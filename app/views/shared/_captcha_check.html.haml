@@ -1,0 +1,37 @@
+- resource_name = spammable.class.model_name.singular
+- humanized_resource_name = spammable.class.model_name.human.downcase
+- script = local_assigns.fetch(:script, true)
+- method = params[:action] == 'create' ? :post : :put
+
+%h3.page-title
+  = _('Anti-spam verification')
+%hr
+
+%p
+  = _("We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed.") % { humanized_resource_name: humanized_resource_name }
+
+= form_for resource_name, method: method, html: { class: 'recaptcha-form js-recaptcha-form' } do |f|
+  .recaptcha
+    -# Create a hidden field for each param of the resource
+    - params[resource_name].each do |field, value|
+      = hidden_field(resource_name, field, value: value)
+
+    -# The reCAPTCHA response value will be returned in the 'g-recaptcha-response' field in non-test environments
+    = recaptcha_tags script: script, callback: 'recaptchaDialogCallback', nonce: content_security_policy_nonce unless Rails.env.test?
+
+    -# Fake the 'g-recaptcha-response' field in the test environment, so that the feature spec
+    -# can get to the (mocked) SpamVerdictService check.
+    = hidden_field_tag('g-recaptcha-response', 'abc123') if Rails.env.test?
+
+    -# Create a hidden field to pass back the ID of the spam_log record which was previously created
+    = hidden_field_tag(:spam_log_id, spammable.spam_log.id)
+
+    -# Yields a block with given extra params which are not included in `params[resource_name]`.
+    -# Currently, this is only used for these params which are passed via URL parameters,
+    -# and can be removed once they are no longer needed to be passed:
+    -# - merge_request_to_resolve_discussions_of
+    -# - discussion_to_resolve
+    = yield
+
+  .row-content-block.footer-block
+    = f.submit _("Create %{humanized_resource_name}") % { humanized_resource_name: humanized_resource_name }, class: 'gl-button btn btn-confirm'

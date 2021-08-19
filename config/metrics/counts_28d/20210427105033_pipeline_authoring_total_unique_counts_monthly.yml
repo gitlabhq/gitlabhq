@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_monthly
 name: "0"
 description:
@@ -12,7 +12,12 @@ status: data_available
 milestone: "13.12"
 introduced_by_url:
 time_frame: 28d
-data_source:
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - o_pipeline_authoring_unique_users_committing_ciconfigfile
+    - o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
 distribution:
 - ce
 - ee

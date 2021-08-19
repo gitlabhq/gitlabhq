@@ -9,15 +9,15 @@ module Types
 
     present_using BoardPresenter
 
-    field :id, type: GraphQL::ID_TYPE, null: false,
+    field :id, type: GraphQL::Types::ID, null: false,
           description: 'ID (global ID) of the board.'
-    field :name, type: GraphQL::STRING_TYPE, null: true,
+    field :name, type: GraphQL::Types::String, null: true,
           description: 'Name of the board.'
 
-    field :hide_backlog_list, type: GraphQL::BOOLEAN_TYPE, null: true,
+    field :hide_backlog_list, type: GraphQL::Types::Boolean, null: true,
           description: 'Whether or not backlog list is hidden.'
 
-    field :hide_closed_list, type: GraphQL::BOOLEAN_TYPE, null: true,
+    field :hide_closed_list, type: GraphQL::Types::Boolean, null: true,
           description: 'Whether or not closed list is hidden.'
 
     field :created_at, Types::TimeType, null: false,
@@ -33,10 +33,10 @@ module Types
           resolver: Resolvers::BoardListsResolver,
           extras: [:lookahead]
 
-    field :web_path, GraphQL::STRING_TYPE, null: false,
+    field :web_path, GraphQL::Types::String, null: false,
           description: 'Web path of the board.'
 
-    field :web_url, GraphQL::STRING_TYPE, null: false,
+    field :web_url, GraphQL::Types::String, null: false,
           description: 'Web URL of the board.'
   end
 end

@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-class Groups::DependencyProxyForContainersController < Groups::ApplicationController
-  include DependencyProxy::Auth
+class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy::ApplicationController
+  include Gitlab::Utils::StrongMemoize
   include DependencyProxy::GroupAccess
   include SendFileUpload
+  include ::PackagesHelper # for event tracking
 
+  before_action :ensure_group
   before_action :ensure_token_granted!
   before_action :ensure_feature_enabled!
 
@@ -22,6 +24,8 @@ class Groups::DependencyProxyForContainersController < Groups::ApplicationContro
       response.headers['Etag'] = "\"#{result[:manifest].digest}\""
       content_type = result[:manifest].content_type
 
+      event_name = tracking_event_name(object_type: :manifest, from_cache: result[:from_cache])
+      track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
       send_upload(
         result[:manifest].file,
         proxy: true,
@@ -38,6 +42,8 @@ class Groups::DependencyProxyForContainersController < Groups::ApplicationContro
       .new(group, image, token, params[:sha]).execute
 
     if result[:status] == :success
+      event_name = tracking_event_name(object_type: :blob, from_cache: result[:from_cache])
+      track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
       send_upload(result[:blob].file)
     else
       head result[:http_status]
@@ -45,6 +51,12 @@ class Groups::DependencyProxyForContainersController < Groups::ApplicationContro
   end
 
   private
+
+  def group
+    strong_memoize(:group) do
+      Group.find_by_full_path(params[:group_id], follow_redirects: request.get?)
+    end
+  end
 
   def image
     params[:image]
@@ -54,9 +66,20 @@ class Groups::DependencyProxyForContainersController < Groups::ApplicationContro
     params[:tag]
   end
 
+  def tracking_event_name(object_type:, from_cache:)
+    event_name = "pull_#{object_type}"
+    event_name = "#{event_name}_from_cache" if from_cache
+
+    event_name
+  end
+
   def dependency_proxy
     @dependency_proxy ||=
       group.dependency_proxy_setting || group.create_dependency_proxy_setting
+  end
+
+  def ensure_group
+    render_404 unless group
   end
 
   def ensure_feature_enabled!

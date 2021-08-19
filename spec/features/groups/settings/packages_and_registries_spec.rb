@@ -113,7 +113,7 @@ RSpec.describe 'Group Packages & Registries settings' do
   end
 
   def find_settings_menu
-    find('ul[data-testid="group-settings-menu"]')
+    find('.shortcuts-settings ul')
   end
 
   def visit_settings_page

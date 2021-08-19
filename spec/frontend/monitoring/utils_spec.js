@@ -448,7 +448,7 @@ describe('monitoring/utils', () => {
       input                                                               | urlParams
       ${[]}                                                               | ${''}
       ${[{ name: 'env', value: 'prod' }]}                                 | ${'?var-env=prod'}
-      ${[{ name: 'env1', value: 'prod' }, { name: 'env2', value: null }]} | ${'?var-env=prod&var-env1=prod'}
+      ${[{ name: 'env1', value: 'prod' }, { name: 'env2', value: null }]} | ${'?var-env1=prod'}
     `(
       'setCustomVariablesFromUrl updates history with query "$urlParams" with input $input',
       ({ input, urlParams }) => {

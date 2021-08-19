@@ -86,18 +86,21 @@ export const STALE_STORED_DATA = [
 
 export const MOCK_FRESH_DATA_RES = { name: 'fresh' };
 
-export const PROMISE_ALL_EXPECTED_MUTATIONS = {
-  initGroups: {
+export const PRELOAD_EXPECTED_MUTATIONS = [
+  {
     type: types.LOAD_FREQUENT_ITEMS,
     payload: { key: GROUPS_LOCAL_STORAGE_KEY, data: FRESH_STORED_DATA },
   },
+  {
+    type: types.LOAD_FREQUENT_ITEMS,
+    payload: { key: PROJECTS_LOCAL_STORAGE_KEY, data: FRESH_STORED_DATA },
+  },
+];
+
+export const PROMISE_ALL_EXPECTED_MUTATIONS = {
   resGroups: {
     type: types.LOAD_FREQUENT_ITEMS,
     payload: { key: GROUPS_LOCAL_STORAGE_KEY, data: [MOCK_FRESH_DATA_RES, MOCK_FRESH_DATA_RES] },
-  },
-  initProjects: {
-    type: types.LOAD_FREQUENT_ITEMS,
-    payload: { key: PROJECTS_LOCAL_STORAGE_KEY, data: FRESH_STORED_DATA },
   },
   resProjects: {
     type: types.LOAD_FREQUENT_ITEMS,

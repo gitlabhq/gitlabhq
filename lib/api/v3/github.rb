@@ -214,6 +214,8 @@ module API
 
           update_project_feature_usage_for(user_project)
 
+          next [] unless user_project.repo_exists?
+
           branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
           present paginate(branches), with: ::API::Github::Entities::Branch, project: user_project

@@ -40,7 +40,7 @@ RSpec.describe 'User searches group settings', :js do
       visit group_settings_ci_cd_path(group)
     end
 
-    it_behaves_like 'can search settings', 'Variables', 'Runners'
+    it_behaves_like 'can search settings', 'Variables', 'Auto DevOps'
   end
 
   context 'in Packages & Registries page' do

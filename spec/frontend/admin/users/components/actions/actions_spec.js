@@ -5,8 +5,8 @@ import { nextTick } from 'vue';
 import Actions from '~/admin/users/components/actions';
 import SharedDeleteAction from '~/admin/users/components/actions/shared/shared_delete_action.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-
 import { CONFIRMATION_ACTIONS, DELETE_ACTIONS } from '../../constants';
+import { paths } from '../../mock_data';
 
 describe('Action components', () => {
   let wrapper;
@@ -47,32 +47,33 @@ describe('Action components', () => {
 
   describe('DELETE_ACTION_COMPONENTS', () => {
     const oncallSchedules = [{ name: 'schedule1' }, { name: 'schedule2' }];
-    it.each(DELETE_ACTIONS)('renders a dropdown item for "%s"', async (action) => {
-      initComponent({
-        component: Actions[capitalizeFirstCharacter(action)],
-        props: {
-          username: 'John Doe',
-          paths: {
-            delete: '/delete',
-            block: '/block',
+
+    it.each(DELETE_ACTIONS.map((action) => [action, paths[action]]))(
+      'renders a dropdown item for "%s"',
+      async (action, expectedPath) => {
+        initComponent({
+          component: Actions[capitalizeFirstCharacter(action)],
+          props: {
+            username: 'John Doe',
+            paths,
+            oncallSchedules,
           },
-          oncallSchedules,
-        },
-        stubs: { SharedDeleteAction },
-      });
+          stubs: { SharedDeleteAction },
+        });
 
-      await nextTick();
+        await nextTick();
 
-      const sharedAction = wrapper.find(SharedDeleteAction);
+        const sharedAction = wrapper.find(SharedDeleteAction);
 
-      expect(sharedAction.attributes('data-block-user-url')).toBe('/block');
-      expect(sharedAction.attributes('data-delete-user-url')).toBe('/delete');
-      expect(sharedAction.attributes('data-gl-modal-action')).toBe(kebabCase(action));
-      expect(sharedAction.attributes('data-username')).toBe('John Doe');
-      expect(sharedAction.attributes('data-oncall-schedules')).toBe(
-        JSON.stringify(oncallSchedules),
-      );
-      expect(findDropdownItem().exists()).toBe(true);
-    });
+        expect(sharedAction.attributes('data-block-user-url')).toBe(paths.block);
+        expect(sharedAction.attributes('data-delete-user-url')).toBe(expectedPath);
+        expect(sharedAction.attributes('data-gl-modal-action')).toBe(kebabCase(action));
+        expect(sharedAction.attributes('data-username')).toBe('John Doe');
+        expect(sharedAction.attributes('data-oncall-schedules')).toBe(
+          JSON.stringify(oncallSchedules),
+        );
+        expect(findDropdownItem().exists()).toBe(true);
+      },
+    );
   });
 });

@@ -23,7 +23,7 @@ module API
         optional :mentions_disabled, type: Boolean, desc: 'Disable a group from getting mentioned'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
+        optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to default branch'
         optional :shared_runners_setting, type: String, values: ::Namespace::SHARED_RUNNERS_SETTINGS, desc: 'Enable/disable shared runners for the group and its subgroups and projects'
       end
 

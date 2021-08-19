@@ -496,18 +496,6 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       expect(find_user_from_web_access_token(:archive)).to eq(user)
     end
 
-    context 'when allow_archive_as_web_access_format feature flag is disabled' do
-      before do
-        stub_feature_flags(allow_archive_as_web_access_format: false)
-      end
-
-      it 'returns nil for ARCHIVE requests' do
-        set_header('SCRIPT_NAME', '/-/archive/main.zip')
-
-        expect(find_user_from_web_access_token(:archive)).to be_nil
-      end
-    end
-
     context 'for API requests' do
       it 'returns the user' do
         set_header('SCRIPT_NAME', '/api/endpoint')

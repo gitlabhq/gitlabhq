@@ -1,5 +1,6 @@
 ---
 redirect_to: 'index.md'
+remove_date: '2021-09-28'
 ---
 
 This document was moved to [another location](index.md).

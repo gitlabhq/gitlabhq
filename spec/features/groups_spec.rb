@@ -52,7 +52,7 @@ RSpec.describe 'Group' do
         click_button 'Create group'
 
         expect(current_path).to eq(new_group_path)
-        expect(page).to have_text('Please choose a group URL with no special characters.')
+        expect(page).to have_text('Please choose a group URL with no special characters or spaces.')
       end
     end
 

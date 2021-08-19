@@ -23,7 +23,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
         find(".js-allowed-to-push").click
         wait_for_requests
 
-        within('.qa-allowed-to-push-dropdown') do
+        within('.qa-allowed-to-push-dropdown') do # rubocop:disable QA/SelectorUsage
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
@@ -38,7 +38,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
         find(".js-allowed-to-merge").click
         wait_for_requests
 
-        within('.qa-allowed-to-merge-dropdown') do
+        within('.qa-allowed-to-merge-dropdown') do # rubocop:disable QA/SelectorUsage
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)
@@ -68,7 +68,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
         find(".js-allowed-to-push").click
         wait_for_requests
 
-        within('.qa-allowed-to-push-dropdown') do
+        within('.qa-allowed-to-push-dropdown') do # rubocop:disable QA/SelectorUsage
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)

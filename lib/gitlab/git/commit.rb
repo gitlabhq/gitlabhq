@@ -111,8 +111,18 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
+          # In either of these cases, we are guaranteed to return no commits, so
+          # shortcut the RPC call
+          return [] if Gitlab::Git.blank_ref?(base) || Gitlab::Git.blank_ref?(head)
+
           wrapped_gitaly_errors do
-            repo.gitaly_commit_client.between(base, head)
+            if Feature.enabled?(:between_uses_list_commits, default_enabled: :yaml)
+              revisions = [head, "^#{base}"] # base..head
+
+              repo.gitaly_commit_client.list_commits(revisions, reverse: true)
+            else
+              repo.gitaly_commit_client.between(base, head)
+            end
           end
         end
 

@@ -4,16 +4,13 @@ Rails.autoloaders.each do |autoloader|
   # We need to ignore these since these are non-Ruby files
   # that do not define Ruby classes / modules
   autoloader.ignore(Rails.root.join('lib/support'))
+  autoloader.ignore(Rails.root.join('ee/lib/ee/gitlab/ci/parsers/security/validators/schemas')) if Gitlab.ee?
 
-  # Ignore generators since these are loaded manually by Rails
-  # https://github.com/rails/rails/blob/v6.1.3.2/railties/lib/rails/command/behavior.rb#L56-L65
-  autoloader.ignore(Rails.root.join('lib/generators'))
-  autoloader.ignore(Rails.root.join('ee/lib/generators')) if Gitlab.ee?
-
-  # Mailer previews are also loaded manually by Rails
+  # Mailer previews are loaded manually by Rails
   # https://github.com/rails/rails/blob/v6.1.3.2/actionmailer/lib/action_mailer/preview.rb#L121-L125
   autoloader.ignore(Rails.root.join('app/mailers/previews'))
   autoloader.ignore(Rails.root.join('ee/app/mailers/previews')) if Gitlab.ee?
+  autoloader.ignore(Rails.root.join('jh/app/mailers/previews')) if Gitlab.jh?
 
   autoloader.inflector.inflect(
     'api' => 'API',

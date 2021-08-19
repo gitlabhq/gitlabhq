@@ -90,7 +90,7 @@ export default {
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <a
         v-if="isEditable"
-        class="float-right lock-edit"
+        class="float-right lock-edit btn gl-text-gray-900! gl-ml-auto hide-collapsed btn-default btn-sm gl-button btn-default-tertiary gl-mr-n2"
         href="#"
         data-testid="edit-link"
         data-track-event="click_edit_button"

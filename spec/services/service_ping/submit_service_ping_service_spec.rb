@@ -100,9 +100,7 @@ RSpec.describe ServicePing::SubmitService do
 
   context 'when product_intelligence_enabled is false' do
     before do
-      allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |service|
-        allow(service).to receive(:product_intelligence_enabled?).and_return(false)
-      end
+      allow(ServicePing::ServicePingSettings).to receive(:product_intelligence_enabled?).and_return(false)
     end
 
     it_behaves_like 'does not run'
@@ -112,9 +110,7 @@ RSpec.describe ServicePing::SubmitService do
     before do
       stub_usage_data_connections
 
-      allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |service|
-        allow(service).to receive(:product_intelligence_enabled?).and_return(true)
-      end
+      allow(ServicePing::ServicePingSettings).to receive(:product_intelligence_enabled?).and_return(true)
     end
 
     it 'generates service ping' do

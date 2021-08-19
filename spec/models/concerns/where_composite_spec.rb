@@ -8,7 +8,7 @@ RSpec.describe WhereComposite do
 
     let(:model) do
       tbl_name = test_table_name
-      Class.new(ActiveRecord::Base) do
+      Class.new(ApplicationRecord) do
         self.table_name = tbl_name
 
         include WhereComposite
@@ -16,7 +16,7 @@ RSpec.describe WhereComposite do
     end
 
     def connection
-      ActiveRecord::Base.connection
+      ApplicationRecord.connection
     end
 
     before_all do

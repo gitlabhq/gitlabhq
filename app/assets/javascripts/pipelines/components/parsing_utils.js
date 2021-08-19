@@ -175,7 +175,7 @@ export const listByLayers = ({ stages }) => {
   const parsedData = parseData(arrayOfJobs);
   const dataWithLayers = createSankey()(parsedData);
 
-  return dataWithLayers.nodes.reduce((acc, { layer, name }) => {
+  const pipelineLayers = dataWithLayers.nodes.reduce((acc, { layer, name }) => {
     /* sort groups by layer */
 
     if (!acc[layer]) {
@@ -186,6 +186,12 @@ export const listByLayers = ({ stages }) => {
 
     return acc;
   }, []);
+
+  return {
+    linksData: parsedData.links,
+    numGroups: arrayOfJobs.length,
+    pipelineLayers,
+  };
 };
 
 export const generateColumnsFromLayersListBare = ({ stages, stagesLookup }, pipelineLayers) => {

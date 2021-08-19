@@ -5,6 +5,8 @@ import {
   FILTER_ANY,
   FILTER_CURRENT,
   FILTER_NONE,
+  FILTER_STARTED,
+  FILTER_UPCOMING,
   OPERATOR_IS,
   OPERATOR_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -107,8 +109,12 @@ export const PARAM_DUE_DATE = 'due_date';
 export const PARAM_SORT = 'sort';
 export const PARAM_STATE = 'state';
 
-export const initialPageParams = {
+export const defaultPageSizeParams = {
   firstPageSize: PAGE_SIZE,
+};
+
+export const largePageSizeParams = {
+  firstPageSize: PAGE_SIZE_MANUAL,
 };
 
 export const DUE_DATE_NONE = '0';
@@ -186,12 +192,19 @@ export const URL_PARAM = 'urlParam';
 export const NORMAL_FILTER = 'normalFilter';
 export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
-export const SPECIAL_FILTER_VALUES = [FILTER_NONE, FILTER_ANY, FILTER_CURRENT];
+export const SPECIAL_FILTER_VALUES = [
+  FILTER_NONE,
+  FILTER_ANY,
+  FILTER_CURRENT,
+  FILTER_UPCOMING,
+  FILTER_STARTED,
+];
 
 export const TOKEN_TYPE_AUTHOR = 'author_username';
 export const TOKEN_TYPE_ASSIGNEE = 'assignee_username';
 export const TOKEN_TYPE_MILESTONE = 'milestone';
 export const TOKEN_TYPE_LABEL = 'labels';
+export const TOKEN_TYPE_TYPE = 'type';
 export const TOKEN_TYPE_MY_REACTION = 'my_reaction_emoji';
 export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
 export const TOKEN_TYPE_ITERATION = 'iteration';
@@ -231,10 +244,12 @@ export const filters = {
   [TOKEN_TYPE_MILESTONE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'milestoneTitle',
+      [SPECIAL_FILTER]: 'milestoneWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'milestone_title',
+        [SPECIAL_FILTER]: 'milestone_title',
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[milestone_title]',
@@ -253,6 +268,18 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
+      },
+    },
+  },
+  [TOKEN_TYPE_TYPE]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'types',
+      [SPECIAL_FILTER]: 'types',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'type[]',
+        [SPECIAL_FILTER]: 'type[]',
       },
     },
   },

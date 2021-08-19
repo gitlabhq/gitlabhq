@@ -112,7 +112,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
       end
 
       context 'when the strategy name is flexibleRollout' do
-        valid_parameters = { rollout: '40', groupId: 'mygroup', stickiness: 'DEFAULT' }
+        valid_parameters = { rollout: '40', groupId: 'mygroup', stickiness: 'default' }
         where(invalid_parameters: [
           nil,
           {},
@@ -133,7 +133,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
         [
           [:rollout, '10'],
-          [:stickiness, 'DEFAULT'],
+          [:stickiness, 'default'],
           [:groupId, 'mygroup']
         ].permutation(3).each do |parameters|
           it "allows the parameters in the order #{parameters.map { |p| p.first }.join(', ')}" do
@@ -151,7 +151,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
                                 "\n", "\t", "\n10", "20\n", "\n100", "100\n", "\n  ", nil])
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
-              parameters = { stickiness: 'DEFAULT', groupId: 'mygroup', rollout: invalid_value }
+              parameters = { stickiness: 'default', groupId: 'mygroup', rollout: invalid_value }
               strategy = described_class.create(feature_flag: feature_flag,
                                                 name: 'flexibleRollout',
                                                 parameters: parameters)
@@ -165,7 +165,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           where(valid_value: %w[0 1 10 38 100 93])
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
-              parameters = { stickiness: 'DEFAULT', groupId: 'mygroup', rollout: valid_value }
+              parameters = { stickiness: 'default', groupId: 'mygroup', rollout: valid_value }
               strategy = described_class.create(feature_flag: feature_flag,
                                                 name: 'flexibleRollout',
                                                 parameters: parameters)
@@ -180,7 +180,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
                                 '!bad', '.bad', 'Bad', 'bad1', "", " ", "b" * 33, "ba_d", "ba\nd"])
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
-              parameters = { stickiness: 'DEFAULT', groupId: invalid_value, rollout: '40' }
+              parameters = { stickiness: 'default', groupId: invalid_value, rollout: '40' }
               strategy = described_class.create(feature_flag: feature_flag,
                                                 name: 'flexibleRollout',
                                                 parameters: parameters)
@@ -192,7 +192,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           where(valid_value: ["somegroup", "anothergroup", "okay", "g", "a" * 32])
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
-              parameters = { stickiness: 'DEFAULT', groupId: valid_value, rollout: '40' }
+              parameters = { stickiness: 'default', groupId: valid_value, rollout: '40' }
               strategy = described_class.create(feature_flag: feature_flag,
                                                 name: 'flexibleRollout',
                                                 parameters: parameters)
@@ -203,7 +203,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         end
 
         describe 'stickiness' do
-          where(invalid_value: [nil, " ", "default", "DEFAULT\n", "UserId", "USER", "USERID "])
+          where(invalid_value: [nil, " ", "DEFAULT", "DEFAULT\n", "UserId", "USER", "USERID "])
           with_them do
             it 'must be a string representing a supported stickiness setting' do
               parameters = { stickiness: invalid_value, groupId: 'mygroup', rollout: '40' }
@@ -212,12 +212,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
                                                 parameters: parameters)
 
               expect(strategy.errors[:parameters]).to eq([
-                'stickiness parameter must be DEFAULT, USERID, SESSIONID, or RANDOM'
+                'stickiness parameter must be default, userId, sessionId, or random'
               ])
             end
           end
 
-          where(valid_value: %w[DEFAULT USERID SESSIONID RANDOM])
+          where(valid_value: %w[default userId sessionId random])
           with_them do
             it 'must be a string representing a supported stickiness setting' do
               parameters = { stickiness: valid_value, groupId: 'mygroup', rollout: '40' }
@@ -425,7 +425,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
                                             user_list: user_list,
                                             parameters: { groupId: 'default',
                                                           rollout: '10',
-                                                          stickiness: 'DEFAULT' })
+                                                          stickiness: 'default' })
 
           expect(strategy.errors[:user_list]).to eq(['must be blank'])
         end
@@ -435,7 +435,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
                                             name: 'flexibleRollout',
                                             parameters: { groupId: 'default',
                                                           rollout: '10',
-                                                          stickiness: 'DEFAULT' })
+                                                          stickiness: 'default' })
 
           expect(strategy.errors[:user_list]).to be_empty
         end

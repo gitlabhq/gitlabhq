@@ -13,7 +13,7 @@ import {
   REPORT_TYPE_SECRET_DETECTION,
   reportTypeToSecurityReportTypeEnum,
 } from './constants';
-import securityReportMergeRequestDownloadPathsQuery from './queries/security_report_merge_request_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from './graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import store from './store';
 import { MODULE_SAST, MODULE_SECRET_DETECTION } from './store/constants';
 import { extractSecurityReportArtifactsFromMergeRequest } from './utils';

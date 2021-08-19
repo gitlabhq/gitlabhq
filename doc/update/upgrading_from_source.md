@@ -12,12 +12,10 @@ Users wishing to upgrade to 12.0.0 must take some extra steps. See the
 version specific upgrade instructions for 12.0.0 for more details.
 
 Make sure you view this update guide from the branch (version) of GitLab you
-would like to install (e.g., `11.8`. You can select the version in the version
-dropdown at the top left corner of GitLab (below the menu bar).
+would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown at the top right corner of GitLab documentation page.
 
-In all examples, replace `BRANCH` with the branch for the version you upgrading
-to (e.g. `11-8-stable` for `11.8`), and replace `PREVIOUS_BRANCH` with the
-branch for the version you are upgrading from (e.g. `11-7-stable` for `11.7`).
+In each of the following examples, replace `BRANCH` with the branch of the version you upgrading to (for example, `11-8-stable` for `11.8`). Replace `PREVIOUS_BRANCH` with the
+branch for the version you are upgrading from (for example, `11-7-stable` for `11.7`).
 
 If the highest number stable branch is unclear please check the
 [GitLab Blog](https://about.gitlab.com/blog/archives.html) for installation
@@ -29,7 +27,7 @@ the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
 ## Upgrading to a new major version
 
 Major versions are reserved for backwards incompatible changes. We recommend that
-you first upgrade to the latest available minor version within your major version.
+you first upgrade to the latest available minor version of your current major version.
 Please follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
 to identify the ideal upgrade path.
 
@@ -152,7 +150,7 @@ WARNING:
 From GitLab 14.0, you must use at least PostgreSQL 12.
 
 The latest version of GitLab might depend on a more recent PostgreSQL version
-than what you're currently running. You may also need to enable some
+than what you are running. You may also have to enable some
 extensions. For more information, see the
 [PostgreSQL requirements](../install/requirements.md#postgresql-requirements)
 
@@ -212,9 +210,9 @@ git diff origin/PREVIOUS_BRANCH:lib/support/nginx/gitlab-ssl origin/BRANCH:lib/s
 git diff origin/PREVIOUS_BRANCH:lib/support/nginx/gitlab origin/BRANCH:lib/support/nginx/gitlab
 ```
 
-If you are using Strict-Transport-Security in your installation to continue
-using it you must enable it in your NGINX configuration as GitLab application no
-longer handles setting it.
+If you are using Strict-Transport-Security in your installation, you must enable it in your
+NGINX configuration to continue using it. This is because the GitLab application no longer
+sets it.
 
 If you are using Apache instead of NGINX see the updated [Apache templates](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 Also note that because Apache does not support upstreams behind Unix sockets you
@@ -391,11 +389,11 @@ cp config/initializers/rack_attack.rb config/initializers/rack_attack_backup.rb
 
 ### 1. Revert the code to the previous version
 
-To revert to a previous version, you need to follow the upgrading guides
+To revert to a previous version, you must follow the upgrading guides
 for the previous version.
 
 For example, if you have upgraded to GitLab 12.6 and want to revert back to
-12.5, you need to follow the guides for upgrading from 12.4 to 12.5. You can
+12.5, follow the guides for upgrading from 12.4 to 12.5. You can
 use the version dropdown at the top of the page to select the right version.
 
 When reverting, you should **not** follow the database migration guides, as the

@@ -7,16 +7,16 @@
 #
 #   # bad
 #   class AwfulType
-#     field :some_field, GraphQL::STRING_TYPE
+#     field :some_field, GraphQL::Types::String
 #   end
 #
 #   class TerribleType
-#     argument :some_argument, GraphQL::STRING_TYPE
+#     argument :some_argument, GraphQL::Types::String
 #   end
 #
 #   class UngoodType
 #     field :some_argument,
-#       GraphQL::STRING_TYPE,
+#       GraphQL::Types::String,
 #       description: "A description that does not end in a period"
 #   end
 #
@@ -27,12 +27,12 @@
 #   # good
 #   class GreatType
 #     argument :some_field,
-#       GraphQL::STRING_TYPE,
+#       GraphQL::Types::String,
 #       description: "Well described - a superb description."
 #
 #     field :some_field,
-#       GraphQL::STRING_TYPE,
-#       description: "A thorough and compelling description."
+#       GraphQL::Types::String,
+#       description: "Thorough and compelling description."
 #   end
 #
 #   class GoodEnum
@@ -43,8 +43,10 @@ module RuboCop
   module Cop
     module Graphql
       class Descriptions < RuboCop::Cop::Cop
-        MSG_NO_DESCRIPTION = 'Please add a `description` property.'
-        MSG_NO_PERIOD = '`description` strings must end with a `.`.'
+        MSG_STYLE_GUIDE_LINK = 'See the description style guide: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide'
+        MSG_NO_DESCRIPTION = "Please add a `description` property. #{MSG_STYLE_GUIDE_LINK}"
+        MSG_NO_PERIOD = "`description` strings must end with a `.`. #{MSG_STYLE_GUIDE_LINK}"
+        MSG_BAD_START = "`description` strings should not start with \"A...\" or \"The...\". #{MSG_STYLE_GUIDE_LINK}"
 
         def_node_matcher :graphql_describable?, <<~PATTERN
           (send nil? {:field :argument :value} ...)
@@ -75,6 +77,7 @@ module RuboCop
           return add_offense(node, location: :expression, message: MSG_NO_DESCRIPTION) unless description
 
           add_offense(node, location: :expression, message: MSG_NO_PERIOD) if no_period?(description)
+          add_offense(node, location: :expression, message: MSG_BAD_START) if bad_start?(description)
         end
 
         # Autocorrect missing periods at end of description.
@@ -100,12 +103,19 @@ module RuboCop
         end
 
         def no_period?(description)
-          # Test that the description node is a `:str` (as opposed to
-          # a `#copy_field_description` call) before checking.
-          description.type == :str && !description.value.strip.end_with?('.')
+          string?(description) && !description.value.strip.end_with?('.')
         end
 
-        # Returns a Parser::Source::Range that ends just before the final String delimiter.
+        def bad_start?(description)
+          string?(description) && description.value.strip.downcase.start_with?('a ', 'the ')
+        end
+
+        # Returns true if `description` node is a `:str` (as opposed to a `#copy_field_description` call)
+        def string?(description)
+          description.type == :str
+        end
+
+        # Returns a `Parser::Source::Range` that ends just before the final `String` delimiter.
         def before_end_quote(string)
           return string.source_range.adjust(end_pos: -1) unless string.heredoc?
 

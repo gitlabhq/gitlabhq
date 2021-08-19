@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Pipeline < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class Pipeline < Ci::ApplicationRecord
     include Ci::HasStatus
     include Importable
     include AfterCommitQueue
@@ -319,6 +318,7 @@ module Ci
     scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :eager_load_project, -> { eager_load(project: [:route, { namespace: :route }]) }
+    scope :with_pipeline_source, -> (source) { where(source: source)}
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
@@ -378,11 +378,15 @@ module Ci
     end
 
     def self.latest_successful_for_refs(refs)
-      relation = newest_first(ref: refs).success
+      return Ci::Pipeline.none if refs.empty?
 
-      relation.each_with_object({}) do |pipeline, hash|
-        hash[pipeline.ref] ||= pipeline
-      end
+      refs_values = refs.map { |ref| "(#{connection.quote(ref)})" }.join(",")
+      join_query = success.where("refs_values.ref = ci_pipelines.ref").order(id: :desc).limit(1)
+
+      Ci::Pipeline
+        .from("(VALUES #{refs_values}) refs_values (ref)")
+        .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{Ci::Pipeline.table_name} ON TRUE")
+        .index_by(&:ref)
     end
 
     def self.latest_running_for_ref(ref)
@@ -391,6 +395,10 @@ module Ci
 
     def self.latest_failed_for_ref(ref)
       newest_first(ref: ref).failed.take
+    end
+
+    def self.jobs_count_in_alive_pipelines
+      created_after(24.hours.ago).alive.joins(:builds).count
     end
 
     # Returns a Hash containing the latest pipeline for every given

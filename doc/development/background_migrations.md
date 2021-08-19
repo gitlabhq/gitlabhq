@@ -8,7 +8,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 # Background migrations
 
 Background migrations should be used to perform data migrations whenever a
-migration exceeds [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations). For example, you can use background
+migration exceeds [the time limits in our guidelines](migration_style_guide.md#how-long-a-migration-should-take). For example, you can use background
 migrations to migrate data that's stored in a single JSON column
 to a separate table instead.
 
@@ -18,7 +18,7 @@ migrations automatically reschedule themselves for a later point in time.
 ## When To Use Background Migrations
 
 You should use a background migration when you migrate _data_ in tables that have
-so many rows that the process would exceed [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations) if performed using a regular Rails migration.
+so many rows that the process would exceed [the time limits in our guidelines](migration_style_guide.md#how-long-a-migration-should-take) if performed using a regular Rails migration.
 
 - Background migrations should be used when migrating data in [high-traffic tables](migration_style_guide.md#high-traffic-tables).
 - Background migrations may also be used when executing numerous single-row queries
@@ -31,7 +31,7 @@ Some examples where background migrations can be useful:
 
 - Migrating events from one table to multiple separate tables.
 - Populating one column based on JSON stored in another column.
-- Migrating data that depends on the output of external services (e.g. an API).
+- Migrating data that depends on the output of external services (for example, an API).
 
 NOTE:
 If the background migration is part of an important upgrade, make sure it's announced
@@ -40,7 +40,7 @@ into this category.
 
 ## Isolation
 
-Background migrations must be isolated and can not use application code (e.g.
+Background migrations must be isolated and can not use application code (for example,
 models defined in `app/models`). Since these migrations can take a long time to
 run it's possible for new versions to be deployed while they are still running.
 
@@ -157,7 +157,7 @@ Because background migrations can take a long time you can't immediately clean
 things up after scheduling them. For example, you can't drop a column that's
 used in the migration process as this would cause jobs to fail. This means that
 you'll need to add a separate _post deployment_ migration in a future release
-that finishes any remaining jobs before cleaning things up (e.g. removing a
+that finishes any remaining jobs before cleaning things up (for example, removing a
 column).
 
 As an example, say you want to migrate the data from column `foo` (containing a
@@ -167,20 +167,25 @@ roughly be as follows:
 1. Release A:
    1. Create a migration class that perform the migration for a row with a given ID.
    1. Deploy the code for this release, this should include some code that will
-      schedule jobs for newly created data (e.g. using an `after_create` hook).
+      schedule jobs for newly created data (for example, using an `after_create` hook).
    1. Schedule jobs for all existing rows in a post-deployment migration. It's
       possible some newly created rows may be scheduled twice so your migration
       should take care of this.
 1. Release B:
    1. Deploy code so that the application starts using the new column and stops
       scheduling jobs for newly created data.
-   1. In a post-deployment migration you'll need to ensure no jobs remain.
-      1. Use `Gitlab::BackgroundMigration.steal` to process any remaining
-         jobs in Sidekiq.
-      1. Reschedule the migration to be run directly (i.e. not through Sidekiq)
-         on any rows that weren't migrated by Sidekiq. This can happen if, for
-         instance, Sidekiq received a SIGKILL, or if a particular batch failed
-         enough times to be marked as dead.
+   1. In a post-deployment migration use `finalize_background_migration` from
+      `BackgroundMigrationHelpers` to ensure no jobs remain. This helper will:
+         1. Use `Gitlab::BackgroundMigration.steal` to process any remaining
+            jobs in Sidekiq.
+         1. Reschedule the migration to be run directly (that is, not through Sidekiq)
+            on any rows that weren't migrated by Sidekiq. This can happen if, for
+            instance, Sidekiq received a SIGKILL, or if a particular batch failed
+            enough times to be marked as dead.
+         1. Remove `Gitlab::Database::BackgroundMigrationJob` rows where
+            `status = succeeded`. To retain diagnostic information that may
+            help with future bug tracking you can skip this step by specifying
+            the `delete_tracking_jobs: false` parameter.
    1. Remove the old column.
 
 This may also require a bump to the [import/export version](../user/project/settings/import_export.md), if

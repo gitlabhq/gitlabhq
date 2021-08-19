@@ -23,7 +23,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
     end
 
     it 'can find ancestors upto a certain level' do
-      relation = described_class.new(Group.where(id: child2), options: options).base_and_ancestors(upto: child1)
+      relation = described_class.new(Group.where(id: child2), options: options).base_and_ancestors(upto: child1.id)
 
       expect(relation).to contain_exactly(child2)
     end
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
     end
 
     it 'can find ancestors upto a certain level' do
-      relation = described_class.new(Group.where(id: child2), options: options).ancestors(upto: child1)
+      relation = described_class.new(Group.where(id: child2), options: options).ancestors(upto: child1.id)
 
       expect(relation).to be_empty
     end

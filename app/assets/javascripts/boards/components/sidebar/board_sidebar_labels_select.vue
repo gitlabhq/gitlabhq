@@ -25,6 +25,8 @@ export default {
   data() {
     return {
       loading: false,
+      oldIid: null,
+      isEditing: false,
     };
   },
   computed: {
@@ -72,6 +74,15 @@ export default {
       return this.labelsFetchPath || projectLabelsFetchPath;
     },
   },
+  watch: {
+    activeBoardItem(_, oldVal) {
+      if (this.isEditing) {
+        this.oldIid = oldVal.iid;
+      } else {
+        this.oldIid = null;
+      }
+    },
+  },
   methods: {
     ...mapActions(['setActiveBoardItemLabels', 'setError']),
     async setLabels(payload) {
@@ -84,8 +95,14 @@ export default {
           .filter((label) => !payload.find((selected) => selected.id === label.id))
           .map((label) => label.id);
 
-        const input = { addLabelIds, removeLabelIds, projectPath: this.projectPathForActiveIssue };
+        const input = {
+          addLabelIds,
+          removeLabelIds,
+          projectPath: this.projectPathForActiveIssue,
+          iid: this.oldIid,
+        };
         await this.setActiveBoardItemLabels(input);
+        this.oldIid = null;
       } catch (e) {
         this.setError({ error: e, message: __('An error occurred while updating labels.') });
       } finally {
@@ -115,6 +132,8 @@ export default {
     :title="__('Labels')"
     :loading="loading"
     data-testid="sidebar-labels"
+    @open="isEditing = true"
+    @close="isEditing = false"
   >
     <template #collapsed>
       <gl-label

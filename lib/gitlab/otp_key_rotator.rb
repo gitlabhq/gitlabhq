@@ -36,7 +36,7 @@ module Gitlab
       raise ArgumentError, "New key is too short! Must be 256 bits" if new_key.size < 64
 
       write_csv do |csv|
-        ActiveRecord::Base.transaction do
+        User.transaction do
           User.with_two_factor.in_batches do |relation| # rubocop: disable Cop/InBatches
             rows = relation.pluck(:id, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt)
             rows.each do |row|
@@ -54,7 +54,7 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def rollback!
-      ActiveRecord::Base.transaction do
+      User.transaction do
         CSV.foreach(filename, headers: HEADERS, return_headers: false) do |row|
           User.where(id: row['user_id']).update_all(encrypted_otp_secret: row['old_value'])
         end

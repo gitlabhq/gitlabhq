@@ -15,6 +15,8 @@ GitLab allows [Owners](../user/permissions.md) to set a project's visibility as:
 
 These visibility levels affect who can see the project in the public access directory (`/public`
 for your GitLab instance). For example, <https://gitlab.com/public>.
+You can control the visibility of individual features with
+[project feature settings](../user/permissions.md#project-features).
 
 ## Public projects
 
@@ -26,7 +28,7 @@ They are listed in the public access directory (`/public`) for all users.
 
 NOTE:
 By default, `/public` is visible to unauthenticated users. However, if the
-[**Public** visibility level](../user/admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels)
+[**Public** visibility level](../user/admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/public` is visible only to signed-in users.
 
 ## Internal projects
@@ -53,8 +55,15 @@ They appear in the public access directory (`/public`) for project members only.
 
 ## Change project visibility
 
-1. Go to your project's **Settings**.
-1. Change **Visibility Level** to either Public, Internal, or Private.
+Prerequisite:
+
+- You must have the Owner role for a project.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Change **Project visibility** to either Public, Internal, or Private.
+1. Select **Save changes**.
 
 ## Restrict use of public or internal projects
 
@@ -62,7 +71,7 @@ You can restrict the use of visibility levels for users when they create a proje
 This is useful to prevent users from publicly exposing their repositories by accident. The
 restricted visibility settings do not apply to admin users.
 
-For details, see [Restricted visibility levels](../user/admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels).
+For details, see [Restricted visibility levels](../user/admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels).
 
 <!-- ## Troubleshooting
 

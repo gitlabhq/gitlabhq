@@ -71,7 +71,9 @@ describe('Snippet view app', () => {
   it('renders correct snippet-blob components', () => {
     createComponent({
       data: {
-        blobs: [Blob, BinaryBlob],
+        snippet: {
+          blobs: [Blob, BinaryBlob],
+        },
       },
     });
     const blobs = wrapper.findAll(SnippetBlob);

@@ -190,7 +190,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
         .with(issue.assignees[1])
         .and_return(5)
 
-      expect(Gitlab::Database)
+      expect(Gitlab::Database.main)
         .to receive(:bulk_insert)
         .with(
           IssueAssignee.table_name,

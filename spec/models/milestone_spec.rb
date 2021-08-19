@@ -538,6 +538,15 @@ RSpec.describe Milestone do
 
     it { is_expected.to match('gitlab-org/gitlab-ce%123') }
     it { is_expected.to match('gitlab-org/gitlab-ce%"my-milestone"') }
+
+    context 'when milestone_reference_pattern feature flag is false' do
+      before do
+        stub_feature_flags(milestone_reference_pattern: false)
+      end
+
+      it { is_expected.to match('gitlab-org/gitlab-ce%123') }
+      it { is_expected.to match('gitlab-org/gitlab-ce%"my-milestone"') }
+    end
   end
 
   describe '.link_reference_pattern' do

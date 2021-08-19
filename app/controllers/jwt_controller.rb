@@ -19,7 +19,7 @@ class JwtController < ApplicationController
     service = SERVICES[params[:service]]
     return head :not_found unless service
 
-    result = service.new(@authentication_result.project, @authentication_result.actor, auth_params)
+    result = service.new(@authentication_result.project, auth_user, auth_params)
       .execute(authentication_abilities: @authentication_result.authentication_abilities)
 
     render json: result, status: result[:http_status]
@@ -67,7 +67,7 @@ class JwtController < ApplicationController
   end
 
   def additional_params
-    { scopes: scopes_param }.compact
+    { scopes: scopes_param, deploy_token: @authentication_result.deploy_token }.compact
   end
 
   # We have to parse scope here, because Docker Client does not send an array of scopes,
@@ -83,8 +83,7 @@ class JwtController < ApplicationController
 
   def auth_user
     strong_memoize(:auth_user) do
-      actor = @authentication_result&.actor
-      actor.is_a?(User) ? actor : nil
+      @authentication_result.auth_user
     end
   end
 end

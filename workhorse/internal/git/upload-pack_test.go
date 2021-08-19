@@ -15,8 +15,8 @@ import (
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 )
 
 var (

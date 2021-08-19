@@ -74,6 +74,14 @@ You can also use the API to [retrieve the current value](../../api/settings.md#g
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings"
 ```
 
+### Reduce wiki repository size
+
+The wiki counts as part of the [namespace storage size](../../user/admin_area/settings/account_and_limit_settings.md),
+so you should keep your wiki repositories as compact as possible.
+
+For more information about tools to compact repositories,
+read the documentation on [reducing repository size](../../user/project/repository/reducing_the_repo_size_using_git.md).
+
 ## Related topics
 
 - [User documentation for wikis](../../user/project/wiki/index.md)

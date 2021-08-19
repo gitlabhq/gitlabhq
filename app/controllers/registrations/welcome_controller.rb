@@ -16,7 +16,7 @@ module Registrations
       result = ::Users::SignupService.new(current_user, update_params).execute
 
       if result[:status] == :success
-        return redirect_to new_users_sign_up_group_path if show_signup_onboarding?
+        return redirect_to new_users_sign_up_group_path(trial_params) if show_signup_onboarding?
 
         members = current_user.members
 
@@ -41,7 +41,7 @@ module Registrations
     end
 
     def update_params
-      params.require(:user).permit(:role, :other_role, :setup_for_company, :email_opted_in)
+      params.require(:user).permit(:role, :other_role, :setup_for_company)
     end
 
     def requires_confirmation?(user)
@@ -66,6 +66,10 @@ module Registrations
 
     def show_signup_onboarding?
       false
+    end
+
+    def trial_params
+      nil
     end
   end
 end

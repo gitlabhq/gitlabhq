@@ -214,7 +214,7 @@ describe('LabelsSelect Actions', () => {
     });
 
     describe('on success', () => {
-      it('dispatches `requestCreateLabel`, `receiveCreateLabelSuccess` & `toggleDropdownContentsCreateView` actions', (done) => {
+      it('dispatches `requestCreateLabel`, `fetchLabels` & `receiveCreateLabelSuccess` & `toggleDropdownContentsCreateView` actions', (done) => {
         const label = { id: 1 };
         mock.onPost(/labels.json/).replyOnce(200, label);
 
@@ -225,6 +225,7 @@ describe('LabelsSelect Actions', () => {
           [],
           [
             { type: 'requestCreateLabel' },
+            { payload: { refetch: true }, type: 'fetchLabels' },
             { type: 'receiveCreateLabelSuccess' },
             { type: 'toggleDropdownContentsCreateView' },
           ],
@@ -260,6 +261,18 @@ describe('LabelsSelect Actions', () => {
         [{ type: types.UPDATE_SELECTED_LABELS, payload: { labels } }],
         [],
         done,
+      );
+    });
+  });
+
+  describe('updateLabelsSetState', () => {
+    it('updates labels `set` state to match `selectedLabels`', () => {
+      testAction(
+        actions.updateLabelsSetState,
+        {},
+        state,
+        [{ type: types.UPDATE_LABELS_SET_STATE }],
+        [],
       );
     });
   });

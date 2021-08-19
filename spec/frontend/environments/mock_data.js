@@ -71,6 +71,8 @@ const environment = {
   state: 'stopped',
   external_url: 'http://external.com',
   environment_type: null,
+  can_stop: true,
+  terminal_path: '/terminal',
   last_deployment: {
     id: 66,
     iid: 6,
@@ -301,4 +303,22 @@ const tableData = {
   },
 };
 
-export { environment, environmentsList, folder, serverData, tableData, deployBoardMockData };
+const createEnvironment = (data = {}) => ({
+  id: 1,
+  name: 'My environment',
+  externalUrl: 'my external url',
+  isAvailable: true,
+  hasTerminals: false,
+  autoStopAt: null,
+  ...data,
+});
+
+export {
+  environment,
+  environmentsList,
+  folder,
+  serverData,
+  tableData,
+  deployBoardMockData,
+  createEnvironment,
+};

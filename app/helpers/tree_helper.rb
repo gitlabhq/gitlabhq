@@ -178,7 +178,7 @@ module TreeHelper
   def web_ide_button_data(options = {})
     {
       project_path: project_to_use.full_path,
-      ref: ActionDispatch::Journey::Router::Utils.escape_path(@ref),
+      ref: @ref,
 
       is_fork: fork?,
       needs_to_fork: needs_to_fork?,

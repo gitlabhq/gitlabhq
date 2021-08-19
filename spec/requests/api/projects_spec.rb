@@ -207,6 +207,18 @@ RSpec.describe API::Projects do
         let(:current_user) { user }
       end
 
+      it 'includes container_registry_access_level', :aggregate_failures do
+        project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+
+        get api('/projects', user)
+        project_response = json_response.find { |p| p['id'] == project.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(project_response['container_registry_access_level']).to eq('disabled')
+        expect(project_response['container_registry_enabled']).to eq(false)
+      end
+
       context 'when some projects are in a group' do
         before do
           create(:project, :public, group: create(:group))
@@ -219,7 +231,6 @@ RSpec.describe API::Projects do
       end
 
       it 'includes correct value of container_registry_enabled', :aggregate_failures do
-        project.update_column(:container_registry_enabled, true)
         project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
 
         get api('/projects', user)
@@ -700,52 +711,112 @@ RSpec.describe API::Projects do
       end
     end
 
-    context 'sorting by project statistics' do
-      %w(repository_size storage_size wiki_size packages_size).each do |order_by|
-        context "sorting by #{order_by}" do
-          before do
-            ProjectStatistics.update_all(order_by => 100)
-            project4.statistics.update_columns(order_by => 10)
-            project.statistics.update_columns(order_by => 200)
-          end
+    context 'sorting' do
+      context 'by project statistics' do
+        %w(repository_size storage_size wiki_size packages_size).each do |order_by|
+          context "sorting by #{order_by}" do
+            before do
+              ProjectStatistics.update_all(order_by => 100)
+              project4.statistics.update_columns(order_by => 10)
+              project.statistics.update_columns(order_by => 200)
+            end
 
-          context 'admin user' do
-            let(:current_user) { admin }
+            context 'admin user' do
+              let(:current_user) { admin }
 
-            context "when sorting by #{order_by} ascendingly" do
-              it 'returns a properly sorted list of projects' do
-                get api('/projects', current_user), params: { order_by: order_by, sort: :asc }
+              context "when sorting by #{order_by} ascendingly" do
+                it 'returns a properly sorted list of projects' do
+                  get api('/projects', current_user), params: { order_by: order_by, sort: :asc }
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to include_pagination_headers
+                  expect(json_response).to be_an Array
+                  expect(json_response.first['id']).to eq(project4.id)
+                end
+              end
+
+              context "when sorting by #{order_by} descendingly" do
+                it 'returns a properly sorted list of projects' do
+                  get api('/projects', current_user), params: { order_by: order_by, sort: :desc }
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to include_pagination_headers
+                  expect(json_response).to be_an Array
+                  expect(json_response.first['id']).to eq(project.id)
+                end
+              end
+            end
+
+            context 'non-admin user' do
+              let(:current_user) { user }
+
+              it 'returns projects ordered normally' do
+                get api('/projects', current_user), params: { order_by: order_by }
 
                 expect(response).to have_gitlab_http_status(:ok)
                 expect(response).to include_pagination_headers
                 expect(json_response).to be_an Array
-                expect(json_response.first['id']).to eq(project4.id)
-              end
-            end
-
-            context "when sorting by #{order_by} descendingly" do
-              it 'returns a properly sorted list of projects' do
-                get api('/projects', current_user), params: { order_by: order_by, sort: :desc }
-
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(response).to include_pagination_headers
-                expect(json_response).to be_an Array
-                expect(json_response.first['id']).to eq(project.id)
+                expect(json_response.map { |project| project['id'] }).to eq(user_projects.map(&:id).sort.reverse)
               end
             end
           end
+        end
+      end
 
-          context 'non-admin user' do
-            let(:current_user) { user }
+      context 'by similarity', :aggregate_failures do
+        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:project_1) { create(:project, name: 'Project', path: 'project', group: group_with_projects) }
+        let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects) }
+        let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects) }
+        let_it_be(:project_4) { create(:project, :public, name: 'Test Public Project') }
 
-            it 'returns projects ordered normally' do
-              get api('/projects', current_user), params: { order_by: order_by }
+        let(:current_user) { user }
+        let(:params) { { order_by: 'similarity', search: 'test' } }
 
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response).to be_an Array
-              expect(json_response.map { |project| project['id'] }).to eq(user_projects.map(&:id).sort.reverse)
-            end
+        subject { get api('/projects', current_user), params: params }
+
+        before do
+          group_with_projects.add_owner(current_user)
+        end
+
+        it 'returns non-public items based ordered by similarity' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.length).to eq(2)
+
+          project_names = json_response.map { |proj| proj['name'] }
+          expect(project_names).to contain_exactly('Test', 'Test Project')
+        end
+
+        context 'when `search` parameter is not given' do
+          let(:params) { { order_by: 'similarity' } }
+
+          it 'returns items ordered by created_at descending' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(8)
+
+            project_names = json_response.map { |proj| proj['name'] }
+            expect(project_names).to contain_exactly(project.name, project2.name, 'second_project', 'public_project', 'Project', 'Test Project', 'Test Public Project', 'Test')
+          end
+        end
+
+        context 'when called anonymously' do
+          let(:current_user) { nil }
+
+          it 'returns items ordered by created_at descending' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(1)
+
+            project_names = json_response.map { |proj| proj['name'] }
+            expect(project_names).to contain_exactly('Test Public Project')
           end
         end
       end
@@ -982,7 +1053,7 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it "assigns attributes to project" do
+    it "assigns attributes to project", :aggregate_failures do
       project = attributes_for(:project, {
         path: 'camelCasePath',
         issues_enabled: false,
@@ -1004,6 +1075,7 @@ RSpec.describe API::Projects do
       }).tap do |attrs|
         attrs[:operations_access_level] = 'disabled'
         attrs[:analytics_access_level] = 'disabled'
+        attrs[:container_registry_access_level] = 'private'
       end
 
       post api('/projects', user), params: project
@@ -1011,7 +1083,10 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:created)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version].include?(k)
+        next if %i[
+          has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
+          container_registry_access_level
+        ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -1023,6 +1098,28 @@ RSpec.describe API::Projects do
       expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.operations_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.analytics_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::PRIVATE)
+    end
+
+    it 'assigns container_registry_enabled to project', :aggregate_failures do
+      project = attributes_for(:project, { container_registry_enabled: true })
+
+      post api('/projects', user), params: project
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(json_response['container_registry_access_level']).to eq('enabled')
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::ENABLED)
+    end
+
+    it 'assigns container_registry_enabled to project' do
+      project = attributes_for(:project, { container_registry_enabled: true })
+
+      post api('/projects', user), params: project
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
 
     it 'creates a project using a template' do
@@ -1280,6 +1377,14 @@ RSpec.describe API::Projects do
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
     end
 
+    it 'includes container_registry_access_level', :aggregate_failures do
+      get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an Array
+      expect(json_response.first.keys).to include('container_registry_access_level')
+    end
+
     context 'and using id_after' do
       let!(:another_public_project) { create(:project, :public, name: 'another_public_project', creator_id: user4.id, namespace: user4.namespace) }
 
@@ -1464,6 +1569,18 @@ RSpec.describe API::Projects do
       expect(json_response['error']).to eq('name is missing')
     end
 
+    it 'sets container_registry_enabled' do
+      project = attributes_for(:project).tap do |attrs|
+        attrs[:container_registry_enabled] = true
+      end
+
+      post api("/projects/user/#{user.id}", admin), params: project
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::ENABLED)
+    end
+
     it 'assigns attributes to project' do
       project = attributes_for(:project, {
         issues_enabled: false,
@@ -1588,6 +1705,59 @@ RSpec.describe API::Projects do
       post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
+    end
+
+    context 'container_registry_enabled' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:container_registry_enabled, :container_registry_access_level) do
+        true  | ProjectFeature::ENABLED
+        false | ProjectFeature::DISABLED
+      end
+
+      with_them do
+        it 'setting container_registry_enabled also sets container_registry_access_level', :aggregate_failures do
+          project_attributes = attributes_for(:project).tap do |attrs|
+            attrs[:container_registry_enabled] = container_registry_enabled
+          end
+
+          post api("/projects/user/#{user.id}", admin), params: project_attributes
+
+          project = Project.find_by(path: project_attributes[:path])
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['container_registry_access_level']).to eq(ProjectFeature.str_from_access_level(container_registry_access_level))
+          expect(json_response['container_registry_enabled']).to eq(container_registry_enabled)
+          expect(project.container_registry_access_level).to eq(container_registry_access_level)
+          expect(project.container_registry_enabled).to eq(container_registry_enabled)
+        end
+      end
+    end
+
+    context 'container_registry_access_level' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:container_registry_access_level, :container_registry_enabled) do
+        'enabled'  | true
+        'private'  | true
+        'disabled' | false
+      end
+
+      with_them do
+        it 'setting container_registry_access_level also sets container_registry_enabled', :aggregate_failures do
+          project_attributes = attributes_for(:project).tap do |attrs|
+            attrs[:container_registry_access_level] = container_registry_access_level
+          end
+
+          post api("/projects/user/#{user.id}", admin), params: project_attributes
+
+          project = Project.find_by(path: project_attributes[:path])
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['container_registry_access_level']).to eq(container_registry_access_level)
+          expect(json_response['container_registry_enabled']).to eq(container_registry_enabled)
+          expect(project.container_registry_access_level).to eq(ProjectFeature.access_level_from_str(container_registry_access_level))
+          expect(project.container_registry_enabled).to eq(container_registry_enabled)
+        end
+      end
     end
   end
 
@@ -1974,6 +2144,7 @@ RSpec.describe API::Projects do
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
         expect(json_response['container_registry_enabled']).to be_present
+        expect(json_response['container_registry_access_level']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
         expect(json_response['shared_runners_enabled']).to be_present
@@ -2065,6 +2236,7 @@ RSpec.describe API::Projects do
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy
         expect(json_response['container_registry_enabled']).to be_present
+        expect(json_response['container_registry_access_level']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
         expect(json_response['shared_runners_enabled']).to be_present
@@ -2865,6 +3037,59 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe 'POST /projects/:id/import_project_members/:project_id' do
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2_user) { create(:user) }
+
+    before_all do
+      project.add_maintainer(user)
+      project2.add_maintainer(user)
+      project2.add_developer(project2_user)
+    end
+
+    it 'returns 200 when it successfully imports members from another project' do
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{project2.id}", user)
+      end.to change { project.members.count }.by(2)
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['message']).to eq('Successfully imported')
+    end
+
+    it 'returns 404 if the source project does not exist' do
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{non_existing_record_id}", user)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Project Not Found')
+    end
+
+    it 'returns 404 if the target project members cannot be administered by the requester' do
+      private_project = create(:project, :private)
+
+      expect do
+        post api("/projects/#{private_project.id}/import_project_members/#{project2.id}", user)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Project Not Found')
+    end
+
+    it 'returns 422 if the import failed for valid projects' do
+      allow_next_instance_of(::ProjectTeam) do |project_team|
+        allow(project_team).to receive(:import).and_return(false)
+      end
+
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{project2.id}", user)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('Import failed')
+    end
+  end
+
   describe 'PUT /projects/:id' do
     before do
       expect(project).to be_persisted
@@ -2889,6 +3114,24 @@ RSpec.describe API::Projects do
         expect(project.reload.packages_enabled).to be false
         expect(json_response['packages_enabled']).to eq(false)
       end
+    end
+
+    it 'sets container_registry_access_level', :aggregate_failures do
+      put api("/projects/#{project.id}", user), params: { container_registry_access_level: 'private' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['container_registry_access_level']).to eq('private')
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::PRIVATE)
+    end
+
+    it 'sets container_registry_enabled' do
+      project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+
+      put(api("/projects/#{project.id}", user), params: { container_registry_enabled: true })
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(project.reload.container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
 
     it 'returns 400 when nothing sent' do

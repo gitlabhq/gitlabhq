@@ -38,10 +38,12 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
       create_track_url
     when :verify
       project_pipelines_url(group.projects.first)
-    when :trial
+    when :trial, :trial_short
       'https://about.gitlab.com/free-trial/'
-    when :team
+    when :team, :team_short
       group_group_members_url(group)
+    when :admin_verify
+      project_settings_ci_cd_path(group.projects.first, ci_runner_templates: true, anchor: 'js-runners-settings')
     end
   end
 

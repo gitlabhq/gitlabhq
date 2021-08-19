@@ -159,4 +159,71 @@ RSpec.describe Packages::PackageFile, type: :model do
       expect { subject }.to change { package_file.size }.from(nil).to(3513)
     end
   end
+
+  context 'update callbacks' do
+    subject { package_file.save! }
+
+    shared_examples 'executing the default callback' do
+      it 'executes the default callback' do
+        expect(package_file).to receive(:remove_previously_stored_file)
+        expect(package_file).not_to receive(:move_in_object_storage)
+
+        subject
+      end
+    end
+
+    context 'with object storage disabled' do
+      let(:package_file) { create(:package_file, file_name: 'file_name.txt') }
+
+      before do
+        stub_package_file_object_storage(enabled: false)
+      end
+
+      it_behaves_like 'executing the default callback'
+
+      context 'with new_file_path set' do
+        before do
+          package_file.new_file_path = 'test'
+        end
+
+        it_behaves_like 'executing the default callback'
+      end
+    end
+
+    context 'with object storage enabled' do
+      let(:package_file) do
+        create(
+          :package_file,
+          file_name: 'file_name.txt',
+          file: CarrierWaveStringFile.new_file(
+            file_content: 'content',
+            filename: 'file_name.txt',
+            content_type: 'text/plain'
+          ),
+          file_store: ::Packages::PackageFileUploader::Store::REMOTE
+        )
+      end
+
+      before do
+        stub_package_file_object_storage(enabled: true)
+      end
+
+      it_behaves_like 'executing the default callback'
+
+      context 'with new_file_path set' do
+        before do
+          package_file.new_file_path = 'test'
+        end
+
+        it 'executes the move_in_object_storage callback' do
+          expect(package_file).not_to receive(:remove_previously_stored_file)
+          expect(package_file).to receive(:move_in_object_storage).and_call_original
+          expect(package_file.file.file).to receive(:copy_to).and_call_original
+          expect(package_file.file.file).to receive(:delete).and_call_original
+
+          subject
+        end
+      end
+    end
+  end
 end

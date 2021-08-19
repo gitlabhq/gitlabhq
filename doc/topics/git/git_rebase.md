@@ -123,6 +123,27 @@ them before continuing the rebase.
 To learn more, check Git's documentation on [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
 and [rebasing strategies](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
 
+#### Rebase from the GitLab UI
+
+You can rebase your feature branch directly from the merge request through a
+[quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
+if all of these conditions are met:
+
+- No [merge conflicts](#merge-conflicts) exist for your feature branch.
+- You have the **Developer** role for the source project. This role grants you
+  permission to push to the source branch for the source project.
+- If the merge request is in a fork, the fork must allow commits
+  [from members of the upstream project](../../user/project/merge_requests/allow_collaboration.md).
+
+To rebase from the UI:
+
+1. Go to your merge request.
+1. Type `/rebase` in a comment.
+1. Select **Comment**.
+
+GitLab schedules a rebase of the feature branch against the default branch and
+executes it as soon as possible.
+
 ### Interactive rebase
 
 You can use interactive rebase to modify commits. For example, amend a commit
@@ -153,18 +174,20 @@ the operation you want to perform in each commit. To do so, you need to edit
 the commits in your terminal's text editor.
 
 For example, if you're using [Vim](https://www.vim.org/) as the text editor in
-a macOS's `ZSH` shell, and you want to **squash** all the three commits
+a macOS's `ZSH` shell, and you want to `squash` or `fixup` all the three commits
 (join them into one):
 
-1. Press <!-- vale gitlab.FirstPerson = NO --> <kbd>i</kbd> <!-- vale gitlab.FirstPerson = YES -->
+<!-- vale gitlab.FirstPerson = NO -->
+
+1. Press <kbd>i</kbd>
    on your keyboard to switch to Vim's editing mode.
 1. Navigate with your keyboard arrows to edit the **second** commit keyword
-   from `pick` to `squash` (or `s`). Do the same to the **third** commit.
+   from `pick` to `squash` or `fixup` (or `s` or `f`). Do the same to the **third** commit.
    The first commit should be left **unchanged** (`pick`) as we want to squash
    the second and third into the first.
 1. Press <kbd>Escape</kbd> to leave the editing mode.
 1. Type `:wq` to "write" (save) and "quit".
-1. Git outputs the commit message so you have a chance to edit it:
+1. When squashing, Git outputs the commit message so you have a chance to edit it:
    - All lines starting with `#` are ignored and not included in the commit
    message. Everything else is included.
    - To leave it as it is, type `:wq`. To edit the commit message: switch to the
@@ -172,6 +195,8 @@ a macOS's `ZSH` shell, and you want to **squash** all the three commits
 1. If you haven't pushed your commits to the remote branch before rebasing,
    push your changes normally. If you had pushed these commits already,
    [force-push](#force-push) instead.
+
+<!-- vale gitlab.FirstPerson = YES -->
 
 Note that the steps for editing through the command line can be slightly
 different depending on your operating system and the shell you're using.

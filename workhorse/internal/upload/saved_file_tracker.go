@@ -6,8 +6,8 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/filestore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 )
 
 type SavedFileTracker struct {

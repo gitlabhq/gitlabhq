@@ -6,13 +6,13 @@ module Mutations
       graphql_name 'UserCalloutCreate'
 
       argument :feature_name,
-               GraphQL::STRING_TYPE,
+               GraphQL::Types::String,
                required: true,
-               description: "The feature name you want to dismiss the callout for."
+               description: "Feature name you want to dismiss the callout for."
 
       field :user_callout, Types::UserCalloutType,
         null: false,
-        description: 'The user callout dismissed.'
+        description: 'User callout dismissed.'
 
       def resolve(feature_name:)
         callout = Users::DismissUserCalloutService.new(

@@ -83,6 +83,12 @@ RSpec.describe Gitlab::InstrumentationHelper do
       expect(payload).to include(:cpu_s)
     end
 
+    it 'logs the process ID' do
+      subject
+
+      expect(payload).to include(:pid)
+    end
+
     context 'when logging memory allocations' do
       include MemoryInstrumentationHelper
 
@@ -102,8 +108,6 @@ RSpec.describe Gitlab::InstrumentationHelper do
     end
 
     context 'when load balancing is enabled' do
-      include_context 'clear DB Load Balancing configuration'
-
       before do
         allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
       end

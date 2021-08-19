@@ -131,40 +131,70 @@ You can mark that content for translation with:
 
 ### JavaScript files
 
-In JavaScript we added the `__()` (double underscore parenthesis) function that
-you can import from the `~/locale` file. For instance:
-
-```javascript
-import { __ } from '~/locale';
-const label = __('Subscribe');
-```
-
-To test JavaScript translations you must:
-
-- Change the GitLab localization to a language other than English.
-- Generate JSON files by using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
-
-### Vue files
-
-In Vue files, we make the following functions available:
+The `~/locale` module exports the following key functions for externalization:
 
 - `__()` (double underscore parenthesis)
 - `s__()` (namespaced double underscore parenthesis)
-
-You can therefore import from the `~/locale` file.
-For example:
+- `__()` Mark content for translation (note the double underscore).
+- `s__()` Mark namespaced content for translation
+- `n__()` Mark pluralized content for translation 
 
 ```javascript
-import { __, s__ } from '~/locale';
+import { __, s__, n__ } from '~/locale';
+
+const defaultErrorMessage = s__('Branches|Create branch failed.');
 const label = __('Subscribe');
-const nameSpacedlabel = __('Plan|Subscribe');
+const message =  n__('Apple', 'Apples', 3)
 ```
 
-For the static text strings we suggest two patterns for using these translations in Vue files:
+To test JavaScript translations, learn about [manually testing translations from the UI](#manually-test-translations-from-the-ui).
 
-- External constants file:
+### Vue files
 
-  ```javascript
+In Vue files, we make the following functions available to Vue templates using the `translate` mixin:
+
+- `__()`
+- `s__()`
+- `n__()`
+- `sprintf`
+
+This means you can externalize strings in Vue templates without having to import these functions from the `~/locale` file:
+
+```html
+<template>
+  <h1>{{ s__('Branches|Create a new branch') }}</h1>
+  <gl-button>{{ __('Create branch') }}</gl-button>
+</template>
+```
+
+If you need to translate strings in the Vue component's JavaScript, you can import the necessary externalization function from the `~/locale` file as described in the [JavaScript files](#javascript-files) section.
+
+To test Vue translations, learn about [manually testing translations from the UI](#manually-test-translations-from-the-ui).
+
+#### Recommendations
+
+If strings are reused throughout a component, it can be useful to define these strings as variables. We recommend defining an `i18n` property on the component's `$options` object. If there is a mixture of many-use and single-use strings in the component, consider using this approach to create a local [Single Source of Truth](https://about.gitlab.com/handbook/values/#single-source-of-truth) for externalized strings.
+
+```javascript
+<script>
+  export default {
+    i18n: {
+      buttonLabel: s__('Plan|Button Label')
+    }
+  },
+</script>
+
+<template>
+  <gl-button :aria-label="$options.i18n.buttonLabel">
+    {{ $options.i18n.buttonLabel }}
+  </gl-button>
+</template>
+```
+
+Also consider defining these strings in a `constants.js` file, especially if they need
+to be shared across different modules.
+
+```javascript
   javascripts
   │
   └───alert_settings
@@ -179,60 +209,41 @@ For the static text strings we suggest two patterns for using these translations
 
   /* Integration constants */
 
-  export const I18N_ALERT_SETTINGS_FORM = {
-    saveBtnLabel: __('Save changes'),
-  };
+  export const MSG_ALERT_SETTINGS_FORM_ERROR = __('Failed to save alert settings.')
 
 
   // alert_settings_form.vue
 
   import {
-    I18N_ALERT_SETTINGS_FORM,
+    MSG_ALERT_SETTINGS_FORM_ERROR,
   } from '../constants';
 
   <script>
     export default {
-      i18n: {
-        I18N_ALERT_SETTINGS_FORM,
-      }
+      MSG_ALERT_SETTINGS_FROM_ERROR,
     }
   </script>
 
   <template>
-    <gl-button
-      ref="submitBtn"
-      variant="success"
-      type="submit"
-    >
-      {{ $options.i18n.I18N_ALERT_SETTINGS_FORM }}
-    </gl-button>
+    <gl-alert v-if="showAlert">
+      {{ $options.MSG_ALERT_SETTINGS_FORM_ERROR }}
+    </gl-alert>
   </template>
-  ```
+```
 
-  When possible, you should opt for this pattern, as this allows you to import these strings directly into your component specs for re-use during testing.
+Using either `constants` or `$options.i18n` allows us to reference messages directly in specs:
 
-- Internal component `$options` object:
+```javascript
+import { MSG_ALERT_SETTINGS_FORM_ERROR } from 'path/to/constants.js';
 
-  ```javascript
-  <script>
-    export default {
-      i18n: {
-        buttonLabel: s__('Plan|Button Label')
-      }
-    },
-  </script>
+// okay
+expect(wrapper.text()).toEqual('this test will fail just from button text changing!');
 
-  <template>
-    <gl-button :aria-label="$options.i18n.buttonLabel">
-      {{ $options.i18n.buttonLabel }}
-    </gl-button>
-  </template>
-  ```
-
-To visually test the Vue translations:
-
-1. Change the GitLab localization to another language than English.
-1. Generate JSON files using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
+// better
+expect(wrapper.text()).toEqual(MyComponent.i18n.buttonLabel);
+// also better
+expect(wrapper.text()).toEqual(MSG_ALERT_SETTINGS_FORM_ERROR);
+```
 
 ### Dynamic translations
 
@@ -853,3 +864,10 @@ Suppose you want to add translations for a new language, for example, French:
    git add locale/fr/ app/assets/javascripts/locale/fr/
    git commit -m "Add French translations for Value Stream Analytics page"
    ```
+
+## Manually test translations from the UI
+
+To manually test Vue translations:
+
+1. Change the GitLab localization to another language than English.
+1. Generate JSON files using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.

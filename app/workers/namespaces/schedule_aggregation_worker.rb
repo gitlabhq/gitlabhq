@@ -4,6 +4,8 @@ module Namespaces
   class ScheduleAggregationWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
 
     queue_namespace :update_namespace_statistics

@@ -1,7 +1,7 @@
 import initTree from 'ee_else_ce/repository';
 import Activities from '~/activities';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import BlobViewer from '~/blob/viewer/index';
+import { BlobViewer } from '~/blob/viewer/index';
 import { initUploadForm } from '~/blob_edit/blob_bundle';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';

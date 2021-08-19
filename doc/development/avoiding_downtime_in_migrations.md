@@ -47,6 +47,9 @@ Multiple columns can be ignored, too:
 ignore_columns %i[updated_at created_at], remove_with: '12.7', remove_after: '2020-01-22'
 ```
 
+If the model exists in CE and EE, the column has to be ignored in the CE model. If the
+model only exists in EE, then it has to be added there.
+
 We require indication of when it is safe to remove the column ignore with:
 
 - `remove_with`: set to a GitLab release typically two releases (M+2) after adding the
@@ -235,7 +238,7 @@ updating many rows in sequence.
 
 To reduce database pressure you should instead use
 `change_column_type_using_background_migration` or `rename_column_using_background_migration`
-when migrating a column in a large table (e.g. `issues`). These methods work
+when migrating a column in a large table (for example, `issues`). These methods work
 similarly to the concurrent counterparts but uses background migration to spread
 the work / load over a longer time period, without slowing down deployments.
 
@@ -402,7 +405,7 @@ into errors. On the other hand, if we were to migrate after deploying the
 application code we could run into the same problems.
 
 If you merely need to correct some invalid data, then a post-deployment
-migration is usually enough. If you need to change the format of data (e.g. from
+migration is usually enough. If you need to change the format of data (for example, from
 JSON to something else) it's typically best to add a new column for the new data
 format, and have the application use that. In such a case the procedure would
 be:

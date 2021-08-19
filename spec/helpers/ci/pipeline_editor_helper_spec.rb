@@ -47,7 +47,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "empty-state-illustration-path" => 'foo',
           "initial-branch-name" => nil,
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
-          "needs-help-page-path" => help_page_path('ci/yaml/README', anchor: 'needs'),
+          "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
           "new-merge-request-path" => '/mock/project/-/merge_requests/new',
           "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
           "pipeline-page-path" => project_pipelines_path(project),
@@ -56,7 +56,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
           "total-branches" => project.repository.branches.length,
-          "yml-help-page-path" => help_page_path('ci/yaml/README')
+          "yml-help-page-path" => help_page_path('ci/yaml/index')
         })
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "empty-state-illustration-path" => 'foo',
           "initial-branch-name" => nil,
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
-          "needs-help-page-path" => help_page_path('ci/yaml/README', anchor: 'needs'),
+          "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
           "new-merge-request-path" => '/mock/project/-/merge_requests/new',
           "pipeline_etag" => '',
           "pipeline-page-path" => project_pipelines_path(project),
@@ -83,7 +83,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
           "total-branches" => 0,
-          "yml-help-page-path" => help_page_path('ci/yaml/README')
+          "yml-help-page-path" => help_page_path('ci/yaml/index')
         })
       end
     end

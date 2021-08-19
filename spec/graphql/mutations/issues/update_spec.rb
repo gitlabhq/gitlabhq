@@ -131,6 +131,28 @@ RSpec.describe Mutations::Issues::Update do
 
           expect(issue.reload.labels).to match_array([project_label, label_2])
         end
+
+        context 'when setting labels with label_ids' do
+          it 'replaces existing labels with provided ones' do
+            expect(issue.reload.labels).to match_array([project_label])
+
+            mutation_params[:label_ids] = [label_1.id, label_2.id]
+
+            subject
+
+            expect(issue.reload.labels).to match_array([label_1, label_2])
+          end
+
+          it 'raises error when label_ids is combined with remove_label_ids' do
+            expect { mutation.ready?(label_ids: [label_1.id, label_2.id], remove_label_ids: [label_1.id]) }
+              .to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'labelIds is mutually exclusive with any of addLabelIds or removeLabelIds')
+          end
+
+          it 'raises error when label_ids is combined with add_label_ids' do
+            expect { mutation.ready?(label_ids: [label_1.id, label_2.id], add_label_ids: [label_2.id]) }
+              .to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'labelIds is mutually exclusive with any of addLabelIds or removeLabelIds')
+          end
+        end
       end
 
       context 'when changing type' do

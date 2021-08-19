@@ -12,17 +12,21 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   def publish(_result = nil)
     super
 
-    publish_to_client if should_track? # publish the experiment data to the client
-    publish_to_database if @record # publish the experiment context to the database
+    publish_to_client
+    publish_to_database if @record
   end
 
   def publish_to_client
+    return unless should_track?
+
     Gon.push({ experiment: { name => signature } }, true)
   rescue NoMethodError
     # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
   end
 
   def publish_to_database
+    return unless should_track?
+
     # if the context contains a namespace, group, project, user, or actor
     value = context.value
     subject = value[:namespace] || value[:group] || value[:project] || value[:user] || value[:actor]

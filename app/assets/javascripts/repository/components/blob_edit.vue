@@ -15,6 +15,10 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    showEditButton: {
+      type: Boolean,
+      required: true,
+    },
     editPath: {
       type: String,
       required: true,
@@ -30,17 +34,31 @@ export default {
 <template>
   <web-ide-link
     v-if="glFeatures.consolidatedEditButton"
+    :show-edit-button="showEditButton"
     class="gl-mr-3"
     :edit-url="editPath"
     :web-ide-url="webIdePath"
     :is-blob="true"
   />
   <div v-else>
-    <gl-button class="gl-mr-2" category="primary" variant="confirm" :href="editPath">
+    <gl-button
+      v-if="showEditButton"
+      class="gl-mr-2"
+      category="primary"
+      variant="confirm"
+      :href="editPath"
+      data-testid="edit"
+    >
       {{ $options.i18n.edit }}
     </gl-button>
 
-    <gl-button class="gl-mr-3" category="primary" variant="confirm" :href="webIdePath">
+    <gl-button
+      class="gl-mr-3"
+      category="primary"
+      variant="confirm"
+      :href="webIdePath"
+      data-testid="web-ide"
+    >
       {{ $options.i18n.webIde }}
     </gl-button>
   </div>

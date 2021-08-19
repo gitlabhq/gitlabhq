@@ -5,24 +5,35 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
   describe '#observe' do
     subject { described_class.new }
 
-    let(:migration) { 1234 }
+    let(:migration_name) { 'test' }
+    let(:migration_version) { '12345' }
 
     it 'executes the given block' do
-      expect { |b| subject.observe(migration, &b) }.to yield_control
+      expect { |b| subject.observe(version: migration_version, name: migration_name, &b) }.to yield_control
     end
 
     context 'behavior with observers' do
-      subject { described_class.new(observers).observe(migration) {} }
+      subject { described_class.new([Gitlab::Database::Migrations::Observers::MigrationObserver]).observe(version: migration_version, name: migration_name) {} }
 
-      let(:observers) { [observer] }
       let(:observer) { instance_double('Gitlab::Database::Migrations::Observers::MigrationObserver', before: nil, after: nil, record: nil) }
+
+      before do
+        allow(Gitlab::Database::Migrations::Observers::MigrationObserver).to receive(:new).and_return(observer)
+      end
+
+      it 'instantiates observer with observation' do
+        expect(Gitlab::Database::Migrations::Observers::MigrationObserver)
+          .to receive(:new)
+          .with(instance_of(Gitlab::Database::Migrations::Observation)) { |observation| expect(observation.version).to eq(migration_version) }
+          .and_return(observer)
+
+        subject
+      end
 
       it 'calls #before, #after, #record on given observers' do
         expect(observer).to receive(:before).ordered
         expect(observer).to receive(:after).ordered
-        expect(observer).to receive(:record).ordered do |observation|
-          expect(observation.migration).to eq(migration)
-        end
+        expect(observer).to receive(:record).ordered
 
         subject
       end
@@ -47,7 +58,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'on successful execution' do
-      subject { described_class.new.observe(migration) {} }
+      subject { described_class.new.observe(version: migration_version, name: migration_name) {} }
 
       it 'records walltime' do
         expect(subject.walltime).not_to be_nil
@@ -58,12 +69,16 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       end
 
       it 'records the migration version' do
-        expect(subject.migration).to eq(migration)
+        expect(subject.version).to eq(migration_version)
+      end
+
+      it 'records the migration name' do
+        expect(subject.name).to eq(migration_name)
       end
     end
 
     context 'upon failure' do
-      subject { described_class.new.observe(migration) { raise 'something went wrong' } }
+      subject { described_class.new.observe(version: migration_version, name: migration_name) { raise 'something went wrong' } }
 
       it 'raises the exception' do
         expect { subject }.to raise_error(/something went wrong/)
@@ -73,7 +88,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
         subject { instance.observations.first }
 
         before do
-          instance.observe(migration) { raise 'something went wrong' }
+          instance.observe(version: migration_version, name: migration_name) { raise 'something went wrong' }
         rescue StandardError
           # ignore
         end
@@ -89,7 +104,11 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
         end
 
         it 'records the migration version' do
-          expect(subject.migration).to eq(migration)
+          expect(subject.version).to eq(migration_version)
+        end
+
+        it 'records the migration name' do
+          expect(subject.name).to eq(migration_name)
         end
       end
     end
@@ -101,8 +120,8 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       let(:migration2) { double('migration2', call: nil) }
 
       it 'records observations for all migrations' do
-        subject.observe('migration1') {}
-        subject.observe('migration2') { raise 'something went wrong' } rescue nil
+        subject.observe(version: migration_version, name: migration_name) {}
+        subject.observe(version: migration_version, name: migration_name) { raise 'something went wrong' } rescue nil
 
         expect(subject.observations.size).to eq(2)
       end

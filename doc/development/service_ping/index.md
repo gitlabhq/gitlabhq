@@ -82,9 +82,9 @@ Registration is not yet required for participation, but will be added in a futur
 
 ## View the Service Ping payload **(FREE SELF)**
 
-You can view the exact JSON payload sent to GitLab Inc. in the administration panel. To view the payload:
+You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
 
-1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
+1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
@@ -106,7 +106,7 @@ configuration file.
 
 To disable Service Ping in the GitLab UI:
 
-1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
+1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
@@ -116,7 +116,7 @@ To disable Service Ping in the GitLab UI:
 ### Disable Service Ping using the configuration file
 
 To disable Service Ping and prevent it from being configured in the future through
-the admin area:
+the Admin Area:
 
 **For installations using the Linux package:**
 
@@ -185,190 +185,40 @@ sequenceDiagram
 
 ## How Service Ping works
 
-1. The Service Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_usage_ping_worker.rb#L30) is set in Sidekiq to run weekly.
-1. When the cron job runs, it calls [`Gitlab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L22).
-1. `Gitlab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L22) to ~400+ other counter method calls.
-1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L14) into a single JSON payload in `Gitlab::UsageData.to_json`.
-1. The JSON payload is then [posted to the Versions application]( https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L20)
+1. The Service Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_service_ping_worker.rb#L24) is set in Sidekiq to run weekly.
+1. When the cron job runs, it calls [`Gitlab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L49).
+1. `Gitlab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) to ~400+ other counter method calls.
+1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L68) into a single JSON payload in `Gitlab::UsageData.to_json`.
+1. The JSON payload is then [posted to the Versions application](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L20)
    If a firewall exception is needed, the required URL depends on several things. If
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
 
-## Service Ping Metric Life cycle
+### On a Geo secondary site
 
-### 1. New metrics addition
+We also collect metrics specific to [Geo](../../administration/geo/index.md) secondary sites to send with Service Ping.
 
-Please follow the [Implementing Service Ping](#implementing-service-ping) guide.
+1. The [Geo secondary service ping cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/geo/secondary_usage_data_cron_worker.rb) is set in Sidekiq to run weekly.
+1. When the cron job runs, it calls [`SecondaryUsageData.update_metrics!`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo/secondary_usage_data.rb#L33). This collects the relevant metrics from Prometheus and stores the data in the Geo secondary tracking database for transmission to the primary site during a [Geo node status update](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo_node_status.rb#L105).
+1. Geo node status data is sent with the JSON payload in the process described above. The following is an example of the payload where each object in the array represents a Geo node:
 
-### 2. Existing metric change
-
-Because we do not control when customers update their self-managed instances of GitLab,
-we **STRONGLY DISCOURAGE** changes to the logic used to calculate any metric.
-Any such changes lead to inconsistent reports from multiple GitLab instances.
-If there is a problem with an existing metric, it's best to deprecate the existing metric,
-and use it, side by side, with the desired new metric.
-
-Example:
-Consider following change. Before GitLab 12.6, the `example_metric` was implemented as:
-
-```ruby
-{
-  ...
-  example_metric: distinct_count(Project, :creator_id)
-}
-```
-
-For GitLab 12.6, the metric was changed to filter out archived projects:
-
-```ruby
-{
-  ...
-  example_metric: distinct_count(Project.non_archived, :creator_id)
-}
-```
-
-In this scenario all instances running up to GitLab 12.5 continue to report `example_metric`,
-including all archived projects, while all instances running GitLab 12.6 and higher filters
-out such projects. As Service Ping data is collected from all reporting instances, the
-resulting dataset includes mixed data, which distorts any following business analysis.
-
-The correct approach is to add a new metric for GitLab 12.6 release with updated logic:
-
-```ruby
-{
-  ...
-  example_metric_without_archived: distinct_count(Project.non_archived, :creator_id)
-}
-```
-
-and update existing business analysis artefacts to use `example_metric_without_archived` instead of `example_metric`
-
-### 3. Deprecate a metric
-
-If a metric is obsolete and you no longer use it, you can mark it as deprecated.
-
-For an example of the metric deprecation process take a look at this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59899)
-
-To deprecate a metric:
-
-1. Check the following YAML files and verify the metric is not used in an aggregate:
-   - [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/)
-   - [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/)
-
-1. Create an issue in the [GitLab Data Team
-   project](https://gitlab.com/gitlab-data/analytics/-/issues). Ask for
-   confirmation that the metric is not used by other teams, or in any of the SiSense
-   dashboards.
-
-1. Verify the metric is not used to calculate the conversational index. The
-   conversational index is a measure that reports back to self-managed instances
-   to inform administrators of the progress of DevOps adoption for the instance.
-
-   You can check
-   [`CalculateConvIndexService`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/calculate_conv_index_service.rb)
-   to view the metrics that are used. The metrics are represented
-   as the keys that are passed as a field argument into the `get_value` method.
-
-1. Document the deprecation in the metric's YAML definition. Set
-   the `status:` attribute to `deprecated`, for example:
-
-   ```yaml
-   ---
-   key_path: analytics_unique_visits.analytics_unique_visits_for_any_target_monthly
-   description: Visits to any of the pages listed above per month
-   product_section: dev
-   product_stage: manage
-   product_group: group::analytics
-   product_category:
-   value_type: number
-   status: deprecated
-   time_frame: 28d
-   data_source:
-   distribution:
-   - ce
-   tier:
-   - free
+   ```json
+   [
+     {
+       "repository_verification_enabled"=>true,
+       "repositories_replication_enabled"=>true,
+       "repositories_synced_count"=>24,
+       "repositories_failed_count"=>0,
+       "attachments_replication_enabled"=>true,
+       "attachments_count"=>1,
+       "attachments_synced_count"=>1,
+       "attachments_failed_count"=>0,
+       "git_fetch_event_count_weekly"=>nil,
+       "git_push_event_count_weekly"=>nil,
+       ... other geo node status fields
+     }
+   ]
    ```
-
-1. Replace the metric's instrumentation with a fixed value. This avoids wasting
-   resources to calculate the deprecated metric. In
-   [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb)
-   or
-   [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb),
-   replace the code that calculates the metric's value with a fixed value that
-   indicates it's deprecated:
-
-   ```ruby
-   module Gitlab
-     class UsageData
-       DEPRECATED_VALUE = -1000
-
-       def analytics_unique_visits_data
-         results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
-         results['analytics_unique_visits_for_any_target_monthly'] = DEPRECATED_VALUE
-
-         { analytics_unique_visits: results }
-       end
-     # ...
-     end
-   end
-   ```
-
-1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
-
-### 4. Remove a metric
-
-Only deprecated metrics can be removed from Service Ping.
-
-For an example of the metric removal process take a look at this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/297029)
-
-To remove a deprecated metric:
-
-1. Verify that removing the metric from the Service Ping payload does not cause
-   errors in [Version App](https://gitlab.com/gitlab-services/version-gitlab-com)
-   when the updated payload is collected and processed. Version App collects
-   and persists all Service Ping reports. To do that you can modify
-   [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
-   used to test
-   [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
-   endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.
-
-1. Create an issue in the
-   [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).
-   Ask for confirmation that the metric is not referred to in any SiSense dashboards and
-   can be safely removed from Service Ping. Use this
-   [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/7539) for guidance.
-   This step can be skipped if verification done during [deprecation process](#3-deprecate-a-metric)
-   reported that metric is not required by any data transformation in Snowflake data warehouse nor it is
-   used by any of SiSense dashboards.
-
-1. After you verify the metric can be safely removed,
-   update the attributes of the metric's YAML definition:
-
-   - Set the `status:` to `removed`.
-   - Set `milestone_removed:` to the number of the
-     milestone in which the metric was removed.
-
-   Do not remove the metric's YAML definition altogether. Some self-managed
-   instances might not immediately update to the latest version of GitLab, and
-   therefore continue to report the removed metric. The Product Intelligence team
-   requires a record of all removed metrics in order to identify and filter them.
-
-   For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).
-
-1. After you verify the metric can be safely removed,
-   remove the metric's instrumentation from
-   [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb)
-   or
-   [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
-
-   For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#6335dc533bd21df26db9de90a02dd66278c2390d_167_167).
-
-1. Remove any other records related to the metric:
-   - The feature flag YAML file at [`config/feature_flags/*/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/feature_flags).
-   - The entry in the known events YAML file at [`lib/gitlab/usage_data_counters/known_events/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/usage_data_counters/known_events).
-
-1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
 
 ## Implementing Service Ping
 
@@ -377,7 +227,9 @@ happened over time, such as how many CI pipelines have run. They are monotonic a
 Observations are facts collected from one or more GitLab instances and can carry arbitrary data. There are no
 general guidelines around how to collect those, due to the individual nature of that data.
 
-There are several types of counters which are all found in `usage_data.rb`:
+### Types of counters
+
+There are several types of counters in `usage_data.rb`:
 
 - **Ordinary Batch Counters:** Simple count of a given ActiveRecord_Relation
 - **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation in a given column
@@ -386,9 +238,22 @@ There are several types of counters which are all found in `usage_data.rb`:
 - **Redis Counters:** Used for in-memory counts.
 
 NOTE:
-Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Service Ping.
+Only use the provided counter methods. Each counter method contains a built-in fail-safe mechanism that isolates each counter to avoid breaking the entire Service Ping process.
 
-### Why batch counting
+### Instrumentation classes
+
+We recommend you use [instrumentation classes](metrics_instrumentation.md) in `usage_data.rb` where possible.
+
+For example, we have the following instrumentation class:
+`lib/gitlab/usage/metrics/instrumentations/count_boards_metric.rb`.
+
+You should add it to `usage_data.rb` as follows:
+
+```ruby
+boards: add_metric('CountBoardsMetric', time_frame: 'all'),
+```
+
+### Batch counting
 
 For large tables, PostgreSQL can take a long time to count rows due to MVCC [(Multi-version Concurrency Control)](https://en.wikipedia.org/wiki/Multiversion_concurrency_control). Batch counting is a counting method where a single large query is broken into multiple smaller queries. For example, instead of a single query querying 1,000,000 records, with batch counting, you can execute 100 queries of 10,000 records each. Batch counting is useful for avoiding database timeouts as each batch query is significantly shorter than one single long running query.
 
@@ -401,18 +266,18 @@ For GitLab.com, there are extremely large tables with 15 second query timeouts, 
 | `merge_request_diff_files`   | 1082                   |
 | `events`                     | 514                    |
 
-The following operation methods are available for your use:
+The following operation methods are available:
 
-- [Ordinary Batch Counters](#ordinary-batch-counters)
-- [Distinct Batch Counters](#distinct-batch-counters)
-- [Sum Batch Operation](#sum-batch-operation)
-- [Add Operation](#add-operation)
-- [Estimated Batch Counters](#estimated-batch-counters)
+- [Ordinary batch counters](#ordinary-batch-counters)
+- [Distinct batch counters](#distinct-batch-counters)
+- [Sum batch operation](#sum-batch-operation)
+- [Add operation](#add-operation)
+- [Estimated batch counters](#estimated-batch-counters)
 
 Batch counting requires indexes on columns to calculate max, min, and range queries. In some cases,
 you may need to add a specialized index on the columns involved in a counter.
 
-### Ordinary Batch Counters
+### Ordinary batch counters
 
 Handles `ActiveRecord::StatementInvalid` error
 
@@ -436,7 +301,7 @@ count(::Clusters::Cluster.aws_installed.enabled, :cluster_id)
 count(::Clusters::Cluster.aws_installed.enabled, :cluster_id, start: ::Clusters::Cluster.minimum(:id), finish: ::Clusters::Cluster.maximum(:id))
 ```
 
-### Distinct Batch Counters
+### Distinct batch counters
 
 Handles `ActiveRecord::StatementInvalid` error
 
@@ -454,7 +319,7 @@ Arguments:
 - `end`: custom end of the batch counting to avoid complex min calculations
 
 WARNING:
-Counting over non-unique columns can lead to performance issues. Take a look at the [iterating tables in batches](../iterating_tables_in_batches.md) guide for more details.
+Counting over non-unique columns can lead to performance issues. For more information, see the [iterating tables in batches](../iterating_tables_in_batches.md) guide.
 
 Examples:
 
@@ -464,7 +329,7 @@ distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::
 distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
 ```
 
-### Sum Batch Operation
+### Sum batch operation
 
 Handles `ActiveRecord::StatementInvalid` error
 
@@ -486,7 +351,7 @@ Examples:
 sum(JiraImportState.finished, :imported_issues_count)
 ```
 
-### Grouping & Batch Operations
+### Grouping and batch operations
 
 The `count`, `distinct_count`, and `sum` batch counters can accept an `ActiveRecord::Relation`
 object, which groups by a specified column. With a grouped relation, the methods do batch counting,
@@ -505,7 +370,7 @@ sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
 ```
 
-### Add Operation
+### Add operation
 
 Handles `StandardError`.
 
@@ -515,7 +380,7 @@ Sum the values given as parameters.
 
 Method: `add(*args)`
 
-Examples
+Examples:
 
 ```ruby
 project_imports = distinct_count(::Project.where.not(import_type: nil), :creator_id)
@@ -524,7 +389,7 @@ bulk_imports = distinct_count(::BulkImport, :user_id)
  add(project_imports, bulk_imports)
 ```
 
-### Estimated Batch Counters
+### Estimated batch counters
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233) in GitLab 13.7.
 
@@ -559,7 +424,7 @@ The method includes the following prerequisites:
 1. The supplied `relation` must include the primary key defined as the numeric column.
    For example: `id bigint NOT NULL`.
 1. The `estimate_batch_distinct_count` can handle a joined relation. To use its ability to
-   count non-unique columns, the joined relation **must NOT** have a one-to-many relationship,
+   count non-unique columns, the joined relation **must not** have a one-to-many relationship,
    such as `has_many :boards`.
 1. Both `start` and `finish` arguments should always represent primary key relationship values,
    even if the estimated count refers to another column, for example:
@@ -603,7 +468,7 @@ When instrumenting metric with usage of estimated batch counter please add
     ...
 ```
 
-### Redis Counters
+### Redis counters
 
 Handles `::Redis::CommandError` and `Gitlab::UsageDataCounters::BaseCounter::UnknownEvent`
 returns -1 when a block is sent or hash with all values -1 when a `counter(Gitlab::UsageDataCounters)` is sent
@@ -616,14 +481,14 @@ Arguments:
 - `counter`: a counter from `Gitlab::UsageDataCounters`, that has `fallback_totals` method implemented
 - or a `block`: which is evaluated
 
-#### Ordinary Redis Counters
+#### Ordinary Redis counters
 
 Examples of implementation:
 
 - Using Redis methods [`INCR`](https://redis.io/commands/incr), [`GET`](https://redis.io/commands/get), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
 - Using Redis methods [`HINCRBY`](https://redis.io/commands/hincrby), [`HGETALL`](https://redis.io/commands/hgetall), and [`Gitlab::UsageCounters::PodLogs`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_counters/pod_logs.rb)
 
-##### UsageData API Tracking
+##### UsageData API tracking
 
 <!-- There's nearly identical content in `##### Adding new events`. If you fix errors here, you may need to fix the same errors in the other location. -->
 
@@ -645,7 +510,7 @@ Examples of implementation:
    | :-------- | :--- | :------- | :---------- |
    | `event` | string | yes | The event name it should be tracked |
 
-   Response
+   Response:
 
    - `200` if event was tracked
    - `400 Bad request` if event parameter is missing
@@ -662,7 +527,7 @@ Examples of implementation:
    api.trackRedisCounterEvent('my_already_defined_event_name'),
    ```
 
-#### Redis HLL Counters
+#### Redis HLL counters
 
 WARNING:
 HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount), data from
@@ -672,7 +537,7 @@ With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structu
 
 Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PFCOUNT](https://redis.io/commands/pfcount).
 
-##### Adding new events
+##### Add new events
 
 1. Define events in [`known_events`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/).
 
@@ -851,7 +716,7 @@ Next, get the unique events for the current week.
 
 ##### Recommendations
 
-We have the following recommendations for [Adding new events](#adding-new-events):
+We have the following recommendations for [adding new events](#add-new-events):
 
 - Event aggregation: weekly.
 - Key expiry time:
@@ -861,7 +726,7 @@ We have the following recommendations for [Adding new events](#adding-new-events
 - For feature flags triggered by another service, set `default_enabled: false`,
   - Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change
 
-##### Enable/Disable Redis HLL tracking
+##### Enable or disable Redis HLL tracking
 
 Events are tracked behind optional [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
 
@@ -887,8 +752,8 @@ We can also disable tracking completely by using the global flag:
 All events added in [`known_events/common.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml) are automatically added to Service Data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
 For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
-- `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
-- `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#add-new-events) events and data for the last complete week for weekly [aggregation](#add-new-events) events.
+- `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#add-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#add-new-events) events.
 
 Redis HLL implementation calculates automatic total metrics, if there are more than one metric for the same category, aggregation, and Redis slot.
 
@@ -921,7 +786,7 @@ Example of `redis_hll_counters` data:
  }
 ```
 
-Example usage:
+Example:
 
 ```ruby
 # Redis Counters
@@ -937,7 +802,7 @@ Gitlab::UsageDataCounters::HLLRedisCounter.track_event('users_expanding_vulnerab
 redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'users_expanding_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
 ```
 
-### Alternative Counters
+### Alternative counters
 
 Handles `StandardError` and fallbacks into -1 this way not all measures fail if we encounter one exception.
 Mainly used for settings and configurations.
@@ -950,7 +815,7 @@ Arguments:
 - or a `block`: which is evaluated
 - `fallback: -1`: the common value used for any metrics that are failing.
 
-Usage:
+Example:
 
 ```ruby
 alt_usage_data { Gitlab::VERSION }
@@ -958,25 +823,25 @@ alt_usage_data { Gitlab::CurrentSettings.uuid }
 alt_usage_data(999)
 ```
 
-### Adding counters to build new metrics
+### Add counters to build new metrics
 
 When adding the results of two counters, use the `add` Service Data method that
-handles fallback values and exceptions. It also generates a valid [SQL export](#exporting-service-ping-sql-queries-and-definitions).
+handles fallback values and exceptions. It also generates a valid [SQL export](#export-service-ping-sql-queries-and-definitions).
 
-Example usage:
+Example:
 
 ```ruby
 add(User.active, User.bot)
 ```
 
-### Prometheus Queries
+### Prometheus queries
 
 In those cases where operational metrics should be part of Service Ping, a database or Redis query is unlikely
 to provide useful data. Instead, Prometheus might be more appropriate, because most GitLab architectural
 components publish metrics to it that can be queried back, aggregated, and included as Service Data.
 
 NOTE:
-Prometheus as a data source for Service Ping is currently only available for single-node Omnibus installations
+Prometheus as a data source for Service Ping is only available for single-node Omnibus installations
 that are running the [bundled Prometheus](../../administration/monitoring/prometheus/index.md) instance.
 
 To query Prometheus for metrics, a helper method is available to `yield` a fully configured
@@ -989,10 +854,10 @@ with_prometheus_client do |client|
 end
 ```
 
-Please refer to [the `PrometheusClient` definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/prometheus_client.rb)
+Refer to [the `PrometheusClient` definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/prometheus_client.rb)
 for how to use its API to query for data.
 
-### Fallback values for UsagePing
+### Fallback values for Service Ping
 
 We return fallback values in these cases:
 
@@ -1002,186 +867,6 @@ We return fallback values in these cases:
 | Timeouts, general failures  | -1    |
 | Standard errors in counters | -2    |
 
-## Developing and testing Service Ping
-
-### 1. Naming and placing the metrics
-
-Add the metric in one of the top level keys
-
-- `settings`: for settings related metrics.
-- `counts_weekly`: for counters that have data for the most recent 7 days.
-- `counts_monthly`: for counters that have data for the most recent 28 days.
-- `counts`: for counters that have data for all time.
-
-### 2. Use your Rails console to manually test counters
-
-```ruby
-# count
-Gitlab::UsageData.count(User.active)
-Gitlab::UsageData.count(::Clusters::Cluster.aws_installed.enabled, :cluster_id)
-
-# count distinct
-Gitlab::UsageData.distinct_count(::Project, :creator_id)
-Gitlab::UsageData.distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::User.minimum(:id), finish: ::User.maximum(:id))
-```
-
-### 3. Generate the SQL query
-
-Your Rails console returns the generated SQL queries.
-
-Example:
-
-```ruby
-pry(main)> Gitlab::UsageData.count(User.active)
-   (2.6ms)  SELECT "features"."key" FROM "features"
-   (15.3ms)  SELECT MIN("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4))
-   (2.4ms)  SELECT MAX("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4))
-   (1.9ms)  SELECT COUNT("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4)) AND "users"."id" BETWEEN 1 AND 100000
-```
-
-### 4. Optimize queries with #database-lab
-
-Paste the SQL query into `#database-lab` to see how the query performs at scale.
-
-- `#database-lab` is a Slack channel which uses a production-sized environment to test your queries.
-- GitLab.com's production database has a 15 second timeout.
-- Any single query must stay below [1 second execution time](../query_performance.md#timing-guidelines-for-queries) with cold caches.
-- Add a specialized index on columns involved to reduce the execution time.
-
-To have an understanding of the query's execution we add in the MR description the following information:
-
-- For counters that have a `time_period` test we add information for both cases:
-  - `time_period = {}` for all time periods
-  - `time_period = { created_at: 28.days.ago..Time.current }` for last 28 days period
-- Execution plan and query time before and after optimization
-- Query generated for the index and time
-- Migration output for up and down execution
-
-We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/). For more details, see the [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries).
-
-#### Optimization recommendations and examples
-
-- Use specialized indexes [example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871), [example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445).
-- Use defined `start` and `finish`, and simple queries. These values can be memoized and reused, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
-- Avoid joins and write the queries as simply as possible, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
-- Set a custom `batch_size` for `distinct_count`, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
-
-### 5. Add the metric definition
-
-[Check Metrics Dictionary Guide](metrics_dictionary.md)
-
-When adding, updating, or removing metrics, please update the [Metrics Dictionary](dictionary.md).
-
-### 6. Add new metric to Versions Application
-
-Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and Service Data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
-
-### 7. Add the feature label
-
-Add the `feature` label to the Merge Request for new Service Ping metrics. These are user-facing changes and are part of expanding the Service Ping feature.
-
-### 8. Add a changelog
-
-Ensure you comply with the [Changelog entries guide](../changelog.md).
-
-### 9. Ask for a Product Intelligence Review
-
-On GitLab.com, we have DangerBot set up to monitor Product Intelligence related files and DangerBot recommends a [Product Intelligence review](review_guidelines.md).
-
-### 10. Verify your metric
-
-On GitLab.com, the Product Intelligence team regularly [monitors Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/6000).
-They may alert you that your metrics need further optimization to run quicker and with greater success.
-
-The Service Ping JSON payload for GitLab.com is shared in the
-[#g_product_intelligence](https://gitlab.slack.com/archives/CL3A7GFPF) Slack channel every week.
-
-You may also use the [Service Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
-
-### Service Ping local setup
-
-To set up Service Ping locally, you must:
-
-1. [Set up local repositories](#set-up-local-repositories).
-1. [Test local setup](#test-local-setup).
-1. (Optional) [Test Prometheus-based Service Ping](#test-prometheus-based-service-ping).
-
-#### Set up local repositories
-
-1. Clone and start [GitLab](https://gitlab.com/gitlab-org/gitlab-development-kit).
-1. Clone and start [Versions Application](https://gitlab.com/gitlab-services/version-gitlab-com).
-   Make sure to run `docker-compose up` to start a PostgreSQL and Redis instance.
-1. Point GitLab to the Versions Application endpoint instead of the default endpoint:
-   1. Open [submit_usage_ping_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L4) in your local and modified `PRODUCTION_URL`.
-   1. Set it to the local Versions Application URL `http://localhost:3000/usage_data`.
-
-#### Test local setup
-
-1. Using the `gitlab` Rails console, manually trigger Service Ping:
-
-   ```ruby
-   ServicePing::SubmitService.new.execute
-   ```
-
-1. Use the `versions` Rails console to check the Service Ping was successfully received,
-   parsed, and stored in the Versions database:
-
-   ```ruby
-   UsageData.last
-   ```
-
-### Test Prometheus-based Service Ping
-
-If the data submitted includes metrics [queried from Prometheus](#prometheus-queries)
-you want to inspect and verify, you must:
-
-- Ensure that a Prometheus server is running locally.
-- Ensure the respective GitLab components are exporting metrics to the Prometheus server.
-
-If you do not need to test data coming from Prometheus, no further action
-is necessary. Service Ping should degrade gracefully in the absence of a running Prometheus server.
-
-Three kinds of components may export data to Prometheus, and are included in Service Ping:
-
-- [`node_exporter`](https://github.com/prometheus/node_exporter): Exports node metrics
-  from the host machine.
-- [`gitlab-exporter`](https://gitlab.com/gitlab-org/gitlab-exporter): Exports process metrics
-  from various GitLab components.
-- Other various GitLab services, such as Sidekiq and the Rails server, which export their own metrics.
-
-#### Test with an Omnibus container
-
-This is the recommended approach to test Prometheus based Service Ping.
-
-The easiest way to verify your changes is to build a new Omnibus image from your code branch by using CI, then download the image
-and run a local container instance:
-
-1. From your merge request, click on the `qa` stage, then trigger the `package-and-qa` job. This job triggers an Omnibus
-build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/pipelines).
-1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
-1. Open the job logs and locate the full container name including the version. It takes the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.
-1. On your local machine, make sure you are signed in to the GitLab Docker registry. You can find the instructions for this in
-[Authenticate to the GitLab Container Registry](../../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
-1. Once signed in, download the new image by using `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
-1. For more information about working with and running Omnibus GitLab containers in Docker, please refer to [GitLab Docker images](https://docs.gitlab.com/omnibus/docker/README.html) in the Omnibus documentation.
-
-#### Test with GitLab development toolkits
-
-This is the less recommended approach, because it comes with a number of difficulties when emulating a real GitLab deployment.
-
-The [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) is not set up to run a Prometheus server or `node_exporter` alongside other GitLab components. If you would
-like to do so, [Monitoring the GDK with Prometheus](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/prometheus/index.md#monitoring-the-gdk-with-prometheus) is a good start.
-
-The [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit) has limited support for testing Prometheus based Service Ping.
-By default, it already comes with a fully configured Prometheus service that is set up to scrape a number of components,
-but with the following limitations:
-
-- It does not run a `gitlab-exporter` instance, so several `process_*` metrics from services such as Gitaly may be missing.
-- While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it would normally report itself to not be associated
-with any of the other services that are running. That is not how node metrics are reported in a production setup, where `node_exporter`
-always runs as a process alongside other GitLab components on any given node. From Service Ping's perspective none of the node data would therefore
-appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Service Ping.
-
 ## Aggregated metrics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
@@ -1189,7 +874,10 @@ appear to be associated to any of the services running, because they all appear 
 WARNING:
 This feature is intended solely for internal GitLab use.
 
-To add data for aggregated metrics into Service Ping payload you should add corresponding definition at [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/) for metrics available at Community Edition and at [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/) for Enterprise Edition ones.
+To add data for aggregated metrics to the Service Ping payload, add a corresponding definition to:
+
+- [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/) for metrics available in the Community Edition.
+- [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/) for metrics available in the Enterprise Edition.
 
 Each aggregate definition includes following parts:
 
@@ -1578,7 +1266,7 @@ The following is example content of the Service Ping payload.
 
 In GitLab 13.5, `pg_system_id` was added to send the [PostgreSQL system identifier](https://www.2ndquadrant.com/en/blog/support-for-postgresqls-system-identifier-in-barman/).
 
-## Exporting Service Ping SQL queries and definitions
+## Export Service Ping SQL queries and definitions
 
 Two Rake tasks exist to export Service Ping definitions.
 
@@ -1638,25 +1326,25 @@ you are not impacted by this bug.
 
 #### Check if you are affected
 
-You can check if you were affected by this bug by using the Admin area or by
+You can check if you were affected by this bug by using the Admin Area or by
 checking the configuration file of your GitLab instance:
 
-- Using the Admin area:
+- Using the Admin Area:
 
-  1. On the top bar, go to the admin area (**{admin}**).
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
-  1. Are you able to check/uncheck the checkbox to disable Service Ping?
+  1. Are you able to check or uncheck the checkbox to disable Service Ping?
 
      - If _yes_, your GitLab instance is not affected by this bug.
-     - If you can't check/uncheck the checkbox, you are affected by this bug.
-       Read below [how to fix this](#how-to-fix-the-cannot-disable-service-ping-bug).
+     - If you can't check or uncheck the checkbox, you are affected by this bug.
+       See the steps on [how to fix this](#how-to-fix-the-cannot-disable-service-ping-bug).
 
 - Checking your GitLab instance configuration file:
 
   To check whether you're impacted by this bug, check your instance configuration
-  settings. The configuration file in which Service Ping can be disabled will depend
-  on your installation and deployment method, but it will typically be one of the following:
+  settings. The configuration file in which Service Ping can be disabled depends
+  on your installation and deployment method, but is typically one of the following:
 
   - `/etc/gitlab/gitlab.rb` for Omnibus GitLab Linux Package and Docker.
   - `charts.yaml` for GitLab Helm and cloud-native Kubernetes deployments.
@@ -1700,7 +1388,7 @@ To work around this bug, you have two options:
      sudo gitlab-ctl reconfigure
      ```
 
-  1. In GitLab, on the top bar, go to the admin area (**{admin}**).
+  1. In GitLab, on the top bar, select **Menu >** **{admin}** **Admin**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
   1. Clear the **Enable service ping** checkbox.

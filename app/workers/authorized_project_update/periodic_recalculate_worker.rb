@@ -4,7 +4,8 @@ module AuthorizedProjectUpdate
   class PeriodicRecalculateWorker
     include ApplicationWorker
 
-    sidekiq_options retry: 3
+    data_consistency :always
+
     # This worker does not perform work scoped to a context
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 

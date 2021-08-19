@@ -28,6 +28,7 @@ export default {
     modal-type="delete-with-contributions"
     :username="username"
     :paths="paths"
+    :delete-path="paths.deleteWithContributions"
     :oncall-schedules="oncallSchedules"
   >
     <slot></slot>

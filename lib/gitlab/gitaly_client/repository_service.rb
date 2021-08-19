@@ -73,17 +73,20 @@ module Gitlab
       # rubocop: disable Metrics/ParameterLists
       # The `remote` parameter is going away soonish anyway, at which point the
       # Rubocop warning can be enabled again.
-      def fetch_remote(remote, url:, refmap:, ssh_auth:, forced:, no_tags:, timeout:, prune: true, check_tags_changed: false)
+      def fetch_remote(url, refmap:, ssh_auth:, forced:, no_tags:, timeout:, prune: true, check_tags_changed: false, http_authorization_header: "")
         request = Gitaly::FetchRemoteRequest.new(
-          repository: @gitaly_repo, remote: remote, force: forced,
-          no_tags: no_tags, timeout: timeout, no_prune: !prune,
-          check_tags_changed: check_tags_changed
+          repository: @gitaly_repo,
+          force: forced,
+          no_tags: no_tags,
+          timeout: timeout,
+          no_prune: !prune,
+          check_tags_changed: check_tags_changed,
+          remote_params: Gitaly::Remote.new(
+            url: url,
+            mirror_refmaps: Array.wrap(refmap).map(&:to_s),
+            http_authorization_header: http_authorization_header
+          )
         )
-
-        if url
-          request.remote_params = Gitaly::Remote.new(url: url,
-                                                     mirror_refmaps: Array.wrap(refmap).map(&:to_s))
-        end
 
         if ssh_auth&.ssh_mirror_url?
           if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
@@ -263,6 +266,21 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
       end
 
+      def set_full_path(path)
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :set_full_path,
+          Gitaly::SetFullPathRequest.new(
+            repository: @gitaly_repo,
+            path: path
+          ),
+          timeout: GitalyClient.fast_timeout
+        )
+
+        nil
+      end
+
       def set_config(entries)
         return if entries.empty?
 
@@ -275,22 +293,6 @@ module Gitlab
           @storage,
           :repository_service,
           :set_config,
-          request,
-          timeout: GitalyClient.fast_timeout
-        )
-
-        nil
-      end
-
-      def delete_config(keys)
-        return if keys.empty?
-
-        request = Gitaly::DeleteConfigRequest.new(repository: @gitaly_repo, keys: keys)
-
-        GitalyClient.call(
-          @storage,
-          :repository_service,
-          :delete_config,
           request,
           timeout: GitalyClient.fast_timeout
         )

@@ -31,7 +31,8 @@ Prerequisites:
 
 To view a list of environments and deployments:
 
-1. Go to the project's **Deployments > Environments** page.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
    The environments are displayed.
 
    ![Environments list](img/environments_list.png)
@@ -57,7 +58,8 @@ You can create an environment and deployment in the UI or in your `.gitlab-ci.ym
 
 In the UI:
 
-1. Go to the project's **Deployments > Environments** page.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
 1. Select **New environment**.
 1. Enter a name and external URL.
 1. Select **Save**.
@@ -326,7 +328,8 @@ If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or rollback a deployment:
 
-1. Go to the project's **Deployments > Environments**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
 1. Select the environment.
 1. To the right of the deployment name:
    - To retry a deployment, select **Re-deploy to environment**.
@@ -353,12 +356,12 @@ For example:
 
 ![Environment URLs in merge request](../img/environments_link_url_mr.png)
 
-#### Going from source files to public pages
+#### Go from source files to public pages
 
 With GitLab [Route Maps](../review_apps/index.md#route-maps), you can go directly
 from source files to public pages in the environment set for Review Apps.
 
-### Stopping an environment
+### Stop an environment
 
 When you stop an environment:
 
@@ -465,7 +468,8 @@ GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
 You can view a deployment's expiration date in the GitLab UI.
 
-1. Go to the project's **Deployments > Environments** page.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
 1. Select the name of the deployment.
 
 In the top left, next to the environment name, the expiration date is displayed.
@@ -474,7 +478,8 @@ In the top left, next to the environment name, the expiration date is displayed.
 
 You can manually override a deployment's expiration date.
 
-1. Go to the project's **Deployments > Environments** page.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
 1. Select the deployment name.
 1. On the top right, select the thumbtack (**{thumbtack}**).
 
@@ -486,12 +491,13 @@ The `auto_stop_in` setting is overwritten and the environment remains active unt
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20620) in GitLab 12.10.
 
-You can delete [stopped environments](#stopping-an-environment) in the GitLab UI or by using
+You can delete [stopped environments](#stop-an-environment) in the GitLab UI or by using
 [the API](../../api/environments.md#delete-an-environment).
 
 To delete a stopped environment in the GitLab UI:
 
-1. Go to the project's **Deployments > Environments** page.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.
@@ -519,7 +525,7 @@ build:
     url: https://staging.example.com
 ```
 
-This gives you access to [environment-scoped variables](#scoping-environments-with-specs),
+This gives you access to [environment-scoped variables](#scope-environments-with-specs),
 and can be used to [protect builds from unauthorized access](protected_environments.md).
 
 ### Group similar environments
@@ -596,11 +602,13 @@ Limitations of GitLab Auto Rollback:
 
 GitLab Auto Rollback is turned off by default. To turn it on:
 
-1. Go to **Project > Settings > CI/CD > Automatic deployment rollbacks**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.
 
-### Monitoring environments
+### Monitor environments
 
 To monitor the behavior of your app as it runs in each environment,
 enable [Prometheus for monitoring system and response metrics](../../user/project/integrations/prometheus.md).
@@ -619,7 +627,7 @@ It may take a minute or two for data to appear after initial deployment.
 
 ![Monitoring dashboard](../img/environments_monitoring.png)
 
-#### Embedding metrics in GitLab Flavored Markdown
+#### Embed metrics in GitLab Flavored Markdown
 
 Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metrics in GitLab Flavored Markdown](../../operations/metrics/embed.md) for more details.
 
@@ -672,7 +680,7 @@ fetch line:
 fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ```
 
-### Scoping environments with specs
+### Scope environments with specs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - [Environment scoping for CI/CD variables was moved to all tiers](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) in GitLab 12.2.

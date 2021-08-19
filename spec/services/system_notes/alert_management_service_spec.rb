@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ::SystemNotes::AlertManagementService do
   let_it_be(:author)   { create(:user) }
   let_it_be(:project)  { create(:project, :repository) }
-  let_it_be(:noteable) { create(:alert_management_alert, :with_issue, :acknowledged, project: project) }
+  let_it_be(:noteable) { create(:alert_management_alert, :with_incident, :acknowledged, project: project) }
 
   describe '#create_new_alert' do
     subject { described_class.new(noteable: noteable, project: project).create_new_alert('Some Service') }

@@ -10,6 +10,14 @@ describe('MergeRequestStore', () => {
     store = new MergeRequestStore(mockData);
   });
 
+  it('should initialize gitpod attributes', () => {
+    expect(store).toMatchObject({
+      gitpodEnabled: mockData.gitpod_enabled,
+      showGitpodButton: mockData.show_gitpod_button,
+      gitpodUrl: mockData.gitpod_url,
+    });
+  });
+
   describe('setData', () => {
     it('should set isSHAMismatch when the diff SHA changes', () => {
       store.setData({ ...mockData, diff_head_sha: 'a-different-string' });

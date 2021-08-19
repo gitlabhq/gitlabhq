@@ -3,11 +3,11 @@
 module Types
   module Notes
     class DiffPositionBaseInputType < BaseInputObject
-      argument :head_sha, GraphQL::STRING_TYPE, required: true,
+      argument :head_sha, GraphQL::Types::String, required: true,
                description: copy_field_description(Types::DiffRefsType, :head_sha)
-      argument :base_sha,  GraphQL::STRING_TYPE, required: false,
+      argument :base_sha,  GraphQL::Types::String, required: false,
                description: copy_field_description(Types::DiffRefsType, :base_sha)
-      argument :start_sha, GraphQL::STRING_TYPE, required: true,
+      argument :start_sha, GraphQL::Types::String, required: true,
                description: copy_field_description(Types::DiffRefsType, :start_sha)
 
       argument :paths,

@@ -7,7 +7,7 @@ module Types
       class StageType < BaseObject
         graphql_name 'CiConfigStage'
 
-        field :name, GraphQL::STRING_TYPE, null: true,
+        field :name, GraphQL::Types::String, null: true,
               description: 'Name of the stage.'
         field :groups, Types::Ci::Config::GroupType.connection_type, null: true,
               description: 'Groups of jobs for the stage.'

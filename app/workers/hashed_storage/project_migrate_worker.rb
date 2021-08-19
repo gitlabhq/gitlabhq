@@ -4,11 +4,16 @@ module HashedStorage
   class ProjectMigrateWorker < BaseWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
 
     queue_namespace :hashed_storage
     loggable_arguments 1
-    tags :exclude_from_gitlab_com
+
+    # Gitlab::HashedStorage::Migrator#migration_pending? depends on the
+    # queue size of this worker.
+    tags :exclude_from_gitlab_com, :needs_own_queue
 
     attr_reader :project_id
 

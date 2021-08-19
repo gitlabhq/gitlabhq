@@ -21,7 +21,7 @@ export const loadDataFromLS = (key) => {
 
 export const setFrequentItemToLS = (key, data, itemData) => {
   if (!AccessorUtilities.isLocalStorageAccessSafe()) {
-    return;
+    return [];
   }
 
   const keyList = [
@@ -66,9 +66,11 @@ export const setFrequentItemToLS = (key, data, itemData) => {
     // Note we do not need to commit a mutation here as immediately after this we refresh the page to
     // update the search results.
     localStorage.setItem(key, JSON.stringify(frequentItems));
+    return frequentItems;
   } catch {
     // The LS got in a bad state, let's wipe it
     localStorage.removeItem(key);
+    return [];
   }
 };
 

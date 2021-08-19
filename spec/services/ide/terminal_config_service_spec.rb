@@ -47,7 +47,6 @@ RSpec.describe Ide::TerminalConfigService do
           status: :success,
           terminal: {
             tag_list: [],
-            yaml_variables: [],
             job_variables: [],
             options: { script: ["sleep 60"] }
           })
@@ -62,7 +61,6 @@ RSpec.describe Ide::TerminalConfigService do
           status: :success,
           terminal: {
             tag_list: [],
-            yaml_variables: [],
             job_variables: [],
             options: { before_script: ["ls"], script: ["sleep 60"] }
           })

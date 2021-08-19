@@ -1,4 +1,3 @@
-import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 
 /**
@@ -7,8 +6,6 @@ import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
  * on underlying DOM methods.
  */
 describe('AutofocusOnShow directive', () => {
-  useMockIntersectionObserver();
-
   describe('with input invisible on component render', () => {
     let el;
 

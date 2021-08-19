@@ -7,8 +7,12 @@ module Gitlab
         Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
         Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Irker Jenkins Jira Mattermost
         MattermostSlashCommands MicrosoftTeams MockCi MockMonitoring Packagist PipelinesEmail Pivotaltracker
-        Prometheus Pushover Redmine Slack SlackSlashCommands Teamcity UnifyCircuit Youtrack WebexTeams
+        Prometheus Pushover Redmine Slack SlackSlashCommands Teamcity UnifyCircuit WebexTeams Youtrack
       )).freeze
+
+      def self.namespaced_integrations
+        NAMESPACED_INTEGRATIONS
+      end
 
       def cast(value)
         new_cast(value) || super
@@ -32,16 +36,12 @@ module Gitlab
 
       private
 
-      def namespaced_integrations
-        NAMESPACED_INTEGRATIONS
-      end
-
       def new_cast(value)
         value = prepare_value(value)
         return unless value
 
         stripped_name = value.delete_suffix('Service')
-        return unless namespaced_integrations.include?(stripped_name)
+        return unless self.class.namespaced_integrations.include?(stripped_name)
 
         "Integrations::#{stripped_name}"
       end

@@ -5,10 +5,13 @@ class Packages::PackageFile < ApplicationRecord
 
   delegate :project, :project_id, to: :package
   delegate :conan_file_type, to: :conan_file_metadatum
-  delegate :file_type, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
+  delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
   delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm
 
   belongs_to :package
+
+  # used to move the linked file within object storage
+  attribute :new_file_path, default: nil
 
   has_one :conan_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Conan::FileMetadatum'
   has_many :package_file_build_infos, inverse_of: :package_file, class_name: 'Packages::PackageFileBuildInfo'
@@ -33,6 +36,8 @@ class Packages::PackageFile < ApplicationRecord
   scope :with_file_name_like, ->(file_name) { where(arel_table[:file_name].matches(file_name)) }
   scope :with_files_stored_locally, -> { where(file_store: ::Packages::PackageFileUploader::Store::LOCAL) }
   scope :with_format, ->(format) { where(::Packages::PackageFile.arel_table[:file_name].matches("%.#{format}")) }
+
+  scope :preload_package, -> { preload(:package) }
   scope :preload_conan_file_metadata, -> { preload(:conan_file_metadatum) }
   scope :preload_debian_file_metadata, -> { preload(:debian_file_metadatum) }
   scope :preload_helm_file_metadata, -> { preload(:helm_file_metadatum) }
@@ -78,6 +83,12 @@ class Packages::PackageFile < ApplicationRecord
 
   before_save :update_size_from_file
 
+  # if a new_file_path is provided, we need
+  # * disable the remove_previously_stored_file callback so that carrierwave doesn't take care of the file
+  # * enable a new after_commit callback that will move the file in object storage
+  skip_callback :commit, :after, :remove_previously_stored_file, if: :execute_move_in_object_storage?
+  after_commit :move_in_object_storage, if: :execute_move_in_object_storage?
+
   def download_path
     Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)
   end
@@ -86,6 +97,17 @@ class Packages::PackageFile < ApplicationRecord
 
   def update_size_from_file
     self.size ||= file.size
+  end
+
+  def execute_move_in_object_storage?
+    !file.file_storage? && new_file_path?
+  end
+
+  def move_in_object_storage
+    carrierwave_file = file.file
+
+    carrierwave_file.copy_to(new_file_path)
+    carrierwave_file.delete
   end
 end
 

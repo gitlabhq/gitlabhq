@@ -136,4 +136,16 @@ RSpec.describe GroupMember do
       group_member.update!(expires_at: 5.days.from_now)
     end
   end
+
+  describe 'refresh_member_authorized_projects' do
+    context 'when importing' do
+      it 'does not refresh' do
+        expect(UserProjectAccessChangedService).not_to receive(:new)
+
+        member = build(:group_member)
+        member.importing = true
+        member.save!
+      end
+    end
+  end
 end

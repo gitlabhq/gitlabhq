@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
@@ -49,6 +49,7 @@ GitLab has integrated with several security partners. For more information, see
 GitLab can be integrated with the following external service for continuous integration:
 
 - [Jenkins](jenkins.md) CI.
+- [Datadog](datadog.md), to monitor for CI/CD job failures and performance issues.
 
 ## Feature enhancements
 

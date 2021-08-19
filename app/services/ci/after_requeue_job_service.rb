@@ -38,7 +38,7 @@ module Ci
     end
 
     def stage_dependent_jobs(processable)
-      skipped_jobs(processable).scheduling_type_stage.after_stage(processable.stage_idx)
+      skipped_jobs(processable).after_stage(processable.stage_idx)
     end
 
     def needs_dependent_jobs(processable)

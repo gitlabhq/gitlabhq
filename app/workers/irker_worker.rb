@@ -6,9 +6,10 @@ require 'socket'
 class IrkerWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  data_consistency :always
   sidekiq_options retry: 3
-
   feature_category :integrations
+  urgency :low
 
   def perform(project_id, channels, colors, push_data, settings)
     # Establish connection to irker server

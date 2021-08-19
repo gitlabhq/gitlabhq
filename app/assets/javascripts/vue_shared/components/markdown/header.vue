@@ -1,5 +1,5 @@
 <script>
-import { GlPopover, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlPopover, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import { keysFor, BOLD_TEXT, ITALIC_TEXT, LINK_TEXT } from '~/behaviors/shortcuts/keybindings';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
@@ -10,7 +10,6 @@ import ToolbarButton from './toolbar_button.vue';
 export default {
   components: {
     ToolbarButton,
-    GlIcon,
     GlPopover,
     GlButton,
   },
@@ -46,6 +45,7 @@ export default {
   data() {
     return {
       tag: '> ',
+      suggestPopoverVisible: false,
     };
   },
   computed: {
@@ -76,15 +76,27 @@ export default {
       return this.isMac ? '⌘' : s__('KeyboardKey|Ctrl+');
     },
   },
+  watch: {
+    showSuggestPopover() {
+      this.updateSuggestPopoverVisibility();
+    },
+  },
   mounted() {
     $(document).on('markdown-preview:show.vue', this.previewMarkdownTab);
     $(document).on('markdown-preview:hide.vue', this.writeMarkdownTab);
+
+    this.updateSuggestPopoverVisibility();
   },
   beforeDestroy() {
     $(document).off('markdown-preview:show.vue', this.previewMarkdownTab);
     $(document).off('markdown-preview:hide.vue', this.writeMarkdownTab);
   },
   methods: {
+    async updateSuggestPopoverVisibility() {
+      await this.$nextTick();
+
+      this.suggestPopoverVisible = this.showSuggestPopover && this.canSuggest;
+    },
     isValid(form) {
       return (
         !form ||
@@ -153,127 +165,114 @@ export default {
         </button>
       </li>
       <li :class="{ active: !previewMarkdown }" class="md-header-toolbar">
-        <div class="d-inline-block">
+        <toolbar-button
+          tag="**"
+          :button-title="
+            sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), { modifierKey })
+          "
+          :shortcuts="$options.shortcuts.bold"
+          icon="bold"
+        />
+        <toolbar-button
+          tag="_"
+          :button-title="
+            sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), { modifierKey })
+          "
+          :shortcuts="$options.shortcuts.italic"
+          icon="italic"
+        />
+        <toolbar-button
+          :prepend="true"
+          :tag="tag"
+          :button-title="__('Insert a quote')"
+          icon="quote"
+          @click="handleQuote"
+        />
+        <template v-if="canSuggest">
           <toolbar-button
-            tag="**"
-            :button-title="
-              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), { modifierKey })
-            "
-            :shortcuts="$options.shortcuts.bold"
-            icon="bold"
-          />
-          <toolbar-button
-            tag="_"
-            :button-title="
-              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), { modifierKey })
-            "
-            :shortcuts="$options.shortcuts.italic"
-            icon="italic"
-          />
-          <toolbar-button
+            ref="suggestButton"
+            :tag="mdSuggestion"
             :prepend="true"
-            :tag="tag"
-            :button-title="__('Insert a quote')"
-            icon="quote"
-            @click="handleQuote"
+            :button-title="__('Insert suggestion')"
+            :cursor-offset="4"
+            :tag-content="lineContent"
+            icon="doc-code"
+            data-qa-selector="suggestion_button"
+            class="js-suggestion-btn"
+            @click="handleSuggestDismissed"
           />
-        </div>
-        <div class="d-inline-block ml-md-2 ml-0">
-          <template v-if="canSuggest">
-            <toolbar-button
-              ref="suggestButton"
-              :tag="mdSuggestion"
-              :prepend="true"
-              :button-title="__('Insert suggestion')"
-              :cursor-offset="4"
-              :tag-content="lineContent"
-              icon="doc-code"
-              data-qa-selector="suggestion_button"
-              class="js-suggestion-btn"
-              @click="handleSuggestDismissed"
-            />
-            <gl-popover
-              v-if="showSuggestPopover && $refs.suggestButton"
-              :target="$refs.suggestButton"
-              :css-classes="['diff-suggest-popover']"
-              placement="bottom"
-              :show="showSuggestPopover"
-            >
-              <strong>{{ __('New! Suggest changes directly') }}</strong>
-              <p class="mb-2">
-                {{
-                  __(
-                    'Suggest code changes which can be immediately applied in one click. Try it out!',
-                  )
-                }}
-              </p>
-              <gl-button
-                variant="info"
-                category="primary"
-                size="sm"
-                @click="handleSuggestDismissed"
-              >
-                {{ __('Got it') }}
-              </gl-button>
-            </gl-popover>
-          </template>
-          <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />
-          <toolbar-button
-            tag="[{text}](url)"
-            tag-select="url"
-            :button-title="
-              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), { modifierKey })
-            "
-            :shortcuts="$options.shortcuts.link"
-            icon="link"
-          />
-        </div>
-        <div class="d-inline-block ml-md-2 ml-0">
-          <toolbar-button
-            :prepend="true"
-            tag="- "
-            :button-title="__('Add a bullet list')"
-            icon="list-bulleted"
-          />
-          <toolbar-button
-            :prepend="true"
-            tag="1. "
-            :button-title="__('Add a numbered list')"
-            icon="list-numbered"
-          />
-          <toolbar-button
-            :prepend="true"
-            tag="- [ ] "
-            :button-title="__('Add a task list')"
-            icon="list-task"
-          />
-          <toolbar-button
-            :tag="mdCollapsibleSection"
-            :prepend="true"
-            tag-select="Click to expand"
-            :button-title="__('Add a collapsible section')"
-            icon="details-block"
-          />
-          <toolbar-button
-            :tag="mdTable"
-            :prepend="true"
-            :button-title="__('Add a table')"
-            icon="table"
-          />
-        </div>
-        <div class="d-inline-block ml-md-2 ml-0">
-          <button
-            v-gl-tooltip
-            :aria-label="__('Go full screen')"
-            class="toolbar-btn toolbar-fullscreen-btn js-zen-enter"
-            data-container="body"
-            tabindex="-1"
-            :title="__('Go full screen')"
-            type="button"
+          <gl-popover
+            v-if="suggestPopoverVisible"
+            :target="$refs.suggestButton.$el"
+            :css-classes="['diff-suggest-popover']"
+            placement="bottom"
+            :show="suggestPopoverVisible"
           >
-            <gl-icon name="maximize" />
-          </button>
-        </div>
+            <strong>{{ __('New! Suggest changes directly') }}</strong>
+            <p class="mb-2">
+              {{
+                __(
+                  'Suggest code changes which can be immediately applied in one click. Try it out!',
+                )
+              }}
+            </p>
+            <gl-button
+              variant="info"
+              category="primary"
+              size="small"
+              @click="handleSuggestDismissed"
+            >
+              {{ __('Got it') }}
+            </gl-button>
+          </gl-popover>
+        </template>
+        <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />
+        <toolbar-button
+          tag="[{text}](url)"
+          tag-select="url"
+          :button-title="
+            sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), { modifierKey })
+          "
+          :shortcuts="$options.shortcuts.link"
+          icon="link"
+        />
+        <toolbar-button
+          :prepend="true"
+          tag="- "
+          :button-title="__('Add a bullet list')"
+          icon="list-bulleted"
+        />
+        <toolbar-button
+          :prepend="true"
+          tag="1. "
+          :button-title="__('Add a numbered list')"
+          icon="list-numbered"
+        />
+        <toolbar-button
+          :prepend="true"
+          tag="- [ ] "
+          :button-title="__('Add a task list')"
+          icon="list-task"
+        />
+        <toolbar-button
+          :tag="mdCollapsibleSection"
+          :prepend="true"
+          tag-select="Click to expand"
+          :button-title="__('Add a collapsible section')"
+          icon="details-block"
+        />
+        <toolbar-button
+          :tag="mdTable"
+          :prepend="true"
+          :button-title="__('Add a table')"
+          icon="table"
+        />
+        <toolbar-button
+          class="js-zen-enter"
+          :prepend="true"
+          :button-title="__('Go full screen')"
+          icon="maximize"
+        />
       </li>
     </ul>
   </div>

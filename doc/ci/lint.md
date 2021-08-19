@@ -39,8 +39,8 @@ more complicated issues.
 To validate the configuration by running a pipeline simulation:
 
 1. Paste the GitLab CI configuration to verify into the text box.
-1. Click the **Simulate pipeline creation for the default branch** checkbox.
-1. Click **Validate**.
+1. Select the **Simulate pipeline creation for the default branch** checkbox.
+1. Select **Validate**.
 
 ![Dry run](img/ci_lint_dry_run.png)
 

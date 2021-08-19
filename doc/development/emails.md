@@ -26,7 +26,7 @@ mailer.unknown_sign_in_email(user, ip, time).deliver_later
 To view rendered emails "sent" in your development instance, visit
 [`/rails/letter_opener`](http://localhost:3000/rails/letter_opener).
 
-Please note that [S/MIME signed](../administration/smime_signing_email.md) emails
+[S/MIME signed](../administration/smime_signing_email.md) emails
 [cannot be currently previewed](https://github.com/fgrehm/letter_opener_web/issues/96) with
 `letter_opener`.
 
@@ -125,7 +125,7 @@ Examples of valid email keys:
 - `1234567890abcdef1234567890abcdef-unsubscribe` (unsubscribe from a conversation)
 - `1234567890abcdef1234567890abcdef` (reply to a conversation)
 
-Please note that the action `-issue-` is used in GitLab as the handler for the Service Desk feature.
+The action `-issue-` is used in GitLab as the handler for the Service Desk feature.
 
 ### Legacy format
 
@@ -137,7 +137,7 @@ These are the only valid legacy formats for an email handler:
 - `namespace`
 - `namespace+action`
 
-Please note that `path/to/project` is used in GitLab as the handler for the Service Desk feature.
+In GitLab, the handler for the Service Desk feature is `path/to/project`.
 
 ---
 

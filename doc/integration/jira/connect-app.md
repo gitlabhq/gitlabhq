@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -53,7 +53,7 @@ After a namespace is added:
   are synced to Jira.
 - From GitLab 13.8, past merge request data is synced to Jira.
 
-Support for syncing past branch and commit data [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
+Support for syncing past branch and commit data is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
 ## Install the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 
@@ -130,4 +130,4 @@ The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the settin
 
 > "You need to sign in or sign up before continuing."
 
-In this case, use [Firefox](https://www.mozilla.org/en-US/firefox/) or enable cross-site cookies in your browser.
+In this case, use [Firefox](https://www.mozilla.org/en-US/firefox/), [Google Chrome](https://www.google.com/chrome/), or enable cross-site cookies in your browser.

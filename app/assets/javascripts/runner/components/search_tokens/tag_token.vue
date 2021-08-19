@@ -28,11 +28,6 @@ export default {
     };
   },
   methods: {
-    fnCurrentTokenValue(data) {
-      // By default, values are transformed with `toLowerCase`
-      // however, runner tags are case sensitive.
-      return data;
-    },
     getTagsOptions(search) {
       // TODO This should be implemented via a GraphQL API
       // The API should
@@ -72,7 +67,6 @@ export default {
     :config="config"
     :suggestions-loading="loading"
     :suggestions="tags"
-    :fn-current-token-value="fnCurrentTokenValue"
     :recent-suggestions-storage-key="config.recentTokenValuesStorageKey"
     @fetch-suggestions="fetchTags"
     v-on="$listeners"

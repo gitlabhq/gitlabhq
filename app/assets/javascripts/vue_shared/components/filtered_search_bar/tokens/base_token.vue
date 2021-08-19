@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
-import { DEBOUNCE_DELAY } from '../constants';
+import { DEBOUNCE_DELAY, FILTER_NONE_ANY, OPERATOR_IS_NOT } from '../constants';
 import { getRecentlyUsedSuggestions, setTokenValueToRecentlyUsed } from '../filtered_search_utils';
 
 export default {
@@ -42,12 +42,10 @@ export default {
       required: false,
       default: () => [],
     },
-    fnActiveTokenValue: {
+    getActiveTokenValue: {
       type: Function,
       required: false,
-      default: (suggestions, currentTokenValue) => {
-        return suggestions.find(({ value }) => value === currentTokenValue);
-      },
+      default: (suggestions, data) => suggestions.find(({ value }) => value === data),
     },
     defaultSuggestions: {
       type: Array,
@@ -69,11 +67,6 @@ export default {
       required: false,
       default: 'id',
     },
-    fnCurrentTokenValue: {
-      type: Function,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -81,7 +74,6 @@ export default {
       recentSuggestions: this.recentSuggestionsStorageKey
         ? getRecentlyUsedSuggestions(this.recentSuggestionsStorageKey)
         : [],
-      loading: false,
     };
   },
   computed: {
@@ -94,14 +86,16 @@ export default {
     preloadedTokenIds() {
       return this.preloadedSuggestions.map((tokenValue) => tokenValue[this.valueIdentifier]);
     },
-    currentTokenValue() {
-      if (this.fnCurrentTokenValue) {
-        return this.fnCurrentTokenValue(this.value.data);
-      }
-      return this.value.data.toLowerCase();
-    },
     activeTokenValue() {
-      return this.fnActiveTokenValue(this.suggestions, this.currentTokenValue);
+      return this.getActiveTokenValue(this.suggestions, this.value.data);
+    },
+    availableDefaultSuggestions() {
+      if (this.value.operator === OPERATOR_IS_NOT) {
+        return this.defaultSuggestions.filter(
+          (suggestion) => !FILTER_NONE_ANY.includes(suggestion.value),
+        );
+      }
+      return this.defaultSuggestions;
     },
     /**
      * Return all the suggestions when searchKey is present
@@ -116,6 +110,29 @@ export default {
               !this.recentTokenIds.includes(tokenValue[this.valueIdentifier]) &&
               !this.preloadedTokenIds.includes(tokenValue[this.valueIdentifier]),
           );
+    },
+    showDefaultSuggestions() {
+      return this.availableDefaultSuggestions.length;
+    },
+    showRecentSuggestions() {
+      return this.isRecentSuggestionsEnabled && this.recentSuggestions.length && !this.searchKey;
+    },
+    showPreloadedSuggestions() {
+      return this.preloadedSuggestions.length && !this.searchKey;
+    },
+    showAvailableSuggestions() {
+      return this.availableSuggestions.length;
+    },
+    showSuggestions() {
+      // These conditions must match the template under `#suggestions` slot
+      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65817#note_632619411
+      return (
+        this.showDefaultSuggestions ||
+        this.showRecentSuggestions ||
+        this.showPreloadedSuggestions ||
+        this.suggestionsLoading ||
+        this.showAvailableSuggestions
+      );
     },
   },
   watch: {
@@ -168,10 +185,10 @@ export default {
     <template #view="viewTokenProps">
       <slot name="view" :view-token-props="{ ...viewTokenProps, activeTokenValue }"></slot>
     </template>
-    <template #suggestions>
-      <template v-if="defaultSuggestions.length">
+    <template v-if="showSuggestions" #suggestions>
+      <template v-if="showDefaultSuggestions">
         <gl-filtered-search-suggestion
-          v-for="token in defaultSuggestions"
+          v-for="token in availableDefaultSuggestions"
           :key="token.value"
           :value="token.value"
         >
@@ -179,13 +196,13 @@ export default {
         </gl-filtered-search-suggestion>
         <gl-dropdown-divider />
       </template>
-      <template v-if="isRecentSuggestionsEnabled && recentSuggestions.length && !searchKey">
+      <template v-if="showRecentSuggestions">
         <gl-dropdown-section-header>{{ __('Recently used') }}</gl-dropdown-section-header>
         <slot name="suggestions-list" :suggestions="recentSuggestions"></slot>
         <gl-dropdown-divider />
       </template>
       <slot
-        v-if="preloadedSuggestions.length && !searchKey"
+        v-if="showPreloadedSuggestions"
         name="suggestions-list"
         :suggestions="preloadedSuggestions"
       ></slot>

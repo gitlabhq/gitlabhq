@@ -79,6 +79,15 @@ RSpec.describe CommitStatus do
     end
   end
 
+  describe '.updated_at_before' do
+    it 'finds the relevant records' do
+      status = create(:commit_status, updated_at: 1.day.ago, project: project)
+      create(:commit_status, updated_at: 1.day.since, project: project)
+
+      expect(described_class.updated_at_before(Time.current)).to eq([status])
+    end
+  end
+
   describe '.updated_before' do
     let!(:lookback) { 5.days.ago }
     let!(:timeout) { 1.day.ago }

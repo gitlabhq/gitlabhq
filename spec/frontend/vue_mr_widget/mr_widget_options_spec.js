@@ -12,7 +12,7 @@ import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/consta
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_merge_request_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
 
@@ -80,14 +80,15 @@ describe('MrWidgetOptions', () => {
 
     describe('computed', () => {
       describe('componentName', () => {
-        it('should return merged component', () => {
-          expect(wrapper.vm.componentName).toEqual('mr-widget-merged');
-        });
+        it.each`
+          state            | componentName
+          ${'merged'}      | ${'mr-widget-merged'}
+          ${'conflicts'}   | ${'mr-widget-conflicts'}
+          ${'shaMismatch'} | ${'sha-mismatch'}
+        `('should translate $state into $componentName', ({ state, componentName }) => {
+          wrapper.vm.mr.state = state;
 
-        it('should return conflicts component', () => {
-          wrapper.vm.mr.state = 'conflicts';
-
-          expect(wrapper.vm.componentName).toEqual('mr-widget-conflicts');
+          expect(wrapper.vm.componentName).toEqual(componentName);
         });
       });
 

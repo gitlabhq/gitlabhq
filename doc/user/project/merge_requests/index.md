@@ -119,7 +119,7 @@ For a software developer working in a team:
    1. Pushes a commit with their final review.
    1. [Approves the merge request](approvals/index.md).
    1. Sets it to [merge when pipeline succeeds](merge_when_pipeline_succeeds.md).
-1. Your changes get deployed to production with [manual actions](../../../ci/yaml/index.md#whenmanual) for GitLab CI/CD.
+1. Your changes get deployed to production with [manual jobs](../../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) for GitLab CI/CD.
 1. Your implementations were successfully shipped to your customer.
 
 For a web developer writing a webpage for your company's website:
@@ -135,6 +135,6 @@ For a web developer writing a webpage for your company's website:
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)
-- [Review and manage merge requests](reviews/index.md)
+- [Review a merge request](reviews/index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Testing and reports](testing_and_reports_in_merge_requests.md)

@@ -4,6 +4,8 @@ module Deployments
   class UpdateEnvironmentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
 
     queue_namespace :deployment

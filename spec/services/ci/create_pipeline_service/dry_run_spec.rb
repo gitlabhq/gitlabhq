@@ -9,7 +9,7 @@ RSpec.describe Ci::CreatePipelineService do
   let(:ref) { 'refs/heads/master' }
   let(:service) { described_class.new(project, user, { ref: ref }) }
 
-  subject { service.execute(:push, dry_run: true) }
+  subject { service.execute(:push, dry_run: true).payload }
 
   before do
     stub_ci_pipeline_yaml_file(config)

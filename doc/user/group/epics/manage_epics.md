@@ -40,9 +40,11 @@ The newly created epic opens.
 If you select **Inherited**:
 
 - For the **start date**: GitLab scans all child epics and issues assigned to the epic,
-  and sets the start date to match the earliest found start date or milestone.
-- For the **due date**: GitLab sets the due date to match the latest due date or
-  milestone found among its child epics and issues.
+  and sets the start date to match the earliest start date found in the child epics or the milestone
+  assigned to the issues.
+- For the **due date**: GitLab scans all child epics and issues assigned to the epic,
+  and sets the due date to match the latest due date found in the child epics or the milestone
+  assigned to the issues.
 
 These are dynamic dates and recalculated if any of the following occur:
 
@@ -191,7 +193,10 @@ or newest items to be shown first.
 If you're working on items that contain private information, you can make an epic confidential.
 
 NOTE:
-A confidential epic can only contain confidential issues and confidential child epics.
+A confidential epic can only contain [confidential issues](../../project/issues/confidential_issues.md)
+and confidential child epics. However, merge requests are public, if created in a public project.
+Read [Merge requests for confidential issues](../../project/merge_requests/confidential.md)
+to learn how to create a confidential merge request.
 
 To make an epic confidential:
 

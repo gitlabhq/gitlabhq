@@ -1,70 +1,24 @@
 import { useFakeDate } from 'helpers/fake_date';
 import {
-  decorateEvents,
-  decorateData,
   transformStagesForPathNavigation,
   timeSummaryForPathNavigation,
   medianTimeToParsedSeconds,
   formatMedianValues,
   filterStagesByHiddenStatus,
   calculateFormattedDayInPast,
+  prepareTimeMetricsData,
 } from '~/cycle_analytics/utils';
+import { slugify } from '~/lib/utils/text_utility';
 import {
   selectedStage,
-  rawData,
-  convertedData,
-  rawEvents,
   allowedStages,
   stageMedians,
   pathNavIssueMetric,
   rawStageMedians,
+  metricsData,
 } from './mock_data';
 
 describe('Value stream analytics utils', () => {
-  describe('decorateEvents', () => {
-    const [result] = decorateEvents(rawEvents, selectedStage);
-    const eventKeys = Object.keys(result);
-    const authorKeys = Object.keys(result.author);
-    it('will return the same number of events', () => {
-      expect(decorateEvents(rawEvents, selectedStage).length).toBe(rawEvents.length);
-    });
-
-    it('will set all the required event fields', () => {
-      ['totalTime', 'author', 'createdAt', 'shortSha', 'commitUrl'].forEach((key) => {
-        expect(eventKeys).toContain(key);
-      });
-      ['webUrl', 'avatarUrl'].forEach((key) => {
-        expect(authorKeys).toContain(key);
-      });
-    });
-
-    it('will remove unused fields', () => {
-      ['total_time', 'created_at', 'short_sha', 'commit_url'].forEach((key) => {
-        expect(eventKeys).not.toContain(key);
-      });
-
-      ['web_url', 'avatar_url'].forEach((key) => {
-        expect(authorKeys).not.toContain(key);
-      });
-    });
-  });
-
-  describe('decorateData', () => {
-    const result = decorateData(rawData);
-    it('returns the summary data', () => {
-      expect(result.summary).toEqual(convertedData.summary);
-    });
-
-    it('returns `-` for summary data that has no value', () => {
-      const singleSummaryResult = decorateData({
-        stats: [],
-        permissions: { issue: true },
-        summary: [{ value: null, title: 'Commits' }],
-      });
-      expect(singleSummaryResult.summary).toEqual([{ value: '-', title: 'Commits' }]);
-    });
-  });
-
   describe('transformStagesForPathNavigation', () => {
     const stages = allowedStages;
     const response = transformStagesForPathNavigation({
@@ -157,6 +111,34 @@ describe('Value stream analytics utils', () => {
 
     it('will return 2 dates, now and past', () => {
       expect(calculateFormattedDayInPast(5)).toEqual({ now: '1815-12-10', past: '1815-12-05' });
+    });
+  });
+
+  describe('prepareTimeMetricsData', () => {
+    let prepared;
+    const [first, second] = metricsData;
+    const firstKey = slugify(first.title);
+    const secondKey = slugify(second.title);
+
+    beforeEach(() => {
+      prepared = prepareTimeMetricsData([first, second], {
+        [firstKey]: { description: 'Is a value that is good' },
+      });
+    });
+
+    it('will add a `key` based on the title', () => {
+      expect(prepared).toMatchObject([{ key: firstKey }, { key: secondKey }]);
+    });
+
+    it('will add a `label` key', () => {
+      expect(prepared).toMatchObject([{ label: 'New Issues' }, { label: 'Commits' }]);
+    });
+
+    it('will add a popover description using the key if it is provided', () => {
+      expect(prepared).toMatchObject([
+        { description: 'Is a value that is good' },
+        { description: '' },
+      ]);
     });
   });
 });

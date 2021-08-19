@@ -5,6 +5,8 @@ module Packages
     class ExtractionWorker
       include ApplicationWorker
 
+      data_consistency :always
+
       queue_namespace :package_repositories
       feature_category :package_registry
       deduplicate :until_executing

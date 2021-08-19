@@ -53,6 +53,14 @@ module Ci
         relation.pluck(:id)
       end
 
+      def use_denormalized_shared_runners_data?
+        false
+      end
+
+      def use_denormalized_minutes_data?
+        false
+      end
+
       private
 
       def running_builds_for_shared_runners

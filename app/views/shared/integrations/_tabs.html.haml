@@ -1,0 +1,18 @@
+- active_tab = local_assigns.fetch(:active_tab, 'edit')
+- active_classes = 'gl-tab-nav-item-active gl-tab-nav-item-active-indigo active'
+- tabs = integration_tabs(integration: integration)
+
+- if tabs.length <= 1
+  = yield
+- else
+  .tabs.gl-tabs
+    %div
+      %ul.nav.gl-tabs-nav{ role: 'tablist' }
+        - tabs.each do |tab|
+          %li.nav-item{ role: 'presentation' }
+            %a.nav-link.gl-tab-nav-item{ role: 'tab', class: (active_classes if tab[:key] == active_tab), href: tab[:href] }
+              = tab[:text]
+
+    .tab-content.gl-tab-content
+      .tab-pane.gl-pt-3.active{ role: 'tabpanel' }
+        = yield

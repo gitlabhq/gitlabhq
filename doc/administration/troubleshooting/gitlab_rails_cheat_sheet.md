@@ -16,13 +16,13 @@ and your [support options](https://about.gitlab.com/support/), before attempting
 this information.
 
 WARNING:
-Please note that some of these scripts could be damaging if not run correctly,
+Some of these scripts could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them under the
 guidance of a Support Engineer, or running them in a test environment with a
 backup of the instance ready to be restored, just in case.
 
 WARNING:
-Please also note that as GitLab changes, changes to the code are inevitable,
+As GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
 mentioned above, we recommend running these scripts under the supervision of a
@@ -466,7 +466,7 @@ sudo gitlab-rake cache:clear
 
 ### Export a repository
 
-It's typically recommended to export a project through [the web interface](../../user/project/settings/import_export.md#exporting-a-project-and-its-data) or through [the API](../../api/project_import_export.md). In situations where this is not working as expected, it may be preferable to export a project directly via the Rails console:
+It's typically recommended to export a project through [the web interface](../../user/project/settings/import_export.md#export-a-project-and-its-data) or through [the API](../../api/project_import_export.md). In situations where this is not working as expected, it may be preferable to export a project directly via the Rails console:
 
 ```ruby
 user = User.find_by_username('USERNAME')
@@ -554,11 +554,26 @@ end
 
 ## Users
 
+### Create new user
+
+```ruby
+u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
+u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user will recieve confirmation e-mail
+u.save!
+```
+
 ### Skip reconfirmation
 
 ```ruby
-user = User.find_by_username '<username>'
+user = User.find_by_username('<username>')
 user.skip_reconfirmation!
+```
+
+### Disable 2fa for single user
+
+```ruby
+user = User.find_by_username('<username>')
+user.disable_two_factor!
 ```
 
 ### Active users & Historical users

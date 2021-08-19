@@ -23,6 +23,26 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Team do
         expect(message.body_line2).to be_present
         expect(message.cta_text).to be_present
       end
+
+      describe '#progress' do
+        subject { message.progress }
+
+        before do
+          allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
+        end
+
+        context 'on gitlab.com' do
+          let(:is_gitlab_com) { true }
+
+          it { is_expected.to include("This is email #{series + 2} of 4 in the Team series") }
+        end
+
+        context 'not on gitlab.com' do
+          let(:is_gitlab_com) { false }
+
+          it { is_expected.to include("This is email #{series + 2} of 4 in the Team series", Gitlab::Routing.url_helpers.profile_notifications_url) }
+        end
+      end
     end
 
     context 'with series 2' do
@@ -36,6 +56,26 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Team do
         expect(message.body_line1).to be_present
         expect(message.body_line2).to be_present
         expect(message.cta_text).to be_present
+      end
+
+      describe '#progress' do
+        subject { message.progress }
+
+        before do
+          allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
+        end
+
+        context 'on gitlab.com' do
+          let(:is_gitlab_com) { true }
+
+          it { is_expected.to include('This is email 4 of 4 in the Team series') }
+        end
+
+        context 'not on gitlab.com' do
+          let(:is_gitlab_com) { false }
+
+          it { is_expected.to include('This is email 4 of 4 in the Team series', Gitlab::Routing.url_helpers.profile_notifications_url) }
+        end
       end
     end
   end

@@ -11,6 +11,32 @@ The following troubleshooting scenarios have been collected from customer suppor
 experience a problem not addressed here, or the information here does not fix your problem, create a
 support ticket. For more details, see the [GitLab Support](https://about.gitlab.com/support/) page.
 
+## Debugging DAST jobs
+
+A DAST job has two executing processes:
+
+- The ZAP server.
+- A series of scripts that start, control and stop the ZAP server.
+
+Enable the `DAST_DEBUG` CI/CD variable to debug scripts. This can help when troubleshooting the job,
+and outputs statements indicating what percentage of the scan is complete.
+For details on using variables, see [Overriding the DAST template](index.md#customizing-the-dast-settings).
+
+Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATION` variable.
+The following table outlines examples of values that can be set and the effect that they have on the output that is logged.
+Multiple values can be specified, separated by semicolons.
+
+For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG`.
+
+| Log configuration value                                      | Effect                                                            |
+|--------------------------------------------------            | ----------------------------------------------------------------- |
+| `log4j.rootLogger=DEBUG`                                     | Enable all debug logging statements.                              |
+| `log4j.logger.org.apache.commons.httpclient=DEBUG`           | Log every HTTP request and response made by the ZAP server.       |
+| `log4j.logger.org.zaproxy.zap.spider.SpiderController=DEBUG` | Log URLs found during the spider scan of the target.              |
+| `log4j.logger.com.crawljax=DEBUG`                            | Enable Ajax Crawler debug logging statements.                     |
+| `log4j.logger.org.parosproxy.paros=DEBUG`                    | Enable ZAP server proxy debug logging statements.                 |
+| `log4j.logger.org.zaproxy.zap=DEBUG`                         | Enable debug logging statements of the general ZAP server code.   |
+
 ## Running out of memory
 
 By default, ZAProxy, which DAST relies on, is allocated memory that sums to 25%

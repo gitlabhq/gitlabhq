@@ -3,26 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GrapeLogging::Loggers::PerfLogger do
-  subject { described_class.new }
+  let(:mock_request) { OpenStruct.new(env: {}) }
 
   describe ".parameters" do
-    let(:mock_request) { OpenStruct.new(env: {}) }
+    subject { described_class.new.parameters(mock_request, nil) }
 
-    describe 'when no performance datais are present' do
-      it 'returns an empty Hash' do
-        expect(subject.parameters(mock_request, nil)).to eq({})
-      end
+    let(:perf_data) { { redis_calls: 1 } }
+
+    describe 'when no performance data present' do
+      it { is_expected.not_to include(perf_data) }
     end
 
-    describe 'when Redis calls are present', :request_store do
-      it 'returns a Hash with Redis information' do
+    describe 'when performance data present', :request_store do
+      before do
         Gitlab::Redis::SharedState.with { |redis| redis.get('perf-logger-test') }
-
-        payload = subject.parameters(mock_request, nil)
-
-        expect(payload[:redis_calls]).to eq(1)
-        expect(payload[:redis_duration_s]).to be >= 0
       end
+
+      it { is_expected.to include(perf_data) }
     end
   end
 end

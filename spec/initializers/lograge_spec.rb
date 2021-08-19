@@ -120,7 +120,6 @@ RSpec.describe 'lograge', type: :request do
 
   context 'with a log subscriber' do
     include_context 'parsed logs'
-    include_context 'clear DB Load Balancing configuration'
 
     let(:subscriber) { Lograge::LogSubscribers::ActionController.new }
 
@@ -212,7 +211,7 @@ RSpec.describe 'lograge', type: :request do
       end
 
       before do
-        ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+        ApplicationRecord.connection.execute('SELECT pg_sleep(0.1);')
       end
 
       context 'when RequestStore is enabled', :request_store do

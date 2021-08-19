@@ -417,7 +417,7 @@ RSpec.describe API::FeatureFlags do
           version: 'new_version_flag',
           strategies: [{
             name: 'flexibleRollout',
-            parameters: { groupId: 'default', rollout: '50', stickiness: 'DEFAULT' },
+            parameters: { groupId: 'default', rollout: '50', stickiness: 'default' },
             scopes: [{
               environment_scope: 'staging'
             }]
@@ -434,7 +434,7 @@ RSpec.describe API::FeatureFlags do
         expect(feature_flag.version).to eq('new_version_flag')
         expect(feature_flag.strategies.map { |s| s.slice(:name, :parameters).deep_symbolize_keys }).to eq([{
           name: 'flexibleRollout',
-          parameters: { groupId: 'default', rollout: '50', stickiness: 'DEFAULT' }
+          parameters: { groupId: 'default', rollout: '50', stickiness: 'default' }
         }])
         expect(feature_flag.strategies.first.scopes.map { |s| s.slice(:environment_scope).deep_symbolize_keys }).to eq([{
           environment_scope: 'staging'
@@ -630,7 +630,7 @@ RSpec.describe API::FeatureFlags do
           strategies: [{
             id: strategy.id,
             name: 'flexibleRollout',
-            parameters: { groupId: 'default', rollout: '10', stickiness: 'DEFAULT' }
+            parameters: { groupId: 'default', rollout: '10', stickiness: 'default' }
           }]
         }
 
@@ -642,7 +642,7 @@ RSpec.describe API::FeatureFlags do
         expect(result).to eq([{
           id: strategy.id,
           name: 'flexibleRollout',
-          parameters: { groupId: 'default', rollout: '10', stickiness: 'DEFAULT' }
+          parameters: { groupId: 'default', rollout: '10', stickiness: 'default' }
         }])
       end
 
@@ -677,7 +677,7 @@ RSpec.describe API::FeatureFlags do
         params = {
           strategies: [{
             name: 'flexibleRollout',
-            parameters: { groupId: 'default', rollout: '10', stickiness: 'DEFAULT' }
+            parameters: { groupId: 'default', rollout: '10', stickiness: 'default' }
           }]
         }
 
@@ -694,7 +694,7 @@ RSpec.describe API::FeatureFlags do
           parameters: {}
         }, {
           name: 'flexibleRollout',
-          parameters: { groupId: 'default', rollout: '10', stickiness: 'DEFAULT' }
+          parameters: { groupId: 'default', rollout: '10', stickiness: 'default' }
         }])
       end
 

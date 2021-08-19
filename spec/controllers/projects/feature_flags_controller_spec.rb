@@ -652,7 +652,7 @@ RSpec.describe Projects::FeatureFlagsController do
             version: 'new_version_flag',
             strategies_attributes: [{
               name: 'flexibleRollout',
-              parameters: { groupId: 'default', rollout: '15', stickiness: 'DEFAULT' },
+              parameters: { groupId: 'default', rollout: '15', stickiness: 'default' },
               scopes_attributes: [{ environment_scope: 'production' }]
             }]
           }
@@ -666,7 +666,7 @@ RSpec.describe Projects::FeatureFlagsController do
 
         strategy_json = json_response['strategies'].first
         expect(strategy_json['name']).to eq('flexibleRollout')
-        expect(strategy_json['parameters']).to eq({ 'groupId' => 'default', 'rollout' => '15', 'stickiness' => 'DEFAULT' })
+        expect(strategy_json['parameters']).to eq({ 'groupId' => 'default', 'rollout' => '15', 'stickiness' => 'default' })
         expect(strategy_json['scopes'].count).to eq(1)
 
         scope_json = strategy_json['scopes'].first
@@ -938,7 +938,7 @@ RSpec.describe Projects::FeatureFlagsController do
       it 'creates a flexibleRollout strategy' do
         put_request(new_version_flag, strategies_attributes: [{
           name: 'flexibleRollout',
-          parameters: { groupId: 'default', rollout: '30', stickiness: 'DEFAULT' }
+          parameters: { groupId: 'default', rollout: '30', stickiness: 'default' }
         }])
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -948,7 +948,7 @@ RSpec.describe Projects::FeatureFlagsController do
         expect(strategy_json['parameters']).to eq({
           'groupId' => 'default',
           'rollout' => '30',
-          'stickiness' => 'DEFAULT'
+          'stickiness' => 'default'
         })
         expect(strategy_json['scopes']).to eq([])
       end

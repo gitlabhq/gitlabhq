@@ -208,6 +208,10 @@ If you need to specifically remove a part of the file, you can also copy and pas
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 into your project and edit it as needed.
 
+## Use multiple Kubernetes clusters
+
+See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops.md).
+
 ## Customizing the Kubernetes namespace
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
@@ -338,7 +342,7 @@ You must define environment-scoped CI/CD variables for `POSTGRES_ENABLED` and
 `DATABASE_URL` in your project's CI/CD settings:
 
 1. Disable the built-in PostgreSQL installation for the required environments using
-   environment-scoped [CI/CD variables](../../ci/environments/index.md#scoping-environments-with-specs).
+   environment-scoped [CI/CD variables](../../ci/environments/index.md#scope-environments-with-specs).
    For this use case, it's likely that only `production` must be added to this
    list. The built-in PostgreSQL setup for Review Apps and staging is sufficient.
 
@@ -379,6 +383,7 @@ applications.
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | From GitLab 11.11, used to set the name of the Helm repository. Defaults to `gitlab`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME` | From GitLab 11.11, used to set a username to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | From GitLab 11.11, used to set a password to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME`. |
+| `AUTO_DEVOPS_CHART_REPOSITORY_PASS_CREDENTIALS` | From GitLab 14.2, set to a non-empty value to enable forwarding of the Helm repository credentials to the chart server when the chart artifacts are on a different host than repository. |
 | `AUTO_DEVOPS_DEPLOY_DEBUG`              | From GitLab 13.1, if this variable is present, Helm outputs debug logs. |
 | `AUTO_DEVOPS_ALLOW_TO_FORCE_DEPLOY_V<N>` | From [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image) v1.0.0, if this variable is present, a new major version of chart is forcibly deployed. For more information, see [Ignore warnings and continue deploying](upgrading_auto_deploy_dependencies.md#ignore-warnings-and-continue-deploying). |
 | `BUILDPACK_URL`                         | Buildpack's full URL. [Must point to a URL supported by Pack or Herokuish](#custom-buildpacks). |
@@ -587,7 +592,7 @@ service:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/160) in GitLab 10.8.
 
 NOTE:
-You can also set this inside your [project's settings](index.md#deployment-strategy).
+You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
 
 The normal behavior of Auto DevOps is to use continuous deployment, pushing
 automatically to the `production` environment every time a new pipeline is run
@@ -616,7 +621,7 @@ If you define `CANARY_ENABLED` with a non-empty value, then two manual jobs are 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5415) in GitLab 10.8.
 
 NOTE:
-You can also set this inside your [project's settings](index.md#deployment-strategy).
+You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
 
 When you're ready to deploy a new version of your app to production, you may want
 to use an incremental rollout to replace just a few pods with the latest code to
@@ -673,7 +678,7 @@ removed in the future.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
 NOTE:
-You can also set this inside your [project's settings](index.md#deployment-strategy).
+You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
 
 This configuration is based on
 [incremental rollout to production](#incremental-rollout-to-production).

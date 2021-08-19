@@ -25,18 +25,6 @@ module QA
           push.file_content = "Target branch test target branch #{SecureRandom.hex(8)}"
         end
 
-        # Confirm the target branch can be checked out to avoid a race condition
-        # where the subsequent push option attempts to create an MR before the target branch is ready.
-        Support::Retrier.retry_on_exception(sleep_interval: 5) do
-          Git::Repository.perform do |repository|
-            repository.uri = project.repository_http_location.uri
-            repository.use_default_credentials
-            repository.clone
-            repository.configure_identity('GitLab QA', 'root@gitlab.com')
-            repository.checkout(target_branch)
-          end
-        end
-
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.branch_name = "push-options-test-#{SecureRandom.hex(8)}"

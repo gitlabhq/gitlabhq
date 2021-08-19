@@ -111,7 +111,7 @@ module Spammable
   end
 
   # Override in Spammable if further checks are necessary
-  def check_for_spam?
+  def check_for_spam?(user:)
     true
   end
 

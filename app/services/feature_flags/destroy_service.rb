@@ -11,7 +11,7 @@ module FeatureFlags
     def destroy_feature_flag(feature_flag)
       return error('Access Denied', 403) unless can_destroy?(feature_flag)
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         if feature_flag.destroy
           save_audit_event(audit_event(feature_flag))
 

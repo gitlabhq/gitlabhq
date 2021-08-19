@@ -6,7 +6,7 @@ module Resolvers
 
     type Types::ContainerRepositoryType, null: true
 
-    argument :name, GraphQL::STRING_TYPE,
+    argument :name, GraphQL::Types::String,
               required: false,
               description: 'Filter the container repositories by their name.'
 

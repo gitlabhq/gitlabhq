@@ -1,10 +1,10 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.uploads
 description: Count of Uploads via Notes and Descriptions
 product_section: dev
-product_stage: plan 
-product_group: group::project management 
+product_stage: plan
+product_group: group::project management
 product_category: issue_tracking
 value_type: number
 status: data_available
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

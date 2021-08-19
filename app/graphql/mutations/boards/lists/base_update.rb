@@ -4,11 +4,11 @@ module Mutations
   module Boards
     module Lists
       class BaseUpdate < BaseMutation
-        argument :position, GraphQL::INT_TYPE,
+        argument :position, GraphQL::Types::Int,
                   required: false,
                   description: 'Position of list within the board.'
 
-        argument :collapsed, GraphQL::BOOLEAN_TYPE,
+        argument :collapsed, GraphQL::Types::Boolean,
                   required: false,
                   description: 'Indicates if the list is collapsed for this user.'
 

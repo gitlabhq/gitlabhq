@@ -168,8 +168,8 @@ class Repository
   end
 
   # Returns a list of commits that are not present in any reference
-  def new_commits(newrev)
-    commits = raw.new_commits(newrev)
+  def new_commits(newrev, allow_quarantine: false)
+    commits = raw.new_commits(newrev, allow_quarantine: allow_quarantine)
 
     ::Commit.decorate(commits, container)
   end
@@ -502,8 +502,8 @@ class Repository
     end
   end
 
-  def blob_at(sha, path)
-    Blob.decorate(raw_repository.blob_at(sha, path), container)
+  def blob_at(sha, path, limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
+    Blob.decorate(raw_repository.blob_at(sha, path, limit: limit), container)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -656,7 +656,7 @@ class Repository
     end
   end
 
-  def tree(sha = :head, path = nil, recursive: false)
+  def tree(sha = :head, path = nil, recursive: false, pagination_params: nil)
     if sha == :head
       return unless head_commit
 
@@ -667,7 +667,7 @@ class Repository
       end
     end
 
-    Tree.new(self, sha, path, recursive: recursive)
+    Tree.new(self, sha, path, recursive: recursive, pagination_params: pagination_params)
   end
 
   def blob_at_branch(branch_name, path)
@@ -938,33 +938,8 @@ class Repository
     end
   end
 
-  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil, prune: true)
-    return fetch_remote(remote_name, url: url, refmap: refmap, forced: forced, prune: prune) if Feature.enabled?(:fetch_remote_params, project, default_enabled: :yaml)
-
-    unless remote_name
-      remote_name = "tmp-#{SecureRandom.hex}"
-      tmp_remote_name = true
-    end
-
-    add_remote(remote_name, url, mirror_refmap: refmap)
-    fetch_remote(remote_name, forced: forced, prune: prune)
-  ensure
-    async_remove_remote(remote_name) if tmp_remote_name
-  end
-
-  def async_remove_remote(remote_name)
-    return unless remote_name
-    return unless project
-
-    job_id = RepositoryRemoveRemoteWorker.perform_async(project.id, remote_name)
-
-    if job_id
-      Gitlab::AppLogger.info("Remove remote job scheduled for #{project.id} with remote name: #{remote_name} job ID #{job_id}.")
-    else
-      Gitlab::AppLogger.info("Remove remote job failed to create for #{project.id} with remote name #{remote_name}.")
-    end
-
-    job_id
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, http_authorization_header: "")
+    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, http_authorization_header: http_authorization_header)
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)

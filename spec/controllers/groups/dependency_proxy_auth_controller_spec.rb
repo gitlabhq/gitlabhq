@@ -30,16 +30,31 @@ RSpec.describe Groups::DependencyProxyAuthController do
     end
 
     context 'with valid JWT' do
-      let_it_be(:user) { create(:user) }
+      context 'user' do
+        let_it_be(:user) { create(:user) }
 
-      let(:jwt) { build_jwt(user) }
-      let(:token_header) { "Bearer #{jwt.encoded}" }
+        let(:jwt) { build_jwt(user) }
+        let(:token_header) { "Bearer #{jwt.encoded}" }
 
-      before do
-        request.headers['HTTP_AUTHORIZATION'] = token_header
+        before do
+          request.headers['HTTP_AUTHORIZATION'] = token_header
+        end
+
+        it { is_expected.to have_gitlab_http_status(:success) }
       end
 
-      it { is_expected.to have_gitlab_http_status(:success) }
+      context 'deploy token' do
+        let_it_be(:user) { create(:deploy_token) }
+
+        let(:jwt) { build_jwt(user) }
+        let(:token_header) { "Bearer #{jwt.encoded}" }
+
+        before do
+          request.headers['HTTP_AUTHORIZATION'] = token_header
+        end
+
+        it { is_expected.to have_gitlab_http_status(:success) }
+      end
     end
 
     context 'with invalid JWT' do
@@ -51,7 +66,7 @@ RSpec.describe Groups::DependencyProxyAuthController do
           request.headers['HTTP_AUTHORIZATION'] = token_header
         end
 
-        it { is_expected.to have_gitlab_http_status(:not_found) }
+        it { is_expected.to have_gitlab_http_status(:unauthorized) }
       end
 
       context 'token with no user id' do
@@ -61,13 +76,39 @@ RSpec.describe Groups::DependencyProxyAuthController do
           request.headers['HTTP_AUTHORIZATION'] = token_header
         end
 
-        it { is_expected.to have_gitlab_http_status(:not_found) }
+        it { is_expected.to have_gitlab_http_status(:unauthorized) }
       end
 
       context 'expired token' do
         let_it_be(:user) { create(:user) }
 
         let(:jwt) { build_jwt(user, expire_time: Time.zone.now - 1.hour) }
+        let(:token_header) { "Bearer #{jwt.encoded}" }
+
+        before do
+          request.headers['HTTP_AUTHORIZATION'] = token_header
+        end
+
+        it { is_expected.to have_gitlab_http_status(:unauthorized) }
+      end
+
+      context 'expired deploy token' do
+        let_it_be(:user) { create(:deploy_token, :expired) }
+
+        let(:jwt) { build_jwt(user) }
+        let(:token_header) { "Bearer #{jwt.encoded}" }
+
+        before do
+          request.headers['HTTP_AUTHORIZATION'] = token_header
+        end
+
+        it { is_expected.to have_gitlab_http_status(:unauthorized) }
+      end
+
+      context 'revoked deploy token' do
+        let_it_be(:user) { create(:deploy_token, :revoked) }
+
+        let(:jwt) { build_jwt(user) }
         let(:token_header) { "Bearer #{jwt.encoded}" }
 
         before do

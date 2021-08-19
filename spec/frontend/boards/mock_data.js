@@ -1,5 +1,6 @@
 /* global List */
 
+import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import Vue from 'vue';
 import '~/boards/models/list';
@@ -8,6 +9,8 @@ import boardsStore from '~/boards/stores/boards_store';
 import { __ } from '~/locale';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
+import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export const boardObj = {
   id: 1,
@@ -100,6 +103,17 @@ export const mockMilestone = {
   start_date: '2018-01-01',
   due_date: '2019-12-31',
 };
+
+export const mockMilestones = [
+  {
+    id: 'gid://gitlab/Milestone/1',
+    title: 'Milestone 1',
+  },
+  {
+    id: 'gid://gitlab/Milestone/2',
+    title: 'Milestone 2',
+  },
+];
 
 export const assignees = [
   {
@@ -531,7 +545,7 @@ export const mockMoveData = {
   ...mockMoveIssueParams,
 };
 
-export const mockTokens = (fetchLabels, fetchAuthors) => [
+export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
   {
     icon: 'labels',
     title: __('Label'),
@@ -557,6 +571,7 @@ export const mockTokens = (fetchLabels, fetchAuthors) => [
     token: AuthorToken,
     unique: true,
     fetchAuthors,
+    preloadedAuthors: [],
   },
   {
     icon: 'user',
@@ -569,5 +584,35 @@ export const mockTokens = (fetchLabels, fetchAuthors) => [
     token: AuthorToken,
     unique: true,
     fetchAuthors,
+    preloadedAuthors: [],
+  },
+  {
+    icon: 'issues',
+    title: __('Type'),
+    type: 'types',
+    operators: [{ value: '=', description: 'is' }],
+    token: GlFilteredSearchToken,
+    unique: true,
+    options: [
+      { icon: 'issue-type-issue', value: 'ISSUE', title: 'Issue' },
+      { icon: 'issue-type-incident', value: 'INCIDENT', title: 'Incident' },
+    ],
+  },
+  {
+    icon: 'clock',
+    title: __('Milestone'),
+    symbol: '%',
+    type: 'milestone_title',
+    token: MilestoneToken,
+    unique: true,
+    defaultMilestones: [],
+    fetchMilestones,
+  },
+  {
+    icon: 'weight',
+    title: __('Weight'),
+    type: 'weight',
+    token: WeightToken,
+    unique: true,
   },
 ];

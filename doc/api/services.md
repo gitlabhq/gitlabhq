@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -259,7 +259,7 @@ GET /projects/:id/services/buildkite
 ## Campfire
 
 Send notifications about push events to Campfire chat rooms.
-Note that [new users can no longer sign up for Campfire](https://basecamp.com/retired/campfire).
+[New users can no longer sign up for Campfire](https://basecamp.com/retired/campfire).
 
 ### Create/Edit Campfire service
 
@@ -695,16 +695,15 @@ Get Hangouts Chat service settings for a project.
 GET /projects/:id/services/hangouts-chat
 ```
 
-## Irker (IRC gateway)
+## irker (IRC gateway)
 
-Send IRC messages, on update, to a list of recipients through an Irker gateway.
+Send IRC messages, on update, to a list of recipients through an irker gateway.
 
-### Create/Edit Irker (IRC gateway) service
+For more information, see the [irker integration documentation](../user/project/integrations/irker.md).
 
-Set Irker (IRC gateway) service for a project.
+### Create/Edit irker (IRC gateway) service
 
-NOTE:
-Irker does NOT have built-in authentication, which makes it vulnerable to spamming IRC channels if it is hosted outside of a firewall. Please make sure you run the daemon within a secured network to prevent abuse. For more details, read [Security analysis of `irker`](http://www.catb.org/~esr/irker/security.html).
+Set irker (IRC gateway) service for a project.
 
 ```plaintext
 PUT /projects/:id/services/irker
@@ -721,17 +720,17 @@ Parameters:
 | `colorize_messages` | boolean | false | Colorize messages |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Irker (IRC gateway) service
+### Delete irker (IRC gateway) service
 
-Delete Irker (IRC gateway) service for a project.
+Delete irker (IRC gateway) service for a project.
 
 ```plaintext
 DELETE /projects/:id/services/irker
 ```
 
-### Get Irker (IRC gateway) service settings
+### Get irker (IRC gateway) service settings
 
-Get Irker (IRC gateway) service settings for a project.
+Get irker (IRC gateway) service settings for a project.
 
 ```plaintext
 GET /projects/:id/services/irker

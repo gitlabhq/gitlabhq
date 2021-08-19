@@ -88,13 +88,15 @@ at the project level or the [group level](../user/group/index.md#group-push-rule
 To create global push rules:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Push rules**.
+1. On the left sidebar, select **Push Rules**.
 
 To override global push rules in a project's settings:
 
-1. Navigate to your project's **Settings > Repository** and expand **Push rules**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Push rules**.
 1. Set the rule you want.
-1. Select **Save Push Rules** for the changes to take effect.
+1. Select **Save push rules**.
 
 The following options are available:
 

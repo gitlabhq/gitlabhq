@@ -26,6 +26,7 @@ RSpec.describe DependencyProxy::FindOrCreateBlobService do
       expect(subject[:status]).to eq(:success)
       expect(subject[:blob]).to be_a(DependencyProxy::Blob)
       expect(subject[:blob]).to be_persisted
+      expect(subject[:from_cache]).to eq false
     end
   end
 
@@ -36,6 +37,7 @@ RSpec.describe DependencyProxy::FindOrCreateBlobService do
       expect(subject[:status]).to eq(:success)
       expect(subject[:blob]).to be_a(DependencyProxy::Blob)
       expect(subject[:blob]).to eq(blob)
+      expect(subject[:from_cache]).to eq true
     end
   end
 

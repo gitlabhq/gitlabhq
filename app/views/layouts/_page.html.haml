@@ -11,7 +11,6 @@
       = render "layouts/broadcast"
       = render "layouts/header/read_only_banner"
       = render "layouts/header/registration_enabled_callout"
-      = render "layouts/header/service_templates_deprecation_callout"
       = render "layouts/nav/classification_level_banner"
       = yield :flash_message
       = render "shared/service_ping_consent"
@@ -29,5 +28,7 @@
         = yield :before_content
         = yield
     = yield :after_content
+    -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
+    = render_if_exists "shared/footer/global_footer"
 
 = render "layouts/nav/top_nav_responsive", class: 'layout-page content-wrapper-margin'

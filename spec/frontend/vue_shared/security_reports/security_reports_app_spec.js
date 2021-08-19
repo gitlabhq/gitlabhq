@@ -22,7 +22,7 @@ import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SECRET_DETECTION,
 } from '~/vue_shared/security_reports/constants';
-import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_merge_request_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import SecurityReportsApp from '~/vue_shared/security_reports/security_reports_app.vue';
 
 jest.mock('~/flash');

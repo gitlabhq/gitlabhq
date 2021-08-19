@@ -9,9 +9,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore/test"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 func TestGoCloudObjectUpload(t *testing.T) {

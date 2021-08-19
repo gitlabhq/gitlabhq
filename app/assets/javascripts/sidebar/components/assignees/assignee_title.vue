@@ -50,7 +50,7 @@ export default {
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <a
       v-if="editable"
-      class="js-sidebar-dropdown-toggle edit-link float-right"
+      class="js-sidebar-dropdown-toggle edit-link btn gl-text-gray-900! gl-ml-auto hide-collapsed btn-default btn-sm gl-button btn-default-tertiary float-right"
       href="#"
       data-test-id="edit-link"
       data-track-event="click_edit_button"

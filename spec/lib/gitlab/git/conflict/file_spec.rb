@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::Conflict::File do
-  let(:conflict) { { theirs: { path: 'foo', mode: 33188 }, ours: { path: 'foo', mode: 33188 } } }
+  let(:conflict) { { ancestor: { path: 'ancestor' }, theirs: { path: 'foo', mode: 33188 }, ours: { path: 'foo', mode: 33188 } } }
   let(:invalid_content) { described_class.new(nil, nil, conflict, (+"a\xC4\xFC").force_encoding(Encoding::ASCII_8BIT)) }
   let(:valid_content) { described_class.new(nil, nil, conflict, (+"Espa\xC3\xB1a").force_encoding(Encoding::ASCII_8BIT)) }
 
@@ -45,6 +45,20 @@ RSpec.describe Gitlab::Git::Conflict::File do
         expect(valid_content.content).to eq('España')
         expect(valid_content.content).to be_valid_encoding
         expect(valid_content.content.encoding).to eq(Encoding::UTF_8)
+      end
+    end
+  end
+
+  describe '#path' do
+    it 'returns our_path' do
+      expect(valid_content.path).to eq(conflict[:ours][:path])
+    end
+
+    context 'when our_path is not present' do
+      let(:conflict) { { ancestor: { path: 'ancestor' }, theirs: { path: 'theirs', mode: 33188 }, ours: { path: '', mode: 0 } } }
+
+      it 'returns their_path' do
+        expect(valid_content.path).to eq(conflict[:theirs][:path])
       end
     end
   end

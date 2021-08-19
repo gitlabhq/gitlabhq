@@ -44,7 +44,7 @@ export default class LazyLoader {
 
   startContentObserver() {
     const contentNode = document.querySelector(this.observerNode) || document.querySelector('body');
-    if (contentNode) {
+    if (contentNode && !this.mutationObserver) {
       this.mutationObserver = new MutationObserver(() => this.searchLazyImages());
 
       this.mutationObserver.observe(contentNode, {

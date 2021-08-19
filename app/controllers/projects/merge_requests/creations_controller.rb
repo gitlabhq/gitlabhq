@@ -10,10 +10,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
 
-  before_action do
-    push_frontend_feature_flag(:mr_collapsed_approval_rules, @project)
-  end
-
   def new
     define_new_vars
   end

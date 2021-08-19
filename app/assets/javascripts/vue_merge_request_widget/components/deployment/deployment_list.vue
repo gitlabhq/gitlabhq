@@ -32,11 +32,6 @@ export default {
         appUrl: '',
       }),
     },
-    showVisualReviewAppLink: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     showCollapsedDeployments() {
@@ -74,8 +69,6 @@ export default {
       class="gl-bg-gray-50"
       :deployment="deployment"
       :show-metrics="hasDeploymentMetrics"
-      :show-visual-review-app="showVisualReviewAppLink"
-      :visual-review-app-meta="visualReviewAppMeta"
     />
   </mr-collapsible-extension>
   <div v-else class="mr-widget-extension">
@@ -85,8 +78,6 @@ export default {
       :class="deploymentClass"
       :deployment="deployment"
       :show-metrics="hasDeploymentMetrics"
-      :show-visual-review-app="showVisualReviewAppLink"
-      :visual-review-app-meta="visualReviewAppMeta"
     />
   </div>
 </template>

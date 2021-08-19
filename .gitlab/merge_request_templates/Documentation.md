@@ -1,9 +1,12 @@
-<!-- Follow the documentation workflow https://docs.gitlab.com/ee/development/documentation/workflow.html -->
-<!-- Additional information is located at https://docs.gitlab.com/ee/development/documentation/ -->
-<!-- To find the designated Tech Writer for the stage/group, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers -->
+<!--
+  Follow the documentation workflow https://docs.gitlab.com/ee/development/documentation/workflow.html
+  Additional information is located at https://docs.gitlab.com/ee/development/documentation/
+  To find the designated Tech Writer for the stage/group, see
+  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 
-<!-- Mention "documentation" or "docs" in the MR title -->
-<!-- For changing documentation location use the "Change documentation location" template -->
+  Mention "documentation" or "docs" in the MR title
+  For changing documentation location use the Change Documentation Location.md template
+-->
 
 ## What does this MR do?
 
@@ -15,11 +18,23 @@
 
 ## Author's checklist
 
-- [ ] Follow the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
-- [ ] Ensure that the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) is added to doc's `h1`.
-- [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on the documentation page's metadata and [associated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+- [ ] Follow the:
+  - [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/).
+  - [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
+- [ ] Ensure that the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) is added to topic's `h1`.
+- [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on the:
+  - The documentation page's [metadata](https://docs.gitlab.com/ee/development/documentation/#metadata).
+  - The [associated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
 
-To avoid having this MR be added to code verification QA issues, don't add these labels: ~"feature", ~"frontend", ~"backend", ~"bug", or ~"database"
+If you are only adding documentation, do not add any of the following labels:
+
+- `~"feature"`
+- `~"frontend"`
+- `~"backend"`
+- `~"bug"`
+- `~"database"`
+
+These labels cause the MR to be added to code verification QA issues.
 
 ## Review checklist
 

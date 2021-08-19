@@ -14,7 +14,7 @@ RSpec.describe QA::Runtime::API::Request do
     end
 
     context 'when oauth_access_token is passed in the query string' do
-      let(:request) { described_class.new(client, '/users', { oauth_access_token: 'foo' }) }
+      let(:request) { described_class.new(client, '/users', oauth_access_token: 'foo') }
 
       it 'does not adds a private_token query string' do
         expect(request.url).to eq 'http://example.com/api/v4/users?oauth_access_token=foo'

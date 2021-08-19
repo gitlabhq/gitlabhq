@@ -133,9 +133,9 @@ migrate your data out of object storage and back into your local storage.
 
 WARNING:
 **Extended downtime is required** so no new files are created in object storage during
-the migration. A configuration setting is planned to allow migrating
-from object storage to local files with only a brief moment of downtime for configuration changes.
-To follow progress, see the [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30979).
+the migration. A configuration setting to allow migrating
+from object storage to local files with only a brief moment of downtime for configuration changes
+is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30979).
 
 ### All-in-one Rake task
 

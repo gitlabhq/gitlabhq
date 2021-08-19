@@ -8,8 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60933) in GitLab Free 13.12.
 
-Federated Learning of Conhorts (FLoC) is a feature that the Chrome browser has
-rolled out, where users are categorized into different cohorts, so that
+Federated Learning of Cohorts (FLoC) is a new feature of the Chrome browser.
+It works by categorizing users into different cohorts, so that
 advertisers can use this data to uniquely target and track users. For more
 information, visit the [FLoC repository](https://github.com/WICG/floc).
 

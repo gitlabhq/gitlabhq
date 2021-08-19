@@ -40,6 +40,14 @@ module Gitlab
         @authenticated = result.response.is_a?(Net::HTTPOK)
         store_cookies(result) if options[:use_cookies]
 
+        # This is needed to make response.to_s work. HTTParty::Response internal uses a Net::HTTPResponse as @response.
+        # When a block is used, Net::HTTPResponse#body will be a Net::ReadAdapter instead of a String.
+        # In this case HTTParty::Response.to_s will default to inspecting the Net::HTTPResponse class instead
+        # of returning the content of body.
+        # See https://github.com/jnunemaker/httparty/blob/v0.18.1/lib/httparty/response.rb#L86-L92
+        # See https://github.com/ruby/net-http/blob/v0.1.1/lib/net/http/response.rb#L346-L350
+        result.response.body = result.body
+
         result
       end
 

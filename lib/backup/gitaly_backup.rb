@@ -25,18 +25,21 @@ module Backup
       args += ['-parallel', @parallel.to_s] if type == :create && @parallel
       args += ['-parallel-storage', @parallel_storage.to_s] if type == :create && @parallel_storage
 
-      @read_io, @write_io = IO.pipe
-      @pid = Process.spawn(bin_path, command, '-path', backup_repos_path, *args, in: @read_io, out: @progress)
+      @stdin, stdout, @thread = Open3.popen2(ENV, bin_path, command, '-path', backup_repos_path, *args)
+
+      @out_reader = Thread.new do
+        IO.copy_stream(stdout, @progress)
+      end
     end
 
     def wait
       return unless started?
 
-      @write_io.close
-      Process.wait(@pid)
-      status = $?
+      @stdin.close
+      [@thread, @out_reader].each(&:join)
+      status =  @thread.value
 
-      @pid = nil
+      @thread = nil
 
       raise Error, "gitaly-backup exit status #{status.exitstatus}" if status.exitstatus != 0
     end
@@ -46,7 +49,7 @@ module Backup
 
       repository = repo_type.repository_for(container)
 
-      @write_io.puts({
+      @stdin.puts({
         storage_name: repository.storage,
         relative_path: repository.relative_path,
         gl_project_path: repository.gl_project_path,
@@ -61,7 +64,7 @@ module Backup
     private
 
     def started?
-      @pid.present?
+      @thread.present?
     end
 
     def backup_repos_path

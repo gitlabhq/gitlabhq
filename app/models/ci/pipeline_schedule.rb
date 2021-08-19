@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineSchedule < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class PipelineSchedule < Ci::ApplicationRecord
     extend ::Gitlab::Utils::Override
     include Importable
     include StripAttribute
@@ -25,7 +24,7 @@ module Ci
     validates :description, presence: true
     validates :variables, nested_attributes_duplicates: true
 
-    strip_attributes :cron
+    strip_attributes! :cron
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }

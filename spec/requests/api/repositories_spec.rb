@@ -107,13 +107,18 @@ RSpec.describe API::Repositories do
 
     shared_examples_for 'repository blob' do
       it 'returns blob attributes as json' do
+        stub_const("Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE", 5)
+
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['size']).to eq(111)
         expect(json_response['encoding']).to eq("base64")
-        expect(Base64.decode64(json_response['content']).lines.first).to eq("class Commit\n")
         expect(json_response['sha']).to eq(sample_blob.oid)
+
+        content = Base64.decode64(json_response['content'])
+        expect(content.lines.first).to eq("class Commit\n")
+        expect(content).to eq(project.repository.gitaly_blob_client.get_blob(oid: sample_blob.oid, limit: -1).data)
       end
 
       context 'when sha does not exist' do
@@ -164,7 +169,10 @@ RSpec.describe API::Repositories do
 
     shared_examples_for 'repository raw blob' do
       it 'returns the repository raw blob' do
-        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+        expect(Gitlab::Workhorse).to receive(:send_git_blob) do |_, blob|
+          expect(blob.id).to eq(sample_blob.oid)
+          expect(blob.loaded_size).to eq(0)
+        end
 
         get api(route, current_user)
 

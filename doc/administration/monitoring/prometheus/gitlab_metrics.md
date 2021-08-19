@@ -8,10 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To enable the GitLab Prometheus metrics:
 
-1. Log into GitLab as a user with [administrator permissions](../../../user/permissions.md).
+1. Log in to GitLab as a user with Administrator [role](../../../user/permissions.md).
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
-1. Find the **Metrics - Prometheus** section, and click **Enable Prometheus Metrics**.
+1. Find the **Metrics - Prometheus** section, and select **Add link to Prometheus**.
 1. [Restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart) for the changes to take effect.
 
 For installations from source you must configure it yourself.
@@ -45,6 +45,7 @@ The following metrics are available:
 | `gitlab_ci_pipeline_size_builds`                                 | Histogram   | 13.1    | Total number of builds within a pipeline grouped by a pipeline source                                                 | `source`                                                  |
 | `job_waiter_started_total`                                       | Counter     | 12.9    | Number of batches of jobs started where a web request is waiting for the jobs to complete                             | `worker`                                                  |
 | `job_waiter_timeouts_total`                                      | Counter     | 12.9    | Number of batches of jobs that timed out where a web request is waiting for the jobs to complete                      | `worker`                                                  |
+| `gitlab_ci_active_jobs`                                          | Histogram   | 14.2    | Count of active jobs when pipeline is created                                                                         |                                                           |
 | `gitlab_database_transaction_seconds`                            | Histogram   | 12.1    | Time spent in database transactions, in seconds                                                                       |                                                           |
 | `gitlab_method_call_duration_seconds`                            | Histogram   | 10.2    | Method calls real duration                                                                                            | `controller`, `action`, `module`, `method`                |
 | `gitlab_page_out_of_bounds`                                      | Counter     | 12.8    | Counter for the PageLimiter pagination limit being hit                                                                | `controller`, `action`, `bot`                             |
@@ -152,15 +153,8 @@ The following metrics can be controlled by feature flags:
 
 ## Praefect metrics
 
-You can [configure Praefect to report metrics](../../gitaly/praefect.md#praefect).
-These are some of the Praefect metrics served from the `/metrics` path on the [configured port](index.md#changing-the-port-and-address-prometheus-listens-on)
-(9652 by default).
-
-| Metric | Type | Since | Description | Labels |
-| :----- | :--- | ----: | :---------- | :----- |
-| `gitaly_praefect_replication_latency_bucket` | Histogram | 12.10 | The amount of time it takes for replication to complete once the replication job starts. |  |
-| `gitaly_praefect_replication_delay_bucket` | Histogram | 12.10 | A measure of how much time passes between when the replication job is created and when it starts. |  |
-| `gitaly_praefect_node_latency_bucket` | Histogram | 12.10 | The latency in Gitaly returning health check information to Praefect. This indicates Praefect connection saturation. |  |
+You can [configure Praefect](../../gitaly/praefect.md#praefect) to report metrics. For information
+on available metrics, see the [relevant documentation](../../gitaly/index.md#monitor-gitaly-cluster).
 
 ## Sidekiq metrics
 

@@ -15,17 +15,17 @@ module Mutations
           field :annotation,
             Types::Metrics::Dashboards::AnnotationType,
             null: true,
-            description: 'The created annotation.'
+            description: 'Created annotation.'
 
           argument :environment_id,
             ::Types::GlobalIDType[::Environment],
             required: false,
-            description: 'The global ID of the environment to add an annotation to.'
+            description: 'Global ID of the environment to add an annotation to.'
 
           argument :cluster_id,
             ::Types::GlobalIDType[::Clusters::Cluster],
             required: false,
-            description: 'The global ID of the cluster to add an annotation to.'
+            description: 'Global ID of the cluster to add an annotation to.'
 
           argument :starting_at, Types::TimeType,
             required: true,
@@ -36,14 +36,14 @@ module Mutations
             description: 'Timestamp indicating ending moment to which the annotation relates.'
 
           argument :dashboard_path,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             required: true,
-            description: 'The path to a file defining the dashboard on which the annotation should be added.'
+            description: 'Path to a file defining the dashboard on which the annotation should be added.'
 
           argument :description,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             required: true,
-            description: 'The description of the annotation.'
+            description: 'Description of the annotation.'
 
           AnnotationSource = Struct.new(:object, keyword_init: true) do
             def type_keys

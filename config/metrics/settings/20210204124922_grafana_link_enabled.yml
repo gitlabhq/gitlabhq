@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: grafana_link_enabled
 description: Whether Grafana is enabled
 product_section: growth
@@ -14,3 +14,4 @@ distribution:
 - ce
 tier:
 - free
+performance_indicator_type: []

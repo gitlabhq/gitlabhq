@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';
 import eventHub from '../notes/event_hub';
 import diffsApp from './components/app.vue';
@@ -82,6 +83,9 @@ export default function initDiffsApp(store) {
         showWhitespaceDefault: parseBoolean(dataset.showWhitespaceDefault),
         viewDiffsFileByFile: parseBoolean(dataset.fileByFileDefault),
         defaultSuggestionCommitMessage: dataset.defaultSuggestionCommitMessage,
+        sourceProjectDefaultUrl: dataset.sourceProjectDefaultUrl,
+        sourceProjectFullPath: dataset.sourceProjectFullPath,
+        isForked: parseBoolean(dataset.isForked),
       };
     },
     computed: {
@@ -93,7 +97,7 @@ export default function initDiffsApp(store) {
       const treeListStored = localStorage.getItem(TREE_LIST_STORAGE_KEY);
       const renderTreeList = treeListStored !== null ? parseBoolean(treeListStored) : true;
 
-      this.setRenderTreeList(renderTreeList);
+      this.setRenderTreeList({ renderTreeList, trackClick: false });
 
       // NOTE: A "true" or "checked" value for `showWhitespace` is '0' not '1'.
       // Check for cookie and save that setting for future use.
@@ -104,6 +108,7 @@ export default function initDiffsApp(store) {
         this.setShowWhitespace({
           url: this.endpointUpdateUser,
           showWhitespace: hideWhitespace !== '1',
+          trackClick: false,
         });
         Cookies.remove(DIFF_WHITESPACE_COOKIE_NAME);
       } else {
@@ -111,7 +116,13 @@ export default function initDiffsApp(store) {
         this.setShowWhitespace({
           showWhitespace: this.showWhitespaceDefault,
           updateDatabase: false,
+          trackClick: false,
         });
+      }
+
+      const vScrollingParam = getParameterValues('virtual_scrolling')[0];
+      if (vScrollingParam === 'false' || vScrollingParam === 'true') {
+        Cookies.set('diffs_virtual_scrolling', vScrollingParam);
       }
     },
     methods: {
@@ -139,6 +150,9 @@ export default function initDiffsApp(store) {
           fileByFileUserPreference: this.viewDiffsFileByFile,
           defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
           rehydratedMrReviews: getReviewsForMergeRequest(mrPath),
+          sourceProjectDefaultUrl: this.sourceProjectDefaultUrl,
+          sourceProjectFullPath: this.sourceProjectFullPath,
+          isForked: this.isForked,
         },
       });
     },

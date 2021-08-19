@@ -7,6 +7,7 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import initUserPopovers from '~/user_popovers';
 import { FIELDS, ACTIVE_TAB_QUERY_PARAM_NAME } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
+import RemoveMemberModal from '../modals/remove_member_modal.vue';
 import CreatedAt from './created_at.vue';
 import ExpirationDatepicker from './expiration_datepicker.vue';
 import ExpiresAt from './expires_at.vue';
@@ -29,6 +30,7 @@ export default {
     MemberActionButtons,
     RoleDropdown,
     RemoveGroupLinkModal,
+    RemoveMemberModal,
     ExpirationDatepicker,
     LdapOverrideConfirmationModal: () =>
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
@@ -225,6 +227,7 @@ export default {
       align="center"
     />
     <remove-group-link-modal />
+    <remove-member-modal />
     <ldap-override-confirmation-modal />
   </div>
 </template>

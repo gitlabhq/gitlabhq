@@ -32,6 +32,11 @@ export default {
       default: '',
     },
   },
+  computed: {
+    showDropdown() {
+      return this.loading || this.artifacts.length > 0;
+    },
+  },
   methods: {
     artifactText({ name }) {
       return sprintf(s__('SecurityReports|Download %{artifactName}'), {
@@ -44,6 +49,7 @@ export default {
 
 <template>
   <gl-dropdown
+    v-if="showDropdown"
     v-gl-tooltip
     :text="text"
     :title="title"

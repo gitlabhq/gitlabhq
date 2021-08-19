@@ -68,7 +68,7 @@ RSpec.describe 'Setting Due Date of an issue' do
     it 'returns an error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(graphql_errors).to include(a_hash_including('message' => /Argument dueDate must be provided/))
+      expect(graphql_errors).to include(a_hash_including('message' => /Arguments must be provided: dueDate/))
     end
   end
 

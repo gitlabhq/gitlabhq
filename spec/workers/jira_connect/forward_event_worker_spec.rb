@@ -15,23 +15,23 @@ RSpec.describe JiraConnect::ForwardEventWorker do
     let(:client_key) { '123' }
     let(:shared_secret) { '123' }
 
-    subject { described_class.new.perform(jira_connect_installation.id, base_path, event_path) }
+    subject(:perform) { described_class.new.perform(jira_connect_installation.id, base_path, event_path) }
 
-    it 'forwards the event including the auth header and deletes the installation' do
+    it 'forwards the event and deletes the installation' do
       stub_request(:post, event_url)
 
       expect(Atlassian::Jwt).to receive(:create_query_string_hash).with(event_url, 'POST', base_url).and_return('some_qsh')
       expect(Atlassian::Jwt).to receive(:encode).with({ iss: client_key, qsh: 'some_qsh' }, shared_secret).and_return('auth_token')
-      expect { subject }.to change(JiraConnectInstallation, :count).by(-1)
+      expect(JiraConnect::RetryRequestWorker).to receive(:perform_async).with(event_url, 'auth_token')
 
-      expect(WebMock).to have_requested(:post, event_url).with(headers: { 'Authorization' => 'JWT auth_token' })
+      expect { perform }.to change(JiraConnectInstallation, :count).by(-1)
     end
 
     context 'when installation does not exist' do
       let(:jira_connect_installation) { instance_double(JiraConnectInstallation, id: -1) }
 
       it 'does nothing' do
-        expect { subject }.not_to change(JiraConnectInstallation, :count)
+        expect { perform }.not_to change(JiraConnectInstallation, :count)
       end
     end
 
@@ -39,17 +39,9 @@ RSpec.describe JiraConnect::ForwardEventWorker do
       let!(:jira_connect_installation) { create(:jira_connect_installation) }
 
       it 'forwards the event including the auth header' do
-        expect { subject }.to change(JiraConnectInstallation, :count).by(-1)
+        expect { perform }.to change(JiraConnectInstallation, :count).by(-1)
 
-        expect(WebMock).not_to have_requested(:post, '*')
-      end
-    end
-
-    context 'when it fails to forward the event' do
-      it 'still deletes the installation' do
-        allow(Gitlab::HTTP).to receive(:post).and_raise(StandardError)
-
-        expect { subject }.to raise_error(StandardError).and change(JiraConnectInstallation, :count).by(-1)
+        expect(JiraConnect::RetryRequestWorker).not_to receive(:perform_async)
       end
     end
   end

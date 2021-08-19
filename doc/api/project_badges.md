@@ -21,6 +21,7 @@ Badges support placeholders that are replaced in real time in both the link and 
 - **%{commit_sha}**: Replaced by the last project's commit SHA.
 
 <!-- vale gitlab.Spelling = YES -->
+
 ## List all badges of a project
 
 Gets a list of a project's badges and its group badges.

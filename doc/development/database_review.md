@@ -117,7 +117,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](post_deployment_migrations.md).
     Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
     will be in place when the code that needs it will be deployed.
-- Trigger the [database testing](../architecture/blueprints/database_testing/index.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
+- Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - This job runs migrations in a production-like environment (similar to `#database_lab`) and posts to the MR its findings (queries, runtime, size change).
   - Review migration runtimes and any warnings.
 
@@ -128,7 +128,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
   [paste.depesz.com](https://paste.depesz.com) and using regular quotes
-  (e.g. `"projects"."id"`) and avoiding smart quotes (e.g. `“projects”.“id”`).
+  (for example, `"projects"."id"`) and avoiding smart quotes (for example, `“projects”.“id”`).
 - In case of queries generated dynamically by using parameters, there should be one raw SQL query for each variation.
 
   For example, a finder for issues that may take as a parameter an optional filter on projects,
@@ -216,7 +216,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
     it's suggested to treat background migrations as post migrations:
     place them in `db/post_migrate` instead of `db/migrate`. Keep in mind
     that post migrations are executed post-deployment in production.
-- Check [timing guidelines for migrations](#timing-guidelines-for-migrations)
+- Check [timing guidelines for migrations](migration_style_guide.md#how-long-a-migration-should-take)
 - Check migrations are reversible and implement a `#down` method
 - Check data migrations:
   - Establish a time estimate for execution on GitLab.com.
@@ -234,18 +234,3 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
     to queries (changing the query, schema or adding indexes and similar)
   - General guideline is for queries to come in below [100ms execution time](query_performance.md#timing-guidelines-for-queries)
   - Avoid N+1 problems and minimize the [query count](merge_request_performance_guidelines.md#query-counts).
-
-### Timing guidelines for migrations
-
-In general, migrations for a single deploy shouldn't take longer than
-1 hour for GitLab.com. The following guidelines are not hard rules, they were
-estimated to keep migration timing to a minimum.
-
-NOTE:
-Keep in mind that all runtimes should be measured against GitLab.com.
-
-| Migration Type | Execution Time Recommended | Notes |
-|----|----|---|
-| Regular migrations on `db/migrate` | `3 minutes` | A valid exception are index creation as this can take a long time. |
-| Post migrations on `db/post_migrate` | `10 minutes` | |
-| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](query_performance.md#timing-guidelines-for-queries) with cold caches. |

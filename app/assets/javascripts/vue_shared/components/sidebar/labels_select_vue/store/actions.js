@@ -20,7 +20,11 @@ export const receiveLabelsFailure = ({ commit }) => {
     message: __('Error fetching labels.'),
   });
 };
-export const fetchLabels = ({ state, dispatch }) => {
+export const fetchLabels = ({ state, dispatch }, options) => {
+  if (state.labelsFetched && (!options || !options.refetch)) {
+    return Promise.resolve();
+  }
+
   dispatch('requestLabels');
   return axios
     .get(state.labelsFetchPath)
@@ -46,6 +50,7 @@ export const createLabel = ({ state, dispatch }, label) => {
     })
     .then(({ data }) => {
       if (data.id) {
+        dispatch('fetchLabels', { refetch: true });
         dispatch('receiveCreateLabelSuccess');
         dispatch('toggleDropdownContentsCreateView');
       } else {
@@ -60,3 +65,5 @@ export const createLabel = ({ state, dispatch }, label) => {
 
 export const updateSelectedLabels = ({ commit }, labels) =>
   commit(types.UPDATE_SELECTED_LABELS, { labels });
+
+export const updateLabelsSetState = ({ commit }) => commit(types.UPDATE_LABELS_SET_STATE);

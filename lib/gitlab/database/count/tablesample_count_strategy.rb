@@ -61,7 +61,7 @@ module Gitlab
             #{where_clause(model)}
           SQL
 
-          rows = ActiveRecord::Base.connection.select_all(query)
+          rows = ActiveRecord::Base.connection.select_all(query) # rubocop: disable Database/MultipleDatabases
 
           Integer(rows.first['count'])
         end

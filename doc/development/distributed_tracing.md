@@ -101,7 +101,7 @@ trace in a hierarchical time-line.
 ## Using Jaeger without the GitLab Developer Kit
 
 Distributed Tracing can be enabled in non-GDK development environments as well as production or
-staging environments, for troubleshooting. Please note that at this time, this functionality is
+staging environments, for troubleshooting. At this time, this functionality is
 experimental, and not supported in production environments at present. In this first release, it is intended to be
 used for debugging in development environments only.
 

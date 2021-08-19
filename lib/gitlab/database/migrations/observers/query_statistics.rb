@@ -16,7 +16,7 @@ module Gitlab
             connection.execute('select pg_stat_statements_reset()')
           end
 
-          def record(observation)
+          def record
             return unless enabled?
 
             observation.query_statistics = connection.execute(<<~SQL)

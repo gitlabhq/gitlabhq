@@ -73,7 +73,7 @@ choose one of these templates:
 - [Django (`Django.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Django.gitlab-ci.yml)
 - [Docker (`Docker.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Docker.gitlab-ci.yml)
 - [dotNET (`dotNET.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET.gitlab-ci.yml)
-- [dotNET Core (`dotNET-Core.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET-Core.yml)
+- [dotNET Core (`dotNET-Core.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET-Core.gitlab-ci.yml)
 - [Elixir (`Elixir.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Elixir.gitlab-ci.yml)
 - [Flutter (`Flutter.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Flutter.gitlab-ci.yml)
 - [goLang (`Go.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml)

@@ -2,9 +2,9 @@
 
 module Types
   class DiffPathsInputType < BaseInputObject
-    argument :old_path, GraphQL::STRING_TYPE, required: false,
+    argument :old_path, GraphQL::Types::String, required: false,
               description: 'The path of the file on the start sha.'
-    argument :new_path, GraphQL::STRING_TYPE, required: false,
+    argument :new_path, GraphQL::Types::String, required: false,
               description: 'The path of the file on the head sha.'
   end
 end

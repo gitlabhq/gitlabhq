@@ -165,8 +165,3 @@ To view your pipeline:
   ![Job details](img/job_details_v13_6.png)
 
 If the job status is `stuck`, check to ensure a runner is properly configured for the project.
-
-> To learn more about GitLab CI/CD, check out these video walkthroughs:
->
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=150s).
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s).

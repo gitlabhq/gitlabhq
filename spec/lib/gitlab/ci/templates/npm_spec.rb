@@ -14,7 +14,7 @@ RSpec.describe 'npm.gitlab-ci.yml' do
     let(:pipeline_tag) { 'v1.2.1' }
     let(:pipeline_ref) { pipeline_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref ) }
-    let(:pipeline) { service.execute!(:push) }
+    let(:pipeline) { service.execute!(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     def create_branch(name:)

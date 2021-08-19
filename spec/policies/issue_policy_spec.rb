@@ -360,6 +360,21 @@ RSpec.describe IssuePolicy do
         expect(permissions(assignee, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
       end
     end
+
+    context 'with a hidden issue' do
+      let(:user) { create(:user) }
+      let(:banned_user) { create(:user, :banned) }
+      let(:admin) { create(:user, :admin)}
+      let(:hidden_issue) { create(:issue, project: project, author: banned_user) }
+
+      it 'does not allow non-admin user to read the issue' do
+        expect(permissions(user, hidden_issue)).not_to be_allowed(:read_issue)
+      end
+
+      it 'allows admin to read the issue', :enable_admin_mode do
+        expect(permissions(admin, hidden_issue)).to be_allowed(:read_issue)
+      end
+    end
   end
 
   context 'with external authorization enabled' do

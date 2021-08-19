@@ -3,47 +3,68 @@
 require 'spec_helper'
 
 RSpec.describe Users::BanService do
-  let(:current_user) { create(:admin) }
+  let(:user) { create(:user) }
 
-  subject(:service) { described_class.new(current_user) }
+  let_it_be(:current_user) { create(:admin) }
 
-  describe '#execute' do
-    subject(:operation) { service.execute(user) }
+  shared_examples 'does not modify the BannedUser record or user state' do
+    it 'does not modify the BannedUser record or user state' do
+      expect { ban_user }.not_to change { Users::BannedUser.count }
+      expect { ban_user }.not_to change { user.state }
+    end
+  end
 
-    context 'when successful' do
-      let(:user) { create(:user) }
+  context 'ban', :aggregate_failures do
+    subject(:ban_user) { described_class.new(current_user).execute(user) }
 
-      it { is_expected.to eq(status: :success) }
+    context 'when successful', :enable_admin_mode do
+      it 'returns success status' do
+        response = ban_user
 
-      it "bans the user" do
-        expect { operation }.to change { user.state }.to('banned')
+        expect(response[:status]).to eq(:success)
       end
 
-      it "blocks the user" do
-        expect { operation }.to change { user.blocked? }.from(false).to(true)
+      it 'bans the user' do
+        expect { ban_user }.to change { user.state }.from('active').to('banned')
+      end
+
+      it 'creates a BannedUser' do
+        expect { ban_user }.to change { Users::BannedUser.count }.by(1)
+        expect(Users::BannedUser.last.user_id).to eq(user.id)
       end
 
       it 'logs ban in application logs' do
-        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).to receive(:info).with(message: "User ban", user: "#{user.username}", email: "#{user.email}", ban_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
 
-        operation
-
-        expect(Gitlab::AppLogger).to have_received(:info).with(message: "User banned", user: "#{user.username}", email: "#{user.email}", banned_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
+        ban_user
       end
     end
 
     context 'when failed' do
-      let(:user) { create(:user, :blocked) }
-
-      it 'returns error result' do
-        aggregate_failures 'error result' do
-          expect(operation[:status]).to eq(:error)
-          expect(operation[:message]).to match(/State cannot transition/)
+      context 'when user is blocked', :enable_admin_mode do
+        before do
+          user.block!
         end
+
+        it 'returns state error message' do
+          response = ban_user
+
+          expect(response[:status]).to eq(:error)
+          expect(response[:message]).to match(/State cannot transition/)
+        end
+
+        it_behaves_like 'does not modify the BannedUser record or user state'
       end
 
-      it "does not change the user's state" do
-        expect { operation }.not_to change { user.state }
+      context 'when user is not an admin' do
+        it 'returns permissions error message' do
+          response = ban_user
+
+          expect(response[:status]).to eq(:error)
+          expect(response[:message]).to match(/You are not allowed to ban a user/)
+        end
+
+        it_behaves_like 'does not modify the BannedUser record or user state'
       end
     end
   end

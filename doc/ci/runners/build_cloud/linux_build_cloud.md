@@ -4,11 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Linux shared runners
+# Build Cloud runners for Linux
 
-Linux shared runners on GitLab.com run in autoscale mode and are powered by Google Cloud Platform.
+GitLab Build Cloud runners for Linux run in autoscale mode and are powered by Google Cloud Platform.
 
-Autoscaling means reduced queue times to spin up CI/CD jobs, and isolated VMs for each job, thus maximizing security. These shared runners are available for users and customers on GitLab.com.
+Autoscaling means reduced queue times to spin up CI/CD jobs, and isolated VMs for each job, thus maximizing security. These shared runners are available on GitLab.com.
 
 GitLab offers Ultimate tier capabilities and included CI/CD minutes per group per month for our [Open Source](https://about.gitlab.com/solutions/open-source/join/), [Education](https://about.gitlab.com/solutions/education/), and [Startups](https://about.gitlab.com/solutions/startups/) programs. For private projects, GitLab offers various [plans](https://about.gitlab.com/pricing/), starting with a Free tier.
 
@@ -23,7 +23,7 @@ Jobs handled by the shared runners on GitLab.com (`shared-runners-manager-X.gitl
 **time out after 3 hours**, regardless of the timeout configured in a
 project. Check the issues [4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
 
-Below are the shared runners settings.
+Below are the runners' settings.
 
 | Setting                               | GitLab.com                                        | Default    |
 | -----------                           | -----------------                                 | ---------- |
@@ -33,7 +33,7 @@ Below are the shared runners settings.
 
 ## Pre-clone script
 
-Linux shared runners on GitLab.com provide a way to run commands in a CI
+Build Cloud runners for Linux provide a way to run commands in a CI
 job before the runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The
 [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)

@@ -204,6 +204,9 @@ export const FiltersInfo = {
   releaseTag: {
     negatedSupport: true,
   },
+  types: {
+    negatedSupport: true,
+  },
   search: {
     negatedSupport: false,
   },

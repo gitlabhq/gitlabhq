@@ -323,7 +323,7 @@ RSpec.describe 'getting an issue list for a project' do
     it 'avoids N+1 queries' do
       control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
 
-      create(:alert_management_alert, :with_issue, project: project)
+      create(:alert_management_alert, :with_incident, project: project)
 
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
     end
@@ -471,6 +471,17 @@ RSpec.describe 'getting an issue list for a project' do
       before do
         create_list(:note_on_issue, 2, noteable: issue_a, project: project)
         create(:note_on_issue, noteable: issue_b, project: project)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting `merge_requests_count`' do
+      let(:requested_fields) { [:merge_requests_count] }
+
+      before do
+        create_list(:merge_requests_closing_issues, 2, issue: issue_a)
+        create_list(:merge_requests_closing_issues, 3, issue: issue_b)
       end
 
       include_examples 'N+1 query check'

@@ -8,12 +8,14 @@ import {
   GlIcon,
   GlModal,
   GlSprintf,
+  GlModalDirective,
 } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import addDataToState from '../graphql/mutations/add_data_to_state.mutation.graphql';
 import lockState from '../graphql/mutations/lock_state.mutation.graphql';
 import removeState from '../graphql/mutations/remove_state.mutation.graphql';
 import unlockState from '../graphql/mutations/unlock_state.mutation.graphql';
+import InitCommandModal from './init_command_modal.vue';
 
 export default {
   components: {
@@ -25,6 +27,10 @@ export default {
     GlIcon,
     GlModal,
     GlSprintf,
+    InitCommandModal,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     state: {
@@ -36,6 +42,7 @@ export default {
     return {
       showRemoveModal: false,
       removeConfirmText: '',
+      showCommandModal: false,
     };
   },
   i18n: {
@@ -43,7 +50,7 @@ export default {
     errorUpdate: s__('Terraform|An error occurred while changing the state file'),
     lock: s__('Terraform|Lock'),
     modalBody: s__(
-      'Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously	will remain intact, only the state file with all its versions are to be removed. This action is non-revertible.',
+      'Terraform|You are about to remove the state file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously will remain intact, and only the state file with all its versions will be removed. This action cannot be undone.',
     ),
     modalCancel: s__('Terraform|Cancel'),
     modalHeader: s__('Terraform|Are you sure you want to remove the Terraform State %{name}?'),
@@ -54,6 +61,7 @@ export default {
     remove: s__('Terraform|Remove state file and versions'),
     removeSuccessful: s__('Terraform|%{name} successfully removed'),
     unlock: s__('Terraform|Unlock'),
+    copyCommand: s__('Terraform|Copy Terraform init command'),
   },
   computed: {
     cancelModalProps() {
@@ -73,6 +81,9 @@ export default {
         text: this.$options.i18n.modalRemove,
         attributes: [{ disabled: this.disableModalSubmit }, { variant: 'danger' }],
       };
+    },
+    commandModalId() {
+      return `init-command-modal-${this.state.name}`;
     },
   },
   methods: {
@@ -164,6 +175,9 @@ export default {
           });
         });
     },
+    copyInitCommand() {
+      this.showCommandModal = true;
+    },
   },
 };
 </script>
@@ -180,6 +194,14 @@ export default {
       <template #button-content>
         <gl-icon class="gl-mr-0" name="ellipsis_v" />
       </template>
+
+      <gl-dropdown-item
+        v-gl-modal-directive="commandModalId"
+        data-testid="terraform-state-copy-init-command"
+        @click="copyInitCommand"
+      >
+        {{ $options.i18n.copyCommand }}
+      </gl-dropdown-item>
 
       <gl-dropdown-item
         v-if="state.latestVersion"
@@ -248,5 +270,11 @@ export default {
         />
       </gl-form-group>
     </gl-modal>
+
+    <init-command-modal
+      v-if="showCommandModal"
+      :modal-id="commandModalId"
+      :state-name="state.name"
+    />
   </div>
 </template>

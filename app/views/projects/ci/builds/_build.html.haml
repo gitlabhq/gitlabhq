@@ -12,12 +12,15 @@
   %td.status
     = render "ci/status/badge", status: job.detailed_status(current_user), title: job.status_title
 
-  %td.branch-commit.cgray
+  %td
     - if can?(current_user, :read_build, job)
-      = link_to project_job_path(job.project, job) do
-        %span.build-link ##{job.id}
+      = link_to job.name, project_job_path(job.project, job), class: 'gl-text-blue-600!'
     - else
-      %span.build-link ##{job.id}
+      %span.gl-text-blue-600!
+        = job.name
+
+  %td.branch-commit.gl-text-gray-900
+    %span.build-link ##{job.id}
 
     - if ref
       - if job.ref
@@ -79,9 +82,6 @@
       = job.stage
 
   %td
-    = job.name
-
-  %td
     - if job.duration
       %p.duration
         = custom_icon("icon_timer")
@@ -105,7 +105,7 @@
         - if can?(current_user, :update_build, job)
           - if job.active?
             = link_to cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), class: 'gl-button btn btn-default btn-icon' do
-              = sprite_icon('close', css_class: 'gl-icon')
+              = sprite_icon('cancel', css_class: 'gl-icon')
           - elsif job.scheduled?
             .gl-button.btn.btn-default.btn-icon.disabled{ disabled: true }
               = sprite_icon('planning', css_class: 'gl-icon')

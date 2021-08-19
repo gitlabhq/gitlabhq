@@ -42,17 +42,12 @@ rules to define what types of users can approve work. Some examples of rules you
 - Users with specific permissions can be allowed or denied the ability
   to [override approval rules on a specific merge request](rules.md#edit-or-override-merge-request-approval-rules).
 
-You can also configure additional [settings for merge request approvals](settings.md)
-for more control of the level of oversight and security your project needs, including:
+You can also configure:
 
-- [Prevent users from overriding a merge request approval rule.](settings.md#prevent-overrides-of-default-approvals)
-- [Reset approvals when new code is pushed.](settings.md#reset-approvals-on-push)
-- Allow (or disallow) [authors and committers](settings.md) to approve their own merge requests.
-- [Require password authentication when approving.](settings.md#require-authentication-for-approvals)
-- [Require security team approval.](settings.md#security-approvals-in-merge-requests)
-
-You can configure your merge request approval rules and settings through the GitLab
-user interface or with the [Merge request approvals API](../../../../api/merge_request_approvals.md).
+- Additional [settings for merge request approvals](settings.md) for more control of the
+  level of oversight and security your project needs.
+- Merge request approval rules and settings through the GitLab UI or with the
+  [Merge request approvals API](../../../../api/merge_request_approvals.md).
 
 ## Approve a merge request
 
@@ -74,10 +69,10 @@ such as merge conflicts, [pending discussions](../../../discussions/index.md#pre
 or a [failed CI/CD pipeline](../merge_when_pipeline_succeeds.md).
 
 To prevent merge request authors from approving their own merge requests,
-enable [**Prevent author approval**](settings.md#prevent-authors-from-approving-their-own-work)
+enable [**Prevent author approval**](settings.md#prevent-approval-by-author)
 in your project's settings.
 
-If you enable [approval rule overrides](settings.md#prevent-overrides-of-default-approvals),
+If you enable [approval rule overrides](settings.md#prevent-editing-approval-rules-in-merge-requests),
 merge requests created before a change to default approval rules are not affected.
 The only exceptions are changes to the [target branch](rules.md#approvals-for-protected-branches)
 of the rule.
@@ -121,6 +116,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example, `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

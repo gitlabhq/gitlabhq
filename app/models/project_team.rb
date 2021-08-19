@@ -42,7 +42,7 @@ class ProjectTeam
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    Members::Projects::CreatorService.add_users( # rubocop:todo CodeReuse/ServiceClass
+    Members::Projects::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       project,
       users,
       access_level,
@@ -52,7 +52,7 @@ class ProjectTeam
   end
 
   def add_user(user, access_level, current_user: nil, expires_at: nil)
-    Members::Projects::CreatorService.new(project, # rubocop:todo CodeReuse/ServiceClass
+    Members::Projects::CreatorService.new(project, # rubocop:disable CodeReuse/ServiceClass
                                           user,
                                           access_level,
                                           current_user: current_user,
@@ -76,6 +76,10 @@ class ProjectTeam
   # so we filter out only members of project or project's group
   def members_in_project_and_ancestors
     members.where(id: member_user_ids)
+  end
+
+  def members_with_access_levels(access_levels = [])
+    fetch_members(access_levels)
   end
 
   def guests

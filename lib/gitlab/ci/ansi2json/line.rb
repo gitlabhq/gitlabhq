@@ -9,6 +9,8 @@ module Gitlab
         # Line::Segment is a portion of a line that has its own style
         # and text. Multiple segments make the line content.
         class Segment
+          include EncodingHelper
+
           attr_accessor :text, :style
 
           def initialize(style:)
@@ -21,11 +23,12 @@ module Gitlab
           end
 
           def to_h
-            # Without force encoding to UTF-8 we could get an error
-            # when serializing the Hash to JSON.
+            # Without forcing the encoding to UTF-8 and then replacing
+            # invalid UTF-8 sequences we can get an error when serializing
+            # the Hash to JSON.
             # Encoding::UndefinedConversionError:
             #   "\xE2" from ASCII-8BIT to UTF-8
-            { text: text.force_encoding('UTF-8') }.tap do |result|
+            { text: encode_utf8_no_detect(text) }.tap do |result|
               result[:style] = style.to_s if style.set?
             end
           end

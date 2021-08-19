@@ -14,14 +14,14 @@ RSpec.describe Packages::Pypi::PackagesFinder do
 
   let(:package_name) { package2.name }
 
-  describe 'execute!' do
-    subject { described_class.new(user, scope, package_name: package_name).execute! }
+  describe 'execute' do
+    subject { described_class.new(user, scope, package_name: package_name).execute }
 
     shared_examples 'when no package is found' do
       context 'non-existing package' do
         let(:package_name) { 'none' }
 
-        it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+        it { expect(subject).to be_empty }
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Packages::Pypi::PackagesFinder do
       context 'non-existing package' do
         let(:package_name) { package2.name.upcase.tr('-', '.') }
 
-        it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+        it { expect(subject).to be_empty }
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Packages::Pypi::PackagesFinder do
     context 'within a group' do
       let(:scope) { group }
 
-      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+      it { expect(subject).to be_empty }
 
       context 'user with access to only one project' do
         before do

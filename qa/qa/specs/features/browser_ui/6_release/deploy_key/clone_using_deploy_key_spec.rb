@@ -5,27 +5,31 @@ require 'digest/sha1'
 module QA
   RSpec.describe 'Release', :runner do
     describe 'Git clone using a deploy key' do
-      before do
-        Flow::Login.sign_in
+      let(:runner_name) { "qa-runner-#{SecureRandom.hex(4)}" }
+      let(:repository_location) { project.repository_ssh_location }
 
-        @runner_name = "qa-runner-#{Time.now.to_i}"
-
-        @project = Resource::Project.fabricate_via_api! do |project|
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
           project.name = 'deploy-key-clone-project'
         end
+      end
 
-        @repository_location = @project.repository_ssh_location
-
-        @runner = Resource::Runner.fabricate_via_api! do |resource|
-          resource.project = @project
-          resource.name = @runner_name
-          resource.tags = %w[qa docker]
+      let!(:runner) do
+        Resource::Runner.fabricate_via_api! do |resource|
+          resource.project = project
+          resource.name = runner_name
+          resource.tags = [runner_name]
           resource.image = 'gitlab/gitlab-runner:alpine'
         end
       end
 
+      before do
+        Flow::Login.sign_in
+      end
+
       after do
-        @runner.remove_via_api!
+        runner.remove_via_api!
+        project.remove_via_api!
       end
 
       keys = [
@@ -39,7 +43,7 @@ module QA
           key = key_class.new(*bits)
 
           Resource::DeployKey.fabricate_via_browser_ui! do |resource|
-            resource.project = @project
+            resource.project = project
             resource.title = "deploy key #{key.name}(#{key.bits})"
             resource.key = key.public_key
           end
@@ -49,25 +53,23 @@ module QA
           make_ci_variable(deploy_key_name, key)
 
           gitlab_ci = <<~YAML
-          cat-config:
-            script:
-              - apk add --update --no-cache openssh-client
-              - mkdir -p ~/.ssh
-              - ssh-keyscan -p #{@repository_location.port} #{@repository_location.host} >> ~/.ssh/known_hosts
-              - eval $(ssh-agent -s)
-              - ssh-add -D
-              - echo "$#{deploy_key_name}" | ssh-add -
-              - git clone #{@repository_location.git_uri}
-              - cd #{@project.name}
-              - git checkout #{deploy_key_name}
-              - sha1sum .gitlab-ci.yml
-            tags:
-              - qa
-              - docker
+            cat-config:
+              script:
+                - which ssh-agent || ( apk --update add openssh-client )
+                - mkdir -p ~/.ssh
+                - ssh-keyscan -p #{repository_location.port} #{repository_location.host} >> ~/.ssh/known_hosts
+                - eval $(ssh-agent -s)
+                - ssh-add -D
+                - echo "$#{deploy_key_name}" | ssh-add -
+                - git clone #{repository_location.git_uri}
+                - cd #{project.name}
+                - git checkout #{deploy_key_name}
+                - sha1sum .gitlab-ci.yml
+              tags: [#{runner_name}]
           YAML
 
           Resource::Repository::ProjectPush.fabricate! do |resource|
-            resource.project = @project
+            resource.project = project
             resource.file_name = '.gitlab-ci.yml'
             resource.commit_message = 'Add .gitlab-ci.yml'
             resource.file_content = gitlab_ci
@@ -81,8 +83,10 @@ module QA
           Page::Project::Pipeline::Show.perform(&:click_on_first_job)
 
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful
-            expect(job.output).to include(sha1sum)
+            aggregate_failures 'job succeeds and has correct sha1sum' do
+              expect(job).to be_successful
+              expect(job.output).to include(sha1sum)
+            end
           end
         end
 
@@ -90,7 +94,7 @@ module QA
 
         def make_ci_variable(key_name, key)
           Resource::CiVariable.fabricate_via_api! do |resource|
-            resource.project = @project
+            resource.project = project
             resource.key = key_name
             resource.value = key.private_key
             resource.masked = false

@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -162,19 +162,26 @@ The chosen OmniAuth provider is now active and can be used to sign in to GitLab 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664) in GitLab 13.4.
 
 You can automatically link OmniAuth users with existing GitLab users if their email addresses match.
-For example, the following setting is used to enable the auto link feature for both a SAML provider and the Twitter OAuth provider:
+Automatic linking using this method works for all providers
+[except the SAML provider](https://gitlab.com/gitlab-org/gitlab/-/issues/338293). For automatic
+linking using the SAML provider, see [SAML-specific](saml.md#general-setup) instructions.
+
+As an example, the following configuration is used to enable the auto link feature for both:
+
+- OpenID Connect provider.
+- Twitter OAuth provider.
 
 **For Omnibus installations**
 
 ```ruby
-gitlab_rails['omniauth_auto_link_user'] = ["saml", "twitter"]
+gitlab_rails['omniauth_auto_link_user'] = ["openid_connect", "twitter"]
 ```
 
 **For installations from source**
 
 ```yaml
 omniauth:
-  auto_link_user: ["saml", "twitter"]
+  auto_link_user: ["openid_connect", "twitter"]
 ```
 
 ## Configure OmniAuth Providers as External
@@ -264,7 +271,7 @@ To enable/disable an OmniAuth provider:
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, go to **Settings**.
 1. Scroll to the **Sign-in Restrictions** section, and click **Expand**.
-1. Below **Enabled OAuth Sign-In sources**, select the check box for each provider you want to enable or disable.
+1. Below **Enabled OAuth Sign-In sources**, select the checkbox for each provider you want to enable or disable.
 
    ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources_v13_10.png)
 

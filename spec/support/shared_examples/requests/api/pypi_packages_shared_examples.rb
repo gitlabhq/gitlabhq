@@ -228,6 +228,35 @@ RSpec.shared_examples 'pypi simple API endpoint' do
 
     it_behaves_like 'PyPI package versions', :developer, :success
   end
+
+  context 'package request forward' do
+    include_context 'dependency proxy helpers context'
+
+    where(:forward, :package_in_project, :shared_examples_name, :expected_status) do
+      true  | true  | 'PyPI package versions'    | :success
+      true  | false | 'process PyPI api request' | :redirect
+      false | true  | 'PyPI package versions'    | :success
+      false | false | 'process PyPI api request' | :not_found
+    end
+
+    with_them do
+      let_it_be(:package) { create(:pypi_package, project: project, name: 'foobar') }
+
+      let(:package_name) do
+        if package_in_project
+          'foobar'
+        else
+          'barfoo'
+        end
+      end
+
+      before do
+        allow_fetch_application_setting(attribute: "pypi_package_requests_forwarding", return_value: forward)
+      end
+
+      it_behaves_like params[:shared_examples_name], :reporter, params[:expected_status]
+    end
+  end
 end
 
 RSpec.shared_examples 'pypi file download endpoint' do

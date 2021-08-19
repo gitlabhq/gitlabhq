@@ -4,7 +4,6 @@ module UserCalloutsHelper
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
-  SERVICE_TEMPLATES_DEPRECATED_CALLOUT = 'service_templates_deprecated_callout'
   TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
   CUSTOMIZE_HOMEPAGE = 'customize_homepage'
   FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
@@ -35,13 +34,6 @@ module UserCalloutsHelper
     !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
   end
 
-  def show_service_templates_deprecated_callout?
-    !Gitlab.com? &&
-    current_user&.admin? &&
-    Integration.for_template.active.exists? &&
-    !user_dismissed?(SERVICE_TEMPLATES_DEPRECATED_CALLOUT)
-  end
-
   def show_customize_homepage_banner?
     current_user.default_dashboard? && !user_dismissed?(CUSTOMIZE_HOMEPAGE)
   end
@@ -61,6 +53,9 @@ module UserCalloutsHelper
     !user_dismissed?(REGISTRATION_ENABLED_CALLOUT)
   end
 
+  def dismiss_account_recovery_regular_check
+  end
+
   private
 
   def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil)
@@ -70,4 +65,4 @@ module UserCalloutsHelper
   end
 end
 
-UserCalloutsHelper.prepend_mod_with('UserCalloutsHelper')
+UserCalloutsHelper.prepend_mod

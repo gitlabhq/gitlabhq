@@ -1,0 +1,8 @@
+---
+name: cache_shared_runners_enabled
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68002
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338267
+milestone: '14.2'
+type: development
+group: group::optimize
+default_enabled: false

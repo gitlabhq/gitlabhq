@@ -1,0 +1,13 @@
+---
+# Suggestion: gitlab.Wordy
+#
+# Suggests shorter versions of wordy phrases.
+#
+# For a list of all options, see https://docs.errata.ai/vale/styles
+extends: substitution
+message: 'Be concise: "%s" is less wordy than "%s".'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+level: suggestion
+ignorecase: true
+swap:
+  in order to: to

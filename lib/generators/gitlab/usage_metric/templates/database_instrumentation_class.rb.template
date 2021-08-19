@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class <%= class_name %>Metric < DatabaseMetric
+          operation :<%= operation%>
+
+          relation do
+            # Insert ActiveRecord relation here
+          end
+        end
+      end
+    end
+  end
+end

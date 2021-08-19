@@ -205,7 +205,7 @@ export default {
             >{{ issuableSymbol }}{{ issuable.iid }}</span
           >
           <span class="issuable-authored gl-display-none gl-sm-display-inline-block! gl-mr-3">
-            &middot;
+            <span aria-hidden="true">&middot;</span>
             <span
               v-gl-tooltip:tooltipcontainer.bottom
               data-testid="issuable-created-at"
@@ -229,17 +229,19 @@ export default {
           </span>
           <slot name="timeframe"></slot>
           &nbsp;
-          <gl-label
-            v-for="(label, index) in labels"
-            :key="index"
-            :background-color="label.color"
-            :title="labelTitle(label)"
-            :description="label.description"
-            :scoped="scopedLabel(label)"
-            :target="labelTarget(label)"
-            :class="{ 'gl-ml-2': index }"
-            size="sm"
-          />
+          <span v-if="labels.length" role="group" :aria-label="__('Labels')">
+            <gl-label
+              v-for="(label, index) in labels"
+              :key="index"
+              :background-color="label.color"
+              :title="labelTitle(label)"
+              :description="label.description"
+              :scoped="scopedLabel(label)"
+              :target="labelTarget(label)"
+              :class="{ 'gl-ml-2': index }"
+              size="sm"
+            />
+          </span>
         </div>
       </div>
       <div class="issuable-meta">

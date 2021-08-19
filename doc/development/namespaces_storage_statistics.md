@@ -14,7 +14,7 @@ storage consumed by a group, and allow easy management.
 
 ## Proposal
 
-1. Create a new ActiveRecord model to hold the namespaces' statistics in an aggregated form (only for root namespaces).
+1. Create a new ActiveRecord model to hold the namespaces' statistics in an aggregated form (only for root [namespaces](../user/group/index.md#namespaces)).
 1. Refresh the statistics in this model every time a project belonging to this namespace is changed.
 
 ## Problem

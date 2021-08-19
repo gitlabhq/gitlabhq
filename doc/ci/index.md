@@ -61,7 +61,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                |
 | [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                            |
 | [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                       |
-| [Test cases](test_cases/index.md) | Configure your pipelines to run quickly and efficiently. <!--- this seems to be a duplicate description --->                      |
+| [Test cases](test_cases/index.md)                       | Create testing scenarios.                                                      |
 
 ## Configuration
 
@@ -79,7 +79,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories.                                   |
 | [`.gitlab-ci.yml` full reference](yaml/index.md)                                        | All the attributes you can use with GitLab CI/CD.                                         |
 
-Note that certain operations can only be performed according to the
+Certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
 ## Feature set

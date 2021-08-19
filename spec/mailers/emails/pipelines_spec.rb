@@ -9,12 +9,14 @@ RSpec.describe Emails::Pipelines do
   let_it_be(:project) { create(:project, :repository) }
 
   shared_examples_for 'correct pipeline information' do
-    it 'has a correct information' do
-      expect(subject)
-          .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
-                           "#{project.name} | " \
-                           "#{pipeline.short_sha}".to_s
+    let(:expected_email_subject) do
+      "#{project.name} | " \
+        "#{status} pipeline for #{pipeline.source_ref} | " \
+        "#{pipeline.short_sha}"
+    end
 
+    it 'has a correct information' do
+      expect(subject).to have_subject expected_email_subject
       expect(subject).to have_body_text pipeline.source_ref
       expect(subject).to have_body_text status_text
     end
@@ -28,11 +30,7 @@ RSpec.describe Emails::Pipelines do
       end
 
       it 'has correct information that there is no merge request link' do
-        expect(subject)
-            .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
-                             "#{project.name} | " \
-                             "#{pipeline.short_sha}".to_s
-
+        expect(subject).to have_subject expected_email_subject
         expect(subject).to have_body_text pipeline.source_ref
         expect(subject).to have_body_text status_text
       end
@@ -48,11 +46,7 @@ RSpec.describe Emails::Pipelines do
       end
 
       it 'has correct information that there is a merge request link' do
-        expect(subject)
-          .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
-                           "#{project.name} | " \
-                           "#{pipeline.short_sha}".to_s
-
+        expect(subject).to have_subject expected_email_subject
         expect(subject).to have_body_text merge_request.to_reference
         expect(subject).to have_body_text pipeline.source_ref
         expect(subject).not_to have_body_text pipeline.ref
@@ -70,11 +64,7 @@ RSpec.describe Emails::Pipelines do
       end
 
       it 'has correct information that there is a merge request link' do
-        expect(subject)
-          .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
-                           "#{project.name} | " \
-                           "#{pipeline.short_sha}".to_s
-
+        expect(subject).to have_subject expected_email_subject
         expect(subject).to have_body_text merge_request.to_reference
         expect(subject).to have_body_text pipeline.source_ref
       end
@@ -91,6 +81,17 @@ RSpec.describe Emails::Pipelines do
     it_behaves_like 'correct pipeline information' do
       let(:status) { 'Successful' }
       let(:status_text) { "Pipeline ##{pipeline.id} has passed!" }
+      let(:email_subject_suffix) { 'A Nice Suffix' }
+      let(:expected_email_subject) do
+        "#{project.name} | " \
+          "#{status} pipeline for #{pipeline.source_ref} | " \
+          "#{pipeline.short_sha} | " \
+          "#{email_subject_suffix}"
+      end
+
+      before do
+        stub_config_setting(email_subject_suffix: email_subject_suffix)
+      end
     end
   end
 

@@ -70,7 +70,7 @@ class MigrateK8sServiceIntegration < ActiveRecord::Migration[5.1]
     private
 
     def parsed_properties
-      @parsed_properties ||= JSON.parse(self.properties)
+      @parsed_properties ||= JSON.parse(self.properties) # rubocop:disable Gitlab/Json
     end
   end
 

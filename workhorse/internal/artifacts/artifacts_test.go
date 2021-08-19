@@ -6,7 +6,7 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 func TestMain(m *testing.M) {

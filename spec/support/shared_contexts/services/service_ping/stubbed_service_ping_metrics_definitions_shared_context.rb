@@ -6,20 +6,20 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
   let(:metrics_definitions) { standard_metrics + subscription_metrics + operational_metrics + optional_metrics }
   let(:standard_metrics) do
     [
-      metric_attributes('uuid', "Standard")
+      metric_attributes('uuid', "standard")
     ]
   end
 
   let(:operational_metrics) do
     [
-      metric_attributes('counts.merge_requests', "Operational"),
-      metric_attributes('counts.todos', "Operational")
+      metric_attributes('counts.merge_requests', "operational"),
+      metric_attributes('counts.todos', "operational")
     ]
   end
 
   let(:optional_metrics) do
     [
-      metric_attributes('counts.boards', "Optional"),
+      metric_attributes('counts.boards', "optional"),
       metric_attributes('gitaly.filesystems', '').except('data_category')
     ]
   end

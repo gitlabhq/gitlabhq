@@ -338,6 +338,16 @@ Page::Project::Pipeline::Show.perform do |pipeline|
 end
 ```
 
+### Use `eventually_` matchers for expectations that require waiting
+
+When something requires waiting to be matched, use `eventually_` matchers with clear wait duration definition.
+
+`Eventually` matchers use the following naming pattern: `eventually_${rspec_matcher_name}`. They are defined in [eventually_matcher.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/spec/support/matchers/eventually_matcher.rb).
+
+```ruby
+expect { async_value }.to eventually_eq(value).within(max_duration: 120, max_attempts: 60, reload_page: page)
+```
+
 ### Create negatable matchers to speed `expect` checks
 
 However, sometimes we want to check that something is _not_ as we _don't_ want it to be. In other

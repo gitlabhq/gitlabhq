@@ -4,7 +4,7 @@ class Packages::Event < ApplicationRecord
   belongs_to :package, optional: true
 
   UNIQUE_EVENTS_ALLOWED = %i[push_package delete_package pull_package pull_symbol_package push_symbol_package].freeze
-  EVENT_SCOPES = ::Packages::Package.package_types.merge(container: 1000, tag: 1001).freeze
+  EVENT_SCOPES = ::Packages::Package.package_types.merge(container: 1000, tag: 1001, dependency_proxy: 1002).freeze
 
   EVENT_PREFIX = "i_package"
 
@@ -23,7 +23,11 @@ class Packages::Event < ApplicationRecord
     list_tags: 9,
     cli_metadata: 10,
     pull_symbol_package: 11,
-    push_symbol_package: 12
+    push_symbol_package: 12,
+    pull_manifest: 13,
+    pull_manifest_from_cache: 14,
+    pull_blob: 15,
+    pull_blob_from_cache: 16
   }
 
   enum originator_type: { user: 0, deploy_token: 1, guest: 2 }

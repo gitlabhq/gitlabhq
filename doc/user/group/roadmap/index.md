@@ -69,7 +69,7 @@ You can also filter epics in the Roadmap view by the epics':
 - Author
 - Label
 - Milestone
-- Confidentiality
+- [Confidentiality](../epics/manage_epics.md#make-an-epic-confidential)
 - Epic
 - Your Reaction
 

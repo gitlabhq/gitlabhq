@@ -177,7 +177,7 @@ module Gitlab
           @app.call(env)
         end
       rescue UploadedFile::InvalidPathError => e
-        [400, { 'Content-Type' => 'text/plain' }, e.message]
+        [400, { 'Content-Type' => 'text/plain' }, [e.message]]
       end
     end
   end

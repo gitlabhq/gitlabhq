@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor
 description: Number of unique user logins using two factor authentication
 product_section: dev

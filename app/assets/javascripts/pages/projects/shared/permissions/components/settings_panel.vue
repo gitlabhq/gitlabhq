@@ -3,7 +3,6 @@ import { GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui'
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   visibilityOptions,
   visibilityLevelDescriptions,
@@ -12,6 +11,7 @@ import {
   featureAccessLevel,
   featureAccessLevelNone,
   CVE_ID_REQUEST_BUTTON_I18N,
+  featureAccessLevelDescriptions,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import projectFeatureSetting from './project_feature_setting.vue';
@@ -48,7 +48,7 @@ export default {
     GlFormCheckbox,
     GlToggle,
   },
-  mixins: [settingsMixin, glFeatureFlagsMixin()],
+  mixins: [settingsMixin],
 
   props: {
     requestCveAvailable: {
@@ -177,7 +177,7 @@ export default {
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       operationsAccessLevel: featureAccessLevel.EVERYONE,
-      containerRegistryEnabled: true,
+      containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
       lfsEnabled: true,
       requestAccessEnabled: true,
       highlightChangesClass: false,
@@ -185,6 +185,8 @@ export default {
       cveIdRequestEnabled: true,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
+      featureAccessLevel,
+      featureAccessLevelDescriptions,
     };
 
     return { ...defaults, ...this.currentSettings };
@@ -249,7 +251,10 @@ export default {
     },
 
     showContainerRegistryPublicNote() {
-      return this.visibilityLevel === visibilityOptions.PUBLIC;
+      return (
+        this.visibilityLevel === visibilityOptions.PUBLIC &&
+        this.containerRegistryAccessLevel === featureAccessLevel.EVERYONE
+      );
     },
 
     repositoryHelpText() {
@@ -311,6 +316,10 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.operationsAccessLevel,
         );
+        this.containerRegistryAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.containerRegistryAccessLevel,
+        );
         if (this.pagesAccessLevel === featureAccessLevel.EVERYONE) {
           // When from Internal->Private narrow access for only members
           this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
@@ -340,6 +349,8 @@ export default {
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.operationsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.operationsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.containerRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
 
         this.highlightChanges();
       }
@@ -513,31 +524,6 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
-          v-if="registryAvailable"
-          ref="container-registry-settings"
-          :help-path="registryHelpPath"
-          :label="$options.i18n.containerRegistryLabel"
-          :help-text="
-            s__('ProjectSettings|Every project can have its own space to store its Docker images')
-          "
-        >
-          <div v-if="showContainerRegistryPublicNote" class="text-muted">
-            {{
-              s__(
-                'ProjectSettings|Note: the container registry is always visible when a project is public',
-              )
-            }}
-          </div>
-          <gl-toggle
-            v-model="containerRegistryEnabled"
-            class="gl-my-2"
-            :disabled="!repositoryEnabled"
-            :label="$options.i18n.containerRegistryLabel"
-            label-position="hidden"
-            name="project[container_registry_enabled]"
-          />
-        </project-setting-row>
-        <project-setting-row
           v-if="lfsAvailable"
           ref="git-lfs-settings"
           :help-path="lfsHelpPath"
@@ -590,18 +576,47 @@ export default {
             name="project[packages_enabled]"
           />
         </project-setting-row>
+        <project-setting-row
+          ref="pipeline-settings"
+          :label="$options.i18n.ciCdLabel"
+          :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
+        >
+          <project-feature-setting
+            v-model="buildsAccessLevel"
+            :label="$options.i18n.ciCdLabel"
+            :options="repoFeatureAccessLevelOptions"
+            :disabled-input="!repositoryEnabled"
+            name="project[project_feature_attributes][builds_access_level]"
+          />
+        </project-setting-row>
       </div>
       <project-setting-row
-        ref="pipeline-settings"
-        :label="$options.i18n.ciCdLabel"
-        :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
+        v-if="registryAvailable"
+        ref="container-registry-settings"
+        :help-path="registryHelpPath"
+        :label="$options.i18n.containerRegistryLabel"
+        :help-text="
+          s__('ProjectSettings|Every project can have its own space to store its Docker images')
+        "
       >
+        <div v-if="showContainerRegistryPublicNote" class="text-muted">
+          <gl-sprintf
+            :message="
+              s__(
+                `ProjectSettings|Note: The container registry is always visible when a project is public and the container registry is set to '%{access_level_description}'`,
+              )
+            "
+          >
+            <template #access_level_description>{{
+              featureAccessLevelDescriptions[featureAccessLevel.EVERYONE]
+            }}</template>
+          </gl-sprintf>
+        </div>
         <project-feature-setting
-          v-model="buildsAccessLevel"
-          :label="$options.i18n.ciCdLabel"
-          :options="repoFeatureAccessLevelOptions"
-          :disabled-input="!repositoryEnabled"
-          name="project[project_feature_attributes][builds_access_level]"
+          v-model="containerRegistryAccessLevel"
+          :options="featureAccessLevelOptions"
+          :label="$options.i18n.containerRegistryLabel"
+          name="project[project_feature_attributes][container_registry_access_level]"
         />
       </project-setting-row>
       <project-setting-row
@@ -734,23 +749,6 @@ export default {
           s__(
             'ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets.',
           )
-        }}</template>
-      </gl-form-checkbox>
-    </project-setting-row>
-    <project-setting-row
-      v-if="glFeatures.allowEditingCommitMessages"
-      ref="allow-editing-commit-messages"
-      class="gl-mb-4"
-    >
-      <input
-        :value="allowEditingCommitMessages"
-        type="hidden"
-        name="project[project_setting_attributes][allow_editing_commit_messages]"
-      />
-      <gl-form-checkbox v-model="allowEditingCommitMessages">
-        {{ s__('ProjectSettings|Allow editing commit messages') }}
-        <template #help>{{
-          s__('ProjectSettings|Commit authors can edit commit messages on unprotected branches.')
         }}</template>
       </gl-form-checkbox>
     </project-setting-row>

@@ -7,13 +7,13 @@ module Types
 
       field_class Types::BaseField
 
-      field :id, GraphQL::ID_TYPE, description: 'The ID of this design.', null: false
+      field :id, GraphQL::Types::ID, description: 'The ID of this design.', null: false
       field :project, Types::ProjectType, null: false, description: 'The project the design belongs to.'
       field :issue, Types::IssueType, null: false, description: 'The issue the design belongs to.'
-      field :filename, GraphQL::STRING_TYPE, null: false, description: 'The filename of the design.'
-      field :full_path, GraphQL::STRING_TYPE, null: false, description: 'The full path to the design file.'
-      field :image, GraphQL::STRING_TYPE, null: false, extras: [:parent], description: 'The URL of the full-sized image.'
-      field :image_v432x230, GraphQL::STRING_TYPE, null: true, extras: [:parent],
+      field :filename, GraphQL::Types::String, null: false, description: 'The filename of the design.'
+      field :full_path, GraphQL::Types::String, null: false, description: 'The full path to the design file.'
+      field :image, GraphQL::Types::String, null: false, extras: [:parent], description: 'The URL of the full-sized image.'
+      field :image_v432x230, GraphQL::Types::String, null: true, extras: [:parent],
             description: 'The URL of the design resized to fit within the bounds of 432x230. ' \
                          'This will be `null` if the image has not been generated'
       field :diff_refs, Types::DiffRefsType,
@@ -26,7 +26,7 @@ module Types
             extras: [:parent],
             description: 'How this design was changed in the current version.'
       field :notes_count,
-            GraphQL::INT_TYPE,
+            GraphQL::Types::Int,
             null: false,
             method: :user_notes_count,
             description: 'The total count of user-created notes for this design.'

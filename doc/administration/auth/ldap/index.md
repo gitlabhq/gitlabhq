@@ -197,8 +197,8 @@ Some examples of the `user_filter` field syntax:
 
 LDAP attributes that GitLab uses to create an account for the LDAP user. The specified
 attribute can either be the attribute name as a string (for example, `'mail'`), or an
-array of attribute names to try in order (for example, `['mail', 'email']`). Note that
-the user's LDAP sign-in is the attribute specified as `uid` above.
+array of attribute names to try in order (for example, `['mail', 'email']`).
+The user's LDAP sign-in is the attribute specified as `uid` above.
 
 | Setting      | Description | Required | Examples |
 |--------------|-------------|----------|----------|
@@ -654,7 +654,7 @@ NOTE:
 Administrators are not synced unless `group_base` is also
 specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
 as opposed to the full DN.
-Additionally, note that if an LDAP user has an `admin` role, but is not a member of the `admin_group`
+Additionally, if an LDAP user has an `admin` role, but is not a member of the `admin_group`
 group, GitLab revokes their `admin` role when syncing.
 
 **Omnibus configuration**

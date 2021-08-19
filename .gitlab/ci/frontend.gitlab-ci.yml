@@ -143,7 +143,7 @@ rspec-ee frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs-ee
-  parallel: 2
+  parallel: 3
 
 graphql-schema-dump:
   variables:
@@ -242,7 +242,7 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
-  parallel: 4
+  parallel: 5
 
 jest-integration:
   extends:

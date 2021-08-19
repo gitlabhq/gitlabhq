@@ -1,0 +1,15 @@
+#import "../fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query usersSearch($search: String!, $fullPath: ID!) {
+  workspace: group(fullPath: $fullPath) {
+    users: groupMembers(search: $search, relations: [DIRECT, INHERITED]) {
+      nodes {
+        user {
+          ...User
+          ...UserAvailability
+        }
+      }
+    }
+  }
+}

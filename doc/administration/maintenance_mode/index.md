@@ -60,7 +60,7 @@ There are three ways to disable Maintenance Mode:
 - [**Rails console**](../operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby
-  ::Gitlab::CurrentSettings.update_attributes!(maintenance_mode: false)
+  ::Gitlab::CurrentSettings.update!(maintenance_mode: false)
   ```
 
 ## Behavior of GitLab features in Maintenance Mode

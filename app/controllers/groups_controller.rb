@@ -206,8 +206,6 @@ class GroupsController < Groups::ApplicationController
   protected
 
   def render_show_html
-    record_experiment_user(:invite_members_empty_group_version_a) if ::Gitlab.com?
-
     render 'groups/show', locals: { trial: params[:trial] }
   end
 

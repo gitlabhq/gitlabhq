@@ -301,9 +301,6 @@ describe('Actions menu', () => {
       });
 
       it('redirects to the newly created dashboard', () => {
-        delete window.location;
-        window.location = new URL('https://localhost');
-
         const newDashboard = dashboardGitResponse[1];
 
         const newDashboardUrl = 'root/sandbox/-/metrics/dashboard.yml';

@@ -23,7 +23,7 @@ RSpec.describe 'Merge requests > User lists merge requests' do
                   milestone: create(:milestone, project: project, due_date: '2013-12-11'),
                   created_at: 1.minute.ago,
                   updated_at: 1.minute.ago)
-    @fix.metrics.update_column(:merged_at, 10.seconds.ago)
+    @fix.metrics.update!(merged_at: 10.seconds.ago, latest_closed_at: 10.seconds.ago)
 
     @markdown = create(:merge_request,
            title: 'markdown',
@@ -34,7 +34,7 @@ RSpec.describe 'Merge requests > User lists merge requests' do
            milestone: create(:milestone, project: project, due_date: '2013-12-12'),
            created_at: 2.minutes.ago,
            updated_at: 2.minutes.ago)
-    @markdown.metrics.update_column(:merged_at, 50.seconds.ago)
+    @markdown.metrics.update!(merged_at: 10.minutes.ago, latest_closed_at: 10.seconds.ago)
 
     @merge_test = create(:merge_request,
            title: 'merge-test',
@@ -42,7 +42,15 @@ RSpec.describe 'Merge requests > User lists merge requests' do
            source_branch: 'merge-test',
            created_at: 3.minutes.ago,
            updated_at: 10.seconds.ago)
-    @merge_test.metrics.update_column(:merged_at, 10.seconds.ago)
+    @merge_test.metrics.update!(merged_at: 10.seconds.ago, latest_closed_at: 10.seconds.ago)
+
+    @feature = create(:merge_request,
+           title: 'feature',
+           source_project: project,
+           source_branch: 'feautre',
+           created_at: 2.minutes.ago,
+           updated_at: 1.minute.ago)
+    @feature.metrics.update!(merged_at: 10.seconds.ago, latest_closed_at: 10.minutes.ago)
   end
 
   context 'merge request reviewers' do
@@ -71,9 +79,10 @@ RSpec.describe 'Merge requests > User lists merge requests' do
 
     expect(current_path).to eq(project_merge_requests_path(project))
     expect(page).to have_content 'merge-test'
+    expect(page).to have_content 'feature'
     expect(page).not_to have_content 'fix'
     expect(page).not_to have_content 'markdown'
-    expect(count_merge_requests).to eq(1)
+    expect(count_merge_requests).to eq(2)
   end
 
   it 'filters on a specific assignee' do
@@ -90,28 +99,35 @@ RSpec.describe 'Merge requests > User lists merge requests' do
 
     expect(first_merge_request).to include('fix')
     expect(last_merge_request).to include('merge-test')
-    expect(count_merge_requests).to eq(3)
+    expect(count_merge_requests).to eq(4)
   end
 
   it 'sorts by last updated' do
     visit_merge_requests(project, sort: sort_value_recently_updated)
 
     expect(first_merge_request).to include('merge-test')
-    expect(count_merge_requests).to eq(3)
+    expect(count_merge_requests).to eq(4)
   end
 
   it 'sorts by milestone' do
     visit_merge_requests(project, sort: sort_value_milestone)
 
     expect(first_merge_request).to include('fix')
-    expect(count_merge_requests).to eq(3)
+    expect(count_merge_requests).to eq(4)
   end
 
   it 'sorts by merged at' do
     visit_merge_requests(project, sort: sort_value_merged_date)
 
     expect(first_merge_request).to include('markdown')
-    expect(count_merge_requests).to eq(3)
+    expect(count_merge_requests).to eq(4)
+  end
+
+  it 'sorts by closed at' do
+    visit_merge_requests(project, sort: sort_value_closed_date)
+
+    expect(first_merge_request).to include('feature')
+    expect(count_merge_requests).to eq(4)
   end
 
   it 'filters on one label and sorts by due date' do

@@ -6,15 +6,9 @@ module Gitlab
       class LabelsImporter
         include BulkImporting
 
-        attr_reader :project, :client, :existing_labels
-
-        # project - An instance of `Project`.
-        # client - An instance of `Gitlab::GithubImport::Client`.
         # rubocop: disable CodeReuse/ActiveRecord
-        def initialize(project, client)
-          @project = project
-          @client = client
-          @existing_labels = project.labels.pluck(:title).to_set
+        def existing_labels
+          @existing_labels ||= project.labels.pluck(:title).to_set
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -50,6 +44,10 @@ module Gitlab
 
         def each_label
           client.labels(project.import_source)
+        end
+
+        def object_type
+          :label
         end
       end
     end

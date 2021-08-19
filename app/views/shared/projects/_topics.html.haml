@@ -1,0 +1,32 @@
+- cache_enabled = false unless local_assigns[:cache_enabled] == true
+- max_project_topic_length = 15
+- project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"
+
+- if project.topics.present?
+  = cache_if(cache_enabled, [project, :topic_list], expires_in: 1.day) do
+    %span.gl-w-full.gl-display-inline-flex.gl-font-base.gl-font-weight-normal.gl-align-items-center{ 'data-testid': 'project_topic_list' }
+      = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
+
+      - project.topics_to_show.each do |topic|
+        - explore_project_topic_path = explore_projects_path(topic: topic)
+        - if topic.length > max_project_topic_length
+          %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
+            = truncate(topic, length: max_project_topic_length)
+        - else
+          %a{ class: project_topics_classes, href: explore_project_topic_path, itemprop: 'keywords' }
+            = topic
+
+      - if project.has_extra_topics?
+        - title = _('More topics')
+        - content = capture do
+          %span.gl-display-inline-flex.gl-flex-wrap
+            - project.topics_not_shown.each do |topic|
+              - explore_project_topic_path = explore_projects_path(topic: topic)
+              - if topic.length > max_project_topic_length
+                %a{ class: "#{ project_topics_classes } gl-mb-3 str-truncated has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
+                  = truncate(topic, length: max_project_topic_length)
+              - else
+                %a{ class: "#{ project_topics_classes } gl-mb-3", href: explore_project_topic_path, itemprop: 'keywords' }
+                  = topic
+        .text-nowrap{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
+          = _("+ %{count} more") % { count: project.count_of_extra_topics_not_shown }

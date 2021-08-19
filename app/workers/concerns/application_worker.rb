@@ -54,6 +54,10 @@ module ApplicationWorker
       subclass.after_set_class_attribute { subclass.set_queue }
     end
 
+    def generated_queue_name
+      Gitlab::SidekiqConfig::WorkerRouter.queue_name_from_worker_name(self)
+    end
+
     override :validate_worker_attributes!
     def validate_worker_attributes!
       super

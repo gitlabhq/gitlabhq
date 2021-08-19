@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildTraceChunk < ApplicationRecord
-    extend ::Gitlab::Ci::Model
+  class BuildTraceChunk < Ci::ApplicationRecord
     include ::Comparable
     include ::FastDestroyAll
     include ::Checksummable

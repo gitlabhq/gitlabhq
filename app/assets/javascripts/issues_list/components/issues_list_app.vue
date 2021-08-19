@@ -9,10 +9,11 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { cloneDeep } from 'lodash';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import createFlash from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
@@ -20,7 +21,6 @@ import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
   CREATED_DESC,
   i18n,
-  initialPageParams,
   issuesCountSmartQueryBase,
   MAX_LIST_SIZE,
   PAGE_SIZE,
@@ -36,6 +36,7 @@ import {
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
   urlSortParams,
@@ -46,12 +47,13 @@ import {
   convertToUrlParams,
   getDueDateValue,
   getFilterTokens,
+  getInitialPageParams,
   getSortKey,
   getSortOptions,
 } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import {
   DEFAULT_NONE_ANY,
   OPERATOR_IS_ONLY,
@@ -63,6 +65,7 @@ import {
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_TYPE,
   TOKEN_TITLE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
@@ -73,6 +76,7 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 import eventHub from '../eventhub';
+import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchIterationsQuery from '../queries/search_iterations.query.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
@@ -160,18 +164,22 @@ export default {
     },
   },
   data() {
+    const filterTokens = getFilterTokens(window.location.search);
     const state = getParameterByName(PARAM_STATE);
+    const sortKey = getSortKey(getParameterByName(PARAM_SORT));
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+
+    this.initialFilterTokens = cloneDeep(filterTokens);
 
     return {
       dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
-      filterTokens: getFilterTokens(window.location.search),
+      filterTokens,
       issues: [],
       pageInfo: {},
-      pageParams: initialPageParams,
+      pageParams: getInitialPageParams(sortKey),
       showBulkEditSidebar: false,
-      sortKey: getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey,
+      sortKey: sortKey || defaultSortKey,
       state: state || IssuableStates.Opened,
     };
   },
@@ -275,7 +283,6 @@ export default {
           avatar_url: gon.current_user_avatar_url,
         });
       }
-
       const tokens = [
         {
           type: TOKEN_TYPE_AUTHOR,
@@ -306,7 +313,6 @@ export default {
           icon: 'clock',
           token: MilestoneToken,
           unique: true,
-          defaultMilestones: [],
           fetchMilestones: this.fetchMilestones,
         },
         {
@@ -316,6 +322,18 @@ export default {
           token: LabelToken,
           defaultLabels: DEFAULT_NONE_ANY,
           fetchLabels: this.fetchLabels,
+        },
+        {
+          type: TOKEN_TYPE_TYPE,
+          title: TOKEN_TITLE_TYPE,
+          icon: 'issues',
+          token: GlFilteredSearchToken,
+          operators: OPERATOR_IS_ONLY,
+          options: [
+            { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
+            { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
+            { icon: 'issue-type-test-case', title: 'test_case', value: 'test_case' },
+          ],
         },
       ];
 
@@ -518,12 +536,12 @@ export default {
     },
     handleClickTab(state) {
       if (this.state !== state) {
-        this.pageParams = initialPageParams;
+        this.pageParams = getInitialPageParams(this.sortKey);
       }
       this.state = state;
     },
     handleFilter(filter) {
-      this.pageParams = initialPageParams;
+      this.pageParams = getInitialPageParams(this.sortKey);
       this.filterTokens = filter;
     },
     handleNextPage() {
@@ -560,14 +578,16 @@ export default {
       }
 
       return axios
-        .put(`${this.issuesPath}/${issueToMove.iid}/reorder`, {
-          move_before_id: isMovingToBeginning ? null : moveBeforeId,
-          move_after_id: isMovingToEnd ? null : moveAfterId,
+        .put(joinPaths(this.issuesPath, issueToMove.iid, 'reorder'), {
+          move_before_id: isMovingToBeginning ? null : getIdFromGraphQLId(moveBeforeId),
+          move_after_id: isMovingToEnd ? null : getIdFromGraphQLId(moveAfterId),
         })
         .then(() => {
-          // Move issue to new position in list
-          this.issues.splice(oldIndex, 1);
-          this.issues.splice(newIndex, 0, issueToMove);
+          const serializedVariables = JSON.stringify(this.queryVariables);
+          this.$apollo.mutate({
+            mutation: reorderIssuesMutation,
+            variables: { oldIndex, newIndex, serializedVariables },
+          });
         })
         .catch(() => {
           createFlash({ message: this.$options.i18n.reorderError });
@@ -575,7 +595,7 @@ export default {
     },
     handleSort(sortKey) {
       if (this.sortKey !== sortKey) {
-        this.pageParams = initialPageParams;
+        this.pageParams = getInitialPageParams(sortKey);
       }
       this.sortKey = sortKey;
     },
@@ -593,7 +613,7 @@ export default {
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
-      :initial-filter-value="filterTokens"
+      :initial-filter-value="initialFilterTokens"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"

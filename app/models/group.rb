@@ -80,7 +80,7 @@ class Group < Namespace
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::GroupDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  delegate :prevent_sharing_groups_outside_hierarchy, to: :namespace_settings
+  delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, to: :namespace_settings
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -158,7 +158,7 @@ class Group < Namespace
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
           .where(project_namespace: { share_with_group_lock: false })
-          .select("projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
+          .select("projects.id AS project_id", "LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super
       end
@@ -296,7 +296,7 @@ class Group < Namespace
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    Members::Groups::CreatorService.add_users( # rubocop:todo CodeReuse/ServiceClass
+    Members::Groups::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       self,
       users,
       access_level,
@@ -306,7 +306,7 @@ class Group < Namespace
   end
 
   def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false)
-    Members::Groups::CreatorService.new(self, # rubocop:todo CodeReuse/ServiceClass
+    Members::Groups::CreatorService.new(self, # rubocop:disable CodeReuse/ServiceClass
                                         user,
                                         access_level,
                                         current_user: current_user,
@@ -463,7 +463,7 @@ class Group < Namespace
         id
       end
 
-    group_hierarchy_members = GroupMember.where(source_id: source_ids)
+    group_hierarchy_members = GroupMember.where(source_id: source_ids).select(*GroupMember.cached_column_list)
 
     GroupMember.from_union([group_hierarchy_members,
                             members_from_self_and_ancestor_group_shares]).authorizable
@@ -481,6 +481,7 @@ class Group < Namespace
     group_hierarchy_members = GroupMember.active_without_invites_and_requests
                                          .non_minimal_access
                                          .where(source_id: source_ids)
+                                         .select(*GroupMember.cached_column_list)
 
     GroupMember.from_union([group_hierarchy_members,
                             members_from_self_and_ancestor_group_shares])
@@ -728,6 +729,10 @@ class Group < Namespace
     Groups::MergeRequestsCountService.new(self, current_user).count
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def timelogs
+    Timelog.in_group(self)
+  end
 
   private
 

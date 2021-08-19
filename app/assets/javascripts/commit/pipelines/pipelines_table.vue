@@ -2,6 +2,7 @@
 import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
+import { PipelineKeyOptions } from '~/pipelines/constants';
 import eventHub from '~/pipelines/event_hub';
 import PipelinesMixin from '~/pipelines/mixins/pipelines_mixin';
 import PipelinesService from '~/pipelines/services/pipelines_service';
@@ -10,6 +11,7 @@ import TablePagination from '~/vue_shared/components/pagination/table_pagination
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
+  PipelineKeyOptions,
   components: {
     GlButton,
     GlEmptyState,
@@ -205,6 +207,7 @@ export default {
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :view-type="viewType"
+        :pipeline-key-option="$options.PipelineKeyOptions[0]"
       >
         <template #table-header-actions>
           <div v-if="canRenderPipelineButton" class="gl-text-right">

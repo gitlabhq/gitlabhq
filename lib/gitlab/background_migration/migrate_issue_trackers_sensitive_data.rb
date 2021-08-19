@@ -65,7 +65,7 @@ module Gitlab
           next if service_ids.empty?
 
           migrated_ids += service_ids
-          Gitlab::Database.bulk_insert(table, data) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(table, data) # rubocop:disable Gitlab/BulkInsert
         end
 
         return if migrated_ids.empty?

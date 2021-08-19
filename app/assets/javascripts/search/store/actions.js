@@ -46,38 +46,44 @@ export const fetchProjects = ({ commit, state }, search) => {
   }
 };
 
-export const loadFrequentGroups = async ({ commit }) => {
-  const data = loadDataFromLS(GROUPS_LOCAL_STORAGE_KEY);
-  commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data });
+export const preloadStoredFrequentItems = ({ commit }) => {
+  const storedGroups = loadDataFromLS(GROUPS_LOCAL_STORAGE_KEY);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data: storedGroups });
 
-  const promises = data.map((d) => Api.group(d.id));
+  const storedProjects = loadDataFromLS(PROJECTS_LOCAL_STORAGE_KEY);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: storedProjects });
+};
+
+export const loadFrequentGroups = async ({ commit, state }) => {
+  const storedData = state.frequentItems[GROUPS_LOCAL_STORAGE_KEY];
+  const promises = storedData.map((d) => Api.group(d.id));
   try {
-    const inflatedData = mergeById(await Promise.all(promises), data);
+    const inflatedData = mergeById(await Promise.all(promises), storedData);
     commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data: inflatedData });
   } catch {
     createFlash({ message: __('There was a problem fetching recent groups.') });
   }
 };
 
-export const loadFrequentProjects = async ({ commit }) => {
-  const data = loadDataFromLS(PROJECTS_LOCAL_STORAGE_KEY);
-  commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data });
-
-  const promises = data.map((d) => Api.project(d.id).then((res) => res.data));
+export const loadFrequentProjects = async ({ commit, state }) => {
+  const storedData = state.frequentItems[PROJECTS_LOCAL_STORAGE_KEY];
+  const promises = storedData.map((d) => Api.project(d.id).then((res) => res.data));
   try {
-    const inflatedData = mergeById(await Promise.all(promises), data);
+    const inflatedData = mergeById(await Promise.all(promises), storedData);
     commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: inflatedData });
   } catch {
     createFlash({ message: __('There was a problem fetching recent projects.') });
   }
 };
 
-export const setFrequentGroup = ({ state }, item) => {
-  setFrequentItemToLS(GROUPS_LOCAL_STORAGE_KEY, state.frequentItems, item);
+export const setFrequentGroup = ({ state, commit }, item) => {
+  const frequentItems = setFrequentItemToLS(GROUPS_LOCAL_STORAGE_KEY, state.frequentItems, item);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data: frequentItems });
 };
 
-export const setFrequentProject = ({ state }, item) => {
-  setFrequentItemToLS(PROJECTS_LOCAL_STORAGE_KEY, state.frequentItems, item);
+export const setFrequentProject = ({ state, commit }, item) => {
+  const frequentItems = setFrequentItemToLS(PROJECTS_LOCAL_STORAGE_KEY, state.frequentItems, item);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: frequentItems });
 };
 
 export const setQuery = ({ commit }, { key, value }) => {

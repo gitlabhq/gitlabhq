@@ -8,7 +8,7 @@ import {
 import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY } from '../constants';
+import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY, FILTER_NONE_ANY, OPERATOR_IS_NOT } from '../constants';
 
 export default {
   separator: '::&',
@@ -47,6 +47,14 @@ export default {
     },
     defaultEpics() {
       return this.config.defaultEpics || DEFAULT_NONE_ANY;
+    },
+    availableDefaultEpics() {
+      if (this.value.operator === OPERATOR_IS_NOT) {
+        return this.defaultEpics.filter(
+          (suggestion) => !FILTER_NONE_ANY.includes(suggestion.value),
+        );
+      }
+      return this.defaultEpics;
     },
     activeEpic() {
       if (this.currentValue && this.epics.length) {
@@ -99,7 +107,7 @@ export default {
       // We don't have any information about selected token except for its
       // group path and iid joined by separator, so we need to manually
       // compose epic path from it.
-      if (data.includes(this.$options.separator)) {
+      if (data.includes?.(this.$options.separator)) {
         const [groupPath, epicIid] = data.split(this.$options.separator);
         epicPath = `/groups/${groupPath}/-/epics/${epicIid}`;
       }
@@ -127,13 +135,13 @@ export default {
     </template>
     <template #suggestions>
       <gl-filtered-search-suggestion
-        v-for="epic in defaultEpics"
+        v-for="epic in availableDefaultEpics"
         :key="epic.value"
         :value="epic.value"
       >
         {{ epic.text }}
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider v-if="defaultEpics.length" />
+      <gl-dropdown-divider v-if="availableDefaultEpics.length" />
       <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion v-for="epic in epics" :key="epic.id" :value="getValue(epic)">

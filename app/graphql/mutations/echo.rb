@@ -11,18 +11,18 @@ module Mutations
     DOC
 
     argument :errors,
-             type: [::GraphQL::STRING_TYPE],
+             type: [::GraphQL::Types::String],
              required: false,
              description: 'Errors to return to the user.'
 
     argument :messages,
-             type: [::GraphQL::STRING_TYPE],
+             type: [::GraphQL::Types::String],
              as: :echoes,
              required: false,
              description: 'Messages to return to the user.'
 
     field :echoes,
-          type: [::GraphQL::STRING_TYPE],
+          type: [::GraphQL::Types::String],
           null: true,
           description: 'Messages returned to the user.'
 

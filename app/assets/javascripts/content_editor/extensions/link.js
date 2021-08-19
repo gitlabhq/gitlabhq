@@ -20,7 +20,11 @@ export const extractHrefFromMarkdownLink = (match) => {
   return extractHrefFromMatch(match);
 };
 
-export const tiptapExtension = Link.extend({
+export default Link.extend({
+  defaultOptions: {
+    ...Link.options,
+    openOnClick: false,
+  },
   addInputRules() {
     return [
       markInputRule(markdownLinkSyntaxInputRuleRegExp, this.type, extractHrefFromMarkdownLink),
@@ -48,16 +52,4 @@ export const tiptapExtension = Link.extend({
       },
     };
   },
-}).configure({
-  openOnClick: false,
 });
-
-export const serializer = {
-  open() {
-    return '[';
-  },
-  close(state, mark) {
-    const href = mark.attrs.canonicalSrc || mark.attrs.href;
-    return `](${state.esc(href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`;
-  },
-};

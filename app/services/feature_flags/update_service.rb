@@ -12,7 +12,7 @@ module FeatureFlags
       return error('Access Denied', 403) unless can_update?(feature_flag)
       return error('Not Found', 404) unless valid_user_list_ids?(feature_flag, user_list_ids(params))
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         feature_flag.assign_attributes(params)
 
         feature_flag.strategies.each do |strategy|

@@ -37,6 +37,7 @@ module Gitlab
         @logger.formatter = ::Gitlab::SidekiqLogging::JSONFormatter.new
         @rails_path = Dir.pwd
         @dryrun = false
+        @list_queues = false
       end
 
       def run(argv = ARGV)
@@ -46,6 +47,11 @@ module Gitlab
         end
 
         option_parser.parse!(argv)
+
+        if @dryrun && @list_queues
+          raise CommandError,
+            'The --dryrun and --list-queues options are mutually exclusive'
+        end
 
         worker_metadatas = SidekiqConfig::CliMethods.worker_metadatas(@rails_path)
         worker_queues = SidekiqConfig::CliMethods.worker_queues(@rails_path)
@@ -71,6 +77,12 @@ module Gitlab
         if queue_groups.all?(&:empty?)
           raise CommandError,
             'No queues found, you must select at least one queue'
+        end
+
+        if @list_queues
+          puts queue_groups.map(&:sort) # rubocop:disable Rails/Output
+
+          return
         end
 
         unless @dryrun
@@ -201,6 +213,10 @@ module Gitlab
 
           opt.on('-d', '--dryrun', 'Print commands that would be run without this flag, and quit') do |int|
             @dryrun = true
+          end
+
+          opt.on('--list-queues', 'List matching queues, and quit') do |int|
+            @list_queues = true
           end
         end
       end

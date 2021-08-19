@@ -38,7 +38,7 @@ or other scanners) during a scan could cause inaccurate results.
 
 You can run a Web API fuzzing scan using the following methods:
 
-- [OpenAPI Specification](#openapi-specification) - version 2.0 or 3.0
+- [OpenAPI Specification](#openapi-specification) - version 2, and 3.
 - [HTTP Archive](#http-archive-har) (HAR)
 - [Postman Collection](#postman-collection) - version 2.0 or 2.1
 
@@ -112,6 +112,8 @@ To generate an API Fuzzing configuration snippet:
 
 ### OpenAPI Specification
 
+> Support for OpenAPI Specification v3.1 was
+> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
 > Support for OpenAPI Specification using YAML format was
 > [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
 > Support for OpenAPI Specification v3.0 was

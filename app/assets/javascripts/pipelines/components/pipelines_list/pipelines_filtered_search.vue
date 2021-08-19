@@ -4,6 +4,7 @@ import { map } from 'lodash';
 import { s__ } from '~/locale';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import PipelineBranchNameToken from './tokens/pipeline_branch_name_token.vue';
+import PipelineSourceToken from './tokens/pipeline_source_token.vue';
 import PipelineStatusToken from './tokens/pipeline_status_token.vue';
 import PipelineTagNameToken from './tokens/pipeline_tag_name_token.vue';
 import PipelineTriggerAuthorToken from './tokens/pipeline_trigger_author_token.vue';
@@ -13,6 +14,7 @@ export default {
   branchType: 'ref',
   tagType: 'tag',
   statusType: 'status',
+  sourceType: 'source',
   defaultTokensLength: 1,
   components: {
     GlFilteredSearch,
@@ -37,7 +39,7 @@ export default {
       return this.value.map((i) => i.type);
     },
     tokens() {
-      return [
+      const tokens = [
         {
           type: this.$options.userType,
           icon: 'user',
@@ -76,6 +78,19 @@ export default {
           operators: OPERATOR_IS_ONLY,
         },
       ];
+
+      if (gon.features.pipelineSourceFilter) {
+        tokens.push({
+          type: this.$options.sourceType,
+          icon: 'trigger-source',
+          title: s__('Pipeline|Source'),
+          unique: true,
+          token: PipelineSourceToken,
+          operators: OPERATOR_IS_ONLY,
+        });
+      }
+
+      return tokens;
     },
     parsedParams() {
       return map(this.params, (val, key) => ({
@@ -101,12 +116,10 @@ export default {
 </script>
 
 <template>
-  <div class="row-content-block">
-    <gl-filtered-search
-      v-model="value"
-      :placeholder="__('Filter pipelines')"
-      :available-tokens="tokens"
-      @submit="onSubmit"
-    />
-  </div>
+  <gl-filtered-search
+    v-model="value"
+    :placeholder="__('Filter pipelines')"
+    :available-tokens="tokens"
+    @submit="onSubmit"
+  />
 </template>

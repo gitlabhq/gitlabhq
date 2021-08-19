@@ -38,7 +38,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_COMMIT_TITLE`                        | 10.8   | all    | The title of the commit. The full first line of the message. |
 | `CI_CONCURRENT_ID`                       | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`               | all    | 11.10  | The unique ID of build execution in a single executor and project. |
-| `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |
+| `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. Read-only inside a running pipeline. |
 | `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](index.md#debug-logging) is enabled. |
 | `CI_DEFAULT_BRANCH`                      | 12.4   | all    | The name of the project's default branch. |
 | `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` | 13.7   | all    | The image prefix for pulling images through the Dependency Proxy. |
@@ -89,8 +89,9 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_PROJECT_TITLE`                       | 12.4   | all    | The human-readable project name as displayed in the GitLab web interface. |
 | `CI_PROJECT_URL`                         | 8.10   | 0.5    | The HTTP(S) address of the project. |
 | `CI_PROJECT_VISIBILITY`                  | 10.3   | all    | The project visibility. Can be `internal`, `private`, or `public`. |
+| `CI_PROJECT_CLASSIFICATION_LABEL`        | 14.2   | all    | The project [external authorization classification label](../../user/admin_area/settings/external_authorization.md). |
 | `CI_REGISTRY_IMAGE`                      | 8.10   | 0.5    | The address of the project's Container Registry. Only available if the Container Registry is enabled for the project. |
-| `CI_REGISTRY_PASSWORD`                   | 9.0    | all    | The password to push containers to the project's GitLab Container Registry. Only available if the Container Registry is enabled for the project. |
+| `CI_REGISTRY_PASSWORD`                   | 9.0    | all    | The password to push containers to the project's GitLab Container Registry. Only available if the Container Registry is enabled for the project. This password value is the same as the `CI_JOB_TOKEN` and is valid only as long as the job is running. Use the `CI_DEPLOY_PASSWORD` for long-lived access to the registry |
 | `CI_REGISTRY_USER`                       | 9.0    | all    | The username to push containers to the project's GitLab Container Registry. Only available if the Container Registry is enabled for the project. |
 | `CI_REGISTRY`                            | 8.10   | 0.5    | The address of the GitLab Container Registry. Only available if the Container Registry is enabled for the project. This variable includes a `:port` value if one is specified in the registry configuration. |
 | `CI_REPOSITORY_URL`                      | 9.0    | all    | The URL to clone the Git repository. |

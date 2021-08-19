@@ -4,7 +4,7 @@ module Types
   module InvitationInterface
     include BaseInterface
 
-    field :email, GraphQL::STRING_TYPE, null: false,
+    field :email, GraphQL::Types::String, null: false,
           description: 'Email of the member to invite.'
 
     field :access_level, Types::AccessLevelType, null: true,

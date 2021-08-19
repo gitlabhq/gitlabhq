@@ -92,4 +92,23 @@ RSpec.describe SnippetsHelper do
       end
     end
   end
+
+  describe '#snippet_report_abuse_path' do
+    let(:snippet) { public_personal_snippet }
+    let(:current_user) { create(:user) }
+
+    subject { snippet_report_abuse_path(snippet) }
+
+    it 'returns false if the user cannot submit the snippet as spam' do
+      allow(snippet).to receive(:submittable_as_spam_by?).and_return(false)
+
+      expect(subject).to be_falsey
+    end
+
+    it 'returns true if the user can submit the snippet as spam' do
+      allow(snippet).to receive(:submittable_as_spam_by?).and_return(true)
+
+      expect(subject).to be_truthy
+    end
+  end
 end

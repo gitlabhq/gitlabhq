@@ -34,9 +34,10 @@ developed and tested. We aim to be compatible with most external
    roles ['geo_primary_role']
 
    ##
-   ## The unique identifier for the Geo site.
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
    ##
-   gitlab_rails['geo_node_name'] = '<geo_site_name_here>'
+   gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
 1. Reconfigure the **primary** node for the change to take effect:
@@ -242,7 +243,7 @@ the tracking database on port 5432.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
 
-1. The reconfigure should automatically create the database. If needed, you can perform this task manually. Note that this task (whether run by itself or during reconfigure) requires the database user to be a superuser.
+1. The reconfigure should automatically create the database. If needed, you can perform this task manually. This task (whether run by itself or during reconfigure) requires the database user to be a superuser.
 
    ```shell
    gitlab-rake geo:db:create

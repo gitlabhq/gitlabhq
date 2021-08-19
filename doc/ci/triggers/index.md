@@ -205,7 +205,7 @@ file. The parameter is of the form:
 variables[key]=value
 ```
 
-This information is also exposed in the UI. Please note that _values_ are only viewable by Owners and Maintainers.
+This information is also exposed in the UI. _Values_ are only viewable by users with the Owner and Maintainer role.
 
 ![Job variables in UI](img/trigger_variables.png)
 

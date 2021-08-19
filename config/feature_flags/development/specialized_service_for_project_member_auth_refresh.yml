@@ -1,0 +1,8 @@
+---
+name: specialized_service_for_project_member_auth_refresh
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67477
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337730
+milestone: '14.2'
+type: development
+group: group::access
+default_enabled: false

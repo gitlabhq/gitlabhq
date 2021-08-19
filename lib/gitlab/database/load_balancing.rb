@@ -23,7 +23,7 @@ module Gitlab
 
       # The connection proxy to use for load balancing (if enabled).
       def self.proxy
-        unless @proxy
+        unless load_balancing_proxy = ActiveRecord::Base.load_balancing_proxy
           Gitlab::ErrorTracking.track_exception(
             ProxyNotConfiguredError.new(
               "Attempting to access the database load balancing proxy, but it wasn't configured.\n" \
@@ -31,12 +31,12 @@ module Gitlab
             ))
         end
 
-        @proxy
+        load_balancing_proxy
       end
 
       # Returns a Hash containing the load balancing configuration.
       def self.configuration
-        Gitlab::Database.config[:load_balancing] || {}
+        Gitlab::Database.main.config[:load_balancing] || {}
       end
 
       # Returns the maximum replica lag size in bytes.
@@ -79,7 +79,7 @@ module Gitlab
       end
 
       def self.pool_size
-        Gitlab::Database.config[:pool]
+        Gitlab::Database.main.pool_size
       end
 
       # Returns true if load balancing is to be enabled.
@@ -107,12 +107,12 @@ module Gitlab
 
       # Configures proxying of requests.
       def self.configure_proxy(proxy = ConnectionProxy.new(hosts))
-        @proxy = proxy
+        ActiveRecord::Base.load_balancing_proxy = proxy
 
-        # This hijacks the "connection" method to ensure both
-        # `ActiveRecord::Base.connection` and all models use the same load
-        # balancing proxy.
-        ActiveRecord::Base.singleton_class.prepend(ActiveRecordProxy)
+        # Populate service discovery immediately if it is configured
+        if service_discovery_enabled?
+          ServiceDiscovery.new(service_discovery_configuration).perform_service_discovery
+        end
       end
 
       def self.active_record_models
@@ -132,9 +132,22 @@ module Gitlab
       # recognize the connection, this method returns the primary role
       # directly. In future, we may need to check for other sources.
       def self.db_role_for_connection(connection)
-        return ROLE_PRIMARY if !enable? || @proxy.blank?
+        return ROLE_UNKNOWN unless connection
 
-        proxy.load_balancer.db_role_for_connection(connection)
+        # The connection proxy does not have a role assigned
+        # as this is dependent on a execution context
+        return ROLE_UNKNOWN if connection.is_a?(ConnectionProxy)
+
+        # During application init we might receive `NullPool`
+        return ROLE_UNKNOWN unless connection.respond_to?(:pool) &&
+          connection.pool.respond_to?(:db_config) &&
+          connection.pool.db_config.respond_to?(:name)
+
+        if connection.pool.db_config.name.ends_with?(LoadBalancer::REPLICA_SUFFIX)
+          ROLE_REPLICA
+        else
+          ROLE_PRIMARY
+        end
       end
     end
   end

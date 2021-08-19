@@ -290,6 +290,17 @@ module X509Helpers
       SIGNEDDATA
     end
 
+    def unsigned_tag_base_data
+      <<~SIGNEDDATA
+      object 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+      type commit
+      tag v1.0.0
+      tagger Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com> 1393491299 +0200
+      
+      Release
+      SIGNEDDATA
+    end
+
     def certificate_crl
       'http://ch.siemens.com/pki?ZZZZZZA2.crl'
     end

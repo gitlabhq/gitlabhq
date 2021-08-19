@@ -1,9 +1,9 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.group_clusters_disabled
 description: Total GitLab Managed disabled clusters previously attached to groups
 product_section: ops
-product_stage:
+product_stage: 
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 skip_validation: true
+performance_indicator_type: []

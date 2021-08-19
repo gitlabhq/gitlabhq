@@ -1,0 +1,12 @@
+---
+# Suggestion: gitlab.ReadingLevel
+#
+# Checks the Flesch-Kincaid reading level.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: readability
+message: "Grade level (%s) is high. To lower the score, use shorter sentences and words."
+level: suggestion
+grade: 8
+metrics:
+  - Flesch-Kincaid

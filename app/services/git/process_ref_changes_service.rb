@@ -51,13 +51,17 @@ module Git
           change: change,
           push_options: params[:push_options],
           merge_request_branches: merge_request_branches,
-          create_pipelines: change[:index] < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, project),
+          create_pipelines: under_process_limit?(change),
           execute_project_hooks: execute_project_hooks,
           create_push_event: !create_bulk_push_event
         ).execute
       end
 
       create_bulk_push_event(ref_type, action, changes) if create_bulk_push_event
+    end
+
+    def under_process_limit?(change)
+      change[:index] < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, project)
     end
 
     def create_bulk_push_event(ref_type, action, changes)

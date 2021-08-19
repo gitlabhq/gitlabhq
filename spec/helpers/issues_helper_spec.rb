@@ -1,14 +1,26 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 RSpec.describe IssuesHelper do
   let(:project) { create(:project) }
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
+  describe '#work_item_type_icon' do
+    it 'returns icon of all standard base types' do
+      WorkItem::Type.base_types.each do |type|
+        expect(work_item_type_icon(type[0])).to eq "issue-type-#{type[0].to_s.dasherize}"
+      end
+    end
+
+    it 'defaults to issue icon if type is unknown' do
+      expect(work_item_type_icon('invalid')).to eq 'issue-type-issue'
+    end
+  end
+
   describe '#award_user_list' do
-    it "returns a comma-separated list of the first X users" do
+    it 'returns a comma-separated list of the first X users' do
       user = build_stubbed(:user, name: 'Joe')
       awards = Array.new(3, build_stubbed(:award_emoji, user: user))
 
@@ -24,7 +36,7 @@ RSpec.describe IssuesHelper do
       expect(award_user_list([award], nil)).to eq 'Joe'
     end
 
-    it "truncates lists" do
+    it 'truncates lists' do
       user = build_stubbed(:user, name: 'Jane')
       awards = Array.new(5, build_stubbed(:award_emoji, user: user))
 
@@ -32,14 +44,14 @@ RSpec.describe IssuesHelper do
         .to eq('Jane, Jane, Jane, and 2 more.')
     end
 
-    it "displays the current user in front of other users" do
+    it 'displays the current user in front of other users' do
       current_user = build_stubbed(:user)
       my_award = build_stubbed(:award_emoji, user: current_user)
       award = build_stubbed(:award_emoji, user: build_stubbed(:user, name: 'Jane'))
       awards = Array.new(5, award).push(my_award)
 
       expect(award_user_list(awards, current_user, limit: 2))
-        .to eq("You, Jane, and 4 more.")
+        .to eq('You, Jane, and 4 more.')
     end
   end
 
@@ -54,19 +66,19 @@ RSpec.describe IssuesHelper do
       end
     end
 
-    it "returns disabled string for unauthenticated user" do
-      expect(helper.award_state_class(awardable, AwardEmoji.all, nil)).to eq("disabled")
+    it 'returns disabled string for unauthenticated user' do
+      expect(helper.award_state_class(awardable, AwardEmoji.all, nil)).to eq('disabled')
     end
 
-    it "returns disabled for a user that does not have access to the awardable" do
-      expect(helper.award_state_class(awardable, AwardEmoji.all, build(:user))).to eq("disabled")
+    it 'returns disabled for a user that does not have access to the awardable' do
+      expect(helper.award_state_class(awardable, AwardEmoji.all, build(:user))).to eq('disabled')
     end
 
-    it "returns active string for author" do
-      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq("active")
+    it 'returns active string for author' do
+      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq('active')
     end
 
-    it "is blank for a user that has access to the awardable" do
+    it 'is blank for a user that has access to the awardable' do
       user = build(:user)
       expect(helper).to receive(:can?).with(user, :award_emoji, awardable).and_return(true)
 
@@ -74,40 +86,40 @@ RSpec.describe IssuesHelper do
     end
   end
 
-  describe "awards_sort" do
-    it "sorts a hash so thumbsup and thumbsdown are always on top" do
-      data = { "thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value" }
+  describe 'awards_sort' do
+    it 'sorts a hash so thumbsup and thumbsdown are always on top' do
+      data = { 'thumbsdown' => 'some value', 'lifter' => 'some value', 'thumbsup' => 'some value' }
       expect(awards_sort(data).keys).to eq(%w(thumbsup thumbsdown lifter))
     end
   end
 
-  describe "#link_to_discussions_to_resolve" do
-    describe "passing only a merge request" do
+  describe '#link_to_discussions_to_resolve' do
+    describe 'passing only a merge request' do
       let(:merge_request) { create(:merge_request) }
 
-      it "links just the merge request" do
+      it 'links just the merge request' do
         expected_path = project_merge_request_path(merge_request.project, merge_request)
 
         expect(link_to_discussions_to_resolve(merge_request, nil)).to include(expected_path)
       end
 
-      it "contains the reference to the merge request" do
+      it 'contains the reference to the merge request' do
         expect(link_to_discussions_to_resolve(merge_request, nil)).to include(merge_request.to_reference)
       end
     end
 
-    describe "when passing a discussion" do
+    describe 'when passing a discussion' do
       let(:diff_note) { create(:diff_note_on_merge_request) }
       let(:merge_request) { diff_note.noteable }
       let(:discussion) { diff_note.to_discussion }
 
-      it "links to the merge request with first note if a single discussion was passed" do
+      it 'links to the merge request with first note if a single discussion was passed' do
         expected_path = Gitlab::UrlBuilder.build(diff_note)
 
         expect(link_to_discussions_to_resolve(merge_request, discussion)).to include(expected_path)
       end
 
-      it "contains both the reference to the merge request and a mention of the discussion" do
+      it 'contains both the reference to the merge request and a mention of the discussion' do
         expect(link_to_discussions_to_resolve(merge_request, discussion)).to include("#{merge_request.to_reference} (discussion #{diff_note.id})")
       end
     end
@@ -235,13 +247,13 @@ RSpec.describe IssuesHelper do
   end
 
   describe '#use_startup_call' do
-    it "returns false when a query param is present" do
+    it 'returns false when a query param is present' do
       allow(controller.request).to receive(:query_parameters).and_return({ foo: 'bar' })
 
       expect(helper.use_startup_call?).to eq(false)
     end
 
-    it "returns false when user has stored sort preference" do
+    it 'returns false when user has stored sort preference' do
       controller.instance_variable_set(:@sort, 'updated_asc')
 
       expect(helper.use_startup_call?).to eq(false)
@@ -265,13 +277,13 @@ RSpec.describe IssuesHelper do
 
     it 'returns expected result' do
       expected = {
-        can_create_issue: "true",
-        can_reopen_issue: "true",
-        can_report_spam: "false",
-        can_update_issue: "true",
+        can_create_issue: 'true',
+        can_reopen_issue: 'true',
+        can_report_spam: 'false',
+        can_update_issue: 'true',
         iid: issue.iid,
-        is_issue_author: "false",
-        issue_type: "issue",
+        is_issue_author: 'false',
+        issue_type: 'issue',
         new_issue_path: new_project_issue_path(project),
         project_path: project.full_path,
         report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),
@@ -307,7 +319,7 @@ RSpec.describe IssuesHelper do
         initial_email: project.new_issuable_address(current_user, 'issue'),
         is_signed_in: current_user.present?.to_s,
         issues_path: project_issues_path(project),
-        jira_integration_path: help_page_url('integration/jira/', anchor: 'view-jira-issues'),
+        jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         markdown_help_path: help_page_path('user/markdown'),
         max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
         new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.id }),
@@ -345,7 +357,7 @@ RSpec.describe IssuesHelper do
       end
 
       it 'returns manual ordering class' do
-        expect(helper.issue_manual_ordering_class).to eq("manual-ordering")
+        expect(helper.issue_manual_ordering_class).to eq('manual-ordering')
       end
 
       context 'when manual sorting disabled' do

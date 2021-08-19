@@ -111,4 +111,35 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       end
     end
   end
+
+  context 'when a command takes longer than DURATION_ERROR_THRESHOLD' do
+    let(:threshold) { 0.5 }
+
+    before do
+      stub_const("#{described_class}::DURATION_ERROR_THRESHOLD", threshold)
+    end
+
+    context 'when report_on_long_redis_durations is disabled' do
+      it 'does nothing' do
+        stub_feature_flags(report_on_long_redis_durations: false)
+
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        Gitlab::Redis::SharedState.with { |r| r.mget('foo', 'foo') { sleep threshold + 0.1 } }
+      end
+    end
+
+    context 'when report_on_long_redis_durations is enabled' do
+      it 'tracks an exception and continues' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+                .with(an_instance_of(described_class::MysteryRedisDurationError),
+                      command: 'mget',
+                      duration: be > threshold,
+                      timestamp: a_string_matching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{5}/))
+
+        Gitlab::Redis::SharedState.with { |r| r.mget('foo', 'foo') { sleep threshold + 0.1 } }
+      end
+    end
+  end
 end

@@ -6,9 +6,9 @@ module Types
       graphql_name 'CiStage'
       authorize :read_commit_status
 
-      field :id, GraphQL::ID_TYPE, null: false,
+      field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the stage.'
-      field :name, type: GraphQL::STRING_TYPE, null: true,
+      field :name, type: GraphQL::Types::String, null: true,
             description: 'Name of the stage.'
       field :groups, type: Ci::GroupType.connection_type, null: true,
             extras: [:lookahead],
@@ -18,7 +18,7 @@ module Types
       field :jobs, Ci::JobType.connection_type, null: true,
             description: 'Jobs for the stage.',
             method: 'latest_statuses'
-      field :status, GraphQL::STRING_TYPE,
+      field :status, GraphQL::Types::String,
             null: true,
             description: 'Status of the pipeline stage.'
 
@@ -52,9 +52,13 @@ module Types
 
       # rubocop: disable CodeReuse/ActiveRecord
       def jobs_for_pipeline(pipeline, stage_ids, include_needs)
-        results = pipeline.latest_statuses.where(stage_id: stage_ids)
-        results = results.preload(:project)
-        results = results.preload(:needs) if include_needs
+        builds_results = pipeline.latest_builds.where(stage_id: stage_ids).preload(:job_artifacts, :project)
+        bridges_results = pipeline.bridges.where(stage_id: stage_ids).preload(:project)
+        builds_results = builds_results.preload(:needs) if include_needs
+        bridges_results = bridges_results.preload(:needs) if include_needs
+        commit_status_results = pipeline.latest_statuses.where(stage_id: stage_ids)
+
+        results = builds_results | bridges_results | commit_status_results
 
         results.group_by(&:stage_id)
       end

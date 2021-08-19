@@ -1,16 +1,37 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.analytics.analytics_total_unique_counts_weekly
 description: The number of unique users who visited any analytics feature by week
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - users_viewing_analytics_group_devops_adoption
+    - i_analytics_dev_ops_adoption
+    - i_analytics_dev_ops_score
+    - p_analytics_merge_request
+    - i_analytics_instance_statistics
+    - g_analytics_contribution
+    - g_analytics_insights
+    - g_analytics_issues
+    - g_analytics_productivity
+    - g_analytics_valuestream
+    - p_analytics_pipelines
+    - p_analytics_code_reviews
+    - p_analytics_valuestream
+    - p_analytics_insights
+    - p_analytics_issues
+    - p_analytics_repo
+    - i_analytics_cohorts
 distribution:
 - ee
 tier: []
 skip_validation: true
+performance_indicator_type: []

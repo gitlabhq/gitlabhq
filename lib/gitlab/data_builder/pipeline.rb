@@ -2,20 +2,56 @@
 
 module Gitlab
   module DataBuilder
-    module Pipeline
-      extend self
+    # Some callers want to include retried builds, so we wrap the payload hash
+    # in a SimpleDelegator with additional methods.
+    class Pipeline < SimpleDelegator
+      def self.build(pipeline)
+        new(pipeline)
+      end
 
-      def build(pipeline)
-        {
+      def initialize(pipeline)
+        @pipeline = pipeline
+
+        super(
           object_kind: 'pipeline',
           object_attributes: hook_attrs(pipeline),
           merge_request: pipeline.merge_request && merge_request_attrs(pipeline.merge_request),
           user: pipeline.user.try(:hook_attrs),
           project: pipeline.project.hook_attrs(backward: false),
           commit: pipeline.commit.try(:hook_attrs),
-          builds: pipeline.builds.latest.map(&method(:build_hook_attrs))
-        }
+          builds: Gitlab::Lazy.new do
+            preload_builds(pipeline, :latest_builds)
+            pipeline.latest_builds.map(&method(:build_hook_attrs))
+          end
+        )
       end
+
+      def with_retried_builds
+        merge(
+          builds: Gitlab::Lazy.new do
+            preload_builds(@pipeline, :builds)
+            @pipeline.builds.map(&method(:build_hook_attrs))
+          end
+        )
+      end
+
+      private
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def preload_builds(pipeline, association)
+        ActiveRecord::Associations::Preloader.new.preload(pipeline,
+          {
+            association => {
+              **::Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
+              runner: :tags,
+              job_artifacts_archive: [],
+              user: [],
+              metadata: []
+            }
+          }
+        )
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def hook_attrs(pipeline)
         {
@@ -91,7 +127,8 @@ module Gitlab
 
         {
           name: build.expanded_environment_name,
-          action: build.environment_action
+          action: build.environment_action,
+          deployment_tier: build.persisted_environment.try(:tier)
         }
       end
     end

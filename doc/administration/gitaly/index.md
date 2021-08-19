@@ -30,40 +30,14 @@ repository storage is either:
 
 - A Gitaly storage with direct access to repositories using [storage paths](../repository_storage_paths.md),
   where each repository is stored on a single Gitaly node. All requests are routed to this node.
-- A virtual storage provided by [Gitaly Cluster](#gitaly-cluster), where each repository can be
-  stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
+- A [virtual storage](#virtual-storage) provided by [Gitaly Cluster](#gitaly-cluster), where each
+  repository can be stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
   - Read requests are distributed between multiple Gitaly nodes, which can improve performance.
   - Write requests are broadcast to repository replicas.
 
 WARNING:
 Engineering support for NFS for Git repositories is deprecated. Read the
 [deprecation notice](#nfs-deprecation-notice).
-
-## Virtual storage
-
-Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
-management.
-
-Virtual storage with Gitaly Cluster can usually replace direct Gitaly storage configurations.
-However, this is at the expense of additional storage space needed to store each repository on multiple
-Gitaly nodes. The benefit of using Gitaly Cluster virtual storage over direct Gitaly storage is:
-
-- Improved fault tolerance, because each Gitaly node has a copy of every repository.
-- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
-  loads, because read loads are distributed across Gitaly nodes.
-- Manual rebalancing for performance is not required, because read loads are distributed across
-  Gitaly nodes.
-- Simpler management, because all Gitaly nodes are identical.
-
-The number of repository replicas can be configured using a
-[replication factor](praefect.md#replication-factor).
-
-It can
-be uneconomical to have the same replication factor for all repositories.
-[Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned to
-provide greater flexibility for extremely large GitLab instances.
-
-As with normal Gitaly storages, virtual storages can be sharded.
 
 ## Gitaly
 
@@ -160,7 +134,7 @@ In this example:
 - Repositories are stored on a virtual storage called `storage-1`.
 - Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
 - The three Gitaly nodes share data in three separate hashed storage locations.
-- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
+- The [replication factor](#replication-factor) is `3`. There are three copies maintained
   of each repository.
 
 The availability objectives for Gitaly clusters are:
@@ -170,7 +144,7 @@ The availability objectives for Gitaly clusters are:
   Writes are replicated asynchronously. Any writes that have not been replicated
   to the newly promoted primary are lost.
 
-  [Strong consistency](praefect.md#strong-consistency) can be used to avoid loss in some
+  [Strong consistency](#strong-consistency) can be used to avoid loss in some
   circumstances.
 
 - **Recovery Time Objective (RTO):** Less than 10 seconds.
@@ -178,20 +152,34 @@ The availability objectives for Gitaly clusters are:
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
 
-  [Faster outage detection](https://gitlab.com/gitlab-org/gitaly/-/issues/2608)
-  is planned to improve this to less than 1 second.
+  Faster outage detection, to improve this speed to less than 1 second,
+  is tracked [in this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2608).
 
-Gitaly Cluster supports:
+### Virtual storage
 
-- [Strong consistency](praefect.md#strong-consistency) of the secondary replicas.
-- [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the primary to the secondary.
-- Reporting of possible data loss if replication queue is non-empty.
-- From GitLab 13.0 to GitLab 14.0, marking repositories as [read-only](praefect.md#read-only-mode)
-  if data loss is detected to prevent data inconsistencies.
+Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
+management.
 
-Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
-for improvements including
-[horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+Virtual storage with Gitaly Cluster can usually replace direct Gitaly storage configurations.
+However, this is at the expense of additional storage space needed to store each repository on multiple
+Gitaly nodes. The benefit of using Gitaly Cluster virtual storage over direct Gitaly storage is:
+
+- Improved fault tolerance, because each Gitaly node has a copy of every repository.
+- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
+  loads, because read loads are distributed across Gitaly nodes.
+- Manual rebalancing for performance is not required, because read loads are distributed across
+  Gitaly nodes.
+- Simpler management, because all Gitaly nodes are identical.
+
+The number of repository replicas can be configured using a
+[replication factor](#replication-factor).
+
+It can
+be uneconomical to have the same replication factor for all repositories.
+To provide greater flexibility for extremely large GitLab instances,
+variable replication factor is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/epics/3372).
+
+As with normal Gitaly storages, virtual storages can be sharded.
 
 ### Moving beyond NFS
 
@@ -220,7 +208,7 @@ Further reading:
 - Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
 - Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
 
-### Components of Gitaly Cluster
+### Components
 
 Gitaly Cluster consists of multiple components:
 
@@ -240,9 +228,226 @@ component for running a Gitaly Cluster.
 
 For more information, see [Gitaly High Availability (HA) Design](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md).
 
+### Features
+
+Gitaly Cluster provides the following features:
+
+- [Distributed reads](#distributed-reads) among Gitaly nodes.
+- [Strong consistency](#strong-consistency) of the secondary replicas.
+- [Replication factor](#replication-factor) of repositories for increased redundancy.
+- [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the
+  primary Gitaly node to secondary Gitaly nodes.
+- Reporting of possible [data loss](praefect.md#check-for-data-loss) if replication queue is
+  non-empty.
+
+Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489) for improvements
+including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+
+#### Distributed reads
+
+> - Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
+> - [Made generally available and enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
+> - [Disabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3178) in GitLab 13.5.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3334) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitaly/-/issues/3383) in GitLab 13.11.
+
+Gitaly Cluster supports distribution of read operations across Gitaly nodes that are configured for
+the [virtual storage](#virtual-storage).
+
+All RPCs marked with the `ACCESSOR` option are redirected to an up to date and healthy Gitaly node.
+For example, [`GetBlob`](https://gitlab.com/gitlab-org/gitaly/-/blob/v12.10.6/proto/blob.proto#L16).
+
+_Up to date_ in this context means that:
+
+- There is no replication operations scheduled for this Gitaly node.
+- The last replication operation is in _completed_ state.
+
+The primary node is chosen to serve the request if:
+
+- There are no up to date nodes.
+- Any other error occurs during node selection.
+
+You can [monitor distribution of reads](#monitor-gitaly-cluster) using Prometheus.
+
+#### Strong consistency
+
+> - Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), disabled by default.
+> - Entered [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) in GitLab 13.2, disabled by default.
+> - In GitLab 13.3, disabled unless primary-wins voting strategy is disabled.
+> - From GitLab 13.4, enabled by default.
+> - From GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable strong consistency.
+> - From GitLab 13.6, primary-wins voting strategy and `gitaly_reference_transactions_primary_wins` feature flag were removed from the source code.
+
+By default, Gitaly Cluster guarantees eventual consistency by replicating all writes to secondary
+Gitaly nodes after the write to the primary Gitaly node has happened.
+
+Praefect can instead provide strong consistency by creating a transaction and writing changes to all
+Gitaly nodes at once.
+
+If enabled, transactions are only available for a subset of RPCs. For more information, see the
+[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189).
+
+For configuration information, see [Configure strong consistency](praefect.md#configure-strong-consistency).
+
+#### Replication factor
+
+Replication factor is the number of copies Gitaly Cluster maintains of a given repository. A higher
+replication factor:
+
+- Offers better redundancy and distribution of read workload.
+- Results in higher storage cost.
+
+By default, Gitaly Cluster replicates repositories to every storage in a
+[virtual storage](#virtual-storage).
+
+For configuration information, see [Configure replication factor](praefect.md#configure-replication-factor).
+
 ### Configure Gitaly Cluster
 
 For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
+
+### Migrate to Gitaly Cluster
+
+Whether migrating to Gitaly Cluster because of [NFS support deprecation](index.md#nfs-deprecation-notice)
+or to move from single Gitaly nodes, the basic process involves:
+
+1. Create the required storage. Refer to
+   [repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
+1. Create and configure [Gitaly Cluster](praefect.md).
+1. [Move the repositories](../operations/moving_repositories.md#move-repositories). To migrate to
+   Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
+   automatic migration but the moves can be scheduled with the GitLab API.
+
+## Monitor Gitaly and Gitaly Cluster
+
+You can use the available logs and [Prometheus metrics](../monitoring/prometheus/index.md) to
+monitor Gitaly and Gitaly Cluster (Praefect).
+
+Metric definitions are available:
+
+- Directly from Prometheus `/metrics` endpoint configured for Gitaly.
+- Using [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/) on a
+  Grafana instance configured against Prometheus.
+
+### Monitor Gitaly
+
+You can observe the behavior of [queued requests](configure_gitaly.md#limit-rpc-concurrency) using
+the Gitaly logs and Prometheus:
+
+- In the [Gitaly logs](../logs.md#gitaly-logs), look for the string (or structured log field)
+  `acquire_ms`. Messages that have this field are reporting about the concurrency limiter.
+- In Prometheus, look for the following metrics:
+  - `gitaly_rate_limiting_in_progress`.
+  - `gitaly_rate_limiting_queued`.
+  - `gitaly_rate_limiting_seconds`.
+
+  Although the name of the Prometheus metric contains `rate_limiting`, it's a concurrency limiter,
+  not a rate limiter. If a Gitaly client makes 1,000 requests in a row very quickly, concurrency
+  doesn't exceed 1, and the concurrency limiter has no effect.
+
+The following [pack-objects cache](configure_gitaly.md#pack-objects-cache) metrics are available:
+
+- `gitaly_pack_objects_cache_enabled`, a gauge set to `1` when the cache is enabled. Available
+  labels: `dir` and `max_age`.
+- `gitaly_pack_objects_cache_lookups_total`, a counter for cache lookups. Available label: `result`.
+- `gitaly_pack_objects_generated_bytes_total`, a counter for the number of bytes written into the
+  cache.
+- `gitaly_pack_objects_served_bytes_total`, a counter for the number of bytes read from the cache.
+- `gitaly_streamcache_filestore_disk_usage_bytes`, a gauge for the total size of cache files.
+  Available label: `dir`.
+- `gitaly_streamcache_index_entries`, a gauge for the number of entries in the cache. Available
+  label: `dir`.
+
+Some of these metrics start with `gitaly_streamcache` because they are generated by the
+`streamcache` internal library package in Gitaly.
+
+Example:
+
+```plaintext
+gitaly_pack_objects_cache_enabled{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache",max_age="300"} 1
+gitaly_pack_objects_cache_lookups_total{result="hit"} 2
+gitaly_pack_objects_cache_lookups_total{result="miss"} 1
+gitaly_pack_objects_generated_bytes_total 2.618649e+07
+gitaly_pack_objects_served_bytes_total 7.855947e+07
+gitaly_streamcache_filestore_disk_usage_bytes{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 2.6200152e+07
+gitaly_streamcache_filestore_removed_total{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
+gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
+```
+
+#### Useful queries
+
+The following are useful queries for monitoring Gitaly:
+
+- Use the following Prometheus query to observe the
+  [type of connections](configure_gitaly.md#enable-tls-support) Gitaly is serving a production
+  environment:
+
+  ```prometheus
+  sum(rate(gitaly_connections_total[5m])) by (type)
+  ```
+
+- Use the following Prometheus query to monitor the
+  [authentication behavior](configure_gitaly.md#observe-type-of-gitaly-connections) of your GitLab
+  installation:
+
+  ```prometheus
+  sum(rate(gitaly_authentications_total[5m])) by (enforced, status)
+  ```
+
+  In a system where authentication is configured correctly and where you have live traffic, you
+  see something like this:
+
+  ```prometheus
+  {enforced="true",status="ok"}  4424.985419441742
+  ```
+
+  There may also be other numbers with rate 0, but you only have to take note of the non-zero numbers.
+
+  The only non-zero number should have `enforced="true",status="ok"`. If you have other non-zero
+  numbers, something is wrong in your configuration.
+
+  The `status="ok"` number reflects your current request rate. In the example above, Gitaly is
+  handling about 4000 requests per second.
+
+- Use the following Prometheus query to observe the [Git protocol versions](../git_protocol.md)
+  being used in a production environment:
+
+  ```prometheus
+  sum(rate(gitaly_git_protocol_requests_total[1m])) by (grpc_method,git_protocol,grpc_service)
+  ```
+
+### Monitor Gitaly Cluster
+
+To monitor Gitaly Cluster (Praefect), you can use these Prometheus metrics:
+
+- `gitaly_praefect_read_distribution`, a counter to track [distribution of reads](#distributed-reads).
+  It has two labels:
+
+  - `virtual_storage`.
+  - `storage`.
+
+  They reflect configuration defined for this instance of Praefect.
+
+- `gitaly_praefect_replication_latency_bucket`, a histogram measuring the amount of time it takes
+  for replication to complete once the replication job starts. Available in GitLab 12.10 and later.
+- `gitaly_praefect_replication_delay_bucket`, a histogram measuring how much time passes between
+  when the replication job is created and when it starts. Available in GitLab 12.10 and later.
+- `gitaly_praefect_node_latency_bucket`, a histogram measuring the latency in Gitaly returning
+  health check information to Praefect. This indicates Praefect connection saturation. Available in
+  GitLab 12.10 and later.
+
+To monitor [strong consistency](#strong-consistency), you can use the following Prometheus metrics:
+
+- `gitaly_praefect_transactions_total`, the number of transactions created and voted on.
+- `gitaly_praefect_subtransactions_per_transaction_total`, the number of times nodes cast a vote for
+  a single transaction. This can happen multiple times if multiple references are getting updated in
+  a single transaction.
+- `gitaly_praefect_voters_per_transaction_total`: the number of Gitaly nodes taking part in a
+  transaction.
+- `gitaly_praefect_transactions_delay_seconds`, the server-side delay introduced by waiting for the
+  transaction to be committed.
+- `gitaly_hook_transaction_voting_delay_seconds`, the client-side delay introduced by waiting for
+  the transaction to be committed.
 
 ## Do not bypass Gitaly
 
@@ -253,8 +458,8 @@ your assumptions, resulting in performance degradation, instability, and even da
 - Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
   that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
   interface.
-- [Gitaly Cluster](praefect.md) has optimizations, such as fault tolerance and
-  [distributed reads](praefect.md#distributed-reads), that depend on the gRPC interface and database
+- [Gitaly Cluster](#gitaly-cluster) has optimizations, such as fault tolerance and
+  [distributed reads](#distributed-reads), that depend on the gRPC interface and database
   to determine repository state.
 
 WARNING:
@@ -367,7 +572,7 @@ Additional information:
 GitLab recommends:
 
 - Creating a [Gitaly Cluster](#gitaly-cluster) as soon as possible.
-- [Moving your repositories](praefect.md#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
+- [Moving your repositories](#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
   Cluster.
 
 We welcome your feedback on this process. You can:

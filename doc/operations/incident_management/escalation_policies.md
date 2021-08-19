@@ -15,29 +15,48 @@ where you manage [On-call schedules](oncall_schedules.md).
 
 ## Add an escalation policy
 
-If you have at least Maintainer [permissions](../../user/permissions.md),
-you can create an escalation policy:
+Prerequisite:
 
-1. Go to **Operations > Escalation Policies** and select **Add an escalation policy**.
-1. In the **Add escalation policy** form, enter the policy's name and description, and create
+- You must have at least the Maintainer [role](../../user/permissions.md).
+- You must have an [on-call schedule](oncall_schedules.md).
+
+To create an escalation policy:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Escalation Policies**.
+1. Select **Add an escalation policy**.
+1. Enter the policy's name and description, and
    escalation rules to follow when a primary responder misses an alert.
 1. Select **Add escalation policy**.
 
 ![Escalation Policy](img/escalation_policy_v14_1.png)
 
-### Edit an escalation policy
+### Select the responder of an escalation rule
 
-Follow these steps to update an escalation policy:
+When configuring an escalation rule, you can designate who to page:
 
-1. Go to **Operations > Escalation Policies** and select the **Pencil** icon on the top right of the
-   policy card, across from the policy name.
-1. In the **Edit policy** form, edit the information you wish to update.
-1. Select the **Edit policy** button to save your changes.
+- **Email on-call user in schedule:** notifies the users who are on-call when the rule is triggered,
+  covering all rotations on the specified [on-call schedule](oncall_schedules.md).
+- **Email user:** notifies the specified user directly.
 
-### Delete an escalation policy
+When a notification is sent to a user through an on-call schedule or directly, a system note listing
+the paged users is created on the alert.
 
-Follow these steps to delete a policy:
+## Edit an escalation policy
 
-1. Go to **Operations > Escalation Policies** and select the **Trash Can** icon on the top right of
-   the policy card.
-1. In the **Delete escalation policy** window, select the **Delete escalation policy** button.
+To update an escalation policy:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Escalation Policies**.
+1. Select **Edit escalation policy** (**{pencil}**).
+1. Edit the information.
+1. Select **Save changes**.
+
+## Delete an escalation policy
+
+To delete an escalation policy:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Escalation Policies**.
+1. Select **Delete escalation policy** (**{remove}**).
+1. On the confirmation dialog, select **Delete escalation policy**.

@@ -152,6 +152,20 @@ RSpec.describe API::Invitations do
         end
       end
 
+      context 'with areas_of_focus', :snowplow do
+        it 'tracks the areas_of_focus from params' do
+          post invitations_url(source, maintainer),
+               params: { email: email, access_level: Member::DEVELOPER, areas_of_focus: 'Other' }
+
+          expect_snowplow_event(
+            category: 'Members::InviteService',
+            action: 'area_of_focus',
+            label: 'Other',
+            property: source.members.last.id.to_s
+          )
+        end
+      end
+
       context 'with invite_source considerations', :snowplow do
         let(:params) { { email: email, access_level: Member::DEVELOPER } }
 

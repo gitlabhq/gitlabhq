@@ -40,7 +40,7 @@ module Gitlab
             }
           end
 
-          Gitlab::Database.bulk_insert(LabelLink.table_name, rows) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(LabelLink.table_name, rows) # rubocop:disable Gitlab/BulkInsert
         end
 
         def find_target_id

@@ -11,6 +11,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RecordUserLastActivity
   include SourcegraphDecorator
   include DiffHelper
+  include Gitlab::Cache::Helpers
 
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
   before_action :apply_diff_view_cookie!, only: [:show]
@@ -43,9 +44,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
+    push_frontend_feature_flag(:diff_searching_usage_data, @project, default_enabled: :yaml)
 
     experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
-      experiment_instance.exclude! unless helpers.can_import_members?
+      experiment_instance.exclude! unless helpers.can_admin_project_member?(@project)
 
       experiment_instance.use {}
       experiment_instance.try(:invite_member_link) {}
@@ -55,7 +57,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   before_action do
-    push_frontend_feature_flag(:mr_collapsed_approval_rules, @project)
     push_frontend_feature_flag(:show_relevant_approval_rule_approvers, @project, default_enabled: :yaml)
   end
 
@@ -92,6 +93,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def show
     close_merge_request_if_no_source_project
 
@@ -128,7 +130,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: serializer.represent(@merge_request, serializer: params[:serializer])
+        if params[:serializer] == 'sidebar_extras' && Feature.enabled?(:merge_request_show_render_cached, @project, default_enabled: :yaml)
+          cache_context = [
+            params[:serializer],
+            current_user&.cache_key,
+            @merge_request.assignees.map(&:cache_key),
+            @merge_request.reviewers.map(&:cache_key)
+          ]
+
+          render_cached(@merge_request,
+                        with: serializer,
+                        cache_context: -> (_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
+                        serializer: params[:serializer])
+        else
+          render json: serializer.represent(@merge_request, serializer: params[:serializer])
+        end
       end
 
       format.patch do
@@ -144,6 +160,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def commits
     # Get context commits from repository

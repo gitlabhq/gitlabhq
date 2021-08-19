@@ -7,7 +7,7 @@ module Mutations
         field :integration,
               Types::AlertManagement::PrometheusIntegrationType,
               null: true,
-              description: "The newly created integration."
+              description: "Newly created integration."
 
         authorize :admin_project
 

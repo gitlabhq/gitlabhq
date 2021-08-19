@@ -188,7 +188,7 @@ release-branch-workflow:
           - testing
 ```
 
-Example of the same workflow using [`when: manual`](../yaml/index.md#whenmanual) in GitLab CI/CD:
+Example of the same workflow using [`when: manual`](../jobs/job_control.md#create-a-job-that-must-be-run-manually) in GitLab CI/CD:
 
 ```yaml
 deploy_prod:

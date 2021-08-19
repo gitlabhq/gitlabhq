@@ -3,4 +3,8 @@
 - page_title @integration.title, _('Integrations')
 - @content_class = 'limit-container-width' unless fluid_layout
 
-= render 'shared/integrations/form', integration: @integration
+%h3.page-title
+  = @integration.title
+
+= render 'shared/integrations/tabs', integration: @integration, active_tab: 'edit' do
+  = render 'shared/integrations/form', integration: @integration

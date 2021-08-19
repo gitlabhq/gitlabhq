@@ -24,16 +24,8 @@ class UserInteractedProject < ApplicationRecord
       }
 
       cached_exists?(**attributes) do
-        transaction(requires_new: true) do
-          where(attributes).select(1).first || create!(attributes)
-          true # not caching the whole record here for now
-        rescue ActiveRecord::RecordNotUnique
-          # Note, above queries are not atomic and prone
-          # to race conditions (similar like #find_or_create!).
-          # In the case where we hit this, the record we want
-          # already exists - shortcut and return.
-          true
-        end
+        where(attributes).exists? || UserInteractedProject.insert_all([attributes], unique_by: %w(project_id user_id))
+        true
       end
     end
 

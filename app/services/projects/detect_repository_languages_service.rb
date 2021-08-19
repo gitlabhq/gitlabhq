@@ -21,7 +21,7 @@ module Projects
             .update_all(share: update[:share])
         end
 
-        Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
+        Gitlab::Database.main.bulk_insert( # rubocop:disable Gitlab/BulkInsert
           RepositoryLanguage.table_name,
           detection.insertions(matching_programming_languages)
         )

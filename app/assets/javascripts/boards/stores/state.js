@@ -19,6 +19,8 @@ export default () => ({
   boardConfig: {},
   labelsLoading: false,
   labels: [],
+  milestones: [],
+  milestonesLoading: false,
   highlightedLists: [],
   selectedBoardItems: [],
   groupProjects: [],

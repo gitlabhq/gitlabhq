@@ -95,14 +95,14 @@ To view the Sidekiq processes in GitLab:
 
 ## Negate settings
 
-To have the additional Sidekiq processes work on every queue **except** the ones
+To have the Sidekiq process work on every queue **except** the ones
 you list. In this example, we exclude all import-related jobs from a Sidekiq node:
 
-1. After you follow the steps for [starting extra processes](#start-multiple-processes),
-   edit `/etc/gitlab/gitlab.rb` and add:
+1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
    sidekiq['negate'] = true
+   sidekiq['queue_selector'] = true
    sidekiq['queue_groups'] = [
       "feature_category=importers"
    ]
@@ -139,50 +139,6 @@ sidekiq['queue_groups'] = [
   '*'
 ]
 ```
-
-### Disable Sidekiq cluster
-
-WARNING:
-Sidekiq cluster is [scheduled](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/240)
-to be the only way to start Sidekiq in GitLab 14.0.
-
-By default, the Sidekiq service runs `sidekiq-cluster`. To disable this behavior,
-add the following to the Sidekiq configuration:
-
-```ruby
-sidekiq['enable'] = true
-sidekiq['cluster'] = false
-```
-
-All of the aforementioned configuration options for `sidekiq`
-are available. By default, they are configured as follows:
-
-```ruby
-sidekiq['queue_selector'] = false
-sidekiq['interval'] = nil
-sidekiq['max_concurrency'] = 50
-sidekiq['min_concurrency'] = nil
-sidekiq['negate'] = false
-sidekiq['queue_groups'] = ['*']
-sidekiq['shutdown_timeout'] = 25
-```
-
-`sidekiq_cluster` must be disabled if you decide to configure the
-cluster as above.
-
-When disabling `sidekiq_cluster`, you must copy your configuration for
-`sidekiq_cluster`over to `sidekiq`. Anything configured for
-`sidekiq_cluster` is overridden by the options for `sidekiq` when
-setting `sidekiq['cluster'] = true`.
-
-When using this feature, the service called `sidekiq` is now
-running `sidekiq-cluster`.
-
-The [concurrency](#manage-concurrency) and other options configured
-for Sidekiq are respected.
-
-By default, logs for `sidekiq-cluster` go to `/var/log/gitlab/sidekiq`
-like regular Sidekiq logs.
 
 ## Ignore all import queues
 
@@ -264,7 +220,7 @@ being equal to `max_concurrency`.
 Running a single Sidekiq process is the default in GitLab 12.10 and earlier.
 
 WARNING:
-Running Sidekiq directly is scheduled to be removed in GitLab
+Running Sidekiq directly was removed in GitLab
 [14.0](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/240).
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:

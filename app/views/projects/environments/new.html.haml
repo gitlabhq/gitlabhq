@@ -2,7 +2,4 @@
 - page_title _("New Environment")
 - add_page_specific_style 'page_bundles/environments'
 
-%h3.page-title
-  = _("New environment")
-%hr
-= render 'form'
+#js-new-environment{ data: { project_environments_path: project_environments_path(@project) } }

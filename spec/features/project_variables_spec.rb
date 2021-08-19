@@ -21,7 +21,7 @@ RSpec.describe 'Project variables', :js do
     click_button('Add variable')
 
     page.within('#add-ci-variable') do
-      find('[data-qa-selector="ci_variable_key_field"] input').set('akey')
+      find('[data-qa-selector="ci_variable_key_field"] input').set('akey') # rubocop:disable QA/SelectorUsage
       find('#ci-variable-value').set('akey_value')
       find('[data-testid="environment-scope"]').click
       find('[data-testid="ci-environment-search"]').set('review/*')

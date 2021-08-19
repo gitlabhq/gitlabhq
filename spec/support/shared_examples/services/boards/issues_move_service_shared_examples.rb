@@ -100,8 +100,8 @@ RSpec.shared_examples 'issues move service' do |group|
       create(:labeled_issue, project: project, labels: [bug, development], assignees: [assignee])
     end
 
-    it 'returns false' do
-      expect(described_class.new(parent, user, params).execute(issue)).to eq false
+    it 'returns nil' do
+      expect(described_class.new(parent, user, params).execute(issue)).to be_nil
     end
 
     it 'keeps issues labels' do

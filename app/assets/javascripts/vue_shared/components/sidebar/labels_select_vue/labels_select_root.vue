@@ -142,6 +142,7 @@ export default {
       this.setInitialState({
         selectedLabels,
       });
+      setTimeout(() => this.updateLabelsSetState(), 100);
     },
     showDropdownContents(showDropdownContents) {
       this.setContentIsOnViewport(showDropdownContents);
@@ -184,7 +185,7 @@ export default {
     document.removeEventListener('click', this.handleDocumentClick);
   },
   methods: {
-    ...mapActions(['setInitialState', 'toggleDropdownContents']),
+    ...mapActions(['setInitialState', 'toggleDropdownContents', 'updateLabelsSetState']),
     /**
      * This method differentiates between
      * dispatched actions and calls necessary method.
@@ -315,7 +316,7 @@ export default {
       </dropdown-value>
       <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />
       <dropdown-contents
-        v-show="dropdownButtonVisible && showDropdownContents"
+        v-if="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"
         :render-on-top="!contentIsOnViewport"
       />

@@ -81,8 +81,10 @@ ethnicity. In languages that distinguish between a male and female form, use bot
 neutral formulation.
 
 <!-- vale gitlab.Spelling = NO -->
+
 For example, in German, the word _user_ can be translated into _Benutzer_ (male) or _Benutzerin_
 (female). Therefore, _create a new user_ translates to _Benutzer(in) anlegen_.
+
 <!-- vale gitlab.Spelling = YES -->
 
 ### Updating the glossary
@@ -93,7 +95,9 @@ To propose additions to the glossary, please
 ## French translation guidelines
 
 <!-- vale gitlab.Spelling = NO -->
+
 In French, the _écriture inclusive_ is now over (see on [Legifrance](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000036068906/)).
 To include both genders, write _Utilisateurs et utilisatrices_ instead of _Utilisateur·rice·s_. If
 there is not enough space, use the male gender alone.
+
 <!-- vale gitlab.Spelling = YES -->

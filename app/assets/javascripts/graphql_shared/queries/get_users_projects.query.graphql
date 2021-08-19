@@ -1,0 +1,28 @@
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
+query getProjects(
+  $search: String!
+  $after: String = ""
+  $first: Int!
+  $searchNamespaces: Boolean = false
+  $sort: String
+  $membership: Boolean = true
+) {
+  projects(
+    search: $search
+    after: $after
+    first: $first
+    membership: $membership
+    searchNamespaces: $searchNamespaces
+    sort: $sort
+  ) {
+    nodes {
+      id
+      name
+      nameWithNamespace
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

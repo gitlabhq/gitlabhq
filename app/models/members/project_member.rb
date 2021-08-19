@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectMember < Member
+  extend ::Gitlab::Utils::Override
   SOURCE_TYPE = 'Project'
 
   belongs_to :project, foreign_key: 'source_id'
@@ -17,11 +18,6 @@ class ProjectMember < Member
   scope :in_namespaces, ->(groups) do
     joins('INNER JOIN projects ON projects.id = members.source_id')
       .where(projects: { namespace_id: groups.select(:id) })
-  end
-
-  scope :without_project_bots, -> do
-    left_join_users
-      .merge(User.without_project_bot)
   end
 
   class << self
@@ -48,7 +44,7 @@ class ProjectMember < Member
         project_ids.each do |project_id|
           project = Project.find(project_id)
 
-          Members::Projects::CreatorService.add_users( # rubocop:todo CodeReuse/ServiceClass
+          Members::Projects::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
             project,
             users,
             access_level,
@@ -92,6 +88,22 @@ class ProjectMember < Member
 
   def notifiable_options
     { project: project }
+  end
+
+  override :refresh_member_authorized_projects
+  def refresh_member_authorized_projects
+    return super unless Feature.enabled?(:specialized_service_for_project_member_auth_refresh)
+    return unless user
+
+    # rubocop:disable CodeReuse/ServiceClass
+    AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user).execute
+
+    # Until we compare the inconsistency rates of the new, specialized service and
+    # the old approach, we still run AuthorizedProjectsWorker
+    # but with some delay and lower urgency as a safety net.
+    UserProjectAccessChangedService.new(user_id)
+      .execute(blocking: false, priority: UserProjectAccessChangedService::LOW_PRIORITY)
+    # rubocop:enable CodeReuse/ServiceClass
   end
 
   private

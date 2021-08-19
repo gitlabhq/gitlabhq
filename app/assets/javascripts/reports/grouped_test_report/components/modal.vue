@@ -47,7 +47,7 @@ export default {
     <div v-for="(field, key, index) in filteredModalData" :key="index" class="row gl-mt-3 gl-mb-3">
       <strong class="col-sm-3 text-right"> {{ field.text }}: </strong>
 
-      <div class="col-sm-9 text-secondary">
+      <div class="col-sm-9">
         <code-block v-if="field.type === $options.fieldTypes.codeBlock" :code="field.value" />
 
         <gl-link

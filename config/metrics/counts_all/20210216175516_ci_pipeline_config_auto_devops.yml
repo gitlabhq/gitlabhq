@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.ci_pipeline_config_auto_devops
 description: Total pipelines from an Auto DevOps template
 product_section: ops
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

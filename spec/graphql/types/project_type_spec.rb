@@ -33,7 +33,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       issue_status_counts terraform_states alert_management_integrations
       container_repositories container_repositories_count
       pipeline_analytics squash_read_only sast_ci_configuration
-      ci_template
+      ci_template timelogs
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -390,6 +390,15 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::Terraform::StateType.connection_type) }
     it { is_expected.to have_graphql_resolver(Resolvers::Terraform::StatesResolver) }
+  end
+
+  describe 'timelogs field' do
+    subject { described_class.fields['timelogs'] }
+
+    it 'finds timelogs for project' do
+      is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
+      is_expected.to have_graphql_type(Types::TimelogType.connection_type)
+    end
   end
 
   it_behaves_like 'a GraphQL type with labels' do

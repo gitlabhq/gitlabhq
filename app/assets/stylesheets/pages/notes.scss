@@ -649,7 +649,7 @@ $system-note-svg-size: 16px;
 
   @include media-breakpoint-down(xs) {
     width: 100%;
-    margin: $gl-padding-8 0;
+    margin: 0 0 $gl-padding-8;
   }
 
   .btn-group > .discussion-next-btn {

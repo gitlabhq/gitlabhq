@@ -67,6 +67,13 @@ Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
 are included when cloning.
 
+## Delayed project deletion **(PREMIUM SAAS)**
+
+Top-level groups created after August 12, 2021 have delayed project deletion enabled by default.
+Projects are permanently deleted after a seven-day delay.
+
+You can disable this by changing the [group setting](../group/index.md#enable-delayed-project-removal).
+
 ## Alternative SSH port
 
 GitLab.com can be reached by using a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
@@ -148,7 +155,7 @@ from those IPs and allow them.
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP
-addresses. All GitLab runners are deployed into Google Cloud Platform (GCP). Any
+addresses. All GitLab.com shared runners are deployed into Google Cloud Platform (GCP). Any
 IP-based firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
@@ -177,11 +184,11 @@ The following limits apply for [Webhooks](../project/integrations/webhooks.md):
 | [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
 | Maximum payload size | 25 MB       | 25 MB   |
 
-## Shared runners
+## Shared Build Cloud runners
 
 GitLab has shared runners on GitLab.com that you can use to run your CI jobs.
 
-For more information, see [choosing a runner](../../ci/runners/index.md).
+For more information, see [GitLab Build Cloud runners](../../ci/runners/index.md).
 
 ## Sidekiq
 

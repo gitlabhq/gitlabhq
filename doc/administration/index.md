@@ -121,7 +121,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Creating users](../user/profile/account/create_accounts.md): Create users manually or through authentication integrations.
 - [Libravatar](libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
-- [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
+- [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication and Authorization](auth/index.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
   - [Sync LDAP](auth/ldap/index.md)
   - [Kerberos authentication](../integration/kerberos.md)
@@ -166,7 +166,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Continuous Integration settings
 
-- [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
+- [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#make-gitlab-cicd-disabled-by-default-in-new-projects): Enable or disable GitLab CI/CD for your instance.
 - [GitLab CI/CD administration settings](../user/admin_area/settings/continuous_integration.md): Enable or disable Auto DevOps site-wide and define the artifacts' max size and expiration time.
 - [External Pipeline Validation](external_pipeline_validation.md): Enable, disable, and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).

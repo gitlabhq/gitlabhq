@@ -99,6 +99,48 @@
     "status": {
       "type": ["string"],
       "enum": ["DEFAULT", "HIDDEN", "PROCESSING", "ERROR"]
+    },
+    "dependencyLinks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pageInfo": { "type": "object" },
+        "edges": { "type": "array" },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "dependencyType": {
+                "type": "string"
+              },
+              "dependency": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "versionPattern": {
+                    "type": "string"
+                  }
+                }
+              },
+              "metadata": {
+                "anyOf": [
+                  { "$ref": "./package_nuget_dependency_link_metadata.json" },
+                  { "type": "null" }
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

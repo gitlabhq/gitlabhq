@@ -36,7 +36,7 @@ class Feature
     end
 
     def persisted_names
-      return [] unless Gitlab::Database.exists?
+      return [] unless Gitlab::Database.main.exists?
 
       # This loads names of all stored feature flags
       # and returns a stable Set in the following order:
@@ -56,7 +56,7 @@ class Feature
 
     # use `default_enabled: true` to default the flag to being `enabled`
     # unless set explicitly.  The default is `disabled`
-    # TODO: remove the `default_enabled:` and read it from the `defintion_yaml`
+    # TODO: remove the `default_enabled:` and read it from the `definition_yaml`
     # check: https://gitlab.com/gitlab-org/gitlab/-/issues/30228
     def enabled?(key, thing = nil, type: :development, default_enabled: false)
       if check_feature_flags_definition?
@@ -73,7 +73,7 @@ class Feature
 
       # During setup the database does not exist yet. So we haven't stored a value
       # for the feature yet and return the default.
-      return default_enabled unless Gitlab::Database.exists?
+      return default_enabled unless Gitlab::Database.main.exists?
 
       feature = get(key)
 

@@ -37,7 +37,8 @@ request thread. It crosslinks the new commit and the existing merge request.
 Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment) includes cherry-picked merge commits.
 
 NOTE:
-We only track cherry-pick executed from GitLab (both UI and API). Support for [tracking cherry-picked commits through the command line](https://gitlab.com/gitlab-org/gitlab/-/issues/202215) is planned for a future release.
+We only track cherry-pick executed from GitLab (both UI and API). Support for tracking cherry-picked commits through the command line
+is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/202215).
 
 ## Cherry-picking a commit
 
@@ -62,8 +63,8 @@ git cherry-pick -m 2 7a39eb0
 
 ### Cherry-pick into a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21268) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/324154) in GitLab 14.0
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21268) in GitLab 13.11 behind a [feature flag](../../feature_flags.md), disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/324154) in GitLab 14.0.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.

@@ -31,7 +31,7 @@ module QA
 
           def click_delete
             click_element(:tag_delete_button)
-            find_button('Confirm').click
+            find_button('Delete').click
           end
         end
       end

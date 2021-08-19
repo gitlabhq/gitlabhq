@@ -317,18 +317,6 @@ RSpec.describe MergeRequestsFinder do
             )
           end
 
-          context 'when merge_request_draft_filter is disabled' do
-            it 'does not include draft merge requests' do
-              stub_feature_flags(merge_request_draft_filter: false)
-
-              merge_requests = described_class.new(user, { draft_param_key => 'yes' }).execute
-
-              expect(merge_requests).to contain_exactly(
-                merge_request4, merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3, wip_merge_request4
-              )
-            end
-          end
-
           it "filters by not #{draft_param_key}" do
             params = { draft_param_key => 'no' }
 

@@ -68,6 +68,18 @@ module QA
         def has_no_page?
           has_element?(:create_first_page_link)
         end
+
+        def has_heading?(heading_type, text)
+          within_element(:wiki_page_content) do
+            has_css?(heading_type, text: text)
+          end
+        end
+
+        def has_image?(image_file_name)
+          within_element(:wiki_page_content) do
+            has_css?("img[src$='#{image_file_name}']")
+          end
+        end
       end
     end
   end

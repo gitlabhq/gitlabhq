@@ -5,7 +5,7 @@ module Resolvers
     include Gitlab::Graphql::Authorize::AuthorizeResource
     include TimeFrameArguments
 
-    argument :ids, [GraphQL::ID_TYPE],
+    argument :ids, [GraphQL::Types::ID],
              required: false,
              description: 'Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`.'
 
@@ -13,11 +13,11 @@ module Resolvers
              required: false,
              description: 'Filter milestones by state.'
 
-    argument :title, GraphQL::STRING_TYPE,
+    argument :title, GraphQL::Types::String,
              required: false,
              description: 'The title of the milestone.'
 
-    argument :search_title, GraphQL::STRING_TYPE,
+    argument :search_title, GraphQL::Types::String,
              required: false,
              description: 'A search string for the title.'
 

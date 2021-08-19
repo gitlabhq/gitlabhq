@@ -102,33 +102,45 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
 
   describe 'table of contents' do
     let(:project) { create(:project, :public) }
-    let(:markdown) do
-      <<-MARKDOWN.strip_heredoc
-          [[_TOC_]]
+
+    shared_examples 'table of contents tag' do |tag, tag_html|
+      let(:markdown) do
+        <<-MARKDOWN.strip_heredoc
+          #{tag}
 
           # Header
-      MARKDOWN
-    end
+        MARKDOWN
+      end
 
-    let(:invalid_markdown) do
-      <<-MARKDOWN.strip_heredoc
-          test [[_TOC_]]
+      let(:invalid_markdown) do
+        <<-MARKDOWN.strip_heredoc
+          test #{tag}
 
           # Header
-      MARKDOWN
+        MARKDOWN
+      end
+
+      it 'inserts a table of contents' do
+        output = described_class.to_html(markdown, project: project)
+
+        expect(output).to include("<ul class=\"section-nav\">")
+        expect(output).to include("<li><a href=\"#header\">Header</a></li>")
+      end
+
+      it 'does not insert a table of contents' do
+        output = described_class.to_html(invalid_markdown, project: project)
+
+        expect(output).to include("test #{tag_html}")
+      end
     end
 
-    it 'inserts a table of contents' do
-      output = described_class.to_html(markdown, project: project)
-
-      expect(output).to include("<ul class=\"section-nav\">")
-      expect(output).to include("<li><a href=\"#header\">Header</a></li>")
+    context 'with [[_TOC_]] as tag' do
+      it_behaves_like 'table of contents tag', '[[_TOC_]]', '[[<em>TOC</em>]]'
     end
 
-    it 'does not insert a table of contents' do
-      output = described_class.to_html(invalid_markdown, project: project)
-
-      expect(output).to include("test [[<em>TOC</em>]]")
+    context 'with [toc] as tag' do
+      it_behaves_like 'table of contents tag', '[toc]', '[toc]'
+      it_behaves_like 'table of contents tag', '[TOC]', '[TOC]'
     end
   end
 

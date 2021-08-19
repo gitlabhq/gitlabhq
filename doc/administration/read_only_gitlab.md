@@ -76,7 +76,7 @@ the database is read-only:
         -h /var/opt/gitlab/postgresql gitlabhq_production
     ```
 
-1. Create the `gitlab_read_only` user. Note that the password is set to `mypassword`,
+1. Create the `gitlab_read_only` user. The password is set to `mypassword`,
    change that to your liking:
 
     ```sql

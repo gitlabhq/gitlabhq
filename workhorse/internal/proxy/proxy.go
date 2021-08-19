@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 var (

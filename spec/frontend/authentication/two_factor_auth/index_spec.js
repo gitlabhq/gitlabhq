@@ -1,5 +1,6 @@
 import { getByTestId, fireEvent } from '@testing-library/dom';
 import { createWrapper } from '@vue/test-utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { initRecoveryCodes, initClose2faSuccessMessage } from '~/authentication/two_factor_auth';
 import RecoveryCodes from '~/authentication/two_factor_auth/components/recovery_codes.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -53,8 +54,7 @@ describe('initClose2faSuccessMessage', () => {
 
   describe('when alert is closed', () => {
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL(
+      setWindowLocation(
         'https://localhost/-/profile/account?two_factor_auth_enabled_successfully=true',
       );
 

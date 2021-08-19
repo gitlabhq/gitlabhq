@@ -119,6 +119,7 @@ export const containerRepositoryMock = {
   expirationPolicyCleanupStatus: 'UNSCHEDULED',
   project: {
     visibility: 'public',
+    path: 'gitlab-test',
     containerExpirationPolicy: {
       enabled: false,
       nextRunAt: '2020-11-27T08:59:27Z',

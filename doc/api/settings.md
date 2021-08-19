@@ -79,6 +79,7 @@ Example response:
   "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
   "asset_proxy_allowlist": ["example.com", "*.example.com", "your-instance.com"],
   "npm_package_requests_forwarding": true,
+  "pypi_package_requests_forwarding": true,
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
@@ -96,7 +97,7 @@ Example response:
 ```
 
 Users on GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
-the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
+the `file_template_project_id`, `delayed_project_deletion`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
 
 ```json
 {
@@ -104,6 +105,7 @@ the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_al
   "signup_enabled" : true,
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "delayed_project_deletion": false,
   "deletion_adjourned_period": 7,
   ...
 }
@@ -179,6 +181,7 @@ Example response:
   "allow_local_requests_from_web_hooks_and_services": true,
   "allow_local_requests_from_system_hooks": false,
   "npm_package_requests_forwarding": true,
+  "pypi_package_requests_forwarding": true,
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
@@ -200,6 +203,7 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
+- `delayed_project_delection`
 - `deletion_adjourned_period`
 
 Example responses: **(PREMIUM SELF)**
@@ -241,8 +245,9 @@ listed in the descriptions of the relevant settings.
 | `check_namespace_plan`                   | boolean          | no                                   | **(PREMIUM)** Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
-| `deactivate_dormant_users`               | boolean          | no                                   | Enable [atomatic deactivation of dormant users](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users). |
+| `deactivate_dormant_users`               | boolean          | no                                   | Enable [automatic deactivation of dormant users](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users). |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
+| `default_branch_name`                    | string           | no                                   | [Instance-level custom initial branch name](../user/project/repository/branches/default.md#instance-level-custom-initial-branch-name) ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225258) in GitLab 13.2). |
 | `default_branch_protection`              | integer          | no                                   | Determine if developers can push to the default branch. Can take: `0` _(not protected, both developers and maintainers can push new commits, force push, or delete the branch)_, `1` _(partially protected, developers and maintainers can push new commits, but cannot force push, or delete, the branch)_ or `2` _(fully protected, developers cannot push new commits, but maintainers can; no-one can force push or delete the branch)_ as a parameter. Default is `2`. |
 | `default_ci_config_path`                  | string           | no                                   | Default CI/CD configuration file and path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
@@ -250,6 +255,7 @@ listed in the descriptions of the relevant settings.
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
+| `delayed_project_deletion`               | boolean          | no                                   | **(PREMIUM SELF)** Enable delayed project deletion by default in new groups. Default is `false`. |
 | `deletion_adjourned_period`              | integer          | no                                   | **(PREMIUM SELF)** The number of days to wait before deleting a project or group that is marked for deletion. Value must be between 0 and 90.
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../user/admin_area/diff_limits.md), in bytes. |
 | `diff_max_files`                         | integer          | no                                   | Maximum [files in a diff](../user/admin_area/diff_limits.md). |
@@ -324,7 +330,7 @@ listed in the descriptions of the relevant settings.
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `gitlab`, `fogbugz`, `git`, `gitlab_project`, `gitea`, `manifest`, and `phabricator`. |
 | `in_product_marketing_emails_enabled`    | boolean          | no                                   | Enable [in-product marketing emails](../user/profile/notifications.md#global-notification-settings). Enabled by default. |
-| `invisible_captcha_enabled`              | boolean          | no                                   | <!-- vale gitlab.Spelling = NO --> Enable Invisible Captcha <!-- vale gitlab.Spelling = YES --> spam detection during sign-up. Disabled by default. |
+| `invisible_captcha_enabled`              | boolean          | no                                   | Enable Invisible CAPTCHA spam detection during sign-up. Disabled by default. |
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Disabled by default.|
 | `keep_latest_artifact`                   | boolean          | no                                   | Prevent the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Enabled by default. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
@@ -343,6 +349,7 @@ listed in the descriptions of the relevant settings.
 | `mirror_max_capacity`                    | integer          | no                                   | **(PREMIUM)** Maximum number of mirrors that can be synchronizing at the same time. |
 | `mirror_max_delay`                       | integer          | no                                   | **(PREMIUM)** Maximum time (in minutes) between updates that a mirror can have when scheduled to synchronize. |
 | `npm_package_requests_forwarding`        | boolean          | no                                   | **(PREMIUM)** Use npmjs.org as a default remote repository when the package is not found in the GitLab Package Registry for npm. |
+| `pypi_package_requests_forwarding`       | boolean          | no                                   | **(PREMIUM)** Use pypi.org as a default remote repository when the package is not found in the GitLab Package Registry for PyPI. |
 | `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for hooks and services are disabled.
 | `pages_domain_verification_enabled`       | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
@@ -370,7 +377,7 @@ listed in the descriptions of the relevant settings.
 | `repository_size_limit`                  | integer          | no                                   | **(PREMIUM)** Size limit per repository (MB) |
 | `repository_storages_weighted`           | hash of strings to integers | no                        | (GitLab 13.1 and later) Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored). New projects are created in one of these stores, chosen by a weighted random selection. |
 | `repository_storages`                    | array of strings | no                                   | (GitLab 13.0 and earlier) List of names of enabled storage paths, taken from `gitlab.yml`. New projects are created in one of these stores, chosen at random. |
-| `require_admin_approval_after_user_signup` | boolean        | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../user/admin_area/approving_users.md) by an administrator. |
+| `require_admin_approval_after_user_signup` | boolean        | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../user/admin_area/moderate_users.md) by an administrator. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up Two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |

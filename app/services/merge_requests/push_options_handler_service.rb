@@ -65,7 +65,7 @@ module MergeRequests
       end
 
       if push_options[:target] && !target_project.repository.branch_exists?(push_options[:target])
-        errors << "Branch #{push_options[:target]} does not exist"
+        errors << "Target branch #{target_project.full_path}:#{push_options[:target]} does not exist"
       end
     end
 

@@ -163,16 +163,15 @@ class Discussion
   end
 
   def cache_key
-    # Need this so cache will be invalidated when note within a discussion
-    # has been deleted.
-    notes_sha = Digest::SHA1.hexdigest(notes.map(&:id).join(':'))
+    # Need to use the notes' cache key so cache will be invalidated when note
+    # within a discussion has been deleted or has different data after post
+    # processing of content.
+    notes_sha = Digest::SHA1.hexdigest(notes.map(&:post_processed_cache_key).join(':'))
 
     [
       CACHE_VERSION,
-      notes.last.latest_cached_markdown_version,
       id,
       notes_sha,
-      notes.max_by(&:updated_at).updated_at,
       resolved_at
     ].join(':')
   end

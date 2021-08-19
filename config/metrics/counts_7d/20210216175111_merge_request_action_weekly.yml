@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.source_code.merge_request_action_weekly
 description: Count of unique users who perform an action on a merge request
 product_section: dev
@@ -10,10 +10,15 @@ value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - merge_request_action
 distribution:
 - ce
 - ee
 tier:
- - free
- - premium
- - ultimate
+- free
+- premium
+- ultimate
+performance_indicator_type: []

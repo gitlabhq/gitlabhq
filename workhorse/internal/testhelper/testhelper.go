@@ -19,7 +19,7 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 )
 
 func ConfigureSecret() {

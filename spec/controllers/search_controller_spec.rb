@@ -53,6 +53,20 @@ RSpec.describe SearchController do
       end
     end
 
+    shared_examples_for 'support for active record query timeouts' do |action, params, method_to_stub, format|
+      before do
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive(method_to_stub).and_raise(ActiveRecord::QueryCanceled)
+        end
+      end
+
+      it 'renders a 408 when a timeout occurs' do
+        get action, params: params, format: format
+
+        expect(response).to have_gitlab_http_status(:request_timeout)
+      end
+    end
+
     describe 'GET #show' do
       it_behaves_like 'when the user cannot read cross project', :show, { search: 'hello' } do
         it 'still allows accessing the search page' do
@@ -63,6 +77,7 @@ RSpec.describe SearchController do
       end
 
       it_behaves_like 'with external authorization service enabled', :show, { search: 'hello' }
+      it_behaves_like 'support for active record query timeouts', :show, { search: 'hello' }, :search_objects, :html
 
       context 'uses the right partials depending on scope' do
         using RSpec::Parameterized::TableSyntax
@@ -230,6 +245,7 @@ RSpec.describe SearchController do
     describe 'GET #count' do
       it_behaves_like 'when the user cannot read cross project', :count, { search: 'hello', scope: 'projects' }
       it_behaves_like 'with external authorization service enabled', :count, { search: 'hello', scope: 'projects' }
+      it_behaves_like 'support for active record query timeouts', :count, { search: 'hello', scope: 'projects' }, :search_results, :json
 
       it 'returns the result count for the given term and scope' do
         create(:project, :public, name: 'hello world')

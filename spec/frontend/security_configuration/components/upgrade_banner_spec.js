@@ -43,11 +43,11 @@ describe('UpgradeBanner component', () => {
   it('renders the list of benefits', () => {
     const wrapperText = wrapper.text();
 
-    expect(wrapperText).toContain('GitLab Ultimate checks your application');
+    expect(wrapperText).toContain('Immediately begin risk analysis and remediation');
     expect(wrapperText).toContain('statistics in the merge request');
     expect(wrapperText).toContain('statistics across projects');
     expect(wrapperText).toContain('Runtime security metrics');
-    expect(wrapperText).toContain('risk analysis and remediation');
+    expect(wrapperText).toContain('More scan types, including Container Scanning,');
   });
 
   it(`re-emits GlBanner's close event`, () => {

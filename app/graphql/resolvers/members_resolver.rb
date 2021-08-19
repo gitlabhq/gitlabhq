@@ -7,7 +7,7 @@ module Resolvers
 
     type Types::MemberInterface.connection_type, null: true
 
-    argument :search, GraphQL::STRING_TYPE,
+    argument :search, GraphQL::Types::String,
               required: false,
               description: 'Search query.'
 

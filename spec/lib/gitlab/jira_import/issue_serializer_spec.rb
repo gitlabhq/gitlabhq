@@ -192,6 +192,19 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
             expect(subject[:assignee_ids]).to be_nil
           end
         end
+
+        context 'with jira server response' do
+          let(:assignee) { double(attrs: { 'displayName' => 'Solver', 'key' => '1234' }) }
+
+          context 'when assignee maps to a valid GitLab user' do
+            it 'sets the issue assignees to the mapped user' do
+              expect(Gitlab::JiraImport).to receive(:get_user_mapping).with(project.id, '1234')
+                                                                      .and_return(user.id)
+
+              expect(subject[:assignee_ids]).to eq([user.id])
+            end
+          end
+        end
       end
     end
 

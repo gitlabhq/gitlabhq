@@ -27,20 +27,6 @@ RSpec.describe 'Environment' do
       visit_environment(environment)
     end
 
-    it 'shows environment name' do
-      expect(page).to have_content(environment.name)
-    end
-
-    context 'without auto-stop' do
-      it 'does not show auto-stop text' do
-        expect(page).not_to have_content('Auto stops')
-      end
-
-      it 'does not show auto-stop button' do
-        expect(page).not_to have_selector(auto_stop_button_selector)
-      end
-    end
-
     context 'with auto-stop' do
       let!(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
 
@@ -48,11 +34,11 @@ RSpec.describe 'Environment' do
         visit_environment(environment)
       end
 
-      it 'shows auto stop info' do
+      it 'shows auto stop info', :js do
         expect(page).to have_content('Auto stops')
       end
 
-      it 'shows auto stop button' do
+      it 'shows auto stop button', :js do
         expect(page).to have_selector(auto_stop_button_selector)
         expect(page.find(auto_stop_button_selector).find(:xpath, '..')['action']).to have_content(cancel_auto_stop_project_environment_path(environment.project, environment))
       end
@@ -80,7 +66,6 @@ RSpec.describe 'Environment' do
         it 'does show deployment SHA' do
           expect(page).to have_link(deployment.short_sha)
           expect(page).not_to have_link('Re-deploy')
-          expect(page).not_to have_terminal_button
         end
       end
 
@@ -186,7 +171,7 @@ RSpec.describe 'Environment' do
             let(:build) { create(:ci_build, pipeline: pipeline) }
             let(:deployment) { create(:deployment, :success, environment: environment, deployable: build) }
 
-            it 'does show an external link button' do
+            it 'does show an external link button', :js do
               expect(page).to have_link(nil, href: environment.external_url)
             end
           end
@@ -199,10 +184,6 @@ RSpec.describe 'Environment' do
 
               context 'for project maintainer' do
                 let(:role) { :maintainer }
-
-                it 'shows the terminal button' do
-                  expect(page).to have_terminal_button
-                end
 
                 context 'web terminal', :js do
                   before do
@@ -222,14 +203,6 @@ RSpec.describe 'Environment' do
                     expect(page).to have_selector('#terminal')
                     expect(page).to have_link(nil, href: environment.external_url)
                   end
-                end
-              end
-
-              context 'for developer' do
-                let(:role) { :developer }
-
-                it 'does not show terminal button' do
-                  expect(page).not_to have_terminal_button
                 end
               end
             end
@@ -259,7 +232,7 @@ RSpec.describe 'Environment' do
                   click_button('Stop')
                   click_button('Stop environment') # confirm modal
                   wait_for_all_requests
-                  expect(page).to have_content('close_app')
+                  expect(page).to have_button('Delete')
                 end
               end
 
@@ -269,7 +242,7 @@ RSpec.describe 'Environment' do
                          name: action.ref, project: project)
                 end
 
-                it 'does not allow to stop environment' do
+                it 'does not allow to stop environment', :js do
                   expect(page).not_to have_button('Stop')
                 end
               end
@@ -277,7 +250,7 @@ RSpec.describe 'Environment' do
               context 'for reporter' do
                 let(:role) { :reporter }
 
-                it 'does not show stop button' do
+                it 'does not show stop button', :js do
                   expect(page).not_to have_button('Stop')
                 end
               end
@@ -287,7 +260,7 @@ RSpec.describe 'Environment' do
           context 'when environment is stopped' do
             let(:environment) { create(:environment, project: project, state: :stopped) }
 
-            it 'does not show stop button' do
+            it 'does not show stop button', :js do
               expect(page).not_to have_button('Stop')
             end
           end
@@ -323,7 +296,7 @@ RSpec.describe 'Environment' do
                                              ref: 'feature')
     end
 
-    it 'user visits environment page' do
+    it 'user visits environment page', :js do
       visit_environment(environment)
 
       expect(page).to have_button('Stop')
@@ -379,9 +352,5 @@ RSpec.describe 'Environment' do
 
   def visit_environment(environment)
     visit project_environment_path(environment.project, environment)
-  end
-
-  def have_terminal_button
-    have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 end

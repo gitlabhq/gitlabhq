@@ -22,8 +22,8 @@ Although, the [Cluster management project template](management_project_template.
 requires that you manually do the last steps of these sections,
 [Enable Prometheus integration for your cluster](#enable-prometheus-integration-for-your-cluster)
 or [Enable Elastic Stack integration for your cluster](#enable-elastic-stack-integration-for-your-cluster)
-depending on which application you are installing. We plan to also automate this step in the future,
-see the [opened issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326565).
+depending on which application you are installing. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/326565)
+to automate this step.
 
 ## Prometheus cluster integration
 

@@ -1,0 +1,6 @@
+mutation createBranch($name: String!, $projectPath: ID!, $ref: String!) {
+  createBranch(input: { name: $name, projectPath: $projectPath, ref: $ref }) {
+    clientMutationId
+    errors
+  }
+}

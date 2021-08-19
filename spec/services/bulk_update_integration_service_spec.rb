@@ -51,11 +51,11 @@ RSpec.describe BulkUpdateIntegrationService do
 
   context 'with inherited integration' do
     it 'updates the integration', :aggregate_failures do
-      described_class.new(subgroup_integration, batch).execute
+      described_class.new(subgroup_integration.reload, batch).execute
 
       expect(integration.reload.inherit_from_id).to eq(group_integration.id)
       expect(integration.reload.attributes.except(*excluded_attributes))
-        .to eq(subgroup_integration.attributes.except(*excluded_attributes))
+        .to eq(subgroup_integration.reload.attributes.except(*excluded_attributes))
 
       expect(excluded_integration.reload.inherit_from_id).not_to eq(group_integration.id)
       expect(excluded_integration.reload.attributes.except(*excluded_attributes))
@@ -75,5 +75,17 @@ RSpec.describe BulkUpdateIntegrationService do
           .not_to eq(excluded_integration.data_fields.attributes.except(*excluded_attributes))
       end
     end
+  end
+
+  it 'works with batch as an ActiveRecord::Relation' do
+    expect do
+      described_class.new(group_integration, Integration.where(id: integration.id)).execute
+    end.to change { integration.reload.url }.to(group_integration.url)
+  end
+
+  it 'works with batch as an array of ActiveRecord objects' do
+    expect do
+      described_class.new(group_integration, [integration]).execute
+    end.to change { integration.reload.url }.to(group_integration.url)
   end
 end

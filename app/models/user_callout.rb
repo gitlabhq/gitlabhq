@@ -16,7 +16,6 @@ class UserCallout < ApplicationRecord
     tabs_position_highlight: 10,
     threat_monitoring_info: 11,                # EE-only
     account_recovery_regular_check: 12,        # EE-only
-    service_templates_deprecated_callout: 14,
     web_ide_alert_dismissed: 16,               # no longer in use
     active_user_count_threshold: 18,           # EE-only
     buy_pipeline_minutes_notification_dot: 19, # EE-only
@@ -35,7 +34,9 @@ class UserCallout < ApplicationRecord
     cloud_licensing_subscription_activation_banner: 33, # EE-only
     trial_status_reminder_d14: 34,             # EE-only
     trial_status_reminder_d3: 35,              # EE-only
-    security_configuration_devops_alert: 36    # EE-only
+    security_configuration_devops_alert: 36,   # EE-only
+    profile_personal_access_token_expiry: 37,  # EE-only
+    terraform_notification_dismissed: 38
   }
 
   validates :user, presence: true

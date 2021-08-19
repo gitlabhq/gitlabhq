@@ -7,6 +7,8 @@ type: concepts, howto
 
 # Signing commits and tags with X.509 **(FREE)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17773) in GitLab 12.8.
+
 [X.509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
 certificates issued by a public or private Public Key Infrastructure (PKI).
 Personal X.509 certificates are used for authentication or signing purposes
@@ -36,6 +38,20 @@ Self signed certificates without `authorityKeyIdentifier`,
 `subjectKeyIdentifier`, and `crlDistributionPoints` are not supported. We
 recommend using certificates from a PKI that are in line with
 [RFC 5280](https://tools.ietf.org/html/rfc5280).
+
+## Limitations
+
+- If you have more than one email in the Subject Alternative Name list in
+  your signing certificate,
+  [only the first one is used to verify commits](https://gitlab.com/gitlab-org/gitlab/-/issues/336677).
+- The `X509v3 Subject Key Identifier` (SKI) in the issuer certificate and the
+  signing certificate
+  [must be 40 characters long](https://gitlab.com/gitlab-org/gitlab/-/issues/332503).
+  If your SKI is shorter, commits will not show as verified in GitLab, and
+  short subject key identifiers may also
+  [cause errors when accessing the project](https://gitlab.com/gitlab-org/gitlab/-/issues/332464),
+  such as 'An error occurred while loading commit signatures' and
+  `HTTP 422 Unprocessable Entity` errors.
 
 ## Obtaining an X.509 key pair
 

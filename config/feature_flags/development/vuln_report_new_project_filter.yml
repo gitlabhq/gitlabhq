@@ -1,0 +1,8 @@
+---
+name: vuln_report_new_project_filter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55745
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334380
+milestone: '14.2'
+type: development
+group: group::threat insights
+default_enabled: false

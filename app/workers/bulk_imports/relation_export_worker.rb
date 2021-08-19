@@ -3,6 +3,8 @@
 module BulkImports
   class RelationExportWorker
     include ApplicationWorker
+
+    data_consistency :always
     include ExceptionBacktrace
 
     idempotent!

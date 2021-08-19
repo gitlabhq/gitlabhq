@@ -5,7 +5,7 @@ module Types
     graphql_name 'IssueType'
     description 'Issue type'
 
-    ::Issue.issue_types.keys.each do |issue_type|
+    ::WorkItem::Type.base_types.keys.each do |issue_type|
       value issue_type.upcase, value: issue_type, description: "#{issue_type.titleize} issue type"
     end
   end

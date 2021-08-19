@@ -218,6 +218,16 @@ RSpec.describe ApplicationSetting do
       end
     end
 
+    describe 'default_branch_name validaitions' do
+      context "when javascript tags get sanitized properly" do
+        it "gets sanitized properly" do
+          setting.update!(default_branch_name: "hello<script>alert(1)</script>")
+
+          expect(setting.default_branch_name).to eq('hello')
+        end
+      end
+    end
+
     describe 'spam_check_endpoint' do
       context 'when spam_check_endpoint is enabled' do
         before do
@@ -834,6 +844,23 @@ RSpec.describe ApplicationSetting do
         end
       end
 
+      describe '#customers_dot_jwt_signing_key' do
+        it { is_expected.not_to allow_value('').for(:customers_dot_jwt_signing_key) }
+        it { is_expected.not_to allow_value('invalid RSA key').for(:customers_dot_jwt_signing_key) }
+        it { is_expected.to allow_value(nil).for(:customers_dot_jwt_signing_key) }
+        it { is_expected.to allow_value(OpenSSL::PKey::RSA.new(1024).to_pem).for(:customers_dot_jwt_signing_key) }
+
+        it 'is encrypted' do
+          subject.customers_dot_jwt_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
+
+          aggregate_failures do
+            expect(subject.encrypted_customers_dot_jwt_signing_key).to be_present
+            expect(subject.encrypted_customers_dot_jwt_signing_key_iv).to be_present
+            expect(subject.encrypted_customers_dot_jwt_signing_key).not_to eq(subject.customers_dot_jwt_signing_key)
+          end
+        end
+      end
+
       describe '#cloud_license_auth_token' do
         it { is_expected.to allow_value(nil).for(:cloud_license_auth_token) }
 
@@ -927,7 +954,7 @@ RSpec.describe ApplicationSetting do
 
   context 'when ApplicationSettings does not have a primary key' do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:primary_key).with(described_class.table_name).and_return(nil)
+      allow(described_class.connection).to receive(:primary_key).with(described_class.table_name).and_return(nil)
     end
 
     it 'raises an exception' do

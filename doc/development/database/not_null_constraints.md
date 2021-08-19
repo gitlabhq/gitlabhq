@@ -58,7 +58,7 @@ different releases:
 
 1. Release `N.M` (current release)
 
-   - Ensure the constraint is enforced at the application level (i.e. add a model validation).
+   - Ensure the constraint is enforced at the application level (that is, add a model validation).
    - Add a post-deployment migration to add the `NOT NULL` constraint with `validate: false`.
    - Add a post-deployment migration to fix the existing records.
 

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.projects_with_alerts_service_enabled
 description: Count of projects that have enabled the Alerts service
 product_section: ops
@@ -18,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

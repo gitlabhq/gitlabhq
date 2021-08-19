@@ -9,7 +9,7 @@ module Mutations
         field :list,
             Types::BoardListType,
             null: true,
-            description: 'The list after mutation.'
+            description: 'List after mutation.'
 
         argument :list_id, ::Types::GlobalIDType[::List],
                   required: true,

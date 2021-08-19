@@ -41,8 +41,8 @@ Fields removed in [GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/merge_req
 Fields removed in [GitLab 13.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44866):
 
 | Field name           | GraphQL type             | Deprecated in | Use instead                |
-| -------------------- | --------------------     | ------------- | -------------------------- |
-| `date`               | `Timelog` **(STARTER)**  | 12.10         | `spentAt`                  |
+|----------------------|--------------------------|---------------|----------------------------|
+| `date`               | `Timelog`                | 12.10         | `spentAt`                  |
 | `designs`            | `Issue`, `EpicIssue`     | 12.2          | `designCollection`         |
 | `latestPipeline`     | `Commit`                 | 12.5          | `pipelines`                |
 | `mergeCommitMessage` | `MergeRequest`           | 11.8          | `latestMergeCommitMessage` |

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/utils/svg"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/utils/svg"
 )
 
 var (

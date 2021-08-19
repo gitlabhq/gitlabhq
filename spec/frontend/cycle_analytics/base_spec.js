@@ -5,38 +5,68 @@ import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BaseComponent from '~/cycle_analytics/components/base.vue';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
+import StageTable from '~/cycle_analytics/components/stage_table.vue';
+import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
+import { NOT_ENOUGH_DATA_ERROR } from '~/cycle_analytics/constants';
 import initState from '~/cycle_analytics/store/state';
-import { selectedStage, convertedEvents as selectedStageEvents } from './mock_data';
+import {
+  permissions,
+  transformedProjectStagePathData,
+  selectedStage,
+  issueEvents,
+  createdBefore,
+  createdAfter,
+  currentGroup,
+  stageCounts,
+} from './mock_data';
 
+const selectedStageEvents = issueEvents.events;
 const noDataSvgPath = 'path/to/no/data';
 const noAccessSvgPath = 'path/to/no/access';
+const selectedStageCount = stageCounts[selectedStage.id];
+const fullPath = 'full/path/to/foo';
 
 Vue.use(Vuex);
 
 let wrapper;
 
-function createStore({ initialState = {} }) {
+const defaultState = {
+  permissions,
+  currentGroup,
+  createdBefore,
+  createdAfter,
+  stageCounts,
+  endpoints: { fullPath },
+};
+
+function createStore({ initialState = {}, initialGetters = {} }) {
   return new Vuex.Store({
     state: {
       ...initState(),
-      permissions: {
-        [selectedStage.id]: true,
-      },
+      ...defaultState,
       ...initialState,
     },
     getters: {
-      pathNavigationData: () => [],
+      pathNavigationData: () => transformedProjectStagePathData,
+      filterParams: () => ({
+        created_after: createdAfter,
+        created_before: createdBefore,
+      }),
+      ...initialGetters,
     },
   });
 }
 
-function createComponent({ initialState } = {}) {
+function createComponent({ initialState, initialGetters } = {}) {
   return extendedWrapper(
     shallowMount(BaseComponent, {
-      store: createStore({ initialState }),
+      store: createStore({ initialState, initialGetters }),
       propsData: {
         noDataSvgPath,
         noAccessSvgPath,
+      },
+      stubs: {
+        StageTable,
       },
     }),
   );
@@ -44,23 +74,20 @@ function createComponent({ initialState } = {}) {
 
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findPathNavigation = () => wrapper.findComponent(PathNavigation);
-const findOverviewMetrics = () => wrapper.findByTestId('vsa-stage-overview-metrics');
-const findStageTable = () => wrapper.findByTestId('vsa-stage-table');
-const findEmptyStage = () => wrapper.findComponent(GlEmptyState);
-const findStageEvents = () => wrapper.findByTestId('stage-table-events');
+const findOverviewMetrics = () => wrapper.findComponent(ValueStreamMetrics);
+const findStageTable = () => wrapper.findComponent(StageTable);
+const findStageEvents = () => findStageTable().props('stageEvents');
+const findEmptyStageTitle = () => wrapper.findComponent(GlEmptyState).props('title');
+
+const hasMetricsRequests = (reqs) => {
+  const foundReqs = findOverviewMetrics().props('requests');
+  expect(foundReqs.length).toEqual(reqs.length);
+  expect(foundReqs.map(({ name }) => name)).toEqual(reqs);
+};
 
 describe('Value stream analytics component', () => {
   beforeEach(() => {
-    wrapper = createComponent({
-      initialState: {
-        isLoading: false,
-        isLoadingStage: false,
-        isEmptyStage: false,
-        selectedStageEvents,
-        selectedStage,
-        selectedStageError: '',
-      },
-    });
+    wrapper = createComponent({ initialState: { selectedStage, selectedStageEvents } });
   });
 
   afterEach(() => {
@@ -72,21 +99,42 @@ describe('Value stream analytics component', () => {
     expect(findPathNavigation().exists()).toBe(true);
   });
 
+  it('receives the stages formatted for the path navigation', () => {
+    expect(findPathNavigation().props('stages')).toBe(transformedProjectStagePathData);
+  });
+
   it('renders the overview metrics', () => {
     expect(findOverviewMetrics().exists()).toBe(true);
+  });
+
+  it('passes requests prop to the metrics component', () => {
+    hasMetricsRequests(['recent activity']);
   });
 
   it('renders the stage table', () => {
     expect(findStageTable().exists()).toBe(true);
   });
 
+  it('passes the selected stage count to the stage table', () => {
+    expect(findStageTable().props('stageCount')).toBe(selectedStageCount);
+  });
+
   it('renders the stage table events', () => {
-    expect(findEmptyStage().exists()).toBe(false);
-    expect(findStageEvents().exists()).toBe(true);
+    expect(findStageEvents()).toEqual(selectedStageEvents);
   });
 
   it('does not render the loading icon', () => {
     expect(findLoadingIcon().exists()).toBe(false);
+  });
+
+  describe('with `cycleAnalyticsForGroups=true` license', () => {
+    beforeEach(() => {
+      wrapper = createComponent({ initialState: { features: { cycleAnalyticsForGroups: true } } });
+    });
+
+    it('passes requests prop to the metrics component', () => {
+      hasMetricsRequests(['time summary', 'recent activity']);
+    });
   });
 
   describe('isLoading = true', () => {
@@ -97,15 +145,15 @@ describe('Value stream analytics component', () => {
     });
 
     it('renders the path navigation component with prop `loading` set to true', () => {
-      expect(findPathNavigation().html()).toMatchSnapshot();
-    });
-
-    it('does not render the overview metrics', () => {
-      expect(findOverviewMetrics().exists()).toBe(false);
+      expect(findPathNavigation().props('loading')).toBe(true);
     });
 
     it('does not render the stage table', () => {
       expect(findStageTable().exists()).toBe(false);
+    });
+
+    it('renders the overview metrics', () => {
+      expect(findOverviewMetrics().exists()).toBe(true);
     });
 
     it('renders the loading icon', () => {
@@ -125,32 +173,37 @@ describe('Value stream analytics component', () => {
       expect(tableWrapper.exists()).toBe(true);
       expect(tableWrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
+
+    it('renders the path navigation loading state', () => {
+      expect(findPathNavigation().props('loading')).toBe(true);
+    });
   });
 
   describe('isEmptyStage = true', () => {
+    const emptyStageParams = {
+      isEmptyStage: true,
+      selectedStage: { ...selectedStage, emptyStageText: 'This stage is empty' },
+    };
     beforeEach(() => {
-      wrapper = createComponent({
-        initialState: { selectedStage, isEmptyStage: true },
-      });
+      wrapper = createComponent({ initialState: emptyStageParams });
     });
 
     it('renders the empty stage with `Not enough data` message', () => {
-      expect(findEmptyStage().html()).toMatchSnapshot();
+      expect(findEmptyStageTitle()).toBe(NOT_ENOUGH_DATA_ERROR);
     });
 
     describe('with a selectedStageError', () => {
       beforeEach(() => {
         wrapper = createComponent({
           initialState: {
-            selectedStage,
-            isEmptyStage: true,
+            ...emptyStageParams,
             selectedStageError: 'There is too much data to calculate',
           },
         });
       });
 
       it('renders the empty stage with `There is too much data to calculate` message', () => {
-        expect(findEmptyStage().html()).toMatchSnapshot();
+        expect(findEmptyStageTitle()).toBe('There is too much data to calculate');
       });
     });
   });
@@ -159,21 +212,24 @@ describe('Value stream analytics component', () => {
     beforeEach(() => {
       wrapper = createComponent({
         initialState: {
+          selectedStage,
           permissions: {
+            ...permissions,
             [selectedStage.id]: false,
           },
         },
       });
     });
 
-    it('renders the empty stage with `You need permission` message', () => {
-      expect(findEmptyStage().html()).toMatchSnapshot();
+    it('renders the empty stage with `You need permission.` message', () => {
+      expect(findEmptyStageTitle()).toBe('You need permission.');
     });
   });
 
   describe('without a selected stage', () => {
     beforeEach(() => {
       wrapper = createComponent({
+        initialGetters: { pathNavigationData: () => [] },
         initialState: { selectedStage: null, isEmptyStage: true },
       });
     });
@@ -182,12 +238,12 @@ describe('Value stream analytics component', () => {
       expect(findStageTable().exists()).toBe(true);
     });
 
-    it('does not render the path navigation component', () => {
+    it('does not render the path navigation', () => {
       expect(findPathNavigation().exists()).toBe(false);
     });
 
     it('does not render the stage table events', () => {
-      expect(findStageEvents().exists()).toBe(false);
+      expect(findStageEvents()).toHaveLength(0);
     });
 
     it('does not render the loading icon', () => {

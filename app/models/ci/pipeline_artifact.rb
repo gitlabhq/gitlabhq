@@ -3,8 +3,7 @@
 # This class is being used to persist additional artifacts after a pipeline completes, which is a great place to cache a computed result in object storage
 
 module Ci
-  class PipelineArtifact < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class PipelineArtifact < Ci::ApplicationRecord
     include UpdateProjectStatistics
     include Artifactable
     include FileStoreMounter

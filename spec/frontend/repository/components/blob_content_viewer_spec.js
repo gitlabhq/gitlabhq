@@ -20,6 +20,8 @@ import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 jest.mock('~/repository/components/blob_viewers');
 
 let wrapper;
+let mockResolver;
+
 const simpleMockData = {
   name: 'some_file.js',
   size: 123,
@@ -37,9 +39,6 @@ const simpleMockData = {
   externalStorageUrl: 'some_file.js',
   replacePath: 'some_file.js/replace',
   deletePath: 'some_file.js/delete',
-  canLock: true,
-  isLocked: false,
-  lockLink: 'some_file.js/lock',
   forkPath: 'some_file.js/fork',
   simpleViewer: {
     fileType: 'text',
@@ -62,6 +61,7 @@ const richMockData = {
 const projectMockData = {
   userPermissions: {
     pushCode: true,
+    downloadCode: true,
   },
   repository: {
     empty: false,
@@ -71,17 +71,28 @@ const projectMockData = {
 const localVue = createLocalVue();
 const mockAxios = new MockAdapter(axios);
 
-const createComponentWithApollo = (mockData = {}) => {
+const createComponentWithApollo = (mockData = {}, inject = {}) => {
   localVue.use(VueApollo);
 
   const defaultPushCode = projectMockData.userPermissions.pushCode;
+  const defaultDownloadCode = projectMockData.userPermissions.downloadCode;
   const defaultEmptyRepo = projectMockData.repository.empty;
-  const { blobs, emptyRepo = defaultEmptyRepo, canPushCode = defaultPushCode } = mockData;
+  const {
+    blobs,
+    emptyRepo = defaultEmptyRepo,
+    canPushCode = defaultPushCode,
+    canDownloadCode = defaultDownloadCode,
+    pathLocks = [],
+  } = mockData;
 
-  const mockResolver = jest.fn().mockResolvedValue({
+  mockResolver = jest.fn().mockResolvedValue({
     data: {
       project: {
-        userPermissions: { pushCode: canPushCode },
+        id: '1234',
+        userPermissions: { pushCode: canPushCode, downloadCode: canDownloadCode },
+        pathLocks: {
+          nodes: pathLocks,
+        },
         repository: {
           empty: emptyRepo,
           blobs: {
@@ -101,6 +112,14 @@ const createComponentWithApollo = (mockData = {}) => {
       path: 'some_file.js',
       projectPath: 'some/path',
     },
+    mixins: [
+      {
+        data: () => ({ ref: 'default-ref' }),
+      },
+    ],
+    provide: {
+      ...inject,
+    },
   });
 };
 
@@ -119,6 +138,7 @@ const createFactory = (mountFn) => (
         queries: {
           project: {
             loading,
+            refetch: jest.fn(),
           },
         },
       },
@@ -298,6 +318,7 @@ describe('Blob content viewer component', () => {
       expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
+        showEditButton: true,
       });
     });
 
@@ -315,10 +336,11 @@ describe('Blob content viewer component', () => {
       expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
+        showEditButton: true,
       });
     });
 
-    it('does not render BlobHeaderEdit button when viewing a binary file', async () => {
+    it('renders BlobHeaderEdit button for binary files', async () => {
       fullFactory({
         mockData: { blobInfo: richMockData, isBinary: true },
         stubs: {
@@ -329,13 +351,36 @@ describe('Blob content viewer component', () => {
 
       await nextTick();
 
-      expect(findBlobEdit().exists()).toBe(false);
+      expect(findBlobEdit().props()).toMatchObject({
+        editPath: editBlobPath,
+        webIdePath: ideEditPath,
+        showEditButton: false,
+      });
+    });
+
+    describe('blob header binary file', () => {
+      it.each([richMockData, { simpleViewer: { fileType: 'download' } }])(
+        'passes the correct isBinary value when viewing a binary file',
+        async (blobInfo) => {
+          fullFactory({
+            mockData: {
+              blobInfo,
+              isBinary: true,
+            },
+            stubs: { BlobContent: true, BlobReplace: true },
+          });
+
+          await nextTick();
+
+          expect(findBlobHeader().props('isBinary')).toBe(true);
+        },
+      );
     });
 
     describe('BlobButtonGroup', () => {
       const { name, path, replacePath, webPath } = simpleMockData;
       const {
-        userPermissions: { pushCode },
+        userPermissions: { pushCode, downloadCode },
         repository: { empty },
       } = projectMockData;
 
@@ -345,7 +390,7 @@ describe('Blob content viewer component', () => {
         fullFactory({
           mockData: {
             blobInfo: simpleMockData,
-            project: { userPermissions: { pushCode }, repository: { empty } },
+            project: { userPermissions: { pushCode, downloadCode }, repository: { empty } },
           },
           stubs: {
             BlobContent: true,
@@ -361,8 +406,35 @@ describe('Blob content viewer component', () => {
           replacePath,
           deletePath: webPath,
           canPushCode: pushCode,
+          canLock: true,
+          isLocked: false,
           emptyRepo: empty,
         });
+      });
+
+      it.each`
+        canPushCode | canDownloadCode | canLock
+        ${true}     | ${true}         | ${true}
+        ${false}    | ${true}         | ${false}
+        ${true}     | ${false}        | ${false}
+      `('passes the correct lock states', async ({ canPushCode, canDownloadCode, canLock }) => {
+        fullFactory({
+          mockData: {
+            blobInfo: simpleMockData,
+            project: {
+              userPermissions: { pushCode: canPushCode, downloadCode: canDownloadCode },
+              repository: { empty },
+            },
+          },
+          stubs: {
+            BlobContent: true,
+            BlobButtonGroup: true,
+          },
+        });
+
+        await nextTick();
+
+        expect(findBlobButtonGroup().props('canLock')).toBe(canLock);
       });
 
       it('does not render if not logged in', async () => {
@@ -380,6 +452,34 @@ describe('Blob content viewer component', () => {
 
         expect(findBlobButtonGroup().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('blob info query', () => {
+    it('is called with originalBranch value if the prop has a value', async () => {
+      const inject = { originalBranch: 'some-branch' };
+      createComponentWithApollo({ blobs: simpleMockData }, inject);
+
+      await waitForPromises();
+
+      expect(mockResolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'some-branch',
+        }),
+      );
+    });
+
+    it('is called with ref value if the originalBranch prop has no value', async () => {
+      const inject = { originalBranch: null };
+      createComponentWithApollo({ blobs: simpleMockData }, inject);
+
+      await waitForPromises();
+
+      expect(mockResolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'default-ref',
+        }),
+      );
     });
   });
 });

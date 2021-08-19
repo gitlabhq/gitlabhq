@@ -30,18 +30,19 @@ To protect, update, or unprotect an environment, you need to have at least the
 
 To protect an environment:
 
-1. Navigate to your project's **Settings > CI/CD**.
-1. Expand the **Protected environments** section.
-1. From the **Environment** dropdown menu, select the environment you want to protect.
-1. In the **Allowed to Deploy** dropdown menu, select the role, users, or groups you
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Protected environments**.
+1. From the **Environment** list, select the environment you want to protect.
+1. In the **Allowed to deploy** list, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:
    - There are two roles to choose from:
-     - **Maintainers**: Allows access to all maintainers in the project.
-     - **Developers**: Allows access to all maintainers and all developers in the project.
-   - You can only select groups that are already associated with the project.
-   - Only users that have at least the Developer role appear in
-     the **Allowed to Deploy** dropdown menu.
-1. Click the **Protect** button.
+     - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
+     - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
+   - You can select groups that are already associated with the project only.
+   - Users must have at least the Developer role to appear in
+     the **Allowed to deploy** list.
+1. Select **Protect**.
 
 The protected environment now appears in the list of protected environments.
 
@@ -121,7 +122,7 @@ access to a protected environment through any of these methods:
 If the user also has push or merge access to the branch deployed on production,
 they have the following privileges:
 
-- [Stopping an environment](index.md#stopping-an-environment).
+- [Stop an environment](index.md#stop-an-environment).
 - [Delete a stopped environment](index.md#delete-a-stopped-environment).
 - [Create an environment terminal](index.md#web-terminals).
 
@@ -134,10 +135,10 @@ appears in the dropdown menu for deployment-only access.
 
 To add deployment-only access:
 
-1. Add a group with Reporter permissions.
-1. Add user(s) to the group.
+1. Add a group with the Reporter role.
+1. Add users to the group.
 1. Invite the group to be a project member.
-1. Follow the steps outlined in [Protecting Environments](#protecting-environments).
+1. Follow the steps in [Protecting Environments](#protecting-environments).
 
 Note that deployment-only access is the only possible access level for groups with [Reporter permissions](../../user/permissions.md).
 
@@ -163,7 +164,7 @@ For more information, see [Deployment safety](deployment_safety.md).
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-group-level-protected-environments). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 Typically, large enterprise organizations have an explicit permission boundary
@@ -214,7 +215,7 @@ configured:
 - Operators should be assigned the [maintainer role](../../user/permissions.md)
   (or above) to the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
-  wnich includes group-level protected environments,
+  which includes group-level protected environments,
   [group-level runners](../runners/runners_scope.md#group-runners),
   [group-level clusters](../../user/group/clusters/index.md), etc. Those
   configurations are inherited to the child projects as read-only entries.
@@ -231,9 +232,9 @@ configured:
     cannot override it.
   - [Project-level protected environments](#protecting-environments) can be
     combined with the group-level setting. If both group-level and project-level
-    environment configurations exist, the user must be allowed in **both**
-    rulesets in order to run a deployment job.
-  - Within a project or a sub-group of the top-level group, developers can be
+    environment configurations exist, to run a deployment job, the user must be allowed in **both**
+    rulesets.
+  - In a project or a subgroup of the top-level group, developers can be
     safely assigned the Maintainer role to tune their lower environments (such
     as `testing`).
 

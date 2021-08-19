@@ -128,6 +128,7 @@ class ProfilesController < Profiles::ApplicationController
       :timezone,
       :job_title,
       :pronouns,
+      :pronunciation,
       status: [:emoji, :message, :availability]
     )
   end

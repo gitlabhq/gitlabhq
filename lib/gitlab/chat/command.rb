@@ -54,10 +54,12 @@ module Gitlab
           }
         )
 
-        service.execute(:chat) do |pipeline|
+        response = service.execute(:chat) do |pipeline|
           build_environment_variables(pipeline)
           build_chat_data(pipeline)
         end
+
+        response.payload
       end
 
       # pipeline - The `Ci::Pipeline` to create the environment variables for.

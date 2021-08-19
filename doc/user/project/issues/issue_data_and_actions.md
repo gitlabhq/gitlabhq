@@ -199,7 +199,7 @@ You can mention a user or a group present in your GitLab instance with `@usernam
 unless they have disabled all [notifications](#notifications) in their user settings.
 This is controlled in the [notification settings](../../profile/notifications.md).
 
-Mentions for yourself (the current logged in user) are highlighted
+Mentions for yourself (the user currently signed in) are highlighted
 in a different color, which allows you to quickly see which comments involve you.
 
 Avoid mentioning `@all` in issues and merge requests, as it sends an email notification

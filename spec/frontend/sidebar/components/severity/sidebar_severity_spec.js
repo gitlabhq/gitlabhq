@@ -1,5 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import { INCIDENT_SEVERITY, ISSUABLE_TYPES } from '~/sidebar/components/severity/constants';
@@ -15,6 +16,7 @@ describe('SidebarSeverity', () => {
   const projectPath = 'gitlab-org/gitlab-test';
   const iid = '1';
   const severity = 'CRITICAL';
+  let canUpdate = true;
 
   function createComponent(props = {}) {
     const propsData = {
@@ -25,8 +27,11 @@ describe('SidebarSeverity', () => {
       ...props,
     };
     mutate = jest.fn();
-    wrapper = shallowMount(SidebarSeverity, {
+    wrapper = shallowMountExtended(SidebarSeverity, {
       propsData,
+      provide: {
+        canUpdate,
+      },
       mocks: {
         $apollo: {
           mutate,
@@ -45,22 +50,34 @@ describe('SidebarSeverity', () => {
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
-      wrapper = null;
     }
   });
 
-  const findSeverityToken = () => wrapper.findAll(SeverityToken);
-  const findEditBtn = () => wrapper.find('[data-testid="editButton"]');
-  const findDropdown = () => wrapper.find(GlDropdown);
-  const findCriticalSeverityDropdownItem = () => wrapper.find(GlDropdownItem);
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findTooltip = () => wrapper.find(GlTooltip);
+  const findSeverityToken = () => wrapper.findAllComponents(SeverityToken);
+  const findEditBtn = () => wrapper.findByTestId('editButton');
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findCriticalSeverityDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findCollapsedSeverity = () => wrapper.find({ ref: 'severity' });
 
-  it('renders severity widget', () => {
-    expect(findEditBtn().exists()).toBe(true);
-    expect(findSeverityToken().exists()).toBe(true);
-    expect(findDropdown().exists()).toBe(true);
+  describe('Severity widget', () => {
+    it('renders severity dropdown and token', () => {
+      expect(findSeverityToken().exists()).toBe(true);
+      expect(findDropdown().exists()).toBe(true);
+    });
+
+    describe('edit button', () => {
+      it('is rendered when `canUpdate` provided as `true`', () => {
+        expect(findEditBtn().exists()).toBe(true);
+      });
+
+      it('is NOT rendered when `canUpdate` provided as `false`', () => {
+        canUpdate = false;
+        createComponent();
+        expect(findEditBtn().exists()).toBe(false);
+      });
+    });
   });
 
   describe('Update severity', () => {
@@ -100,7 +117,7 @@ describe('SidebarSeverity', () => {
       );
       findCriticalSeverityDropdownItem().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findLoadingIcon().exists()).toBe(true);
 
       resolvePromise();
@@ -128,27 +145,29 @@ describe('SidebarSeverity', () => {
 
       it('should expand the dropdown on collapsed icon click', async () => {
         wrapper.vm.isDropdownShowing = false;
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDropdown().classes(HIDDDEN_CLASS)).toBe(true);
 
         findCollapsedSeverity().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDropdown().classes(SHOWN_CLASS)).toBe(true);
       });
     });
 
     describe('expanded', () => {
       it('toggles dropdown with edit button', async () => {
+        canUpdate = true;
+        createComponent();
         wrapper.vm.isDropdownShowing = false;
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDropdown().classes(HIDDDEN_CLASS)).toBe(true);
 
         findEditBtn().vm.$emit('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDropdown().classes(SHOWN_CLASS)).toBe(true);
 
         findEditBtn().vm.$emit('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDropdown().classes(HIDDDEN_CLASS)).toBe(true);
       });
     });

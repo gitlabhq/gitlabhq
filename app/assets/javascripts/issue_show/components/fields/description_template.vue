@@ -15,7 +15,7 @@ export default {
     issuableTemplates: {
       type: [Object, Array],
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     projectPath: {
       type: String,

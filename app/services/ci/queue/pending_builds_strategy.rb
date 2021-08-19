@@ -11,25 +11,9 @@ module Ci
 
       # rubocop:disable CodeReuse/ActiveRecord
       def builds_for_shared_runner
-        relation = new_builds
-          # don't run projects which have not enabled shared runners and builds
-          .joins('INNER JOIN projects ON ci_pending_builds.project_id = projects.id')
-          .where(projects: { shared_runners_enabled: true, pending_delete: false })
-          .joins('LEFT JOIN project_features ON ci_pending_builds.project_id = project_features.project_id')
-          .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0')
+        shared_builds = builds_available_for_shared_runners
 
-        if Feature.enabled?(:ci_queueing_disaster_recovery_disable_fair_scheduling, runner, type: :ops, default_enabled: :yaml)
-          # if disaster recovery is enabled, we fallback to FIFO scheduling
-          relation.order('ci_pending_builds.build_id ASC')
-        else
-          # Implement fair scheduling
-          # this returns builds that are ordered by number of running builds
-          # we prefer projects that don't use shared runners at all
-          relation
-            .with(running_builds_for_shared_runners_cte.to_arel)
-            .joins("LEFT JOIN project_builds ON ci_pending_builds.project_id = project_builds.project_id")
-            .order(Arel.sql('COALESCE(project_builds.running_builds, 0) ASC'), 'ci_pending_builds.build_id ASC')
-        end
+        builds_ordered_for_shared_runners(shared_builds)
       end
 
       def builds_matching_tag_ids(relation, ids)
@@ -52,7 +36,43 @@ module Ci
         relation.pluck(:build_id)
       end
 
+      def use_denormalized_shared_runners_data?
+        ::Feature.enabled?(:ci_queueing_denormalize_shared_runners_information, runner, type: :development, default_enabled: :yaml)
+      end
+
+      def use_denormalized_minutes_data?
+        ::Feature.enabled?(:ci_queueing_denormalize_ci_minutes_information, runner, type: :development, default_enabled: :yaml)
+      end
+
       private
+
+      def builds_available_for_shared_runners
+        if use_denormalized_shared_runners_data?
+          new_builds.with_instance_runners
+        else
+          new_builds
+            # don't run projects which have not enabled shared runners and builds
+            .joins('INNER JOIN projects ON ci_pending_builds.project_id = projects.id')
+            .where(projects: { shared_runners_enabled: true, pending_delete: false })
+            .joins('LEFT JOIN project_features ON ci_pending_builds.project_id = project_features.project_id')
+            .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0')
+        end
+      end
+
+      def builds_ordered_for_shared_runners(relation)
+        if Feature.enabled?(:ci_queueing_disaster_recovery_disable_fair_scheduling, runner, type: :ops, default_enabled: :yaml)
+          # if disaster recovery is enabled, we fallback to FIFO scheduling
+          relation.order('ci_pending_builds.build_id ASC')
+        else
+          # Implement fair scheduling
+          # this returns builds that are ordered by number of running builds
+          # we prefer projects that don't use shared runners at all
+          relation
+            .with(running_builds_for_shared_runners_cte.to_arel)
+            .joins("LEFT JOIN project_builds ON ci_pending_builds.project_id = project_builds.project_id")
+            .order(Arel.sql('COALESCE(project_builds.running_builds, 0) ASC'), 'ci_pending_builds.build_id ASC')
+        end
+      end
 
       def running_builds_for_shared_runners_cte
         running_builds = ::Ci::RunningBuild
@@ -67,3 +87,5 @@ module Ci
     end
   end
 end
+
+Ci::Queue::PendingBuildsStrategy.prepend_mod_with('Ci::Queue::PendingBuildsStrategy')

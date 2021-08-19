@@ -20,8 +20,6 @@ export default {
     GlLink,
     GlSearchBoxByType,
     ReviewAppLink,
-    VisualReviewAppLink: () =>
-      import('ee_component/vue_merge_request_widget/components/visual_review_app_link.vue'),
   },
   directives: {
     autofocusonshow,
@@ -34,21 +32,6 @@ export default {
     deployment: {
       type: Object,
       required: true,
-    },
-    showVisualReviewApp: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    visualReviewAppMeta: {
-      type: Object,
-      required: false,
-      default: () => ({
-        sourceProjectId: '',
-        sourceProjectPath: '',
-        mergeRequestId: '',
-        appUrl: '',
-      }),
     },
   },
   data() {
@@ -113,13 +96,6 @@ export default {
       :link="deploymentExternalUrl"
       size="small"
       css-class="js-deploy-url deploy-link btn btn-default btn-sm inline gl-ml-3"
-    />
-    <visual-review-app-link
-      v-if="showVisualReviewApp"
-      :view-app-display="appButtonText"
-      :link="deploymentExternalUrl"
-      :app-metadata="visualReviewAppMeta"
-      :changes="deployment.changes"
     />
   </span>
 </template>

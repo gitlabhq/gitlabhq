@@ -12,22 +12,14 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
 ## Atlassian application registration
 
 1. Go to <https://developer.atlassian.com/console/myapps/> and sign-in with the Atlassian
-   account that will administer the application.
-
+   account to administer the application.
 1. Click **Create a new app**.
-
 1. Choose an App Name, such as 'GitLab', and click **Create**.
-
 1. Note the `Client ID` and `Secret` for the [GitLab configuration](#gitlab-configuration) steps.
-
 1. In the left sidebar under **APIS AND FEATURES**, click **OAuth 2.0 (3LO)**.
-
 1. Enter the GitLab callback URL using the format `https://gitlab.example.com/users/auth/atlassian_oauth2/callback` and click **Save changes**.
-
 1. Click **+ Add** in the left sidebar under **APIS AND FEATURES**.
-
 1. Click **Add** for **Jira platform REST API** and then **Configure**.
-
 1. Click **Add** next to the following scopes:
     - **View Jira issue data**
     - **View user profiles**
@@ -50,7 +42,6 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
    ```
 
 1. See [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration) for initial settings to enable single sign-on and add `atlassian_oauth2` as an OAuth provider.
-
 1. Add the provider configuration for Atlassian:
 
    For Omnibus GitLab installations:
@@ -76,9 +67,7 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
    ```
 
 1. Change `YOUR_CLIENT_ID` and `YOUR_CLIENT_SECRET` to the Client credentials you received in [application registration](#atlassian-application-registration) steps.
-
 1. Save the configuration file.
-
 1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
 
 On the sign-in page there should now be an Atlassian icon below the regular sign in form. Click the icon to begin the authentication process.

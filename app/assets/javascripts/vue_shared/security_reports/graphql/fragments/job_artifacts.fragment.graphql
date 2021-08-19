@@ -1,0 +1,13 @@
+fragment JobArtifacts on Pipeline {
+  jobs(securityReportTypes: $reportTypes) {
+    nodes {
+      name
+      artifacts {
+        nodes {
+          downloadPath
+          fileType
+        }
+      }
+    }
+  }
+}

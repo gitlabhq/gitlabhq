@@ -4,7 +4,6 @@
 - page_title @group.name, _("Groups")
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
-.js-remove-member-modal
 %h3.page-title
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 

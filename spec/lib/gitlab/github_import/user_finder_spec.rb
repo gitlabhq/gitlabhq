@@ -3,7 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
-  let(:project) { create(:project) }
+  let(:project) do
+    create(
+      :project,
+      import_type: 'github',
+      import_url: 'https://api.github.com/user/repo'
+    )
+  end
+
   let(:client) { double(:client) }
   let(:finder) { described_class.new(project, client) }
 
@@ -262,6 +269,26 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
         .with(described_class::ID_CACHE_KEY % id, nil)
 
       finder.id_for_github_id(id)
+    end
+
+    context 'when importing from github enterprise' do
+      let(:project) do
+        create(
+          :project,
+          import_type: 'github',
+          import_url: 'https://othergithub.net/user/repo'
+        )
+      end
+
+      it 'does not look up the user by external id' do
+        expect(finder).not_to receive(:query_id_for_github_id)
+
+        expect(Gitlab::Cache::Import::Caching)
+          .to receive(:write)
+          .with(described_class::ID_CACHE_KEY % id, nil)
+
+        finder.id_for_github_id(id)
+      end
     end
   end
 

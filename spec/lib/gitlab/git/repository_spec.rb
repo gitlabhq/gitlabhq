@@ -491,6 +491,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#fetch_remote' do
+    let(:url) { 'http://example.clom' }
+
     it 'delegates to the gitaly RepositoryService' do
       ssh_auth = double(:ssh_auth)
       expected_opts = {
@@ -500,17 +502,17 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         timeout: described_class::GITLAB_PROJECTS_TIMEOUT,
         prune: false,
         check_tags_changed: false,
-        url: nil,
-        refmap: nil
+        refmap: nil,
+        http_authorization_header: ""
       }
 
-      expect(repository.gitaly_repository_client).to receive(:fetch_remote).with('remote-name', expected_opts)
+      expect(repository.gitaly_repository_client).to receive(:fetch_remote).with(url, expected_opts)
 
-      repository.fetch_remote('remote-name', ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false)
+      repository.fetch_remote(url, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false)
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :fetch_remote do
-      subject { repository.fetch_remote('remote-name') }
+      subject { repository.fetch_remote(url) }
     end
   end
 
@@ -584,29 +586,29 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .to receive(:find_remote_root_ref).and_call_original
 
-      expect(repository.find_remote_root_ref('origin', SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to eq 'master'
+      expect(repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to eq 'master'
     end
 
     it 'returns UTF-8' do
-      expect(repository.find_remote_root_ref('origin', SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to be_utf8
+      expect(repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to be_utf8
     end
 
     it 'returns nil when remote name is nil' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .not_to receive(:find_remote_root_ref)
 
-      expect(repository.find_remote_root_ref(nil, nil)).to be_nil
+      expect(repository.find_remote_root_ref(nil)).to be_nil
     end
 
     it 'returns nil when remote name is empty' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .not_to receive(:find_remote_root_ref)
 
-      expect(repository.find_remote_root_ref('', '')).to be_nil
+      expect(repository.find_remote_root_ref('')).to be_nil
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RemoteService, :find_remote_root_ref do
-      subject { repository.find_remote_root_ref('origin', SeedHelper::GITLAB_GIT_TEST_REPO_URL) }
+      subject { repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL) }
     end
   end
 
@@ -950,44 +952,23 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     let(:expected_commits) { 1 }
     let(:revisions) { [new_commit] }
 
-    shared_examples 'an enumeration of new commits' do
-      it 'enumerates commits' do
-        commits = repository.new_commits(revisions).to_a
-
-        expect(commits.size).to eq(expected_commits)
-        commits.each do |commit|
-          expect(commit.id).to eq(new_commit)
-          expect(commit.message).to eq("Message")
-        end
+    before do
+      expect_next_instance_of(Gitlab::GitalyClient::CommitService) do |service|
+        expect(service)
+          .to receive(:list_commits)
+          .with([new_commit, '--not', '--all'])
+          .and_call_original
       end
     end
 
-    context 'with list_commits disabled' do
-      before do
-        stub_feature_flags(list_commits: false)
+    it 'enumerates commits' do
+      commits = repository.new_commits(revisions).to_a
 
-        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
-          expect(service)
-            .to receive(:list_new_commits)
-            .with(new_commit)
-            .and_call_original
-        end
+      expect(commits.size).to eq(expected_commits)
+      commits.each do |commit|
+        expect(commit.id).to eq(new_commit)
+        expect(commit.message).to eq("Message")
       end
-
-      it_behaves_like 'an enumeration of new commits'
-    end
-
-    context 'with list_commits enabled' do
-      before do
-        expect_next_instance_of(Gitlab::GitalyClient::CommitService) do |service|
-          expect(service)
-            .to receive(:list_commits)
-            .with([new_commit, '--not', '--all'])
-            .and_call_original
-        end
-      end
-
-      it_behaves_like 'an enumeration of new commits'
     end
   end
 
@@ -1750,43 +1731,61 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
-  describe '#write_config' do
-    before do
-      repository_rugged.config["gitlab.fullpath"] = repository_path
-    end
+  describe '#set_full_path' do
+    shared_examples '#set_full_path' do
+      before do
+        repository_rugged.config["gitlab.fullpath"] = repository_path
+      end
 
-    context 'is given a path' do
-      it 'writes it to disk' do
-        repository.write_config(full_path: "not-the/real-path.git")
+      context 'is given a path' do
+        it 'writes it to disk' do
+          repository.set_full_path(full_path: "not-the/real-path.git")
 
-        config = File.read(File.join(repository_path, "config"))
+          config = File.read(File.join(repository_path, "config"))
 
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = not-the/real-path.git")
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = not-the/real-path.git")
+        end
+      end
+
+      context 'it is given an empty path' do
+        it 'does not write it to disk' do
+          repository.set_full_path(full_path: "")
+
+          config = File.read(File.join(repository_path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = #{repository_path}")
+        end
+      end
+
+      context 'repository does not exist' do
+        it 'raises NoRepository and does not call Gitaly WriteConfig' do
+          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
+
+          expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
+
+          expect do
+            repository.set_full_path(full_path: 'foo/bar.git')
+          end.to raise_error(Gitlab::Git::Repository::NoRepository)
+        end
       end
     end
 
-    context 'it is given an empty path' do
-      it 'does not write it to disk' do
-        repository.write_config(full_path: "")
-
-        config = File.read(File.join(repository_path, "config"))
-
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = #{repository_path}")
+    context 'with :set_full_path enabled' do
+      before do
+        stub_feature_flags(set_full_path: true)
       end
+
+      it_behaves_like '#set_full_path'
     end
 
-    context 'repository does not exist' do
-      it 'raises NoRepository and does not call Gitaly WriteConfig' do
-        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
-
-        expect(repository.gitaly_repository_client).not_to receive(:write_config)
-
-        expect do
-          repository.write_config(full_path: 'foo/bar.git')
-        end.to raise_error(Gitlab::Git::Repository::NoRepository)
+    context 'with :set_full_path disabled' do
+      before do
+        stub_feature_flags(set_full_path: false)
       end
+
+      it_behaves_like '#set_full_path'
     end
   end
 
@@ -1810,34 +1809,6 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
     after do
       entries.keys.each { |k| repository_rugged.config.delete(k) }
-    end
-  end
-
-  describe '#delete_config' do
-    let(:repository) { mutable_repository }
-    let(:entries) do
-      {
-        'test.foo1' => 'bla bla',
-        'test.foo2' => 1234,
-        'test.foo3' => true
-      }
-    end
-
-    it 'can delete config settings' do
-      entries.each do |key, value|
-        repository_rugged.config[key] = value
-      end
-
-      expect(repository.delete_config(*%w[does.not.exist test.foo1 test.foo2])).to be_nil
-
-      # Workaround for https://github.com/libgit2/rugged/issues/785: If
-      # Gitaly changes .gitconfig while Rugged has the file loaded
-      # Rugged::Repository#each_key will report stale values unless a
-      # lookup is done first.
-      expect(repository_rugged.config['test.foo1']).to be_nil
-      config_keys = repository_rugged.config.each_key.to_a
-      expect(config_keys).not_to include('test.foo1')
-      expect(config_keys).not_to include('test.foo2')
     end
   end
 
@@ -1998,47 +1969,6 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       expect(repository.ref_exists?("refs/keep/c")).to be(true)
       expect(repository.ref_exists?("refs/also-keep/d")).to be(true)
       expect(repository.ref_exists?("refs/heads/master")).to be(true)
-    end
-  end
-
-  describe 'remotes' do
-    let(:repository) { mutable_repository }
-    let(:remote_name) { 'my-remote' }
-    let(:url) { 'http://my-repo.git' }
-
-    after do
-      ensure_seeds
-    end
-
-    describe '#add_remote' do
-      let(:mirror_refmap) { '+refs/*:refs/*' }
-
-      it 'added the remote' do
-        begin
-          repository_rugged.remotes.delete(remote_name)
-        rescue Rugged::ConfigError
-        end
-
-        repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
-
-        expect(repository_rugged.remotes[remote_name]).not_to be_nil
-        expect(repository_rugged.config["remote.#{remote_name}.mirror"]).to eq('true')
-        expect(repository_rugged.config["remote.#{remote_name}.prune"]).to eq('true')
-        expect(repository_rugged.config["remote.#{remote_name}.fetch"]).to eq(mirror_refmap)
-      end
-    end
-
-    describe '#remove_remote' do
-      it 'removes the remote' do
-        repository_rugged.remotes.create(remote_name, url)
-
-        expect(repository.remove_remote(remote_name)).to be true
-
-        # Since we deleted the remote via Gitaly, Rugged doesn't know
-        # this changed underneath it. Let's refresh the Rugged repo.
-        repository_rugged = Rugged::Repository.new(repository_path)
-        expect(repository_rugged.remotes[remote_name]).to be_nil
-      end
     end
   end
 

@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
 
 type s3Session struct {

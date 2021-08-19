@@ -4,9 +4,10 @@ require 'spec_helper'
 
 RSpec.describe PropagateIntegrationWorker do
   describe '#perform' do
+    let(:project) { create(:project) }
     let(:integration) do
       Integrations::Pushover.create!(
-        template: true,
+        project: project,
         active: true,
         device: 'MyDevice',
         sound: 'mic',

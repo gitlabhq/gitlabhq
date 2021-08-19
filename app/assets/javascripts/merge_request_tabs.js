@@ -82,9 +82,9 @@ export default class MergeRequestTabs {
       this.mergeRequestTabPanes && this.mergeRequestTabPanes.querySelectorAll
         ? this.mergeRequestTabPanes.querySelectorAll('.tab-pane')
         : null;
-    const navbar = document.querySelector('.navbar-gitlab');
-    const peek = document.getElementById('js-peek');
-    const paddingTop = 16;
+    this.navbar = document.querySelector('.navbar-gitlab');
+    this.peek = document.getElementById('js-peek');
+    this.paddingTop = 16;
 
     this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
 
@@ -99,15 +99,6 @@ export default class MergeRequestTabs {
     this.setCurrentAction = this.setCurrentAction.bind(this);
     this.tabShown = this.tabShown.bind(this);
     this.clickTab = this.clickTab.bind(this);
-    this.stickyTop = navbar ? navbar.offsetHeight - paddingTop : 0;
-
-    if (peek) {
-      this.stickyTop += peek.offsetHeight;
-    }
-
-    if (this.mergeRequestTabs) {
-      this.stickyTop += this.mergeRequestTabs.offsetHeight;
-    }
 
     if (stubLocation) {
       location = stubLocation;
@@ -519,5 +510,19 @@ export default class MergeRequestTabs {
         $gutterBtn.trigger('click', [true]);
       }
     }, 0);
+  }
+
+  get stickyTop() {
+    let stickyTop = this.navbar ? this.navbar.offsetHeight : 0;
+
+    if (this.peek) {
+      stickyTop += this.peek.offsetHeight;
+    }
+
+    if (this.mergeRequestTabs) {
+      stickyTop += this.mergeRequestTabs.offsetHeight;
+    }
+
+    return stickyTop;
   }
 }

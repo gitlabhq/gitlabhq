@@ -2,39 +2,23 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/cycle_analytics/store/actions';
+import * as getters from '~/cycle_analytics/store/getters';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { allowedStages, selectedStage, selectedValueStream } from '../mock_data';
 
 const mockRequestPath = 'some/cool/path';
 const mockFullPath = '/namespace/-/analytics/value_stream_analytics/value_streams';
 const mockStartDate = 30;
-const mockRequestedDataActions = ['fetchValueStreams', 'fetchCycleAnalyticsData'];
-const mockInitializeActionCommit = {
-  payload: { requestPath: mockRequestPath },
-  type: 'INITIALIZE_VSA',
-};
+const mockEndpoints = { fullPath: mockFullPath, requestPath: mockRequestPath };
 const mockSetDateActionCommit = { payload: { startDate: mockStartDate }, type: 'SET_DATE_RANGE' };
-const mockRequestedDataMutations = [
-  {
-    payload: true,
-    type: 'SET_LOADING',
-  },
-  {
-    payload: false,
-    type: 'SET_LOADING',
-  },
-];
 
-const features = {
-  cycleAnalyticsForGroups: true,
-};
+const defaultState = { ...getters, selectedValueStream };
 
 describe('Project Value Stream Analytics actions', () => {
   let state;
   let mock;
 
   beforeEach(() => {
-    state = {};
     mock = new MockAdapter(axios);
   });
 
@@ -45,28 +29,62 @@ describe('Project Value Stream Analytics actions', () => {
 
   const mutationTypes = (arr) => arr.map(({ type }) => type);
 
+  const mockFetchStageDataActions = [
+    { type: 'setLoading', payload: true },
+    { type: 'fetchCycleAnalyticsData' },
+    { type: 'fetchStageData' },
+    { type: 'fetchStageMedians' },
+    { type: 'setLoading', payload: false },
+  ];
+
   describe.each`
-    action                      | payload                             | expectedActions               | expectedMutations
-    ${'initializeVsa'}          | ${{ requestPath: mockRequestPath }} | ${mockRequestedDataActions}   | ${[mockInitializeActionCommit, ...mockRequestedDataMutations]}
-    ${'setDateRange'}           | ${{ startDate: mockStartDate }}     | ${mockRequestedDataActions}   | ${[mockSetDateActionCommit, ...mockRequestedDataMutations]}
-    ${'setSelectedStage'}       | ${{ selectedStage }}                | ${['fetchStageData']}         | ${[{ type: 'SET_SELECTED_STAGE', payload: { selectedStage } }]}
-    ${'setSelectedValueStream'} | ${{ selectedValueStream }}          | ${['fetchValueStreamStages']} | ${[{ type: 'SET_SELECTED_VALUE_STREAM', payload: { selectedValueStream } }]}
+    action                      | payload                         | expectedActions                                                              | expectedMutations
+    ${'setLoading'}             | ${true}                         | ${[]}                                                                        | ${[{ type: 'SET_LOADING', payload: true }]}
+    ${'setDateRange'}           | ${{ startDate: mockStartDate }} | ${mockFetchStageDataActions}                                                 | ${[mockSetDateActionCommit]}
+    ${'setFilters'}             | ${[]}                           | ${mockFetchStageDataActions}                                                 | ${[]}
+    ${'setSelectedStage'}       | ${{ selectedStage }}            | ${[{ type: 'fetchStageData' }]}                                              | ${[{ type: 'SET_SELECTED_STAGE', payload: { selectedStage } }]}
+    ${'setSelectedValueStream'} | ${{ selectedValueStream }}      | ${[{ type: 'fetchValueStreamStages' }, { type: 'fetchCycleAnalyticsData' }]} | ${[{ type: 'SET_SELECTED_VALUE_STREAM', payload: { selectedValueStream } }]}
   `('$action', ({ action, payload, expectedActions, expectedMutations }) => {
     const types = mutationTypes(expectedMutations);
-
     it(`will dispatch ${expectedActions} and commit ${types}`, () =>
       testAction({
         action: actions[action],
         state,
         payload,
         expectedMutations,
-        expectedActions: expectedActions.map((a) => ({ type: a })),
+        expectedActions,
       }));
+  });
+
+  describe('initializeVsa', () => {
+    let mockDispatch;
+    let mockCommit;
+    const payload = { endpoints: mockEndpoints };
+
+    beforeEach(() => {
+      mockDispatch = jest.fn(() => Promise.resolve());
+      mockCommit = jest.fn();
+    });
+
+    it('will dispatch the setLoading and fetchValueStreams actions and commit INITIALIZE_VSA', async () => {
+      await actions.initializeVsa(
+        {
+          ...state,
+          dispatch: mockDispatch,
+          commit: mockCommit,
+        },
+        payload,
+      );
+      expect(mockCommit).toHaveBeenCalledWith('INITIALIZE_VSA', { endpoints: mockEndpoints });
+      expect(mockDispatch).toHaveBeenCalledWith('setLoading', true);
+      expect(mockDispatch).toHaveBeenCalledWith('fetchValueStreams');
+      expect(mockDispatch).toHaveBeenCalledWith('setLoading', false);
+    });
   });
 
   describe('fetchCycleAnalyticsData', () => {
     beforeEach(() => {
-      state = { requestPath: mockRequestPath };
+      state = { endpoints: mockEndpoints };
       mock = new MockAdapter(axios);
       mock.onGet(mockRequestPath).reply(httpStatusCodes.OK);
     });
@@ -85,7 +103,7 @@ describe('Project Value Stream Analytics actions', () => {
 
     describe('with a failing request', () => {
       beforeEach(() => {
-        state = { requestPath: mockRequestPath };
+        state = { endpoints: mockEndpoints };
         mock = new MockAdapter(axios);
         mock.onGet(mockRequestPath).reply(httpStatusCodes.BAD_REQUEST);
       });
@@ -105,11 +123,12 @@ describe('Project Value Stream Analytics actions', () => {
   });
 
   describe('fetchStageData', () => {
-    const mockStagePath = `${mockRequestPath}/events/${selectedStage.name}`;
+    const mockStagePath = /value_streams\/\w+\/stages\/\w+\/records/;
 
     beforeEach(() => {
       state = {
-        requestPath: mockRequestPath,
+        ...defaultState,
+        endpoints: mockEndpoints,
         startDate: mockStartDate,
         selectedStage,
       };
@@ -131,7 +150,8 @@ describe('Project Value Stream Analytics actions', () => {
 
       beforeEach(() => {
         state = {
-          requestPath: mockRequestPath,
+          ...defaultState,
+          endpoints: mockEndpoints,
           startDate: mockStartDate,
           selectedStage,
         };
@@ -155,7 +175,8 @@ describe('Project Value Stream Analytics actions', () => {
     describe('with a failing request', () => {
       beforeEach(() => {
         state = {
-          requestPath: mockRequestPath,
+          ...defaultState,
+          endpoints: mockEndpoints,
           startDate: mockStartDate,
           selectedStage,
         };
@@ -179,8 +200,7 @@ describe('Project Value Stream Analytics actions', () => {
 
     beforeEach(() => {
       state = {
-        features,
-        fullPath: mockFullPath,
+        endpoints: mockEndpoints,
       };
       mock = new MockAdapter(axios);
       mock.onGet(mockValueStreamPath).reply(httpStatusCodes.OK);
@@ -196,28 +216,9 @@ describe('Project Value Stream Analytics actions', () => {
           { type: 'receiveValueStreamsSuccess' },
           { type: 'setSelectedStage' },
           { type: 'fetchStageMedians' },
+          { type: 'fetchStageCountValues' },
         ],
       }));
-
-    describe('with cycleAnalyticsForGroups=false', () => {
-      beforeEach(() => {
-        state = {
-          features: { cycleAnalyticsForGroups: false },
-          fullPath: mockFullPath,
-        };
-        mock = new MockAdapter(axios);
-        mock.onGet(mockValueStreamPath).reply(httpStatusCodes.OK);
-      });
-
-      it("does not dispatch the 'fetchStageMedians' request", () =>
-        testAction({
-          action: actions.fetchValueStreams,
-          state,
-          payload: {},
-          expectedMutations: [{ type: 'REQUEST_VALUE_STREAMS' }],
-          expectedActions: [{ type: 'receiveValueStreamsSuccess' }, { type: 'setSelectedStage' }],
-        }));
-    });
 
     describe('with a failing request', () => {
       beforeEach(() => {
@@ -271,7 +272,7 @@ describe('Project Value Stream Analytics actions', () => {
 
     beforeEach(() => {
       state = {
-        fullPath: mockFullPath,
+        endpoints: mockEndpoints,
         selectedValueStream,
       };
       mock = new MockAdapter(axios);
@@ -359,6 +360,66 @@ describe('Project Value Stream Analytics actions', () => {
           expectedMutations: [
             { type: 'REQUEST_STAGE_MEDIANS' },
             { type: 'RECEIVE_STAGE_MEDIANS_ERROR', payload: stageMedianError },
+          ],
+          expectedActions: [],
+        }));
+    });
+  });
+
+  describe('fetchStageCountValues', () => {
+    const mockValueStreamPath = /count/;
+    const stageCountsPayload = [
+      { id: 'issue', count: 1 },
+      { id: 'plan', count: 2 },
+      { id: 'code', count: 3 },
+    ];
+
+    const stageCountError = new Error(
+      `Request failed with status code ${httpStatusCodes.BAD_REQUEST}`,
+    );
+
+    beforeEach(() => {
+      state = {
+        fullPath: mockFullPath,
+        selectedValueStream,
+        stages: allowedStages,
+      };
+      mock = new MockAdapter(axios);
+      mock
+        .onGet(mockValueStreamPath)
+        .replyOnce(httpStatusCodes.OK, { count: 1 })
+        .onGet(mockValueStreamPath)
+        .replyOnce(httpStatusCodes.OK, { count: 2 })
+        .onGet(mockValueStreamPath)
+        .replyOnce(httpStatusCodes.OK, { count: 3 });
+    });
+
+    it(`commits the 'REQUEST_STAGE_COUNTS' and 'RECEIVE_STAGE_COUNTS_SUCCESS' mutations`, () =>
+      testAction({
+        action: actions.fetchStageCountValues,
+        state,
+        payload: {},
+        expectedMutations: [
+          { type: 'REQUEST_STAGE_COUNTS' },
+          { type: 'RECEIVE_STAGE_COUNTS_SUCCESS', payload: stageCountsPayload },
+        ],
+        expectedActions: [],
+      }));
+
+    describe('with a failing request', () => {
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+        mock.onGet(mockValueStreamPath).reply(httpStatusCodes.BAD_REQUEST);
+      });
+
+      it(`commits the 'RECEIVE_STAGE_COUNTS_ERROR' mutation`, () =>
+        testAction({
+          action: actions.fetchStageCountValues,
+          state,
+          payload: {},
+          expectedMutations: [
+            { type: 'REQUEST_STAGE_COUNTS' },
+            { type: 'RECEIVE_STAGE_COUNTS_ERROR', payload: stageCountError },
           ],
           expectedActions: [],
         }));

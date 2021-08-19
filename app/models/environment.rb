@@ -5,6 +5,7 @@ class Environment < ApplicationRecord
   include ReactiveCaching
   include FastDestroyAll::Helpers
   include Presentable
+  include NullifyIfBlank
 
   self.reactive_cache_refresh_interval = 1.minute
   self.reactive_cache_lifetime = 55.seconds
@@ -14,6 +15,7 @@ class Environment < ApplicationRecord
   belongs_to :project, required: true
 
   use_fast_destroy :all_deployments
+  nullify_if_blank :external_url
 
   has_many :all_deployments, class_name: 'Deployment'
   has_many :deployments, -> { visible }
@@ -33,7 +35,6 @@ class Environment < ApplicationRecord
   has_one :upcoming_deployment, -> { running.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
-  before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
 
   before_save :set_environment_type
@@ -77,6 +78,7 @@ class Environment < ApplicationRecord
   scope :for_name, -> (name) { where(name: name) }
   scope :preload_cluster, -> { preload(last_deployment: :cluster) }
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
+  scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
 
   ##
   # Search environments which have names like the given query.
@@ -228,10 +230,6 @@ class Environment < ApplicationRecord
 
   def recently_updated_on_branch?(ref)
     ref.to_s == last_deployment.try(:ref)
-  end
-
-  def nullify_external_url
-    self.external_url = nil if self.external_url.blank?
   end
 
   def set_environment_type

@@ -11,7 +11,7 @@ RSpec.shared_context 'conan api setup' do
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
 
   let(:project) { package.project }
-  let(:job) { create(:ci_build, :running, user: user, project: project) }
+  let(:job) { create(:ci_build, :running, user: user) }
   let(:job_token) { job.token }
   let(:auth_token) { personal_access_token.token }
   let(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }

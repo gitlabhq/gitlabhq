@@ -14,13 +14,20 @@ export default function appFactory(el, Component) {
   }
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient({}, { batchMax: 1 }),
+    defaultClient: createDefaultClient(
+      {},
+      {
+        batchMax: 1,
+        assumeImmutableResults: true,
+      },
+    ),
   });
 
   const {
     visibilityLevels = '[]',
     selectedLevel,
     multipleLevelsRestricted,
+    reportAbusePath,
     ...restDataset
   } = el.dataset;
 
@@ -31,6 +38,7 @@ export default function appFactory(el, Component) {
       visibilityLevels: JSON.parse(visibilityLevels),
       selectedLevel: SNIPPET_LEVELS_MAP[selectedLevel] ?? SNIPPET_VISIBILITY_PRIVATE,
       multipleLevelsRestricted: 'multipleLevelsRestricted' in el.dataset,
+      reportAbusePath,
     },
     render(createElement) {
       return createElement(Component, {

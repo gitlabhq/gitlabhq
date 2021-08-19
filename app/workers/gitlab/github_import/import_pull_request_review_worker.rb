@@ -6,6 +6,7 @@ module Gitlab
       include ObjectImporter
 
       tags :exclude_from_kubernetes
+      worker_resource_boundary :cpu
 
       def representation_class
         Gitlab::GithubImport::Representation::PullRequestReview

@@ -2,7 +2,7 @@ review-cleanup:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3.5-kubectl1.17
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
   stage: prepare
   environment:
     name: review/auto-cleanup
@@ -27,12 +27,15 @@ review-build-cng:
     - .review:rules:review-build-cng
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine3.13
   stage: review-prepare
-  before_script:
-    - source ./scripts/utils.sh
-    - install_gitlab_gem
   needs:
     - job: compile-production-assets
       artifacts: false
+  variables:
+    CNG_PROJECT_ACCESS_TOKEN: "${CNG_MIRROR_PROJECT_ACCESS_TOKEN}"  # "Multi-pipeline (from 'gitlab-org/gitlab' 'review-build-cng' job)" at https://gitlab.com/gitlab-org/build/CNG-mirror/-/settings/access_tokens
+    CNG_PROJECT_PATH: "gitlab-org/build/CNG-mirror"
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
   script:
     - ./scripts/trigger-build cng
 
@@ -43,7 +46,7 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v4.12.0"
+    GITLAB_HELM_CHART_REF: "v5.1.0"
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
@@ -114,7 +117,7 @@ review-stop:
   extends:
     - .use-docker-in-docker
   image:
-    name: ${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}
+    name: ${QA_IMAGE}
     entrypoint: [""]
   stage: qa
   needs: ["build-qa-image", "review-deploy"]

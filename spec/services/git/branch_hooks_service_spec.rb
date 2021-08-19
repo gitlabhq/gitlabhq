@@ -92,7 +92,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
   end
 
   describe 'Push Event' do
-    let(:event) { Event.pushed_action.first }
+    let(:event) { Event.pushed_action.take }
 
     subject(:execute_service) { service.execute }
 
@@ -134,7 +134,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
 
         context 'when usage ping is disabled' do
           before do
-            stub_application_setting(usage_ping_enabled: false)
+            allow(::ServicePing::ServicePingSettings).to receive(:enabled?).and_return(false)
           end
 
           it 'does not track the event' do
@@ -171,7 +171,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context "with a new branch" do
+    context "with a new default branch" do
       let(:oldrev) { Gitlab::Git::BLANK_SHA }
 
       it 'generates a push event with more than one commit' do
@@ -183,8 +183,28 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
         expect(event.push_event_payload).to be_an_instance_of(PushEventPayload)
         expect(event.push_event_payload.commit_from).to be_nil
         expect(event.push_event_payload.commit_to).to eq(newrev)
-        expect(event.push_event_payload.commit_title).to eq('Initial commit')
+        expect(event.push_event_payload.commit_title).to eq('Change some files')
         expect(event.push_event_payload.ref).to eq('master')
+        expect(event.push_event_payload.commit_count).to be > 1
+      end
+    end
+
+    context "with a new non-default branch" do
+      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:branch) { 'fix' }
+      let(:commit_id) { project.commit(branch).id }
+
+      it 'generates a push event with more than one commit' do
+        execute_service
+
+        expect(event).to be_an_instance_of(PushEvent)
+        expect(event.project).to eq(project)
+        expect(event).to be_pushed_action
+        expect(event.push_event_payload).to be_an_instance_of(PushEventPayload)
+        expect(event.push_event_payload.commit_from).to be_nil
+        expect(event.push_event_payload.commit_to).to eq(newrev)
+        expect(event.push_event_payload.commit_title).to eq('Test file for directories with a leading dot')
+        expect(event.push_event_payload.ref).to eq('fix')
         expect(event.push_event_payload.commit_count).to be > 1
       end
     end

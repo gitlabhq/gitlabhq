@@ -43,10 +43,12 @@ describe('JiraIssuesImportStatus', () => {
     wrapper = null;
   });
 
-  describe('when Jira import is not in progress', () => {
-    it('does not show an alert', () => {
+  describe('when Jira import is neither in progress nor finished', () => {
+    beforeEach(() => {
       wrapper = mountComponent();
+    });
 
+    it('does not show an alert', () => {
       expect(wrapper.find(GlAlert).exists()).toBe(false);
     });
   });

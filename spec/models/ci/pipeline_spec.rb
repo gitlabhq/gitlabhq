@@ -263,6 +263,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.with_pipeline_source' do
+    subject { described_class.with_pipeline_source(source) }
+
+    let(:source) { 'web' }
+
+    let_it_be(:push_pipeline)   { create(:ci_pipeline, source: :push) }
+    let_it_be(:web_pipeline)    { create(:ci_pipeline, source: :web) }
+    let_it_be(:api_pipeline)    { create(:ci_pipeline, source: :api) }
+
+    it 'contains pipelines created due to specified source' do
+      expect(subject).to contain_exactly(web_pipeline)
+    end
+  end
+
   describe '.ci_sources' do
     subject { described_class.ci_sources }
 
@@ -2263,18 +2277,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe '.latest_successful_for_refs' do
-      let!(:latest_successful_pipeline1) do
-        create_pipeline(:success, 'ref1', 'D')
+      subject(:latest_successful_for_refs) { described_class.latest_successful_for_refs(refs) }
+
+      context 'when refs are specified' do
+        let(:refs) { %w(first_ref second_ref third_ref) }
+
+        before do
+          create(:ci_empty_pipeline, id: 1001, status: :success, ref: 'first_ref', sha: 'sha')
+          create(:ci_empty_pipeline, id: 1002, status: :success, ref: 'second_ref', sha: 'sha')
+        end
+
+        let!(:latest_successful_pipeline_for_first_ref) do
+          create(:ci_empty_pipeline, id: 2001, status: :success, ref: 'first_ref', sha: 'sha')
+        end
+
+        let!(:latest_successful_pipeline_for_second_ref) do
+          create(:ci_empty_pipeline, id: 2002, status: :success, ref: 'second_ref', sha: 'sha')
+        end
+
+        it 'returns the latest successful pipeline for both refs' do
+          expect(latest_successful_for_refs).to eq({
+            'first_ref' => latest_successful_pipeline_for_first_ref,
+            'second_ref' => latest_successful_pipeline_for_second_ref
+          })
+        end
       end
 
-      let!(:latest_successful_pipeline2) do
-        create_pipeline(:success, 'ref2', 'D')
-      end
+      context 'when no refs are specified' do
+        let(:refs) { [] }
 
-      it 'returns the latest successful pipeline for both refs' do
-        refs = %w(ref1 ref2 ref3)
-
-        expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
+        it 'returns an empty relation whenno refs are specified' do
+          expect(latest_successful_for_refs).to be_empty
+        end
       end
     end
   end

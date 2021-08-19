@@ -11,7 +11,7 @@ module Mutations
     field_class ::Types::BaseField
     argument_class ::Types::BaseArgument
 
-    field :errors, [GraphQL::STRING_TYPE],
+    field :errors, [GraphQL::Types::String],
           null: false,
           description: 'Errors encountered during execution of the mutation.'
 
@@ -30,6 +30,12 @@ module Mutations
 
     def ready?(**args)
       raise_resource_not_available_error! ERROR_MESSAGE if Gitlab::Database.read_only?
+
+      missing_args = self.class.arguments.values
+        .reject { |arg| arg.accepts?(args.fetch(arg.keyword, :not_given)) }
+        .map(&:graphql_name)
+
+      raise ArgumentError, "Arguments must be provided: #{missing_args.join(", ")}" if missing_args.any?
 
       true
     end

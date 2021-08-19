@@ -1,19 +1,11 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { DEFAULT_DAYS_TO_DISPLAY } from '../constants';
-import {
-  decorateData,
-  decorateEvents,
-  formatMedianValues,
-  calculateFormattedDayInPast,
-} from '../utils';
+import { formatMedianValues, calculateFormattedDayInPast } from '../utils';
 import * as types from './mutation_types';
 
 export default {
-  [types.INITIALIZE_VSA](state, { requestPath, fullPath, groupPath, projectId, features }) {
-    state.requestPath = requestPath;
-    state.fullPath = fullPath;
-    state.groupPath = groupPath;
-    state.id = projectId;
+  [types.INITIALIZE_VSA](state, { endpoints, features }) {
+    state.endpoints = endpoints;
     const { now, past } = calculateFormattedDayInPast(DEFAULT_DAYS_TO_DISPLAY);
     state.createdBefore = now;
     state.createdAfter = past;
@@ -28,9 +20,9 @@ export default {
   [types.SET_SELECTED_STAGE](state, stage) {
     state.selectedStage = stage;
   },
-  [types.SET_DATE_RANGE](state, { startDate }) {
-    state.startDate = startDate;
-    const { now, past } = calculateFormattedDayInPast(startDate);
+  [types.SET_DATE_RANGE](state, daysInPast) {
+    state.daysInPast = daysInPast;
+    const { now, past } = calculateFormattedDayInPast(daysInPast);
     state.createdBefore = now;
     state.createdAfter = past;
   },
@@ -47,13 +39,7 @@ export default {
     state.stages = [];
   },
   [types.RECEIVE_VALUE_STREAM_STAGES_SUCCESS](state, { stages = [] }) {
-    state.stages = stages.map((s) => ({
-      ...convertObjectPropsToCamelCase(s, { deep: true }),
-      // NOTE: we set the component type here to match the current behaviour
-      // this can be removed when we migrate to the update stage table
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/326704
-      component: `stage-${s.id}-component`,
-    }));
+    state.stages = stages.map((s) => convertObjectPropsToCamelCase(s, { deep: true }));
   },
   [types.RECEIVE_VALUE_STREAM_STAGES_ERROR](state) {
     state.stages = [];
@@ -61,25 +47,14 @@ export default {
   [types.REQUEST_CYCLE_ANALYTICS_DATA](state) {
     state.isLoading = true;
     state.hasError = false;
-    if (!state.features.cycleAnalyticsForGroups) {
-      state.medians = {};
-    }
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS](state, data) {
-    const { summary, medians } = decorateData(data);
-    if (!state.features.cycleAnalyticsForGroups) {
-      state.medians = formatMedianValues(medians);
-    }
-    state.permissions = data.permissions;
-    state.summary = summary;
+    state.permissions = data?.permissions || {};
     state.hasError = false;
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR](state) {
     state.isLoading = false;
     state.hasError = true;
-    if (!state.features.cycleAnalyticsForGroups) {
-      state.medians = {};
-    }
   },
   [types.REQUEST_STAGE_DATA](state) {
     state.isLoadingStage = true;
@@ -87,11 +62,12 @@ export default {
     state.selectedStageEvents = [];
     state.hasError = false;
   },
-  [types.RECEIVE_STAGE_DATA_SUCCESS](state, { events = [] }) {
-    const { selectedStage } = state;
+  [types.RECEIVE_STAGE_DATA_SUCCESS](state, events = []) {
     state.isLoadingStage = false;
     state.isEmptyStage = !events.length;
-    state.selectedStageEvents = decorateEvents(events, selectedStage);
+    state.selectedStageEvents = events.map((ev) =>
+      convertObjectPropsToCamelCase(ev, { deep: true }),
+    );
     state.hasError = false;
   },
   [types.RECEIVE_STAGE_DATA_ERROR](state, error) {
@@ -109,5 +85,20 @@ export default {
   },
   [types.RECEIVE_STAGE_MEDIANS_ERROR](state) {
     state.medians = {};
+  },
+  [types.REQUEST_STAGE_COUNTS](state) {
+    state.stageCounts = {};
+  },
+  [types.RECEIVE_STAGE_COUNTS_SUCCESS](state, stageCounts = []) {
+    state.stageCounts = stageCounts.reduce(
+      (acc, { id, count }) => ({
+        ...acc,
+        [id]: count,
+      }),
+      {},
+    );
+  },
+  [types.RECEIVE_STAGE_COUNTS_ERROR](state) {
+    state.stageCounts = {};
   },
 };

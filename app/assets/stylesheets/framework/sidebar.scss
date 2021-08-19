@@ -237,3 +237,7 @@
   @include side-panel-toggle;
   border-bottom: 1px solid $border-color;
 }
+
+.edit-link {
+  margin-right: -$gl-spacing-scale-2;
+}

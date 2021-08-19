@@ -3,6 +3,8 @@ import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
 import 'jquery';
 import { setGlobalDateToFakeDate } from 'helpers/fake_date';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import Translate from '~/vue_shared/translate';
 import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';
 import { initializeTestTimeout } from './__helpers__/timeout';
@@ -88,8 +90,13 @@ Object.assign(global, {
   },
 });
 
-// make sure that each test actually tests something
-// see https://jestjs.io/docs/en/expect#expecthasassertions
 beforeEach(() => {
+  // make sure that each test actually tests something
+  // see https://jestjs.io/docs/en/expect#expecthasassertions
   expect.hasAssertions();
+
+  // Reset the mocked window.location. This ensures tests don't interfere with
+  // each other, and removes the need to tidy up if it was changed for a given
+  // test.
+  setWindowLocation(TEST_HOST);
 });

@@ -6,10 +6,12 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DraggableItemTypes } from '../constants';
 import BoardColumn from './board_column.vue';
 import BoardColumnDeprecated from './board_column_deprecated.vue';
 
 export default {
+  draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
     BoardColumn,
@@ -76,19 +78,6 @@ export default {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
     },
-    handleDragOnEnd(params) {
-      const { item, newIndex, oldIndex, to } = params;
-
-      const listId = item.dataset.id;
-      const replacedListId = to.children[newIndex].dataset.id;
-
-      this.moveList({
-        listId,
-        replacedListId,
-        newIndex,
-        adjustmentValue: newIndex < oldIndex ? 1 : -1,
-      });
-    },
   },
 };
 </script>
@@ -104,7 +93,7 @@ export default {
       ref="list"
       v-bind="draggableOptions"
       class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
-      @end="handleDragOnEnd"
+      @end="moveList"
     >
       <component
         :is="boardColumnComponent"
@@ -112,6 +101,7 @@ export default {
         :key="index"
         ref="board"
         :list="list"
+        :data-draggable-item-type="$options.draggableItemTypes.list"
         :disabled="disabled"
       />
 

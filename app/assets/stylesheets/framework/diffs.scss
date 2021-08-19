@@ -839,6 +839,18 @@ table.code {
   }
 }
 
+.commits-container {
+  .diff-files-changed {
+    @include media-breakpoint-up(sm) {
+      top: $header-height;
+
+      .with-performance-bar & {
+        top: $header-height + $performance-bar-height;
+      }
+    }
+  }
+}
+
 .diff-files-changed {
   .inline-parallel-buttons {
     position: relative;
@@ -854,12 +866,12 @@ table.code {
   @include media-breakpoint-up(sm) {
     position: -webkit-sticky;
     position: sticky;
-    top: $header-height;
+    top: $header-height + $mr-tabs-height;
     background-color: $white;
     z-index: 200;
 
     .with-performance-bar & {
-      top: $header-height + $performance-bar-height;
+      top: $header-height + $mr-tabs-height + $performance-bar-height;
     }
 
     &.is-stuck {

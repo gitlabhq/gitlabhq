@@ -8,14 +8,15 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/274
-	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/274
-	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/labkit/log"
+	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
+	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+
+	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/labkit/log"
 )
 
 type GitalyTestServer struct {

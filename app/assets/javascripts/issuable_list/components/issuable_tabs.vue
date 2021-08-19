@@ -49,7 +49,7 @@ export default {
           <span :title="tab.titleTooltip">{{ tab.title }}</span>
           <gl-badge
             v-if="tabCounts && isTabCountNumeric(tab)"
-            variant="neutral"
+            variant="muted"
             size="sm"
             class="gl-tab-counter-badge"
           >

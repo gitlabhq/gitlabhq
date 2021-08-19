@@ -15,6 +15,8 @@ import {
 
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
+jest.mock('~/emoji');
+
 describe('WikiForm', () => {
   let wrapper;
   let mock;
@@ -348,11 +350,6 @@ describe('WikiForm', () => {
 
         // try waiting for content editor to load (but it will never actually load)
         await waitForPromises();
-      });
-
-      it('editor is shown in a perpetual loading state', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-        expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
       });
 
       it('disables the submit button', () => {

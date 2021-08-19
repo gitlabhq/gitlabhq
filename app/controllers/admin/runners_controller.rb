@@ -4,19 +4,11 @@ class Admin::RunnersController < Admin::ApplicationController
   include RunnerSetupScripts
 
   before_action :runner, except: [:index, :tag_list, :runner_setup_scripts]
-  before_action only: [:index] do
-    push_frontend_feature_flag(:runner_list_view_vue_ui, current_user, default_enabled: :yaml)
-  end
 
   feature_category :runner
 
-  NUMBER_OF_RUNNERS_PER_PAGE = 30
-
   def index
-    finder = Ci::RunnersFinder.new(current_user: current_user, params: params)
-    @runners = finder.execute.page(params[:page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
     @active_runners_count = Ci::Runner.online.count
-    @sort = finder.sort_key
   end
 
   def show

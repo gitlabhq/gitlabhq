@@ -5,7 +5,8 @@ module Ci
     class ExpireArtifactsWorker
       include ApplicationWorker
 
-      sidekiq_options retry: 3
+      data_consistency :always
+
       # rubocop:disable Scalability/CronWorkerContext
       # This worker does not perform work scoped to a context
       include CronjobQueue

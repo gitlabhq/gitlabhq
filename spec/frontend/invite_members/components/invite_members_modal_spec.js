@@ -6,6 +6,7 @@ import {
   GlSprintf,
   GlLink,
   GlModal,
+  GlFormCheckboxGroup,
 } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { stubComponent } from 'helpers/stub_component';
@@ -15,7 +16,8 @@ import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
-import { INVITE_MEMBERS_IN_COMMENT } from '~/invite_members/constants';
+import { INVITE_MEMBERS_IN_COMMENT, MEMBER_AREAS_OF_FOCUS } from '~/invite_members/constants';
+import eventHub from '~/invite_members/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import { apiPaths, membersApiResponse, invitationsApiResponse } from '../mock_data/api_responses';
@@ -32,7 +34,12 @@ const inviteeType = 'members';
 const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 };
 const defaultAccessLevel = 10;
 const inviteSource = 'unknown';
+const noSelectionAreasOfFocus = ['no_selection'];
 const helpLink = 'https://example.com';
+const areasOfFocusOptions = [
+  { text: 'area1', value: 'area1' },
+  { text: 'area2', value: 'area2' },
+];
 
 const user1 = { id: 1, name: 'Name One', username: 'one_1', avatar_url: '' };
 const user2 = { id: 2, name: 'Name Two', username: 'one_2', avatar_url: '' };
@@ -58,7 +65,9 @@ const createComponent = (data = {}, props = {}) => {
       isProject,
       inviteeType,
       accessLevels,
+      areasOfFocusOptions,
       defaultAccessLevel,
+      noSelectionAreasOfFocus,
       helpLink,
       ...props,
     },
@@ -74,7 +83,7 @@ const createComponent = (data = {}, props = {}) => {
       GlDropdownItem: true,
       GlSprintf,
       GlFormGroup: stubComponent(GlFormGroup, {
-        props: ['state', 'invalidFeedback'],
+        props: ['state', 'invalidFeedback', 'description'],
       }),
     },
   });
@@ -116,9 +125,12 @@ describe('InviteMembersModal', () => {
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findInviteButton = () => wrapper.findByTestId('invite-button');
   const clickInviteButton = () => findInviteButton().vm.$emit('click');
+  const clickCancelButton = () => findCancelButton().vm.$emit('click');
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () => findMembersFormGroup().props('invalidFeedback');
+  const membersFormGroupDescription = () => findMembersFormGroup().props('description');
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
+  const findAreaofFocusCheckBoxGroup = () => wrapper.findComponent(GlFormCheckboxGroup);
 
   describe('rendering the modal', () => {
     beforeEach(() => {
@@ -135,6 +147,10 @@ describe('InviteMembersModal', () => {
 
     it('renders the Invite button text correctly', () => {
       expect(findInviteButton().text()).toBe('Invite');
+    });
+
+    it('renders the Invite button modal without isLoading', () => {
+      expect(findInviteButton().props('loading')).toBe(false);
     });
 
     describe('rendering the access levels dropdown', () => {
@@ -160,13 +176,29 @@ describe('InviteMembersModal', () => {
     });
   });
 
-  describe('displaying the correct introText', () => {
+  describe('rendering the areas_of_focus', () => {
+    it('renders the areas_of_focus checkboxes', () => {
+      createComponent();
+
+      expect(findAreaofFocusCheckBoxGroup().props('options')).toBe(areasOfFocusOptions);
+      expect(findAreaofFocusCheckBoxGroup().exists()).toBe(true);
+    });
+
+    it('does not render the areas_of_focus checkboxes', () => {
+      createComponent({}, { areasOfFocusOptions: [] });
+
+      expect(findAreaofFocusCheckBoxGroup().exists()).toBe(false);
+    });
+  });
+
+  describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {
       describe('when inviting members', () => {
         it('includes the correct invitee, type, and formatted name', () => {
           createInviteMembersToProjectWrapper();
 
           expect(findIntroText()).toBe("You're inviting members to the test name project.");
+          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
         });
       });
 
@@ -175,6 +207,7 @@ describe('InviteMembersModal', () => {
           createInviteGroupToProjectWrapper();
 
           expect(findIntroText()).toBe("You're inviting a group to the test name project.");
+          expect(membersFormGroupDescription()).toBe('');
         });
       });
     });
@@ -185,6 +218,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           expect(findIntroText()).toBe("You're inviting members to the test name group.");
+          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
         });
       });
 
@@ -193,6 +227,7 @@ describe('InviteMembersModal', () => {
           createInviteGroupToGroupWrapper();
 
           expect(findIntroText()).toBe("You're inviting a group to the test name group.");
+          expect(membersFormGroupDescription()).toBe('');
         });
       });
     });
@@ -210,6 +245,20 @@ describe('InviteMembersModal', () => {
       "email 'email@example.com' does not match the allowed domains: example1.org";
     const expectedSyntaxError = 'email contains an invalid email address';
 
+    it('calls the API with the expected focus data when an areas_of_focus checkbox is clicked', () => {
+      const spy = jest.spyOn(Api, 'addGroupMembersByUserId');
+      const expectedFocus = [areasOfFocusOptions[0].value];
+      createComponent({ newUsersToInvite: [user1] });
+
+      findAreaofFocusCheckBoxGroup().vm.$emit('input', expectedFocus);
+      clickInviteButton();
+
+      expect(spy).toHaveBeenCalledWith(
+        user1.id.toString(),
+        expect.objectContaining({ areas_of_focus: expectedFocus }),
+      );
+    });
+
     describe('when inviting an existing user to group by user ID', () => {
       const postData = {
         user_id: '1,2',
@@ -217,6 +266,7 @@ describe('InviteMembersModal', () => {
         expires_at: undefined,
         invite_source: inviteSource,
         format: 'json',
+        areas_of_focus: noSelectionAreasOfFocus,
       };
 
       describe('when member is added successfully', () => {
@@ -226,20 +276,34 @@ describe('InviteMembersModal', () => {
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'addGroupMembersByUserId').mockResolvedValue({ data: postData });
           jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
+        });
+
+        it('includes the non-default selected areas of focus', () => {
+          const focus = ['abc'];
+          const updatedPostData = { ...postData, areas_of_focus: focus };
+          wrapper.setData({ selectedAreasOfFocus: focus });
 
           clickInviteButton();
+
+          expect(Api.addGroupMembersByUserId).toHaveBeenCalledWith(id, updatedPostData);
         });
 
-        it('calls Api addGroupMembersByUserId with the correct params', async () => {
-          await waitForPromises;
+        describe('when triggered from regular mounting', () => {
+          beforeEach(() => {
+            clickInviteButton();
+          });
 
-          expect(Api.addGroupMembersByUserId).toHaveBeenCalledWith(id, postData);
-        });
+          it('sets isLoading on the Invite button when it is clicked', () => {
+            expect(findInviteButton().props('loading')).toBe(true);
+          });
 
-        it('displays the successful toastMessage', async () => {
-          await waitForPromises;
+          it('calls Api addGroupMembersByUserId with the correct params', () => {
+            expect(Api.addGroupMembersByUserId).toHaveBeenCalledWith(id, postData);
+          });
 
-          expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          it('displays the successful toastMessage', () => {
+            expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          });
         });
       });
 
@@ -260,6 +324,51 @@ describe('InviteMembersModal', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
           expect(findMembersFormGroup().props('state')).toBe(false);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
+        });
+
+        describe('clearing the invalid state and message', () => {
+          beforeEach(async () => {
+            mockMembersApi(httpStatus.CONFLICT, membersApiResponse.MEMBER_ALREADY_EXISTS);
+
+            clickInviteButton();
+
+            await waitForPromises();
+          });
+
+          it('clears the error when the list of members to invite is cleared', async () => {
+            expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
+            expect(findMembersFormGroup().props('state')).toBe(false);
+            expect(findMembersSelect().props('validationState')).toBe(false);
+
+            findMembersSelect().vm.$emit('clear');
+
+            await wrapper.vm.$nextTick();
+
+            expect(membersFormGroupInvalidFeedback()).toBe('');
+            expect(findMembersFormGroup().props('state')).not.toBe(false);
+            expect(findMembersSelect().props('validationState')).not.toBe(false);
+          });
+
+          it('clears the error when the cancel button is clicked', async () => {
+            clickCancelButton();
+
+            await wrapper.vm.$nextTick();
+
+            expect(membersFormGroupInvalidFeedback()).toBe('');
+            expect(findMembersFormGroup().props('state')).not.toBe(false);
+            expect(findMembersSelect().props('validationState')).not.toBe(false);
+          });
+
+          it('clears the error when the modal is hidden', async () => {
+            wrapper.findComponent(GlModal).vm.$emit('hide');
+
+            await wrapper.vm.$nextTick();
+
+            expect(membersFormGroupInvalidFeedback()).toBe('');
+            expect(findMembersFormGroup().props('state')).not.toBe(false);
+            expect(findMembersSelect().props('validationState')).not.toBe(false);
+          });
         });
 
         it('clears the invalid state and message once the list of members to invite is cleared', async () => {
@@ -272,6 +381,7 @@ describe('InviteMembersModal', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
           expect(findMembersFormGroup().props('state')).toBe(false);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
 
           findMembersSelect().vm.$emit('clear');
 
@@ -280,6 +390,7 @@ describe('InviteMembersModal', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersFormGroup().props('state')).not.toBe(false);
           expect(findMembersSelect().props('validationState')).not.toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
         });
 
         it('displays the generic error for http server error', async () => {
@@ -336,6 +447,7 @@ describe('InviteMembersModal', () => {
         expires_at: undefined,
         email: 'email@example.com',
         invite_source: inviteSource,
+        areas_of_focus: noSelectionAreasOfFocus,
         format: 'json',
       };
 
@@ -346,16 +458,30 @@ describe('InviteMembersModal', () => {
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
           jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
+        });
+
+        it('includes the non-default selected areas of focus', () => {
+          const focus = ['abc'];
+          const updatedPostData = { ...postData, areas_of_focus: focus };
+          wrapper.setData({ selectedAreasOfFocus: focus });
 
           clickInviteButton();
+
+          expect(Api.inviteGroupMembersByEmail).toHaveBeenCalledWith(id, updatedPostData);
         });
 
-        it('calls Api inviteGroupMembersByEmail with the correct params', () => {
-          expect(Api.inviteGroupMembersByEmail).toHaveBeenCalledWith(id, postData);
-        });
+        describe('when triggered from regular mounting', () => {
+          beforeEach(() => {
+            clickInviteButton();
+          });
 
-        it('displays the successful toastMessage', () => {
-          expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          it('calls Api inviteGroupMembersByEmail with the correct params', () => {
+            expect(Api.inviteGroupMembersByEmail).toHaveBeenCalledWith(id, postData);
+          });
+
+          it('displays the successful toastMessage', () => {
+            expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          });
         });
       });
 
@@ -375,6 +501,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
         });
 
         it('displays the restricted email error when restricted email is invited', async () => {
@@ -386,6 +513,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toContain(expectedEmailRestrictedError);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
         });
 
         it('displays the successful toast message when email has already been invited', async () => {
@@ -446,6 +574,7 @@ describe('InviteMembersModal', () => {
         access_level: defaultAccessLevel,
         expires_at: undefined,
         invite_source: inviteSource,
+        areas_of_focus: noSelectionAreasOfFocus,
         format: 'json',
       };
 
@@ -482,7 +611,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('calls Apis with the invite source passed through to openModal', () => {
-          wrapper.vm.openModal({ inviteeType: 'members', source: '_invite_source_' });
+          eventHub.$emit('openModal', { inviteeType: 'members', source: '_invite_source_' });
 
           clickInviteButton();
 
@@ -548,9 +677,9 @@ describe('InviteMembersModal', () => {
 
       describe('when sharing the group fails', () => {
         beforeEach(() => {
-          createComponent({ groupToBeSharedWith: sharedGroup });
+          createInviteGroupToGroupWrapper();
 
-          wrapper.setData({ inviteeType: 'group' });
+          wrapper.setData({ groupToBeSharedWith: sharedGroup });
           wrapper.vm.$toast = { show: jest.fn() };
 
           jest
@@ -560,10 +689,9 @@ describe('InviteMembersModal', () => {
           clickInviteButton();
         });
 
-        it('displays the generic error message', async () => {
-          await waitForPromises();
-
+        it('displays the generic error message', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
+          expect(membersFormGroupDescription()).toBe('');
         });
       });
     });
@@ -577,7 +705,7 @@ describe('InviteMembersModal', () => {
       });
 
       it('tracks the invite', () => {
-        wrapper.vm.openModal({ inviteeType: 'members', source: INVITE_MEMBERS_IN_COMMENT });
+        eventHub.$emit('openModal', { inviteeType: 'members', source: INVITE_MEMBERS_IN_COMMENT });
 
         clickInviteButton();
 
@@ -586,19 +714,37 @@ describe('InviteMembersModal', () => {
       });
 
       it('does not track invite for unknown source', () => {
-        wrapper.vm.openModal({ inviteeType: 'members', source: 'unknown' });
+        eventHub.$emit('openModal', { inviteeType: 'members', source: 'unknown' });
 
         clickInviteButton();
 
-        expect(ExperimentTracking).not.toHaveBeenCalled();
+        expect(ExperimentTracking).not.toHaveBeenCalledWith(INVITE_MEMBERS_IN_COMMENT);
       });
 
       it('does not track invite undefined source', () => {
-        wrapper.vm.openModal({ inviteeType: 'members' });
+        eventHub.$emit('openModal', { inviteeType: 'members' });
 
         clickInviteButton();
 
-        expect(ExperimentTracking).not.toHaveBeenCalled();
+        expect(ExperimentTracking).not.toHaveBeenCalledWith(INVITE_MEMBERS_IN_COMMENT);
+      });
+
+      it('tracks the view for areas_of_focus', () => {
+        eventHub.$emit('openModal', { inviteeType: 'members' });
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.name);
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.view);
+      });
+
+      it('tracks the invite for areas_of_focus', () => {
+        eventHub.$emit('openModal', { inviteeType: 'members' });
+
+        clickInviteButton();
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.name);
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
+          MEMBER_AREAS_OF_FOCUS.submit,
+        );
       });
     });
   });

@@ -1,11 +1,19 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
+import axios from '~/lib/utils/axios_utils';
+import {
+  PIPELINES_DETAIL_LINK_DURATION,
+  PIPELINES_DETAIL_LINKS_TOTAL,
+  PIPELINES_DETAIL_LINKS_JOB_RATIO,
+} from '~/performance/constants';
+import * as perfUtils from '~/performance/utils';
 import {
   IID_FAILURE,
   LAYER_VIEW,
@@ -16,8 +24,12 @@ import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import * as Api from '~/pipelines/components/graph_shared/api';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
+import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
+import * as sentryUtils from '~/pipelines/utils';
+import { mockRunningPipelineHeaderData } from '../mock_data';
 import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {
@@ -72,8 +84,10 @@ describe('Pipeline graph wrapper', () => {
   } = {}) => {
     const callouts = mapCallouts(calloutsList);
     const getUserCalloutsHandler = jest.fn().mockResolvedValue(mockCalloutsResponse(callouts));
+    const getPipelineHeaderDataHandler = jest.fn().mockResolvedValue(mockRunningPipelineHeaderData);
 
     const requestHandlers = [
+      [getPipelineHeaderData, getPipelineHeaderDataHandler],
       [getPipelineDetails, getPipelineDetailsHandler],
       [getUserCallouts, getUserCalloutsHandler],
     ];
@@ -110,6 +124,11 @@ describe('Pipeline graph wrapper', () => {
     it('does not display the graph', () => {
       createComponentWithApollo();
       expect(getGraph().exists()).toBe(false);
+    });
+
+    it('skips querying headerPipeline', () => {
+      createComponentWithApollo();
+      expect(wrapper.vm.$apollo.queries.headerPipeline.skip).toBe(true);
     });
   });
 
@@ -190,12 +209,15 @@ describe('Pipeline graph wrapper', () => {
   describe('when refresh action is emitted', () => {
     beforeEach(async () => {
       createComponentWithApollo();
+      jest.spyOn(wrapper.vm.$apollo.queries.headerPipeline, 'refetch');
       jest.spyOn(wrapper.vm.$apollo.queries.pipeline, 'refetch');
       await wrapper.vm.$nextTick();
       getGraph().vm.$emit('refreshPipelineGraph');
     });
 
     it('calls refetch', () => {
+      expect(wrapper.vm.$apollo.queries.headerPipeline.skip).toBe(false);
+      expect(wrapper.vm.$apollo.queries.headerPipeline.refetch).toHaveBeenCalled();
       expect(wrapper.vm.$apollo.queries.pipeline.refetch).toHaveBeenCalled();
     });
   });
@@ -245,28 +267,11 @@ describe('Pipeline graph wrapper', () => {
   });
 
   describe('view dropdown', () => {
-    describe('when pipelineGraphLayersView feature flag is off', () => {
-      beforeEach(async () => {
-        createComponentWithApollo();
-        jest.runOnlyPendingTimers();
-        await wrapper.vm.$nextTick();
-      });
-
-      it('does not appear', () => {
-        expect(getViewSelector().exists()).toBe(false);
-      });
-    });
-
-    describe('when pipelineGraphLayersView feature flag is on', () => {
+    describe('default', () => {
       let layersFn;
       beforeEach(async () => {
         layersFn = jest.spyOn(parsingUtils, 'listByLayers');
         createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineGraphLayersView: true,
-            },
-          },
           mountFn: mount,
         });
 
@@ -304,14 +309,9 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
-    describe('when pipelineGraphLayersView feature flag is on and layers view is selected', () => {
+    describe('when layers view is selected', () => {
       beforeEach(async () => {
         createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineGraphLayersView: true,
-            },
-          },
           data: {
             currentViewType: LAYER_VIEW,
           },
@@ -334,14 +334,9 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
-    describe('when pipelineGraphLayersView feature flag is on, layers view is selected, and links are active', () => {
+    describe('when layers view is selected, and links are active', () => {
       beforeEach(async () => {
         createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineGraphLayersView: true,
-            },
-          },
           data: {
             currentViewType: LAYER_VIEW,
             showLinks: true,
@@ -362,11 +357,6 @@ describe('Pipeline graph wrapper', () => {
     describe('when hover tip would otherwise show, but it has been previously dismissed', () => {
       beforeEach(async () => {
         createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineGraphLayersView: true,
-            },
-          },
           data: {
             currentViewType: LAYER_VIEW,
             showLinks: true,
@@ -390,11 +380,6 @@ describe('Pipeline graph wrapper', () => {
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
 
         createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineGraphLayersView: true,
-            },
-          },
           mountFn: mount,
         });
 
@@ -422,11 +407,6 @@ describe('Pipeline graph wrapper', () => {
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
 
         createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineGraphLayersView: true,
-            },
-          },
           mountFn: mount,
           getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
         });
@@ -450,11 +430,6 @@ describe('Pipeline graph wrapper', () => {
         nonNeedsResponse.data.project.pipeline.usesNeeds = false;
 
         createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineGraphLayersView: true,
-            },
-          },
           mountFn: mount,
           getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
         });
@@ -465,6 +440,114 @@ describe('Pipeline graph wrapper', () => {
 
       it('does not appear when pipeline does not use needs', () => {
         expect(getViewSelector().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('performance metrics', () => {
+    const metricsPath = '/root/project/-/ci/prometheus_metrics/histograms.json';
+    let markAndMeasure;
+    let reportToSentry;
+    let reportPerformance;
+    let mock;
+
+    beforeEach(() => {
+      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      markAndMeasure = jest.spyOn(perfUtils, 'performanceMarkAndMeasure');
+      reportToSentry = jest.spyOn(sentryUtils, 'reportToSentry');
+      reportPerformance = jest.spyOn(Api, 'reportPerformance');
+    });
+
+    describe('with no metrics path', () => {
+      beforeEach(async () => {
+        createComponentWithApollo();
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('is not called', () => {
+        expect(markAndMeasure).not.toHaveBeenCalled();
+        expect(reportToSentry).not.toHaveBeenCalled();
+        expect(reportPerformance).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with metrics path', () => {
+      const duration = 875;
+      const numLinks = 7;
+      const totalGroups = 8;
+      const metricsData = {
+        histograms: [
+          { name: PIPELINES_DETAIL_LINK_DURATION, value: duration / 1000 },
+          { name: PIPELINES_DETAIL_LINKS_TOTAL, value: numLinks },
+          {
+            name: PIPELINES_DETAIL_LINKS_JOB_RATIO,
+            value: numLinks / totalGroups,
+          },
+        ],
+      };
+
+      describe('when no duration is obtained', () => {
+        beforeEach(async () => {
+          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
+            return [];
+          });
+
+          createComponentWithApollo({
+            provide: {
+              metricsPath,
+              glFeatures: {
+                pipelineGraphLayersView: true,
+              },
+            },
+            data: {
+              currentViewType: LAYER_VIEW,
+            },
+          });
+
+          jest.runOnlyPendingTimers();
+          await wrapper.vm.$nextTick();
+        });
+
+        it('attempts to collect metrics', () => {
+          expect(markAndMeasure).toHaveBeenCalled();
+          expect(reportPerformance).not.toHaveBeenCalled();
+          expect(reportToSentry).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('with duration and no error', () => {
+        beforeEach(() => {
+          mock = new MockAdapter(axios);
+          mock.onPost(metricsPath).reply(200, {});
+
+          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
+            return [{ duration }];
+          });
+
+          createComponentWithApollo({
+            provide: {
+              metricsPath,
+              glFeatures: {
+                pipelineGraphLayersView: true,
+              },
+            },
+            data: {
+              currentViewType: LAYER_VIEW,
+            },
+          });
+        });
+
+        afterEach(() => {
+          mock.restore();
+        });
+
+        it('it calls reportPerformance with expected arguments', () => {
+          expect(markAndMeasure).toHaveBeenCalled();
+          expect(reportPerformance).toHaveBeenCalled();
+          expect(reportPerformance).toHaveBeenCalledWith(metricsPath, metricsData);
+          expect(reportToSentry).not.toHaveBeenCalled();
+        });
       });
     });
   });

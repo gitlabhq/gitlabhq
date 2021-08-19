@@ -126,6 +126,15 @@ Use `stages` to define stages that contain groups of jobs. `stages` is defined g
 for the pipeline. Use [`stage`](#stage) in a job to define which stage the job is
 part of.
 
+If `stages` is not defined in the `.gitlab-ci.yml` file, then the default
+pipeline stages are:
+
+- [`.pre`](#stage-pre)
+- `build`
+- `test`
+- `deploy`
+- [`.post`](#stage-post)
+
 The order of the `stages` items defines the execution order for jobs:
 
 - Jobs in the same stage run in parallel.
@@ -147,9 +156,6 @@ stages:
 
 If any job fails, the pipeline is marked as `failed` and jobs in later stages do not
 start. Jobs in the current stage are not stopped and continue to run.
-
-If no `stages` are defined in the `.gitlab-ci.yml` file, then `build`, `test` and `deploy`
-are the default pipeline stages.
 
 If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 
@@ -415,13 +421,20 @@ NOTE:
 Use merging to customize and override included CI/CD configurations with local
 configurations. Local configurations in the `.gitlab-ci.yml` file override included configurations.
 
-#### Variables with `include` **(FREE SELF)**
+#### Variables with `include`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
+> - [Support for project, group, and instance variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
 
-You can [use some predefined variables in `include` sections](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-in your `.gitlab-ci.yml` file:
+In `include` sections in your `.gitlab-ci.yml` file, you can use:
+
+- `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md) in GitLab 14.2
+  and later.
+- [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
+- [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
+- [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
+- Project [predefined variables](../variables/predefined_variables.md).   
 
 ```yaml
 include:
@@ -431,6 +444,32 @@ include:
 
 For an example of how you can include these predefined variables, and the variables' impact on CI/CD jobs,
 see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
+
+There is a [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337633)
+that proposes expanding this feature to support more variables.
+
+#### `rules` with `include`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276515) in GitLab 14.2.
+
+NOTE:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the `ci_include_rules` flag](../../administration/feature_flags.md).
+On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
+You can only use `rules:if` in `include` with [certain variables](#variables-with-include).
+
+```yaml
+include:
+  - local: builds.yml
+    rules:
+      - if: '$INCLUDE_BUILDS == "true"'
+
+test:
+  stage: test
+  script: exit 0
+```
 
 #### `include:local`
 
@@ -463,15 +502,7 @@ Use local includes instead of symbolic links.
 ##### `include:local` with wildcard file paths
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 13.12.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to disable it. **(CORE ONLY)**
-
-There can be
-[risks when disabling released features](../../user/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 14.2.
 
 You can use wildcard paths (`*` and `**`) with `include:local`.
 
@@ -494,23 +525,6 @@ When the pipeline runs, GitLab:
   # This matches all `.yml` files only in subfolders of `configs`.
   include: 'configs/**/*.yml'
   ```
-
-The wildcard file paths feature is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_wildcard_file_paths)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_wildcard_file_paths)
-```
 
 #### `include:file`
 
@@ -680,160 +694,148 @@ For more information, see [Available settings for `services`](../services/index.
 
 ### `script`
 
-Use `script` to specify a shell script for the runner to execute.
+Use `script` to specify commands for the runner to execute.
 
 All jobs except [trigger jobs](#trigger) require a `script` keyword.
 
-For example:
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](#yaml-anchors-for-scripts).
+
+**Example of `script`:**
 
 ```yaml
-job:
+job1:
   script: "bundle exec rspec"
-```
 
-You can use [YAML anchors with `script`](#yaml-anchors-for-scripts).
-
-The `script` keyword can also contain several commands in an array:
-
-```yaml
-job:
+job2:
   script:
     - uname -a
     - bundle exec rspec
 ```
 
-Sometimes, `script` commands must be wrapped in single or double quotes.
-For example, commands that contain a colon (`:`) must be wrapped in single quotes (`'`).
-The YAML parser needs to interpret the text as a string rather than
-a "key: value" pair.
+**Additional details**:
 
-For example, this script uses a colon:
+You might need to use single quotes (`'`) or double quotes (`"`) when using
+[special characters in `script`](script.md#use-special-characters-with-script).
 
-```yaml
-job:
-  script:
-    - curl --request POST --header 'Content-Type: application/json' "https://gitlab/api/v4/projects"
-```
+**Related topics**:
 
-To be considered valid YAML, you must wrap the entire command in single quotes. If
-the command already uses single quotes, you should change them to double quotes (`"`)
-if possible:
-
-```yaml
-job:
-  script:
-    - 'curl --request POST --header "Content-Type: application/json" "https://gitlab/api/v4/projects"'
-```
-
-You can verify the syntax is valid with the [CI Lint](../lint.md) tool.
-
-Be careful when using these characters as well:
-
-- `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
-
-If any of the script commands return an exit code other than zero, the job
-fails and further commands are not executed. Store the exit code in a variable to
-avoid this behavior:
-
-```yaml
-job:
-  script:
-    - false || exit_code=$?
-    - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
-```
+- You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
+- [Use color codes with `script`](script.md#add-color-codes-to-script-output)
+  to make job logs easier to review.
+- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+  to simplify job log output.
 
 #### `before_script`
 
-Use `before_script` to define an array of commands that should run before each job,
-but after [artifacts](#artifacts) are restored.
+Use `before_script` to define an array of commands that should run before each job's
+`script` commands, but after [artifacts](#artifacts) are restored.
 
-Scripts you specify in `before_script` are concatenated with any scripts you specify
-in the main [`script`](#script). The combine scripts execute together in a single shell.
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
 
-You can overwrite a globally-defined `before_script` if you define it in a job:
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](#yaml-anchors-for-scripts).
+
+**Example of `before_script`:**
 
 ```yaml
-default:
-  before_script:
-    - echo "Execute this script in all jobs that don't already have a before_script section."
-
-job1:
-  script:
-    - echo "This script executes after the global before_script."
-
 job:
   before_script:
-    - echo "Execute this script instead of the global before_script."
+    - echo "Execute this command before any `script:` commands."
   script:
-    - echo "This script executes after the job's `before_script`"
+    - echo "This command executes after the job's `before_script` commands."
 ```
 
-You can use [YAML anchors with `before_script`](#yaml-anchors-for-scripts).
+**Additional details**:
+
+Scripts you specify in `before_script` are concatenated with any scripts you specify
+in the main [`script`](#script). The combined scripts execute together in a single shell.
+
+**Related topics**:
+
+- [Use `before_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
+  to define a default array of commands that should run before the `script` commands in all jobs.
+- You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
+- [Use color codes with `before_script`](script.md#add-color-codes-to-script-output)
+  to make job logs easier to review.
+- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+  to simplify job log output.
 
 #### `after_script`
 
-Use `after_script` to define an array of commands that run after each job,
-including failed jobs.
+Use `after_script` to define an array of commands that run after each job, including failed jobs.
 
-If a job times out or is cancelled, the `after_script` commands do not execute.
-An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) exists to support
-executing `after_script` commands for timed-out or cancelled jobs.
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](#yaml-anchors-for-scripts).
+
+**Example of `after_script`:**
+
+```yaml
+job:
+  script:
+    - echo "An example script section."
+  after_script:
+    - echo "Execute this command after the `script` section completes."
+```
+
+**Additional details**:
 
 Scripts you specify in `after_script` execute in a new shell, separate from any
-`before_script` or `script` scripts. As a result, they:
+`before_script` or `script` commands. As a result, they:
 
 - Have a current working directory set back to the default.
-- Have no access to changes done by scripts defined in `before_script` or `script`, including:
+- Don't have access to changes done by commands defined in the `before_script` or `script`,
+  including:
   - Command aliases and variables exported in `script` scripts.
   - Changes outside of the working tree (depending on the runner executor), like
     software installed by a `before_script` or `script` script.
-- Have a separate timeout, which is hard coded to 5 minutes. See the
-  [related issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2716) for details.
+- Have a separate timeout, which is [hard-coded to 5 minutes](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2716).
 - Don't affect the job's exit code. If the `script` section succeeds and the
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
 
-```yaml
-default:
-  after_script:
-    - echo "Execute this script in all jobs that don't already have an after_script section."
+If a job times out or is cancelled, the `after_script` commands do not execute.
+[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out or cancelled jobs.
 
-job1:
-  script:
-    - echo "This script executes first. When it completes, the global after_script executes."
+**Related topics**:
 
-job:
-  script:
-    - echo "This script executes first. When it completes, the job's `after_script` executes."
-  after_script:
-    - echo "Execute this script instead of the global after_script."
-```
-
-You can use [YAML anchors with `after_script`](#yaml-anchors-for-scripts).
-
-#### Script syntax
-
-You can use syntax in [`script`](#script) sections to:
-
-- [Split long commands](script.md#split-long-commands) into multiline commands.
-- [Use color codes](script.md#add-color-codes-to-script-output) to make job logs easier to review.
+- [Use `after_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
+  to define a default array of commands that should run after all jobs.
+- You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
+- [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
+  to make job logs easier to review.
 - [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 
 ### `stage`
 
-Use `stage` to define which stage a job runs in. Jobs in the same
-`stage` can execute in parallel (subject to [certain conditions](#use-your-own-runners)).
+Use `stage` to define which [stage](#stages) a job runs in. Jobs in the same
+`stage` can execute in parallel (see **Additional details**).
 
-Jobs without a `stage` entry use the `test` stage by default. If you do not define
-[`stages`](#stages) in the pipeline, you can use the 5 default stages, which execute in
-this order:
+If `stage` is not defined, the job uses the `test` stage by default.
 
-- [`.pre`](#pre-and-post)
-- `build`
-- `test`
-- `deploy`
-- [`.post`](#pre-and-post)
-For example:
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: An array including any number of stage names. Stage names can be:
+
+- The [default stages](#stages).
+- User-defined stages.
+
+**Example of `stage`**:
 
 ```yaml
 stages:
@@ -841,76 +843,101 @@ stages:
   - test
   - deploy
 
-job 0:
-  stage: .pre
-  script: make something useful before build stage
-
-job 1:
+job1:
   stage: build
-  script: make build dependencies
+  script:
+    - echo "This job compiles code."
 
-job 2:
-  stage: build
-  script: make build artifacts
-
-job 3:
+job2:
   stage: test
-  script: make test
+  script:
+    - echo "This job tests the compiled code. It runs when the build stage completes."
 
-job 4:
+job3:
+  script:
+    - echo "This job also runs in the test stage".
+
+job4:
   stage: deploy
-  script: make deploy
-
-job 5:
-  stage: .post
-  script: make something useful at the end of pipeline
+  script:
+    - echo "This job deploys the code. It runs when the test stage completes."
 ```
 
-#### Use your own runners
+**Additional details**:
 
-When you use your own runners, each runner runs only one job at a time by default.
-Jobs can run in parallel if they run on different runners.
+- Jobs can run in parallel if they run on different runners.
+- If you have only one runner, jobs can run in parallel if the runner's
+  [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+  is greater than `1`.
 
-If you have only one runner, jobs can run in parallel if the runner's
-[`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
-is greater than `1`.
-
-#### `.pre` and `.post`
+#### `stage: .pre`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
 
-Use `pre` and `post` for jobs that need to run first or last in a pipeline.
-
-- `.pre` is guaranteed to always be the first stage in a pipeline.
-- `.post` is guaranteed to always be the last stage in a pipeline.
-
-User-defined stages are executed after `.pre` and before `.post`.
+Use the `.pre` stage to make a job run at the start of a pipeline. `.pre` is
+always the first stage in a pipeline. User-defined stages execute after `.pre`.
+You do not need to define `.pre` in [`stages`](#stages).
 
 You must have a job in at least one stage other than `.pre` or `.post`.
 
-You can't change the order of `.pre` and `.post`, even if you define them out of order in the `.gitlab-ci.yml` file.
-For example, the following configurations are equivalent:
+**Keyword type**: You can only use it with a job's `stage` keyword.
+
+**Example of `stage: .pre`**:
 
 ```yaml
 stages:
-  - .pre
-  - a
-  - b
-  - .post
+  - build
+  - test
+
+job1:
+  stage: build
+  script:
+    - echo "This job runs in the build stage."
+
+first-job:
+  stage: .pre
+  script:
+    - echo "This job runs in the .pre stage, before all other stages."
+
+job2:
+  stage: test
+  script:
+    - echo "This job runs in the test stage."
 ```
 
-```yaml
-stages:
-  - a
-  - .pre
-  - b
-  - .post
-```
+#### `stage: .post`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
+
+Use the `.post` stage to make a job run at the end of a pipeline. `.post`
+is always the last stage in a pipeline. User-defined stages execute before `.post`.
+You do not need to define `.post` in [`stages`](#stages).
+
+You must have a job in at least one stage other than `.pre` or `.post`.
+
+**Keyword type**: You can only use it with a job's `stage` keyword.
+
+**Example of `stage: .post`**:
 
 ```yaml
 stages:
-  - a
-  - b
+  - build
+  - test
+
+job1:
+  stage: build
+  script:
+    - echo "This job runs in the build stage."
+
+last-job:
+  stage: .post
+  script:
+    - echo "This job runs in the .post stage, after all other stages."
+
+job2:
+  stage: test
+  script:
+    - echo "This job runs in the test stage."
 ```
 
 ### `extends`
@@ -1504,6 +1531,7 @@ in the project.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063) in GitLab 12.2.
 > - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30631) in GitLab 12.8, `needs: []` lets jobs start immediately.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) in GitLab 14.2, you can refer to jobs in the same stage as the job you are configuring.
 
 Use `needs:` to execute jobs out-of-order. Relationships between jobs
 that use `needs` can be visualized as a [directed acyclic graph](../directed_acyclic_graph/index.md).
@@ -1563,13 +1591,11 @@ production:
 
 #### Requirements and limitations
 
-- In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
-  you can refer to jobs in the same stage as the job you are configuring. This feature
-  is [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-- Disabled on GitLab.com.
-- Not recommended for production use.
-- For GitLab self-managed instances, GitLab adminsitrators
-  can choose to [disable it](#enable-or-disable-needs-for-jobs-in-the-same-stage)
+- In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) you
+  can refer to jobs in the same stage as the job you are configuring. This feature is
+  enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
+  this feature is available by default. To hide the feature, ask an administrator to
+  [disable the `ci_same_stage_job_needs` flag](../../administration/feature_flags.md).
 - In GitLab 14.0 and older, you can only refer to jobs in earlier stages.
 - In GitLab 13.9 and older, if `needs:` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.
@@ -1583,25 +1609,9 @@ production:
   name, they overwrite each other and only the last one downloaded is saved.
 - `needs:` is similar to `dependencies:` in that it must use jobs from prior stages,
   meaning it's impossible to create circular dependencies. Depending on jobs in the
-  current stage is not possible either, but support [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/30632).
+  current stage is not possible either, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/30632).
 - Stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
-
-##### Enable or disable `needs` for jobs in the same stage **(FREE SELF)**
-
-`needs` for jobs in the same stage is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails
-console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-`Feature.enable(:ci_same_stage_job_needs)`
-
-To disable it:
-
-`Feature.disable(:ci_same_stage_job_needs)`
 
 ##### Changing the `needs:` job limit **(FREE SELF)**
 
@@ -1860,11 +1870,26 @@ osx job:
     - echo "Hello, $USER!"
 ```
 
+In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/35742), you can
+use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+
+```yaml
+variables:
+  KUBERNETES_RUNNER: kubernetes
+
+  job:
+    tags:
+      - docker
+      - $KUBERNETES_RUNNER
+    script:
+      - echo "Hello runner selector feature"
+```
+
 ### `allow_failure`
 
 Use `allow_failure` when you want to let a job fail without impacting the rest of the CI
-suite. The default value is `false`, except for [manual](#whenmanual) jobs that use
-the `when: manual` syntax.
+suite. The default value is `false`, except for [manual](../jobs/job_control.md#create-a-job-that-must-be-run-manually) jobs that use
+the [`when: manual`](#when) syntax.
 
 In jobs that use [`rules:`](#rules), all jobs default to `allow_failure: false`,
 *including* `when: manual` jobs.
@@ -1928,28 +1953,23 @@ test_job_2:
 
 ### `when`
 
-Use `when` to implement jobs that run in case of failure or despite the
-failure.
+Use `when` to configure the conditions for when jobs run. If not defined in a job,
+the default value is `when: on_success`.
 
-The valid values of `when` are:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-1. `on_success` (default) - Execute job only when all jobs in earlier stages succeed,
-    or are considered successful because they have `allow_failure: true`.
-1. `on_failure` - Execute job only when at least one job in an earlier stage fails.
-1. `always` - Execute job regardless of the status of jobs in earlier stages.
-1. `manual` - Execute job [manually](#whenmanual).
-1. `delayed` - [Delay the execution of a job](#whendelayed) for a specified duration.
-    Added in GitLab 11.14.
-1. `never`:
-   - With job [`rules`](#rules), don't execute job.
-   - With [`workflow:rules`](#workflow), don't run pipeline.
+**Possible inputs**:
 
-In the following example, the script:
+- `on_success` (default): Run the job only when all jobs in earlier stages succeed
+  or have `allow_failure: true`.
+- `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
+- `always`: Run the job regardless of the status of jobs in earlier stages.
+- `on_failure`: Run the job only when at least one job in an earlier stage fails.
+- `delayed`: [Delay the execution of a job](../jobs/job_control.md#run-a-job-after-a-delay)
+  for a specified duration.
+- `never`: Don't run the job.
 
-1. Executes `cleanup_build_job` only when `build_job` fails.
-1. Always executes `cleanup_job` as the last step in pipeline regardless of
-   success or failure.
-1. Executes `deploy_job` when you run it manually in the GitLab UI.
+**Example of `when`**:
 
 ```yaml
 stages:
@@ -1988,116 +2008,26 @@ cleanup_job:
   when: always
 ```
 
-#### `when:manual`
+In this example, the script:
 
-A manual job is a type of job that is not executed automatically and must be explicitly
-started by a user. You might want to use manual jobs for things like deploying to production.
+1. Executes `cleanup_build_job` only when `build_job` fails.
+1. Always executes `cleanup_job` as the last step in pipeline regardless of
+   success or failure.
+1. Executes `deploy_job` when you run it manually in the GitLab UI.
 
-To make a job manual, add `when: manual` to its configuration.
+**Additional details**:
 
-When the pipeline starts, manual jobs display as skipped and do not run automatically.
-They can be started from the pipeline, job, [environment](../environments/index.md#configure-manual-deployments),
-and deployment views.
+- In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
+  can use `when:manual` in the same job as [`trigger`](#trigger). In GitLab 13.4 and
+  earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
+- The default behavior of `allow_failure` changes to `true` with `when: manual`.
+  However, if you use `when: manual` with [`rules`](#rules), `allow_failure` defaults
+  to `false`.
 
-Manual jobs can be either optional or blocking:
+**Related topics**:
 
-- **Optional**: Manual jobs have [`allow_failure: true](#allow_failure) set by default
-  and are considered optional. The status of an optional manual job does not contribute
-  to the overall pipeline status. A pipeline can succeed even if all its manual jobs fail.
-
-- **Blocking**: To make a blocking manual job, add `allow_failure: false` to its configuration.
-  Blocking manual jobs stop further execution of the pipeline at the stage where the
-  job is defined. To let the pipeline continue running, click **{play}** (play) on
-  the blocking manual job.
-
-  Merge requests in projects with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
-  enabled can't be merged with a blocked pipeline. Blocked pipelines show a status
-  of **blocked**.
-
-When you use [`rules:`](#rules), `allow_failure` defaults to `false`, including for manual jobs.
-
-To trigger a manual job, a user must have permission to merge to the assigned branch.
-You can use [protected branches](../../user/project/protected_branches.md) to more strictly
-[protect manual deployments](#protecting-manual-jobs) from being run by unauthorized users.
-
-In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
-can use `when:manual` in the same job as [`trigger`](#trigger). In GitLab 13.4 and
-earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-
-##### Protecting manual jobs **(PREMIUM)**
-
-Use [protected environments](../environments/protected_environments.md)
-to define a list of users authorized to run a manual job. You can authorize only
-the users associated with a protected environment to trigger manual jobs, which can:
-
-- More precisely limit who can deploy to an environment.
-- Block a pipeline until an approved user "approves" it.
-
-To protect a manual job:
-
-1. Add an `environment` to the job. For example:
-
-   ```yaml
-   deploy_prod:
-     stage: deploy
-     script:
-       - echo "Deploy to production server"
-     environment:
-       name: production
-       url: https://example.com
-     when: manual
-     rules:
-       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-   ```
-
-1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
-   select the environment (`production` in this example) and add the users, roles or groups
-   that are authorized to trigger the manual job to the **Allowed to Deploy** list. Only those in
-   this list can trigger this manual job, as well as GitLab administrators
-   who are always able to use protected environments.
-
-You can use protected environments with blocking manual jobs to have a list of users
-allowed to approve later pipeline stages. Add `allow_failure: false` to the protected
-manual job and the pipeline's next stages only run after the manual job is triggered
-by authorized users.
-
-#### `when:delayed`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
-
-Use `when: delayed` to execute scripts after a waiting period, or if you want to avoid
-jobs immediately entering the `pending` state.
-
-You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time in seconds, unless a unit is
-provided. `start_in` must be less than or equal to one week. Examples of valid values include:
-
-- `'5'`
-- `5 seconds`
-- `30 minutes`
-- `1 day`
-- `1 week`
-
-When a stage includes a delayed job, the pipeline doesn't progress until the delayed job finishes.
-You can use this keyword to insert delays between different stages.
-
-The timer of a delayed job starts immediately after the previous stage completes.
-Similar to other types of jobs, a delayed job's timer doesn't start unless the previous stage passes.
-
-The following example creates a job named `timed rollout 10%` that is executed 30 minutes after the previous stage completes:
-
-```yaml
-timed rollout 10%:
-  stage: deploy
-  script: echo 'Rolling out 10% ...'
-  when: delayed
-  start_in: 30 minutes
-```
-
-To stop the active timer of a delayed job, click the **{time-out}** (**Unschedule**) button.
-This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
-
-To start a delayed job immediately, click the **Play** button.
-Soon GitLab Runner picks up and starts the job.
+- `when` can be used with [`rules`](#rules) for more dynamic job control.
+- `when` can be used with [`workflow`](#workflow) to control when a pipeline can start.
 
 ### `environment`
 
@@ -2225,11 +2155,11 @@ In the above example, the `review_app` job deploys to the `review`
 environment. A new `stop_review_app` job is listed under `on_stop`.
 After the `review_app` job is finished, it triggers the
 `stop_review_app` job based on what is defined under `when`. In this case,
-it is set to `manual`, so it needs a [manual action](#whenmanual) from
+it is set to `manual`, so it needs a [manual action](../jobs/job_control.md#create-a-job-that-must-be-run-manually) from
 the GitLab UI to run.
 
 Also in the example, `GIT_STRATEGY` is set to `none`. If the
-`stop_review_app` job is [automatically triggered](../environments/index.md#stopping-an-environment),
+`stop_review_app` job is [automatically triggered](../environments/index.md#stop-an-environment),
 the runner won't try to check out the code after the branch is deleted.
 
 The example also overwrites global variables. If your `stop` `environment` job depends
@@ -3262,7 +3192,7 @@ dashboards.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207528) in GitLab 13.0.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
-The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/mr_integration.md#setup). The collected Terraform
+The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/mr_integration.md#configure-terraform-report-artifacts). The collected Terraform
 plan report uploads to GitLab as an artifact and displays
 in merge requests. For more information, see
 [Output `terraform plan` information into a merge request](../../user/infrastructure/mr_integration.md).
@@ -3345,6 +3275,50 @@ Leading zeros are removed.
 Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md) is not recorded
 or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
 for more details.
+
+### `dast_configuration` **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
+
+Use the `dast_configuration` keyword to specify a site profile and scanner profile to be used in a
+CI/CD configuration. Both profiles must first have been created in the project. The job's stage must
+be `dast`.
+
+**Keyword type**: Job keyword. You can use only as part of a job.
+
+**Possible inputs**: One each of `site_profile` and `scanner_profile`.
+
+- Use `site_profile` to specify the site profile to be used in the job.
+- Use `scanner_profile` to specify the scanner profile to be used in the job.
+
+**Example of `dast_configuration`**:
+
+```yaml
+stages:
+  - build
+  - dast
+
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  dast_configuration:
+    site_profile: "Example Co"
+    scanner_profile: "Quick Passive Test"
+```
+
+In this example, the `dast` job extends the `dast` configuration added with the `include:` keyword
+to select a specific site profile and scanner profile.
+
+**Additional details**:
+
+- Settings contained in either a site profile or scanner profile take precedence over those
+  contained in the DAST template.
+
+**Related topics**:
+
+- [Site profile](../../user/application_security/dast/index.md#site-profile).
+- [Scanner profile](../../user/application_security/dast/index.md#scanner-profile).
 
 ### `retry`
 
@@ -3500,7 +3474,7 @@ but with different variable values for each instance of the job.
 There can be from 2 to 50 jobs.
 
 Jobs can only run in parallel if there are multiple runners, or a single runner is
-[configured to run multiple jobs concurrently](#use-your-own-runners).
+configured to run multiple jobs concurrently.
 
 Every job gets the same `CI_NODE_TOTAL` [CI/CD variable](../variables/index.md#predefined-cicd-variables) value, and a unique `CI_NODE_INDEX` value.
 
@@ -3590,6 +3564,23 @@ deploystacks: [gcp, data]
 deploystacks: [vultr, data]
 ```
 
+In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/239737), you can
+use the variables defined in `parallel: matrix` with the [`tags`](#tags) keyword for
+dynamic runner selection.
+
+```yaml
+deploystacks:
+  stage: deploy
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK: [monitoring, app1]
+      - PROVIDER: gcp
+        STACK: [data]
+  tags:
+    - ${PROVIDER}-${STACK}
+```
+
 ### `trigger`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
@@ -3612,7 +3603,7 @@ view which job triggered a downstream pipeline. In the [pipeline graph](../pipel
 hover over the downstream pipeline job.
 
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
-can use [`when:manual`](#whenmanual) in the same job as `trigger`. In GitLab 13.4 and
+can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
 earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
 You [cannot start `manual` trigger jobs with the API](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
 
@@ -3931,17 +3922,26 @@ image: registry.gitlab.com/gitlab-org/release-cli:latest
 
 #### `release-cli` for shell executors
 
-> [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
+> - [Changed](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/108): the `release-cli` binaries are also
+[available in the Package Registry](https://gitlab.com/jaime/release-cli/-/packages)
+starting from GitLab 14.2.
 
 For GitLab Runner shell executors, you can download and install the `release-cli` manually for your [supported OS and architecture](https://release-cli-downloads.s3.amazonaws.com/latest/index.html).
 Once installed, the `release` keyword should be available to you.
 
 **Install on Unix/Linux**
 
-1. Download the binary for your system, in the following example for amd64 systems:
+1. Download the binary for your system from S3, in the following example for amd64 systems:
 
   ```shell
   curl --location --output /usr/local/bin/release-cli "https://release-cli-downloads.s3.amazonaws.com/latest/release-cli-linux-amd64"
+  ```
+
+Or from the GitLab package registry:
+
+  ```shell
+  curl --location --output /usr/local/bin/release-cli "https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli/packages/generic/release-cli/latest/release-cli-darwin-amd64"
   ```
 
 1. Give it permissions to execute:
@@ -4526,50 +4526,6 @@ You can use [CI/CD variables](../variables/index.md) to configure how the runner
 
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](../runners/configure_runners.md#job-stages-attempts).
-
-## `dast_configuration` **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
-
-Use the `dast_configuration` keyword to specify a site profile and scanner profile to be used in a
-CI/CD configuration. Both profiles must first have been created in the project. The job's stage must
-be `dast`.
-
-**Keyword type**: Job keyword. You can use only as part of a job.
-
-**Possible inputs**: One each of `site_profile` and `scanner_profile`.
-
-- Use `site_profile` to specify the site profile to be used in the job.
-- Use `scanner_profile` to specify the scanner profile to be used in the job.
-
-**Example of `dast_configuration`**:
-
-```yaml
-stages:
-  - build
-  - dast
-
-include:
-  - template: DAST.gitlab-ci.yml
-
-dast:
-  dast_configuration:
-    site_profile: "Example Co"
-    scanner_profile: "Quick Passive Test"
-```
-
-In this example, the `dast` job extends the `dast` configuration added with the `include:` keyword
-to select a specific site profile and scanner profile.
-
-**Additional details**:
-
-- Settings contained in either a site profile or scanner profile take precedence over those
-  contained in the DAST template.
-
-**Related topics**:
-
-- [Site profile](../../user/application_security/dast/index.md#site-profile).
-- [Scanner profile](../../user/application_security/dast/index.md#scanner-profile).
 
 ## YAML-specific features
 

@@ -8,6 +8,7 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :authorize_admin_project!
   before_action :ensure_service_enabled
   before_action :integration
+  before_action :default_integration, only: [:edit, :update]
   before_action :web_hook_logs, only: [:edit, :update]
   before_action :set_deprecation_notice_for_prometheus_integration, only: [:edit, :update]
   before_action :redirect_deprecated_prometheus_integration, only: [:update]
@@ -19,14 +20,22 @@ class Projects::ServicesController < Projects::ApplicationController
   feature_category :integrations
 
   def edit
-    @default_integration = Integration.default_integration(service.type, project)
   end
 
   def update
-    @integration.attributes = integration_params[:integration]
-    @integration.inherit_from_id = nil if integration_params[:integration][:inherit_from_id].blank?
+    attributes = integration_params[:integration]
 
-    saved = @integration.save(context: :manual_change)
+    if use_inherited_settings?(attributes)
+      @integration.inherit_from_id = default_integration.id
+
+      if saved = @integration.save(context: :manual_change)
+        BulkUpdateIntegrationService.new(default_integration, [@integration]).execute
+      end
+    else
+      attributes[:inherit_from_id] = nil
+      @integration.attributes = attributes
+      saved = @integration.save(context: :manual_change)
+    end
 
     respond_to do |format|
       format.html do
@@ -88,6 +97,10 @@ class Projects::ServicesController < Projects::ApplicationController
   end
   alias_method :service, :integration
 
+  def default_integration
+    @default_integration ||= Integration.default_integration(integration.type, project)
+  end
+
   def web_hook_logs
     return unless integration.service_hook.present?
 
@@ -114,5 +127,9 @@ class Projects::ServicesController < Projects::ApplicationController
     operations_link_start = "<a href=\"#{project_settings_operations_path(project)}\">"
     message = s_('PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page have been deprecated.') % { operations_link_start: operations_link_start, operations_link_end: "</a>" }
     flash.now[:alert] = message.html_safe
+  end
+
+  def use_inherited_settings?(attributes)
+    default_integration && attributes[:inherit_from_id] == default_integration.id.to_s
   end
 end

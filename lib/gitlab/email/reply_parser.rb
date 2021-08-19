@@ -6,20 +6,17 @@ module Gitlab
     class ReplyParser
       attr_accessor :message
 
-      def initialize(message, trim_reply: true)
+      def initialize(message, trim_reply: true, append_reply: false)
         @message = message
         @trim_reply = trim_reply
+        @append_reply = append_reply
       end
 
       def execute
         body = select_body(message)
 
         encoding = body.encoding
-
-        if @trim_reply
-          body = EmailReplyTrimmer.trim(body)
-        end
-
+        body, stripped_text = EmailReplyTrimmer.trim(body, @append_reply) if @trim_reply
         return '' unless body
 
         # not using /\s+$/ here because that deletes empty lines
@@ -30,7 +27,10 @@ module Gitlab
         # so we detect it manually here.
         return "" if body.lines.all? { |l| l.strip.empty? || l.start_with?('>') }
 
-        body.force_encoding(encoding).encode("UTF-8")
+        encoded_body = body.force_encoding(encoding).encode("UTF-8")
+        return encoded_body unless @append_reply
+
+        [encoded_body, stripped_text.force_encoding(encoding).encode("UTF-8")]
       end
 
       private

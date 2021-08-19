@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class DailyBuildGroupReportResult < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class DailyBuildGroupReportResult < Ci::ApplicationRecord
     PARAM_TYPES = %w[coverage].freeze
 
     belongs_to :last_pipeline, class_name: 'Ci::Pipeline', foreign_key: :last_pipeline_id

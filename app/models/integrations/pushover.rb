@@ -21,18 +21,46 @@ module Integrations
 
     def fields
       [
-        { type: 'text', name: 'api_key', title: _('API key'), placeholder: s_('PushoverService|Your application key'), required: true },
-        { type: 'text', name: 'user_key', placeholder: s_('PushoverService|Your user key'), required: true },
-        { type: 'text', name: 'device', placeholder: s_('PushoverService|Leave blank for all active devices') },
-        { type: 'select', name: 'priority', required: true, choices:
+        {
+          type: 'text',
+          name: 'api_key',
+          title: _('API key'),
+          help: s_('PushoverService|Enter your application key.'),
+          placeholder: '',
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'user_key',
+          title: _('User key'),
+          help: s_('PushoverService|Enter your user key.'),
+          placeholder: '',
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'device',
+          title: _('Devices (optional)'),
+          help: s_('PushoverService|Leave blank for all active devices.'),
+          placeholder: ''
+        },
+        {
+          type: 'select',
+          name: 'priority',
+          required: true,
+          choices:
           [
-            [s_('PushoverService|Lowest Priority'), -2],
-            [s_('PushoverService|Low Priority'), -1],
-            [s_('PushoverService|Normal Priority'), 0],
-            [s_('PushoverService|High Priority'), 1]
+            [s_('PushoverService|Lowest priority'), -2],
+            [s_('PushoverService|Low priority'), -1],
+            [s_('PushoverService|Normal priority'), 0],
+            [s_('PushoverService|High priority'), 1]
           ],
-          default_choice: 0 },
-        { type: 'select', name: 'sound', choices:
+          default_choice: 0
+        },
+        {
+          type: 'select',
+          name: 'sound',
+          choices:
           [
             ['Device default sound', nil],
             ['Pushover (default)', 'pushover'],
@@ -57,7 +85,8 @@ module Integrations
             ['Pushover Echo (long)', 'echo'],
             ['Up Down (long)', 'updown'],
             ['None (silent)', 'none']
-          ] }
+          ]
+        }
       ]
     end
 

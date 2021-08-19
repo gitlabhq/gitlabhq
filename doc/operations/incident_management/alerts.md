@@ -91,10 +91,14 @@ your alerting rules, see [Embedding metrics based on alerts in incident issues](
 [External Prometheus instances](../metrics/alerts.md#external-prometheus-instances) for information about setting up alerts for your self-managed Prometheus
 instance.
 
+Prerequisite:
+
+- You must have at least the Developer [role](../../user/permissions.md).
+
 To view the metrics for an alert:
 
-1. Sign in as a user with Developer or higher [permissions](../../user/permissions.md).
-1. Navigate to **Monitor > Alerts**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Alerts**.
 1. Select the alert you want to view.
 1. Below the title of the alert, select the **Metrics** tab.
 
@@ -111,10 +115,14 @@ application incident and need to [explore logs](../metrics/dashboards/index.md#c
 from across your application. These logs help you understand what's affecting
 your application's performance and how to resolve any problems.
 
+Prerequisite:
+
+- You must have at least the Developer [role](../../user/permissions.md).
+
 To view the logs for an alert:
 
-1. Sign in as a user with Developer or higher [permissions](../../user/permissions.md).
-1. Navigate to **Monitor > Alerts**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Alerts**.
 1. Select the alert you want to view.
 1. Below the title of the alert, select the **Metrics** tab.
 1. Select the [menu](../metrics/dashboards/index.md#chart-context-menu) of
@@ -167,17 +175,20 @@ difficult to track who is investigating and working on it. Assigning alerts ease
 
 To assign an alert:
 
-1. To display the list of current alerts, navigate to **Monitor > Alerts**.
+1. Display the list of current alerts:
+
+   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the left sidebar, select **Monitor > Alerts**.
 
 1. Select your desired alert to display its details.
 
    ![Alert Details View Assignee(s)](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
-   **{angle-double-right}** **Expand sidebar** to expand it.
+   **Expand sidebar** (**{angle-double-right}**) to expand it.
 
-1. In the right sidebar, locate the **Assignee**, and then select **Edit**.
-   From the dropdown menu, select each user you want to assign to the alert.
+1. On the right sidebar, locate the **Assignee**, and then select **Edit**.
+   From the list, select each user you want to assign to the alert.
    GitLab creates a [to-do item](../../user/todos.md) for each user.
 
 After completing their portion of investigating or fixing the alert, users can
@@ -192,13 +203,17 @@ You can manually create [To-Do list items](../../user/todos.md) for yourself
 from the Alert details screen, and view them later on your **To-Do List**. To
 add a to-do item:
 
-1. To display the list of current alerts, navigate to **Monitor > Alerts**.
+1. Display the list of current alerts:
+
+   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the left sidebar, select **Monitor > Alerts**.
+
 1. Select your desired alert to display its **Alert Management Details View**.
-1. Select the **Add a to do** button in the right sidebar:
+1. On the right sidebar, select **Add a to do**:
 
    ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
 
-Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
+To view your To-Do List, on the top bar, select **To-Do List** (**{todo-done}**).
 
 ## View the environment that generated the alert
 

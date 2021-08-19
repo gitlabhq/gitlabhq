@@ -281,6 +281,7 @@ export class GitLabDropdown {
         $target &&
         !$target.hasClass('dropdown-menu-close') &&
         !$target.hasClass('dropdown-menu-close-icon') &&
+        !$target.is('use') &&
         !$target.data('isLink')
       ) {
         e.stopPropagation();

@@ -66,12 +66,68 @@ To do that, you can use the `data` attributes in the HTML element and query them
 You should only do this while initializing the application, because the mounted element is replaced
 with a Vue-generated DOM.
 
-The advantage of providing data from the DOM to the Vue instance through `props` in the `render`
-function instead of querying the DOM inside the main Vue component is avoiding the need to create a
-fixture or an HTML element in the unit test, which makes the tests easier.
+The advantage of providing data from the DOM to the Vue instance through `props` or
+`provide` in the `render` function, instead of querying the DOM inside the main Vue
+component, is that you avoid the need to create a fixture or an HTML element in the unit test.
 
-See the following example. Also, please refer to our [Vue style guide](style/vue.md#basic-rules) for
-additional information on why we explicitly declare the data being passed into the Vue app;
+##### provide/inject
+
+Vue supports dependency injection through [provide/inject](https://vuejs.org/v2/api/#provide-inject).
+Values passed to the component through `provide` can be accessed in the component the `inject` configuration.
+In the following example of a Vue app initialization, a value from HAML is passed to the component
+through the `provide` configuration:
+
+```javascript
+#js-vue-app{ data: { endpoint: 'foo' }}
+
+// index.js
+const el = document.getElementById('js-vue-app');
+
+if (!el) return false;
+
+const { endpoint } = el.dataset;
+
+return new Vue({
+  el,
+  render(createElement) {
+    return createElement('my-component', {
+      provide: {
+        endpoint
+      },
+    });
+  },
+});
+```
+
+The component, or any of its child components, can access the property through `inject` as:
+
+```vue
+<script>
+  export default {
+    name: 'MyComponent',
+    inject: ['endpoint'],
+    ...
+    ...
+  };
+</script>
+<template>
+  ...
+  ...
+</template>
+```
+
+Using dependency injection to provide values from HAML is ideal when:
+
+- The injected value doesn't need an explicit validation against its data type or contents.
+- The value doesn't need to be reactive.
+- There are multiple components in the hierarchy that need access to this value where
+  prop-drilling becomes an inconvenience. Prop-drilling when the same prop is passed
+  through all components in the hierarchy until the component that is genuinely using it.
+
+##### props
+
+If the value from HAML doesn't fit the criteria of dependency injection, use `props`.
+See the following example.
 
 ```javascript
 // haml
@@ -98,6 +154,9 @@ return new Vue({
 
 > When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique
 across the codebase.
+
+For more information on why we explicitly declare the data being passed into the Vue app,
+refer to our [Vue style guide](style/vue.md#basic-rules).
 
 #### Providing Rails form fields to Vue applications
 

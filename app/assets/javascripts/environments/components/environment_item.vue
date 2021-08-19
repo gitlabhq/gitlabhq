@@ -776,23 +776,39 @@ export default {
       role="gridcell"
     >
       <div class="btn-group table-action-buttons" role="group">
-        <pin-component v-if="canShowAutoStopDate" :auto-stop-url="autoStopUrl" />
+        <pin-component
+          v-if="canShowAutoStopDate"
+          :auto-stop-url="autoStopUrl"
+          data-track-action="click_button"
+          data-track-label="environment_pin"
+        />
 
         <external-url-component
           v-if="externalURL && canReadEnvironment"
           :external-url="externalURL"
+          data-track-action="click_button"
+          data-track-label="environment_url"
         />
 
         <monitoring-button-component
           v-if="monitoringUrl && canReadEnvironment"
           :monitoring-url="monitoringUrl"
+          data-track-action="click_button"
+          data-track-label="environment_monitoring"
         />
 
-        <actions-component v-if="actions.length > 0" :actions="actions" />
+        <actions-component
+          v-if="actions.length > 0"
+          :actions="actions"
+          data-track-action="click_dropdown"
+          data-track-label="environment_actions"
+        />
 
         <terminal-button-component
           v-if="model && model.terminal_path"
           :terminal-path="model.terminal_path"
+          data-track-action="click_button"
+          data-track-label="environment_terminal"
         />
 
         <rollback-component
@@ -800,11 +816,23 @@ export default {
           :environment="model"
           :is-last-deployment="isLastDeployment"
           :retry-url="retryUrl"
+          data-track-action="click_button"
+          data-track-label="environment_rollback"
         />
 
-        <stop-component v-if="canStopEnvironment" :environment="model" />
+        <stop-component
+          v-if="canStopEnvironment"
+          :environment="model"
+          data-track-action="click_button"
+          data-track-label="environment_stop"
+        />
 
-        <delete-component v-if="canDeleteEnvironment" :environment="model" />
+        <delete-component
+          v-if="canDeleteEnvironment"
+          :environment="model"
+          data-track-action="click_button"
+          data-track-label="environment_delete"
+        />
       </div>
     </div>
   </div>

@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"strings"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/filestore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 type PreAuthorizer interface {

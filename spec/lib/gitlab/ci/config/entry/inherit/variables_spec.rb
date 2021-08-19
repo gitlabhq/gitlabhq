@@ -24,19 +24,4 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Inherit::Variables do
       end
     end
   end
-
-  describe '#inherit?' do
-    where(:config, :inherit) do
-      true  | true
-      false | false
-      %w[A] | true
-      %w[B] | false
-    end
-
-    with_them do
-      it do
-        expect(subject.inherit?('A')).to eq(inherit)
-      end
-    end
-  end
 end

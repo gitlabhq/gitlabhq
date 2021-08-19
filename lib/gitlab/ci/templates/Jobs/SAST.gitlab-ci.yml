@@ -252,6 +252,7 @@ semgrep-sast:
         - '**/*.jsx'
         - '**/*.ts'
         - '**/*.tsx'
+        - '**/*.c'
 
 sobelow-sast:
   extends: .sast-analyzer

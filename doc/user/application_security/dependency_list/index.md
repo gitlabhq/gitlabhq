@@ -10,7 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab Ultimate 12.0.
 
 Use the dependency list to review your project's dependencies and key
-details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings. To see the dependency list, go to your project and select **Security & Compliance > Dependency List**.
+details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings. 
+
+To see the dependency list, go to your project and select **Security & Compliance > Dependency List**.
+
 This information is sometimes referred to as a Software Bill of Materials or SBoM / BOM.
 
 The dependency list only shows the results of the last successful pipeline to run on the default branch. This is why we recommend not changing the default behavior of allowing the secure jobs to fail.
@@ -71,4 +74,12 @@ If the [License Compliance](../../compliance/license_compliance/index.md) CI job
 ## Downloading the dependency list
 
 You can download your project's full list of dependencies and their details in
-`JSON` format by selecting the download button.
+`JSON` format.
+
+### In the UI
+
+You can download your project’s list of dependencies and their details in JSON format by selecting the **Export** button. Note that the dependency list only shows the results of the last successful pipeline to run on the default branch.
+
+### Using the API
+
+You can download your project’s list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the gemnasium family of analyzers and [not any other of the GitLab dependency analyzers](../dependency_scanning/analyzers.md).

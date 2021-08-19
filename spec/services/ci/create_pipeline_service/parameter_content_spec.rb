@@ -30,7 +30,7 @@ RSpec.describe Ci::CreatePipelineService do
 
   describe '#execute' do
     context 'when source is a dangling build' do
-      subject { service.execute(:ondemand_dast_scan, content: content) }
+      subject { service.execute(:ondemand_dast_scan, content: content).payload }
 
       context 'parameter config content' do
         it 'creates a pipeline' do

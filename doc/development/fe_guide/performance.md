@@ -212,6 +212,8 @@ When writing code for real-time features we have to keep a couple of things in m
 Thus, we must strike a balance between sending requests and the feeling of real-time.
 Use the following rules when creating real-time solutions.
 
+<!-- vale gitlab.Spelling = NO -->
+
 1. The server tells you how much to poll by sending `Poll-Interval` in the header.
    Use that as your polling interval. This enables system administrators to change the
    [polling rate](../../administration/polling.md).
@@ -219,10 +221,12 @@ Use the following rules when creating real-time solutions.
 1. A response with HTTP status different from 2XX should disable polling as well.
 1. Use a common library for polling.
 1. Poll on active tabs only. Please use [Visibility](https://github.com/ai/visibilityjs).
-1. Use regular polling intervals, do not use <!-- vale gitlab.Spelling = NO --> backoff polling <!-- vale gitlab.Spelling = YES --> or jitter, as the interval is
+1. Use regular polling intervals, do not use backoff polling or jitter, as the interval is
    controlled by the server.
 1. The backend code is likely to be using ETags. You do not and should not check for status
    `304 Not Modified`. The browser transforms it for you.
+
+<!-- vale gitlab.Spelling = YES -->
 
 ### Lazy Loading Images
 

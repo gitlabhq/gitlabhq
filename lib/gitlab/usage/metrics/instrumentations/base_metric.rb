@@ -15,6 +15,10 @@ module Gitlab
             @time_frame = time_frame
             @options = options
           end
+
+          def instrumentation
+            value
+          end
         end
       end
     end

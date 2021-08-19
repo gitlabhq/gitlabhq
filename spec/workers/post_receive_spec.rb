@@ -5,7 +5,13 @@ require 'spec_helper'
 RSpec.describe PostReceive do
   include AfterNextHelpers
 
-  let(:changes) { "123456 789012 refs/heads/tést\n654321 210987 refs/tags/tag" }
+  let(:changes) do
+    <<~EOF
+      #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést
+      #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/tags/tag
+    EOF
+  end
+
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
   let(:gl_repository) { "project-#{project.id}" }
@@ -64,7 +70,6 @@ RSpec.describe PostReceive do
   describe '#process_project_changes' do
     context 'with an empty project' do
       let(:empty_project) { create(:project, :empty_repo) }
-      let(:changes) { "123456 789012 refs/heads/tést1\n" }
 
       before do
         allow_next(Gitlab::GitPostReceive).to receive(:identify).and_return(empty_project.owner)
@@ -81,14 +86,6 @@ RSpec.describe PostReceive do
       it 'schedules a cache update for commit count and size' do
         expect(ProjectCacheWorker).to receive(:perform_async)
                                         .with(empty_project.id, [], [:repository_size, :commit_count], true)
-
-        perform
-      end
-
-      it 'tracks an event for the new_project_readme experiment', :experiment do
-        expect_next_instance_of(NewProjectReadmeExperiment, :new_project_readme, nil, actor: empty_project.owner) do |e|
-          expect(e).to receive(:track_initial_writes).with(empty_project)
-        end
 
         perform
       end
@@ -154,8 +151,8 @@ RSpec.describe PostReceive do
       context 'branches' do
         let(:changes) do
           <<~EOF
-            123456 789012 refs/heads/tést1
-            123456 789012 refs/heads/tést2
+            #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést1
+            #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést2
           EOF
         end
 
@@ -190,9 +187,9 @@ RSpec.describe PostReceive do
         context 'with a default branch' do
           let(:changes) do
             <<~EOF
-              123456 789012 refs/heads/tést1
-              123456 789012 refs/heads/tést2
-              678912 123455 refs/heads/#{project.default_branch}
+              #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést1
+              #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést2
+              #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/#{project.default_branch}
             EOF
           end
 
@@ -208,9 +205,9 @@ RSpec.describe PostReceive do
       context 'tags' do
         let(:changes) do
           <<~EOF
-            654321 210987 refs/tags/tag1
-            654322 210986 refs/tags/tag2
-            654323 210985 refs/tags/tag3
+            #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/tags/tag1
+            #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/tags/tag2
+            #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/tags/tag3
           EOF
         end
 
@@ -249,7 +246,7 @@ RSpec.describe PostReceive do
       end
 
       context 'merge-requests' do
-        let(:changes) { "123456 789012 refs/merge-requests/123" }
+        let(:changes) { "#{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/merge-requests/123" }
 
         it "does not call any of the services" do
           expect(Git::ProcessRefChangesService).not_to receive(:new)
@@ -261,7 +258,6 @@ RSpec.describe PostReceive do
       end
 
       context 'after project changes hooks' do
-        let(:changes) { '123456 789012 refs/heads/tést' }
         let(:fake_hook_data) { { event_name: 'repository_update' } }
 
         before do
@@ -313,12 +309,12 @@ RSpec.describe PostReceive do
 
     context 'master' do
       let(:default_branch) { 'master' }
-      let(:oldrev) { '012345' }
-      let(:newrev) { '6789ab' }
+      let(:oldrev) { SeedRepo::Commit::PARENT_ID }
+      let(:newrev) { SeedRepo::Commit::ID }
       let(:changes) do
         <<~EOF
             #{oldrev} #{newrev} refs/heads/#{default_branch}
-            123456 789012 refs/heads/tést2
+            #{oldrev} #{newrev} refs/heads/tést2
         EOF
       end
 
@@ -334,8 +330,8 @@ RSpec.describe PostReceive do
     context 'branches' do
       let(:changes) do
         <<~EOF
-            123456 789012 refs/heads/tést1
-            123456 789012 refs/heads/tést2
+            #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést1
+            #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést2
         EOF
       end
 
@@ -414,8 +410,8 @@ RSpec.describe PostReceive do
         context 'branches' do
           let(:changes) do
             <<~EOF
-                123456 789012 refs/heads/tést1
-                123456 789012 refs/heads/tést2
+                #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést1
+                #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/heads/tést2
             EOF
           end
 
@@ -442,9 +438,9 @@ RSpec.describe PostReceive do
         context 'tags' do
           let(:changes) do
             <<~EOF
-              654321 210987 refs/tags/tag1
-              654322 210986 refs/tags/tag2
-              654323 210985 refs/tags/tag3
+              #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/tags/tag1
+              #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/tags/tag2
+              #{SeedRepo::Commit::PARENT_ID} #{SeedRepo::Commit::ID} refs/tags/tag3
             EOF
           end
 

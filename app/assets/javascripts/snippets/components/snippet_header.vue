@@ -54,6 +54,7 @@ export default {
       },
     },
   },
+  inject: ['reportAbusePath'],
   props: {
     snippet: {
       type: Object,
@@ -93,7 +94,6 @@ export default {
           click: this.showDeleteModal,
           variant: 'danger',
           category: 'secondary',
-          cssClass: 'ml-2',
         },
         {
           condition: this.canCreateSnippet,
@@ -103,9 +103,17 @@ export default {
             : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
           variant: 'success',
           category: 'secondary',
-          cssClass: 'ml-2',
+        },
+        {
+          condition: this.reportAbusePath,
+          text: __('Submit as spam'),
+          href: this.reportAbusePath,
+          title: __('Submit as spam'),
         },
       ];
+    },
+    hasPersonalSnippetActions() {
+      return Boolean(this.personalSnippetActions.filter(({ condition }) => condition).length);
     },
     editLink() {
       return `${this.snippet.webUrl}/edit`;
@@ -212,7 +220,7 @@ export default {
       </div>
     </div>
 
-    <div class="detail-page-header-actions">
+    <div v-if="hasPersonalSnippetActions" class="detail-page-header-actions">
       <div class="d-none d-sm-flex">
         <template v-for="(action, index) in personalSnippetActions">
           <div
@@ -221,6 +229,7 @@ export default {
             v-gl-tooltip
             :title="action.title"
             class="d-inline-block"
+            :class="{ 'gl-ml-3': index > 0 }"
           >
             <gl-button
               :disabled="action.disabled"
@@ -239,15 +248,17 @@ export default {
       </div>
       <div class="d-block d-sm-none dropdown">
         <gl-dropdown :text="__('Options')" block>
-          <gl-dropdown-item
-            v-for="(action, index) in personalSnippetActions"
-            :key="index"
-            :disabled="action.disabled"
-            :title="action.title"
-            :href="action.href"
-            @click="action.click ? action.click() : undefined"
-            >{{ action.text }}</gl-dropdown-item
-          >
+          <template v-for="(action, index) in personalSnippetActions">
+            <gl-dropdown-item
+              v-if="action.condition"
+              :key="index"
+              :disabled="action.disabled"
+              :title="action.title"
+              :href="action.href"
+              @click="action.click ? action.click() : undefined"
+              >{{ action.text }}</gl-dropdown-item
+            >
+          </template>
         </gl-dropdown>
       </div>
     </div>

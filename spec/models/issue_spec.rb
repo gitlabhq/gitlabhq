@@ -15,6 +15,7 @@ RSpec.describe Issue do
     it { is_expected.to belong_to(:iteration) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:namespace).through(:project) }
+    it { is_expected.to belong_to(:work_item_type).class_name('WorkItem::Type') }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }
     it { is_expected.to have_one(:moved_from).class_name('Issue') }
     it { is_expected.to belong_to(:duplicated_to).class_name('Issue') }
@@ -31,6 +32,8 @@ RSpec.describe Issue do
     it { is_expected.to have_and_belong_to_many(:self_managed_prometheus_alert_events) }
     it { is_expected.to have_many(:prometheus_alerts) }
     it { is_expected.to have_many(:issue_email_participants) }
+    it { is_expected.to have_many(:timelogs).autosave(true) }
+    it { is_expected.to have_one(:incident_management_issuable_escalation_status) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
@@ -614,33 +617,40 @@ RSpec.describe Issue do
     let(:subject) { create :issue }
   end
 
-  describe "#to_branch_name" do
-    let_it_be(:issue) { create(:issue, project: reusable_project, title: 'testing-issue') }
-
-    it 'starts with the issue iid' do
-      expect(issue.to_branch_name).to match(/\A#{issue.iid}-[A-Za-z\-]+\z/)
+  describe '.to_branch_name' do
+    it 'parameterizes arguments and joins with dashes' do
+      expect(described_class.to_branch_name(123, 'foo bar', '!@#$%', 'f!o@o#b$a%r^')).to eq('123-foo-bar-f-o-o-b-a-r')
     end
 
-    it "contains the issue title if not confidential" do
-      expect(issue.to_branch_name).to match(/testing-issue\z/)
+    it 'preserves the case in the first argument' do
+      expect(described_class.to_branch_name('ACME-!@#$-123', 'FoO BaR')).to eq('ACME-123-foo-bar')
     end
 
-    it "does not contain the issue title if confidential" do
-      issue = create(:issue, project: reusable_project, title: 'testing-issue', confidential: true)
-      expect(issue.to_branch_name).to match(/confidential-issue\z/)
+    it 'truncates branch name to at most 100 characters' do
+      expect(described_class.to_branch_name('a' * 101)).to eq('a' * 100)
     end
 
-    context 'issue title longer than 100 characters' do
-      let_it_be(:issue) { create(:issue, project: reusable_project, iid: 999, title: 'Lorem ipsum dolor sit amet consectetur adipiscing elit Mauris sit amet ipsum id lacus custom fringilla convallis') }
+    it 'truncates dangling parts of the branch name' do
+      branch_name = described_class.to_branch_name(
+        999,
+        'Lorem ipsum dolor sit amet consectetur adipiscing elit Mauris sit amet ipsum id lacus custom fringilla convallis'
+      )
 
-      it "truncates branch name to at most 100 characters" do
-        expect(issue.to_branch_name.length).to be <= 100
-      end
+      # 100 characters would've got us "999-lorem...lacus-custom-fri".
+      expect(branch_name).to eq('999-lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-mauris-sit-amet-ipsum-id-lacus-custom')
+    end
+  end
 
-      it "truncates dangling parts of the branch name" do
-        # 100 characters would've got us "999-lorem...lacus-custom-fri".
-        expect(issue.to_branch_name).to eq("999-lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-mauris-sit-amet-ipsum-id-lacus-custom")
-      end
+  describe '#to_branch_name' do
+    let_it_be(:issue) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
+
+    it 'returns a branch name with the issue title if not confidential' do
+      expect(issue.to_branch_name).to eq('123-testing-issue')
+    end
+
+    it 'returns a generic branch name if confidential' do
+      issue.confidential = true
+      expect(issue.to_branch_name).to eq('123-confidential-issue')
     end
   end
 
@@ -787,17 +797,47 @@ RSpec.describe Issue do
         end
       end
 
+      shared_examples 'hidden issue readable by user' do
+        before do
+          issue.author.ban!
+        end
+
+        specify do
+          is_expected.to eq(true)
+        end
+
+        after do
+          issue.author.activate!
+        end
+      end
+
+      shared_examples 'hidden issue not readable by user' do
+        before do
+          issue.author.ban!
+        end
+
+        specify do
+          is_expected.to eq(false)
+        end
+
+        after do
+          issue.author.activate!
+        end
+      end
+
       context 'with an admin user' do
         let(:user) { build(:admin) }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue readable by user'
+          it_behaves_like 'hidden issue readable by user'
         end
 
         context 'when admin mode is disabled' do
           it_behaves_like 'issue not readable by user'
           it_behaves_like 'confidential issue not readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
       end
 
@@ -808,6 +848,7 @@ RSpec.describe Issue do
 
         it_behaves_like 'issue readable by user'
         it_behaves_like 'confidential issue readable by user'
+        it_behaves_like 'hidden issue not readable by user'
       end
 
       context 'with a reporter user' do
@@ -817,6 +858,7 @@ RSpec.describe Issue do
 
         it_behaves_like 'issue readable by user'
         it_behaves_like 'confidential issue readable by user'
+        it_behaves_like 'hidden issue not readable by user'
       end
 
       context 'with a guest user' do
@@ -826,6 +868,7 @@ RSpec.describe Issue do
 
         it_behaves_like 'issue readable by user'
         it_behaves_like 'confidential issue not readable by user'
+        it_behaves_like 'hidden issue not readable by user'
 
         context 'when user is an assignee' do
           before do
@@ -834,6 +877,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
 
         context 'when user is the author' do
@@ -843,6 +887,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
       end
 
@@ -852,6 +897,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue not readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
 
         context 'using an internal project' do
@@ -864,6 +910,7 @@ RSpec.describe Issue do
 
             it_behaves_like 'issue readable by user'
             it_behaves_like 'confidential issue not readable by user'
+            it_behaves_like 'hidden issue not readable by user'
           end
 
           context 'using an external user' do
@@ -873,6 +920,7 @@ RSpec.describe Issue do
 
             it_behaves_like 'issue not readable by user'
             it_behaves_like 'confidential issue not readable by user'
+            it_behaves_like 'hidden issue not readable by user'
           end
         end
 
@@ -883,6 +931,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue not readable by user'
           it_behaves_like 'confidential issue not readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
       end
 
@@ -1112,14 +1161,14 @@ RSpec.describe Issue do
 
     with_them do
       it 'checks for spam when necessary' do
-        author = support_bot? ? support_bot : user
+        active_user = support_bot? ? support_bot : user
         project = reusable_project
         project.update!(visibility_level: visibility_level)
-        issue = create(:issue, project: project, confidential: confidential, description: 'original description', author: author)
+        issue = create(:issue, project: project, confidential: confidential, description: 'original description', author: support_bot)
 
         issue.assign_attributes(new_attributes)
 
-        expect(issue.check_for_spam?).to eq(check_for_spam?)
+        expect(issue.check_for_spam?(user: active_user)).to eq(check_for_spam?)
       end
     end
   end
@@ -1148,6 +1197,26 @@ RSpec.describe Issue do
       confidential_issue = create(:issue, project: reusable_project, confidential: true)
 
       expect(described_class.confidential_only).to eq([confidential_issue])
+    end
+  end
+
+  describe '.without_hidden' do
+    let_it_be(:banned_user) { create(:user, :banned) }
+    let_it_be(:public_issue) { create(:issue, project: reusable_project) }
+    let_it_be(:hidden_issue) { create(:issue, project: reusable_project, author: banned_user) }
+
+    it 'only returns without_hidden issues' do
+      expect(described_class.without_hidden).to eq([public_issue])
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(ban_user_feature_flag: false)
+      end
+
+      it 'returns public and hidden issues' do
+        expect(described_class.without_hidden).to eq([public_issue, hidden_issue])
+      end
     end
   end
 

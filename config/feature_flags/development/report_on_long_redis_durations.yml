@@ -1,0 +1,8 @@
+---
+name: report_on_long_redis_durations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67512
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1183
+milestone: '14.2'
+type: development
+group: team::Scalability
+default_enabled: false

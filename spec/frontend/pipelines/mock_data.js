@@ -127,6 +127,28 @@ export const mockSuccessfulPipelineHeader = {
   },
 };
 
+export const mockRunningPipelineHeaderData = {
+  data: {
+    project: {
+      pipeline: {
+        ...mockRunningPipelineHeader,
+        iid: '28',
+        user: {
+          name: 'Foo',
+          username: 'foobar',
+          webPath: '/foo',
+          email: 'foo@bar.com',
+          avatarUrl: 'link',
+          status: null,
+          __typename: 'UserCore',
+        },
+        __typename: 'Pipeline',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const stageReply = {
   name: 'deploy',
   title: 'deploy: running',

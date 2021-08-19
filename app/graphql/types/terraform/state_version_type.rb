@@ -9,7 +9,7 @@ module Types
 
       authorize :read_terraform_state
 
-      field :id, GraphQL::ID_TYPE,
+      field :id, GraphQL::Types::ID,
             null: false,
             description: 'ID of the Terraform state version.'
 
@@ -17,7 +17,7 @@ module Types
             null: true,
             description: 'The user that created this version.'
 
-      field :download_path, GraphQL::STRING_TYPE,
+      field :download_path, GraphQL::Types::String,
             null: true,
             description: "URL for downloading the version's JSON file."
 
@@ -25,7 +25,7 @@ module Types
             null: true,
             description: 'The job that created this version.'
 
-      field :serial, GraphQL::INT_TYPE,
+      field :serial, GraphQL::Types::Int,
             null: true,
             description: 'Serial number of the version.',
             method: :version

@@ -11,7 +11,7 @@ module Resolvers
       argument :ids, [DesignID],
                required: false,
                description: 'Filters designs by their ID.'
-      argument :filenames, [GraphQL::STRING_TYPE],
+      argument :filenames, [GraphQL::Types::String],
                required: false,
                description: 'Filters designs by their filename.'
       argument :at_version, VersionID,

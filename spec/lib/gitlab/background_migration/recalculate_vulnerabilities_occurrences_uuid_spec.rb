@@ -13,12 +13,13 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
   let(:vulnerabilities) { table(:vulnerabilities) }
   let(:vulnerabilities_findings) { table(:vulnerability_occurrences) }
   let(:vulnerability_identifiers) { table(:vulnerability_identifiers) }
+
   let(:vulnerability_identifier) do
     vulnerability_identifiers.create!(
       project_id: project.id,
       external_type: 'uuid-v5',
       external_id: 'uuid-v5',
-      fingerprint: '7e394d1b1eb461a7406d7b1e08f057a1cf11287a',
+      fingerprint: Gitlab::Database::ShaAttribute.serialize('7e394d1b1eb461a7406d7b1e08f057a1cf11287a'),
       name: 'Identifier for UUIDv5')
   end
 
@@ -27,7 +28,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
       project_id: project.id,
       external_type: 'uuid-v4',
       external_id: 'uuid-v4',
-      fingerprint: '772da93d34a1ba010bcb5efa9fb6f8e01bafcc89',
+      fingerprint: Gitlab::Database::ShaAttribute.serialize('772da93d34a1ba010bcb5efa9fb6f8e01bafcc89'),
       name: 'Identifier for UUIDv4')
   end
 
@@ -59,7 +60,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
         scanner_id: different_scanner.id,
         primary_identifier_id: different_vulnerability_identifier.id,
         report_type: 0, # "sast"
-        location_fingerprint: "fa18f432f1d56675f4098d318739c3cd5b14eb3e",
+        location_fingerprint: Gitlab::Database::ShaAttribute.serialize("fa18f432f1d56675f4098d318739c3cd5b14eb3e"),
         uuid: known_uuid_v4
       )
     end
@@ -91,7 +92,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
         scanner_id: scanner.id,
         primary_identifier_id: vulnerability_identifier.id,
         report_type: 0, # "sast"
-        location_fingerprint: "838574be0210968bf6b9f569df9c2576242cbf0a",
+        location_fingerprint: Gitlab::Database::ShaAttribute.serialize("838574be0210968bf6b9f569df9c2576242cbf0a"),
         uuid: known_uuid_v5
       )
     end
@@ -115,7 +116,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
         scanner_id: different_scanner.id,
         primary_identifier_id: different_vulnerability_identifier.id,
         report_type: 0, # "sast"
-        location_fingerprint: "fa18f432f1d56675f4098d318739c3cd5b14eb3e",
+        location_fingerprint: Gitlab::Database::ShaAttribute.serialize("fa18f432f1d56675f4098d318739c3cd5b14eb3e"),
         uuid: known_uuid_v4
       )
 

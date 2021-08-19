@@ -1,0 +1,13 @@
+mutation toggleLock($projectPath: ID!, $filePath: String!, $lock: Boolean!) {
+  projectSetLocked(input: { projectPath: $projectPath, filePath: $filePath, lock: $lock }) {
+    project {
+      id
+      pathLocks {
+        nodes {
+          path
+        }
+      }
+    }
+    errors
+  }
+}

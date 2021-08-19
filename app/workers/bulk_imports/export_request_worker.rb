@@ -4,6 +4,8 @@ module BulkImports
   class ExportRequestWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     idempotent!
     worker_has_external_dependencies!
     feature_category :importers

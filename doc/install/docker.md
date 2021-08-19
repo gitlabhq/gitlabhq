@@ -119,9 +119,16 @@ sudo docker logs -f gitlab
 After starting a container you can visit `gitlab.example.com` (or
 `http://192.168.59.103` if you used boot2docker on macOS). It might take a while
 before the Docker container starts to respond to queries.
-The very first time you visit GitLab, you will be asked to set up the admin
-password. After you change it, you can log in with username `root` and the
-password you set up.
+
+Visit the GitLab URL, and log in with username `root`
+and the password from the following command:
+
+```shell
+sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
+```
+
+NOTE:
+The password file will be automatically deleted in the first reconfigure run after 24 hours.
 
 ### Install GitLab using Docker Compose
 

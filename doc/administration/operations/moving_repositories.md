@@ -7,8 +7,7 @@ type: reference
 
 # Moving repositories managed by GitLab **(FREE SELF)**
 
-Sometimes you need to move all repositories managed by GitLab to
-another file system or another server.
+You can move all repositories managed by GitLab to another file system or another server.
 
 ## Moving data within a GitLab instance
 
@@ -28,7 +27,128 @@ For more information, see:
   querying and scheduling snippet repository moves.
 - [The API documentation](../../api/group_repository_storage_moves.md) details the endpoints for
   querying and scheduling group repository moves **(PREMIUM SELF)**.
-- [Migrate to Gitaly Cluster](../gitaly/praefect.md#migrate-to-gitaly-cluster).
+- [Migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
+
+### Move Repositories
+
+GitLab repositories can be associated with projects, groups, and snippets. Each of these types
+have a separate API to schedule the respective repositories to move. To move all repositories
+on a GitLab instance, each of these types must be scheduled to move for each storage.
+
+WARNING:
+To move repositories into a [Gitaly Cluster](../gitaly/index.md#gitaly-cluster) in GitLab versions
+13.12 to 14.1, you must [enable the `gitaly_replicate_repository_direct_fetch` feature flag](../feature_flags.md).
+
+Each repository is made read-only for the duration of the move. The repository is not writable
+until the move has completed.
+
+To move repositories:
+
+1. Ensure all storages are accessible to the GitLab instance. In this example, these are
+   `<original_storage_name>` and `<cluster_storage_name>`.
+1. [Configure repository storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored)
+   so that the new storages receives all new projects. This stops new projects from being created
+   on existing storages while the migration is in progress.
+1. Schedule repository moves for:
+   - [Projects](#bulk-schedule-project-moves).
+   - [Snippets](#bulk-schedule-snippet-moves).
+   - [Groups](#bulk-schedule-group-moves). **(PREMIUM SELF)**
+
+### Bulk schedule project moves
+
+Use the API to schedule project moves:
+
+1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard)
+   using the API. For example:
+
+   ```shell
+   curl --request POST --header "Private-Token: <your_access_token>" \
+        --header "Content-Type: application/json" \
+        --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
+        "https://gitlab.example.com/api/v4/project_repository_storage_moves"
+   ```
+
+1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#retrieve-all-project-repository-storage-moves)
+   using the API. The response indicates either:
+   - The moves have completed successfully. The `state` field is `finished`.
+   - The moves are in progress. Re-query the repository move until it completes successfully.
+   - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
+
+1. After the moves are complete, use the API to [query projects](../../api/projects.md#list-all-projects) and confirm that all projects have moved. None of the projects should be returned with the
+   `repository_storage` field set to the old storage. For example:
+
+   ```shell
+   curl --header "Private-Token: <your_access_token>" --header "Content-Type: application/json" \
+   "https://gitlab.example.com/api/v4/projects?repository_storage=<original_storage_name>"
+   ```
+
+   Alternatively use [the rails console](../operations/rails_console.md) to confirm that all
+   projects have moved. Run the following in the rails console:
+
+   ```ruby
+   ProjectRepository.for_repository_storage('<original_storage_name>')
+   ```
+
+1. Repeat for each storage as required.
+
+### Bulk schedule snippet moves
+
+Use the API to schedule snippet moves:
+
+1. [Schedule repository storage moves for all snippets on a storage shard](../../api/snippet_repository_storage_moves.md#schedule-repository-storage-moves-for-all-snippets-on-a-storage-shard). For example:
+
+   ```shell
+   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+        --header "Content-Type: application/json" \
+        --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
+        "https://gitlab.example.com/api/v4/snippet_repository_storage_moves"
+   ```
+
+1. [Query the most recent repository moves](../../api/snippet_repository_storage_moves.md#retrieve-all-snippet-repository-storage-moves)
+The response indicates either:
+   - The moves have completed successfully. The `state` field is `finished`.
+   - The moves are in progress. Re-query the repository move until it completes successfully.
+   - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
+
+1. After the moves are complete, use [the rails console](../operations/rails_console.md) to confirm
+   that all snippets have moved. No snippets should be returned for the original storage. Run the
+   following in the rails console:
+
+   ```ruby
+   SnippetRepository.for_repository_storage('<original_storage_name>')
+   ```
+
+1. Repeat for each storage as required.
+
+### Bulk schedule group moves **(PREMIUM SELF)**
+
+Use the API to schedule group moves:
+
+1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard)
+. For example:
+
+    ```shell
+    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+         --header "Content-Type: application/json" \
+         --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
+         "https://gitlab.example.com/api/v4/group_repository_storage_moves"
+    ```
+
+1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#retrieve-all-group-repository-storage-moves)
+. The response indicates either:
+   - The moves have completed successfully. The `state` field is `finished`.
+   - The moves are in progress. Re-query the repository move until it completes successfully.
+   - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
+
+1. After the moves are complete, use [the rails console](../operations/rails_console.md) to confirm
+   that all groups have moved. No groups should be returned for the original storage. Run the
+   following in the rails console:
+
+   ```ruby
+   GroupWikiRepository.for_repository_storage('<original_storage_name>')
+   ```
+
+1. Repeat for each storage as required.
 
 ## Migrating to another GitLab instance
 

@@ -56,9 +56,9 @@ namespace :gitlab do
           color = case complexity
                   when 0..GitlabSchema::DEFAULT_MAX_COMPLEXITY
                     :green
-                  when GitlabSchema::DEFAULT_MAX_COMPLEXITY..GitlabSchema::AUTHENTICATED_COMPLEXITY
+                  when GitlabSchema::DEFAULT_MAX_COMPLEXITY..GitlabSchema::AUTHENTICATED_MAX_COMPLEXITY
                     :yellow
-                  when GitlabSchema::AUTHENTICATED_COMPLEXITY..GitlabSchema::ADMIN_COMPLEXITY
+                  when GitlabSchema::AUTHENTICATED_MAX_COMPLEXITY..GitlabSchema::ADMIN_MAX_COMPLEXITY
                     :orange
                   else
                     :red

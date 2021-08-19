@@ -432,7 +432,7 @@ To run the LDAP tests on your local with TLS enabled, follow these steps:
 
    `127.0.0.1    gitlab.test`
 
-   You can then run tests against GitLab in a Docker container on `https://gitlab.test`. Please note that the TLS certificate [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab) is configured for this domain.
+   You can then run tests against GitLab in a Docker container on `https://gitlab.test`. The TLS certificate [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab) is configured for this domain.
 1. Run the OpenLDAP container with TLS enabled. Change the path to [`gitlab-qa/fixtures/ldap`](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) directory to your local checkout path:
 
    ```shell

@@ -54,7 +54,9 @@ RSpec.describe 'merge requests discussions' do
     end
 
     context 'caching', :use_clean_rails_memory_store_caching do
-      let!(:first_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+      let(:reference) { create(:issue, project: project) }
+      let(:author) { create(:user) }
+      let!(:first_note) { create(:diff_note_on_merge_request, author: author, noteable: merge_request, project: project, note: "reference: #{reference.to_reference}") }
       let!(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
       let!(:award_emoji) { create(:award_emoji, awardable: first_note) }
 
@@ -86,6 +88,16 @@ RSpec.describe 'merge requests discussions' do
       context 'when a note in a discussion got updated' do
         before do
           first_note.update!(updated_at: 1.minute.from_now)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when a note in a discussion got its reference state updated' do
+        before do
+          reference.close!
         end
 
         it_behaves_like 'cache miss' do
@@ -147,17 +159,6 @@ RSpec.describe 'merge requests discussions' do
         end
       end
 
-      context 'when cached markdown version gets bump' do
-        before do
-          settings = Gitlab::CurrentSettings.current_application_settings
-          settings.update!(local_markdown_version: settings.local_markdown_version + 1)
-        end
-
-        it_behaves_like 'cache miss' do
-          let(:changed_notes) { [first_note, second_note] }
-        end
-      end
-
       context 'when the diff note position changes' do
         before do
           # This replicates a position change wherein timestamps aren't updated
@@ -174,6 +175,53 @@ RSpec.describe 'merge requests discussions' do
           )
 
           Gitlab::Timeless.timeless(first_note, &:save)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when the HEAD diff note position changes' do
+        before do
+          # This replicates a DiffNotePosition change. This is the same approach
+          # being used in Discussions::CaptureDiffNotePositionService which is
+          # responsible for updating/creating DiffNotePosition of a diff discussions
+          # in relation to HEAD diff.
+          new_position = Gitlab::Diff::Position.new(
+            old_path: first_note.position.old_path,
+            new_path: first_note.position.new_path,
+            old_line: first_note.position.old_line,
+            new_line: first_note.position.new_line + 1,
+            diff_refs: first_note.position.diff_refs
+          )
+
+          DiffNotePosition.create_or_update_for(
+            first_note,
+            diff_type: :head,
+            position: new_position,
+            line_code: 'bd4b7bfff3a247ccf6e3371c41ec018a55230bcc_534_521'
+          )
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author detail changes' do
+        before do
+          author.update!(name: "#{author.name} (Updated)")
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author status changes' do
+        before do
+          Users::SetStatusService.new(author, message: "updated status").execute
         end
 
         it_behaves_like 'cache miss' do

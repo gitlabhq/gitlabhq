@@ -3,7 +3,8 @@
 class PartitionCreationWorker
   include ApplicationWorker
 
-  sidekiq_options retry: 3
+  data_consistency :always
+
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :database

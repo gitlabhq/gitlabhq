@@ -60,8 +60,31 @@ module Emails
       @project = project
       @alert = alert.present
 
+      add_project_headers
+      add_alert_headers
+
       subject_text = "Alert: #{@alert.email_title}"
       mail(to: user.notification_email_for(@project.group), subject: subject(subject_text))
+    end
+
+    private
+
+    def add_alert_headers
+      return unless @alert
+
+      headers['X-GitLab-Alert-ID'] = @alert.id
+      headers['X-GitLab-Alert-IID'] = @alert.iid
+      headers['X-GitLab-NotificationReason'] = "alert_#{@alert.state}"
+
+      add_incident_headers
+    end
+
+    def add_incident_headers
+      incident = @alert.issue
+      return unless incident
+
+      headers['X-GitLab-Incident-ID'] = incident.id
+      headers['X-GitLab-Incident-IID'] = incident.iid
     end
   end
 end

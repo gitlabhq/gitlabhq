@@ -45,7 +45,7 @@ processing it, and returns any syntax or semantic errors. The `YAML Processor` c
 [all the keywords](../../ci/yaml/index.md) available to structure a pipeline.
 
 The `CreatePipelineService` receives the abstract data structure returned by the `YAML Processor`,
-which then converts it to persisted models (pipeline, stages, jobs, etc.). After that, the pipeline is ready
+which then converts it to persisted models (like pipeline, stages, and jobs). After that, the pipeline is ready
 to be processed. Processing a pipeline means running the jobs in order of execution (stage or DAG)
 until either one of the following:
 
@@ -77,9 +77,9 @@ that need to be stored. Also, a job may depend on artifacts from previous jobs i
 case the runner downloads them using a dedicated API endpoint.
 
 Artifacts are stored in object storage, while metadata is kept in the database. An important example of artifacts
-are reports (JUnit, SAST, DAST, etc.) which are parsed and rendered in the merge request.
+are reports (like JUnit, SAST, and DAST) which are parsed and rendered in the merge request.
 
-Job status transitions are not all automated. A user may run [manual jobs](../../ci/yaml/index.md#whenmanual), cancel a pipeline, retry
+Job status transitions are not all automated. A user may run [manual jobs](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually), cancel a pipeline, retry
 specific failed jobs or the entire pipeline. Anything that
 causes a job to change status triggers `ProcessPipelineService`, as it's responsible for
 tracking the status of the entire pipeline.
@@ -159,7 +159,7 @@ On top of that, we have the following types of jobs:
 - `Ci::Bridge` ... The job to trigger a downstream pipeline.
 - `GenericCommitStatus` ... The job to be executed in an external CI/CD system e.g. Jenkins.
 
-Please note that, when you use the "Job" terminology in codebase, readers would
+When you use the "Job" terminology in codebase, readers would
 assume that the class/object is any type of above.
 If you specifically refer `Ci::Build` class, you should not name the object/class
 as "job" as this could cause some confusions. In documentation,

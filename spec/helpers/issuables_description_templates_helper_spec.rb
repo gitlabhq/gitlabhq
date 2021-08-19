@@ -41,19 +41,6 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       context 'when project parent group does not have a file template project' do
         it_behaves_like 'project issuable templates'
       end
-
-      context 'when project parent group has a file template project' do
-        let_it_be(:file_template_project) { create(:project, :custom_repo, group: parent_group, files: issuable_template_files) }
-        let_it_be(:group, reload: true) { create(:group, parent: parent_group) }
-        let_it_be(:project, reload: true) { create(:project, :custom_repo, group: group, files: issuable_template_files) }
-
-        before do
-          project.update!(group: group)
-          parent_group.update_columns(file_template_project_id: file_template_project.id)
-        end
-
-        it_behaves_like 'project issuable templates'
-      end
     end
   end
 
@@ -65,16 +52,12 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       allow(helper).to receive(:issuable_templates).and_return(templates)
     end
 
-    context 'with matching project templates' do
+    context 'with project templates' do
       let(:templates) do
         {
           "" => [
-            { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
-            { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
-          ],
-          "Instance" => [
-            { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
-            { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
+            { name: "another_issue_template", id: "another_issue_template" },
+            { name: "custom_issue_template", id: "custom_issue_template" }
           ]
         }
       end
@@ -90,10 +73,6 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
           "Project Templates" => [
             { name: "another_issue_template", id: "another_issue_template", project_id: non_existing_record_id },
             { name: "custom_issue_template", id: "custom_issue_template", project_id: non_existing_record_id }
-          ],
-          "Instance" => [
-            { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
-            { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
           ]
         }
       end

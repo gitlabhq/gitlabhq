@@ -19,9 +19,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 var (

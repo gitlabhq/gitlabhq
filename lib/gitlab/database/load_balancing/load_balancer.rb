@@ -7,20 +7,21 @@ module Gitlab
       #
       # Each host in the load balancer uses the same credentials as the primary
       # database.
-      #
-      # This class *requires* that `ActiveRecord::Base.retrieve_connection`
-      # always returns a connection to the primary.
       class LoadBalancer
         CACHE_KEY = :gitlab_load_balancer_host
-        VALID_HOSTS_CACHE_KEY = :gitlab_load_balancer_valid_hosts
+
+        REPLICA_SUFFIX = '_replica'
 
         attr_reader :host_list
 
         # hosts - The hostnames/addresses of the additional databases.
-        def initialize(hosts = [])
+        def initialize(hosts = [], model = ActiveRecord::Base)
+          @model = model
           @host_list = HostList.new(hosts.map { |addr| Host.new(addr, self) })
-          @connection_db_roles = {}.compare_by_identity
-          @connection_db_roles_count = {}.compare_by_identity
+        end
+
+        def disconnect!(timeout: 120)
+          host_list.hosts.each { |host| host.disconnect!(timeout: timeout) }
         end
 
         # Yields a connection that can be used for reads.
@@ -28,7 +29,6 @@ module Gitlab
         # If no secondaries were available this method will use the primary
         # instead.
         def read(&block)
-          connection = nil
           conflict_retried = 0
 
           while host
@@ -36,12 +36,8 @@ module Gitlab
 
             begin
               connection = host.connection
-              track_connection_role(connection, ROLE_REPLICA)
-
               return yield connection
             rescue StandardError => error
-              untrack_connection_role(connection)
-
               if serialization_failure?(error)
                 # This error can occur when a query conflicts. See
                 # https://www.postgresql.org/docs/current/static/hot-standby.html#HOT-STANDBY-CONFLICT
@@ -84,8 +80,6 @@ module Gitlab
           )
 
           read_write(&block)
-        ensure
-          untrack_connection_role(connection)
         end
 
         # Yields a connection that can be used for both reads and writes.
@@ -95,22 +89,9 @@ module Gitlab
           # Instead of immediately grinding to a halt we'll retry the operation
           # a few times.
           retry_with_backoff do
-            connection = ActiveRecord::Base.retrieve_connection
-            track_connection_role(connection, ROLE_PRIMARY)
-
+            connection = pool.connection
             yield connection
           end
-        ensure
-          untrack_connection_role(connection)
-        end
-
-        # Recognize the role (primary/replica) of the database this connection
-        # is connecting to. If the connection is not issued by this load
-        # balancer, return nil
-        def db_role_for_connection(connection)
-          return @connection_db_roles[connection] if @connection_db_roles[connection]
-          return ROLE_REPLICA if @host_list.manage_pool?(connection.pool)
-          return ROLE_PRIMARY if connection.pool == ActiveRecord::Base.connection_pool
         end
 
         # Returns a host to use for queries.
@@ -118,28 +99,27 @@ module Gitlab
         # Hosts are scoped per thread so that multiple threads don't
         # accidentally re-use the same host + connection.
         def host
-          RequestStore[CACHE_KEY] ||= current_host_list.next
+          request_cache[CACHE_KEY] ||= @host_list.next
         end
 
         # Releases the host and connection for the current thread.
         def release_host
-          if host = RequestStore[CACHE_KEY]
+          if host = request_cache[CACHE_KEY]
             host.disable_query_cache!
             host.release_connection
           end
 
-          RequestStore.delete(CACHE_KEY)
-          RequestStore.delete(VALID_HOSTS_CACHE_KEY)
+          request_cache.delete(CACHE_KEY)
         end
 
         def release_primary_connection
-          ActiveRecord::Base.connection_pool.release_connection
+          pool.release_connection
         end
 
         # Returns the transaction write location of the primary.
         def primary_write_location
           location = read_write do |connection|
-            ::Gitlab::Database.get_write_location(connection)
+            ::Gitlab::Database.main.get_write_location(connection)
           end
 
           return location if location
@@ -148,53 +128,15 @@ module Gitlab
         end
 
         # Returns true if there was at least one host that has caught up with the given transaction.
-        #
-        # In case of a retry, this method also stores the set of hosts that have caught up.
-        #
-        # UPD: `select_caught_up_hosts` seems to have redundant logic managing host list (`:gitlab_load_balancer_valid_hosts`),
-        # while we only need a single host: https://gitlab.com/gitlab-org/gitlab/-/issues/326125#note_615271604
-        # Also, shuffling the list afterwards doesn't seem to be necessary.
-        # This may be improved by merging this method with `select_up_to_date_host`.
-        # Could be removed when `:load_balancing_refine_load_balancer_methods` FF is rolled out
-        def select_caught_up_hosts(location)
-          all_hosts = @host_list.hosts
-          valid_hosts = all_hosts.select { |host| host.caught_up?(location) }
-
-          return false if valid_hosts.empty?
-
-          # Hosts can come online after the time when this scan was done,
-          # so we need to remember the ones that can be used. If the host went
-          # offline, we'll just rely on the retry mechanism to use the primary.
-          set_consistent_hosts_for_request(HostList.new(valid_hosts))
-
-          # Since we will be using a subset from the original list, let's just
-          # pick a random host and mix up the original list to ensure we don't
-          # only end up using one replica.
-          RequestStore[CACHE_KEY] = valid_hosts.sample
-          @host_list.shuffle
-
-          true
-        end
-
-        # Returns true if there was at least one host that has caught up with the given transaction.
-        # Similar to `#select_caught_up_hosts`, picks a random host, to rotate replicas we use.
-        # Unlike `#select_caught_up_hosts`, does not iterate over all hosts if finds any.
-        #
-        # It is going to be merged with `select_caught_up_hosts`, because they intend to do the same.
         def select_up_to_date_host(location)
           all_hosts = @host_list.hosts.shuffle
           host = all_hosts.find { |host| host.caught_up?(location) }
 
           return false unless host
 
-          RequestStore[CACHE_KEY] = host
+          request_cache[CACHE_KEY] = host
 
           true
-        end
-
-        # Could be removed when `:load_balancing_refine_load_balancer_methods` FF is rolled out
-        def set_consistent_hosts_for_request(hosts)
-          RequestStore[VALID_HOSTS_CACHE_KEY] = hosts
         end
 
         # Yields a block, retrying it upon error using an exponential backoff.
@@ -247,30 +189,50 @@ module Gitlab
           end
         end
 
+        # pool_size - The size of the DB pool.
+        # host - An optional host name to use instead of the default one.
+        # port - An optional port to connect to.
+        def create_replica_connection_pool(pool_size, host = nil, port = nil)
+          db_config = pool.db_config
+
+          env_config = db_config.configuration_hash.dup
+          env_config[:pool] = pool_size
+          env_config[:host] = host if host
+          env_config[:port] = port if port
+
+          replica_db_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+            db_config.env_name,
+            db_config.name + REPLICA_SUFFIX,
+            env_config
+          )
+
+          # We cannot use ActiveRecord::Base.connection_handler.establish_connection
+          # as it will rewrite ActiveRecord::Base.connection
+          ActiveRecord::ConnectionAdapters::ConnectionHandler
+            .new
+            .establish_connection(replica_db_config)
+        end
+
         private
+
+        # ActiveRecord::ConnectionAdapters::ConnectionHandler handles fetching,
+        # and caching for connections pools for each "connection", so we
+        # leverage that.
+        def pool
+          ActiveRecord::Base.connection_handler.retrieve_connection_pool(
+            @model.connection_specification_name,
+            role: ActiveRecord::Base.writing_role,
+            shard: ActiveRecord::Base.default_shard
+          )
+        end
 
         def ensure_caching!
           host.enable_query_cache! unless host.query_cache_enabled
         end
 
-        def track_connection_role(connection, role)
-          @connection_db_roles[connection] = role
-          @connection_db_roles_count[connection] ||= 0
-          @connection_db_roles_count[connection] += 1
-        end
-
-        def untrack_connection_role(connection)
-          return if connection.blank? || @connection_db_roles_count[connection].blank?
-
-          @connection_db_roles_count[connection] -= 1
-          if @connection_db_roles_count[connection] <= 0
-            @connection_db_roles.delete(connection)
-            @connection_db_roles_count.delete(connection)
-          end
-        end
-
-        def current_host_list
-          RequestStore[VALID_HOSTS_CACHE_KEY] || @host_list
+        def request_cache
+          base = RequestStore[:gitlab_load_balancer] ||= {}
+          base[pool] ||= {}
         end
       end
     end

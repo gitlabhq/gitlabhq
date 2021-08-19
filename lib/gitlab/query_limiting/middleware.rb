@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def call(env)
-        transaction, retval = Transaction.run do
+        transaction, retval = ::Gitlab::QueryLimiting::Transaction.run do
           @app.call(env)
         end
 

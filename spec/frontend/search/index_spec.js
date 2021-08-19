@@ -1,4 +1,5 @@
 import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { initSearchApp } from '~/search';
 import createStore from '~/search/store';
 
@@ -8,25 +9,6 @@ jest.mock('~/search/sidebar');
 jest.mock('ee_else_ce/search/highlight_blob_search_result');
 
 describe('initSearchApp', () => {
-  let defaultLocation;
-
-  const setUrl = (query) => {
-    window.location.href = `https://localhost:3000/search${query}`;
-    window.location.search = query;
-  };
-
-  beforeEach(() => {
-    defaultLocation = window.location;
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: { href: '', search: '' },
-    });
-  });
-
-  afterEach(() => {
-    window.location = defaultLocation;
-  });
-
   describe.each`
     search                           | decodedSearch
     ${'test'}                        | ${'test'}
@@ -38,7 +20,7 @@ describe('initSearchApp', () => {
     ${'test+%2520+this+%2520+stuff'} | ${'test %20 this %20 stuff'}
   `('parameter decoding', ({ search, decodedSearch }) => {
     beforeEach(() => {
-      setUrl(`?search=${search}`);
+      setWindowLocation(`/search?search=${search}`);
       initSearchApp();
     });
 

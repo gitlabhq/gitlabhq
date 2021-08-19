@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe SentryErrorPresenter do
-  let(:error) { build(:detailed_error_tracking_error) }
+  let(:error) { build(:error_tracking_sentry_detailed_error) }
   let(:presenter) { described_class.new(error) }
 
   describe '#frequency' do

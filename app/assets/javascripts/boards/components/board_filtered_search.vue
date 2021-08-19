@@ -27,7 +27,15 @@ export default {
   },
   computed: {
     urlParams() {
-      const { authorUsername, labelName, assigneeUsername, search } = this.filterParams;
+      const {
+        authorUsername,
+        labelName,
+        assigneeUsername,
+        search,
+        milestoneTitle,
+        types,
+        weight,
+      } = this.filterParams;
       let notParams = {};
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
@@ -36,6 +44,9 @@ export default {
             'not[label_name][]': this.filterParams.not.labelName,
             'not[author_username]': this.filterParams.not.authorUsername,
             'not[assignee_username]': this.filterParams.not.assigneeUsername,
+            'not[types]': this.filterParams.not.types,
+            'not[milestone_title]': this.filterParams.not.milestoneTitle,
+            'not[weight]': this.filterParams.not.weight,
           },
           undefined,
         );
@@ -46,7 +57,10 @@ export default {
         author_username: authorUsername,
         'label_name[]': labelName,
         assignee_username: assigneeUsername,
+        milestone_title: milestoneTitle,
         search,
+        types,
+        weight,
       };
     },
   },
@@ -64,7 +78,15 @@ export default {
       this.performSearch();
     },
     getFilteredSearchValue() {
-      const { authorUsername, labelName, assigneeUsername, search } = this.filterParams;
+      const {
+        authorUsername,
+        labelName,
+        assigneeUsername,
+        search,
+        milestoneTitle,
+        types,
+        weight,
+      } = this.filterParams;
       const filteredSearchValue = [];
 
       if (authorUsername) {
@@ -81,6 +103,13 @@ export default {
         });
       }
 
+      if (types) {
+        filteredSearchValue.push({
+          type: 'types',
+          value: { data: types, operator: '=' },
+        });
+      }
+
       if (labelName?.length) {
         filteredSearchValue.push(
           ...labelName.map((label) => ({
@@ -90,10 +119,38 @@ export default {
         );
       }
 
+      if (milestoneTitle) {
+        filteredSearchValue.push({
+          type: 'milestone_title',
+          value: { data: milestoneTitle, operator: '=' },
+        });
+      }
+
+      if (weight) {
+        filteredSearchValue.push({
+          type: 'weight',
+          value: { data: weight, operator: '=' },
+        });
+      }
+
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
           type: 'author_username',
           value: { data: this.filterParams['not[authorUsername]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[milestoneTitle]']) {
+        filteredSearchValue.push({
+          type: 'milestone_title',
+          value: { data: this.filterParams['not[milestoneTitle]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[weight]']) {
+        filteredSearchValue.push({
+          type: 'weight',
+          value: { data: this.filterParams['not[weight]'], operator: '!=' },
         });
       }
 
@@ -111,6 +168,13 @@ export default {
             value: { data: label, operator: '!=' },
           })),
         );
+      }
+
+      if (this.filterParams['not[types]']) {
+        filteredSearchValue.push({
+          type: 'types',
+          value: { data: this.filterParams['not[types]'], operator: '!=' },
+        });
       }
 
       if (search) {
@@ -140,8 +204,17 @@ export default {
           case 'assignee_username':
             filterParams.assigneeUsername = filter.value.data;
             break;
+          case 'types':
+            filterParams.types = filter.value.data;
+            break;
           case 'label_name':
             labels.push(filter.value.data);
+            break;
+          case 'milestone_title':
+            filterParams.milestoneTitle = filter.value.data;
+            break;
+          case 'weight':
+            filterParams.weight = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);

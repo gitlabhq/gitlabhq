@@ -16,7 +16,7 @@ RSpec.describe 'Project' do
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
       it "is created from template", :js do
-        find('[data-qa-panel-name="create_from_template"]').click
+        find('[data-qa-panel-name="create_from_template"]').click # rubocop:disable QA/SelectorUsage
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
         fill_in("project_name", with: template.name)
@@ -132,8 +132,8 @@ RSpec.describe 'Project' do
 
       visit path
 
-      expect(page).to have_css('.home-panel-topic-list')
-      expect(page).to have_link('Topic1', href: explore_projects_path(topic: 'topic1'))
+      expect(page).to have_selector('[data-testid="project_topic_list"]')
+      expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
     end
 
     it 'shows up to 3 project topics' do
@@ -141,10 +141,10 @@ RSpec.describe 'Project' do
 
       visit path
 
-      expect(page).to have_css('.home-panel-topic-list')
-      expect(page).to have_link('Topic1', href: explore_projects_path(topic: 'topic1'))
-      expect(page).to have_link('Topic2', href: explore_projects_path(topic: 'topic2'))
-      expect(page).to have_link('Topic3', href: explore_projects_path(topic: 'topic3'))
+      expect(page).to have_selector('[data-testid="project_topic_list"]')
+      expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
+      expect(page).to have_link('topic2', href: explore_projects_path(topic: 'topic2'))
+      expect(page).to have_link('topic3', href: explore_projects_path(topic: 'topic3'))
       expect(page).to have_content('+ 1 more')
     end
   end
@@ -290,7 +290,7 @@ RSpec.describe 'Project' do
     it 'has working links to submodules' do
       click_link('645f6c4c')
 
-      expect(page).to have_selector('.qa-branches-select', text: '645f6c4c82fd3f5e06f67134450a570b795e55a6')
+      expect(page).to have_selector('.qa-branches-select', text: '645f6c4c82fd3f5e06f67134450a570b795e55a6') # rubocop:disable QA/SelectorUsage
     end
 
     context 'for signed commit on default branch', :js do

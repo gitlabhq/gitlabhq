@@ -7,12 +7,16 @@
 
 %h5
   = _('Active %{type} (%{token_length})') % { type: type_plural, token_length: active_tokens.length }
+
 - if personal && !personal_access_token_expiration_enforced?
   %p.profile-settings-content
     = _("Personal access tokens are not revoked upon expiration.")
 - if impersonation
   %p.profile-settings-content
     = _("To see all the user's personal access tokens you must impersonate them first.")
+
+- if personal
+  = render_if_exists 'profiles/personal_access_tokens/token_expiry_notification', active_tokens: active_tokens
 
 - if active_tokens.present?
   .table-responsive
@@ -42,7 +46,7 @@
                 %span.token-never-used-label= _('Never')
             %td
               - if token.expires?
-                - if token.expires_at.past? || token.expires_at.today?
+                - if token.expired? || token.expired_but_not_enforced?
                   %span{ class: 'text-danger has-tooltip', title: _('Token valid until revoked') }
                     = _('Expired')
                 - else

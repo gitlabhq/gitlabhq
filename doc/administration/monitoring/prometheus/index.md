@@ -8,18 +8,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
+
 GitLab provides out-of-the-box monitoring with Prometheus, providing easy
 access to high quality time-series monitoring of GitLab services.
 
-> **Notes:**
->
-> - Prometheus and the various exporters listed in this page are bundled in the
->   Omnibus GitLab package. Check each exporter's documentation for the timeline
->   they got added. For installations from source you must install them
->   yourself. Over subsequent releases additional GitLab metrics are captured.
-> - Prometheus services are on by default with GitLab 9.0.
-> - Prometheus and its exporters don't authenticate users, and are available
->  to anyone who can access them.
+Prometheus and the various exporters listed in this page are bundled in the
+Omnibus GitLab package. Check each exporter's documentation for the timeline
+they got added. For installations from source you must install them
+yourself. Over subsequent releases additional GitLab metrics are captured.
+
+Prometheus services are on by default.
+
+Prometheus and its exporters don't authenticate users, and are available to anyone who can access
+them.
 
 ## Overview
 
@@ -33,7 +34,7 @@ dashboard tool like [Grafana](https://grafana.com).
 
 For installations from source, you must install and configure it yourself.
 
-Prometheus and its exporters are on by default, starting with GitLab 9.0.
+Prometheus and its exporters are on by default.
 Prometheus runs as the `gitlab-prometheus` user and listen on
 `http://localhost:9090`. By default, Prometheus is only accessible from the GitLab server itself.
 Each exporter is automatically set up as a
@@ -294,8 +295,8 @@ To use an external Prometheus server:
 You can visit `http://localhost:9090` for the dashboard that Prometheus offers by default.
 
 If SSL has been enabled on your GitLab instance, you may not be able to access
-Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security). We plan to
-[provide access via GitLab](https://gitlab.com/gitlab-org/multi-user-prometheus), but in the interim there are
+Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
+[A test project exists](https://gitlab.com/gitlab-org/multi-user-prometheus) to provide access via GitLab, but in the interim there are
 some workarounds: using a separate FQDN, using server IP, using a separate browser for Prometheus, resetting HSTS, or
 having [NGINX proxy it](https://docs.gitlab.com/omnibus/settings/nginx.html#inserting-custom-nginx-settings-into-the-gitlab-server-block).
 

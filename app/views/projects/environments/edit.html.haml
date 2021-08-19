@@ -1,7 +1,6 @@
 - page_title _("Edit"), @environment.name, _("Environments")
 - add_page_specific_style 'page_bundles/environments'
 
-%h3.page-title
-  = _('Edit environment')
-%hr
-= render 'form'
+#js-edit-environment{ data: { project_environments_path: project_environments_path(@project),
+                              update_environment_path: project_environment_path(@project, @environment),
+                              environment: environment_data(@environment)} }

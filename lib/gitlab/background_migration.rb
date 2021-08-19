@@ -31,7 +31,7 @@ module Gitlab
         queue.each do |job|
           migration_class, migration_args = job.args
 
-          next unless job.queue == self.queue
+          next unless job.klass == 'BackgroundMigrationWorker'
           next unless migration_class == steal_class
           next if block_given? && !(yield job)
 
@@ -60,11 +60,14 @@ module Gitlab
     end
 
     def self.remaining
-      scheduled = Sidekiq::ScheduledSet.new.count do |job|
-        job.queue == self.queue
-      end
+      enqueued = Sidekiq::Queue.new(self.queue)
+      scheduled = Sidekiq::ScheduledSet.new
 
-      scheduled + Sidekiq::Queue.new(self.queue).size
+      [enqueued, scheduled].sum do |set|
+        set.count do |job|
+          job.klass == 'BackgroundMigrationWorker'
+        end
+      end
     end
 
     def self.exists?(migration_class, additional_queues = [])
@@ -105,13 +108,11 @@ module Gitlab
     end
 
     def self.enqueued_job?(queues, migration_class)
-      queues.each do |queue|
-        queue.each do |job|
-          return true if job.queue == self.queue && job.args.first == migration_class
+      queues.any? do |queue|
+        queue.any? do |job|
+          job.klass == 'BackgroundMigrationWorker' && job.args.first == migration_class
         end
       end
-
-      false
     end
   end
 end

@@ -1,0 +1,8 @@
+---
+name: cache_merge_to_ref_calls
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67789
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338251
+milestone: '14.2'
+type: development
+group: group::code review
+default_enabled: false

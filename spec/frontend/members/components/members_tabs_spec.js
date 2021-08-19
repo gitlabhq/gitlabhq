@@ -1,6 +1,7 @@
-import { GlTabs } from '@gitlab/ui';
+import { GlTabs, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MembersApp from '~/members/components/app.vue';
 import MembersTabs from '~/members/components/members_tabs.vue';
@@ -16,7 +17,7 @@ describe('MembersTabs', () => {
 
   let wrapper;
 
-  const createComponent = ({ totalItems = 10, options = {} } = {}) => {
+  const createComponent = ({ totalItems = 10, provide = {} } = {}) => {
     const store = new Vuex.Store({
       modules: {
         [MEMBER_TYPES.user]: {
@@ -78,8 +79,10 @@ describe('MembersTabs', () => {
       stubs: ['members-app'],
       provide: {
         canManageMembers: true,
+        canExportMembers: true,
+        exportCsvPath: '',
+        ...provide,
       },
-      ...options,
     });
 
     return nextTick();
@@ -88,10 +91,10 @@ describe('MembersTabs', () => {
   const findTabs = () => wrapper.findAllByRole('tab').wrappers;
   const findTabByText = (text) => findTabs().find((tab) => tab.text().includes(text));
   const findActiveTab = () => wrapper.findByRole('tab', { selected: true });
+  const findExportButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
-    delete window.location;
-    window.location = new URL('https://localhost');
+    setWindowLocation('https://localhost');
   });
 
   afterEach(() => {
@@ -151,7 +154,7 @@ describe('MembersTabs', () => {
 
     describe('when url param matches `filteredSearchBar.searchParam`', () => {
       beforeEach(() => {
-        window.location.search = '?search_groups=foo+bar';
+        setWindowLocation('?search_groups=foo+bar');
       });
 
       it('shows tab that corresponds to search param', async () => {
@@ -164,12 +167,28 @@ describe('MembersTabs', () => {
 
   describe('when `canManageMembers` is `false`', () => {
     it('shows all tabs except `Invited` and `Access requests`', async () => {
-      await createComponent({ options: { provide: { canManageMembers: false } } });
+      await createComponent({ provide: { canManageMembers: false } });
 
       expect(findTabByText('Members')).not.toBeUndefined();
       expect(findTabByText('Groups')).not.toBeUndefined();
       expect(findTabByText('Invited')).toBeUndefined();
       expect(findTabByText('Access requests')).toBeUndefined();
+    });
+  });
+
+  describe('when `canExportMembers` is true', () => {
+    it('shows the CSV export button with export path', async () => {
+      await createComponent({ provide: { canExportMembers: true, exportCsvPath: 'foo' } });
+
+      expect(findExportButton().attributes('href')).toBe('foo');
+    });
+  });
+
+  describe('when `canExportMembers` is false', () => {
+    it('does not show the CSV export button', async () => {
+      await createComponent({ provide: { canExportMembers: false } });
+
+      expect(findExportButton().exists()).toBe(false);
     });
   });
 });

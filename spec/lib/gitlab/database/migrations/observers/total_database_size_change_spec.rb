@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::TotalDatabaseSizeChange do
-  subject { described_class.new }
+  subject { described_class.new(observation) }
 
   let(:observation) { Gitlab::Database::Migrations::Observation.new }
   let(:connection) { ActiveRecord::Base.connection }
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::TotalDatabaseSizeChange 
 
     subject.before
     subject.after
-    subject.record(observation)
+    subject.record
 
     expect(observation.total_database_size_change).to eq(256 - 1024)
   end
@@ -27,13 +27,13 @@ RSpec.describe Gitlab::Database::Migrations::Observers::TotalDatabaseSizeChange 
     it 'does not record anything if before size is unknown' do
       subject.after
 
-      expect { subject.record(observation) }.not_to change { observation.total_database_size_change }
+      expect { subject.record }.not_to change { observation.total_database_size_change }
     end
 
     it 'does not record anything if after size is unknown' do
       subject.before
 
-      expect { subject.record(observation) }.not_to change { observation.total_database_size_change }
+      expect { subject.record }.not_to change { observation.total_database_size_change }
     end
   end
 end

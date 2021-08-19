@@ -23,7 +23,7 @@ module Packages
         files[:mod] = prepare_file(version, :mod, version.gomod)
         files[:zip] = prepare_file(version, :zip, version.archive.string)
 
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           # create new package and files
           package = create_package
           files.each { |type, (file, digests)| create_file(package, type, file, digests) }

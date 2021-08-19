@@ -9,10 +9,10 @@ class BulkUpdateIntegrationService
   # rubocop: disable CodeReuse/ActiveRecord
   def execute
     Integration.transaction do
-      Integration.where(id: batch.select(:id)).update_all(integration_hash)
+      Integration.where(id: batch_ids).update_all(integration_hash)
 
       if integration.data_fields_present?
-        integration.data_fields.class.where(service_id: batch.select(:id)).update_all(data_fields_hash)
+        integration.data_fields.class.where(service_id: batch_ids).update_all(data_fields_hash)
       end
     end
   end
@@ -28,5 +28,14 @@ class BulkUpdateIntegrationService
 
   def data_fields_hash
     integration.to_data_fields_hash
+  end
+
+  def batch_ids
+    @batch_ids ||=
+      if batch.is_a?(ActiveRecord::Relation)
+        batch.select(:id)
+      else
+        batch.map(&:id)
+      end
   end
 end

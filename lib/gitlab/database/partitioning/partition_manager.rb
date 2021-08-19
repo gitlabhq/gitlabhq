@@ -4,6 +4,8 @@ module Gitlab
   module Database
     module Partitioning
       class PartitionManager
+        UnsafeToDetachPartitionError = Class.new(StandardError)
+
         def self.register(model)
           raise ArgumentError, "Only models with a #partitioning_strategy can be registered." unless model.respond_to?(:partitioning_strategy)
 
@@ -16,6 +18,7 @@ module Gitlab
 
         LEASE_TIMEOUT = 1.minute
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
+        RETAIN_DETACHED_PARTITIONS_FOR = 1.week
 
         attr_reader :models
 
@@ -35,13 +38,16 @@ module Gitlab
               partitions_to_create = missing_partitions(model)
               create(partitions_to_create) unless partitions_to_create.empty?
 
-              if Feature.enabled?(:partition_pruning_dry_run)
+              if Feature.enabled?(:partition_pruning, default_enabled: :yaml)
                 partitions_to_detach = extra_partitions(model)
                 detach(partitions_to_detach) unless partitions_to_detach.empty?
               end
             end
           rescue StandardError => e
-            Gitlab::AppLogger.error("Failed to create / detach partition(s) for #{model.table_name}: #{e.class}: #{e.message}")
+            Gitlab::AppLogger.error(message: "Failed to create / detach partition(s)",
+                                    table_name: model.table_name,
+                                    exception_class: e.class,
+                                    exception_message: e.message)
           end
         end
 
@@ -54,7 +60,6 @@ module Gitlab
         end
 
         def extra_partitions(model)
-          return [] unless Feature.enabled?(:partition_pruning_dry_run)
           return [] unless connection.table_exists?(model.table_name)
 
           model.partitioning_strategy.extra_partitions
@@ -74,7 +79,9 @@ module Gitlab
               partitions.each do |partition|
                 connection.execute partition.to_sql
 
-                Gitlab::AppLogger.info("Created partition #{partition.partition_name} for table #{partition.table}")
+                Gitlab::AppLogger.info(message: "Created partition",
+                                       partition_name: partition.partition_name,
+                                       table_name: partition.table)
               end
             end
           end
@@ -89,7 +96,24 @@ module Gitlab
         end
 
         def detach_one_partition(partition)
-          Gitlab::AppLogger.info("Planning to detach #{partition.partition_name} for table #{partition.table}")
+          assert_partition_detachable!(partition)
+
+          connection.execute partition.to_detach_sql
+
+          Postgresql::DetachedPartition.create!(table_name: partition.partition_name,
+                                                drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now)
+
+          Gitlab::AppLogger.info(message: "Detached Partition",
+                                 partition_name: partition.partition_name,
+                                 table_name: partition.table)
+        end
+
+        def assert_partition_detachable!(partition)
+          parent_table_identifier = "#{connection.current_schema}.#{partition.table}"
+
+          if (example_fk = PostgresForeignKey.by_referenced_table_identifier(parent_table_identifier).first)
+            raise UnsafeToDetachPartitionError, "Cannot detach #{partition.partition_name}, it would block while checking foreign key #{example_fk.name} on #{example_fk.constrained_table_identifier}"
+          end
         end
 
         def with_lock_retries(&block)

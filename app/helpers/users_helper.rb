@@ -184,7 +184,7 @@ module UsersHelper
       activate: activate_admin_user_path(:id),
       unlock: unlock_admin_user_path(:id),
       delete: admin_user_path(:id),
-      delete_with_contributions: admin_user_path(:id),
+      delete_with_contributions: admin_user_path(:id, hard_delete: true),
       admin_user: admin_user_path(:id),
       ban: ban_admin_user_path(:id),
       unban: unban_admin_user_path(:id)

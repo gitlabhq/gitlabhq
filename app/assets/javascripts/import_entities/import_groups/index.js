@@ -17,6 +17,7 @@ export function mountImportGroupsApp(mountElement) {
     jobsPath,
     sourceUrl,
     groupPathRegex,
+    groupUrlErrorMessage,
   } = mountElement.dataset;
   const apolloProvider = new VueApollo({
     defaultClient: createApolloClient({
@@ -38,6 +39,7 @@ export function mountImportGroupsApp(mountElement) {
         props: {
           sourceUrl,
           groupPathRegex: new RegExp(`^(${groupPathRegex})$`),
+          groupUrlErrorMessage,
         },
       });
     },

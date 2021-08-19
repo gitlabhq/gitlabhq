@@ -20,7 +20,6 @@ RSpec.describe Ci::Build do
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
 
-  it { is_expected.to have_many(:trace_sections) }
   it { is_expected.to have_many(:needs) }
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:job_variables) }
@@ -29,6 +28,7 @@ RSpec.describe Ci::Build do
 
   it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session) }
+  it { is_expected.to have_one(:trace_metadata) }
 
   it { is_expected.to validate_presence_of(:ref) }
 
@@ -345,11 +345,8 @@ RSpec.describe Ci::Build do
   end
 
   describe '#stick_build_if_status_changed' do
-    it 'sticks the build if the status changed' do
+    it 'sticks the build if the status changed', :db_load_balancing do
       job = create(:ci_build, :pending)
-
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
-        .and_return(true)
 
       expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
         .with(:build, job.id)
@@ -1102,17 +1099,6 @@ RSpec.describe Ci::Build do
         expect(build.update_coverage).to be(true)
         expect(build.coverage).to eq(98.29)
       end
-    end
-  end
-
-  describe '#parse_trace_sections!' do
-    it 'calls ExtractSectionsFromBuildTraceService' do
-      expect(Ci::ExtractSectionsFromBuildTraceService)
-          .to receive(:new).with(project, build.user).once.and_call_original
-      expect_any_instance_of(Ci::ExtractSectionsFromBuildTraceService)
-        .to receive(:execute).with(build).once
-
-      build.parse_trace_sections!
     end
   end
 
@@ -1955,17 +1941,7 @@ RSpec.describe Ci::Build do
             described_class.retry(build, user)
           end
 
-          context 'when prevent_retry_of_retried_jobs feature flag is enabled' do
-            it { is_expected.not_to be_retryable }
-          end
-
-          context 'when prevent_retry_of_retried_jobs feature flag is disabled' do
-            before do
-              stub_feature_flags(prevent_retry_of_retried_jobs: false)
-            end
-
-            it { is_expected.to be_retryable }
-          end
+          it { is_expected.not_to be_retryable }
         end
       end
     end
@@ -2214,34 +2190,12 @@ RSpec.describe Ci::Build do
       expect(build.options['image']).to be_nil
     end
 
-    context 'when ci_build_metadata_config is set' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: true)
-      end
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
-      end
-
-      it 'does not persist data in build' do
-        expect(build.read_attribute(:options)).to be_nil
-      end
+    it 'persist data in build metadata' do
+      expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
     end
 
-    context 'when ci_build_metadata_config is disabled' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
-      before do
-        stub_feature_flags(ci_build_metadata_config: false)
-      end
-
-      it 'persist data in build' do
-        expect(build.read_attribute(:options)).to eq(options.symbolize_keys)
-      end
-
-      it 'does not persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to be_nil
-      end
+    it 'does not persist data in build' do
+      expect(build.read_attribute(:options)).to be_nil
     end
 
     context 'when options include artifacts:expose_as' do
@@ -2668,6 +2622,7 @@ RSpec.describe Ci::Build do
           { key: 'CI_PROJECT_URL', value: project.web_url, public: true, masked: false },
           { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true, masked: false },
           { key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: project.repository_languages.map(&:name).join(',').downcase, public: true, masked: false },
+          { key: 'CI_PROJECT_CLASSIFICATION_LABEL', value: project.external_authorization_classification_label, public: true, masked: false },
           { key: 'CI_DEFAULT_BRANCH', value: project.default_branch, public: true, masked: false },
           { key: 'CI_CONFIG_PATH', value: project.ci_config_path_or_default, public: true, masked: false },
           { key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host, public: true, masked: false },
@@ -3195,6 +3150,17 @@ RSpec.describe Ci::Build do
     end
 
     context 'when container registry is enabled' do
+      let_it_be_with_reload(:project) { create(:project, :public, :repository, group: group) }
+
+      let_it_be_with_reload(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: project.commit.id,
+                             ref: project.default_branch,
+                             status: 'success')
+      end
+
+      let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
+
       let(:container_registry_enabled) { true }
       let(:ci_registry) do
         { key: 'CI_REGISTRY', value: 'registry.example.com', public: true, masked: false }
@@ -3206,7 +3172,7 @@ RSpec.describe Ci::Build do
 
       context 'and is disabled for project' do
         before do
-          project.update!(container_registry_enabled: false)
+          project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
         end
 
         it { is_expected.to include(ci_registry) }
@@ -3215,7 +3181,16 @@ RSpec.describe Ci::Build do
 
       context 'and is enabled for project' do
         before do
-          project.update!(container_registry_enabled: true)
+          project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
+        end
+
+        it { is_expected.to include(ci_registry) }
+        it { is_expected.to include(ci_registry_image) }
+      end
+
+      context 'and is private for project' do
+        before do
+          project.project_feature.update_column(:container_registry_access_level, ProjectFeature::PRIVATE)
         end
 
         it { is_expected.to include(ci_registry) }
@@ -3613,36 +3588,14 @@ RSpec.describe Ci::Build do
       end
     end
 
-    context 'when ci_build_metadata_config is set' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: true)
-      end
+    it_behaves_like 'having consistent representation'
 
-      it_behaves_like 'having consistent representation'
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
-      end
-
-      it 'does not persist data in build' do
-        expect(build.read_attribute(:yaml_variables)).to be_nil
-      end
+    it 'persist data in build metadata' do
+      expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
     end
 
-    context 'when ci_build_metadata_config is disabled' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: false)
-      end
-
-      it_behaves_like 'having consistent representation'
-
-      it 'persist data in build' do
-        expect(build.read_attribute(:yaml_variables)).not_to be_nil
-      end
-
-      it 'does not persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_variables)).to be_nil
-      end
+    it 'does not persist data in build' do
+      expect(build.read_attribute(:yaml_variables)).to be_nil
     end
   end
 
@@ -3727,7 +3680,7 @@ RSpec.describe Ci::Build do
 
       it 'ensures that it is not run in database transaction' do
         expect(job.pipeline.persistent_ref).to receive(:create) do
-          expect(Gitlab::Database).not_to be_inside_transaction
+          expect(Gitlab::Database.main).not_to be_inside_transaction
         end
 
         run_job_without_exception
@@ -3792,7 +3745,21 @@ RSpec.describe Ci::Build do
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect(job).not_to have_valid_build_dependencies }
+        context 'when pipeline is not locked' do
+          before do
+            build.pipeline.unlocked!
+          end
+
+          it { expect(job).not_to have_valid_build_dependencies }
+        end
+
+        context 'when pipeline is locked' do
+          before do
+            build.pipeline.artifacts_locked!
+          end
+
+          it { expect(job).to have_valid_build_dependencies }
+        end
       end
 
       context 'when artifacts of depended job has been erased' do
@@ -4788,51 +4755,21 @@ RSpec.describe Ci::Build do
 
     subject { build.send(:write_metadata_attribute, :options, :config_options, options) }
 
-    context 'when ci_build_metadata_config is set' do
+    context 'when data in build is already set' do
       before do
-        stub_feature_flags(ci_build_metadata_config: true)
+        build.write_attribute(:options, existing_options)
       end
 
-      context 'when data in build is already set' do
-        before do
-          build.write_attribute(:options, existing_options)
-        end
+      it 'does set metadata options' do
+        subject
 
-        it 'does set metadata options' do
-          subject
-
-          expect(build.metadata.read_attribute(:config_options)).to eq(options)
-        end
-
-        it 'does reset build options' do
-          subject
-
-          expect(build.read_attribute(:options)).to be_nil
-        end
-      end
-    end
-
-    context 'when ci_build_metadata_config is disabled' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: false)
+        expect(build.metadata.read_attribute(:config_options)).to eq(options)
       end
 
-      context 'when data in build metadata is already set' do
-        before do
-          build.ensure_metadata.write_attribute(:config_options, existing_options)
-        end
+      it 'does reset build options' do
+        subject
 
-        it 'does set metadata options' do
-          subject
-
-          expect(build.read_attribute(:options)).to eq(options)
-        end
-
-        it 'does reset build options' do
-          subject
-
-          expect(build.metadata.read_attribute(:config_options)).to be_nil
-        end
+        expect(build.read_attribute(:options)).to be_nil
       end
     end
   end
@@ -4842,8 +4779,24 @@ RSpec.describe Ci::Build do
     let!(:pre_stage_job_invalid) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
     let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
 
-    it 'returns invalid dependencies' do
-      expect(job.invalid_dependencies).to eq([pre_stage_job_invalid])
+    context 'when pipeline is locked' do
+      before do
+        build.pipeline.unlocked!
+      end
+
+      it 'returns invalid dependencies when expired' do
+        expect(job.invalid_dependencies).to eq([pre_stage_job_invalid])
+      end
+    end
+
+    context 'when pipeline is not locked' do
+      before do
+        build.pipeline.artifacts_locked!
+      end
+
+      it 'returns no invalid dependencies when expired' do
+        expect(job.invalid_dependencies).to eq([])
+      end
     end
   end
 
@@ -5263,6 +5216,14 @@ RSpec.describe Ci::Build do
 
       it 'is a shared runner build' do
         expect(build).to be_shared_runner_build
+      end
+    end
+  end
+
+  describe '.with_project_and_metadata' do
+    it 'does not join across databases' do
+      with_cross_joins_prevented do
+        ::Ci::Build.with_project_and_metadata.to_a
       end
     end
   end

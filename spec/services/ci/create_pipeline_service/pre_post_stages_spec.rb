@@ -8,7 +8,7 @@ RSpec.describe Ci::CreatePipelineService do
 
     let(:source)   { :push }
     let(:service)  { described_class.new(project, user, { ref: ref }) }
-    let(:pipeline) { service.execute(source) }
+    let(:pipeline) { service.execute(source).payload }
 
     let(:config) do
       <<~YAML

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Groups::DependencyProxyAuthController < ApplicationController
-  include DependencyProxy::Auth
-
+class Groups::DependencyProxyAuthController < ::Groups::DependencyProxy::ApplicationController
   feature_category :dependency_proxy
 
   def authenticate

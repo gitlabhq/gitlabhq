@@ -33,6 +33,7 @@ module Gitlab
             locations
               .compact
               .map(&method(:normalize_location))
+              .filter_map(&method(:verify_rules))
               .flat_map(&method(:expand_project_files))
               .flat_map(&method(:expand_wildcard_paths))
               .map(&method(:expand_variables))
@@ -56,6 +57,15 @@ module Gitlab
             end
           end
 
+          def verify_rules(location)
+            # Behaves like there is no `rules`
+            return location unless ::Feature.enabled?(:ci_include_rules, context.project, default_enabled: :yaml)
+
+            return unless Rules.new(location[:rules]).evaluate(context).pass?
+
+            location
+          end
+
           def expand_project_files(location)
             return location unless location[:project]
 
@@ -65,8 +75,6 @@ module Gitlab
           end
 
           def expand_wildcard_paths(location)
-            return location unless ::Feature.enabled?(:ci_wildcard_file_paths, context.project, default_enabled: :yaml)
-
             # We only support local files for wildcard paths
             return location unless location[:local] && location[:local].include?('*')
 

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class TriggerRequest < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class TriggerRequest < Ci::ApplicationRecord
     belongs_to :trigger
     belongs_to :pipeline, foreign_key: :commit_id
     has_many :builds

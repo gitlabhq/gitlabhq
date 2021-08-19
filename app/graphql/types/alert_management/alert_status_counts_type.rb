@@ -11,18 +11,18 @@ module Types
 
       ::AlertManagement::Alert.status_names.each do |status|
         field status,
-              GraphQL::INT_TYPE,
+              GraphQL::Types::Int,
               null: true,
               description: "Number of alerts with status #{status.to_s.upcase} for the project"
       end
 
       field :open,
-            GraphQL::INT_TYPE,
+            GraphQL::Types::Int,
             null: true,
             description: 'Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project.'
 
       field :all,
-            GraphQL::INT_TYPE,
+            GraphQL::Types::Int,
             null: true,
             description: 'Total number of alerts for the project.'
     end

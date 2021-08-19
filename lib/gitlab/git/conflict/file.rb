@@ -6,13 +6,14 @@ module Gitlab
       class File
         UnsupportedEncoding = Class.new(StandardError)
 
-        attr_reader :their_path, :our_path, :our_mode, :repository, :commit_oid
+        attr_reader :ancestor_path, :their_path, :our_path, :our_mode, :repository, :commit_oid
 
         attr_accessor :raw_content
 
         def initialize(repository, commit_oid, conflict, raw_content)
           @repository = repository
           @commit_oid = commit_oid
+          @ancestor_path = conflict[:ancestor][:path]
           @their_path = conflict[:theirs][:path]
           @our_path = conflict[:ours][:path]
           @our_mode = conflict[:ours][:mode]
@@ -93,6 +94,15 @@ module Gitlab
           end
 
           resolution
+        end
+
+        def path
+          # There are conflict scenarios (e.g. file is removed on source) wherein
+          # our_path will be blank/nil. Since we are indexing them by path in
+          # `#conflicts` helper and we want to match the diff file to a conflict
+          # in `DiffFileEntity#highlighted_diff_lines`, we need to fallback to
+          # their_path (this is the path on target).
+          our_path.presence || their_path
         end
       end
     end

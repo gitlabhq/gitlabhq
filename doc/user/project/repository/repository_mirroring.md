@@ -62,8 +62,8 @@ For an existing project, you can set up push mirroring as follows:
 1. In the **Mirror direction** dropdown, select **Push**.
 1. Select an authentication method from the **Authentication method** dropdown.
    You can authenticate with either a password or an [SSH key](#ssh-authentication).
-1. Select the **Only mirror protected branches** check box, if necessary.
-1. Select the **Keep divergent refs** check box, if desired.
+1. Select the **Only mirror protected branches** checkbox, if necessary.
+1. Select the **Keep divergent refs** checkbox, if desired.
 1. Select **Mirror repository** to save the configuration.
 
 When push mirroring is enabled, only push commits directly to the mirrored repository to prevent the
@@ -92,19 +92,18 @@ You can also create and modify project push mirrors through the
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208828) in GitLab 13.0.
 
-By default, if any ref on the remote mirror has diverged from the local
-repository, the *entire push* fails, and no updates occur.
+By default, if any ref (branch or tag) on the remote mirror has diverged from the local repository, the local differences are forced to the remote.
 
-For example, if a repository has `main`, `develop`, and `stable` branches that
+For example, if a repository has `main` and `develop` branches that
 have been mirrored to a remote, and then a new commit is added to `develop` on
-the mirror, the next push attempt fails, leaving `main` and `stable`
-out-of-date despite not having diverged. No change on any branch can be mirrored
-until the divergence is resolved.
+the remote mirror. The next push updates all of the references on the remote mirror to match
+the local repository, and the new commit added to the remote `develop` branch is lost.
 
 With the **Keep divergent refs** option enabled, the `develop` branch is
-skipped, allowing `main` and `stable` to be updated. The mirror status
-reflects that `develop` has diverged and was skipped, and be marked as a failed
-update.
+skipped, causing only `main` to be updated. The mirror status
+reflects that `develop` has diverged and was skipped, and be marked as a
+failed update. Refs that exist in the mirror repository but not in the local
+repository are left untouched.
 
 NOTE:
 After the mirror is created, this option can only be modified via the [API](../../../api/remote_mirrors.md).

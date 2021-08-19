@@ -11,8 +11,7 @@ This is the API documentation for [Helm](../../user/packages/helm_repository/ind
 WARNING:
 This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
 and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
-and is generally not meant for manual consumption. This API is under development and is not ready
-for production use due to limited functionality.
+and is generally not meant for manual consumption.
 
 For instructions on how to upload and install Helm packages from the GitLab
 Package Registry, see the [Helm registry documentation](../../user/packages/helm_repository/index.md).

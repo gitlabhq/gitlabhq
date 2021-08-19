@@ -472,4 +472,23 @@ RSpec.describe ApplicationHelper do
       allow(helper.controller).to receive(method_name).and_return(value)
     end
   end
+
+  describe '#gitlab_ui_form_for' do
+    let_it_be(:user) { build(:user) }
+
+    before do
+      allow(helper).to receive(:users_path).and_return('/root')
+      allow(helper).to receive(:form_for).and_call_original
+    end
+
+    it 'adds custom form builder to options and calls `form_for`' do
+      options = { html: { class: 'foo-bar' } }
+      expected_options = options.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder, url: '/root' })
+
+      expect do |b|
+        helper.gitlab_ui_form_for(user, options, &b)
+      end.to yield_with_args(::Gitlab::FormBuilders::GitlabUiFormBuilder)
+      expect(helper).to have_received(:form_for).with(user, expected_options)
+    end
+  end
 end

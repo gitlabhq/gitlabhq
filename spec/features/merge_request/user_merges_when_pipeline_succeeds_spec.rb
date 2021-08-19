@@ -64,7 +64,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
       context 'when enabled after it was previously canceled' do
         before do
           click_button "Merge when pipeline succeeds"
-          click_link "Cancel"
+          click_button "Cancel auto-merge"
 
           wait_for_requests
 
@@ -87,7 +87,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
         before do
           merge_request.merge_params['force_remove_source_branch'] = '0'
           merge_request.save!
-          click_link "Cancel"
+          click_button "Cancel auto-merge"
         end
 
         it_behaves_like 'Merge when pipeline succeeds activator'
@@ -114,7 +114,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
     end
 
     it 'allows to cancel the automatic merge' do
-      click_link "Cancel"
+      click_button "Cancel auto-merge"
 
       expect(page).to have_button "Merge when pipeline succeeds"
 
@@ -124,7 +124,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
     end
 
     it 'allows to delete source branch' do
-      click_link "Delete source branch"
+      click_button "Delete source branch"
 
       expect(page).to have_content "The source branch will be deleted"
     end

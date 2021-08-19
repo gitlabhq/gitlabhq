@@ -15,14 +15,14 @@ module Types
 
     present_using MergeRequestPresenter
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id, GraphQL::Types::ID, null: false,
           description: 'ID of the merge request.'
-    field :iid, GraphQL::STRING_TYPE, null: false,
+    field :iid, GraphQL::Types::String, null: false,
           description: 'Internal ID of the merge request.'
-    field :title, GraphQL::STRING_TYPE, null: false,
+    field :title, GraphQL::Types::String, null: false,
           description: 'Title of the merge request.'
     markdown_field :title_html, null: true
-    field :description, GraphQL::STRING_TYPE, null: true,
+    field :description, GraphQL::Types::String, null: true,
           description: 'Description of the merge request (Markdown rendered as HTML for caching).'
     markdown_field :description_html, null: true
     field :state, MergeRequestStateEnum, null: false,
@@ -41,91 +41,91 @@ module Types
           description: 'References of the base SHA, the head SHA, and the start SHA for this merge request.'
     field :project, Types::ProjectType, null: false,
           description: 'Alias for target_project.'
-    field :project_id, GraphQL::INT_TYPE, null: false, method: :target_project_id,
+    field :project_id, GraphQL::Types::Int, null: false, method: :target_project_id,
           description: 'ID of the merge request project.'
-    field :source_project_id, GraphQL::INT_TYPE, null: true,
+    field :source_project_id, GraphQL::Types::Int, null: true,
           description: 'ID of the merge request source project.'
-    field :target_project_id, GraphQL::INT_TYPE, null: false,
+    field :target_project_id, GraphQL::Types::Int, null: false,
           description: 'ID of the merge request target project.'
-    field :source_branch, GraphQL::STRING_TYPE, null: false,
+    field :source_branch, GraphQL::Types::String, null: false,
           description: 'Source branch of the merge request.'
-    field :source_branch_protected, GraphQL::BOOLEAN_TYPE, null: false, calls_gitaly: true,
+    field :source_branch_protected, GraphQL::Types::Boolean, null: false, calls_gitaly: true,
           description: 'Indicates if the source branch is protected.'
-    field :target_branch, GraphQL::STRING_TYPE, null: false,
+    field :target_branch, GraphQL::Types::String, null: false,
           description: 'Target branch of the merge request.'
-    field :work_in_progress, GraphQL::BOOLEAN_TYPE, method: :work_in_progress?, null: false,
+    field :work_in_progress, GraphQL::Types::Boolean, method: :work_in_progress?, null: false,
           deprecated: { reason: 'Use `draft`', milestone: '13.12' },
           description: 'Indicates if the merge request is a draft.'
-    field :draft, GraphQL::BOOLEAN_TYPE, method: :draft?, null: false,
+    field :draft, GraphQL::Types::Boolean, method: :draft?, null: false,
           description: 'Indicates if the merge request is a draft.'
-    field :merge_when_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true,
+    field :merge_when_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS).'
-    field :diff_head_sha, GraphQL::STRING_TYPE, null: true,
+    field :diff_head_sha, GraphQL::Types::String, null: true,
           description: 'Diff head SHA of the merge request.'
     field :diff_stats, [Types::DiffStatsType], null: true, calls_gitaly: true,
           description: 'Details about which files were changed in this merge request.' do
-      argument :path, GraphQL::STRING_TYPE, required: false, description: 'A specific file-path.'
+      argument :path, GraphQL::Types::String, required: false, description: 'A specific file-path.'
     end
 
     field :diff_stats_summary, Types::DiffStatsSummaryType, null: true, calls_gitaly: true,
           description: 'Summary of which files were changed in this merge request.'
-    field :merge_commit_sha, GraphQL::STRING_TYPE, null: true,
+    field :merge_commit_sha, GraphQL::Types::String, null: true,
           description: 'SHA of the merge request commit (set once merged).'
-    field :user_notes_count, GraphQL::INT_TYPE, null: true,
+    field :user_notes_count, GraphQL::Types::Int, null: true,
           description: 'User notes count of the merge request.',
           resolver: Resolvers::UserNotesCountResolver
-    field :user_discussions_count, GraphQL::INT_TYPE, null: true,
+    field :user_discussions_count, GraphQL::Types::Int, null: true,
           description: 'Number of user discussions in the merge request.',
           resolver: Resolvers::UserDiscussionsCountResolver
-    field :should_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :should_remove_source_branch?, null: true,
+    field :should_remove_source_branch, GraphQL::Types::Boolean, method: :should_remove_source_branch?, null: true,
           description: 'Indicates if the source branch of the merge request will be deleted after merge.'
-    field :force_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :force_remove_source_branch?, null: true,
+    field :force_remove_source_branch, GraphQL::Types::Boolean, method: :force_remove_source_branch?, null: true,
           description: 'Indicates if the project settings will lead to source branch deletion after merge.'
-    field :merge_status, GraphQL::STRING_TYPE, method: :public_merge_status, null: true,
+    field :merge_status, GraphQL::Types::String, method: :public_merge_status, null: true,
           description: 'Status of the merge request.',
           deprecated: { reason: :renamed, replacement: 'MergeRequest.mergeStatusEnum', milestone: '14.0' }
     field :merge_status_enum, ::Types::MergeRequests::MergeStatusEnum,
           method: :public_merge_status, null: true,
           description: 'Merge status of the merge request.'
-    field :in_progress_merge_commit_sha, GraphQL::STRING_TYPE, null: true,
+    field :in_progress_merge_commit_sha, GraphQL::Types::String, null: true,
           description: 'Commit SHA of the merge request if merge is in progress.'
-    field :merge_error, GraphQL::STRING_TYPE, null: true,
+    field :merge_error, GraphQL::Types::String, null: true,
           description: 'Error message due to a merge error.'
-    field :allow_collaboration, GraphQL::BOOLEAN_TYPE, null: true,
+    field :allow_collaboration, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if members of the target project can push to the fork.'
-    field :should_be_rebased, GraphQL::BOOLEAN_TYPE, method: :should_be_rebased?, null: false, calls_gitaly: true,
+    field :should_be_rebased, GraphQL::Types::Boolean, method: :should_be_rebased?, null: false, calls_gitaly: true,
           description: 'Indicates if the merge request will be rebased.'
-    field :rebase_commit_sha, GraphQL::STRING_TYPE, null: true,
+    field :rebase_commit_sha, GraphQL::Types::String, null: true,
           description: 'Rebase commit SHA of the merge request.'
-    field :rebase_in_progress, GraphQL::BOOLEAN_TYPE, method: :rebase_in_progress?, null: false, calls_gitaly: true,
+    field :rebase_in_progress, GraphQL::Types::Boolean, method: :rebase_in_progress?, null: false, calls_gitaly: true,
           description: 'Indicates if there is a rebase currently in progress for the merge request.'
-    field :default_merge_commit_message, GraphQL::STRING_TYPE, null: true,
+    field :default_merge_commit_message, GraphQL::Types::String, null: true,
           description: 'Default merge commit message of the merge request.'
-    field :default_merge_commit_message_with_description, GraphQL::STRING_TYPE, null: true,
+    field :default_merge_commit_message_with_description, GraphQL::Types::String, null: true,
           description: 'Default merge commit message of the merge request with description.'
-    field :default_squash_commit_message, GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
+    field :default_squash_commit_message, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Default squash commit message of the merge request.'
-    field :merge_ongoing, GraphQL::BOOLEAN_TYPE, method: :merge_ongoing?, null: false,
+    field :merge_ongoing, GraphQL::Types::Boolean, method: :merge_ongoing?, null: false,
           description: 'Indicates if a merge is currently occurring.'
-    field :source_branch_exists, GraphQL::BOOLEAN_TYPE,
+    field :source_branch_exists, GraphQL::Types::Boolean,
           null: false, calls_gitaly: true,
           method: :source_branch_exists?,
           description: 'Indicates if the source branch of the merge request exists.'
-    field :target_branch_exists, GraphQL::BOOLEAN_TYPE,
+    field :target_branch_exists, GraphQL::Types::Boolean,
           null: false, calls_gitaly: true,
           method: :target_branch_exists?,
           description: 'Indicates if the target branch of the merge request exists.'
-    field :diverged_from_target_branch, GraphQL::BOOLEAN_TYPE,
+    field :diverged_from_target_branch, GraphQL::Types::Boolean,
           null: false, calls_gitaly: true,
           method: :diverged_from_target_branch?,
           description: 'Indicates if the source branch is behind the target branch.'
-    field :mergeable_discussions_state, GraphQL::BOOLEAN_TYPE, null: true,
+    field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged.'
-    field :web_url, GraphQL::STRING_TYPE, null: true,
+    field :web_url, GraphQL::Types::String, null: true,
           description: 'Web URL of the merge request.'
-    field :upvotes, GraphQL::INT_TYPE, null: false,
+    field :upvotes, GraphQL::Types::Int, null: false,
           description: 'Number of upvotes for the merge request.'
-    field :downvotes, GraphQL::INT_TYPE, null: false,
+    field :downvotes, GraphQL::Types::Int, null: false,
           description: 'Number of downvotes for the merge request.'
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline,
@@ -151,52 +151,52 @@ module Types
           description: 'User who created this merge request.'
     field :participants, Types::UserType.connection_type, null: true, complexity: 15,
           description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.'
-    field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
+    field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates if the currently logged in user is subscribed to this merge request.'
     field :labels, Types::LabelType.connection_type, null: true, complexity: 5,
           description: 'Labels of the merge request.'
-    field :discussion_locked, GraphQL::BOOLEAN_TYPE,
+    field :discussion_locked, GraphQL::Types::Boolean,
           description: 'Indicates if comments on the merge request are locked to members only.',
           null: false
-    field :time_estimate, GraphQL::INT_TYPE, null: false,
+    field :time_estimate, GraphQL::Types::Int, null: false,
           description: 'Time estimate of the merge request.'
-    field :total_time_spent, GraphQL::INT_TYPE, null: false,
+    field :total_time_spent, GraphQL::Types::Int, null: false,
           description: 'Total time reported as spent on the merge request.'
-    field :human_time_estimate, GraphQL::STRING_TYPE, null: true,
+    field :human_time_estimate, GraphQL::Types::String, null: true,
           description: 'Human-readable time estimate of the merge request.'
-    field :human_total_time_spent, GraphQL::STRING_TYPE, null: true,
+    field :human_total_time_spent, GraphQL::Types::String, null: true,
           description: 'Human-readable total time reported as spent on the merge request.'
-    field :reference, GraphQL::STRING_TYPE, null: false, method: :to_reference,
+    field :reference, GraphQL::Types::String, null: false, method: :to_reference,
           description: 'Internal reference of the merge request. Returned in shortened format by default.' do
-      argument :full, GraphQL::BOOLEAN_TYPE, required: false, default_value: false,
+      argument :full, GraphQL::Types::Boolean, required: false, default_value: false,
                description: 'Boolean option specifying whether the reference should be returned in full.'
     end
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
           description: Types::TaskCompletionStatus.description
-    field :commit_count, GraphQL::INT_TYPE, null: true, method: :commits_count,
+    field :commit_count, GraphQL::Types::Int, null: true, method: :commits_count,
           description: 'Number of commits in the merge request.'
-    field :conflicts, GraphQL::BOOLEAN_TYPE, null: false, method: :cannot_be_merged?,
+    field :conflicts, GraphQL::Types::Boolean, null: false, method: :cannot_be_merged?,
           description: 'Indicates if the merge request has conflicts.'
-    field :auto_merge_enabled, GraphQL::BOOLEAN_TYPE, null: false,
+    field :auto_merge_enabled, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if auto merge is enabled for the merge request.'
 
     field :approved_by, Types::UserType.connection_type, null: true,
           description: 'Users who approved the merge request.'
-    field :squash_on_merge, GraphQL::BOOLEAN_TYPE, null: false, method: :squash_on_merge?,
+    field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,
           description: 'Indicates if squash on merge is enabled.'
-    field :squash, GraphQL::BOOLEAN_TYPE, null: false,
+    field :squash, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if squash on merge is enabled.'
-    field :available_auto_merge_strategies, [GraphQL::STRING_TYPE], null: true, calls_gitaly: true,
+    field :available_auto_merge_strategies, [GraphQL::Types::String], null: true, calls_gitaly: true,
           description: 'Array of available auto merge strategies.'
-    field :has_ci, GraphQL::BOOLEAN_TYPE, null: false, method: :has_ci?,
+    field :has_ci, GraphQL::Types::Boolean, null: false, method: :has_ci?,
           description: 'Indicates if the merge request has CI.'
-    field :mergeable, GraphQL::BOOLEAN_TYPE, null: false, method: :mergeable?, calls_gitaly: true,
+    field :mergeable, GraphQL::Types::Boolean, null: false, method: :mergeable?, calls_gitaly: true,
           description: 'Indicates if the merge request is mergeable.'
     field :commits_without_merge_commits, Types::CommitType.connection_type, null: true,
           calls_gitaly: true, description: 'Merge request commits excluding merge commits.'
-    field :security_auto_fix, GraphQL::BOOLEAN_TYPE, null: true,
+    field :security_auto_fix, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if the merge request is created by @GitLab-Security-Bot.'
-    field :auto_merge_strategy, GraphQL::STRING_TYPE, null: true,
+    field :auto_merge_strategy, GraphQL::Types::String, null: true,
           description: 'Selected auto merge strategy.'
     field :merge_user, Types::UserType, null: true,
           description: 'User who merged this merge request.'

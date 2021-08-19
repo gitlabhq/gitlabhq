@@ -14,7 +14,7 @@ RSpec.describe 'User activates Pushover' do
     fill_in('API key', with: 'verySecret')
     fill_in('User key', with: 'verySecret')
     fill_in('Device', with: 'myDevice')
-    select('High Priority', from: 'Priority')
+    select('High priority', from: 'Priority')
     select('Bike', from: 'Sound')
 
     click_test_then_save_integration(expect_test_to_fail: false)

@@ -50,10 +50,6 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             name: 'test: [aws, app1]',
             instance: 1,
             parallel: { total: 4 },
-            variables: {
-              'PROVIDER' => 'aws',
-              'STACK' => 'app1'
-            },
             job_variables: {
               'PROVIDER' => 'aws',
               'STACK' => 'app1'
@@ -63,10 +59,6 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             name: 'test: [aws, app2]',
             instance: 2,
             parallel: { total: 4 },
-            variables: {
-              'PROVIDER' => 'aws',
-              'STACK' => 'app2'
-            },
             job_variables: {
               'PROVIDER' => 'aws',
               'STACK' => 'app2'
@@ -76,10 +68,6 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             name: 'test: [ovh, app]',
             instance: 3,
             parallel: { total: 4 },
-            variables: {
-              'PROVIDER' => 'ovh',
-              'STACK' => 'app'
-            },
             job_variables: {
               'PROVIDER' => 'ovh',
               'STACK' => 'app'
@@ -89,10 +77,6 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             name: 'test: [gcp, app]',
             instance: 4,
             parallel: { total: 4 },
-            variables: {
-              'PROVIDER' => 'gcp',
-              'STACK' => 'app'
-            },
             job_variables: {
               'PROVIDER' => 'gcp',
               'STACK' => 'app'

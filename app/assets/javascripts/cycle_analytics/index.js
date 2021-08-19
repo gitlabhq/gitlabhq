@@ -20,11 +20,12 @@ export default () => {
   store.dispatch('initializeVsa', {
     projectId: parseInt(projectId, 10),
     groupPath,
-    requestPath,
-    fullPath,
+    endpoints: {
+      requestPath,
+      fullPath,
+    },
     features: {
-      cycleAnalyticsForGroups:
-        (groupPath && gon?.licensed_features?.cycleAnalyticsForGroups) || false,
+      cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
     },
   });
 

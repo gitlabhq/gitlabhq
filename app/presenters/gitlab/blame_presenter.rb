@@ -66,17 +66,14 @@ module Gitlab
       link_to project_blame_path(project, tree_join(previous_commit_id, path)),
         title: _('View blame prior to this change'),
         aria: { label: _('View blame prior to this change') },
+        class: 'version-link',
         data: { toggle: 'tooltip', placement: 'right', container: 'body' } do
-          versions_sprite_icon
+          '&nbsp;'.html_safe
         end
     end
 
     def project_duration
       @project_duration ||= age_map_duration(groups, project)
-    end
-
-    def versions_sprite_icon
-      @versions_sprite_icon ||= sprite_icon('doc-versions', css_class: 'doc-versions align-text-bottom')
     end
   end
 end

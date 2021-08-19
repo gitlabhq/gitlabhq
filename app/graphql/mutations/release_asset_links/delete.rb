@@ -16,7 +16,7 @@ module Mutations
       field :link,
             Types::ReleaseAssetLinkType,
             null: true,
-            description: 'The deleted release asset link.'
+            description: 'Deleted release asset link.'
 
       def resolve(id:)
         link = authorized_find!(id)

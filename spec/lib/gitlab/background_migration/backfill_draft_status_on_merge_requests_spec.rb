@@ -23,6 +23,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests d
   end
 
   context "for MRs with #draft? == true titles but draft attribute false" do
+    let(:mr_ids) { merge_requests.all.collect(&:id) }
+
     before do
       draft_prefixes.each do |prefix|
         (1..4).each do |n|
@@ -37,11 +39,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests d
 
     it "updates all open draft merge request's draft field to true" do
       mr_count = merge_requests.all.count
-      mr_ids = merge_requests.all.collect(&:id)
 
       expect { subject.perform(mr_ids.first, mr_ids.last) }
         .to change { MergeRequest.where(draft: false).count }
         .from(mr_count).to(mr_count - draft_prefixes.length)
+    end
+
+    it "marks successful slices as completed" do
+      expect(subject).to receive(:mark_job_as_succeeded).with(mr_ids.first, mr_ids.last)
+
+      subject.perform(mr_ids.first, mr_ids.last)
     end
   end
 end

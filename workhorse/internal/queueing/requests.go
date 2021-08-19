@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 const (

@@ -20,6 +20,48 @@ RSpec.describe API::BulkImports do
     end
   end
 
+  describe 'POST /bulk_imports' do
+    it 'starts a new migration' do
+      post api('/bulk_imports', user), params: {
+        configuration: {
+          url: 'http://gitlab.example',
+          access_token: 'access_token'
+        },
+        entities: [
+          source_type: 'group_entity',
+          source_full_path: 'full_path',
+          destination_name: 'destination_name',
+          destination_namespace: 'destination_namespace'
+        ]
+      }
+
+      expect(response).to have_gitlab_http_status(:created)
+
+      expect(json_response['status']).to eq('created')
+    end
+
+    context 'when provided url is blocked' do
+      it 'returns blocked url error' do
+        post api('/bulk_imports', user), params: {
+          configuration: {
+            url: 'url',
+            access_token: 'access_token'
+          },
+          entities: [
+            source_type: 'group_entity',
+            source_full_path: 'full_path',
+            destination_name: 'destination_name',
+            destination_namespace: 'destination_namespace'
+          ]
+        }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+
+        expect(json_response['message']).to eq('Validation failed: Url is blocked: Only allowed schemes are http, https')
+      end
+    end
+  end
+
   describe 'GET /bulk_imports/entities' do
     it 'returns a list of all import entities authored by the user' do
       get api('/bulk_imports/entities', user)

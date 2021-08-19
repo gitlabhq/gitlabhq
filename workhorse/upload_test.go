@@ -17,10 +17,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 )
 
 type uploadArtifactsFunction func(url, contentType string, body io.Reader) (*http.Response, string, error)

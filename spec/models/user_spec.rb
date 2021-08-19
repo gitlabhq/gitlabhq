@@ -77,6 +77,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:pronouns).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:pronouns=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:pronunciation).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:pronunciation=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:bio).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bio=).to(:user_detail).with_arguments(:args).allow_nil }
     it { is_expected.to delegate_method(:bio_html).to(:user_detail).allow_nil }
@@ -89,6 +92,7 @@ RSpec.describe User do
     it { is_expected.to have_one(:atlassian_identity) }
     it { is_expected.to have_one(:user_highest_role) }
     it { is_expected.to have_one(:credit_card_validation) }
+    it { is_expected.to have_one(:banned_user) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:project_members) }
@@ -120,6 +124,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
     it { is_expected.to have_many(:in_product_marketing_emails) }
+    it { is_expected.to have_many(:timelogs) }
 
     describe "#user_detail" do
       it 'does not persist `user_detail` by default' do
@@ -143,6 +148,12 @@ RSpec.describe User do
         user = create(:user, pronouns: 'they/them')
 
         expect(user.pronouns).to eq(user.user_detail.pronouns)
+      end
+
+      it 'delegates `pronunciation` to `user_detail`' do
+        user = create(:user, name: 'Example', pronunciation: 'uhg-zaam-pl')
+
+        expect(user.pronunciation).to eq(user.user_detail.pronunciation)
       end
 
       it 'creates `user_detail` when `bio` is first updated' do
@@ -485,7 +496,7 @@ RSpec.describe User do
     describe 'email' do
       context 'when no signup domains allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return([])
+          stub_application_setting(domain_allowlist: [])
         end
 
         it 'accepts any email' do
@@ -496,7 +507,7 @@ RSpec.describe User do
 
       context 'bad regex' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['([a-zA-Z0-9]+)+\.com'])
+          stub_application_setting(domain_allowlist: ['([a-zA-Z0-9]+)+\.com'])
         end
 
         it 'does not hang on evil input' do
@@ -510,7 +521,7 @@ RSpec.describe User do
 
       context 'when a signup domain is allowed and subdomains are allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['example.com', '*.example.com'])
+          stub_application_setting(domain_allowlist: ['example.com', '*.example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -526,12 +537,13 @@ RSpec.describe User do
         it 'rejects example@test.com' do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
+          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
         end
       end
 
       context 'when a signup domain is allowed and subdomains are not allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['example.com'])
+          stub_application_setting(domain_allowlist: ['example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -542,11 +554,13 @@ RSpec.describe User do
         it 'rejects info@test.example.com' do
           user = build(:user, email: "info@test.example.com")
           expect(user).to be_invalid
+          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
         end
 
         it 'rejects example@test.com' do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
+          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
         end
 
         it 'accepts example@test.com when added by another user' do
@@ -557,13 +571,13 @@ RSpec.describe User do
 
       context 'domain denylist' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist_enabled?).and_return(true)
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['example.com'])
+          stub_application_setting(domain_denylist_enabled: true)
+          stub_application_setting(domain_denylist: ['example.com'])
         end
 
         context 'bad regex' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['([a-zA-Z0-9]+)+\.com'])
+            stub_application_setting(domain_denylist: ['([a-zA-Z0-9]+)+\.com'])
           end
 
           it 'does not hang on evil input' do
@@ -584,6 +598,7 @@ RSpec.describe User do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
+            expect(user.errors.messages[:email].first).to eq(_('is not from an allowed domain.'))
           end
 
           it 'accepts info@example.com when added by another user' do
@@ -594,8 +609,8 @@ RSpec.describe User do
 
         context 'when a signup domain is denied but a wildcard subdomain is allowed' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['test.example.com'])
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['*.example.com'])
+            stub_application_setting(domain_denylist: ['test.example.com'])
+            stub_application_setting(domain_allowlist: ['*.example.com'])
           end
 
           it 'gives priority to allowlist and allow info@test.example.com' do
@@ -606,7 +621,7 @@ RSpec.describe User do
 
         context 'with both lists containing a domain' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['test.com'])
+            stub_application_setting(domain_allowlist: ['test.com'])
           end
 
           it 'accepts info@test.com' do
@@ -617,6 +632,7 @@ RSpec.describe User do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
+            expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
           end
         end
       end
@@ -688,7 +704,7 @@ RSpec.describe User do
           user.notification_email = email.email
 
           expect(user).to be_invalid
-          expect(user.errors[:notification_email]).to include('is not an email you own')
+          expect(user.errors[:notification_email]).to include(_('must be an email you have verified'))
         end
       end
 
@@ -707,7 +723,7 @@ RSpec.describe User do
           user.public_email = email.email
 
           expect(user).to be_invalid
-          expect(user.errors[:public_email]).to include('is not an email you own')
+          expect(user.errors[:public_email]).to include(_('must be an email you have verified'))
         end
       end
 
@@ -1798,6 +1814,15 @@ RSpec.describe User do
     it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
     it { expect(user.manageable_namespaces).to contain_exactly(user.namespace, group) }
 
+    context 'with owned groups only' do
+      before do
+        other_group = create(:group)
+        other_group.add_developer(user)
+      end
+
+      it { expect(user.namespaces(owned_only: true)).to contain_exactly(user.namespace, group) }
+    end
+
     context 'with child groups' do
       let!(:subgroup) { create(:group, parent: group) }
 
@@ -1947,6 +1972,42 @@ RSpec.describe User do
       active_admins_in_recent_sign_in_desc_order = User.admins.active.order_recent_sign_in.limit(10)
 
       expect(User.instance_access_request_approvers_to_be_notified).to eq(active_admins_in_recent_sign_in_desc_order)
+    end
+  end
+
+  describe 'banning and unbanning a user', :aggregate_failures do
+    let(:user) { create(:user) }
+
+    context 'banning a user' do
+      it 'bans and blocks the user' do
+        user.ban
+
+        expect(user.banned?).to eq(true)
+        expect(user.blocked?).to eq(true)
+      end
+
+      it 'creates a BannedUser record' do
+        expect { user.ban }.to change { Users::BannedUser.count }.by(1)
+        expect(Users::BannedUser.last.user_id).to eq(user.id)
+      end
+    end
+
+    context 'unbanning a user' do
+      before do
+        user.ban!
+      end
+
+      it 'activates the user' do
+        user.activate
+
+        expect(user.banned?).to eq(false)
+        expect(user.active?).to eq(true)
+      end
+
+      it 'deletes the BannedUser record' do
+        expect { user.activate }.to change { Users::BannedUser.count }.by(-1)
+        expect(Users::BannedUser.where(user_id: user.id)).not_to exist
+      end
     end
   end
 
@@ -3064,6 +3125,19 @@ RSpec.describe User do
     end
   end
 
+  describe '#notification_email' do
+    let(:email) { 'gonzo@muppets.com' }
+
+    context 'when the column in the database is null' do
+      subject { create(:user, email: email, notification_email: nil) }
+
+      it 'defaults to the primary email' do
+        expect(subject.read_attribute(:notification_email)).to be nil
+        expect(subject.notification_email).to eq(email)
+      end
+    end
+  end
+
   describe '.find_by_private_commit_email' do
     context 'with email' do
       let_it_be(:user) { create(:user) }
@@ -3993,6 +4067,14 @@ RSpec.describe User do
         ]
       end
     end
+
+    context 'when the user is not saved' do
+      let(:user) { build(:user) }
+
+      it 'returns empty when there are no groups or ancestor groups for the user' do
+        is_expected.to eq([])
+      end
+    end
   end
 
   describe '#refresh_authorized_projects', :clean_gitlab_redis_shared_state do
@@ -4252,6 +4334,14 @@ RSpec.describe User do
 
       it 'falls back to the default grace period' do
         expect(user.two_factor_grace_period).to be 48
+      end
+    end
+
+    context 'when the user is not saved' do
+      let(:user) { build(:user) }
+
+      it 'does not raise an ActiveRecord::StatementInvalid statement exception' do
+        expect { user.update_two_factor_requirement }.not_to raise_error
       end
     end
   end

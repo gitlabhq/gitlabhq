@@ -32,7 +32,7 @@ module Emails
       # thousand times. This could be potentially expensive in a loop, and
       # recipients would contain all project watchers so it could be a lot.
       mail(bcc: recipients,
-           subject: pipeline_subject(status)) do |format|
+           subject: subject(pipeline_subject(status))) do |format|
         format.html { render layout: 'mailer' }
         format.text { render layout: 'mailer' }
       end
@@ -53,7 +53,6 @@ module Emails
       subject = []
 
       subject << "#{status} pipeline for #{@pipeline.source_ref}"
-      subject << @project.name if @project
       subject << @pipeline.short_sha
 
       subject.join(' | ')

@@ -44,6 +44,7 @@ describe('Pipeline Status', () => {
   const findPipelineCommit = () => wrapper.find('[data-testid="pipeline-commit"]');
   const findPipelineErrorMsg = () => wrapper.find('[data-testid="pipeline-error-msg"]');
   const findPipelineLoadingMsg = () => wrapper.find('[data-testid="pipeline-loading-msg"]');
+  const findPipelineViewBtn = () => wrapper.find('[data-testid="pipeline-view-btn"]');
 
   beforeEach(() => {
     mockPipelineQuery = jest.fn();
@@ -96,11 +97,15 @@ describe('Pipeline Status', () => {
       });
 
       it('renders pipeline data', () => {
-        const { id } = mockProjectPipeline.pipeline;
+        const {
+          id,
+          detailedStatus: { detailsPath },
+        } = mockProjectPipeline.pipeline;
 
         expect(findCiIcon().exists()).toBe(true);
         expect(findPipelineId().text()).toBe(`#${id.match(/\d+/g)[0]}`);
         expect(findPipelineCommit().text()).toBe(mockCommitSha);
+        expect(findPipelineViewBtn().attributes('href')).toBe(detailsPath);
       });
     });
 
@@ -121,6 +126,7 @@ describe('Pipeline Status', () => {
         expect(findCiIcon().exists()).toBe(false);
         expect(findPipelineId().exists()).toBe(false);
         expect(findPipelineCommit().exists()).toBe(false);
+        expect(findPipelineViewBtn().exists()).toBe(false);
       });
     });
   });

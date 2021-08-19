@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.alert_bot_incident_issues
 description: Count of issues created by the alert bot automatically
 product_section: ops
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

@@ -230,8 +230,10 @@ Set the limit to `0` to disable it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/237891) in GitLab 13.7.
 
-The [minimum time between pull refreshes](../user/project/repository/repository_mirroring.md)
-defaults to 300 seconds (5 minutes).
+The [minimum wait time between pull refreshes](../user/project/repository/repository_mirroring.md)
+defaults to 300 seconds (5 minutes). For example, by default a pull refresh will only run once in a given 300 second period regardless of how many times you try to trigger it.
+
+This setting applies in the context of pull refreshes invoked via the [projects API](../api/projects.md#start-the-pull-mirroring-process-for-a-project), or when forcing an update by selecting the **Update now** (**{retry}**) button within **Settings > Repository > Mirroring repositories**. This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/repository_mirroring.md#how-it-works).
 
 To change this limit for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -457,6 +459,21 @@ installation, run the following in the [GitLab Rails console](operations/rails_c
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
 
+### Number of files per GitLab Pages web-site
+
+The total number of file entries (including directories and symlinks) is limited to `100000` per
+GitLab Pages website.
+
+This is the default limit for all [GitLab self-managed and SaaS plans](https://about.gitlab.com/pricing/).
+
+You can update the limit in your self-managed instance using the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+For example, to change the limit to `100`:
+
+```ruby
+Plan.default.actual_limits.update!(pages_file_entries: 100)
+```
+
 ### Number of registered runners per scope
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12.
@@ -484,15 +501,8 @@ A runner's registration fails if it exceeds the limit for the scope determined b
 
 ### Maximum file size for job logs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1.
-> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-job-log-limits). **(FREE SELF)**
-
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../user/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1, disabled by default.
+> - Enabled by default and [feature flag `ci_jobs_trace_size_limit` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335259) in GitLab 14.2.
 
 The job log file size limit is 100 megabytes by default. Any job that exceeds this value is dropped.
 
@@ -501,25 +511,6 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 
 ```ruby
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
-```
-
-#### Enable or disable job log limits **(FREE SELF)**
-
-This feature is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_jobs_trace_size_limit)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_jobs_trace_size_limit)
 ```
 
 ## Instance monitoring and metrics
@@ -626,8 +617,8 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8638) in GitLab 13.3.
 
 You can set a limit on the content of repository files that are indexed in
-Elasticsearch. Any files larger than this limit is neither indexed
-nor searchable.
+Elasticsearch. Any files larger than this limit only index the file name.
+The file content is neither indexed nor searchable.
 
 Setting a limit helps reduce the memory usage of the indexing processes and
 the overall index size. This value defaults to `1024 KiB` (1 MiB) as any

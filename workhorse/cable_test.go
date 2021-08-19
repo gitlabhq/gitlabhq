@@ -10,9 +10,9 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 const cablePath = "/-/cable"

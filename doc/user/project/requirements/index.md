@@ -68,7 +68,7 @@ To edit a requirement:
 
 1. From the requirements list, select the **Edit** icon (**{pencil}**).
 1. Update the title and description in text input field. You can also mark a
-   requirement as satisfied in the edit form by using the check box **Satisfied**.
+   requirement as satisfied in the edit form by using the checkbox **Satisfied**.
 1. Select **Save changes**.
 
 ## Archive a requirement
@@ -295,8 +295,10 @@ To export requirements:
 ### Exported CSV file format
 
 <!-- vale gitlab.Spelling = NO -->
+
 You can preview the exported CSV file in a spreadsheet editor, such as Microsoft Excel,
 OpenOffice Calc, or Google Sheets.
+
 <!-- vale gitlab.Spelling = YES -->
 
 The exported CSV file contains the following headers:

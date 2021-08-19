@@ -13,8 +13,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 var (

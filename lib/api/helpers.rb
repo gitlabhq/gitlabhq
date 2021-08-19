@@ -577,6 +577,10 @@ module API
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
+    def order_by_similarity?(allow_unauthorized: true)
+      params[:order_by] == 'similarity' && params[:search].present? && (allow_unauthorized || current_user.present?)
+    end
+
     protected
 
     def project_finder_params_visibility_ce

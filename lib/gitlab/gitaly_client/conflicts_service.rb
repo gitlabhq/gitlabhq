@@ -14,11 +14,12 @@ module Gitlab
         @their_commit_oid = their_commit_oid
       end
 
-      def list_conflict_files
+      def list_conflict_files(allow_tree_conflicts: false)
         request = Gitaly::ListConflictFilesRequest.new(
           repository: @gitaly_repo,
           our_commit_oid: @our_commit_oid,
-          their_commit_oid: @their_commit_oid
+          their_commit_oid: @their_commit_oid,
+          allow_tree_conflicts: allow_tree_conflicts
         )
         response = GitalyClient.call(@repository.storage, :conflicts_service, :list_conflict_files, request, timeout: GitalyClient.long_timeout)
         GitalyClient::ConflictFilesStitcher.new(response, @gitaly_repo)

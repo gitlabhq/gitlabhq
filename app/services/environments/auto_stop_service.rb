@@ -32,7 +32,7 @@ module Environments
 
       return false unless environments.exists?
 
-      Ci::StopEnvironmentsService.execute_in_batch(environments)
+      Environments::StopService.execute_in_batch(environments)
     end
   end
 end

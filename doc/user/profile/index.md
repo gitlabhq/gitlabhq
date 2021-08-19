@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# User account
+# User account **(FREE)**
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -86,7 +86,7 @@ not.
 
 When visiting the public page of a user, you can only see the projects which you have privileges to.
 
-If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels),
+If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 user profiles are only visible to signed-in users.
 
 ## Add external accounts to your user profile page
@@ -105,8 +105,6 @@ To add links to other accounts:
 1. Select **Update profile settings**.
 
 ## Show private contributions on your user profile page
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14078) in GitLab 11.3.
 
 In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../../api/events.md#action-types) to private projects.
 
@@ -131,10 +129,23 @@ To specify your pronouns:
 1. In the **Pronouns** field, enter your pronouns.
 1. Select **Update profile settings**.
 
+## Add your name pronunciation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
+
+You can add your name pronunciation to your GitLab account. This is displayed in your profile, below
+your name.
+
+To add your name pronunciation:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Pronunciation** field, enter how your name is pronounced.
+1. Select **Update profile settings**.
+
 ## Set your current status
 
-> - Introduced in GitLab 11.2.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
 
 You can provide a custom status message for your user profile along with an emoji that describes it.
 This may be helpful when you are out of office or otherwise not available.
@@ -195,9 +206,15 @@ To set the busy status indicator, either:
   | --- | --- |
   | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
 
-## Change the email displayed on your commits
+## Set your time zone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21598) in GitLab 11.4.
+To set your time zone:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Time settings** section, select your time zone from the dropdown list.
+
+## Change the email displayed on your commits
 
 A commit email is an email address displayed in every Git-related action carried out through the GitLab interface.
 
@@ -211,8 +228,6 @@ To change your commit email:
 1. Select **Update profile settings**.
 
 ### Use an automatically-generated private commit email
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
 
 GitLab provides an automatically-generated private commit email address,
 so you can keep your email information private.

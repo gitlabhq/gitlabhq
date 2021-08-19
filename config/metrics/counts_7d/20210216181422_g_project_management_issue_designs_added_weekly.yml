@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly
 description: Count of WAU adding a design to an issue
 product_section: dev
@@ -10,6 +10,10 @@ value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - g_project_management_issue_designs_added
 distribution:
 - ce
 - ee
@@ -17,4 +21,4 @@ tier:
 - free
 - premium
 - ultimate
-
+performance_indicator_type: []

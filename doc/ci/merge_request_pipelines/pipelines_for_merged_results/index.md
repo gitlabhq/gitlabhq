@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../pipelines/pipelines_for_merged_results.md'
+remove_date: '2021-09-29'
 ---
 
 This document was moved to [another location](../../pipelines/pipelines_for_merged_results.md).

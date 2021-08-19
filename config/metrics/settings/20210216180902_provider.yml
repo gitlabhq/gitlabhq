@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: object_store.lfs.object_store.provider
 description: What Object Storage provider has been configured for LFS
 product_section: enablement
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

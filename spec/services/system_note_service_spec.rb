@@ -745,7 +745,7 @@ RSpec.describe SystemNoteService do
   end
 
   describe '.new_alert_issue' do
-    let(:alert) { build(:alert_management_alert, :with_issue) }
+    let(:alert) { build(:alert_management_alert, :with_incident) }
 
     it 'calls AlertManagementService' do
       expect_next_instance_of(SystemNotes::AlertManagementService) do |service|

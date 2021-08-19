@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.quickactions.i_quickactions_severity_monthly
+description: Count of MAU using the `/severity` quick action
+product_section: ops
+product_stage: monitor
+product_group: group::monitor
+product_category: incident_management
+value_type: number
+status: implemented
+milestone: "14.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66422
+time_frame: 28d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_quickactions_severity
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

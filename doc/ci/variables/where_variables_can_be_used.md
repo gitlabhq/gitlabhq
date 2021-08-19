@@ -113,7 +113,7 @@ Feature.disable(:variable_inside_variable, Project.find(<project id>))
 
 - Supported: project/group variables, `.gitlab-ci.yml` variables, `config.toml` variables, and
   variables from triggers, pipeline schedules, and manual pipelines.
-- Not supported: variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`).
+- Not supported: variables defined inside of scripts (for example, `export MY_VARIABLE="test"`).
 
 The runner uses Go's `os.Expand()` method for variable expansion. It means that it handles
 only variables defined as `$variable` and `${variable}`. What's also important, is that
@@ -132,7 +132,7 @@ use a different variables syntax.
 
 Supported:
 
-- The `script` may use all available variables that are default for the shell (e.g., `$PATH` which
+- The `script` may use all available variables that are default for the shell (for example, `$PATH` which
   should be present in all bash/sh shells) and all variables defined by GitLab CI/CD (project/group variables,
   `.gitlab-ci.yml` variables, `config.toml` variables, and variables from triggers and pipeline schedules).
 - The `script` may also use all variables defined in the lines before. So, for example, if you define
@@ -174,7 +174,7 @@ They are:
   - Script execution shell.
 - Not supported:
   - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
-  - In the `only` and `except` [variables expressions](../jobs/job_control.md#cicd-variable-expressions).
+  - In the `only`, `except`, and `rules` [variables expressions](../jobs/job_control.md#cicd-variable-expressions).
 
 Some of the persisted variables contain tokens and cannot be used by some definitions
 due to security reasons.

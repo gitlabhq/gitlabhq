@@ -3,6 +3,8 @@
 class AuthorizedKeysWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
 
   PERMITTED_ACTIONS = %w[add_key remove_key].freeze

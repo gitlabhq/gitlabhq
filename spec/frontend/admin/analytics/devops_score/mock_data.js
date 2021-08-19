@@ -44,3 +44,5 @@ export const devopsScoreMetricsData = {
 export const devopsReportDocsPath = 'docs-path';
 
 export const noDataImagePath = 'image-path';
+
+export const devopsScoreIntroImagePath = 'image-path';

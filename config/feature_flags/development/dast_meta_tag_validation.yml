@@ -1,0 +1,8 @@
+---
+name: dast_meta_tag_validation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67945
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337711
+milestone: '14.2'
+type: development
+group: group::dynamic analysis
+default_enabled: true

@@ -81,7 +81,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def preload_associations(projects)
-    projects.includes(:route, :creator, :group, namespace: [:route, :owner]).preload(:project_feature)
+    projects.includes(:route, :creator, :group, :topics, namespace: [:route, :owner]).preload(:project_feature)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -10,28 +10,28 @@ module Resolvers
     alias_method :project, :object
 
     def self.accept_assignee
-      argument :assignee_username, GraphQL::STRING_TYPE,
+      argument :assignee_username, GraphQL::Types::String,
                required: false,
                description: 'Username of the assignee.'
     end
 
     def self.accept_author
-      argument :author_username, GraphQL::STRING_TYPE,
+      argument :author_username, GraphQL::Types::String,
                required: false,
                description: 'Username of the author.'
     end
 
     def self.accept_reviewer
-      argument :reviewer_username, GraphQL::STRING_TYPE,
+      argument :reviewer_username, GraphQL::Types::String,
                required: false,
                description: 'Username of the reviewer.'
     end
 
-    argument :iids, [GraphQL::STRING_TYPE],
+    argument :iids, [GraphQL::Types::String],
              required: false,
              description: 'Array of IIDs of merge requests, for example `[1, 2]`.'
 
-    argument :source_branches, [GraphQL::STRING_TYPE],
+    argument :source_branches, [GraphQL::Types::String],
              required: false,
              as: :source_branch,
              description: <<~DESC
@@ -39,7 +39,7 @@ module Resolvers
                All resolved merge requests will have one of these branches as their source.
              DESC
 
-    argument :target_branches, [GraphQL::STRING_TYPE],
+    argument :target_branches, [GraphQL::Types::String],
              required: false,
              as: :target_branch,
              description: <<~DESC
@@ -51,7 +51,7 @@ module Resolvers
              required: false,
              description: 'A merge request state. If provided, all resolved merge requests will have this state.'
 
-    argument :labels, [GraphQL::STRING_TYPE],
+    argument :labels, [GraphQL::Types::String],
              required: false,
              as: :label_name,
              description: 'Array of label names. All resolved merge requests will have all of these labels.'
@@ -61,7 +61,7 @@ module Resolvers
     argument :merged_before, Types::TimeType,
              required: false,
              description: 'Merge requests merged before this date.'
-    argument :milestone_title, GraphQL::STRING_TYPE,
+    argument :milestone_title, GraphQL::Types::String,
              required: false,
              description: 'Title of the milestone.'
     argument :sort, Types::MergeRequestSortEnum,
@@ -70,11 +70,11 @@ module Resolvers
              default_value: :created_desc
 
     negated do
-      argument :labels, [GraphQL::STRING_TYPE],
+      argument :labels, [GraphQL::Types::String],
                required: false,
                as: :label_name,
                description: 'Array of label names. All resolved merge requests will not have these labels.'
-      argument :milestone_title, GraphQL::STRING_TYPE,
+      argument :milestone_title, GraphQL::Types::String,
                required: false,
                description: 'Title of the milestone.'
     end

@@ -9,7 +9,7 @@ module Mutations
         field :pipeline,
               Types::Ci::PipelineType,
               null: true,
-              description: 'The pipeline after mutation.'
+              description: 'Pipeline after mutation.'
 
         authorize :update_pipeline
 

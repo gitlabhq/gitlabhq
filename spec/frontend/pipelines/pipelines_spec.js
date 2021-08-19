@@ -4,6 +4,8 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';
 import { nextTick } from 'vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
@@ -40,7 +42,6 @@ const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
 describe('Pipelines', () => {
   let wrapper;
   let mock;
-  let origWindowLocation;
 
   const paths = {
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
@@ -73,6 +74,7 @@ describe('Pipelines', () => {
   const findTablePagination = () => wrapper.findComponent(TablePagination);
 
   const findTab = (tab) => wrapper.findByTestId(`pipelines-tab-${tab}`);
+  const findPipelineKeyDropdown = () => wrapper.findByTestId('pipeline-key-dropdown');
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
@@ -98,20 +100,13 @@ describe('Pipelines', () => {
     );
   };
 
-  beforeAll(() => {
-    origWindowLocation = window.location;
-    delete window.location;
-    window.location = {
-      search: '',
-      protocol: 'https:',
-    };
-  });
-
-  afterAll(() => {
-    window.location = origWindowLocation;
+  beforeEach(() => {
+    setWindowLocation(TEST_HOST);
   });
 
   beforeEach(() => {
+    window.gon = { features: { pipelineSourceFilter: true } };
+
     mock = new MockAdapter(axios);
 
     jest.spyOn(window.history, 'pushState');
@@ -536,6 +531,10 @@ describe('Pipelines', () => {
         expect(findFilteredSearch().exists()).toBe(true);
       });
 
+      it('renders the pipeline key dropdown', () => {
+        expect(findPipelineKeyDropdown().exists()).toBe(true);
+      });
+
       it('renders tab empty state finished scope', async () => {
         mock.onGet(mockPipelinesEndpoint, { params: { scope: 'finished', page: '1' } }).reply(200, {
           pipelines: [],
@@ -629,6 +628,10 @@ describe('Pipelines', () => {
 
       it('does not render filtered search', () => {
         expect(findFilteredSearch().exists()).toBe(false);
+      });
+
+      it('does not render the pipeline key dropdown', () => {
+        expect(findPipelineKeyDropdown().exists()).toBe(false);
       });
 
       it('does not render tabs nor buttons', () => {

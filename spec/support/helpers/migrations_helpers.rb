@@ -16,6 +16,23 @@ module MigrationsHelpers
     end
   end
 
+  def partitioned_table(name, by: :created_at, strategy: :monthly)
+    klass = Class.new(active_record_base) do
+      include PartitionedTable
+
+      self.table_name = name
+      self.primary_key = :id
+
+      partitioned_by by, strategy: strategy
+
+      def self.name
+        table_name.singularize.camelcase
+      end
+    end
+
+    klass.tap { Gitlab::Database::Partitioning::PartitionManager.new.sync_partitions }
+  end
+
   def migrations_paths
     ActiveRecord::Migrator.migrations_paths
   end

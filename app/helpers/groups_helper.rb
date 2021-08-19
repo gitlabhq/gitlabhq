@@ -1,52 +1,6 @@
 # frozen_string_literal: true
 
 module GroupsHelper
-  def group_overview_nav_link_paths
-    %w[
-      groups#activity
-      groups#subgroups
-      labels#index
-      group_members#index
-    ]
-  end
-
-  def group_settings_nav_link_paths
-    %w[
-      groups#projects
-      groups#edit
-      badges#index
-      repository#show
-      ci_cd#show
-      integrations#index
-      integrations#edit
-      ldap_group_links#index
-      hooks#index
-      pipeline_quota#index
-      applications#index
-      applications#show
-      applications#edit
-      packages_and_registries#show
-      groups/runners#show
-      groups/runners#edit
-    ]
-  end
-
-  def group_packages_nav_link_paths
-    %w[
-      groups/packages#index
-      groups/container_registries#index
-    ]
-  end
-
-  def group_information_title(group)
-    group.subgroup? ? _('Subgroup information') : _('Group information')
-  end
-
-  def group_container_registry_nav?
-    Gitlab.config.registry.enabled &&
-      can?(current_user, :read_container_image, @group)
-  end
-
   def group_sidebar_links
     @group_sidebar_links ||= get_group_sidebar_links
   end
@@ -75,6 +29,10 @@ module GroupsHelper
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
+  def can_admin_group_member?(group)
+    Ability.allowed?(current_user, :admin_group_member, group)
+  end
+
   def group_issues_count(state:)
     IssuesFinder
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
@@ -89,18 +47,13 @@ module GroupsHelper
       .count
   end
 
-  def cached_issuables_count(group, type: nil)
-    count_service = issuables_count_service_class(type)
-    return unless count_service.present?
-
-    issuables_count = count_service.new(group, current_user).count
-    format_issuables_count(count_service, issuables_count)
-  end
-
-  def group_dependency_proxy_url(group)
+  def group_dependency_proxy_image_prefix(group)
     # The namespace path can include uppercase letters, which
     # Docker doesn't allow. The proxy expects it to be downcased.
-    "#{group_url(group).downcase}#{DependencyProxy::URL_SUFFIX}"
+    url = "#{group_url(group).downcase}#{DependencyProxy::URL_SUFFIX}"
+
+    # Docker images do not include the protocol
+    url.partition('//').last
   end
 
   def group_icon_url(group, options = {})
@@ -164,7 +117,7 @@ module GroupsHelper
   end
 
   def remove_group_message(group)
-    _("You are going to remove %{group_name}, this will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
+    _("You are going to remove %{group_name}. This will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
   end
 
@@ -198,19 +151,6 @@ module GroupsHelper
     end
 
     groups.to_json
-  end
-
-  def group_packages_nav?
-    group_packages_list_nav? ||
-      group_container_registry_nav?
-  end
-
-  def group_dependency_proxy_nav?
-    @group.dependency_proxy_feature_available?
-  end
-
-  def group_packages_list_nav?
-    @group.packages_feature_enabled?
   end
 
   def show_invite_banner?(group)
@@ -248,6 +188,12 @@ module GroupsHelper
                  :merge_requests]
     links += resources.select do |resource|
       can?(current_user, "read_group_#{resource}".to_sym, @group)
+    end
+
+    # TODO Proper policies, such as `read_group_runners, should be implemented per
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
+    if can?(current_user, :admin_group, @group) && Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
+      links << :runners
     end
 
     if can?(current_user, :read_cluster, @group)
@@ -322,24 +268,8 @@ module GroupsHelper
     s_("GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup.").html_safe % { ancestor_group: ancestor_group(group) }
   end
 
-  def issuables_count_service_class(type)
-    if type == :issues
-      Groups::OpenIssuesCountService
-    elsif type == :merge_requests
-      Groups::MergeRequestsCountService
-    end
-  end
-
-  def format_issuables_count(count_service, count)
-    if count > count_service::CACHED_COUNT_THRESHOLD
-      ActiveSupport::NumberHelper
-        .number_to_human(
-          count,
-          units: { thousand: 'k', million: 'm' }, precision: 1, significant: false, format: '%n%u'
-        )
-    else
-      number_with_delimiter(count)
-    end
+  def group_url_error_message
+    s_('GroupSettings|Please choose a group URL with no special characters or spaces.')
   end
 end
 

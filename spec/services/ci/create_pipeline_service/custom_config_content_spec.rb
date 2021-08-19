@@ -11,7 +11,7 @@ RSpec.describe Ci::CreatePipelineService do
   let(:upstream_pipeline) { create(:ci_pipeline, project: project) }
   let(:bridge) { create(:ci_bridge, pipeline: upstream_pipeline) }
 
-  subject { service.execute(:push, bridge: bridge) }
+  subject { service.execute(:push, bridge: bridge).payload }
 
   context 'custom config content' do
     let(:bridge) do

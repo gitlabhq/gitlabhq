@@ -181,7 +181,9 @@ username = <your_personal_access_token_name>
 password = <your_personal_access_token>
 ```
 
-- Your project ID is on your project's home page.
+The `<project_id>` is either the project's
+[URL-encoded](../../../api/index.md#namespaced-path-encoding)
+path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a deploy token
 
@@ -198,7 +200,9 @@ username = <deploy token username>
 password = <deploy token>
 ```
 
-Your project ID is on your project's home page.
+The `<project_id>` is either the project's
+[URL-encoded](../../../api/index.md#namespaced-path-encoding)
+path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a CI job token
 
@@ -324,6 +328,11 @@ more than once, a `400 Bad Request` error occurs.
 
 ## Install a PyPI package
 
+In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/233413),
+when a PyPI package is not found in the Package Registry, the request is forwarded to [pypi.org](https://pypi.org/).
+
+Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+
 ### Install from the project level
 
 To install the latest version of a package, use the following command:
@@ -335,7 +344,8 @@ pip install --index-url https://<personal_access_token_name>:<personal_access_to
 - `<package_name>` is the package name.
 - `<personal_access_token_name>` is a personal access token name with the `read_api` scope.
 - `<personal_access_token>` is a personal access token with the `read_api` scope.
-- `<project_id>` is the project ID.
+- `<project_id>` is either the project's [URL-encoded](../../../api/index.md#namespaced-path-encoding)
+  path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 In these commands, you can use `--extra-index-url` instead of `--index-url`. However, using
 `--extra-index-url` makes you vulnerable to dependency confusion attacks because it checks the PyPi

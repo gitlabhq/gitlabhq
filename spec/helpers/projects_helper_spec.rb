@@ -720,21 +720,21 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe '#can_import_members?' do
+  describe '#can_admin_project_member?' do
     context 'when user is project owner' do
       before do
         allow(helper).to receive(:current_user) { project.owner }
       end
 
       it 'returns true for owner of project' do
-        expect(helper.can_import_members?).to eq true
+        expect(helper.can_admin_project_member?(project)).to eq true
       end
     end
 
     context 'when user is not a project owner' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:user_project_role, :can_import) do
+      where(:user_project_role, :can_admin) do
         :maintainer | true
         :developer | false
         :reporter | false
@@ -748,7 +748,7 @@ RSpec.describe ProjectsHelper do
         end
 
         it 'resolves if the user can import members' do
-          expect(helper.can_import_members?).to eq can_import
+          expect(helper.can_admin_project_member?(project)).to eq can_admin
         end
       end
     end
@@ -918,33 +918,39 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe '#project_permissions_settings' do
-    context 'with no project_setting associated' do
-      it 'includes a value for edit commit messages' do
-        settings = project_permissions_settings(project)
+  describe '#project_permissions_panel_data' do
+    subject { helper.project_permissions_panel_data(project) }
 
-        expect(settings[:allowEditingCommitMessages]).to be_falsy
-      end
+    before do
+      allow(helper).to receive(:can?) { true }
+      allow(helper).to receive(:current_user).and_return(user)
     end
 
-    context 'when commits are allowed to be edited' do
-      it 'includes the edit commit message value' do
-        project.create_project_setting(allow_editing_commit_messages: true)
+    it 'includes project_permissions_settings' do
+      settings = subject.dig(:currentSettings)
 
-        settings = project_permissions_settings(project)
-
-        expect(settings[:allowEditingCommitMessages]).to be_truthy
-      end
-    end
-
-    context 'when commits are not allowed to be edited' do
-      it 'returns false to the edit commit message value' do
-        project.create_project_setting(allow_editing_commit_messages: false)
-
-        settings = project_permissions_settings(project)
-
-        expect(settings[:allowEditingCommitMessages]).to be_falsy
-      end
+      expect(settings).to include(
+        packagesEnabled: !!project.packages_enabled,
+        visibilityLevel: project.visibility_level,
+        requestAccessEnabled: !!project.request_access_enabled,
+        issuesAccessLevel: project.project_feature.issues_access_level,
+        repositoryAccessLevel: project.project_feature.repository_access_level,
+        forkingAccessLevel: project.project_feature.forking_access_level,
+        mergeRequestsAccessLevel: project.project_feature.merge_requests_access_level,
+        buildsAccessLevel: project.project_feature.builds_access_level,
+        wikiAccessLevel: project.project_feature.wiki_access_level,
+        snippetsAccessLevel: project.project_feature.snippets_access_level,
+        pagesAccessLevel: project.project_feature.pages_access_level,
+        analyticsAccessLevel: project.project_feature.analytics_access_level,
+        containerRegistryEnabled: !!project.container_registry_enabled,
+        lfsEnabled: !!project.lfs_enabled,
+        emailsDisabled: project.emails_disabled?,
+        metricsDashboardAccessLevel: project.project_feature.metrics_dashboard_access_level,
+        operationsAccessLevel: project.project_feature.operations_access_level,
+        showDefaultAwardEmojis: project.show_default_award_emojis?,
+        securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
+        containerRegistryAccessLevel: project.project_feature.container_registry_access_level
+      )
     end
   end
 end

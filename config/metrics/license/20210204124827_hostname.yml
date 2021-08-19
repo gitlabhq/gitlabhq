@@ -9,7 +9,7 @@ value_type: string
 status: data_available
 time_frame: none
 data_source: system
-data_category: Standard
+data_category: standard
 instrumentation_class: HostnameMetric
 distribution:
 - ce
@@ -18,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Pipelines::AddJobService do
+  include ExclusiveLeaseHelpers
+
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   let(:job) { build(:ci_build) }
@@ -66,6 +68,39 @@ RSpec.describe Ci::Pipelines::AddJobService do
         expect(job).not_to receive(:update_older_statuses_retried!)
 
         execute
+      end
+    end
+
+    context 'exclusive lock' do
+      let(:lock_uuid) { 'test' }
+      let(:lock_key) { "ci:pipelines:#{pipeline.id}:add-job" }
+      let(:lock_timeout) { 1.minute }
+
+      before do
+        # "Please stub a default value first if message might be received with other args as well."
+        allow(Gitlab::ExclusiveLease).to receive(:new).and_call_original
+      end
+
+      it 'uses exclusive lock' do
+        lease = stub_exclusive_lease(lock_key, lock_uuid, timeout: lock_timeout)
+        expect(lease).to receive(:try_obtain)
+        expect(lease).to receive(:cancel)
+
+        expect(execute).to be_success
+        expect(execute.payload[:job]).to eq(job)
+      end
+
+      context 'when the FF ci_pipeline_add_job_with_lock is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_add_job_with_lock: false)
+        end
+
+        it 'does not use exclusive lock' do
+          expect(Gitlab::ExclusiveLease).not_to receive(:new).with(lock_key, timeout: lock_timeout)
+
+          expect(execute).to be_success
+          expect(execute.payload[:job]).to eq(job)
+        end
       end
     end
   end

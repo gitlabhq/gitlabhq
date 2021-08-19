@@ -1,0 +1,8 @@
+---
+name: ci_pending_builds_maintain_ci_minutes_data
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64443
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338149
+milestone: '14.2'
+type: development
+group: group::pipeline execution
+default_enabled: false

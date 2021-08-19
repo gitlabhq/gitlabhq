@@ -1,16 +1,16 @@
 import { shallowMount } from '@vue/test-utils';
 import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
 import IssueBoardFilteredSpec from '~/boards/components/issue_board_filtered_search.vue';
-import { BoardType } from '~/boards/constants';
 import issueBoardFilters from '~/boards/issue_board_filters';
 import { mockTokens } from '../mock_data';
+
+jest.mock('~/boards/issue_board_filters');
 
 describe('IssueBoardFilter', () => {
   let wrapper;
 
-  const createComponent = ({ initialFilterParams = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
-      provide: { initialFilterParams },
       props: { fullPath: '', boardType: '' },
     });
   };
@@ -20,7 +20,17 @@ describe('IssueBoardFilter', () => {
   });
 
   describe('default', () => {
+    let fetchAuthorsSpy;
+    let fetchLabelsSpy;
     beforeEach(() => {
+      fetchAuthorsSpy = jest.fn();
+      fetchLabelsSpy = jest.fn();
+
+      issueBoardFilters.mockReturnValue({
+        fetchAuthors: fetchAuthorsSpy,
+        fetchLabels: fetchLabelsSpy,
+      });
+
       createComponent();
     });
 
@@ -28,17 +38,10 @@ describe('IssueBoardFilter', () => {
       expect(wrapper.find(BoardFilteredSearch).exists()).toBe(true);
     });
 
-    it.each([[BoardType.group], [BoardType.project]])(
-      'when boardType is %s we pass the correct tokens to BoardFilteredSearch',
-      (boardType) => {
-        const { fetchAuthors, fetchLabels } = issueBoardFilters({}, '', boardType);
+    it('passes the correct tokens to BoardFilteredSearch', () => {
+      const tokens = mockTokens(fetchLabelsSpy, fetchAuthorsSpy, wrapper.vm.fetchMilestones);
 
-        const tokens = mockTokens(fetchLabels, fetchAuthors);
-
-        expect(wrapper.find(BoardFilteredSearch).props('tokens').toString()).toBe(
-          tokens.toString(),
-        );
-      },
-    );
+      expect(wrapper.find(BoardFilteredSearch).props('tokens')).toEqual(tokens);
+    });
   });
 });

@@ -12,6 +12,7 @@ class Member < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include FromUnion
   include UpdateHighestRole
+  include RestrictedSignup
 
   AVATAR_SIZE = 40
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
@@ -42,6 +43,7 @@ class Member < ApplicationRecord
       scope: [:source_type, :source_id],
       allow_nil: true
     }
+  validate :signup_email_valid?, on: :create, if: ->(member) { member.invite_email.present? }
   validates :user_id,
     uniqueness: {
       message: _('project bots cannot be added to other groups / projects')
@@ -166,7 +168,7 @@ class Member < ApplicationRecord
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
-  before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
+  before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? && !member.invite_accepted_at? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
   after_create :send_request, if: :request?, unless: :importing?
@@ -175,7 +177,9 @@ class Member < ApplicationRecord
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
-  after_commit :refresh_member_authorized_projects
+  after_save :log_invitation_token_cleanup
+
+  after_commit :refresh_member_authorized_projects, unless: :importing?
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
@@ -391,11 +395,6 @@ class Member < ApplicationRecord
   # error or not doing any meaningful work.
   # rubocop: disable CodeReuse/ServiceClass
   def refresh_member_authorized_projects
-    # If user/source is being destroyed, project access are going to be
-    # destroyed eventually because of DB foreign keys, so we shouldn't bother
-    # with refreshing after each member is destroyed through association
-    return if destroyed_by_association.present?
-
     UserProjectAccessChangedService.new(user_id).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -436,6 +435,12 @@ class Member < ApplicationRecord
     end
   end
 
+  def signup_email_valid?
+    error = validate_admin_signup_restrictions(invite_email)
+
+    errors.add(:user, error) if error
+  end
+
   def update_highest_role?
     return unless user_id.present?
 
@@ -448,6 +453,13 @@ class Member < ApplicationRecord
 
   def project_bot?
     user&.project_bot?
+  end
+
+  def log_invitation_token_cleanup
+    return true unless Gitlab.com? && invite? && invite_accepted_at?
+
+    error = StandardError.new("Invitation token is present but invite was already accepted!")
+    Gitlab::ErrorTracking.track_exception(error, attributes.slice(%w["invite_accepted_at created_at source_type source_id user_id id"]))
   end
 end
 

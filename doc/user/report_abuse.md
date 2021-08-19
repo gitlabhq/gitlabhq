@@ -64,5 +64,5 @@ in the abuse report's **Message** field.
 
 ## Managing abuse reports
 
-Admins are able to view and resolve abuse reports.
+Administrators are able to view and resolve abuse reports.
 For more information, see [abuse reports administration documentation](admin_area/review_abuse_reports.md).

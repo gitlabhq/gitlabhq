@@ -29,7 +29,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
       .new(@group, current_user, params: filter_params)
       .execute(include_relations: requested_relations)
 
-    if can_manage_members?
+    if can?(current_user, :admin_group_member, @group)
       @skip_groups = @group.related_group_ids
 
       @invited_members = @members.invite

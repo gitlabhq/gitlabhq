@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store do
       allow(::Gitlab::Metrics).to receive(:histogram).with(
         :action_cable_transmitted_bytes, /transmit/
       ).and_return(counter)
-      message_size = ::ActiveSupport::JSON.encode(data).bytesize
+      message_size = ::Gitlab::Json.generate(data).bytesize
 
       expect(counter).to receive(:observe).with({ channel: channel_class, operation: 'event' }, message_size)
 

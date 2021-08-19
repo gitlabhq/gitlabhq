@@ -66,11 +66,6 @@ export default {
     pipeline() {
       return this.isPostMerge ? this.mr.mergePipeline : this.mr.pipeline;
     },
-    showVisualReviewAppLink() {
-      return Boolean(
-        this.mr.visualReviewAppAvailable && this.glFeatures.anonymousVisualReviewFeedback,
-      );
-    },
     showMergeTrainPositionIndicator() {
       return isNumber(this.mr.mergeTrainIndex);
     },
@@ -120,8 +115,6 @@ export default {
         :deployments="deployments"
         :deployment-class="deploymentClass"
         :has-deployment-metrics="hasDeploymentMetrics"
-        :visual-review-app-meta="visualReviewAppMeta"
-        :show-visual-review-app-link="showVisualReviewAppLink"
       />
       <merge-train-position-indicator
         v-if="showMergeTrainPositionIndicator"

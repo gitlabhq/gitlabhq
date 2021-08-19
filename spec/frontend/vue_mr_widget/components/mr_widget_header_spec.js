@@ -1,6 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Header from '~/vue_merge_request_widget/components/mr_widget_header.vue';
+import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 
 describe('MRWidgetHeader', () => {
   let wrapper;
@@ -34,6 +35,8 @@ describe('MRWidgetHeader', () => {
     targetBranchPath: '/foo/bar/main',
     statusPath: 'abc',
   };
+
+  const findWebIdeButton = () => wrapper.findComponent(WebIdeLink);
 
   describe('computed', () => {
     describe('shouldShowCommitsBehindText', () => {
@@ -147,73 +150,81 @@ describe('MRWidgetHeader', () => {
         statusPath: 'abc',
         sourceProjectFullPath: 'root/gitlab-ce',
         targetProjectFullPath: 'gitlab-org/gitlab-ce',
+        gitpodEnabled: true,
+        showGitpodButton: true,
+        gitpodUrl: 'http://gitpod.localhost',
       };
 
-      beforeEach(() => {
+      it('renders checkout branch button with modal trigger', () => {
         createComponent({
           mr: { ...mrDefaultOptions },
         });
-      });
 
-      it('renders checkout branch button with modal trigger', () => {
         const button = wrapper.find('.js-check-out-branch');
 
         expect(button.text().trim()).toBe('Check out branch');
       });
 
-      it('renders web ide button', async () => {
-        const button = wrapper.find('.js-web-ide');
+      it.each([
+        [
+          'renders web ide button',
+          {
+            mrProps: {},
+            relativeUrl: '',
+            webIdeUrl:
+              '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=gitlab-org%2Fgitlab-ce',
+          },
+        ],
+        [
+          'renders web ide button with blank target_project, when mr has same target project',
+          {
+            mrProps: { targetProjectFullPath: 'root/gitlab-ce' },
+            relativeUrl: '',
+            webIdeUrl: '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=',
+          },
+        ],
+        [
+          'renders web ide button with relative url',
+          {
+            mrProps: { iid: 2 },
+            relativeUrl: '/gitlab',
+            webIdeUrl:
+              '/gitlab/-/ide/project/root/gitlab-ce/merge_requests/2?target_project=gitlab-org%2Fgitlab-ce',
+          },
+        ],
+      ])('%s', async (_, { mrProps, relativeUrl, webIdeUrl }) => {
+        gon.relative_url_root = relativeUrl;
+        createComponent({
+          mr: { ...mrDefaultOptions, ...mrProps },
+        });
 
         await nextTick();
 
-        expect(button.text().trim()).toBe('Open in Web IDE');
-        expect(button.classes('disabled')).toBe(false);
-        expect(button.attributes('href')).toBe(
-          '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=gitlab-org%2Fgitlab-ce',
-        );
+        expect(findWebIdeButton().props()).toMatchObject({
+          showEditButton: false,
+          showWebIdeButton: true,
+          webIdeText: 'Open in Web IDE',
+          gitpodText: 'Open in Gitpod',
+          gitpodEnabled: true,
+          showGitpodButton: true,
+          gitpodUrl: 'http://gitpod.localhost',
+          webIdeUrl,
+        });
       });
 
-      it('renders web ide button in disabled state with no href', async () => {
-        const mr = { ...mrDefaultOptions, canPushToSourceBranch: false };
-        createComponent({ mr });
+      it('does not render web ide button if source branch is removed', async () => {
+        createComponent({ mr: { ...mrDefaultOptions, sourceBranchRemoved: true } });
 
         await nextTick();
 
-        const link = wrapper.find('.js-web-ide');
-
-        expect(link.attributes('disabled')).toBe('true');
-        expect(link.attributes('href')).toBeUndefined();
-      });
-
-      it('renders web ide button with blank query string if target & source project branch', async () => {
-        createComponent({ mr: { ...mrDefaultOptions, targetProjectFullPath: 'root/gitlab-ce' } });
-
-        await nextTick();
-
-        const button = wrapper.find('.js-web-ide');
-
-        expect(button.text().trim()).toBe('Open in Web IDE');
-        expect(button.attributes('href')).toBe(
-          '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=',
-        );
-      });
-
-      it('renders web ide button with relative URL', async () => {
-        gon.relative_url_root = '/gitlab';
-
-        createComponent({ mr: { ...mrDefaultOptions, iid: 2 } });
-
-        await nextTick();
-
-        const button = wrapper.find('.js-web-ide');
-
-        expect(button.text().trim()).toBe('Open in Web IDE');
-        expect(button.attributes('href')).toBe(
-          '/gitlab/-/ide/project/root/gitlab-ce/merge_requests/2?target_project=gitlab-org%2Fgitlab-ce',
-        );
+        expect(findWebIdeButton().exists()).toBe(false);
       });
 
       it('renders download dropdown with links', () => {
+        createComponent({
+          mr: { ...mrDefaultOptions },
+        });
+
         expectDownloadDropdownItems();
       });
     });

@@ -32,6 +32,7 @@ module RuboCop
         SELF_METHODS = %i[
           push_frontend_feature_flag
           limit_feature_flag=
+          limit_feature_flag_for_override=
         ].freeze + EXPERIMENT_METHODS + RUGGED_METHODS + WORKER_METHODS
 
         RESTRICT_ON_SEND = FEATURE_METHODS + EXPERIMENTATION_METHODS + GRAPHQL_METHODS + SELF_METHODS

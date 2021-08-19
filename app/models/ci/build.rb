@@ -39,7 +39,6 @@ module Ci
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
-    has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
 
@@ -54,6 +53,7 @@ module Ci
     end
 
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
+    has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', inverse_of: :build
 
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables
@@ -103,7 +103,6 @@ module Ci
     end
 
     scope :unstarted, -> { where(runner_id: nil) }
-    scope :ignore_failures, -> { where(allow_failure: false) }
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)
@@ -120,10 +119,6 @@ module Ci
       where('EXISTS (?)', ::Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').merge(query))
     end
 
-    scope :with_archived_trace, -> do
-      with_existing_job_artifacts(Ci::JobArtifact.trace)
-    end
-
     scope :without_archived_trace, -> do
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
     end
@@ -134,7 +129,6 @@ module Ci
     end
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
-    scope :eager_load_job_artifacts_archive, -> { includes(:job_artifacts_archive) }
     scope :eager_load_tags, -> { includes(:tags) }
 
     scope :eager_load_everything, -> do
@@ -158,7 +152,7 @@ module Ci
 
     scope :with_project_and_metadata, -> do
       if Feature.enabled?(:non_public_artifacts, type: :development)
-        joins(:metadata).includes(:project, :metadata)
+        joins(:metadata).includes(:metadata).preload(:project)
       end
     end
 
@@ -466,13 +460,9 @@ module Ci
     end
 
     def retryable?
-      if Feature.enabled?(:prevent_retry_of_retried_jobs, project, default_enabled: :yaml)
-        return false if retried? || archived?
+      return false if retried? || archived?
 
-        success? || failed? || canceled?
-      else
-        !archived? && (success? || failed? || canceled?)
-      end
+      success? || failed? || canceled?
     end
 
     def retries_count
@@ -559,6 +549,7 @@ module Ci
           .concat(persisted_variables)
           .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
+          .concat(kubernetes_variables)
           .concat(scoped_variables)
           .concat(job_variables)
           .concat(persisted_environment_variables)
@@ -647,12 +638,6 @@ module Ci
       coverage = trace.extract_coverage(coverage_regex)
       update(coverage: coverage) if coverage.present?
     end
-
-    # rubocop: disable CodeReuse/ServiceClass
-    def parse_trace_sections!
-      ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
-    end
-    # rubocop: enable CodeReuse/ServiceClass
 
     def trace
       Gitlab::Ci::Trace.new(self)
@@ -907,7 +892,7 @@ module Ci
     end
 
     def valid_dependency?
-      return false if artifacts_expired?
+      return false if artifacts_expired? && !pipeline.artifacts_locked?
       return false if erased?
 
       true
@@ -1181,6 +1166,10 @@ module Ci
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
+    end
+
+    def kubernetes_variables
+      [] # Overridden in EE
     end
 
     def conditionally_allow_failure!(exit_code)

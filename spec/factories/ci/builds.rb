@@ -120,6 +120,19 @@ FactoryBot.define do
       end
     end
 
+    trait :environment_with_deployment_tier do
+      environment { 'test_portal' }
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'test_portal',
+            action: 'start',
+            url: 'http://staging.example.com/$CI_JOB_NAME',
+            deployment_tier: 'testing' }
+        }
+      end
+    end
+
     trait :deploy_to_production do
       environment { 'production' }
 
@@ -224,8 +237,13 @@ FactoryBot.define do
         # to the job. If `build.deployment` has already been set, it doesn't
         # build a new instance.
         environment = Gitlab::Ci::Pipeline::Seed::Environment.new(build).to_resource
-        build.deployment =
-          Gitlab::Ci::Pipeline::Seed::Deployment.new(build, environment).to_resource
+
+        build.assign_attributes(
+          deployment: Gitlab::Ci::Pipeline::Seed::Deployment.new(build, environment).to_resource,
+          metadata_attributes: {
+            expanded_environment_name: environment.name
+          }
+        )
       end
     end
 

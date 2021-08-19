@@ -11,6 +11,7 @@ RSpec.shared_context 'merge request show action' do
   before do
     allow(view).to receive(:experiment_enabled?).and_return(false)
     allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive(:can_admin_project_member?)
     assign(:project, project)
     assign(:merge_request, merge_request)
     assign(:note, note)

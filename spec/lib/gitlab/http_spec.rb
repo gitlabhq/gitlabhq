@@ -33,7 +33,7 @@ RSpec.describe Gitlab::HTTP do
 
       WebMock.stub_request(:post, /.*/).to_return do |request|
         sleep 0.002.seconds
-        { body: 'I\m slow', status: 200 }
+        { body: 'I\'m slow', status: 200 }
       end
     end
 
@@ -41,24 +41,66 @@ RSpec.describe Gitlab::HTTP do
 
     subject(:request_slow_responder) { described_class.post('http://example.org', **options) }
 
-    specify do
-      expect { request_slow_responder }.not_to raise_error
+    shared_examples 'tracks the timeout but does not raise an error' do
+      specify :aggregate_failures do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          an_instance_of(Gitlab::HTTP::ReadTotalTimeout)
+        ).once
+
+        expect { request_slow_responder }.not_to raise_error
+      end
+
+      it 'still calls the block' do
+        expect { |b| described_class.post('http://example.org', **options, &b) }.to yield_with_args
+      end
     end
 
-    context 'with use_read_total_timeout option' do
+    shared_examples 'does not track or raise timeout error' do
+      specify :aggregate_failures do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        expect { request_slow_responder }.not_to raise_error
+      end
+    end
+
+    it_behaves_like 'tracks the timeout but does not raise an error'
+
+    context 'and use_read_total_timeout option is truthy' do
       let(:options) { { use_read_total_timeout: true } }
 
-      it 'raises a timeout error' do
+      it 'raises an error' do
         expect { request_slow_responder }.to raise_error(Gitlab::HTTP::ReadTotalTimeout, /Request timed out after ?([0-9]*[.])?[0-9]+ seconds/)
       end
+    end
 
-      context 'and timeout option' do
-        let(:options) { { use_read_total_timeout: true, timeout: 10.seconds } }
+    context 'and timeout option is greater than DEFAULT_READ_TOTAL_TIMEOUT' do
+      let(:options) { { timeout: 10.seconds } }
 
-        it 'overrides the default timeout when timeout option is present' do
-          expect { request_slow_responder }.not_to raise_error
-        end
+      it_behaves_like 'does not track or raise timeout error'
+    end
+
+    context 'and stream_body option is truthy' do
+      let(:options) { { stream_body: true } }
+
+      it_behaves_like 'does not track or raise timeout error'
+
+      context 'but skip_read_total_timeout option is falsey' do
+        let(:options) { { stream_body: true, skip_read_total_timeout: false } }
+
+        it_behaves_like 'tracks the timeout but does not raise an error'
       end
+    end
+
+    context 'and skip_read_total_timeout option is truthy' do
+      let(:options) { { skip_read_total_timeout: true } }
+
+      it_behaves_like 'does not track or raise timeout error'
+    end
+
+    context 'and skip_read_total_timeout option is falsely' do
+      let(:options) { { skip_read_total_timeout: false } }
+
+      it_behaves_like 'tracks the timeout but does not raise an error'
     end
   end
 

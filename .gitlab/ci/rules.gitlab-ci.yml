@@ -19,12 +19,6 @@
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
-.if-default-branch-schedule-2-hourly: &if-default-branch-schedule-2-hourly
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
-
-.if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
-
 .if-auto-deploy-branches: &if-auto-deploy-branches
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
@@ -34,23 +28,50 @@
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_IID'
 
+.if-merge-request-approved: &if-merge-request-approved
+  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVED'
+
+.if-merge-request-not-approved: &if-merge-request-not-approved
+  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVED != "true"'
+
+.if-automated-merge-request: &if-automated-merge-request
+  if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'
+
 .if-merge-request-title-as-if-foss: &if-merge-request-title-as-if-foss
-  if: '$CI_MERGE_REQUEST_TITLE =~ /RUN AS-IF-FOSS/'
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
 .if-merge-request-title-update-caches: &if-merge-request-title-update-caches
-  if: '$CI_MERGE_REQUEST_TITLE =~ /UPDATE CACHE/'
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
 
 .if-merge-request-title-run-all-rspec: &if-merge-request-title-run-all-rspec
-  if: '$CI_MERGE_REQUEST_TITLE =~ /RUN ALL RSPEC/'
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
 
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
+
+.if-default-branch-schedule-2-hourly: &if-default-branch-schedule-2-hourly
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+
+.if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
 
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-dot-com-ee-schedule: &if-dot-com-ee-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-dot-com-ee-2-hourly-schedule: &if-dot-com-ee-2-hourly-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+
+.if-dot-com-ee-nightly-schedule: &if-dot-com-ee-nightly-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
+
+.if-cache-credentials-schedule: &if-cache-credentials-schedule
+  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
 
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
@@ -64,20 +85,12 @@
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
-.if-dot-com-ee-schedule: &if-dot-com-ee-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
-
-.if-cache-credentials-schedule: &if-cache-credentials-schedule
-  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
-
-.if-merge-request-rspec-minimal-disabled: &if-merge-request-rspec-minimal-disabled
-  if: '$CI_MERGE_REQUEST_IID && $RSPEC_MINIMAL_ENABLED != "true"'
 
 .if-rspec-fail-fast-disabled: &if-rspec-fail-fast-disabled
   if: '$RSPEC_FAIL_FAST_ENABLED != "true"'
 
 .if-rspec-fail-fast-skipped: &if-rspec-fail-fast-skipped
-  if: '$CI_MERGE_REQUEST_TITLE =~ /SKIP RSPEC FAIL-FAST/'
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-rspec-fail-fast/'
 
 # For Security merge requests, the gitlab-release-tools-bot triggers a new
 # pipeline for the "Pipelines for merged results" feature. If the pipeline
@@ -205,6 +218,7 @@
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
+  - "GITALY_SERVER_VERSION" # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -551,9 +565,7 @@
 ###############
 .pages:rules:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-dot-com-ee-2-hourly-schedule
 
 ############
 # QA rules #
@@ -597,12 +609,20 @@
 ###############
 .rails:rules:ee-and-foss-migration:
   rules:
-    - changes: *db-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *db-patterns
 
 .rails:rules:ee-and-foss-migration:minimal:
   rules:
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -628,12 +648,20 @@
 
 .rails:rules:ee-and-foss-unit:
   rules:
-    - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *backend-patterns
 
 .rails:rules:ee-and-foss-unit:minimal:
   rules:
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -645,12 +673,20 @@
 
 .rails:rules:ee-and-foss-integration:
   rules:
-    - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *backend-patterns
 
 .rails:rules:ee-and-foss-integration:minimal:
   rules:
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -662,12 +698,20 @@
 
 .rails:rules:ee-and-foss-system:
   rules:
-    - changes: *code-backstage-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *code-backstage-patterns
 
 .rails:rules:ee-and-foss-system:minimal:
   rules:
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -679,12 +723,20 @@
 
 .rails:rules:ee-and-foss-fast_spec_helper:
   rules:
-    - changes: ["config/**/*"]
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: ["config/**/*"]
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: ["config/**/*"]
 
 .rails:rules:ee-and-foss-fast_spec_helper:minimal:
   rules:
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -703,14 +755,22 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - changes: *db-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *db-patterns
 
 .rails:rules:ee-only-migration:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -724,14 +784,22 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *backend-patterns
 
 .rails:rules:ee-only-unit:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -745,14 +813,22 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *backend-patterns
 
 .rails:rules:ee-only-integration:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -766,14 +842,22 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - changes: *code-backstage-patterns
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - changes: *code-backstage-patterns
 
 .rails:rules:ee-only-system:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request-title-run-all-rspec
       when: never
@@ -787,19 +871,25 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-security-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *db-patterns
-    - <<: *if-merge-request-title-run-all-rspec
-    - <<: *if-merge-request
-      changes: *ci-patterns
 
 .rails:rules:as-if-foss-migration:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -808,25 +898,30 @@
       changes: *db-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *db-patterns
-    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:as-if-foss-unit:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *backend-patterns
-    - <<: *if-merge-request-title-run-all-rspec
-    - <<: *if-merge-request
-      changes: *ci-patterns
 
 .rails:rules:as-if-foss-unit:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -835,25 +930,30 @@
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *backend-patterns
-    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:as-if-foss-integration:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *backend-patterns
-    - <<: *if-merge-request-title-run-all-rspec
-    - <<: *if-merge-request
-      changes: *ci-patterns
 
 .rails:rules:as-if-foss-integration:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -862,25 +962,30 @@
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *backend-patterns
-    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:as-if-foss-system:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-title-run-all-rspec
-    - <<: *if-merge-request
-      changes: *ci-patterns
 
 .rails:rules:as-if-foss-system:minimal:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-rspec-minimal-disabled
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -889,7 +994,6 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-and-foss-db-library-code:
   rules:
@@ -1209,6 +1313,8 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       allow_failure: true
+    - <<: *if-dot-com-ee-schedule
+      allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
 # because the jobs `needs` the previous job to complete.
@@ -1235,6 +1341,10 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       when: on_failure
+    - <<: *if-dot-com-ee-schedule
+      when: on_success
+    - <<: *if-dot-com-ee-schedule
+      when: on_failure
 
 .review:rules:review-qa-all:
   rules:
@@ -1246,6 +1356,8 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
+      allow_failure: true
+    - <<: *if-dot-com-ee-nightly-schedule
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
@@ -1261,12 +1373,18 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
       when: on_success
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
       when: on_failure
+      allow_failure: true
+    - <<: *if-dot-com-ee-nightly-schedule
+      when: on_success
+      allow_failure: true
+    - <<: *if-dot-com-ee-nightly-schedule
+      when: on_failure
+      allow_failure: true
 
 .review:rules:review-cleanup:
   rules:
@@ -1354,10 +1472,10 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-dot-com-ee-2-hourly-schedule
     - changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
-    - <<: *if-dot-com-ee-schedule
 
 ###################
 # workhorse rules #

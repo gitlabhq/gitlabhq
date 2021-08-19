@@ -6,6 +6,7 @@ module Gitlab
       include Migrations::BackgroundMigrationHelpers
       include DynamicModelHelpers
       include RenameTableHelpers
+      include AsyncIndexes::MigrationHelpers
 
       # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
       MAX_IDENTIFIER_NAME_LENGTH = 63
@@ -152,6 +153,9 @@ module Gitlab
         disable_statement_timeout do
           add_index(table_name, column_name, **options)
         end
+
+        # We created this index. Now let's remove the queuing entry for async creation in case it's still there.
+        unprepare_async_index(table_name, column_name, **options)
       end
 
       # Removes an existed index, concurrently
@@ -178,6 +182,9 @@ module Gitlab
         disable_statement_timeout do
           remove_index(table_name, **options.merge({ column: column_name }))
         end
+
+        # We removed this index. Now let's make sure it's not queued for async creation.
+        unprepare_async_index(table_name, column_name, **options)
       end
 
       # Removes an existing index, concurrently
@@ -208,6 +215,9 @@ module Gitlab
         disable_statement_timeout do
           remove_index(table_name, **options.merge({ name: index_name }))
         end
+
+        # We removed this index. Now let's make sure it's not queued for async creation.
+        unprepare_async_index_by_name(table_name, index_name, **options)
       end
 
       # Adds a foreign key with only minimal locking on the tables involved.
@@ -221,8 +231,13 @@ module Gitlab
       # on_delete - The action to perform when associated data is removed,
       #             defaults to "CASCADE".
       # name - The name of the foreign key.
+      # validate - Flag that controls whether the new foreign key will be validated after creation.
+      #            If the flag is not set, the constraint will only be enforced for new data.
+      # reverse_lock_order - Flag that controls whether we should attempt to acquire locks in the reverse
+      #                      order of the ALTER TABLE. This can be useful in situations where the foreign
+      #                      key creation could deadlock with another process.
       #
-      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, target_column: :id, name: nil, validate: true)
+      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, target_column: :id, name: nil, validate: true, reverse_lock_order: false)
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
@@ -250,6 +265,8 @@ module Gitlab
           # data.
 
           with_lock_retries do
+            execute("LOCK TABLE #{target}, #{source} IN SHARE ROW EXCLUSIVE MODE") if reverse_lock_order
+
             execute <<-EOF.strip_heredoc
             ALTER TABLE #{source}
             ADD CONSTRAINT #{options[:name]}
@@ -324,9 +341,9 @@ module Gitlab
       # - Per connection (requires a cleanup after the execution)
       #
       # When using a per connection disable statement, code must be inside
-      # a block so we can automatically execute `RESET ALL` after block finishes
+      # a block so we can automatically execute `RESET statement_timeout` after block finishes
       # otherwise the statement will still be disabled until connection is dropped
-      # or `RESET ALL` is executed
+      # or `RESET statement_timeout` is executed
       def disable_statement_timeout
         if block_given?
           if statement_timeout_disabled?
@@ -340,7 +357,7 @@ module Gitlab
 
               yield
             ensure
-              execute('RESET ALL')
+              execute('RESET statement_timeout')
             end
           end
         else
@@ -1248,8 +1265,8 @@ module Gitlab
 
       def check_trigger_permissions!(table)
         unless Grant.create_and_execute_trigger?(table)
-          dbname = Database.database_name
-          user = Database.username
+          dbname = Database.main.database_name
+          user = Database.main.username
 
           raise <<-EOF
 Your database user is not allowed to create, drop, or execute triggers on the
@@ -1569,8 +1586,8 @@ into similar problems in the future (e.g. when new tables are created).
       def create_extension(extension)
         execute('CREATE EXTENSION IF NOT EXISTS %s' % extension)
       rescue ActiveRecord::StatementInvalid => e
-        dbname = Database.database_name
-        user = Database.username
+        dbname = Database.main.database_name
+        user = Database.main.username
 
         warn(<<~MSG) if e.to_s =~ /permission denied/
           GitLab requires the PostgreSQL extension '#{extension}' installed in database '#{dbname}', but
@@ -1597,8 +1614,8 @@ into similar problems in the future (e.g. when new tables are created).
       def drop_extension(extension)
         execute('DROP EXTENSION IF EXISTS %s' % extension)
       rescue ActiveRecord::StatementInvalid => e
-        dbname = Database.database_name
-        user = Database.username
+        dbname = Database.main.database_name
+        user = Database.main.username
 
         warn(<<~MSG) if e.to_s =~ /permission denied/
           This migration attempts to drop the PostgreSQL extension '#{extension}'

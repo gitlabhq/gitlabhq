@@ -1,3 +1,5 @@
-import initShowEnvironment from '~/environments/mount_show';
+import initConfirmRollBackModal from '~/environments/init_confirm_rollback_modal';
+import { initHeader } from '~/environments/mount_show';
 
-initShowEnvironment();
+initHeader();
+initConfirmRollBackModal();

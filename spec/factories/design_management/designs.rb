@@ -39,7 +39,7 @@ FactoryBot.define do
           sha = commit_version[action]
           version = DesignManagement::Version.new(sha: sha, issue: issue, author: evaluator.author)
           version.save!(validate: false) # We need it to have an ID, validate later
-          Gitlab::Database.bulk_insert(dv_table_name, [action.row_attrs(version)]) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(dv_table_name, [action.row_attrs(version)]) # rubocop:disable Gitlab/BulkInsert
         end
 
         # always a creation

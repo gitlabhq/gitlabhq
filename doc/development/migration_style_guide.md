@@ -31,11 +31,66 @@ Please don't depend on GitLab-specific code since it can change in future
 versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
 
-For GitLab.com, please take into consideration that regular migrations (under `db/migrate`)
-are run before [Canary is deployed](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/#configuration-and-deployment),
-and [post-deployment migrations](post_deployment_migrations.md) (`db/post_migrate`) are run after the deployment to production has finished.
+## Choose an appropriate migration type
 
-## Create database migrations
+The first step before adding a new migration should be to decide which type is most appropriate.
+
+There are currently three kinds of migrations you can create, depending on the kind of
+work it needs to perform and how long it takes to complete:
+
+1. [**Regular schema migrations.**](#create-a-regular-schema-migration) These are traditional Rails migrations in `db/migrate` that run _before_ new application code is deployed
+   (for GitLab.com before [Canary is deployed](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/#configuration-and-deployment)).
+   This means that they should be relatively fast, no more than a few minutes, so as not to unnecessarily delay a deployment.
+
+   One exception is a migration that takes longer but is absolutely critical for the application to operate correctly.
+   For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/index.md)
+   and perform a post-deployment migration instead. The feature can then be turned on after the migration finishes.
+1. [**Post-deployment migrations.**](post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
+   run _after_ new application code has been deployed (for GitLab.com after the production deployment has finished).
+   They can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
+   Common examples for schema changes that should run post-deploy include:
+     - Clean-ups, like removing unused columns.
+     - Adding non-critical indices on high-traffic tables.
+     - Adding non-critical indices that take a long time to create.
+1. [**Background migrations.**](background_migrations.md) These aren't regular Rails migrations, but application code that is
+   executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
+   exceed the timing guidelines for post-deploy migrations. Background migrations should _not_ change the schema.
+
+Use the following diagram to guide your decision, but keep in mind that it is just a tool, and
+the final outcome will always be dependent on the specific changes being made:
+
+```mermaid
+graph LR
+    A{Schema<br/>changed?}
+    A -->|Yes| C{Critical to<br/>speed or<br/>behavior?}
+    A -->|No| D{Is it fast?}
+
+    C -->|Yes| H{Is it fast?}
+    C -->|No| F[Post-deploy migration]
+
+    H -->|Yes| E[Regular migration]
+    H -->|No| I[Post-deploy migration<br/>+ feature flag]
+ 
+    D -->|Yes| F[Post-deploy migration]
+    D -->|No| G[Background migration]
+```
+
+### How long a migration should take
+
+In general, all migrations for a single deploy shouldn't take longer than
+1 hour for GitLab.com. The following guidelines are not hard rules, they were
+estimated to keep migration duration to a minimum.
+
+NOTE:
+Keep in mind that all durations should be measured against GitLab.com.
+
+| Migration Type | Recommended Duration | Notes |
+|----|----|---|
+| Regular migrations | `<= 3 minutes` | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
+| Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
+| Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](query_performance.md#timing-guidelines-for-queries) with cold caches. |
+
+## Create a regular schema migration
 
 To create a migration you can use the following Rails generator:
 
@@ -432,47 +487,6 @@ like a standard migration invocation.
 
 The migration might fail if there is a very long running transaction (40+ minutes)
 accessing the `users` table.
-
-## Multi-Threading
-
-Sometimes a migration might need to use multiple Ruby threads to speed up a
-migration. For this to work your migration needs to include the module
-`Gitlab::Database::MultiThreadedMigration`:
-
-```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-  include Gitlab::Database::MultiThreadedMigration
-end
-```
-
-You can then use the method `with_multiple_threads` to perform work in separate
-threads. For example:
-
-```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-  include Gitlab::Database::MultiThreadedMigration
-
-  def up
-    with_multiple_threads(4) do
-      disable_statement_timeout
-
-      # ...
-    end
-  end
-end
-```
-
-Here the call to `disable_statement_timeout` uses the connection local to
-the `with_multiple_threads` block, instead of re-using the global connection
-pool. This ensures each thread has its own connection object, and doesn't time
-out when trying to obtain one.
-
-PostgreSQL has a maximum amount of connections that it allows. This
-limit can vary from installation to installation. As a result, it's recommended
-you do not use more than 32 threads in a single migration. Usually, 4-8 threads
-should be more than enough.
 
 ## Removing indexes
 
@@ -1131,3 +1145,7 @@ Note that the metrics linked here are GitLab-internal only:
 - [Size](https://thanos.gitlab.net/graph?g0.range_input=2h&g0.max_source_resolution=0s&g0.expr=topk(500%2C%20max%20by%20(relname)%20(pg_total_relation_size_bytes%7Benvironment%3D%22gprd%22%7D))&g0.tab=1) is greater than 10 GB
 
 Any table which has some high read operation compared to current [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L4) might be a good candidate.
+
+As a general rule, we discourage adding columns to high-traffic tables that are purely for
+analytics or reporting of GitLab.com. This can have negative performance impacts for all
+self-managed instances without providing direct feature value to them.

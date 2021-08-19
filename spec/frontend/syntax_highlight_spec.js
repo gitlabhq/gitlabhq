@@ -10,39 +10,50 @@ describe('Syntax Highlighter', () => {
     }
     return (window.gon.user_color_scheme = value);
   };
-  describe('on a js-syntax-highlight element', () => {
-    beforeEach(() => {
-      setFixtures('<div class="js-syntax-highlight"></div>');
+
+  // We have to bind `document.querySelectorAll` to `document` to not mess up the fn's context
+  describe.each`
+    desc                | fn
+    ${'jquery'}         | ${$}
+    ${'vanilla all'}    | ${document.querySelectorAll.bind(document)}
+    ${'vanilla single'} | ${document.querySelector.bind(document)}
+  `('highlight using $desc syntax', ({ fn }) => {
+    describe('on a js-syntax-highlight element', () => {
+      beforeEach(() => {
+        setFixtures('<div class="js-syntax-highlight"></div>');
+      });
+
+      it('applies syntax highlighting', () => {
+        stubUserColorScheme('monokai');
+        syntaxHighlight(fn('.js-syntax-highlight'));
+
+        expect(fn('.js-syntax-highlight')).toHaveClass('monokai');
+      });
     });
 
-    it('applies syntax highlighting', () => {
-      stubUserColorScheme('monokai');
-      syntaxHighlight($('.js-syntax-highlight'));
+    describe('on a parent element', () => {
+      beforeEach(() => {
+        setFixtures(
+          '<div class="parent">\n  <div class="js-syntax-highlight"></div>\n  <div class="foo"></div>\n  <div class="js-syntax-highlight"></div>\n</div>',
+        );
+      });
 
-      expect($('.js-syntax-highlight')).toHaveClass('monokai');
-    });
-  });
+      it('applies highlighting to all applicable children', () => {
+        stubUserColorScheme('monokai');
+        syntaxHighlight(fn('.parent'));
 
-  describe('on a parent element', () => {
-    beforeEach(() => {
-      setFixtures(
-        '<div class="parent">\n  <div class="js-syntax-highlight"></div>\n  <div class="foo"></div>\n  <div class="js-syntax-highlight"></div>\n</div>',
-      );
-    });
+        expect(fn('.parent')).not.toHaveClass('monokai');
+        expect(fn('.foo')).not.toHaveClass('monokai');
 
-    it('applies highlighting to all applicable children', () => {
-      stubUserColorScheme('monokai');
-      syntaxHighlight($('.parent'));
+        expect(document.querySelectorAll('.monokai').length).toBe(2);
+      });
 
-      expect($('.parent, .foo')).not.toHaveClass('monokai');
-      expect($('.monokai').length).toBe(2);
-    });
+      it('prevents an infinite loop when no matches exist', () => {
+        setFixtures('<div></div>');
+        const highlight = () => syntaxHighlight(fn('div'));
 
-    it('prevents an infinite loop when no matches exist', () => {
-      setFixtures('<div></div>');
-      const highlight = () => syntaxHighlight($('div'));
-
-      expect(highlight).not.toThrow();
+        expect(highlight).not.toThrow();
+      });
     });
   });
 });

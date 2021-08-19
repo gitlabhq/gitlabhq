@@ -426,7 +426,7 @@ Started syncing 'ldapmain' provider for 'my_group' group
 ```
 
 The following entry shows an array of all user DNs GitLab sees in the LDAP server.
-Note that these are the users for a single LDAP group, not a GitLab group. If
+These are the users for a single LDAP group, not a GitLab group. If
 you have multiple LDAP groups linked to this GitLab group, you see multiple
 log entries like this - one for each LDAP group. If you don't see an LDAP user
 DN in this log entry, LDAP is not returning the user when we do the lookup.
@@ -666,7 +666,7 @@ ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
   -b "dc=ldap-testing,dc=example,dc=com"
 ```
 
-Note that the `bind_dn`, `password`, `port`, `host`, and `base` are all
+The `bind_dn`, `password`, `port`, `host`, and `base` are all
 identical to what's configured in the `gitlab.rb`.
 
 For more information, see the [official `ldapsearch` documentation](https://linux.die.net/man/1/ldapsearch).

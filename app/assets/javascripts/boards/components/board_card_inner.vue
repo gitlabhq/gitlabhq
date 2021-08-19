@@ -65,7 +65,7 @@ export default {
   },
   computed: {
     ...mapState(['isShowingLabels', 'issuableType', 'allowSubEpics']),
-    ...mapGetters(['isEpicBoard']),
+    ...mapGetters(['isEpicBoard', 'isProjectBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
       // Render up to all 4 assignees if there are only 4 assigness
@@ -143,6 +143,9 @@ export default {
     },
     totalProgress() {
       return Math.round((this.item.descendantWeightSum.closedIssues / this.totalWeight) * 100);
+    },
+    showReferencePath() {
+      return !this.isProjectBoard && this.itemReferencePath;
     },
   },
   methods: {
@@ -247,7 +250,7 @@ export default {
           :class="{ 'gl-font-base': isEpicBoard }"
         >
           <tooltip-on-truncate
-            v-if="itemReferencePath"
+            v-if="showReferencePath"
             :title="itemReferencePath"
             placement="bottom"
             class="board-item-path gl-text-truncate gl-font-weight-bold"

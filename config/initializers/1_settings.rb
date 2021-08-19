@@ -164,6 +164,7 @@ Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host'] ||= ENV['GITLAB_HOST'] || 'localhost'
+Settings.gitlab['cdn_host'] ||= ENV['GITLAB_CDN_HOST'].presence
 Settings.gitlab['ssh_host'] ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= ENV['GITLAB_PORT'] || (Settings.gitlab.https ? 443 : 80)
@@ -177,6 +178,7 @@ Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'G
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['email_subject_suffix'] ||= ENV['GITLAB_EMAIL_SUBJECT_SUFFIX'] || ""
 Settings.gitlab['email_smime'] = SmimeSignatureSettings.parse(Settings.gitlab['email_smime'])
+Settings.gitlab['email_smtp_secret_file'] = Settings.absolute(Settings.gitlab['email_smtp_secret_file'] || File.join(Settings.encrypted_settings['path'], "smtp.yaml.enc"))
 Settings.gitlab['base_url'] ||= Settings.__send__(:build_base_gitlab_url)
 Settings.gitlab['url'] ||= Settings.__send__(:build_gitlab_url)
 Settings.gitlab['user'] ||= 'git'
@@ -209,7 +211,7 @@ Settings.gitlab.default_projects_features['visibility_level']   = Settings.__sen
 Settings.gitlab['domain_allowlist'] ||= []
 Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
-Settings.gitlab['content_security_policy'] ||= Gitlab::ContentSecurityPolicy::ConfigLoader.default_settings_hash
+Settings.gitlab['content_security_policy'] ||= {}
 Settings.gitlab['allowed_hosts'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
@@ -444,6 +446,9 @@ Settings.cron_jobs['ci_schedule_delete_objects_worker']['job_class'] = 'Ci::Sche
 Settings.cron_jobs['environments_auto_stop_cron_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['environments_auto_stop_cron_worker']['cron'] ||= '24 * * * *'
 Settings.cron_jobs['environments_auto_stop_cron_worker']['job_class'] = 'Environments::AutoStopCronWorker'
+Settings.cron_jobs['environments_auto_delete_cron_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['environments_auto_delete_cron_worker']['cron'] ||= '34 * * * *'
+Settings.cron_jobs['environments_auto_delete_cron_worker']['job_class'] = 'Environments::AutoDeleteCronWorker'
 Settings.cron_jobs['repository_check_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['repository_check_worker']['cron'] ||= '20 * * * *'
 Settings.cron_jobs['repository_check_worker']['job_class'] = 'RepositoryCheck::DispatchWorker'
@@ -543,6 +548,9 @@ Settings.cron_jobs['update_container_registry_info_worker']['job_class'] = 'Upda
 Settings.cron_jobs['postgres_dynamic_partitions_manager'] ||= Settingslogic.new({})
 Settings.cron_jobs['postgres_dynamic_partitions_manager']['cron'] ||= '21 */6 * * *'
 Settings.cron_jobs['postgres_dynamic_partitions_manager']['job_class'] ||= 'Database::PartitionManagementWorker'
+Settings.cron_jobs['postgres_dynamic_partitions_dropper'] ||= Settingslogic.new({})
+Settings.cron_jobs['postgres_dynamic_partitions_dropper']['cron'] ||= '45 12 * * *'
+Settings.cron_jobs['postgres_dynamic_partitions_dropper']['job_class'] ||= 'Database::DropDetachedPartitionsWorker'
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['cron'] ||= '47 9 * * *'
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['job_class'] = 'CiPlatformMetricsUpdateCronWorker'
@@ -701,6 +709,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['cron'] ||= '*/15 * * * *'
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['job_class'] = 'Security::OrchestrationPolicyRuleScheduleWorker'
+  Settings.cron_jobs['app_sec_dast_profile_schedule_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['cron'] ||= '7-59/15 * * * *'
+  Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['job_class'] = 'AppSec::Dast::ProfileScheduleWorker'
 end
 
 #
@@ -750,13 +761,6 @@ Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 #
 Settings['repositories'] ||= Settingslogic.new({})
 Settings.repositories['storages'] ||= {}
-unless Settings.repositories.storages['default']
-  Settings.repositories.storages['default'] ||= {}
-  # We set the path only if the default storage doesn't exist, in case it exists
-  # but follows the pre-9.0 configuration structure. `6_validations.rb` initializer
-  # will validate all storages and throw a relevant error to the user if necessary.
-  Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
-end
 
 Settings.repositories.storages.each do |key, storage|
   Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)

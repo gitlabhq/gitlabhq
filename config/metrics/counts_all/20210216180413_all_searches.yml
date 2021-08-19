@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.all_searches
 description: Total Searches for All Basic Search and Advanced Search in self-managed
   and SaaS
@@ -18,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

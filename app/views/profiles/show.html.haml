@@ -77,12 +77,10 @@
   .row.user-time-preferences.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0= s_("Profiles|Time settings")
-      %p= s_("Profiles|You can set your current timezone here")
+      %p= s_("Profiles|Set your local time zone")
     .col-lg-8
-      -# TODO: might need an entry in user/profile.md to describe some of these settings
-      -# https://gitlab.com/gitlab-org/gitlab-foss/issues/60070
       %h5= _("Time zone")
-      = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
+      = dropdown_tag(_("Select a time zone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg', title: _("Select a time zone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
       %input.hidden{ :type => 'hidden', :id => 'user_timezone', :name => 'user[timezone]', value: @user.timezone }
     .col-lg-12
       %hr
@@ -100,6 +98,7 @@
         = f.text_field :id, class: 'gl-form-input', readonly: true, label: s_('Profiles|User ID'), wrapper: { class: 'col-md-3' }
 
       = f.text_field :pronouns, class: 'input-md gl-form-input', help: s_("Profiles|Enter your pronouns to let people know how to refer to you")
+      = f.text_field :pronunciation, class: 'input-md gl-form-input', help: s_("Profiles|Enter how your name is pronounced to help people address you correctly")
       = render_if_exists 'profiles/email_settings', form: f
       = f.text_field :skype, class: 'input-md gl-form-input', placeholder: s_("Profiles|username")
       = f.text_field :linkedin, class: 'input-md gl-form-input', help: s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
@@ -123,10 +122,9 @@
       = f.check_box :include_private_contributions, label: s_('Profiles|Include private contributions on my profile'), wrapper_class: 'mb-2', inline: true
       .help-block
         = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
-  .row.gl-justify-content-end.gl-mt-5
-    .col-lg-8.gl-display-flex
-      = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3'
-      = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
+  %hr
+  = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3'
+  = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
 
 .modal.modal-profile-crop{ data: { cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css') } }
   .modal-dialog

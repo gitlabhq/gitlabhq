@@ -1,3 +1,4 @@
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { DEFAULT_SORT, MEMBER_TYPES } from '~/members/constants';
 import {
   generateBadges,
@@ -150,21 +151,18 @@ describe('Members Utils', () => {
 
   describe('parseSortParam', () => {
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL(URL_HOST);
+      setWindowLocation(URL_HOST);
     });
 
     describe('when `sort` param is not present', () => {
       it('returns default sort options', () => {
-        window.location.search = '';
-
         expect(parseSortParam(['account'])).toEqual(DEFAULT_SORT);
       });
     });
 
     describe('when field passed in `sortableFields` argument does not have `sort` key defined', () => {
       it('returns default sort options', () => {
-        window.location.search = '?sort=source_asc';
+        setWindowLocation('?sort=source_asc');
 
         expect(parseSortParam(['source'])).toEqual(DEFAULT_SORT);
       });
@@ -182,7 +180,7 @@ describe('Members Utils', () => {
       ${'oldest_sign_in'}    | ${{ sortByKey: 'lastSignIn', sortDesc: true }}
     `('when `sort` query string param is `$sortParam`', ({ sortParam, expected }) => {
       it(`returns ${JSON.stringify(expected)}`, async () => {
-        window.location.search = `?sort=${sortParam}`;
+        setWindowLocation(`?sort=${sortParam}`);
 
         expect(parseSortParam(['account', 'granted', 'expires', 'maxRole', 'lastSignIn'])).toEqual(
           expected,
@@ -193,8 +191,7 @@ describe('Members Utils', () => {
 
   describe('buildSortHref', () => {
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL(URL_HOST);
+      setWindowLocation(URL_HOST);
     });
 
     describe('when field passed in `sortBy` argument does not have `sort` key defined', () => {
@@ -225,7 +222,7 @@ describe('Members Utils', () => {
 
     describe('when filter params are set', () => {
       it('merges the `sort` param with the filter params', () => {
-        window.location.search = '?two_factor=enabled&with_inherited_permissions=exclude';
+        setWindowLocation('?two_factor=enabled&with_inherited_permissions=exclude');
 
         expect(
           buildSortHref({
@@ -240,7 +237,7 @@ describe('Members Utils', () => {
 
     describe('when search param is set', () => {
       it('merges the `sort` param with the search param', () => {
-        window.location.search = '?search=foobar';
+        setWindowLocation('?search=foobar');
 
         expect(
           buildSortHref({

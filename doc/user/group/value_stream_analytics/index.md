@@ -20,7 +20,12 @@ to uncover, triage, and identify the root cause of slowdowns in the software dev
 
 For information on how to contribute to the development of Value Stream Analytics, see our [contributor documentation](../../../development/value_stream_analytics.md).
 
-Group-level Value Stream Analytics is available via **Group > Analytics > Value Stream**.
+To view group-level Value Stream Analytics:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+
+Value Stream Analytics at the group level includes data for the selected group and its subgroups.
 
 [Project-level Value Stream Analytics](../../analytics/value_stream_analytics.md) is also available.
 

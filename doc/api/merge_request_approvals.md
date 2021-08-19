@@ -954,7 +954,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer | yes      | The IID of the merge request |
 | `sha`               | string  | no       | The `HEAD` of the merge request |
-| `approval_password` **(PREMIUM)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-authentication-for-approvals) is enabled in the project settings. |
+| `approval_password` **(PREMIUM)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-password-to-approve) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
 when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must

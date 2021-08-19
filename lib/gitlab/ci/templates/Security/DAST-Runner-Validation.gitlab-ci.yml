@@ -1,0 +1,23 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-Runner-Validation.gitlab-ci.yml
+
+stages:
+  - build
+  - test
+  - deploy
+  - dast
+
+variables:
+  DAST_RUNNER_VALIDATION_VERSION: 1
+
+validation:
+  stage: dast
+  image:
+    name: "registry.gitlab.com/security-products/dast-runner-validation:$DAST_RUNNER_VALIDATION_VERSION"
+  variables:
+    GIT_STRATEGY: none
+  allow_failure: false
+  script:
+    - ~/validate.sh

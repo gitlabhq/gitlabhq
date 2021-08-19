@@ -19,6 +19,7 @@ import {
   collapsibleTrace,
   collapsibleTraceIncremental,
   multipleCollapsibleSectionsMockData,
+  backwardsCompatibilityTrace,
 } from '../components/log/mock_data';
 
 describe('Jobs Store Utils', () => {
@@ -295,6 +296,21 @@ describe('Jobs Store Utils', () => {
         ];
 
         expect(result.parsedLines[1].lines).toEqual(expect.arrayContaining(innerSection));
+      });
+    });
+
+    describe('backwards compatibility', () => {
+      beforeEach(() => {
+        result = logLinesParser(backwardsCompatibilityTrace);
+      });
+
+      it('should return an object with a parsedLines prop', () => {
+        expect(result).toEqual(
+          expect.objectContaining({
+            parsedLines: expect.any(Array),
+          }),
+        );
+        expect(result.parsedLines).toHaveLength(1);
       });
     });
   });

@@ -12,6 +12,9 @@ const DEFAULT_PROPS = {
   replacePath: 'some/replace/path',
   deletePath: 'some/delete/path',
   emptyRepo: false,
+  projectPath: 'some/project/path',
+  isLocked: false,
+  canLock: true,
 };
 
 const DEFAULT_INJECT = {
@@ -43,7 +46,7 @@ describe('BlobButtonGroup component', () => {
 
   const findDeleteBlobModal = () => wrapper.findComponent(DeleteBlobModal);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
-  const findReplaceButton = () => wrapper.findAll(GlButton).at(0);
+  const findReplaceButton = () => wrapper.find('[data-testid="replace"]');
 
   it('renders component', () => {
     createComponent();

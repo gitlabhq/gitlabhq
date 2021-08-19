@@ -20,7 +20,7 @@ RSpec.describe ::CachingArrayResolver do
     Class.new(::Resolvers::BaseResolver) do
       include mod
       type [::Types::UserType], null: true
-      argument :is_admin, ::GraphQL::BOOLEAN_TYPE, required: false
+      argument :is_admin, ::GraphQL::Types::Boolean, required: false
 
       def query_input(is_admin:)
         is_admin
@@ -50,7 +50,7 @@ RSpec.describe ::CachingArrayResolver do
         Class.new(::Resolvers::BaseResolver) do
           include mod
           type [::Types::UserType], null: true
-          argument :username, ::GraphQL::STRING_TYPE, required: false
+          argument :username, ::GraphQL::Types::String, required: false
 
           def query_input(username:)
             username

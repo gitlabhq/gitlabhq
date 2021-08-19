@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'RemoveMemberButton',
@@ -45,7 +45,7 @@ export default {
     oncallSchedules: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
   },
   computed: {
@@ -54,30 +54,35 @@ export default {
         return state[this.namespace].memberPath;
       },
     }),
-    computedMemberPath() {
-      return this.memberPath.replace(':id', this.memberId);
+    modalData() {
+      return {
+        isAccessRequest: this.isAccessRequest,
+        isInvite: this.isInvite,
+        memberPath: this.memberPath.replace(':id', this.memberId),
+        memberType: this.memberType,
+        message: this.message,
+        oncallSchedules: this.oncallSchedules,
+      };
     },
-    stringifiedSchedules() {
-      return JSON.stringify(this.oncallSchedules);
-    },
+  },
+  methods: {
+    ...mapActions({
+      showRemoveMemberModal(dispatch, payload) {
+        return dispatch(`${this.namespace}/showRemoveMemberModal`, payload);
+      },
+    }),
   },
 };
 </script>
 
 <template>
   <gl-button
-    v-gl-tooltip.hover
-    class="js-remove-member-button"
+    v-gl-tooltip
     variant="danger"
     :title="title"
     :aria-label="title"
     :icon="icon"
-    :data-member-path="computedMemberPath"
-    :data-member-type="memberType"
-    :data-is-access-request="isAccessRequest"
-    :data-is-invite="isInvite"
-    :data-message="message"
-    :data-oncall-schedules="stringifiedSchedules"
     data-qa-selector="delete_member_button"
+    @click="showRemoveMemberModal(modalData)"
   />
 </template>

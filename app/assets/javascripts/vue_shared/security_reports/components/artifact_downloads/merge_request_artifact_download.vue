@@ -3,7 +3,7 @@ import { reportTypeToSecurityReportTypeEnum } from 'ee_else_ce/vue_shared/securi
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
-import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_merge_request_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import { extractSecurityReportArtifactsFromMergeRequest } from '~/vue_shared/security_reports/utils';
 
 export default {

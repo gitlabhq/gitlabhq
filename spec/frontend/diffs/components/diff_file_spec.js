@@ -521,4 +521,54 @@ describe('DiffFile', () => {
       expect(button.attributes('href')).toBe('/file/view/path');
     });
   });
+
+  it('loads collapsed file on mounted when single file mode is enabled', async () => {
+    wrapper.destroy();
+
+    const file = {
+      ...getReadableFile(),
+      load_collapsed_diff_url: '/diff_for_path',
+      highlighted_diff_lines: [],
+      parallel_diff_lines: [],
+      viewer: { name: 'collapsed', automaticallyCollapsed: true },
+    };
+
+    axiosMock.onGet(file.load_collapsed_diff_url).reply(httpStatus.OK, getReadableFile());
+
+    ({ wrapper, store } = createComponent({ file, props: { viewDiffsFileByFile: true } }));
+
+    await wrapper.vm.$nextTick();
+
+    expect(findLoader(wrapper).exists()).toBe(true);
+  });
+
+  describe('merge conflicts', () => {
+    beforeEach(() => {
+      wrapper.destroy();
+    });
+
+    it('does not render conflict alert', () => {
+      const file = {
+        ...getReadableFile(),
+        conflict_type: null,
+        renderIt: true,
+      };
+
+      ({ wrapper, store } = createComponent({ file }));
+
+      expect(wrapper.find('[data-testid="conflictsAlert"]').exists()).toBe(false);
+    });
+
+    it('renders conflict alert when conflict_type is present', () => {
+      const file = {
+        ...getReadableFile(),
+        conflict_type: 'both_modified',
+        renderIt: true,
+      };
+
+      ({ wrapper, store } = createComponent({ file }));
+
+      expect(wrapper.find('[data-testid="conflictsAlert"]').exists()).toBe(true);
+    });
+  });
 });

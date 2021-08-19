@@ -17,7 +17,9 @@ your Git branches like a CI/CD server.
 
 This means you don't have to wait for dependencies to be downloaded and builds to finish, you can start
 coding immediately. With Gitpod you can start coding instantly on any project, branch, and merge
-request from any device, at any time.
+request from any device, at any time, from your browser:
+
+![Gitpod interface](img/gitpod_web_interface_v13_4.png)
 
 To use the GitLab Gitpod integration, it must be enabled for your GitLab instance. Users of:
 
@@ -52,15 +54,28 @@ For GitLab self-managed instances, a GitLab administrator needs to:
    1. Add your Gitpod instance URL (for example, `https://gitpod.example.com`).
    1. Select the **Save changes** button.
 
-Your users then need to [enable it for themselves](#enable-gitpod-in-your-user-settings).
+Your users can then [enable it for themselves](#enable-gitpod-in-your-user-settings).
 
 ## Launch Gitpod in GitLab
 
-You can launch Gitpod directly from GitLab by clicking the **Gitpod** button from the **Web IDE**
-dropdown on the project page:
+You can launch Gitpod directly from GitLab in one of these ways:
 
-![Gitpod Button on Project Page](img/gitpod_button_project_page_v13_4.png)
+- *From your project's page:*
+  1. Go to your project, and navigate to the page you want to edit.
+  1. Select the caret **(angle-down)** next to **Web IDE**, and select **Gitpod**
+     from the list:
 
-A project launched in GitLab looks like:
+     ![Gitpod Button on Project Page](img/gitpod_button_project_page_v13_4.png)
 
-![Gitpod interface](img/gitpod_web_interface_v13_4.png)
+  1. Select **Open in Gitpod**.
+- *From a merge request:*
+  1. Go to your merge request, and select **Overview** in the tab menu.
+  1. Scroll to the end of the merge request description.
+  1. Select the caret **(angle-down)** next to **Web IDE**, then select **Gitpod**
+     from the list:
+
+     ![Gitpod button on the merge request page](img/gitpod-button_v14_2.png)
+
+  1. Select **Open in Gitpod**.
+
+Gitpod builds your development environment for your branch.

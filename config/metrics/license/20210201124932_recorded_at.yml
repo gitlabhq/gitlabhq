@@ -1,5 +1,5 @@
 ---
-data_category: Standard
+data_category: standard
 key_path: recorded_at
 description: When the Usage Ping computation was started
 product_section: growth
@@ -19,3 +19,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

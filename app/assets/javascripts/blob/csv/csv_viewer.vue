@@ -1,11 +1,12 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import Papa from 'papaparse';
+import PapaParseAlert from '~/vue_shared/components/papa_parse_alert.vue';
 
 export default {
   components: {
+    PapaParseAlert,
     GlTable,
-    GlAlert,
     GlLoadingIcon,
   },
   props: {
@@ -17,7 +18,7 @@ export default {
   data() {
     return {
       items: [],
-      errorMessage: null,
+      papaParseErrors: [],
       loading: true,
     };
   },
@@ -26,7 +27,7 @@ export default {
     this.items = parsed.data;
 
     if (parsed.errors.length) {
-      this.errorMessage = parsed.errors.map((e) => e.message).join('. ');
+      this.papaParseErrors = parsed.errors;
     }
 
     this.loading = false;
@@ -40,9 +41,7 @@ export default {
       <gl-loading-icon class="gl-mt-5" size="lg" />
     </div>
     <div v-else>
-      <gl-alert v-if="errorMessage" variant="danger" :dismissible="false">
-        {{ errorMessage }}
-      </gl-alert>
+      <papa-parse-alert v-if="papaParseErrors.length" :papa-parse-errors="papaParseErrors" />
       <gl-table
         :empty-text="__('No CSV data to display.')"
         :items="items"

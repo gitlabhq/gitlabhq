@@ -82,6 +82,10 @@ RSpec.describe ClustersHelper do
       expect(subject[:get_started_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'))
       expect(subject[:integration_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'))
     end
+
+    it 'displays kas address' do
+      expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
+    end
   end
 
   describe '#js_clusters_list_data' do

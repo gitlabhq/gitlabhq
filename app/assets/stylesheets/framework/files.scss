@@ -15,6 +15,16 @@
   border-top: 0;
   border-radius: $border-radius-default;
 
+  &.file-holder-top-border {
+    border-top: 1px solid $border-color;
+
+    .file-title {
+      // Prevents the top border getting clipped by the background
+      border-top-left-radius: $border-radius-default;
+      border-top-right-radius: $border-radius-default;
+    }
+  }
+
   &.file-holder-no-border {
     border: 0;
   }
@@ -136,6 +146,13 @@
      *  Blame file
      */
     &.blame {
+      //
+      // IMPORTANT PERFORMANCE OPTIMIZATION
+      //
+      // When viewinng a blame with many commits a lot of content is rendered on the page.
+      // The line below ensures that we only render what is visible to the user, thus reducing TBT in the browser.
+      content-visibility: auto;
+
       table {
         border: 0;
         margin: 0;
@@ -150,6 +167,12 @@
       }
 
       td {
+        //
+        // IMPORTANT PERFORMANCE OPTIMIZATION
+        //
+        // When viewinng a blame with many commits a lot of content is rendered on the page.
+        // The line below ensures that we only render what is visible to the user, thus reducing TBT in the browser.
+        content-visibility: auto;
         border-top: 0;
         border-bottom: 0;
 
@@ -509,6 +532,24 @@ span.idiff {
   }
 }
 
+.version-link {
+  @include gl-display-inline-block;
+  @include gl-align-self-center;
+  @include gl-mt-2;
+  @include gl-w-5;
+  @include gl-h-5;
+  @include gl-float-left;
+  background-color: $gray-400;
+  mask-image: asset_url('icons-stacked.svg#doc-versions');
+  mask-repeat: no-repeat;
+  mask-size: cover;
+  mask-position: center;
+
+  &:hover {
+    background-color: $black;
+  }
+}
+
 //
 // IMPORTANT PERFORMANCE OPTIMIZATION BELOW
 //
@@ -530,3 +571,18 @@ span.idiff {
 // will always be expanded to the maximum needed width.
 .blob-viewer[data-loading] .file-content.code .line:nth-of-type(1n+70):not(:last-of-type),
 .blob-viewer[data-loading] .file-content.code .file-line-num:nth-of-type(1n+70):not(:last-of-type) {display: none !important;}
+
+.blob-viewer[data-loading] .file-content.code .line:nth-of-type(69):not(:last-of-type),
+.blob-viewer[data-loading] .file-content.code .file-line-num:nth-of-type(69):not(:last-of-type) {
+  &::after {
+    @include gl-display-block;
+    @include gl-font-weight-bold;
+    content: '\2026';
+  }
+}
+
+.blob-viewer[data-loading] .file-content.code .line:nth-of-type(69):not(:last-of-type) {
+  &::after {
+    @include gl-text-center;
+  }
+}

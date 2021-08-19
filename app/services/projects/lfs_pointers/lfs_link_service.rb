@@ -38,7 +38,7 @@ module Projects
           rows = existent_lfs_objects
                    .not_linked_to_project(project)
                    .map { |existing_lfs_object| { project_id: project.id, lfs_object_id: existing_lfs_object.id } }
-          Gitlab::Database.bulk_insert(:lfs_objects_projects, rows) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(:lfs_objects_projects, rows) # rubocop:disable Gitlab/BulkInsert
           iterations += 1
 
           linked_existing_objects += existent_lfs_objects.map(&:oid)

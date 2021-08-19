@@ -1,5 +1,5 @@
 ---
-data_category: Operational
+data_category: operational
 key_path: counts.ci_builds
 description: Unique builds in project
 product_section: ops
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

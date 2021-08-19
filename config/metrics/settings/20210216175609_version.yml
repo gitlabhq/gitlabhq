@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: database.version
 description: The version of the PostgreSQL database.
 product_section: enablement
@@ -17,4 +17,4 @@ tier:
 - free
 - premium
 - ultimate
-
+performance_indicator_type: []

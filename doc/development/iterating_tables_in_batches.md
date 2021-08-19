@@ -334,8 +334,8 @@ end
 The iteration uses the `id` column of the `projects` table. The batching does not affect the
 subquery. This means for each iteration, the subquery is executed by the database. This adds a
 constant "load" on the query which often ends up in statement timeouts. We have an unknown number
-of confidential issues, the execution time and the accessed database rows depend on the data
-distribution in the `issues` table.
+of [confidential issues](../user/project/issues/confidential_issues.md), the execution time
+and the accessed database rows depend on the data distribution in the `issues` table.
 
 NOTE:
 Using subqueries works only when the subquery returns a small number of rows.

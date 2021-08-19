@@ -205,18 +205,21 @@ To use SSH with GitLab, copy your public key to your GitLab account.
    Replace `id_ed25519.pub` with your filename. For example, use `id_rsa.pub` for RSA.
 
 1. Sign in to GitLab.
-1. In the top right corner, select your avatar.
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Preferences**.
-1. From the left sidebar, select **SSH Keys**.
+1. On the left sidebar, select **SSH Keys**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
    which starts with `ssh-ed25519` or `ssh-rsa`, and may end with a comment.
-1. In the **Title** text box, type a description, like _Work Laptop_ or
-   _Home Workstation_.
+1. In the **Title** box, type a description, like `Work Laptop` or
+   `Home Workstation`.
 1. Optional. In the **Expires at** box, select an expiration date. (Introduced in [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36243).)
-   The expiration date is informational only, and does not prevent you from using
-   the key. However, administrators can view expiration dates and
-   use them for guidance when [deleting keys](../user/admin_area/credentials_inventory.md#delete-a-users-ssh-key).
+   In:
+   - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
+     you from using the key. Administrators can view expiration dates and use them for
+     guidance when [deleting keys](../user/admin_area/credentials_inventory.md#delete-a-users-ssh-key).
+   - GitLab 14.0 and later, the expiration date is enforced. Administrators can
+     [allow expired keys to be used](../user/admin_area/settings/account_and_limit_settings.md#allow-expired-ssh-keys-to-be-used).
    - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
    - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
 1. Select **Add key**.

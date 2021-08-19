@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import CodequalityIssueBody from '~/reports/codequality_report/components/codequality_issue_body.vue';
 import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
 import { getStoreConfig } from '~/reports/codequality_report/store';
+import { STATUS_NOT_FOUND } from '~/reports/constants';
 import { parsedReportIssues } from './mock_data';
 
 const localVue = createLocalVue();
@@ -14,8 +15,6 @@ describe('Grouped code quality reports app', () => {
 
   const PATHS = {
     codequalityHelpPath: 'codequality_help.html',
-    basePath: 'base.json',
-    headPath: 'head.json',
     baseBlobPath: 'base/blob/path/',
     headBlobPath: 'head/blob/path/',
   };
@@ -127,21 +126,6 @@ describe('Grouped code quality reports app', () => {
     });
   });
 
-  describe('when there is a head report but no base report', () => {
-    beforeEach(() => {
-      mockStore.state.basePath = null;
-      mockStore.state.hasError = true;
-    });
-
-    it('renders error text', () => {
-      expect(findWidget().text()).toContain('Failed to load codeclimate report');
-    });
-
-    it('renders a help icon with more information', () => {
-      expect(findWidget().find('[data-testid="question-icon"]').exists()).toBe(true);
-    });
-  });
-
   describe('on error', () => {
     beforeEach(() => {
       mockStore.state.hasError = true;
@@ -153,6 +137,16 @@ describe('Grouped code quality reports app', () => {
 
     it('does not render a help icon', () => {
       expect(findWidget().find('[data-testid="question-icon"]').exists()).toBe(false);
+    });
+
+    describe('when base report was not found', () => {
+      beforeEach(() => {
+        mockStore.state.status = STATUS_NOT_FOUND;
+      });
+
+      it('renders a help icon with more information', () => {
+        expect(findWidget().find('[data-testid="question-icon"]').exists()).toBe(true);
+      });
     });
   });
 });

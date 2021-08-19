@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
 
       expect(field.name).to eq('testHtml')
       expect(field.description).to eq('The GitLab Flavored Markdown rendering of `hello`')
-      expect(field.type).to eq(GraphQL::STRING_TYPE)
+      expect(field.type).to eq(GraphQL::Types::String)
       expect(field.to_graphql.complexity).to eq(5)
     end
 

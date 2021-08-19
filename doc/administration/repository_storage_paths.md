@@ -120,17 +120,23 @@ For compatibility reasons `gitlab.yml` has a different structure than Omnibus Gi
 
 1. [Restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+1. [Configure where new repositories are stored](#configure-where-new-repositories-are-stored).
+
 **For Omnibus installations**
 
-Edit `/etc/gitlab/gitlab.rb` by appending the rest of the paths to the default one:
+1. Edit `/etc/gitlab/gitlab.rb` by appending the rest of the paths to the default one:
 
-```ruby
-git_data_dirs({
- "default" => { "path" => "/var/opt/gitlab/git-data" },
- "storage1" => { "path" => "/mnt/storage1/git-data" },
- "storage2" => { "path" => "/mnt/storage2/git-data" }
-})
-```
+   ```ruby
+   git_data_dirs({
+    "default" => { "path" => "/var/opt/gitlab/git-data" },
+    "storage1" => { "path" => "/mnt/storage1/git-data" },
+    "storage2" => { "path" => "/mnt/storage2/git-data" }
+   })
+   ```
+
+1. [Restart GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+1. [Configure where new repositories are stored](#configure-where-new-repositories-are-stored).
 
 NOTE:
 Omnibus stores the repositories in a `repositories` subdirectory of the `git-data` directory.
@@ -153,7 +159,18 @@ The higher the weight of a given repository storage path relative to other repos
 paths, the more often it is chosen. That is,
 `(storage weight) / (sum of all weights) * 100 = chance %`.
 
+By default, if repository weights have not been configured earlier:
+
+- `default` is weighted `100`.
+- All other storages are weighted `0`.
+
+NOTE:
+If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
+create new repositories on `default`, regardless of the configuration or if `default` exists.
+See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
+information.
+
 ## Move repositories
 
 To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
-same process as [migrating to Gitaly Cluster](gitaly/praefect.md#migrate-to-gitaly-cluster).
+same process as [migrating to Gitaly Cluster](gitaly/index.md#migrate-to-gitaly-cluster).

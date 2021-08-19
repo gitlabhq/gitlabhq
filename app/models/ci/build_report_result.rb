@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildReportResult < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class BuildReportResult < Ci::ApplicationRecord
     self.primary_key = :build_id
 
     belongs_to :build, class_name: "Ci::Build", inverse_of: :report_results

@@ -20,6 +20,7 @@ describe('Stages Dropdown', () => {
   const findPipelineInfoText = () => wrapper.findByTestId('pipeline-info').text();
   const findPipelinePath = () => wrapper.findByTestId('pipeline-path').attributes('href');
   const findMRLinkPath = () => wrapper.findByTestId('mr-link').attributes('href');
+  const findCopySourceBranchBtn = () => wrapper.findByTestId('copy-source-ref-link');
   const findSourceBranchLinkPath = () =>
     wrapper.findByTestId('source-branch-link').attributes('href');
   const findTargetBranchLinkPath = () =>
@@ -70,6 +71,10 @@ describe('Stages Dropdown', () => {
 
       expect(actual).toBe(expected);
     });
+
+    it(`renders the source ref copy button`, () => {
+      expect(findCopySourceBranchBtn().exists()).toBe(true);
+    });
   });
 
   describe('with an "attached" merge request pipeline', () => {
@@ -103,6 +108,10 @@ describe('Stages Dropdown', () => {
         mockPipelineWithAttachedMR.merge_request.target_branch_path,
       );
     });
+
+    it(`renders the source ref copy button`, () => {
+      expect(findCopySourceBranchBtn().exists()).toBe(true);
+    });
   });
 
   describe('with a detached merge request pipeline', () => {
@@ -129,6 +138,10 @@ describe('Stages Dropdown', () => {
       expect(findSourceBranchLinkPath()).toBe(
         mockPipelineDetached.merge_request.source_branch_path,
       );
+    });
+
+    it(`renders the source ref copy button`, () => {
+      expect(findCopySourceBranchBtn().exists()).toBe(true);
     });
   });
 });

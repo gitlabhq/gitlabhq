@@ -139,7 +139,7 @@ If you're using Cloudflare, check
 > - **Do not** use a CNAME record if you want to point your
   `domain.com` to your GitLab Pages site. Use an `A` record instead.
 > - **Do not** add any special chars after the default Pages
-  domain. E.g., don't point `subdomain.domain.com` to
+  domain. For example, don't point `subdomain.domain.com` to
   or `namespace.gitlab.io/`. Some domain hosting providers may request a trailing dot (`namespace.gitlab.io.`), though.
 > - GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017.
 > - GitLab Pages IP on GitLab.com [has changed](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
@@ -315,6 +315,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example, `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

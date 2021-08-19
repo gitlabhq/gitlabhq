@@ -51,15 +51,16 @@ export default class IssuableForm {
     this.resetAutosave = this.resetAutosave.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     /* eslint-disable @gitlab/require-i18n-strings */
-    this.wipRegex = new RegExp(
+    // prettier-ignore
+    this.draftRegex = new RegExp(
       '^\\s*(' + // Line start, then any amount of leading whitespace
         'draft\\s-\\s' + // Draft_-_ where "_" are *exactly* one whitespace
-        '|\\[draft\\]\\s*' + // [Draft] or [WIP] and any following whitespace
-        '|draft:\\s*' + // Draft: or WIP: and any following whitespace
-        '|draft\\s+' + // Draft_ or WIP_ where "_" is at least one whitespace
+        '|\\[draft\\]\\s*' + // [Draft] and any following whitespace
+        '|draft:\\s*' + // Draft: and any following whitespace
+        '|draft\\s+' + // Draft_ where "_" is at least one whitespace
         '|\\(draft\\)\\s*' + // (Draft) and any following whitespace
-        ')+' + // At least one repeated match of the preceding parenthetical
-        '\\s*', // Any amount of trailing whitespace
+      ')+' + // At least one repeated match of the preceding parenthetical
+      '\\s*', // Any amount of trailing whitespace
       'i', // Match any case(s)
     );
     /* eslint-enable @gitlab/require-i18n-strings */
@@ -144,7 +145,7 @@ export default class IssuableForm {
   }
 
   workInProgress() {
-    return this.wipRegex.test(this.titleField.val());
+    return this.draftRegex.test(this.titleField.val());
   }
 
   renderWipExplanation() {
@@ -170,7 +171,7 @@ export default class IssuableForm {
   }
 
   removeWip() {
-    return this.titleField.val(this.titleField.val().replace(this.wipRegex, ''));
+    return this.titleField.val(this.titleField.val().replace(this.draftRegex, ''));
   }
 
   addWip() {

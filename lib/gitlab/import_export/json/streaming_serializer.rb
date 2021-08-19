@@ -31,10 +31,12 @@ module Gitlab
         end
 
         def execute
-          serialize_root
+          read_from_replica_if_available do
+            serialize_root
 
-          includes.each do |relation_definition|
-            serialize_relation(relation_definition)
+            includes.each do |relation_definition|
+              serialize_relation(relation_definition)
+            end
           end
         end
 
@@ -165,6 +167,13 @@ module Gitlab
               order_expression: arel_order_classes[direction].new(arel_table[klass.primary_key.to_sym])
             )
           ])
+        end
+
+        def read_from_replica_if_available(&block)
+          return yield unless ::Feature.enabled?(:load_balancing_for_export_workers, type: :development, default_enabled: :yaml)
+          return yield unless ::Gitlab::Database::LoadBalancing.enable?
+
+          ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&block)
         end
       end
     end

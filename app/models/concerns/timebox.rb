@@ -106,7 +106,7 @@ module Timebox
         .where('due_date is NULL or due_date >= ?', start_date)
     end
 
-    strip_attributes :title
+    strip_attributes! :title
 
     alias_attribute :name, :title
   end

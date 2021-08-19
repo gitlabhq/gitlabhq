@@ -1,0 +1,64 @@
+# Terraform/Base.latest
+#
+# The purpose of this template is to provide flexibility to the user so
+# they are able to only include the jobs that they find interesting.
+#
+# Therefore, this template is not supposed to run any jobs. The idea is to only
+# create hidden jobs. See: https://docs.gitlab.com/ee/ci/yaml/#hide-jobs
+#
+# There is a more opinionated template which we suggest the users to abide,
+# which is the lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
+
+image:
+  name: registry.gitlab.com/gitlab-org/terraform-images/releases/terraform:1.0.3
+
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
+  TF_STATE_NAME: ${TF_STATE_NAME:-default}  # The name of the state file used by the GitLab Managed Terraform state backend
+
+cache:
+  key: "${TF_ROOT}"
+  paths:
+    - ${TF_ROOT}/.terraform/
+    - ${TF_ROOT}/.terraform.lock.hcl
+
+.init: &init
+  stage: init
+  script:
+    - cd ${TF_ROOT}
+    - gitlab-terraform init
+
+.validate: &validate
+  stage: validate
+  script:
+    - cd ${TF_ROOT}
+    - gitlab-terraform validate
+
+.build: &build
+  stage: build
+  script:
+    - cd ${TF_ROOT}
+    - gitlab-terraform plan
+    - gitlab-terraform plan-json
+  artifacts:
+    paths:
+      - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
+
+.deploy: &deploy
+  stage: deploy
+  script:
+    - cd ${TF_ROOT}
+    - gitlab-terraform apply
+  when: manual
+  only:
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.destroy: &destroy
+  stage: cleanup
+  script:
+    - cd ${TF_ROOT}
+    - gitlab-terraform destroy
+  when: manual

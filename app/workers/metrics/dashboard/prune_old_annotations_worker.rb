@@ -5,6 +5,8 @@ module Metrics
     class PruneOldAnnotationsWorker
       include ApplicationWorker
 
+      data_consistency :always
+
       sidekiq_options retry: 3
 
       DELETE_LIMIT = 10_000

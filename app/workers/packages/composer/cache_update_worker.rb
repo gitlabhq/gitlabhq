@@ -5,6 +5,8 @@ module Packages
     class CacheUpdateWorker
       include ApplicationWorker
 
+      data_consistency :always
+
       sidekiq_options retry: 3
 
       feature_category :package_registry

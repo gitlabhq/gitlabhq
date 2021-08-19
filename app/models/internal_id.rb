@@ -83,7 +83,7 @@ class InternalId < ApplicationRecord
       self.internal_id_transactions_total.increment(
         operation: operation,
         usage: usage.to_s,
-        in_transaction: ActiveRecord::Base.connection.transaction_open?.to_s
+        in_transaction: ActiveRecord::Base.connection.transaction_open?.to_s # rubocop: disable Database/MultipleDatabases
       )
     end
 
@@ -317,7 +317,7 @@ class InternalId < ApplicationRecord
       stmt.set(arel_table[:last_value] => new_value)
       stmt.wheres = InternalId.filter_by(scope, usage).arel.constraints
 
-      ActiveRecord::Base.connection.insert(stmt, 'Update InternalId', 'last_value')
+      ActiveRecord::Base.connection.insert(stmt, 'Update InternalId', 'last_value') # rubocop: disable Database/MultipleDatabases
     end
 
     def create_record!(subject, scope, usage, init)

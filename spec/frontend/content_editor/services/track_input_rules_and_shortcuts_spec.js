@@ -4,10 +4,10 @@ import {
   INPUT_RULE_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
 } from '~/content_editor/constants';
-import { tiptapExtension as BulletList } from '~/content_editor/extensions/bullet_list';
-import { tiptapExtension as CodeBlockLowlight } from '~/content_editor/extensions/code_block_highlight';
-import { tiptapExtension as Heading } from '~/content_editor/extensions/heading';
-import { tiptapExtension as ListItem } from '~/content_editor/extensions/list_item';
+import BulletList from '~/content_editor/extensions/bullet_list';
+import CodeBlockLowlight from '~/content_editor/extensions/code_block_highlight';
+import Heading from '~/content_editor/extensions/heading';
+import ListItem from '~/content_editor/extensions/list_item';
 import trackInputRulesAndShortcuts from '~/content_editor/services/track_input_rules_and_shortcuts';
 import { ENTER_KEY, BACKSPACE_KEY } from '~/lib/utils/keys';
 import { createTestEditor } from '../test_utils';

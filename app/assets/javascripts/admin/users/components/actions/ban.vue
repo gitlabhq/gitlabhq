@@ -6,10 +6,11 @@ import { I18N_USER_ACTIONS } from '../../constants';
 
 // TODO: To be replaced with <template> content in https://gitlab.com/gitlab-org/gitlab/-/issues/320922
 const messageHtml = `
-  <p>${s__('AdminUsers|When banned, users:')}</p>
+  <p>${s__('AdminUsers|When banned:')}</p>
   <ul>
-    <li>${s__("AdminUsers|Can't log in.")}</li>
-    <li>${s__("AdminUsers|Can't access Git repositories.")}</li>
+    <li>${s__("AdminUsers|The user can't log in.")}</li>
+    <li>${s__("AdminUsers|The user can't access git repositories.")}</li>
+    <li>${s__('AdminUsers|Issues authored by this user are hidden from other users.')}</li>
   </ul>
   <p>${s__('AdminUsers|You can unban their account in the future. Their data remains intact.')}</p>
   <p>${sprintf(

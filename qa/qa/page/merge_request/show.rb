@@ -202,7 +202,9 @@ module QA
 
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
-          has_element?(:merge_request_pipeline_info_content, text: text, wait: 60)
+          wait_until(sleep_interval: 5, reload: false) do
+            has_element?(:merge_request_pipeline_info_content, text: text, wait: 15 )
+          end
         end
 
         def has_title?(title)
@@ -236,7 +238,10 @@ module QA
         end
 
         def merged?
-          # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
+          # Reloads the page at this point to avoid the problem of the merge status failing to update
+          # That's the transient UX issue this test is checking for, so if the MR is merged but the UI still shows the
+          # status as unmerged, the test will fail.
+          # Revisit after merge page re-architect is done https://gitlab.com/groups/gitlab-org/-/epics/5598
           # To remove page refresh logic if possible
           retry_until(max_attempts: 3, reload: true) do
             has_element?(:merged_status_content, text: 'The changes were merged into', wait: 20)

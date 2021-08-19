@@ -1,0 +1,11 @@
+fragment DesignTodoItem on Design {
+  id
+  image
+  __typename
+  currentUserTodos(state: pending) {
+    nodes {
+      id
+      __typename
+    }
+  }
+}

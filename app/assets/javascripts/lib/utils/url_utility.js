@@ -474,19 +474,17 @@ export function queryToObject(query, { gatherArrays = false, legacySpacesDecode 
     }
 
     const decodedValue = legacySpacesDecode ? decodeURIComponent(value) : decodeUrlParameter(value);
+    const decodedKey = legacySpacesDecode ? decodeURIComponent(key) : decodeUrlParameter(key);
 
-    if (gatherArrays && key.endsWith('[]')) {
-      const decodedKey = legacySpacesDecode
-        ? decodeURIComponent(key.slice(0, -2))
-        : decodeUrlParameter(key.slice(0, -2));
+    if (gatherArrays && decodedKey.endsWith('[]')) {
+      const decodedArrayKey = decodedKey.slice(0, -2);
 
-      if (!Array.isArray(accumulator[decodedKey])) {
-        accumulator[decodedKey] = [];
+      if (!Array.isArray(accumulator[decodedArrayKey])) {
+        accumulator[decodedArrayKey] = [];
       }
-      accumulator[decodedKey].push(decodedValue);
-    } else {
-      const decodedKey = legacySpacesDecode ? decodeURIComponent(key) : decodeUrlParameter(key);
 
+      accumulator[decodedArrayKey].push(decodedValue);
+    } else {
       accumulator[decodedKey] = decodedValue;
     }
 

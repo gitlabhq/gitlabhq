@@ -72,8 +72,8 @@ module Gitlab
       def license_usage_data
         {
           recorded_at: recorded_at,
-          uuid: alt_usage_data { Gitlab::CurrentSettings.uuid },
-          hostname: alt_usage_data { Gitlab.config.gitlab.host },
+          uuid: add_metric('UuidMetric'),
+          hostname: add_metric('HostnameMetric'),
           version: alt_usage_data { Gitlab::VERSION },
           installation_type: alt_usage_data { installation_type },
           active_user_count: count(User.active),
@@ -93,7 +93,7 @@ module Gitlab
         {
           counts: {
             assignee_lists: count(List.assignee),
-            boards: count(Board),
+            boards: add_metric('CountBoardsMetric', time_frame: 'all'),
             ci_builds: count(::Ci::Build),
             ci_internal_pipelines: count(::Ci::Pipeline.internal),
             ci_external_pipelines: count(::Ci::Pipeline.external),
@@ -108,6 +108,7 @@ module Gitlab
             deployments: deployment_count(Deployment),
             successful_deployments: deployment_count(Deployment.success),
             failed_deployments: deployment_count(Deployment.failed),
+            feature_flags: count(Operations::FeatureFlag),
             # rubocop: enable UsageData/LargeTable:
             environments: count(::Environment),
             clusters: count(::Clusters::Cluster),
@@ -138,7 +139,7 @@ module Gitlab
             in_review_folder: count(::Environment.in_review_folder),
             grafana_integrated_projects: count(GrafanaIntegration.enabled),
             groups: count(Group),
-            issues: count(Issue, start: minimum_id(Issue), finish: maximum_id(Issue)),
+            issues: add_metric('CountIssuesMetric', time_frame: 'all'),
             issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
@@ -255,9 +256,10 @@ module Gitlab
         {
           settings: {
             ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? },
+            smtp_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Email::SmtpConfig.encrypted_secrets.active? },
             operating_system: alt_usage_data(fallback: nil) { operating_system },
             gitaly_apdex: alt_usage_data { gitaly_apdex },
-            collected_data_categories: alt_usage_data(fallback: []) { Gitlab::Usage::Metrics::Instrumentations::CollectedDataCategoriesMetric.new(time_frame: 'none').value }
+            collected_data_categories: add_metric('CollectedDataCategoriesMetric', time_frame: 'none')
           }
         }
       end
@@ -328,9 +330,9 @@ module Gitlab
             version: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.container_registry_version }
           },
           database: {
-            adapter: alt_usage_data { Gitlab::Database.adapter_name },
-            version: alt_usage_data { Gitlab::Database.version },
-            pg_system_id: alt_usage_data { Gitlab::Database.system_id }
+            adapter: alt_usage_data { Gitlab::Database.main.adapter_name },
+            version: alt_usage_data { Gitlab::Database.main.version },
+            pg_system_id: alt_usage_data { Gitlab::Database.main.system_id }
           },
           mail: {
             smtp_server: alt_usage_data { ActionMailer::Base.smtp_settings[:address] }
@@ -644,16 +646,17 @@ module Gitlab
       # Omitted because of encrypted properties: `projects_jira_cloud_active`, `projects_jira_server_active`
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_plan(time_period)
+        time_frame = time_period.present? ? '28d' : 'none'
         {
-          issues: distinct_count(::Issue.where(time_period), :author_id),
+          issues: add_metric('CountUsersCreatingIssuesMetric', time_frame: time_frame),
           notes: distinct_count(::Note.where(time_period), :author_id),
           projects: distinct_count(::Project.where(time_period), :creator_id),
           todos: distinct_count(::Todo.where(time_period), :author_id),
           service_desk_enabled_projects: distinct_count_service_desk_enabled_projects(time_period),
           service_desk_issues: count(::Issue.service_desk.where(time_period)),
-          projects_jira_active: distinct_count(::Project.with_active_jira_integrations.where(time_period), :creator_id),
-          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_jira_integrations.with_jira_dvcs_cloud.where(time_period), :creator_id),
-          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_jira_integrations.with_jira_dvcs_server.where(time_period), :creator_id)
+          projects_jira_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .where(time_period), :creator_id),
+          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_cloud.where(time_period), :creator_id),
+          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_server.where(time_period), :creator_id)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

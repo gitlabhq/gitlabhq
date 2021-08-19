@@ -4,6 +4,8 @@ module Packages
   module Debian
     class ProcessChangesWorker
       include ApplicationWorker
+
+      data_consistency :always
       include Gitlab::Utils::StrongMemoize
 
       deduplicate :until_executed

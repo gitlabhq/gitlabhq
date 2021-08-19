@@ -19,7 +19,7 @@ class NewProjectReadmeContentExperiment < ApplicationExperiment # rubocop:disabl
   end
 
   def redirect(to_url)
-    experiment_redirect_url(self, to_url)
+    experiment_redirect_url(self, url: to_url)
   end
 
   private

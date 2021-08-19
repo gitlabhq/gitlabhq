@@ -362,76 +362,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
     end
 
     context 'with inheritance' do
-      context 'of variables' do
-        let(:config) do
-          { variables: { A: 'job', B: 'job' } }
-        end
-
-        before do
-          entry.compose!(deps)
-        end
-
-        context 'with only job variables' do
-          it 'does return defined variables' do
-            expect(entry.value).to include(
-              variables: { 'A' => 'job', 'B' => 'job' },
-              job_variables: { 'A' => 'job', 'B' => 'job' },
-              root_variables_inheritance: true
-            )
-          end
-        end
-
-        context 'when root yaml variables are used' do
-          let(:variables) do
-            Gitlab::Ci::Config::Entry::Variables.new(
-              { A: 'root', C: 'root', D: 'root' }
-            ).value
-          end
-
-          it 'does return job and root variables' do
-            expect(entry.value).to include(
-              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root', 'D' => 'root' },
-              job_variables: { 'A' => 'job', 'B' => 'job' },
-              root_variables_inheritance: true
-            )
-          end
-
-          context 'when inherit of defaults is disabled' do
-            let(:config) do
-              {
-                variables: { A: 'job', B: 'job' },
-                inherit: { variables: false }
-              }
-            end
-
-            it 'does return job and root variables' do
-              expect(entry.value).to include(
-                variables: { 'A' => 'job', 'B' => 'job' },
-                job_variables: { 'A' => 'job', 'B' => 'job' },
-                root_variables_inheritance: false
-              )
-            end
-          end
-
-          context 'when inherit of only specific variable is enabled' do
-            let(:config) do
-              {
-                variables: { A: 'job', B: 'job' },
-                inherit: { variables: ['D'] }
-              }
-            end
-
-            it 'does return job and root variables' do
-              expect(entry.value).to include(
-                variables: { 'A' => 'job', 'B' => 'job', 'D' => 'root' },
-                job_variables: { 'A' => 'job', 'B' => 'job' },
-                root_variables_inheritance: ['D']
-              )
-            end
-          end
-        end
-      end
-
       context 'of default:tags' do
         using RSpec::Parameterized::TableSyntax
 
@@ -493,7 +423,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
             name: :rspec,
             stage: 'test',
             only: { refs: %w[branches tags] },
-            variables: {},
             job_variables: {},
             root_variables_inheritance: true
           )

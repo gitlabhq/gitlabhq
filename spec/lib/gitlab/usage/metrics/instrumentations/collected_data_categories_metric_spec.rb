@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CollectedDataCategoriesMetric do
   it_behaves_like 'a correct instrumented metric value', {} do
-    let(:expected_value) { %w[Standard Subscription Operational Optional] }
+    let(:expected_value) { %w[standard subscription operational optional] }
 
     before do
       allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|

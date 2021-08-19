@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class DiffFileEntity < DiffFileBaseEntity
+  include DiffFileConflictType
   include CommitsHelper
   include IconsHelper
   include Gitlab::Utils::StrongMemoize
@@ -87,11 +88,5 @@ class DiffFileEntity < DiffFileBaseEntity
   def diff_view(options)
     # If nothing is present, inline will be the default.
     options.fetch(:diff_view, :inline).to_sym
-  end
-
-  def conflict_file(options, diff_file)
-    strong_memoize(:conflict_file) do
-      options[:conflicts] && options[:conflicts][diff_file.new_path]
-    end
   end
 end

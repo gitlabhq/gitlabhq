@@ -64,6 +64,49 @@ RSpec.describe Member do
       end
     end
 
+    context 'with admin signup restrictions' do
+      context 'when allowed domains for signup is enabled' do
+        before do
+          stub_application_setting(domain_allowlist: ['example.com'])
+        end
+
+        it 'adds an error message when email is not accepted' do
+          member = build(:group_member, :invited, invite_email: 'info@gitlab.com')
+
+          expect(member).not_to be_valid
+          expect(member.errors.messages[:user].first).to eq(_('domain is not authorized for sign-up.'))
+        end
+      end
+
+      context 'when denylist is enabled' do
+        before do
+          stub_application_setting(domain_denylist_enabled: true)
+          stub_application_setting(domain_denylist: ['example.org'])
+        end
+
+        it 'adds an error message when email is denied' do
+          member = build(:group_member, :invited, invite_email: 'denylist@example.org')
+
+          expect(member).not_to be_valid
+          expect(member.errors.messages[:user].first).to eq(_('is not from an allowed domain.'))
+        end
+      end
+
+      context 'when email restrictions is enabled' do
+        before do
+          stub_application_setting(email_restrictions_enabled: true)
+          stub_application_setting(email_restrictions: '([\+]|\b(\w*gitlab.com\w*)\b)')
+        end
+
+        it 'adds an error message when email is not accepted' do
+          member = build(:group_member, :invited, invite_email: 'info@gitlab.com')
+
+          expect(member).not_to be_valid
+          expect(member.errors.messages[:user].first).to eq(_('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
+        end
+      end
+    end
+
     context "when a child member inherits its access level" do
       let(:user) { create(:user) }
       let(:member) { create(:group_member, :developer, user: user) }
@@ -624,7 +667,23 @@ RSpec.describe Member do
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
 
     it "sets the invite token" do
-      expect { member.generate_invite_token }.to change { member.invite_token}
+      expect { member.generate_invite_token }.to change { member.invite_token }
+    end
+  end
+
+  describe 'generate invite token on create' do
+    let!(:member) { build(:project_member, invite_email: "user@example.com") }
+
+    it "sets the invite token" do
+      expect { member.save! }.to change { member.invite_token }.to(kind_of(String))
+    end
+
+    context 'when invite was already accepted' do
+      it "does not set invite token" do
+        member.invite_accepted_at = 1.day.ago
+
+        expect { member.save! }.not_to change { member.invite_token }.from(nil)
+      end
     end
   end
 
@@ -746,6 +805,46 @@ RSpec.describe Member do
 
           include_examples 'update highest role with exclusive lease'
         end
+      end
+    end
+  end
+
+  describe 'log_invitation_token_cleanup' do
+    let_it_be(:project) { create :project }
+
+    context 'when on gitlab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return true
+      end
+
+      it "doesn't log info for members without invitation or accepted invitation" do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        create :project_member
+        create :project_member, :invited, invite_accepted_at: nil
+        create :project_member, invite_token: nil, invite_accepted_at: Time.zone.now
+      end
+
+      it 'logs error for accepted members with token and creates membership' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(kind_of(StandardError), kind_of(Hash))
+
+        expect do
+          create :project_member, :invited, source: project, invite_accepted_at: Time.zone.now
+        end.to change { Member.count }.by(1)
+      end
+    end
+
+    context 'when not on gitlab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return false
+      end
+
+      it 'does not log error for accepted members with token and creates membership' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        expect do
+          create :project_member, :invited, source: project, invite_accepted_at: Time.zone.now
+        end.to change { Member.count }.by(1)
       end
     end
   end

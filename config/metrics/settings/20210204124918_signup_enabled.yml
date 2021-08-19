@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: signup_enabled
 description: Whether public signup is enabled
 product_section: dev
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 skip_validation: true
+performance_indicator_type: []

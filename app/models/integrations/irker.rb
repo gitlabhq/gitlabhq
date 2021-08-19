@@ -4,6 +4,8 @@ require 'uri'
 
 module Integrations
   class Irker < Integration
+    include ActionView::Helpers::UrlHelper
+
     prop_accessor :server_host, :server_port, :default_irc_uri
     prop_accessor :recipients, :channels
     boolean_accessor :colorize_messages
@@ -12,11 +14,11 @@ module Integrations
     before_validation :get_channels
 
     def title
-      'Irker (IRC gateway)'
+      s_('IrkerService|irker (IRC gateway)')
     end
 
     def description
-      'Send IRC messages.'
+      s_('IrkerService|Send update messages to an irker server.')
     end
 
     def self.to_param
@@ -42,33 +44,25 @@ module Integrations
     end
 
     def fields
+      recipients_docs_link = link_to s_('IrkerService|How to enter channels or users?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'enter-irker-recipients'), target: '_blank', rel: 'noopener noreferrer'
       [
-        { type: 'text', name: 'server_host', placeholder: 'localhost',
-          help: 'Irker daemon hostname (defaults to localhost)' },
-        { type: 'text', name: 'server_port', placeholder: 6659,
-          help: 'Irker daemon port (defaults to 6659)' },
-        { type: 'text', name: 'default_irc_uri', title: 'Default IRC URI',
-          help: 'A default IRC URI to prepend before each recipient (optional)',
+        { type: 'text', name: 'server_host', placeholder: 'localhost', title: s_('IrkerService|Server host (optional)'),
+          help: s_('IrkerService|irker daemon hostname (defaults to localhost).') },
+        { type: 'text', name: 'server_port', placeholder: 6659, title: s_('IrkerService|Server port (optional)'),
+          help: s_('IrkerService|irker daemon port (defaults to 6659).') },
+        { type: 'text', name: 'default_irc_uri', title: s_('IrkerService|Default IRC URI (optional)'),
+          help: s_('IrkerService|URI to add before each recipient.'),
           placeholder: 'irc://irc.network.net:6697/' },
-        { type: 'textarea', name: 'recipients',
-          placeholder: 'Recipients/channels separated by whitespaces', required: true,
-          help: 'Recipients have to be specified with a full URI: '\
-          'irc[s]://irc.network.net[:port]/#channel. Special cases: if '\
-          'you want the channel to be a nickname instead, append ",isnick" to ' \
-          'the channel name; if the channel is protected by a secret password, ' \
-          ' append "?key=secretpassword" to the URI (Note that due to a bug, if you ' \
-          ' want to use a password, you have to omit the "#" on the channel). If you ' \
-          ' specify a default IRC URI to prepend before each recipient, you can just ' \
-          ' give a channel name.' },
-        { type: 'checkbox', name: 'colorize_messages' }
+        { type: 'textarea', name: 'recipients', title: s_('IrkerService|Recipients'),
+          placeholder: 'irc[s]://irc.network.net[:port]/#channel', required: true,
+          help: s_('IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}').html_safe % { recipients_docs_link: recipients_docs_link.html_safe } },
+        { type: 'checkbox', name: 'colorize_messages', title: _('Colorize messages') }
       ]
     end
 
     def help
-      ' NOTE: Irker does NOT have built-in authentication, which makes it' \
-      ' vulnerable to spamming IRC channels if it is hosted outside of a ' \
-      ' firewall. Please make sure you run the daemon within a secured network ' \
-      ' to prevent abuse. For more details, read: http://www.catb.org/~esr/irker/security.html.'
+      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'set-up-an-irker-daemon'), target: '_blank', rel: 'noopener noreferrer'
+      s_('IrkerService|Send update messages to an irker server. Before you can use this, you need to set up the irker daemon. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
     private

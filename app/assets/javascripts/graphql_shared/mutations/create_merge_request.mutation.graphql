@@ -1,0 +1,8 @@
+mutation createMergeRequest($input: MergeRequestCreateInput!) {
+  mergeRequestCreate(input: $input) {
+    mergeRequest {
+      iid
+    }
+    errors
+  }
+}

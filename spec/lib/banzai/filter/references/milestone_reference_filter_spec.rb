@@ -92,6 +92,11 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter do
       expect(doc.to_html).to match(%r(\(<a.+>#{milestone.reference_link_text}</a>\.\)))
     end
 
+    it 'links with adjacent html tags' do
+      doc = reference_filter("Milestone <p>#{reference}</p>.")
+      expect(doc.to_html).to match(%r(<p><a.+>#{milestone.reference_link_text}</a></p>))
+    end
+
     it 'ignores invalid milestone names' do
       exp = act = "Milestone #{Milestone.reference_prefix}#{milestone.name.reverse}"
 

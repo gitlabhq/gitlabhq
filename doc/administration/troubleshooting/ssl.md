@@ -199,7 +199,7 @@ To fix this problem:
     git config --global http.sslCAInfo ~/.ssl/gitlab.domain.tld.crt
     ```
 
-  - Disable SSL verification in your Git client. Note that this intended as a
+  - Disable SSL verification in your Git client. This is intended as a
     temporary measure, as it could be considered a security risk.
 
     ```shell

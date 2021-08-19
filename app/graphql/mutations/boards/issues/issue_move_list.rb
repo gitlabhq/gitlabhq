@@ -6,19 +6,19 @@ module Mutations
       class IssueMoveList < Mutations::Issues::Base
         graphql_name 'IssueMoveList'
         BoardGID = ::Types::GlobalIDType[::Board]
-        ListID = ::GraphQL::ID_TYPE
-        IssueID = ::GraphQL::ID_TYPE
+        ListID = ::GraphQL::Types::ID
+        IssueID = ::GraphQL::Types::ID
 
         argument :board_id, BoardGID,
                  required: true,
                  loads: Types::BoardType,
                  description: 'Global ID of the board that the issue is in.'
 
-        argument :project_path, GraphQL::ID_TYPE,
+        argument :project_path, GraphQL::Types::ID,
                  required: true,
                  description: 'Project the issue to mutate is in.'
 
-        argument :iid, GraphQL::STRING_TYPE,
+        argument :iid, GraphQL::Types::String,
                  required: true,
                  description: 'IID of the issue to mutate.'
 
@@ -56,11 +56,11 @@ module Mutations
           issue = authorized_find!(project_path: project_path, iid: iid)
           move_params = { id: issue.id, board_id: board.id }.merge(move_arguments(args))
 
-          move_issue(board, issue, move_params)
+          result = move_issue(board, issue, move_params)
 
           {
             issue: issue.reset,
-            errors: issue.errors.full_messages
+            errors: error_for(result)
           }
         end
 
@@ -78,6 +78,12 @@ module Mutations
 
         def move_arguments(args)
           args.slice(:from_list_id, :to_list_id, :move_after_id, :move_before_id)
+        end
+
+        def error_for(result)
+          return [] unless result.error?
+
+          [result.message]
         end
       end
     end

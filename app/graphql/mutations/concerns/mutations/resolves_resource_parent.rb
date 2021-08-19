@@ -7,11 +7,11 @@ module Mutations
     include ResolvesProject
 
     included do
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: false,
                description: 'Full path of the project with which the resource is associated.'
 
-      argument :group_path, GraphQL::ID_TYPE,
+      argument :group_path, GraphQL::Types::ID,
                required: false,
                description: 'Full path of the group with which the resource is associated.'
     end

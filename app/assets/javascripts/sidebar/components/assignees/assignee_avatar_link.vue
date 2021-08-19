@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import AssigneeAvatar from './assignee_avatar.vue';
 
@@ -32,10 +32,9 @@ const generateAssigneeTooltip = ({
   }
 
   if (tooltipHasName && statusInformation.length) {
-    return sprintf(__('%{name} %{status}'), {
-      name,
-      status: statusInformation.map(paranthesize).join(' '),
-    });
+    const status = statusInformation.map(paranthesize).join(' ');
+
+    return `${name} ${status}`;
   }
 
   return name;

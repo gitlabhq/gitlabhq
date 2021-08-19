@@ -152,7 +152,8 @@ module QA
         @project = Resource::ImportProject.fabricate_via_browser_ui!
         # Setting the name here, since otherwise some tests will look for an existing file in
         # the proejct without ever knowing what is in it.
-        @file_name = "github_controller_spec.rb"
+        @file_name = "added_file-00000000.txt"
+        @source_branch = "large_merge_request"
         visit("#{project.web_url}/-/merge_requests/1")
         current_url
       end
@@ -160,9 +161,13 @@ module QA
       # Get MR comments
       #
       # @return [Array]
-      def comments
-        response = get(Runtime::API::Request.new(api_client, api_comments_path).url)
-        parse_body(response)
+      def comments(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_comments_path)) unless auto_paginate
+
+        auto_paginated_response(
+          Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url,
+          attempts: attempts
+        )
       end
 
       private

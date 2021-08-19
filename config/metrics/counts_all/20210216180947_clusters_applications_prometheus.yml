@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.monitor.clusters_applications_prometheus
 description: Users creating clusters with Prometheus enabled.
 product_section: ops

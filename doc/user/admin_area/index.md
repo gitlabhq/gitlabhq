@@ -121,8 +121,8 @@ To list users matching a specific criteria, click on one of the following tabs o
 - **2FA Enabled**
 - **2FA Disabled**
 - **External**
-- **[Blocked](moderate_users.md#blocking-a-user)**
-- **[Deactivated](moderate_users.md#deactivating-a-user)**
+- **[Blocked](moderate_users.md#block-a-user)**
+- **[Deactivated](moderate_users.md#deactivate-a-user)**
 - **Without projects**
 
 For each user, the following are listed:
@@ -163,6 +163,8 @@ You can impersonate a user in the following ways:
 - With the API, using [impersonation tokens](../../api/index.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](../../administration/audit_events.md#impersonation-data).
+
+By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../../api/index.md#disable-impersonation).
 
 ![user impersonation button](img/impersonate_user_button_v13_8.png)
 

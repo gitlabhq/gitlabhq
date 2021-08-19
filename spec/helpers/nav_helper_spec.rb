@@ -112,16 +112,6 @@ RSpec.describe NavHelper do
     it { is_expected.to all(be_a(String)) }
   end
 
-  describe '.group_issues_sub_menu_items' do
-    subject { helper.group_issues_sub_menu_items }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(nil)
-    end
-
-    it { is_expected.to all(be_a(String)) }
-  end
-
   describe '#page_has_markdown?' do
     using RSpec::Parameterized::TableSyntax
 

@@ -13,7 +13,7 @@ module Gitlab
       return unless path.is_a?(String)
 
       path = decode_path(path)
-      path_regex = /(\A(\.{1,2})\z|\A\.\.[\/\\]|[\/\\]\.\.\z|[\/\\]\.\.[\/\\]|\n)/
+      path_regex = %r{(\A(\.{1,2})\z|\A\.\.[/\\]|[/\\]\.\.\z|[/\\]\.\.[/\\]|\n)}
 
       if path.match?(path_regex)
         raise PathTraversalAttackError, 'Invalid path'

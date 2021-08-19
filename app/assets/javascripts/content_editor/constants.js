@@ -6,6 +6,7 @@ export const PROVIDE_SERIALIZER_OR_RENDERER_ERROR = s__(
 
 export const CONTENT_EDITOR_TRACKING_LABEL = 'content_editor';
 export const TOOLBAR_CONTROL_TRACKING_ACTION = 'execute_toolbar_control';
+export const BUBBLE_MENU_TRACKING_ACTION = 'execute_bubble_menu_control';
 export const KEYBOARD_SHORTCUT_TRACKING_ACTION = 'execute_keyboard_shortcut';
 export const INPUT_RULE_TRACKING_ACTION = 'execute_input_rule';
 
@@ -40,3 +41,7 @@ export const TEXT_STYLE_DROPDOWN_ITEMS = [
     label: __('Normal text'),
   },
 ];
+
+export const LOADING_CONTENT_EVENT = 'loadingContent';
+export const LOADING_SUCCESS_EVENT = 'loadingSuccess';
+export const LOADING_ERROR_EVENT = 'loadingError';

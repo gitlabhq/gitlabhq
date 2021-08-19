@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Mousetrap from 'mousetrap';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import App from '~/diffs/components/app.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
@@ -16,7 +17,6 @@ import TreeList from '~/diffs/components/tree_list.vue';
 /* You know what: sometimes alphabetical isn't the best order */
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
-import MergeConflictWarning from '~/diffs/components/merge_conflict_warning.vue';
 /* eslint-enable import/order */
 
 import axios from '~/lib/utils/axios_utils';
@@ -258,6 +258,8 @@ describe('diffs/components/app', () => {
   });
 
   it('marks current diff file based on currently highlighted row', async () => {
+    window.location.hash = 'ABC_123';
+
     createComponent({
       shouldShow: true,
     });
@@ -428,21 +430,14 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'refetchDiffData').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'adjustView').mockImplementation(() => {});
     };
-    let location;
 
-    beforeAll(() => {
-      location = window.location;
-      delete window.location;
-      window.location = COMMIT_URL;
+    beforeEach(() => {
+      setWindowLocation(COMMIT_URL);
       document.title = 'My Title';
     });
 
     beforeEach(() => {
       jest.spyOn(urlUtils, 'updateHistory');
-    });
-
-    afterAll(() => {
-      window.location = location;
     });
 
     it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', async () => {
@@ -545,43 +540,6 @@ describe('diffs/components/app', () => {
 
           expect(getCollapsedFilesWarning(wrapper).exists()).toBe(false);
         });
-      });
-
-      describe('merge conflicts', () => {
-        it('should render the merge conflicts banner if viewing the whole changeset and there are conflicts', () => {
-          createComponent({}, ({ state }) => {
-            Object.assign(state.diffs, {
-              latestDiff: true,
-              startVersion: null,
-              hasConflicts: true,
-              canMerge: false,
-              conflictResolutionPath: 'path',
-            });
-          });
-
-          expect(wrapper.find(MergeConflictWarning).exists()).toBe(true);
-        });
-
-        it.each`
-          prop              | value
-          ${'latestDiff'}   | ${false}
-          ${'startVersion'} | ${'notnull'}
-          ${'hasConflicts'} | ${false}
-        `(
-          "should not render if any of the MR properties aren't correct - like $prop: $value",
-          ({ prop, value }) => {
-            createComponent({}, ({ state }) => {
-              Object.assign(state.diffs, {
-                latestDiff: true,
-                startVersion: null,
-                hasConflicts: true,
-                [prop]: value,
-              });
-            });
-
-            expect(wrapper.find(MergeConflictWarning).exists()).toBe(false);
-          },
-        );
       });
     });
 

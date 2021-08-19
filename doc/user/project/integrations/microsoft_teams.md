@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -38,7 +38,7 @@ GitLab to send the notifications:
    to your project's page.
 1. Go to **Settings > Integrations** and select **Microsoft Teams Notification**.
 1. Select **Active** to enable the integration.
-1. Select the check box next to each **Trigger** to enable:
+1. Select the checkbox next to each **Trigger** to enable:
    - Push
    - Issue
    - Confidential issue
@@ -51,7 +51,7 @@ GitLab to send the notifications:
 1. In **Webhook**, paste the URL you copied when you
    [configured Microsoft Teams](#configure-microsoft-teams).
 1. (Optional) If you enabled the pipeline trigger, you can select the
-   **Notify only broken pipelines** check box to push notifications only when pipelines break.
+   **Notify only broken pipelines** checkbox to push notifications only when pipelines break.
 1. Select the branches you want to send notifications for.
 1. Click **Save changes**.
 

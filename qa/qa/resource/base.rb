@@ -75,19 +75,18 @@ module QA
         end
 
         def log_fabrication(method, resource, parents, args)
-          return yield unless Runtime::Env.debug?
-
           start = Time.now
-          prefix = "==#{'=' * parents.size}>"
-          msg = [prefix]
-          msg << "Built a #{name}"
-          msg << "as a dependency of #{parents.last}" if parents.any?
-          msg << "via #{method}"
 
           yield.tap do
-            msg << "in #{Time.now - start} seconds"
-            puts msg.join(' ')
-            puts if parents.empty?
+            Runtime::Logger.debug do
+              msg = ["==#{'=' * parents.size}>"]
+              msg << "Built a #{name}"
+              msg << "as a dependency of #{parents.last}" if parents.any?
+              msg << "via #{method}"
+              msg << "in #{Time.now - start} seconds"
+
+              msg.join(' ')
+            end
           end
         end
 
@@ -189,7 +188,7 @@ module QA
       end
 
       def log_having_both_api_result_and_block(name, api_value)
-        QA::Runtime::Logger.info(<<~MSG.strip)
+        QA::Runtime::Logger.debug(<<~MSG.strip)
           <#{self.class}> Attribute #{name.inspect} has both API response `#{api_value}` and a block. API response will be picked. Block will be ignored.
         MSG
       end

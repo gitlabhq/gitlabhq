@@ -33,6 +33,8 @@ module Gitlab
       Result = Struct.new(:html, :state, :append, :truncated, :offset, :size, :total, keyword_init: true) # rubocop:disable Lint/StructNewOverride
 
       class Converter
+        include EncodingHelper
+
         def on_0(_)
           reset
         end
@@ -256,6 +258,7 @@ module Gitlab
           start_offset = @offset
 
           stream.each_line do |line|
+            line = encode_utf8_no_detect(line)
             s = StringScanner.new(line)
 
             until s.eos?

@@ -6,17 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Workspace
 
-Workspace will be the top-level [namespace](../group/index.md#namespaces) for you to manage
+Workspace will be the top [namespace](../group/index.md#namespaces) for you to manage
 everything GitLab, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.
 - Aggregating data from all your groups, subgroups, and projects.
 
 Workspace will take many of the features from the
-[Admin Area](../admin_area/index.md), and there will be one workspace per:
+[Admin Area](../admin_area/index.md) and will:
 
-- Instance, for self-managed instances.
-- Namespace, for GitLab.com.
+- Enable a top namespace for GitLab.com.
+- Eventually replace the instance level for self-managed installations.
+
+Our goal is to reach feature parity between SaaS and self-managed installations, with one
+exception: **Hardware Controls** will appear **only** on self-managed installations.
 
 NOTE:
 Workspace is currently in development.
@@ -32,3 +35,5 @@ The following provide a preview to the Workspace concept.
 ![Admin Overview](img/1.3-Admin.png)
 
 ![Admin Overview](img/Admin_Settings.png)
+
+![Admin Overview](img/hardware_settings.png)

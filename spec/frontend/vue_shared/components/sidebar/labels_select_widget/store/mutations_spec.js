@@ -67,58 +67,6 @@ describe('LabelsSelect Mutations', () => {
     });
   });
 
-  describe(`${types.REQUEST_LABELS}`, () => {
-    it('sets value of `state.labelsFetchInProgress` to true', () => {
-      const state = {
-        labelsFetchInProgress: false,
-      };
-      mutations[types.REQUEST_LABELS](state);
-
-      expect(state.labelsFetchInProgress).toBe(true);
-    });
-  });
-
-  describe(`${types.RECEIVE_SET_LABELS_SUCCESS}`, () => {
-    const selectedLabels = [{ id: 2 }, { id: 4 }];
-    const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-
-    it('sets value of `state.labelsFetchInProgress` to false', () => {
-      const state = {
-        selectedLabels,
-        labelsFetchInProgress: true,
-      };
-      mutations[types.RECEIVE_SET_LABELS_SUCCESS](state, labels);
-
-      expect(state.labelsFetchInProgress).toBe(false);
-    });
-
-    it('sets provided `labels` to `state.labels` along with `set` prop based on `state.selectedLabels`', () => {
-      const selectedLabelIds = selectedLabels.map((label) => label.id);
-      const state = {
-        selectedLabels,
-        labelsFetchInProgress: true,
-      };
-      mutations[types.RECEIVE_SET_LABELS_SUCCESS](state, labels);
-
-      state.labels.forEach((label) => {
-        if (selectedLabelIds.includes(label.id)) {
-          expect(label.set).toBe(true);
-        }
-      });
-    });
-  });
-
-  describe(`${types.RECEIVE_SET_LABELS_FAILURE}`, () => {
-    it('sets value of `state.labelsFetchInProgress` to false', () => {
-      const state = {
-        labelsFetchInProgress: true,
-      };
-      mutations[types.RECEIVE_SET_LABELS_FAILURE](state);
-
-      expect(state.labelsFetchInProgress).toBe(false);
-    });
-  });
-
   describe(`${types.UPDATE_SELECTED_LABELS}`, () => {
     let labels;
 

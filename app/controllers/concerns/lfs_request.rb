@@ -4,6 +4,7 @@
 # - a `#container` accessor
 # - a `#project` accessor
 # - a `#user` accessor
+# - a `#deploy_token` accessor
 # - a `#authentication_result` accessor
 # - a `#can?(object, action, subject)` method
 # - a `#ci?` method
@@ -83,18 +84,10 @@ module LfsRequest
   end
 
   def deploy_token_can_download_code?
-    deploy_token_present? &&
+    deploy_token.present? &&
       deploy_token.project == project &&
       deploy_token.active? &&
       deploy_token.read_repository?
-  end
-
-  def deploy_token_present?
-    user && user.is_a?(DeployToken)
-  end
-
-  def deploy_token
-    user
   end
 
   def lfs_upload_access?
@@ -102,7 +95,7 @@ module LfsRequest
       next false unless has_authentication_ability?(:push_code)
       next false if limit_exceeded?
 
-      lfs_deploy_token? || can?(user, :push_code, project)
+      lfs_deploy_token? || can?(user, :push_code, project) || can?(deploy_token, :push_code, project)
     end
   end
 
@@ -111,7 +104,7 @@ module LfsRequest
   end
 
   def user_can_download_code?
-    has_authentication_ability?(:download_code) && can?(user, :download_code, project) && !deploy_token_present?
+    has_authentication_ability?(:download_code) && can?(user, :download_code, project)
   end
 
   def build_can_download_code?

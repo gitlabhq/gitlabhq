@@ -53,6 +53,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findAllArtifactItems = () => wrapper.findAllByTestId(artifactItemTestId);
   const findFirstArtifactItem = () => wrapper.findByTestId(artifactItemTestId);
+  const findEmptyMessage = () => wrapper.findByTestId('artifacts-empty-message');
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
@@ -86,6 +87,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
       createComponent({ mockData: { artifacts } });
 
       expect(findAllArtifactItems()).toHaveLength(artifacts.length);
+      expect(findEmptyMessage().exists()).toBe(false);
     });
 
     it('should render the correct artifact name and path', () => {
@@ -93,6 +95,12 @@ describe('Pipeline Multi Actions Dropdown', () => {
 
       expect(findFirstArtifactItem().attributes('href')).toBe(artifacts[0].path);
       expect(findFirstArtifactItem().text()).toBe(`Download ${artifacts[0].name} artifact`);
+    });
+
+    it('should render empty message when no artifacts are found', () => {
+      createComponent({ mockData: { artifacts: [] } });
+
+      expect(findEmptyMessage().exists()).toBe(true);
     });
 
     describe('with a failing request', () => {

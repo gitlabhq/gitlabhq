@@ -3,7 +3,7 @@
 module Types
   # rubocop: disable Graphql/AuthorizeTypes
   class CountableConnectionType < GraphQL::Types::Relay::BaseConnection
-    field :count, GraphQL::INT_TYPE, null: false,
+    field :count, GraphQL::Types::Int, null: false,
           description: 'Total count of collection.'
 
     def count

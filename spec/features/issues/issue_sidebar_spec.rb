@@ -408,7 +408,7 @@ RSpec.describe 'Issue Sidebar' do
 
       context 'sidebar', :js do
         it 'finds issue copy forwarding email' do
-          expect(find('[data-qa-selector="copy-forward-email"]').text).to eq "Issue email: #{issue.creatable_note_email_address(user)}"
+          expect(find('[data-qa-selector="copy-forward-email"]').text).to eq "Issue email: #{issue.creatable_note_email_address(user)}" # rubocop:disable QA/SelectorUsage
         end
       end
 
@@ -444,7 +444,7 @@ RSpec.describe 'Issue Sidebar' do
       end
 
       it 'does not find issue email' do
-        expect(page).not_to have_selector('[data-qa-selector="copy-forward-email"]')
+        expect(page).not_to have_selector('[data-qa-selector="copy-forward-email"]') # rubocop:disable QA/SelectorUsage
       end
     end
   end

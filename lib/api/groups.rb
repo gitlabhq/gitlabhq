@@ -35,7 +35,8 @@ module API
           :all_available,
           :custom_attributes,
           :owned, :min_access_level,
-          :include_parent_descendants
+          :include_parent_descendants,
+          :search
         )
 
         find_params[:parent] = if params[:top_level_only]
@@ -48,7 +49,6 @@ module API
           find_params.fetch(:all_available, current_user&.can_read_all_resources?)
 
         groups = GroupsFinder.new(current_user, find_params).execute
-        groups = groups.search(params[:search], include_parents: true) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
 
         order_groups(groups)
@@ -128,10 +128,6 @@ module API
         groups.reorder(group_without_similarity_options) # rubocop: disable CodeReuse/ActiveRecord
       end
 
-      def order_by_similarity?
-        params[:order_by] == 'similarity' && params[:search].present?
-      end
-
       def group_without_similarity_options
         order_options = { params[:order_by] => params[:sort] }
         order_options['name'] = order_options.delete('similarity') if order_options.has_key?('similarity')
@@ -141,7 +137,7 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def handle_similarity_order(group, projects)
-        if params[:search].present? && Feature.enabled?(:similarity_search, group, default_enabled: true)
+        if params[:search].present?
           projects.sorted_by_similarity_desc(params[:search])
         else
           order_options = { name: :asc }

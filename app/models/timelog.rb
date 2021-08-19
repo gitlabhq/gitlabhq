@@ -19,6 +19,14 @@ class Timelog < ApplicationRecord
     joins(:project).where(projects: { namespace: group.self_and_descendants })
   end
 
+  scope :in_project, -> (project) do
+    where(project: project)
+  end
+
+  scope :for_user, -> (user) do
+    where(user: user)
+  end
+
   scope :at_or_after, -> (start_time) do
     where('spent_at >= ?', start_time)
   end

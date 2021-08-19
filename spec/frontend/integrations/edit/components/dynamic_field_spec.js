@@ -182,6 +182,19 @@ describe('DynamicField', () => {
 
         expect(findGlFormGroup().find('small').html()).toContain(helpHTML);
       });
+
+      it('strips unsafe HTML from the help text', () => {
+        const helpHTML =
+          '[<code>1</code> <iframe>2</iframe> <a href="javascript:alert(document.cookie)">3</a> <a href="foo" target="_blank">4</a>]';
+
+        createComponent({
+          help: helpHTML,
+        });
+
+        expect(findGlFormGroup().find('small').html()).toContain(
+          '[<code>1</code>  <a>3</a> <a target="_blank" href="foo">4</a>]',
+        );
+      });
     });
 
     describe('label text', () => {

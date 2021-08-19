@@ -208,12 +208,12 @@ module Groups
     end
 
     def update_integrations
-      @group.integrations.inherit.delete_all
+      @group.integrations.with_default_settings.delete_all
       Integration.create_from_active_default_integrations(@group, :group_id)
     end
 
     def propagate_integrations
-      @group.integrations.inherit.each do |integration|
+      @group.integrations.with_default_settings.each do |integration|
         PropagateIntegrationWorker.perform_async(integration.id)
       end
     end

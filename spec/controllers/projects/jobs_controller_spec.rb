@@ -868,64 +868,85 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   end
 
   describe 'POST cancel' do
-    before do
-      project.add_developer(user)
-      sign_in(user)
-    end
-
-    context 'when continue url is present' do
-      let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
-
-      context 'when continue to is a safe url' do
-        let(:url) { '/test' }
-
-        before do
-          post_cancel(continue: { to: url })
-        end
-
-        it 'redirects to the continue url' do
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(url)
-        end
-
-        it 'transits to canceled' do
-          expect(job.reload).to be_canceled
-        end
-      end
-
-      context 'when continue to is not a safe url' do
-        let(:url) { 'http://example.com' }
-
-        it 'raises an error' do
-          expect { cancel_with_redirect(url) }.to raise_error
-        end
-      end
-    end
-
-    context 'when continue url is not present' do
+    context 'when user is authorized to cancel the build' do
       before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      context 'when continue url is present' do
+        let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+
+        context 'when continue to is a safe url' do
+          let(:url) { '/test' }
+
+          before do
+            post_cancel(continue: { to: url })
+          end
+
+          it 'redirects to the continue url' do
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(url)
+          end
+
+          it 'transits to canceled' do
+            expect(job.reload).to be_canceled
+          end
+        end
+
+        context 'when continue to is not a safe url' do
+          let(:url) { 'http://example.com' }
+
+          it 'raises an error' do
+            expect { cancel_with_redirect(url) }.to raise_error
+          end
+        end
+      end
+
+      context 'when continue url is not present' do
+        before do
+          post_cancel
+        end
+
+        context 'when job is cancelable' do
+          let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+
+          it 'redirects to the builds page' do
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(builds_namespace_project_pipeline_path(id: pipeline.id))
+          end
+
+          it 'transits to canceled' do
+            expect(job.reload).to be_canceled
+          end
+        end
+
+        context 'when job is not cancelable' do
+          let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+
+          it 'returns unprocessable_entity' do
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+      end
+    end
+
+    context 'when user is not authorized to cancel the build' do
+      let!(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+
+      before do
+        project.add_reporter(user)
+        sign_in(user)
+
         post_cancel
       end
 
-      context 'when job is cancelable' do
-        let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
-
-        it 'redirects to the builds page' do
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(builds_namespace_project_pipeline_path(id: pipeline.id))
-        end
-
-        it 'transits to canceled' do
-          expect(job.reload).to be_canceled
-        end
+      it 'responds with not_found' do
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      context 'when job is not cancelable' do
-        let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
-
-        it 'returns unprocessable_entity' do
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        end
+      it 'does not transit to canceled' do
+        expect(job.reload).not_to be_canceled
       end
     end
 
@@ -938,43 +959,60 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
   describe 'POST unschedule' do
     before do
-      project.add_developer(user)
-
-      create(:protected_branch, :developers_can_merge,
-             name: 'master', project: project)
-
-      sign_in(user)
-
-      post_unschedule
+      create(:protected_branch, :developers_can_merge, name: 'master', project: project)
     end
 
-    context 'when job is scheduled' do
+    context 'when user is authorized to unschedule the build' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+
+        post_unschedule
+      end
+
+      context 'when job is scheduled' do
+        let(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+        it 'redirects to the unscheduled job page' do
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+        end
+
+        it 'transits to manual' do
+          expect(job.reload).to be_manual
+        end
+      end
+
+      context 'when job is not scheduled' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'renders unprocessable_entity' do
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+    end
+
+    context 'when user is not authorized to unschedule the build' do
       let(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
 
-      it 'redirects to the unscheduled job page' do
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+      before do
+        project.add_reporter(user)
+        sign_in(user)
+
+        post_unschedule
       end
 
-      it 'transits to manual' do
-        expect(job.reload).to be_manual
+      it 'responds with not_found' do
+        expect(response).to have_gitlab_http_status(:not_found)
       end
-    end
 
-    context 'when job is not scheduled' do
-      let(:job) { create(:ci_build, pipeline: pipeline) }
-
-      it 'renders unprocessable_entity' do
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      it 'does not transit to scheduled' do
+        expect(job.reload).not_to be_manual
       end
     end
 
     def post_unschedule
-      post :unschedule, params: {
-                          namespace_id: project.namespace,
-                          project_id: project,
-                          id: job.id
-                        }
+      post :unschedule, params: { namespace_id: project.namespace, project_id: project, id: job.id }
     end
   end
 

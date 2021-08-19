@@ -67,11 +67,11 @@ module Gitlab
             end
           end
 
-          def progress
+          def progress(current: series + 1, total: total_series, track_name: track.to_s.humanize)
             if Gitlab.com?
-              s_('InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series.') % { current_series: series + 1, total_series: total_series, track: track.to_s.humanize }
+              s_('InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series.') % { current_series: current, total_series: total, track: track_name }
             else
-              s_('InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series. To disable notification emails sent by your local GitLab instance, either contact your administrator or %{unsubscribe_link}.') % { current_series: series + 1, total_series: total_series, track: track.to_s.humanize, unsubscribe_link: unsubscribe_link }
+              s_('InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series. To disable notification emails sent by your local GitLab instance, either contact your administrator or %{unsubscribe_link}.') % { current_series: current, total_series: total, track: track_name, unsubscribe_link: unsubscribe_link }
             end
           end
 
@@ -109,7 +109,7 @@ module Gitlab
           private
 
           def track
-            self.class.name.demodulize.downcase.to_sym
+            self.class.name.demodulize.underscore.to_sym
           end
 
           def total_series

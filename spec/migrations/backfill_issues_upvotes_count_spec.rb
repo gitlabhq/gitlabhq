@@ -19,7 +19,7 @@ RSpec.describe BackfillIssuesUpvotesCount do
   let!(:award_emoji3) { award_emoji.create!( name: 'thumbsup', awardable_type: 'Issue', awardable_id: issue3.id) }
   let!(:award_emoji4) { award_emoji.create!( name: 'thumbsup', awardable_type: 'Issue', awardable_id: issue4.id) }
 
-  it 'correctly schedules background migrations' do
+  it 'correctly schedules background migrations', :aggregate_failures do
     stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
     Sidekiq::Testing.fake! do

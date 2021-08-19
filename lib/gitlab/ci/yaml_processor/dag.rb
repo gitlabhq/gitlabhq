@@ -23,7 +23,7 @@ module Gitlab
 
           new(nodes).tsort
         rescue TSort::Cyclic
-          raise ValidationError, 'The pipeline has circular dependencies.'
+          raise ValidationError, 'The pipeline has circular dependencies'
         rescue MissingNodeError
         end
 

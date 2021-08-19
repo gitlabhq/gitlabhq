@@ -43,4 +43,5 @@ export default () => ({
   defaultSuggestionCommitMessage: '',
   mrReviews: {},
   latestDiff: true,
+  disableVirtualScroller: false,
 });

@@ -14,6 +14,85 @@ You can use special syntax in [`script`](index.md#script) sections to:
 - [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 
+## Use special characters with `script:`
+
+Sometimes, `script` commands must be wrapped in single or double quotes.
+For example, commands that contain a colon (`:`) must be wrapped in single quotes (`'`).
+The YAML parser needs to interpret the text as a string rather than
+a "key: value" pair.
+
+For example, this script uses a colon:
+
+```yaml
+job:
+  script:
+    - curl --request POST --header 'Content-Type: application/json' "https://gitlab/api/v4/projects"
+```
+
+To be considered valid YAML, you must wrap the entire command in single quotes. If
+the command already uses single quotes, you should change them to double quotes (`"`)
+if possible:
+
+```yaml
+job:
+  script:
+    - 'curl --request POST --header "Content-Type: application/json" "https://gitlab/api/v4/projects"'
+```
+
+You can verify the syntax is valid with the [CI Lint](../lint.md) tool.
+
+Be careful when using these characters as well:
+
+- `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
+
+## Ignore non-zero exit codes
+
+When script commands return an exit code other than zero, the job fails and further
+commands do not execute.
+
+Store the exit code in a variable to avoid this behavior:
+
+```yaml
+job:
+  script:
+    - false || exit_code=$?
+    - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
+```
+
+## Set a default `before_script` or `after_script` for all jobs
+
+You can use [`before_script`](index.md#before_script) and [`after_script`](index.md#after_script)
+with [`default`](index.md#custom-default-keyword-values):
+
+- Use `before_script` with `default` to define a default array of commands that
+  should run before the `script` commands in all jobs.
+- Use `after_script` with default to define a default array of commands
+  that should run after the job completes.
+
+You can overwrite a default by defining a different one in a job. To ignore the default
+use `before_script: []` or `after_script: []`:
+
+```yaml
+default:
+  before_script:
+    - echo "Execute this `before_script` in all jobs by default."
+  after_script:
+    - echo "Execute this `after_script` in all jobs by default."
+
+job1:
+  script:
+    - echo "These script commands execute after the default `before_script`,"
+    - echo "and before the default `after_script`."
+
+job2:
+  before_script:
+    - echo "Execute this script instead of the default `before_script`."
+  script:
+    - echo "This script executes after the job's `before_script`,"
+    - echo "but the job does not use the default `after_script`."
+  after_script: []
+```
+
 ## Split long commands
 
 You can split long commands into multiline commands to improve readability with

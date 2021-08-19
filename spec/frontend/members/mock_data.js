@@ -57,6 +57,15 @@ export const group = {
   validRoles: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },
 };
 
+export const modalData = {
+  isAccessRequest: true,
+  isInvite: true,
+  memberPath: '/groups/foo-bar/-/group_members/1',
+  memberType: 'GroupMember',
+  message: 'Are you sure you want to remove John Smith?',
+  oncallSchedules: { name: 'user', schedules: [] },
+};
+
 const { user, ...memberNoUser } = member;
 export const invite = {
   ...memberNoUser,

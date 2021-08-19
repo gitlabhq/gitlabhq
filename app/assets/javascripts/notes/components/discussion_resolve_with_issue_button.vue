@@ -29,7 +29,7 @@ export default {
       :href="url"
       :title="$options.i18n.buttonLabel"
       :aria-label="$options.i18n.buttonLabel"
-      class="new-issue-for-discussion discussion-create-issue-btn"
+      class="new-issue-for-discussion discussion-create-issue-btn gl-xs-w-full"
       icon="issue-new"
     />
   </div>

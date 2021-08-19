@@ -354,13 +354,9 @@ module Gitlab
         end
       end
 
-      def new_commits(newrevs)
+      def new_commits(newrevs, allow_quarantine: false)
         wrapped_gitaly_errors do
-          if Feature.enabled?(:list_commits)
-            gitaly_commit_client.list_commits(Array.wrap(newrevs) + %w[--not --all])
-          else
-            Array.wrap(newrevs).flat_map { |newrev| gitaly_ref_client.list_new_commits(newrev) }
-          end
+          gitaly_commit_client.list_new_commits(Array.wrap(newrevs), allow_quarantine: allow_quarantine)
         end
       end
 
@@ -703,24 +699,11 @@ module Gitlab
         write_ref(ref, start_point)
       end
 
-      # If `mirror_refmap` is present the remote is set as mirror with that mapping
-      def add_remote(remote_name, url, mirror_refmap: nil)
-        wrapped_gitaly_errors do
-          gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
-        end
-      end
-
-      def remove_remote(remote_name)
-        wrapped_gitaly_errors do
-          gitaly_remote_client.remove_remote(remote_name)
-        end
-      end
-
-      def find_remote_root_ref(remote_name, remote_url, authorization = nil)
-        return unless remote_name.present? && remote_url.present?
+      def find_remote_root_ref(remote_url, authorization = nil)
+        return unless remote_url.present?
 
         wrapped_gitaly_errors do
-          gitaly_remote_client.find_remote_root_ref(remote_name, remote_url, authorization)
+          gitaly_remote_client.find_remote_root_ref(remote_url, authorization)
         end
       end
 
@@ -820,18 +803,18 @@ module Gitlab
       # no_tags - should we use --no-tags flag?
       # prune - should we use --prune flag?
       # check_tags_changed - should we ask gitaly to calculate whether any tags changed?
-      def fetch_remote(remote, url: nil, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, prune: true, check_tags_changed: false)
+      def fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, prune: true, check_tags_changed: false, http_authorization_header: "")
         wrapped_gitaly_errors do
           gitaly_repository_client.fetch_remote(
-            remote,
-            url: url,
+            url,
             refmap: refmap,
             ssh_auth: ssh_auth,
             forced: forced,
             no_tags: no_tags,
             prune: prune,
             check_tags_changed: check_tags_changed,
-            timeout: GITLAB_PROJECTS_TIMEOUT
+            timeout: GITLAB_PROJECTS_TIMEOUT,
+            http_authorization_header: http_authorization_header
           )
         end
       end
@@ -844,8 +827,8 @@ module Gitlab
         end
       end
 
-      def blob_at(sha, path)
-        Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      def blob_at(sha, path, limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
+        Gitlab::Git::Blob.find(self, sha, path, limit: limit) unless Gitlab::Git.blank_ref?(sha)
       end
 
       # Items should be of format [[commit_id, path], [commit_id1, path1]]
@@ -922,24 +905,22 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
-      def write_config(full_path:)
+      def set_full_path(full_path:)
         return unless full_path.present?
 
         # This guard avoids Gitaly log/error spam
         raise NoRepository, 'repository does not exist' unless exists?
 
-        set_config('gitlab.fullpath' => full_path)
+        if Feature.enabled?(:set_full_path)
+          gitaly_repository_client.set_full_path(full_path)
+        else
+          set_config('gitlab.fullpath' => full_path)
+        end
       end
 
       def set_config(entries)
         wrapped_gitaly_errors do
           gitaly_repository_client.set_config(entries)
-        end
-      end
-
-      def delete_config(*keys)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.delete_config(keys)
         end
       end
 

@@ -395,10 +395,10 @@ class MergeRequestDiff < ApplicationRecord
       if comparison
         if diff_options[:paths].blank? && !without_files?
           # Return the empty MergeRequestDiffBatch for an out of bound batch request
-          break diffs_batch if diffs_batch.diff_file_paths.blank?
+          break diffs_batch if diffs_batch.diff_paths.blank?
 
           diff_options.merge!(
-            paths: diffs_batch.diff_file_paths,
+            paths: diffs_batch.diff_paths,
             pagination_data: diffs_batch.pagination_data
           )
         end
@@ -515,7 +515,7 @@ class MergeRequestDiff < ApplicationRecord
 
     transaction do
       MergeRequestDiffFile.where(merge_request_diff_id: id).delete_all
-      Gitlab::Database.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+      Gitlab::Database.main.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
       save!
     end
 
@@ -535,7 +535,7 @@ class MergeRequestDiff < ApplicationRecord
 
     transaction do
       MergeRequestDiffFile.where(merge_request_diff_id: id).delete_all
-      Gitlab::Database.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+      Gitlab::Database.main.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
       update!(stored_externally: false)
     end
 
@@ -595,7 +595,7 @@ class MergeRequestDiff < ApplicationRecord
     rows = build_external_merge_request_diff_files(rows) if use_external_diff?
 
     # Faster inserts
-    Gitlab::Database.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+    Gitlab::Database.main.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
   end
 
   def build_external_diff_tempfile(rows)

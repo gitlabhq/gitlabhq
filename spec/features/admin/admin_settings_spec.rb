@@ -190,7 +190,7 @@ RSpec.describe 'Admin updates settings' do
         accept_terms(admin)
 
         page.within('.as-terms') do
-          check 'Require all users to accept Terms of Service and Privacy Policy when they access GitLab.'
+          check 'All users must accept the Terms of Service and Privacy Policy to access GitLab'
           fill_in 'Terms of Service Agreement', with: 'Be nice!'
           click_button 'Save changes'
         end
@@ -490,7 +490,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'change Prometheus settings' do
         page.within('.as-prometheus') do
-          check 'Enable Prometheus Metrics'
+          check 'Enable health and performance metrics endpoint'
           click_button 'Save changes'
         end
 
@@ -502,23 +502,23 @@ RSpec.describe 'Admin updates settings' do
         group = create(:group)
 
         page.within('.as-performance-bar') do
-          check 'Enable access to the Performance Bar'
-          fill_in 'Allowed group', with: group.path
+          check 'Allow non-administrators to access to the performance bar'
+          fill_in 'Allow access to members of the following group', with: group.path
           click_on 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
-        expect(find_field('Enable access to the Performance Bar')).to be_checked
-        expect(find_field('Allowed group').value).to eq group.path
+        expect(find_field('Allow non-administrators to access to the performance bar')).to be_checked
+        expect(find_field('Allow access to members of the following group').value).to eq group.path
 
         page.within('.as-performance-bar') do
-          uncheck 'Enable access to the Performance Bar'
+          uncheck 'Allow non-administrators to access to the performance bar'
           click_on 'Save changes'
         end
 
         expect(page).to have_content 'Application settings saved successfully'
-        expect(find_field('Enable access to the Performance Bar')).not_to be_checked
-        expect(find_field('Allowed group').value).to be_nil
+        expect(find_field('Allow non-administrators to access to the performance bar')).not_to be_checked
+        expect(find_field('Allow access to members of the following group').value).to be_nil
       end
 
       it 'loads usage ping payload on click', :js do
@@ -585,7 +585,7 @@ RSpec.describe 'Admin updates settings' do
 
         page.within('.as-help-page') do
           fill_in 'Additional text to show on the Help page', with: 'Example text'
-          check 'Hide marketing-related entries from the Help page.'
+          check 'Hide marketing-related entries from the Help page'
           fill_in 'Support page URL', with: new_support_url
           fill_in 'Documentation pages URL', with: new_documentation_url
           click_button 'Save changes'
@@ -634,7 +634,7 @@ RSpec.describe 'Admin updates settings' do
       it "change Pages Let's Encrypt settings" do
         visit preferences_admin_application_settings_path
         page.within('.as-pages') do
-          fill_in 'Email', with: 'my@test.example.com'
+          fill_in "Let's Encrypt email", with: 'my@test.example.com'
           check "I have read and agree to the Let's Encrypt Terms of Service"
           click_button 'Save changes'
         end

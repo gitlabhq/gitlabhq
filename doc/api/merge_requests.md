@@ -2538,6 +2538,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                      |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request.     |
 | `duration`          | string  | yes      | The duration in human format, such as `3h30m` |
+| `summary`           | string  | no       | A summary of how the time was spent.  |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h"

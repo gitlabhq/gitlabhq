@@ -310,7 +310,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
             context 'when database exists' do
               before do
-                allow(Gitlab::Database).to receive(:exists?).and_return(true)
+                allow(Gitlab::Database.main).to receive(:exists?).and_return(true)
               end
 
               it 'checks the persisted status and returns false' do
@@ -322,7 +322,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
             context 'when database does not exist' do
               before do
-                allow(Gitlab::Database).to receive(:exists?).and_return(false)
+                allow(Gitlab::Database.main).to receive(:exists?).and_return(false)
               end
 
               it 'returns false without checking the status in the database' do

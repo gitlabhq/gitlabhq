@@ -1,3 +1,5 @@
+import Draggable from 'vuedraggable';
+import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import createComponent from 'jest/boards/board_list_helper';
 import BoardCard from '~/boards/components/board_card.vue';
@@ -10,6 +12,23 @@ describe('Board list component', () => {
 
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
   const findIssueCountLoadingIcon = () => wrapper.find('[data-testid="count-loading-icon"]');
+  const findDraggable = () => wrapper.findComponent(Draggable);
+
+  const startDrag = (
+    params = {
+      item: {
+        dataset: {
+          draggableItemType: DraggableItemTypes.card,
+        },
+      },
+    },
+  ) => {
+    findByTestId('tree-root-wrapper').vm.$emit('start', params);
+  };
+
+  const endDrag = (params) => {
+    findByTestId('tree-root-wrapper').vm.$emit('end', params);
+  };
 
   useFakeRequestAnimationFrame();
 
@@ -155,40 +174,89 @@ describe('Board list component', () => {
   });
 
   describe('drag & drop issue', () => {
-    beforeEach(() => {
-      wrapper = createComponent();
-    });
+    describe('when dragging is allowed', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          componentProps: {
+            disabled: false,
+          },
+        });
+      });
 
-    describe('handleDragOnStart', () => {
-      it('adds a class `is-dragging` to document body', () => {
-        expect(document.body.classList.contains('is-dragging')).toBe(false);
+      it('Draggable is used', () => {
+        expect(findDraggable().exists()).toBe(true);
+      });
 
-        findByTestId('tree-root-wrapper').vm.$emit('start');
+      describe('handleDragOnStart', () => {
+        it('adds a class `is-dragging` to document body', () => {
+          expect(document.body.classList.contains('is-dragging')).toBe(false);
 
-        expect(document.body.classList.contains('is-dragging')).toBe(true);
+          startDrag();
+
+          expect(document.body.classList.contains('is-dragging')).toBe(true);
+        });
+      });
+
+      describe('handleDragOnEnd', () => {
+        beforeEach(() => {
+          jest.spyOn(wrapper.vm, 'moveItem').mockImplementation(() => {});
+
+          startDrag();
+        });
+
+        it('removes class `is-dragging` from document body', () => {
+          document.body.classList.add('is-dragging');
+
+          endDrag({
+            oldIndex: 1,
+            newIndex: 0,
+            item: {
+              dataset: {
+                draggableItemType: DraggableItemTypes.card,
+                itemId: mockIssues[0].id,
+                itemIid: mockIssues[0].iid,
+                itemPath: mockIssues[0].referencePath,
+              },
+            },
+            to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
+            from: { dataset: { listId: 'gid://gitlab/List/2' } },
+          });
+
+          expect(document.body.classList.contains('is-dragging')).toBe(false);
+        });
+
+        it(`should not handle the event if the dragged item is not a "${DraggableItemTypes.card}"`, () => {
+          endDrag({
+            oldIndex: 1,
+            newIndex: 0,
+            item: {
+              dataset: {
+                draggableItemType: DraggableItemTypes.list,
+                itemId: mockIssues[0].id,
+                itemIid: mockIssues[0].iid,
+                itemPath: mockIssues[0].referencePath,
+              },
+            },
+            to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
+            from: { dataset: { listId: 'gid://gitlab/List/2' } },
+          });
+
+          expect(document.body.classList.contains('is-dragging')).toBe(true);
+        });
       });
     });
 
-    describe('handleDragOnEnd', () => {
-      it('removes class `is-dragging` from document body', () => {
-        jest.spyOn(wrapper.vm, 'moveItem').mockImplementation(() => {});
-        document.body.classList.add('is-dragging');
-
-        findByTestId('tree-root-wrapper').vm.$emit('end', {
-          oldIndex: 1,
-          newIndex: 0,
-          item: {
-            dataset: {
-              itemId: mockIssues[0].id,
-              itemIid: mockIssues[0].iid,
-              itemPath: mockIssues[0].referencePath,
-            },
+    describe('when dragging is not allowed', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          componentProps: {
+            disabled: true,
           },
-          to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
-          from: { dataset: { listId: 'gid://gitlab/List/2' } },
         });
+      });
 
-        expect(document.body.classList.contains('is-dragging')).toBe(false);
+      it('Draggable is not used', () => {
+        expect(findDraggable().exists()).toBe(false);
       });
     });
   });

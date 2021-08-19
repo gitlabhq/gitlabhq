@@ -54,7 +54,6 @@ module Gitlab
           def to_hash
             {
               tag_list: tags || [],
-              yaml_variables: yaml_variables, # https://gitlab.com/gitlab-org/gitlab/-/issues/300581
               job_variables: yaml_variables,
               options: {
                 image: image_value,

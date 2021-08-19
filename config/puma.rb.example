@@ -82,3 +82,12 @@ json_formatter = Gitlab::PumaLogging::JSONFormatter.new
 log_formatter do |str|
   json_formatter.call(str)
 end
+
+lowlevel_error_handler do |ex, env|
+  if Raven.configuration.capture_allowed?
+    Raven.capture_exception(ex, tags: { 'handler': 'puma_low_level' }, extra: { puma_env: env })
+  end
+
+  # note the below is just a Rack response
+  [500, {}, ["An error has occurred and reported in the system's low-level error handler."]]
+end

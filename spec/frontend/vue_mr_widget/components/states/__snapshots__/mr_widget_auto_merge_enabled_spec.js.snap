@@ -4,8 +4,10 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
 <div
   class="mr-widget-body media"
 >
-  <status-icon-stub
-    status="success"
+  <gl-icon-stub
+    class="gl-text-blue-500 gl-mr-3 gl-mt-1"
+    name="status_scheduled"
+    size="24"
   />
    
   <div
@@ -17,55 +19,31 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
       <span
         class="gl-mr-3"
       >
-        <span
-          class="js-status-text-before-author"
-          data-testid="beforeStatusText"
-        >
-          Set by
-        </span>
-         
-        <mr-widget-author-stub
-          author="[object Object]"
-          showauthorname="true"
+        <gl-sprintf-stub
+          data-testid="statusText"
+          message="Set by %{merge_author} to be merged automatically when the pipeline succeeds"
         />
-         
-        <span
-          class="js-status-text-after-author"
-          data-testid="afterStatusText"
-        >
-          to be merged automatically when the pipeline succeeds
-        </span>
       </span>
        
-      <a
-        class="btn btn-sm btn-default js-cancel-auto-merge"
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
+        class="js-cancel-auto-merge"
         data-qa-selector="cancel_auto_merge_button"
         data-testid="cancelAutomaticMergeButton"
-        href="#"
-        role="button"
+        icon=""
+        size="small"
+        variant="default"
       >
-        <!---->
         
-          Cancel
+          Cancel auto-merge
         
-      </a>
+      </gl-button-stub>
     </h4>
      
     <section
       class="mr-info-list"
     >
-      <p>
-        
-          The changes will be merged into
-          
-        <a
-          class="label-branch"
-          href="/foo/bar"
-        >
-          foo
-        </a>
-      </p>
-       
       <p
         class="gl-display-flex"
       >
@@ -75,17 +53,19 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
           The source branch will not be deleted
         </span>
          
-        <a
-          class="btn btn-sm btn-default js-remove-source-branch"
+        <gl-button-stub
+          buttontextclasses=""
+          category="primary"
+          class="js-remove-source-branch"
           data-testid="removeSourceBranchButton"
-          href="#"
-          role="button"
+          icon=""
+          size="small"
+          variant="default"
         >
-          <!---->
           
             Delete source branch
           
-        </a>
+        </gl-button-stub>
       </p>
     </section>
   </div>
@@ -96,8 +76,10 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
 <div
   class="mr-widget-body media"
 >
-  <status-icon-stub
-    status="success"
+  <gl-icon-stub
+    class="gl-text-blue-500 gl-mr-3 gl-mt-1"
+    name="status_scheduled"
+    size="24"
   />
    
   <div
@@ -109,55 +91,31 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
       <span
         class="gl-mr-3"
       >
-        <span
-          class="js-status-text-before-author"
-          data-testid="beforeStatusText"
-        >
-          Set by
-        </span>
-         
-        <mr-widget-author-stub
-          author="[object Object]"
-          showauthorname="true"
+        <gl-sprintf-stub
+          data-testid="statusText"
+          message="Set by %{merge_author} to be merged automatically when the pipeline succeeds"
         />
-         
-        <span
-          class="js-status-text-after-author"
-          data-testid="afterStatusText"
-        >
-          to be merged automatically when the pipeline succeeds
-        </span>
       </span>
        
-      <a
-        class="btn btn-sm btn-default js-cancel-auto-merge"
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
+        class="js-cancel-auto-merge"
         data-qa-selector="cancel_auto_merge_button"
         data-testid="cancelAutomaticMergeButton"
-        href="#"
-        role="button"
+        icon=""
+        size="small"
+        variant="default"
       >
-        <!---->
         
-          Cancel
+          Cancel auto-merge
         
-      </a>
+      </gl-button-stub>
     </h4>
      
     <section
       class="mr-info-list"
     >
-      <p>
-        
-          The changes will be merged into
-          
-        <a
-          class="label-branch"
-          href="/foo/bar"
-        >
-          foo
-        </a>
-      </p>
-       
       <p
         class="gl-display-flex"
       >
@@ -167,17 +125,19 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
           The source branch will not be deleted
         </span>
          
-        <a
-          class="btn btn-sm btn-default js-remove-source-branch"
+        <gl-button-stub
+          buttontextclasses=""
+          category="primary"
+          class="js-remove-source-branch"
           data-testid="removeSourceBranchButton"
-          href="#"
-          role="button"
+          icon=""
+          size="small"
+          variant="default"
         >
-          <!---->
           
             Delete source branch
           
-        </a>
+        </gl-button-stub>
       </p>
     </section>
   </div>

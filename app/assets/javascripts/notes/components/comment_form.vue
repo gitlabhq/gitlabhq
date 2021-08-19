@@ -380,6 +380,7 @@ export default {
             <comment-field-layout
               :with-alert-container="true"
               :noteable-data="getNoteableData"
+              :note-is-confidential="noteIsConfidential"
               :noteable-type="noteableType"
             >
               <markdown-field

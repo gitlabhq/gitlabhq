@@ -5,6 +5,8 @@ class ClusterUpdateAppWorker # rubocop:disable Scalability/IdempotentWorker
   UpdateAlreadyInProgressError = Class.new(StandardError)
 
   include ApplicationWorker
+
+  data_consistency :always
   include ClusterQueue
   include ClusterApplications
   include ExclusiveLeaseGuard

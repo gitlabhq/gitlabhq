@@ -527,6 +527,12 @@ class IssuableBaseService < ::BaseProjectService
   def allowed_update_params(params)
     params
   end
+
+  def update_issuable_sla(issuable)
+    return unless issuable_sla = issuable.issuable_sla
+
+    issuable_sla.update(issuable_closed: issuable.closed?)
+  end
 end
 
 IssuableBaseService.prepend_mod_with('IssuableBaseService')

@@ -11,24 +11,24 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
-	apipkg "gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/artifacts"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/builds"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/channel"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/git"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/imageresizer"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/lfs"
-	proxypkg "gitlab.com/gitlab-org/gitlab-workhorse/internal/proxy"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/queueing"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/redis"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/sendfile"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/sendurl"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/staticpages"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload"
+	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/artifacts"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/channel"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lfs"
+	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/sendfile"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/sendurl"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/staticpages"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 )
 
 type matcherFunc func(*http.Request) bool
@@ -328,7 +328,7 @@ func configureRoutes(u *upstream) {
 
 		// health checks don't intercept errors and go straight to rails
 		// TODO: We should probably not return a HTML deploy page?
-		//       https://gitlab.com/gitlab-org/gitlab-workhorse/issues/230
+		//       https://gitlab.com/gitlab-org/gitlab/-/issues/336326
 		u.route("", "^/-/(readiness|liveness)$", static.DeployPage(probeUpstream)),
 		u.route("", "^/-/health$", static.DeployPage(healthUpstream)),
 
@@ -336,6 +336,42 @@ func configureRoutes(u *upstream) {
 		u.route("", "^/-/", defaultUpstream),
 
 		u.route("", "", defaultUpstream),
+	}
+
+	// Routes which should actually be served locally by a Geo Proxy. If none
+	// matches, then then proxy the request.
+	u.geoLocalRoutes = []routeEntry{
+		// Git and LFS requests
+		//
+		// Note that Geo already redirects pushes, with special terminal output.
+		// Note that excessive secondary lag can cause unexpected behavior since
+		// pulls are performed against a different source of truth. Ideally, we'd
+		// proxy/redirect pulls as well, when the secondary is not up-to-date.
+		//
+		u.route("GET", gitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
+		u.route("POST", gitProjectPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
+		u.route("POST", gitProjectPattern+`git-receive-pack\z`, contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
+		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, lfs.PutStore(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
+
+		// Serve health checks from this Geo secondary
+		u.route("", "^/-/(readiness|liveness)$", static.DeployPage(probeUpstream)),
+		u.route("", "^/-/health$", static.DeployPage(healthUpstream)),
+		u.route("", "^/-/metrics$", defaultUpstream),
+
+		// Authentication routes
+		u.route("", "^/users/(sign_in|sign_out)$", defaultUpstream),
+		u.route("", "^/oauth/geo/(auth|callback|logout)$", defaultUpstream),
+
+		// Admin Area > Geo routes
+		u.route("", "^/admin/geo$", defaultUpstream),
+		u.route("", "^/admin/geo/", defaultUpstream),
+
+		// Geo API routes
+		u.route("", "^/api/v4/geo_nodes", defaultUpstream),
+		u.route("", "^/api/v4/geo_replication", defaultUpstream),
+
+		// Don't define a catch-all route. If a route does not match, then we know
+		// the request should be proxied.
 	}
 }
 

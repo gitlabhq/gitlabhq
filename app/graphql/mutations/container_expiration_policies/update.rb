@@ -10,12 +10,12 @@ module Mutations
       authorize :destroy_container_image
 
       argument :project_path,
-               GraphQL::ID_TYPE,
+               GraphQL::Types::ID,
                required: true,
-               description: 'The project path where the container expiration policy is located.'
+               description: 'Project path where the container expiration policy is located.'
 
       argument :enabled,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: false,
                description: copy_field_description(Types::ContainerExpirationPolicyType, :enabled)
 
@@ -47,7 +47,7 @@ module Mutations
       field :container_expiration_policy,
             Types::ContainerExpirationPolicyType,
             null: true,
-            description: 'The container expiration policy after mutation.'
+            description: 'Container expiration policy after mutation.'
 
       def resolve(project_path:, **args)
         project = authorized_find!(project_path)

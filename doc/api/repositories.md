@@ -22,11 +22,11 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | :---------- | :------------- | :------- | :---------- |
-| `id`        | integer/string | no       | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `path`      | string         | yes      | The path inside repository. Used to get content of subdirectories. |
-| `ref`       | string         | yes      | The name of a repository branch or tag or if not given the default branch. |
-| `recursive` | boolean        | yes      | Boolean value used to get a recursive tree (false by default). |
-| `per_page`  | integer        | yes      | Number of results to show per page. If not specified, defaults to `20`. [Learn more on pagination](index.md#pagination). |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `path`      | string         | no       | The path inside repository. Used to get content of subdirectories. |
+| `ref`       | string         | no       | The name of a repository branch or tag or if not given the default branch. |
+| `recursive` | boolean        | no       | Boolean value used to get a recursive tree (false by default). |
+| `per_page`  | integer        | no       | Number of results to show per page. If not specified, defaults to `20`. [Learn more on pagination](index.md#pagination). |
 
 ```json
 [
@@ -85,7 +85,7 @@ Supported attributes:
 ## Get a blob from repository
 
 Allows you to receive information about blob in repository like size and
-content. Note that blob content is Base64 encoded. This endpoint can be accessed
+content. Blob content is Base64 encoded. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```plaintext
@@ -112,8 +112,8 @@ Supported attributes:
 
 | Attribute | Type     | Required | Description |
 | :-------- | :------- | :------- | :---------- |
-| `id`      | datatype | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `sha`     | datatype | yes      | The blob SHA. |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `sha`     | string | yes      | The blob SHA. |
 
 ## Get file archive
 
@@ -149,7 +149,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/pr
 ## Compare branches, tags or commits
 
 This endpoint can be accessed without authentication if the repository is
-publicly accessible. Note that diffs could have an empty diff string if [diff limits](../development/diffs.md#diff-limits) are reached.
+publicly accessible. Diffs can have an empty diff string if [diff limits](../development/diffs.md#diff-limits) are reached.
 
 ```plaintext
 GET /projects/:id/repository/compare
@@ -607,7 +607,7 @@ template: |
   {% end %}
 ```
 
-Note that when specifying the template you should use `template: |` and not
+When specifying the template you should use `template: |` and not
 `template: >`, as the latter doesn't preserve newlines in the template.
 
 ### Template data

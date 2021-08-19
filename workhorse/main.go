@@ -17,11 +17,11 @@ import (
 	"gitlab.com/gitlab-org/labkit/monitoring"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/queueing"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/redis"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upstream"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
 )
 
 // Version is the current version of GitLab Workhorse
@@ -152,6 +152,8 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.ImageResizerConfig = cfgFromFile.ImageResizerConfig
 	cfg.AltDocumentRoot = cfgFromFile.AltDocumentRoot
 	cfg.ShutdownTimeout = cfgFromFile.ShutdownTimeout
+	cfg.TrustedCIDRsForXForwardedFor = cfgFromFile.TrustedCIDRsForXForwardedFor
+	cfg.TrustedCIDRsForPropagation = cfgFromFile.TrustedCIDRsForPropagation
 
 	return boot, cfg, nil
 }

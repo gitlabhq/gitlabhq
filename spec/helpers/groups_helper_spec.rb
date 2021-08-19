@@ -19,11 +19,15 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#group_dependency_proxy_url' do
-    it 'converts uppercase letters to lowercase' do
-      group = build_stubbed(:group, path: 'GroupWithUPPERcaseLetters')
+  describe '#group_dependency_proxy_image_prefix' do
+    let_it_be(:group) { build_stubbed(:group, path: 'GroupWithUPPERcaseLetters') }
 
-      expect(group_dependency_proxy_url(group)).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
+    it 'converts uppercase letters to lowercase' do
+      expect(group_dependency_proxy_image_prefix(group)).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
+    end
+
+    it 'removes the protocol' do
+      expect(group_dependency_proxy_image_prefix(group)).not_to include('http')
     end
   end
 
@@ -263,42 +267,6 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#group_container_registry_nav' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be(:user) { create(:user) }
-
-    before do
-      stub_container_registry_config(enabled: true)
-      allow(helper).to receive(:current_user) { user }
-      allow(helper).to receive(:can?).with(user, :read_container_image, group) { true }
-      helper.instance_variable_set(:@group, group)
-    end
-
-    subject { helper.group_container_registry_nav? }
-
-    context 'when container registry is enabled' do
-      it { is_expected.to be_truthy }
-
-      it 'is disabled for guest' do
-        allow(helper).to receive(:can?).with(user, :read_container_image, group) { false }
-        expect(subject).to be false
-      end
-    end
-
-    context 'when container registry is not enabled' do
-      before do
-        stub_container_registry_config(enabled: false)
-      end
-
-      it { is_expected.to be_falsy }
-
-      it 'is disabled for guests' do
-        allow(helper).to receive(:can?).with(user, :read_container_image, group) { false }
-        expect(subject).to be false
-      end
-    end
-  end
-
   describe '#group_sidebar_links' do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
@@ -313,15 +281,30 @@ RSpec.describe GroupsHelper do
     it 'returns all the expected links' do
       links = [
         :overview, :activity, :issues, :labels, :milestones, :merge_requests,
-        :group_members, :settings
+        :runners, :group_members, :settings
       ]
 
       expect(helper.group_sidebar_links).to include(*links)
     end
 
-    it 'includes settings when the user can admin the group' do
+    it 'excludes runners when the user cannot admin the group' do
       expect(helper).to receive(:current_user) { user }
-      expect(helper).to receive(:can?).with(user, :admin_group, group) { false }
+      # TODO Proper policies, such as `read_group_runners, should be implemented per
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
+      expect(helper).to receive(:can?).twice.with(user, :admin_group, group) { false }
+
+      expect(helper.group_sidebar_links).not_to include(:runners)
+    end
+
+    it 'excludes runners when the feature "runner_list_group_view_vue_ui" is disabled' do
+      stub_feature_flags(runner_list_group_view_vue_ui: false)
+
+      expect(helper.group_sidebar_links).not_to include(:runners)
+    end
+
+    it 'excludes settings when the user can admin the group' do
+      expect(helper).to receive(:current_user) { user }
+      expect(helper).to receive(:can?).twice.with(user, :admin_group, group) { false }
 
       expect(helper.group_sidebar_links).not_to include(:settings)
     end
@@ -540,22 +523,22 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#cached_issuables_count' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group) { create(:group, name: 'group') }
+  describe '#can_admin_group_member?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
 
-    context 'with issues type' do
-      let(:type) { :issues }
-      let(:count_service) { Groups::OpenIssuesCountService }
-
-      it_behaves_like 'cached issuables count'
+    before do
+      allow(helper).to receive(:current_user) { user }
     end
 
-    context 'with merge requests type' do
-      let(:type) { :merge_requests }
-      let(:count_service) { Groups::MergeRequestsCountService }
+    it 'returns true when current_user can admin members' do
+      group.add_owner(user)
 
-      it_behaves_like 'cached issuables count'
+      expect(helper.can_admin_group_member?(group)).to be(true)
+    end
+
+    it 'returns false when current_user can not admin members' do
+      expect(helper.can_admin_group_member?(group)).to be(false)
     end
   end
 end

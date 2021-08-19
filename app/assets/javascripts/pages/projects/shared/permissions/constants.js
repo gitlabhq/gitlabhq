@@ -22,7 +22,7 @@ export const featureAccessLevel = {
   EVERYONE: 20,
 };
 
-const featureAccessLevelDescriptions = {
+export const featureAccessLevelDescriptions = {
   [featureAccessLevel.NOT_ENABLED]: __('Enable feature to choose access level'),
   [featureAccessLevel.PROJECT_MEMBERS]: __('Only Project Members'),
   [featureAccessLevel.EVERYONE]: __('Everyone With Access'),

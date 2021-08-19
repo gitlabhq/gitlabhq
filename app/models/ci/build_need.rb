@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildNeed < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class BuildNeed < Ci::ApplicationRecord
     include BulkInsertSafe
     include IgnorableColumns
 

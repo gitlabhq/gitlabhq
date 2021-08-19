@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_remove_zoom_monthly
 description: Count of MAU using the `/remove_zoom` quick action 
 product_section: dev
@@ -10,6 +10,10 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_quickactions_remove_zoom
 distribution:
 - ce
 - ee 

@@ -6,6 +6,6 @@ module ProductAnalytics
     URL = Gitlab.config.gitlab.url + '/-/sp.js'
 
     # The collector URL minus protocol and /i
-    COLLECTOR_URL = Gitlab.config.gitlab.url.sub(/\Ahttps?\:\/\//, '') + '/-/collector'
+    COLLECTOR_URL = Gitlab.config.gitlab.url.sub(%r{\Ahttps?\://}, '') + '/-/collector'
   end
 end

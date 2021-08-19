@@ -31,8 +31,8 @@ The results are sorted by the priority of the vulnerability:
 1. High
 1. Medium
 1. Low
+1. Info
 1. Unknown
-1. Everything else
 
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
@@ -71,6 +71,7 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | .NET Core                                                                                                                                         | [Security Code Scan](https://security-code-scan.github.io)                                                    | 11.0                                                                                    |
 | .NET Framework                                                                                                                                    | [Security Code Scan](https://security-code-scan.github.io)                                                    | 13.0                                                                                    |
 | Apex (Salesforce)                                                                                                                                 | [PMD](https://pmd.github.io/pmd/index.html)                                                                   | 12.1                                                                                    |
+| C                                                                                                                                            | [Semgrep](https://semgrep.dev)                                                                                | 14.2                                                                                    |
 | C/C++                                                                                                                                             | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                                                   | 10.7                                                                                    |
 | Elixir (Phoenix)                                                                                                                                  | [Sobelow](https://github.com/nccgroup/sobelow)                                                                | 11.1                                                                                    |
 | Go                                                                                                                                                | [Gosec](https://github.com/securego/gosec)                                                                    | 10.7                                                                                    |
@@ -146,6 +147,7 @@ as shown in the following table:
 | [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Configure SAST in the UI](#configure-sast-in-the-ui)                                  | **{dotted-circle}** | **{check-circle}** |
 | [Customize SAST Rulesets](#customize-rulesets)                                         | **{dotted-circle}** | **{check-circle}** |
+| [False Positive Detection](#false-positive-detection)                                  | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -354,6 +356,12 @@ To create a custom ruleset:
          type  = "file"
          value = "gosec-config.json"
      ```
+
+### False Positive Detection **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292686) in GitLab 14.2.
+
+Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
 ### Using CI/CD variables to pass credentials for private repositories
 

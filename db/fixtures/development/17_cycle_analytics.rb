@@ -149,7 +149,7 @@ class Gitlab::Seeder::CycleAnalytics
         email: "vsm-user-#{i}@#{suffix}.com"
       )
 
-      project.group.add_developer(user)
+      project.group&.add_developer(user)
       project.add_developer(user)
 
       @developers << user

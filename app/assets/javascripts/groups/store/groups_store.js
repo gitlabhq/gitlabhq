@@ -1,4 +1,5 @@
-import { normalizeHeaders, parseIntPagination } from '../../lib/utils/common_utils';
+import { isEmpty } from 'lodash';
+import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import { getGroupItemMicrodata } from './utils';
 
 export default class GroupsStore {
@@ -70,7 +71,7 @@ export default class GroupsStore {
       ? rawGroupItem.subgroup_count
       : rawGroupItem.children_count;
 
-    return {
+    const groupItem = {
       id: rawGroupItem.id,
       name: rawGroupItem.name,
       fullName: rawGroupItem.full_name,
@@ -98,6 +99,16 @@ export default class GroupsStore {
       pendingRemoval: rawGroupItem.marked_for_deletion,
       microdata: this.showSchemaMarkup ? getGroupItemMicrodata(rawGroupItem) : {},
     };
+
+    if (!isEmpty(rawGroupItem.compliance_management_framework)) {
+      groupItem.complianceFramework = {
+        name: rawGroupItem.compliance_management_framework.name,
+        color: rawGroupItem.compliance_management_framework.color,
+        description: rawGroupItem.compliance_management_framework.description,
+      };
+    }
+
+    return groupItem;
   }
 
   removeGroup(group, parentGroup) {

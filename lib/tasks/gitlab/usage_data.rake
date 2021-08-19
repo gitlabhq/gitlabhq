@@ -24,12 +24,6 @@ namespace :gitlab do
       puts Gitlab::Json.pretty_generate(result.attributes)
     end
 
-    desc 'GitLab | UsageData | Generate metrics dictionary'
-    task generate_metrics_dictionary: :environment do
-      items = Gitlab::Usage::MetricDefinition.definitions
-      Gitlab::Usage::Docs::Renderer.new(items).write
-    end
-
     desc 'GitLab | UsageDataMetrics | Generate usage ping from metrics definition YAML files in JSON'
     task generate_from_yaml: :environment do
       puts Gitlab::Json.pretty_generate(Gitlab::UsageDataMetrics.uncached_data)

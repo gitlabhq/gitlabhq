@@ -53,10 +53,10 @@ RSpec.describe Discussion do
   end
 
   describe '#cache_key' do
-    let(:notes_sha) { Digest::SHA1.hexdigest("#{first_note.id}:#{second_note.id}:#{third_note.id}") }
+    let(:notes_sha) { Digest::SHA1.hexdigest("#{first_note.post_processed_cache_key}:#{second_note.post_processed_cache_key}:#{third_note.post_processed_cache_key}") }
 
-    it 'returns the cache key with ID and latest updated note updated at' do
-      expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{third_note.latest_cached_markdown_version}:#{subject.id}:#{notes_sha}:#{third_note.updated_at}:")
+    it 'returns the cache key' do
+      expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}:")
     end
 
     context 'when discussion is resolved' do
@@ -65,7 +65,7 @@ RSpec.describe Discussion do
       end
 
       it 'returns the cache key with resolved at' do
-        expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{third_note.latest_cached_markdown_version}:#{subject.id}:#{notes_sha}:#{third_note.updated_at}:#{subject.resolved_at}")
+        expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}:#{subject.resolved_at}")
       end
     end
   end

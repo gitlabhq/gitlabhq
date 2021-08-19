@@ -15,7 +15,7 @@ To get to the importer page you need to go to "New project" page.
 
 NOTE:
 If you are interested in importing Wiki and Merge Request data to your new instance,
-you'll need to follow the instructions for [exporting a project](../settings/import_export.md#exporting-a-project-and-its-data)
+you'll need to follow the instructions for [exporting a project](../settings/import_export.md#export-a-project-and-its-data)
 
 ![New project page](img/gitlab_new_project_page_v12_2.png)
 

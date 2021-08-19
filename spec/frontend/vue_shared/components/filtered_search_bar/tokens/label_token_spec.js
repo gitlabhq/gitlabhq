@@ -13,10 +13,7 @@ import {
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-import {
-  DEFAULT_LABELS,
-  DEFAULT_NONE_ANY,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
@@ -98,11 +95,11 @@ describe('LabelToken', () => {
       });
     });
 
-    describe('fetchLabelBySearchTerm', () => {
+    describe('fetchLabels', () => {
       it('calls `config.fetchLabels` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels');
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         expect(wrapper.vm.config.fetchLabels).toHaveBeenCalledWith('foo');
       });
@@ -110,7 +107,7 @@ describe('LabelToken', () => {
       it('sets response to `labels` when request is succesful', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels').mockResolvedValue(mockLabels);
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.labels).toEqual(mockLabels);
@@ -120,7 +117,7 @@ describe('LabelToken', () => {
       it('calls `createFlash` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels').mockRejectedValue({});
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         return waitForPromises().then(() => {
           expect(createFlash).toHaveBeenCalledWith({
@@ -132,7 +129,7 @@ describe('LabelToken', () => {
       it('sets `loading` to false when request completes', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels').mockRejectedValue({});
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.loading).toBe(false);
@@ -160,7 +157,7 @@ describe('LabelToken', () => {
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
         suggestions: mockLabels,
-        fnActiveTokenValue: wrapper.vm.getActiveLabel,
+        getActiveTokenValue: wrapper.vm.getActiveLabel,
       });
     });
 
@@ -208,7 +205,7 @@ describe('LabelToken', () => {
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `DEFAULT_LABELS` as default suggestions', () => {
+    it('renders `DEFAULT_NONE_ANY` as default suggestions', () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockLabelToken },
@@ -220,8 +217,8 @@ describe('LabelToken', () => {
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
-      expect(suggestions).toHaveLength(DEFAULT_LABELS.length);
-      DEFAULT_LABELS.forEach((label, index) => {
+      expect(suggestions).toHaveLength(DEFAULT_NONE_ANY.length);
+      DEFAULT_NONE_ANY.forEach((label, index) => {
         expect(suggestions.at(index).text()).toBe(label.text);
       });
     });

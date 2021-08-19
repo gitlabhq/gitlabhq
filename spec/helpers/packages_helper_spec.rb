@@ -219,4 +219,25 @@ RSpec.describe PackagesHelper do
       it { is_expected.to eq(expected_result) }
     end
   end
+
+  describe '#package_details_data' do
+    let_it_be(:package) { create(:package) }
+
+    before do
+      allow(helper).to receive(:current_user) { project.owner }
+      allow(helper).to receive(:can?) { true }
+    end
+
+    it 'when use_presenter is true populate the package key' do
+      result = helper.package_details_data(project, package, true)
+
+      expect(result[:package]).not_to be_nil
+    end
+
+    it 'when use_presenter is false the package key is nil' do
+      result = helper.package_details_data(project, package, false)
+
+      expect(result[:package]).to be_nil
+    end
+  end
 end

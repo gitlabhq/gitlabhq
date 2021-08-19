@@ -194,6 +194,29 @@ RSpec.describe 'Dashboard Projects' do
     end
   end
 
+  describe 'with topics' do
+    context 'when project has topics' do
+      before do
+        project.update_attribute(:topic_list, 'topic1')
+      end
+
+      it 'shows project topics if exist' do
+        visit dashboard_projects_path
+
+        expect(page).to have_selector('[data-testid="project_topic_list"]')
+        expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
+      end
+    end
+
+    context 'when project does not have topics' do
+      it 'does not show project topics' do
+        visit dashboard_projects_path
+
+        expect(page).not_to have_selector('[data-testid="project_topic_list"]')
+      end
+    end
+  end
+
   context 'last push widget', :use_clean_rails_memory_store_caching do
     before do
       event = create(:push_event, project: project, author: user)

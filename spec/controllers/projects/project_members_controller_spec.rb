@@ -93,13 +93,12 @@ RSpec.describe Projects::ProjectMembersController do
       let_it_be(:invited_member) { create(:project_member, :invited, project: project) }
 
       before do
-        project.add_maintainer(user)
         sign_in(user)
       end
 
       context 'when user has `admin_project_member` permissions' do
         before do
-          allow(controller.helpers).to receive(:can_manage_project_members?).with(project).and_return(true)
+          project.add_maintainer(user)
         end
 
         it 'lists invited members' do
@@ -110,10 +109,6 @@ RSpec.describe Projects::ProjectMembersController do
       end
 
       context 'when user does not have `admin_project_member` permissions' do
-        before do
-          allow(controller.helpers).to receive(:can_manage_project_members?).with(project).and_return(false)
-        end
-
         it 'does not list invited members' do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
@@ -127,13 +122,12 @@ RSpec.describe Projects::ProjectMembersController do
 
       before do
         project.request_access(access_requester_user)
-        project.add_maintainer(user)
         sign_in(user)
       end
 
       context 'when user has `admin_project_member` permissions' do
         before do
-          allow(controller.helpers).to receive(:can_manage_project_members?).with(project).and_return(true)
+          project.add_maintainer(user)
         end
 
         it 'lists access requests' do
@@ -144,10 +138,6 @@ RSpec.describe Projects::ProjectMembersController do
       end
 
       context 'when user does not have `admin_project_member` permissions' do
-        before do
-          allow(controller.helpers).to receive(:can_manage_project_members?).with(project).and_return(false)
-        end
-
         it 'does not list access requests' do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 

@@ -1,4 +1,4 @@
-import { GlToggle } from '@gitlab/ui';
+import { GlSprintf, GlToggle } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
@@ -22,12 +22,11 @@ const defaultProps = {
     operationsAccessLevel: 20,
     pagesAccessLevel: 10,
     analyticsAccessLevel: 20,
-    containerRegistryEnabled: true,
+    containerRegistryAccessLevel: 20,
     lfsEnabled: true,
     emailsDisabled: false,
     packagesEnabled: true,
     showDefaultAwardEmojis: true,
-    allowEditingCommitMessages: false,
   },
   isGitlabCom: true,
   canDisableEmails: true,
@@ -53,7 +52,7 @@ describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    { currentSettings = {}, glFeatures = {}, ...customProps } = {},
+    { currentSettings = {}, ...customProps } = {},
     mountFn = shallowMount,
   ) => {
     const propsData = {
@@ -64,9 +63,6 @@ describe('Settings Panel', () => {
 
     return mountFn(settingsPanel, {
       propsData,
-      provide: {
-        glFeatures,
-      },
     });
   };
 
@@ -89,8 +85,10 @@ describe('Settings Panel', () => {
   const findBuildsAccessLevelInput = () =>
     wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]');
   const findContainerRegistrySettings = () => wrapper.find({ ref: 'container-registry-settings' });
-  const findContainerRegistryEnabledInput = () =>
-    wrapper.find('[name="project[container_registry_enabled]"]');
+  const findContainerRegistryPublicNoteGlSprintfComponent = () =>
+    findContainerRegistrySettings().findComponent(GlSprintf);
+  const findContainerRegistryAccessLevelInput = () =>
+    wrapper.find('[name="project[project_feature_attributes][container_registry_access_level]"]');
   const findPackageSettings = () => wrapper.find({ ref: 'package-settings' });
   const findPackagesEnabledInput = () => wrapper.find('[name="project[packages_enabled]"]');
   const findPagesSettings = () => wrapper.find({ ref: 'pages-settings' });
@@ -100,8 +98,6 @@ describe('Settings Panel', () => {
   const findShowDefaultAwardEmojis = () =>
     wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
   const findMetricsVisibilitySettings = () => wrapper.find({ ref: 'metrics-visibility-settings' });
-  const findAllowEditingCommitMessages = () =>
-    wrapper.find({ ref: 'allow-editing-commit-messages' }).exists();
   const findOperationsSettings = () => wrapper.find({ ref: 'operations-settings' });
 
   afterEach(() => {
@@ -281,13 +277,29 @@ describe('Settings Panel', () => {
 
     it('should show the container registry public note if the visibility level is public and the registry is available', () => {
       wrapper = mountComponent({
-        currentSettings: { visibilityLevel: visibilityOptions.PUBLIC },
+        currentSettings: {
+          visibilityLevel: visibilityOptions.PUBLIC,
+          containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
+        },
         registryAvailable: true,
       });
 
-      expect(findContainerRegistrySettings().text()).toContain(
-        'Note: the container registry is always visible when a project is public',
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().exists()).toBe(true);
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().attributes('message')).toContain(
+        `Note: The container registry is always visible when a project is public and the container registry is set to '%{access_level_description}'`,
       );
+    });
+
+    it('should hide the container registry public note if the visibility level is public but the registry is private', () => {
+      wrapper = mountComponent({
+        currentSettings: {
+          visibilityLevel: visibilityOptions.PUBLIC,
+          containerRegistryAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+        },
+        registryAvailable: true,
+      });
+
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().exists()).toBe(false);
     });
 
     it('should hide the container registry public note if the visibility level is private and the registry is available', () => {
@@ -296,27 +308,7 @@ describe('Settings Panel', () => {
         registryAvailable: true,
       });
 
-      expect(findContainerRegistrySettings().text()).not.toContain(
-        'Note: the container registry is always visible when a project is public',
-      );
-    });
-
-    it('should enable the container registry input when the repository is enabled', () => {
-      wrapper = mountComponent({
-        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
-        registryAvailable: true,
-      });
-
-      expect(findContainerRegistryEnabledInput().props('disabled')).toBe(false);
-    });
-
-    it('should disable the container registry input when the repository is disabled', () => {
-      wrapper = mountComponent({
-        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
-        registryAvailable: true,
-      });
-
-      expect(findContainerRegistryEnabledInput().props('disabled')).toBe(true);
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().exists()).toBe(false);
     });
 
     it('has label for the toggle', () => {
@@ -325,7 +317,7 @@ describe('Settings Panel', () => {
         registryAvailable: true,
       });
 
-      expect(findContainerRegistrySettings().findComponent(GlToggle).props('label')).toBe(
+      expect(findContainerRegistryAccessLevelInput().props('label')).toBe(
         settingsPanel.i18n.containerRegistryLabel,
       );
     });
@@ -580,18 +572,6 @@ describe('Settings Panel', () => {
         expect(option.text()).toBe(selectedOptionLabel);
       },
     );
-  });
-
-  describe('Settings panel with feature flags', () => {
-    describe('Allow edit of commit message', () => {
-      it('should show the allow editing of commit messages checkbox', () => {
-        wrapper = mountComponent({
-          glFeatures: { allowEditingCommitMessages: true },
-        });
-
-        expect(findAllowEditingCommitMessages()).toBe(true);
-      });
-    });
   });
 
   describe('Analytics', () => {

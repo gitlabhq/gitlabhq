@@ -49,9 +49,14 @@ module Gitlab
 
         retval
       rescue StandardError => e
-        error(project.id, e)
+        Gitlab::Import::ImportFailureService.track(
+          project_id: project.id,
+          error_source: self.class.name,
+          exception: e,
+          fail_import: abort_on_failure
+        )
 
-        raise e
+        raise(e)
       end
 
       # Imports all the objects in sequence in the current thread.
@@ -165,6 +170,10 @@ module Gitlab
         raise NotImplementedError
       end
 
+      def abort_on_failure
+        false
+      end
+
       # Any options to be passed to the method used for retrieving the data to
       # import.
       def collection_options
@@ -174,35 +183,15 @@ module Gitlab
       private
 
       def info(project_id, extra = {})
-        logger.info(log_attributes(project_id, extra))
-      end
-
-      def error(project_id, exception)
-        logger.error(
-          log_attributes(
-            project_id,
-            message: 'importer failed',
-            'error.message': exception.message
-          )
-        )
-
-        Gitlab::ErrorTracking.track_exception(
-          exception,
-          log_attributes(project_id)
-        )
+        Logger.info(log_attributes(project_id, extra))
       end
 
       def log_attributes(project_id, extra = {})
         extra.merge(
-          import_source: :github,
           project_id: project_id,
           importer: importer_class.name,
           parallel: parallel?
         )
-      end
-
-      def logger
-        @logger ||= Gitlab::Import::Logger.build
       end
     end
   end

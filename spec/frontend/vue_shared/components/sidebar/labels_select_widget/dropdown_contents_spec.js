@@ -5,7 +5,7 @@ import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_w
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_widget/store';
 
-import { mockConfig } from './mock_data';
+import { mockConfig, mockLabels } from './mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -19,6 +19,11 @@ const createComponent = (initialState = mockConfig, defaultProps = {}) => {
     propsData: {
       ...defaultProps,
       labelsCreateTitle: 'test',
+      selectedLabels: mockLabels,
+      allowMultiselect: true,
+      labelsListTitle: 'Assign labels',
+      footerCreateLabelTitle: 'create',
+      footerManageLabelTitle: 'manage',
     },
     localVue,
     store,

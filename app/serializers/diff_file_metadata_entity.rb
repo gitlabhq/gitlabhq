@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DiffFileMetadataEntity < Grape::Entity
+  include DiffFileConflictType
+
   expose :added_lines
   expose :removed_lines
   expose :new_path

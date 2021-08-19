@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import { DESIGN_MARK_APP_START, DESIGN_MEASURE_BEFORE_APP } from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import App from './components/app.vue';
 import apolloProvider from './graphql';
 import activeDiscussionQuery from './graphql/queries/active_discussion.query.graphql';
@@ -27,6 +29,16 @@ export default () => {
     provide: {
       projectPath,
       issueIid,
+    },
+    mounted() {
+      performanceMarkAndMeasure({
+        mark: DESIGN_MARK_APP_START,
+        measures: [
+          {
+            name: DESIGN_MEASURE_BEFORE_APP,
+          },
+        ],
+      });
     },
     render(createElement) {
       return createElement(App);

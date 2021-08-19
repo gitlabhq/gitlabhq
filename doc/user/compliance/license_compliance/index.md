@@ -83,6 +83,9 @@ The reported licenses might be incomplete or inaccurate.
 
 ## Requirements
 
+WARNING:
+License Compliance Scanning does not support run-time installation of compilers and interpreters.
+
 To run a License Compliance scanning job, you need GitLab Runner with the
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 

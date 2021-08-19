@@ -201,9 +201,36 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     let(:reindex) { double('reindex') }
     let(:indexes) { double('indexes') }
 
+    it 'cleans up any leftover indexes' do
+      expect(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!)
+
+      run_rake_task('gitlab:db:reindex')
+    end
+
+    context 'when async index creation is enabled' do
+      it 'executes async index creation prior to any reindexing actions' do
+        stub_feature_flags(database_async_index_creation: true)
+
+        expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered
+        expect(Gitlab::Database::Reindexing).to receive(:perform).ordered
+
+        run_rake_task('gitlab:db:reindex')
+      end
+    end
+
+    context 'when async index creation is disabled' do
+      it 'does not execute async index creation' do
+        stub_feature_flags(database_async_index_creation: false)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:create_pending_indexes!)
+
+        run_rake_task('gitlab:db:reindex')
+      end
+    end
+
     context 'when no index_name is given' do
       it 'uses all candidate indexes' do
-        expect(Gitlab::Database::Reindexing).to receive(:candidate_indexes).and_return(indexes)
+        expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).and_return(indexes)
         expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes)
 
         run_rake_task('gitlab:db:reindex')
@@ -214,7 +241,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       let(:index) { double('index') }
 
       before do
-        allow(Gitlab::Database::Reindexing).to receive(:candidate_indexes).and_return(indexes)
+        allow(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).and_return(indexes)
       end
 
       it 'calls the index rebuilder with the proper arguments' do
@@ -270,8 +297,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     let(:ctx) { double('ctx', migrations: all_migrations, schema_migration: double, get_all_versions: existing_versions) }
     let(:instrumentation) { instance_double(Gitlab::Database::Migrations::Instrumentation, observations: observations) }
     let(:existing_versions) { [1] }
-    let(:all_migrations) { [double('migration1', version: 1), pending_migration] }
-    let(:pending_migration) { double('migration2', version: 2) }
+    let(:all_migrations) { [double('migration1', version: 1, name: 'test'), pending_migration] }
+    let(:pending_migration) { double('migration2', version: 2, name: 'test') }
     let(:filename) { Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME }
     let(:result_dir) { Dir.mktmpdir }
     let(:observations) { %w[some data] }
@@ -297,7 +324,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     end
 
     it 'instruments the pending migration' do
-      expect(instrumentation).to receive(:observe).with(2).and_yield
+      expect(instrumentation).to receive(:observe).with(version: 2, name: 'test').and_yield
 
       subject
     end

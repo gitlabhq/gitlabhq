@@ -48,21 +48,50 @@ RSpec.describe 'search/show' do
         assign(:group, group)
       end
 
-      it 'renders meta tags for a group' do
-        render
+      context 'search with full count' do
+        before do
+          assign(:without_count, false)
+        end
 
-        expect(view.page_description).to match(/\d+ issues for term '#{search_term}'/)
-        expect(view.page_card_attributes).to eq("Namespace" => group.full_path)
+        it 'renders meta tags for a group' do
+          render
+
+          expect(view.page_description).to match(/\d+ issues for term '#{search_term}'/)
+          expect(view.page_card_attributes).to eq("Namespace" => group.full_path)
+        end
+
+        it 'renders meta tags for both group and project' do
+          project = build(:project, group: group)
+          assign(:project, project)
+
+          render
+
+          expect(view.page_description).to match(/\d+ issues for term '#{search_term}'/)
+          expect(view.page_card_attributes).to eq("Namespace" => group.full_path, "Project" => project.full_path)
+        end
       end
 
-      it 'renders meta tags for both group and project' do
-        project = build(:project, group: group)
-        assign(:project, project)
+      context 'search without full count' do
+        before do
+          assign(:without_count, true)
+        end
 
-        render
+        it 'renders meta tags for a group' do
+          render
 
-        expect(view.page_description).to match(/\d+ issues for term '#{search_term}'/)
-        expect(view.page_card_attributes).to eq("Namespace" => group.full_path, "Project" => project.full_path)
+          expect(view.page_description).to match(/issues results for term '#{search_term}'/)
+          expect(view.page_card_attributes).to eq("Namespace" => group.full_path)
+        end
+
+        it 'renders meta tags for both group and project' do
+          project = build(:project, group: group)
+          assign(:project, project)
+
+          render
+
+          expect(view.page_description).to match(/issues results for term '#{search_term}'/)
+          expect(view.page_card_attributes).to eq("Namespace" => group.full_path, "Project" => project.full_path)
+        end
       end
     end
   end

@@ -9,7 +9,7 @@ module Mutations
                loads: Types::UserType,
                required: true,
                description: <<~DESC
-                            The user ID for the user that has been requested for a new review.
+                            User ID for the user that has been requested for a new review.
                DESC
 
       def resolve(project_path:, iid:, user:)

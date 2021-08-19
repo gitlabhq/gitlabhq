@@ -1,7 +1,4 @@
 - integration = local_assigns.fetch(:integration)
 
-%h3.page-title
-  = integration.title
-
 = form_for integration, as: :service, url: scoped_integration_path(integration), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'test-url' => scoped_test_integration_path(integration) } } do |form|
   = render 'shared/service_settings', form: form, integration: integration

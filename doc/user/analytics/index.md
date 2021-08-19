@@ -11,25 +11,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 When we describe GitLab analytics, we use the following terms:
 
 - **Cycle time:** The duration of only the execution work alone. Often displayed in combination with "lead time," which is longer. GitLab measures cycle time from issue first merge request creation to issue close. This approach underestimates lead time because merge request creation is always later than commit time. GitLab displays cycle time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
-- **Deploys:** The total number of successful deployments to production in the given time frame (across all applicable projects). GitLab displays deploys in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
+- **Deploys:** The total number of successful deployments to production in the given time frame (across all applicable projects). GitLab displays deploys in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md) and [project-level Value Stream Analytics](value_stream_analytics.md).
 - **DORA (DevOps Research and Assessment)** ["Four Keys"](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance):
   - **Speed/Velocity**
 
-    - **Deployment frequency:** The average number of successful deployments to production per period.
+    - **Deployment frequency:** The relative frequency of successful deployments to production
+      (hourly, daily, weekly, monthly, or yearly).
       This effectively measures how often you are delivering value to end users. A higher deployment
       frequency means you are able to get feedback and iterate more quickly in delivering
       improvements and features faster. GitLab measures this as the number of deployments to a
       [production environment](../../ci/environments/index.md#deployment-tier-of-environments) in
       the given time period.
-      GitLab displays deployment frequency in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
+      GitLab displays deployment frequency in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md) and [project-level Value Stream Analytics](value_stream_analytics.md).
     - **Lead Time for Changes:** The time it takes for a commit to get into production. (1) GitLab
       measures this as the median duration between merge request merge and deployment to a
       [production environment](../../ci/environments/index.md#deployment-tier-of-environments) for
       all MRs deployed in the given time period. This measure under-estimates lead time because
       merge time is always later than commit time. The
-      [standard definition](https://github.com/GoogleCloudPlatform/fourkeys/blob/main/METRICS.md#lead-time-for-changes) uses median commit time. We plan to start
-      [measuring from "issue first commit"](https://gitlab.com/gitlab-org/gitlab/-/issues/328459)
-      as a better proxy, although still imperfect.
+      [standard definition](https://github.com/GoogleCloudPlatform/fourkeys/blob/main/METRICS.md#lead-time-for-changes) uses median commit time.
+      [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/328459) to start
+      measuring from "issue first commit" as a better proxy, although still imperfect.
 
   - **Stability**
     - **Change Failure Rate:** The percentage of deployments causing a failure in production.

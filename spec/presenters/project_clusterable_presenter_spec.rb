@@ -67,22 +67,6 @@ RSpec.describe ProjectClusterablePresenter do
     it { is_expected.to eq(cluster_status_project_cluster_path(project, cluster)) }
   end
 
-  describe '#install_applications_cluster_path' do
-    let(:application) { :helm }
-
-    subject { presenter.install_applications_cluster_path(cluster, application) }
-
-    it { is_expected.to eq(install_applications_project_cluster_path(project, cluster, application)) }
-  end
-
-  describe '#update_applications_cluster_path' do
-    let(:application) { :helm }
-
-    subject { presenter.update_applications_cluster_path(cluster, application) }
-
-    it { is_expected.to eq(update_applications_project_cluster_path(project, cluster, application)) }
-  end
-
   describe '#clear_cluster_cache_path' do
     subject { presenter.clear_cluster_cache_path(cluster) }
 

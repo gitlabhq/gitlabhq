@@ -17,8 +17,8 @@ export default {
       type: Object,
       required: true,
     },
-    parsedData: {
-      type: Object,
+    linksData: {
+      type: Array,
       required: true,
     },
     pipelineId: {
@@ -95,7 +95,7 @@ export default {
     highlightedJobs(jobs) {
       this.$emit('highlightedJobsChange', jobs);
     },
-    parsedData() {
+    linksData() {
       this.calculateLinkData();
     },
     viewType() {
@@ -112,7 +112,7 @@ export default {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   mounted() {
-    if (!isEmpty(this.parsedData)) {
+    if (!isEmpty(this.linksData)) {
       this.calculateLinkData();
     }
   },
@@ -122,7 +122,7 @@ export default {
     },
     calculateLinkData() {
       try {
-        this.links = generateLinksData(this.parsedData, this.containerId, `-${this.pipelineId}`);
+        this.links = generateLinksData(this.linksData, this.containerId, `-${this.pipelineId}`);
       } catch (err) {
         this.$emit('error', { type: DRAW_FAILURE, reportToSentry: false });
         reportToSentry(this.$options.name, err);

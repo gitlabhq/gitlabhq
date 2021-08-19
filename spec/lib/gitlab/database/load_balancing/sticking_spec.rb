@@ -237,7 +237,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
       context 'when write location is nil' do
         before do
-          allow(Gitlab::Database).to receive(:get_write_location).and_return(nil)
+          allow(Gitlab::Database.main).to receive(:get_write_location).and_return(nil)
         end
 
         it 'does not update the write location' do
@@ -313,7 +313,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
       end
 
       it 'returns false and does not try to find caught up hosts' do
-        expect(described_class).not_to receive(:select_caught_up_hosts)
+        expect(lb).not_to receive(:select_up_to_date_host)
         expect(described_class.select_caught_up_replicas(:project, 42)).to be false
       end
     end
@@ -328,18 +328,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
         expect(lb).to receive(:select_up_to_date_host).and_return(true)
         expect(described_class).to receive(:unstick).with(:project, 42)
         expect(described_class.select_caught_up_replicas(:project, 42)).to be true
-      end
-
-      context 'when :load_balancing_refine_load_balancer_methods FF is disabled' do
-        before do
-          stub_feature_flags(load_balancing_refine_load_balancer_methods: false)
-        end
-
-        it 'returns true, selects hosts, and unsticks if any secondary has caught up' do
-          expect(lb).to receive(:select_caught_up_hosts).and_return(true)
-          expect(described_class).to receive(:unstick).with(:project, 42)
-          expect(described_class.select_caught_up_replicas(:project, 42)).to be true
-        end
       end
     end
   end

@@ -3,10 +3,12 @@
 class PagesDomainVerificationCronWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  sidekiq_options retry: 3
+  data_consistency :always
+
   include CronjobQueue
 
   feature_category :pages
+  worker_resource_boundary :cpu
 
   def perform
     return if Gitlab::Database.read_only?

@@ -9,7 +9,7 @@ module Packages
         return error('Package already exists.', 403) if current_package_exists?
         return error('File is too large.', 400) if file_size_exceeded?
 
-        ActiveRecord::Base.transaction { create_npm_package! }
+        ApplicationRecord.transaction { create_npm_package! }
       end
 
       private

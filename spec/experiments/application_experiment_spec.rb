@@ -57,24 +57,23 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   describe "#publish" do
-    it "doesn't track or publish to the client or database if we can't track", :snowplow do
-      allow(subject).to receive(:should_track?).and_return(false)
+    let(:should_track) { true }
 
-      expect(subject).not_to receive(:publish_to_client)
-      expect(subject).not_to receive(:publish_to_database)
-
-      subject.publish
-
-      expect_no_snowplow_event
+    before do
+      allow(subject).to receive(:should_track?).and_return(should_track)
     end
 
-    it "tracks the assignment" do
-      expect(subject).to receive(:track).with(:assignment)
-
+    it "tracks the assignment", :snowplow do
       subject.publish
+
+      expect_snowplow_event(
+        category: 'namespaced/stub',
+        action: 'assignment',
+        context: [{ schema: anything, data: anything }]
+      )
     end
 
-    it "publishes the to the client" do
+    it "publishes to the client" do
       expect(subject).to receive(:publish_to_client)
 
       subject.publish
@@ -86,6 +85,16 @@ RSpec.describe ApplicationExperiment, :experiment do
       expect(subject).to receive(:publish_to_database)
 
       subject.publish
+    end
+
+    context 'when we should not track' do
+      let(:should_track) { false }
+
+      it 'does not track an event to Snowplow', :snowplow do
+        subject.publish
+
+        expect_no_snowplow_event
+      end
     end
 
     describe "#publish_to_client" do
@@ -101,17 +110,34 @@ RSpec.describe ApplicationExperiment, :experiment do
 
         expect { subject.publish_to_client }.not_to raise_error
       end
+
+      context 'when we should not track' do
+        let(:should_track) { false }
+
+        it 'returns early' do
+          expect(Gon).not_to receive(:push)
+
+          subject.publish_to_client
+        end
+      end
     end
 
-    describe "#publish_to_database" do
+    describe '#publish_to_database' do
       using RSpec::Parameterized::TableSyntax
-      let(:context) { { context_key => context_value }}
 
-      before do
-        subject.record!
+      shared_examples 'does not record to the database' do
+        it 'does not create an experiment record' do
+          expect { subject.publish_to_database }.not_to change(Experiment, :count)
+        end
+
+        it 'does not create an experiment subject record' do
+          expect { subject.publish_to_database }.not_to change(ExperimentSubject, :count)
+        end
       end
 
-      context "when there's a usable subject" do
+      context 'when there is a usable subject' do
+        let(:context) { { context_key => context_value } }
+
         where(:context_key, :context_value, :object_type) do
           :namespace | build(:namespace) | :namespace
           :group     | build(:namespace) | :namespace
@@ -121,7 +147,7 @@ RSpec.describe ApplicationExperiment, :experiment do
         end
 
         with_them do
-          it "creates an experiment and experiment subject record" do
+          it 'creates an experiment and experiment subject record' do
             expect { subject.publish_to_database }.to change(Experiment, :count).by(1)
 
             expect(Experiment.last.name).to eq('namespaced/stub')
@@ -130,21 +156,23 @@ RSpec.describe ApplicationExperiment, :experiment do
         end
       end
 
-      context "when there's not a usable subject" do
+      context 'when there is not a usable subject' do
+        let(:context) { { context_key => context_value } }
+
         where(:context_key, :context_value) do
           :namespace | nil
           :foo       | :bar
         end
 
         with_them do
-          it "doesn't create an experiment record" do
-            expect { subject.publish_to_database }.not_to change(Experiment, :count)
-          end
-
-          it "doesn't create an experiment subject record" do
-            expect { subject.publish_to_database }.not_to change(ExperimentSubject, :count)
-          end
+          include_examples 'does not record to the database'
         end
+      end
+
+      context 'but we should not track' do
+        let(:should_track) { false }
+
+        include_examples 'does not record to the database'
       end
     end
   end
@@ -206,6 +234,40 @@ RSpec.describe ApplicationExperiment, :experiment do
   describe "#key_for" do
     it "generates MD5 hashes" do
       expect(subject.key_for(foo: :bar)).to eq('6f9ac12afdb9b58c2f19a136d09f9153')
+    end
+  end
+
+  describe "#process_redirect_url" do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :processed_url) do
+      'https://about.gitlab.com/'                 | 'https://about.gitlab.com/'
+      'https://gitlab.com/'                       | 'https://gitlab.com/'
+      'http://docs.gitlab.com'                    | 'http://docs.gitlab.com'
+      'https://docs.gitlab.com/some/path?foo=bar' | 'https://docs.gitlab.com/some/path?foo=bar'
+      'http://badgitlab.com'                      | nil
+      'https://gitlab.com.nefarious.net'          | nil
+      'https://unknown.gitlab.com'                | nil
+      "https://badplace.com\nhttps://gitlab.com"  | nil
+      'https://gitlabbcom'                        | nil
+      'https://gitlabbcom/'                       | nil
+    end
+
+    with_them do
+      it "returns the url or nil if invalid" do
+        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        expect(subject.process_redirect_url(url)).to eq(processed_url)
+      end
+
+      it "considers all urls invalid when not on dev or com" do
+        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        expect(subject.process_redirect_url(url)).to be_nil
+      end
+    end
+
+    it "generates the correct urls based on where the engine was mounted" do
+      url = Rails.application.routes.url_helpers.experiment_redirect_url(subject, url: 'https://docs.gitlab.com')
+      expect(url).to include("/-/experiment/namespaced%2Fstub:#{subject.context.key}?https://docs.gitlab.com")
     end
   end
 

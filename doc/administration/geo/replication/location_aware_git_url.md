@@ -20,7 +20,7 @@ as well.
 
 NOTE:
 You can also use a load balancer to distribute web UI or API traffic to
-[multiple Geo **secondary** sites](../../../user/admin_area/geo_nodes.md#multiple-secondary-nodes-behind-a-load-balancer).
+[multiple Geo **secondary** sites](../../../user/admin_area/geo_nodes.md#multiple-secondary-sites-behind-a-load-balancer).
 Importantly, the **primary** site cannot yet be included. See the feature request
 [Support putting the **primary** behind a Geo node load balancer](https://gitlab.com/gitlab-org/gitlab/-/issues/10888).
 
@@ -107,7 +107,7 @@ You can customize the:
 - SSH remote URL to use the location-aware `git.example.com`. To do so, change the SSH remote URL's
   host by setting `gitlab_rails['gitlab_ssh_host']` in `gitlab.rb` of web nodes.
 - HTTP remote URL as shown in
-  [Custom Git clone URL for HTTP(S)](../../../user/admin_area/settings/visibility_and_access_controls.md#custom-git-clone-url-for-https).
+  [Custom Git clone URL for HTTP(S)](../../../user/admin_area/settings/visibility_and_access_controls.md#customize-git-clone-url-for-https).
 
 ## Example Git request handling behavior
 

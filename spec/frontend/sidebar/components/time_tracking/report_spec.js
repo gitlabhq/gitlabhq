@@ -74,6 +74,8 @@ describe('Issuable Time Tracking Report', () => {
 
       expect(getAllByRole(wrapper.element, 'row', { name: /John Doe18/i })).toHaveLength(1);
       expect(getAllByRole(wrapper.element, 'row', { name: /Administrator/i })).toHaveLength(2);
+      expect(getAllByRole(wrapper.element, 'row', { name: /A note/i })).toHaveLength(1);
+      expect(getAllByRole(wrapper.element, 'row', { name: /A summary/i })).toHaveLength(2);
     });
   });
 

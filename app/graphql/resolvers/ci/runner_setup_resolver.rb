@@ -9,12 +9,12 @@ module Resolvers
       description 'Runner setup instructions.'
 
       argument :platform,
-               type: GraphQL::STRING_TYPE,
+               type: GraphQL::Types::String,
                required: true,
                description: 'Platform to generate the instructions for.'
 
       argument :architecture,
-               type: GraphQL::STRING_TYPE,
+               type: GraphQL::Types::String,
                required: true,
                description: 'Architecture to generate the instructions for.'
 

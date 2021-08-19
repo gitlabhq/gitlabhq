@@ -20,7 +20,7 @@ upstream image from a registry, acting as a pull-through cache.
 
 ## Prerequisites
 
-The Dependency Proxy must be [enabled by an administrator](../../../administration/packages/dependency_proxy.md).
+- The Dependency Proxy is enabled by default but can be [turned off by an administrator](../../../administration/packages/dependency_proxy.md).
 
 ### Supported images and packages
 
@@ -32,11 +32,6 @@ The following images and packages are supported.
 
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
-
-## Enable the Dependency Proxy
-
-The Dependency Proxy is disabled by default.
-[Learn how an administrator can enable it](../../../administration/packages/dependency_proxy.md).
 
 ## View the Dependency Proxy
 
@@ -68,11 +63,6 @@ The requirement to authenticate is a breaking change added in 13.7. An [administ
 disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication) if it
 has disrupted your existing Dependency Proxy usage.
 
-WARNING:
-If [SSO enforcement](../../group/saml_sso/index.md#sso-enforcement)
-is enabled for your Group, requests to the dependency proxy will fail. This bug is being tracked in
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/294018).
-
 Because the Dependency Proxy is storing Docker images in a space associated with your group,
 you must authenticate against the Dependency Proxy.
 
@@ -89,6 +79,13 @@ You can authenticate using:
 
 - Your GitLab username and password.
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
+- A [group deploy token](../../../user/project/deploy_tokens/index.md#group-deploy-token) with the scope set to `read_registry` and `write_registry`.
+
+#### SAML SSO
+
+When [SSO enforcement](../../group/saml_sso/index.md#sso-enforcement)
+is enabled, users must be signed-in through SSO before they can pull images through the Dependency
+Proxy.
 
 #### Authenticate within CI/CD
 
@@ -123,7 +120,7 @@ Proxy manually without including the port:
 docker pull gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest
 ```
 
-You can also use [custom CI/CD variables](../../../ci/variables/index.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
+You can also use [custom CI/CD variables](../../../ci/variables/index.md#custom-cicd-variables) to store and access your personal access token or deploy token.
 
 ### Store a Docker image in Dependency Proxy cache
 
@@ -252,6 +249,10 @@ hub_docker_quota_check:
       - |
         TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1
 ```
+
+## Use the NPM Dependency Proxy for NPM packages
+
+For information on this, see [Dependency Proxy](../npm_registry/#dependency-proxy).
 
 ## Troubleshooting
 

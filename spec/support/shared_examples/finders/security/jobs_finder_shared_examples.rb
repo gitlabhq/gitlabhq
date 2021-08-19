@@ -68,20 +68,6 @@ RSpec.shared_examples ::Security::JobsFinder do |default_job_types|
       end
     end
 
-    context 'when using legacy CI build metadata config storage' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: false)
-      end
-
-      it_behaves_like 'JobsFinder core functionality'
-    end
-
-    context 'when using the new CI build metadata config storage' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: true)
-      end
-
-      it_behaves_like 'JobsFinder core functionality'
-    end
+    it_behaves_like 'JobsFinder core functionality'
   end
 end

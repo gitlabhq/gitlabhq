@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: omniauth_enabled
 description: Whether OmniAuth is enabled
 product_section: growth
@@ -15,3 +15,4 @@ distribution:
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

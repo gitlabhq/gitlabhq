@@ -13,6 +13,7 @@ import {
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issue_show/constants';
+import { timeFor } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import {
@@ -22,6 +23,7 @@ import {
   issuableAttributesQueries,
   noAttributeId,
   defaultEpicSort,
+  epicIidPattern,
 } from '~/sidebar/constants';
 
 export default {
@@ -118,17 +120,37 @@ export default {
         return query;
       },
       skip() {
+        if (this.isEpic && this.searchTerm.startsWith('&') && this.searchTerm.length < 2) {
+          return true;
+        }
+
         return !this.editing;
       },
       debounce: 250,
       variables() {
-        return {
+        if (!this.isEpic) {
+          return {
+            fullPath: this.attrWorkspacePath,
+            title: this.searchTerm,
+            state: this.$options.IssuableAttributeState[this.issuableAttribute],
+          };
+        }
+
+        const variables = {
           fullPath: this.attrWorkspacePath,
-          title: this.searchTerm,
-          in: this.searchTerm && this.issuableAttribute === IssuableType.Epic ? 'TITLE' : undefined,
           state: this.$options.IssuableAttributeState[this.issuableAttribute],
-          sort: this.issuableAttribute === IssuableType.Epic ? defaultEpicSort : null,
+          sort: defaultEpicSort,
         };
+
+        if (epicIidPattern.test(this.searchTerm)) {
+          const matches = this.searchTerm.match(epicIidPattern);
+          variables.iidStartsWith = matches.groups.iid;
+        } else if (this.searchTerm !== '') {
+          variables.in = 'TITLE';
+          variables.title = this.searchTerm;
+        }
+
+        return variables;
       },
       update(data) {
         if (data?.workspace) {
@@ -183,6 +205,9 @@ export default {
     attributeTypeIcon() {
       return this.icon || this.issuableAttribute;
     },
+    tooltipText() {
+      return timeFor(this.currentAttribute?.dueDate);
+    },
     i18n() {
       return {
         noAttribute: sprintf(s__('DropdownWidget|No %{issuableAttribute}'), {
@@ -213,6 +238,9 @@ export default {
           { issuableAttribute: this.issuableAttribute, issuableType: this.issuableType },
         ),
       };
+    },
+    isEpic() {
+      return this.issuableAttribute === IssuableType.Epic;
     },
   },
   methods: {
@@ -322,6 +350,7 @@ export default {
           :currentAttribute="currentAttribute"
         >
           <gl-link
+            v-gl-tooltip="tooltipText"
             class="gl-text-gray-900! gl-font-weight-bold"
             :href="attributeUrl"
             :data-qa-selector="`${issuableAttribute}_link`"

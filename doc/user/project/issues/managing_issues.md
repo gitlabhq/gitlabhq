@@ -59,7 +59,7 @@ When you're creating a new issue, these are the fields you can fill in:
 
 - Title
 - Description
-- Checkbox to make the issue confidential
+- Checkbox to make the issue [confidential](confidential_issues.md)
 - Assignee
 - Weight
 - [Epic](../../group/epics/index.md)

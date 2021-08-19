@@ -85,7 +85,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Deployments do
     end
 
     it 'logs the error' do
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
         instance_of(Gitlab::Ci::Limit::LimitExceededError),
         project_id: project.id, plan: namespace.actual_plan_name
       )

@@ -94,6 +94,8 @@ The following table describes details of your subscription:
 To view a list of seats being used, go to **Settings > Billing**.
 Under **Seats currently in use**, select **See usage**.
 
+You can also see this information in your group settings by going to **Menu > Groups > Your Group > Settings > Usage Quotas**, and the information about **Seat usage** will be under the **Seats** tab.
+
 The **Seat usage** page lists all users occupying seats. Details for each user include:
 
 - Full name
@@ -119,6 +121,20 @@ For example:
 |:-----------|:--------------|:--------|
 | Amir       | `ami`         | Yes     |
 | Amir       | `amr`         | No      |
+
+### Export seat usage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262877) in GitLab 14.2.
+
+To export seat usage data as a CSV file:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Billing**.
+1. Under **Seats currently in use**, select **See usage**.
+1. Select **Export list**.
+
+The generated list contains all seats being used,
+and is not affected by the current search.
 
 ## Subscription expiry
 

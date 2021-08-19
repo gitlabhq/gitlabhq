@@ -17,6 +17,8 @@ const defaultMockDiscussion = {
   notes,
 };
 
+const DEFAULT_TODO_COUNT = 2;
+
 describe('Design discussions component', () => {
   let wrapper;
 
@@ -41,8 +43,14 @@ describe('Design discussions component', () => {
     },
   };
   const mutate = jest.fn().mockResolvedValue({ data: { createNote: { errors: [] } } });
+  const readQuery = jest.fn().mockReturnValue({
+    project: {
+      issue: { designCollection: { designs: { nodes: [{ currentUserTodos: { nodes: [] } }] } } },
+    },
+  });
   const $apollo = {
     mutate,
+    provider: { clients: { defaultClient: { readQuery } } },
   };
 
   function createComponent(props = {}, data = {}) {
@@ -69,6 +77,12 @@ describe('Design discussions component', () => {
         $apollo,
         $route: {
           hash: '#note_1',
+          params: {
+            id: 1,
+          },
+          query: {
+            version: null,
+          },
         },
       },
     });
@@ -138,7 +152,13 @@ describe('Design discussions component', () => {
   });
 
   describe('when discussion is resolved', () => {
+    let dispatchEventSpy;
+
     beforeEach(() => {
+      dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+      jest.spyOn(document, 'querySelector').mockReturnValue({
+        innerText: DEFAULT_TODO_COUNT,
+      });
       createComponent({
         discussion: {
           ...defaultMockDiscussion,
@@ -172,6 +192,24 @@ describe('Design discussions component', () => {
 
     it('renders a correct icon to resolve a thread', () => {
       expect(findResolveIcon().props('name')).toBe('check-circle-filled');
+    });
+
+    it('emit todo:toggle when discussion is resolved', async () => {
+      createComponent(
+        { discussionWithOpenForm: defaultMockDiscussion.id },
+        { discussionComment: 'test', isFormRendered: true },
+      );
+      findResolveButton().trigger('click');
+      findReplyForm().vm.$emit('submitForm');
+
+      await mutate();
+      await wrapper.vm.$nextTick();
+
+      const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
+
+      expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
+      expect(dispatchedEvent.detail).toEqual({ count: DEFAULT_TODO_COUNT });
+      expect(dispatchedEvent.type).toBe('todo:toggle');
     });
 
     describe('when replies are expanded', () => {

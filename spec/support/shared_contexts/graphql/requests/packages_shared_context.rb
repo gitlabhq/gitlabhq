@@ -9,6 +9,7 @@ RSpec.shared_context 'package details setup' do
   let(:depth) { 3 }
   let(:excluded) { %w[metadata apiFuzzingCiConfiguration pipeline packageFiles] }
   let(:package_files) { all_graphql_fields_for('PackageFile') }
+  let(:dependency_links) { all_graphql_fields_for('PackageDependencyLink') }
   let(:user) { project.owner }
   let(:package_details) { graphql_data_at(:package) }
   let(:metadata_response) { graphql_data_at(:package, :metadata) }
@@ -26,6 +27,11 @@ RSpec.shared_context 'package details setup' do
     packageFiles {
       nodes {
         #{package_files}
+      }
+    }
+    dependencyLinks {
+      nodes {
+        #{dependency_links}
       }
     }
     FIELDS

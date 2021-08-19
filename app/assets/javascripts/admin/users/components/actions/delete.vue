@@ -28,6 +28,7 @@ export default {
     modal-type="delete"
     :username="username"
     :paths="paths"
+    :delete-path="paths.delete"
     :oncall-schedules="oncallSchedules"
   >
     <slot></slot>

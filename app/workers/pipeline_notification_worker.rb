@@ -8,6 +8,7 @@ class PipelineNotificationWorker # rubocop:disable Scalability/IdempotentWorker
 
   urgency :high
   worker_resource_boundary :cpu
+  data_consistency :delayed
 
   def perform(pipeline_id, args = {})
     case args

@@ -69,21 +69,26 @@ class WebHook < ApplicationRecord
   end
 
   def disable!
-    update!(recent_failures: FAILURE_THRESHOLD + 1)
+    update_attribute(:recent_failures, FAILURE_THRESHOLD + 1)
   end
 
   def enable!
     return if recent_failures == 0 && disabled_until.nil? && backoff_count == 0
 
-    update!(recent_failures: 0, disabled_until: nil, backoff_count: 0)
+    assign_attributes(recent_failures: 0, disabled_until: nil, backoff_count: 0)
+    save(validate: false)
   end
 
   def backoff!
-    update!(disabled_until: next_backoff.from_now, backoff_count: backoff_count.succ.clamp(0, MAX_FAILURES))
+    assign_attributes(disabled_until: next_backoff.from_now, backoff_count: backoff_count.succ.clamp(0, MAX_FAILURES))
+    save(validate: false)
   end
 
   def failed!
-    update!(recent_failures: recent_failures + 1) if recent_failures < MAX_FAILURES
+    return unless recent_failures < MAX_FAILURES
+
+    assign_attributes(recent_failures: recent_failures + 1)
+    save(validate: false)
   end
 
   # Overridden in ProjectHook and GroupHook, other webhooks are not rate-limited.

@@ -12,10 +12,10 @@ module Types
         field :id, ::Types::GlobalIDType[::Packages::Maven::Metadatum], null: false, description: 'ID of the metadatum.'
         field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
         field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
-        field :path, GraphQL::STRING_TYPE, null: false, description: 'Path of the Maven package.'
-        field :app_group, GraphQL::STRING_TYPE, null: false, description: 'App group of the Maven package.'
-        field :app_version, GraphQL::STRING_TYPE, null: true, description: 'App version of the Maven package.'
-        field :app_name, GraphQL::STRING_TYPE, null: false, description: 'App name of the Maven package.'
+        field :path, GraphQL::Types::String, null: false, description: 'Path of the Maven package.'
+        field :app_group, GraphQL::Types::String, null: false, description: 'App group of the Maven package.'
+        field :app_version, GraphQL::Types::String, null: true, description: 'App version of the Maven package.'
+        field :app_name, GraphQL::Types::String, null: false, description: 'App name of the Maven package.'
       end
     end
   end

@@ -3,10 +3,12 @@
 class PropagateIntegrationGroupWorker
   include ApplicationWorker
 
+  data_consistency :always
   sidekiq_options retry: 3
-
   feature_category :integrations
   tags :exclude_from_kubernetes
+  urgency :low
+
   idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord

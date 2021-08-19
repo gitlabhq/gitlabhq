@@ -4,6 +4,8 @@ module Issuables
   class ClearGroupsIssueCounterWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     idempotent!
     urgency :low
     feature_category :issue_tracking

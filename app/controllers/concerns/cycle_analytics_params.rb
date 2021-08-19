@@ -16,8 +16,19 @@ module CycleAnalyticsParams
   end
 
   def options(params)
-    @options ||= { from: start_date(params), current_user: current_user }.merge(date_range(params))
+    @options ||= {}.tap do |opts|
+      opts[:current_user] = current_user
+      opts[:projects] = params[:project_ids] if params[:project_ids]
+      opts[:group] = params[:group_id] if params[:group_id]
+      opts[:from] = params[:from] || start_date(params)
+      opts[:to] = params[:to] if params[:to]
+      opts[:end_event_filter] = params[:end_event_filter] if params[:end_event_filter]
+      opts.merge!(params.slice(*::Gitlab::Analytics::CycleAnalytics::RequestParams::FINDER_PARAM_NAMES))
+      opts.merge!(date_range(params))
+    end
   end
+
+  private
 
   def start_date(params)
     case params[:start_date]
@@ -40,6 +51,27 @@ module CycleAnalyticsParams
   def to_utc_time(field)
     date = field.is_a?(Date) || field.is_a?(Time) ? field : Date.parse(field)
     date.to_time.utc
+  end
+
+  def permitted_cycle_analytics_params
+    params.permit(*::Gitlab::Analytics::CycleAnalytics::RequestParams::STRONG_PARAMS_DEFINITION)
+  end
+
+  def all_cycle_analytics_params
+    permitted_cycle_analytics_params.merge(current_user: current_user)
+  end
+
+  def request_params
+    @request_params ||= ::Gitlab::Analytics::CycleAnalytics::RequestParams.new(all_cycle_analytics_params)
+  end
+
+  def validate_params
+    if request_params.invalid?
+      render(
+        json: { message: 'Invalid parameters', errors: request_params.errors },
+        status: :unprocessable_entity
+      )
+    end
   end
 end
 

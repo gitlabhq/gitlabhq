@@ -12,6 +12,9 @@
           - if issue.confidential?
             %span.has-tooltip{ title: _('Confidential') }
               = confidential_icon(issue)
+          - if Feature.enabled?(:ban_user_feature_flag) && issue.hidden?
+            %span.has-tooltip{ title: _('This issue is hidden because its author has been banned') }
+              = hidden_issue_icon(issue)
           = link_to issue.title, issue_path(issue)
         = render_if_exists 'projects/issues/subepic_flag', issue: issue
         - if issue.tasks?
@@ -36,7 +39,7 @@
               = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
               = issue.milestone.title
         - if issue.due_date
-          %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
+          %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue? && !issue.closed?}", title: _('Due date') }
             &nbsp;
             = sprite_icon('calendar')
             = issue.due_date.to_s(:medium)

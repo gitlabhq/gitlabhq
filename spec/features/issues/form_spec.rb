@@ -6,13 +6,13 @@ RSpec.describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 
-  let!(:project)   { create(:project) }
-  let!(:user)      { create(:user)}
-  let!(:user2)     { create(:user)}
-  let!(:milestone) { create(:milestone, project: project) }
-  let!(:label)     { create(:label, project: project) }
-  let!(:label2)    { create(:label, project: project) }
-  let!(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
+  let_it_be(:project)   { create(:project) }
+  let_it_be(:user)      { create(:user)}
+  let_it_be(:user2)     { create(:user)}
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:label)     { create(:label, project: project) }
+  let_it_be(:label2)    { create(:label, project: project) }
+  let_it_be(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
@@ -232,6 +232,28 @@ RSpec.describe 'New/edit issue', :js do
       fill_in 'issue_description', with: '@'
 
       expect(page).to have_selector('.atwho-view')
+    end
+
+    describe 'displays issue type options in the dropdown' do
+      before do
+        page.within('.issue-form') do
+          click_button 'Issue'
+        end
+      end
+
+      it 'correctly displays the Issue type option with an icon', :aggregate_failures do
+        page.within('[data-testid="issue-type-select-dropdown"]') do
+          expect(page).to have_selector('[data-testid="issue-type-issue-icon"]')
+          expect(page).to have_content('Issue')
+        end
+      end
+
+      it 'correctly displays the Incident type option with an icon', :aggregate_failures do
+        page.within('[data-testid="issue-type-select-dropdown"]') do
+          expect(page).to have_selector('[data-testid="issue-type-incident-icon"]')
+          expect(page).to have_content('Incident')
+        end
+      end
     end
 
     describe 'milestone' do

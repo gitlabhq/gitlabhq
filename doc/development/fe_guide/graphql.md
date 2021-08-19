@@ -110,7 +110,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 
 If you are make multiple queries to the same Apollo client object you might encounter the following error: "Store error: the application attempted to write an object with no provided ID but the store already contains an ID of SomeEntity". [This error only should occur when you have made a query with an ID field for a portion, then made another that returns what would be the same object, but is missing the ID field.](https://github.com/apollographql/apollo-client/issues/2510#issue-271829009)
 
-Please note this is being tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326101) and the documentation will be updated when this issue is resolved.
+This is being tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326101) and the documentation will be updated when this issue is resolved.
 
 ## GraphQL Queries
 

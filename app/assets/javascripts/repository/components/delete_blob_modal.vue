@@ -1,13 +1,23 @@
 <script>
-import { GlModal, GlFormGroup, GlFormInput, GlFormTextarea, GlToggle } from '@gitlab/ui';
+import { GlModal, GlFormGroup, GlFormInput, GlFormTextarea, GlToggle, GlForm } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
+import validation from '~/vue_shared/directives/validation';
 import {
   SECONDARY_OPTIONS_TEXT,
   COMMIT_LABEL,
   TARGET_BRANCH_LABEL,
   TOGGLE_CREATE_MR_LABEL,
+  COMMIT_MESSAGE_SUBJECT_MAX_LENGTH,
+  COMMIT_MESSAGE_BODY_MAX_LENGTH,
 } from '../constants';
+
+const initFormField = ({ value, required = true, skipValidation = false }) => ({
+  value,
+  required,
+  state: skipValidation ? true : null,
+  feedback: null,
+});
 
 export default {
   csrf,
@@ -17,6 +27,7 @@ export default {
     GlFormInput,
     GlFormTextarea,
     GlToggle,
+    GlForm,
   },
   i18n: {
     PRIMARY_OPTIONS_TEXT: __('Delete file'),
@@ -24,6 +35,12 @@ export default {
     COMMIT_LABEL,
     TARGET_BRANCH_LABEL,
     TOGGLE_CREATE_MR_LABEL,
+    COMMIT_MESSAGE_HINT: __(
+      'Try to keep the first line under 52 characters and the others under 72.',
+    ),
+  },
+  directives: {
+    validation: validation(),
   },
   props: {
     modalId: {
@@ -60,12 +77,20 @@ export default {
     },
   },
   data() {
+    const form = {
+      state: false,
+      showValidation: false,
+      fields: {
+        // fields key must match case of form name for validation directive to work
+        commit_message: initFormField({ value: this.commitMessage }),
+        branch_name: initFormField({ value: this.targetBranch }),
+      },
+    };
     return {
       loading: false,
-      commit: this.commitMessage,
-      target: this.targetBranch,
       createNewMr: true,
       error: '',
+      form,
     };
   },
   computed: {
@@ -76,7 +101,7 @@ export default {
           {
             variant: 'danger',
             loading: this.loading,
-            disabled: !this.formCompleted || this.loading,
+            disabled: this.loading || !this.form.state,
           },
         ],
       };
@@ -91,18 +116,44 @@ export default {
         ],
       };
     },
+    /* eslint-disable dot-notation */
     showCreateNewMrToggle() {
-      return this.canPushCode && this.target !== this.originalBranch;
+      return this.canPushCode && this.form.fields['branch_name'].value !== this.originalBranch;
     },
     formCompleted() {
-      return this.commit && this.target;
+      return this.form.fields['commit_message'].value && this.form.fields['branch_name'].value;
     },
+    showHint() {
+      const splitCommitMessageByLineBreak = this.form.fields['commit_message'].value
+        .trim()
+        .split('\n');
+      const [firstLine, ...otherLines] = splitCommitMessageByLineBreak;
+
+      const hasFirstLineExceedMaxLength = firstLine.length > COMMIT_MESSAGE_SUBJECT_MAX_LENGTH;
+
+      const hasOtherLineExceedMaxLength =
+        Boolean(otherLines.length) &&
+        otherLines.some((text) => text.length > COMMIT_MESSAGE_BODY_MAX_LENGTH);
+
+      return (
+        !this.form.fields['commit_message'].feedback &&
+        (hasFirstLineExceedMaxLength || hasOtherLineExceedMaxLength)
+      );
+    },
+    /* eslint-enable dot-notation */
   },
   methods: {
     submitForm(e) {
       e.preventDefault(); // Prevent modal from closing
+      this.form.showValidation = true;
+
+      if (!this.form.state) {
+        return;
+      }
+
       this.loading = true;
-      this.$refs.form.submit();
+      this.form.showValidation = false;
+      this.$refs.form.$el.submit();
     },
   },
 };
@@ -110,13 +161,15 @@ export default {
 
 <template>
   <gl-modal
+    v-bind="$attrs"
+    data-testid="modal-delete"
     :modal-id="modalId"
     :title="modalTitle"
     :action-primary="primaryOptions"
     :action-cancel="cancelOptions"
     @primary="submitForm"
   >
-    <form ref="form" :action="deletePath" method="post">
+    <gl-form ref="form" novalidate :action="deletePath" method="post">
       <input type="hidden" name="_method" value="delete" />
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
       <template v-if="emptyRepo">
@@ -129,15 +182,37 @@ export default {
         <!-- Once "push to branch" permission is made available, will need to add to conditional
           Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/335462 -->
         <input v-if="createNewMr" type="hidden" name="create_merge_request" value="1" />
-        <gl-form-group :label="$options.i18n.COMMIT_LABEL" label-for="commit_message">
-          <gl-form-textarea v-model="commit" name="commit_message" :disabled="loading" />
+        <gl-form-group
+          :label="$options.i18n.COMMIT_LABEL"
+          label-for="commit_message"
+          :invalid-feedback="form.fields['commit_message'].feedback"
+        >
+          <gl-form-textarea
+            v-model="form.fields['commit_message'].value"
+            v-validation:[form.showValidation]
+            name="commit_message"
+            :state="form.fields['commit_message'].state"
+            :disabled="loading"
+            required
+          />
+          <p v-if="showHint" class="form-text gl-text-gray-600" data-testid="hint">
+            {{ $options.i18n.COMMIT_MESSAGE_HINT }}
+          </p>
         </gl-form-group>
         <gl-form-group
           v-if="canPushCode"
           :label="$options.i18n.TARGET_BRANCH_LABEL"
           label-for="branch_name"
+          :invalid-feedback="form.fields['branch_name'].feedback"
         >
-          <gl-form-input v-model="target" :disabled="loading" name="branch_name" />
+          <gl-form-input
+            v-model="form.fields['branch_name'].value"
+            v-validation:[form.showValidation]
+            :state="form.fields['branch_name'].state"
+            :disabled="loading"
+            name="branch_name"
+            required
+          />
         </gl-form-group>
         <gl-toggle
           v-if="showCreateNewMrToggle"
@@ -146,6 +221,6 @@ export default {
           :label="$options.i18n.TOGGLE_CREATE_MR_LABEL"
         />
       </template>
-    </form>
+    </gl-form>
   </gl-modal>
 </template>

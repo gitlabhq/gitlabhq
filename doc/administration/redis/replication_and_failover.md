@@ -106,7 +106,7 @@ is not initiated.
 As an example, if you have `6` Redis nodes, a maximum of `3` can be
 simultaneously down.
 
-Please note that there are different requirements for Sentinel nodes.
+There are different requirements for Sentinel nodes.
 If you host them in the same Redis machines, you may need to take
 that restrictions into consideration when calculating the amount of
 nodes to be provisioned. See [Sentinel setup overview](#sentinel-setup-overview)
@@ -539,7 +539,7 @@ Here is a list and description of each **machine** and the assigned **IP**:
 - `10.0.0.3`: Redis Replica 2 + Sentinel 3
 - `10.0.0.4`: GitLab application
 
-Please note that after the initial configuration, if a failover is initiated
+After the initial configuration, if a failover is initiated
 by the Sentinel nodes, the Redis nodes are reconfigured and the **Primary**
 changes permanently (including in `redis.conf`) from one node to the other,
 until a new failover is initiated again.
@@ -683,8 +683,6 @@ To make this work with Sentinel:
    ]
    ```
 
-   Note that:
-
    - Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_PRIMARY_NAME`, where:
      - `PASSWORD` is the plaintext password for the Redis instance.
      - `SENTINEL_PRIMARY_NAME` is the Sentinel primary name set with `redis['master_name']`,
@@ -731,7 +729,7 @@ redis_master_role['enable'] = true # enable only one of them
 redis_replica_role['enable'] = true # enable only one of them
 
 # When Redis primary or Replica role are enabled, the following services are
-# enabled/disabled. Note that if Redis and Sentinel roles are combined, both
+# enabled/disabled. If Redis and Sentinel roles are combined, both
 # services are enabled.
 
 # The following services are disabled

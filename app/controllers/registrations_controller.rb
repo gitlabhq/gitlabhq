@@ -199,7 +199,9 @@ class RegistrationsController < Devise::RegistrationsController
 
     return unless member
 
-    experiment('members/invite_email', actor: member).track(:accepted)
+    experiment_name = session.delete(:invite_email_experiment_name)
+    experiment(:invite_email_preview_text, actor: member).track(:accepted) if experiment_name == 'invite_email_preview_text'
+    Gitlab::Tracking.event(self.class.name, 'accepted', label: 'invite_email', property: member.id.to_s)
   end
 
   def context_user

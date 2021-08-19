@@ -86,7 +86,7 @@ describe('AuthorToken', () => {
   });
 
   describe('methods', () => {
-    describe('fetchAuthorBySearchTerm', () => {
+    describe('fetchAuthors', () => {
       beforeEach(() => {
         wrapper = createComponent();
       });
@@ -155,7 +155,7 @@ describe('AuthorToken', () => {
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
         suggestions: mockAuthors,
-        fnActiveTokenValue: wrapper.vm.getActiveAuthor,
+        getActiveTokenValue: wrapper.vm.getActiveAuthor,
       });
     });
 

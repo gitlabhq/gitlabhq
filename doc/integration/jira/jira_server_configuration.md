@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -80,4 +80,4 @@ After creating the group in Jira, grant permissions to the group by creating a p
 
 Write down the new Jira username and its
 password, as you need them when
-[configuring GitLab](development_panel.md#configure-gitlab).
+[configuring GitLab](configure.md).

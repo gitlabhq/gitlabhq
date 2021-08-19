@@ -5,5 +5,6 @@ FactoryBot.define do
     user
     job_title { 'VP of Sales' }
     pronouns { nil }
+    pronunciation { nil }
   end
 end

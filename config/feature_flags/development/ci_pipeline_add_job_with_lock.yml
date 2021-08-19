@@ -1,0 +1,8 @@
+---
+name: ci_pipeline_add_job_with_lock
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65754
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337628
+milestone: '14.2'
+type: development
+group: group::pipeline authoring
+default_enabled: false

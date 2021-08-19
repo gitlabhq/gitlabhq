@@ -18,9 +18,9 @@ module Gitlab
         # namespace - The namespace to use for sticking.
         # id - The identifier to use for sticking.
         def self.stick_or_unstick(env, namespace, id)
-          return unless LoadBalancing.enable?
+          return unless ::Gitlab::Database::LoadBalancing.enable?
 
-          Sticking.unstick_or_continue_sticking(namespace, id)
+          ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking(namespace, id)
 
           env[STICK_OBJECT] ||= Set.new
           env[STICK_OBJECT] << [namespace, id]
@@ -56,7 +56,7 @@ module Gitlab
           namespaces_and_ids = sticking_namespaces_and_ids(env)
 
           namespaces_and_ids.each do |namespace, id|
-            Sticking.unstick_or_continue_sticking(namespace, id)
+            ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking(namespace, id)
           end
         end
 
@@ -65,17 +65,17 @@ module Gitlab
           namespaces_and_ids = sticking_namespaces_and_ids(env)
 
           namespaces_and_ids.each do |namespace, id|
-            Sticking.stick_if_necessary(namespace, id)
+            ::Gitlab::Database::LoadBalancing::Sticking.stick_if_necessary(namespace, id)
           end
         end
 
         def clear
           load_balancer.release_host
-          Session.clear_session
+          ::Gitlab::Database::LoadBalancing::Session.clear_session
         end
 
         def load_balancer
-          LoadBalancing.proxy.load_balancer
+          ::Gitlab::Database::LoadBalancing.proxy.load_balancer
         end
 
         # Determines the sticking namespace and identifier based on the Rack

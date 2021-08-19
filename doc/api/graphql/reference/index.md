@@ -51,8 +51,18 @@ Returns [`CiConfig`](#ciconfig).
 | ---- | ---- | ----------- |
 | <a id="queryciconfigcontent"></a>`content` | [`String!`](#string) | Contents of `.gitlab-ci.yml`. |
 | <a id="queryciconfigdryrun"></a>`dryRun` | [`Boolean`](#boolean) | Run pipeline creation simulation, or only do static check. |
-| <a id="queryciconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | The project of the CI config. |
+| <a id="queryciconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the CI config. |
 | <a id="queryciconfigsha"></a>`sha` | [`String`](#string) | Sha for the pipeline. |
+
+### `Query.ciMinutesUsage`
+
+The monthly CI minutes usage data for the current user.
+
+Returns [`CiMinutesNamespaceMonthlyUsageConnection`](#ciminutesnamespacemonthlyusageconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
 
 ### `Query.containerRepository`
 
@@ -134,7 +144,7 @@ Returns [`Group`](#group).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+| <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.instanceSecurityDashboard`
 
@@ -161,7 +171,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryinstancestatisticsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | The type of measurement/statistics to retrieve. |
+| <a id="queryinstancestatisticsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | Type of measurement or statistics to retrieve. |
 | <a id="queryinstancestatisticsmeasurementsrecordedafter"></a>`recordedAfter` | [`Time`](#time) | Measurement recorded after this date. |
 | <a id="queryinstancestatisticsmeasurementsrecordedbefore"></a>`recordedBefore` | [`Time`](#time) | Measurement recorded before this date. |
 
@@ -239,7 +249,7 @@ Returns [`Namespace`](#namespace).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+| <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.package`
 
@@ -263,7 +273,7 @@ Returns [`Project`](#project).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+| <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.projects`
 
@@ -368,7 +378,29 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="querysnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="querysnippetsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The ID of a project. |
 | <a id="querysnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
+
+### `Query.timelogs`
+
+Find timelogs visible to the current user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querytimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="querytimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="querytimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="querytimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="querytimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="querytimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="querytimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ### `Query.usageTrendsMeasurements`
 
@@ -384,7 +416,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryusagetrendsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | The type of measurement/statistics to retrieve. |
+| <a id="queryusagetrendsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | Type of measurement or statistics to retrieve. |
 | <a id="queryusagetrendsmeasurementsrecordedafter"></a>`recordedAfter` | [`Time`](#time) | Measurement recorded after this date. |
 | <a id="queryusagetrendsmeasurementsrecordedbefore"></a>`recordedBefore` | [`Time`](#time) | Measurement recorded before this date. |
 
@@ -447,7 +479,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ### `Query.vulnerabilitiesCountByDay`
 
-Number of vulnerabilities per day for the projects on the current user's instance security dashboard.
+The historical number of vulnerabilities per day for the projects on the current user's instance security dashboard.
 
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
@@ -525,7 +557,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationadminsidekiqqueuesdeletejobsfeaturecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsproject"></a>`project` | [`String`](#string) | Delete jobs matching project in the context metadata. |
-| <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | The name of the queue to delete jobs from. |
+| <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | Name of the queue to delete jobs from. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrelatedclass"></a>`relatedClass` | [`String`](#string) | Delete jobs matching related_class in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsremoteip"></a>`remoteIp` | [`String`](#string) | Delete jobs matching remote_ip in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrootnamespace"></a>`rootNamespace` | [`String`](#string) | Delete jobs matching root_namespace in the context metadata. |
@@ -548,21 +580,21 @@ Input type: `AlertSetAssigneesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationalertsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | The usernames to assign to the alert. Replaces existing assignees by default. |
+| <a id="mutationalertsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | Usernames to assign to the alert. Replaces existing assignees by default. |
 | <a id="mutationalertsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationalertsetassigneesiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationalertsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | The operation to perform. Defaults to REPLACE. |
-| <a id="mutationalertsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
+| <a id="mutationalertsetassigneesiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationalertsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
+| <a id="mutationalertsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationalertsetassigneesalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationalertsetassigneesalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationalertsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationalertsetassigneeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationalertsetassigneesissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationalertsetassigneestodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationalertsetassigneesissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationalertsetassigneestodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.alertTodoCreate`
 
@@ -573,18 +605,18 @@ Input type: `AlertTodoCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationalerttodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationalerttodocreateiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationalerttodocreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
+| <a id="mutationalerttodocreateiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationalerttodocreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationalerttodocreatealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationalerttodocreatealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationalerttodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationalerttodocreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.apiFuzzingCiConfigurationCreate`
 
@@ -620,7 +652,7 @@ Input type: `AwardEmojiAddInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiaddawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | The global ID of the awardable resource. |
+| <a id="mutationawardemojiaddawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | Global ID of the awardable resource. |
 | <a id="mutationawardemojiaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiaddname"></a>`name` | [`String!`](#string) | The emoji name. |
 
@@ -628,7 +660,7 @@ Input type: `AwardEmojiAddInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiaddawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | The award emoji after mutation. |
+| <a id="mutationawardemojiaddawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | Award emoji after mutation. |
 | <a id="mutationawardemojiaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiadderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -640,7 +672,7 @@ Input type: `AwardEmojiRemoveInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiremoveawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | The global ID of the awardable resource. |
+| <a id="mutationawardemojiremoveawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | Global ID of the awardable resource. |
 | <a id="mutationawardemojiremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiremovename"></a>`name` | [`String!`](#string) | The emoji name. |
 
@@ -648,7 +680,7 @@ Input type: `AwardEmojiRemoveInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiremoveawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | The award emoji after mutation. |
+| <a id="mutationawardemojiremoveawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | Award emoji after mutation. |
 | <a id="mutationawardemojiremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiremoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -660,7 +692,7 @@ Input type: `AwardEmojiToggleInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojitoggleawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | The global ID of the awardable resource. |
+| <a id="mutationawardemojitoggleawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | Global ID of the awardable resource. |
 | <a id="mutationawardemojitoggleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojitogglename"></a>`name` | [`String!`](#string) | The emoji name. |
 
@@ -668,7 +700,7 @@ Input type: `AwardEmojiToggleInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojitoggleawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | The award emoji after mutation. |
+| <a id="mutationawardemojitoggleawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | Award emoji after mutation. |
 | <a id="mutationawardemojitoggleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojitoggleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationawardemojitoggletoggledon"></a>`toggledOn` | [`Boolean!`](#boolean) | Indicates the status of the emoji. True if the toggle awarded the emoji, and false if the toggle removed the emoji. |
@@ -782,7 +814,7 @@ Input type: `CiCdSettingsUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcicdsettingsupdatecicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting!`](#projectcicdsetting) | The CI/CD settings after mutation. |
+| <a id="mutationcicdsettingsupdatecicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting!`](#projectcicdsetting) | CI/CD settings after mutation. |
 | <a id="mutationcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcicdsettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -795,14 +827,14 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | The project that the CI job token scope belongs to. |
-| <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | The project to be added to the CI job token scope. |
+| <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
+| <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be added to the CI job token scope. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI job token's scope of access. |
+| <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's scope of access. |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeaddprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -815,14 +847,14 @@ Input type: `CiJobTokenScopeRemoveProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | The project that the CI job token scope belongs to. |
-| <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | The project to be removed from the CI job token scope. |
+| <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
+| <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be removed from the CI job token scope. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI job token's scope of access. |
+| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's scope of access. |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscoperemoveprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -904,7 +936,7 @@ Input type: `CommitCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcommitcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcommitcreatecommit"></a>`commit` | [`Commit`](#commit) | The commit after mutation. |
+| <a id="mutationcommitcreatecommit"></a>`commit` | [`Commit`](#commit) | Commit after mutation. |
 | <a id="mutationcommitcreatecommitpipelinepath"></a>`commitPipelinePath` | [`String`](#string) | ETag path for the commit's pipeline. |
 | <a id="mutationcommitcreatecontent"></a>`content` | [`[String!]`](#string) | Contents of the commit. |
 | <a id="mutationcommitcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
@@ -992,18 +1024,18 @@ Input type: `CreateAlertIssueInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatealertissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatealertissueiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationcreatealertissueprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
+| <a id="mutationcreatealertissueiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationcreatealertissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreatealertissuealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationcreatealertissuealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationcreatealertissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatealertissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatealertissueissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationcreatealertissuetodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationcreatealertissueissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationcreatealertissuetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.createAnnotation`
 
@@ -1014,18 +1046,18 @@ Input type: `CreateAnnotationInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreateannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateannotationclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | The global ID of the cluster to add an annotation to. |
-| <a id="mutationcreateannotationdashboardpath"></a>`dashboardPath` | [`String!`](#string) | The path to a file defining the dashboard on which the annotation should be added. |
-| <a id="mutationcreateannotationdescription"></a>`description` | [`String!`](#string) | The description of the annotation. |
+| <a id="mutationcreateannotationclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | Global ID of the cluster to add an annotation to. |
+| <a id="mutationcreateannotationdashboardpath"></a>`dashboardPath` | [`String!`](#string) | Path to a file defining the dashboard on which the annotation should be added. |
+| <a id="mutationcreateannotationdescription"></a>`description` | [`String!`](#string) | Description of the annotation. |
 | <a id="mutationcreateannotationendingat"></a>`endingAt` | [`Time`](#time) | Timestamp indicating ending moment to which the annotation relates. |
-| <a id="mutationcreateannotationenvironmentid"></a>`environmentId` | [`EnvironmentID`](#environmentid) | The global ID of the environment to add an annotation to. |
+| <a id="mutationcreateannotationenvironmentid"></a>`environmentId` | [`EnvironmentID`](#environmentid) | Global ID of the environment to add an annotation to. |
 | <a id="mutationcreateannotationstartingat"></a>`startingAt` | [`Time!`](#time) | Timestamp indicating starting moment to which the annotation relates. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreateannotationannotation"></a>`annotation` | [`MetricsDashboardAnnotation`](#metricsdashboardannotation) | The created annotation. |
+| <a id="mutationcreateannotationannotation"></a>`annotation` | [`MetricsDashboardAnnotation`](#metricsdashboardannotation) | Created annotation. |
 | <a id="mutationcreateannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -1046,7 +1078,7 @@ Input type: `CreateBoardInput`
 | <a id="mutationcreateboardlabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationcreateboardlabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationcreateboardmilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | ID of milestone to be assigned to the board. |
-| <a id="mutationcreateboardname"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationcreateboardname"></a>`name` | [`String`](#string) | Board name. |
 | <a id="mutationcreateboardprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationcreateboardweight"></a>`weight` | [`Int`](#int) | Weight value to be assigned to the board. |
 
@@ -1054,7 +1086,7 @@ Input type: `CreateBoardInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreateboardboard"></a>`board` | [`Board`](#board) | The board after mutation. |
+| <a id="mutationcreateboardboard"></a>`board` | [`Board`](#board) | Board after mutation. |
 | <a id="mutationcreateboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateboarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -1139,7 +1171,7 @@ Input type: `CreateCustomEmojiInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecustomemojiclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecustomemojicustomemoji"></a>`customEmoji` | [`CustomEmoji`](#customemoji) | The new custom emoji. |
+| <a id="mutationcreatecustomemojicustomemoji"></a>`customEmoji` | [`CustomEmoji`](#customemoji) | New custom emoji. |
 | <a id="mutationcreatecustomemojierrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createDiffNote`
@@ -1152,8 +1184,8 @@ Input type: `CreateDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | The global ID of the resource to add a note to. |
+| <a id="mutationcreatediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -1162,7 +1194,7 @@ Input type: `CreateDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationcreatediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.createEpic`
 
@@ -1202,8 +1234,8 @@ Input type: `CreateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateimagediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | The global ID of the resource to add a note to. |
+| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -1212,7 +1244,7 @@ Input type: `CreateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreateimagediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationcreateimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.createIssue`
 
@@ -1222,21 +1254,21 @@ Input type: `CreateIssueInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreateissueassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | The array of user IDs to assign to the issue. |
+| <a id="mutationcreateissueassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | Array of user IDs to assign to the issue. |
 | <a id="mutationcreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates the issue is confidential. |
 | <a id="mutationcreateissuecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the issue was created. Available only for admins and project owners. |
 | <a id="mutationcreateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
-| <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`. |
+| <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`. |
 | <a id="mutationcreateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
 | <a id="mutationcreateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of an epic to associate the issue with. |
 | <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
-| <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | The IID (internal ID) of a project issue. Only admins and project owners can modify. |
-| <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | The IDs of labels to be added to the issue. |
+| <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | IID (internal ID) of a project issue. Only admins and project owners can modify. |
+| <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the issue. |
 | <a id="mutationcreateissuelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationcreateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
-| <a id="mutationcreateissuemergerequesttoresolvediscussionsof"></a>`mergeRequestToResolveDiscussionsOf` | [`MergeRequestID`](#mergerequestid) | The IID of a merge request for which to resolve discussions. |
-| <a id="mutationcreateissuemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | The ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
+| <a id="mutationcreateissuemergerequesttoresolvediscussionsof"></a>`mergeRequestToResolveDiscussionsOf` | [`MergeRequestID`](#mergerequestid) | IID of a merge request for which to resolve discussions. |
+| <a id="mutationcreateissuemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
 | <a id="mutationcreateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the issue is associated with. |
 | <a id="mutationcreateissuetitle"></a>`title` | [`String!`](#string) | Title of the issue. |
 | <a id="mutationcreateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
@@ -1248,7 +1280,7 @@ Input type: `CreateIssueInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreateissueissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationcreateissueissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.createIteration`
 
@@ -1289,9 +1321,9 @@ Input type: `CreateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatenotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | The global ID of the discussion this note is in reply to. |
-| <a id="mutationcreatenotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | The global ID of the resource to add a note to. |
+| <a id="mutationcreatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the discussion this note is in reply to. |
+| <a id="mutationcreatenotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 
 #### Fields
 
@@ -1299,7 +1331,7 @@ Input type: `CreateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatenoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatenotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationcreatenotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.createRequirement`
 
@@ -1334,11 +1366,11 @@ Input type: `CreateSnippetInput`
 | <a id="mutationcreatesnippetcaptcharesponse"></a>`captchaResponse` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatesnippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
-| <a id="mutationcreatesnippetprojectpath"></a>`projectPath` | [`ID`](#id) | The project full path the snippet is associated with. |
+| <a id="mutationcreatesnippetprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project the snippet is associated with. |
 | <a id="mutationcreatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippettitle"></a>`title` | [`String!`](#string) | Title of the snippet. |
-| <a id="mutationcreatesnippetuploadedfiles"></a>`uploadedFiles` | [`[String!]`](#string) | The paths to files uploaded in the snippet description. |
-| <a id="mutationcreatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum!`](#visibilitylevelsenum) | The visibility level of the snippet. |
+| <a id="mutationcreatesnippetuploadedfiles"></a>`uploadedFiles` | [`[String!]`](#string) | Paths to files uploaded in the snippet description. |
+| <a id="mutationcreatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum!`](#visibilitylevelsenum) | Visibility level of the snippet. |
 
 #### Fields
 
@@ -1348,7 +1380,7 @@ Input type: `CreateSnippetInput`
 | <a id="mutationcreatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatesnippetneedscaptcharesponse"></a>`needsCaptchaResponse` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
-| <a id="mutationcreatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationcreatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 | <a id="mutationcreatesnippetspam"></a>`spam` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 
@@ -1717,9 +1749,9 @@ Input type: `DesignManagementDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementdeletefilenames"></a>`filenames` | [`[String!]!`](#string) | The filenames of the designs to delete. |
-| <a id="mutationdesignmanagementdeleteiid"></a>`iid` | [`ID!`](#id) | The IID of the issue to modify designs for. |
-| <a id="mutationdesignmanagementdeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | The project where the issue is to upload designs for. |
+| <a id="mutationdesignmanagementdeletefilenames"></a>`filenames` | [`[String!]!`](#string) | Filenames of the designs to delete. |
+| <a id="mutationdesignmanagementdeleteiid"></a>`iid` | [`ID!`](#id) | IID of the issue to modify designs for. |
+| <a id="mutationdesignmanagementdeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | Project where the issue is to upload designs for. |
 
 #### Fields
 
@@ -1727,7 +1759,7 @@ Input type: `DesignManagementDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdesignmanagementdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdesignmanagementdeleteversion"></a>`version` | [`DesignVersion`](#designversion) | The new version in which the designs are deleted. |
+| <a id="mutationdesignmanagementdeleteversion"></a>`version` | [`DesignVersion`](#designversion) | New version in which the designs are deleted. |
 
 ### `Mutation.designManagementMove`
 
@@ -1747,7 +1779,7 @@ Input type: `DesignManagementMoveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementmoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementmovedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | The current state of the collection. |
+| <a id="mutationdesignmanagementmovedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Current state of the collection. |
 | <a id="mutationdesignmanagementmoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.designManagementUpload`
@@ -1759,16 +1791,16 @@ Input type: `DesignManagementUploadInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementuploadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementuploadfiles"></a>`files` | [`[Upload!]!`](#upload) | The files to upload. |
-| <a id="mutationdesignmanagementuploadiid"></a>`iid` | [`ID!`](#id) | The IID of the issue to modify designs for. |
-| <a id="mutationdesignmanagementuploadprojectpath"></a>`projectPath` | [`ID!`](#id) | The project where the issue is to upload designs for. |
+| <a id="mutationdesignmanagementuploadfiles"></a>`files` | [`[Upload!]!`](#upload) | Files to upload. |
+| <a id="mutationdesignmanagementuploadiid"></a>`iid` | [`ID!`](#id) | IID of the issue to modify designs for. |
+| <a id="mutationdesignmanagementuploadprojectpath"></a>`projectPath` | [`ID!`](#id) | Project where the issue is to upload designs for. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementuploadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementuploaddesigns"></a>`designs` | [`[Design!]!`](#design) | The designs that were uploaded by the mutation. |
+| <a id="mutationdesignmanagementuploaddesigns"></a>`designs` | [`[Design!]!`](#design) | Designs that were uploaded by the mutation. |
 | <a id="mutationdesignmanagementuploaderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdesignmanagementuploadskippeddesigns"></a>`skippedDesigns` | [`[Design!]!`](#design) | Any designs that were skipped from the upload due to there being no change to their content since their last version. |
 
@@ -1781,13 +1813,13 @@ Input type: `DestroyBoardInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroyboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroyboardid"></a>`id` | [`BoardID!`](#boardid) | The global ID of the board to destroy. |
+| <a id="mutationdestroyboardid"></a>`id` | [`BoardID!`](#boardid) | Global ID of the board to destroy. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationdestroyboardboard"></a>`board` | [`Board`](#board) | The board after mutation. |
+| <a id="mutationdestroyboardboard"></a>`board` | [`Board`](#board) | Board after mutation. |
 | <a id="mutationdestroyboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroyboarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -1808,7 +1840,7 @@ Input type: `DestroyBoardListInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdestroyboardlistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroyboardlisterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdestroyboardlistlist"></a>`list` | [`BoardList`](#boardlist) | The list after mutation. |
+| <a id="mutationdestroyboardlistlist"></a>`list` | [`BoardList`](#boardlist) | List after mutation. |
 
 ### `Mutation.destroyComplianceFramework`
 
@@ -1844,7 +1876,7 @@ Input type: `DestroyContainerRepositoryInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroycontainerrepositoryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroycontainerrepositorycontainerrepository"></a>`containerRepository` | [`ContainerRepository!`](#containerrepository) | The container repository policy after scheduling the deletion. |
+| <a id="mutationdestroycontainerrepositorycontainerrepository"></a>`containerRepository` | [`ContainerRepository!`](#containerrepository) | Container repository policy after scheduling the deletion. |
 | <a id="mutationdestroycontainerrepositoryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.destroyContainerRepositoryTags`
@@ -1895,7 +1927,7 @@ Input type: `DestroyNoteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroynoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroynoteid"></a>`id` | [`NoteID!`](#noteid) | The global ID of the note to destroy. |
+| <a id="mutationdestroynoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to destroy. |
 
 #### Fields
 
@@ -1903,7 +1935,7 @@ Input type: `DestroyNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdestroynoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroynoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdestroynotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationdestroynotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.destroyPackage`
 
@@ -1923,6 +1955,24 @@ Input type: `DestroyPackageInput`
 | <a id="mutationdestroypackageclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroypackageerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.destroyPackageFile`
+
+Input type: `DestroyPackageFileInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroypackagefileclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroypackagefileid"></a>`id` | [`PackagesPackageFileID!`](#packagespackagefileid) | ID of the Package file. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroypackagefileclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroypackagefileerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.destroySnippet`
 
 Input type: `DestroySnippetInput`
@@ -1932,7 +1982,7 @@ Input type: `DestroySnippetInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroysnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroysnippetid"></a>`id` | [`SnippetID!`](#snippetid) | The global ID of the snippet to destroy. |
+| <a id="mutationdestroysnippetid"></a>`id` | [`SnippetID!`](#snippetid) | Global ID of the snippet to destroy. |
 
 #### Fields
 
@@ -1940,7 +1990,7 @@ Input type: `DestroySnippetInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdestroysnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroysnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdestroysnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationdestroysnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
 ### `Mutation.disableDevopsAdoptionNamespace`
 
@@ -1973,7 +2023,7 @@ Input type: `DiscussionToggleResolveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdiscussiontoggleresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdiscussiontoggleresolveid"></a>`id` | [`DiscussionID!`](#discussionid) | The global ID of the discussion. |
+| <a id="mutationdiscussiontoggleresolveid"></a>`id` | [`DiscussionID!`](#discussionid) | Global ID of the discussion. |
 | <a id="mutationdiscussiontoggleresolveresolve"></a>`resolve` | [`Boolean!`](#boolean) | Will resolve the discussion when true, and unresolve the discussion when false. |
 
 #### Fields
@@ -1981,7 +2031,7 @@ Input type: `DiscussionToggleResolveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdiscussiontoggleresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | The discussion after mutation. |
+| <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion after mutation. |
 | <a id="mutationdiscussiontoggleresolveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.echoCreate`
@@ -2040,8 +2090,8 @@ Input type: `EnvironmentsCanaryIngressUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationenvironmentscanaryingressupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationenvironmentscanaryingressupdateid"></a>`id` | [`EnvironmentID!`](#environmentid) | The global ID of the environment to update. |
-| <a id="mutationenvironmentscanaryingressupdateweight"></a>`weight` | [`Int!`](#int) | The weight of the Canary Ingress. |
+| <a id="mutationenvironmentscanaryingressupdateid"></a>`id` | [`EnvironmentID!`](#environmentid) | Global ID of the environment to update. |
+| <a id="mutationenvironmentscanaryingressupdateweight"></a>`weight` | [`Int!`](#int) | Weight of the Canary Ingress. |
 
 #### Fields
 
@@ -2087,7 +2137,7 @@ Input type: `EpicBoardCreateInput`
 | <a id="mutationepicboardcreatehideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="mutationepicboardcreatelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationepicboardcreatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
-| <a id="mutationepicboardcreatename"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationepicboardcreatename"></a>`name` | [`String`](#string) | Board name. |
 
 #### Fields
 
@@ -2153,7 +2203,7 @@ Input type: `EpicBoardUpdateInput`
 | <a id="mutationepicboardupdateid"></a>`id` | [`BoardsEpicBoardID!`](#boardsepicboardid) | The epic board global ID. |
 | <a id="mutationepicboardupdatelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationepicboardupdatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
-| <a id="mutationepicboardupdatename"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationepicboardupdatename"></a>`name` | [`String`](#string) | Board name. |
 
 #### Fields
 
@@ -2332,6 +2382,26 @@ Input type: `GitlabSubscriptionActivateInput`
 | <a id="mutationgitlabsubscriptionactivateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationgitlabsubscriptionactivatelicense"></a>`license` | [`CurrentLicense`](#currentlicense) | The current license. |
 
+### `Mutation.groupUpdate`
+
+Input type: `GroupUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group that will be updated. |
+| <a id="mutationgroupupdatesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting!`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgroupupdategroup"></a>`group` | [`Group`](#group) | Group after update. |
+
 ### `Mutation.httpIntegrationCreate`
 
 Input type: `HttpIntegrationCreateInput`
@@ -2342,10 +2412,10 @@ Input type: `HttpIntegrationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationcreateactive"></a>`active` | [`Boolean!`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationhttpintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationcreatename"></a>`name` | [`String!`](#string) | The name of the integration. |
+| <a id="mutationhttpintegrationcreatename"></a>`name` | [`String!`](#string) | Name of the integration. |
 | <a id="mutationhttpintegrationcreatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | The custom mapping of GitLab alert attributes to fields from the payload_example. |
 | <a id="mutationhttpintegrationcreatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | The example of an alert payload. |
-| <a id="mutationhttpintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to create the integration in. |
+| <a id="mutationhttpintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the integration in. |
 
 #### Fields
 
@@ -2353,7 +2423,7 @@ Input type: `HttpIntegrationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationcreateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationcreateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.httpIntegrationDestroy`
 
@@ -2364,7 +2434,7 @@ Input type: `HttpIntegrationDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationdestroyid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | The ID of the integration to remove. |
+| <a id="mutationhttpintegrationdestroyid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | ID of the integration to remove. |
 
 #### Fields
 
@@ -2372,7 +2442,7 @@ Input type: `HttpIntegrationDestroyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationdestroyintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationdestroyintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.httpIntegrationResetToken`
 
@@ -2383,7 +2453,7 @@ Input type: `HttpIntegrationResetTokenInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationresettokenid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | The ID of the integration to mutate. |
+| <a id="mutationhttpintegrationresettokenid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | ID of the integration to mutate. |
 
 #### Fields
 
@@ -2391,7 +2461,7 @@ Input type: `HttpIntegrationResetTokenInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationresettokenerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationresettokenintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationresettokenintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.httpIntegrationUpdate`
 
@@ -2403,8 +2473,8 @@ Input type: `HttpIntegrationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationupdateactive"></a>`active` | [`Boolean`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationhttpintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationupdateid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | The ID of the integration to mutate. |
-| <a id="mutationhttpintegrationupdatename"></a>`name` | [`String`](#string) | The name of the integration. |
+| <a id="mutationhttpintegrationupdateid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | ID of the integration to mutate. |
+| <a id="mutationhttpintegrationupdatename"></a>`name` | [`String`](#string) | Name of the integration. |
 | <a id="mutationhttpintegrationupdatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | The custom mapping of GitLab alert attributes to fields from the payload_example. |
 | <a id="mutationhttpintegrationupdatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | The example of an alert payload. |
 
@@ -2414,7 +2484,7 @@ Input type: `HttpIntegrationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.issueMove`
 
@@ -2425,9 +2495,9 @@ Input type: `IssueMoveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuemoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuemoveiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuemoveprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
-| <a id="mutationissuemovetargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | The project to move the issue to. |
+| <a id="mutationissuemoveiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuemoveprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+| <a id="mutationissuemovetargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to move the issue to. |
 
 #### Fields
 
@@ -2435,7 +2505,7 @@ Input type: `IssueMoveInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuemoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuemoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuemoveissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuemoveissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueMoveList`
 
@@ -2447,7 +2517,7 @@ Input type: `IssueMoveListInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuemovelistboardid"></a>`boardId` | [`BoardID!`](#boardid) | Global ID of the board that the issue is in. |
 | <a id="mutationissuemovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuemovelistepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of the parent epic. NULL when removing the association. |
+| <a id="mutationissuemovelistepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of the parent epic. NULL when removing the association. |
 | <a id="mutationissuemovelistfromlistid"></a>`fromListId` | [`ID`](#id) | ID of the board list that the issue will be moved from. |
 | <a id="mutationissuemovelistiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuemovelistmoveafterid"></a>`moveAfterId` | [`ID`](#id) | ID of issue that should be placed after the current issue. |
@@ -2461,7 +2531,7 @@ Input type: `IssueMoveListInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuemovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuemovelisterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuemovelistissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuemovelistissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetAssignees`
 
@@ -2471,11 +2541,11 @@ Input type: `IssueSetAssigneesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationissuesetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | The usernames to assign to the resource. Replaces existing assignees by default. |
+| <a id="mutationissuesetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | Usernames to assign to the resource. Replaces existing assignees by default. |
 | <a id="mutationissuesetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetassigneesiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | The operation to perform. Defaults to REPLACE. |
-| <a id="mutationissuesetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetassigneesiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
+| <a id="mutationissuesetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2483,7 +2553,7 @@ Input type: `IssueSetAssigneesInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetassigneeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetassigneesissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetassigneesissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetConfidential`
 
@@ -2495,8 +2565,8 @@ Input type: `IssueSetConfidentialInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetconfidentialclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetconfidentialconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Whether or not to set the issue as a confidential. |
-| <a id="mutationissuesetconfidentialiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetconfidentialprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetconfidentialiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetconfidentialprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2504,7 +2574,7 @@ Input type: `IssueSetConfidentialInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetconfidentialclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetconfidentialerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetconfidentialissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetconfidentialissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetDueDate`
 
@@ -2515,9 +2585,9 @@ Input type: `IssueSetDueDateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetduedateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetduedateduedate"></a>`dueDate` | [`Time`](#time) | The desired due date for the issue, due date will be removed if absent or set to null. |
-| <a id="mutationissuesetduedateiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetduedateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetduedateduedate"></a>`dueDate` | [`Time`](#time) | Desired due date for the issue. Due date is removed if null. |
+| <a id="mutationissuesetduedateiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetduedateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2525,7 +2595,7 @@ Input type: `IssueSetDueDateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetduedateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetduedateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetduedateissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetduedateissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetEpic`
 
@@ -2537,8 +2607,8 @@ Input type: `IssueSetEpicInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetepicepicid"></a>`epicId` | [`EpicID`](#epicid) | Global ID of the epic to be assigned to the issue, epic will be removed if absent or set to null. |
-| <a id="mutationissuesetepiciid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetepicprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetepiciid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetepicprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2546,7 +2616,7 @@ Input type: `IssueSetEpicInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetepicissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetIteration`
 
@@ -2557,9 +2627,9 @@ Input type: `IssueSetIterationInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetiterationiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
+| <a id="mutationissuesetiterationiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuesetiterationiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | The iteration to assign to the issue. |
-| <a id="mutationissuesetiterationprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetiterationprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2567,7 +2637,7 @@ Input type: `IssueSetIterationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetiterationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetiterationissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetiterationissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetLocked`
 
@@ -2578,9 +2648,9 @@ Input type: `IssueSetLockedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetlockediid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
+| <a id="mutationissuesetlockediid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuesetlockedlocked"></a>`locked` | [`Boolean!`](#boolean) | Whether or not to lock discussion on the issue. |
-| <a id="mutationissuesetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2588,7 +2658,7 @@ Input type: `IssueSetLockedInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetlockedissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetlockedissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetSeverity`
 
@@ -2599,8 +2669,8 @@ Input type: `IssueSetSeverityInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetseverityclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetseverityiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetseverityprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetseverityiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetseverityprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 | <a id="mutationissuesetseverityseverity"></a>`severity` | [`IssuableSeverity!`](#issuableseverity) | Set the incident severity level. |
 
 #### Fields
@@ -2609,7 +2679,7 @@ Input type: `IssueSetSeverityInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetseverityclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetseverityerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetseverityissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetseverityissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetSubscription`
 
@@ -2620,9 +2690,9 @@ Input type: `IssueSetSubscriptionInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetsubscriptioniid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
-| <a id="mutationissuesetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | The desired state of the subscription. |
+| <a id="mutationissuesetsubscriptioniid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+| <a id="mutationissuesetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | Desired state of the subscription. |
 
 #### Fields
 
@@ -2630,7 +2700,7 @@ Input type: `IssueSetSubscriptionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetsubscriptionissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetsubscriptionissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetWeight`
 
@@ -2641,8 +2711,8 @@ Input type: `IssueSetWeightInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetweightclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetweightiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetweightprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetweightiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetweightprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 | <a id="mutationissuesetweightweight"></a>`weight` | [`Int`](#int) | The desired weight for the issue. If set to null, weight is removed. |
 
 #### Fields
@@ -2651,7 +2721,7 @@ Input type: `IssueSetWeightInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetweightclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetweighterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetweightissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetweightissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.iterationCadenceCreate`
 
@@ -2781,8 +2851,8 @@ Input type: `JiraImportStartInput`
 | <a id="mutationjiraimportstartclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjiraimportstartjiraprojectkey"></a>`jiraProjectKey` | [`String!`](#string) | Project key of the importer Jira project. |
 | <a id="mutationjiraimportstartjiraprojectname"></a>`jiraProjectName` | [`String`](#string) | Project name of the importer Jira project. |
-| <a id="mutationjiraimportstartprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to import the Jira project into. |
-| <a id="mutationjiraimportstartusersmapping"></a>`usersMapping` | [`[JiraUsersMappingInputType!]`](#jirausersmappinginputtype) | The mapping of Jira to GitLab users. |
+| <a id="mutationjiraimportstartprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to import the Jira project into. |
+| <a id="mutationjiraimportstartusersmapping"></a>`usersMapping` | [`[JiraUsersMappingInputType!]`](#jirausersmappinginputtype) | Mapping of Jira to GitLab users. |
 
 #### Fields
 
@@ -2790,7 +2860,7 @@ Input type: `JiraImportStartInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjiraimportstartclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjiraimportstarterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationjiraimportstartjiraimport"></a>`jiraImport` | [`JiraImport`](#jiraimport) | The Jira import data after mutation. |
+| <a id="mutationjiraimportstartjiraimport"></a>`jiraImport` | [`JiraImport`](#jiraimport) | Jira import data after mutation. |
 
 ### `Mutation.jiraImportUsers`
 
@@ -2801,8 +2871,8 @@ Input type: `JiraImportUsersInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationjiraimportusersclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationjiraimportusersprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to import the Jira users into. |
-| <a id="mutationjiraimportusersstartat"></a>`startAt` | [`Int`](#int) | The index of the record the import should started at, default 0 (50 records returned). |
+| <a id="mutationjiraimportusersprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to import the Jira users into. |
+| <a id="mutationjiraimportusersstartat"></a>`startAt` | [`Int`](#int) | Index of the record the import should started at, default 0 (50 records returned). |
 
 #### Fields
 
@@ -2811,6 +2881,25 @@ Input type: `JiraImportUsersInput`
 | <a id="mutationjiraimportusersclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjiraimportuserserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationjiraimportusersjirausers"></a>`jiraUsers` | [`[JiraUser!]`](#jirauser) | Users returned from Jira, matched by email and name if possible. |
+
+### `Mutation.jobCancel`
+
+Input type: `JobCancelInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobcancelclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobcancelid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobcancelclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobcancelerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationjobcanceljob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
 
 ### `Mutation.jobPlay`
 
@@ -2821,7 +2910,7 @@ Input type: `JobPlayInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationjobplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationjobplayid"></a>`id` | [`CiBuildID!`](#cibuildid) | The ID of the job to mutate. |
+| <a id="mutationjobplayid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
 
 #### Fields
 
@@ -2829,7 +2918,7 @@ Input type: `JobPlayInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjobplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobplayerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationjobplayjob"></a>`job` | [`CiJob`](#cijob) | The job after the mutation. |
+| <a id="mutationjobplayjob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
 
 ### `Mutation.jobRetry`
 
@@ -2840,7 +2929,7 @@ Input type: `JobRetryInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationjobretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationjobretryid"></a>`id` | [`CiBuildID!`](#cibuildid) | The ID of the job to mutate. |
+| <a id="mutationjobretryid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
 
 #### Fields
 
@@ -2848,7 +2937,26 @@ Input type: `JobRetryInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjobretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobretryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationjobretryjob"></a>`job` | [`CiJob`](#cijob) | The job after the mutation. |
+| <a id="mutationjobretryjob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
+
+### `Mutation.jobUnschedule`
+
+Input type: `JobUnscheduleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobunscheduleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobunscheduleid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobunscheduleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobunscheduleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationjobunschedulejob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
 
 ### `Mutation.labelCreate`
 
@@ -2871,7 +2979,7 @@ Input type: `LabelCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationlabelcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationlabelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationlabelcreatelabel"></a>`label` | [`Label`](#label) | The label after mutation. |
+| <a id="mutationlabelcreatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
 
 ### `Mutation.markAsSpamSnippet`
 
@@ -2882,7 +2990,7 @@ Input type: `MarkAsSpamSnippetInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmarkasspamsnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmarkasspamsnippetid"></a>`id` | [`SnippetID!`](#snippetid) | The global ID of the snippet to update. |
+| <a id="mutationmarkasspamsnippetid"></a>`id` | [`SnippetID!`](#snippetid) | Global ID of the snippet to update. |
 
 #### Fields
 
@@ -2890,7 +2998,7 @@ Input type: `MarkAsSpamSnippetInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmarkasspamsnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmarkasspamsnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
 ### `Mutation.mergeRequestAccept`
 
@@ -2906,9 +3014,9 @@ Input type: `MergeRequestAcceptInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestacceptclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestacceptcommitmessage"></a>`commitMessage` | [`String`](#string) | Custom merge commit message. |
-| <a id="mutationmergerequestacceptiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestacceptprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestacceptsha"></a>`sha` | [`String!`](#string) | The HEAD SHA at the time when this merge was requested. |
+| <a id="mutationmergerequestacceptiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestacceptprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestacceptsha"></a>`sha` | [`String!`](#string) | HEAD SHA at the time when this merge was requested. |
 | <a id="mutationmergerequestacceptshouldremovesourcebranch"></a>`shouldRemoveSourceBranch` | [`Boolean`](#boolean) | Should the source branch be removed. |
 | <a id="mutationmergerequestacceptsquash"></a>`squash` | [`Boolean`](#boolean) | Squash commits on the source branch before merge. |
 | <a id="mutationmergerequestacceptsquashcommitmessage"></a>`squashCommitMessage` | [`String`](#string) | Custom squash commit message (if squash is true). |
@@ -2920,7 +3028,7 @@ Input type: `MergeRequestAcceptInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestacceptclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestaccepterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestacceptmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestacceptmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestCreate`
 
@@ -2944,7 +3052,7 @@ Input type: `MergeRequestCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestcreatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestcreatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestReviewerRereview`
 
@@ -2955,9 +3063,9 @@ Input type: `MergeRequestReviewerRereviewInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestreviewerrereviewclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestreviewerrereviewiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestreviewerrereviewprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestreviewerrereviewuserid"></a>`userId` | [`UserID!`](#userid) | The user ID for the user that has been requested for a new review. |
+| <a id="mutationmergerequestreviewerrereviewiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestreviewerrereviewprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestreviewerrereviewuserid"></a>`userId` | [`UserID!`](#userid) | User ID for the user that has been requested for a new review. |
 
 #### Fields
 
@@ -2965,7 +3073,7 @@ Input type: `MergeRequestReviewerRereviewInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestreviewerrereviewclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestreviewerrereviewerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestreviewerrereviewmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestreviewerrereviewmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetAssignees`
 
@@ -2975,11 +3083,11 @@ Input type: `MergeRequestSetAssigneesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationmergerequestsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | The usernames to assign to the resource. Replaces existing assignees by default. |
+| <a id="mutationmergerequestsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | Usernames to assign to the resource. Replaces existing assignees by default. |
 | <a id="mutationmergerequestsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetassigneesiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | The operation to perform. Defaults to REPLACE. |
-| <a id="mutationmergerequestsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetassigneesiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
+| <a id="mutationmergerequestsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -2987,7 +3095,7 @@ Input type: `MergeRequestSetAssigneesInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetassigneeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetassigneesmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetassigneesmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetDraft`
 
@@ -2999,8 +3107,8 @@ Input type: `MergeRequestSetDraftInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetdraftclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetdraftdraft"></a>`draft` | [`Boolean!`](#boolean) | Whether or not to set the merge request as a draft. |
-| <a id="mutationmergerequestsetdraftiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetdraftprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetdraftiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetdraftprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3008,7 +3116,7 @@ Input type: `MergeRequestSetDraftInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetdraftclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetdrafterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetdraftmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetdraftmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetLabels`
 
@@ -3019,10 +3127,10 @@ Input type: `MergeRequestSetLabelsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlabelsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetlabelsiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetlabelslabelids"></a>`labelIds` | [`[LabelID!]!`](#labelid) | The Label IDs to set. Replaces existing labels by default. |
+| <a id="mutationmergerequestsetlabelsiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetlabelslabelids"></a>`labelIds` | [`[LabelID!]!`](#labelid) | Label IDs to set. Replaces existing labels by default. |
 | <a id="mutationmergerequestsetlabelsoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Changes the operation mode. Defaults to REPLACE. |
-| <a id="mutationmergerequestsetlabelsprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetlabelsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3030,7 +3138,7 @@ Input type: `MergeRequestSetLabelsInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlabelsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetlabelserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetlabelsmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetlabelsmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetLocked`
 
@@ -3041,9 +3149,9 @@ Input type: `MergeRequestSetLockedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetlockediid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetlockediid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutationmergerequestsetlockedlocked"></a>`locked` | [`Boolean!`](#boolean) | Whether or not to lock the merge request. |
-| <a id="mutationmergerequestsetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3051,7 +3159,7 @@ Input type: `MergeRequestSetLockedInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetlockedmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetlockedmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetMilestone`
 
@@ -3062,9 +3170,9 @@ Input type: `MergeRequestSetMilestoneInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetmilestoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetmilestoneiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetmilestonemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | The milestone to assign to the merge request. |
-| <a id="mutationmergerequestsetmilestoneprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetmilestoneiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetmilestonemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Milestone to assign to the merge request. |
+| <a id="mutationmergerequestsetmilestoneprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3072,7 +3180,7 @@ Input type: `MergeRequestSetMilestoneInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetmilestoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetmilestoneerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetmilestonemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetmilestonemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetSubscription`
 
@@ -3083,9 +3191,9 @@ Input type: `MergeRequestSetSubscriptionInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetsubscriptioniid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestsetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | The desired state of the subscription. |
+| <a id="mutationmergerequestsetsubscriptioniid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | Desired state of the subscription. |
 
 #### Fields
 
@@ -3093,7 +3201,7 @@ Input type: `MergeRequestSetSubscriptionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetWip`
 
@@ -3108,8 +3216,8 @@ Input type: `MergeRequestSetWipInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetwipclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetwipiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetwipprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetwipiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetwipprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationmergerequestsetwipwip"></a>`wip` | [`Boolean!`](#boolean) | Whether or not to set the merge request as a draft. |
 
 #### Fields
@@ -3118,7 +3226,7 @@ Input type: `MergeRequestSetWipInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetwipclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetwiperrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetwipmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetwipmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestUpdate`
 
@@ -3132,9 +3240,9 @@ Input type: `MergeRequestUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
-| <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | The action to perform to change the state. |
+| <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
 | <a id="mutationmergerequestupdatetargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
 | <a id="mutationmergerequestupdatetitle"></a>`title` | [`String`](#string) | Title of the merge request. |
 
@@ -3144,7 +3252,7 @@ Input type: `MergeRequestUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestupdatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestupdatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.namespaceIncreaseStorageTemporarily`
 
@@ -3311,7 +3419,7 @@ Input type: `PipelineCancelInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinecancelclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelinecancelid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | The ID of the pipeline to mutate. |
+| <a id="mutationpipelinecancelid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | ID of the pipeline to mutate. |
 
 #### Fields
 
@@ -3329,7 +3437,7 @@ Input type: `PipelineDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinedestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelinedestroyid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | The ID of the pipeline to mutate. |
+| <a id="mutationpipelinedestroyid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | ID of the pipeline to mutate. |
 
 #### Fields
 
@@ -3347,7 +3455,7 @@ Input type: `PipelineRetryInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpipelineretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelineretryid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | The ID of the pipeline to mutate. |
+| <a id="mutationpipelineretryid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | ID of the pipeline to mutate. |
 
 #### Fields
 
@@ -3355,7 +3463,50 @@ Input type: `PipelineRetryInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpipelineretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelineretryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationpipelineretrypipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | The pipeline after mutation. |
+| <a id="mutationpipelineretrypipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline after mutation. |
+
+### `Mutation.projectSetComplianceFramework`
+
+Assign (or unset) a compliance framework to a project.
+
+Input type: `ProjectSetComplianceFrameworkInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetcomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetcomplianceframeworkcomplianceframeworkid"></a>`complianceFrameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework to assign to the project. |
+| <a id="mutationprojectsetcomplianceframeworkprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project to change the compliance framework of. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetcomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetcomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsetcomplianceframeworkproject"></a>`project` | [`Project`](#project) | Project after mutation. |
+
+### `Mutation.projectSetLocked`
+
+Input type: `ProjectSetLockedInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetlockedfilepath"></a>`filePath` | [`String!`](#string) | Full path to the file. |
+| <a id="mutationprojectsetlockedlock"></a>`lock` | [`Boolean!`](#boolean) | Whether or not to lock the file path. |
+| <a id="mutationprojectsetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsetlockedproject"></a>`project` | [`Project`](#project) | Project after mutation. |
 
 ### `Mutation.prometheusIntegrationCreate`
 
@@ -3368,7 +3519,7 @@ Input type: `PrometheusIntegrationCreateInput`
 | <a id="mutationprometheusintegrationcreateactive"></a>`active` | [`Boolean!`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationprometheusintegrationcreateapiurl"></a>`apiUrl` | [`String!`](#string) | Endpoint at which Prometheus can be queried. |
 | <a id="mutationprometheusintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprometheusintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to create the integration in. |
+| <a id="mutationprometheusintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the integration in. |
 
 #### Fields
 
@@ -3376,7 +3527,7 @@ Input type: `PrometheusIntegrationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprometheusintegrationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationprometheusintegrationcreateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | The newly created integration. |
+| <a id="mutationprometheusintegrationcreateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | Newly created integration. |
 
 ### `Mutation.prometheusIntegrationResetToken`
 
@@ -3387,7 +3538,7 @@ Input type: `PrometheusIntegrationResetTokenInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprometheusintegrationresettokenid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | The ID of the integration to mutate. |
+| <a id="mutationprometheusintegrationresettokenid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | ID of the integration to mutate. |
 
 #### Fields
 
@@ -3395,7 +3546,7 @@ Input type: `PrometheusIntegrationResetTokenInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprometheusintegrationresettokenerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationprometheusintegrationresettokenintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | The newly created integration. |
+| <a id="mutationprometheusintegrationresettokenintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | Newly created integration. |
 
 ### `Mutation.prometheusIntegrationUpdate`
 
@@ -3408,7 +3559,7 @@ Input type: `PrometheusIntegrationUpdateInput`
 | <a id="mutationprometheusintegrationupdateactive"></a>`active` | [`Boolean`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationprometheusintegrationupdateapiurl"></a>`apiUrl` | [`String`](#string) | Endpoint at which Prometheus can be queried. |
 | <a id="mutationprometheusintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprometheusintegrationupdateid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | The ID of the integration to mutate. |
+| <a id="mutationprometheusintegrationupdateid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | ID of the integration to mutate. |
 
 #### Fields
 
@@ -3416,7 +3567,7 @@ Input type: `PrometheusIntegrationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprometheusintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationprometheusintegrationupdateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | The newly created integration. |
+| <a id="mutationprometheusintegrationupdateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | Newly created integration. |
 
 ### `Mutation.promoteToEpic`
 
@@ -3428,8 +3579,8 @@ Input type: `PromoteToEpicInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpromotetoepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpromotetoepicgrouppath"></a>`groupPath` | [`ID`](#id) | The group the promoted epic will belong to. |
-| <a id="mutationpromotetoepiciid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationpromotetoepicprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationpromotetoepiciid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationpromotetoepicprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -3438,7 +3589,7 @@ Input type: `PromoteToEpicInput`
 | <a id="mutationpromotetoepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpromotetoepicepic"></a>`epic` | [`Epic`](#epic) | The epic after issue promotion. |
 | <a id="mutationpromotetoepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.releaseAssetLinkCreate`
 
@@ -3462,7 +3613,7 @@ Input type: `ReleaseAssetLinkCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseassetlinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseassetlinkcreatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | The asset link after mutation. |
+| <a id="mutationreleaseassetlinkcreatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | Asset link after mutation. |
 
 ### `Mutation.releaseAssetLinkDelete`
 
@@ -3481,7 +3632,7 @@ Input type: `ReleaseAssetLinkDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseassetlinkdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseassetlinkdeletelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | The deleted release asset link. |
+| <a id="mutationreleaseassetlinkdeletelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | Deleted release asset link. |
 
 ### `Mutation.releaseAssetLinkUpdate`
 
@@ -3494,7 +3645,7 @@ Input type: `ReleaseAssetLinkUpdateInput`
 | <a id="mutationreleaseassetlinkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkupdatedirectassetpath"></a>`directAssetPath` | [`String`](#string) | Relative path for a direct asset link. |
 | <a id="mutationreleaseassetlinkupdateid"></a>`id` | [`ReleasesLinkID!`](#releaseslinkid) | ID of the release asset link to update. |
-| <a id="mutationreleaseassetlinkupdatelinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | The type of the asset link. |
+| <a id="mutationreleaseassetlinkupdatelinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | Type of the asset link. |
 | <a id="mutationreleaseassetlinkupdatename"></a>`name` | [`String`](#string) | Name of the asset link. |
 | <a id="mutationreleaseassetlinkupdateurl"></a>`url` | [`String`](#string) | URL of the asset link. |
 
@@ -3504,7 +3655,7 @@ Input type: `ReleaseAssetLinkUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseassetlinkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseassetlinkupdatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | The asset link after mutation. |
+| <a id="mutationreleaseassetlinkupdatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | Asset link after mutation. |
 
 ### `Mutation.releaseCreate`
 
@@ -3517,11 +3668,11 @@ Input type: `ReleaseCreateInput`
 | <a id="mutationreleasecreateassets"></a>`assets` | [`ReleaseAssetsInput`](#releaseassetsinput) | Assets associated to the release. |
 | <a id="mutationreleasecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleasecreatedescription"></a>`description` | [`String`](#string) | Description (also known as "release notes") of the release. |
-| <a id="mutationreleasecreatemilestones"></a>`milestones` | [`[String!]`](#string) | The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
+| <a id="mutationreleasecreatemilestones"></a>`milestones` | [`[String!]`](#string) | Title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
 | <a id="mutationreleasecreatename"></a>`name` | [`String`](#string) | Name of the release. |
 | <a id="mutationreleasecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the release is associated with. |
-| <a id="mutationreleasecreateref"></a>`ref` | [`String`](#string) | The commit SHA or branch name to use if creating a new tag. |
-| <a id="mutationreleasecreatereleasedat"></a>`releasedAt` | [`Time`](#time) | The date when the release will be/was ready. Defaults to the current time. |
+| <a id="mutationreleasecreateref"></a>`ref` | [`String`](#string) | Commit SHA or branch name to use if creating a new tag. |
+| <a id="mutationreleasecreatereleasedat"></a>`releasedAt` | [`Time`](#time) | Date and time for the release. Defaults to the current date and time. |
 | <a id="mutationreleasecreatetagname"></a>`tagName` | [`String!`](#string) | Name of the tag to associate with the release. |
 
 #### Fields
@@ -3530,7 +3681,7 @@ Input type: `ReleaseCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleasecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleasecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleasecreaterelease"></a>`release` | [`Release`](#release) | The release after mutation. |
+| <a id="mutationreleasecreaterelease"></a>`release` | [`Release`](#release) | Release after mutation. |
 
 ### `Mutation.releaseDelete`
 
@@ -3550,7 +3701,7 @@ Input type: `ReleaseDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleasedeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleasedeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleasedeleterelease"></a>`release` | [`Release`](#release) | The deleted release. |
+| <a id="mutationreleasedeleterelease"></a>`release` | [`Release`](#release) | Deleted release. |
 
 ### `Mutation.releaseUpdate`
 
@@ -3562,10 +3713,10 @@ Input type: `ReleaseUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseupdatedescription"></a>`description` | [`String`](#string) | Description (release notes) of the release. |
-| <a id="mutationreleaseupdatemilestones"></a>`milestones` | [`[String!]`](#string) | The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
+| <a id="mutationreleaseupdatemilestones"></a>`milestones` | [`[String!]`](#string) | Title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
 | <a id="mutationreleaseupdatename"></a>`name` | [`String`](#string) | Name of the release. |
 | <a id="mutationreleaseupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the release is associated with. |
-| <a id="mutationreleaseupdatereleasedat"></a>`releasedAt` | [`Time`](#time) | The release date. |
+| <a id="mutationreleaseupdatereleasedat"></a>`releasedAt` | [`Time`](#time) | Release date. |
 | <a id="mutationreleaseupdatetagname"></a>`tagName` | [`String!`](#string) | Name of the tag associated with the release. |
 
 #### Fields
@@ -3574,7 +3725,7 @@ Input type: `ReleaseUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseupdaterelease"></a>`release` | [`Release`](#release) | The release after mutation. |
+| <a id="mutationreleaseupdaterelease"></a>`release` | [`Release`](#release) | Release after mutation. |
 
 ### `Mutation.removeProjectFromSecurityDashboard`
 
@@ -3605,7 +3756,7 @@ Input type: `RepositionImageDiffNoteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationrepositionimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationrepositionimagediffnoteid"></a>`id` | [`DiffNoteID!`](#diffnoteid) | The global ID of the DiffNote to update. |
+| <a id="mutationrepositionimagediffnoteid"></a>`id` | [`DiffNoteID!`](#diffnoteid) | Global ID of the DiffNote to update. |
 | <a id="mutationrepositionimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput!`](#updatediffimagepositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -3614,7 +3765,7 @@ Input type: `RepositionImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrepositionimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrepositionimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationrepositionimagediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationrepositionimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.runnerDelete`
 
@@ -3664,7 +3815,7 @@ Input type: `RunnerUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | The runner after mutation. |
+| <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner after mutation. |
 
 ### `Mutation.runnersRegistrationTokenReset`
 
@@ -3686,7 +3837,7 @@ Input type: `RunnersRegistrationTokenResetInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrunnersregistrationtokenresetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnersregistrationtokenreseterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationrunnersregistrationtokenresettoken"></a>`token` | [`String`](#string) | The runner token after mutation. |
+| <a id="mutationrunnersregistrationtokenresettoken"></a>`token` | [`String`](#string) | Runner token after mutation. |
 
 ### `Mutation.scanExecutionPolicyCommit`
 
@@ -3810,7 +3961,7 @@ Input type: `TodoCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodocreatetargetid"></a>`targetId` | [`TodoableID!`](#todoableid) | The global ID of the to-do item's parent. Issues, merge requests, designs and epics are supported. |
+| <a id="mutationtodocreatetargetid"></a>`targetId` | [`TodoableID!`](#todoableid) | Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. |
 
 #### Fields
 
@@ -3818,7 +3969,7 @@ Input type: `TodoCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtodocreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationtodocreatetodo"></a>`todo` | [`Todo`](#todo) | The to-do item created. |
+| <a id="mutationtodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item created. |
 
 ### `Mutation.todoMarkDone`
 
@@ -3829,7 +3980,7 @@ Input type: `TodoMarkDoneInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodomarkdoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodomarkdoneid"></a>`id` | [`TodoID!`](#todoid) | The global ID of the to-do item to mark as done. |
+| <a id="mutationtodomarkdoneid"></a>`id` | [`TodoID!`](#todoid) | Global ID of the to-do item to mark as done. |
 
 #### Fields
 
@@ -3837,7 +3988,7 @@ Input type: `TodoMarkDoneInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtodomarkdoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtodomarkdoneerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationtodomarkdonetodo"></a>`todo` | [`Todo!`](#todo) | The requested to-do item. |
+| <a id="mutationtodomarkdonetodo"></a>`todo` | [`Todo!`](#todo) | Requested to-do item. |
 
 ### `Mutation.todoRestore`
 
@@ -3848,7 +3999,7 @@ Input type: `TodoRestoreInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoreclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodorestoreid"></a>`id` | [`TodoID!`](#todoid) | The global ID of the to-do item to restore. |
+| <a id="mutationtodorestoreid"></a>`id` | [`TodoID!`](#todoid) | Global ID of the to-do item to restore. |
 
 #### Fields
 
@@ -3856,7 +4007,7 @@ Input type: `TodoRestoreInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoreclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtodorestoreerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationtodorestoretodo"></a>`todo` | [`Todo!`](#todo) | The requested to-do item. |
+| <a id="mutationtodorestoretodo"></a>`todo` | [`Todo!`](#todo) | Requested to-do item. |
 
 ### `Mutation.todoRestoreMany`
 
@@ -3867,7 +4018,7 @@ Input type: `TodoRestoreManyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoremanyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | The global IDs of the to-do items to restore (a maximum of 50 is supported at once). |
+| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | Global IDs of the to-do items to restore (a maximum of 50 is supported at once). |
 
 #### Fields
 
@@ -3904,19 +4055,19 @@ Input type: `UpdateAlertStatusInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatealertstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatealertstatusiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationupdatealertstatusprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
-| <a id="mutationupdatealertstatusstatus"></a>`status` | [`AlertManagementStatus!`](#alertmanagementstatus) | The status to set the alert. |
+| <a id="mutationupdatealertstatusiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationupdatealertstatusprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
+| <a id="mutationupdatealertstatusstatus"></a>`status` | [`AlertManagementStatus!`](#alertmanagementstatus) | Status to set the alert. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdatealertstatusalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationupdatealertstatusalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationupdatealertstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatealertstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatealertstatusissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationupdatealertstatustodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationupdatealertstatusissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationupdatealertstatustodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.updateBoard`
 
@@ -3930,19 +4081,19 @@ Input type: `UpdateBoardInput`
 | <a id="mutationupdateboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateboardhidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationupdateboardhideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
-| <a id="mutationupdateboardid"></a>`id` | [`BoardID!`](#boardid) | The board global ID. |
+| <a id="mutationupdateboardid"></a>`id` | [`BoardID!`](#boardid) | Board global ID. |
 | <a id="mutationupdateboarditerationid"></a>`iterationId` | [`IterationID`](#iterationid) | ID of iteration to be assigned to the board. |
 | <a id="mutationupdateboardlabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationupdateboardlabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationupdateboardmilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | ID of milestone to be assigned to the board. |
-| <a id="mutationupdateboardname"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationupdateboardname"></a>`name` | [`String`](#string) | Board name. |
 | <a id="mutationupdateboardweight"></a>`weight` | [`Int`](#int) | Weight value to be assigned to the board. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdateboardboard"></a>`board` | [`Board`](#board) | The board after mutation. |
+| <a id="mutationupdateboardboard"></a>`board` | [`Board`](#board) | Board after mutation. |
 | <a id="mutationupdateboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateboarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -4023,14 +4174,14 @@ Input type: `UpdateContainerExpirationPolicyInput`
 | <a id="mutationupdatecontainerexpirationpolicynameregex"></a>`nameRegex` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will expire. |
 | <a id="mutationupdatecontainerexpirationpolicynameregexkeep"></a>`nameRegexKeep` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will be preserved. |
 | <a id="mutationupdatecontainerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older that this will expire. |
-| <a id="mutationupdatecontainerexpirationpolicyprojectpath"></a>`projectPath` | [`ID!`](#id) | The project path where the container expiration policy is located. |
+| <a id="mutationupdatecontainerexpirationpolicyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path where the container expiration policy is located. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerexpirationpolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | The container expiration policy after mutation. |
+| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy after mutation. |
 | <a id="mutationupdatecontainerexpirationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.updateEpic`
@@ -4099,7 +4250,7 @@ Input type: `UpdateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateimagediffnotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateimagediffnoteid"></a>`id` | [`NoteID!`](#noteid) | The global ID of the note to update. |
+| <a id="mutationupdateimagediffnoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 | <a id="mutationupdateimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput`](#updatediffimagepositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -4108,7 +4259,7 @@ Input type: `UpdateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdateimagediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationupdateimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.updateIssue`
 
@@ -4118,18 +4269,19 @@ Input type: `UpdateIssueInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdateissueaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | The IDs of labels to be added to the issue. |
+| <a id="mutationupdateissueaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the issue. |
 | <a id="mutationupdateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates the issue is confidential. |
 | <a id="mutationupdateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="mutationupdateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
 | <a id="mutationupdateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of the parent epic. NULL when removing the association. |
 | <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
-| <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
+| <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | IDs of labels to be set. Replaces existing issue labels. |
 | <a id="mutationupdateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
-| <a id="mutationupdateissuemilestoneid"></a>`milestoneId` | [`ID`](#id) | The ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
-| <a id="mutationupdateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
-| <a id="mutationupdateissueremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | The IDs of labels to be removed from the issue. |
+| <a id="mutationupdateissuemilestoneid"></a>`milestoneId` | [`ID`](#id) | ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
+| <a id="mutationupdateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+| <a id="mutationupdateissueremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | IDs of labels to be removed from the issue. |
 | <a id="mutationupdateissuestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
 | <a id="mutationupdateissuetitle"></a>`title` | [`String`](#string) | Title of the issue. |
 | <a id="mutationupdateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
@@ -4141,7 +4293,7 @@ Input type: `UpdateIssueInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdateissueissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationupdateissueissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.updateIteration`
 
@@ -4180,7 +4332,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate generic packages are allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsmavenduplicateexceptionregex"></a>`mavenDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsmavenduplicatesallowed"></a>`mavenDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate Maven packages are allowed for this namespace. |
-| <a id="mutationupdatenamespacepackagesettingsnamespacepath"></a>`namespacePath` | [`ID!`](#id) | The namespace path where the namespace package setting is located. |
+| <a id="mutationupdatenamespacepackagesettingsnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the namespace package setting is located. |
 
 #### Fields
 
@@ -4188,7 +4340,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenamespacepackagesettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatenamespacepackagesettingserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatenamespacepackagesettingspackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | The namespace package setting after mutation. |
+| <a id="mutationupdatenamespacepackagesettingspackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Namespace package setting after mutation. |
 
 ### `Mutation.updateNote`
 
@@ -4205,8 +4357,8 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | The global ID of the note to update. |
+| <a id="mutationupdatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 
 #### Fields
 
@@ -4214,7 +4366,7 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatenoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatenotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationupdatenotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.updateRequirement`
 
@@ -4252,10 +4404,10 @@ Input type: `UpdateSnippetInput`
 | <a id="mutationupdatesnippetcaptcharesponse"></a>`captchaResponse` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatesnippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
-| <a id="mutationupdatesnippetid"></a>`id` | [`SnippetID!`](#snippetid) | The global ID of the snippet to update. |
+| <a id="mutationupdatesnippetid"></a>`id` | [`SnippetID!`](#snippetid) | Global ID of the snippet to update. |
 | <a id="mutationupdatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippettitle"></a>`title` | [`String`](#string) | Title of the snippet. |
-| <a id="mutationupdatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | The visibility level of the snippet. |
+| <a id="mutationupdatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Visibility level of the snippet. |
 
 #### Fields
 
@@ -4265,7 +4417,7 @@ Input type: `UpdateSnippetInput`
 | <a id="mutationupdatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationupdatesnippetneedscaptcharesponse"></a>`needsCaptchaResponse` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
-| <a id="mutationupdatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationupdatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 | <a id="mutationupdatesnippetspam"></a>`spam` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 
@@ -4278,7 +4430,7 @@ Input type: `UserCalloutCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationusercalloutcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationusercalloutcreatefeaturename"></a>`featureName` | [`String!`](#string) | The feature name you want to dismiss the callout for. |
+| <a id="mutationusercalloutcreatefeaturename"></a>`featureName` | [`String!`](#string) | Feature name you want to dismiss the callout for. |
 
 #### Fields
 
@@ -4286,7 +4438,7 @@ Input type: `UserCalloutCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationusercalloutcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationusercalloutcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationusercalloutcreateusercallout"></a>`userCallout` | [`UserCallout!`](#usercallout) | The user callout dismissed. |
+| <a id="mutationusercalloutcreateusercallout"></a>`userCallout` | [`UserCallout!`](#usercallout) | User callout dismissed. |
 
 ### `Mutation.vulnerabilityConfirm`
 
@@ -4835,6 +4987,52 @@ The edge type for [`CiJob`](#cijob).
 | ---- | ---- | ----------- |
 | <a id="cijobedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cijobedgenode"></a>`node` | [`CiJob`](#cijob) | The item at the end of the edge. |
+
+#### `CiMinutesNamespaceMonthlyUsageConnection`
+
+The connection type for [`CiMinutesNamespaceMonthlyUsage`](#ciminutesnamespacemonthlyusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciminutesnamespacemonthlyusageconnectionedges"></a>`edges` | [`[CiMinutesNamespaceMonthlyUsageEdge]`](#ciminutesnamespacemonthlyusageedge) | A list of edges. |
+| <a id="ciminutesnamespacemonthlyusageconnectionnodes"></a>`nodes` | [`[CiMinutesNamespaceMonthlyUsage]`](#ciminutesnamespacemonthlyusage) | A list of nodes. |
+| <a id="ciminutesnamespacemonthlyusageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiMinutesNamespaceMonthlyUsageEdge`
+
+The edge type for [`CiMinutesNamespaceMonthlyUsage`](#ciminutesnamespacemonthlyusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciminutesnamespacemonthlyusageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="ciminutesnamespacemonthlyusageedgenode"></a>`node` | [`CiMinutesNamespaceMonthlyUsage`](#ciminutesnamespacemonthlyusage) | The item at the end of the edge. |
+
+#### `CiMinutesProjectMonthlyUsageConnection`
+
+The connection type for [`CiMinutesProjectMonthlyUsage`](#ciminutesprojectmonthlyusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciminutesprojectmonthlyusageconnectionedges"></a>`edges` | [`[CiMinutesProjectMonthlyUsageEdge]`](#ciminutesprojectmonthlyusageedge) | A list of edges. |
+| <a id="ciminutesprojectmonthlyusageconnectionnodes"></a>`nodes` | [`[CiMinutesProjectMonthlyUsage]`](#ciminutesprojectmonthlyusage) | A list of nodes. |
+| <a id="ciminutesprojectmonthlyusageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiMinutesProjectMonthlyUsageEdge`
+
+The edge type for [`CiMinutesProjectMonthlyUsage`](#ciminutesprojectmonthlyusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciminutesprojectmonthlyusageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="ciminutesprojectmonthlyusageedgenode"></a>`node` | [`CiMinutesProjectMonthlyUsage`](#ciminutesprojectmonthlyusage) | The item at the end of the edge. |
 
 #### `CiRunnerConnection`
 
@@ -5485,6 +5683,29 @@ The edge type for [`Event`](#event).
 | <a id="eventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="eventedgenode"></a>`node` | [`Event`](#event) | The item at the end of the edge. |
 
+#### `GroupConnection`
+
+The connection type for [`Group`](#group).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupconnectionedges"></a>`edges` | [`[GroupEdge]`](#groupedge) | A list of edges. |
+| <a id="groupconnectionnodes"></a>`nodes` | [`[Group]`](#group) | A list of nodes. |
+| <a id="groupconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GroupEdge`
+
+The edge type for [`Group`](#group).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="groupedgenode"></a>`node` | [`Group`](#group) | The item at the end of the edge. |
+
 #### `GroupMemberConnection`
 
 The connection type for [`GroupMember`](#groupmember).
@@ -6053,6 +6274,29 @@ The connection type for [`Package`](#package).
 | <a id="packageconnectionedges"></a>`edges` | [`[PackageEdge]`](#packageedge) | A list of edges. |
 | <a id="packageconnectionnodes"></a>`nodes` | [`[Package]`](#package) | A list of nodes. |
 | <a id="packageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PackageDependencyLinkConnection`
+
+The connection type for [`PackageDependencyLink`](#packagedependencylink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencylinkconnectionedges"></a>`edges` | [`[PackageDependencyLinkEdge]`](#packagedependencylinkedge) | A list of edges. |
+| <a id="packagedependencylinkconnectionnodes"></a>`nodes` | [`[PackageDependencyLink]`](#packagedependencylink) | A list of nodes. |
+| <a id="packagedependencylinkconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PackageDependencyLinkEdge`
+
+The edge type for [`PackageDependencyLink`](#packagedependencylink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencylinkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="packagedependencylinkedgenode"></a>`node` | [`PackageDependencyLink`](#packagedependencylink) | The item at the end of the edge. |
 
 #### `PackageEdge`
 
@@ -6897,6 +7141,29 @@ The edge type for [`Todo`](#todo).
 | ---- | ---- | ----------- |
 | <a id="todoedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="todoedgenode"></a>`node` | [`Todo`](#todo) | The item at the end of the edge. |
+
+#### `TreeConnection`
+
+The connection type for [`Tree`](#tree).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="treeconnectionedges"></a>`edges` | [`[TreeEdge]`](#treeedge) | A list of edges. |
+| <a id="treeconnectionnodes"></a>`nodes` | [`[Tree]`](#tree) | A list of nodes. |
+| <a id="treeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `TreeEdge`
+
+The edge type for [`Tree`](#tree).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="treeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="treeedgenode"></a>`node` | [`Tree`](#tree) | The item at the end of the edge. |
 
 #### `TreeEntryConnection`
 
@@ -7795,6 +8062,25 @@ Represents the total number of issues and their weights for a particular day.
 | ---- | ---- | ----------- |
 | <a id="cijobtokenscopetypeprojects"></a>`projects` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can be accessed by CI Job tokens created by this project. (see [Connections](#connections)) |
 
+### `CiMinutesNamespaceMonthlyUsage`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciminutesnamespacemonthlyusageminutes"></a>`minutes` | [`Int`](#int) | The total number of minutes used by all projects in the namespace. |
+| <a id="ciminutesnamespacemonthlyusagemonth"></a>`month` | [`String`](#string) | The month related to the usage data. |
+| <a id="ciminutesnamespacemonthlyusageprojects"></a>`projects` | [`CiMinutesProjectMonthlyUsageConnection`](#ciminutesprojectmonthlyusageconnection) | CI minutes usage data for projects in the namespace. (see [Connections](#connections)) |
+
+### `CiMinutesProjectMonthlyUsage`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciminutesprojectmonthlyusageminutes"></a>`minutes` | [`Int`](#int) | The number of CI minutes used by the project in the month. |
+| <a id="ciminutesprojectmonthlyusagename"></a>`name` | [`String`](#string) | The name of the project. |
+
 ### `CiRunner`
 
 #### Fields
@@ -8296,8 +8582,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | The Global ID of the most recent acceptable version. |
-| <a id="designversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | The SHA256 of the most recent acceptable version. |
+| <a id="designversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | Global ID of the most recent acceptable version. |
+| <a id="designversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | SHA256 of the most recent acceptable version. |
 
 ### `DesignAtVersion`
 
@@ -8357,7 +8643,7 @@ Returns [`DesignAtVersion`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcollectiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | The Global ID of the design at this version. |
+| <a id="designcollectiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at this version. |
 
 ##### `DesignCollection.designs`
 
@@ -8387,8 +8673,8 @@ Returns [`DesignVersion`](#designversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcollectionversionid"></a>`id` | [`DesignManagementVersionID`](#designmanagementversionid) | The Global ID of the version. |
-| <a id="designcollectionversionsha"></a>`sha` | [`String`](#string) | The SHA256 of a specific version. |
+| <a id="designcollectionversionid"></a>`id` | [`DesignManagementVersionID`](#designmanagementversionid) | Global ID of the version. |
+| <a id="designcollectionversionsha"></a>`sha` | [`String`](#string) | SHA256 of a specific version. |
 
 ##### `DesignCollection.versions`
 
@@ -8404,8 +8690,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcollectionversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | The Global ID of the most recent acceptable version. |
-| <a id="designcollectionversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | The SHA256 of the most recent acceptable version. |
+| <a id="designcollectionversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | Global ID of the most recent acceptable version. |
+| <a id="designcollectionversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | SHA256 of the most recent acceptable version. |
 
 ### `DesignManagement`
 
@@ -8421,7 +8707,7 @@ Returns [`DesignAtVersion`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designmanagementdesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | The Global ID of the design at this version. |
+| <a id="designmanagementdesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at this version. |
 
 ##### `DesignManagement.version`
 
@@ -8433,7 +8719,7 @@ Returns [`DesignVersion`](#designversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designmanagementversionid"></a>`id` | [`DesignManagementVersionID!`](#designmanagementversionid) | The Global ID of the version. |
+| <a id="designmanagementversionid"></a>`id` | [`DesignManagementVersionID!`](#designmanagementversionid) | Global ID of the version. |
 
 ### `DesignVersion`
 
@@ -8461,9 +8747,9 @@ Returns [`DesignAtVersion!`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designversiondesignatversiondesignid"></a>`designId` | [`DesignManagementDesignID`](#designmanagementdesignid) | The ID of a specific design. |
-| <a id="designversiondesignatversionfilename"></a>`filename` | [`String`](#string) | The filename of a specific design. |
-| <a id="designversiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID`](#designmanagementdesignatversionid) | The ID of the DesignAtVersion. |
+| <a id="designversiondesignatversiondesignid"></a>`designId` | [`DesignManagementDesignID`](#designmanagementdesignid) | ID of a specific design. |
+| <a id="designversiondesignatversionfilename"></a>`filename` | [`String`](#string) | Filename of a specific design. |
+| <a id="designversiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID`](#designmanagementdesignatversionid) | ID of the DesignAtVersion. |
 
 ##### `DesignVersion.designsAtVersion`
 
@@ -8942,6 +9228,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueiid"></a>`iid` | [`ID!`](#id) | Internal ID of the issue. |
 | <a id="epicissueiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the issue. |
 | <a id="epicissuelabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the issue. (see [Connections](#connections)) |
+| <a id="epicissuemergerequestscount"></a>`mergeRequestsCount` | [`Int!`](#int) | Number of merge requests that close the issue on merge. |
 | <a id="epicissuemetricimages"></a>`metricImages` | [`[MetricImage!]`](#metricimage) | Metric images associated to the issue. |
 | <a id="epicissuemilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the issue. |
 | <a id="epicissuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
@@ -9079,6 +9366,7 @@ Represents an escalation rule for an escalation policy.
 | <a id="escalationruletypeid"></a>`id` | [`IncidentManagementEscalationRuleID`](#incidentmanagementescalationruleid) | ID of the escalation policy. |
 | <a id="escalationruletypeoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | The on-call schedule to notify. |
 | <a id="escalationruletypestatus"></a>`status` | [`EscalationRuleStatus`](#escalationrulestatus) | The status required to prevent the rule from activating. |
+| <a id="escalationruletypeuser"></a>`user` | [`UserCore`](#usercore) | The user to notify. |
 
 ### `Event`
 
@@ -9294,6 +9582,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouprequiretwofactorauthentication"></a>`requireTwoFactorAuthentication` | [`Boolean`](#boolean) | Indicates if all users in this group are required to set up two-factor authentication. |
 | <a id="grouprootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
 | <a id="groupsharewithgrouplock"></a>`shareWithGroupLock` | [`Boolean`](#boolean) | Indicates if sharing a project with another group within this group is prevented. |
+| <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | The permission level required to create subgroups within the group. |
@@ -9318,7 +9607,7 @@ Returns [`Board`](#board).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupboardid"></a>`id` | [`BoardID!`](#boardid) | The board's ID. |
+| <a id="groupboardid"></a>`id` | [`BoardID!`](#boardid) | ID of the board. |
 
 ##### `Group.boards`
 
@@ -9384,6 +9673,24 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcontainerrepositoriesname"></a>`name` | [`String`](#string) | Filter the container repositories by their name. |
 | <a id="groupcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by this criteria. |
+
+##### `Group.descendantGroups`
+
+List of descendant groups of this group.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdescendantgroupsincludeparentdescendants"></a>`includeParentDescendants` | [`Boolean`](#boolean) | List of descendant groups of the parent group. |
+| <a id="groupdescendantgroupsowned"></a>`owned` | [`Boolean`](#boolean) | Limit result to groups owned by authenticated user. |
+| <a id="groupdescendantgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 
 ##### `Group.epic`
 
@@ -9506,6 +9813,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupissuesiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="groupissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
 | <a id="groupissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="groupissuesmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="groupissuesnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
 | <a id="groupissuessearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
 | <a id="groupissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
@@ -9700,10 +10008,13 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="grouptimelogsenddate"></a>`endDate` | [`Time`](#time) | List time logs within a date range where the logged date is equal to or before endDate. |
-| <a id="grouptimelogsendtime"></a>`endTime` | [`Time`](#time) | List time-logs within a time range where the logged time is equal to or before endTime. |
-| <a id="grouptimelogsstartdate"></a>`startDate` | [`Time`](#time) | List time logs within a date range where the logged date is equal to or after startDate. |
-| <a id="grouptimelogsstarttime"></a>`startTime` | [`Time`](#time) | List time-logs within a time range where the logged time is equal to or after startTime. |
+| <a id="grouptimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="grouptimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="grouptimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="grouptimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="grouptimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="grouptimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="grouptimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `Group.vulnerabilities`
 
@@ -9731,7 +10042,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.vulnerabilitiesCountByDay`
 
-Number of vulnerabilities per day for the projects in the group and its subgroups.
+The historical number of vulnerabilities per day for the projects in the group and its subgroups.
 
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
@@ -9996,6 +10307,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="issueiid"></a>`iid` | [`ID!`](#id) | Internal ID of the issue. |
 | <a id="issueiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the issue. |
 | <a id="issuelabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the issue. (see [Connections](#connections)) |
+| <a id="issuemergerequestscount"></a>`mergeRequestsCount` | [`Int!`](#int) | Number of merge requests that close the issue on merge. |
 | <a id="issuemetricimages"></a>`metricImages` | [`[MetricImage!]`](#metricimage) | Metric images associated to the issue. |
 | <a id="issuemilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the issue. |
 | <a id="issuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
@@ -10451,6 +10763,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="mergerequestassigneemergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestassigneename"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="mergerequestassigneenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestassigneeprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -10565,7 +10878,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneesnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="mergerequestassigneesnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="mergerequestassigneesnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="mergerequestassigneesnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `MergeRequestAssignee.starredProjects`
 
@@ -10582,6 +10895,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `MergeRequestAssignee.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestassigneetimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="mergerequestassigneetimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="mergerequestassigneetimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="mergerequestassigneetimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="mergerequestassigneetimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="mergerequestassigneetimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="mergerequestassigneetimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `MergeRequestAssignee.todos`
 
@@ -10657,6 +10992,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="mergerequestreviewermergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestreviewername"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="mergerequestreviewernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestreviewerprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -10771,7 +11107,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewersnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="mergerequestreviewersnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="mergerequestreviewersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="mergerequestreviewersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `MergeRequestReviewer.starredProjects`
 
@@ -10788,6 +11124,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `MergeRequestReviewer.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewertimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="mergerequestreviewertimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="mergerequestreviewertimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="mergerequestreviewertimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="mergerequestreviewertimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="mergerequestreviewertimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="mergerequestreviewertimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `MergeRequestReviewer.todos`
 
@@ -10932,6 +11290,7 @@ Contains statistics about a milestone.
 | <a id="namespacerepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int!`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. |
 | <a id="namespacerequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
 | <a id="namespacerootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
+| <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
@@ -11032,6 +11391,17 @@ Represents the network policy.
 | <a id="notepermissionsrepositionnote"></a>`repositionNote` | [`Boolean!`](#boolean) | Indicates the user can perform `reposition_note` on this resource. |
 | <a id="notepermissionsresolvenote"></a>`resolveNote` | [`Boolean!`](#boolean) | Indicates the user can perform `resolve_note` on this resource. |
 
+### `NugetDependencyLinkMetadata`
+
+Nuget dependency link metadata.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="nugetdependencylinkmetadataid"></a>`id` | [`PackagesNugetDependencyLinkMetadatumID!`](#packagesnugetdependencylinkmetadatumid) | ID of the metadatum. |
+| <a id="nugetdependencylinkmetadatatargetframework"></a>`targetFramework` | [`String!`](#string) | Target framework of the dependency link package. |
+
 ### `NugetMetadata`
 
 Nuget metadata.
@@ -11103,6 +11473,31 @@ Represents a composer JSON file.
 | <a id="packagecomposerjsontypetype"></a>`type` | [`String`](#string) | The type set in the Composer JSON file. |
 | <a id="packagecomposerjsontypeversion"></a>`version` | [`String`](#string) | The version set in the Composer JSON file. |
 
+### `PackageDependency`
+
+Represents a package dependency.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencyid"></a>`id` | [`PackagesDependencyID!`](#packagesdependencyid) | ID of the dependency. |
+| <a id="packagedependencyname"></a>`name` | [`String!`](#string) | Name of the dependency. |
+| <a id="packagedependencyversionpattern"></a>`versionPattern` | [`String!`](#string) | Version pattern of the dependency. |
+
+### `PackageDependencyLink`
+
+Represents a package dependency link.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencylinkdependency"></a>`dependency` | [`PackageDependency`](#packagedependency) | Dependency. |
+| <a id="packagedependencylinkdependencytype"></a>`dependencyType` | [`PackageDependencyType!`](#packagedependencytype) | Dependency type. |
+| <a id="packagedependencylinkid"></a>`id` | [`PackagesDependencyLinkID!`](#packagesdependencylinkid) | ID of the dependency link. |
+| <a id="packagedependencylinkmetadata"></a>`metadata` | [`DependencyLinkMetadata`](#dependencylinkmetadata) | Dependency link metadata. |
+
 ### `PackageDetailsType`
 
 Represents a package details in the Package Registry. Note that this type is in beta and susceptible to changes.
@@ -11112,6 +11507,7 @@ Represents a package details in the Package Registry. Note that this type is in 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagedetailstypecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="packagedetailstypedependencylinks"></a>`dependencyLinks` | [`PackageDependencyLinkConnection`](#packagedependencylinkconnection) | Dependency link. (see [Connections](#connections)) |
 | <a id="packagedetailstypeid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagedetailstypemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagedetailstypename"></a>`name` | [`String!`](#string) | Name of the package. |
@@ -11371,6 +11767,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | ---- | ---- | ----------- |
 | <a id="pipelinesecurityreportfindingconfidence"></a>`confidence` | [`String`](#string) | Type of the security report that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
+| <a id="pipelinesecurityreportfindingfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. Available only when feature flag `vulnerability_flags` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="pipelinesecurityreportfindingidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerabilit finding. |
 | <a id="pipelinesecurityreportfindinglocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingname"></a>`name` | [`String`](#string) | Name of the vulnerability finding. |
@@ -11574,7 +11971,7 @@ Returns [`Board`](#board).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectboardid"></a>`id` | [`BoardID!`](#boardid) | The board's ID. |
+| <a id="projectboardid"></a>`id` | [`BoardID!`](#boardid) | ID of the board. |
 
 ##### `Project.boards`
 
@@ -11632,6 +12029,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectcontainerrepositoriesname"></a>`name` | [`String`](#string) | Filter the container repositories by their name. |
 | <a id="projectcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by this criteria. |
+
+##### `Project.dastProfile`
+
+DAST Profile associated with the project.
+
+Returns [`DastProfile`](#dastprofile).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdastprofileid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the DAST Profile. |
 
 ##### `Project.dastSiteProfile`
 
@@ -11746,6 +12155,7 @@ Returns [`Issue`](#issue).
 | <a id="projectissueiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="projectissuelabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
 | <a id="projectissuemilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="projectissuemilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuenot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
 | <a id="projectissuesearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
 | <a id="projectissuesort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
@@ -11777,6 +12187,7 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | <a id="projectissuestatuscountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
 | <a id="projectissuestatuscountslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
 | <a id="projectissuestatuscountsmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="projectissuestatuscountsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuestatuscountsnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
 | <a id="projectissuestatuscountssearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
 | <a id="projectissuestatuscountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter issues by the given issue types. |
@@ -11812,6 +12223,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectissuesiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="projectissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
 | <a id="projectissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="projectissuesmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuesnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
 | <a id="projectissuessearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
 | <a id="projectissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
@@ -12172,7 +12584,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
-| <a id="projectsnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="projectsnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `Project.terraformState`
 
@@ -12185,6 +12597,28 @@ Returns [`TerraformState`](#terraformstate).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectterraformstatename"></a>`name` | [`String!`](#string) | Name of the Terraform state. |
+
+##### `Project.timelogs`
+
+Time logged on issues and merge requests in the project.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projecttimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="projecttimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="projecttimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="projecttimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="projecttimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="projecttimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="projecttimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `Project.vulnerabilities`
 
@@ -12212,7 +12646,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.vulnerabilitiesCountByDay`
 
-Number of vulnerabilities per day for the project.
+The historical number of vulnerabilities per day for the project.
 
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
@@ -12511,7 +12945,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="repositoryblobspaths"></a>`paths` | [`[String!]!`](#string) | Array of desired blob paths. |
-| <a id="repositoryblobsref"></a>`ref` | [`String`](#string) | The commit ref to get the blobs from. Default value is HEAD. |
+| <a id="repositoryblobsref"></a>`ref` | [`String`](#string) | Commit ref to get the blobs from. Default value is HEAD. |
 
 ##### `Repository.branchNames`
 
@@ -12526,6 +12960,24 @@ Returns [`[String!]`](#string).
 | <a id="repositorybranchnameslimit"></a>`limit` | [`Int!`](#int) | The number of branch names to return. |
 | <a id="repositorybranchnamesoffset"></a>`offset` | [`Int!`](#int) | The number of branch names to skip. |
 | <a id="repositorybranchnamessearchpattern"></a>`searchPattern` | [`String!`](#string) | The pattern to search for branch names by. |
+
+##### `Repository.paginatedTree`
+
+Paginated tree of the repository. Available only when feature flag `paginated_tree_graphql_query` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Returns [`TreeConnection`](#treeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorypaginatedtreepath"></a>`path` | [`String`](#string) | The path to get the tree for. Default value is the root of the repository. |
+| <a id="repositorypaginatedtreerecursive"></a>`recursive` | [`Boolean`](#boolean) | Used to get a recursive tree. Default is false. |
+| <a id="repositorypaginatedtreeref"></a>`ref` | [`String`](#string) | The commit ref to get the tree for. Default value is HEAD. |
 
 ##### `Repository.tree`
 
@@ -13322,6 +13774,7 @@ Represents a historically accurate report about the timebox.
 | <a id="timelogmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request that logged time was added to. |
 | <a id="timelognote"></a>`note` | [`Note`](#note) | The note where the quick action to add the logged time was executed. |
 | <a id="timelogspentat"></a>`spentAt` | [`Time`](#time) | Timestamp of when the time tracked was spent at. |
+| <a id="timelogsummary"></a>`summary` | [`String`](#string) | The summary of how the time was spent. |
 | <a id="timelogtimespent"></a>`timeSpent` | [`Int!`](#int) | The time spent displayed in seconds. |
 | <a id="timeloguser"></a>`user` | [`UserCore!`](#usercore) | The user that logged the time. |
 
@@ -13409,6 +13862,7 @@ Core represention of a GitLab user.
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="usercorelocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="usercorename"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="usercorenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="usercorepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -13523,7 +13977,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercoresnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="usercoresnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="usercoresnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="usercoresnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `UserCore.starredProjects`
 
@@ -13540,6 +13994,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercorestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `UserCore.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercoretimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="usercoretimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="usercoretimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="usercoretimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="usercoretimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="usercoretimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="usercoretimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `UserCore.todos`
 
@@ -13633,6 +14109,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitydismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to dismissed. |
 | <a id="vulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | The user that dismissed the vulnerability. |
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
+| <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. Available only when feature flag `vulnerability_flags` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="vulnerabilityhassolutions"></a>`hasSolutions` | [`Boolean`](#boolean) | Indicates whether there is a solution available for this vulnerability. |
 | <a id="vulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="vulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
@@ -14162,8 +14639,8 @@ Alert status values.
 | Value | Description |
 | ----- | ----------- |
 | <a id="alertmanagementstatusacknowledged"></a>`ACKNOWLEDGED` | Someone is actively investigating the problem. |
-| <a id="alertmanagementstatusignored"></a>`IGNORED` | No action will be taken on the alert. |
-| <a id="alertmanagementstatusresolved"></a>`RESOLVED` | No further work is required. |
+| <a id="alertmanagementstatusignored"></a>`IGNORED` | No action will be taken. |
+| <a id="alertmanagementstatusresolved"></a>`RESOLVED` | The problem has been addressed. |
 | <a id="alertmanagementstatustriggered"></a>`TRIGGERED` | Investigation has not started. |
 
 ### `ApiFuzzingScanMode`
@@ -14403,6 +14880,7 @@ Status of a container repository.
 | Value | Description |
 | ----- | ----------- |
 | <a id="dastsitevalidationstrategyenumheader"></a>`HEADER` | Header validation. |
+| <a id="dastsitevalidationstrategyenummeta_tag"></a>`META_TAG` | Meta tag validation. |
 | <a id="dastsitevalidationstrategyenumtext_file"></a>`TEXT_FILE` | Text file validation. |
 
 ### `DastTargetTypeEnum`
@@ -14811,6 +15289,8 @@ Values for sorting merge requests.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="mergerequestsortclosed_at_asc"></a>`CLOSED_AT_ASC` | Closed time by ascending order. |
+| <a id="mergerequestsortclosed_at_desc"></a>`CLOSED_AT_DESC` | Closed time by descending order. |
 | <a id="mergerequestsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="mergerequestsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="mergerequestsortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |
@@ -14888,6 +15368,17 @@ Current state of milestone.
 | <a id="milestonestateenumactive"></a>`active` | Milestone is currently active. |
 | <a id="milestonestateenumclosed"></a>`closed` | Milestone is closed. |
 
+### `MilestoneWildcardId`
+
+Milestone ID wildcard values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="milestonewildcardidany"></a>`ANY` | A milestone is assigned. |
+| <a id="milestonewildcardidnone"></a>`NONE` | No milestone is assigned. |
+| <a id="milestonewildcardidstarted"></a>`STARTED` | An open, started milestone (start date <= today). |
+| <a id="milestonewildcardidupcoming"></a>`UPCOMING` | An open milestone due in the future (due date >= today). |
+
 ### `MoveType`
 
 The position to which the adjacent object should be moved.
@@ -14924,6 +15415,15 @@ Negated Iteration ID wildcard values.
 | ----- | ----------- |
 | <a id="negatediterationwildcardidcurrent"></a>`CURRENT` | Current iteration. |
 
+### `NegatedMilestoneWildcardId`
+
+Negated Milestone ID wildcard values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="negatedmilestonewildcardidstarted"></a>`STARTED` | An open, started milestone (start date <= today). |
+| <a id="negatedmilestonewildcardidupcoming"></a>`UPCOMING` | An open milestone due in the future (due date >= today). |
+
 ### `NetworkPolicyKind`
 
 Kind of the network policy.
@@ -14942,6 +15442,15 @@ Rotation length unit of an on-call rotation.
 | <a id="oncallrotationunitenumdays"></a>`DAYS` | Days. |
 | <a id="oncallrotationunitenumhours"></a>`HOURS` | Hours. |
 | <a id="oncallrotationunitenumweeks"></a>`WEEKS` | Weeks. |
+
+### `PackageDependencyType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="packagedependencytypebundle_dependencies"></a>`BUNDLE_DEPENDENCIES` | bundleDependencies dependency type. |
+| <a id="packagedependencytypedependencies"></a>`DEPENDENCIES` | dependencies dependency type. |
+| <a id="packagedependencytypedev_dependencies"></a>`DEV_DEPENDENCIES` | devDependencies dependency type. |
+| <a id="packagedependencytypepeer_dependencies"></a>`PEER_DEPENDENCIES` | peerDependencies dependency type. |
 
 ### `PackageGroupSort`
 
@@ -15183,6 +15692,14 @@ State of a Sentry error.
 | <a id="servicetypewebex_teams_service"></a>`WEBEX_TEAMS_SERVICE` | WebexTeamsService type. |
 | <a id="servicetypeyoutrack_service"></a>`YOUTRACK_SERVICE` | YoutrackService type. |
 
+### `SharedRunnersSetting`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="sharedrunnerssettingdisabled_and_unoverridable"></a>`DISABLED_AND_UNOVERRIDABLE` | Sharing of runners is disabled and unoverridable. |
+| <a id="sharedrunnerssettingdisabled_with_override"></a>`DISABLED_WITH_OVERRIDE` | Sharing of runners is disabled with override. |
+| <a id="sharedrunnerssettingenabled"></a>`ENABLED` | Sharing of runners is enabled. |
+
 ### `SnippetBlobActionEnum`
 
 Type of a snippet blob input action.
@@ -15290,13 +15807,14 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_hover_tip"></a>`PIPELINE_NEEDS_HOVER_TIP` | Callout feature name for pipeline_needs_hover_tip. |
+| <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumregistration_enabled_callout"></a>`REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
-| <a id="usercalloutfeaturenameenumservice_templates_deprecated_callout"></a>`SERVICE_TEMPLATES_DEPRECATED_CALLOUT` | Callout feature name for service_templates_deprecated_callout. |
 | <a id="usercalloutfeaturenameenumsuggest_pipeline"></a>`SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |
 | <a id="usercalloutfeaturenameenumsuggest_popover_dismissed"></a>`SUGGEST_POPOVER_DISMISSED` | Callout feature name for suggest_popover_dismissed. |
 | <a id="usercalloutfeaturenameenumtabs_position_highlight"></a>`TABS_POSITION_HIGHLIGHT` | Callout feature name for tabs_position_highlight. |
+| <a id="usercalloutfeaturenameenumterraform_notification_dismissed"></a>`TERRAFORM_NOTIFICATION_DISMISSED` | Callout feature name for terraform_notification_dismissed. |
 | <a id="usercalloutfeaturenameenumthreat_monitoring_info"></a>`THREAT_MONITORING_INFO` | Callout feature name for threat_monitoring_info. |
 | <a id="usercalloutfeaturenameenumtrial_status_reminder_d14"></a>`TRIAL_STATUS_REMINDER_D14` | Callout feature name for trial_status_reminder_d14. |
 | <a id="usercalloutfeaturenameenumtrial_status_reminder_d3"></a>`TRIAL_STATUS_REMINDER_D3` | Callout feature name for trial_status_reminder_d3. |
@@ -15422,8 +15940,8 @@ Vulnerability sort values.
 | <a id="vulnerabilitysortseverity_desc"></a>`severity_desc` | Severity in descending order. |
 | <a id="vulnerabilitysortstate_asc"></a>`state_asc` | State in ascending order. |
 | <a id="vulnerabilitysortstate_desc"></a>`state_desc` | State in descending order. |
-| <a id="vulnerabilitysorttitle_asc"></a>`title_asc` | Title in ascending order. |
-| <a id="vulnerabilitysorttitle_desc"></a>`title_desc` | Title in descending order. |
+| <a id="vulnerabilitysorttitle_asc"></a>`title_asc` **{warning-solid}** | **Deprecated** in 14.2. Deprecated due to performance issues. |
+| <a id="vulnerabilitysorttitle_desc"></a>`title_desc` **{warning-solid}** | **Deprecated** in 14.2. Deprecated due to performance issues. |
 
 ### `VulnerabilityState`
 
@@ -15809,11 +16327,29 @@ A `PackagesConanMetadatumID` is a global ID. It is encoded as a string.
 
 An example `PackagesConanMetadatumID` is: `"gid://gitlab/Packages::Conan::Metadatum/1"`.
 
+### `PackagesDependencyID`
+
+A `PackagesDependencyID` is a global ID. It is encoded as a string.
+
+An example `PackagesDependencyID` is: `"gid://gitlab/Packages::Dependency/1"`.
+
+### `PackagesDependencyLinkID`
+
+A `PackagesDependencyLinkID` is a global ID. It is encoded as a string.
+
+An example `PackagesDependencyLinkID` is: `"gid://gitlab/Packages::DependencyLink/1"`.
+
 ### `PackagesMavenMetadatumID`
 
 A `PackagesMavenMetadatumID` is a global ID. It is encoded as a string.
 
 An example `PackagesMavenMetadatumID` is: `"gid://gitlab/Packages::Maven::Metadatum/1"`.
+
+### `PackagesNugetDependencyLinkMetadatumID`
+
+A `PackagesNugetDependencyLinkMetadatumID` is a global ID. It is encoded as a string.
+
+An example `PackagesNugetDependencyLinkMetadatumID` is: `"gid://gitlab/Packages::Nuget::DependencyLinkMetadatum/1"`.
 
 ### `PackagesNugetMetadatumID`
 
@@ -15943,6 +16479,14 @@ See the [GraphQL documentation](https://graphql.org/learn/) for more information
 abstract types.
 
 ### Unions
+
+#### `DependencyLinkMetadata`
+
+Represents metadata associated with a dependency link.
+
+One of:
+
+- [`NugetDependencyLinkMetadata`](#nugetdependencylinkmetadata)
 
 #### `Issuable`
 
@@ -16234,6 +16778,7 @@ Implementations:
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="userlocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="username"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="usernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="userpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -16348,7 +16893,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usersnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="usersnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="usersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="usersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ###### `User.starredProjects`
 
@@ -16365,6 +16910,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+###### `User.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usertimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="usertimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="usertimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="usertimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="usertimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="usertimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="usertimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ###### `User.todos`
 
@@ -16429,6 +16996,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputnot"></a>`not` | [`NegatedBoardIssueInput`](#negatedboardissueinput) | List of negated arguments. |
 | <a id="boardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
 | <a id="boardissueinputsearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
+| <a id="boardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="boardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
 | <a id="boardissueinputweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -16543,8 +17111,9 @@ Represents an escalation rule.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="escalationruleinputelapsedtimeseconds"></a>`elapsedTimeSeconds` | [`Int!`](#int) | The time in seconds before the rule is activated. |
-| <a id="escalationruleinputoncallscheduleiid"></a>`oncallScheduleIid` | [`ID!`](#id) | The on-call schedule to notify. |
+| <a id="escalationruleinputoncallscheduleiid"></a>`oncallScheduleIid` | [`ID`](#id) | The on-call schedule to notify. |
 | <a id="escalationruleinputstatus"></a>`status` | [`EscalationRuleStatus!`](#escalationrulestatus) | The status required to prevent the rule from activating. |
+| <a id="escalationruleinputusername"></a>`username` | [`String`](#string) | The username of the user to notify. |
 
 ### `JiraUsersMappingInputType`
 
@@ -16581,6 +17150,7 @@ Represents an escalation rule.
 | <a id="negatedboardissueinputmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter by milestone title. |
 | <a id="negatedboardissueinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="negatedboardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
+| <a id="negatedboardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="negatedboardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
 
 ### `NegatedEpicBoardIssueInput`
@@ -16617,6 +17187,7 @@ Represents an escalation rule.
 | <a id="negatedissuefilterinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by negated iteration ID wildcard. |
 | <a id="negatedissuefilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Labels not applied to this issue. |
 | <a id="negatedissuefilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone not applied to this issue. |
+| <a id="negatedissuefilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`NegatedMilestoneWildcardId`](#negatedmilestonewildcardid) | Filter by negated milestone wildcard values. |
 | <a id="negatedissuefilterinputweight"></a>`weight` | [`String`](#string) | Weight not applied to the issue. |
 
 ### `OncallRotationActivePeriodInputType`

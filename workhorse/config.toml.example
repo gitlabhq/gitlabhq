@@ -1,5 +1,7 @@
 # alt_document_root = '/home/git/public/assets'
 # shutdown_timeout = "60s"
+# trusted_cidrs_for_x_forwarded_for = []
+# trusted_cidrs_for_propagation = []
 
 [redis]
 URL = "unix:/home/git/gitlab/redis/redis.socket"

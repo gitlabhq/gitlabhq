@@ -131,7 +131,7 @@ Parameters:
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
-| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
+| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only subgroup short paths are searched (not full paths) |
 | `order_by`               | string            | no       | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics`             | boolean           | no       | Include group statistics (administrators only) |
@@ -189,7 +189,7 @@ Parameters:
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence |
-| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
+| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only descendant group short paths are searched (not full paths) |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics`             | boolean           | no       | Include group statistics (administrators only) |
@@ -288,11 +288,8 @@ Parameters:
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
 1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
-URL parameter. This is an [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) feature [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221043) in GitLab 13.3.
-
-   The feature is behind a feature flag, you can [enable it](../administration/feature_flags.md#enable-or-disable-the-feature)
-with the `similarity_search` flag. When using `order_by=similarity` the `sort` parameter is
-ignored. When the `search` parameter is not provided, the API returns the projects ordered by `name`.
+URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search`
+parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 

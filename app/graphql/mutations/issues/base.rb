@@ -5,18 +5,18 @@ module Mutations
     class Base < BaseMutation
       include Mutations::ResolvesIssuable
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
-               description: "The project the issue to mutate is in."
+               description: "Project the issue to mutate is in."
 
-      argument :iid, GraphQL::STRING_TYPE,
+      argument :iid, GraphQL::Types::String,
                required: true,
-               description: "The IID of the issue to mutate."
+               description: "IID of the issue to mutate."
 
       field :issue,
             Types::IssueType,
             null: true,
-            description: "The issue after mutation."
+            description: "Issue after mutation."
 
       authorize :update_issue
 

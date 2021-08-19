@@ -232,3 +232,8 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+- name: i_code_review_user_searches_diff
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: diff_searching_usage_data

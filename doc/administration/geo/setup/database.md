@@ -69,11 +69,14 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    sudo -i
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your node:
+1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site:
 
    ```ruby
-   # The unique identifier for the Geo node.
-   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   ##
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
+   ##
+   gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
 1. Reconfigure the **primary** node for the change to take effect:
@@ -207,7 +210,12 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```ruby
    ##
    ## Geo Primary role
-   ## - configure dependent flags automatically to enable Geo
+   ## - Configures Postgres settings for replication
+   ## - Prevents automatic upgrade of Postgres since it requires downtime of
+   ##   streaming replication to Geo secondary sites
+   ## - Enables standard single-node GitLab services like NGINX, Puma, Redis,
+   ##   Sidekiq, etc. If you are segregating services, then you will need to
+   ##   explicitly disable unwanted services.
    ##
    roles(['geo_primary_role'])
 
@@ -571,6 +579,13 @@ Leader instance**:
    patroni['password'] = 'PATRONI_API_PASSWORD'
    patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
 
+   # Add all patroni nodes to the allowlist
+   patroni['allowlist'] = %w[
+     127.0.0.1/32
+     PATRONI_PRIMARY1_IP/32 PATRONI_PRIMARY2_IP/32 PATRONI_PRIMARY3_IP/32
+     PATRONI_SECONDARY1_IP/32 PATRONI_SECONDARY2_IP/32 PATRONI_SECONDARY3_IP/32
+   ]
+
    # We list all secondary instances as they can all become a Standby Leader
    postgresql['md5_auth_cidr_addresses'] = %w[
      PATRONI_PRIMARY1_IP/32 PATRONI_PRIMARY2_IP/32 PATRONI_PRIMARY3_IP/32 PATRONI_PRIMARY_PGBOUNCER/32
@@ -723,6 +738,13 @@ For each Patroni instance on the secondary site:
    postgresql['md5_auth_cidr_addresses'] = [
      'PATRONI_SECONDARY1_IP/32', 'PATRONI_SECONDARY2_IP/32', 'PATRONI_SECONDARY3_IP/32', 'PATRONI_SECONDARY_PGBOUNCER/32',
      # Any other instance that needs access to the database as per documentation
+   ]
+
+
+   # Add patroni nodes to the allowlist
+   patroni['allowlist'] = %w[
+     127.0.0.1/32
+     PATRONI_SECONDARY1_IP/32 PATRONI_SECONDARY2_IP/32 PATRONI_SECONDARY3_IP/32
    ]
 
    patroni['standby_cluster']['enable'] = true
@@ -901,6 +923,12 @@ For each Patroni instance on the secondary site for the tracking database:
    postgresql['md5_auth_cidr_addresses'] = [
       'PATRONI_TRACKINGDB1_IP/32', 'PATRONI_TRACKINGDB2_IP/32', 'PATRONI_TRACKINGDB3_IP/32', 'PATRONI_TRACKINGDB_PGBOUNCER/32',
       # Any other instance that needs access to the database as per documentation
+   ]
+
+   # Add patroni nodes to the allowlist
+   patroni['allowlist'] = %w[
+     127.0.0.1/32
+     PATRONI_TRACKINGDB1_IP/32 PATRONI_TRACKINGDB2_IP/32 PATRONI_TRACKINGDB3_IP/32
    ]
 
    # Patroni configuration

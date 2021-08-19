@@ -323,7 +323,7 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/mer
 
 ### LFS commands fail on TLS v1.3 server
 
-If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx.md)
+If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx.html)
 and only enable TLS v1.3 connections, LFS operations require a
 [Git LFS client](https://git-lfs.github.com) version 2.11.0 or later. If you use
 a Git LFS client earlier than version 2.11.0, GitLab displays an error:
@@ -334,7 +334,7 @@ error: failed to fetch some objects from 'https://username:[MASKED]@gitlab.examp
 ```
 
 When using GitLab CI over a TLS v1.3 configured GitLab server, you must
-[upgrade to GitLab Runner](https://docs.gitlab.com/runner/install/index.md) 13.2.0
+[upgrade to GitLab Runner](https://docs.gitlab.com/runner/install/index.html) 13.2.0
 or later to receive an updated Git LFS client version via
 the included [GitLab Runner Helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#helper-image).
 

@@ -19,14 +19,28 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
     }
   end
 
-  describe '.default_settings_hash' do
-    let(:settings) { described_class.default_settings_hash }
+  describe '.default_enabled' do
+    let(:enabled) { described_class.default_enabled }
 
-    it 'returns defaults for all keys' do
-      expect(settings['enabled']).to be_truthy
-      expect(settings['report_only']).to be_falsey
+    it 'is enabled' do
+      expect(enabled).to be_truthy
+    end
 
-      directives = settings['directives']
+    context 'when in production' do
+      before do
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+      end
+
+      it 'is disabled' do
+        expect(enabled).to be_falsey
+      end
+    end
+  end
+
+  describe '.default_directives' do
+    let(:directives) { described_class.default_directives }
+
+    it 'returns default directives' do
       directive_names = (described_class::DIRECTIVES - ['report_uri'])
       directive_names.each do |directive|
         expect(directives.has_key?(directive)).to be_truthy
@@ -38,27 +52,25 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       expect(directives['child_src']).to eq(directives['frame_src'])
     end
 
-    context 'when in production' do
+    context 'when CDN host is defined' do
       before do
-        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+        stub_config_setting(cdn_host: 'https://example.com')
       end
 
-      it 'is disabled' do
-        expect(settings['enabled']).to be_falsey
-      end
-    end
-
-    context 'when GITLAB_CDN_HOST is set' do
-      before do
-        stub_env('GITLAB_CDN_HOST', 'https://example.com')
-      end
-
-      it 'adds GITLAB_CDN_HOST to CSP' do
-        directives = settings['directives']
-
+      it 'adds CDN host to CSP' do
         expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://example.com")
         expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://example.com")
         expect(directives['font_src']).to eq("'self' https://example.com")
+      end
+    end
+
+    context 'when sentry is configured' do
+      before do
+        stub_sentry_settings
+      end
+
+      it 'adds sentry path to CSP without user' do
+        expect(directives['connect_src']).to eq("'self' dummy://example.com/43")
       end
     end
 
@@ -73,8 +85,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'does not add CUSTOMER_PORTAL_URL to CSP' do
-          directives = settings['directives']
-
           expect(directives['frame_src']).to eq("'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com")
         end
       end
@@ -85,8 +95,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'adds CUSTOMER_PORTAL_URL to CSP' do
-          directives = settings['directives']
-
           expect(directives['frame_src']).to eq("'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com https://customers.example.com")
         end
       end

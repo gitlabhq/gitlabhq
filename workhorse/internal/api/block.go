@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 // Prevent internal API responses intended for gitlab-workhorse from

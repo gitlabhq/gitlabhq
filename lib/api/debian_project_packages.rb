@@ -2,17 +2,23 @@
 
 module API
   class DebianProjectPackages < ::API::Base
-    params do
-      requires :id, type: String, desc: 'The ID of a project'
-    end
+    PACKAGE_FILE_REQUIREMENTS = {
+      id: API::NO_SLASH_URL_PART_REGEX,
+      distribution: ::Packages::Debian::DISTRIBUTION_REGEX,
+      letter: ::Packages::Debian::LETTER_REGEX,
+      package_name: API::NO_SLASH_URL_PART_REGEX,
+      package_version: API::NO_SLASH_URL_PART_REGEX,
+      file_name: API::NO_SLASH_URL_PART_REGEX
+    }.freeze
+    FILE_NAME_REQUIREMENTS = {
+      file_name: API::NO_SLASH_URL_PART_REGEX
+    }.freeze
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      rescue_from ArgumentError do |e|
-        render_api_error!(e.message, 400)
-      end
-
-      rescue_from ActiveRecord::RecordInvalid do |e|
-        render_api_error!(e.message, 400)
+      helpers do
+        def project_or_group
+          user_project
+        end
       end
 
       after_validation do
@@ -23,20 +29,32 @@ module API
         authorize_read_package!
       end
 
-      namespace ':id' do
-        helpers do
-          def project_or_group
-            user_project
-          end
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
+      end
+
+      namespace ':id/packages/debian' do
+        include ::API::Concerns::Packages::DebianPackageEndpoints
+
+        # GET projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:package_version/:file_name
+        params do
+          use :shared_package_file_params
         end
 
-        include ::API::Concerns::Packages::DebianPackageEndpoints
+        desc 'The package' do
+          detail 'This feature was introduced in GitLab 14.2'
+        end
+
+        route_setting :authentication, authenticate_non_public: true
+        get 'pool/:distribution/:letter/:package_name/:package_version/:file_name', requirements: PACKAGE_FILE_REQUIREMENTS do
+          present_package_file!
+        end
 
         params do
           requires :file_name, type: String, desc: 'The file name'
         end
 
-        namespace 'packages/debian/:file_name', requirements: FILE_NAME_REQUIREMENTS do
+        namespace ':file_name', requirements: FILE_NAME_REQUIREMENTS do
           format :txt
           content_type :json, Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 

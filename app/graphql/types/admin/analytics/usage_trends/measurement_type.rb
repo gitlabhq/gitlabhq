@@ -14,7 +14,7 @@ module Types
           field :recorded_at, Types::TimeType, null: true,
                 description: 'The time the measurement was recorded.'
 
-          field :count, GraphQL::INT_TYPE, null: false,
+          field :count, GraphQL::Types::Int, null: false,
                 description: 'Object count.'
 
           field :identifier, Types::Admin::Analytics::UsageTrends::MeasurementIdentifierEnum, null: false,

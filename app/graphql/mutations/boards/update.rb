@@ -10,12 +10,12 @@ module Mutations
       argument :id,
                ::Types::GlobalIDType[::Board],
                required: true,
-               description: 'The board global ID.'
+               description: 'Board global ID.'
 
       field :board,
             Types::BoardType,
             null: true,
-            description: 'The board after mutation.'
+            description: 'Board after mutation.'
 
       authorize :admin_issue_board
 

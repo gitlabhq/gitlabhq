@@ -110,7 +110,7 @@ RSpec.describe Projects::SnippetsController do
            }
     end
 
-    it 'updates the snippet' do
+    it 'updates the snippet', :enable_admin_mode do
       mark_as_spam
 
       expect(snippet.reload).not_to be_submittable_as_spam
@@ -170,6 +170,24 @@ RSpec.describe Projects::SnippetsController do
         end
 
         context 'when signed in' do
+          before do
+            sign_in(user)
+          end
+
+          it 'responds with status 404' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'when the project snippet is public' do
+        let_it_be(:project_snippet_public) { create(:project_snippet, :public, :repository, project: project, author: user) }
+
+        context 'when attempting to access from a different project route' do
+          subject { get action, params: { namespace_id: project.namespace, project_id: 42, id: project_snippet_public.to_param } }
+
           before do
             sign_in(user)
           end

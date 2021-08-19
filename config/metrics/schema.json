@@ -59,7 +59,7 @@
     },
     "data_category": {
       "type": "string",
-      "enum": ["Operational", "Optional", "Subscription", "Standard"]
+      "enum": ["Operational", "Optional", "Subscription", "Standard", "operational", "optional", "subscription", "standard"]
     },
     "instrumentation_class": {
       "type": "string",
@@ -70,6 +70,13 @@
       "items": {
         "type": "string",
         "enum": ["ee", "ce"]
+      }
+    },
+    "performance_indicator_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["gmau", "smau", "paid_gmau", "umau"]
       }
     },
     "tier": {

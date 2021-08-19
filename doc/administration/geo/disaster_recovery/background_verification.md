@@ -161,7 +161,7 @@ If the **primary** and **secondary** nodes have a checksum verification mismatch
       ![Project administration page](img/checksum-differences-admin-project-page.png)
 
 1. Go to the project's repository directory on both **primary** and **secondary** nodes
-   (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs`
+   (the path is usually `/var/opt/gitlab/git-data/repositories`). If `git_data_dirs`
    is customized, check the directory layout on your server to be sure:
 
    ```shell
@@ -198,7 +198,7 @@ nodes, and comparing the output between them.
 
 In GitLab EE 12.1, Geo calculates checksums for attachments, LFS objects, and
 archived traces on secondary nodes after the transfer, compares it with the
-stored checksums, and rejects transfers if mismatched. Please note that Geo
+stored checksums, and rejects transfers if mismatched. Geo
 currently does not support an automatic way to verify these data if they have
 been synced before GitLab EE 12.1.
 

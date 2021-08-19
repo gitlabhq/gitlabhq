@@ -10,6 +10,10 @@ module Repositories
     skip_before_action :lfs_check_access!, only: [:deprecated]
     before_action :lfs_check_batch_operation!, only: [:batch]
 
+    # added here as a part of the refactor, will be removed
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/328692
+    delegate :deploy_token, :user, to: :authentication_result, allow_nil: true
+
     def batch
       unless objects.present?
         render_lfs_not_found
@@ -141,7 +145,7 @@ module Repositories
     end
 
     def lfs_auth_header
-      return unless user.is_a?(User)
+      return unless user
 
       Gitlab::LfsToken.new(user).basic_encoding
     end

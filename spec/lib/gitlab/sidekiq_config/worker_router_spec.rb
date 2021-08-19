@@ -114,6 +114,13 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
         ['resource_boundary=cpu', 'queue_b'],
         ['tags=expensive', 'queue_c']
       ] | 'queue_foo'
+      # Match by generated queue name
+      [
+        ['name=foo_bar', 'queue_foo'],
+        ['feature_category=feature_a|urgency=low', 'queue_a'],
+        ['resource_boundary=cpu', 'queue_b'],
+        ['tags=expensive', 'queue_c']
+      ] | 'queue_foo'
     end
   end
 

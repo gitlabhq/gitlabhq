@@ -48,6 +48,7 @@ class Issue < ApplicationRecord
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
   belongs_to :iteration, foreign_key: 'sprint_id'
+  belongs_to :work_item_type, class_name: 'WorkItem::Type', inverse_of: :work_items
 
   belongs_to :moved_to, class_name: 'Issue'
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
@@ -76,6 +77,7 @@ class Issue < ApplicationRecord
   has_one :issuable_severity
   has_one :sentry_issue
   has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
+  has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_many :prometheus_alerts, through: :prometheus_alert_events
@@ -86,12 +88,7 @@ class Issue < ApplicationRecord
   validates :project, presence: true
   validates :issue_type, presence: true
 
-  enum issue_type: {
-    issue: 0,
-    incident: 1,
-    test_case: 2, ## EE-only
-    requirement: 3 ## EE-only
-  }
+  enum issue_type: WorkItem::Type.base_types
 
   alias_method :issuing_parent, :project
 
@@ -133,6 +130,15 @@ class Issue < ApplicationRecord
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
+
+  scope :without_hidden, -> {
+    if Feature.enabled?(:ban_user_feature_flag)
+      where(id: joins('LEFT JOIN banned_users ON banned_users.user_id = issues.author_id WHERE banned_users.user_id IS NULL')
+      .select('issues.id'))
+    else
+      all
+    end
+  }
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
@@ -317,6 +323,21 @@ class Issue < ApplicationRecord
     )
   end
 
+  def self.to_branch_name(*args)
+    branch_name = args.map(&:to_s).each_with_index.map do |arg, i|
+      arg.parameterize(preserve_case: i == 0).presence
+    end.compact.join('-')
+
+    if branch_name.length > 100
+      truncated_string = branch_name[0, 100]
+      # Delete everything dangling after the last hyphen so as not to risk
+      # existence of unintended words in the branch name due to mid-word split.
+      branch_name = truncated_string.sub(/-[^-]*\Z/, '')
+    end
+
+    branch_name
+  end
+
   # Temporary disable moving null elements because of performance problems
   # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
   def check_repositioning_allowed!
@@ -384,16 +405,7 @@ class Issue < ApplicationRecord
     if self.confidential?
       "#{iid}-confidential-issue"
     else
-      branch_name = "#{iid}-#{title.parameterize}"
-
-      if branch_name.length > 100
-        truncated_string = branch_name[0, 100]
-        # Delete everything dangling after the last hyphen so as not to risk
-        # existence of unintended words in the branch name due to mid-word split.
-        branch_name = truncated_string[0, truncated_string.rindex("-")]
-      end
-
-      branch_name
+      self.class.to_branch_name(iid, title)
     end
   end
 
@@ -437,10 +449,10 @@ class Issue < ApplicationRecord
         user, project.external_authorization_classification_label)
   end
 
-  def check_for_spam?
+  def check_for_spam?(user:)
     # content created via support bots is always checked for spam, EVEN if
     # the issue is not publicly visible and/or confidential
-    return true if author.support_bot? && spammable_attribute_changed?
+    return true if user.support_bot? && spammable_attribute_changed?
 
     # Only check for spam on issues which are publicly visible (and thus indexed in search engines)
     return false unless publicly_visible?
@@ -549,11 +561,17 @@ class Issue < ApplicationRecord
       true
     elsif confidential? && !assignee_or_author?(user)
       project.team.member?(user, Gitlab::Access::REPORTER)
+    elsif hidden?
+      false
     else
       project.public? ||
         project.internal? && !user.external? ||
         project.team.member?(user)
     end
+  end
+
+  def hidden?
+    author&.banned?
   end
 
   private
@@ -583,7 +601,7 @@ class Issue < ApplicationRecord
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && !confidential? && !::Gitlab::ExternalAuthorization.enabled?
+    project.public? && !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
   end
 
   def expire_etag_cache

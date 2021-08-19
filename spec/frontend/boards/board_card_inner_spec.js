@@ -1,6 +1,7 @@
 import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
@@ -8,7 +9,7 @@ import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { mockLabelList, mockIssue } from './mock_data';
+import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
@@ -44,7 +45,7 @@ describe('Board card component', () => {
   const findEpicCountablesTotalWeight = () => wrapper.findByTestId('epic-countables-total-weight');
   const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
 
-  const createStore = ({ isEpicBoard = false } = {}) => {
+  const createStore = ({ isEpicBoard = false, isProjectBoard = false } = {}) => {
     store = new Vuex.Store({
       ...defaultStore,
       state: {
@@ -54,7 +55,7 @@ describe('Board card component', () => {
       getters: {
         isGroupBoard: () => true,
         isEpicBoard: () => isEpicBoard,
-        isProjectBoard: () => false,
+        isProjectBoard: () => isProjectBoard,
       },
     });
   };
@@ -131,6 +132,17 @@ describe('Board card component', () => {
 
   it('does not render loading icon', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+  });
+
+  it('does not render item reference path', () => {
+    createStore({ isProjectBoard: true });
+    createWrapper();
+
+    expect(wrapper.find('.board-card-number').text()).not.toContain(mockIssueFullPath);
+  });
+
+  it('renders item reference path', () => {
+    expect(wrapper.find('.board-card-number').text()).toContain(mockIssueFullPath);
   });
 
   describe('blocked', () => {
@@ -363,8 +375,6 @@ describe('Board card component', () => {
 
   describe('filterByLabel method', () => {
     beforeEach(() => {
-      delete window.location;
-
       wrapper.setProps({
         updateFilters: true,
       });
@@ -373,7 +383,7 @@ describe('Board card component', () => {
     describe('when selected label is not in the filter', () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
-        window.location = { search: '' };
+        setWindowLocation('?');
         wrapper.vm.filterByLabel(label1);
       });
 
@@ -394,7 +404,7 @@ describe('Board card component', () => {
     describe('when selected label is already in the filter', () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
-        window.location = { search: '?label_name[]=testing%20123' };
+        setWindowLocation('?label_name[]=testing%20123');
         wrapper.vm.filterByLabel(label1);
       });
 

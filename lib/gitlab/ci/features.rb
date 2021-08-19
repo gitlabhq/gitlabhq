@@ -3,7 +3,7 @@
 module Gitlab
   module Ci
     ##
-    # Ci::Features is a class that aggregates all CI/CD feature flags in one place.
+    # Deprecated: Ci::Features is a class that aggregates all CI/CD feature flags in one place.
     #
     module Features
       # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`

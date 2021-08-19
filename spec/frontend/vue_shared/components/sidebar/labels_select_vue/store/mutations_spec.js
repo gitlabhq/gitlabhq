@@ -197,4 +197,26 @@ describe('LabelsSelect Mutations', () => {
       });
     });
   });
+
+  describe(`${types.UPDATE_LABELS_SET_STATE}`, () => {
+    it('updates labels `set` state to match selected labels', () => {
+      const state = {
+        labels: [
+          { id: 1, title: 'scoped::test', set: false },
+          { id: 2, set: true, title: 'scoped::one', touched: true },
+          { id: 3, title: '' },
+          { id: 4, title: '' },
+        ],
+        selectedLabels: [{ id: 1 }, { id: 3 }],
+      };
+      mutations[types.UPDATE_LABELS_SET_STATE](state);
+
+      expect(state.labels).toEqual([
+        { id: 1, title: 'scoped::test', set: true },
+        { id: 2, set: false, title: 'scoped::one', touched: true },
+        { id: 3, title: '', set: true },
+        { id: 4, title: '', set: false },
+      ]);
+    });
+  });
 });

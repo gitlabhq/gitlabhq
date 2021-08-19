@@ -13,7 +13,7 @@
       .form-group
         %h5.prepend-top-20= _('Enable proxy')
         .js-dependency-proxy-toggle-area
-          = render "shared/buttons/project_feature_toggle", is_checked: @dependency_proxy.enabled?, label: s_("DependencyProxy|Toggle Dependency Proxy") do
+          = render "shared/buttons/project_feature_toggle", is_checked: @dependency_proxy.enabled?, label: s_("DependencyProxy|Toggle Dependency Proxy"), data: { qa_selector: 'dependency_proxy_setting_toggle' } do
             = f.hidden_field :enabled, { class: 'js-project-feature-toggle-input'}
 
       - if @dependency_proxy.enabled

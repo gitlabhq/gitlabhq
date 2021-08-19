@@ -63,20 +63,32 @@ RSpec.describe 'Cluster Health board', :js, :kubeclient, :use_clean_rails_memory
     context 'connected, prometheus returns data' do
       before do
         stub_connected
-      end
 
-      it 'renders charts' do
         visit cluster_path
 
         click_link 'Health'
 
         wait_for_requests
+      end
 
+      it 'renders charts' do
         expect(page).to have_css('.prometheus-graphs')
         expect(page).to have_css('.prometheus-graph')
         expect(page).to have_css('.prometheus-graph-title')
         expect(page).to have_css('[_echarts_instance_]')
+        expect(page).to have_css('.prometheus-graph', count: 2)
         expect(page).to have_content('Avg')
+      end
+
+      it 'focuses the single panel on toggle', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338341' do
+        click_button('More actions')
+        click_button('Expand panel')
+
+        expect(page).to have_css('.prometheus-graph', count: 1)
+
+        click_button('Collapse panel')
+
+        expect(page).to have_css('.prometheus-graph', count: 2)
       end
     end
 

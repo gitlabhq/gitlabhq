@@ -3,7 +3,8 @@
 class RemoveExpiredGroupLinksWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  sidekiq_options retry: 3
+  data_consistency :always
+
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :authentication_and_authorization

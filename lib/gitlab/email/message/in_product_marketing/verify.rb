@@ -72,7 +72,7 @@ module Gitlab
           end
 
           def quick_start_link
-            link(s_('InProductMarketing|quick start guide'), help_page_url('ci/quick_start/README'))
+            link(s_('InProductMarketing|quick start guide'), help_page_url('ci/quick_start/index'))
           end
 
           def performance_link

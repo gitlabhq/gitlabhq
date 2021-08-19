@@ -21,11 +21,9 @@ fi
 # Documentation pages need front matter for tracking purposes.
 echo '=> Checking documentation for front matter...'
 echo
-no_frontmatter=$(find doc -name "*.md" -exec head -n1 {} \; | grep -v  --count -- ---)
-if [ $no_frontmatter -ne 0 ]
+if ! scripts/lint-docs-metadata.sh
 then
   echo '✖ ERROR: These documentation pages need front matter. See https://docs.gitlab.com/ee/development/documentation/index.html#stage-and-group-metadata for how to add it.' >&2
-  find doc -name "*.md" -exec sh -c 'if (head -n 1 "{}" | grep -v -- --- >/dev/null); then echo "{}"; fi' \; 2>&1
   echo
   ((ERRORCODE++))
 fi
@@ -68,8 +66,8 @@ then
 fi
 
 # Do not use 'README.md', instead use 'index.md'
-# Number of 'README.md's as of 2021-06-21
-NUMBER_READMES=15
+# Number of 'README.md's as of 2021-08-17
+NUMBER_READMES=13
 FIND_READMES=$(find doc/ -name "README.md" | wc -l)
 echo '=> Checking for new README.md files...'
 echo

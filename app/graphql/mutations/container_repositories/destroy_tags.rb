@@ -17,7 +17,7 @@ module Mutations
                description: 'ID of the container repository.'
 
       argument :tag_names,
-               [GraphQL::STRING_TYPE],
+               [GraphQL::Types::String],
                required: true,
                description: "Container repository tag(s) to delete. Total number can't be greater than #{LIMIT}",
                prepare: ->(tag_names, _) do
@@ -27,7 +27,7 @@ module Mutations
                end
 
       field :deleted_tag_names,
-            [GraphQL::STRING_TYPE],
+            [GraphQL::Types::String],
             description: 'Deleted container repository tags.',
             null: false
 

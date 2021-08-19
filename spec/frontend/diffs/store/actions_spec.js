@@ -874,6 +874,7 @@ describe('DiffsStoreActions', () => {
 
   describe('scrollToFile', () => {
     let commit;
+    const getters = { isVirtualScrollingEnabled: false };
 
     beforeEach(() => {
       commit = jest.fn();
@@ -888,7 +889,7 @@ describe('DiffsStoreActions', () => {
         },
       };
 
-      scrollToFile({ state, commit }, 'path');
+      scrollToFile({ state, commit, getters }, 'path');
 
       expect(document.location.hash).toBe('#test');
     });
@@ -902,7 +903,7 @@ describe('DiffsStoreActions', () => {
         },
       };
 
-      scrollToFile({ state, commit }, 'path');
+      scrollToFile({ state, commit, getters }, 'path');
 
       expect(commit).toHaveBeenCalledWith(types.VIEW_DIFF_FILE, 'test');
     });
@@ -1000,7 +1001,7 @@ describe('DiffsStoreActions', () => {
     it('commits SET_RENDER_TREE_LIST', (done) => {
       testAction(
         setRenderTreeList,
-        true,
+        { renderTreeList: true },
         {},
         [{ type: types.SET_RENDER_TREE_LIST, payload: true }],
         [],
@@ -1009,7 +1010,7 @@ describe('DiffsStoreActions', () => {
     });
 
     it('sets localStorage', () => {
-      setRenderTreeList({ commit() {} }, true);
+      setRenderTreeList({ commit() {} }, { renderTreeList: true });
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_diff_tree_list', true);
     });

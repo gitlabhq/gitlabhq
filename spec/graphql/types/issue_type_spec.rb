@@ -15,7 +15,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
 
   it 'has specific fields' do
     fields = %i[id iid title description state reference author assignees updated_by participants labels milestone due_date
-                confidential discussion_locked upvotes downvotes user_notes_count user_discussions_count web_path web_url relative_position
+                confidential discussion_locked upvotes downvotes merge_requests_count user_notes_count user_discussions_count web_path web_url relative_position
                 emails_disabled subscribed time_estimate total_time_spent human_time_estimate human_total_time_spent closed_at created_at updated_at task_completion_status
                 design_collection alert_management_alert severity current_user_todos moved moved_to
                 create_note_email timelogs project_id]

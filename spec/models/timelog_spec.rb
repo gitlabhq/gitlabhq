@@ -70,8 +70,9 @@ RSpec.describe Timelog do
     let_it_be(:medium_time_ago) { 15.days.ago }
     let_it_be(:long_time_ago) { 65.days.ago }
 
-    let_it_be(:timelog) { create(:issue_timelog, spent_at: long_time_ago) }
-    let_it_be(:timelog1) { create(:issue_timelog, spent_at: medium_time_ago, issue: group_issue) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:timelog) { create(:issue_timelog, spent_at: long_time_ago, user: user) }
+    let_it_be(:timelog1) { create(:issue_timelog, spent_at: medium_time_ago, issue: group_issue, user: user) }
     let_it_be(:timelog2) { create(:issue_timelog, spent_at: short_time_ago, issue: subgroup_issue) }
     let_it_be(:timelog3) { create(:merge_request_timelog, spent_at: long_time_ago) }
     let_it_be(:timelog4) { create(:merge_request_timelog, spent_at: medium_time_ago, merge_request: group_merge_request) }
@@ -80,6 +81,25 @@ RSpec.describe Timelog do
     describe '.in_group' do
       it 'return timelogs created for group issues and merge requests' do
         expect(described_class.in_group(group)).to contain_exactly(timelog1, timelog2, timelog4, timelog5)
+      end
+    end
+
+    describe '.for_user' do
+      it 'return timelogs created by user' do
+        expect(described_class.for_user(user)).to contain_exactly(timelog, timelog1)
+      end
+    end
+
+    describe '.in_project' do
+      it 'returns timelogs created for project issues and merge requests' do
+        project = create(:project, :empty_repo)
+
+        create(:issue_timelog)
+        create(:merge_request_timelog)
+        timelog1 = create(:issue_timelog, issue: create(:issue, project: project))
+        timelog2 = create(:merge_request_timelog, merge_request: create(:merge_request, source_project: project))
+
+        expect(described_class.in_project(project.id)).to contain_exactly(timelog1, timelog2)
       end
     end
 

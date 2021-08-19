@@ -89,6 +89,8 @@ module Projects
 
         update_integrations
 
+        remove_paid_features
+
         project.old_path_with_namespace = @old_path
 
         update_repository_configuration(@new_path)
@@ -107,6 +109,10 @@ module Projects
     # Overridden in EE
     def post_update_hooks(project)
       move_pages(project)
+    end
+
+    # Overridden in EE
+    def remove_paid_features
     end
 
     def transfer_missing_group_resources(group)
@@ -129,7 +135,7 @@ module Projects
     end
 
     def update_repository_configuration(full_path)
-      project.write_repository_config(gl_full_path: full_path)
+      project.set_full_path(gl_full_path: full_path)
       project.track_project_repository
     end
 
@@ -235,7 +241,7 @@ module Projects
     end
 
     def update_integrations
-      project.integrations.inherit.delete_all
+      project.integrations.with_default_settings.delete_all
       Integration.create_from_active_default_integrations(project, :project_id)
     end
   end

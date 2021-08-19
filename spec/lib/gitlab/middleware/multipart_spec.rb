@@ -77,7 +77,8 @@ RSpec.describe Gitlab::Middleware::Multipart do
             result = subject
 
             expect(result[0]).to eq(400)
-            expect(result[2]).to include('insecure path used')
+            expect(result[2]).to be_a(Array)
+            expect(result[2].first).to include('insecure path used')
           end
         end
       end

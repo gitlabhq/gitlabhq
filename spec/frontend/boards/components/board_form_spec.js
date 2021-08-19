@@ -1,5 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -74,10 +75,6 @@ describe('BoardForm', () => {
       attachTo: document.body,
     });
   };
-
-  beforeEach(() => {
-    delete window.location;
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -244,7 +241,7 @@ describe('BoardForm', () => {
           updateBoard: { board: { id: 'gid://gitlab/Board/321', webPath: 'test-path' } },
         },
       });
-      window.location = new URL('https://test/boards/1');
+      setWindowLocation('https://test/boards/1');
       createComponent({ canAdminBoard: true, currentPage: formType.edit });
 
       findInput().trigger('keyup.enter', { metaKey: true });
@@ -270,7 +267,7 @@ describe('BoardForm', () => {
           updateBoard: { board: { id: 'gid://gitlab/Board/321', webPath: 'test-path' } },
         },
       });
-      window.location = new URL('https://test/boards/1?group_by=epic');
+      setWindowLocation('https://test/boards/1?group_by=epic');
       createComponent({ canAdminBoard: true, currentPage: formType.edit });
 
       findInput().trigger('keyup.enter', { metaKey: true });

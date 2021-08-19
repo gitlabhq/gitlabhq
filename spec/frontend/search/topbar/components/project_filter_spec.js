@@ -51,7 +51,6 @@ describe('ProjectFilter', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findSearchableDropdown = () => wrapper.find(SearchableDropdown);
@@ -89,9 +88,10 @@ describe('ProjectFilter', () => {
           findSearchableDropdown().vm.$emit('change', ANY_OPTION);
         });
 
-        it('calls setUrlParams with null, no group id, then calls visitUrl', () => {
+        it('calls setUrlParams with null, no group id, nav_source null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
             [PROJECT_DATA.queryParam]: null,
+            nav_source: null,
           });
           expect(visitUrl).toHaveBeenCalled();
         });
@@ -106,10 +106,11 @@ describe('ProjectFilter', () => {
           findSearchableDropdown().vm.$emit('change', MOCK_PROJECT);
         });
 
-        it('calls setUrlParams with project id, group id, then calls visitUrl', () => {
+        it('calls setUrlParams with project id, group id, nav_source null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
             [GROUP_DATA.queryParam]: MOCK_PROJECT.namespace.id,
             [PROJECT_DATA.queryParam]: MOCK_PROJECT.id,
+            nav_source: null,
           });
           expect(visitUrl).toHaveBeenCalled();
         });
@@ -154,6 +155,33 @@ describe('ProjectFilter', () => {
         it('sets selectedProject to the initialData', () => {
           expect(wrapper.vm.selectedProject).toBe(MOCK_PROJECT);
         });
+      });
+    });
+  });
+
+  describe.each`
+    navSource   | initialData     | callMethod
+    ${null}     | ${null}         | ${false}
+    ${null}     | ${MOCK_PROJECT} | ${false}
+    ${'navbar'} | ${null}         | ${false}
+    ${'navbar'} | ${MOCK_PROJECT} | ${true}
+  `('onCreate', ({ navSource, initialData, callMethod }) => {
+    describe(`when nav_source is ${navSource} and ${
+      initialData ? 'has' : 'does not have'
+    } an initial project`, () => {
+      beforeEach(() => {
+        createComponent({ query: { ...MOCK_QUERY, nav_source: navSource } }, { initialData });
+      });
+
+      it(`${callMethod ? 'does' : 'does not'} call setFrequentProject`, () => {
+        if (callMethod) {
+          expect(actionSpies.setFrequentProject).toHaveBeenCalledWith(
+            expect.any(Object),
+            initialData,
+          );
+        } else {
+          expect(actionSpies.setFrequentProject).not.toHaveBeenCalled();
+        }
       });
     });
   });

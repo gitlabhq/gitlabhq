@@ -10,7 +10,7 @@ RSpec.describe Ci::CreatePipelineService do
     let(:ref)      { 'refs/heads/feature' }
     let(:source)   { :push }
     let(:service)  { described_class.new(project, user, { ref: ref }) }
-    let(:pipeline) { service.execute(source) }
+    let(:pipeline) { service.execute(source).payload }
 
     before do
       stub_ci_pipeline_yaml_file <<-EOS

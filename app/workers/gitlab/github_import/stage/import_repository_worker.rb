@@ -6,6 +6,8 @@ module Gitlab
       class ImportRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
         include ApplicationWorker
 
+        data_consistency :always
+
         sidekiq_options retry: 3
         include GithubImport::Queue
         include StageMethods
@@ -26,7 +28,7 @@ module Gitlab
           info(project.id, message: "starting importer", importer: 'Importer::RepositoryImporter')
           importer = Importer::RepositoryImporter.new(project, client)
 
-          return unless importer.execute
+          importer.execute
 
           counter.increment
 
@@ -38,6 +40,10 @@ module Gitlab
             :github_importer_imported_repositories,
             'The number of imported GitHub repositories'
           )
+        end
+
+        def abort_on_failure
+          true
         end
       end
     end

@@ -78,7 +78,7 @@ export default {
 
       return sprintf(
         s__(
-          'ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provision role, first create one on  %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}',
+          'ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provisioned role, first create one on %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}',
         ),
         {
           startAwsLink:

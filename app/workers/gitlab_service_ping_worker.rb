@@ -5,10 +5,13 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
   LEASE_TIMEOUT = 86400
 
   include ApplicationWorker
+
+  data_consistency :always
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
   include Gitlab::ExclusiveLeaseHelpers
 
   feature_category :service_ping
+  worker_resource_boundary :cpu
   sidekiq_options retry: 3, dead: false
   sidekiq_retry_in { |count| (count + 1) * 8.hours.to_i }
 

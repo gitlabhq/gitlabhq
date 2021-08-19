@@ -81,7 +81,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do
         end
       end
 
-      context '-timeout flag' do
+      context 'with --timeout flag' do
         it 'when given', 'starts Sidekiq workers with given timeout' do
           expect(Gitlab::SidekiqCluster).to receive(:start)
             .with([['foo']], default_options.merge(timeout: 10))
@@ -94,6 +94,27 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do
             .with([['foo']], default_options.merge(timeout: described_class::DEFAULT_SOFT_TIMEOUT_SECONDS))
 
           cli.run(%w(foo))
+        end
+      end
+
+      context 'with --list-queues flag' do
+        it 'errors when given --list-queues and --dryrun' do
+          expect { cli.run(%w(foo --list-queues --dryrun)) }.to raise_error(described_class::CommandError)
+        end
+
+        it 'prints out a list of queues in alphabetical order' do
+          expected_queues = [
+            'epics:epics_update_epics_dates',
+            'epics_new_epic_issue',
+            'new_epic',
+            'todos_destroyer:todos_destroyer_confidential_epic'
+          ]
+
+          allow(Gitlab::SidekiqConfig::CliMethods).to receive(:query_queues).and_return(expected_queues.shuffle)
+
+          expect(cli).to receive(:puts).with([expected_queues])
+
+          cli.run(%w(--queue-selector feature_category=epics --list-queues))
         end
       end
 

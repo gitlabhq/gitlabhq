@@ -1,9 +1,9 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.grafana_integrated_projects
 description: Total Grafana integrations attached to projects
 product_section: ops
-product_stage:
+product_stage: 
 product_group: group::monitor
 product_category: metrics
 value_type: number
@@ -14,3 +14,4 @@ distribution:
 - ce
 tier:
 - free
+performance_indicator_type: []

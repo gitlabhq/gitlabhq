@@ -1,12 +1,17 @@
 <script>
-import { GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import createFlash from '~/flash';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, FILTER_TAG_IDENTIFIER } from '../../constants';
+import {
+  ANY_TRIGGER_AUTHOR,
+  RAW_TEXT_WARNING,
+  FILTER_TAG_IDENTIFIER,
+  PipelineKeyOptions,
+} from '../../constants';
 import PipelinesMixin from '../../mixins/pipelines_mixin';
 import PipelinesService from '../../services/pipelines_service';
 import { validateParams } from '../../utils';
@@ -16,8 +21,11 @@ import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
 import PipelinesTableComponent from './pipelines_table.vue';
 
 export default {
+  PipelineKeyOptions,
   components: {
     EmptyState,
+    GlDropdown,
+    GlDropdownItem,
     GlEmptyState,
     GlIcon,
     GlLoadingIcon,
@@ -114,6 +122,7 @@ export default {
       page: getParameterByName('page') || '1',
       requestData: {},
       isResetCacheButtonLoading: false,
+      selectedPipelineKeyOption: this.$options.PipelineKeyOptions[0],
     };
   },
   stateMap: {
@@ -301,6 +310,9 @@ export default {
 
       this.updateContent(this.requestData);
     },
+    changeVisibilityPipelineID(val) {
+      this.selectedPipelineKeyOption = val;
+    },
   },
 };
 </script>
@@ -330,12 +342,31 @@ export default {
       />
     </div>
 
-    <pipelines-filtered-search
-      v-if="stateToRender !== $options.stateMap.emptyState"
-      :project-id="projectId"
-      :params="validatedParams"
-      @filterPipelines="filterPipelines"
-    />
+    <div v-if="stateToRender !== $options.stateMap.emptyState" class="gl-display-flex">
+      <div class="row-content-block gl-display-flex gl-flex-grow-1">
+        <pipelines-filtered-search
+          class="gl-display-flex gl-flex-grow-1 gl-mr-4"
+          :project-id="projectId"
+          :params="validatedParams"
+          @filterPipelines="filterPipelines"
+        />
+        <gl-dropdown
+          class="gl-display-flex"
+          :text="selectedPipelineKeyOption.text"
+          data-testid="pipeline-key-dropdown"
+        >
+          <gl-dropdown-item
+            v-for="(val, index) in $options.PipelineKeyOptions"
+            :key="index"
+            :is-checked="selectedPipelineKeyOption.key === val.key"
+            is-check-item
+            @click="changeVisibilityPipelineID(val)"
+          >
+            {{ val.text }}
+          </gl-dropdown-item>
+        </gl-dropdown>
+      </div>
+    </div>
 
     <div class="content-list pipelines">
       <gl-loading-icon
@@ -374,6 +405,7 @@ export default {
           :pipeline-schedule-url="pipelineScheduleUrl"
           :update-graph-dropdown="updateGraphDropdown"
           :view-type="viewType"
+          :pipeline-key-option="selectedPipelineKeyOption"
         />
       </div>
 

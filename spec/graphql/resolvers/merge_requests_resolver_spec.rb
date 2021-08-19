@@ -303,6 +303,29 @@ RSpec.describe Resolvers::MergeRequestsResolver do
             expect { resolve_mr(project, sort: :merged_at_desc, labels: %w[a b]) }.not_to raise_error
           end
         end
+
+        context 'when sorting by closed at' do
+          before do
+            merge_request_1.metrics.update!(latest_closed_at: 10.days.ago)
+            merge_request_3.metrics.update!(latest_closed_at: 5.days.ago)
+          end
+
+          it 'sorts merge requests ascending' do
+            expect(resolve_mr(project, sort: :closed_at_asc))
+              .to match_array(mrs)
+              .and be_sorted(->(mr) { [closed_at(mr), -mr.id] })
+          end
+
+          it 'sorts merge requests descending' do
+            expect(resolve_mr(project, sort: :closed_at_desc))
+              .to match_array(mrs)
+              .and be_sorted(->(mr) { [-closed_at(mr), -mr.id] })
+          end
+
+          def closed_at(mr)
+            nils_last(mr.metrics.latest_closed_at)
+          end
+        end
       end
     end
   end

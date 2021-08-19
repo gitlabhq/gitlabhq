@@ -13,7 +13,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
   using RSpec::Parameterized::TableSyntax
 
   where(:invite_members_group_modal_enabled, :expected_invite_group_selector) do
-    true  | 'button[data-qa-selector="invite_a_group_button"]'
+    true  | 'button[data-qa-selector="invite_a_group_button"]' # rubocop:disable QA/SelectorUsage
     false | '#invite-group-tab'
   end
 
@@ -43,7 +43,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
   end
 
   describe 'Share with group lock' do
-    let(:invite_group_selector) { 'button[data-qa-selector="invite_a_group_button"]' }
+    let(:invite_group_selector) { 'button[data-qa-selector="invite_a_group_button"]' } # rubocop:disable QA/SelectorUsage
 
     shared_examples 'the project can be shared with groups' do
       it 'the "Invite a group" button exists' do

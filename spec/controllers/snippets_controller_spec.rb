@@ -231,7 +231,7 @@ RSpec.describe SnippetsController do
       post :mark_as_spam, params: { id: public_snippet.id }
     end
 
-    it 'updates the snippet' do
+    it 'updates the snippet', :enable_admin_mode do
       mark_as_spam
 
       expect(public_snippet.reload).not_to be_submittable_as_spam

@@ -62,6 +62,6 @@ RSpec.describe 'Import/Export - project import integration test', :js do
   end
 
   def click_import_project
-    find('[data-qa-panel-name="import_project"]').click
+    find('[data-qa-panel-name="import_project"]').click # rubocop:disable QA/SelectorUsage
   end
 end

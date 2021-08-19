@@ -21,7 +21,7 @@ module Ci
         "empty-state-illustration-path" => image_path('illustrations/empty-state/empty-dag-md.svg'),
         "initial-branch-name" => initial_branch,
         "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
-        "needs-help-page-path" => help_page_path('ci/yaml/README', anchor: 'needs'),
+        "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
         "new-merge-request-path" => namespace_project_new_merge_request_path,
         "pipeline_etag" => latest_commit ? graphql_etag_pipeline_sha_path(commit_sha) : '',
         "pipeline-page-path" => project_pipelines_path(project),
@@ -30,7 +30,7 @@ module Ci
         "project-namespace" => project.namespace.full_path,
         "runner-help-page-path" => help_page_path('ci/runners/index'),
         "total-branches" => project.repository.branches.length,
-        "yml-help-page-path" => help_page_path('ci/yaml/README')
+        "yml-help-page-path" => help_page_path('ci/yaml/index')
       }
     end
   end

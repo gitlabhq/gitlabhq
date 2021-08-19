@@ -12,5 +12,9 @@ FactoryBot.define do
     trait :disabled do
       enabled { false }
     end
+
+    trait :integrated do
+      integrated { true }
+    end
   end
 end

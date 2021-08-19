@@ -19,8 +19,8 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/mask"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/headers"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 var (

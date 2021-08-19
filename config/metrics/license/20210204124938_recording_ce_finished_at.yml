@@ -1,5 +1,5 @@
 ---
-data_category: Standard
+data_category: standard
 key_path: recording_ce_finished_at
 description: When the core features were computed
 product_section: growth
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

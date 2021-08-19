@@ -24,7 +24,7 @@ NOTE:
 Upgrade instructions for Omnibus GitLab installations
 [are available](https://docs.gitlab.com/omnibus/update/#gitaly-cluster).
 
-## Requirements for configuring a Gitaly Cluster
+## Requirements
 
 The minimum recommended configuration for a Gitaly Cluster requires:
 
@@ -33,13 +33,32 @@ The minimum recommended configuration for a Gitaly Cluster requires:
 - 3 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
-See the [design
-document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
+See the [design document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
 for implementation details.
 
 NOTE:
 If not set in GitLab, feature flags are read as false from the console and Praefect uses their
 default value. The default value depends on the GitLab version.
+
+### Network connectivity
+
+Gitaly Cluster [components](index.md#components) need to communicate with each other over many
+routes. Your firewall rules must allow the following for Gitaly Cluster to function properly:
+
+| From                   | To                     | Default port | TLS port |
+|:-----------------------|:-----------------------|:-------------|:---------|
+| GitLab                 | Praefect load balancer | `2305`       | `3305`   |
+| Praefect load balancer | Praefect               | `2305`       | `3305`   |
+| Praefect               | Gitaly                 | `8075`       | `9999`   |
+| Gitaly                 | GitLab (internal API)  | `80`         | `443`    |
+| Gitaly                 | Praefect load balancer | `2305`       | `3305`   |
+| Gitaly                 | Praefect               | `2305`       | `3305`   |
+| Gitaly                 | Gitaly                 | `8075`       | `9999`   |
+
+NOTE:
+Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
+load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
+the Gitaly nodes.
 
 ## Setup Instructions
 
@@ -129,7 +148,7 @@ The following options are available:
 
 - For non-Geo installations, either:
   - Use one of the documented [PostgreSQL setups](../postgresql/index.md).
-  - Use your own third-party database setup. This will require [manual setup](#manual-database-setup).
+  - Use your own third-party database setup. This requires [manual setup](#manual-database-setup).
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
@@ -176,7 +195,7 @@ instructions only work on Omnibus-provided PostgreSQL:
    ```
 
    Replace `<PRAEFECT_SQL_PASSWORD_HASH>` with the hash of the password you generated in the
-   preparation step. Note that it is prefixed with `md5` literal.
+   preparation step. It is prefixed with `md5` literal.
 
 1. The PgBouncer that is shipped with Omnibus is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
    and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`
@@ -413,7 +432,7 @@ On the **Praefect** node:
    WARNING:
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](#migrate-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
    afterwards.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
@@ -457,7 +476,7 @@ On the **Praefect** node:
    In [GitLab 13.8 and earlier](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4988),
    Gitaly nodes were configured directly under the virtual storage, and not under the `nodes` key.
 
-1. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2013) in GitLab 13.1 and later, enable [distribution of reads](#distributed-reads).
+1. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2013) in GitLab 13.1 and later, enable [distribution of reads](index.md#distributed-reads).
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
    Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
@@ -877,7 +896,7 @@ Particular attention should be shown to:
 
    WARNING:
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data your Gitaly Cluster storage](#migrate-to-gitaly-cluster)
+   you should [migrate the data your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
    first.
 
    ```ruby
@@ -1053,75 +1072,9 @@ To get started quickly:
 Congratulations! You've configured an observable fault-tolerant Praefect
 cluster.
 
-## Network connectivity requirements
+## Configure strong consistency
 
-Gitaly Cluster components need to communicate with each other over many routes.
-Your firewall rules must allow the following for Gitaly Cluster to function properly:
-
-| From                   | To                      | Default port / TLS port |
-|:-----------------------|:------------------------|:------------------------|
-| GitLab                 | Praefect load balancer  | `2305` / `3305`         |
-| Praefect load balancer | Praefect                | `2305` / `3305`         |
-| Praefect               | Gitaly                  | `8075` / `9999`         |
-| Gitaly                 | GitLab (internal API)   | `80` / `443`            |
-| Gitaly                 | Praefect load balancer  | `2305` / `3305`         |
-| Gitaly                 | Praefect                | `2305` / `3305`         |
-| Gitaly                 | Gitaly                  | `8075` / `9999`         |
-
-NOTE:
-Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
-load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
-the Gitaly nodes.
-
-## Distributed reads
-
-> - Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
-> - [Made generally available and enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
-> - [Disabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3178) in GitLab 13.5.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3334) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitaly/-/issues/3383) in GitLab 13.11.
-
-Praefect supports distribution of read operations across Gitaly nodes that are
-configured for the virtual node.
-
-All RPCs marked with `ACCESSOR` option like
-[GetBlob](https://gitlab.com/gitlab-org/gitaly/-/blob/v12.10.6/proto/blob.proto#L16)
-are redirected to an up to date and healthy Gitaly node.
-
-_Up to date_ in this context means that:
-
-- There is no replication operations scheduled for this node.
-- The last replication operation is in _completed_ state.
-
-If there is no such nodes, or any other error occurs during node selection, the primary
-node is chosen to serve the request.
-
-To track distribution of read operations, you can use the `gitaly_praefect_read_distribution`
-Prometheus counter metric. It has two labels:
-
-- `virtual_storage`.
-- `storage`.
-
-They reflect configuration defined for this instance of Praefect.
-
-## Strong consistency
-
-> - Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), disabled by default.
-> - Entered [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) in GitLab 13.2, disabled by default.
-> - In GitLab 13.3, disabled unless primary-wins voting strategy is disabled.
-> - From GitLab 13.4, enabled by default.
-> - From GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable strong consistency.
-> - From GitLab 13.6, primary-wins voting strategy and `gitaly_reference_transactions_primary_wins` feature flag were removed from the source code.
-
-Praefect guarantees eventual consistency by replicating all writes to secondary nodes
-after the write to the primary Gitaly node has happened.
-
-Praefect can instead provide strong consistency by creating a transaction and writing
-changes to all Gitaly nodes at once.
-If enabled, transactions are only available for a subset of RPCs. For more
-information, see the [strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189).
-
-To enable strong consistency:
+To enable [strong consistency](index.md#strong-consistency):
 
 - In GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable strong consistency.
 - In GitLab 13.4 and later, the strong consistency voting strategy has been improved and enabled by default.
@@ -1141,28 +1094,10 @@ Feature.enable(:gitaly_reference_transactions)
 Feature.disable(:gitaly_reference_transactions_primary_wins)
 ```
 
-To monitor strong consistency, you can use the following Prometheus metrics:
+For information on monitoring strong consistency, see the
+[relevant documentation](index.md#monitor-gitaly-cluster).
 
-- `gitaly_praefect_transactions_total`: Number of transactions created and
-  voted on.
-- `gitaly_praefect_subtransactions_per_transaction_total`: Number of times
-  nodes cast a vote for a single transaction. This can happen multiple times if
-  multiple references are getting updated in a single transaction.
-- `gitaly_praefect_voters_per_transaction_total`: Number of Gitaly nodes taking
-  part in a transaction.
-- `gitaly_praefect_transactions_delay_seconds`: Server-side delay introduced by
-  waiting for the transaction to be committed.
-- `gitaly_hook_transaction_voting_delay_seconds`: Client-side delay introduced
-  by waiting for the transaction to be committed.
-
-## Replication factor
-
-Replication factor is the number of copies Praefect maintains of a given repository. A higher
-replication factor offers better redundancy and distribution of read workload, but also results
-in a higher storage cost. By default, Praefect replicates repositories to every storage in a
-virtual storage.
-
-### Configure replication factor
+## Configure replication factor
 
 WARNING:
 Configurable replication factors require [repository-specific primary nodes](#repository-specific-primary-nodes) to be used.
@@ -1639,128 +1574,3 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 - Replace the placeholder `<virtual-storage>` with the virtual storage containing the Gitaly node storage to be checked.
 - Replace the placeholder `<up-to-date-storage>` with the Gitaly storage name containing up to date repositories.
 - Replace the placeholder `<outdated-storage>` with the Gitaly storage name containing outdated repositories.
-
-## Migrate to Gitaly Cluster
-
-Whether migrating to Gitaly Cluster because of [NFS support deprecation](index.md#nfs-deprecation-notice)
-or to move from single Gitaly nodes, the basic process involves:
-
-1. Create the required storage.
-1. Create and configure Gitaly Cluster.
-1. [Move the repositories](#move-repositories).
-
-When creating the storage, see some
-[repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
-
-### Move Repositories
-
-To migrate to Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be
-moved. There is no automatic migration but the moves can be scheduled with the GitLab API.
-
-GitLab repositories can be associated with projects, groups, and snippets. Each of these types
-have a separate API to schedule the respective repositories to move. To move all repositories
-on a GitLab instance, each of these types must be scheduled to move for each storage.
-
-Each repository is made read-only for the duration of the move. The repository is not writable
-until the move has completed.
-
-After creating and configuring Gitaly Cluster:
-
-1. Ensure all storages are accessible to the GitLab instance. In this example, these are
-   `<original_storage_name>` and `<cluster_storage_name>`.
-1. [Configure repository storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored)
-   so that the Gitaly Cluster receives all new projects. This stops new projects from being created
-   on existing Gitaly nodes while the migration is in progress.
-1. Schedule repository moves for:
-   - [Projects](#bulk-schedule-project-moves).
-   - [Snippets](#bulk-schedule-snippet-moves).
-   - [Groups](#bulk-schedule-group-moves). **(PREMIUM SELF)**
-
-#### Bulk schedule project moves
-
-1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard) using the API. For example:
-
-   ```shell
-   curl --request POST --header "Private-Token: <your_access_token>" \
-        --header "Content-Type: application/json" \
-        --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
-        "https://gitlab.example.com/api/v4/project_repository_storage_moves"
-   ```
-
-1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#retrieve-all-project-repository-storage-moves)
-   using the API. The query indicates either:
-   - The moves have completed successfully. The `state` field is `finished`.
-   - The moves are in progress. Re-query the repository move until it completes successfully.
-   - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
-
-1. After the moves are complete, [query projects](../../api/projects.md#list-all-projects)
-   using the API to confirm that all projects have moved. No projects should be returned
-   with `repository_storage` field set to the old storage.
-
-   ```shell
-   curl --header "Private-Token: <your_access_token>" --header "Content-Type: application/json" \
-   "https://gitlab.example.com/api/v4/projects?repository_storage=<original_storage_name>"
-   ```
-
-   Alternatively use [the rails console](../operations/rails_console.md) to
-   confirm that all projects have moved. Run the following in the rails console:
-
-   ```ruby
-   ProjectRepository.for_repository_storage('<original_storage_name>')
-   ```
-
-1. Repeat for each storage as required.
-
-#### Bulk schedule snippet moves
-
-1. [Schedule repository storage moves for all snippets on a storage shard](../../api/snippet_repository_storage_moves.md#schedule-repository-storage-moves-for-all-snippets-on-a-storage-shard) using the API. For example:
-
-   ```shell
-   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-        --header "Content-Type: application/json" \
-        --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
-        "https://gitlab.example.com/api/v4/snippet_repository_storage_moves"
-   ```
-
-1. [Query the most recent repository moves](../../api/snippet_repository_storage_moves.md#retrieve-all-snippet-repository-storage-moves)
-   using the API. The query indicates either:
-   - The moves have completed successfully. The `state` field is `finished`.
-   - The moves are in progress. Re-query the repository move until it completes successfully.
-   - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
-
-1. After the moves are complete, use [the rails console](../operations/rails_console.md) to
-   confirm that all snippets have moved. No snippets should be returned for the original
-   storage. Run the following in the rails console:
-
-   ```ruby
-   SnippetRepository.for_repository_storage('<original_storage_name>')
-   ```
-
-1. Repeat for each storage as required.
-
-#### Bulk schedule group moves **(PREMIUM SELF)**
-
-1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard) using the API.
-
-    ```shell
-    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-         --header "Content-Type: application/json" \
-         --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
-         "https://gitlab.example.com/api/v4/group_repository_storage_moves"
-    ```
-
-1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#retrieve-all-group-repository-storage-moves)
-   using the API. The query indicates either:
-   - The moves have completed successfully. The `state` field is `finished`.
-   - The moves are in progress. Re-query the repository move until it completes successfully.
-   - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
-
-1. After the moves are complete, use [the rails console](../operations/rails_console.md) to
-   confirm that all groups have moved. No groups should be returned for the original
-   storage. Run the following in the rails console:
-
-   ```ruby
-   GroupWikiRepository.for_repository_storage('<original_storage_name>')
-   ```
-
-1. Repeat for each storage as required.

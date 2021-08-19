@@ -3,7 +3,7 @@ import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@
 import { debounce } from 'lodash';
 import { __ } from '~/locale';
 import { getUsers } from '~/rest_api';
-import { SEARCH_DELAY } from '../constants';
+import { SEARCH_DELAY, USERS_FILTER_ALL, USERS_FILTER_SAML_PROVIDER_ID } from '../constants';
 
 export default {
   components: {
@@ -25,6 +25,16 @@ export default {
     },
     validationState: {
       type: Boolean,
+      required: false,
+      default: false,
+    },
+    usersFilter: {
+      type: String,
+      required: false,
+      default: USERS_FILTER_ALL,
+    },
+    filterId: {
+      type: Number,
       required: false,
       default: null,
     },
@@ -51,6 +61,15 @@ export default {
       }
       return '';
     },
+    queryOptions() {
+      if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID) {
+        return {
+          saml_provider_id: this.filterId,
+          ...this.$options.defaultQueryOptions,
+        };
+      }
+      return this.$options.defaultQueryOptions;
+    },
   },
   methods: {
     handleTextInput(query) {
@@ -60,7 +79,7 @@ export default {
       this.retrieveUsers(query);
     },
     retrieveUsers: debounce(function debouncedRetrieveUsers() {
-      return getUsers(this.query, this.$options.queryOptions)
+      return getUsers(this.query, this.queryOptions)
         .then((response) => {
           this.users = response.data.map((token) => ({
             id: token.id,
@@ -98,7 +117,7 @@ export default {
       this.$emit('clear');
     },
   },
-  queryOptions: { exclude_internal: true, active: true },
+  defaultQueryOptions: { exclude_internal: true, active: true },
   i18n: {
     inviteTextMessage: __('Invite "%{email}" by email'),
   },

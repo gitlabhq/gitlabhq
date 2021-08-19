@@ -50,6 +50,14 @@ class GroupPolicy < BasePolicy
     @subject.dependency_proxy_feature_available?
   end
 
+  condition(:dependency_proxy_access_allowed) do
+    if Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true)
+      access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
+    else
+      can?(:read_group)
+    end
+  end
+
   desc "Deploy token with read_package_registry scope"
   condition(:read_package_registry_deploy_token) do
     @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.read_package_registry
@@ -117,6 +125,7 @@ class GroupPolicy < BasePolicy
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
     enable :create_custom_emoji
+    enable :create_package
     enable :create_package_settings
   end
 
@@ -134,6 +143,7 @@ class GroupPolicy < BasePolicy
   end
 
   rule { maintainer }.policy do
+    enable :destroy_package
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build
@@ -210,7 +220,7 @@ class GroupPolicy < BasePolicy
     enable :read_group
   end
 
-  rule { can?(:read_group) & dependency_proxy_available }
+  rule { dependency_proxy_access_allowed & dependency_proxy_available }
     .enable :read_dependency_proxy
 
   rule { developer & dependency_proxy_available }
@@ -230,14 +240,14 @@ class GroupPolicy < BasePolicy
     enable :read_label
   end
 
-  def access_level
+  def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?
     return GroupMember::NO_ACCESS unless user_is_user?
 
-    @access_level ||= lookup_access_level!
+    @access_level ||= lookup_access_level!(for_any_session: for_any_session)
   end
 
-  def lookup_access_level!
+  def lookup_access_level!(for_any_session: false)
     @subject.max_member_access_for_user(@user)
   end
 
@@ -257,6 +267,10 @@ class GroupPolicy < BasePolicy
 
   def resource_access_token_creation_allowed?
     resource_access_token_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
+  end
+
+  def valid_dependency_proxy_deploy_token
+    @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
   end
 end
 

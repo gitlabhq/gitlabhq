@@ -48,7 +48,7 @@ module API
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :default_ci_config_path, type: String, desc: 'The instance default CI/CD configuration file and path for new projects'
       optional :default_project_creation, type: Integer, values: ::Gitlab::Access.project_creation_values, desc: 'Determine if developers can create projects in the group'
-      optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
+      optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to default branch'
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'

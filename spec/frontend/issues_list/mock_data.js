@@ -23,6 +23,7 @@ export const getIssuesQueryResponse = {
             downvotes: 2,
             dueDate: '2021-05-29',
             humanTimeEstimate: null,
+            mergeRequestsCount: false,
             moved: false,
             title: 'Issue title',
             updatedAt: '2021-05-22T04:08:01Z',
@@ -106,8 +107,11 @@ export const locationSearch = [
 export const locationSearchWithSpecialValues = [
   'assignee_id=123',
   'assignee_username=bart',
+  'type[]=issue',
+  'type[]=incident',
   'my_reaction_emoji=None',
   'iteration_id=Current',
+  'milestone_title=Upcoming',
   'epic_id=None',
   'weight=None',
 ].join('&');
@@ -140,8 +144,11 @@ export const filteredTokens = [
 export const filteredTokensWithSpecialValues = [
   { type: 'assignee_username', value: { data: '123', operator: OPERATOR_IS } },
   { type: 'assignee_username', value: { data: 'bart', operator: OPERATOR_IS } },
+  { type: 'type', value: { data: 'issue', operator: OPERATOR_IS } },
+  { type: 'type', value: { data: 'incident', operator: OPERATOR_IS } },
   { type: 'my_reaction_emoji', value: { data: 'None', operator: OPERATOR_IS } },
   { type: 'iteration', value: { data: 'Current', operator: OPERATOR_IS } },
+  { type: 'milestone', value: { data: 'Upcoming', operator: OPERATOR_IS } },
   { type: 'epic_id', value: { data: 'None', operator: OPERATOR_IS } },
   { type: 'weight', value: { data: 'None', operator: OPERATOR_IS } },
 ];
@@ -170,8 +177,10 @@ export const apiParams = {
 export const apiParamsWithSpecialValues = {
   assigneeId: '123',
   assigneeUsernames: 'bart',
+  types: ['ISSUE', 'INCIDENT'],
   myReactionEmoji: 'None',
   iterationWildcardId: 'CURRENT',
+  milestoneWildcardId: 'UPCOMING',
   epicId: 'None',
   weight: 'None',
 };
@@ -198,8 +207,10 @@ export const urlParams = {
 export const urlParamsWithSpecialValues = {
   assignee_id: '123',
   'assignee_username[]': 'bart',
+  'type[]': ['issue', 'incident'],
   my_reaction_emoji: 'None',
   iteration_id: 'Current',
+  milestone_title: 'Upcoming',
   epic_id: 'None',
   weight: 'None',
 };

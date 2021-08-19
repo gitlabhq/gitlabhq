@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.plan.notes
 description: Count of MAU commenting on an issuable
 product_section: dev
@@ -9,11 +9,12 @@ product_category: issue_tracking
 value_type: number
 status: data_available
 time_frame: 28d
-data_source: database 
+data_source: database
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
+performance_indicator_type: []

@@ -14,6 +14,19 @@ RSpec.describe DependencyProxy::AuthTokenService do
       result = subject
 
       expect(result['user_id']).to eq(user.id)
+      expect(result['deploy_token']).to be_nil
+    end
+
+    context 'with a deploy token' do
+      let_it_be(:deploy_token) { create(:deploy_token) }
+      let_it_be(:token) { build_jwt(deploy_token) }
+
+      it 'returns the deploy token' do
+        result = subject
+
+        expect(result['deploy_token']).to eq(deploy_token.token)
+        expect(result['user_id']).to be_nil
+      end
     end
 
     it 'raises an error if the token is expired' do

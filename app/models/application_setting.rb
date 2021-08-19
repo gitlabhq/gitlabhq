@@ -5,6 +5,11 @@ class ApplicationSetting < ApplicationRecord
   include CacheMarkdownField
   include TokenAuthenticatable
   include ChronicDurationAttribute
+  include IgnorableColumns
+
+  ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
+  ignore_column :seat_link_enabled, remove_with: '14.4', remove_after: '2021-09-22'
+  ignore_column :cloud_license_enabled, remove_with: '14.4', remove_after: '2021-09-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -30,7 +35,7 @@ class ApplicationSetting < ApplicationRecord
   def self.kroki_formats_attributes
     {
       blockdiag: {
-        label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag and RackDiag)'
+        label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag, and RackDiag)'
       },
       bpmn: {
         label: 'BPMN'
@@ -451,6 +456,9 @@ class ApplicationSetting < ApplicationRecord
   validates :ci_jwt_signing_key,
             rsa_key: true, allow_nil: true
 
+  validates :customers_dot_jwt_signing_key,
+            rsa_key: true, allow_nil: true
+
   validates :rate_limiting_response_text,
             length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
             allow_blank: true
@@ -554,6 +562,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :slack_app_secret, encryption_options_base_32_aes_256_gcm
   attr_encrypted :slack_app_verification_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :ci_jwt_signing_key, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :customers_dot_jwt_signing_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_32_aes_256_gcm
@@ -564,6 +573,7 @@ class ApplicationSetting < ApplicationRecord
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
+  before_validation :sanitize_default_branch_name
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -591,6 +601,14 @@ class ApplicationSetting < ApplicationRecord
 
   def sourcegraph_url_is_com?
     !!(sourcegraph_url =~ %r{\Ahttps://(www\.)?sourcegraph\.com})
+  end
+
+  def sanitize_default_branch_name
+    self.default_branch_name = if default_branch_name.blank?
+                                 nil
+                               else
+                                 Sanitize.fragment(self.default_branch_name)
+                               end
   end
 
   def instance_review_permitted?
@@ -627,7 +645,7 @@ class ApplicationSetting < ApplicationRecord
   # prevent this from happening, we do a sanity check that the
   # primary key constraint is present before inserting a new entry.
   def self.check_schema!
-    return if ActiveRecord::Base.connection.primary_key(self.table_name).present?
+    return if connection.primary_key(self.table_name).present?
 
     raise "The `#{self.table_name}` table is missing a primary key constraint in the database schema"
   end

@@ -4,6 +4,8 @@ module MembersDestroyer
   class UnassignIssuablesWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
 
     ENTITY_TYPES = %w(Group Project).freeze

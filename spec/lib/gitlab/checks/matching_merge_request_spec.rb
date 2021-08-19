@@ -49,12 +49,11 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
       end
     end
 
-    context 'with load balancing enabled', :request_store, :redis do
+    context 'with load balancing enabled', :db_load_balancing do
       let(:session) { ::Gitlab::Database::LoadBalancing::Session.current }
       let(:all_caught_up) { true }
 
       before do
-        expect(::Gitlab::Database::LoadBalancing).to receive(:enable?).at_least(:once).and_return(true)
         allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?).and_return(all_caught_up)
 
         expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_valid_host).with(:project, project.id).and_call_original

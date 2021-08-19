@@ -11,6 +11,47 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 With the GitLab Migrations API, you can view the progress of migrations initiated with
 [GitLab Group Migration](../user/group/import/index.md).
 
+## Start a new GitLab migration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66353) in GitLab 14.2.
+
+```plaintext
+POST /bulk_imports
+```
+
+| Attribute                         | Type   | Required | Description |
+| --------------------------------- | ------ | -------- | ----------- |
+| `configuration`                   | Hash   | yes      | The source GitLab instance configuration. |
+| `configuration[url]`              | String | yes      | Source GitLab instance URL. |
+| `configuration[access_token]`     | String | yes      | Access token to the source GitLab instance. |
+| `entities`                        | Array  | yes      | List of entities to import. |
+| `entities[source_type]`           | String | yes      | Source entity type (only `group_entity` is supported). |
+| `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. |
+| `entities[destination_name]`      | String | yes      | Destination name for the entity. |
+| `entities[destination_namespace]` | String | no       | Destination namespace for the entity. |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports" \
+  --data '{
+    "configuration": {
+      "url": "http://gitlab.example/",
+      "access_token": "access_token"
+    },
+    "entities": [
+      {
+        "source_full_path": "source/full/path",
+        "source_type": "group_entity",
+        "destination_name": "destination_name",
+        "destination_namespace": "destination/namespace/path"
+      }
+    ]
+  }'
+```
+
+```json
+{ "id": 1, "status": "created", "source_type": "gitlab", "created_at": "2021-06-18T09:45:55.358Z", "updated_at": "2021-06-18T09:46:27.003Z" }
+```
+
 ## List all GitLab migrations
 
 ```plaintext

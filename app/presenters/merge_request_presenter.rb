@@ -139,7 +139,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def mentioned_issues_links
-    mentioned_issues = issues_mentioned_but_not_closing(current_user)
     markdown(
       issues_sentence(project, mentioned_issues),
       pipeline: :gfm,
@@ -239,6 +238,18 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     APPROVALS_WIDGET_BASE_TYPE
   end
 
+  def closing_issues
+    strong_memoize(:closing_issues) do
+      visible_closing_issues_for(current_user)
+    end
+  end
+
+  def mentioned_issues
+    strong_memoize(:mentioned_issues) do
+      issues_mentioned_but_not_closing(current_user)
+    end
+  end
+
   private
 
   def cached_can_be_reverted?
@@ -251,10 +262,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     # rubocop: disable CodeReuse/ServiceClass
     @conflicts ||= MergeRequests::Conflicts::ListService.new(merge_request)
     # rubocop: enable CodeReuse/ServiceClass
-  end
-
-  def closing_issues
-    @closing_issues ||= visible_closing_issues_for(current_user)
   end
 
   def pipeline

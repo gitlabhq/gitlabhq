@@ -3,10 +3,14 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 
+const defaultMockRoute = {
+  name: 'blobPath',
+};
+
 describe('Repository breadcrumbs component', () => {
   let wrapper;
 
-  const factory = (currentPath, extraProps = {}) => {
+  const factory = (currentPath, extraProps = {}, mockRoute = {}) => {
     const $apollo = {
       queries: {
         userPermissions: {
@@ -23,7 +27,13 @@ describe('Repository breadcrumbs component', () => {
       stubs: {
         RouterLink: RouterLinkStub,
       },
-      mocks: { $apollo },
+      mocks: {
+        $route: {
+          defaultMockRoute,
+          ...mockRoute,
+        },
+        $apollo,
+      },
     });
   };
 
@@ -68,6 +78,21 @@ describe('Repository breadcrumbs component', () => {
 
     expect(wrapper.find(GlDropdown).exists()).toBe(false);
   });
+
+  it.each`
+    routeName            | isRendered
+    ${'blobPath'}        | ${false}
+    ${'blobPathDecoded'} | ${false}
+    ${'treePath'}        | ${true}
+    ${'treePathDecoded'} | ${true}
+    ${'projectRoot'}     | ${true}
+  `(
+    'does render add to tree dropdown $isRendered when route is $routeName',
+    ({ routeName, isRendered }) => {
+      factory('app/assets/javascripts.js', { canCollaborate: true }, { name: routeName });
+      expect(wrapper.find(GlDropdown).exists()).toBe(isRendered);
+    },
+  );
 
   it('renders add to tree dropdown when permissions are true', async () => {
     factory('/', { canCollaborate: true });

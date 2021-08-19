@@ -18,7 +18,7 @@ module Integrations
     end
 
     def description
-      s_('Integrations|Update your Packagist projects.')
+      s_('Integrations|Keep your PHP dependencies updated on Packagist.')
     end
 
     def self.to_param
@@ -27,9 +27,30 @@ module Integrations
 
     def fields
       [
-        { type: 'text', name: 'username', placeholder: '', required: true },
-        { type: 'text', name: 'token', placeholder: '', required: true },
-        { type: 'text', name: 'server', placeholder: 'https://packagist.org', required: false }
+        {
+          type: 'text',
+          name: 'username',
+          title: _('Username'),
+          help: s_('Enter your Packagist username.'),
+          placeholder: '',
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'token',
+          title: _('Token'),
+          help: s_('Enter your Packagist token.'),
+          placeholder: '',
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'server',
+          title: _('Server (optional)'),
+          help: s_('Enter your Packagist server. Defaults to https://packagist.org.'),
+          placeholder: 'https://packagist.org',
+          required: false
+        }
       ]
     end
 

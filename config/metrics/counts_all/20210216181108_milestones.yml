@@ -1,19 +1,20 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.milestones
-description: Count of milestones created 
+description: Count of milestones created
 product_section: dev
-product_stage: plan 
+product_stage: plan
 product_group: group::project management
-product_category: issue_tracking 
+product_category: issue_tracking
 value_type: number
 status: data_available
 time_frame: all
 data_source: database
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
+performance_indicator_type: []

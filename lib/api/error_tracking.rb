@@ -32,6 +32,7 @@ module API
       end
       params do
         requires :active, type: Boolean, desc: 'Specifying whether to enable or disable error tracking settings', allow_blank: false
+        optional :integrated, type: Boolean, desc: 'Specifying whether to enable or disable integrated error tracking'
       end
 
       patch ':id/error_tracking/settings/' do
@@ -44,6 +45,10 @@ module API
         update_params = {
           error_tracking_setting_attributes: { enabled: params[:active] }
         }
+
+        unless params[:integrated].nil?
+          update_params[:error_tracking_setting_attributes][:integrated] = params[:integrated]
+        end
 
         result = ::Projects::Operations::UpdateService.new(user_project, current_user, update_params).execute
 

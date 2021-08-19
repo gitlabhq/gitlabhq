@@ -17,29 +17,6 @@ RSpec.describe ReleasePolicy, :request_store do
 
   subject { described_class.new(user, release) }
 
-  context 'when the evalute_protected_tag_for_release_permissions feature flag is disabled' do
-    before do
-      stub_feature_flags(evalute_protected_tag_for_release_permissions: false)
-    end
-
-    it 'allows the user to create and update a release' do
-      is_expected.to be_allowed(:create_release)
-      is_expected.to be_allowed(:update_release)
-    end
-
-    it 'prevents the user from destroying a release' do
-      is_expected.to be_disallowed(:destroy_release)
-    end
-
-    context 'when the user is maintainer' do
-      let(:user) { maintainer }
-
-      it 'allows the user to destroy a release' do
-        is_expected.to be_allowed(:destroy_release)
-      end
-    end
-  end
-
   context 'when the user has access to the protected tag' do
     let_it_be(:protected_tag) { create(:protected_tag, :developers_can_create, name: release.tag, project: project) }
 

@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
 
 type S3Object struct {

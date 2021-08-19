@@ -5,7 +5,7 @@ module Mutations
     class Base < BaseMutation
       include FindsProject
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Full path of the project the release is associated with.'
     end

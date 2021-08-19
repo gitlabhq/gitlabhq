@@ -52,8 +52,8 @@ When self-identifying as a domain expert, it is recommended to assign the MR cha
 
 We make the following assumption with regards to automatically being considered a domain expert:
 
-- Team members working in a specific stage/group (e.g. create: source code) are considered domain experts for that area of the app they work on
-- Team members working on a specific feature (e.g. search) are considered domain experts for that feature
+- Team members working in a specific stage/group (for example, create: source code) are considered domain experts for that area of the app they work on
+- Team members working on a specific feature (for example, search) are considered domain experts for that feature
 
 We default to assigning reviews to team members with domain expertise.
 When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or simply follow the [Reviewer roulette](#reviewer-roulette) recommendation.
@@ -125,7 +125,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes an addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa)**.
 1. If your merge request introduces a new service to GitLab (Puma, Sidekiq, Gitaly are examples), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**. See the [process for adding a service component to GitLab](adding_service_component.md) for details.
 
-- (*1*): Please note that specs other than JavaScript specs are considered backend code.
+- (*1*): Specs other than JavaScript specs are considered backend code.
 - (*2*): We encourage you to seek guidance from a database maintainer if your merge
   request is potentially introducing expensive queries. It is most efficient to comment
   on the line of code in question with the SQL queries so they can give their advice.
@@ -403,6 +403,12 @@ your own suggestions to the merge request. Note that:
     has more than one commit, then see the note below about rewriting
     commit history.
 
+As a maintainer, if a merge request that you authored has received all required approvals, it is acceptable to show a [bias for action](https://about.gitlab.com/handbook/values/#bias-for-action) and merge your own MR, if:
+
+- The last maintainer to review intended to start the merge and did not, OR
+- The last maintainer to review started the merge, but some trivial chore caused the pipeline to break. For example, the MR might need a rebase first because of unrelated pipeline issues, or some files might need to be regenerated (like `gitlab.pot`).
+  - "Trivial" is a subjective measure but we expect project maintainers to exercise their judgement carefully and cautiously.
+
 When ready to merge:
 
 WARNING:
@@ -423,6 +429,7 @@ WARNING:
     do not merge the merge request** except for
     [very specific cases](https://about.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
+  - If the latest pipeline was created before the merge request was approved, start a new pipeline to ensure that full RSpec suite has been run. You may skip this step only if the merge request does not contain any backend change.
   - If the **latest [Pipeline for Merged Results](../ci/pipelines/pipelines_for_merged_results.md)** finished less than 2 hours ago, you
     might merge without starting a new pipeline as the merge request is close
     enough to `main`.
@@ -577,11 +584,12 @@ context is fresh in memory, and improves contributors' experience significantly.
 
 To ensure swift feedback to ready-to-review code, we maintain a `Review-response` Service-level Objective (SLO). The SLO is defined as:
 
-> - review-response SLO = (time when first review response is provided) - (time MR is assigned to reviewer) < 2 business days
+> Review-response SLO = (time when first review is provided) - (time MR is assigned to reviewer) < 2 business days
 
 If you don't think you can review a merge request in the `Review-response` SLO
-time frame, let the author know as soon as possible and try to help them find
-another reviewer or maintainer who is able to, so that they can be unblocked
+time frame, let the author know as soon as possible in the comments
+(no later than 36 hours after first receiving the review request)
+and try to help them find another reviewer or maintainer who is able to, so that they can be unblocked
 and get on with their work quickly. Remove yourself as a reviewer.
 
 If you think you are at capacity and are unable to accept any more reviews until

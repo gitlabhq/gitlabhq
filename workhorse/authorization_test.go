@@ -13,11 +13,11 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upstream/roundtripper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
 
 func okHandler(w http.ResponseWriter, _ *http.Request, _ *api.Response) {

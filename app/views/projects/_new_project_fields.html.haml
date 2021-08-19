@@ -54,8 +54,7 @@
   .form-group.row.initialize-with-readme-setting
     %div{ :class => "col-sm-12" }
       .form-check
-        - experiment(:new_project_readme, actor: current_user) do |e|
-          = check_box_tag 'project[initialize_with_readme]', '1', e.run, class: 'form-check-input', data: { qa_selector: "initialize_with_readme_checkbox", track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme", track_value: "" }
+        = check_box_tag 'project[initialize_with_readme]', '1', true, class: 'form-check-input', data: { qa_selector: "initialize_with_readme_checkbox", track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme", track_value: "" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
             %strong= s_('ProjectsNew|Initialize repository with a README')

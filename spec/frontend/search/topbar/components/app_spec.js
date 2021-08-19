@@ -1,13 +1,13 @@
 import { GlForm, GlSearchBoxByType, GlButton } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import GroupFilter from '~/search/topbar/components/group_filter.vue';
 import ProjectFilter from '~/search/topbar/components/project_filter.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('GlobalSearchTopbar', () => {
   let wrapper;
@@ -15,6 +15,7 @@ describe('GlobalSearchTopbar', () => {
   const actionSpies = {
     applyQuery: jest.fn(),
     setQuery: jest.fn(),
+    preloadStoredFrequentItems: jest.fn(),
   };
 
   const createComponent = (initialState) => {
@@ -27,14 +28,12 @@ describe('GlobalSearchTopbar', () => {
     });
 
     wrapper = shallowMount(GlobalSearchTopbar, {
-      localVue,
       store,
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findTopbarForm = () => wrapper.find(GlForm);
@@ -108,6 +107,16 @@ describe('GlobalSearchTopbar', () => {
       findTopbarForm().vm.$emit('submit', { preventDefault: () => {} });
 
       expect(actionSpies.applyQuery).toHaveBeenCalled();
+    });
+  });
+
+  describe('onCreate', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('calls preloadStoredFrequentItems', () => {
+      expect(actionSpies.preloadStoredFrequentItems).toHaveBeenCalled();
     });
   });
 });

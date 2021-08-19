@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -94,7 +94,7 @@ Triggered when you push to the repository except when pushing tags.
 
 NOTE:
 When more than 20 commits are pushed at once, the `commits` webhook
-attribute only contains the first 20 for performance reasons. Loading
+attribute only contains the newest 20 for performance reasons. Loading
 detailed commit data is expensive. Note that despite only 20 commits being
 present in the `commits` attribute, the `total_commits_count` attribute contains the actual total.
 
@@ -1157,7 +1157,8 @@ X-Gitlab-Event: Pipeline Hook
          },
          "environment": {
            "name": "production",
-           "action": "start"
+           "action": "start",
+           "deployment_tier": "production"
          }
       },
       {
@@ -1291,7 +1292,8 @@ X-Gitlab-Event: Pipeline Hook
          },
          "environment": {
            "name": "staging",
-           "action": "start"
+           "action": "start",
+           "deployment_tier": "staging"
          }
       }
    ]
@@ -1394,6 +1396,7 @@ X-Gitlab-Event: Deployment Hook
   "object_kind": "deployment",
   "status": "success",
   "status_changed_at":"2021-04-28 21:50:00 +0200",
+  "deployment_id": 15,
   "deployable_id": 796,
   "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
   "environment": "staging",

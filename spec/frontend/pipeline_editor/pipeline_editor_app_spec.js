@@ -2,6 +2,7 @@ import { GlAlert, GlButton, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
@@ -348,15 +349,14 @@ describe('Pipeline editor app component', () => {
   });
 
   describe('when a template parameter is present in the URL', () => {
-    const { location } = window;
+    const originalLocation = window.location.href;
 
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL('https://localhost?template=Android');
+      setWindowLocation('?template=Android');
     });
 
     afterEach(() => {
-      window.location = location;
+      setWindowLocation(originalLocation);
     });
 
     it('renders the given template', async () => {

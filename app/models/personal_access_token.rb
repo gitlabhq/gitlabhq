@@ -47,6 +47,10 @@ class PersonalAccessToken < ApplicationRecord
     !revoked? && !expired?
   end
 
+  def expired_but_not_enforced?
+    false
+  end
+
   def self.redis_getdel(user_id)
     Gitlab::Redis::SharedState.with do |redis|
       redis_key = redis_shared_state_key(user_id)

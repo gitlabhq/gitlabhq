@@ -143,11 +143,12 @@ module QA
           if QA::Runtime::Env.remote_grid
             selenium_options[:url] = QA::Runtime::Env.remote_grid
             capabilities[:browserVersion] = 'latest'
+            capabilities['sauce:options'] = { tunnelIdentifier: QA::Runtime::Env.remote_tunnel_id }
           end
 
           Capybara::Selenium::Driver.new(
             app,
-            selenium_options
+            **selenium_options
           )
         end
 

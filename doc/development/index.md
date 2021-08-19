@@ -63,12 +63,13 @@ Complementary reads:
 
 - [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/-/blob/master/PROCESS.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
-- [Guidelines for implementing Enterprise Edition features](ee_features.md)
-- [Danger bot](dangerbot.md)
-- [Guidelines for changelogs](changelog.md)
-- [Requesting access to ChatOps on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
+- [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Adding a new service component to GitLab](adding_service_component.md)
+- [Guidelines for changelogs](changelog.md)
+- [Dependencies](dependencies.md)
+- [Danger bot](dangerbot.md)
+- [Requesting access to ChatOps on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 
 ### Development guidelines review
 
@@ -256,6 +257,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
   environments.
 - [Performance guidelines](performance.md) for writing code, benchmarks, and
   certain patterns to avoid.
+- [Caching guidelines](caching.md) for using caching in Rails under a GitLab environment.
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
 - [Profiling](profiling.md) a URL, measuring performance using Sherlock, or

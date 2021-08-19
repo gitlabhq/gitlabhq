@@ -13,6 +13,7 @@ RSpec.shared_examples 'value stream analytics stage' do
   describe 'associations' do
     it { is_expected.to belong_to(:end_event_label) }
     it { is_expected.to belong_to(:start_event_label) }
+    it { is_expected.to belong_to(:stage_event_hash) }
   end
 
   describe 'validation' do
@@ -138,6 +139,67 @@ RSpec.shared_examples 'value stream analytics stage' do
       expect(stage_1.events_hash_code).not_to eq(stage_2.events_hash_code)
     end
   end
+
+  # rubocop: disable Rails/SaveBang
+  describe '#event_hash' do
+    it 'associates the same stage event hash record' do
+      first = create(factory)
+      second = create(factory)
+
+      expect(first.stage_event_hash_id).to eq(second.stage_event_hash_id)
+    end
+
+    it 'does not introduce duplicated stage event hash records' do
+      expect do
+        create(factory)
+        create(factory)
+      end.to change { Analytics::CycleAnalytics::StageEventHash.count }.from(0).to(1)
+    end
+
+    it 'creates different hash record for different event configurations' do
+      expect do
+        create(factory, start_event_identifier: :issue_created, end_event_identifier: :issue_stage_end)
+        create(factory, start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
+      end.to change { Analytics::CycleAnalytics::StageEventHash.count }.from(0).to(2)
+    end
+
+    context 'when the stage event hash changes' do
+      let(:stage) { create(factory, start_event_identifier: :issue_created, end_event_identifier: :issue_stage_end) }
+
+      it 'deletes the old, unused stage event hash record' do
+        old_stage_event_hash = stage.stage_event_hash
+
+        stage.update!(end_event_identifier: :issue_deployed_to_production)
+
+        expect(stage.stage_event_hash_id).not_to eq(old_stage_event_hash.id)
+
+        old_stage_event_hash_from_db = Analytics::CycleAnalytics::StageEventHash.find_by_id(old_stage_event_hash.id)
+        expect(old_stage_event_hash_from_db).to be_nil
+      end
+
+      it 'does not delete used stage event hash record' do
+        other_stage = create(factory, start_event_identifier: :issue_created, end_event_identifier: :issue_stage_end)
+
+        stage.update!(end_event_identifier: :issue_deployed_to_production)
+
+        expect(stage.stage_event_hash_id).not_to eq(other_stage.stage_event_hash_id)
+
+        old_stage_event_hash_from_db = Analytics::CycleAnalytics::StageEventHash.find_by_id(other_stage.stage_event_hash_id)
+        expect(old_stage_event_hash_from_db).not_to be_nil
+      end
+    end
+
+    context 'when the stage events hash code does not change' do
+      it 'does not trigger extra query on save' do
+        stage = create(factory, start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
+
+        expect(Analytics::CycleAnalytics::StageEventHash).not_to receive(:record_id_by_hash_sha256)
+
+        stage.update!(name: 'new title')
+      end
+    end
+  end
+  # rubocop: enable Rails/SaveBang
 end
 
 RSpec.shared_examples 'value stream analytics label based stage' do

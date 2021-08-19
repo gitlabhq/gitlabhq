@@ -8,6 +8,8 @@ require_relative '../lib/gitlab'
 require_relative '../lib/gitlab/utils'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
 
+require_relative 'lib/gitlab'
+
 require 'chemlab'
 
 module QA
@@ -71,6 +73,7 @@ module QA
     autoload :GroupBase, 'qa/resource/group_base'
     autoload :Sandbox, 'qa/resource/sandbox'
     autoload :Group, 'qa/resource/group'
+    autoload :BulkImportGroup, 'qa/resource/bulk_import_group'
     autoload :Issue, 'qa/resource/issue'
     autoload :ProjectIssueNote, 'qa/resource/project_issue_note'
     autoload :Project, 'qa/resource/project'
@@ -236,6 +239,7 @@ module QA
       autoload :Menu, 'qa/page/group/menu'
       autoload :Members, 'qa/page/group/members'
       autoload :BulkImport, 'qa/page/group/bulk_import'
+      autoload :DependencyProxy, 'qa/page/group/dependency_proxy'
 
       module Milestone
         autoload :Index, 'qa/page/group/milestone/index'
@@ -385,7 +389,6 @@ module QA
       module Deployments
         module Environments
           autoload :Index, 'qa/page/project/deployments/environments/index'
-          autoload :Show, 'qa/page/project/deployments/environments/show'
         end
       end
 
@@ -423,6 +426,10 @@ module QA
         autoload :New, 'qa/page/project/snippet/new'
         autoload :Show, 'qa/page/project/snippet/show'
         autoload :Index, 'qa/page/project/snippet/index'
+      end
+
+      module Secure
+        autoload :ConfigurationForm, 'qa/page/project/secure/configuration_form'
       end
     end
 
@@ -538,6 +545,7 @@ module QA
       autoload :AccessTokens, 'qa/page/component/access_tokens'
       autoload :CommitModal, 'qa/page/component/commit_modal'
       autoload :VisibilitySetting, 'qa/page/component/visibility_setting'
+      autoload :ContentEditor, 'qa/page/component/content_editor'
 
       module Import
         autoload :Gitlab, 'qa/page/component/import/gitlab'
@@ -627,7 +635,9 @@ module QA
 
     module Helpers
       autoload :ContextSelector, 'qa/specs/helpers/context_selector'
+      autoload :ContextFormatter, 'qa/specs/helpers/context_formatter'
       autoload :Quarantine, 'qa/specs/helpers/quarantine'
+      autoload :QuarantineFormatter, 'qa/specs/helpers/quarantine_formatter'
       autoload :RSpec, 'qa/specs/helpers/rspec'
     end
   end
@@ -675,6 +685,7 @@ module QA
     autoload :WaitForRequests, 'qa/support/wait_for_requests'
     autoload :OTP, 'qa/support/otp'
     autoload :SSH, 'qa/support/ssh'
+    autoload :AllureMetadataFormatter, 'qa/support/allure_metadata_formatter.rb'
   end
 end
 

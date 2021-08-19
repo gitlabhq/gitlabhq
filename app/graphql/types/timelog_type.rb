@@ -12,7 +12,7 @@ module Types
           description: 'Timestamp of when the time tracked was spent at.'
 
     field :time_spent,
-          GraphQL::INT_TYPE,
+          GraphQL::Types::Int,
           null: false,
           description: 'The time spent displayed in seconds.'
 
@@ -35,6 +35,10 @@ module Types
           Types::Notes::NoteType,
           null: true,
           description: 'The note where the quick action to add the logged time was executed.'
+
+    field :summary, GraphQL::Types::String,
+          null: true,
+          description: 'The summary of how the time was spent.'
 
     def user
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find

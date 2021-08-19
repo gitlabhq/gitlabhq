@@ -58,7 +58,7 @@ module Git
     def stop_environments
       return unless removing_branch?
 
-      Ci::StopEnvironmentsService.new(project, current_user).execute(branch_name)
+      Environments::StopService.new(project, current_user).execute_for_branch(branch_name)
     end
 
     def unlock_artifacts

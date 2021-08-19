@@ -13,13 +13,14 @@ module QA
                     :initialize_with_readme,
                     :auto_devops_enabled,
                     :github_personal_access_token,
-                    :github_repository_path
+                    :github_repository_path,
+                    :gitlab_repository_path
 
       attributes :id,
                  :name,
                  :add_name_uuid,
                  :description,
-                 :standalone,
+                 :personal_namespace,
                  :runners_token,
                  :visibility,
                  :template_name,
@@ -32,7 +33,7 @@ module QA
       end
 
       attribute :path_with_namespace do
-        "#{sandbox_path}#{group.path}/#{name}" if group
+        "#{group.full_path}/#{name}"
       end
 
       alias_method :full_path, :path_with_namespace
@@ -51,7 +52,7 @@ module QA
 
       def initialize
         @add_name_uuid = true
-        @standalone = false
+        @personal_namespace = false
         @description = 'My awesome project'
         @initialize_with_readme = false
         @auto_devops_enabled = false
@@ -69,7 +70,9 @@ module QA
       def fabricate!
         return if @import
 
-        unless @standalone
+        if @personal_namespace
+          Page::Dashboard::Projects.perform(&:click_new_project_button)
+        else
           group.visit!
           Page::Group::Show.perform(&:go_to_new_project)
         end
@@ -84,13 +87,15 @@ module QA
         Page::Project::New.perform(&:click_blank_project_link)
 
         Page::Project::New.perform do |new_page|
-          new_page.choose_test_namespace
+          new_page.choose_test_namespace unless @personal_namespace
           new_page.choose_name(@name)
           new_page.add_description(@description)
           new_page.set_visibility(@visibility)
-          new_page.enable_initialize_with_readme if @initialize_with_readme
+          new_page.disable_initialize_with_readme unless @initialize_with_readme
           new_page.create_new_project
         end
+
+        @id = Page::Project::Show.perform(&:project_id)
       end
 
       def fabricate_via_api!
@@ -218,7 +223,7 @@ module QA
           auto_devops_enabled: @auto_devops_enabled
         }
 
-        unless @standalone
+        unless @personal_namespace
           post_body[:namespace_id] = group.id
           post_body[:path] = name
         end
@@ -263,19 +268,24 @@ module QA
 
         result = parse_body(response)
 
-        Runtime::Logger.error("Import failed: #{result[:import_error]}") if result[:import_status] == "failed"
+        if result[:import_status] == "failed"
+          Runtime::Logger.error("Import failed: #{result[:import_error]}")
+          Runtime::Logger.error("Failed relations: #{result[:failed_relations]}")
+        end
 
         result[:import_status]
       end
 
-      def commits
-        response = get(request_url(api_commits_path))
-        parse_body(response)
+      def commits(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_commits_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_commits_path, per_page: '100'), attempts: attempts)
       end
 
-      def merge_requests
-        response = get(request_url(api_merge_requests_path))
-        parse_body(response)
+      def merge_requests(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_merge_requests_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_merge_requests_path, per_page: '100'), attempts: attempts)
       end
 
       def merge_request_with_title(title)
@@ -299,9 +309,10 @@ module QA
         parse_body(response)
       end
 
-      def repository_branches
-        response = get(request_url(api_repository_branches_path))
-        parse_body(response)
+      def repository_branches(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_repository_branches_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_repository_branches_path, per_page: '100'), attempts: attempts)
       end
 
       def repository_tags
@@ -324,19 +335,22 @@ module QA
         parse_body(response)
       end
 
-      def issues
-        response = get(request_url(api_issues_path))
-        parse_body(response)
+      def issues(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_issues_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_issues_path, per_page: '100'), attempts: attempts)
       end
 
-      def labels
-        response = get(request_url(api_labels_path))
-        parse_body(response)
+      def labels(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_labels_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_labels_path, per_page: '100'), attempts: attempts)
       end
 
-      def milestones
-        response = get(request_url(api_milestones_path))
-        parse_body(response)
+      def milestones(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_milestones_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_milestones_path, per_page: '100'), attempts: attempts)
       end
 
       def wikis

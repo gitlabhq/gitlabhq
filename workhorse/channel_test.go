@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
 var (

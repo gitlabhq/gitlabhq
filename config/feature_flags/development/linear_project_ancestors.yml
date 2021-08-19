@@ -1,0 +1,8 @@
+---
+name: linear_project_ancestors
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68072
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338403
+milestone: '14.2'
+type: development
+group: group::access
+default_enabled: false

@@ -271,7 +271,11 @@ If you are storing LFS files outside of GitLab you can disable LFS on the projec
 
 It is possible to host LFS objects externally by setting a custom LFS URL with `git config -f .lfsconfig lfs.url https://example.com/<project>.git/info/lfs`.
 
-You might choose to do this if you are using an appliance like a <!-- vale gitlab.Spelling = NO --> Sonatype Nexus <!-- vale gitlab.Spelling = YES --> to store LFS data. If you choose to use an external LFS store,
+<!-- vale gitlab.Spelling = NO -->
+
+You might choose to do this if you are using an appliance like a Sonatype Nexus to store LFS data. If you choose to use an external LFS store,
 GitLab can't verify LFS objects. Pushes then fail if you have GitLab LFS support enabled.
+
+<!-- vale gitlab.Spelling = YES -->
 
 To stop push failure, LFS support can be disabled in the [Project settings](../../../user/project/settings/index.md), which also disables GitLab LFS value-adds (Verifying LFS objects, UI integration for LFS).

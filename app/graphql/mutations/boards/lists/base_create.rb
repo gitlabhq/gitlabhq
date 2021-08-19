@@ -4,7 +4,7 @@ module Mutations
   module Boards
     module Lists
       class BaseCreate < BaseMutation
-        argument :backlog, GraphQL::BOOLEAN_TYPE,
+        argument :backlog, GraphQL::Types::Boolean,
                  required: false,
                  description: 'Create the backlog list.'
 

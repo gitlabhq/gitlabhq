@@ -9,13 +9,19 @@ import {
   GlSprintf,
   GlButton,
   GlFormInput,
+  GlFormCheckboxGroup,
 } from '@gitlab/ui';
 import { partition, isString } from 'lodash';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
-import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
-import { INVITE_MEMBERS_IN_COMMENT, GROUP_FILTERS } from '../constants';
+import {
+  INVITE_MEMBERS_IN_COMMENT,
+  GROUP_FILTERS,
+  USERS_FILTER_ALL,
+  MEMBER_AREAS_OF_FOCUS,
+} from '../constants';
 import eventHub from '../event_hub';
 import {
   responseMessageFromError,
@@ -36,6 +42,7 @@ export default {
     GlSprintf,
     GlButton,
     GlFormInput,
+    GlFormCheckboxGroup,
     MembersTokenSelect,
     GroupSelect,
   },
@@ -70,8 +77,26 @@ export default {
       required: false,
       default: null,
     },
+    usersFilter: {
+      type: String,
+      required: false,
+      default: USERS_FILTER_ALL,
+    },
+    filterId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     helpLink: {
       type: String,
+      required: true,
+    },
+    areasOfFocusOptions: {
+      type: Array,
+      required: true,
+    },
+    noSelectionAreasOfFocus: {
+      type: Array,
       required: true,
     },
   },
@@ -83,9 +108,11 @@ export default {
       inviteeType: 'members',
       newUsersToInvite: [],
       selectedDate: undefined,
+      selectedAreasOfFocus: [],
       groupToBeSharedWith: {},
       source: 'unknown',
       invalidFeedbackMessage: '',
+      isLoading: false,
     };
   },
   computed: {
@@ -127,10 +154,28 @@ export default {
         this.newUsersToInvite.length === 0 && Object.keys(this.groupToBeSharedWith).length === 0
       );
     },
+    areasOfFocusEnabled() {
+      return this.areasOfFocusOptions.length !== 0;
+    },
+    areasOfFocusForPost() {
+      if (this.selectedAreasOfFocus.length === 0 && this.areasOfFocusEnabled) {
+        return this.noSelectionAreasOfFocus;
+      }
+
+      return this.selectedAreasOfFocus;
+    },
+    errorFieldDescription() {
+      if (this.inviteeType === 'group') {
+        return '';
+      }
+
+      return this.$options.labels[this.inviteeType].placeHolder;
+    },
   },
   mounted() {
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
+      this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.view);
     });
   },
   methods: {
@@ -151,9 +196,13 @@ export default {
 
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
+    trackEvent(experimentName, eventName) {
+      const tracking = new ExperimentTracking(experimentName);
+      tracking.event(eventName);
+    },
     closeModal() {
       this.resetFields();
-      this.$root.$emit(BV_HIDE_MODAL, this.modalId);
+      this.$refs.modal.hide();
     },
     sendInvite() {
       if (this.isInviteGroup) {
@@ -164,16 +213,19 @@ export default {
     },
     trackInvite() {
       if (this.source === INVITE_MEMBERS_IN_COMMENT) {
-        const tracking = new ExperimentTracking(INVITE_MEMBERS_IN_COMMENT);
-        tracking.event('comment_invite_success');
+        this.trackEvent(INVITE_MEMBERS_IN_COMMENT, 'comment_invite_success');
       }
+
+      this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.submit);
     },
     resetFields() {
+      this.isLoading = false;
       this.selectedAccessLevel = this.defaultAccessLevel;
       this.selectedDate = undefined;
       this.newUsersToInvite = [];
       this.groupToBeSharedWith = {};
       this.invalidFeedbackMessage = '';
+      this.selectedAreasOfFocus = [];
     },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
@@ -189,6 +241,7 @@ export default {
     },
     submitInviteMembers() {
       this.invalidFeedbackMessage = '';
+      this.isLoading = true;
 
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
       const promises = [];
@@ -220,6 +273,7 @@ export default {
         email: usersToInviteByEmail,
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
+        areas_of_focus: this.areasOfFocusForPost,
       };
     },
     addByUserIdPostData(usersToAddById) {
@@ -228,6 +282,7 @@ export default {
         user_id: usersToAddById,
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
+        areas_of_focus: this.areasOfFocusForPost,
       };
     },
     shareWithGroupPostData(groupToBeSharedWith) {
@@ -247,12 +302,14 @@ export default {
       }
 
       this.invalidFeedbackMessage = message;
+      this.isLoading = false;
     },
     showToastMessageSuccess() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);
       this.closeModal();
     },
     showInvalidFeedbackMessage(response) {
+      this.isLoading = false;
       this.invalidFeedbackMessage =
         responseMessageFromError(response) || this.$options.labels.invalidFeedbackMessageDefault;
     },
@@ -299,18 +356,24 @@ export default {
     inviteButtonText: s__('InviteMembersModal|Invite'),
     cancelButtonText: s__('InviteMembersModal|Cancel'),
     headerCloseLabel: s__('InviteMembersModal|Close invite team members'),
+    areasOfFocusLabel: s__(
+      'InviteMembersModal|What would you like new member(s) to focus on? (optional)',
+    ),
   },
   membersTokenSelectLabelId: 'invite-members-input',
 };
 </script>
 <template>
   <gl-modal
+    ref="modal"
     :modal-id="modalId"
     size="sm"
     data-qa-selector="invite_members_modal_content"
     :title="$options.labels[inviteeType].modalTitle"
     :header-close-label="$options.labels.headerCloseLabel"
+    @hidden="resetFields"
     @close="resetFields"
+    @hide="resetFields"
   >
     <div>
       <p ref="introText">
@@ -322,10 +385,9 @@ export default {
       </p>
 
       <gl-form-group
-        class="gl-mt-2"
         :invalid-feedback="invalidFeedbackMessage"
         :state="validationState"
-        :description="$options.labels[inviteeType].placeHolder"
+        :description="errorFieldDescription"
         data-testid="members-form-group"
       >
         <label :id="$options.membersTokenSelectLabelId" class="col-form-label">{{
@@ -334,8 +396,11 @@ export default {
         <members-token-select
           v-if="!isInviteGroup"
           v-model="newUsersToInvite"
+          class="gl-mb-2"
           :validation-state="validationState"
           :aria-labelledby="$options.membersTokenSelectLabelId"
+          :users-filter="usersFilter"
+          :filter-id="filterId"
           @clear="handleMembersTokenSelectClear"
         />
         <group-select
@@ -343,10 +408,11 @@ export default {
           v-model="groupToBeSharedWith"
           :groups-filter="groupSelectFilter"
           :parent-group-id="groupSelectParentId"
+          @input="handleMembersTokenSelectClear"
         />
       </gl-form-group>
 
-      <label class="gl-font-weight-bold gl-mt-3">{{ $options.labels.accessLevel }}</label>
+      <label class="gl-font-weight-bold">{{ $options.labels.accessLevel }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full">
         <gl-dropdown
           class="gl-shadow-none gl-w-full"
@@ -376,7 +442,7 @@ export default {
         </gl-sprintf>
       </div>
 
-      <label class="gl-font-weight-bold gl-mt-5 gl-display-block" for="expires_at">{{
+      <label class="gl-mt-5 gl-display-block" for="expires_at">{{
         $options.labels.accessExpireDate
       }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full gl-display-inline-block">
@@ -395,6 +461,16 @@ export default {
           </template>
         </gl-datepicker>
       </div>
+      <div v-if="areasOfFocusEnabled">
+        <label class="gl-mt-5">
+          {{ $options.labels.areasOfFocusLabel }}
+        </label>
+        <gl-form-checkbox-group
+          v-model="selectedAreasOfFocus"
+          :options="areasOfFocusOptions"
+          data-testid="area-of-focus-checks"
+        />
+      </div>
     </div>
 
     <template #modal-footer>
@@ -405,6 +481,7 @@ export default {
         <div class="gl-mr-3"></div>
         <gl-button
           :disabled="inviteDisabled"
+          :loading="isLoading"
           variant="success"
           data-qa-selector="invite_button"
           data-testid="invite-button"

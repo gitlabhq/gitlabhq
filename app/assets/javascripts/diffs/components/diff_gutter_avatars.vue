@@ -75,6 +75,7 @@ export default {
         :key="note.id"
         :img-src="note.author.avatar_url"
         :tooltip-text="getTooltipText(note)"
+        lazy
         class="diff-comment-avatar js-diff-comment-avatar"
         @click.native="$emit('toggleLineDiscussions')"
       />

@@ -1,0 +1,8 @@
+---
+name: get_tag_signatures
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67000
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337842
+milestone: '14.2'
+type: development
+group: group::gitaly
+default_enabled: false

@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :requires_admin do
+  RSpec.describe 'Verify' do
     describe 'Include local config file paths with wildcard' do
-      let(:feature_flag) { :ci_wildcard_file_paths }
-
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-pipeline'
@@ -12,7 +10,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(feature_flag)
         Flow::Login.sign_in
         add_files_to_project
         project.visit!
@@ -20,7 +17,6 @@ module QA
       end
 
       after do
-        Runtime::Feature.disable(feature_flag)
         project.remove_via_api!
       end
 

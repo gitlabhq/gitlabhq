@@ -48,8 +48,8 @@ export default {
     dueDate() {
       return this.issue.dueDate && dateInWords(new Date(this.issue.dueDate), true);
     },
-    isDueDateInPast() {
-      return isInPast(new Date(this.issue.dueDate));
+    showDueDateInRed() {
+      return isInPast(new Date(this.issue.dueDate)) && !this.issue.closedAt;
     },
     timeEstimate() {
       return this.issue.humanTimeEstimate || this.issue.timeStats?.humanTimeEstimate;
@@ -97,7 +97,7 @@ export default {
       v-if="issue.dueDate"
       v-gl-tooltip
       class="issuable-due-date gl-display-none gl-sm-display-inline-block! gl-mr-3"
-      :class="{ 'gl-text-red-500': isDueDateInPast }"
+      :class="{ 'gl-text-red-500': showDueDateInRed }"
       :title="__('Due date')"
       data-testid="issuable-due-date"
     >

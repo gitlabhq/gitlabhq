@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.ci_templates.ci_templates_total_unique_counts_weekly
 description: Total count of pipelines runs
 product_section: ops
@@ -11,6 +11,24 @@ status: broken
 repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332466
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - p_ci_templates_implicit_auto_devops
+    - p_ci_templates_implicit_auto_devops_build
+    - p_ci_templates_implicit_auto_devops_deploy
+    - p_ci_templates_implicit_security_sast
+    - p_ci_templates_implicit_security_secret_detection
+    - p_ci_templates_5_min_production_app
+    - p_ci_templates_auto_devops
+    - p_ci_templates_aws_cf_deploy_ec2
+    - p_ci_templates_aws_deploy_ecs
+    - p_ci_templates_auto_devops_build
+    - p_ci_templates_auto_devops_deploy
+    - p_ci_templates_auto_devops_deploy_latest
+    - p_ci_templates_security_sast
+    - p_ci_templates_security_secret_detection
+    - p_ci_templates_terraform_base_latest
 distribution:
 - ce
 - ee
@@ -18,4 +36,4 @@ tier:
 - free
 - premium
 - ultimate
-
+performance_indicator_type: []

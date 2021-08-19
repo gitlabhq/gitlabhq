@@ -124,9 +124,9 @@ From the previous example we see the time used for each stage:
 - **Issue**: 2 hrs (09:00 to 11:00)
 - **Plan**: 1 hr (11:00 to 12:00)
 - **Code**: 2 hrs (12:00 to 14:00)
-- **Test**: 5 mins
+- **Test**: 5 minutes
 - **Review**: 5 hrs (14:00 to 19:00)
-- **Staging**: 30 mins (19:00 to 19:30)
+- **Staging**: 30 minutes (19:00 to 19:30)
 
 More information:
 

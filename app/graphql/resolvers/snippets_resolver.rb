@@ -3,6 +3,7 @@
 
 module Resolvers
   class SnippetsResolver < BaseResolver
+    include ResolvesIds
     include ResolvesSnippets
 
     ERROR_MESSAGE = 'Filtering by both an author and a project is not supported'
@@ -22,7 +23,7 @@ module Resolvers
               description: 'The type of snippet.'
 
     argument :explore,
-              GraphQL::BOOLEAN_TYPE,
+              GraphQL::Types::Boolean,
               required: false,
               description: 'Explore personal snippets.'
 

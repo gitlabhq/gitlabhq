@@ -31,12 +31,13 @@ module ErrorTracking
     validates :api_url, length: { maximum: 255 }, public_url: { enforce_sanitization: true, ascii_only: true }, allow_nil: true
 
     validates :enabled, inclusion: { in: [true, false] }
+    validates :integrated, inclusion: { in: [true, false] }
 
-    validates :api_url, presence: { message: 'is a required field' }, if: :enabled
-
-    validate :validate_api_url_path, if: :enabled
-
-    validates :token, presence: { message: 'is a required field' }, if: :enabled
+    with_options if: :sentry_enabled do
+      validates :api_url, presence: { message: 'is a required field' }
+      validates :token, presence: { message: 'is a required field' }
+      validate :validate_api_url_path
+    end
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
@@ -44,6 +45,14 @@ module ErrorTracking
       algorithm: 'aes-256-gcm'
 
     after_save :clear_reactive_cache!
+
+    def sentry_enabled
+      enabled && !integrated_client?
+    end
+
+    def integrated_client?
+      integrated && ::Feature.enabled?(:integrated_error_tracking, project)
+    end
 
     def api_url=(value)
       super
@@ -79,7 +88,7 @@ module ErrorTracking
 
     def sentry_client
       strong_memoize(:sentry_client) do
-        ErrorTracking::SentryClient.new(api_url, token)
+        ::ErrorTracking::SentryClient.new(api_url, token)
       end
     end
 

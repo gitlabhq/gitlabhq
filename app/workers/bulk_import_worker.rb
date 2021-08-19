@@ -3,6 +3,8 @@
 class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   feature_category :importers
   tags :exclude_from_kubernetes
 

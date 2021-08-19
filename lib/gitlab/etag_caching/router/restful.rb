@@ -71,7 +71,7 @@ module Gitlab
             'continuous_delivery'
           ],
           [
-            %r(#{RESERVED_WORDS_PREFIX}/environments\.json\z),
+            %r(#{RESERVED_WORDS_PREFIX}/-/environments\.json\z),
             'environments',
             'continuous_delivery'
           ],

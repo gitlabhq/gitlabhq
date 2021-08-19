@@ -72,6 +72,17 @@ module Backup
       end
     end
 
+    def remove_tmp
+      # delete tmp inside backups
+      progress.print "Deleting backups/tmp ... "
+
+      if FileUtils.rm_rf(File.join(backup_path, "tmp"))
+        progress.puts "done".color(:green)
+      else
+        puts "deleting backups/tmp failed".color(:red)
+      end
+    end
+
     def remove_old
       # delete backups
       progress.print "Deleting old backups ... "
@@ -232,7 +243,7 @@ module Backup
     end
 
     def folders_to_backup
-      FOLDERS_TO_BACKUP.reject { |name| skipped?(name) }
+      FOLDERS_TO_BACKUP.select { |name| !skipped?(name) && Dir.exist?(File.join(backup_path, name)) }
     end
 
     def disabled_features

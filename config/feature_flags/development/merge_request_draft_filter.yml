@@ -1,8 +1,0 @@
----
-name: merge_request_draft_filter
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35942
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/298776
-milestone: '13.3'
-type: development
-group: group::code review
-default_enabled: true

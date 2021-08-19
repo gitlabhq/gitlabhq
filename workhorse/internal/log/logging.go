@@ -8,7 +8,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/mask"
 	"golang.org/x/net/context"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 type Fields = log.Fields
@@ -65,6 +65,14 @@ func (b *Builder) WithError(err error) *Builder {
 	b.err = err
 	b.entry = b.entry.WithError(err)
 	return b
+}
+
+func Debug(args ...interface{}) {
+	NewBuilder().Debug(args...)
+}
+
+func (b *Builder) Debug(args ...interface{}) {
+	b.entry.Debug(args...)
 }
 
 func Info(args ...interface{}) {

@@ -36,7 +36,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
   - [Deploy tokens](deploy_tokens/index.md): Manage access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)
 - [CVE ID Requests](../application_security/cve_id_request.md): Request a CVE identifier to track a
-  vulnerability in your project.
+  vulnerability in your project. **(FREE SAAS)**
 
 **Issues and merge requests:**
 
@@ -121,7 +121,7 @@ Kubernetes, Slack, and a lot more.
   - [Bitbucket to GitLab](import/bitbucket.md)
   - [Gitea to GitLab](import/gitea.md)
   - [FogBugz to GitLab](import/fogbugz.md)
-- [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
+- [Export a project from GitLab](settings/import_export.md#export-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
 ## GitLab Workflow - VS Code extension

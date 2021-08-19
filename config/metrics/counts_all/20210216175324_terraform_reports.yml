@@ -1,9 +1,9 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.terraform_reports
 description: Count of Terraform MR reports generated
 product_section: ops
-product_stage:
+product_stage: 
 product_group: group::configure
 product_category: infrastructure_as_code
 value_type: number
@@ -16,3 +16,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

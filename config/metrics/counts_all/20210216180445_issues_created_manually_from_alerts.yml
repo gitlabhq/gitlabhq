@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.issues_created_manually_from_alerts
 description: Count of issues created manually by non-bot users from GitLab alerts
 product_section: ops
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

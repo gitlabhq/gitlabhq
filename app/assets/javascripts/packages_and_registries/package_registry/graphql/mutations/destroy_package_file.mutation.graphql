@@ -1,0 +1,5 @@
+mutation destroyPackageFile($id: PackagesPackageFileID!) {
+  destroyPackageFile(input: { id: $id }) {
+    errors
+  }
+}

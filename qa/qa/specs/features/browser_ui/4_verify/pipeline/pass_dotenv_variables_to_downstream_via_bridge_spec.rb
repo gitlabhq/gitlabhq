@@ -41,7 +41,7 @@ module QA
 
       after do
         runner.remove_via_api!
-        group.remove_via_api!
+        [upstream_project, downstream_project].each(&:remove_via_api!)
       end
 
       it 'runs the pipeline with composed config', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1086' do

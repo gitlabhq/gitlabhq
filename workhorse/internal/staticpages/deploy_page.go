@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 func (s *Static) DeployPage(handler http.Handler) http.Handler {

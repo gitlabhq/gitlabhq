@@ -1,10 +1,22 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { redirectTo } from '~/lib/utils/url_utility';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+
+jest.mock('~/lib/utils/url_utility', () => {
+  const urlUtility = jest.requireActual('~/lib/utils/url_utility');
+
+  return {
+    __esModule: true,
+    ...urlUtility,
+    redirectTo: jest.fn(),
+  };
+});
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -113,12 +125,11 @@ describe('MembersFilteredSearchBar', () => {
 
   describe('when filters are set via query params', () => {
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL('https://localhost');
+      setWindowLocation('https://localhost');
     });
 
     it('parses and passes tokens to `FilteredSearchBar` component as `initialFilterValue` prop', () => {
-      window.location.search = '?two_factor=enabled&token_not_available=foobar';
+      setWindowLocation('?two_factor=enabled&token_not_available=foobar');
 
       createComponent();
 
@@ -134,7 +145,7 @@ describe('MembersFilteredSearchBar', () => {
     });
 
     it('parses and passes search param to `FilteredSearchBar` component as `initialFilterValue` prop', () => {
-      window.location.search = '?search=foobar';
+      setWindowLocation('?search=foobar');
 
       createComponent();
 
@@ -149,7 +160,7 @@ describe('MembersFilteredSearchBar', () => {
     });
 
     it('parses and passes search param with multiple words to `FilteredSearchBar` component as `initialFilterValue` prop', () => {
-      window.location.search = '?search=foo+bar+baz';
+      setWindowLocation('?search=foo+bar+baz');
 
       createComponent();
 
@@ -166,8 +177,7 @@ describe('MembersFilteredSearchBar', () => {
 
   describe('when filter bar is submitted', () => {
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL('https://localhost');
+      setWindowLocation('https://localhost');
     });
 
     it('adds correct filter query params', () => {
@@ -177,7 +187,7 @@ describe('MembersFilteredSearchBar', () => {
         { type: 'two_factor', value: { data: 'enabled', operator: '=' } },
       ]);
 
-      expect(window.location.href).toBe('https://localhost/?two_factor=enabled');
+      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?two_factor=enabled');
     });
 
     it('adds search query param', () => {
@@ -188,7 +198,9 @@ describe('MembersFilteredSearchBar', () => {
         { type: 'filtered-search-term', value: { data: 'foobar' } },
       ]);
 
-      expect(window.location.href).toBe('https://localhost/?two_factor=enabled&search=foobar');
+      expect(redirectTo).toHaveBeenCalledWith(
+        'https://localhost/?two_factor=enabled&search=foobar',
+      );
     });
 
     it('adds search query param with multiple words', () => {
@@ -199,11 +211,13 @@ describe('MembersFilteredSearchBar', () => {
         { type: 'filtered-search-term', value: { data: 'foo bar baz' } },
       ]);
 
-      expect(window.location.href).toBe('https://localhost/?two_factor=enabled&search=foo+bar+baz');
+      expect(redirectTo).toHaveBeenCalledWith(
+        'https://localhost/?two_factor=enabled&search=foo+bar+baz',
+      );
     });
 
     it('adds sort query param', () => {
-      window.location.search = '?sort=name_asc';
+      setWindowLocation('?sort=name_asc');
 
       createComponent();
 
@@ -212,13 +226,13 @@ describe('MembersFilteredSearchBar', () => {
         { type: 'filtered-search-term', value: { data: 'foobar' } },
       ]);
 
-      expect(window.location.href).toBe(
+      expect(redirectTo).toHaveBeenCalledWith(
         'https://localhost/?two_factor=enabled&search=foobar&sort=name_asc',
       );
     });
 
     it('adds active tab query param', () => {
-      window.location.search = '?tab=invited';
+      setWindowLocation('?tab=invited');
 
       createComponent();
 
@@ -226,7 +240,7 @@ describe('MembersFilteredSearchBar', () => {
         { type: 'filtered-search-term', value: { data: 'foobar' } },
       ]);
 
-      expect(window.location.href).toBe('https://localhost/?search=foobar&tab=invited');
+      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?search=foobar&tab=invited');
     });
   });
 });

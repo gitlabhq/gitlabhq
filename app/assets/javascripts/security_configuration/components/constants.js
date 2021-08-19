@@ -18,8 +18,9 @@ import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
 
 /**
- * Translations & helpPagePaths for Static Security Configuration Page
+ * Translations & helpPagePaths for Security Configuration Page
  */
+
 export const SAST_NAME = __('Static Application Security Testing (SAST)');
 export const SAST_SHORT_NAME = s__('ciReport|SAST');
 export const SAST_DESCRIPTION = __('Analyze your source code for known vulnerabilities.');
@@ -98,6 +99,10 @@ export const COVERAGE_FUZZING_DESCRIPTION = __(
 export const COVERAGE_FUZZING_HELP_PATH = helpPagePath(
   'user/application_security/coverage_fuzzing/index',
 );
+export const COVERAGE_FUZZING_CONFIG_HELP_PATH = helpPagePath(
+  'user/application_security/coverage_fuzzing/index',
+  { anchor: 'configuration' },
+);
 
 export const API_FUZZING_NAME = __('API Fuzzing');
 export const API_FUZZING_DESCRIPTION = __('Find bugs in your code with API fuzzing.');
@@ -110,73 +115,6 @@ export const LICENSE_COMPLIANCE_DESCRIPTION = __(
 export const LICENSE_COMPLIANCE_HELP_PATH = helpPagePath(
   'user/compliance/license_compliance/index',
 );
-
-export const UPGRADE_CTA = s__(
-  'SecurityConfiguration|Available with %{linkStart}upgrade or free trial%{linkEnd}',
-);
-
-export const scanners = [
-  {
-    name: SAST_NAME,
-    description: SAST_DESCRIPTION,
-    helpPath: SAST_HELP_PATH,
-    type: REPORT_TYPE_SAST,
-  },
-  {
-    name: DAST_NAME,
-    description: DAST_DESCRIPTION,
-    helpPath: DAST_HELP_PATH,
-    type: REPORT_TYPE_DAST,
-  },
-  {
-    name: DAST_PROFILES_NAME,
-    description: DAST_PROFILES_DESCRIPTION,
-    helpPath: DAST_PROFILES_HELP_PATH,
-    type: REPORT_TYPE_DAST_PROFILES,
-  },
-  {
-    name: DEPENDENCY_SCANNING_NAME,
-    description: DEPENDENCY_SCANNING_DESCRIPTION,
-    helpPath: DEPENDENCY_SCANNING_HELP_PATH,
-    type: REPORT_TYPE_DEPENDENCY_SCANNING,
-  },
-  {
-    name: CONTAINER_SCANNING_NAME,
-    description: CONTAINER_SCANNING_DESCRIPTION,
-    helpPath: CONTAINER_SCANNING_HELP_PATH,
-    type: REPORT_TYPE_CONTAINER_SCANNING,
-  },
-  {
-    name: CLUSTER_IMAGE_SCANNING_NAME,
-    description: CLUSTER_IMAGE_SCANNING_DESCRIPTION,
-    helpPath: CLUSTER_IMAGE_SCANNING_HELP_PATH,
-    type: REPORT_TYPE_CLUSTER_IMAGE_SCANNING,
-  },
-  {
-    name: SECRET_DETECTION_NAME,
-    description: SECRET_DETECTION_DESCRIPTION,
-    helpPath: SECRET_DETECTION_HELP_PATH,
-    type: REPORT_TYPE_SECRET_DETECTION,
-  },
-  {
-    name: COVERAGE_FUZZING_NAME,
-    description: COVERAGE_FUZZING_DESCRIPTION,
-    helpPath: COVERAGE_FUZZING_HELP_PATH,
-    type: REPORT_TYPE_COVERAGE_FUZZING,
-  },
-  {
-    name: API_FUZZING_NAME,
-    description: API_FUZZING_DESCRIPTION,
-    helpPath: API_FUZZING_HELP_PATH,
-    type: REPORT_TYPE_API_FUZZING,
-  },
-  {
-    name: LICENSE_COMPLIANCE_NAME,
-    description: LICENSE_COMPLIANCE_DESCRIPTION,
-    helpPath: LICENSE_COMPLIANCE_HELP_PATH,
-    type: REPORT_TYPE_LICENSE_COMPLIANCE,
-  },
-];
 
 export const securityFeatures = [
   {
@@ -219,7 +157,7 @@ export const securityFeatures = [
 
     // This field will eventually come from the backend, the progress is
     // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-    canEnableByMergeRequest: window.gon.features?.secDependencyScanningUiEnable,
+    canEnableByMergeRequest: true,
   },
   {
     name: CONTAINER_SCANNING_NAME,
@@ -262,6 +200,7 @@ export const securityFeatures = [
     name: COVERAGE_FUZZING_NAME,
     description: COVERAGE_FUZZING_DESCRIPTION,
     helpPath: COVERAGE_FUZZING_HELP_PATH,
+    configurationHelpPath: COVERAGE_FUZZING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_COVERAGE_FUZZING,
   },
 ];
@@ -300,3 +239,6 @@ export const featureToMutationMap = {
     }),
   },
 };
+
+export const AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY =
+  'security_configuration_auto_devops_enabled_dismissed_projects';

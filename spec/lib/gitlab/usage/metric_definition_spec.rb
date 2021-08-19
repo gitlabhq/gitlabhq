@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       distribution: %w(ee ce),
       tier: %w(free starter premium ultimate bronze silver gold),
       name: 'uuid',
-      data_category: 'Standard'
+      data_category: 'standard'
     }
   end
 
@@ -87,14 +87,14 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       end
 
       it 'raise exception' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::Metric::InvalidMetricError))
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
 
         described_class.new(path, attributes).validate!
       end
 
       context 'with skip_validation' do
         it 'raise exception if skip_validation: false' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::Metric::InvalidMetricError))
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
 
           described_class.new(path, attributes.merge( { skip_validation: false } )).validate!
         end
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
           attributes[:status] = 'broken'
           attributes.delete(:repair_issue_url)
 
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::Metric::InvalidMetricError))
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
 
           described_class.new(path, attributes).validate!
         end
@@ -173,7 +173,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       write_metric(metric1, path, yaml_content)
       write_metric(metric2, path, yaml_content)
 
-      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(instance_of(Gitlab::Usage::Metric::InvalidMetricError))
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
 
       subject
     end
@@ -199,7 +199,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
         data_source: 'database',
         distribution: %w(ee ce),
         tier: %w(free starter premium ultimate bronze silver gold),
-        data_category: 'Optional'
+        data_category: 'optional'
       }
     end
 

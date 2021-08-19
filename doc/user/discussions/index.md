@@ -138,6 +138,8 @@ who have at least the Reporter role.
 
 ![Confidential comments](img/confidential_comments_v13_9.png)
 
+You can also make an [entire issue confidential](../project/issues/confidential_issues.md).
+
 ## Show only comments
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.

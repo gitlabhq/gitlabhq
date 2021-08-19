@@ -1,3 +1,3 @@
 import UsersSelect from '~/users_select';
 
-document.addEventListener('DOMContentLoaded', () => new UsersSelect());
+new UsersSelect(); // eslint-disable-line no-new

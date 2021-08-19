@@ -7,22 +7,22 @@ module Mutations
 
       description 'Update attributes of a merge request'
 
-      argument :title, GraphQL::STRING_TYPE,
+      argument :title, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::MergeRequestType, :title)
 
-      argument :target_branch, GraphQL::STRING_TYPE,
+      argument :target_branch, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::MergeRequestType, :target_branch)
 
-      argument :description, GraphQL::STRING_TYPE,
+      argument :description, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::MergeRequestType, :description)
 
       argument :state, ::Types::MergeRequestStateEventEnum,
                required: false,
                as: :state_event,
-               description: 'The action to perform to change the state.'
+               description: 'Action to perform to change the state.'
 
       def resolve(project_path:, iid:, **args)
         merge_request = authorized_find!(project_path: project_path, iid: iid)

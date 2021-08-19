@@ -5,7 +5,8 @@ module UserStatusCleanup
   class BatchWorker
     include ApplicationWorker
 
-    sidekiq_options retry: 3
+    data_consistency :always
+
     # rubocop:disable Scalability/CronWorkerContext
     include CronjobQueue
     # rubocop:enable Scalability/CronWorkerContext

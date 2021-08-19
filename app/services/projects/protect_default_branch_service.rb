@@ -69,3 +69,5 @@ module Projects
     end
   end
 end
+
+Projects::ProtectDefaultBranchService.prepend_mod

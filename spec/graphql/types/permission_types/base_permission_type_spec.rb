@@ -36,7 +36,7 @@ RSpec.describe Types::PermissionTypes::BasePermissionType do
       expected_keywords = {
         name: :resolve_using_hash,
         hash_key: :the_key,
-        type: GraphQL::BOOLEAN_TYPE,
+        type: GraphQL::Types::Boolean,
         description: "custom description",
         null: false
       }

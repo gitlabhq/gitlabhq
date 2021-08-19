@@ -114,7 +114,7 @@ rules:
 
 If you add the security scanning jobs as described in [Security scanning with Auto DevOps](#security-scanning-with-auto-devops) or [Security scanning without Auto DevOps](#security-scanning-without-auto-devops) to your `.gitlab-ci.yml` each added [security scanning tool](#security-scanning-tools) behave as described below.
 
-For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline. Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md) that rely on this scan data only show results from pipelines on the default branch. Please note that one tool may use many analyzers.
+For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline. Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md) that rely on this scan data only show results from pipelines on the default branch. One tool might use many analyzers.
 
 Our language and package manager specific jobs attempt to assess which analyzer(s) they should run for your project so that you can do less configuration.
 

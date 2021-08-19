@@ -15,12 +15,19 @@ class IssuePolicy < IssuablePolicy
   desc "Issue is confidential"
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
+  desc "Issue is hidden"
+  condition(:hidden, scope: :subject) { @subject.hidden? }
+
   desc "Issue is persisted"
   condition(:persisted, scope: :subject) { @subject.persisted? }
 
   rule { confidential & ~can_read_confidential }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
     prevent :read_issue_iid
+  end
+
+  rule { hidden & ~admin }.policy do
+    prevent :read_issue
   end
 
   rule { ~can?(:read_issue) }.prevent :create_note

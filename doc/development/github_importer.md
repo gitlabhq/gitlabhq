@@ -69,7 +69,23 @@ don't need to perform this work in parallel.
 This worker imports all pull requests. For every pull request a job for the
 `Gitlab::GithubImport::ImportPullRequestWorker` worker is scheduled.
 
-### 5. Stage::ImportIssuesAndDiffNotesWorker
+### 5. Stage::ImportPullRequestsMergedByWorker
+
+This worker imports the pull requests' _merged-by_ user information. The [_List pull
+requests_](https://docs.github.com/en/rest/reference/pulls#list-pull-requests)
+API doesn't provide this information. Therefore, this stage must fetch each merged pull request
+individually to import this information. A
+`Gitlab::GithubImport::ImportPullRequestMergedByWorker` job is scheduled for each fetched pull
+request.
+
+### 6. Stage::ImportPullRequestsReviewsWorker
+
+This worker imports the pull requests' reviews. For each pull request, this worker:
+
+- Fetches all the pages of reviews.
+- Schedules a `Gitlab::GithubImport::ImportPullRequestReviewWorker` job for each fetched review.
+
+### 7. Stage::ImportIssuesAndDiffNotesWorker
 
 This worker imports all issues and pull request comments. For every issue, we
 schedule a job for the `Gitlab::GithubImport::ImportIssueWorker` worker. For
@@ -85,7 +101,7 @@ label links in the same worker removes the need for performing a separate crawl
 through the API data, reducing the number of API calls necessary to import a
 project.
 
-### 6. Stage::ImportNotesWorker
+### 8. Stage::ImportNotesWorker
 
 This worker imports regular comments for both issues and pull requests. For
 every comment, we schedule a job for the
@@ -96,7 +112,7 @@ returns comments for both issues and pull requests. This means we have to wait
 for all issues and pull requests to be imported before we can import regular
 comments.
 
-### 7. Stage::FinishImportWorker
+### 9. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.
@@ -167,6 +183,9 @@ perform:
    tries to find the user based on the GitHub user ID, while the second query
    is used to find the user using their GitHub Email address.
 
+To avoid mismatching users, the search by GitHub user ID is not done when importing from GitHub
+Enterprise.
+
 Because this process is quite expensive we cache the result of these lookups in
 Redis. For every user looked up we store three keys:
 
@@ -218,9 +237,11 @@ The code for this resides in:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48512/diffs) in GitLab 13.7.
 > - Number of imported objects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64256) in GitLab 14.1.
+> - `Gitlab::GithubImport::Logger` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65968) in GitLab 14.2.
+> - `import_source` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67726) to `import_type` in GitLab 14.2.
 
 The import progress can be checked in the `logs/importer.log` file. Each relevant import is logged
-with `"import_source": "github"` and the `"project_id"`.
+with `"import_type": "github"` and the `"project_id"`.
 
 The last log entry reports the number of objects fetched and imported:
 

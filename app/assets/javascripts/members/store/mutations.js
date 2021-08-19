@@ -47,4 +47,11 @@ export default {
   [types.HIDE_REMOVE_GROUP_LINK_MODAL](state) {
     state.removeGroupLinkModalVisible = false;
   },
+  [types.SHOW_REMOVE_MEMBER_MODAL](state, modalData) {
+    state.removeMemberModalData = modalData;
+    state.removeMemberModalVisible = true;
+  },
+  [types.HIDE_REMOVE_MEMBER_MODAL](state) {
+    state.removeMemberModalVisible = false;
+  },
 };

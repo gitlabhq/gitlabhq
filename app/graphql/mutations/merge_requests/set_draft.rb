@@ -6,7 +6,7 @@ module Mutations
       graphql_name 'MergeRequestSetDraft'
 
       argument :draft,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: true,
                description: <<~DESC
                  Whether or not to set the merge request as a draft.

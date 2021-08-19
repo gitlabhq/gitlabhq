@@ -9,8 +9,8 @@ import (
 	"github.com/rafaeljusto/redigomock"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 func mockRedisServer(t *testing.T, connectReceived *bool) string {

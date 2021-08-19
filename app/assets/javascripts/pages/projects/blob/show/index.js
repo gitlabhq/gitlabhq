@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import TableOfContents from '~/blob/components/table_contents.vue';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
-import BlobViewer from '~/blob/viewer/index';
+import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
 import GpgBadges from '~/gpg_badges';
 import createDefaultClient from '~/lib/graphql';
 import initBlob from '~/pages/projects/init_blob';
@@ -39,6 +39,8 @@ if (viewBlobEl) {
       });
     },
   });
+
+  initAuxiliaryViewer();
 } else {
   new BlobViewer(); // eslint-disable-line no-new
   initBlob();

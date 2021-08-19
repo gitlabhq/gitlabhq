@@ -35,7 +35,7 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
     context 'resolving the thread' do
       before do
-        find('button[data-qa-selector="resolve_discussion_button"]').click
+        find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
       end
 
       it 'hides the link for creating a new issue' do

@@ -3,12 +3,14 @@ import MockAdapter from 'axios-mock-adapter';
 import { noop } from 'lodash';
 import { useFakeDate } from 'helpers/fake_date';
 import testAction from 'helpers/vuex_action_helper';
-import { members, group } from 'jest/members/mock_data';
+import { members, group, modalData } from 'jest/members/mock_data';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
   updateMemberRole,
   showRemoveGroupLinkModal,
   hideRemoveGroupLinkModal,
+  showRemoveMemberModal,
+  hideRemoveMemberModal,
   updateMemberExpiration,
 } from '~/members/store/actions';
 import * as types from '~/members/store/mutation_types';
@@ -148,6 +150,34 @@ describe('Vuex members actions', () => {
         testAction(hideRemoveGroupLinkModal, group, state, [
           {
             type: types.HIDE_REMOVE_GROUP_LINK_MODAL,
+          },
+        ]);
+      });
+    });
+  });
+
+  describe('Remove member modal', () => {
+    const state = {
+      removeMemberModalVisible: false,
+      removeMemberModalData: {},
+    };
+
+    describe('showRemoveMemberModal', () => {
+      it(`commits ${types.SHOW_REMOVE_MEMBER_MODAL} mutation`, () => {
+        testAction(showRemoveMemberModal, modalData, state, [
+          {
+            type: types.SHOW_REMOVE_MEMBER_MODAL,
+            payload: modalData,
+          },
+        ]);
+      });
+    });
+
+    describe('hideRemoveMemberModal', () => {
+      it(`commits ${types.HIDE_REMOVE_MEMBER_MODAL} mutation`, () => {
+        testAction(hideRemoveMemberModal, undefined, state, [
+          {
+            type: types.HIDE_REMOVE_MEMBER_MODAL,
           },
         ]);
       });

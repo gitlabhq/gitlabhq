@@ -10,11 +10,11 @@ module ResolvesPipelines
              required: false,
              description: "Filter pipelines by their status."
     argument :ref,
-             GraphQL::STRING_TYPE,
+             GraphQL::Types::String,
              required: false,
              description: "Filter pipelines by the ref they are run for."
     argument :sha,
-             GraphQL::STRING_TYPE,
+             GraphQL::Types::String,
              required: false,
              description: "Filter pipelines by the sha of the commit they are run for."
   end

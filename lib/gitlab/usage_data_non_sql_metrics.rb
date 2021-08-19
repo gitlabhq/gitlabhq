@@ -5,6 +5,16 @@ module Gitlab
     SQL_METRIC_DEFAULT = -3
 
     class << self
+      def uncached_data
+        super.with_indifferent_access.deep_merge(instrumentation_metrics_queries.with_indifferent_access)
+      end
+
+      def add_metric(metric, time_frame: 'none')
+        metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
+
+        metric_class.new(time_frame: time_frame).instrumentation
+      end
+
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         SQL_METRIC_DEFAULT
       end
@@ -36,6 +46,12 @@ module Gitlab
           projects_jira_server_active: 0,
           projects_jira_cloud_active: 0
         }
+      end
+
+      private
+
+      def instrumentation_metrics_queries
+        ::Gitlab::Usage::Metric.all.map(&:with_instrumentation).reduce({}, :deep_merge)
       end
     end
   end

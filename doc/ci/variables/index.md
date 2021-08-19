@@ -112,20 +112,33 @@ job1:
     - echo This job does not need any variables
 ```
 
-You can use variables to help define other variables. Use `$$` to ignore a variable
-name inside another variable:
-
-```yaml
-variables:
-  FLAGS: '-al'
-  LS_CMD: 'ls "$FLAGS" $$TMP_DIR'
-script:
-  - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
-```
-
 Use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
 keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
+
+### Use variables or `$` in other variables
+
+You can use variables inside other variables:
+
+```yaml
+job:
+  variables:
+    FLAGS: '-al'
+    LS_CMD: 'ls "$FLAGS"'
+  script:
+    - 'eval "$LS_CMD"'  # Executes 'ls -al'
+```
+
+If you do not want the `$` interpreted as the start of a variable, use `$$` instead:
+
+```yaml
+job:
+  variables:
+    FLAGS: '-al'
+    LS_CMD: 'ls "$FLAGS" $$TMP_DIR'
+  script:
+    - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
+```
 
 ### Add a CI/CD variable to a project
 
@@ -294,7 +307,7 @@ To mask a variable:
 1. In the project, group, or Admin Area, go to **Settings > CI/CD**.
 1. Expand the **Variables** section.
 1. Next to the variable you want to protect, select **Edit**.
-1. Select the **Mask variable** check box.
+1. Select the **Mask variable** checkbox.
 1. Select **Update variable**.
 
 The value of the variable must:
@@ -311,18 +324,27 @@ NOTE:
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from accessing
 variable values. To make variables more secure, you can [use external secrets](../secrets/index.md).
 
+WARNING:
+Due to a technical limitation, masked variables that are more than 4 KiB in length are not recommended. Printing such
+a large value to the trace log has the potential to be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128).
+When using GitLab Runner 14.2, only the tail of the variable, characters beyond 4KiB in length, have the potential to
+be revealed.
+
 ### Protect a CI/CD variable
 
 You can protect a project, group or instance CI/CD variable so it is only passed
 to pipelines running on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 
+[Pipelines for merge requests](../pipelines/merge_request_pipelines.md) do not have access to protected variables.
+An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/28002) regarding this limitation.
+
 To protect a variable:
 
 1. Go to **Settings > CI/CD** in the project, group or instance admin area.
 1. Expand the **Variables** section.
 1. Next to the variable you want to protect, select **Edit**.
-1. Select the **Protect variable** check box.
+1. Select the **Protect variable** checkbox.
 1. Select **Update variable**.
 
 The variable is available for all subsequent pipelines.
@@ -398,7 +420,7 @@ job_name:
 ```
 
 In [some cases](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4115#note_157692820)
-environment variables might need to be surrounded by quotes to expand properly:
+environment variables must be surrounded by quotes to expand properly:
 
 ```yaml
 job_name:
@@ -626,7 +648,7 @@ the environment scope of a variable. GitLab does this by
 [defining which environments and corresponding jobs](../environments/index.md)
 the variable can be available for.
 
-To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scoping-environments-with-specs).
+To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scope-environments-with-specs).
 
 To learn more about ensuring CI/CD variables are only exposed in pipelines running from protected
 branches or tags, see [Protect a CI/CD Variable](#protect-a-cicd-variable).
@@ -770,6 +792,8 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_PROJECT_VISIBILITY=public
 ++ export CI_PROJECT_REPOSITORY_LANGUAGES=
 ++ CI_PROJECT_REPOSITORY_LANGUAGES=
+++ export CI_PROJECT_CLASSIFICATION_LABEL=
+++ CI_PROJECT_CLASSIFICATION_LABEL=
 ++ export CI_DEFAULT_BRANCH=main
 ++ CI_DEFAULT_BRANCH=main
 ++ export CI_REGISTRY=registry.gitlab.com

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: web_ide_clientside_preview_enabled
 description: Whether Web IDE clientside preview is enabled
 product_section: dev
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

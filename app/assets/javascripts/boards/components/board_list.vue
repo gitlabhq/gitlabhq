@@ -6,12 +6,13 @@ import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_opt
 import { sprintf, __ } from '~/locale';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import Tracking from '~/tracking';
-import { toggleFormEventPrefix } from '../constants';
+import { toggleFormEventPrefix, DraggableItemTypes } from '../constants';
 import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
 import BoardNewIssue from './board_new_issue.vue';
 
 export default {
+  draggableItemTypes: DraggableItemTypes,
   name: 'BoardList',
   i18n: {
     loading: __('Loading'),
@@ -27,11 +28,6 @@ export default {
     GlIntersectionObserver,
   },
   mixins: [Tracking.mixin()],
-  inject: {
-    canAdminList: {
-      default: false,
-    },
-  },
   props: {
     disabled: {
       type: Boolean,
@@ -89,8 +85,8 @@ export default {
       return !this.isEpicBoard && this.list.listType !== 'closed' && this.showIssueForm;
     },
     listRef() {
-      // When  list is draggable, the reference to the list needs to be accessed differently
-      return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
+      // When list is draggable, the reference to the list needs to be accessed differently
+      return this.canMoveIssue ? this.$refs.list.$el : this.$refs.list;
     },
     showingAllItems() {
       return this.boardItems.length === this.listItemsCount;
@@ -100,8 +96,11 @@ export default {
         ? this.$options.i18n.showingAllEpics
         : this.$options.i18n.showingAllIssues;
     },
+    canMoveIssue() {
+      return !this.disabled;
+    },
     treeRootWrapper() {
-      return this.canAdminList && !this.listsFlags[this.list.id]?.addItemToListInProgress
+      return this.canMoveIssue && !this.listsFlags[this.list.id]?.addItemToListInProgress
         ? Draggable
         : 'ul';
     },
@@ -116,7 +115,7 @@ export default {
         value: this.boardItems,
       };
 
-      return this.canAdminList ? options : {};
+      return this.canMoveIssue ? options : {};
     },
   },
   watch: {
@@ -172,15 +171,33 @@ export default {
         this.loadNextPage();
       }
     },
-    handleDragOnStart() {
+    handleDragOnStart({
+      item: {
+        dataset: { draggableItemType },
+      },
+    }) {
+      if (draggableItemType !== DraggableItemTypes.card) {
+        return;
+      }
+
       sortableStart();
       this.track('drag_card', { label: 'board' });
     },
-    handleDragOnEnd(params) {
+    handleDragOnEnd({
+      newIndex: originalNewIndex,
+      oldIndex,
+      from,
+      to,
+      item: {
+        dataset: { draggableItemType, itemId, itemIid, itemPath },
+      },
+    }) {
+      if (draggableItemType !== DraggableItemTypes.card) {
+        return;
+      }
+
       sortableEnd();
-      const { oldIndex, from, to, item } = params;
-      let { newIndex } = params;
-      const { itemId, itemIid, itemPath } = item.dataset;
+      let newIndex = originalNewIndex;
       let { children } = to;
       let moveBeforeId;
       let moveAfterId;
@@ -267,6 +284,7 @@ export default {
         :index="index"
         :list="list"
         :item="item"
+        :data-draggable-item-type="$options.draggableItemTypes.card"
         :disabled="disabled"
       />
       <gl-intersection-observer @appear="onReachingListBottom">

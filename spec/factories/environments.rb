@@ -75,6 +75,11 @@ FactoryBot.define do
       auto_stop_at { 1.day.ago }
     end
 
+    trait :auto_deletable do
+      state { :stopped }
+      auto_delete_at { 1.day.ago }
+    end
+
     trait :will_auto_stop do
       auto_stop_at { 1.day.from_now }
     end

@@ -51,7 +51,6 @@ describe('GroupFilter', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findSearchableDropdown = () => wrapper.find(SearchableDropdown);
@@ -89,10 +88,11 @@ describe('GroupFilter', () => {
         findSearchableDropdown().vm.$emit('change', ANY_OPTION);
       });
 
-      it('calls setUrlParams with group null, project id null, and then calls visitUrl', () => {
+      it('calls setUrlParams with group null, project id null, nav_source null, and then calls visitUrl', () => {
         expect(setUrlParams).toHaveBeenCalledWith({
           [GROUP_DATA.queryParam]: null,
           [PROJECT_DATA.queryParam]: null,
+          nav_source: null,
         });
 
         expect(visitUrl).toHaveBeenCalled();
@@ -108,10 +108,11 @@ describe('GroupFilter', () => {
         findSearchableDropdown().vm.$emit('change', MOCK_GROUP);
       });
 
-      it('calls setUrlParams with group id, project id null, and then calls visitUrl', () => {
+      it('calls setUrlParams with group id, project id null, nav_source null, and then calls visitUrl', () => {
         expect(setUrlParams).toHaveBeenCalledWith({
           [GROUP_DATA.queryParam]: MOCK_GROUP.id,
           [PROJECT_DATA.queryParam]: null,
+          nav_source: null,
         });
 
         expect(visitUrl).toHaveBeenCalled();
@@ -153,6 +154,33 @@ describe('GroupFilter', () => {
         it('sets selectedGroup to ANY_OPTION', () => {
           expect(wrapper.vm.selectedGroup).toBe(MOCK_GROUP);
         });
+      });
+    });
+  });
+
+  describe.each`
+    navSource   | initialData   | callMethod
+    ${null}     | ${null}       | ${false}
+    ${null}     | ${MOCK_GROUP} | ${false}
+    ${'navbar'} | ${null}       | ${false}
+    ${'navbar'} | ${MOCK_GROUP} | ${true}
+  `('onCreate', ({ navSource, initialData, callMethod }) => {
+    describe(`when nav_source is ${navSource} and ${
+      initialData ? 'has' : 'does not have'
+    } an initial group`, () => {
+      beforeEach(() => {
+        createComponent({ query: { ...MOCK_QUERY, nav_source: navSource } }, { initialData });
+      });
+
+      it(`${callMethod ? 'does' : 'does not'} call setFrequentGroup`, () => {
+        if (callMethod) {
+          expect(actionSpies.setFrequentGroup).toHaveBeenCalledWith(
+            expect.any(Object),
+            initialData,
+          );
+        } else {
+          expect(actionSpies.setFrequentGroup).not.toHaveBeenCalled();
+        }
       });
     });
   });

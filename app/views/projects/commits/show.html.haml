@@ -26,7 +26,7 @@
           = form_tag(project_commits_path(@project, @id), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path }) do
             = search_field_tag :search, params[:search], { placeholder: _('Search by message'), id: 'commits-search', class: 'form-control gl-form-input input-short gl-mt-3 gl-sm-mt-0 gl-min-w-full', spellcheck: false }
         .control.d-none.d-md-block
-          = link_to project_commits_path(@project, @ref, rss_url_options), title: _("Commits feed"), class: 'btn gl-button btn-default btn-icon' do
+          = link_to project_commits_path(@project, @id, rss_url_options), title: _("Commits feed"), class: 'btn gl-button btn-default btn-icon' do
             = sprite_icon('rss', css_class: 'qa-rss-icon')
 
   = render_if_exists 'projects/commits/mirror_status'

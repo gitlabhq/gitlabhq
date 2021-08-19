@@ -18,8 +18,12 @@ is created, based on the user's access permissions:
 
 - Public projects can be selected by any signed-in user as a template for a new project,
   if all enabled [project features](../project/settings/index.md#sharing-and-permissions)
-  except for GitLab Pages are set to **Everyone With Access**.
+  except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
+  The same applies to internal projects.
 - Private projects can be selected only by users who are members of the projects.
+
+The **Metrics Dashboard** is set to **Only Project Members** when you create a new project. Make
+sure you change it to **Everyone With Access** before making it a project template.
 
 Repository and database information that are copied over to each new project are
 identical to the data exported with the [GitLab Project Import/Export](../project/settings/import_export.md).

@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlFormInput } from '@gitlab/ui';
 import { n__ } from '~/locale';
 import {
   REMOVE_TAG_CONFIRMATION_TEXT,
@@ -12,6 +12,7 @@ export default {
   components: {
     GlModal,
     GlSprintf,
+    GlFormInput,
   },
   props: {
     itemsToBeDeleted: {
@@ -25,7 +26,15 @@ export default {
       required: false,
     },
   },
+  data() {
+    return {
+      projectPath: '',
+    };
+  },
   computed: {
+    imageProjectPath() {
+      return this.itemsToBeDeleted[0]?.project?.path;
+    },
     modalTitle() {
       if (this.deleteImage) {
         return DELETE_IMAGE_CONFIRMATION_TITLE;
@@ -40,6 +49,7 @@ export default {
       if (this.deleteImage) {
         return {
           message: DELETE_IMAGE_CONFIRMATION_TEXT,
+          item: this.imageProjectPath,
         };
       }
       if (this.itemsToBeDeleted.length > 1) {
@@ -55,6 +65,9 @@ export default {
         item: first?.path,
       };
     },
+    disablePrimaryButton() {
+      return this.deleteImage && this.projectPath !== this.imageProjectPath;
+    },
   },
   methods: {
     show() {
@@ -69,10 +82,14 @@ export default {
     ref="deleteModal"
     modal-id="delete-tag-modal"
     ok-variant="danger"
-    :action-primary="{ text: __('Confirm'), attributes: { variant: 'danger' } }"
+    :action-primary="{
+      text: __('Delete'),
+      attributes: [{ variant: 'danger' }, { disabled: disablePrimaryButton }],
+    }"
     :action-cancel="{ text: __('Cancel') }"
     @primary="$emit('confirmDelete')"
     @cancel="$emit('cancelDelete')"
+    @change="projectPath = ''"
   >
     <template #modal-title>{{ modalTitle }}</template>
     <p v-if="modalDescription" data-testid="description">
@@ -80,7 +97,13 @@ export default {
         <template #item>
           <b>{{ modalDescription.item }}</b>
         </template>
+        <template #code>
+          <code>{{ modalDescription.item }}</code>
+        </template>
       </gl-sprintf>
     </p>
+    <div v-if="deleteImage">
+      <gl-form-input v-model="projectPath" />
+    </div>
   </gl-modal>
 </template>

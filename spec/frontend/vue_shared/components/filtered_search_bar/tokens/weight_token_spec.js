@@ -12,6 +12,7 @@ describe('WeightToken', () => {
   const createComponent = ({ config = mockWeightToken, value = { data: '' } } = {}) =>
     mount(WeightToken, {
       propsData: {
+        active: false,
         config,
         value,
       },

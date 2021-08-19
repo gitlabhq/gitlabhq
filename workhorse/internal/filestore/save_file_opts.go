@@ -7,8 +7,8 @@ import (
 
 	"gocloud.dev/blob"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
 
 // DefaultObjectStoreTimeout is the timeout for ObjectStore upload operation

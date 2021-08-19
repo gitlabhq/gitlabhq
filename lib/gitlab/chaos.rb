@@ -31,7 +31,7 @@ module Gitlab
       expected_end_time = Time.now + duration_s
 
       while Time.now < expected_end_time
-        ActiveRecord::Base.connection.execute("SELECT 1")
+        ApplicationRecord.connection.execute("SELECT 1")
 
         end_interval_time = Time.now + [duration_s, interval_s].min
         rand while Time.now < end_interval_time

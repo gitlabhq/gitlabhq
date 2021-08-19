@@ -33,7 +33,7 @@ module Repositories
     end
 
     def authenticate_user
-      @authentication_result = Gitlab::Auth::Result.new
+      @authentication_result = Gitlab::Auth::Result::EMPTY
 
       if allow_basic_auth? && basic_auth_provided?
         login, password = user_name_and_password(request)

@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::EncodingHelper do
+  using RSpec::Parameterized::TableSyntax
+
   let(:ext_class) { Class.new { extend Gitlab::EncodingHelper } }
   let(:binary_string) { File.read(Rails.root + "spec/fixtures/dk.png") }
 
@@ -86,6 +88,22 @@ RSpec.describe Gitlab::EncodingHelper do
           parents: repo.empty? ? [] : [repo.head.target].compact,
           update_ref: 'HEAD'
         )
+      end
+    end
+  end
+
+  describe '#encode_utf8_no_detect' do
+    where(:input, :expected) do
+      "abcd" | "abcd"
+      "ǲǲǲ" | "ǲǲǲ"
+      "\xC7\xB2\xC7ǲǲǲ" | "ǲ�ǲǲǲ"
+      "🐤🐤🐤🐤\xF0\x9F\x90" | "🐤🐤🐤🐤�"
+    end
+
+    with_them do
+      it 'drops invalid UTF-8' do
+        expect(ext_class.encode_utf8_no_detect(input.dup.force_encoding(Encoding::ASCII_8BIT))).to eq(expected)
+        expect(ext_class.encode_utf8_no_detect(input)).to eq(expected)
       end
     end
   end

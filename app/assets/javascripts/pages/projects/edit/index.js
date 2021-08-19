@@ -25,10 +25,6 @@ initProjectLoadingSpinner();
 initProjectPermissionsSettings();
 setupTransferEdit('.js-project-transfer-form', 'select.select2');
 
-dirtySubmitFactory(
-  document.querySelectorAll(
-    '.js-general-settings-form, .js-mr-settings-form, .js-mr-approvals-form',
-  ),
-);
+dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-settings-form'));
 
 initSearchSettings();

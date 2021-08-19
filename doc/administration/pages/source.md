@@ -41,7 +41,7 @@ which you can set it up:
    the Pages daemon is installed, so you must share it through the network.
 1. Run the Pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you must proxy the traffic with
-   a load balancer. If you choose that route, note that you should use TCP load
+   a load balancer. If you choose that route, you should use TCP load
    balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing), the
    pages aren't able to be served with user-provided certificates. For
    HTTP, it's OK to use HTTP or TCP load balancing.
@@ -127,17 +127,43 @@ The Pages daemon doesn't listen to the outside world.
      # path: shared/pages
 
      host: example.io
-     port: 80
+     access_control: false
+     port: 8090
      https: false
+     artifacts_server: false
+     external_http: ["127.0.0.1:8090"]
+     secret_file: /home/git/gitlab/gitlab-pages/gitlab-pages-secret
+   ```
+
+1. Add the following configuration file to
+   `/home/git/gitlab/gitlab-pages/gitlab-pages.conf`, and be sure to change
+   `example.io` to the FQDN from which you want to serve GitLab Pages and
+   `gitlab.example.com` to the URL of your GitLab instance:
+
+   ```ini
+   listen-http=:8090
+   pages-root=/home/git/gitlab/shared/pages
+   api-secret-key=/home/git/gitlab/gitlab-pages-secret
+   pages-domain=example.io
+   internal-gitlab-server=https://gitlab.example.com
+   ```
+
+   You may use an `http` address, when running GitLab Pages and GitLab on the
+   same host. If you use `https` and use a self-signed certificate, be sure to
+   make your custom CA available to GitLab Pages, for example by setting the
+   `SSL_CERT_DIR` environment variable.
+
+1. Add the secret API key:
+
+   ```shell
+   sudo -u git -H openssl rand -base64 32 > /home/git/gitlab/gitlab-pages-secret
    ```
 
 1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
-   order to enable the pages daemon. In `gitlab_pages_options` the
-   `-pages-domain` must match the `host` setting that you set above.
+   order to enable the pages daemon:
 
    ```ini
    gitlab_pages_enabled=true
-   gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
    ```
 
 1. Copy the `gitlab-pages` NGINX configuration file:

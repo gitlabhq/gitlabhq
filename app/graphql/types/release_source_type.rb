@@ -7,9 +7,9 @@ module Types
 
     authorize :download_code
 
-    field :format, GraphQL::STRING_TYPE, null: true,
+    field :format, GraphQL::Types::String, null: true,
           description: 'Format of the source.'
-    field :url, GraphQL::STRING_TYPE, null: true,
+    field :url, GraphQL::Types::String, null: true,
           description: 'Download URL of the source.'
   end
 end

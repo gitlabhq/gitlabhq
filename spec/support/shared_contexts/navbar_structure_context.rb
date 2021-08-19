@@ -176,6 +176,15 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:ci_cd_nav_item) do
+    {
+      nav_item: _('CI/CD'),
+      nav_sub_items: [
+        s_('Runners|Runners')
+      ]
+    }
+  end
+
   let(:issues_nav_items) do
     [
       _('List'),

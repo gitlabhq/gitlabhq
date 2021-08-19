@@ -29,27 +29,11 @@ module QA
         end
       end
 
-      let(:subgroup) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.api_client = api_client
-          group.sandbox = source_group
-          group.path = "subgroup-for-import-#{SecureRandom.hex(4)}"
-        end
-      end
-
       let(:imported_group) do
-        Resource::Group.init do |group|
+        Resource::BulkImportGroup.init do |group|
           group.api_client = api_client
           group.sandbox = sandbox
-          group.path = source_group.path
-        end
-      end
-
-      let(:imported_subgroup) do
-        Resource::Group.init do |group|
-          group.api_client = api_client
-          group.sandbox = imported_group
-          group.path = subgroup.path
+          group.source_group_path = source_group.path
         end
       end
 
@@ -61,7 +45,6 @@ module QA
 
         # create groups explicitly before connecting gitlab instance
         source_group
-        subgroup
 
         Flow::Login.sign_in(as: user)
         Page::Main::Menu.perform(&:go_to_create_group)
@@ -74,33 +57,15 @@ module QA
       # Non blocking issues:
       # https://gitlab.com/gitlab-org/gitlab/-/issues/331252
       # https://gitlab.com/gitlab-org/gitlab/-/issues/333678 <- can cause 500 when creating user and group back to back
-      it(
-        'imports group with subgroups and labels',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785'
-      ) do
-        Resource::GroupLabel.fabricate_via_api! do |label|
-          label.api_client = api_client
-          label.group = source_group
-          label.title = "source-group-#{SecureRandom.hex(4)}"
-        end
-        Resource::GroupLabel.fabricate_via_api! do |label|
-          label.api_client = api_client
-          label.group = subgroup
-          label.title = "subgroup-#{SecureRandom.hex(4)}"
-        end
-
+      it 'imports group from UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785' do
         Page::Group::BulkImport.perform do |import_page|
-          import_page.import_group(source_group.path, sandbox.path)
+          import_page.import_group(imported_group.path, imported_group.sandbox.path)
 
-          expect(import_page).to have_imported_group(source_group.path, wait: 180)
+          expect(import_page).to have_imported_group(imported_group.path, wait: 300)
 
-          aggregate_failures do
-            expect { imported_group.reload! }.to eventually_eq(source_group).within(duration: 10)
-            expect { imported_group.labels }.to eventually_include(*source_group.labels).within(duration: 10)
-
-            # Do not validate subgroups until https://gitlab.com/gitlab-org/gitlab/-/issues/332818 is resolved
-            # expect { imported_subgroup.reload! }.to eventually_eq(subgroup).within(duration: 30)
-            # expect { imported_subgroup.labels }.to eventually_include(*subgroup.labels).within(duration: 30)
+          imported_group.reload!.visit!
+          Page::Group::Show.perform do |group|
+            expect(group).to have_content(imported_group.path)
           end
         end
       end

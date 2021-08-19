@@ -6,7 +6,7 @@ module Mutations
       extend ActiveSupport::Concern
 
       included do
-        argument :description, GraphQL::STRING_TYPE,
+        argument :description, GraphQL::Types::String,
                  required: false,
                  description: copy_field_description(Types::IssueType, :description)
 
@@ -14,11 +14,11 @@ module Mutations
                  required: false,
                  description: copy_field_description(Types::IssueType, :due_date)
 
-        argument :confidential, GraphQL::BOOLEAN_TYPE,
+        argument :confidential, GraphQL::Types::Boolean,
                  required: false,
                  description: copy_field_description(Types::IssueType, :confidential)
 
-        argument :locked, GraphQL::BOOLEAN_TYPE,
+        argument :locked, GraphQL::Types::Boolean,
                  as: :discussion_locked,
                  required: false,
                  description: copy_field_description(Types::IssueType, :discussion_locked)

@@ -2,7 +2,7 @@ import $ from 'jquery';
 import ShortcutsNetwork from '~/behaviors/shortcuts/shortcuts_network';
 import Network from '../network';
 
-document.addEventListener('DOMContentLoaded', () => {
+(() => {
   if (!$('.network-graph').length) return;
 
   const networkGraph = new Network({
@@ -14,4 +14,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // eslint-disable-next-line no-new
   new ShortcutsNetwork(networkGraph.branch_graph);
-});
+})();

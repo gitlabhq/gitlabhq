@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: object_store.packages.object_store.enabled
 description: Whether Object Storage is enabled for Packages
 product_section: enablement
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

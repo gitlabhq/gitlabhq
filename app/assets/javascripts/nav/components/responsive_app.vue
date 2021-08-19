@@ -2,8 +2,7 @@
 import { FREQUENT_ITEMS_PROJECTS, FREQUENT_ITEMS_GROUPS } from '~/frequent_items/constants';
 import { BV_DROPDOWN_SHOW, BV_DROPDOWN_HIDE } from '~/lib/utils/constants';
 import KeepAliveSlots from '~/vue_shared/components/keep_alive_slots.vue';
-import eventHub, { EVENT_RESPONSIVE_TOGGLE } from '../event_hub';
-import { resetMenuItemsActive, hasMenuExpanded } from '../utils';
+import { resetMenuItemsActive } from '../utils';
 import ResponsiveHeader from './responsive_header.vue';
 import ResponsiveHome from './responsive_home.vue';
 import TopNavContainerView from './top_nav_container_view.vue';
@@ -33,25 +32,14 @@ export default {
     },
   },
   created() {
-    eventHub.$on(EVENT_RESPONSIVE_TOGGLE, this.updateResponsiveOpen);
     this.$root.$on(BV_DROPDOWN_SHOW, this.showMobileOverlay);
     this.$root.$on(BV_DROPDOWN_HIDE, this.hideMobileOverlay);
-
-    this.updateResponsiveOpen();
   },
   beforeDestroy() {
-    eventHub.$off(EVENT_RESPONSIVE_TOGGLE, this.onToggle);
     this.$root.$off(BV_DROPDOWN_SHOW, this.showMobileOverlay);
     this.$root.$off(BV_DROPDOWN_HIDE, this.hideMobileOverlay);
   },
   methods: {
-    updateResponsiveOpen() {
-      if (hasMenuExpanded()) {
-        document.body.classList.add('top-nav-responsive-open');
-      } else {
-        document.body.classList.remove('top-nav-responsive-open');
-      }
-    },
     onMenuItemClick({ view }) {
       if (view) {
         this.activeView = view;

@@ -71,7 +71,7 @@ RSpec.describe 'layouts/header/_new_dropdown' do
       before do
         allow(view).to receive(:can?).with(user, :create_projects, group).and_return(true)
         allow(view).to receive(:can?).with(user, :admin_group_member, group).and_return(invite_member)
-        allow(view).to receive(:can_import_members?).and_return(invite_member)
+        allow(view).to receive(:can_admin_project_member?).and_return(invite_member)
         allow(view).to receive(:experiment_enabled?)
       end
 
@@ -142,7 +142,7 @@ RSpec.describe 'layouts/header/_new_dropdown' do
       let(:href) { project_project_members_path(project) }
 
       before do
-        allow(view).to receive(:can_import_members?).and_return(invite_member)
+        allow(view).to receive(:can_admin_project_member?).and_return(invite_member)
         stub_current_user(user)
         allow(view).to receive(:experiment_enabled?)
       end

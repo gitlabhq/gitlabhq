@@ -3,7 +3,7 @@
 module Resolvers
   module Users
     class GroupCountResolver < BaseResolver
-      type GraphQL::INT_TYPE, null: true
+      type GraphQL::Types::Int, null: true
 
       alias_method :user, :object
 

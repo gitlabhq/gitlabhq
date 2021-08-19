@@ -7,7 +7,7 @@ module Gitlab
       # "connection" method.
       module ActiveRecordProxy
         def connection
-          LoadBalancing.proxy
+          ::Gitlab::Database::LoadBalancing.proxy
         end
       end
     end

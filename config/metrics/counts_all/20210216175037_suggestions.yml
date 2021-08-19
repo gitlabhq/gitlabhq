@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.suggestions
 description: Count of all comments that contain suggested changes
 product_section: dev
@@ -14,6 +14,7 @@ distribution:
 - ce
 - ee
 tier:
- - free
- - premium
- - ultimate
+- free
+- premium
+- ultimate
+performance_indicator_type: []

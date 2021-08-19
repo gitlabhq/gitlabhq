@@ -2,6 +2,9 @@
 
 module Ci
   class DropPipelineService
+    PRELOADED_COMMIT_STATUS_RELATIONS = [:project, :pipeline].freeze
+    PRELOADED_CI_BUILD_RELATIONS = [:metadata, :deployment, :taggings].freeze
+
     # execute service asynchronously for each cancelable pipeline
     def execute_async_for_all(pipelines, failure_reason, context_user)
       pipelines.cancelable.select(:id).find_in_batches do |pipelines_batch|
@@ -27,11 +30,11 @@ module Ci
 
     private
 
-    def preload_associations_for_drop(builds_batch)
-      ActiveRecord::Associations::Preloader.new.preload( # rubocop: disable CodeReuse/ActiveRecord
-        builds_batch,
-        [:project, :pipeline, :metadata, :deployment, :taggings]
-      )
+    # rubocop: disable CodeReuse/ActiveRecord
+    def preload_associations_for_drop(commit_status_batch)
+      ActiveRecord::Associations::Preloader.new.preload(commit_status_batch, PRELOADED_COMMIT_STATUS_RELATIONS)
+      ActiveRecord::Associations::Preloader.new.preload(commit_status_batch.select { |job| job.is_a?(Ci::Build) }, PRELOADED_CI_BUILD_RELATIONS)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -104,4 +104,15 @@ describe('User Avatar Link Component', () => {
       );
     });
   });
+
+  describe('lazy', () => {
+    it('passes lazy prop to avatar image', () => {
+      createWrapper({
+        username: '',
+        lazy: true,
+      });
+
+      expect(wrapper.find(UserAvatarImage).props('lazy')).toBe(true);
+    });
+  });
 });

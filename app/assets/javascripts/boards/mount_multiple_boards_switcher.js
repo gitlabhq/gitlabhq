@@ -11,7 +11,12 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
+  defaultClient: createDefaultClient(
+    {},
+    {
+      assumeImmutableResults: true,
+    },
+  ),
 });
 
 export default (params = {}) => {

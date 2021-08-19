@@ -9,6 +9,7 @@ query ListIssues(
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     board(id: $boardId) {
+      hideBacklogList
       lists(issueFilters: $filters) {
         nodes {
           ...BoardListFragment
@@ -18,6 +19,7 @@ query ListIssues(
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     board(id: $boardId) {
+      hideBacklogList
       lists(issueFilters: $filters) {
         nodes {
           ...BoardListFragment

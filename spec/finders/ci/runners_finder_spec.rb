@@ -33,41 +33,43 @@ RSpec.describe Ci::RunnersFinder do
         end
       end
 
-      context 'filter by search term' do
-        it 'calls Ci::Runner.search' do
-          expect(Ci::Runner).to receive(:search).with('term').and_call_original
+      context 'filtering' do
+        context 'by search term' do
+          it 'calls Ci::Runner.search' do
+            expect(Ci::Runner).to receive(:search).with('term').and_call_original
 
-          described_class.new(current_user: admin, params: { search: 'term' }).execute
+            described_class.new(current_user: admin, params: { search: 'term' }).execute
+          end
         end
-      end
 
-      context 'filter by status' do
-        Ci::Runner::AVAILABLE_STATUSES.each do |status|
-          it "calls the corresponding :#{status} scope on Ci::Runner" do
-            expect(Ci::Runner).to receive(status.to_sym).and_call_original
+        context 'by status' do
+          Ci::Runner::AVAILABLE_STATUSES.each do |status|
+            it "calls the corresponding :#{status} scope on Ci::Runner" do
+              expect(Ci::Runner).to receive(status.to_sym).and_call_original
 
-            described_class.new(current_user: admin, params: { status_status: status }).execute
+              described_class.new(current_user: admin, params: { status_status: status }).execute
+            end
+          end
+        end
+
+        context 'by runner type' do
+          it 'calls the corresponding scope on Ci::Runner' do
+            expect(Ci::Runner).to receive(:project_type).and_call_original
+
+            described_class.new(current_user: admin, params: { type_type: 'project_type' }).execute
+          end
+        end
+
+        context 'by tag_name' do
+          it 'calls the corresponding scope on Ci::Runner' do
+            expect(Ci::Runner).to receive(:tagged_with).with(%w[tag1 tag2]).and_call_original
+
+            described_class.new(current_user: admin, params: { tag_name: %w[tag1 tag2] }).execute
           end
         end
       end
 
-      context 'filter by runner type' do
-        it 'calls the corresponding scope on Ci::Runner' do
-          expect(Ci::Runner).to receive(:project_type).and_call_original
-
-          described_class.new(current_user: admin, params: { type_type: 'project_type' }).execute
-        end
-      end
-
-      context 'filter by tag_name' do
-        it 'calls the corresponding scope on Ci::Runner' do
-          expect(Ci::Runner).to receive(:tagged_with).with(%w[tag1 tag2]).and_call_original
-
-          described_class.new(current_user: admin, params: { tag_name: %w[tag1 tag2] }).execute
-        end
-      end
-
-      context 'sort' do
+      context 'sorting' do
         let_it_be(:runner1) { create :ci_runner, created_at: '2018-07-12 07:00', contacted_at: 1.minute.ago }
         let_it_be(:runner2) { create :ci_runner, created_at: '2018-07-12 08:00', contacted_at: 3.minutes.ago }
         let_it_be(:runner3) { create :ci_runner, created_at: '2018-07-12 09:00', contacted_at: 2.minutes.ago }
@@ -121,7 +123,7 @@ RSpec.describe Ci::RunnersFinder do
         end
       end
 
-      context 'non admin user' do
+      context 'by non admin user' do
         it 'returns no runners' do
           user = create :user
           create :ci_runner, active: true
@@ -131,7 +133,7 @@ RSpec.describe Ci::RunnersFinder do
         end
       end
 
-      context 'user is nil' do
+      context 'when user is nil' do
         it 'returns no runners' do
           user = nil
           create :ci_runner, active: true
@@ -182,85 +184,69 @@ RSpec.describe Ci::RunnersFinder do
     describe '#execute' do
       subject { described_class.new(current_user: user, group: group, params: params).execute }
 
-      context 'no params' do
+      context 'with user as group owner' do
         before do
           group.add_owner(user)
         end
 
-        it 'returns all runners' do
-          expect(subject).to eq([runner_project_7, runner_project_6, runner_project_5,
-                                 runner_project_4, runner_project_3, runner_project_2,
-                                 runner_project_1, runner_sub_group_4, runner_sub_group_3,
-                                 runner_sub_group_2, runner_sub_group_1, runner_group])
+        context 'passing no params' do
+          it 'returns all descendant runners' do
+            expect(subject).to eq([runner_project_7, runner_project_6, runner_project_5,
+                                   runner_project_4, runner_project_3, runner_project_2,
+                                   runner_project_1, runner_sub_group_4, runner_sub_group_3,
+                                   runner_sub_group_2, runner_sub_group_1, runner_group])
+          end
+        end
+
+        context 'with sort param' do
+          let(:params) { { sort: 'contacted_asc' } }
+
+          it 'sorts by specified attribute' do
+            expect(subject).to eq([runner_group, runner_sub_group_1, runner_sub_group_2,
+                                   runner_sub_group_3, runner_sub_group_4, runner_project_1,
+                                   runner_project_2, runner_project_3, runner_project_4,
+                                   runner_project_5, runner_project_6, runner_project_7])
+          end
+        end
+
+        context 'filtering' do
+          context 'by search term' do
+            let(:params) { { search: 'runner_project_search' } }
+
+            it 'returns correct runner' do
+              expect(subject).to eq([runner_project_3])
+            end
+          end
+
+          context 'by status' do
+            let(:params) { { status_status: 'paused' } }
+
+            it 'returns correct runner' do
+              expect(subject).to eq([runner_sub_group_1])
+            end
+          end
+
+          context 'by tag_name' do
+            let(:params) { { tag_name: %w[runner_tag] } }
+
+            it 'returns correct runner' do
+              expect(subject).to eq([runner_project_5])
+            end
+          end
+
+          context 'by runner type' do
+            let(:params) { { type_type: 'project_type' } }
+
+            it 'returns correct runners' do
+              expect(subject).to eq([runner_project_7, runner_project_6,
+                                     runner_project_5, runner_project_4,
+                                     runner_project_3, runner_project_2, runner_project_1])
+            end
+          end
         end
       end
 
-      context 'with sort param' do
-        let(:params) { { sort: 'contacted_asc' } }
-
-        before do
-          group.add_owner(user)
-        end
-
-        it 'sorts by specified attribute' do
-          expect(subject).to eq([runner_group, runner_sub_group_1, runner_sub_group_2,
-                                 runner_sub_group_3, runner_sub_group_4, runner_project_1,
-                                 runner_project_2, runner_project_3, runner_project_4,
-                                 runner_project_5, runner_project_6, runner_project_7])
-        end
-      end
-
-      context 'filter by search term' do
-        let(:params) { { search: 'runner_project_search' } }
-
-        before do
-          group.add_owner(user)
-        end
-
-        it 'returns correct runner' do
-          expect(subject).to eq([runner_project_3])
-        end
-      end
-
-      context 'filter by status' do
-        let(:params) { { status_status: 'paused' } }
-
-        before do
-          group.add_owner(user)
-        end
-
-        it 'returns correct runner' do
-          expect(subject).to eq([runner_sub_group_1])
-        end
-      end
-
-      context 'filter by tag_name' do
-        let(:params) { { tag_name: %w[runner_tag] } }
-
-        before do
-          group.add_owner(user)
-        end
-
-        it 'returns correct runner' do
-          expect(subject).to eq([runner_project_5])
-        end
-      end
-
-      context 'filter by runner type' do
-        let(:params) { { type_type: 'project_type' } }
-
-        before do
-          group.add_owner(user)
-        end
-
-        it 'returns correct runners' do
-          expect(subject).to eq([runner_project_7, runner_project_6,
-                                 runner_project_5, runner_project_4,
-                                 runner_project_3, runner_project_2, runner_project_1])
-        end
-      end
-
-      context 'user has no access to runners' do
+      context 'when user is not group owner' do
         where(:user_permission) do
           [:maintainer, :developer, :reporter, :guest]
         end
@@ -276,13 +262,13 @@ RSpec.describe Ci::RunnersFinder do
         end
       end
 
-      context 'user with no access' do
+      context 'when user has no access' do
         it 'returns no runners' do
           expect(subject).to be_empty
         end
       end
 
-      context 'user is nil' do
+      context 'when user is nil' do
         let_it_be(:user) { nil }
 
         it 'returns no runners' do
@@ -294,7 +280,7 @@ RSpec.describe Ci::RunnersFinder do
     describe '#sort_key' do
       subject { described_class.new(current_user: user, group: group, params: params).sort_key }
 
-      context 'no params' do
+      context 'without params' do
         it 'returns created_at_desc' do
           expect(subject).to eq('created_at_desc')
         end

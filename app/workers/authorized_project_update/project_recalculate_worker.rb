@@ -3,6 +3,8 @@
 module AuthorizedProjectUpdate
   class ProjectRecalculateWorker
     include ApplicationWorker
+
+    data_consistency :always
     include Gitlab::ExclusiveLeaseHelpers
 
     feature_category :authentication_and_authorization
@@ -24,7 +26,7 @@ module AuthorizedProjectUpdate
     private
 
     def lock_key(project)
-      "#{self.class.name.underscore}/#{project.root_namespace.id}"
+      "#{self.class.name.underscore}/projects/#{project.id}"
     end
   end
 end

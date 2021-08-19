@@ -15,9 +15,9 @@ FactoryBot.define do
       end
     end
 
-    trait :with_issue do
+    trait :with_incident do
       after(:create) do |alert|
-        create(:issue, alert_management_alert: alert, project: alert.project)
+        create(:incident, alert_management_alert: alert, project: alert.project)
       end
     end
 
@@ -128,7 +128,7 @@ FactoryBot.define do
     end
 
     trait :all_fields do
-      with_issue
+      with_incident
       with_assignee
       with_fingerprint
       with_service

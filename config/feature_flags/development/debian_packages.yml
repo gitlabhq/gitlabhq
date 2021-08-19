@@ -1,7 +1,7 @@
 ---
 name: debian_packages
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/5835
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337288
 milestone: '13.5'
 type: development
 group: group::package

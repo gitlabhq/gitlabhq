@@ -1950,6 +1950,7 @@ POST /projects/:id/issues/:issue_iid/add_spent_time
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
+| `summary`   | string  | no       | A summary of how the time was spent  |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/add_spent_time?duration=1h"

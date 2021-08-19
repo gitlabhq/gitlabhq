@@ -20,5 +20,9 @@ RSpec.describe PipelineNotificationWorker, :mailer do
 
       subject.perform(non_existing_record_id)
     end
+
+    it_behaves_like 'worker with data consistency',
+      described_class,
+      data_consistency: :delayed
   end
 end

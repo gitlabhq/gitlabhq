@@ -6,6 +6,7 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
@@ -27,11 +28,6 @@ const TEST_ENDPOINT = '/issues';
 const TEST_CREATE_ISSUES_PATH = '/createIssue';
 const TEST_SVG_PATH = '/emptySvg';
 
-const setUrl = (query) => {
-  window.location.href = `${TEST_LOCATION}${query}`;
-  window.location.search = query;
-};
-
 const MOCK_ISSUES = Array(PAGE_SIZE_MANUAL)
   .fill(0)
   .map((_, i) => ({
@@ -40,7 +36,6 @@ const MOCK_ISSUES = Array(PAGE_SIZE_MANUAL)
   }));
 
 describe('Issuables list component', () => {
-  let oldLocation;
   let mockAxios;
   let wrapper;
   let apiSpy;
@@ -75,19 +70,13 @@ describe('Issuables list component', () => {
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
 
-    oldLocation = window.location;
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: { href: '', search: '' },
-    });
-    window.location.href = TEST_LOCATION;
+    setWindowLocation(TEST_LOCATION);
   });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
     mockAxios.restore();
-    window.location = oldLocation;
   });
 
   describe('with failed issues response', () => {
@@ -314,7 +303,7 @@ describe('Issuables list component', () => {
         '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&weight=0&not[label_name][]=Afterpod&not[milestone_title][]=13';
 
       beforeEach(() => {
-        setUrl(query);
+        setWindowLocation(query);
 
         setupApiMock(() => [200, MOCK_ISSUES.slice(0)]);
         factory({ sortKey: 'milestone_due_desc' });
@@ -358,7 +347,7 @@ describe('Issuables list component', () => {
         '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&weight=0&page=3';
 
       beforeEach(() => {
-        setUrl(query);
+        setWindowLocation(query);
 
         setupApiMock(() => [200, MOCK_ISSUES.slice(0)]);
         factory({ sortKey: 'milestone_due_desc' });
@@ -387,7 +376,7 @@ describe('Issuables list component', () => {
 
   describe('with hash in window.location', () => {
     beforeEach(() => {
-      window.location.href = `${TEST_LOCATION}#stuff`;
+      setWindowLocation(`${TEST_LOCATION}#stuff`);
       setupApiMock(() => [200, MOCK_ISSUES.slice(0)]);
       factory();
       return waitForPromises();
@@ -422,7 +411,7 @@ describe('Issuables list component', () => {
 
     describe('with query in window location', () => {
       beforeEach(() => {
-        window.location.search = '?weight=Any';
+        setWindowLocation('?weight=Any');
 
         factory();
 
@@ -436,7 +425,7 @@ describe('Issuables list component', () => {
 
     describe('with closed state', () => {
       beforeEach(() => {
-        window.location.search = '?state=closed';
+        setWindowLocation('?state=closed');
 
         factory();
 
@@ -450,7 +439,7 @@ describe('Issuables list component', () => {
 
     describe('with all state', () => {
       beforeEach(() => {
-        window.location.search = '?state=all';
+        setWindowLocation('?state=all');
 
         factory();
 
@@ -565,7 +554,7 @@ describe('Issuables list component', () => {
       });
 
       it('sets value according to query', () => {
-        setUrl(query);
+        setWindowLocation(query);
 
         factory({ type: 'jira' });
 
@@ -583,7 +572,7 @@ describe('Issuables list component', () => {
       it('sets value according to query', () => {
         const query = '?search=free+text';
 
-        setUrl(query);
+        setWindowLocation(query);
 
         factory({ type: 'jira' });
 

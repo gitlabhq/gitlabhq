@@ -14,6 +14,7 @@ import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import MrWidgetHowToMergeModal from './mr_widget_how_to_merge_modal.vue';
 import MrWidgetIcon from './mr_widget_icon.vue';
 
@@ -30,6 +31,7 @@ export default {
     GlDropdownItem,
     GlLink,
     GlSprintf,
+    WebIdeLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -56,30 +58,23 @@ export default {
       });
     },
     webIdePath() {
-      if (this.mr.canPushToSourceBranch) {
-        return mergeUrlParams(
-          {
-            target_project:
-              this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath
-                ? this.mr.targetProjectFullPath
-                : '',
-          },
-          webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`),
-        );
-      }
-
-      return null;
-    },
-    ideButtonTitle() {
-      return !this.mr.canPushToSourceBranch
-        ? s__(
-            'mrWidget|You are not allowed to edit this project directly. Please fork to make changes.',
-          )
-        : '';
+      return mergeUrlParams(
+        {
+          target_project:
+            this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath
+              ? this.mr.targetProjectFullPath
+              : '',
+        },
+        webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`),
+      );
     },
     isFork() {
       return this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath;
     },
+  },
+  i18n: {
+    webIdeText: s__('mrWidget|Open in Web IDE'),
+    gitpodText: s__('mrWidget|Open in Gitpod'),
   },
 };
 </script>
@@ -123,22 +118,21 @@ export default {
 
       <div class="branch-actions d-flex">
         <template v-if="mr.isOpen">
-          <span
+          <web-ide-link
             v-if="!mr.sourceBranchRemoved"
-            v-gl-tooltip
-            :title="ideButtonTitle"
-            class="gl-display-none d-md-inline-block gl-mr-3"
-            :tabindex="ideButtonTitle ? 0 : null"
-          >
-            <gl-button
-              :href="webIdePath"
-              :disabled="!mr.canPushToSourceBranch"
-              class="js-web-ide"
-              data-qa-selector="open_in_web_ide_button"
-            >
-              {{ s__('mrWidget|Open in Web IDE') }}
-            </gl-button>
-          </span>
+            :show-edit-button="false"
+            :show-web-ide-button="true"
+            :web-ide-url="webIdePath"
+            :web-ide-text="$options.i18n.webIdeText"
+            :show-gitpod-button="mr.showGitpodButton"
+            :gitpod-url="mr.gitpodUrl"
+            :gitpod-enabled="mr.gitpodEnabled"
+            :gitpod-text="$options.i18n.gitpodText"
+            class="gl-display-none gl-md-display-inline-block gl-mr-3"
+            data-placement="bottom"
+            tabindex="0"
+            data-qa-selector="open_in_web_ide_button"
+          />
           <gl-button
             v-gl-modal-directive="'modal-merge-info'"
             :disabled="mr.sourceBranchRemoved"

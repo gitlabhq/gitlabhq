@@ -38,7 +38,7 @@ See [this video](https://youtu.be/-BkEhghP-kM) for an in-depth overview and inve
 + expect(wrapper.findComponent(ChildComponent).props()).toMatchObject(...);
 ```
 
-Please note that `toMatchObject` actually changes the nature of the assertion and won't fail if some items are **missing** from the expectation.
+`toMatchObject` actually changes the nature of the assertion and won't fail if some items are **missing** from the expectation.
 
 ### Script issues
 

@@ -109,6 +109,18 @@ RSpec.shared_examples 'multiple issue boards' do
 
       assert_boards_nav_active
     end
+
+    it 'switches current board back' do
+      in_boards_switcher_dropdown do
+        click_link board.name
+      end
+
+      wait_for_requests
+
+      page.within('.boards-switcher') do
+        expect(page).to have_content(board.name)
+      end
+    end
   end
 
   context 'unauthorized user' do

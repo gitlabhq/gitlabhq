@@ -49,7 +49,7 @@ If a job shouldn't be able to be triggered from chat, you can set the job to `ex
 Since ChatOps is built upon GitLab CI/CD, the job has all the same features and
 functions available. Consider these best practices when creating ChatOps jobs:
 
-- GitLab strongly recommends you set `only: [chat]` so the job does not run as part
+- GitLab strongly recommends you set [`rules`](../yaml/index.md#rules) so the job does not run as part
   of the standard CI pipeline.
 - If the job is set to `when: manual`, ChatOps creates the pipeline, but the job waits to be started.
 - ChatOps provides limited support for access control. If the user triggering the
@@ -65,9 +65,13 @@ The output for jobs with a single command is sent to the channel as a reply. For
 example, the chat reply of the following job is `Hello World` in the channel:
 
 ```yaml
+stages:
+- chatops
+
 hello-world:
   stage: chatops
-  only: [chat]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "chat"'
   script:
     - echo "Hello World"
 ```
@@ -81,9 +85,13 @@ the `chat_reply` section. For example, the following job lists the files in the
 current directory:
 
 ```yaml
+stages:
+- chatops
+
 ls:
   stage: chatops
-  only: [chat]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "chat"'
   script:
     - echo "This command will not be shown."
     - echo -e "section_start:$( date +%s ):chat_reply\r\033[0K\n$( ls -la )\nsection_end:$( date +%s ):chat_reply\r\033[0K"

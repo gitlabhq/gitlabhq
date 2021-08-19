@@ -6,6 +6,14 @@ module Sidebars
       override :configure_menus
       def configure_menus
         set_scope_menu(Sidebars::Groups::Menus::ScopeMenu.new(context))
+
+        add_menu(Sidebars::Groups::Menus::GroupInformationMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::IssuesMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::MergeRequestsMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::CiCdMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::KubernetesMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::PackagesRegistriesMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::SettingsMenu.new(context))
       end
 
       override :render_raw_menus_partial
@@ -20,3 +28,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Groups::Panel.prepend_mod_with('Sidebars::Groups::Panel')

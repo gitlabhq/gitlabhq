@@ -63,9 +63,25 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.safe_find_or_create_by(*args, &block)
+    return optimized_safe_find_or_create_by(*args, &block) if Feature.enabled?(:optimize_safe_find_or_create_by, default_enabled: :yaml)
+
     safe_ensure_unique(retries: 1) do
       find_or_create_by(*args, &block)
     end
+  end
+
+  def self.optimized_safe_find_or_create_by(*args, &block)
+    record = find_by(*args)
+    return record if record.present?
+
+    # We need to use `all.create` to make this implementation follow `find_or_create_by` which delegates this in
+    # https://github.com/rails/rails/blob/v6.1.3.2/activerecord/lib/active_record/querying.rb#L22
+    #
+    # When calling this method on an association, just calling `self.create` would call `ActiveRecord::Persistence.create`
+    # and that skips some code that adds the newly created record to the association.
+    transaction(requires_new: true) { all.create(*args, &block) }
+  rescue ActiveRecord::RecordNotUnique
+    find_by(*args)
   end
 
   def create_or_load_association(association_name)
@@ -85,6 +101,23 @@ class ApplicationRecord < ActiveRecord::Base
   def self.declarative_enum(enum_mod)
     values = enum_mod.definition.transform_values { |v| v[:value] }
     enum(enum_mod.key => values)
+  end
+
+  def self.transaction(**options, &block)
+    if options[:requires_new] && track_subtransactions?
+      ::Gitlab::Database::Metrics.subtransactions_increment(self.name)
+    end
+
+    super(**options, &block)
+  end
+
+  def self.track_subtransactions?
+    ::Feature.enabled?(:active_record_subtransactions_counter, type: :ops, default_enabled: :yaml) &&
+      connection.transaction_open?
+  end
+
+  def self.cached_column_list
+    self.column_names.map { |column_name| self.arel_table[column_name] }
   end
 
   def readable_by?(user)

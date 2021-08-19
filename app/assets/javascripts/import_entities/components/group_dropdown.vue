@@ -28,7 +28,7 @@ export default {
 <template>
   <gl-dropdown
     toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-    class="import-entities-namespace-dropdown gl-h-7 gl-flex-fill-1"
+    class="gl-h-7 gl-flex-fill-1"
     data-qa-selector="target_namespace_selector_dropdown"
     v-bind="$attrs"
   >

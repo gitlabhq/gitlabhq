@@ -139,4 +139,171 @@ RSpec.describe ProjectMember do
       end
     end
   end
+
+  context 'refreshing project_authorizations' do
+    let_it_be_with_refind(:project) { create(:project) }
+    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be(:project_member) { create(:project_member, :guest, project: project, user: user) }
+
+    context 'when the source project of the project member is destroyed' do
+      it 'refreshes the authorization of user to the project in the group' do
+        expect { project.destroy! }.to change { user.can?(:guest_access, project) }.from(true).to(false)
+      end
+
+      it 'refreshes the authorization without calling AuthorizedProjectUpdate::ProjectRecalculatePerUserService' do
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserService).not_to receive(:new)
+
+        project.destroy!
+      end
+    end
+
+    context 'when the user of the project member is destroyed' do
+      it 'refreshes the authorization of user to the project in the group' do
+        expect(project.authorized_users).to include(user)
+
+        user.destroy!
+
+        expect(project.authorized_users).not_to include(user)
+      end
+
+      it 'refreshes the authorization without calling UserProjectAccessChangedService' do
+        expect(UserProjectAccessChangedService).not_to receive(:new)
+
+        user.destroy!
+      end
+    end
+
+    context 'when importing' do
+      it 'does not refresh' do
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserService).not_to receive(:new)
+
+        member = build(:project_member)
+        member.importing = true
+        member.save!
+      end
+    end
+  end
+
+  context 'authorization refresh on addition/updation/deletion' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+
+    shared_examples_for 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations' do
+      it 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService' do
+        expect_next_instance_of(AuthorizedProjectUpdate::ProjectRecalculatePerUserService, project, user) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        action
+      end
+    end
+
+    shared_examples_for 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+      it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker' do
+        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+          receive(:bulk_perform_in)
+            .with(1.hour,
+                  [[user.id]],
+                  batch_delay: 30.seconds, batch_size: 100)
+        )
+
+        action
+      end
+    end
+
+    context 'on create' do
+      let(:action) { project.add_user(user, Gitlab::Access::GUEST) }
+
+      it 'changes access level' do
+        expect { action }.to change { user.can?(:guest_access, project) }.from(false).to(true)
+      end
+
+      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations'
+      it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
+    end
+
+    context 'on update' do
+      let(:action) { project.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
+
+      before do
+        project.add_user(user, Gitlab::Access::GUEST)
+      end
+
+      it 'changes access level' do
+        expect { action }.to change { user.can?(:developer_access, project) }.from(false).to(true)
+      end
+
+      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations'
+      it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
+    end
+
+    context 'on destroy' do
+      let(:action) { project.members.find_by(user: user).destroy! }
+
+      before do
+        project.add_user(user, Gitlab::Access::GUEST)
+      end
+
+      it 'changes access level' do
+        expect { action }.to change { user.can?(:guest_access, project) }.from(true).to(false)
+      end
+
+      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations'
+      it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
+    end
+
+    context 'when the feature flag `specialized_service_for_project_member_auth_refresh` is disabled' do
+      before do
+        stub_feature_flags(specialized_service_for_project_member_auth_refresh: false)
+      end
+
+      shared_examples_for 'calls UserProjectAccessChangedService to recalculate authorizations' do
+        it 'calls UserProjectAccessChangedService' do
+          expect_next_instance_of(UserProjectAccessChangedService, user.id) do |service|
+            expect(service).to receive(:execute)
+          end
+
+          action
+        end
+      end
+
+      context 'on create' do
+        let(:action) { project.add_user(user, Gitlab::Access::GUEST) }
+
+        it 'changes access level' do
+          expect { action }.to change { user.can?(:guest_access, project) }.from(false).to(true)
+        end
+
+        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      end
+
+      context 'on update' do
+        let(:action) { project.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
+
+        before do
+          project.add_user(user, Gitlab::Access::GUEST)
+        end
+
+        it 'changes access level' do
+          expect { action }.to change { user.can?(:developer_access, project) }.from(false).to(true)
+        end
+
+        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      end
+
+      context 'on destroy' do
+        let(:action) { project.members.find_by(user: user).destroy! }
+
+        before do
+          project.add_user(user, Gitlab::Access::GUEST)
+        end
+
+        it 'changes access level' do
+          expect { action }.to change { user.can?(:guest_access, project) }.from(true).to(false)
+        end
+
+        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      end
+    end
+  end
 end

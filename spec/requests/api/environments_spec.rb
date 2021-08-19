@@ -360,6 +360,8 @@ RSpec.describe API::Environments do
         expect(json_response["scheduled_entries"].size).to eq(1)
         expect(json_response["scheduled_entries"].first["id"]).to eq(old_stopped_review_env.id)
         expect(json_response["unprocessable_entries"].size).to eq(0)
+        expect(json_response["scheduled_entries"]).to match_schema('public_api/v4/environments')
+        expect(json_response["unprocessable_entries"]).to match_schema('public_api/v4/environments')
 
         expect(old_stopped_review_env.reload.auto_delete_at).to eq(1.week.from_now)
         expect(new_stopped_review_env.reload.auto_delete_at).to be_nil

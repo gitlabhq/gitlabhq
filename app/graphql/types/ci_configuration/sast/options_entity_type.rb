@@ -8,10 +8,10 @@ module Types
         graphql_name 'SastCiConfigurationOptionsEntity'
         description 'Represents an entity for options in SAST CI configuration'
 
-        field :label, GraphQL::STRING_TYPE, null: true,
+        field :label, GraphQL::Types::String, null: true,
           description: 'Label of option entity.'
 
-        field :value, GraphQL::STRING_TYPE, null: true,
+        field :value, GraphQL::Types::String, null: true,
           description: 'Value of option entity.'
       end
     end

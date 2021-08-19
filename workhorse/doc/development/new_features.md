@@ -4,7 +4,7 @@ GitLab Workhorse is a smart reverse proxy for GitLab. It handles
 "long" HTTP requests such as file downloads, file uploads, Git
 push/pull and Git archive downloads.
 
-Workhorse itself is not a feature, but there are [several features in GitLab](https://gitlab.com/gitlab-org/gitlab-workhorse/-/blob/master/doc/architecture/gitlab_features.md) that would not work efficiently without Workhorse.
+Workhorse itself is not a feature, but there are [several features in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/workhorse/doc/architecture/gitlab_features.md) that would not work efficiently without Workhorse.
 
 At a first glance, it may look like Workhorse is just a pipeline for processing HTTP streams so that you can reduce the amount of logic in your Ruby on Rails controller, but there are good reasons to avoid treating it like that.
 

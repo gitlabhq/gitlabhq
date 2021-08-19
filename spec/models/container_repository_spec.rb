@@ -323,7 +323,7 @@ RSpec.describe ContainerRepository do
     context 'with a subgroup' do
       let_it_be(:test_group) { create(:group) }
       let_it_be(:another_project) { create(:project, path: 'test', group: test_group) }
-      let_it_be(:project3) { create(:project, path: 'test3', group: test_group, container_registry_enabled: false) }
+      let_it_be(:project3) { create(:project, :container_registry_disabled, path: 'test3', group: test_group) }
 
       let_it_be(:another_repository) do
         create(:container_repository, name: 'my_image', project: another_project)

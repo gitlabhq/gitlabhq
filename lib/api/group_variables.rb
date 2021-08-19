@@ -8,7 +8,7 @@ module API
     before { authorize! :admin_group, user_group }
     feature_category :continuous_integration
 
-    helpers Helpers::VariablesHelpers
+    helpers ::API::Helpers::VariablesHelpers
 
     params do
       requires :id, type: String, desc: 'The ID of a group'

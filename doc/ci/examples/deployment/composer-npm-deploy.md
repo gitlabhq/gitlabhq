@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
+# Running Composer and npm scripts with deployment via SCP in GitLab CI/CD **(FREE)**
 
 This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../README.md).
 
@@ -123,7 +123,7 @@ Therefore, for a production environment we use additional steps to ensure that a
 Since this was a WordPress project, I gave real life code snippets. Some further ideas you can pursue:
 
 - Having a slightly different script for the default branch allows you to deploy to a production server from that branch and to a stage server from any other branches.
-- Instead of pushing it live, you can push it to WordPress official repository (with creating a SVN commit, etc.).
+- Instead of pushing it live, you can push it to WordPress official repository.
 - You could generate i18n text domains on the fly.
 
 ---

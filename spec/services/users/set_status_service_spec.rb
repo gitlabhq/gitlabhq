@@ -8,6 +8,18 @@ RSpec.describe Users::SetStatusService do
   subject(:service) { described_class.new(current_user, params) }
 
   describe '#execute' do
+    shared_examples_for 'bumps user' do
+      it 'bumps User#updated_at' do
+        expect { service.execute }.to change { current_user.updated_at }
+      end
+    end
+
+    shared_examples_for 'does not bump user' do
+      it 'does not bump User#updated_at' do
+        expect { service.execute }.not_to change { current_user.updated_at }
+      end
+    end
+
     context 'when params are set' do
       let(:params) { { emoji: 'taurus', message: 'a random status', availability: 'busy' } }
 
@@ -30,6 +42,8 @@ RSpec.describe Users::SetStatusService do
         create(:user_status, user: current_user)
         expect(service.execute).to be(true)
       end
+
+      it_behaves_like 'bumps user'
 
       context 'when setting availability to not_set' do
         before do
@@ -72,6 +86,8 @@ RSpec.describe Users::SetStatusService do
         it 'does not update the status if the current user is not allowed' do
           expect { service.execute }.not_to change { target_user.status }
         end
+
+        it_behaves_like 'does not bump user'
       end
     end
 
@@ -79,20 +95,28 @@ RSpec.describe Users::SetStatusService do
       let(:params) { {} }
 
       shared_examples 'removes user status record' do
-        it 'deletes the status' do
-          status = create(:user_status, user: current_user)
-
+        it 'deletes the user status record' do
           expect { service.execute }
-            .to change { current_user.reload.status }.from(status).to(nil)
+            .to change { current_user.reload.status }.from(user_status).to(nil)
+        end
+
+        it_behaves_like 'bumps user'
+      end
+
+      context 'when user has existing user status record' do
+        let!(:user_status) { create(:user_status, user: current_user) }
+
+        it_behaves_like 'removes user status record'
+
+        context 'when not_set is given for availability' do
+          let(:params) { { availability: 'not_set' } }
+
+          it_behaves_like 'removes user status record'
         end
       end
 
-      it_behaves_like 'removes user status record'
-
-      context 'when not_set is given for availability' do
-        let(:params) { { availability: 'not_set' } }
-
-        it_behaves_like 'removes user status record'
+      context 'when user has no existing user status record' do
+        it_behaves_like 'does not bump user'
       end
     end
   end

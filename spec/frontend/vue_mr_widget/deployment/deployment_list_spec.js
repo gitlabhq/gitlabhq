@@ -7,7 +7,6 @@ import MrCollapsibleExtension from '~/vue_merge_request_widget/components/mr_col
 import { mockStore } from '../mock_data';
 
 const DEFAULT_PROPS = {
-  showVisualReviewAppLink: false,
   hasDeploymentMetrics: false,
   deploymentClass: 'js-pre-deployment',
 };
@@ -46,7 +45,6 @@ describe('~/vue_merge_request_widget/components/deployment/deployment_list.vue',
         ([deploymentWrapper, deployment]) => {
           expect(deploymentWrapper.props('deployment')).toEqual(deployment);
           expect(deploymentWrapper.props()).toMatchObject({
-            showVisualReviewApp: DEFAULT_PROPS.showVisualReviewAppLink,
             showMetrics: DEFAULT_PROPS.hasDeploymentMetrics,
           });
           expect(deploymentWrapper.classes(DEFAULT_PROPS.deploymentClass)).toBe(true);
@@ -87,10 +85,6 @@ describe('~/vue_merge_request_widget/components/deployment/deployment_list.vue',
       zip(deploymentWrappers.wrappers, propsData.deployments).forEach(
         ([deploymentWrapper, deployment]) => {
           expect(deploymentWrapper.props('deployment')).toEqual(deployment);
-          expect(deploymentWrapper.props()).toMatchObject({
-            showVisualReviewApp: DEFAULT_PROPS.showVisualReviewAppLink,
-            showMetrics: DEFAULT_PROPS.hasDeploymentMetrics,
-          });
           expect(deploymentWrapper.classes(DEFAULT_PROPS.deploymentClass)).toBe(true);
           expect(deploymentWrapper.text()).toEqual(expect.any(String));
           expect(deploymentWrapper.text()).not.toBe('');

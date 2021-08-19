@@ -30,6 +30,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    lazy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     linkHref: {
       type: String,
       required: false,
@@ -91,6 +96,7 @@ export default {
       :size="imgSize"
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
+      :lazy="lazy"
     >
       <slot></slot> </user-avatar-image
     ><span

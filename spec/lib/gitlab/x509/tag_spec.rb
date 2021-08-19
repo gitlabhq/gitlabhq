@@ -2,13 +2,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::X509::Tag do
-  subject(:signature) { described_class.new(tag).signature }
+  subject(:signature) { described_class.new(project.repository, tag).signature }
 
   describe '#signature' do
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
     let(:project) { create(:project, :repository) }
 
-    describe 'signed tag' do
+    shared_examples 'signed tag' do
       let(:tag) { project.repository.find_tag('v1.1.1') }
       let(:certificate_attributes) do
         {
@@ -33,10 +33,24 @@ RSpec.describe Gitlab::X509::Tag do
       it { expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes) }
     end
 
-    context 'unsigned tag' do
+    shared_examples 'unsigned tag' do
       let(:tag) { project.repository.find_tag('v1.0.0') }
 
       it { expect(signature).to be_nil }
+    end
+
+    context 'with :get_tag_signatures enabled' do
+      it_behaves_like 'signed tag'
+      it_behaves_like 'unsigned tag'
+    end
+
+    context 'with :get_tag_signatures disabled' do
+      before do
+        stub_feature_flags(get_tag_signatures: false)
+      end
+
+      it_behaves_like 'signed tag'
+      it_behaves_like 'unsigned tag'
     end
   end
 end

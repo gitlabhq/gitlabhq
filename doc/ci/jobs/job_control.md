@@ -497,6 +497,120 @@ test:
       - "README.md"
 ```
 
+## Create a job that must be run manually
+
+You can require that a job doesn't run unless a user starts it. This is called a **manual job**.
+You might want to use a manual job for something like deploying to production.
+
+To specify a job as manual, add [`when: manual`](../yaml/index.md#when) to the job
+in the `.gitlab-ci.yml` file.
+
+By default, manual jobs display as skipped when the pipeline starts.
+
+You can use [protected branches](../../user/project/protected_branches.md) to more strictly
+[protect manual deployments](#protect-manual-jobs) from being run by unauthorized users.
+
+### Types of manual jobs
+
+Manual jobs can be either optional or blocking:
+
+- **Optional**: The default setting for manual jobs.
+  - They have [`allow_failure: true`](../yaml/index.md#allow_failure) by default.
+  - The status does not contribute to the overall pipeline status. A pipeline can
+    succeed even if all of its manual jobs fail.
+- **Blocking**: An optional setting for manual jobs.
+  - Add `allow_failure: false` to the job configuration.
+  - The pipeline stops at the stage where the job is defined. To let the pipeline
+    continue running, [run the manual job](#run-a-manual-job).
+  - Merge requests in projects with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
+    enabled can't be merged with a blocked pipeline. Blocked pipelines show a status
+    of **blocked**.
+
+### Run a manual job
+
+To run a manual job, you must have permission to merge to the assigned branch.
+
+To run a manual job:
+
+1. Go to the pipeline, job, [environment](../environments/index.md#configure-manual-deployments),
+   or deployment view.
+1. Next to the manual job, select **Play** (**{play}**).
+
+### Protect manual jobs **(PREMIUM)**
+
+Use [protected environments](../environments/protected_environments.md)
+to define a list of users authorized to run a manual job. You can authorize only
+the users associated with a protected environment to trigger manual jobs, which can:
+
+- More precisely limit who can deploy to an environment.
+- Block a pipeline until an approved user "approves" it.
+
+To protect a manual job:
+
+1. Add an `environment` to the job. For example:
+
+   ```yaml
+   deploy_prod:
+     stage: deploy
+     script:
+       - echo "Deploy to production server"
+     environment:
+       name: production
+       url: https://example.com
+     when: manual
+     rules:
+       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+   ```
+
+1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
+   select the environment (`production` in this example) and add the users, roles or groups
+   that are authorized to trigger the manual job to the **Allowed to Deploy** list. Only those in
+   this list can trigger this manual job, as well as GitLab administrators
+   who are always able to use protected environments.
+
+You can use protected environments with blocking manual jobs to have a list of users
+allowed to approve later pipeline stages. Add `allow_failure: false` to the protected
+manual job and the pipeline's next stages only run after the manual job is triggered
+by authorized users.
+
+## Run a job after a delay
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
+
+Use [`when: delayed`](../yaml/index.md#when) to execute scripts after a waiting period, or if you want to avoid
+jobs immediately entering the `pending` state.
+
+You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time in seconds, unless a unit is
+provided. `start_in` must be less than or equal to one week. Examples of valid values include:
+
+- `'5'` (a value with no unit must be surrounded by single quotes)
+- `5 seconds`
+- `30 minutes`
+- `1 day`
+- `1 week`
+
+When a stage includes a delayed job, the pipeline doesn't progress until the delayed job finishes.
+You can use this keyword to insert delays between different stages.
+
+The timer of a delayed job starts immediately after the previous stage completes.
+Similar to other types of jobs, a delayed job's timer doesn't start unless the previous stage passes.
+
+The following example creates a job named `timed rollout 10%` that is executed 30 minutes after the previous stage completes:
+
+```yaml
+timed rollout 10%:
+  stage: deploy
+  script: echo 'Rolling out 10% ...'
+  when: delayed
+  start_in: 30 minutes
+```
+
+To stop the active timer of a delayed job, click the **{time-out}** (**Unschedule**) button.
+This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
+
+To start a delayed job immediately, select **Play** (**{play}**).
+Soon GitLab Runner starts the job.
+
 ## Use predefined CI/CD variables to run jobs only in specific pipeline types
 
 You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose

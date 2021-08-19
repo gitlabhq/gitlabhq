@@ -1,13 +1,38 @@
 import { isEmpty } from 'lodash';
 import Visibility from 'visibilityjs';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { reportToSentry } from '../../utils';
+import { listByLayers } from '../parsing_utils';
 import { unwrapStagesWithNeedsAndLookup } from '../unwrapping_utils';
+import { beginPerfMeasure, finishPerfMeasureAndSend } from './perf_utils';
 
 const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
   return {
     ...linkedPipeline,
     multiproject: mainPipelineProjectPath !== linkedPipeline.project.fullPath,
   };
+};
+
+const calculatePipelineLayersInfo = (pipeline, componentName, metricsPath) => {
+  const shouldCollectMetrics = Boolean(metricsPath);
+
+  if (shouldCollectMetrics) {
+    beginPerfMeasure();
+  }
+
+  let layers = null;
+
+  try {
+    layers = listByLayers(pipeline);
+
+    if (shouldCollectMetrics) {
+      finishPerfMeasureAndSend(layers.linksData.length, layers.numGroups, metricsPath);
+    }
+  } catch (err) {
+    reportToSentry(componentName, err);
+  }
+
+  return layers;
 };
 
 /* eslint-disable @gitlab/require-i18n-strings */
@@ -106,6 +131,7 @@ const unwrapPipelineData = (mainPipelineProjectPath, data) => {
 const validateConfigPaths = (value) => value.graphqlResourceEtag?.length > 0;
 
 export {
+  calculatePipelineLayersInfo,
   getQueryHeaders,
   serializeGqlErr,
   serializeLoadErrors,

@@ -1,6 +1,4 @@
 export default () => ({
-  basePath: null,
-  headPath: null,
   reportsPath: null,
 
   baseBlobPath: null,
@@ -8,6 +6,7 @@ export default () => ({
 
   isLoading: false,
   hasError: false,
+  status: '',
   statusReason: '',
 
   newIssues: [],

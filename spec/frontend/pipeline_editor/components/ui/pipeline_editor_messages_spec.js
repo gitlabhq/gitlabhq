@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import CodeSnippetAlert from '~/pipeline_editor/components/code_snippet_alert/code_snippet_alert.vue';
 import { CODE_SNIPPET_SOURCES } from '~/pipeline_editor/components/code_snippet_alert/constants';
@@ -11,6 +12,10 @@ import {
   DEFAULT_SUCCESS,
   LOAD_FAILURE_UNKNOWN,
 } from '~/pipeline_editor/constants';
+
+beforeEach(() => {
+  setWindowLocation(TEST_HOST);
+});
 
 describe('Pipeline Editor messages', () => {
   let wrapper;
@@ -95,9 +100,7 @@ describe('Pipeline Editor messages', () => {
 
   describe('code snippet alert', () => {
     const setCodeSnippetUrlParam = (value) => {
-      global.jsdom.reconfigure({
-        url: `${TEST_HOST}/?code_snippet_copied_from=${value}`,
-      });
+      setWindowLocation(`${TEST_HOST}/?code_snippet_copied_from=${value}`);
     };
 
     it('does not show by default', () => {

@@ -9,7 +9,7 @@ RSpec.describe Ci::CreatePipelineService do
   let_it_be(:user)           { create(:user) }
 
   let(:service)  { described_class.new(project, user, ref: 'master') }
-  let(:pipeline) { service.execute(:push) }
+  let(:pipeline) { service.execute(:push).payload }
   let(:job)      { pipeline.builds.find_by(name: 'job') }
 
   before do

@@ -39,6 +39,9 @@ describe('Blob Header Default Actions', () => {
   });
 
   describe('renders', () => {
+    const findCopyButton = () => wrapper.find('[data-testid="copyContentsButton"]');
+    const findViewRawButton = () => wrapper.find('[data-testid="viewRawButton"]');
+
     it('gl-button-group component', () => {
       expect(btnGroup.exists()).toBe(true);
     });
@@ -76,7 +79,14 @@ describe('Blob Header Default Actions', () => {
         hasRenderError: true,
       });
 
-      expect(wrapper.find('[data-testid="copyContentsButton"]').exists()).toBe(false);
+      expect(findCopyButton().exists()).toBe(false);
+    });
+
+    it('does not render the copy and view raw button if isBinary is set to true', () => {
+      createComponent({ isBinary: true });
+
+      expect(findCopyButton().exists()).toBe(false);
+      expect(findViewRawButton().exists()).toBe(false);
     });
   });
 });

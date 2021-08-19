@@ -105,7 +105,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
     describe 'with a single permission' do
       let(:type) do
         type_factory do |type|
-          type.field :name, GraphQL::STRING_TYPE, null: true, authorize: permission_single
+          type.field :name, GraphQL::Types::String, null: true, authorize: permission_single
         end
       end
 
@@ -124,7 +124,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       let(:type) do
         permissions = permission_collection
         type_factory do |type|
-          type.field :name, GraphQL::STRING_TYPE,
+          type.field :name, GraphQL::Types::String,
                      null: true,
                      authorize: permissions
         end
@@ -332,7 +332,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       type_factory do |type|
         type.graphql_name 'FakeIssueType'
         type.authorize :read_issue
-        type.field :id, GraphQL::ID_TYPE, null: false
+        type.field :id, GraphQL::Types::ID, null: false
       end
     end
 

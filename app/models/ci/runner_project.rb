@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 module Ci
-  class RunnerProject < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class RunnerProject < Ci::ApplicationRecord
     include Limitable
 
     self.limit_name = 'ci_registered_project_runners'
     self.limit_scope = :project
     self.limit_relation = :recent_runners
     self.limit_feature_flag = :ci_runner_limits
+    self.limit_feature_flag_for_override = :ci_runner_limits_override
 
     belongs_to :runner, inverse_of: :runner_projects
     belongs_to :project, inverse_of: :runner_projects

@@ -4,14 +4,12 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import projectSelect from '~/project_select';
 
-document.addEventListener('DOMContentLoaded', () => {
-  addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys, true);
+addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys, true);
 
-  initFilteredSearch({
-    page: FILTERED_SEARCH.MERGE_REQUESTS,
-    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
-    useDefaultState: true,
-  });
-
-  projectSelect();
+initFilteredSearch({
+  page: FILTERED_SEARCH.MERGE_REQUESTS,
+  filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+  useDefaultState: true,
 });
+
+projectSelect();

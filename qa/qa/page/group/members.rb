@@ -7,7 +7,7 @@ module QA
         include Page::Component::InviteMembersModal
         include Page::Component::UsersSelect
 
-        view 'app/assets/javascripts/vue_shared/components/remove_member_modal.vue' do
+        view 'app/assets/javascripts/members/components/modals/remove_member_modal.vue' do
           element :remove_member_modal_content
         end
 

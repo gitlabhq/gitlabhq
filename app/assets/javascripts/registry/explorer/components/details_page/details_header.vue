@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { sprintf, n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -27,7 +27,7 @@ import getContainerRepositoryTagsCountQuery from '../../graphql/queries/get_cont
 
 export default {
   name: 'DetailsHeader',
-  components: { GlButton, GlIcon, TitleArea, MetadataItem },
+  components: { GlIcon, TitleArea, MetadataItem, GlDropdown, GlDropdownItem },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -143,9 +143,22 @@ export default {
       />
     </template>
     <template #right-actions>
-      <gl-button variant="danger" :disabled="deleteButtonDisabled" @click="$emit('delete')">
-        {{ __('Delete image repository') }}
-      </gl-button>
+      <gl-dropdown
+        icon="ellipsis_v"
+        text="More actions"
+        :text-sr-only="true"
+        category="tertiary"
+        no-caret
+        right
+      >
+        <gl-dropdown-item
+          variant="danger"
+          :disabled="deleteButtonDisabled"
+          @click="$emit('delete')"
+        >
+          {{ __('Delete image repository') }}
+        </gl-dropdown-item>
+      </gl-dropdown>
     </template>
   </title-area>
 </template>

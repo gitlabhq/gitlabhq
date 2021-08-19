@@ -129,9 +129,9 @@ rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `dast` | The action's type. |
-| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/index.md#site-profile). | The DAST site profile to execute the DAST scan. |
-| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/index.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. |
+| `scan` | `string` | `dast`, `secret_detection` | The action's type. |
+| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/index.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
+| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/index.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 
 Note the following:
 
@@ -144,6 +144,11 @@ Note the following:
 - When configuring policies with a scheduled DAST scan, the author of the commit in the security
   policy project's repository must have access to the scanner and site profiles. Otherwise, the scan
   is not scheduled successfully.
+- For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/index.md#custom-rulesets)
+  are not supported.
+- A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
+  [`historic`](../secret_detection/index.md#full-history-secret-scan)
+  mode when executed as part of a scheduled scan.
 
 Here's an example:
 
@@ -161,8 +166,8 @@ scan_execution_policy:
   - scan: dast
     scanner_profile: Scanner Profile A
     site_profile: Site Profile B
-- name: Enforce DAST scan every 10 minutes
-  description: This policy enforces a DAST scan to run every 10 minutes
+- name: Enforce DAST and secret detection scans every 10 minutes
+  description: This policy enforces DAST and secret detection scans to run every 10 minutes
   enabled: true
   rules:
   - type: schedule
@@ -173,12 +178,25 @@ scan_execution_policy:
   - scan: dast
     scanner_profile: Scanner Profile C
     site_profile: Site Profile D
+  - scan: secret_detection
+- name: Enforce Secret Detection in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with Secret Detection scan for the default branch
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: secret_detection
 ```
 
-In this example, the DAST scan runs with the scanner profile `Scanner Profile A` and the site
-profile `Site Profile B` for every pipeline executed on branches that match the
-`release/*` wildcard (for example, branch name `release/v1.2.1`); and the DAST scan runs with
-the scanner profile `Scanner Profile C` and the site profile `Site Profile D` every 10 minutes.
+In this example:
+
+- For every pipeline executed on branches that match the `release/*` wildcard (for example, branch
+  `release/v1.2.1`), DAST scans run with `Scanner Profile A` and `Site Profile B`.
+- DAST and secret detection scans run every 10 minutes. The DAST scan runs with `Scanner Profile C`
+  and `Site Profile D`.
+- Secret detection scans run for every pipeline executed on the `main` branch.
 
 ## Security Policy project selection
 

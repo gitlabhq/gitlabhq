@@ -6,29 +6,44 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
 
   shared_examples :repo do
-    let(:tree) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID) }
+    subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, pagination_params) }
 
-    it { expect(tree).to be_kind_of Array }
-    it { expect(tree.empty?).to be_falsey }
-    it { expect(tree.count(&:dir?)).to eq(2) }
-    it { expect(tree.count(&:file?)).to eq(10) }
-    it { expect(tree.count(&:submodule?)).to eq(2) }
+    let(:sha) { SeedRepo::Commit::ID }
+    let(:path) { nil }
+    let(:recursive) { false }
+    let(:pagination_params) { nil }
 
-    it 'returns an empty array when called with an invalid ref' do
-      expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
+    let(:entries) { tree.first }
+    let(:cursor) { tree.second }
+
+    it { expect(entries).to be_kind_of Array }
+    it { expect(entries.empty?).to be_falsey }
+    it { expect(entries.count(&:dir?)).to eq(2) }
+    it { expect(entries.count(&:file?)).to eq(10) }
+    it { expect(entries.count(&:submodule?)).to eq(2) }
+    it { expect(cursor&.next_cursor).to be_blank }
+
+    context 'with an invalid ref' do
+      let(:sha) { 'foobar-does-not-exist' }
+
+      it { expect(entries).to eq([]) }
+      it { expect(cursor).to be_nil }
     end
 
-    it 'returns a list of tree objects' do
-      entries = described_class.where(repository, SeedRepo::Commit::ID, 'files', true)
+    context 'when path is provided' do
+      let(:path) { 'files' }
+      let(:recursive) { true }
 
-      expect(entries.map(&:path)).to include('files/html',
-                                             'files/markdown/ruby-style-guide.md')
-      expect(entries.count).to be >= 10
-      expect(entries).to all(be_a(Gitlab::Git::Tree))
+      it 'returns a list of tree objects' do
+        expect(entries.map(&:path)).to include('files/html',
+                                               'files/markdown/ruby-style-guide.md')
+        expect(entries.count).to be >= 10
+        expect(entries).to all(be_a(Gitlab::Git::Tree))
+      end
     end
 
     describe '#dir?' do
-      let(:dir) { tree.select(&:dir?).first }
+      let(:dir) { entries.select(&:dir?).first }
 
       it { expect(dir).to be_kind_of Gitlab::Git::Tree }
       it { expect(dir.id).to eq('3c122d2b7830eca25235131070602575cf8b41a1') }
@@ -41,7 +56,8 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
       context :subdir do
         # rubocop: disable Rails/FindBy
         # This is not ActiveRecord where..first
-        let(:subdir) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files').first }
+        let(:path) { 'files' }
+        let(:subdir) { entries.first }
         # rubocop: enable Rails/FindBy
 
         it { expect(subdir).to be_kind_of Gitlab::Git::Tree }
@@ -55,7 +71,8 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
       context :subdir_file do
         # rubocop: disable Rails/FindBy
         # This is not ActiveRecord where..first
-        let(:subdir_file) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files/ruby').first }
+        let(:path) { 'files/ruby' }
+        let(:subdir_file) { entries.first }
         # rubocop: enable Rails/FindBy
 
         it { expect(subdir_file).to be_kind_of Gitlab::Git::Tree }
@@ -68,10 +85,11 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
 
       context :flat_path do
         let(:filename) { 'files/flat/path/correct/content.txt' }
-        let(:oid) { create_file(filename) }
+        let(:sha) { create_file(filename) }
+        let(:path) { 'files/flat' }
         # rubocop: disable Rails/FindBy
         # This is not ActiveRecord where..first
-        let(:subdir_file) { Gitlab::Git::Tree.where(repository, oid, 'files/flat').first }
+        let(:subdir_file) { entries.first }
         # rubocop: enable Rails/FindBy
         let(:repository_rugged) { Rugged::Repository.new(File.join(SEED_STORAGE_PATH, TEST_REPO_PATH)) }
 
@@ -116,7 +134,7 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
     end
 
     describe '#file?' do
-      let(:file) { tree.select(&:file?).first }
+      let(:file) { entries.select(&:file?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.id).to eq('dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82') }
@@ -125,21 +143,21 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
     end
 
     describe '#readme?' do
-      let(:file) { tree.select(&:readme?).first }
+      let(:file) { entries.select(&:readme?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('README.md') }
     end
 
     describe '#contributing?' do
-      let(:file) { tree.select(&:contributing?).first }
+      let(:file) { entries.select(&:contributing?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('CONTRIBUTING.md') }
     end
 
     describe '#submodule?' do
-      let(:submodule) { tree.select(&:submodule?).first }
+      let(:submodule) { entries.select(&:submodule?).first }
 
       it { expect(submodule).to be_kind_of Gitlab::Git::Tree }
       it { expect(submodule.id).to eq('79bceae69cb5750d6567b223597999bfa91cb3b9') }
@@ -149,7 +167,16 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
   end
 
   describe '.where with Gitaly enabled' do
-    it_behaves_like :repo
+    it_behaves_like :repo do
+      context 'with pagination parameters' do
+        let(:pagination_params) { { limit: 3, page_token: nil } }
+
+        it 'returns paginated list of tree objects' do
+          expect(entries.count).to eq(3)
+          expect(cursor.next_cursor).to be_present
+        end
+      end
+    end
   end
 
   describe '.where with Rugged enabled', :enable_rugged do
@@ -161,6 +188,15 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
       described_class.where(repository, SeedRepo::Commit::ID, 'files', false)
     end
 
-    it_behaves_like :repo
+    it_behaves_like :repo do
+      context 'with pagination parameters' do
+        let(:pagination_params) { { limit: 3, page_token: nil } }
+
+        it 'does not support pagination' do
+          expect(entries.count).to be >= 10
+          expect(cursor).to be_nil
+        end
+      end
+    end
   end
 end

@@ -142,7 +142,7 @@ to view the `secretName` field:
 ```ruby
 module Types
   class ProjectType < BaseObject
-    field :secret_name, ::GraphQL::STRING_TYPE, null: true, authorize: :owner_access
+    field :secret_name, ::GraphQL::Types::String, null: true, authorize: :owner_access
   end
 end
 ```
@@ -179,7 +179,7 @@ as an array instead of as a single value:
 ```ruby
 module Types
   class MyType < BaseObject
-    field :hidden_field, ::GraphQL::INT_TYPE,
+    field :hidden_field, ::GraphQL::Types::Int,
       null: true,
       authorize: [:owner_access, :another_ability]
   end

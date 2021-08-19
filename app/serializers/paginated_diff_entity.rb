@@ -17,7 +17,7 @@ class PaginatedDiffEntity < Grape::Entity
       options.merge(
         submodule_links: submodule_links,
         code_navigation_path: code_navigation_path(diffs),
-        conflicts: conflicts
+        conflicts: conflicts(allow_tree_conflicts: options[:allow_tree_conflicts])
       )
     )
   end

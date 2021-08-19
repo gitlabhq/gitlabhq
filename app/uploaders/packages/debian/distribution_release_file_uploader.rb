@@ -10,7 +10,12 @@ class Packages::Debian::DistributionReleaseFileUploader < GitlabUploader
   alias_method :upload, :model
 
   def filename
-    'Release'
+    case mounted_as
+    when :signed_file
+      'InRelease'
+    else
+      'Release'
+    end
   end
 
   def store_dir

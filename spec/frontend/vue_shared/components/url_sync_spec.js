@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import UrlSyncComponent from '~/vue_shared/components/url_sync.vue';
@@ -15,9 +14,6 @@ jest.mock('~/lib/utils/common_utils', () => ({
 describe('url sync component', () => {
   let wrapper;
   const mockQuery = { group_id: '5014437163714', project_ids: ['5014437608314'] };
-  const TEST_HOST = 'http://testhost/';
-
-  setWindowLocation(TEST_HOST);
 
   const findButton = () => wrapper.find('button');
 
@@ -35,7 +31,9 @@ describe('url sync component', () => {
 
   const expectUrlSync = (query, times, mergeUrlParamsReturnValue) => {
     expect(mergeUrlParams).toHaveBeenCalledTimes(times);
-    expect(mergeUrlParams).toHaveBeenCalledWith(query, TEST_HOST, { spreadArrays: true });
+    expect(mergeUrlParams).toHaveBeenCalledWith(query, window.location.href, {
+      spreadArrays: true,
+    });
 
     expect(historyPushState).toHaveBeenCalledTimes(times);
     expect(historyPushState).toHaveBeenCalledWith(mergeUrlParamsReturnValue);

@@ -91,7 +91,11 @@ module EachBatch
 
         # Any ORDER BYs are useless for this relation and can lead to less
         # efficient UPDATE queries, hence we get rid of it.
-        yield relation.except(:order), index
+        relation = relation.except(:order)
+
+        # Using unscoped is necessary to prevent leaking the current scope used by
+        # ActiveRecord to chain `each_batch` method.
+        unscoped { yield relation, index }
 
         break unless stop
       end

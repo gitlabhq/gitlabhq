@@ -17,7 +17,7 @@ is locked.
 
 ## Activate GitLab EE with an Activation Code **(PREMIUM SELF)**
 
-As of GitLab Enterprise Edition 14.0, you need an activation code to activate your instance. You can obtain an activation code by [purchasing a license](https://about.gitlab.com/pricing/) or by signing up for a [free trial](https://about.gitlab.com/free-trial/). This activation code is a 24-character alphanumeric string you receive in a confirmation email. You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) to copy the activation code to your clipboard.
+As of GitLab Enterprise Edition 14.1, you need an activation code to activate your instance. You can obtain an activation code by [purchasing a license](https://about.gitlab.com/pricing/) or by signing up for a [free trial](https://about.gitlab.com/free-trial/). This activation code is a 24-character alphanumeric string you receive in a confirmation email. You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) to copy the activation code to your clipboard.
 
 To begin the activation process with your activation code:
 
@@ -30,7 +30,7 @@ To begin the activation process with your activation code:
 
 ## Activate GitLab EE with a License File **(PREMIUM SELF)**
 
-If you receive a license file from GitLab (for example a new trial), you can upload it by signing into your GitLab instance as an admin or adding it during installation. The license is a base64-encoded ASCII text file with a `.gitlab-license` extension. 
+If you receive a license file from GitLab (for example a new trial), you can upload it by signing into your GitLab instance as an admin or adding it during installation. The license is a base64-encoded ASCII text file with a `.gitlab-license` extension.
 
 ## Uploading your license
 
@@ -153,6 +153,20 @@ additional users. More information on how to determine the required number of us
 and how to add additional seats can be found in the
 [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
 
+In GitLab 14.2 and later, for instances that use a license file, you can exceed the number of purchased users and still activate your license.
+
+- If the users over license are less than or equal to 10% of the users in the subscription,
+  the license is applied and the overage is paid in the next true-up.
+- If the users over license are more than 10% of the users in the subscription,
+  you cannot apply the license without purchasing more users.
+
+For example, if you purchased a license for 100 users, you can have 110 users when you activate
+your license. However, if you have 111, you must purchase more users before you can activate.
+
 ### There is a connectivity issue
 
-In GitLab 14.0 and later, to activate your subscription, your GitLab instance must be connected to the internet. If you have questions or need assistance activating your instance please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
+In GitLab 14.1 and later, to activate your subscription, your GitLab instance must be connected to the internet. 
+
+If you have an offline or airgapped environment, you can [upload a license file](license.md#activate-gitlab-ee-with-a-license-file) instead.
+
+If you have questions or need assistance activating your instance, please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).

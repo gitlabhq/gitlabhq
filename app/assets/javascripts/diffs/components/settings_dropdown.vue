@@ -60,14 +60,14 @@ export default {
         <gl-button
           :class="{ selected: !renderTreeList }"
           class="gl-w-half js-list-view"
-          @click="setRenderTreeList(false)"
+          @click="setRenderTreeList({ renderTreeList: false })"
         >
           {{ __('List view') }}
         </gl-button>
         <gl-button
           :class="{ selected: renderTreeList }"
           class="gl-w-half js-tree-view"
-          @click="setRenderTreeList(true)"
+          @click="setRenderTreeList({ renderTreeList: true })"
         >
           {{ __('Tree view') }}
         </gl-button>

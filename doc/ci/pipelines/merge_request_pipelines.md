@@ -16,8 +16,8 @@ changes are pushed to a branch.
 If you want the pipeline to run jobs **only** on commits associated with a merge request,
 you can use *pipelines for merge requests*.
 
-In the UI, these pipelines are labeled as `detached`. Otherwise, these pipelines are the same
-as other pipelines.
+These pipelines are labeled as `detached` in the UI, and they do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable).
+Otherwise, these pipelines are the same as other pipelines.
 
 Pipelines for merge requests can run when you:
 

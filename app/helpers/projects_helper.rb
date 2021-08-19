@@ -291,8 +291,8 @@ module ProjectsHelper
     ) % { default_label: default_label }
   end
 
-  def can_import_members?
-    Ability.allowed?(current_user, :admin_project_member, @project)
+  def can_admin_project_member?(project)
+    Ability.allowed?(current_user, :admin_project_member, project) && !membership_locked?
   end
 
   def project_can_be_shared?
@@ -352,6 +352,29 @@ module ProjectsHelper
 
   def show_terraform_banner?(project)
     project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+  end
+
+  def project_permissions_panel_data(project)
+    {
+      packagesAvailable: ::Gitlab.config.packages.enabled,
+      packagesHelpPath: help_page_path('user/packages/index'),
+      currentSettings: project_permissions_settings(project),
+      canDisableEmails: can_disable_emails?(project, current_user),
+      canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
+      allowedVisibilityOptions: project_allowed_visibility_levels(project),
+      visibilityHelpPath: help_page_path('public_access/public_access'),
+      registryAvailable: Gitlab.config.registry.enabled,
+      registryHelpPath: help_page_path('user/packages/container_registry/index'),
+      lfsAvailable: Gitlab.config.lfs.enabled,
+      lfsHelpPath: help_page_path('topics/git/lfs/index'),
+      lfsObjectsExist: project.lfs_objects.exists?,
+      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index', anchor: 'removing-objects-from-lfs'),
+      pagesAvailable: Gitlab.config.pages.enabled,
+      pagesAccessControlEnabled: Gitlab.config.pages.access_control,
+      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
+      issuesHelpPath: help_page_path('user/project/issues/index')
+    }
   end
 
   private
@@ -491,7 +514,6 @@ module ProjectsHelper
 
   def project_permissions_settings(project)
     feature = project.project_feature
-
     {
       packagesEnabled: !!project.packages_enabled,
       visibilityLevel: project.visibility_level,
@@ -511,36 +533,9 @@ module ProjectsHelper
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       operationsAccessLevel: feature.operations_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
-      allowEditingCommitMessages: project.allow_editing_commit_messages?,
-      securityAndComplianceAccessLevel: project.security_and_compliance_access_level
+      securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
+      containerRegistryAccessLevel: feature.container_registry_access_level
     }
-  end
-
-  def project_permissions_panel_data(project)
-    {
-      packagesAvailable: ::Gitlab.config.packages.enabled,
-      packagesHelpPath: help_page_path('user/packages/index'),
-      currentSettings: project_permissions_settings(project),
-      canDisableEmails: can_disable_emails?(project, current_user),
-      canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
-      allowedVisibilityOptions: project_allowed_visibility_levels(project),
-      visibilityHelpPath: help_page_path('public_access/public_access'),
-      registryAvailable: Gitlab.config.registry.enabled,
-      registryHelpPath: help_page_path('user/packages/container_registry/index'),
-      lfsAvailable: Gitlab.config.lfs.enabled,
-      lfsHelpPath: help_page_path('topics/git/lfs/index'),
-      lfsObjectsExist: project.lfs_objects.exists?,
-      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index', anchor: 'removing-objects-from-lfs'),
-      pagesAvailable: Gitlab.config.pages.enabled,
-      pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
-      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
-      issuesHelpPath: help_page_path('user/project/issues/index')
-    }
-  end
-
-  def project_permissions_panel_data_json(project)
-    project_permissions_panel_data(project).to_json.html_safe
   end
 
   def project_allowed_visibility_levels(project)

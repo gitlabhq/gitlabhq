@@ -1,10 +1,10 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.deployments
 description: Total deployments count
 product_section: ops
 product_stage: release
-product_group: group::ops release
+product_group: group::release
 value_type: number
 status: data_available
 milestone: "8.12"
@@ -18,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

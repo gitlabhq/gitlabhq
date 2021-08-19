@@ -6,7 +6,7 @@ module Mutations
       field :note,
             Types::Notes::NoteType,
             null: true,
-            description: 'The note after mutation.'
+            description: 'Note after mutation.'
 
       private
 

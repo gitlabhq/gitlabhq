@@ -39,7 +39,7 @@ module Gitlab
             @cache = Gitlab::Ci::Build::Cache
               .new(attributes.delete(:cache), @pipeline)
 
-            recalculate_yaml_variables!
+            calculate_yaml_variables!
           end
 
           def name
@@ -232,7 +232,7 @@ module Gitlab
             { options: { allow_failure_criteria: nil } }
           end
 
-          def recalculate_yaml_variables!
+          def calculate_yaml_variables!
             @seed_attributes[:yaml_variables] = Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
               from: @context.root_variables, to: @job_variables, inheritance: @root_variables_inheritance
             )

@@ -44,15 +44,12 @@ gitlab-ctl restart
 
 ## Changing time zone per user
 
-To allow users to change the time zone in their profile, the feature flag `user_time_settings` should be enabled:
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/57654) in GitLab 11.11, disabled by default behind `user_time_settings` [feature flag](feature_flags.md).
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 13.9.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 14.1.
 
-1. [Start a Rails console session](operations/rails_console.md).
-1. Enable the feature flag:
+A user can set their time zone in their profile. If a user has not set their time zone, it defaults
+to the time zone [configured at the instance level](#changing-your-time-zone). On GitLab.com, the
+default time zone is UTC.
 
-   ```ruby
-   Feature.enable(:user_time_settings)
-   ```
-
-1. You should now be able to see the timezone dropdown in the users' **Settings > Profile** page.
-
-   ![User Time Zone Settings](img/time_zone_settings.png)
+For more information, see [Set your time zone](../user/profile/index.md#set-your-time-zone).

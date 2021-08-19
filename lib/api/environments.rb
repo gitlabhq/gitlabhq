@@ -77,7 +77,7 @@ module API
 
       desc "Delete multiple stopped review apps" do
         detail "Remove multiple stopped review environments older than a specific age"
-        success Entities::Environment
+        success Entities::EnvironmentBasic
       end
       params do
         optional :before, type: Time, desc: "The timestamp before which environments can be deleted. Defaults to 30 days ago.", default: -> { 30.days.ago }
@@ -90,8 +90,8 @@ module API
         result = ::Environments::ScheduleToDeleteReviewAppsService.new(user_project, current_user, params).execute
 
         response = {
-          scheduled_entries: Entities::Environment.represent(result.scheduled_entries),
-          unprocessable_entries: Entities::Environment.represent(result.unprocessable_entries)
+          scheduled_entries: Entities::EnvironmentBasic.represent(result.scheduled_entries),
+          unprocessable_entries: Entities::EnvironmentBasic.represent(result.unprocessable_entries)
         }
 
         if result.success?

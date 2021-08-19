@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Container Registry Online Garbage Collection', :registry_gc, only: { subdomain: %i[pre] } do
+    describe 'Container Registry Online Garbage Collection', :registry_gc, only: { subdomain: %i[pre] }, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/337791', type: :waiting_on } do
       let(:group) { Resource::Group.fabricate_via_api! }
 
       let(:imported_project) do

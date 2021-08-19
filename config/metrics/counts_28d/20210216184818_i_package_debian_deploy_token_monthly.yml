@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_debian_deploy_token_monthly
 description: A monthly count of Debian packages published to the registry using a deploy token
 product_section: ops
@@ -10,6 +10,10 @@ value_type: number
 status: deprecated
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_package_debian_deploy_token
 distribution:
 - ee
 - ce

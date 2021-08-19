@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
 
   it 'validates the operation being incremented' do
     expect { described_class.increment(project, :issue, :unknown) }
-      .to raise_error(ArgumentError, 'Operation must be fetched or imported')
+      .to raise_error(ArgumentError, 'operation must be fetched or imported')
   end
 
   it 'increments the counter and saves the key to be listed in the summary later' do
@@ -31,6 +31,22 @@ RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
     expect(described_class.summary(project)).to eq({
       'fetched' => { 'issue' => 2 },
       'imported' => { 'issue' => 2 }
+    })
+  end
+
+  it 'does not increment the counter if the given value is <= 0' do
+    expect(Gitlab::Metrics)
+      .not_to receive(:counter)
+
+    expect(Gitlab::Metrics)
+      .not_to receive(:counter)
+
+    described_class.increment(project, :issue, :fetched, value: 0)
+    described_class.increment(project, :issue, :imported, value: nil)
+
+    expect(described_class.summary(project)).to eq({
+      'fetched' => {},
+      'imported' => {}
     })
   end
 end

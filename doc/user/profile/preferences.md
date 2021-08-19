@@ -54,9 +54,10 @@ See the epic for:
 If you find an issue that isn't listed, please leave a comment on the epic or create a
 new issue.
 
-Dark mode is available as a navigation theme, for MVC and compatibility reasons. In
-the future, we plan to make it configurable in its own section along with support for
-[different navigation themes](https://gitlab.com/gitlab-org/gitlab/-/issues/219512).
+Dark mode is available as a navigation theme, for MVC and compatibility reasons.
+[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/219512)
+to make it configurable in its own section along with support for
+different navigation themes.
 
 Dark theme only works with the **Dark** syntax highlighting theme.
 

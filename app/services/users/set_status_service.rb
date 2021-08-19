@@ -28,11 +28,12 @@ module Users
       params[:emoji] = UserStatus::DEFAULT_EMOJI if params[:emoji].blank?
       params[:availability] = UserStatus.availabilities[:not_set] unless new_user_availability
 
-      user_status.update(params)
+      bump_user if user_status.update(params)
     end
 
     def remove_status
-      UserStatus.delete(target_user.id)
+      bump_user if UserStatus.delete(target_user.id).nonzero?
+      true
     end
 
     def user_status
@@ -47,6 +48,13 @@ module Users
 
     def new_user_availability
       UserStatus.availabilities[params[:availability]]
+    end
+
+    def bump_user
+      # Intentionally not calling `touch` as that will trigger other callbacks
+      # on target_user (e.g. after_touch, after_commit, after_rollback) and we
+      # don't need them to happen here.
+      target_user.update_column(:updated_at, Time.current)
     end
   end
 end

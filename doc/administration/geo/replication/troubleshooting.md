@@ -39,7 +39,7 @@ to help identify if something is wrong:
 - Is the node's secondary tracking database connected?
 - Is the node's secondary tracking database up-to-date?
 
-![Geo health check](img/geo_node_health_v14_0.png)
+![Geo health check](img/geo_site_health_v14_0.png)
 
 For information on how to resolve common errors reported from the UI, see
 [Fixing Common Errors](#fixing-common-errors).
@@ -158,6 +158,27 @@ This machine's Geo node name matches a database record ... no
   For more information see:
   doc/administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-node-correctly
 ```
+
+### Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
+
+If a replication slot is inactive,
+the `pg_wal` logs corresponding to the slot are reserved forever
+(or until the slot is active again). This causes continuous disk usage growth
+and the following messages appear repeatedly in the
+[PostgreSQL logs](../../logs.md#postgresql-logs):
+
+```plaintext
+WARNING: oldest xmin is far in the past
+HINT: Close open transactions soon to avoid wraparound problems.
+You might also need to commit or roll back old prepared transactions, or drop stale replication slots.
+```
+
+To fix this, do the following:
+
+1. [Connect to the primary database](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database).
+1. Run `SELECT * FROM pg_replication_slots;`.
+1. Note the `slot_name` that reports `active` as `f` (false).
+1. Follow [all these steps to remove that Geo site](remove_geo_site.md).
 
 ## Fixing errors found when running the Geo check Rake task
 
@@ -299,7 +320,7 @@ sudo gitlab-ctl \
    --backup-timeout=21600
 ```
 
-This will give the initial replication up to six hours to complete, rather than
+This gives the initial replication up to six hours to complete, rather than
 the default thirty minutes. Adjust as required for your installation.
 
 ### Message: "PANIC: could not write to file `pg_xlog/xlogtemp.123`: No space left on device"
@@ -314,7 +335,7 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
    ```
 
    NOTE:
-   Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
+   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
 
 1. View your replication slots with:
 
@@ -325,7 +346,8 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 Slots where `active` is `f` are not active.
 
 - When this slot should be active, because you have a **secondary** node configured using that slot,
-  log in to that **secondary** node and check the PostgreSQL logs why the replication is not running.
+  log in to that **secondary** node and check the [PostgreSQL logs](../../logs.md#postgresql-logs)
+  to view why the replication is not running.
 
 - If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
   PostgreSQL console session:
@@ -336,13 +358,12 @@ Slots where `active` is `f` are not active.
 
 ### Message: "ERROR: canceling statement due to conflict with recovery"
 
-This error may rarely occur under normal usage, and the system is resilient
+This error occurs infrequently under normal usage, and the system is resilient
 enough to recover.
 
 However, under certain conditions, some database queries on secondaries may run
-excessively long, which increases the frequency of this error. At some point,
-some of these queries will never be able to complete due to being canceled
-every time.
+excessively long, which increases the frequency of this error. This can lead to a situation
+where some queries never complete due to being canceled on every replication.
 
 These long-running queries are
 [planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
@@ -483,7 +504,7 @@ Then reconfigure GitLab:
 sudo gitlab-ctl reconfigure
 ```
 
-This will increase the timeout to four hours (14400 seconds). Choose a time
+This increases the timeout to four hours (14400 seconds). Choose a time
 long enough to accommodate a full clone of your largest repositories.
 
 ### New LFS objects are never replicated
@@ -521,7 +542,7 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl stop geo-logcursor
    ```
 
-   You can watch Sidekiq logs to know when Sidekiq jobs processing have finished:
+   You can watch the [Sidekiq logs](../../logs.md#sidekiq-logs) to know when Sidekiq jobs processing has finished:
 
    ```shell
    gitlab-ctl tail sidekiq
@@ -542,9 +563,8 @@ to start again from scratch, there are a few steps that can help you:
 1. _(Optional)_ Rename other data folders and create new ones
 
    WARNING:
-   You may still have files on the **secondary** node that have been removed from **primary** node but
-   removal have not been reflected. If you skip this step, they will never be removed
-   from this Geo node.
+   You may still have files on the **secondary** node that have been removed from the **primary** node, but this
+   removal has not been reflected. If you skip this step, these files are not removed at all from the Geo node.
 
    Any uploaded content like file attachments, avatars or LFS objects are stored in a
    subfolder in one of the two paths below:
@@ -639,12 +659,12 @@ Counts:
 
 #### If you are promoting a Geo secondary site running on a single server
 
-`gitlab-ctl promotion-preflight-checks` will fail due to the existence of
+`gitlab-ctl promotion-preflight-checks` fails due to the existence of
 `failed` rows in the `geo_design_registry` table. Use the
 [previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports) to
 determine the actual replication status of Design repositories.
 
-`gitlab-ctl promote-to-primary-node` will fail since it runs preflight checks.
+`gitlab-ctl promote-to-primary-node` fails since it runs preflight checks.
 If the [previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports)
 shows that all designs are synced, then you can use the
 `--skip-preflight-checks` option or the `--force` option to move forward with
@@ -652,7 +672,7 @@ promotion.
 
 #### If you are promoting a Geo secondary site running on multiple servers
 
-`gitlab-ctl promotion-preflight-checks` will fail due to the existence of
+`gitlab-ctl promotion-preflight-checks` fails due to the existence of
 `failed` rows in the `geo_design_registry` table. Use the
 [previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports) to
 determine the actual replication status of Design repositories.
@@ -744,7 +764,7 @@ When
 you need to run the `gitlab-pg-ctl` command to promote the PostgreSQL
 read-replica database.
 
-In GitLab 12.8 and earlier, this command will fail with the message:
+In GitLab 12.8 and earlier, this command fails with the message:
 
 ```plaintext
 sudo: gitlab-pg-ctl: command not found
@@ -803,7 +823,7 @@ If you notice for some reason there are more artifacts on the Geo
 secondary node than on the Geo primary node, you can use the Rake task
 to [cleanup orphan artifact files](../../../raketasks/cleanup.md#remove-orphan-artifact-files).
 
-On a Geo **secondary** node, this command will also clean up all Geo
+On a Geo **secondary** node, this command also cleans up all Geo
 registry record related to the orphan files on disk.
 
 ## Fixing sign in errors

@@ -17,13 +17,31 @@ exports[`Design management design version dropdown component renders design vers
     iconname=""
     iconrightarialabel=""
     iconrightname=""
+    ischeckcentered="true"
     ischecked="true"
     ischeckitem="true"
     secondarytext=""
   >
-    Version 
-        2
-       (latest)
+    <strong>
+      Version 
+          2
+         (latest)
+    </strong>
+     
+    <div
+      class="gl-text-gray-600 gl-mt-1"
+    >
+      <div>
+        Adminstrator
+      </div>
+       
+      <time-ago-stub
+        class="text-1"
+        cssclass=""
+        time="2021-08-09T06:05:00Z"
+        tooltipplacement="bottom"
+      />
+    </div>
   </gl-dropdown-item-stub>
   <gl-dropdown-item-stub
     avatarurl=""
@@ -31,12 +49,30 @@ exports[`Design management design version dropdown component renders design vers
     iconname=""
     iconrightarialabel=""
     iconrightname=""
+    ischeckcentered="true"
     ischeckitem="true"
     secondarytext=""
   >
-    Version 
-        1
-      
+    <strong>
+      Version 
+          1
+        
+    </strong>
+     
+    <div
+      class="gl-text-gray-600 gl-mt-1"
+    >
+      <div>
+        Adminstrator
+      </div>
+       
+      <time-ago-stub
+        class="text-1"
+        cssclass=""
+        time="2021-08-09T06:05:00Z"
+        tooltipplacement="bottom"
+      />
+    </div>
   </gl-dropdown-item-stub>
 </gl-dropdown-stub>
 `;
@@ -58,13 +94,31 @@ exports[`Design management design version dropdown component renders design vers
     iconname=""
     iconrightarialabel=""
     iconrightname=""
+    ischeckcentered="true"
     ischecked="true"
     ischeckitem="true"
     secondarytext=""
   >
-    Version 
-        2
-       (latest)
+    <strong>
+      Version 
+          2
+         (latest)
+    </strong>
+     
+    <div
+      class="gl-text-gray-600 gl-mt-1"
+    >
+      <div>
+        Adminstrator
+      </div>
+       
+      <time-ago-stub
+        class="text-1"
+        cssclass=""
+        time="2021-08-09T06:05:00Z"
+        tooltipplacement="bottom"
+      />
+    </div>
   </gl-dropdown-item-stub>
   <gl-dropdown-item-stub
     avatarurl=""
@@ -72,12 +126,30 @@ exports[`Design management design version dropdown component renders design vers
     iconname=""
     iconrightarialabel=""
     iconrightname=""
+    ischeckcentered="true"
     ischeckitem="true"
     secondarytext=""
   >
-    Version 
-        1
-      
+    <strong>
+      Version 
+          1
+        
+    </strong>
+     
+    <div
+      class="gl-text-gray-600 gl-mt-1"
+    >
+      <div>
+        Adminstrator
+      </div>
+       
+      <time-ago-stub
+        class="text-1"
+        cssclass=""
+        time="2021-08-09T06:05:00Z"
+        tooltipplacement="bottom"
+      />
+    </div>
   </gl-dropdown-item-stub>
 </gl-dropdown-stub>
 `;

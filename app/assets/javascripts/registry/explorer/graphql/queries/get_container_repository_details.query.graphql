@@ -12,6 +12,7 @@ query getContainerRepositoryDetails($id: ID!) {
     expirationPolicyCleanupStatus
     project {
       visibility
+      path
       containerExpirationPolicy {
         enabled
         nextRunAt

@@ -1,0 +1,12 @@
+query projectLabels($fullPath: ID!, $searchTerm: String) {
+  workspace: project(fullPath: $fullPath) {
+    labels(searchTerm: $searchTerm, includeAncestorGroups: true) {
+      nodes {
+        id
+        title
+        color
+        description
+      }
+    }
+  }
+}

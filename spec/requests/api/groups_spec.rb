@@ -10,7 +10,7 @@ RSpec.describe API::Groups do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
+  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path)) }
   let_it_be(:group2) { create(:group, :private) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2) }
@@ -60,6 +60,19 @@ RSpec.describe API::Groups do
 
         it_behaves_like 'invalid file upload request'
       end
+    end
+  end
+
+  shared_examples 'skips searching in full path' do
+    it 'does not find groups by full path' do
+      subgroup = create(:group, parent: parent, path: "#{parent.path}-subgroup")
+      create(:group, parent: parent, path: 'not_matching_path')
+
+      get endpoint, params: { search: parent.path }
+
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(subgroup.id)
     end
   end
 
@@ -404,6 +417,22 @@ RSpec.describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to contain_exactly(group2.id, group3.id)
+      end
+    end
+
+    context 'when searching' do
+      let_it_be(:subgroup1) { create(:group, parent: group1, path: 'some_path') }
+
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      subject { get api('/groups', user1), params: { search: group1.path } }
+
+      it 'finds also groups with full path matching search param' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(response_groups).to match_array([group1.id, subgroup1.id])
       end
     end
   end
@@ -936,23 +965,6 @@ RSpec.describe API::Groups do
             expect(project_names).to eq(['Project', 'Test', 'Test Project'])
           end
         end
-
-        context 'when `similarity_search` feature flag is off' do
-          before do
-            stub_feature_flags(similarity_search: false)
-          end
-
-          it 'returns items ordered by name' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response.length).to eq(2)
-
-            project_names = json_response.map { |proj| proj['name'] }
-            expect(project_names).to eq(['Test', 'Test Project'])
-          end
-        end
       end
 
       it "returns the group's projects with simple representation" do
@@ -1424,6 +1436,11 @@ RSpec.describe API::Groups do
         expect(json_response.first).to include('statistics')
       end
     end
+
+    it_behaves_like 'skips searching in full path' do
+      let(:parent) { group1 }
+      let(:endpoint) { api("/groups/#{group1.id}/subgroups", user1) }
+    end
   end
 
   describe 'GET /groups/:id/descendant_groups' do
@@ -1557,6 +1574,11 @@ RSpec.describe API::Groups do
         expect(json_response).to be_an Array
         expect(json_response.first).to include('statistics')
       end
+    end
+
+    it_behaves_like 'skips searching in full path' do
+      let(:parent) { group1 }
+      let(:endpoint) { api("/groups/#{group1.id}/descendant_groups", user1) }
     end
   end
 

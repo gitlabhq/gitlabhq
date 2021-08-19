@@ -2,14 +2,13 @@ import { s__ } from '~/locale';
 
 export default {
   computed: {
-    statusTextBeforeAuthor() {
-      return s__('mrWidget|Set by');
-    },
-    statusTextAfterAuthor() {
-      return s__('mrWidget|to be merged automatically when the pipeline succeeds');
+    statusText() {
+      return s__(
+        'mrWidget|Set by %{merge_author} to be merged automatically when the pipeline succeeds',
+      );
     },
     cancelButtonText() {
-      return s__('mrWidget|Cancel');
+      return s__('mrWidget|Cancel auto-merge');
     },
   },
 };

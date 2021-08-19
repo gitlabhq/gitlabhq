@@ -5,10 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Customize the Help and sign-in page messages
+# Customize the Help and sign-in page messages **(FREE SELF)**
 
 In large organizations, it is useful to have information about who to contact or where
-to go for help. You can customize and display this information on the GitLab  `/help` page and on
+to go for help. You can customize and display this information on the GitLab `/help` page and on
 the GitLab sign-in page.
 
 ## Add a help message to the Help page
@@ -17,32 +17,39 @@ You can add a help message, which is shown at the top of the GitLab `/help` page
 <https://gitlab.com/help>):
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
-1. Under **Additional text to show on the Help page**, fill in the information you wish to display on `/help`.
-1. Select **Save changes**. You can now see the message on `/help`.
+1. On the left sidebar, select **Settings > Preferences**.
+1. Expand **Sign-in and Help page**.
+1. In **Additional text to show on the Help page**, enter the information you want to display on `/help`.
+1. Select **Save changes**.
+
+You can now see the message on `/help`.
 
 NOTE:
 By default, `/help` is visible to unauthenticated users. However, if the
-[**Public** visibility level](visibility_and_access_controls.md#restricted-visibility-levels)
+[**Public** visibility level](visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/help` is visible only to signed-in users.
 
-## Add a help message to the sign-in page **(STARTER)**
+## Add a help message to the sign-in page
 
 You can add a help message, which is shown on the GitLab sign-in page. The message appears in a new
 section titled **Need Help?**, located below the sign-in page message:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
-1. Under **Additional text to show on the sign-in page**, fill in the information you wish to
+1. On the left sidebar, select **Settings > Preferences**.
+1. Expand **Sign-in and Help page**.
+1. In **Additional text to show on the sign-in page**, enter the information you want to
    display on the sign-in page.
-1. Select **Save changes**. You can now see the message on the sign-in page.
+1. Select **Save changes**.
+
+You can now see the message on the sign-in page.
 
 ## Hide marketing-related entries from the Help page
 
 GitLab marketing-related entries are occasionally shown on the Help page. To hide these entries:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
+1. On the left sidebar, select **Settings > Preferences**.
+1. Expand **Sign-in and Help page**.
 1. Select the **Hide marketing-related entries from the Help page** checkbox.
 1. Select **Save changes**.
 
@@ -54,9 +61,47 @@ You can specify a custom URL to which users are directed when they:
 - Select **See our website for help** on the Help page.
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
-1. Enter the URL in the **Support page URL** field.
+1. On the left sidebar, select **Settings > Preferences**.
+1. Expand **Sign-in and Help page**.
+1. In the **Support page URL** field, enter the URL.
 1. Select **Save changes**.
+
+## Redirect `/help` pages
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43157) in GitLab 13.5.
+> - Enabled on GitLab.com and is ready for production use.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+[enable the `:help_page_documentation_redirect` flag](../../../administration/feature_flags.md).
+On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+
+The `/help` URL of a GitLab instance displays a basic version of the documentation sourced from the
+[`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab. `/help` links
+are often used for contextual help.
+
+You can redirect these `/help` links to either:
+
+- The more navigable and searchable version published at [`docs.gitlab.com`](https://docs.gitlab.com).
+- A destination that meets [necessary requirements](#destination-requirements).
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Preferences**.
+1. Expand **Sign-in and Help page**.
+1. In the **Documentation pages URL** field, enter the URL.
+1. Select **Save changes**.
+
+### Destination requirements
+
+When redirecting `/help`, GitLab:
+
+- Redirects requests to the specified URL.
+- Appends `ee`  and the documentation path to the URL.
+- Appends `.html` to the URL, and removes `.md` if necessary.
+
+For example, if the URL is set to `https://docs.gitlab.com`, requests for
+`/help/user/admin_area/settings/help_page.md` redirect to:
+`https://docs.gitlab.com/ee/user/admin_area/settings/help_page.html`.
 
 <!-- ## Troubleshooting
 

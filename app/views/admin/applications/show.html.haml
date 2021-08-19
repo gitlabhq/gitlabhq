@@ -3,47 +3,7 @@
 %h3.page-title
   Application: #{@application.name}
 
-.table-holder.oauth-application-show
-  %table.table
-    %tr
-      %td
-        = _('Application ID')
-      %td
-        .clipboard-group
-          .input-group
-            %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true }
-            .input-group-append
-              = clipboard_button(target: '#application_id', title: _("Copy ID"), class: "gl-button btn btn-default")
-    %tr
-      %td
-        = _('Secret')
-      %td
-        .clipboard-group
-          .input-group
-            %input.label.label-monospace.monospace{ id: "secret", type: "text", autocomplete: 'off', value: @application.secret, readonly: true }
-            .input-group-append
-              = clipboard_button(target: '#secret', title: _("Copy secret"), class: "gl-button btn btn-default")
-    %tr
-      %td
-        = _('Callback URL')
-      %td
-        - @application.redirect_uri.split.each do |uri|
-          %div
-            %span.monospace= uri
-    %tr
-      %td
-        Trusted
-      %td
-        = @application.trusted? ? 'Y' : 'N'
-
-    %tr
-      %td
-        Confidential
-      %td
-        = @application.confidential? ? 'Y' : 'N'
-
-    = render "shared/tokens/scopes_list", token: @application
-
-.form-actions
-  = link_to 'Edit', edit_admin_application_path(@application), class: 'gl-button btn btn-confirm wide float-left'
-  = render 'delete_form', application: @application, submit_btn_css: 'gl-button btn btn-danger gl-ml-3'
+= render 'shared/doorkeeper/applications/show',
+  edit_path: edit_admin_application_path(@application),
+  delete_path: admin_application_path(@application),
+  show_trusted_row: true

@@ -27,7 +27,7 @@ RSpec.describe Banzai::Pipeline::WikiPipeline do
       end
     end
 
-    it 'is case-sensitive' do
+    it 'is not case-sensitive' do
       markdown = <<-MD.strip_heredoc
           [[_toc_]]
 
@@ -36,9 +36,22 @@ RSpec.describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      output = described_class.to_html(markdown, project: project, wiki: wiki)
+      result = described_class.call(markdown, project: project, wiki: wiki)
 
-      expect(output).to include('[[<em>toc</em>]]')
+      expect(result[:output].to_html).to include(result[:toc])
+    end
+
+    it 'works with alternative [toc] tag' do
+      markdown = <<-MD.strip_heredoc
+          [toc]
+
+          # Header 1
+
+          Foo
+      MD
+
+      result = described_class.call(markdown, project: project, wiki: wiki)
+      expect(result[:output].to_html).to include(result[:toc])
     end
 
     it 'handles an empty pipeline result' do

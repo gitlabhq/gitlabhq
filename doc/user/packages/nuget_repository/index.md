@@ -322,7 +322,7 @@ If you're using NuGet with GitLab CI/CD, a CI job token can be used instead of a
 personal access token or deploy token. The token inherits the permissions of the
 user that generates the pipeline.
 
-This example shows how to create a new package each time the `master` branch is
+This example shows how to create a new package each time the `main` branch is
 updated:
 
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
@@ -340,7 +340,7 @@ updated:
        - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
        - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
      only:
-       - master
+       - main
    ```
 
 1. Commit the changes and push it to your GitLab repository to trigger a new CI/CD build.
@@ -422,6 +422,21 @@ CLI (`dotnet`):
 - `dotnet nuget push`: Upload a package to the registry.
 - `nuget install`: Install a package from the registry.
 - `dotnet add`: Install a package from the registry.
+
+## Example project
+
+For an example, see the Guided Exploration project
+[Utterly Automated Software and Artifact Versioning with GitVersion](https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning).
+This project:
+
+- Generates NuGet packages by the `msbuild` method.
+- Generates NuGet packages by the `nuget.exe` method.
+- Uses GitLab releases and `release-cli` in connection with NuGet packaging.
+- Uses a tool called [GitVersion](https://gitversion.net/)
+  to automatically determine and increment versions for the NuGet package in complex repositories.
+
+You can copy this example project to your own group or instance for testing. See the project page
+for more details on what other GitLab CI patterns are demonstrated.
 
 ## Troubleshooting
 

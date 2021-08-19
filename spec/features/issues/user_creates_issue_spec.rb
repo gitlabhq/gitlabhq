@@ -182,7 +182,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'does not hide the milestone select' do
-        expect(page).to have_selector('.qa-issuable-milestone-dropdown')
+        expect(page).to have_selector('.qa-issuable-milestone-dropdown') # rubocop:disable QA/SelectorUsage
       end
     end
 
@@ -202,11 +202,11 @@ RSpec.describe "User creates issue" do
       end
 
       it 'shows the milestone select' do
-        expect(page).to have_selector('.qa-issuable-milestone-dropdown')
+        expect(page).to have_selector('.qa-issuable-milestone-dropdown') # rubocop:disable QA/SelectorUsage
       end
 
       it 'hides the weight input' do
-        expect(page).not_to have_selector('.qa-issuable-weight-input')
+        expect(page).not_to have_selector('.qa-issuable-weight-input') # rubocop:disable QA/SelectorUsage
       end
 
       it 'shows the incident help text' do

@@ -3,6 +3,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import InitCommandModal from '~/terraform/components/init_command_modal.vue';
 import StateActions from '~/terraform/components/states_table_actions.vue';
 import lockStateMutation from '~/terraform/graphql/mutations/lock_state.mutation.graphql';
 import removeStateMutation from '~/terraform/graphql/mutations/remove_state.mutation.graphql';
@@ -73,12 +74,14 @@ describe('StatesTableActions', () => {
     return wrapper.vm.$nextTick();
   };
 
-  const findActionsDropdown = () => wrapper.find(GlDropdown);
+  const findActionsDropdown = () => wrapper.findComponent(GlDropdown);
+  const findCopyBtn = () => wrapper.find('[data-testid="terraform-state-copy-init-command"]');
+  const findCopyModal = () => wrapper.findComponent(InitCommandModal);
   const findLockBtn = () => wrapper.find('[data-testid="terraform-state-lock"]');
   const findUnlockBtn = () => wrapper.find('[data-testid="terraform-state-unlock"]');
   const findDownloadBtn = () => wrapper.find('[data-testid="terraform-state-download"]');
   const findRemoveBtn = () => wrapper.find('[data-testid="terraform-state-remove"]');
-  const findRemoveModal = () => wrapper.find(GlModal);
+  const findRemoveModal = () => wrapper.findComponent(GlModal);
 
   beforeEach(() => {
     return createComponent();
@@ -121,6 +124,25 @@ describe('StatesTableActions', () => {
 
       it('disables the actions dropdown', () => {
         expect(findActionsDropdown().props('disabled')).toBe(true);
+      });
+    });
+  });
+
+  describe('copy command button', () => {
+    it('displays a copy init command button', () => {
+      expect(findCopyBtn().text()).toBe('Copy Terraform init command');
+    });
+
+    describe('when clicking the copy init command button', () => {
+      beforeEach(() => {
+        findCopyBtn().vm.$emit('click');
+
+        return waitForPromises();
+      });
+
+      it('opens the modal', async () => {
+        expect(findCopyModal().exists()).toBe(true);
+        expect(findCopyModal().isVisible()).toBe(true);
       });
     });
   });
@@ -253,7 +275,7 @@ describe('StatesTableActions', () => {
 
       it('displays a remove modal', () => {
         expect(findRemoveModal().text()).toContain(
-          `You are about to remove the State file ${defaultProps.state.name}`,
+          `You are about to remove the state file ${defaultProps.state.name}`,
         );
       });
 

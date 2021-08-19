@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 // Will not return a non-nil error after the response body has been

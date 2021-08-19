@@ -54,6 +54,14 @@ module API
         source.add_user(user, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
       end
 
+      def track_areas_of_focus(member, areas_of_focus)
+        return unless areas_of_focus
+
+        areas_of_focus.each do |area_of_focus|
+          Gitlab::Tracking.event(::Members::CreateService.name, 'area_of_focus', label: area_of_focus, property: member.id.to_s)
+        end
+      end
+
       def present_members(members)
         present members, with: Entities::Member, current_user: current_user, show_seat_info: params[:show_seat_info]
       end

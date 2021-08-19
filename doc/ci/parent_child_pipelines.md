@@ -1,5 +1,6 @@
 ---
 redirect_to: 'pipelines/parent_child_pipelines.md'
+remove_date: '2021-09-29'
 ---
 
 This document was moved to [another location](pipelines/parent_child_pipelines.md).

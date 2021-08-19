@@ -4,12 +4,22 @@ module Boards
   class BaseItemMoveService < Boards::BaseService
     def execute(issuable)
       issuable_modification_params = issuable_params(issuable)
-      return false if issuable_modification_params.empty?
+      return if issuable_modification_params.empty?
 
-      move_single_issuable(issuable, issuable_modification_params)
+      return unless move_single_issuable(issuable, issuable_modification_params)
+
+      success(issuable)
     end
 
     private
+
+    def success(issuable)
+      ServiceResponse.success(payload: { issuable: issuable })
+    end
+
+    def error(issuable, message)
+      ServiceResponse.error(payload: { issuable: issuable }, message: message)
+    end
 
     def issuable_params(issuable)
       attrs = {}

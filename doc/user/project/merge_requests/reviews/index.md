@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Review and manage merge requests **(FREE)**
+# Review a merge request **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245190) in GitLab 13.9.
@@ -15,47 +15,6 @@ GitLab project. [Create and submit a merge request](../creating_merge_requests.m
 to propose changes. Your team leaves [comments](../../../discussions/index.md), and
 makes [code suggestions](suggestions.md) you can accept from the user interface.
 When your work is reviewed, your team members can choose to accept or reject it.
-
-## Bulk edit merge requests at the project level
-
-Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
-
-When bulk editing merge requests in a project, you can edit the following attributes:
-
-- Status (open/closed)
-- Assignee
-- Milestone
-- Labels
-- Subscriptions
-
-To update multiple project merge requests at the same time:
-
-1. In a project, go to **Merge requests**.
-1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
-   editable fields.
-1. Select the checkboxes next to each merge request you want to edit.
-1. Select the appropriate fields and their values from the sidebar.
-1. Click **Update all**.
-
-## Bulk edit merge requests at the group level
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12719) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
-
-Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
-
-When bulk editing merge requests in a group, you can edit the following attributes:
-
-- Milestone
-- Labels
-
-To update multiple group merge requests at the same time:
-
-1. In a group, go to **Merge requests**.
-1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
-   editable fields.
-1. Select the checkboxes next to each merge request you want to edit.
-1. Select the appropriate fields and their values from the sidebar.
-1. Click **Update all**.
 
 ## Review a merge request
 
@@ -204,12 +163,51 @@ Multiline comments display the comment's line numbers above the body of the comm
 
 ![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
 
+## Bulk edit merge requests at the project level
+
+Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
+
+When bulk editing merge requests in a project, you can edit the following attributes:
+
+- Status (open/closed)
+- Assignee
+- Milestone
+- Labels
+- Subscriptions
+
+To update multiple project merge requests at the same time:
+
+1. In a project, go to **Merge requests**.
+1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+   editable fields.
+1. Select the checkboxes next to each merge request you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
+
+## Bulk edit merge requests at the group level
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12719) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+
+Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
+
+When bulk editing merge requests in a group, you can edit the following attributes:
+
+- Milestone
+- Labels
+
+To update multiple group merge requests at the same time:
+
+1. In a group, go to **Merge requests**.
+1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+   editable fields.
+1. Select the checkboxes next to each merge request you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
+
 ## Associated features
 
 These features are associated with merge requests:
 
-- [Bulk editing merge requests](../../../project/bulk_editing.md):
-  Update the attributes of multiple merge requests simultaneously.
 - [Cherry-pick changes](../cherry_pick_changes.md):
   Cherry-pick any commit in the UI by selecting the **Cherry-pick** button in a merged merge requests or a commit.
 - [Fast-forward merge requests](../fast_forward_merge.md):

@@ -6,5 +6,7 @@ FactoryBot.define do
     project
     protected { build.protected }
     instance_runners_enabled { true }
+    namespace { project.namespace }
+    minutes_exceeded { false }
   end
 end

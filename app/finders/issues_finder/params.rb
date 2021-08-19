@@ -32,7 +32,7 @@ class IssuesFinder
         if parent
           Ability.allowed?(current_user, :read_confidential_issues, parent)
         else
-          Ability.allowed?(current_user, :read_all_resources)
+          user_can_see_all_issues?
         end
       end
     end
@@ -41,6 +41,12 @@ class IssuesFinder
       return false if user_can_see_all_confidential_issues?
 
       current_user.blank?
+    end
+
+    def user_can_see_all_issues?
+      strong_memoize(:user_can_see_all_issues) do
+        Ability.allowed?(current_user, :read_all_resources)
+      end
     end
   end
 end

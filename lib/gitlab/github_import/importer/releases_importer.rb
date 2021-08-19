@@ -6,15 +6,9 @@ module Gitlab
       class ReleasesImporter
         include BulkImporting
 
-        attr_reader :project, :client, :existing_tags
-
-        # project - An instance of `Project`
-        # client - An instance of `Gitlab::GithubImport::Client`
         # rubocop: disable CodeReuse/ActiveRecord
-        def initialize(project, client)
-          @project = project
-          @client = client
-          @existing_tags = project.releases.pluck(:tag).to_set
+        def existing_tags
+          @existing_tags ||= project.releases.pluck(:tag).to_set
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -49,6 +43,10 @@ module Gitlab
 
         def description_for(release)
           release.body.presence || "Release for tag #{release.tag_name}"
+        end
+
+        def object_type
+          :release
         end
       end
     end

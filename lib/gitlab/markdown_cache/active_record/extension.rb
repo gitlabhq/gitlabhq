@@ -10,7 +10,9 @@ module Gitlab
           # Using before_update here conflicts with elasticsearch-model somehow
           before_create :refresh_markdown_cache, if: :invalidated_markdown_cache?
           before_update :refresh_markdown_cache, if: :invalidated_markdown_cache?
-          after_save :store_mentions!, if: :mentionable_attributes_changed?
+          # The import case needs to be fixed to avoid large number of
+          # SQL queries: https://gitlab.com/gitlab-org/gitlab/-/issues/21801
+          after_save :store_mentions!, if: :mentionable_attributes_changed?, unless: ->(obj) { obj.is_a?(Importable) && obj.importing? }
         end
 
         # Always exclude _html fields from attributes (including serialization).
@@ -37,6 +39,7 @@ module Gitlab
 
         def save_markdown(updates)
           return unless persisted? && Gitlab::Database.read_write?
+          return if cached_markdown_version.to_i < cached_markdown_version_in_database.to_i
 
           update_columns(updates)
         end

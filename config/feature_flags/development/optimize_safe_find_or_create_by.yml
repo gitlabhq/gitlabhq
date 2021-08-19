@@ -1,0 +1,8 @@
+---
+name: optimize_safe_find_or_create_by
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68458
+rollout_issue_url: 
+milestone: '14.3'
+type: development
+group: group::database
+default_enabled: false

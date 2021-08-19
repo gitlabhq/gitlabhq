@@ -32,7 +32,7 @@
 
 ### Performance (1 change)
 
-- Memoize Gitlab::Database.version.
+- Memoize Gitlab::Database.main.version.
 
 
 ## 10.8.2 (2018-05-28)

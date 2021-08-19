@@ -283,7 +283,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :cycle_analytics, only: :show, path: 'value_stream_analytics'
           scope module: :cycle_analytics, as: 'cycle_analytics', path: 'value_stream_analytics' do
             resources :value_streams, only: [:index] do
-              resources :stages, only: [:index]
+              resources :stages, only: [:index] do
+                member do
+                  get :median
+                  get :average
+                  get :records
+                  get :count
+                end
+              end
             end
             resource :summary, controller: :summary, only: :show
           end
@@ -382,7 +389,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :design_management do
           namespace :designs, path: 'designs/:design_id(/:sha)', constraints: -> (params) { params[:sha].nil? || Gitlab::Git.commit_id?(params[:sha]) } do
             resource :raw_image, only: :show
-            resources :resized_image, only: :show, constraints: -> (params) { DesignManagement::DESIGN_IMAGE_SIZES.include?(params[:id]) }
+            resources :resized_image, only: :show, constraints: -> (params) { ::DesignManagement::DESIGN_IMAGE_SIZES.include?(params[:id]) }
           end
         end
 

@@ -15,13 +15,13 @@ module Resolvers
 
       VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
 
-      argument :sha, GraphQL::STRING_TYPE,
+      argument :sha, GraphQL::Types::String,
                required: false,
-               description: "The SHA256 of a specific version."
+               description: "SHA256 of a specific version."
       argument :id, VersionID,
                as: :version_id,
                required: false,
-               description: 'The Global ID of the version.'
+               description: 'Global ID of the version.'
 
       def resolve(version_id: nil, sha: nil)
         # TODO: remove this line when the compatibility layer is removed

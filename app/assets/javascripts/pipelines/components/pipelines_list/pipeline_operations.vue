@@ -95,10 +95,10 @@ export default {
         :title="$options.i18n.cancelTitle"
         :loading="isCancelling"
         :disabled="isCancelling"
-        icon="close"
+        icon="cancel"
         variant="danger"
         category="primary"
-        class="js-pipelines-cancel-button"
+        class="js-pipelines-cancel-button gl-ml-1"
         @click="handleCancelClick"
       />
 

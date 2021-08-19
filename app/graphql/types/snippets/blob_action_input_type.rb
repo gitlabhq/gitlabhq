@@ -10,15 +10,15 @@ module Types
                description: 'Type of input action.',
                required: true
 
-      argument :previous_path, GraphQL::STRING_TYPE,
+      argument :previous_path, GraphQL::Types::String,
                description: 'Previous path of the snippet file.',
                required: false
 
-      argument :file_path, GraphQL::STRING_TYPE,
+      argument :file_path, GraphQL::Types::String,
                description: 'Path of the snippet file.',
                required: true
 
-      argument :content, GraphQL::STRING_TYPE,
+      argument :content, GraphQL::Types::String,
                description: 'Snippet file content.',
                required: false
     end

@@ -14,12 +14,7 @@ import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
 import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
-import {
-  mockMilestoneToken,
-  mockMilestones,
-  mockRegularMilestone,
-  mockEscapedMilestone,
-} from '../mock_data';
+import { mockMilestoneToken, mockMilestones, mockRegularMilestone } from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/milestones/milestone_utils');
@@ -70,37 +65,12 @@ describe('MilestoneToken', () => {
     wrapper.destroy();
   });
 
-  describe('computed', () => {
-    beforeEach(async () => {
-      // Milestone title with spaces is always enclosed in quotations by component.
-      wrapper = createComponent({ value: { data: `"${mockEscapedMilestone.title}"` } });
-
-      wrapper.setData({
-        milestones: mockMilestones,
-      });
-
-      await wrapper.vm.$nextTick();
-    });
-
-    describe('currentValue', () => {
-      it('returns lowercase string for `value.data`', () => {
-        expect(wrapper.vm.currentValue).toBe('"5.0 rc1"');
-      });
-    });
-
-    describe('activeMilestone', () => {
-      it('returns object for currently present `value.data`', () => {
-        expect(wrapper.vm.activeMilestone).toEqual(mockEscapedMilestone);
-      });
-    });
-  });
-
   describe('methods', () => {
-    describe('fetchMilestoneBySearchTerm', () => {
+    describe('fetchMilestones', () => {
       it('calls `config.fetchMilestones` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchMilestones');
 
-        wrapper.vm.fetchMilestoneBySearchTerm('foo');
+        wrapper.vm.fetchMilestones('foo');
 
         expect(wrapper.vm.config.fetchMilestones).toHaveBeenCalledWith('foo');
       });
@@ -110,7 +80,7 @@ describe('MilestoneToken', () => {
           data: mockMilestones,
         });
 
-        wrapper.vm.fetchMilestoneBySearchTerm();
+        wrapper.vm.fetchMilestones();
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.milestones).toEqual(mockMilestones);
@@ -121,7 +91,7 @@ describe('MilestoneToken', () => {
       it('calls `createFlash` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockRejectedValue({});
 
-        wrapper.vm.fetchMilestoneBySearchTerm('foo');
+        wrapper.vm.fetchMilestones('foo');
 
         return waitForPromises().then(() => {
           expect(createFlash).toHaveBeenCalledWith({
@@ -133,7 +103,7 @@ describe('MilestoneToken', () => {
       it('sets `loading` to false when request completes', () => {
         jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockRejectedValue({});
 
-        wrapper.vm.fetchMilestoneBySearchTerm('foo');
+        wrapper.vm.fetchMilestones('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.loading).toBe(false);

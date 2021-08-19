@@ -26,25 +26,7 @@ module Gitlab
         @storage = repository.storage
       end
 
-      def add_remote(name, url, mirror_refmaps)
-        request = Gitaly::AddRemoteRequest.new(
-          repository: @gitaly_repo,
-          name: name,
-          url: url,
-          mirror_refmaps: Array.wrap(mirror_refmaps).map(&:to_s)
-        )
-
-        GitalyClient.call(@storage, :remote_service, :add_remote, request, timeout: GitalyClient.fast_timeout)
-      end
-
-      def remove_remote(name)
-        request = Gitaly::RemoveRemoteRequest.new(repository: @gitaly_repo, name: name)
-
-        GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.long_timeout).result
-      end
-
-      # The remote_name parameter is deprecated and will be removed soon.
-      def find_remote_root_ref(remote_name, remote_url, authorization)
+      def find_remote_root_ref(remote_url, authorization)
         request = Gitaly::FindRemoteRootRefRequest.new(repository: @gitaly_repo,
                                                        remote_url: remote_url,
                                                        http_authorization_header: authorization)
@@ -55,18 +37,13 @@ module Gitlab
         encode_utf8(response.ref)
       end
 
-      def update_remote_mirror(ref_name, remote_url, only_branches_matching, ssh_key: nil, known_hosts: nil, keep_divergent_refs: false)
+      def update_remote_mirror(remote_url, only_branches_matching, ssh_key: nil, known_hosts: nil, keep_divergent_refs: false)
         req_enum = Enumerator.new do |y|
           first_request = Gitaly::UpdateRemoteMirrorRequest.new(
             repository: @gitaly_repo
           )
 
-          if remote_url
-            first_request.remote = Gitaly::UpdateRemoteMirrorRequest::Remote.new(url: remote_url)
-          else
-            first_request.ref_name = ref_name
-          end
-
+          first_request.remote = Gitaly::UpdateRemoteMirrorRequest::Remote.new(url: remote_url)
           first_request.ssh_key = ssh_key if ssh_key.present?
           first_request.known_hosts = known_hosts if known_hosts.present?
           first_request.keep_divergent_refs = keep_divergent_refs

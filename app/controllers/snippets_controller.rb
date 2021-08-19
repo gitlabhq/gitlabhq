@@ -4,7 +4,7 @@ class SnippetsController < Snippets::ApplicationController
   include SnippetsActions
   include PreviewMarkdown
   include ToggleAwardEmoji
-  include SpammableActions
+  include SpammableActions::AkismetMarkAsSpamAction
 
   before_action :snippet, only: [:show, :edit, :raw, :toggle_award_emoji, :mark_as_spam]
 

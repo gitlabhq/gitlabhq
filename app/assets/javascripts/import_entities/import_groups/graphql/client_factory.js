@@ -4,11 +4,15 @@ import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { STATUSES } from '../../constants';
+import { i18n, NEW_NAME_FIELD } from '../constants';
 import bulkImportSourceGroupItemFragment from './fragments/bulk_import_source_group_item.fragment.graphql';
+import addValidationErrorMutation from './mutations/add_validation_error.mutation.graphql';
+import removeValidationErrorMutation from './mutations/remove_validation_error.mutation.graphql';
 import setImportProgressMutation from './mutations/set_import_progress.mutation.graphql';
 import updateImportStatusMutation from './mutations/update_import_status.mutation.graphql';
 import availableNamespacesQuery from './queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupQuery from './queries/bulk_import_source_group.query.graphql';
+import groupAndProjectQuery from './queries/group_and_project.query.graphql';
 import { SourceGroupsManager } from './services/source_groups_manager';
 import { StatusPoller } from './services/status_poller';
 import typeDefs from './typedefs.graphql';
@@ -44,6 +48,37 @@ function makeGroup(data) {
   });
 
   return result;
+}
+
+async function checkImportTargetIsValid({ client, newName, targetNamespace, sourceGroupId }) {
+  const {
+    data: { existingGroup, existingProject },
+  } = await client.query({
+    query: groupAndProjectQuery,
+    variables: {
+      fullPath: `${targetNamespace}/${newName}`,
+    },
+  });
+
+  const variables = {
+    field: NEW_NAME_FIELD,
+    sourceGroupId,
+  };
+
+  if (!existingGroup && !existingProject) {
+    client.mutate({
+      mutation: removeValidationErrorMutation,
+      variables,
+    });
+  } else {
+    client.mutate({
+      mutation: addValidationErrorMutation,
+      variables: {
+        ...variables,
+        message: i18n.NAME_ALREADY_EXISTS,
+      },
+    });
+  }
 }
 
 const localProgressId = (id) => `not-started-${id}`;
@@ -99,7 +134,7 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
           ]) => {
             const pagination = parseIntPagination(normalizeHeaders(headers));
 
-            return {
+            const response = {
               __typename: clientTypenames.BulkImportSourceGroupConnection,
               nodes: data.importable_data.map((group) => {
                 const { jobId, importState: cachedImportState } =
@@ -123,6 +158,21 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
                 ...pagination,
               },
             };
+
+            setTimeout(() => {
+              response.nodes.forEach((group) => {
+                if (group.progress.status === STATUSES.NONE) {
+                  checkImportTargetIsValid({
+                    client,
+                    newName: group.import_target.new_name,
+                    targetNamespace: group.import_target.target_namespace,
+                    sourceGroupId: group.id,
+                  });
+                }
+              });
+            });
+
+            return response;
           },
         );
       },
@@ -136,6 +186,22 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
         ),
     },
     Mutation: {
+      setImportTarget(_, { targetNamespace, newName, sourceGroupId }, { client }) {
+        checkImportTargetIsValid({
+          client,
+          sourceGroupId,
+          targetNamespace,
+          newName,
+        });
+        return makeGroup({
+          id: sourceGroupId,
+          import_target: {
+            target_namespace: targetNamespace,
+            new_name: newName,
+          },
+        });
+      },
+
       setTargetNamespace: (_, { targetNamespace, sourceGroupId }) =>
         makeGroup({
           id: sourceGroupId,

@@ -398,31 +398,46 @@ RSpec.describe Repository do
   end
 
   describe '#new_commits' do
-    let_it_be(:project) { create(:project, :repository) }
+    shared_examples '#new_commits' do
+      let_it_be(:project) { create(:project, :repository) }
 
-    let(:repository) { project.repository }
+      let(:repository) { project.repository }
 
-    subject { repository.new_commits(rev) }
+      subject { repository.new_commits(rev, allow_quarantine: allow_quarantine) }
 
-    context 'when there are no new commits' do
-      let(:rev) { repository.commit.id }
+      context 'when there are no new commits' do
+        let(:rev) { repository.commit.id }
 
-      it 'returns an empty array' do
-        expect(subject).to eq([])
+        it 'returns an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+
+      context 'when new commits are found' do
+        let(:branch) { 'orphaned-branch' }
+        let!(:rev) { repository.commit(branch).id }
+        let(:allow_quarantine) { false }
+
+        it 'returns the commits' do
+          repository.delete_branch(branch)
+
+          expect(subject).not_to be_empty
+          expect(subject).to all( be_a(::Commit) )
+          expect(subject.size).to eq(1)
+        end
       end
     end
 
-    context 'when new commits are found' do
-      let(:branch) { 'orphaned-branch' }
-      let!(:rev) { repository.commit(branch).id }
+    context 'with quarantine' do
+      let(:allow_quarantine) { true }
 
-      it 'returns the commits' do
-        repository.delete_branch(branch)
+      it_behaves_like '#new_commits'
+    end
 
-        expect(subject).not_to be_empty
-        expect(subject).to all( be_a(::Commit) )
-        expect(subject.size).to eq(1)
-      end
+    context 'without quarantine' do
+      let(:allow_quarantine) { false }
+
+      it_behaves_like '#new_commits'
     end
   end
 
@@ -1094,99 +1109,16 @@ RSpec.describe Repository do
     end
   end
 
-  describe '#async_remove_remote' do
-    before do
-      masterrev = repository.find_branch('master').dereferenced_target
-      create_remote_branch('joe', 'remote_branch', masterrev)
-    end
-
-    context 'when worker is scheduled successfully' do
-      before do
-        masterrev = repository.find_branch('master').dereferenced_target
-        create_remote_branch('remote_name', 'remote_branch', masterrev)
-
-        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return('1234')
-      end
-
-      it 'returns job_id' do
-        expect(repository.async_remove_remote('joe')).to eq('1234')
-      end
-    end
-
-    context 'when worker does not schedule successfully' do
-      before do
-        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return(nil)
-      end
-
-      it 'returns nil' do
-        expect(Gitlab::AppLogger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
-
-        expect(repository.async_remove_remote('joe')).to be_nil
-      end
-    end
-  end
-
   describe '#fetch_as_mirror' do
     let(:url) { "http://example.com" }
 
-    context 'when :fetch_remote_params is enabled' do
-      let(:remote_name) { "remote-name" }
+    it 'fetches the URL without creating a remote' do
+      expect(repository)
+        .to receive(:fetch_remote)
+        .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "")
+        .and_return(nil)
 
-      before do
-        stub_feature_flags(fetch_remote_params: true)
-      end
-
-      it 'fetches the URL without creating a remote' do
-        expect(repository).not_to receive(:add_remote)
-        expect(repository)
-          .to receive(:fetch_remote)
-          .with(remote_name, url: url, forced: false, prune: true, refmap: :all_refs)
-          .and_return(nil)
-
-        repository.fetch_as_mirror(url, remote_name: remote_name)
-      end
-    end
-
-    context 'when :fetch_remote_params is disabled' do
-      before do
-        stub_feature_flags(fetch_remote_params: false)
-      end
-
-      shared_examples 'a fetch' do
-        it 'adds and fetches a remote' do
-          expect(repository)
-            .to receive(:add_remote)
-            .with(expected_remote, url, mirror_refmap: :all_refs)
-            .and_return(nil)
-          expect(repository)
-            .to receive(:fetch_remote)
-            .with(expected_remote, forced: false, prune: true)
-            .and_return(nil)
-
-          repository.fetch_as_mirror(url, remote_name: remote_name)
-        end
-      end
-
-      context 'with temporary remote' do
-        let(:remote_name) { nil }
-        let(:expected_remote_suffix) { "123456" }
-        let(:expected_remote) { "tmp-#{expected_remote_suffix}" }
-
-        before do
-          expect(repository)
-            .to receive(:async_remove_remote).with(expected_remote).and_return(nil)
-          allow(SecureRandom).to receive(:hex).and_return(expected_remote_suffix)
-        end
-
-        it_behaves_like 'a fetch'
-      end
-
-      context 'with remote name' do
-        let(:remote_name) { "foo" }
-        let(:expected_remote) { "foo" }
-
-        it_behaves_like 'a fetch'
-      end
+      repository.fetch_as_mirror(url)
     end
   end
 
@@ -2605,24 +2537,46 @@ RSpec.describe Repository do
   end
 
   shared_examples '#tree' do
+    subject { repository.tree(sha, path, recursive: recursive, pagination_params: pagination_params) }
+
+    let(:sha) { :head }
+    let(:path) { nil }
+    let(:recursive) { false }
+    let(:pagination_params) { nil }
+
     context 'using a non-existing repository' do
       before do
         allow(repository).to receive(:head_commit).and_return(nil)
       end
 
-      it 'returns nil' do
-        expect(repository.tree(:head)).to be_nil
-      end
+      it { is_expected.to be_nil }
 
-      it 'returns nil when using a path' do
-        expect(repository.tree(:head, 'README.md')).to be_nil
+      context 'when path is defined' do
+        let(:path) { 'README.md' }
+
+        it { is_expected.to be_nil }
       end
     end
 
     context 'using an existing repository' do
-      it 'returns a Tree' do
-        expect(repository.tree(:head)).to be_an_instance_of(Tree)
-        expect(repository.tree('v1.1.1')).to be_an_instance_of(Tree)
+      it { is_expected.to be_an_instance_of(Tree) }
+
+      context 'when different sha is set' do
+        let(:sha) { 'v1.1.1' }
+
+        it { is_expected.to be_an_instance_of(Tree) }
+      end
+
+      context 'when recursive is true' do
+        let(:recursive) { true }
+
+        it { is_expected.to be_an_instance_of(Tree) }
+      end
+
+      context 'with pagination parameters' do
+        let(:pagination_params) { { limit: 10, page_token: nil } }
+
+        it { is_expected.to be_an_instance_of(Tree) }
       end
     end
   end

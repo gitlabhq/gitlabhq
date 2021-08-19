@@ -26,27 +26,6 @@ export default {
   [types.TOGGLE_DROPDOWN_CONTENTS_CREATE_VIEW](state) {
     state.showDropdownContentsCreateView = !state.showDropdownContentsCreateView;
   },
-
-  [types.REQUEST_LABELS](state) {
-    state.labelsFetchInProgress = true;
-  },
-  [types.RECEIVE_SET_LABELS_SUCCESS](state, labels) {
-    // Iterate over every label and add a `set` prop
-    // to determine whether it is already a part of
-    // selectedLabels array.
-    const selectedLabelIds = state.selectedLabels.map((label) => label.id);
-    state.labelsFetchInProgress = false;
-    state.labels = labels.reduce((allLabels, label) => {
-      allLabels.push({
-        ...label,
-        set: selectedLabelIds.includes(label.id),
-      });
-      return allLabels;
-    }, []);
-  },
-  [types.RECEIVE_SET_LABELS_FAILURE](state) {
-    state.labelsFetchInProgress = false;
-  },
   [types.UPDATE_SELECTED_LABELS](state, { labels }) {
     // Find the label to update from all the labels
     // and change `set` prop value to represent their current state.

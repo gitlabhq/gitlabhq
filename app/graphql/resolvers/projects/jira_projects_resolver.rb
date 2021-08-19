@@ -9,7 +9,7 @@ module Resolvers
       authorize :admin_project
 
       argument :name,
-               GraphQL::STRING_TYPE,
+               GraphQL::Types::String,
                required: false,
                description: 'Project name or key.'
 

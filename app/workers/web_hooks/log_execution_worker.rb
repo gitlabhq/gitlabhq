@@ -4,9 +4,11 @@ module WebHooks
   class LogExecutionWorker
     include ApplicationWorker
 
-    idempotent!
+    data_consistency :always
     feature_category :integrations
     urgency :low
+
+    idempotent!
 
     # This worker accepts an extra argument. This enables us to
     # treat this worker as idempotent. Currently this is set to

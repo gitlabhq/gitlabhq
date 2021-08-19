@@ -7,16 +7,16 @@ module Mutations
 
       graphql_name 'CreateBranch'
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Project full path the branch is associated with.'
 
-      argument :name, GraphQL::STRING_TYPE,
+      argument :name, GraphQL::Types::String,
                required: true,
                description: 'Name of the branch.'
 
       argument :ref,
-               GraphQL::STRING_TYPE,
+               GraphQL::Types::String,
                required: true,
                description: 'Branch name or commit SHA to create branch from.'
 

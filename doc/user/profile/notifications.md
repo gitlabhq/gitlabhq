@@ -56,11 +56,11 @@ Your **Global notification settings** are the default settings unless you select
 different values for a project or a group.
 
 - **Notification email**: the email address your notifications are sent to.
-- **Receive product marketing emails**: select this check box to receive
+- **Receive product marketing emails**: select this checkbox to receive
   [periodic emails](#product-marketing-emails) about GitLab features.
 - **Global notification level**: the default [notification level](#notification-levels)
   which applies to all your notifications.
-- **Receive notifications about your own activity**: select this check box to receive
+- **Receive notifications about your own activity**: select this checkbox to receive
   notifications about your own activity. Not selected by default.
 
 ![notification settings](img/notification_global_settings_v13_12.png)
@@ -143,7 +143,7 @@ For each project and group you can select one of the following levels:
 |:------------|:------------|
 | Global      | Your global settings apply. |
 | Watch       | Receive notifications for any activity. |
-| On mention  | Receive notifications when `@mentioned` in comments. |
+| On mention  | Receive notifications when [mentioned](../project/issues/issue_data_and_actions.md#mentions) in a comment. |
 | Participate | Receive notifications for threads you have participated in. |
 | Disabled    | Turns off notifications. |
 | Custom      | Receive notifications for custom selected events. |
@@ -278,7 +278,7 @@ The participants are:
 
 - Authors of the design (can be multiple people if different authors have uploaded different versions of the design).
 - Authors of comments on the design.
-- Anyone that is `@mentioned` in a comment on the design.
+- Anyone that is [mentioned](../project/issues/issue_data_and_actions.md#mentions) in a comment on the design.
 
 ## Opt out of all GitLab emails
 
@@ -328,5 +328,12 @@ reason `assigned` has this sentence in the footer:
 
 - `You are receiving this email because you have been assigned an item on <configured GitLab hostname>.`
 
-NOTE:
 Notification of other events is being considered for inclusion in the `X-GitLab-NotificationReason` header. For details, see this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/20689).
+
+For example, an alert notification email can have one of
+[the alert's](../../operations/incident_management/alerts.md) statuses:
+
+- `alert_triggered`
+- `alert_acknowledged`
+- `alert_resolved`
+- `alert_ignored`

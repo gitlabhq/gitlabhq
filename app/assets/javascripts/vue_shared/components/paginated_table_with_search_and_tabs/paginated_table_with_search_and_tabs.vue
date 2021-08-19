@@ -42,12 +42,12 @@ export default {
     itemsCount: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     pageInfo: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     statusTabs: {
       type: Array,

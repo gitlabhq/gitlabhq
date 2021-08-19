@@ -17,7 +17,7 @@ describe('MRWidgetRelatedLinks', () => {
       it('returns Closes text for open merge request', () => {
         createComponent({ state: 'open', relatedLinks: {} });
 
-        expect(wrapper.vm.closesText).toBe('Closes');
+        expect(wrapper.vm.closesText).toBe('Closes issues');
       });
 
       it('returns correct text for closed merge request', () => {
@@ -38,6 +38,7 @@ describe('MRWidgetRelatedLinks', () => {
     createComponent({
       relatedLinks: {
         closing: '<a href="#">#23</a> and <a>#42</a>',
+        closingCount: 2,
       },
     });
     const content = wrapper
@@ -45,7 +46,7 @@ describe('MRWidgetRelatedLinks', () => {
       .replace(/\n(\s)+/g, ' ')
       .trim();
 
-    expect(content).toContain('Closes #23 and #42');
+    expect(content).toContain('Closes issues #23 and #42');
     expect(content).not.toContain('Mentions');
   });
 
@@ -53,11 +54,17 @@ describe('MRWidgetRelatedLinks', () => {
     createComponent({
       relatedLinks: {
         mentioned: '<a href="#">#7</a>',
+        mentionedCount: 1,
       },
     });
 
-    expect(wrapper.text().trim()).toContain('Mentions #7');
-    expect(wrapper.text().trim()).not.toContain('Closes');
+    const content = wrapper
+      .text()
+      .replace(/\n(\s)+/g, ' ')
+      .trim();
+
+    expect(content).toContain('Mentions issue #7');
+    expect(content).not.toContain('Closes issues');
   });
 
   it('should have closing and mentioned issues at the same time', () => {
@@ -65,6 +72,8 @@ describe('MRWidgetRelatedLinks', () => {
       relatedLinks: {
         closing: '<a href="#">#7</a>',
         mentioned: '<a href="#">#23</a> and <a>#42</a>',
+        closingCount: 1,
+        mentionedCount: 2,
       },
     });
     const content = wrapper
@@ -72,8 +81,8 @@ describe('MRWidgetRelatedLinks', () => {
       .replace(/\n(\s)+/g, ' ')
       .trim();
 
-    expect(content).toContain('Closes #7');
-    expect(content).toContain('Mentions #23 and #42');
+    expect(content).toContain('Closes issue #7');
+    expect(content).toContain('Mentions issues #23 and #42');
   });
 
   it('should have assing issues link', () => {

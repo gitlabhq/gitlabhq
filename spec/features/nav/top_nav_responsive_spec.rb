@@ -8,8 +8,6 @@ RSpec.describe 'top nav responsive', :js do
   let_it_be(:user) { create(:user) }
 
   before do
-    stub_feature_flags(combined_menu: true)
-
     sign_in(user)
     visit explore_projects_path
 

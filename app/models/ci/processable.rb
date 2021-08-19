@@ -169,11 +169,7 @@ module Ci
     end
 
     def all_dependencies
-      if Feature.enabled?(:preload_associations_jobs_request_api_endpoint, project, default_enabled: :yaml)
-        strong_memoize(:all_dependencies) do
-          dependencies.all
-        end
-      else
+      strong_memoize(:all_dependencies) do
         dependencies.all
       end
     end

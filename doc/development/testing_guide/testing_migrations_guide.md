@@ -127,7 +127,90 @@ reversible_migration do |migration|
 end
 ```
 
-### Example database migration test
+### Custom matchers for post-deployment migrations
+
+We have some custom matchers in
+[`spec/support/matchers/background_migrations_matchers.rb`](https://gitlab.com/gitlab-org/gitlab/blob/v14.1.0-ee/spec/support/matchers/background_migrations_matchers.rb)
+to verify background migrations were correctly scheduled from a post-deployment migration, and
+receive the correct number of arguments.
+
+All of them use the internal matcher `be_background_migration_with_arguments`, which verifies that
+the `#perform` method on your migration class doesn't crash when receiving the provided arguments.
+
+#### `be_scheduled_migration`
+
+Verifies that a Sidekiq job was queued with the expected class and arguments.
+
+This matcher usually makes sense if you're queueing jobs manually, rather than going through our helpers.
+
+```ruby
+# Migration
+BackgroundMigrationWorker.perform_async('MigrationClass', args)
+
+# Spec
+expect('MigrationClass').to be_scheduled_migration(*args)
+```
+
+#### `be_scheduled_migration_with_multiple_args`
+
+Verifies that a Sidekiq job was queued with the expected class and arguments.
+
+This works the same as `be_scheduled_migration`, except that the order is ignored when comparing
+array arguments.
+
+```ruby
+# Migration
+BackgroundMigrationWorker.perform_async('MigrationClass', ['foo', [3, 2, 1]])
+
+# Spec
+expect('MigrationClass').to be_scheduled_migration_with_multiple_args('foo', [1, 2, 3])
+```
+
+#### `be_scheduled_delayed_migration`
+
+Verifies that a Sidekiq job was queued with the expected delay, class, and arguments.
+
+This can also be used with `queue_background_migration_jobs_by_range_at_intervals` and related helpers.
+
+```ruby
+# Migration
+BackgroundMigrationWorker.perform_in(delay, 'MigrationClass', args)
+
+# Spec
+expect('MigrationClass').to be_scheduled_delayed_migration(delay, *args)
+```
+
+#### `have_scheduled_batched_migration`
+
+Verifies that a `BatchedMigration` record was created with the expected class and arguments.
+
+The `*args` are additional arguments passed to the `MigrationClass`, while `**kwargs` are any other
+attributes to be verified on the `BatchedMigration` record (Example: `interval: 2.minutes`).
+
+```ruby
+# Migration
+queue_batched_background_migration(
+  'MigrationClass',
+  table_name,
+  column_name,
+  *args,
+  **kwargs
+)
+
+# Spec
+expect('MigrationClass').to have_scheduled_batched_migration(
+  table_name: table_name,
+  column_name: column_name,
+  job_arguments: args,
+  **kwargs
+)
+```
+
+### Examples of migration tests
+
+Migration tests depend on what the migration does exactly, the most common types are data migrations and scheduling background migrations.
+
+#### Example of a data migration test
 
 This spec tests the
 [`db/post_migrate/20170526185842_migrate_pipeline_stages.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/db/post_migrate/20170526185842_migrate_pipeline_stages.rb)
@@ -178,6 +261,59 @@ RSpec.describe MigratePipelineStages do
         expect(stages.all.pluck(:name)).to match_array %w[test build]
       }
     end
+end
+```
+
+#### Example of a background migration scheduling test
+
+To test these you usually have to:
+
+- Create some records.
+- Run the migration.
+- Verify that the expected jobs were scheduled, with the correct set
+  of records, the correct batch size, interval, etc.
+
+The behavior of the background migration itself needs to be verified in a [separate
+test for the background migration class](#example-background-migration-test).
+
+This spec tests the
+[`db/post_migrate/20210701111909_backfill_issues_upvotes_count.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/v14.1.0-ee/db/post_migrate/20210701111909_backfill_issues_upvotes_count.rb)
+post-deployment migration. You can find the complete spec in
+[`spec/migrations/backfill_issues_upvotes_count_spec.rb`](https://gitlab.com/gitlab-org/gitlab/blob/v14.1.0-ee/spec/spec/migrations/backfill_issues_upvotes_count_spec.rb).
+
+```ruby
+require 'spec_helper'
+require_migration!
+
+RSpec.describe BackfillIssuesUpvotesCount do
+  let(:migration) { described_class.new }
+  let(:issues) { table(:issues) }
+  let(:award_emoji) { table(:award_emoji) }
+
+  let!(:issue1) { issues.create! }
+  let!(:issue2) { issues.create! }
+  let!(:issue3) { issues.create! }
+  let!(:issue4) { issues.create! }
+  let!(:issue4_without_thumbsup) { issues.create! }
+
+  let!(:award_emoji1) { award_emoji.create!( name: 'thumbsup', awardable_type: 'Issue', awardable_id: issue1.id) }
+  let!(:award_emoji2) { award_emoji.create!( name: 'thumbsup', awardable_type: 'Issue', awardable_id: issue2.id) }
+  let!(:award_emoji3) { award_emoji.create!( name: 'thumbsup', awardable_type: 'Issue', awardable_id: issue3.id) }
+  let!(:award_emoji4) { award_emoji.create!( name: 'thumbsup', awardable_type: 'Issue', awardable_id: issue4.id) }
+
+  it 'correctly schedules background migrations', :aggregate_failures do
+    stub_const("#{described_class.name}::BATCH_SIZE", 2)
+
+    Sidekiq::Testing.fake! do
+      freeze_time do
+        migrate!
+
+        expect(described_class::MIGRATION).to be_scheduled_migration(issue1.id, issue2.id)
+        expect(described_class::MIGRATION).to be_scheduled_migration(issue3.id, issue4.id)
+        expect(BackgroundMigrationWorker.jobs.size).to eq(2)
+      end
+    end
+  end
 end
 ```
 

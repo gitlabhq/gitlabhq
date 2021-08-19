@@ -9,7 +9,7 @@
 - page_description  @commit.description
 - add_page_specific_style 'page_bundles/pipelines'
 
-.container-fluid{ class: [limited_container_width, container_class] }
+.container-fluid.commits-container{ class: [limited_container_width, container_class] }
   = render "commit_box"
   = render "ci_menu"
   = render "projects/diffs/diffs",

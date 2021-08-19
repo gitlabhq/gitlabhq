@@ -4,15 +4,15 @@ import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.qu
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
+import getPipelineQuery from '../../graphql/queries/get_pipeline_header_data.query.graphql';
 import { reportToSentry, reportMessageToSentry } from '../../utils';
-import { listByLayers } from '../parsing_utils';
 import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
+  calculatePipelineLayersInfo,
   getQueryHeaders,
   serializeLoadErrors,
   toggleQueryPollingByVisibility,
@@ -31,7 +31,6 @@ export default {
     LocalStorageSync,
     PipelineGraph,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     graphqlResourceEtag: {
       default: '',
@@ -50,9 +49,10 @@ export default {
     return {
       alertType: null,
       callouts: [],
+      computedPipelineInfo: null,
       currentViewType: STAGE_VIEW,
+      canRefetchHeaderPipeline: false,
       pipeline: null,
-      pipelineLayers: null,
       showAlert: false,
       showLinks: false,
     };
@@ -76,6 +76,26 @@ export default {
           this.$options.name,
           `type: callout_load_failure, info: ${serializeLoadErrors(err)}`,
         );
+      },
+    },
+    headerPipeline: {
+      query: getPipelineQuery,
+      // this query is already being called in header_component.vue, which shares the same cache as this component
+      // the skip here is to prevent sending double network requests on page load
+      skip() {
+        return !this.canRefetchHeaderPipeline;
+      },
+      variables() {
+        return {
+          fullPath: this.pipelineProjectPath,
+          iid: this.pipelineIid,
+        };
+      },
+      update(data) {
+        return data.project?.pipeline || {};
+      },
+      error() {
+        this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
       },
     },
     pipeline: {
@@ -178,7 +198,7 @@ export default {
       return this.$apollo.queries.pipeline.loading && !this.pipeline;
     },
     showGraphViewSelector() {
-      return Boolean(this.glFeatures.pipelineGraphLayersView && this.pipeline?.usesNeeds);
+      return this.pipeline?.usesNeeds;
     },
   },
   mounted() {
@@ -192,12 +212,16 @@ export default {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   methods: {
-    getPipelineLayers() {
-      if (this.currentViewType === LAYER_VIEW && !this.pipelineLayers) {
-        this.pipelineLayers = listByLayers(this.pipeline);
+    getPipelineInfo() {
+      if (this.currentViewType === LAYER_VIEW && !this.computedPipelineInfo) {
+        this.computedPipelineInfo = calculatePipelineLayersInfo(
+          this.pipeline,
+          this.$options.name,
+          this.metricsPath,
+        );
       }
 
-      return this.pipelineLayers;
+      return this.computedPipelineInfo;
     },
     handleTipDismissal() {
       try {
@@ -217,6 +241,10 @@ export default {
     },
     refreshPipelineGraph() {
       this.$apollo.queries.pipeline.refetch();
+
+      // this will update the status in header_component since they share the same cache
+      this.canRefetchHeaderPipeline = true;
+      this.$apollo.queries.headerPipeline.refetch();
     },
     /* eslint-disable @gitlab/require-i18n-strings */
     reportFailure({ type, err = 'No error string passed.', skipSentry = false }) {
@@ -262,7 +290,7 @@ export default {
       v-if="pipeline"
       :config-paths="configPaths"
       :pipeline="pipeline"
-      :pipeline-layers="getPipelineLayers()"
+      :computed-pipeline-info="getPipelineInfo()"
       :show-links="showLinks"
       :view-type="graphViewType"
       @error="reportFailure"

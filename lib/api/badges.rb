@@ -8,7 +8,7 @@ module API
 
     helpers ::API::Helpers::BadgesHelpers
 
-    feature_category :continuous_integration
+    feature_category :projects
 
     helpers do
       def find_source_if_admin(source_type)

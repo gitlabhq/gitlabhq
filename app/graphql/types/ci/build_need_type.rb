@@ -7,9 +7,9 @@ module Types
     class BuildNeedType < BaseObject
       graphql_name 'CiBuildNeed'
 
-      field :id, GraphQL::ID_TYPE, null: false,
+      field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the job we need to complete.'
-      field :name, GraphQL::STRING_TYPE, null: true,
+      field :name, GraphQL::Types::String, null: true,
             description: 'Name of the job we need to complete.'
     end
   end

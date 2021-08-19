@@ -41,7 +41,7 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 - [Upload designs to issues](design_management.md)
 - [Linked issues](related_issues.md)
 - [Cross-link issues](crosslinking_issues.md)
-- [Bulk edit issues](../bulk_editing.md)
+- [Bulk edit issues](../issues/managing_issues.md)
 - [Sort issue lists](sorting_issue_lists.md)
 - [Search for issues](../../search/index.md#filtering-issue-and-merge-request-lists)
 - [Epics](../../group/epics/index.md)

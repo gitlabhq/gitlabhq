@@ -1,6 +1,8 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';
+import { DESIGN_MARK_APP_START, DESIGN_MAIN_IMAGE_OUTPUT } from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 
 export default {
   components: {
@@ -39,7 +41,9 @@ export default {
     window.removeEventListener('resize', this.resizeThrottled, false);
   },
   mounted() {
-    this.onImgLoad();
+    if (!this.image) {
+      this.onImgLoad();
+    }
 
     this.resizeThrottled = throttle(() => {
       // NOTE: if imageStyle is set, then baseImageSize
@@ -53,6 +57,14 @@ export default {
   methods: {
     onImgLoad() {
       requestIdleCallback(this.setBaseImageSize, { timeout: 1000 });
+      performanceMarkAndMeasure({
+        measures: [
+          {
+            name: DESIGN_MAIN_IMAGE_OUTPUT,
+            start: DESIGN_MARK_APP_START,
+          },
+        ],
+      });
     },
     onImgError() {
       this.imageError = true;

@@ -5,6 +5,7 @@ const path = require('path');
 const sass = require('node-sass'); // eslint-disable-line import/no-unresolved
 const { buildIncludePaths, resolveGlobUrl } = require('node-sass-magic-importer/dist/toolbox'); // eslint-disable-line import/no-unresolved
 const webpack = require('webpack');
+const IS_JH = require('../../config/helpers/is_jh_env');
 const gitlabWebpackConfig = require('../../config/webpack.config');
 
 const ROOT = path.resolve(__dirname, '../../');
@@ -13,10 +14,19 @@ const TRANSPARENT_1X1_PNG =
 const SASS_INCLUDE_PATHS = [
   'app/assets/stylesheets',
   'app/assets/stylesheets/_ee',
+  'app/assets/stylesheets/_jh',
   'ee/app/assets/stylesheets',
   'ee/app/assets/stylesheets/_ee',
   'node_modules',
 ].map((p) => path.resolve(ROOT, p));
+
+if (IS_JH) {
+  SASS_INCLUDE_PATHS.push(
+    ...['jh/app/assets/stylesheets', 'jh/app/assets/stylesheets/_jh'].map((p) =>
+      path.resolve(ROOT, p),
+    ),
+  );
+}
 
 /**
  * Custom importer for node-sass, used when LibSass encounters the `@import` directive.

@@ -11,25 +11,25 @@ module Types
 
     alias_method :milestone, :object
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id, GraphQL::Types::ID, null: false,
           description: 'ID of the milestone.'
 
-    field :iid, GraphQL::ID_TYPE, null: false,
+    field :iid, GraphQL::Types::ID, null: false,
           description: "Internal ID of the milestone."
 
-    field :title, GraphQL::STRING_TYPE, null: false,
+    field :title, GraphQL::Types::String, null: false,
           description: 'Title of the milestone.'
 
-    field :description, GraphQL::STRING_TYPE, null: true,
+    field :description, GraphQL::Types::String, null: true,
           description: 'Description of the milestone.'
 
     field :state, Types::MilestoneStateEnum, null: false,
           description: 'State of the milestone.'
 
-    field :expired, GraphQL::BOOLEAN_TYPE, null: false,
+    field :expired, GraphQL::Types::Boolean, null: false,
           description: 'Expired state of the milestone (a milestone is expired when the due date is past the current date). Defaults to `false` when due date has not been set.'
 
-    field :web_path, GraphQL::STRING_TYPE, null: false, method: :milestone_path,
+    field :web_path, GraphQL::Types::String, null: false, method: :milestone_path,
           description: 'Web path of the milestone.'
 
     field :due_date, Types::TimeType, null: true,
@@ -44,15 +44,15 @@ module Types
     field :updated_at, Types::TimeType, null: false,
           description: 'Timestamp of last milestone update.'
 
-    field :project_milestone, GraphQL::BOOLEAN_TYPE, null: false,
+    field :project_milestone, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if milestone is at project level.',
           method: :project_milestone?
 
-    field :group_milestone, GraphQL::BOOLEAN_TYPE, null: false,
+    field :group_milestone, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if milestone is at group level.',
           method: :group_milestone?
 
-    field :subgroup_milestone, GraphQL::BOOLEAN_TYPE, null: false,
+    field :subgroup_milestone, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if milestone is at subgroup level.',
           method: :subgroup_milestone?
 

@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import groupsSelect from '~/groups_select';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteMembersForm from '~/invite_members/init_invite_members_form';
@@ -11,26 +10,10 @@ import { MEMBER_TYPES } from '~/members/constants';
 import { groupLinkRequestFormatter } from '~/members/utils';
 import { projectMemberRequestFormatter } from '~/projects/members/utils';
 import UsersSelect from '~/users_select';
-import RemoveMemberModal from '~/vue_shared/components/remove_member_modal.vue';
-
-function mountRemoveMemberModal() {
-  const el = document.querySelector('.js-remove-member-modal');
-  if (!el) {
-    return false;
-  }
-
-  return new Vue({
-    el,
-    render(createComponent) {
-      return createComponent(RemoveMemberModal);
-    },
-  });
-}
 
 groupsSelect();
 memberExpirationDate();
 memberExpirationDate('.js-access-expiration-date-groups');
-mountRemoveMemberModal();
 initInviteMembersModal();
 initInviteMembersTrigger();
 initInviteGroupTrigger();

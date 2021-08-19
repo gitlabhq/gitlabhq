@@ -17,7 +17,7 @@ dropdown menu.
 
 From a project's files page, click the '+' button to the right of the branch selector.
 Choose **New file** from the dropdown.
-![New file dropdown menu](img/web_editor_new_file_dropdown.png)
+![New file dropdown menu](img/web_editor_new_file_dropdown_v14_1.png)
 
 Enter a filename in the **Filename** box. Then, add file content in the editor
 area. Add a descriptive commit message and choose a branch. The branch field
@@ -27,7 +27,7 @@ request after you commit the changes.
 
 When you are satisfied with your new file, click **Commit Changes** at the bottom.
 
-![Create file editor](img/web_editor_new_file_editor.png)
+![Create file editor](img/web_editor_new_file_editor_v14_1.png)
 
 ### Shortcuts
 
@@ -39,12 +39,12 @@ as the Web IDE. For details, read the documentation for [Command Palette](../web
 When starting a new project, there are some common files that the new project
 might need. GitLab displays a message to help you:
 
-![First file for your project](img/web_editor_template_dropdown_first_file.png)
+![First file for your project](img/web_editor_template_dropdown_first_file_v14_1.png)
 
 When clicking on either `LICENSE` or `.gitignore` and so on, a dropdown displays
 to provide you a template that may be suitable for your project:
 
-![MIT license selected](img/web_editor_template_dropdown_mit_license.png)
+![MIT license selected](img/web_editor_template_dropdown_mit_license_v14_1.png)
 
 The license, changelog, contribution guide, or `.gitlab-ci.yml` file can also
 be added through a button on the project page. In this example, the license
@@ -86,7 +86,7 @@ this case, you need to upload a file.
 From a project's files page, click the '+' button to the right of the branch
 selector. Choose **Upload file** from the dropdown:
 
-![Upload file dropdown menu](img/web_editor_upload_file_dropdown.png)
+![Upload file dropdown menu](img/web_editor_upload_file_dropdown_v14_1.png)
 
 After the upload dialog pops up, there are two ways to upload your file. Either
 drag and drop a file on the popup or use the **click to upload** link. After you
@@ -95,7 +95,7 @@ select a file to upload, a file preview displays.
 Enter a commit message, choose a branch, and click **Upload file** when you are
 ready.
 
-![Upload file dialog](img/web_editor_upload_file_dialog.png)
+![Upload file dialog](img/web_editor_upload_file_dialog_v14_1.png)
 
 ## Create a directory
 
@@ -105,12 +105,12 @@ directory.
 From a project's files page, click the plus button (`+`) to the right of the branch selector.
 Choose **New directory** from the dropdown.
 
-![New directory dropdown](img/web_editor_new_directory_dropdown.png)
+![New directory dropdown](img/web_editor_new_directory_dropdown_v14_1.png)
 
 In the new directory dialog, enter a directory name, a commit message, and choose
 the target branch. Click **Create directory** to finish.
 
-![New directory dialog](img/web_editor_new_directory_dialog.png)
+![New directory dialog](img/web_editor_new_directory_dialog_v14_1.png)
 
 ## Create a new branch
 
@@ -137,11 +137,11 @@ To make this button appear, one possible workaround is to
 After removal, the fork relationship cannot be restored. This project can no longer
 be able to receive or send merge requests to the source project, or other forks.
 
-![Create Button](img/web_editor_new_branch_from_issue_create_button_v12_6.png)
+![Create Button](img/web_editor_new_branch_from_issue_create_button_v14_1.png)
 
 This dropdown contains the options **Create merge request and branch** and **Create branch**.
 
-![New Branch Button](img/web_editor_new_branch_from_issue_v_12_6.png)
+![New Branch Button](img/web_editor_new_branch_from_issue_v14_1.png)
 
 After selecting one of these options, a new branch or branch and merge request
 is created based on your project's [default branch](branches/default.md).
@@ -172,7 +172,7 @@ request, you can create a new branch upfront.
 
 1. From a project's files page, choose **New branch** from the dropdown.
 
-   ![New branch dropdown](img/web_editor_new_branch_dropdown.png)
+   ![New branch dropdown](img/web_editor_new_branch_dropdown_v14_1.png)
 
 1. Enter a new **Branch name**.
 1. (Optional) Change the **Create from** field to choose which branch, tag, or
@@ -180,7 +180,7 @@ request, you can create a new branch upfront.
    start typing an existing branch or tag.
 1. Click **Create branch** to return to the file browser on this new branch.
 
-   ![New branch page](img/web_editor_new_branch_page.png)
+   ![New branch page](img/web_editor_new_branch_page_v14_1.png)
 
 You can now make changes to any files, as needed. When you're ready to merge
 the changes back to your [default branch](branches/default.md), you can use the widget at the top of the screen.
@@ -214,7 +214,7 @@ When creating or uploading a new file or creating a new directory, you can
 trigger a new merge request rather than committing directly to your default branch:
 
 1. Enter a new branch name in the **Target branch** field.
-1. GitLab displays the **Start a new merge request with these changes** check box.
+1. GitLab displays the **Start a new merge request with these changes** checkbox.
 1. Commit your changes, and GitLab redirects you to a new merge request form.
 
    ![Start a new merge request with these changes](img/web_editor_start_new_merge_request.png)

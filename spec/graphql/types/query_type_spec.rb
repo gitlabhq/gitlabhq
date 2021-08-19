@@ -26,6 +26,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       runner_platforms
       runner
       runners
+      timelogs
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -124,5 +125,15 @@ RSpec.describe GitlabSchema.types['Query'] do
     subject { described_class.fields['package'] }
 
     it { is_expected.to have_graphql_type(Types::Packages::PackageDetailsType) }
+  end
+
+  describe 'timelogs field' do
+    subject { described_class.fields['timelogs'] }
+
+    it 'returns timelogs' do
+      is_expected.to have_graphql_arguments(:startDate, :endDate, :startTime, :endTime, :username, :projectId, :groupId, :after, :before, :first, :last)
+      is_expected.to have_graphql_type(Types::TimelogType.connection_type)
+      is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
+    end
   end
 end

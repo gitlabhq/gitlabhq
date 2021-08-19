@@ -278,6 +278,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         model.add_concurrent_index(:users, :foo, unique: true)
       end
+
+      it 'unprepares the async index creation' do
+        expect(model).to receive(:add_index)
+          .with(:users, :foo, algorithm: :concurrently)
+
+        expect(model).to receive(:unprepare_async_index)
+          .with(:users, :foo, algorithm: :concurrently)
+
+        model.add_concurrent_index(:users, :foo)
+      end
     end
 
     context 'inside a transaction' do
@@ -314,6 +324,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           model.remove_concurrent_index(:users, :foo, unique: true)
         end
 
+        it 'unprepares the async index creation' do
+          expect(model).to receive(:remove_index)
+            .with(:users, { algorithm: :concurrently, column: :foo })
+
+          expect(model).to receive(:unprepare_async_index)
+            .with(:users, :foo, { algorithm: :concurrently })
+
+          model.remove_concurrent_index(:users, :foo)
+        end
+
         describe 'by index name' do
           before do
             allow(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(true)
@@ -344,6 +364,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             expect do
               model.remove_concurrent_index_by_name(:users, wrong_key: "index_x_by_y")
             end.to raise_error 'remove_concurrent_index_by_name must get an index name as the second argument'
+          end
+
+          it 'unprepares the async index creation' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+            expect(model).to receive(:unprepare_async_index_by_name)
+              .with(:users, "index_x_by_y", { algorithm: :concurrently })
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
           end
         end
       end
@@ -384,9 +414,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
           expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
 
@@ -398,9 +428,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
           expect(model).to receive(:execute).with(/REFERENCES users \(id_convert_to_bigint\)/)
 
@@ -416,9 +446,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-            expect(model).to receive(:execute).with(/statement_timeout/)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
             expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
 
@@ -433,9 +463,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-            expect(model).to receive(:execute).with(/statement_timeout/)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
             expect(model).to receive(:execute).with(/ON DELETE CASCADE/)
 
@@ -450,9 +480,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-            expect(model).to receive(:execute).with(/statement_timeout/)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
             expect(model).not_to receive(:execute).with(/ON DELETE/)
 
@@ -468,10 +498,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -497,10 +527,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-            expect(model).to receive(:execute).with(/statement_timeout/)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
             expect(model).to receive(:execute).ordered.with(/NOT VALID/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT.+foo/)
-            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
             model.add_concurrent_foreign_key(:projects, :users, column: :user_id, name: :foo)
           end
@@ -527,10 +557,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               expect(model).to receive(:with_lock_retries).and_call_original
               expect(model).to receive(:disable_statement_timeout).and_call_original
               expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-              expect(model).to receive(:execute).with(/statement_timeout/)
+              expect(model).to receive(:execute).with(/SET statement_timeout TO/)
               expect(model).to receive(:execute).ordered.with(/NOT VALID/)
               expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT.+bar/)
-              expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+              expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
               model.add_concurrent_foreign_key(:projects, :users, column: :user_id, name: :bar)
             end
@@ -556,6 +586,22 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           it_behaves_like 'performs validation', {}
         end
       end
+
+      context 'when the reverse_lock_order flag is set' do
+        it 'explicitly locks the tables in target-source order', :aggregate_failures do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+          expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
+          expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id, reverse_lock_order: true)
+        end
+      end
     end
   end
 
@@ -568,9 +614,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).not_to receive(:concurrent_foreign_key_name)
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
           expect(model).to receive(:execute).ordered.with(/ALTER TABLE projects VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
         end
 
         model.validate_foreign_key(:projects, :user_id, name: :foo)
@@ -585,9 +631,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:concurrent_foreign_key_name)
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
           expect(model).to receive(:execute).ordered.with(/ALTER TABLE projects VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
         end
 
         model.validate_foreign_key(:projects, :user_id)
@@ -702,7 +748,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
 
       after do
-        model.execute('RESET ALL')
+        model.execute('RESET statement_timeout')
       end
 
       it 'defines statement to 0 only for current transaction' do
@@ -719,7 +765,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       context 'when passing a blocks' do
         it 'disables statement timeouts on session level and executes the block' do
           expect(model).to receive(:execute).with('SET statement_timeout TO 0')
-          expect(model).to receive(:execute).with('RESET ALL').at_least(:once)
+          expect(model).to receive(:execute).with('RESET statement_timeout').at_least(:once)
 
           expect { |block| model.disable_statement_timeout(&block) }.to yield_control
         end
@@ -731,7 +777,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           end
 
           after do
-            model.execute('RESET ALL')
+            model.execute('RESET statement_timeout')
           end
 
           it 'defines statement to 0 for any code run inside the block' do
@@ -758,12 +804,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       after do
         # Use ActiveRecord::Base.connection instead of model.execute
         # so that this call is not counted below
-        ActiveRecord::Base.connection.execute('RESET ALL')
+        ActiveRecord::Base.connection.execute('RESET statement_timeout')
       end
 
       it 'yields control without disabling the timeout or resetting' do
         expect(model).not_to receive(:execute).with('SET statement_timeout TO 0')
-        expect(model).not_to receive(:execute).with('RESET ALL')
+        expect(model).not_to receive(:execute).with('RESET statement_timeout')
 
         expect { |block| model.disable_statement_timeout(&block) }.to yield_control
       end
@@ -2486,7 +2532,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
 
@@ -2496,7 +2542,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
                        .and_return(true).exactly(1)
 
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
           model.add_check_constraint(
             :test_table,
@@ -2530,7 +2576,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
 
@@ -2539,7 +2585,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
                        .and_return(true).exactly(1)
 
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
           model.add_check_constraint(
             :test_table,
@@ -2572,9 +2618,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:check_constraint_exists?).and_return(true)
         expect(model).to receive(:disable_statement_timeout).and_call_original
         expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-        expect(model).to receive(:execute).with(/statement_timeout/)
+        expect(model).to receive(:execute).with(/SET statement_timeout TO/)
         expect(model).to receive(:execute).ordered.with(validate_sql)
-        expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+        expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
         model.validate_check_constraint(:test_table, 'check_name')
       end

@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
+  let(:load_balancer) { Gitlab::Database::LoadBalancing::LoadBalancer.new([]) }
   let(:service) do
-    described_class.new(nameserver: 'localhost', port: 8600, record: 'foo')
+    described_class.new(
+      nameserver: 'localhost',
+      port: 8600,
+      record: 'foo',
+      load_balancer: load_balancer
+    )
   end
 
   before do
@@ -18,7 +24,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
 
   describe '#initialize' do
     describe ':record_type' do
-      subject { described_class.new(nameserver: 'localhost', port: 8600, record: 'foo', record_type: record_type) }
+      subject do
+        described_class.new(
+          nameserver: 'localhost',
+          port: 8600,
+          record: 'foo',
+          record_type: record_type,
+          load_balancer: load_balancer
+        )
+      end
 
       context 'with a supported type' do
         let(:record_type) { 'SRV' }
@@ -44,21 +58,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
     end
 
     it 'starts service discovery in a new thread' do
-      expect(service)
-        .to receive(:refresh_if_necessary)
-        .and_return(5)
+      expect(Thread).to receive(:new).ordered.and_call_original # Thread starts
 
-      expect(service)
-        .to receive(:rand)
-        .and_return(2)
-
-      expect(service)
-        .to receive(:sleep)
-        .with(7)
+      expect(service).to receive(:perform_service_discovery).ordered.and_return(5)
+      expect(service).to receive(:rand).ordered.and_return(2)
+      expect(service).to receive(:sleep).ordered.with(7) # Sleep runs after thread starts
 
       service.start.join
     end
+  end
 
+  describe '#perform_service_discovery' do
     it 'reports exceptions to Sentry' do
       error = StandardError.new
 
@@ -70,15 +80,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
         .to receive(:track_exception)
         .with(error)
 
-      expect(service)
-        .to receive(:rand)
-        .and_return(2)
-
-      expect(service)
-        .to receive(:sleep)
-        .with(62)
-
-      service.start.join
+      service.perform_service_discovery
     end
   end
 
@@ -155,14 +157,23 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
 
       expect(host)
         .to receive(:disconnect!)
-        .with(2)
+        .with(timeout: 2)
 
       service.replace_hosts([address_bar])
     end
   end
 
   describe '#addresses_from_dns' do
-    let(:service) { described_class.new(nameserver: 'localhost', port: 8600, record: 'foo', record_type: record_type) }
+    let(:service) do
+      described_class.new(
+        nameserver: 'localhost',
+        port: 8600,
+        record: 'foo',
+        record_type: record_type,
+        load_balancer: load_balancer
+      )
+    end
+
     let(:packet) { double(:packet, answer: [res1, res2]) }
 
     before do
@@ -234,13 +245,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   end
 
   describe '#addresses_from_load_balancer' do
+    let(:load_balancer) do
+      Gitlab::Database::LoadBalancing::LoadBalancer.new(%w[b a])
+    end
+
     it 'returns the ordered host names of the load balancer' do
-      load_balancer = Gitlab::Database::LoadBalancing::LoadBalancer.new(%w[b a])
-
-      allow(service)
-        .to receive(:load_balancer)
-        .and_return(load_balancer)
-
       addresses = [
         described_class::Address.new('a'),
         described_class::Address.new('b')

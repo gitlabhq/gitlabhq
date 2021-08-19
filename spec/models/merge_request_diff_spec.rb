@@ -240,7 +240,7 @@ RSpec.describe MergeRequestDiff do
       stub_external_diffs_setting(enabled: true)
 
       expect(diff).not_to receive(:save!)
-      expect(Gitlab::Database)
+      expect(Gitlab::Database.main)
         .to receive(:bulk_insert)
         .with('merge_request_diff_files', anything)
         .and_raise(ActiveRecord::Rollback)
@@ -465,11 +465,13 @@ RSpec.describe MergeRequestDiff do
         it 'sorts diff files directory first' do
           diff_with_commits.update!(sorted: false) # Mark as unsorted so it'll re-order
 
-          expect(diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options).diff_file_paths).to eq([
+          # There will be 11 returned, as we have to take into account for new and old paths
+          expect(diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options).diff_paths).to eq([
             'bar/branch-test.txt',
             'custom-highlighting/test.gitlab-custom',
             'encoding/iso8859.txt',
             'files/images/wm.svg',
+            'files/js/commit.js.coffee',
             'files/js/commit.coffee',
             'files/lfs/lfs_object.iso',
             'files/ruby/popen.rb',
@@ -553,11 +555,12 @@ RSpec.describe MergeRequestDiff do
         it 'sorts diff files directory first' do
           diff_with_commits.update!(sorted: false) # Mark as unsorted so it'll re-order
 
-          expect(diff_with_commits.diffs(diff_options).diff_file_paths).to eq([
+          expect(diff_with_commits.diffs(diff_options).diff_paths).to eq([
             'bar/branch-test.txt',
             'custom-highlighting/test.gitlab-custom',
             'encoding/iso8859.txt',
             'files/images/wm.svg',
+            'files/js/commit.js.coffee',
             'files/js/commit.coffee',
             'files/lfs/lfs_object.iso',
             'files/ruby/popen.rb',

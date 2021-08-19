@@ -44,7 +44,7 @@ module API
           optional :ref,      type: String, desc: 'The ref of pipelines'
           optional :sha,      type: String, desc: 'The sha of pipelines'
           optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations'
-          optional :name,     type: String, desc: 'The name of the user who triggered pipelines'
+          optional :name,     type: String, desc: '(deprecated) The name of the user who triggered pipelines'
           optional :username, type: String, desc: 'The username of the user who triggered pipelines'
           optional :updated_before, type: DateTime, desc: 'Return pipelines updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
           optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
@@ -52,13 +52,14 @@ module API
                               desc: 'Order pipelines'
           optional :sort,     type: String, values: %w[asc desc], default: 'desc',
                               desc: 'Sort pipelines'
+          optional :source,   type: String, values: ::Ci::Pipeline.sources.keys
         end
         get ':id/pipelines' do
           authorize! :read_pipeline, user_project
           authorize! :read_build, user_project
 
           pipelines = ::Ci::PipelinesFinder.new(user_project, current_user, params).execute
-          present paginate(pipelines), with: Entities::Ci::PipelineBasic
+          present paginate(pipelines), with: Entities::Ci::PipelineBasic, project: user_project
         end
 
         desc 'Create a new pipeline' do
@@ -78,12 +79,11 @@ module API
             .merge(variables_attributes: params[:variables])
             .except(:variables)
 
-          new_pipeline = ::Ci::CreatePipelineService.new(user_project,
-                                                         current_user,
-                                                         pipeline_params)
-                             .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+          response = ::Ci::CreatePipelineService.new(user_project, current_user, pipeline_params)
+            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+          new_pipeline = response.payload
 
-          if new_pipeline.persisted?
+          if response.success?
             present new_pipeline, with: Entities::Ci::Pipeline
           else
             render_validation_error!(new_pipeline)
@@ -186,6 +186,19 @@ module API
           authorize! :read_build, pipeline
 
           present pipeline.test_reports, with: TestReportEntity, details: true
+        end
+
+        desc 'Gets the test report summary for a given pipeline' do
+          detail 'This feature was introduced in GitLab 14.2'
+          success TestReportSummaryEntity
+        end
+        params do
+          requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
+        end
+        get ':id/pipelines/:pipeline_id/test_report_summary' do
+          authorize! :read_build, pipeline
+
+          present pipeline.test_report_summary, with: TestReportSummaryEntity
         end
 
         desc 'Deletes a pipeline' do

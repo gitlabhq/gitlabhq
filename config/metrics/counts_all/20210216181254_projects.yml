@@ -1,5 +1,5 @@
 ---
-data_category: Operational
+data_category: operational
 key_path: counts.projects
 description: Count of Projects created
 product_section: dev
@@ -12,8 +12,9 @@ time_frame: all
 data_source: database
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
-- ultimate 
+- premium
+- ultimate
+performance_indicator_type: []

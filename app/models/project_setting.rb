@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectSetting < ApplicationRecord
+  include IgnorableColumns
+
+  ignore_column :allow_editing_commit_messages, remove_with: '14.4', remove_after: '2021-09-10'
+
   belongs_to :project, inverse_of: :project_setting
 
   enum squash_option: {

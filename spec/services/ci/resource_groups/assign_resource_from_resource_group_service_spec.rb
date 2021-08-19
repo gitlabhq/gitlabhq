@@ -51,14 +51,32 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService do
     end
 
     context 'when there are no available resources' do
+      let!(:other_build) { create(:ci_build) }
+
       before do
-        resource_group.assign_resource_to(create(:ci_build))
+        resource_group.assign_resource_to(other_build)
       end
 
       it 'does not request resource' do
         expect_any_instance_of(Ci::Build).not_to receive(:enqueue_waiting_for_resource)
 
         subject
+
+        expect(build.reload).to be_waiting_for_resource
+      end
+
+      context 'when there is a stale build assigned to a resource' do
+        before do
+          other_build.doom!
+          other_build.update_column(:updated_at, 10.minutes.ago)
+        end
+
+        it 'releases the resource from the stale build and assignes to the waiting build' do
+          subject
+
+          expect(build.reload).to be_pending
+          expect(build.resource).to be_present
+        end
       end
     end
   end

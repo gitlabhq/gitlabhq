@@ -6,7 +6,7 @@ RSpec.describe Packages::Composer::CreatePackageService do
 
   let_it_be(:package_name) { 'composer-package-name' }
   let_it_be(:json) { { name: package_name }.to_json }
-  let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json } ) }
+  let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json }) }
   let_it_be(:user) { create(:user) }
 
   let(:params) do
@@ -24,13 +24,30 @@ RSpec.describe Packages::Composer::CreatePackageService do
 
     let(:created_package) { Packages::Package.composer.last }
 
+    shared_examples 'using the cache update worker' do
+      context 'with remove_composer_v1_cache_code enabled' do
+        it 'does not enqueue a cache update job' do
+          expect(::Packages::Composer::CacheUpdateWorker).not_to receive(:perform_async)
+
+          subject
+        end
+      end
+
+      context 'with remove_composer_v1_cache_code disabled' do
+        it 'enqueues a cache update job' do
+          stub_feature_flags(remove_composer_v1_cache_code: true)
+          expect(::Packages::Composer::CacheUpdateWorker).not_to receive(:perform_async)
+
+          subject
+        end
+      end
+    end
+
     context 'without an existing package' do
       context 'with a branch' do
         let(:branch) { project.repository.find_branch('master') }
 
         it 'creates the package' do
-          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
-
           expect { subject }
             .to change { Packages::Package.composer.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
@@ -47,6 +64,7 @@ RSpec.describe Packages::Composer::CreatePackageService do
 
         it_behaves_like 'assigns build to package'
         it_behaves_like 'assigns status to package'
+        it_behaves_like 'using the cache update worker'
       end
 
       context 'with a tag' do
@@ -57,8 +75,6 @@ RSpec.describe Packages::Composer::CreatePackageService do
         end
 
         it 'creates the package' do
-          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
-
           expect { subject }
             .to change { Packages::Package.composer.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
@@ -73,6 +89,7 @@ RSpec.describe Packages::Composer::CreatePackageService do
 
         it_behaves_like 'assigns build to package'
         it_behaves_like 'assigns status to package'
+        it_behaves_like 'using the cache update worker'
       end
     end
 
@@ -85,12 +102,12 @@ RSpec.describe Packages::Composer::CreatePackageService do
         end
 
         it 'does not create a new package' do
-          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
-
           expect { subject }
             .to change { Packages::Package.composer.count }.by(0)
             .and change { Packages::Composer::Metadatum.count }.by(0)
         end
+
+        it_behaves_like 'using the cache update worker'
       end
 
       context 'belonging to another project' do
@@ -108,12 +125,12 @@ RSpec.describe Packages::Composer::CreatePackageService do
         let!(:other_package) { create(:package, name: package_name, version: 'dev-master', project: other_project) }
 
         it 'creates the package' do
-          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
-
           expect { subject }
             .to change { Packages::Package.composer.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
         end
+
+        it_behaves_like 'using the cache update worker'
       end
     end
   end

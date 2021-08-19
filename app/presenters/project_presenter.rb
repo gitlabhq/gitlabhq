@@ -397,16 +397,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def topics_to_show
-    project.topic_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
+    project_topic_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def topics_not_shown
-    project.topic_list - topics_to_show
+    project_topic_list - topics_to_show
   end
 
   def count_of_extra_topics_not_shown
-    if project.topic_list.count > MAX_TOPICS_TO_SHOW
-      project.topic_list.count - MAX_TOPICS_TO_SHOW
+    if project_topic_list.count > MAX_TOPICS_TO_SHOW
+      project_topic_list.count - MAX_TOPICS_TO_SHOW
     else
       0
     end
@@ -485,6 +485,12 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       branch_name:    branch_name,
       **additional_params
     )
+  end
+
+  def project_topic_list
+    strong_memoize(:project_topic_list) do
+      project.topics.map(&:name)
+    end
   end
 end
 

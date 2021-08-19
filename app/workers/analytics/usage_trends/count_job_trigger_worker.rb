@@ -6,7 +6,8 @@ module Analytics
       extend ::Gitlab::Utils::Override
       include ApplicationWorker
 
-      sidekiq_options retry: 3
+      data_consistency :always
+
       include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
       DEFAULT_DELAY = 3.minutes.freeze

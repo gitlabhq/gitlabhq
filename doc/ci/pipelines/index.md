@@ -53,7 +53,7 @@ Pipelines can be configured in many different ways:
 - [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
 - [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
-  run in the same project and with the same SHA.
+  run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
 - [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
 - [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)
@@ -94,7 +94,7 @@ This table lists the refspecs injected for each pipeline type:
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
-deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
+deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stop-an-environment),
 and [merge trains](../pipelines/merge_trains.md)
 that might run pipelines after branch deletion.
 
@@ -123,6 +123,9 @@ you can filter the pipeline list by:
 - Status ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
 - Tag ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
 
+[Starting in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/26621), you can change the
+pipeline column to display the pipeline ID or the pipeline IID.
+
 ### Run a pipeline manually
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
@@ -132,13 +135,13 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. Navigate to your project's **CI/CD > Pipelines**.
-1. Select the **Run pipeline** button.
-1. On the **Run pipeline** page:
-    1. Select the branch or tag to run the pipeline for in the **Run for branch name or tag** field.
-    1. Enter any [environment variables](../variables/index.md) required for the pipeline run.
-       You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
-    1. Click the **Run pipeline** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **CI/CD > Pipelines**.
+1. Select **Run pipeline**.
+1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
+1. Enter any [environment variables](../variables/index.md) required for the pipeline to run.
+   You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
+1. Select **Run pipeline**.
 
 The pipeline now executes the jobs as configured.
 
@@ -166,6 +169,9 @@ variables:
 ```
 
 You cannot set job-level variables to be pre-filled when you run a pipeline manually.
+
+Pre-filled variables do not show up when the CI/CD configuration is [external to the project](settings.md#specify-a-custom-cicd-configuration-file).
+See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336184) for more details.
 
 ### Run a pipeline by using a URL query string
 
@@ -200,7 +206,7 @@ For each `var` or `file_var`, a key and value are required.
 
 ### Add manual interaction to your pipeline
 
-Manual actions, configured using the [`when:manual`](../yaml/index.md#whenmanual) keyword,
+[Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
 allow you to require manual interaction before moving forward in the pipeline.
 
 You can do this straight from the pipeline graph. Just click the play button
@@ -357,12 +363,10 @@ you visualize the entire pipeline, including all cross-project inter-dependencie
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298973) in GitLab 13.12.
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 13.12.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - To disable in GitLab self-managed instances, ask a GitLab administrator to [disable it](#enable-or-disable-job-dependency-view). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.2.
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
@@ -385,29 +389,11 @@ To see the full `needs` dependency tree for a job, hover over it:
 
 ![single job dependency tree highlighted](img/pipelines_graph_dependency_view_hover_v13_12.png)
 
-#### Enable or disable job dependency view **(FREE SELF)**
-
-The job dependency view is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:pipeline_graph_layers_view)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:pipeline_graph_layers_view)
-```
-
 ### Pipeline mini graphs
 
 Pipeline mini graphs take less space and can tell you at a
 quick glance if all jobs passed or something failed. The pipeline mini graph can
-be found when you navigate to:
+be found when you go to:
 
 - The pipelines index page.
 - A single commit page.

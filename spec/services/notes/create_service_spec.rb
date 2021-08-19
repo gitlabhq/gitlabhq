@@ -185,6 +185,14 @@ RSpec.describe Notes::CreateService do
               expect(note.note_diff_file).to be_present
               expect(note.diff_note_positions).to be_present
             end
+
+            context 'when skip_capture_diff_note_position execute option is set to true' do
+              it 'does not execute Discussions::CaptureDiffNotePositionService' do
+                expect(Discussions::CaptureDiffNotePositionService).not_to receive(:new)
+
+                described_class.new(project_with_repo, user, new_opts).execute(skip_capture_diff_note_position: true)
+              end
+            end
           end
 
           context 'when DiffNote is a reply' do

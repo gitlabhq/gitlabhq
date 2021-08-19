@@ -106,7 +106,7 @@ RSpec.describe Admin::UserActionsHelper do
         group.add_owner(user)
       end
 
-      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete_with_contributions") }
     end
 
     context 'the user is a bot' do

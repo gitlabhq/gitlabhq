@@ -87,7 +87,7 @@ export default {
   <div>
     <header
       v-show="showHeader"
-      class="gl-display-flex gl-justify-content-space-between gl-align-items-flex-start gl-mb-3"
+      class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-mb-2"
     >
       <span class="gl-vertical-align-middle">
         <slot name="title">
@@ -97,7 +97,8 @@ export default {
       </span>
       <gl-button
         v-if="canUpdate"
-        variant="link"
+        category="tertiary"
+        size="small"
         class="gl-text-gray-900! gl-ml-5 js-sidebar-dropdown-toggle edit-link"
         data-testid="edit-button"
         @click="toggle"

@@ -18,7 +18,7 @@ variables:
   MYSQL_ROOT_PASSWORD: secret
 
 # This folder is cached between builds
-# http://docs.gitlab.com/ee/ci/yaml/README.html#cache
+# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
 cache:
   paths:
     - vendor/

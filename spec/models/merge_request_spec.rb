@@ -80,6 +80,24 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.order_closed_at_asc' do
+    let_it_be(:older_mr) { create(:merge_request, :closed_last_month) }
+    let_it_be(:newer_mr) { create(:merge_request, :closed_last_month) }
+
+    it 'returns MRs ordered by closed_at ascending' do
+      expect(described_class.order_closed_at_asc).to eq([older_mr, newer_mr])
+    end
+  end
+
+  describe '.order_closed_at_desc' do
+    let_it_be(:older_mr) { create(:merge_request, :closed_last_month) }
+    let_it_be(:newer_mr) { create(:merge_request, :closed_last_month) }
+
+    it 'returns MRs ordered by closed_at descending' do
+      expect(described_class.order_closed_at_desc).to eq([newer_mr, older_mr])
+    end
+  end
+
   describe '.with_jira_issue_keys' do
     let_it_be(:mr_with_jira_title) { create(:merge_request, :unique_branches, title: 'Fix TEST-123') }
     let_it_be(:mr_with_jira_description) { create(:merge_request, :unique_branches, description: 'this closes TEST-321') }
@@ -575,6 +593,26 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it 'sorts desc' do
         merge_requests = described_class.sort_by_attribute(:merged_at_desc)
         expect(merge_requests).to eq([newer_mr, older_mr])
+      end
+    end
+
+    context 'closed_at' do
+      let_it_be(:older_mr) { create(:merge_request, :closed_last_month) }
+      let_it_be(:newer_mr) { create(:merge_request, :closed_last_month) }
+
+      it 'sorts asc' do
+        merge_requests = described_class.sort_by_attribute(:closed_at_asc)
+        expect(merge_requests).to eq([older_mr, newer_mr])
+      end
+
+      it 'sorts desc' do
+        merge_requests = described_class.sort_by_attribute(:closed_at_desc)
+        expect(merge_requests).to eq([newer_mr, older_mr])
+      end
+
+      it 'sorts asc when its closed_at' do
+        merge_requests = described_class.sort_by_attribute(:closed_at)
+        expect(merge_requests).to eq([older_mr, newer_mr])
       end
     end
   end

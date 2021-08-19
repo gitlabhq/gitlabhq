@@ -106,7 +106,7 @@ module Gitlab
         end
 
         def design?
-          klass == DesignManagement::Design
+          klass == ::DesignManagement::Design
         end
 
         def diff_commit_user?

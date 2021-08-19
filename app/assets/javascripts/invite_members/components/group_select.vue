@@ -111,6 +111,7 @@ export default {
       data-testid="group-select-dropdown"
       :text="selectedGroupName"
       block
+      toggle-class="gl-mb-2"
       menu-class="gl-w-full!"
     >
       <gl-search-box-by-type

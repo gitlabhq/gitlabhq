@@ -3,18 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
-  let(:pool) { Gitlab::Database.create_connection_pool(2) }
   let(:conflict_error) { Class.new(RuntimeError) }
-
-  let(:lb) { described_class.new(%w(localhost localhost)) }
+  let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
+  let(:lb) { described_class.new([db_host, db_host]) }
+  let(:request_cache) { lb.send(:request_cache) }
 
   before do
-    allow(Gitlab::Database).to receive(:create_connection_pool)
-      .and_return(pool)
     stub_const(
       'Gitlab::Database::LoadBalancing::LoadBalancer::PG::TRSerializationFailure',
       conflict_error
     )
+  end
+
+  after do |example|
+    lb.disconnect!(timeout: 0) unless example.metadata[:skip_disconnect]
   end
 
   def raise_and_wrap(wrapper, original)
@@ -123,8 +125,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
   describe '#read_write' do
     it 'yields a connection for a write' do
-      expect { |b| lb.read_write(&b) }
-        .to yield_with_args(ActiveRecord::Base.retrieve_connection)
+      connection = ActiveRecord::Base.connection_pool.connection
+
+      expect { |b| lb.read_write(&b) }.to yield_with_args(connection)
     end
 
     it 'uses a retry with exponential backoffs' do
@@ -134,139 +137,29 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
-  describe '#db_role_for_connection' do
-    context 'when the load balancer creates the connection with #read' do
-      it 'returns :replica' do
-        role = nil
-        lb.read do |connection|
-          role = lb.db_role_for_connection(connection)
-        end
-
-        expect(role).to be(:replica)
-      end
-    end
-
-    context 'when the load balancer uses nested #read' do
-      it 'returns :replica' do
-        roles = []
-        lb.read do |connection_1|
-          lb.read do |connection_2|
-            roles << lb.db_role_for_connection(connection_2)
-          end
-          roles << lb.db_role_for_connection(connection_1)
-        end
-
-        expect(roles).to eq([:replica, :replica])
-      end
-    end
-
-    context 'when the load balancer creates the connection with #read_write' do
-      it 'returns :primary' do
-        role = nil
-        lb.read_write do |connection|
-          role = lb.db_role_for_connection(connection)
-        end
-
-        expect(role).to be(:primary)
-      end
-    end
-
-    context 'when the load balancer uses nested #read_write' do
-      it 'returns :primary' do
-        roles = []
-        lb.read_write do |connection_1|
-          lb.read_write do |connection_2|
-            roles << lb.db_role_for_connection(connection_2)
-          end
-          roles << lb.db_role_for_connection(connection_1)
-        end
-
-        expect(roles).to eq([:primary, :primary])
-      end
-    end
-
-    context 'when the load balancer falls back the connection creation to primary' do
-      it 'returns :primary' do
-        allow(lb).to receive(:serialization_failure?).and_return(true)
-
-        role = nil
-        raised = 7 # 2 hosts = 6 retries
-
-        lb.read do |connection|
-          if raised > 0
-            raised -= 1
-            raise
-          end
-
-          role = lb.db_role_for_connection(connection)
-        end
-
-        expect(role).to be(:primary)
-      end
-    end
-
-    context 'when the load balancer uses replica after recovery from a failure' do
-      it 'returns :replica' do
-        allow(lb).to receive(:connection_error?).and_return(true)
-
-        role = nil
-        raised = false
-
-        lb.read do |connection|
-          unless raised
-            raised = true
-            raise
-          end
-
-          role = lb.db_role_for_connection(connection)
-        end
-
-        expect(role).to be(:replica)
-      end
-    end
-
-    context 'when the connection comes from a pool managed by the host list' do
-      it 'returns :replica' do
-        connection = double(:connection)
-        allow(connection).to receive(:pool).and_return(lb.host_list.hosts.first.pool)
-
-        expect(lb.db_role_for_connection(connection)).to be(:replica)
-      end
-    end
-
-    context 'when the connection comes from the primary pool' do
-      it 'returns :primary' do
-        connection = double(:connection)
-        allow(connection).to receive(:pool).and_return(ActiveRecord::Base.connection_pool)
-
-        expect(lb.db_role_for_connection(connection)).to be(:primary)
-      end
-    end
-
-    context 'when the connection does not come from any known pool' do
-      it 'returns nil' do
-        connection = double(:connection)
-        pool = double(:connection_pool)
-        allow(connection).to receive(:pool).and_return(pool)
-
-        expect(lb.db_role_for_connection(connection)).to be(nil)
-      end
-    end
-  end
-
   describe '#host' do
     it 'returns the secondary host to use' do
       expect(lb.host).to be_an_instance_of(Gitlab::Database::LoadBalancing::Host)
     end
 
     it 'stores the host in a thread-local variable' do
-      RequestStore.delete(described_class::CACHE_KEY)
-      RequestStore.delete(described_class::VALID_HOSTS_CACHE_KEY)
+      request_cache.delete(described_class::CACHE_KEY)
 
       expect(lb.host_list).to receive(:next).once.and_call_original
 
       lb.host
       lb.host
+    end
+
+    it 'does not create conflicts with other load balancers when caching hosts' do
+      lb1 = described_class.new([db_host, db_host], ActiveRecord::Base)
+      lb2 = described_class.new([db_host, db_host], Ci::CiDatabaseRecord)
+
+      host1 = lb1.host
+      host2 = lb2.host
+
+      expect(lb1.send(:request_cache)[described_class::CACHE_KEY]).to eq(host1)
+      expect(lb2.send(:request_cache)[described_class::CACHE_KEY]).to eq(host2)
     end
   end
 
@@ -278,8 +171,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
       lb.release_host
 
-      expect(RequestStore[described_class::CACHE_KEY]).to be_nil
-      expect(RequestStore[described_class::VALID_HOSTS_CACHE_KEY]).to be_nil
+      expect(request_cache[described_class::CACHE_KEY]).to be_nil
     end
   end
 
@@ -414,64 +306,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
-  describe '#select_caught_up_hosts' do
-    let(:location) { 'AB/12345'}
-    let(:hosts) { lb.host_list.hosts }
-    let(:valid_host_list) { RequestStore[described_class::VALID_HOSTS_CACHE_KEY] }
-    let(:valid_hosts) { valid_host_list.hosts }
-
-    subject { lb.select_caught_up_hosts(location) }
-
-    context 'when all replicas are caught up' do
-      before do
-        expect(hosts).to all(receive(:caught_up?).with(location).and_return(true))
-      end
-
-      it 'returns true and sets all hosts to valid' do
-        expect(subject).to be true
-        expect(valid_host_list).to be_a(Gitlab::Database::LoadBalancing::HostList)
-        expect(valid_hosts).to contain_exactly(*hosts)
-      end
-    end
-
-    context 'when none of the replicas are caught up' do
-      before do
-        expect(hosts).to all(receive(:caught_up?).with(location).and_return(false))
-      end
-
-      it 'returns false and does not set the valid hosts' do
-        expect(subject).to be false
-        expect(valid_host_list).to be_nil
-      end
-    end
-
-    context 'when one of the replicas is caught up' do
-      before do
-        expect(hosts[0]).to receive(:caught_up?).with(location).and_return(false)
-        expect(hosts[1]).to receive(:caught_up?).with(location).and_return(true)
-      end
-
-      it 'returns true and sets one host to valid' do
-        expect(subject).to be true
-        expect(valid_host_list).to be_a(Gitlab::Database::LoadBalancing::HostList)
-        expect(valid_hosts).to contain_exactly(hosts[1])
-      end
-
-      it 'host always returns the caught-up replica' do
-        subject
-
-        3.times do
-          expect(lb.host).to eq(hosts[1])
-          RequestStore.delete(described_class::CACHE_KEY)
-        end
-      end
-    end
-  end
-
   describe '#select_up_to_date_host' do
     let(:location) { 'AB/12345'}
     let(:hosts) { lb.host_list.hosts }
-    let(:set_host) { RequestStore[described_class::CACHE_KEY] }
+    let(:set_host) { request_cache[described_class::CACHE_KEY] }
 
     subject { lb.select_up_to_date_host(location) }
 
@@ -497,6 +335,47 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
         expect(subject).to be true
         expect(set_host).to eq(hosts[1])
       end
+    end
+  end
+
+  describe '#create_replica_connection_pool' do
+    it 'creates a new connection pool with specific pool size and name' do
+      with_replica_pool(5, 'other_host') do |replica_pool|
+        expect(replica_pool)
+          .to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
+
+        expect(replica_pool.db_config.host).to eq('other_host')
+        expect(replica_pool.db_config.pool).to eq(5)
+        expect(replica_pool.db_config.name).to end_with("_replica")
+      end
+    end
+
+    it 'allows setting of a custom hostname and port' do
+      with_replica_pool(5, 'other_host', 5432) do |replica_pool|
+        expect(replica_pool.db_config.host).to eq('other_host')
+        expect(replica_pool.db_config.configuration_hash[:port]).to eq(5432)
+      end
+    end
+
+    it 'does not modify connection class pool' do
+      expect { with_replica_pool(5) { } }.not_to change { ActiveRecord::Base.connection_pool }
+    end
+
+    def with_replica_pool(*args)
+      pool = lb.create_replica_connection_pool(*args)
+      yield pool
+    ensure
+      pool&.disconnect!
+    end
+  end
+
+  describe '#disconnect!' do
+    it 'calls disconnect on all hosts with a timeout', :skip_disconnect do
+      expect_next_instances_of(Gitlab::Database::LoadBalancing::Host, 2) do |host|
+        expect(host).to receive(:disconnect!).with(timeout: 30)
+      end
+
+      lb.disconnect!(timeout: 30)
     end
   end
 end

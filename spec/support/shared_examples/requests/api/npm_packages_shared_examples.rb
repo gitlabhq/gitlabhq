@@ -46,6 +46,8 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
   end
 
   shared_examples 'handling all conditions' do
+    include_context 'dependency proxy helpers context'
+
     where(:auth, :package_name_type, :request_forward, :visibility, :user_role, :expected_result, :expected_status) do
       nil                    | :scoped_naming_convention    | true  | :public   | nil       | :accept   | :ok
       nil                    | :scoped_naming_convention    | false | :public   | nil       | :accept   | :ok
@@ -243,7 +245,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
         project.send("add_#{user_role}", user) if user_role
         project.update!(visibility: visibility.to_s)
         package.update!(name: package_name) unless package_name == 'non-existing-package'
-        stub_application_setting(npm_package_requests_forwarding: request_forward)
+        allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
       end
 
       example_name = "#{params[:expected_result]} metadata request"

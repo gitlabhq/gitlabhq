@@ -7,7 +7,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 
 	"github.com/stretchr/testify/require"
 )

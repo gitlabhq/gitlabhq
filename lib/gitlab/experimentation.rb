@@ -34,16 +34,13 @@
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
-      invite_members_empty_group_version_a: {
-        tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyGroupVersionA',
-        use_backwards_compatible_subject_index: true
+      remove_known_trial_form_fields_welcoming: {
+        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsWelcoming',
+        rollout_strategy: :user
       },
-      contact_sales_btn_in_app: {
-        tracking_category: 'Growth::Conversion::Experiment::ContactSalesInApp',
-        use_backwards_compatible_subject_index: true
-      },
-      remove_known_trial_form_fields: {
-        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFields'
+      remove_known_trial_form_fields_noneditable: {
+        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsNoneditable',
+        rollout_strategy: :user
       },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
@@ -51,9 +48,6 @@ module Gitlab
       show_trial_status_in_sidebar: {
         tracking_category: 'Growth::Conversion::Experiment::ShowTrialStatusInSidebar',
         rollout_strategy: :group
-      },
-      trial_onboarding_issues: {
-        tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
       },
       learn_gitlab_a: {
         tracking_category: 'Growth::Conversion::Experiment::LearnGitLabA',

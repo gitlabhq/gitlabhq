@@ -70,7 +70,7 @@ username of the original user.
 When using the **Delete user and contributions** option, **all** associated records
 are removed. This includes all of the items mentioned above including issues,
 merge requests, notes/comments, and more. Consider
-[blocking a user](../../admin_area/moderate_users.md#blocking-a-user)
+[blocking a user](../../admin_area/moderate_users.md#block-a-user)
 or using the **Delete user** option instead.
 
 When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md)

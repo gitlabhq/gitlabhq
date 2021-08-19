@@ -16,6 +16,21 @@ RSpec.describe SystemHook do
     end
   end
 
+  describe 'validations' do
+    describe 'url' do
+      let(:url) { 'http://localhost:9000' }
+
+      it { is_expected.not_to allow_value(url).for(:url) }
+
+      it 'is valid if application settings allow local requests from system hooks' do
+        settings = ApplicationSetting.new(allow_local_requests_from_system_hooks: true)
+        allow(ApplicationSetting).to receive(:current).and_return(settings)
+
+        is_expected.to allow_value(url).for(:url)
+      end
+    end
+  end
+
   describe "execute", :sidekiq_might_not_need_inline do
     let(:system_hook) { create(:system_hook) }
     let(:user)        { create(:user) }

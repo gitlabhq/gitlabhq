@@ -12,7 +12,7 @@
 #
 #   # good
 #   class GreatClass
-#     field :some_field, GraphQL::STRING_TYPE
+#     field :some_field, GraphQL::Types::String
 #   end
 
 module RuboCop

@@ -51,10 +51,10 @@ To access the default page for Admin Area settings:
 | Option | Description |
 | ------ | ----------- |
 | [Repository's custom initial branch name](../../project/repository/branches/default.md#instance-level-custom-initial-branch-name) | Set a custom branch name for new repositories created in your instance. |
-| [Repository mirror](visibility_and_access_controls.md#allow-mirrors-to-be-set-up-for-projects) | Configure repository mirroring. |
+| [Repository mirror](visibility_and_access_controls.md#enable-project-mirroring) | Configure repository mirroring. |
 | [Repository storage](../../../administration/repository_storage_types.md) | Configure storage path settings. |
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |
-| [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (for example, archives, blobs, ...) from an external storage (for example, a CDN). |
+| [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (for example, archives and blobs) from an external storage (for example, a CDN). |
 
 ## Templates **(PREMIUM SELF)**
 
@@ -84,8 +84,8 @@ To access the default page for Admin Area settings:
 | ------ | ----------- |
 | [Metrics - Prometheus](../../../administration/monitoring/prometheus/gitlab_metrics.md) | Enable and configure Prometheus metrics. |
 | [Metrics - Grafana](../../../administration/monitoring/performance/grafana_configuration.md#integration-with-gitlab-ui) | Enable and configure Grafana. |
-| [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-via-the-admin-area) | Enable access to the Performance Bar for a given group. |
-| [Self monitoring](../../../administration/monitoring/gitlab_self_monitoring_project/index.md#creating-the-self-monitoring-project) | Enable or disable instance self monitoring. |
+| [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-for-non-administrators) | Enable access to the Performance Bar for non-administrator users in a given group. |
+| [Self monitoring](../../../administration/monitoring/gitlab_self_monitoring_project/index.md#create-the-self-monitoring-project) | Enable or disable instance self monitoring. |
 | [Usage statistics](usage_statistics.md) | Enable or disable version check and Service Ping. |
 | [Pseudonymizer data collection](../../../administration/pseudonymizer.md) **(ULTIMATE)** | Enable or disable the Pseudonymizer data collection. |
 
@@ -115,7 +115,7 @@ To access the default page for Admin Area settings:
 | [What's new](../../../administration/whats-new.md) | Configure What's new drawer and content. |
 | [Help page](help_page.md) | Help page text and support page URL. |
 | [Pages](../../../administration/pages/index.md#custom-domain-verification) | Size and domain settings for static websites |
-| [Real-time features](../../../administration/polling.md) | Change this value to influence how frequently the GitLab UI polls for updates. |
+| [Polling interval multiplier](../../../administration/polling.md) | Configure how frequently the GitLab UI polls for updates. |
 | [Gitaly timeouts](gitaly_timeouts.md) | Configure Gitaly timeouts. |
 | Localization | [Default first day of the week](../../profile/preferences.md) and [Time tracking](../../project/time_tracking.md#limit-displayed-units-to-hours). |
 

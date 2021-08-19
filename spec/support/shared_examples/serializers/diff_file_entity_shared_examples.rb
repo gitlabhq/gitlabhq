@@ -63,3 +63,19 @@ end
 RSpec.shared_examples 'diff file discussion entity' do
   it_behaves_like 'diff file base entity'
 end
+
+RSpec.shared_examples 'diff file with conflict_type' do
+  describe '#conflict_type' do
+    it 'returns nil by default' do
+      expect(subject[:conflict_type]).to be_nil
+    end
+
+    context 'when there is matching conflict file' do
+      let(:options) { { conflicts: { diff_file.new_path => double(diff_lines_for_serializer: [], conflict_type: :both_modified) } } }
+
+      it 'returns false' do
+        expect(subject[:conflict_type]).to eq(:both_modified)
+      end
+    end
+  end
+end

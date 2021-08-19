@@ -178,6 +178,17 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
+  describe '#get_tag_signatures' do
+    it 'sends a get_tag_signatures message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:get_tag_signatures)
+        .with(gitaly_request_with_params(tag_revisions: ['some_tag_id']), kind_of(Hash))
+        .and_return([])
+
+      client.get_tag_signatures(['some_tag_id'])
+    end
+  end
+
   describe '#find_ref_name', :seed_helper do
     subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
 

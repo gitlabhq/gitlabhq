@@ -65,7 +65,7 @@ module Projects
 
       save_project_and_import_data
 
-      Gitlab::ApplicationContext.with_context(related_class: "Projects::CreateService", project: @project) do
+      Gitlab::ApplicationContext.with_context(project: @project) do
         after_create_actions if @project.persisted?
 
         import_schedule
@@ -92,7 +92,7 @@ module Projects
       # Skip writing the config for project imports/forks because it
       # will always fail since the Git directory doesn't exist until
       # a background job creates it (see Project#add_import_job).
-      @project.write_repository_config unless @project.import?
+      @project.set_full_path unless @project.import?
 
       unless @project.gitlab_project_import?
         @project.create_wiki unless skip_wiki?
@@ -100,6 +100,8 @@ module Projects
 
       @project.track_project_repository
       @project.create_project_setting unless @project.project_setting
+
+      yield if block_given?
 
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
@@ -162,7 +164,7 @@ module Projects
         @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
 
         if @project.save
-          Integration.create_from_active_default_integrations(@project, :project_id, with_templates: true)
+          Integration.create_from_active_default_integrations(@project, :project_id)
 
           @project.create_labels unless @project.gitlab_project_import?
 

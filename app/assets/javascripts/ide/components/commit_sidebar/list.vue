@@ -1,12 +1,12 @@
 <script>
-import { GlModal, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlModal, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import ListItem from './list_item.vue';
 
 export default {
   components: {
-    GlIcon,
+    GlButton,
     ListItem,
     GlModal,
   },
@@ -70,7 +70,7 @@ export default {
       <div class="d-flex align-items-center flex-fill">
         <strong> {{ titleText }} </strong>
         <div class="d-flex ml-auto">
-          <button
+          <gl-button
             v-if="!stagedList"
             v-gl-tooltip
             :title="__('Discard all changes')"
@@ -79,15 +79,14 @@ export default {
             :class="{
               'disabled-content': !filesLength,
             }"
-            type="button"
-            class="d-flex ide-staged-action-btn p-0 border-0 align-items-center"
+            class="gl-shadow-none!"
+            category="tertiary"
+            icon="remove-all"
             data-placement="bottom"
             data-container="body"
             data-boundary="viewport"
             @click="openDiscardModal"
-          >
-            <gl-icon :size="16" name="remove-all" class="ml-auto mr-auto position-top-0" />
-          </button>
+          />
         </div>
       </div>
     </header>

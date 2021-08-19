@@ -9,8 +9,10 @@ RSpec.describe Ci::DropPipelineService do
 
   let!(:cancelable_pipeline) { create(:ci_pipeline, :running, user: user) }
   let!(:running_build) { create(:ci_build, :running, pipeline: cancelable_pipeline) }
+  let!(:commit_status_running) { create(:commit_status, :running, pipeline: cancelable_pipeline) }
   let!(:success_pipeline) { create(:ci_pipeline, :success, user: user) }
   let!(:success_build) { create(:ci_build, :success, pipeline: success_pipeline) }
+  let!(:commit_status_success) { create(:commit_status, :success, pipeline: cancelable_pipeline) }
 
   describe '#execute_async_for_all' do
     subject { described_class.new.execute_async_for_all(user.pipelines, failure_reason, user) }

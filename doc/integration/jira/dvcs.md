@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -213,7 +213,7 @@ Potential resolutions:
    the query string.
 1. If `scope=api` is missing from the URL, edit the
    [GitLab account configuration](#configure-a-gitlab-application-for-dvcs). Review
-   the **Scopes** field and ensure the `api` check box is selected.
+   the **Scopes** field and ensure the `api` checkbox is selected.
 
 ### Jira error adding account and no repositories listed
 

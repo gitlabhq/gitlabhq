@@ -30,8 +30,13 @@ exports[`self monitor component When the self monitor project has not been creat
       class="js-section-sub-header"
     >
       
-      Enable or disable instance self monitoring
-    
+      Activate or deactivate instance self monitoring.
+      
+      <gl-link-stub
+        href="/help/administration/monitoring/gitlab_self_monitoring_project/index"
+      >
+        Learn more.
+      </gl-link-stub>
     </p>
   </div>
    
@@ -42,14 +47,14 @@ exports[`self monitor component When the self monitor project has not been creat
       name="self-monitoring-form"
     >
       <p>
-        Enabling this feature creates a project that can be used to monitor the health of your instance.
+        Activate self monitoring to create a project to use to monitor the health of your instance.
       </p>
        
       <gl-form-group-stub
         labeldescription=""
       >
         <gl-toggle-stub
-          label="Create Project"
+          label="Self monitoring"
           labelposition="top"
         />
       </gl-form-group-stub>
@@ -62,15 +67,15 @@ exports[`self monitor component When the self monitor project has not been creat
     dismisslabel="Close"
     modalclass=""
     modalid="delete-self-monitor-modal"
-    ok-title="Delete project"
+    ok-title="Delete self monitoring project"
     ok-variant="danger"
     size="md"
-    title="Disable self monitoring?"
+    title="Deactivate self monitoring?"
     titletag="h4"
   >
     <div>
       
-      Disabling this feature will delete the self monitoring project. Are you sure you want to delete the project?
+      Deactivating self monitoring deletes the self monitoring project. Are you sure you want to deactivate self monitoring and delete the project?
     
     </div>
   </gl-modal-stub>

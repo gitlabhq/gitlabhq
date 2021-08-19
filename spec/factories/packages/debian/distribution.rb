@@ -13,8 +13,18 @@ FactoryBot.define do
     end
 
     trait(:with_file) do
+      file_signature do
+        <<~EOF
+        -----BEGIN PGP SIGNATURE-----
+
+        ABC
+        -----BEGIN PGP SIGNATURE-----
+        EOF
+      end
+
       after(:build) do |distribution, evaluator|
         distribution.file = fixture_file_upload('spec/fixtures/packages/debian/distribution/Release')
+        distribution.signed_file = fixture_file_upload('spec/fixtures/packages/debian/distribution/InRelease')
       end
     end
 

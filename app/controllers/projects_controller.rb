@@ -31,10 +31,6 @@ class ProjectsController < Projects::ApplicationController
   # Project Export Rate Limit
   before_action :export_rate_limit, only: [:export, :download_export, :generate_new_export]
 
-  before_action only: [:edit] do
-    push_frontend_feature_flag(:allow_editing_commit_messages, @project)
-  end
-
   before_action do
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
@@ -74,11 +70,6 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
-      experiment(:new_project_readme, actor: current_user).track(
-        :created,
-        property: active_new_project_tab,
-        value: project_params[:initialize_with_readme].to_i
-      )
       redirect_to(
         project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
@@ -397,6 +388,7 @@ class ProjectsController < Projects::ApplicationController
       analytics_access_level
       operations_access_level
       security_and_compliance_access_level
+      container_registry_access_level
     ]
   end
 
@@ -404,7 +396,6 @@ class ProjectsController < Projects::ApplicationController
     %i[
       show_default_award_emojis
       squash_option
-      allow_editing_commit_messages
       mr_default_target_self
     ]
   end

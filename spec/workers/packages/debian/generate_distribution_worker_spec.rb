@@ -9,6 +9,9 @@ RSpec.describe Packages::Debian::GenerateDistributionWorker, type: :worker do
 
     subject { described_class.new.perform(container_type, distribution_id) }
 
+    let(:subject2) { described_class.new.perform(container_type, distribution_id) }
+    let(:subject3) { described_class.new.perform(container_type, distribution_id) }
+
     include_context 'with published Debian package'
 
     [:project, :group].each do |container_type|

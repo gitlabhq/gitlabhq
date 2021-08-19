@@ -51,7 +51,7 @@ which have to be stubbed.
 
 ### Differences to Karma
 
-- Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/26982).
+- Jest runs in a Node.js environment, not in a browser. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/26982) for running Jest tests in a browser.
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
   The aliases used by Jest are defined in its [own configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/jest.config.js).
@@ -420,6 +420,55 @@ it('does something', () => {
 
   expect(something).toBe('done');
   jasmine.clock().uninstall();
+});
+```
+
+### Mocking the current location in Jest
+
+NOTE:
+The value of `window.location.href` is reset before every test to avoid earlier
+tests affecting later ones.
+
+If your tests require `window.location.href` to take a particular value, use
+the `setWindowLocation` helper:
+
+```javascript
+import setWindowLocation from 'helpers/set_window_location';
+
+it('passes', () => {
+  setWindowLocation('https://gitlab.test/foo?bar=true');
+
+  expect(window.location).toMatchObject({
+    hostname: 'gitlab.test',
+    pathname: '/foo',
+    search: '?bar=true',
+  });
+});
+```
+
+To modify only the hash, use either the `setWindowLocation` helper, or assign
+directly to `window.location.hash`, e.g.:
+
+```javascript
+it('passes', () => {
+  window.location.hash = '#foo';
+
+  expect(window.location.href).toBe('http://test.host/#foo');
+});
+```
+
+If your tests need to assert that certain `window.location` methods were
+called, use the `useMockLocationHelper` helper:
+
+```javascript
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+
+useMockLocationHelper();
+
+it('passes', () => {
+  window.location.reload();
+
+  expect(window.location.reload).toHaveBeenCalled();
 });
 ```
 

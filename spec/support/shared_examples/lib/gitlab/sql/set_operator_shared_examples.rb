@@ -22,7 +22,7 @@ RSpec.shared_examples 'SQL set operator' do |operator_keyword|
     end
 
     it 'skips Model.none segments' do
-      empty_relation = User.none
+      empty_relation = User.none.select(:id)
       set_operator = described_class.new([empty_relation, relation_1, relation_2])
 
       expect {User.where("users.id IN (#{set_operator.to_sql})").to_a}.not_to raise_error
@@ -41,6 +41,17 @@ RSpec.shared_examples 'SQL set operator' do |operator_keyword|
       set_operator = described_class.new([empty_relation, empty_relation])
 
       expect(set_operator.to_sql).to eq('NULL')
+    end
+  end
+
+  context 'when uneven select values are used' do
+    let(:relation_1) { User.where(email: 'alice@example.com').select(*User.column_names) }
+    let(:relation_2) { User.where(email: 'bob@example.com') }
+
+    it 'raises error' do
+      expect do
+        described_class.new([relation_1, relation_2])
+      end.to raise_error /Relations with uneven select values were passed/
     end
   end
 

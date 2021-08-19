@@ -1,6 +1,8 @@
-<!--See the general Documentation guidelines https://docs.gitlab.com/ee/development/documentation/ -->
-
-<!-- Use this description template for changing documentation location. For new docs or updates to existing docs, use the "Documentation" template -->
+<!--
+  See the general Documentation guidelines https://docs.gitlab.com/ee/development/documentation/
+  Use this description template for changing documentation location. For new documentation or
+  updates to existing documentation, use the Documentation.md template.
+-->
 
 ## What does this MR do?
 
@@ -25,4 +27,4 @@ https://docs.gitlab.com/ee/development/documentation/index.html#move-or-rename-a
 - [ ] Update the link in `features.yml` (if applicable)
 - [ ] Assign one of the technical writers for review.
 
-/label ~documentation
+/label ~documentation ~"Technical Writing"

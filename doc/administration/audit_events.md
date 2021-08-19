@@ -123,6 +123,9 @@ From there, you can see the following actions:
 - Created, updated, or deleted DAST profiles, DAST scanner profiles, and DAST site profiles
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1)
 - Changed a project's compliance framework ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329362) in GitLab 14.1)
+- User password required for approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
+- Permission to modify merge requests approval rules in merge requests was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
+- New approvals requirement when new commits are added to an MR was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 
@@ -204,9 +207,6 @@ The current architecture of audit events is not prepared to receive a very high 
 It may make the user interface for your project or audit events very busy, and the disk space consumed by the
 `audit_events` PostgreSQL table may increase considerably. It's disabled by default
 to prevent performance degradations on GitLab instances with very high Git write traffic.
-
-In an upcoming release, Audit Events for Git push events are planned to be enabled
-by default. Follow our [Partitioning strategy for Audit Events epic](https://gitlab.com/groups/gitlab-org/-/epics/3206) for updates.
 
 If you still wish to enable **Repository push** events in your instance, follow
 the steps below.

@@ -386,6 +386,6 @@ If you're unsure if it's secure or not, you need to ask security experts for cro
 
 After your CI/CD template MR is created and labeled with `ci::templates`, DangerBot
 suggests one reviewer and one maintainer that can review your code. When your merge
-request is ready for review, please `@mention` the reviewer and ask them to review
-your CI/CD template changes. See details in the merge request that added
+request is ready for review, please [mention](../../user/project/issues/issue_data_and_actions.md#mentions)
+the reviewer and ask them to review your CI/CD template changes. See details in the merge request that added
 [a DangerBot task for CI/CD template MRs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44688).

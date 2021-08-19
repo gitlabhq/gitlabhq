@@ -43,7 +43,12 @@ class Project < ApplicationRecord
 
   extend Gitlab::ConfigHelper
 
+  ignore_columns :container_registry_enabled, remove_after: '2021-09-22', remove_with: '14.4'
+
   BoardLimitExceeded = Class.new(StandardError)
+
+  ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
+  ignore_columns :pull_mirror_branch_prefix, remove_after: '2021-09-22', remove_with: '14.4'
 
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
@@ -73,7 +78,6 @@ class Project < ApplicationRecord
   default_value_for :packages_enabled, true
   default_value_for :archived, false
   default_value_for :resolve_outdated_diff_discussions, false
-  default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) do
     Repository.pick_storage_shard
   end
@@ -94,9 +98,6 @@ class Project < ApplicationRecord
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
   before_save :ensure_runners_token
-
-  # https://api.rubyonrails.org/v6.0.3.4/classes/ActiveRecord/AttributeMethods/Dirty.html#method-i-will_save_change_to_attribute-3F
-  before_update :set_container_registry_access_level, if: :will_save_change_to_container_registry_enabled?
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
@@ -318,7 +319,6 @@ class Project < ApplicationRecord
   # still using `dependent: :destroy` here.
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
-  has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
   has_many :build_report_results, class_name: 'Ci::BuildReportResult', inverse_of: :project
   has_many :job_artifacts, class_name: 'Ci::JobArtifact'
@@ -378,6 +378,7 @@ class Project < ApplicationRecord
   has_many :operations_feature_flags_user_lists, class_name: 'Operations::FeatureFlags::UserList'
 
   has_many :error_tracking_errors, inverse_of: :project, class_name: 'ErrorTracking::Error'
+  has_many :error_tracking_client_keys, inverse_of: :project, class_name: 'ErrorTracking::ClientKey'
 
   has_many :timelogs
 
@@ -436,7 +437,7 @@ class Project < ApplicationRecord
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
-    :allow_merge_on_skipped_pipeline=, :has_confluence?, :allow_editing_commit_messages?,
+    :allow_merge_on_skipped_pipeline=, :has_confluence?,
     to: :project_setting
   delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
 
@@ -538,10 +539,8 @@ class Project < ApplicationRecord
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
   scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
-  scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
-  scope :with_active_jira_integrations, -> { joins(:integrations).merge(::Integrations::Jira.active) }
   scope :with_jira_dvcs_cloud, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: true)) }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
   scope :inc_routes, -> { includes(:route, namespace: :route) }
@@ -549,7 +548,9 @@ class Project < ApplicationRecord
   scope :with_namespace, -> { includes(:namespace) }
   scope :with_import_state, -> { includes(:import_state) }
   scope :include_project_feature, -> { includes(:project_feature) }
-  scope :with_integration, ->(integration) { joins(integration).eager_load(integration) }
+  scope :include_integration, -> (integration_association_name) { includes(integration_association_name) }
+  scope :with_integration, -> (integration_class) { joins(:integrations).merge(integration_class.all) }
+  scope :with_active_integration, -> (integration_class) { with_integration(integration_class).merge(integration_class.active) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
@@ -913,7 +914,13 @@ class Project < ApplicationRecord
       .base_and_ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
-  alias_method :ancestors, :ancestors_upto
+  def ancestors(hierarchy_order: nil)
+    if Feature.enabled?(:linear_project_ancestors, self, default_enabled: :yaml)
+      group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
+    else
+      ancestors_upto(hierarchy_order: hierarchy_order)
+    end
+  end
 
   def ancestors_upto_ids(...)
     ancestors_upto(...).pluck(:id)
@@ -1180,6 +1187,15 @@ class Project < ApplicationRecord
     import_type == 'gitea'
   end
 
+  def github_import?
+    import_type == 'github'
+  end
+
+  def github_enterprise_import?
+    github_import? &&
+      URI.parse(import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
+  end
+
   def has_remote_mirror?
     remote_mirror_available? && remote_mirrors.enabled.exists?
   end
@@ -1411,14 +1427,13 @@ class Project < ApplicationRecord
   def find_or_initialize_integration(name)
     return if disabled_integrations.include?(name)
 
-    find_integration(integrations, name) || build_from_instance_or_template(name) || build_integration(name)
+    find_integration(integrations, name) || build_from_instance(name) || build_integration(name)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
-      # TODO: remove_on_close exception can be removed after the column is dropped from all envs
-      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type', 'remove_on_close')
+      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
@@ -1876,11 +1891,11 @@ class Project < ApplicationRecord
       .update_all(deployed: deployment.present?, pages_deployment_id: deployment&.id)
   end
 
-  def write_repository_config(gl_full_path: full_path)
+  def set_full_path(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
     # the import rake task.
-    repository.raw_repository.write_config(full_path: gl_full_path)
+    repository.raw_repository.set_full_path(full_path: gl_full_path)
   rescue Gitlab::Git::Repository::NoRepository => e
     Gitlab::AppLogger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
@@ -1892,6 +1907,7 @@ class Project < ApplicationRecord
 
     DetectRepositoryLanguagesWorker.perform_async(id)
     ProjectCacheWorker.perform_async(self.id, [], [:repository_size])
+    AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
     # The import assigns iid values on its own, e.g. by re-using GitHub ids.
     # Flush existing InternalId records for this project for consistency reasons.
@@ -1904,7 +1920,7 @@ class Project < ApplicationRecord
     after_create_default_branch
     join_pool_repository
     refresh_markdown_cache!
-    write_repository_config
+    set_full_path
   end
 
   def update_project_counter_caches
@@ -2030,6 +2046,7 @@ class Project < ApplicationRecord
       .append(key: 'CI_PROJECT_URL', value: web_url)
       .append(key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level))
       .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
+      .append(key: 'CI_PROJECT_CLASSIFICATION_LABEL', value: external_authorization_classification_label)
       .append(key: 'CI_DEFAULT_BRANCH', value: default_branch)
       .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
   end
@@ -2557,12 +2574,15 @@ class Project < ApplicationRecord
     [project&.id, root_group&.id]
   end
 
-  def package_already_taken?(package_name)
-    namespace.root_ancestor.all_projects
-      .joins(:packages)
-      .where.not(id: id)
-      .merge(Packages::Package.default_scoped.with_name(package_name))
-      .exists?
+  def package_already_taken?(package_name, package_version, package_type:)
+    Packages::Package.with_name(package_name)
+      .with_version(package_version)
+      .with_package_type(package_type)
+      .for_projects(
+        root_ancestor.all_projects
+          .id_not_in(id)
+          .select(:id)
+      ).exists?
   end
 
   def default_branch_or_main
@@ -2651,38 +2671,20 @@ class Project < ApplicationRecord
 
   private
 
-  def set_container_registry_access_level
-    # changes_to_save = { 'container_registry_enabled' => [value_before_update, value_after_update] }
-    value = changes_to_save['container_registry_enabled'][1]
-
-    access_level =
-      if value
-        ProjectFeature::ENABLED
-      else
-        ProjectFeature::DISABLED
-      end
-
-    project_feature.update!(container_registry_access_level: access_level)
-  end
-
   def find_integration(integrations, name)
     integrations.find { _1.to_param == name }
   end
 
-  def build_from_instance_or_template(name)
+  def build_from_instance(name)
     instance = find_integration(integration_instances, name)
-    return Integration.build_from_integration(instance, project_id: id) if instance
 
-    template = find_integration(integration_templates, name)
-    return Integration.build_from_integration(template, project_id: id) if template
+    return unless instance
+
+    Integration.build_from_integration(instance, project_id: id)
   end
 
   def build_integration(name)
     Integration.integration_name_to_model(name).new(project_id: id)
-  end
-
-  def integration_templates
-    @integration_templates ||= Integration.for_template
   end
 
   def integration_instances

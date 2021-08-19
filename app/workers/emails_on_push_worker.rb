@@ -3,6 +3,8 @@
 class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
 
   attr_reader :email, :skip_premailer

@@ -4,7 +4,7 @@ module Resolvers
   class UserNotesCountResolver < BaseResolver
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
-    type GraphQL::INT_TYPE, null: true
+    type GraphQL::Types::Int, null: true
 
     def resolve
       authorize!(object)

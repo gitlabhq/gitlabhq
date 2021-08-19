@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser';
+
 /**
  * capture anything starting with http:// or https://
  *   https?:\/\/
@@ -10,3 +12,10 @@
  */
 export const linkRegex = /(https?:\/\/[^"<>()\\^`{|}\s]+[^"<>()\\^`{|}\s.,:;!?])/g;
 export default { linkRegex };
+
+export const reportToSentry = (component, failureType) => {
+  Sentry.withScope((scope) => {
+    scope.setTag('component', component);
+    Sentry.captureException(failureType);
+  });
+};

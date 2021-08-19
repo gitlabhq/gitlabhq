@@ -67,7 +67,6 @@ Rails.application.routes.draw do
 
     Gitlab.ee do
       resources :groups, only: [:new, :create]
-      resources :group_invites, only: [:new, :create]
       resources :projects, only: [:new, :create]
     end
   end
@@ -247,12 +246,6 @@ Rails.application.routes.draw do
         Gitlab.ee do
           get :metrics, format: :json
           get :environments, format: :json
-        end
-
-        scope :applications do
-          post '/:application', to: 'clusters/applications#create', as: :install_applications
-          patch '/:application', to: 'clusters/applications#update', as: :update_applications
-          delete '/:application', to: 'clusters/applications#destroy', as: :uninstall_applications
         end
 
         get :metrics_dashboard

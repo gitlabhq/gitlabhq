@@ -122,6 +122,7 @@ module Gitlab
 
           return unless attribute
           return unless tie_breaker_attribute
+          return unless attribute.respond_to?(:name)
 
           model_class.column_names.include?(attribute.name.to_s) &&
             arel_table[primary_key].to_s == tie_breaker_attribute.to_s

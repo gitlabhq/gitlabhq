@@ -11,10 +11,10 @@ module Types
       field :id, ::Types::GlobalIDType[::Packages::Package], null: false,
             description: 'ID of the package.'
 
-      field :name, GraphQL::STRING_TYPE, null: false, description: 'Name of the package.'
+      field :name, GraphQL::Types::String, null: false, description: 'Name of the package.'
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
       field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
-      field :version, GraphQL::STRING_TYPE, null: true, description: 'Version string.'
+      field :version, GraphQL::Types::String, null: true, description: 'Version string.'
       field :package_type, Types::Packages::PackageTypeEnum, null: false, description: 'Package type.'
       field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'
       field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'

@@ -15,6 +15,33 @@ RSpec.describe Groups::RunnersController do
     sign_in(user)
   end
 
+  describe '#index' do
+    context 'when user is owner' do
+      before do
+        group.add_owner(user)
+      end
+
+      it 'renders show with 200 status code' do
+        get :index, params: { group_id: group }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:index)
+      end
+    end
+
+    context 'when user is not owner' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      it 'renders a 404' do
+        get :index, params: { group_id: group }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe '#show' do
     context 'when user is owner' do
       before do

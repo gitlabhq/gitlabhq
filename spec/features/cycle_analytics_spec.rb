@@ -6,6 +6,8 @@ RSpec.describe 'Value Stream Analytics', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:stage_table_selector) { '[data-testid="vsa-stage-table"]' }
+  let_it_be(:metrics_selector) { "[data-testid='vsa-time-metrics']" }
 
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
@@ -25,11 +27,13 @@ RSpec.describe 'Value Stream Analytics', :js do
         wait_for_requests
       end
 
-      it 'shows pipeline summary' do
-        expect(new_issues_counter).to have_content('-')
-        expect(commits_counter).to have_content('-')
-        expect(deploys_counter).to have_content('-')
-        expect(deployment_frequency_counter).to have_content('-')
+      it 'displays metrics' do
+        aggregate_failures 'with relevant values' do
+          expect(new_issues_counter).to have_content('-')
+          expect(commits_counter).to have_content('-')
+          expect(deploys_counter).to have_content('-')
+          expect(deployment_frequency_counter).to have_content('-')
+        end
       end
 
       it 'shows active stage with empty message' do
@@ -45,9 +49,9 @@ RSpec.describe 'Value Stream Analytics', :js do
         @build = create_cycle(user, project, issue, mr, milestone, pipeline)
         deploy_master(user, project)
 
-        issue.metrics.update!(first_mentioned_in_commit_at: issue.metrics.first_associated_with_milestone_at + 1.day)
+        issue.metrics.update!(first_mentioned_in_commit_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
         merge_request = issue.merge_requests_closing_issues.first.merge_request
-        merge_request.update!(created_at: issue.metrics.first_associated_with_milestone_at + 1.day)
+        merge_request.update!(created_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
         merge_request.metrics.update!(
           latest_build_started_at: 4.hours.ago,
           latest_build_finished_at: 3.hours.ago,
@@ -59,11 +63,15 @@ RSpec.describe 'Value Stream Analytics', :js do
         visit project_cycle_analytics_path(project)
       end
 
-      it 'shows pipeline summary' do
-        expect(new_issues_counter).to have_content('1')
-        expect(commits_counter).to have_content('2')
-        expect(deploys_counter).to have_content('1')
-        expect(deployment_frequency_counter).to have_content('0')
+      it 'displays metrics' do
+        metrics_tiles = page.find(metrics_selector)
+
+        aggregate_failures 'with relevant values' do
+          expect(metrics_tiles).to have_content('Commit')
+          expect(metrics_tiles).to have_content('Deploy')
+          expect(metrics_tiles).to have_content('Deployment Frequency')
+          expect(metrics_tiles).to have_content('New Issue')
+        end
       end
 
       it 'shows data on each stage', :sidekiq_might_not_need_inline do
@@ -76,13 +84,13 @@ RSpec.describe 'Value Stream Analytics', :js do
         expect_merge_request_to_be_present
 
         click_stage('Test')
-        expect_build_to_be_present
+        expect_merge_request_to_be_present
 
         click_stage('Review')
         expect_merge_request_to_be_present
 
         click_stage('Staging')
-        expect_build_to_be_present
+        expect_merge_request_to_be_present
       end
 
       context "when I change the time period observed" do
@@ -95,7 +103,7 @@ RSpec.describe 'Value Stream Analytics', :js do
         end
 
         it 'shows only relevant data' do
-          expect(new_issues_counter).to have_content('1')
+          expect(new_issue_counter).to have_content('1')
         end
       end
     end
@@ -115,60 +123,55 @@ RSpec.describe 'Value Stream Analytics', :js do
     end
 
     it 'does not show the commit stats' do
-      expect(page).to have_no_selector(:xpath, commits_counter_selector)
+      expect(page.find(metrics_selector)).not_to have_selector("#commits")
     end
 
     it 'needs permissions to see restricted stages' do
-      expect(find('.stage-events')).to have_content(issue.title)
+      expect(find(stage_table_selector)).to have_content(issue.title)
 
       click_stage('Code')
-      expect(find('.stage-events')).to have_content('You need permission.')
+      expect(find(stage_table_selector)).to have_content('You need permission.')
 
       click_stage('Review')
-      expect(find('.stage-events')).to have_content('You need permission.')
+      expect(find(stage_table_selector)).to have_content('You need permission.')
     end
   end
 
-  def new_issues_counter
-    find(:xpath, "//p[contains(text(),'New Issue')]/preceding-sibling::h3")
+  def find_metric_tile(sel)
+    page.find("#{metrics_selector} #{sel}")
   end
 
-  def commits_counter_selector
-    "//p[contains(text(),'Commits')]/preceding-sibling::h3"
+  # When now use proper pluralization for the metric names, which affects the id
+  def new_issue_counter
+    find_metric_tile("#new-issue")
+  end
+
+  def new_issues_counter
+    find_metric_tile("#new-issues")
   end
 
   def commits_counter
-    find(:xpath, commits_counter_selector)
+    find_metric_tile("#commits")
   end
 
   def deploys_counter
-    find(:xpath, "//p[contains(text(),'Deploy')]/preceding-sibling::h3", match: :first)
-  end
-
-  def deployment_frequency_counter_selector
-    "//p[contains(text(),'Deployment Frequency')]/preceding-sibling::h3"
+    find_metric_tile("#deploys")
   end
 
   def deployment_frequency_counter
-    find(:xpath, deployment_frequency_counter_selector)
+    find_metric_tile("#deployment-frequency")
   end
 
   def expect_issue_to_be_present
-    expect(find('.stage-events')).to have_content(issue.title)
-    expect(find('.stage-events')).to have_content(issue.author.name)
-    expect(find('.stage-events')).to have_content("##{issue.iid}")
-  end
-
-  def expect_build_to_be_present
-    expect(find('.stage-events')).to have_content(@build.ref)
-    expect(find('.stage-events')).to have_content(@build.short_sha)
-    expect(find('.stage-events')).to have_content("##{@build.id}")
+    expect(find(stage_table_selector)).to have_content(issue.title)
+    expect(find(stage_table_selector)).to have_content(issue.author.name)
+    expect(find(stage_table_selector)).to have_content("##{issue.iid}")
   end
 
   def expect_merge_request_to_be_present
-    expect(find('.stage-events')).to have_content(mr.title)
-    expect(find('.stage-events')).to have_content(mr.author.name)
-    expect(find('.stage-events')).to have_content("!#{mr.iid}")
+    expect(find(stage_table_selector)).to have_content(mr.title)
+    expect(find(stage_table_selector)).to have_content(mr.author.name)
+    expect(find(stage_table_selector)).to have_content("!#{mr.iid}")
   end
 
   def click_stage(stage_name)

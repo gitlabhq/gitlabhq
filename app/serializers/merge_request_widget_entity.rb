@@ -110,8 +110,16 @@ class MergeRequestWidgetEntity < Grape::Entity
       presenter(merge_request).closing_issues_links
     end
 
+    expose :closing_count do |merge_request|
+      presenter(merge_request).closing_issues.size
+    end
+
     expose :mentioned_but_not_closing do |merge_request|
       presenter(merge_request).mentioned_issues_links
+    end
+
+    expose :mentioned_count do |merge_request|
+      presenter(merge_request).mentioned_issues.size
     end
   end
 
@@ -135,6 +143,23 @@ class MergeRequestWidgetEntity < Grape::Entity
 
   expose :enabled_reports do |merge_request|
     merge_request.enabled_reports
+  end
+
+  expose :show_gitpod_button do |merge_request|
+    Gitlab::CurrentSettings.gitpod_enabled
+  end
+
+  expose :gitpod_url do |merge_request|
+    next unless Gitlab::CurrentSettings.gitpod_enabled
+
+    gitpod_url = Gitlab::CurrentSettings.gitpod_url
+    context_url = project_merge_request_url(merge_request.project, merge_request)
+
+    "#{gitpod_url}##{context_url}"
+  end
+
+  expose :gitpod_enabled do |merge_request|
+    current_user&.gitpod_enabled || false
   end
 
   private

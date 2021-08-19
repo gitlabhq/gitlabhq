@@ -2,6 +2,7 @@
 import { GlButtonGroup, GlButton, GlModalDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { sprintf, __ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRefMixin from '../mixins/get_ref';
 import DeleteBlobModal from './delete_blob_modal.vue';
 import UploadBlobModal from './upload_blob_modal.vue';
@@ -17,11 +18,12 @@ export default {
     GlButton,
     UploadBlobModal,
     DeleteBlobModal,
+    LockButton: () => import('ee_component/repository/components/lock_button.vue'),
   },
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
     targetBranch: {
       default: '',
@@ -55,6 +57,18 @@ export default {
       type: Boolean,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    isLocked: {
+      type: Boolean,
+      required: true,
+    },
+    canLock: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     replaceModalId() {
@@ -76,10 +90,19 @@ export default {
 <template>
   <div class="gl-mr-3">
     <gl-button-group>
-      <gl-button v-gl-modal="replaceModalId">
+      <lock-button
+        v-if="glFeatures.fileLocks"
+        :name="name"
+        :path="path"
+        :project-path="projectPath"
+        :is-locked="isLocked"
+        :can-lock="canLock"
+        data-testid="lock"
+      />
+      <gl-button v-gl-modal="replaceModalId" data-testid="replace">
         {{ $options.i18n.replace }}
       </gl-button>
-      <gl-button v-gl-modal="deleteModalId">
+      <gl-button v-gl-modal="deleteModalId" data-testid="delete">
         {{ $options.i18n.delete }}
       </gl-button>
     </gl-button-group>

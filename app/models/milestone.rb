@@ -61,10 +61,38 @@ class Milestone < ApplicationRecord
   end
 
   def self.reference_pattern
+    if Feature.enabled?(:milestone_reference_pattern, default_enabled: :yaml)
+      new_reference_pattern
+    else
+      old_reference_pattern
+    end
+  end
+
+  def self.new_reference_pattern
     # NOTE: The iid pattern only matches when all characters on the expression
     # are digits, so it will match %2 but not %2.1 because that's probably a
     # milestone name and we want it to be matched as such.
-    @reference_pattern ||= %r{
+    @new_reference_pattern ||= %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
+      (?:
+        (?<milestone_iid>
+          \d+(?!\S\w)\b # Integer-based milestone iid, or
+        ) |
+        (?<milestone_name>
+          [^"\s\<]+\b |  # String-based single-word milestone title, or
+          "[^"]+"      # String-based multi-word milestone surrounded in quotes
+        )
+      )
+    }x
+  end
+
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/336268
+  def self.old_reference_pattern
+    # NOTE: The iid pattern only matches when all characters on the expression
+    # are digits, so it will match %2 but not %2.1 because that's probably a
+    # milestone name and we want it to be matched as such.
+    @old_reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:

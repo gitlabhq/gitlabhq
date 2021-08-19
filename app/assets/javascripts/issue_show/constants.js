@@ -28,8 +28,8 @@ export const STATUS_PAGE_PUBLISHED = __('Published on status page');
 export const JOIN_ZOOM_MEETING = __('Join Zoom meeting');
 
 export const IssuableTypes = [
-  { value: 'issue', text: __('Issue') },
-  { value: 'incident', text: __('Incident') },
+  { value: 'issue', text: __('Issue'), icon: 'issue-type-issue' },
+  { value: 'incident', text: __('Incident'), icon: 'issue-type-incident' },
 ];
 
 export const IssueTypePath = 'issues';

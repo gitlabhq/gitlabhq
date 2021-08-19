@@ -52,7 +52,7 @@ For other distributions, follow the instructions in PostgreSQL's
 and then install `pgloader`.
 
 If you are migrating to a Docker based installation, you must install
-pgLoader within the container as it is not included in the container image.
+pgLoader in the container as it is not included in the container image.
 
 1. Start a shell session in the context of the running container:
 
@@ -70,7 +70,7 @@ pgLoader within the container as it is not included in the container image.
 ## Omnibus GitLab installations
 
 For [Omnibus GitLab packages](https://about.gitlab.com/install/), you first
-need to enable the bundled PostgreSQL:
+enable the bundled PostgreSQL:
 
 1. Stop GitLab:
 
@@ -283,7 +283,7 @@ Sometimes, you might encounter some errors during or after the migration.
 
 ### Database error permission denied
 
-The PostgreSQL user that you use for the migration MUST have **superuser** privileges.
+The PostgreSQL user that you use for the migration **must** have **superuser** privileges.
 Otherwise, you may see a similar message to the following:
 
 ```plaintext
@@ -295,7 +295,7 @@ debugger invoked on a CL-POSTGRES-ERROR:INSUFFICIENT-PRIVILEGE in thread
     QUERY: ALTER TABLE approver_groups DISABLE TRIGGER ALL;
 ```
 
-### Experiencing 500 errors after the migration
+### 500 errors after the migration
 
 If you experience 500 errors after the migration, try to clear the cache:
 

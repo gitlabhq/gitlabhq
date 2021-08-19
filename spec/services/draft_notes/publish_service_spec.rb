@@ -66,8 +66,8 @@ RSpec.describe DraftNotes::PublishService do
     let(:commit_id) { nil }
 
     before do
-      create(:draft_note, merge_request: merge_request, author: user, note: 'first note', commit_id: commit_id, position: position)
-      create(:draft_note, merge_request: merge_request, author: user, note: 'second note', commit_id: commit_id, position: position)
+      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'first note', commit_id: commit_id, position: position)
+      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'second note', commit_id: commit_id, position: position)
     end
 
     context 'when review fails to create' do
@@ -125,6 +125,30 @@ RSpec.describe DraftNotes::PublishService do
         .with(user: user)
 
       publish
+    end
+
+    context 'capturing diff notes positions' do
+      before do
+        # Need to execute this to ensure that we'll be able to test creation of
+        # DiffNotePosition records as that only happens when the `MergeRequest#merge_ref_head`
+        # is present. This service creates that for the specified merge request.
+        MergeRequests::MergeToRefService.new(project: project, current_user: user).execute(merge_request)
+      end
+
+      it 'creates diff_note_positions for diff notes' do
+        publish
+
+        notes = merge_request.notes.order(id: :asc)
+        expect(notes.first.diff_note_positions).to be_any
+        expect(notes.last.diff_note_positions).to be_any
+      end
+
+      it 'does not requests a lot from Gitaly', :request_store do
+        # NOTE: This should be reduced as we work on reducing Gitaly calls.
+        # Gitaly requests shouldn't go above this threshold as much as possible
+        # as it may add more to the Gitaly N+1 issue we are experiencing.
+        expect { publish }.to change { Gitlab::GitalyClient.get_request_count }.by(11)
+      end
     end
 
     context 'commit_id is set' do

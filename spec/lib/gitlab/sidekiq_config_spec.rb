@@ -28,7 +28,7 @@ RSpec.describe Gitlab::SidekiqConfig do
   describe '.workers_for_all_queues_yml' do
     it 'returns a tuple with FOSS workers first' do
       expect(described_class.workers_for_all_queues_yml.first)
-        .to include(an_object_having_attributes(queue: 'post_receive'))
+        .to include(an_object_having_attributes(generated_queue_name: 'post_receive'))
     end
   end
 

@@ -7,8 +7,12 @@ RSpec.describe JiraConnect::SubscriptionsController do
 
   describe '#index' do
     before do
+      request.headers['Accept'] = content_type
+
       get :index, params: { jwt: jwt }
     end
+
+    let(:content_type) { 'text/html' }
 
     context 'without JWT' do
       let(:jwt) { nil }
@@ -29,13 +33,55 @@ RSpec.describe JiraConnect::SubscriptionsController do
       it 'removes X-Frame-Options to allow rendering in iframe' do
         expect(response.headers['X-Frame-Options']).to be_nil
       end
+
+      context 'with JSON format' do
+        let_it_be(:subscription) { create(:jira_connect_subscription, installation: installation) }
+
+        let(:content_type) { 'application/json' }
+
+        it 'renders the relevant data as JSON', :aggregate_failures do
+          expect(json_response).to include('groups_path' => api_v4_groups_path(params: { min_access_level: Gitlab::Access::MAINTAINER, skip_groups: [subscription.namespace_id] }))
+          expect(json_response).to include(
+            'subscriptions' => [
+              'group' => {
+                'name' => subscription.namespace.name,
+                'avatar_url' => subscription.namespace.avatar_url,
+                'full_name' => subscription.namespace.full_name,
+                'description' => subscription.namespace.description
+              },
+              'created_at' => subscription.created_at.iso8601(3),
+              'unlink_path' => jira_connect_subscription_path(subscription)
+            ]
+          )
+          expect(json_response).to include('subscriptions_path' => jira_connect_subscriptions_path)
+        end
+
+        context 'when not signed in to GitLab' do
+          it 'contains a login path' do
+            expect(json_response).to include('login_path' => jira_connect_users_path)
+          end
+        end
+
+        context 'when signed in to GitLab' do
+          let(:user) { create(:user) }
+
+          before do
+            sign_in(user)
+
+            get :index, params: { jwt: jwt }
+          end
+
+          it 'does not contain a login path' do
+            expect(json_response).to include('login_path' => nil)
+          end
+        end
+      end
     end
   end
 
   describe '#create' do
     let(:group) { create(:group) }
     let(:user) { create(:user) }
-    let(:current_user) { user }
 
     before do
       group.add_maintainer(user)

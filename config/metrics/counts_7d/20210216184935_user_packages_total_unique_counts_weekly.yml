@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly
 description: A weekly count of users that have published a package to the registry
 product_section: ops
@@ -10,6 +10,23 @@ value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_package_composer_user
+    - i_package_conan_user
+    - i_package_container_user
+    - i_package_debian_user
+    - i_package_generic_user
+    - i_package_golang_user
+    - i_package_helm_user
+    - i_package_maven_user
+    - i_package_npm_user
+    - i_package_nuget_user
+    - i_package_pypi_user
+    - i_package_rubygems_user
+    - i_package_tag_user
+    - i_package_terraform_module_user
 distribution:
 - ee
 - ce
@@ -17,3 +34,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

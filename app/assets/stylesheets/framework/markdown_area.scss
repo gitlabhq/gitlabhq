@@ -83,6 +83,7 @@
   li.md-header-toolbar {
     margin-left: auto;
     display: none;
+    padding-bottom: $gl-padding-8;
 
     &.active {
       display: block;
@@ -92,8 +93,8 @@
         display: flex;
         justify-content: center;
         width: 100%;
-        padding-top: $gl-padding-top;
-        padding-bottom: $gl-padding-top;
+        flex-wrap: wrap;
+        margin-top: $gl-padding-8;
       }
     }
   }
@@ -129,36 +130,6 @@
   padding: 5px;
   box-shadow: none;
   width: 100%;
-}
-
-.toolbar-btn {
-  float: left;
-  padding: 0 7px;
-  background: transparent;
-  border: 0;
-  outline: 0;
-
-  svg {
-    width: 14px;
-    height: 14px;
-    vertical-align: middle;
-    fill: $gl-text-color-secondary;
-  }
-
-  &:hover,
-  &:focus {
-    svg {
-      fill: $blue-600;
-    }
-  }
-}
-
-.toolbar-fullscreen-btn {
-  margin-right: -5px;
-
-  @include media-breakpoint-down(xs) {
-    margin-right: 0;
-  }
 }
 
 .md-suggestion-diff {

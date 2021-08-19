@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 
 	"github.com/stretchr/testify/require"
 )

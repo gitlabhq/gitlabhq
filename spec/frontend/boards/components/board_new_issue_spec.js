@@ -1,6 +1,9 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
+import BoardNewItem from '~/boards/components/board_new_item.vue';
+import ProjectSelect from '~/boards/components/project_select.vue';
+import eventHub from '~/boards/eventhub';
 
 import { mockList, mockGroupProjects } from '../mock_data';
 
@@ -8,107 +11,104 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 
+const addListNewIssuesSpy = jest.fn().mockResolvedValue();
+const mockActions = { addListNewIssue: addListNewIssuesSpy };
+
+const createComponent = ({
+  state = { selectedProject: mockGroupProjects[0], fullPath: mockGroupProjects[0].fullPath },
+  actions = mockActions,
+  getters = { isGroupBoard: () => true, isProjectBoard: () => false },
+} = {}) =>
+  shallowMount(BoardNewIssue, {
+    localVue,
+    store: new Vuex.Store({
+      state,
+      actions,
+      getters,
+    }),
+    propsData: {
+      list: mockList,
+    },
+    provide: {
+      groupId: 1,
+      weightFeatureAvailable: false,
+      boardWeight: null,
+    },
+    stubs: {
+      BoardNewItem,
+    },
+  });
+
 describe('Issue boards new issue form', () => {
   let wrapper;
-  let vm;
 
-  const addListNewIssuesSpy = jest.fn();
+  const findBoardNewItem = () => wrapper.findComponent(BoardNewItem);
 
-  const findSubmitButton = () => wrapper.find({ ref: 'submitButton' });
-  const findCancelButton = () => wrapper.find({ ref: 'cancelButton' });
-  const findSubmitForm = () => wrapper.find({ ref: 'submitForm' });
+  beforeEach(async () => {
+    wrapper = createComponent();
 
-  const submitIssue = () => {
-    const dummySubmitEvent = {
-      preventDefault() {},
-    };
-
-    return findSubmitForm().trigger('submit', dummySubmitEvent);
-  };
-
-  beforeEach(() => {
-    const store = new Vuex.Store({
-      state: { selectedProject: mockGroupProjects[0] },
-      actions: { addListNewIssue: addListNewIssuesSpy },
-      getters: { isGroupBoard: () => false, isProjectBoard: () => true },
-    });
-
-    wrapper = shallowMount(BoardNewIssue, {
-      propsData: {
-        disabled: false,
-        list: mockList,
-      },
-      store,
-      localVue,
-      provide: {
-        groupId: null,
-        weightFeatureAvailable: false,
-        boardWeight: null,
-      },
-    });
-
-    vm = wrapper.vm;
-
-    return vm.$nextTick();
+    await wrapper.vm.$nextTick();
   });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('calls submit if submit button is clicked', async () => {
-    jest.spyOn(wrapper.vm, 'submit').mockImplementation();
-    wrapper.setData({ title: 'Testing Title' });
-
-    await vm.$nextTick();
-    await submitIssue();
-    expect(wrapper.vm.submit).toHaveBeenCalled();
+  it('renders board-new-item component', () => {
+    const boardNewItem = findBoardNewItem();
+    expect(boardNewItem.exists()).toBe(true);
+    expect(boardNewItem.props()).toEqual({
+      list: mockList,
+      formEventPrefix: 'toggle-issue-form-',
+      submitButtonTitle: 'Create issue',
+      disableSubmit: false,
+    });
   });
 
-  it('disables submit button if title is empty', () => {
-    expect(findSubmitButton().props().disabled).toBe(true);
+  it('calls addListNewIssue action when `board-new-item` emits form-submit event', async () => {
+    findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
+
+    await wrapper.vm.$nextTick();
+    expect(addListNewIssuesSpy).toHaveBeenCalledWith(expect.any(Object), {
+      list: mockList,
+      issueInput: {
+        title: 'Foo',
+        labelIds: [],
+        assigneeIds: [],
+        milestoneId: undefined,
+        projectPath: mockGroupProjects[0].fullPath,
+      },
+    });
   });
 
-  it('enables submit button if title is not empty', async () => {
-    wrapper.setData({ title: 'Testing Title' });
+  it('emits event `toggle-issue-form` with current list Id suffix on eventHub when `board-new-item` emits form-cancel event', async () => {
+    jest.spyOn(eventHub, '$emit').mockImplementation();
+    findBoardNewItem().vm.$emit('form-cancel');
 
-    await vm.$nextTick();
-    expect(wrapper.find({ ref: 'input' }).element.value).toBe('Testing Title');
-    expect(findSubmitButton().props().disabled).toBe(false);
+    await wrapper.vm.$nextTick();
+    expect(eventHub.$emit).toHaveBeenCalledWith(`toggle-issue-form-${mockList.id}`);
   });
 
-  it('clears title after clicking cancel', async () => {
-    findCancelButton().trigger('click');
+  describe('when in group issue board', () => {
+    it('renders project-select component within board-new-item component', () => {
+      const projectSelect = findBoardNewItem().findComponent(ProjectSelect);
 
-    await vm.$nextTick();
-    expect(vm.title).toBe('');
+      expect(projectSelect.exists()).toBe(true);
+      expect(projectSelect.props('list')).toEqual(mockList);
+    });
   });
 
-  describe('submit success', () => {
-    it('creates new issue', async () => {
-      wrapper.setData({ title: 'create issue' });
-
-      await vm.$nextTick();
-      await submitIssue();
-      expect(addListNewIssuesSpy).toHaveBeenCalled();
+  describe('when in project issue board', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        getters: { isGroupBoard: () => false, isProjectBoard: () => true },
+      });
     });
 
-    it('enables button after submit', async () => {
-      jest.spyOn(wrapper.vm, 'submit').mockImplementation();
-      wrapper.setData({ title: 'create issue' });
+    it('does not render project-select component within board-new-item component', () => {
+      const projectSelect = findBoardNewItem().findComponent(ProjectSelect);
 
-      await vm.$nextTick();
-      await submitIssue();
-      expect(findSubmitButton().props().disabled).toBe(false);
-    });
-
-    it('clears title after submit', async () => {
-      wrapper.setData({ title: 'create issue' });
-
-      await vm.$nextTick();
-      await submitIssue();
-      await vm.$nextTick();
-      expect(vm.title).toBe('');
+      expect(projectSelect.exists()).toBe(false);
     });
   });
 });

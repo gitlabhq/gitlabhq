@@ -50,7 +50,7 @@ RSpec.describe ResolvesPipelines do
   end
 
   it 'increases field complexity based on arguments' do
-    field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: false, max_page_size: 1)
+    field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String, resolver_class: resolver, null: false, max_page_size: 1)
 
     expect(field.to_graphql.complexity.call({}, {}, 1)).to eq 2
     expect(field.to_graphql.complexity.call({}, { sha: 'foo' }, 1)).to eq 4

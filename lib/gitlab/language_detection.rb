@@ -18,7 +18,7 @@ module Gitlab
     end
 
     # Newly detected languages, returned in a structure accepted by
-    # Gitlab::Database.bulk_insert
+    # Gitlab::Database.main.bulk_insert
     def insertions(programming_languages)
       lang_to_id = programming_languages.to_h { |p| [p.name, p.id] }
 

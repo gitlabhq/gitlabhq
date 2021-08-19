@@ -67,25 +67,8 @@ module QA
         # @return [void]
         def configure_rspec
           RSpec.configure do |config|
-            config.formatter = AllureRspecFormatter
-
-            config.after do |example|
-              next if example.attempts && example.attempts > 0
-
-              testcase = example.metadata[:testcase]
-              example.tms('Testcase', testcase) if testcase
-
-              quarantine_issue = example.metadata.dig(:quarantine, :issue)
-              example.issue('Quarantine issue', quarantine_issue) if quarantine_issue
-
-              spec_file = example.file_path.split('/').last
-              example.issue(
-                'Failure issues',
-                "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=#{spec_file}"
-              )
-
-              example.add_link(name: "Job(#{Env.ci_job_name})", url: Env.ci_job_url) if Env.running_in_ci?
-            end
+            config.add_formatter(AllureRspecFormatter)
+            config.add_formatter(QA::Support::AllureMetadataFormatter)
           end
         end
 

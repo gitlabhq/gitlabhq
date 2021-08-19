@@ -1,0 +1,17 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "UNION",
+        "name": "PackageMetadata",
+        "possibleTypes": [
+          { "name": "ComposerMetadata" },
+          { "name": "ConanMetadata" },
+          { "name": "MavenMetadata" },
+          { "name": "NugetMetadata" },
+          { "name": "PypiMetadata" }
+        ]
+      }
+    ]
+  }
+}

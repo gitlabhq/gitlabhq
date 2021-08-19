@@ -1,0 +1,36 @@
+- rate_limits = @instance_configuration.settings[:rate_limits]
+- content_for :table_content do
+  - if rate_limits
+    %li= link_to _('Rate Limits'), '#rate-limits'
+
+- content_for :settings_content do
+  - if rate_limits
+    %h2#rate-limits
+      = _('Rate Limits')
+
+    %p
+      = _('There are several rate limits in place to protect the system.')
+    .table-responsive
+      %table
+        %thead
+          %tr
+            %th= _('Rate limit')
+            %th= _('Requests per period')
+            %th= _('Period in seconds')
+        %tbody
+          = render 'help/instance_configuration/rate_limit_row', title: _('Unauthenticated requests'), rate_limit: rate_limits[:unauthenticated], public_visible: true
+          = render 'help/instance_configuration/rate_limit_row', title: _('Authenticated API requests'), rate_limit: rate_limits[:authenticated_api]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Authenticated web requests'), rate_limit: rate_limits[:authenticated_web]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Protected Paths: requests'), rate_limit: rate_limits[:protected_paths]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Package Registry: unauthenticated API requests'), rate_limit: rate_limits[:unauthenticated_packages_api], public_visible: true
+          = render 'help/instance_configuration/rate_limit_row', title: _('Package Registry: authenticated API requests'), rate_limit: rate_limits[:authenticated_packages_api]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Issue creation requests'), rate_limit: rate_limits[:issue_creation]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Note creation requests'), rate_limit: rate_limits[:note_creation]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Project export requests'), rate_limit: rate_limits[:project_export]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Project export download requests'), rate_limit: rate_limits[:project_export_download]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Project import requests'), rate_limit: rate_limits[:project_import]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Group export requests'), rate_limit: rate_limits[:group_export]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Group export download requests'), rate_limit: rate_limits[:group_export_download]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Group import requests'), rate_limit: rate_limits[:group_import]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Raw blob requests'), rate_limit: rate_limits[:raw_blob]
+    %br

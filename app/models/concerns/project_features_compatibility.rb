@@ -90,6 +90,13 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:container_registry_access_level, value)
   end
 
+  # TODO: Remove this method after we drop support for project create/edit APIs to set the
+  # container_registry_enabled attribute. They can instead set the container_registry_access_level
+  # attribute.
+  def container_registry_enabled=(value)
+    write_feature_attribute_boolean(:container_registry_access_level, value)
+  end
+
   private
 
   def write_feature_attribute_boolean(field, value)

@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -166,6 +166,15 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 
 Read more about [GitLab as an OAuth2 provider](oauth2.md).
 
+NOTE:
+We recommend OAuth access tokens have an expiration. You can use the `refresh_token` parameter
+to refresh tokens. Integrations may need to be updated to use refresh tokens prior to
+expiration, which is based on the [expires_in](https://datatracker.ietf.org/doc/html/rfc6749#appendix-A.14)
+property in the token endpoint response. See [OAuth2 token](oauth2.md) documentation
+for examples requesting a new access token using a refresh token.
+
+A default refresh setting of two hours is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336598).
+
 ### Personal/project access tokens
 
 You can use access tokens to authenticate with the API by passing it in either
@@ -254,12 +263,12 @@ tries to steal tokens from other jobs.
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ci-job-token-scope-limit). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 You can limit the access scope of a project's CI/CD job token to increase the
 job token's security. A job token might give extra permissions that aren't necessary
-to access specific resources. Limiting the job token access scope reduces the risk of a leaked
+to access specific private resources. Limiting the job token access scope reduces the risk of a leaked
 token being used to access private data that the user associated to the job can access.
 
 Control the job token access scope with an allowlist of other projects authorized
@@ -273,7 +282,9 @@ setting at all times, and configure the allowlist for cross-project access if ne
 
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
-to make an API request to project `B`, then `B` must be added to the allowlist for `A`.
+to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
+If project `B` is public or internal, it doesn't need to be added to the allowlist.
+The job token scope is only for controlling access to private projects.
 
 To enable and configure the job token scope limit:
 
@@ -483,7 +494,7 @@ pass the following parameters:
 In the following example, we list 50 [namespaces](namespaces.md) per page:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
 #### Pagination `Link` header

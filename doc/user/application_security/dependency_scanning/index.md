@@ -7,8 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
-
 The Dependency Scanning feature can automatically find security vulnerabilities in your
 dependencies while you're developing and testing your applications. For example, dependency scanning
 lets you know if your application uses an external (open source) library that is known to be
@@ -29,18 +27,10 @@ either:
 
 GitLab checks the dependency scanning report, compares the found vulnerabilities
 between the source and target branches, and shows the information on the
-merge request.
+merge request. The results are sorted by the [severity](../vulnerabilities/severities.md) of the
+vulnerability.
 
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
-
-The results are sorted by the severity of the vulnerability:
-
-1. Critical
-1. High
-1. Medium
-1. Low
-1. Unknown
-1. Everything else
 
 ## Requirements
 
@@ -53,28 +43,282 @@ WARNING:
 If you use your own runners, make sure your installed version of Docker
 is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
+WARNING:
+Dependency Scanning does not support run-time installation of compilers and interpreters.
+If you have need of this, please explain why by filling out the survey [here](https://docs.google.com/forms/d/e/1FAIpQLScKo7xEYA65rOjPTGIufAyfjPGnCALSJZoTxBlvskfFMEOZMw/viewform).
+
 ## Supported languages and package managers
 
-GitLab relies on [`rules`](../../../ci/yaml/index.md#rules) to start relevant analyzers depending on the languages detected in the repository.
-The current detection logic limits the maximum search depth to two levels. For example, the `gemnasium-dependency_scanning` job is enabled if a repository contains either a `Gemfile` or `api/Gemfile` file, but not if the only supported dependency file is `api/client/Gemfile`.
+Dependency Scanning automatically detects the languages used in the repository. All analyzers
+matching the detected languages are run. There is usually no need to customize the selection of
+analyzers. We recommend not specifying the analyzers so you automatically use the full selection
+for best coverage, avoiding the need to make adjustments when there are deprecations or removals.
+However, you can override the selection using the variable `DS_EXCLUDED_ANALYZERS`.
+
+The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) and searches a
+maximum of two directory levels from the repository's root. For example, the
+`gemnasium-dependency_scanning` job is enabled if a repository contains either a `Gemfile` or
+`api/Gemfile` file, but not if the only supported dependency file is `api/client/Gemfile`.
 
 The following languages and dependency managers are supported:
 
-| Package Managers | Languages  | Supported files | Scan tools |
-| ------------------- | --------- | --------------- | ------------ |
-| [Bundler](https://bundler.io/) | Ruby | `Gemfile.lock`, `gems.locked` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
-| [Composer](https://getcomposer.org/) | PHP | `composer.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [Conan](https://conan.io/) | C, C++ | [`conan.lock`](https://docs.conan.io/en/latest/versioning/lockfiles.html) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [Golang](https://golang.org/) | Go | `go.sum` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) | Java | `build.gradle`, `build.gradle.kts`, `pom.xml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [npm](https://www.npmjs.com/) (7 and earlier), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package.json` | [Retire.js](https://retirejs.github.io/retire.js/) |
-| [NuGet](https://www.nuget.org/) 4.9+ | .NET, C# | [`packages.lock.json`](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [`setuptools`](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) (*1*) | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile`, `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [sbt](https://www.scala-sbt.org/) (*2*) | Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
+<style>
+table.supported-languages tr:nth-child(even) {
+    background-color: transparent;
+}
 
-1. [Pipenv](https://pipenv.pypa.io/en/latest/) projects are scanned when a `Pipfile` is present.
+table.supported-languages td {
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+table.supported-languages tr td:first-child {
+    border-left: 0;
+}
+
+table.supported-languages tr td:last-child {
+    border-right: 0;
+}
+
+table.supported-languages ul {
+    list-style-type: none;
+    padding-left: 0px;
+    margin-bottom: 0px;
+}
+</style>
+
+<table class="supported-languages">
+  <thead>
+    <tr>
+      <th>Language</th>
+      <th>Package Manager</th>
+      <th>Package Manager Versions</th>
+      <th>Supported files</th>
+      <th>Analyzer</th>
+      <th><a href="#how-multiple-files-are-processed">Processes multiple files?</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="2">Ruby</td>
+      <td rowspan="2"><a href="https://bundler.io/">Bundler</a></td>
+      <td rowspan="2">Any</td>
+      <td>
+        <ul>
+            <li><code>Gemfile.lock</code></li>
+            <li><code>gems.locked</code></li>
+        </ul>
+      </td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <td><code>Gemfile.lock</code></td>
+      <td><a href="https://github.com/rubysec/bundler-audit">bundler-audit</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>PHP</td>
+      <td><a href="https://getcomposer.org/">Composer</a></td>
+      <td>Any</td>
+      <td><code>composer.lock</code></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td rowspan="2"><a href="https://conan.io/">Conan</a></td>
+      <td rowspan="2">Any</td>
+      <td rowspan="2"><a href="https://docs.conan.io/en/latest/versioning/lockfiles.html"><code>conan.lock</code></a></td>
+      <td rowspan="2"><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td rowspan="2">Y</td>
+    </tr>
+    <tr>
+      <td>C++</td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td><a href="https://golang.org/">Golang</a></td>
+      <td>Any</td>
+      <td><code>go.sum</code></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <td rowspan="2">Java</td>
+      <td><a href="https://gradle.org/">Gradle</a></td>
+      <td>Any</td>
+      <td>
+        <ul>
+            <li><code>build.gradle</code></li>
+            <li><code>build.gradle.kts</code></li>
+        </ul>
+      </td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td><a href="https://maven.apache.org/">Maven</a></td>
+      <td>Any</td>
+      <td><code>pom.xml</code></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td rowspan="3">JavaScript</td>
+      <td rowspan="2"><a href="https://www.npmjs.com/">npm</a></td>
+      <td rowspan="2">Any</td>
+      <td>
+        <ul>
+            <li><code>package-lock.json</code></li>
+            <li><code>npm-shrinkwrap.json</code></li>
+        </ul>
+      </td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <td><code>package.json</code></td>
+      <td><a href="https://retirejs.github.io/retire.js/">Retire.js</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td><a href="https://classic.yarnpkg.com/en/">yarn</a></td>
+      <td>1.x</td>
+      <td><code>yarn.lock</code></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <td>.NET</td>
+      <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
+      <td rowspan="2">&gt;= 4.9</td>
+      <td rowspan="2"><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
+      <td rowspan="2"><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td rowspan="2">Y</td>
+    </tr>
+    <tr>
+      <td>C#</td>
+    </tr>
+    <tr>
+      <td rowspan="3">Python</td>
+      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
+      <td>Any</td>
+      <td><code>setup.py</code></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td><a href="https://pip.pypa.io/en/stable/">pip</a></td>
+      <td>Any</td>
+      <td>
+        <ul>
+            <li><code>requirements.txt</code></li>
+            <li><code>requirements.pip</code></li>
+            <li><code>requires.txt</code></li>
+        </ul>
+      </td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td><a href="https://pipenv.pypa.io/en/latest/">Pipenv</a></td>
+      <td>Any</td>
+      <td>
+        <ul>
+            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile</code></a></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers">1</a></b></sup></li>
+        </ul>
+      </td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>Scala</td>
+      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers">2</a></b></sup></td>
+      <td>Any</td>
+      <td><code>build.sbt</code></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>N</td>
+    </tr>
+  </tbody>
+</table>
+
+### Notes regarding supported languages and package managers
+
+1. The presence of a `Pipfile.lock` file alone will _not_ trigger the analyzer; the presence of a `Pipfile` is still required in order
+for the analyzer to be executed. However, if a `Pipfile.lock` file is found, it will be used by `Gemnasium` to scan the exact package
+versions listed in this file.
+
+   Support for `Pipfile.lock` files without requiring the presence of a `Pipfile` will be implemented in the following upcoming issue:
+   [Dependency Scanning of Pipfile.lock without installing project dependencies](https://gitlab.com/gitlab-org/gitlab/-/issues/299294).
+
 1. Support for [sbt](https://www.scala-sbt.org/) 1.3 and above was added in GitLab 13.9.
+
+### How analyzers are triggered
+
+GitLab relies on [`rules:exists`](../../../ci/yaml/index.md#rulesexists) to start the relevant analyzers for the languages detected by the presence of the
+`Supported files` in the repository as shown in the [table above](#supported-languages-and-package-managers).
+
+The current detection logic limits the maximum search depth to two levels. For example, the `gemnasium-dependency_scanning` job is enabled if
+a repository contains either a `Gemfile.lock` or `api/Gemfile.lock` file, but not if the only supported dependency file is `api/client/Gemfile.lock`.
+
+### How multiple files are processed
+
+NOTE:
+If you've run into problems while scanning multiple files, please contribute a comment to
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337056).
+
+#### Ruby
+
+The following analyzers are executed, each of which have different behavior when processing multiple files:
+
+- [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
+
+   Supports multiple lockfiles.
+
+- [bundler-audit](https://github.com/rubysec/bundler-audit)
+
+   Does not support multiple lockfiles. When multiple lockfiles exist, `bundler-audit`
+   analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
+
+We execute both analyzers because they use different sources of vulnerability data. The result is more comprehensive analysis than if only one was executed.
+
+#### Python
+
+We only execute one build in the directory where a requirements file has been detected, such as `requirements.txt` or any
+variation of this file (for example, `requirements.pip` or `requires.txt`).
+
+#### Java and Scala
+
+We only execute one build in the directory where a build file has been detected, such as `build.sbt` or `build.gradle`.
+Please note, we support the following types of Java project stuctures:
+
+- [multi-project sbt builds](https://www.scala-sbt.org/1.x/docs/Multi-Project.html)
+- [multi-project gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)
+- [multi-module maven projects](https://maven.apache.org/pom.html#Aggregation)
+
+#### JavaScript
+
+The following analyzers are executed, each of which have different behavior when processing multiple files:
+
+- [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
+
+   Supports multiple lockfiles
+
+- [Retire.js](https://retirejs.github.io/retire.js/)
+
+   Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
+   analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
+
+We execute both analyzers because they use different sources of vulnerability data. The result is more comprehensive analysis than if only one was executed.
+
+#### PHP, Go, C, C++, .NET, C&#35;
+
+The analyzer for these languages supports multiple lockfiles.
+
+### Future support for additional languages
 
 Plans are underway for supporting the following languages, dependency managers, and dependency files. For details, see the issue link for each.
 For workarounds, see the [Troubleshooting section](#troubleshooting)
@@ -113,17 +357,8 @@ always take the latest dependency scanning artifact available.
 ### Enable Dependency Scanning via an automatic merge request
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4908) in GitLab 14.1.
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-configure-dependency-scanning-via-a-merge-request). **(ULTIMATE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-There can be
-[risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Enabled with `sec_dependency_scanning_ui_enable` flag](https://gitlab.com/gitlab-org/gitlab/-/issues/282533) for self-managed GitLab in GitLab 14.1 and is ready for production use.
+> - [Feature flag sec_dependency_scanning_ui_enable removed](https://gitlab.com/gitlab-org/gitlab/-/issues/326005) in GitLab 14.2.
 
 To enable Dependency Scanning in a project, you can create a merge request
 from the Security Configuration page.
@@ -624,7 +859,7 @@ Generally, the approach is the following:
 1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/index.md#dependencies)
    to your `dependency_scanning` job to make use of the converted definitions files.
 
-For example, the currently unsupported `poetry.lock` file can be
+For example, the unsupported `poetry.lock` file can be
 [converted](https://python-poetry.org/docs/cli/#export)
 to the supported `requirements.txt` as follows.
 
@@ -633,25 +868,17 @@ include:
   - template: Dependency-Scanning.gitlab-ci.yml
 
 stages:
-  - .pre
   - test
 
 variables:
   PIP_REQUIREMENTS_FILE: "requirements-converted.txt"
 
-convert-poetry:
-  stage: .pre
-  image: python:3-slim
-  script:
+gemnasium-python-dependency_scanning:
+  # Work around https://gitlab.com/gitlab-org/gitlab/-/issues/7006
+  before_script:
     - pip install poetry  # Or via another method: https://python-poetry.org/docs/#installation
-    - poetry export --output "$PIP_REQUIREMENTS_FILE"
-  artifacts:
-    paths:
-      - "$PIP_REQUIREMENTS_FILE"
-
-dependency_scanning:
-  stage: test
-  dependencies: ["convert-poetry"]
+    - poetry export --output="$PIP_REQUIREMENTS_FILE"
+    - rm poetry.lock pyproject.toml
 ```
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
@@ -681,22 +908,3 @@ with a dependency on this version of Python should use `retire.js` version 2.10.
 ### Error: `dependency_scanning is used for configuration only, and its script should not be executed`
 
 For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
-
-### Enable or disable Configure Dependency Scanning via a Merge Request
-
-Configure Dependency Scanning via a Merge Request is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:sec_dependency_scanning_ui_enable)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:sec_dependency_scanning_ui_enable)
-```

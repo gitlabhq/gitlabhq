@@ -27,13 +27,13 @@ module Ci
       # this check is to not leak the presence of the project if user cannot read it
       return unless trigger.project == project
 
-      pipeline = Ci::CreatePipelineService
+      response = Ci::CreatePipelineService
         .new(project, trigger.owner, ref: params[:ref], variables_attributes: variables)
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
           pipeline.trigger_requests.build(trigger: trigger)
         end
 
-      pipeline_service_response(pipeline)
+      pipeline_service_response(response.payload)
     end
 
     def pipeline_service_response(pipeline)
@@ -57,7 +57,7 @@ module Ci
       # this check is to not leak the presence of the project if user cannot read it
       return unless can?(job.user, :read_project, project)
 
-      pipeline = Ci::CreatePipelineService
+      response = Ci::CreatePipelineService
         .new(project, job.user, ref: params[:ref], variables_attributes: variables)
         .execute(:pipeline, ignore_skip_ci: true) do |pipeline|
           source = job.sourced_pipelines.build(
@@ -69,7 +69,7 @@ module Ci
           pipeline.source_pipeline = source
         end
 
-      pipeline_service_response(pipeline)
+      pipeline_service_response(response.payload)
     end
 
     def job_from_token

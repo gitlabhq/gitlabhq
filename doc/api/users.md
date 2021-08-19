@@ -109,6 +109,7 @@ GET /users
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only admin users. Default is `false`                                 |
+| `saml_provider_id` **(PREMIUM)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
 
 ```json
 [
@@ -407,7 +408,7 @@ users. Either `password`, `reset_password`, or `force_random_password`
 must be specified. If `reset_password` and `force_random_password` are
 both `false`, then `password` is required.
 
-Note that `force_random_password` and `reset_password` take priority
+`force_random_password` and `reset_password` take priority
 over `password`. In addition, `reset_password` and
 `force_random_password` can be used together.
 
@@ -433,7 +434,7 @@ Parameters:
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user (purchased in addition to the minutes included in the plan) **(STARTER)**                                                                                                |
+| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user (purchased in addition to the minutes included in the plan) **(PREMIUM)**                                                                                                |
 | `force_random_password`              | No       | Set user password to a random value - true or false (default)                                                                                           |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -446,7 +447,7 @@ Parameters:
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
-| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
+| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(PREMIUM)**                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -475,7 +476,7 @@ Parameters:
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user (purchased in addition to the minutes included in the plan) **(STARTER)**                                                                                                |
+| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user (purchased in addition to the minutes included in the plan) **(PREMIUM)**                                                                                                |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `id`                                 | Yes      | The ID of the user                                                                                                                                      |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -488,7 +489,7 @@ Parameters:
 | `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | The public email of the user (must be already verified)                                                                                                                            |
-| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
+| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(PREMIUM)**                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -858,9 +859,13 @@ Example response:
 
 Get the counts (same as in top right menu) of the currently signed in user.
 
-| Attribute        | Type   | Description                                                  |
-| ---------------- | ------ | ------------------------------------------------------------ |
-| `merge_requests` | number | Merge requests that are active and assigned to current user. |
+| Attribute                         | Type   | Description                                                                  |
+| --------------------------------- | ------ | ---------------------------------------------------------------------------- |
+| `assigned_issues`                 | number | Number of issues that are open and assigned to the current user. [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66909) in GitLab 14.2. |
+| `assigned_merge_requests`         | number | Number of merge requests that are active and assigned to the current user. [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50026) in GitLab 13.8. |
+| `merge_requests`                  | number | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50026) in GitLab 13.8. Equivalent to and replaced by `assigned_merge_requests`. |
+| `review_requested_merge_requests` | number | Number of merge requests that the current user has been requested to review. [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50026) in GitLab 13.8. |
+| `todos`                           | number | Number of pending to-do items for current user. [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66909) in GitLab 14.2. |
 
 ```plaintext
 GET /user_counts
@@ -874,7 +879,11 @@ Example response:
 
 ```json
 {
-  "merge_requests": 4
+  "merge_requests": 4,
+  "assigned_issues": 15,
+  "assigned_merge_requests": 11,
+  "review_requested_merge_requests": 0,
+  "todos": 1
 }
 ```
 
@@ -1537,7 +1546,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 Returns:
 
-- `201 OK` on success.
+- `201 Created` on success.
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` if the user cannot be approved because they are blocked by an administrator or by LDAP synchronization.
 
@@ -1599,7 +1608,7 @@ Example response:
 > Requires admin permissions.
 > Token values are returned once. Make sure you save it - you can't access it again.
 
-It creates a new impersonation token. Note that only administrators can do this.
+It creates a new impersonation token. Only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
 both API calls and Git reads and writes. The user can't see these tokens in their profile
 settings page.
@@ -1757,7 +1766,7 @@ Example response:
 ]
 ```
 
-Please note that `last_activity_at` is deprecated, please use `last_activity_on`.
+`last_activity_at` is deprecated. Use `last_activity_on` instead.
 
 ## User memberships (admin only)
 

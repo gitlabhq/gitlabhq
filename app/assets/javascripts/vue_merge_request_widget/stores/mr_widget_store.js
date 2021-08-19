@@ -19,6 +19,7 @@ export default class MergeRequestStore {
     this.setPaths(data);
 
     this.setData(data);
+    this.setGitpodData(data);
   }
 
   setData(data, isRebased) {
@@ -71,7 +72,13 @@ export default class MergeRequestStore {
       const assignToMe = links.assign_to_closing;
 
       if (closing || mentioned || assignToMe) {
-        this.relatedLinks = { closing, mentioned, assignToMe };
+        this.relatedLinks = {
+          closing,
+          mentioned,
+          assignToMe,
+          closingCount: links.closing_count,
+          mentionedCount: links.mentioned_count,
+        };
       }
     }
 
@@ -199,6 +206,12 @@ export default class MergeRequestStore {
     }
   }
 
+  setGitpodData(data) {
+    this.showGitpodButton = data.show_gitpod_button;
+    this.gitpodUrl = data.gitpod_url;
+    this.gitpodEnabled = data.gitpod_enabled;
+  }
+
   setState() {
     if (this.mergeOngoing) {
       this.state = 'merging';
@@ -261,7 +274,6 @@ export default class MergeRequestStore {
     this.baseBlobPath = blobPath.base_path || '';
     this.codequalityReportsPath = data.codequality_reports_path;
     this.codequalityHelpPath = data.codequality_help_path;
-    this.codeclimate = data.codeclimate;
 
     // Security reports
     this.sastComparisonPath = data.sast_comparison_path;

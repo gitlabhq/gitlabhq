@@ -1214,13 +1214,13 @@ Parameters:
 | Attribute                 | Type           | Required | Description |
 | ------------------------- | -------------- | -------- | ----------- |
 | `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
-| `commit_id`               | integer        | yes      | The ID of a commit |
+| `commit_id`               | string         | yes      | The SHA of a commit |
 | `body`                    | string         | yes      | The content of the thread |
 | `created_at`              | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 | `position`                | hash           | no       | Position when creating a diff note |
-| `position[base_sha]`      | string         | yes      | Base commit SHA in the source branch |
-| `position[start_sha]`     | string         | yes      | SHA referencing commit in target branch |
-| `position[head_sha]`      | string         | yes      | SHA referencing HEAD of this commit |
+| `position[base_sha]`      | string         | yes      | SHA of the parent commit|
+| `position[start_sha]`     | string         | yes      | SHA of the parent commit |
+| `position[head_sha]`      | string         | yes      | The SHA of this commit (same as `commit_id`) |
 | `position[position_type]` | string         | yes      | Type of the position reference', allowed values: `text` or `image` |
 | `position[new_path]`      | string         | no       | File path after change |
 | `position[new_line]`      | integer        | no       | Line number after change |
@@ -1234,6 +1234,10 @@ Parameters:
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions?body=comment"
 ```
+
+The rules for creating the API request are the same as when
+[creating a new thread in the merge request diff](#create-a-new-thread-in-the-merge-request-diff),
+with the exception of `base_sha`, `start_sha`, and `head_sha` attributes.
 
 ### Add note to existing commit thread
 

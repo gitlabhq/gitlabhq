@@ -55,6 +55,15 @@ RSpec.describe Boards::Issues::ListService do
 
         it_behaves_like 'issues list service'
       end
+
+      context 'when filtering by type' do
+        it 'only returns the specified type' do
+          issue = create(:labeled_issue, project: project, milestone: m1, labels: [development, p1], issue_type: 'incident')
+          params = { board_id: board.id, id: list1.id, issue_types: 'incident' }
+
+          expect(described_class.new(parent, user, params).execute).to eq [issue]
+        end
+      end
     end
 
     # rubocop: disable RSpec/MultipleMemoizedHelpers

@@ -466,6 +466,24 @@ If we expect an increase of **less than 5%**, then no further action is needed.
 Otherwise, please ping `@gitlab-org/scalability` on the merge request and ask
 for a review.
 
+## Job size
+
+GitLab stores Sidekiq jobs and their arguments in Redis. To avoid
+excessive memory usage, we compress the arguments of Sidekiq jobs
+if their original size is bigger than 100KB.
+
+After compression, if their size still exceeds 5MB, it raises an
+[`ExceedLimitError`](https://gitlab.com/gitlab-org/gitlab/-/blob/f3dd89e5e510ea04b43ffdcb58587d8f78a8d77c/lib/gitlab/sidekiq_middleware/size_limiter/exceed_limit_error.rb#L8)
+error when scheduling the job.
+
+If this happens, rely on other means of making the data
+available in Sidekiq. There are possible workarounds such as:
+
+- Rebuild the data in Sidekiq with data loaded from the database or
+  elsewhere.
+- Store the data in [object storage](file_storage.md#object-storage)
+  before scheduling the job, and retrieve it inside the job.
+
 ## Job data consistency strategies
 
 In GitLab 13.11 and earlier, Sidekiq workers would always send database queries to the primary

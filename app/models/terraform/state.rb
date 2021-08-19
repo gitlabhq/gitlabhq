@@ -20,7 +20,6 @@ module Terraform
       foreign_key: :terraform_state_id,
       inverse_of: :terraform_state
 
-    scope :versioning_not_enabled, -> { where(versioning_enabled: false) }
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, -> (name) { where(name: name) }
 

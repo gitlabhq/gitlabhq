@@ -7,10 +7,10 @@ module Types
     class DashboardType < ::Types::BaseObject
       graphql_name 'MetricsDashboard'
 
-      field :path, GraphQL::STRING_TYPE, null: true,
+      field :path, GraphQL::Types::String, null: true,
             description: 'Path to a file with the dashboard definition.'
 
-      field :schema_validation_warnings, [GraphQL::STRING_TYPE], null: true,
+      field :schema_validation_warnings, [GraphQL::Types::String], null: true,
             description: 'Dashboard schema validation warnings.'
 
       field :annotations, Types::Metrics::Dashboards::AnnotationType.connection_type, null: true,

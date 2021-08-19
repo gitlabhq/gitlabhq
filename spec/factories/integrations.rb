@@ -53,7 +53,7 @@ FactoryBot.define do
     transient do
       create_data { true }
       url { 'https://jira.example.com' }
-      api_url { nil }
+      api_url { '' }
       username { 'jira_username' }
       password { 'jira_password' }
       jira_issue_transition_automatic { false }

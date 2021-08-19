@@ -29,15 +29,6 @@ export default {
       update(data) {
         return this.onContentUpdate(data);
       },
-      result() {
-        if (this.activeViewerType === RICH_BLOB_VIEWER) {
-          // eslint-disable-next-line vue/no-mutating-props
-          this.blob.richViewer.renderError = null;
-        } else {
-          // eslint-disable-next-line vue/no-mutating-props
-          this.blob.simpleViewer.renderError = null;
-        }
-      },
       skip() {
         return this.viewer.renderError;
       },

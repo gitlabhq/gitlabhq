@@ -27,10 +27,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     diff_options_hash[:paths] = params[:paths] if params[:paths]
 
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
-    positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
+    unfoldable_positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user).unfoldable
     environment = @merge_request.environments_for(current_user, latest: true).last
 
-    diffs.unfold_diff_files(positions.unfoldable)
+    diffs.unfold_diff_files(unfoldable_positions)
     diffs.write_cache
 
     options = {
@@ -38,14 +38,29 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       merge_request: @merge_request,
       diff_view: diff_view,
       merge_ref_head_diff: render_merge_ref_head_diff?,
-      pagination_data: diffs.pagination_data
+      pagination_data: diffs.pagination_data,
+      allow_tree_conflicts: display_merge_conflicts_in_diff?
     }
 
     if diff_options_hash[:paths].blank? && Feature.enabled?(:diffs_batch_render_cached, project, default_enabled: :yaml)
+      # NOTE: Any variables that would affect the resulting json needs to be added to the cache_context to avoid stale cache issues.
+      cache_context = [
+        current_user&.cache_key,
+        environment&.cache_key,
+        unfoldable_positions.map(&:to_h),
+        diff_view,
+        params[:w],
+        params[:expanded],
+        params[:page],
+        params[:per_page],
+        options[:merge_ref_head_diff],
+        options[:allow_tree_conflicts]
+      ]
+
       render_cached(
         diffs,
         with: PaginatedDiffSerializer.new(current_user: current_user),
-        cache_context: -> (_) { [diff_view, params[:w], params[:expanded], params[:per_page], params[:page]] },
+        cache_context: -> (_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
         **options
       )
     else
@@ -56,8 +71,14 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def diffs_metadata
     diffs = @compare.diffs(diff_options)
 
+    options = additional_attributes.merge(
+      only_context_commits: show_only_context_commits?,
+      merge_ref_head_diff: render_merge_ref_head_diff?,
+      allow_tree_conflicts: display_merge_conflicts_in_diff?
+    )
+
     render json: DiffsMetadataSerializer.new(project: @merge_request.project, current_user: current_user)
-                   .represent(diffs, additional_attributes.merge(only_context_commits: show_only_context_commits?))
+                   .represent(diffs, options)
   end
 
   private
@@ -82,7 +103,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     options = additional_attributes.merge(
       diff_view: "inline",
-      merge_ref_head_diff: render_merge_ref_head_diff?
+      merge_ref_head_diff: render_merge_ref_head_diff?,
+      allow_tree_conflicts: display_merge_conflicts_in_diff?
     )
 
     if @merge_request.project.context_commits_enabled?
@@ -212,5 +234,9 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
       .track_mr_diffs_single_file_action(merge_request: @merge_request, user: current_user)
+  end
+
+  def display_merge_conflicts_in_diff?
+    Feature.enabled?(:display_merge_conflicts_in_diff, @merge_request.project)
   end
 end

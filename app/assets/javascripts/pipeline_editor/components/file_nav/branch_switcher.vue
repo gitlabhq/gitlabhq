@@ -212,6 +212,7 @@ export default {
     :text="currentBranch"
     icon="branch"
     data-qa-selector="branch_selector_button"
+    data-testid="branch-selector"
   >
     <gl-search-box-by-type :debounce="$options.inputDebounce" @input="setSearchTerm" />
     <gl-dropdown-section-header>

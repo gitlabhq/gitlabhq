@@ -8,37 +8,41 @@ RSpec.describe Ci::AfterRequeueJobService do
 
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
+  let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 0, name: 'build') }
   let!(:test1) { create(:ci_build, :success, pipeline: pipeline, stage_idx: 1) }
   let!(:test2) { create(:ci_build, :skipped, pipeline: pipeline, stage_idx: 1) }
-  let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 0, name: 'build') }
+  let!(:test3) { create(:ci_build, :skipped, :dependent, pipeline: pipeline, stage_idx: 1, needed: build) }
+  let!(:deploy) { create(:ci_build, :skipped, :dependent, pipeline: pipeline, stage_idx: 2, needed: test3) }
 
   subject(:execute_service) { described_class.new(project, user).execute(build) }
 
   it 'marks subsequent skipped jobs as processable' do
     expect(test1.reload).to be_success
     expect(test2.reload).to be_skipped
+    expect(test3.reload).to be_skipped
+    expect(deploy.reload).to be_skipped
 
     execute_service
 
     expect(test1.reload).to be_success
     expect(test2.reload).to be_created
+    expect(test3.reload).to be_created
+    expect(deploy.reload).to be_created
   end
 
   context 'when there is a job need from the same stage' do
-    let!(:test3) do
+    let!(:test4) do
       create(:ci_build,
              :skipped,
+             :dependent,
              pipeline: pipeline,
              stage_idx: 0,
-             scheduling_type: :dag)
-    end
-
-    before do
-      create(:ci_build_need, build: test3, name: 'build')
+             scheduling_type: :dag,
+             needed: build)
     end
 
     it 'marks subsequent skipped jobs as processable' do
-      expect { execute_service }.to change { test3.reload.status }.from('skipped').to('created')
+      expect { execute_service }.to change { test4.reload.status }.from('skipped').to('created')
     end
 
     context 'with ci_same_stage_job_needs FF disabled' do
@@ -47,7 +51,7 @@ RSpec.describe Ci::AfterRequeueJobService do
       end
 
       it 'does nothing with the build' do
-        expect { execute_service }.not_to change { test3.reload.status }
+        expect { execute_service }.not_to change { test4.reload.status }
       end
     end
   end

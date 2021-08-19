@@ -236,7 +236,7 @@ combining the two to save us some typing in the `script` section.
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
 including two tests that run in parallel. The `build` is stored in the container
 registry and used by subsequent stages, downloading the image
-when needed. Changes to `master` also get tagged as `latest` and deployed using
+when needed. Changes to `main` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
@@ -285,14 +285,14 @@ release-image:
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
     - docker push $CONTAINER_RELEASE_IMAGE
   only:
-    - master
+    - main
 
 deploy:
   stage: deploy
   script:
     - ./deploy.sh
   only:
-    - master
+    - main
 ```
 
 NOTE:
@@ -436,7 +436,7 @@ build_image:
   only:
     - branches
   except:
-    - master
+    - main
 
 delete_image:
   image: docker:19.03.12
@@ -457,7 +457,7 @@ delete_image:
   only:
     - branches
   except:
-    - master
+    - main
 ```
 
 NOTE:
@@ -488,8 +488,8 @@ To delete the underlying layers and images that aren't associated with any tags,
 Cleanup policies can be run on all projects, with these exceptions:
 
 - For GitLab.com, the project must have been created after 2020-02-22.
-  Support for projects created earlier
-  [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
+  Support for projects created earlier is tracked
+  [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
 - For self-managed GitLab instances, the project must have been created
   in GitLab 12.8 or later. However, an administrator can enable the cleanup policy
   for all projects (even those created before 12.8) in
@@ -605,10 +605,10 @@ Here are examples of regex patterns you may want to use:
   v.+
   ```
 
-- Match only the tag named `master`:
+- Match only the tag named `main`:
 
   ```plaintext
-  master
+  main
   ```
 
 - Match tags that are either named or start with `release`:
@@ -617,10 +617,10 @@ Here are examples of regex patterns you may want to use:
   release.*
   ```
 
-- Match tags that either start with `v`, are named `master`, or begin with `release`:
+- Match tags that either start with `v`, are named `main`, or begin with `release`:
 
   ```plaintext
-  (?:v.+|master|release.*)
+  (?:v.+|main|release.*)
   ```
 
 ### Set cleanup limits to conserve resources
@@ -675,11 +675,11 @@ You can set, update, and disable the cleanup policies using the GitLab API.
 
 Examples:
 
-- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `master` and the policy is enabled:
+- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `main` and the policy is enabled:
 
   ```shell
   curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
-       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-master"}}' \
+       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-main"}}' \
        "https://gitlab.example.com/api/v4/projects/2"
   ```
 
@@ -744,6 +744,47 @@ You can, however, remove the Container Registry for a project:
 1. Click **Save changes**.
 
 The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
+
+## Change visibility of the Container Registry
+
+By default, the Container Registry is visible to everyone with access to the project.
+You can, however, change the visibility of the Container Registry for a project.
+
+See the [Container Registry visibility permissions](#container-registry-visibility-permissions)
+for more details about the permissions that this setting grants to users.
+
+1. Go to your project's **Settings > General** page.
+1. Expand the section **Visibility, project features, permissions**.
+1. Under **Container Registry**, select an option from the dropdown:
+
+   - **Everyone With Access** (Default): The Container Registry is visible to everyone with access
+   to the project. If the project is public, the Container Registry is also public. If the project
+   is internal or private, the Container Registry is also internal or private.
+
+   - **Only Project Members**: The Container Registry is visible only to project members with
+   Reporter role or higher. This is similar to the behavior of a private project with Container
+   Registry visibility set to **Everyone With Access**.
+
+1. Select **Save changes**.
+
+## Container Registry visibility permissions
+
+The ability to view the Container Registry and pull images is controlled by the Container Registry's
+visibility permissions. You can change this through the [visibility setting on the UI](#change-visibility-of-the-container-registry)
+or the [API](../../../api/container_registry.md#change-the-visibility-of-the-container-registry).
+[Other permissions](../../permissions.md)
+such as updating the Container Registry, pushing or deleting images, and so on are not affected by
+this setting. However, disabling the Container Registry disables all Container Registry operations.
+
+|                      |                       | Anonymous<br/>(Everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
+| -------------------- | --------------------- | --------- | ----- | ------------------------------------------ |
+| Public project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)   | View Container Registry <br/> and pull images | Yes       | Yes   | Yes      |
+| Public project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)   | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Internal project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API) | View Container Registry <br/> and pull images | No        | Yes   | Yes      |
+| Internal project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API) | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Private project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Private project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Any project with Container Registry `disabled` | All operations on Container Registry | No | No | No |
 
 ## Manifest lists and garbage collection
 

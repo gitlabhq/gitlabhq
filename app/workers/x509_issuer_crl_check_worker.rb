@@ -3,7 +3,8 @@
 class X509IssuerCrlCheckWorker
   include ApplicationWorker
 
-  sidekiq_options retry: 3
+  data_consistency :always
+
   include CronjobQueue
 
   feature_category :source_code_management

@@ -1,0 +1,8 @@
+---
+name: load_balancing_for_deployments_hooks_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67878
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338342
+milestone: '14.2'
+type: development
+group: group::release
+default_enabled: false

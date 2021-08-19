@@ -14,9 +14,9 @@ RSpec.describe Gitlab::SQL::RecursiveCTE do
       cte << rel2
 
       sql = cte.to_arel.to_sql
-      name = ActiveRecord::Base.connection.quote_table_name(:cte_name)
+      name = ApplicationRecord.connection.quote_table_name(:cte_name)
 
-      sql1, sql2 = ActiveRecord::Base.connection.unprepared_statement do
+      sql1, sql2 = ApplicationRecord.connection.unprepared_statement do
         [rel1.except(:order).to_sql, rel2.except(:order).to_sql]
       end
 
@@ -28,8 +28,8 @@ RSpec.describe Gitlab::SQL::RecursiveCTE do
     it 'returns an alias for the CTE' do
       table = Arel::Table.new(:kittens)
 
-      source_name = ActiveRecord::Base.connection.quote_table_name(:cte_name)
-      alias_name = ActiveRecord::Base.connection.quote_table_name(:kittens)
+      source_name = ApplicationRecord.connection.quote_table_name(:cte_name)
+      alias_name = ApplicationRecord.connection.quote_table_name(:kittens)
 
       expect(cte.alias_to(table).to_sql).to eq("#{source_name} AS #{alias_name}")
     end
@@ -37,8 +37,8 @@ RSpec.describe Gitlab::SQL::RecursiveCTE do
     it 'replaces dots with an underscore' do
       table = Arel::Table.new('gitlab.kittens')
 
-      source_name = ActiveRecord::Base.connection.quote_table_name(:cte_name)
-      alias_name = ActiveRecord::Base.connection.quote_table_name(:gitlab_kittens)
+      source_name = ApplicationRecord.connection.quote_table_name(:cte_name)
+      alias_name = ApplicationRecord.connection.quote_table_name(:gitlab_kittens)
 
       expect(cte.alias_to(table).to_sql).to eq("#{source_name} AS #{alias_name}")
     end

@@ -128,8 +128,7 @@ module CounterAttribute
   end
 
   def counter_attribute_enabled?(attribute)
-    Feature.enabled?(:efficient_counter_attribute, project) &&
-      self.class.counter_attributes.include?(attribute)
+    self.class.counter_attributes.include?(attribute)
   end
 
   private

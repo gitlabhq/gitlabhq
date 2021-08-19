@@ -16,7 +16,7 @@ The following list of recommended steps was created after observing organization
 that were able to quickly complete this migration:
 
 1. Start by reading the GitLab CI/CD [Quick Start Guide](../quick_start/index.md) and [important product differences](#important-product-differences).
-1. Learn the importance of [managing the organizational transition](#managing-the-organizational-transition).
+1. Learn the importance of [managing the organizational transition](#manage-organizational-transition).
 1. [Add runners](../runners/index.md) to your GitLab instance.
 1. Educate and enable your developers to independently perform the following steps in their projects:
    1. Review the [Quick Start Guide](../quick_start/index.md) and [Pipeline Configuration Reference](../yaml/index.md).
@@ -39,7 +39,7 @@ to GitLab!
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/)
 can be a great resource.
 
-## Managing the organizational transition
+## Manage organizational transition
 
 An important part of transitioning from Jenkins to GitLab is the cultural and organizational
 changes that comes with the move, and successfully managing them. There are a few
@@ -89,13 +89,13 @@ There are some high level differences between the products worth mentioning:
   permissions), and then any project can use them. This central project could also
   contain scripts or other reusable code.
 - You can also use the [`extends` keyword](../yaml/index.md#extends) to reuse configuration
-  within a single pipeline configuration.
-- All jobs within a single stage always run in parallel, and all stages run in sequence. We are planning
+  in a single pipeline configuration.
+- All jobs in a single stage always run in parallel, and all stages run in sequence. We are planning
   to allow certain jobs to break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063)
   feature.
 - The [`parallel`](../yaml/index.md#parallel) keyword can automatically parallelize tasks,
   like tests that support parallelization.
-- Normally all jobs within a single stage run in parallel, and all stages run in sequence.
+- Normally all jobs in a single stage run in parallel, and all stages run in sequence.
   There are different [pipeline architectures](../pipelines/pipeline_architectures.md)
   that allow you to change this behavior.
 - The new [`rules` syntax](../yaml/index.md#rules) is the recommended method of
@@ -104,12 +104,12 @@ There are some high level differences between the products worth mentioning:
   fresh environment in each job. Passing artifacts between jobs is controlled using the
   [`artifacts`](../yaml/index.md#artifacts) and [`dependencies`](../yaml/index.md#dependencies)
   keywords. When finished, use the planned [Workspaces](https://gitlab.com/gitlab-org/gitlab/-/issues/29265)
-  feature to more easily persist a common workspace between serial jobs.
+  feature to persist a common workspace between serial jobs.
 - The `.gitlab-ci.yml` file is checked in to the root of your repository, much like a Jenkinsfile, but
   is in the YAML format (see [complete reference](../yaml/index.md)) instead of a Groovy DSL. It's most
   analogous to the declarative Jenkinsfile format.
-- Manual approvals or gates can be set up as [`when:manual` jobs](../yaml/index.md#whenmanual). These can
-  also leverage [`protected environments`](../yaml/index.md#protecting-manual-jobs)
+- Manual approvals or gates can be set up as [`when:manual` jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually). These can
+  also leverage [`protected environments`](../jobs/job_control.md#run-a-job-after-a-delay)
   to control who is able to approve them.
 - GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
   container images to set up your build environment. For example, set up one pipeline that builds your build environment
@@ -122,7 +122,7 @@ There are some high level differences between the products worth mentioning:
 ## Agents vs. runners
 
 Both Jenkins agents and GitLab runners are the hosts that run jobs. To convert the
-Jenkins agent, simply uninstall it and then [install and register the runner](../runners/index.md).
+Jenkins agent, uninstall it and then [install and register the runner](../runners/index.md).
 Runners do not require much overhead, so you can size them similarly to the Jenkins
 agents you were using.
 
@@ -215,7 +215,7 @@ be used by all projects in the group. An instance administrator can set a group 
 the source for [instance project templates](../../user/group/custom_project_templates.md),
 which can be used by projects in that instance.
 
-## Converting a declarative Jenkinsfile
+## Convert a declarative Jenkinsfile
 
 A declarative Jenkinsfile contains "Sections" and "Directives" which are used to control the behavior of your
 pipelines. There are equivalents for all of these in GitLab, which we've documented below.

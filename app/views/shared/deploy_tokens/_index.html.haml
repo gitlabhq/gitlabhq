@@ -11,7 +11,7 @@
     - if @new_deploy_token.persisted?
       = render 'shared/deploy_tokens/new_deploy_token', deploy_token: @new_deploy_token
     %h5.gl-mt-0
-      = s_('DeployTokens|Add a deploy token')
+      = s_('DeployTokens|New deploy token')
     = render 'shared/deploy_tokens/form', group_or_project: group_or_project, token: @new_deploy_token, presenter: @deploy_tokens
     %hr
     = render 'shared/deploy_tokens/table', group_or_project: group_or_project, active_tokens: @deploy_tokens

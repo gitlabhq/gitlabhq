@@ -91,7 +91,7 @@ subgraph "`gitlab-org/gitlab-qa-mirror` pipeline"
 1. The result of the [`gitlab-org/gitlab-qa-mirror` pipeline](https://gitlab.com/gitlab-org/gitlab-qa-mirror) is being
    propagated upstream (through polling from upstream pipelines), through [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror), back to the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) merge request.
 
-Please note, we plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/156)
+We plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/156)
 about the tests included in each job/scenario that runs in `gitlab-org/gitlab-qa-mirror`.
 
 NOTE:

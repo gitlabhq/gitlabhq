@@ -13,24 +13,26 @@ responsibilities. Maintain the availability of your software services by putting
 With an on-call schedule, your team is notified immediately when things go wrong so they can quickly
 respond to service outages and disruptions.
 
-To use on-call schedules, users with Maintainer [permissions](../../user/permissions.md)
-must do the following:
+To use on-call schedules:
 
 1. [Create a schedule](#schedules).
 1. [Add a rotation to the schedule](#rotations).
-
-If you have at least Maintainer [permissions](../../user/permissions.md)
-to create a schedule, you can do this manually.
 
 ## Schedules
 
 Set up an on-call schedule for your team to add rotations to.
 
-Follow these steps to create a schedule:
+Prerequisite:
 
-1. Go to **Monitor > On-call Schedules** and select **Add a schedule**.
-1. In the **Add schedule** form, enter the schedule's name and description, and select a timezone.
-1. Click **Add schedule**.
+- You must have at least the Maintainer [role](../../user/permissions.md).
+
+To create an on-call schedule:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > On-call Schedules**.
+1. Select **Add a schedule**.
+1. Enter the schedule's name and description and select a timezone.
+1. Select **Add schedule**.
 
 You now have an empty schedule with no rotations. This renders as an empty state, prompting you to
 create [rotations](#rotations) for your schedule.
@@ -39,59 +41,64 @@ create [rotations](#rotations) for your schedule.
 
 ### Edit a schedule
 
-Follow these steps to update a schedule:
+To update a schedule:
 
-1. Go to **Monitor > On-call Schedules** and select the **Pencil** icon on the top right of the
-   schedule card, across from the schedule name.
-1. In the **Edit schedule** form, edit the information you wish to update.
-1. Click the **Edit schedule** button to save your changes.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > On-call Schedules**.
+1. Select **Edit schedule** (**{pencil}**).
+1. Edit the information.
+1. Select **Save changes**.
 
 If you change the schedule's time zone, GitLab automatically updates the rotation's restricted time
 interval (if one is set) to the corresponding times in the new time zone.
 
 ### Delete a schedule
 
-Follow these steps to delete a schedule:
+To delete a schedule:
 
-1. Go to **Monitor > On-call Schedules** and select the **Trash Can** icon on the top right of the
-   schedule card.
-1. In the **Delete schedule** window, click the **Delete schedule** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > On-call Schedules**.
+1. Select **Delete escalation policy** (**{remove}**).
+1. On the confirmation dialog, select **Delete schedule**.
 
 ## Rotations
 
 Add rotations to an existing schedule to put your team members on-call.
 
-Follow these steps to create a rotation:
+To create a rotation:
 
-1. Go to **Monitor > On-call Schedules** and select **Add a rotation** on the top right of the
-   current schedule.
-1. In the **Add rotation** form, enter the following:
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > On-call Schedules**.
+1. Select the **Add a rotation** link.
+1. Enter the following information:
 
    - **Name:** Your rotation's name.
    - **Participants:** The people you want in the rotation.
    - **Rotation length:** The rotation's duration.
    - **Starts on:** The date and time the rotation begins.
-   - **Enable end date:** With the toggle set to on, you can select the date and time your rotation
+   - **Enable end date:** With the toggle on, you can select the date and time your rotation
      ends.
-   - **Restrict to time intervals:** With the toggle set to on, you can restrict your rotation to the
+   - **Restrict to time intervals:** With the toggle on, you can restrict your rotation to the
      time period you select.
 
 ### Edit a rotation
 
-Follow these steps to edit a rotation:
+To edit a rotation:
 
-1. Go to **Monitor > On-call Schedules** and select the **Pencil** icon to the right of the title
-   of the rotation that you want to update.
-1. In the **Edit rotation** form, make the changes that you want.
-1. Select the **Edit rotation** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > On-call Schedules**.
+1. In the **Rotations** section, select **Edit rotation** (**{pencil}**).
+1. Edit the information.
+1. Select **Save changes**.
 
 ### Delete a rotation
 
-Follow these steps to delete a rotation:
+To delete a rotation:
 
-1. Go to **Monitor > On-call Schedules** and select the **Trash Can** icon to the right of the
-   title of the rotation that you want to delete.
-1. In the **Delete rotation** window, select the **Delete rotation** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > On-call Schedules**.
+1. In the **Rotations** section, select **Delete rotation** (**{remove}**).
+1. On the confirmation dialog, select **Delete rotation**.
 
 ## View schedule rotations
 

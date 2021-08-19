@@ -15,7 +15,7 @@ module Projects
         ON CONFLICT (project_id, date) DO UPDATE SET fetch_count = #{table_name}.fetch_count + 1
       SQL
 
-      ActiveRecord::Base.connection.execute(increment_fetch_count_sql)
+      ProjectDailyStatistic.connection.execute(increment_fetch_count_sql)
     end
 
     private

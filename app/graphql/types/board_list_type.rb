@@ -10,19 +10,19 @@ module Types
 
     alias_method :list, :object
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id, GraphQL::Types::ID, null: false,
           description: 'ID (global ID) of the list.'
-    field :title, GraphQL::STRING_TYPE, null: false,
+    field :title, GraphQL::Types::String, null: false,
           description: 'Title of the list.'
-    field :list_type, GraphQL::STRING_TYPE, null: false,
+    field :list_type, GraphQL::Types::String, null: false,
           description: 'Type of the list.'
-    field :position, GraphQL::INT_TYPE, null: true,
+    field :position, GraphQL::Types::Int, null: true,
           description: 'Position of list within the board.'
     field :label, Types::LabelType, null: true,
           description: 'Label of the list.'
-    field :collapsed, GraphQL::BOOLEAN_TYPE, null: true,
+    field :collapsed, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if the list is collapsed for this user.'
-    field :issues_count, GraphQL::INT_TYPE, null: true,
+    field :issues_count, GraphQL::Types::Int, null: true,
           description: 'Count of issues in the list.'
 
     field :issues, ::Types::IssueType.connection_type, null: true,

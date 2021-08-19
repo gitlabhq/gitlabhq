@@ -1,13 +1,13 @@
 import { sanitize as dompurifySanitize, addHook } from 'dompurify';
 import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
 
-// Safely allow SVG <use> tags
-
 const defaultConfig = {
+  // Safely allow SVG <use> tags
   ADD_TAGS: ['use'],
+  // Prevent possible XSS attacks with data-* attributes used by @rails/ujs
+  // See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1421
+  FORBID_ATTR: ['data-remote', 'data-url', 'data-type', 'data-method'],
 };
-
-const forbiddenDataAttrs = ['data-remote', 'data-url', 'data-type', 'data-method'];
 
 // Only icons urls from `gon` are allowed
 const getAllowedIconUrls = (gon = window.gon) =>
@@ -46,19 +46,10 @@ const sanitizeSvgIcon = (node) => {
   removeUnsafeHref(node, 'xlink:href');
 };
 
-const sanitizeHTMLAttributes = (node) => {
-  forbiddenDataAttrs.forEach((attr) => {
-    if (node.hasAttribute(attr)) {
-      node.removeAttribute(attr);
-    }
-  });
-};
-
 addHook('afterSanitizeAttributes', (node) => {
   if (node.tagName.toLowerCase() === 'use') {
     sanitizeSvgIcon(node);
   }
-  sanitizeHTMLAttributes(node);
 });
 
 export const sanitize = (val, config = defaultConfig) => dompurifySanitize(val, config);

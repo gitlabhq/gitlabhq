@@ -50,7 +50,7 @@ RSpec.describe 'Environment > Pod Logs', :js, :kubeclient do
 
       wait_for_requests
 
-      page.within('.qa-pods-dropdown') do
+      page.within('.qa-pods-dropdown') do # rubocop:disable QA/SelectorUsage
         find(".dropdown-toggle:not([disabled])").click
 
         dropdown_items = find(".dropdown-menu").all(".dropdown-item:not([disabled])")

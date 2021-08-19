@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: settings.operating_system
 description: Information about the operating system running GitLab
 product_section: enablement
@@ -19,3 +19,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

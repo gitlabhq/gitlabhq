@@ -45,6 +45,8 @@ RSpec.describe 'Packages' do
         it_behaves_like 'package details link'
       end
 
+      it_behaves_like 'package details link'
+
       context 'deleting a package' do
         let_it_be(:project) { create(:project) }
         let_it_be(:package) { create(:package, project: project) }

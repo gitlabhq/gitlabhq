@@ -1,14 +1,21 @@
 import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import { format } from 'timeago.js';
+import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
+import ActionsComponent from '~/environments/components/environment_actions.vue';
 import DeleteComponent from '~/environments/components/environment_delete.vue';
+import ExternalUrlComponent from '~/environments/components/environment_external_url.vue';
 import EnvironmentItem from '~/environments/components/environment_item.vue';
 import PinComponent from '~/environments/components/environment_pin.vue';
+import RollbackComponent from '~/environments/components/environment_rollback.vue';
+import StopComponent from '~/environments/components/environment_stop.vue';
+import TerminalButtonComponent from '~/environments/components/environment_terminal_button.vue';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import { environment, folder, tableData } from './mock_data';
 
 describe('Environment item', () => {
   let wrapper;
+  let tracking;
 
   const factory = (options = {}) => {
     // This destroys any wrappers created before a nested call to factory reassigns it
@@ -28,6 +35,12 @@ describe('Environment item', () => {
         tableData,
       },
     });
+
+    tracking = mockTracking(undefined, wrapper.element, jest.spyOn);
+  });
+
+  afterEach(() => {
+    unmockTracking();
   });
 
   const findAutoStop = () => wrapper.find('.js-auto-stop');
@@ -62,7 +75,7 @@ describe('Environment item', () => {
       });
 
       it('should not render the delete button', () => {
-        expect(wrapper.find(DeleteComponent).exists()).toBe(false);
+        expect(wrapper.findComponent(DeleteComponent).exists()).toBe(false);
       });
 
       describe('With user information', () => {
@@ -176,12 +189,14 @@ describe('Environment item', () => {
         });
 
         it('should not render the auto-stop button', () => {
-          expect(wrapper.find(PinComponent).exists()).toBe(false);
+          expect(wrapper.findComponent(PinComponent).exists()).toBe(false);
         });
       });
 
       describe('With auto-stop date', () => {
         describe('in the future', () => {
+          let pin;
+
           const futureDate = new Date(Date.now() + 100000);
           beforeEach(() => {
             factory({
@@ -195,6 +210,9 @@ describe('Environment item', () => {
                 shouldShowAutoStopDate: true,
               },
             });
+            tracking = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+            pin = wrapper.findComponent(PinComponent);
           });
 
           it('renders the date', () => {
@@ -202,7 +220,15 @@ describe('Environment item', () => {
           });
 
           it('should render the auto-stop button', () => {
-            expect(wrapper.find(PinComponent).exists()).toBe(true);
+            expect(pin.exists()).toBe(true);
+          });
+
+          it('should tracks clicks', () => {
+            pin.trigger('click');
+
+            expect(tracking).toHaveBeenCalledWith('_category_', 'click_button', {
+              label: 'environment_pin',
+            });
           });
         });
 
@@ -227,33 +253,104 @@ describe('Environment item', () => {
           });
 
           it('should not render the suto-stop button', () => {
-            expect(wrapper.find(PinComponent).exists()).toBe(false);
+            expect(wrapper.findComponent(PinComponent).exists()).toBe(false);
           });
         });
       });
     });
 
     describe('With manual actions', () => {
+      let actions;
+
+      beforeEach(() => {
+        actions = wrapper.findComponent(ActionsComponent);
+      });
+
       it('should render actions component', () => {
-        expect(wrapper.find('.js-manual-actions-container')).toBeDefined();
+        expect(actions.exists()).toBe(true);
+      });
+
+      it('should track clicks', () => {
+        actions.trigger('click');
+        expect(tracking).toHaveBeenCalledWith('_category_', 'click_dropdown', {
+          label: 'environment_actions',
+        });
       });
     });
 
     describe('With external URL', () => {
+      let externalUrl;
+
+      beforeEach(() => {
+        externalUrl = wrapper.findComponent(ExternalUrlComponent);
+      });
+
       it('should render external url component', () => {
-        expect(wrapper.find('.js-external-url-container')).toBeDefined();
+        expect(externalUrl.exists()).toBe(true);
+      });
+
+      it('should track clicks', () => {
+        externalUrl.trigger('click');
+        expect(tracking).toHaveBeenCalledWith('_category_', 'click_button', {
+          label: 'environment_url',
+        });
       });
     });
 
     describe('With stop action', () => {
+      let stop;
+
+      beforeEach(() => {
+        stop = wrapper.findComponent(StopComponent);
+      });
+
       it('should render stop action component', () => {
-        expect(wrapper.find('.js-stop-component-container')).toBeDefined();
+        expect(stop.exists()).toBe(true);
+      });
+
+      it('should track clicks', () => {
+        stop.trigger('click');
+        expect(tracking).toHaveBeenCalledWith('_category_', 'click_button', {
+          label: 'environment_stop',
+        });
       });
     });
 
     describe('With retry action', () => {
+      let rollback;
+
+      beforeEach(() => {
+        rollback = wrapper.findComponent(RollbackComponent);
+      });
+
       it('should render rollback component', () => {
-        expect(wrapper.find('.js-rollback-component-container')).toBeDefined();
+        expect(rollback.exists()).toBe(true);
+      });
+
+      it('should track clicks', () => {
+        rollback.trigger('click');
+        expect(tracking).toHaveBeenCalledWith('_category_', 'click_button', {
+          label: 'environment_rollback',
+        });
+      });
+    });
+
+    describe('With terminal path', () => {
+      let terminal;
+
+      beforeEach(() => {
+        terminal = wrapper.findComponent(TerminalButtonComponent);
+      });
+
+      it('should render terminal action component', () => {
+        expect(terminal.exists()).toBe(true);
+      });
+
+      it('should track clicks', () => {
+        triggerEvent(terminal.element);
+        expect(tracking).toHaveBeenCalledWith('_category_', 'click_button', {
+          label: 'environment_terminal',
+        });
       });
     });
   });
@@ -312,7 +409,17 @@ describe('Environment item', () => {
     });
 
     it('should render the delete button', () => {
-      expect(wrapper.find(DeleteComponent).exists()).toBe(true);
+      expect(wrapper.findComponent(DeleteComponent).exists()).toBe(true);
+    });
+
+    it('should trigger a tracking event', async () => {
+      tracking = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+      await wrapper.findComponent(DeleteComponent).trigger('click');
+
+      expect(tracking).toHaveBeenCalledWith('_category_', 'click_button', {
+        label: 'environment_delete',
+      });
     });
   });
 });

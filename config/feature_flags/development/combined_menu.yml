@@ -1,8 +1,0 @@
----
-name: combined_menu
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56249
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324086
-milestone: '13.10'
-type: development
-group: group::editor
-default_enabled: true

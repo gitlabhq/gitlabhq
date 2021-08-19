@@ -14,7 +14,13 @@ export const initMembersApp = (el, options) => {
   Vue.use(Vuex);
   Vue.use(GlToast);
 
-  const { sourceId, canManageMembers, ...vuexStoreAttributes } = parseDataAttributes(el);
+  const {
+    sourceId,
+    canManageMembers,
+    canExportMembers,
+    exportCsvPath,
+    ...vuexStoreAttributes
+  } = parseDataAttributes(el);
 
   const modules = Object.keys(MEMBER_TYPES).reduce((accumulator, namespace) => {
     const namespacedOptions = options[namespace];
@@ -54,6 +60,8 @@ export const initMembersApp = (el, options) => {
       currentUserId: gon.current_user_id || null,
       sourceId,
       canManageMembers,
+      canExportMembers,
+      exportCsvPath,
     },
     render: (createElement) => createElement('members-tabs'),
   });

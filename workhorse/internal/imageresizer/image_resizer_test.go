@@ -15,8 +15,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 
 	_ "image/jpeg" // need this for image.Decode with JPEG
 )

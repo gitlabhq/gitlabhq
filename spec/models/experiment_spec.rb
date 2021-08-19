@@ -258,7 +258,7 @@ RSpec.describe Experiment do
         let(:variant) { :experimental }
 
         it 'does not initiate a transaction' do
-          expect(ActiveRecord::Base.connection).not_to receive(:transaction)
+          expect(Experiment.connection).not_to receive(:transaction)
 
           subject
         end
@@ -360,7 +360,7 @@ RSpec.describe Experiment do
         let(:context) { {} }
 
         it 'does not initiate a transaction' do
-          expect(ActiveRecord::Base.connection).not_to receive(:transaction)
+          expect(Experiment.connection).not_to receive(:transaction)
 
           subject
         end

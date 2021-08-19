@@ -21,7 +21,7 @@ module Auth
 
       return error('DENIED', status: 403, message: 'access forbidden') unless has_registry_ability?
 
-      unless scopes.any? || current_user || project
+      unless scopes.any? || current_user || deploy_token || project
         return error('DENIED', status: 403, message: 'access forbidden')
       end
 
@@ -124,7 +124,6 @@ module Auth
     end
 
     def migration_eligible(project, actions)
-      return unless actions.include?('push')
       return unless Feature.enabled?(:container_registry_migration_phase1)
 
       # The migration process will start by allowing only specific test and gitlab-org projects using the
@@ -178,8 +177,7 @@ module Auth
     end
 
     def can_user?(ability, project)
-      user = current_user.is_a?(User) ? current_user : nil
-      can?(user, ability, project)
+      can?(current_user, ability, project)
     end
 
     def build_can_pull?(requested_project)
@@ -202,16 +200,16 @@ module Auth
 
     def deploy_token_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
-        current_user.is_a?(DeployToken) &&
-        current_user.has_access_to?(requested_project) &&
-        current_user.read_registry?
+        deploy_token.present? &&
+        deploy_token.has_access_to?(requested_project) &&
+        deploy_token.read_registry?
     end
 
     def deploy_token_can_push?(requested_project)
       has_authentication_ability?(:create_container_image) &&
-        current_user.is_a?(DeployToken) &&
-        current_user.has_access_to?(requested_project) &&
-        current_user.write_registry?
+        deploy_token.present? &&
+        deploy_token.has_access_to?(requested_project) &&
+        deploy_token.write_registry?
     end
 
     ##
@@ -248,6 +246,10 @@ module Auth
     # Overridden in EE
     def extra_info
       {}
+    end
+
+    def deploy_token
+      params[:deploy_token]
     end
 
     def log_if_actions_denied(type, requested_project, requested_actions, authorized_actions)

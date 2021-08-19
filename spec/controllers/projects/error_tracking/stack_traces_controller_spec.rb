@@ -40,7 +40,7 @@ RSpec.describe Projects::ErrorTracking::StackTracesController do
 
     context 'service result is successful' do
       let(:service_response) { { status: :success, latest_event: error_event } }
-      let(:error_event) { build(:error_tracking_error_event) }
+      let(:error_event) { build(:error_tracking_sentry_error_event) }
 
       it 'responds with success' do
         expect(response).to have_gitlab_http_status(:ok)

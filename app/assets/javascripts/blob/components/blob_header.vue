@@ -25,6 +25,11 @@ export default {
       required: false,
       default: false,
     },
+    isBinary: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     activeViewerType: {
       type: String,
       required: false,
@@ -81,6 +86,7 @@ export default {
         :raw-path="blob.rawPath"
         :active-viewer="viewer"
         :has-render-error="hasRenderError"
+        :is-binary="isBinary"
         @copy="proxyCopyRequest"
       />
     </div>

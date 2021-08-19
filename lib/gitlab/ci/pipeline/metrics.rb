@@ -24,7 +24,16 @@ module Gitlab
           name = :gitlab_ci_pipeline_size_builds
           comment = 'Pipeline size'
           labels = { source: nil }
-          buckets = [0, 1, 5, 10, 20, 50, 100, 200, 500, 1000]
+          buckets = [0, 1, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 3000]
+
+          ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
+        end
+
+        def self.active_jobs_histogram
+          name = :gitlab_ci_active_jobs
+          comment = 'Total amount of active jobs'
+          labels = { plan: nil }
+          buckets = [0, 200, 500, 1_000, 2_000, 5_000, 10_000]
 
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
         end

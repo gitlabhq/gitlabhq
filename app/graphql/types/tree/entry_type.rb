@@ -4,17 +4,17 @@ module Types
     module EntryType
       include Types::BaseInterface
 
-      field :id, GraphQL::ID_TYPE, null: false,
+      field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the entry.'
-      field :sha, GraphQL::STRING_TYPE, null: false,
+      field :sha, GraphQL::Types::String, null: false,
             description: 'Last commit SHA for the entry.', method: :id
-      field :name, GraphQL::STRING_TYPE, null: false,
+      field :name, GraphQL::Types::String, null: false,
             description: 'Name of the entry.'
       field :type, Tree::TypeEnum, null: false,
             description: 'Type of tree entry.'
-      field :path, GraphQL::STRING_TYPE, null: false,
+      field :path, GraphQL::Types::String, null: false,
             description: 'Path of the entry.'
-      field :flat_path, GraphQL::STRING_TYPE, null: false,
+      field :flat_path, GraphQL::Types::String, null: false,
             description: 'Flat path of the entry.'
     end
   end

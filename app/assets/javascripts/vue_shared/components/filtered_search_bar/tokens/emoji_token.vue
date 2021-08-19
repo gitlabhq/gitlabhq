@@ -1,26 +1,21 @@
 <script>
-import {
-  GlFilteredSearchToken,
-  GlFilteredSearchSuggestion,
-  GlDropdownDivider,
-  GlLoadingIcon,
-} from '@gitlab/ui';
-import { debounce } from 'lodash';
-
+import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-
-import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY } from '../constants';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { DEFAULT_NONE_ANY } from '../constants';
 import { stripQuotes } from '../filtered_search_utils';
 
 export default {
   components: {
-    GlFilteredSearchToken,
+    BaseToken,
     GlFilteredSearchSuggestion,
-    GlDropdownDivider,
-    GlLoadingIcon,
   },
   props: {
+    active: {
+      type: Boolean,
+      required: true,
+    },
     config: {
       type: Object,
       required: true,
@@ -33,87 +28,63 @@ export default {
   data() {
     return {
       emojis: this.config.initialEmojis || [],
-      defaultEmojis: this.config.defaultEmojis || DEFAULT_NONE_ANY,
-      loading: true,
+      loading: false,
     };
   },
   computed: {
-    currentValue() {
-      return this.value.data.toLowerCase();
-    },
-    activeEmoji() {
-      return this.emojis.find(
-        (emoji) => emoji.name.toLowerCase() === stripQuotes(this.currentValue),
-      );
-    },
-  },
-  watch: {
-    active: {
-      immediate: true,
-      handler(newValue) {
-        if (!newValue && !this.emojis.length) {
-          this.fetchEmojiBySearchTerm(this.value.data);
-        }
-      },
+    defaultEmojis() {
+      return this.config.defaultEmojis || DEFAULT_NONE_ANY;
     },
   },
   methods: {
-    fetchEmojiBySearchTerm(searchTerm) {
+    getActiveEmoji(emojis, data) {
+      return emojis.find((emoji) => emoji.name.toLowerCase() === stripQuotes(data).toLowerCase());
+    },
+    fetchEmojis(searchTerm) {
       this.loading = true;
       this.config
         .fetchEmojis(searchTerm)
-        .then((res) => {
-          this.emojis = Array.isArray(res) ? res : res.data;
+        .then((response) => {
+          this.emojis = Array.isArray(response) ? response : response.data;
         })
-        .catch(() =>
-          createFlash({
-            message: __('There was a problem fetching emojis.'),
-          }),
-        )
+        .catch(() => {
+          createFlash({ message: __('There was a problem fetching emojis.') });
+        })
         .finally(() => {
           this.loading = false;
         });
     },
-    searchEmojis: debounce(function debouncedSearch({ data }) {
-      this.fetchEmojiBySearchTerm(data);
-    }, DEBOUNCE_DELAY),
   },
 };
 </script>
 
 <template>
-  <gl-filtered-search-token
+  <base-token
+    :active="active"
     :config="config"
-    v-bind="{ ...$props, ...$attrs }"
+    :value="value"
+    :default-suggestions="defaultEmojis"
+    :suggestions="emojis"
+    :suggestions-loading="loading"
+    :get-active-token-value="getActiveEmoji"
+    @fetch-suggestions="fetchEmojis"
     v-on="$listeners"
-    @input="searchEmojis"
   >
-    <template #view="{ inputValue }">
-      <gl-emoji v-if="activeEmoji" :data-name="activeEmoji.name" />
-      <span v-else>{{ inputValue }}</span>
+    <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
+      <gl-emoji v-if="activeTokenValue" :data-name="activeTokenValue.name" />
+      <template v-else>{{ inputValue }}</template>
     </template>
-    <template #suggestions>
+    <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
-        v-for="emoji in defaultEmojis"
-        :key="emoji.value"
-        :value="emoji.value"
+        v-for="emoji in suggestions"
+        :key="emoji.name"
+        :value="emoji.name"
       >
-        {{ emoji.value }}
+        <div class="gl-display-flex">
+          <gl-emoji class="gl-mr-3" :data-name="emoji.name" />
+          {{ emoji.name }}
+        </div>
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider v-if="defaultEmojis.length" />
-      <gl-loading-icon v-if="loading" size="sm" />
-      <template v-else>
-        <gl-filtered-search-suggestion
-          v-for="emoji in emojis"
-          :key="emoji.name"
-          :value="emoji.name"
-        >
-          <div class="gl-display-flex">
-            <gl-emoji :data-name="emoji.name" />
-            <span class="gl-ml-3">{{ emoji.name }}</span>
-          </div>
-        </gl-filtered-search-suggestion>
-      </template>
     </template>
-  </gl-filtered-search-token>
+  </base-token>
 </template>

@@ -13,7 +13,7 @@ module Gitlab
         "put" => %w(200 202 204 400 401 403 404 405 406 409 410 422 500)
       }.freeze
 
-      HEALTH_ENDPOINT = /^\/-\/(liveness|readiness|health|metrics)\/?$/.freeze
+      HEALTH_ENDPOINT = %r{^/-/(liveness|readiness|health|metrics)/?$}.freeze
 
       FEATURE_CATEGORY_DEFAULT = 'unknown'
 
@@ -66,28 +66,28 @@ module Gitlab
       def call(env)
         method = env['REQUEST_METHOD'].downcase
         method = 'INVALID' unless HTTP_METHODS.key?(method)
-        started = Gitlab::Metrics::System.monotonic_time
+        started = ::Gitlab::Metrics::System.monotonic_time
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
 
         begin
           status, headers, body = @app.call(env)
 
-          elapsed = Gitlab::Metrics::System.monotonic_time - started
+          elapsed = ::Gitlab::Metrics::System.monotonic_time - started
 
-          if !health_endpoint && Gitlab::Metrics.record_duration_for_status?(status)
-            RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method }, elapsed)
+          if !health_endpoint && ::Gitlab::Metrics.record_duration_for_status?(status)
+            self.class.http_request_duration_seconds.observe({ method: method }, elapsed)
           end
 
           [status, headers, body]
         rescue StandardError
-          RequestsRackMiddleware.rack_uncaught_errors_count.increment
+          self.class.rack_uncaught_errors_count.increment
           raise
         ensure
           if health_endpoint
-            RequestsRackMiddleware.http_health_requests_total.increment(status: status.to_s, method: method)
+            self.class.http_health_requests_total.increment(status: status.to_s, method: method)
           else
-            RequestsRackMiddleware.http_requests_total.increment(
+            self.class.http_requests_total.increment(
               status: status.to_s,
               method: method,
               feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT

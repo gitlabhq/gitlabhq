@@ -9,7 +9,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_read_build_trace!, only: [:trace, :raw]
   before_action :authorize_read_build!
   before_action :authorize_update_build!,
-    except: [:index, :show, :status, :raw, :trace, :erase]
+    except: [:index, :show, :status, :raw, :trace, :erase, :cancel, :unschedule]
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
@@ -93,22 +93,28 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def cancel
-    return respond_422 unless @build.cancelable?
+    service_response = Ci::BuildCancelService.new(@build, current_user).execute
 
-    @build.cancel
-
-    if continue_params[:to]
-      redirect_to continue_params[:to]
+    if service_response.success?
+      destination = continue_params[:to].presence || builds_project_pipeline_path(@project, @build.pipeline.id)
+      redirect_to destination
+    elsif service_response.http_status == :forbidden
+      access_denied!
     else
-      redirect_to builds_project_pipeline_path(@project, @build.pipeline.id)
+      head service_response.http_status
     end
   end
 
   def unschedule
-    return respond_422 unless @build.scheduled?
+    service_response = Ci::BuildUnscheduleService.new(@build, current_user).execute
 
-    @build.unschedule!
-    redirect_to build_path(@build)
+    if service_response.success?
+      redirect_to build_path(@build)
+    elsif service_response.http_status == :forbidden
+      access_denied!
+    else
+      head service_response.http_status
+    end
   end
 
   def status

@@ -250,7 +250,7 @@ module MarkupHelper
     data = options[:data].merge({ container: 'body' })
     content_tag :button,
       type: 'button',
-      class: 'toolbar-btn js-md has-tooltip',
+      class: 'gl-button btn btn-default-tertiary btn-icon js-md has-tooltip',
       data: data,
       title: options[:title],
       aria: { label: options[:title] } do

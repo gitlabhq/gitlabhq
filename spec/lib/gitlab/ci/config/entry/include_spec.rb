@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Config::Entry::Include do
   subject(:include_entry) { described_class.new(config) }
@@ -86,12 +86,50 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Include do
           end
         end
       end
+
+      context 'when using with "rules"' do
+        let(:config) { { local: 'test.yml', rules: [{ if: '$VARIABLE' }] } }
+
+        it { is_expected.to be_valid }
+
+        context 'when rules is not an array of hashes' do
+          let(:config) { { local: 'test.yml', rules: ['$VARIABLE'] } }
+
+          it { is_expected.not_to be_valid }
+
+          it 'has specific error' do
+            expect(include_entry.errors).to include('include rules should be an array of hashes')
+          end
+        end
+      end
     end
 
     context 'when value is something else' do
       let(:config) { 123 }
 
       it { is_expected.not_to be_valid }
+    end
+  end
+
+  describe '#value' do
+    subject(:value) { include_entry.value }
+
+    context 'when config is a string' do
+      let(:config) { 'test.yml' }
+
+      it { is_expected.to eq('test.yml') }
+    end
+
+    context 'when config is a hash' do
+      let(:config) { { local: 'test.yml' } }
+
+      it { is_expected.to eq(local: 'test.yml') }
+    end
+
+    context 'when config has "rules"' do
+      let(:config) { { local: 'test.yml', rules: [{ if: '$VARIABLE' }] } }
+
+      it { is_expected.to eq(local: 'test.yml', rules: [{ if: '$VARIABLE' }]) }
     end
   end
 end

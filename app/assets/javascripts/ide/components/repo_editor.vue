@@ -38,6 +38,8 @@ import { getPathParent, readFileAsDataURL, registerSchema, isTextFile } from '..
 import FileAlert from './file_alert.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
 
+const MARKDOWN_FILE_TYPE = 'markdown';
+
 export default {
   name: 'RepoEditor',
   components: {
@@ -201,7 +203,7 @@ export default {
     showContentViewer(val) {
       if (!val) return;
 
-      if (this.fileType === 'markdown') {
+      if (this.fileType === MARKDOWN_FILE_TYPE) {
         const { content, images } = extractMarkdownImagesFromEntries(this.file, this.entries);
         this.content = content;
         this.images = images;
@@ -309,6 +311,23 @@ export default {
           }),
         );
 
+        if (this.fileType === MARKDOWN_FILE_TYPE) {
+          import('~/editor/extensions/source_editor_markdown_ext')
+            .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
+              this.editor.use(
+                new MarkdownExtension({
+                  instance: this.editor,
+                  projectPath: this.currentProjectId,
+                }),
+              );
+            })
+            .catch((e) =>
+              createFlash({
+                message: e,
+              }),
+            );
+        }
+
         this.$nextTick(() => {
           this.setupEditor();
         });
@@ -406,7 +425,11 @@ export default {
       const reImage = /^image\/(png|jpg|jpeg|gif)$/;
       const file = event.clipboardData.files[0];
 
-      if (editor.hasTextFocus() && this.fileType === 'markdown' && reImage.test(file?.type)) {
+      if (
+        editor.hasTextFocus() &&
+        this.fileType === MARKDOWN_FILE_TYPE &&
+        reImage.test(file?.type)
+      ) {
         // don't let the event be passed on to Monaco.
         event.preventDefault();
         event.stopImmediatePropagation();

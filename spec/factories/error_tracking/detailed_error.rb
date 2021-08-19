@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :detailed_error_tracking_error, parent: :error_tracking_error, class: 'Gitlab::ErrorTracking::DetailedError' do
+  factory :error_tracking_sentry_detailed_error, parent: :error_tracking_sentry_error, class: 'Gitlab::ErrorTracking::DetailedError' do
     gitlab_issue { 'http://gitlab.example.com/issues/1' }
     external_base_url { 'http://example.com' }
     first_release_last_commit { '68c914da9' }

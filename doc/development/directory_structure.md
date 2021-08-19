@@ -72,7 +72,7 @@ could make them shallow and more coupled with other contexts.
 Bounded contexts (or top-level namespaces) can be seen as macro-components in the overall app.
 Good bounded contexts should be [deep](https://medium.com/@nakabonne/depth-of-module-f62dac3c2fdb)
 so consider having nested namespaces to further break down complex parts of the domain.
-E.g. `Ci::Config::`.
+For example, `Ci::Config::`.
 
 For example, instead of having separate and granular bounded contexts like: `ContainerScanning::`,
 `ContainerHostSecurity::`, `ContainerNetworkSecurity::`, we could have:

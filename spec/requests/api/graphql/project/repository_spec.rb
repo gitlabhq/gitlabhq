@@ -83,4 +83,26 @@ RSpec.describe 'getting a repository in a project' do
       expect(graphql_data['project']['repository']).to be_nil
     end
   end
+
+  context 'when paginated tree requested' do
+    let(:fields) do
+      %(
+        paginatedTree {
+          nodes {
+            trees {
+              nodes {
+                path
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'returns paginated tree' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['repository']['paginatedTree']).to be_present
+    end
+  end
 end

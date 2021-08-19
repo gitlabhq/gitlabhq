@@ -238,6 +238,8 @@ Associate an incident to a milestone by selecting **Edit** next to the milestone
 See [Incident List](#incident-list) for a full description of the severity levels available.
 Select **Edit** in the right-hand side bar to change the severity of an incident.
 
+You can also change the severity using the [`/severity` quick action](../../user/project/quick_actions.md).
+
 ### Add a to-do item
 
 Add a to-do for incidents that you want to track in your to-do list. Click the

@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { sortBy } from 'lodash';
 import {
   BoardType,
   ListType,
@@ -13,14 +14,14 @@ import {
   issuableTypes,
   FilterFields,
   ListTypeTitles,
+  DraggableItemTypes,
 } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-// eslint-disable-next-line import/no-deprecated
-import { urlParamsToObject } from '~/lib/utils/url_utility';
+import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import {
   formatBoardLists,
@@ -35,10 +36,13 @@ import {
   filterVariables,
 } from '../boards_util';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
+import groupBoardMilestonesQuery from '../graphql/group_board_milestones.query.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
 import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
 import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
+import projectBoardMilestonesQuery from '../graphql/project_board_milestones.query.graphql';
+
 import * as types from './mutation_types';
 
 export const gqlClient = createGqClient(
@@ -76,8 +80,7 @@ export default {
   performSearch({ dispatch }) {
     dispatch(
       'setFilters',
-      // eslint-disable-next-line import/no-deprecated
-      convertObjectPropsToCamelCase(urlParamsToObject(window.location.search)),
+      convertObjectPropsToCamelCase(queryToObject(window.location.search, { gatherArrays: true })),
     );
 
     if (gon.features.graphqlBoardLists) {
@@ -215,34 +218,99 @@ export default {
       });
   },
 
+  fetchMilestones({ state, commit }, searchTerm) {
+    commit(types.RECEIVE_MILESTONES_REQUEST);
+
+    const { fullPath, boardType } = state;
+
+    const variables = {
+      fullPath,
+      searchTerm,
+    };
+
+    let query;
+    if (boardType === BoardType.project) {
+      query = projectBoardMilestonesQuery;
+    }
+    if (boardType === BoardType.group) {
+      query = groupBoardMilestonesQuery;
+    }
+
+    if (!query) {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      throw new Error('Unknown board type');
+    }
+
+    return gqlClient
+      .query({
+        query,
+        variables,
+      })
+      .then(({ data }) => {
+        const errors = data[boardType]?.errors;
+        const milestones = data[boardType]?.milestones.nodes;
+
+        if (errors?.[0]) {
+          throw new Error(errors[0]);
+        }
+
+        commit(types.RECEIVE_MILESTONES_SUCCESS, milestones);
+
+        return milestones;
+      })
+      .catch((e) => {
+        commit(types.RECEIVE_MILESTONES_FAILURE);
+        throw e;
+      });
+  },
+
   moveList: (
-    { state, commit, dispatch },
-    { listId, replacedListId, newIndex, adjustmentValue },
+    { state: { boardLists }, commit, dispatch },
+    {
+      item: {
+        dataset: { listId: movedListId, draggableItemType },
+      },
+      newIndex,
+      to: { children },
+    },
   ) => {
-    if (listId === replacedListId) {
+    if (draggableItemType !== DraggableItemTypes.list) {
       return;
     }
 
-    const { boardLists } = state;
-    const backupList = { ...boardLists };
-    const movedList = boardLists[listId];
+    const displacedListId = children[newIndex].dataset.listId;
+    if (movedListId === displacedListId) {
+      return;
+    }
 
-    const newPosition = newIndex - 1;
-    const listAtNewIndex = boardLists[replacedListId];
+    const listIds = sortBy(
+      Object.keys(boardLists).filter(
+        (listId) =>
+          listId !== movedListId &&
+          boardLists[listId].listType !== ListType.backlog &&
+          boardLists[listId].listType !== ListType.closed,
+      ),
+      (i) => boardLists[i].position,
+    );
 
-    movedList.position = newPosition;
-    listAtNewIndex.position += adjustmentValue;
-    commit(types.MOVE_LIST, {
-      movedList,
-      listAtNewIndex,
-    });
+    const targetPosition = boardLists[displacedListId].position;
+    // When the dragged list moves left, displaced list should shift right.
+    const shiftOffset = Number(boardLists[movedListId].position < targetPosition);
+    const displacedListIndex = listIds.findIndex((listId) => listId === displacedListId);
 
-    dispatch('updateList', { listId, position: newPosition, backupList });
+    commit(
+      types.MOVE_LISTS,
+      listIds
+        .slice(0, displacedListIndex + shiftOffset)
+        .concat([movedListId], listIds.slice(displacedListIndex + shiftOffset))
+        .map((listId, index) => ({ listId, position: index })),
+    );
+    dispatch('updateList', { listId: movedListId, position: targetPosition });
   },
 
   updateList: (
-    { commit, state: { issuableType, boardItemsByListId = {} }, dispatch },
-    { listId, position, collapsed, backupList },
+    { state: { issuableType, boardItemsByListId = {} }, dispatch },
+    { listId, position, collapsed },
   ) => {
     gqlClient
       .mutate({
@@ -255,8 +323,7 @@ export default {
       })
       .then(({ data }) => {
         if (data?.updateBoardList?.errors.length) {
-          commit(types.UPDATE_LIST_FAILURE, backupList);
-          return;
+          throw new Error();
         }
 
         // Only fetch when board items havent been fetched on a collapsed list
@@ -265,8 +332,17 @@ export default {
         }
       })
       .catch(() => {
-        commit(types.UPDATE_LIST_FAILURE, backupList);
+        dispatch('handleUpdateListFailure');
       });
+  },
+
+  handleUpdateListFailure: ({ dispatch, commit }) => {
+    dispatch('fetchLists');
+
+    commit(
+      types.SET_ERROR,
+      s__('Boards|An error occurred while updating the board list. Please try again.'),
+    );
   },
 
   toggleListCollapsed: ({ commit }, { listId, collapsed }) => {
@@ -551,7 +627,7 @@ export default {
       mutation: issueSetLabelsMutation,
       variables: {
         input: {
-          iid: String(activeBoardItem.iid),
+          iid: input.iid || String(activeBoardItem.iid),
           addLabelIds: input.addLabelIds ?? [],
           removeLabelIds: input.removeLabelIds ?? [],
           projectPath: input.projectPath,
@@ -564,7 +640,7 @@ export default {
     }
 
     commit(types.UPDATE_BOARD_ITEM_BY_ID, {
-      itemId: activeBoardItem.id,
+      itemId: getIdFromGraphQLId(data.updateIssue?.issue?.id) || activeBoardItem.id,
       prop: 'labels',
       value: data.updateIssue.issue.labels.nodes,
     });

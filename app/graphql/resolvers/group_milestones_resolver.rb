@@ -2,10 +2,10 @@
 
 module Resolvers
   class GroupMilestonesResolver < MilestonesResolver
-    argument :include_descendants, GraphQL::BOOLEAN_TYPE,
+    argument :include_descendants, GraphQL::Types::Boolean,
              required: false,
              description: 'Include milestones from all subgroups and subprojects.'
-    argument :include_ancestors, GraphQL::BOOLEAN_TYPE,
+    argument :include_ancestors, GraphQL::Types::Boolean,
              required: false,
              description: 'Include milestones from all parent groups.'
 

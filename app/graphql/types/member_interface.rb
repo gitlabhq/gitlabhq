@@ -4,7 +4,7 @@ module Types
   module MemberInterface
     include BaseInterface
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id, GraphQL::Types::ID, null: false,
           description: 'ID of the member.'
 
     field :access_level, Types::AccessLevelType, null: true,

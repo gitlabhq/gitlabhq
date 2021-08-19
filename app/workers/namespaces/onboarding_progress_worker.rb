@@ -4,9 +4,12 @@ module Namespaces
   class OnboardingProgressWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
 
     feature_category :product_analytics
+    worker_resource_boundary :cpu
     tags :exclude_from_kubernetes
     urgency :low
 

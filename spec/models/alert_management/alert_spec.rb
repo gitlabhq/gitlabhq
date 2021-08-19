@@ -33,70 +33,6 @@ RSpec.describe AlertManagement::Alert do
     it { is_expected.to validate_length_of(:service).is_at_most(100) }
     it { is_expected.to validate_length_of(:monitoring_tool).is_at_most(100) }
 
-    context 'when status is triggered' do
-      subject { triggered_alert }
-
-      context 'when ended_at is blank' do
-        it { is_expected.to be_valid }
-      end
-
-      context 'when ended_at is present' do
-        before do
-          triggered_alert.ended_at = Time.current
-        end
-
-        it { is_expected.to be_invalid }
-      end
-    end
-
-    context 'when status is acknowledged' do
-      subject { acknowledged_alert }
-
-      context 'when ended_at is blank' do
-        it { is_expected.to be_valid }
-      end
-
-      context 'when ended_at is present' do
-        before do
-          acknowledged_alert.ended_at = Time.current
-        end
-
-        it { is_expected.to be_invalid }
-      end
-    end
-
-    context 'when status is resolved' do
-      subject { resolved_alert }
-
-      context 'when ended_at is blank' do
-        before do
-          resolved_alert.ended_at = nil
-        end
-
-        it { is_expected.to be_invalid }
-      end
-
-      context 'when ended_at is present' do
-        it { is_expected.to be_valid }
-      end
-    end
-
-    context 'when status is ignored' do
-      subject { ignored_alert }
-
-      context 'when ended_at is blank' do
-        it { is_expected.to be_valid }
-      end
-
-      context 'when ended_at is present' do
-        before do
-          ignored_alert.ended_at = Time.current
-        end
-
-        it { is_expected.to be_invalid }
-      end
-    end
-
     describe 'fingerprint' do
       let_it_be(:fingerprint) { 'fingerprint' }
       let_it_be(:project3, refind: true) { create(:project) }
@@ -112,30 +48,30 @@ RSpec.describe AlertManagement::Alert do
           let_it_be(:existing_alert, refind: true) { create(:alert_management_alert, fingerprint: fingerprint, project: project3) }
 
           # We are only validating uniqueness for non-resolved alerts
-          where(:existing_status, :new_status, :valid) do
-            :resolved      | :triggered    | true
-            :resolved      | :acknowledged | true
-            :resolved      | :ignored      | true
-            :resolved      | :resolved     | true
-            :triggered     | :triggered    | false
-            :triggered     | :acknowledged | false
-            :triggered     | :ignored      | false
-            :triggered     | :resolved     | true
-            :acknowledged  | :triggered    | false
-            :acknowledged  | :acknowledged | false
-            :acknowledged  | :ignored      | false
-            :acknowledged  | :resolved     | true
-            :ignored       | :triggered    | false
-            :ignored       | :acknowledged | false
-            :ignored       | :ignored      | false
-            :ignored       | :resolved     | true
+          where(:existing_status_event, :new_status, :valid) do
+            :resolve      | :triggered    | true
+            :resolve      | :acknowledged | true
+            :resolve      | :ignored      | true
+            :resolve      | :resolved     | true
+            :trigger      | :triggered    | false
+            :trigger      | :acknowledged | false
+            :trigger      | :ignored      | false
+            :trigger      | :resolved     | true
+            :acknowledge  | :triggered    | false
+            :acknowledge  | :acknowledged | false
+            :acknowledge  | :ignored      | false
+            :acknowledge  | :resolved     | true
+            :ignore       | :triggered    | false
+            :ignore       | :acknowledged | false
+            :ignore       | :ignored      | false
+            :ignore       | :resolved     | true
           end
 
           with_them do
             let(:new_alert) { build(:alert_management_alert, new_status, fingerprint: fingerprint, project: project3) }
 
             before do
-              existing_alert.change_status_to(existing_status)
+              existing_alert.update!(status_event: existing_status_event)
             end
 
             if params[:valid]
@@ -194,20 +130,6 @@ RSpec.describe AlertManagement::Alert do
       subject { project.alert_management_alerts.for_iid(triggered_alert.iid) }
 
       it { is_expected.to match_array(triggered_alert) }
-    end
-
-    describe '.for_status' do
-      let(:status) { :resolved }
-
-      subject { AlertManagement::Alert.for_status(status) }
-
-      it { is_expected.to match_array(resolved_alert) }
-
-      context 'with multiple statuses' do
-        let(:status) { [:resolved, :ignored] }
-
-        it { is_expected.to match_array([resolved_alert, ignored_alert]) }
-      end
     end
 
     describe '.for_fingerprint' do
@@ -302,41 +224,7 @@ RSpec.describe AlertManagement::Alert do
     end
   end
 
-  describe '.status_value' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:status, :status_value) do
-      :triggered    | 0
-      :acknowledged | 1
-      :resolved     | 2
-      :ignored      | 3
-      :unknown      | nil
-    end
-
-    with_them do
-      it 'returns status value by its name' do
-        expect(described_class.status_value(status)).to eq(status_value)
-      end
-    end
-  end
-
-  describe '.status_name' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:raw_status, :status) do
-      0  | :triggered
-      1  | :acknowledged
-      2  | :resolved
-      3  | :ignored
-      -1 | nil
-    end
-
-    with_them do
-      it 'returns status name by its values' do
-        expect(described_class.status_name(raw_status)).to eq(status)
-      end
-    end
-  end
+  it_behaves_like 'a model including Escalatable'
 
   describe '.counts_by_status' do
     subject { described_class.counts_by_status }
@@ -454,85 +342,17 @@ RSpec.describe AlertManagement::Alert do
     end
   end
 
+  describe '#open?' do
+    it 'returns true when the status is open status' do
+      expect(triggered_alert.open?).to be true
+      expect(acknowledged_alert.open?).to be true
+      expect(resolved_alert.open?).to be false
+      expect(ignored_alert.open?).to be false
+    end
+  end
+
   describe '#to_reference' do
     it { expect(triggered_alert.to_reference).to eq("^alert##{triggered_alert.iid}") }
-  end
-
-  describe '#trigger' do
-    subject { alert.trigger }
-
-    context 'when alert is in triggered state' do
-      let(:alert) { triggered_alert }
-
-      it 'does not change the alert status' do
-        expect { subject }.not_to change { alert.reload.status }
-      end
-    end
-
-    context 'when alert not in triggered state' do
-      let(:alert) { resolved_alert }
-
-      it 'changes the alert status to triggered' do
-        expect { subject }.to change { alert.triggered? }.to(true)
-      end
-
-      it 'resets ended at' do
-        expect { subject }.to change { alert.reload.ended_at }.to nil
-      end
-    end
-  end
-
-  describe '#acknowledge' do
-    subject { alert.acknowledge }
-
-    let(:alert) { resolved_alert }
-
-    it 'changes the alert status to acknowledged' do
-      expect { subject }.to change { alert.acknowledged? }.to(true)
-    end
-
-    it 'resets ended at' do
-      expect { subject }.to change { alert.reload.ended_at }.to nil
-    end
-  end
-
-  describe '#resolve' do
-    let!(:ended_at) { Time.current }
-
-    subject do
-      alert.ended_at = ended_at
-      alert.resolve
-    end
-
-    context 'when alert already resolved' do
-      let(:alert) { resolved_alert }
-
-      it 'does not change the alert status' do
-        expect { subject }.not_to change { resolved_alert.reload.status }
-      end
-    end
-
-    context 'when alert is not resolved' do
-      let(:alert) { triggered_alert }
-
-      it 'changes alert status to "resolved"' do
-        expect { subject }.to change { alert.resolved? }.to(true)
-      end
-    end
-  end
-
-  describe '#ignore' do
-    subject { alert.ignore }
-
-    let(:alert) { resolved_alert }
-
-    it 'changes the alert status to ignored' do
-      expect { subject }.to change { alert.ignored? }.to(true)
-    end
-
-    it 'resets ended at' do
-      expect { subject }.to change { alert.reload.ended_at }.to nil
-    end
   end
 
   describe '#register_new_event!' do
@@ -545,53 +365,20 @@ RSpec.describe AlertManagement::Alert do
     end
   end
 
-  describe '#status_event_for' do
-    using RSpec::Parameterized::TableSyntax
+  describe '#resolved_at' do
+    subject { resolved_alert.resolved_at }
 
-    where(:for_status, :event) do
-      :triggered     | :trigger
-      'triggered'    | :trigger
-      :acknowledged  | :acknowledge
-      'acknowledged' | :acknowledge
-      :resolved      | :resolve
-      'resolved'     | :resolve
-      :ignored       | :ignore
-      'ignored'      | :ignore
-      :unknown       | nil
-      nil            | nil
-      ''             | nil
-      1              | nil
-    end
-
-    with_them do
-      let(:alert) { build(:alert_management_alert, project: project) }
-
-      it 'returns event by status name' do
-        expect(alert.status_event_for(for_status)).to eq(event)
-      end
-    end
+    it { is_expected.to eq(resolved_alert.ended_at) }
   end
 
-  describe '#change_status_to' do
-    let_it_be_with_reload(:alert) { create(:alert_management_alert, project: project) }
+  describe '#resolved_at=' do
+    let(:resolve_time) { Time.current }
 
-    context 'with valid statuses' do
-      it 'changes the status to triggered' do
-        alert.acknowledge! # change to non-triggered status
-        expect { alert.change_status_to(:triggered) }.to change { alert.triggered? }.to(true)
-      end
+    it 'sets ended_at' do
+      triggered_alert.resolved_at = resolve_time
 
-      %i(acknowledged resolved ignored).each do |status|
-        it "changes the status to #{status}" do
-          expect { alert.change_status_to(status) }.to change { alert.public_send(:"#{status}?") }.to(true)
-        end
-      end
-    end
-
-    context 'with invalid status' do
-      it 'does not change the current status' do
-        expect { alert.change_status_to(nil) }.not_to change { alert.status }
-      end
+      expect(triggered_alert.ended_at).to eq(resolve_time)
+      expect(triggered_alert.resolved_at).to eq(resolve_time)
     end
   end
 end

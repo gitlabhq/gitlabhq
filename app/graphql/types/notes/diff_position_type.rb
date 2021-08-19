@@ -10,29 +10,29 @@ module Types
       field :diff_refs, Types::DiffRefsType, null: false,
             description: 'Information about the branch, HEAD, and base at the time of commenting.'
 
-      field :file_path, GraphQL::STRING_TYPE, null: false,
+      field :file_path, GraphQL::Types::String, null: false,
             description: 'Path of the file that was changed.'
-      field :old_path, GraphQL::STRING_TYPE, null: true,
+      field :old_path, GraphQL::Types::String, null: true,
             description: 'Path of the file on the start SHA.'
-      field :new_path, GraphQL::STRING_TYPE, null: true,
+      field :new_path, GraphQL::Types::String, null: true,
             description: 'Path of the file on the HEAD SHA.'
       field :position_type, Types::Notes::PositionTypeEnum, null: false,
             description: 'Type of file the position refers to.'
 
       # Fields for text positions
-      field :old_line, GraphQL::INT_TYPE, null: true,
+      field :old_line, GraphQL::Types::Int, null: true,
             description: 'Line on start SHA that was changed.'
-      field :new_line, GraphQL::INT_TYPE, null: true,
+      field :new_line, GraphQL::Types::Int, null: true,
             description: 'Line on HEAD SHA that was changed.'
 
       # Fields for image positions
-      field :x, GraphQL::INT_TYPE, null: true,
+      field :x, GraphQL::Types::Int, null: true,
             description: 'X position of the note.'
-      field :y, GraphQL::INT_TYPE, null: true,
+      field :y, GraphQL::Types::Int, null: true,
             description: 'Y position of the note.'
-      field :width, GraphQL::INT_TYPE, null: true,
+      field :width, GraphQL::Types::Int, null: true,
             description: 'Total width of the image.'
-      field :height, GraphQL::INT_TYPE, null: true,
+      field :height, GraphQL::Types::Int, null: true,
             description: 'Total height of the image.'
 
       def old_line

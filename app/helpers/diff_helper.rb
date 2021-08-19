@@ -273,14 +273,14 @@ module DiffHelper
     Gitlab::CodeNavigationPath.new(merge_request.project, merge_request.diff_head_sha)
   end
 
-  def conflicts
+  def conflicts(allow_tree_conflicts: false)
     return unless options[:merge_ref_head_diff]
 
-    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request) # rubocop:disable CodeReuse/ServiceClass
+    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
 
-    return unless conflicts_service.can_be_resolved_in_ui?
+    return unless allow_tree_conflicts || conflicts_service.can_be_resolved_in_ui?
 
-    conflicts_service.conflicts.files.index_by(&:our_path)
+    conflicts_service.conflicts.files.index_by(&:path)
   end
 
   def log_overflow_limits(diff_files:, collection_overflow:)

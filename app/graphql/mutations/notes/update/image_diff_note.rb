@@ -11,7 +11,7 @@ module Mutations
         DESC
 
         argument :body,
-                 GraphQL::STRING_TYPE,
+                 GraphQL::Types::String,
                  required: false,
                  description: copy_field_description(Types::Notes::NoteType, :body)
 

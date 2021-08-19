@@ -4,6 +4,9 @@ module IncidentManagement
   class AddSeveritySystemNoteWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+    worker_resource_boundary :cpu
+
     sidekiq_options retry: 3
 
     queue_namespace :incident_management

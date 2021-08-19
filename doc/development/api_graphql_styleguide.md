@@ -11,9 +11,12 @@ This document outlines the style guide for the GitLab [GraphQL API](../api/graph
 ## How GitLab implements GraphQL
 
 <!-- vale gitlab.Spelling = NO -->
+
 We use the [GraphQL Ruby gem](https://graphql-ruby.org/) written by [Robert Mosolgo](https://github.com/rmosolgo/).
+In addition, we have a subscription to [GraphQL Pro](https://graphql.pro/). For
+details see [GraphQL Pro subscription](graphql_guide/graphql_pro.md).
+
 <!-- vale gitlab.Spelling = YES -->
-In addition, we have a subscription to [GraphQL Pro](https://graphql.pro/). For details see [GraphQL Pro subscription](graphql_guide/graphql_pro.md).
 
 All GraphQL queries are directed to a single endpoint
 ([`app/controllers/graphql_controller.rb#execute`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app%2Fcontrollers%2Fgraphql_controller.rb)),
@@ -133,20 +136,24 @@ For example, `app/graphql/types/issue_type.rb`:
 ```ruby
 graphql_name 'Issue'
 
-field :iid, GraphQL::ID_TYPE, null: true
-field :title, GraphQL::STRING_TYPE, null: true
+field :iid, GraphQL::Types::ID, null: true
+field :title, GraphQL::Types::String, null: true
 
 # we also have a method here that we've defined, that extends `field`
 markdown_field :title_html, null: true
-field :description, GraphQL::STRING_TYPE, null: true
+field :description, GraphQL::Types::String, null: true
 markdown_field :description_html, null: true
 ```
 
 We give each type a name (in this case `Issue`).
 
 The `iid`, `title` and `description` are _scalar_ GraphQL types.
-`iid` is a `GraphQL::ID_TYPE`, a special string type that signifies a unique ID.
-`title` and `description` are regular `GraphQL::STRING_TYPE` types.
+`iid` is a `GraphQL::Types::ID`, a special string type that signifies a unique ID.
+`title` and `description` are regular `GraphQL::Types::String` types.
+
+Note that the old scalar types `GraphQL:ID`, `GraphQL::INT_TYPE`, `GraphQL::STRING_TYPE`,
+and `GraphQL:BOOLEAN_TYPE` are no longer allowed. Please use `GraphQL::Types::ID`,
+`GraphQL::Types::Int`, `GraphQL::Types::String`, and `GraphQL::Types::Boolean`.
 
 When exposing a model through the GraphQL API, we do so by creating a
 new type in `app/graphql/types`. You can also declare custom GraphQL data types
@@ -225,7 +232,7 @@ Using an example from
 [`Types::Notes::DiscussionType`](https://gitlab.com/gitlab-org/gitlab/-/blob/3c95bd9/app/graphql/types/notes/discussion_type.rb#L24-26):
 
 ```ruby
-field :reply_id, GraphQL::ID_TYPE
+field :reply_id, GraphQL::Types::ID
 
 def reply_id
   ::Gitlab::GlobalId.build(object, id: object.reply_id)
@@ -402,7 +409,7 @@ class BranchResolver < BaseResolver
   type ::Types::BranchType, null: true
   calls_gitaly!
 
-  argument name: ::GraphQL::STRING_TYPE, required: true
+  argument name: ::GraphQL::Types::String, required: true
 
   def resolve(name:)
     object.branch(name)
@@ -499,7 +506,7 @@ everyone.
 Example:
 
 ```ruby
-field :test_field, type: GraphQL::STRING_TYPE,
+field :test_field, type: GraphQL::Types::String,
       null: true,
       description: 'Some test field.',
       feature_flag: :my_feature_flag
@@ -523,7 +530,7 @@ When applying a feature flag to toggle the value of a field, the
 Example:
 
 ```ruby
-field :foo, GraphQL::STRING_TYPE,
+field :foo, GraphQL::Types::String,
       null: true,
       description: 'Some test field. Will always return `null`' \
                    'if `my_feature_flag` feature flag is disabled.'
@@ -553,7 +560,7 @@ The value of the property is a `Hash` of:
 Example:
 
 ```ruby
-field :token, GraphQL::STRING_TYPE, null: true,
+field :token, GraphQL::Types::String, null: true,
       deprecated: { reason: 'Login via token has been removed', milestone: '10.0' },
       description: 'Token for login.'
 ```
@@ -795,15 +802,15 @@ We can use GraphQL types like this:
 ```ruby
 module Types
   class ChartType < BaseObject
-    field :title, GraphQL::STRING_TYPE, null: true, description: 'Title of the chart.'
+    field :title, GraphQL::Types::String, null: true, description: 'Title of the chart.'
     field :data, [Types::ChartDatumType], null: true, description: 'Data of the chart.'
   end
 end
 
 module Types
   class ChartDatumType < BaseObject
-    field :x, GraphQL::INT_TYPE, null: true, description: 'X-axis value of the chart datum.'
-    field :y, GraphQL::INT_TYPE, null: true, description: 'Y-axis value of the chart datum.'
+    field :x, GraphQL::Types::Int, null: true, description: 'X-axis value of the chart datum.'
+    field :y, GraphQL::Types::Int, null: true, description: 'Y-axis value of the chart datum.'
   end
 end
 ```
@@ -817,7 +824,7 @@ A description of a field or argument is given using the `description:`
 keyword. For example:
 
 ```ruby
-field :id, GraphQL::ID_TYPE, description: 'ID of the resource.'
+field :id, GraphQL::Types::ID, description: 'ID of the resource.'
 ```
 
 Descriptions of fields and arguments are viewable to users through:
@@ -833,8 +840,8 @@ descriptions:
 - Mention the name of the resource in the description. Example:
   `'Labels of the issue'` (issue being the resource).
 - Use `"{x} of the {y}"` where possible. Example: `'Title of the issue'`.
-  Do not start descriptions with `The`.
-- Descriptions of `GraphQL::BOOLEAN_TYPE` fields should answer the question: "What does
+  Do not start descriptions with `The` or `A`, for consistency and conciseness.
+- Descriptions of `GraphQL::Types::Boolean` fields should answer the question: "What does
   this field do?". Example: `'Indicates project has a Git repository'`.
 - Always include the word `"timestamp"` when describing an argument or
   field of type `Types::TimeType`. This lets the reader know that the
@@ -844,8 +851,8 @@ descriptions:
 Example:
 
 ```ruby
-field :id, GraphQL::ID_TYPE, description: 'ID of the issue.'
-field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential.'
+field :id, GraphQL::Types::ID, description: 'ID of the issue.'
+field :confidential, GraphQL::Types::Boolean, description: 'Indicates the issue is confidential.'
 field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed.'
 ```
 
@@ -861,7 +868,7 @@ passing it the type, and field name to copy the description of.
 Example:
 
 ```ruby
-argument :title, GraphQL::STRING_TYPE,
+argument :title, GraphQL::Types::String,
           required: false,
           description: copy_field_description(Types::MergeRequestType, :title)
 ```
@@ -874,7 +881,7 @@ provide a `see` property on fields. For example:
 
 ```ruby
 field :genus,
-      type: GraphQL::STRING_TYPE,
+      type: GraphQL::Types::String,
       null: true,
       description: 'A taxonomic genus.'
       see: { 'Wikipedia page on genera' => 'https://wikipedia.org/wiki/Genus' }
@@ -923,7 +930,7 @@ class PostResolver < BaseResolver
   authorize :read_blog
   description 'Blog posts, optionally filtered by name'
 
-  argument :name, [::GraphQL::STRING_TYPE], required: false, as: :slug
+  argument :name, [::GraphQL::Types::String], required: false, as: :slug
 
   alias_method :blog, :object
 
@@ -1015,10 +1022,10 @@ class JobsResolver < BaseResolver
   type JobType.connection_type, null: true
   authorize :read_pipeline
 
-  argument :name, [::GraphQL::STRING_TYPE], required: false
+  argument :name, [::GraphQL::Types::String], required: false
 
   when_single do
-    argument :name, ::GraphQL::STRING_TYPE, required: true
+    argument :name, ::GraphQL::Types::String, required: true
   end
 
   def resolve(**args)
@@ -1039,13 +1046,13 @@ class JobsResolver < BaseResolver
   type JobType.connection_type, null: true
   authorize :read_pipeline
 
-  argument :name, [::GraphQL::STRING_TYPE], required: false
+  argument :name, [::GraphQL::Types::String], required: false
   argument :id, [::Types::GlobalIDType[::Job]],
            required: false,
            prepare: ->(ids, ctx) { ids.map(&:model_id) }
 
   when_single do
-    argument :name, ::GraphQL::STRING_TYPE, required: false
+    argument :name, ::GraphQL::Types::String, required: false
     argument :id, ::Types::GlobalIDType[::Job],
              required: false
              prepare: ->(id, ctx) { id.model_id }
@@ -1357,10 +1364,35 @@ Arguments for a mutation are defined using `argument`.
 Example:
 
 ```ruby
-argument :my_arg, GraphQL::STRING_TYPE,
+argument :my_arg, GraphQL::Types::String,
          required: true,
          description: "A description of the argument."
 ```
+
+#### Nullability
+
+Arguments can be marked as `required: true` which means the value must be present and not `null`.
+If a required argument's value can be `null`, use the `required: :nullable` declaration.
+
+Example:
+
+```ruby
+argument :due_date,
+         Types::TimeType,
+         required: :nullable,
+         description: 'The desired due date for the issue. Due date is removed if null.'
+```
+
+In the above example, the `due_date` argument must be given, but unlike the GraphQL spec, the value can be `null`.
+This allows 'unsetting' the due date in a single mutation rather than creating a new mutation for removing the due date.
+
+```ruby
+{ due_date: null } # => OK
+{ due_date: "2025-01-10" } # => OK
+{  } # => invalid (not given)
+```
+
+#### Keywords
 
 Each GraphQL `argument` defined is passed to the `#resolve` method
 of a mutation as keyword arguments.
@@ -1373,6 +1405,8 @@ def resolve(my_arg:)
 end
 ```
 
+#### Input Types
+
 `graphql-ruby` wraps up arguments into an
 [input type](https://graphql.org/learn/schema/#input-types).
 
@@ -1382,16 +1416,16 @@ defines these arguments (some
 [through inheritance](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/base.rb)):
 
 ```ruby
-argument :project_path, GraphQL::ID_TYPE,
+argument :project_path, GraphQL::Types::ID,
          required: true,
          description: "The project the merge request to mutate is in."
 
-argument :iid, GraphQL::STRING_TYPE,
+argument :iid, GraphQL::Types::String,
          required: true,
          description: "The IID of the merge request to mutate."
 
 argument :draft,
-         GraphQL::BOOLEAN_TYPE,
+         GraphQL::Types::Boolean,
          required: false,
          description: <<~DESC
            Whether or not to set the merge request as a draft.

@@ -18,10 +18,10 @@ import (
 
 	"golang.org/x/image/tiff"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/filestore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/lsif_transformer/parser"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload/exif"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lsif_transformer/parser"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 )
 
 // ErrInjectedClientParam means that the client sent a parameter that overrides one of our own fields

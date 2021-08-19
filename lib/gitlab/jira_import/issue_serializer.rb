@@ -52,9 +52,10 @@ module Gitlab
       end
 
       def map_user_id(jira_user)
-        return unless jira_user&.dig('accountId')
+        jira_user_identifier = jira_user&.dig('accountId') || jira_user&.dig('key')
+        return unless jira_user_identifier
 
-        Gitlab::JiraImport.get_user_mapping(project.id, jira_user['accountId'])
+        Gitlab::JiraImport.get_user_mapping(project.id, jira_user_identifier)
       end
 
       def reporter

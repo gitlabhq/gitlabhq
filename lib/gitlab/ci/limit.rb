@@ -24,10 +24,13 @@ module Gitlab
       end
 
       def log_error!(extra_context = {})
-        error = LimitExceededError.new(message)
-        # TODO: change this to Gitlab::ErrorTracking.log_exception(error, extra_context)
-        # https://gitlab.com/gitlab-org/gitlab/issues/32906
-        ::Gitlab::ErrorTracking.track_exception(error, extra_context)
+        ::Gitlab::ErrorTracking.log_exception(limit_exceeded_error, extra_context)
+      end
+
+      protected
+
+      def limit_exceeded_error
+        LimitExceededError.new(message)
       end
     end
   end

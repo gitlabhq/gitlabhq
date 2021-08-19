@@ -17,10 +17,10 @@ module DependencyProxy
 
       head_result = DependencyProxy::HeadManifestService.new(@image, @tag, @token).execute
 
-      return success(manifest: @manifest) if cached_manifest_matches?(head_result)
+      return success(manifest: @manifest, from_cache: true) if cached_manifest_matches?(head_result)
 
       pull_new_manifest
-      respond
+      respond(from_cache: false)
     rescue Timeout::Error, *Gitlab::HTTP::HTTP_ERRORS
       respond
     end
@@ -44,9 +44,9 @@ module DependencyProxy
       @manifest && @manifest.digest == head_result[:digest] && @manifest.content_type == head_result[:content_type]
     end
 
-    def respond
+    def respond(from_cache: true)
       if @manifest.persisted?
-        success(manifest: @manifest)
+        success(manifest: @manifest, from_cache: from_cache)
       else
         error('Failed to download the manifest from the external registry', 503)
       end

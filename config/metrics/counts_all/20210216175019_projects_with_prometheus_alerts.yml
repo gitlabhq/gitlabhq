@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.projects_with_prometheus_alerts
 description: Projects with Prometheus alerting enabled
 product_section: ops
@@ -16,3 +16,4 @@ distribution:
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

@@ -48,3 +48,5 @@ module API
     end
   end
 end
+
+API::Appearance.prepend_mod

@@ -246,7 +246,7 @@ class Snippet < ApplicationRecord
     notes.includes(:author)
   end
 
-  def check_for_spam?
+  def check_for_spam?(user:)
     visibility_level_changed?(to: Snippet::PUBLIC) ||
       (public? && (title_changed? || content_changed?))
   end

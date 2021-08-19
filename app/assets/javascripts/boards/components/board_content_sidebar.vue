@@ -87,6 +87,7 @@ export default {
       v-bind="$attrs"
       :open="isSidebarOpen"
       class="boards-sidebar gl-absolute"
+      variant="sidebar"
       @close="handleClose"
     >
       <template #title>
@@ -159,7 +160,7 @@ export default {
           :issuable-type="issuableType"
           data-testid="sidebar-due-date"
         />
-        <board-sidebar-labels-select class="labels" />
+        <board-sidebar-labels-select class="block labels" />
         <sidebar-weight-widget
           v-if="weightFeatureAvailable"
           :iid="activeBoardItem.iid"

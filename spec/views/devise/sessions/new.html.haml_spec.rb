@@ -48,7 +48,7 @@ RSpec.describe 'devise/sessions/new' do
       render
 
       expect(rendered).to have_selector('.new-session-tabs')
-      expect(rendered).to have_selector('[data-qa-selector="ldap_tab"]')
+      expect(rendered).to have_selector('[data-qa-selector="ldap_tab"]') # rubocop:disable QA/SelectorUsage
       expect(rendered).to have_field('LDAP Username')
     end
 
@@ -58,7 +58,7 @@ RSpec.describe 'devise/sessions/new' do
       render
 
       expect(rendered).to have_content('No authentication methods configured')
-      expect(rendered).not_to have_selector('[data-qa-selector="ldap_tab"]')
+      expect(rendered).not_to have_selector('[data-qa-selector="ldap_tab"]') # rubocop:disable QA/SelectorUsage
       expect(rendered).not_to have_field('LDAP Username')
     end
   end

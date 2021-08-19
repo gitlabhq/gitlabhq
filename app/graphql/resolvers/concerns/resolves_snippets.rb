@@ -2,6 +2,7 @@
 
 module ResolvesSnippets
   extend ActiveSupport::Concern
+  include ResolvesIds
 
   included do
     type Types::SnippetType.connection_type, null: true
@@ -12,7 +13,7 @@ module ResolvesSnippets
 
     argument :visibility, Types::Snippets::VisibilityScopesEnum,
              required: false,
-             description: 'The visibility of the snippet.'
+             description: 'Visibility of the snippet.'
   end
 
   def resolve(**args)
@@ -27,20 +28,9 @@ module ResolvesSnippets
 
   def snippet_finder_params(args)
     {
-      ids: resolve_ids(args[:ids]),
+      ids: resolve_ids(args[:ids], ::Types::GlobalIDType[::Snippet]),
       scope: args[:visibility]
     }.merge(options_by_type(args[:type]))
-  end
-
-  def resolve_ids(ids, type = ::Types::GlobalIDType[::Snippet])
-    Array.wrap(ids).map do |id|
-      next unless id.present?
-
-      # TODO: remove this line when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-      id = type.coerce_isolated_input(id)
-      id.model_id
-    end.compact
   end
 
   def options_by_type(type)

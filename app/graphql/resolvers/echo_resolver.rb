@@ -2,11 +2,11 @@
 
 module Resolvers
   class EchoResolver < BaseResolver
-    type ::GraphQL::STRING_TYPE, null: false
+    type ::GraphQL::Types::String, null: false
     description 'Testing endpoint to validate the API with'
 
     argument :text,
-             type: GraphQL::STRING_TYPE,
+             type: GraphQL::Types::String,
              required: true,
              description: 'Text to echo back.'
 

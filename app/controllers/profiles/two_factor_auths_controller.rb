@@ -57,6 +57,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         @codes = user.generate_otp_backup_codes!
       end
 
+      helpers.dismiss_account_recovery_regular_check
+
       render 'create'
     else
       @error = _('Invalid pin code')
@@ -105,6 +107,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def codes
     Users::UpdateService.new(current_user, user: current_user).execute! do |user|
       @codes = user.generate_otp_backup_codes!
+
+      helpers.dismiss_account_recovery_regular_check
     end
   end
 

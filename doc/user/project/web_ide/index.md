@@ -234,15 +234,28 @@ different branch.
 
 > - Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18059) in [GitLab Free](https://about.gitlab.com/pricing/) 10.7.
 > - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in [GitLab Free](https://about.gitlab.com/pricing/) 13.1.
+> - Side-by-side Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68274) in [GitLab Free](https://about.gitlab.com/pricing/) 14.3
 
-When you edit Markdown files in the Web IDE, you can preview your changes by
-clicking the **Preview Markdown** tab above the file editor. The Markdown preview
-supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
+To edit Markdown files in the Web IDE:
 
-You can also upload any local images by pasting them directly in the Markdown file.
+1. Go to your repository, and navigate to the Markdown page you want to edit.
+1. Select **Edit in Web IDE**, and GitLab loads the page in a tab in the editor.
+1. Make your changes to the file. GitLab supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
+1. When your changes are complete, select **Commit** in the left sidebar.
+1. Add a commit message, select the branch you want to commit to, and select **Commit**.
+
+When editing, you can upload local images by pasting them directly in the Markdown file.
 The image is uploaded to the same directory and is named `image.png` by default.
 If another file already exists with the same name, a numeric suffix is automatically
 added to the filename.
+
+There are two ways to preview Markdown content in the Web IDE: 
+
+1. At the top of the file's tab, select **Preview Markdown** to preview the formatting
+   in your file. You can't edit the file in this view.
+   1. To add more changes to the file, select **Edit**.
+1. Right-click or use the keyboard shortcut `Command/Control + Shift + P` and
+   select **Preview Markdown** to toggle a live Markdown preview panel.
 
 ## Live Preview
 
@@ -362,6 +375,8 @@ terminal:
 After the terminal has started, the console is displayed and we could access
 the project repository files.
 
+When you use the image keyword, a container with the specified image is created. If you specify an image, it has no effect. This is the case when you use the [shell executor](https://docs.gitlab.com/runner/executors/shell.html).
+
 **Important**. The terminal job is branch dependent. This means that the
 configuration file used to trigger and configure the terminal is the one in
 the selected branch of the Web IDE.
@@ -452,7 +467,7 @@ when:
 
 The Web IDE has a few limitations:
 
-- Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, please note that the user is limited to having only one
+- Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, the user is limited to having only one
   active terminal at a time.
 
 - LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository is overwritten with the modified LFS file content.

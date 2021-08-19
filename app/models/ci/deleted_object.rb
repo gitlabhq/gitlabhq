@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class DeletedObject < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class DeletedObject < Ci::ApplicationRecord
     mount_uploader :file, DeletedObjectUploader
 
     scope :ready_for_destruction, ->(limit) do

@@ -240,10 +240,14 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'is possible to retry the success job' do
+        it 'is possible to retry the success job', :sidekiq_might_not_need_inline do
           find('#ci-badge-build .ci-action-icon-container').click
+          wait_for_requests
 
           expect(page).not_to have_content('Retry job')
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
       end
 
@@ -282,10 +286,14 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'is possible to retry the failed build' do
+        it 'is possible to retry the failed build', :sidekiq_might_not_need_inline do
           find('#ci-badge-test .ci-action-icon-container').click
+          wait_for_requests
 
           expect(page).not_to have_content('Retry job')
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
 
         it 'includes the failure reason' do
@@ -308,10 +316,14 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'is possible to play the manual job' do
+        it 'is possible to play the manual job', :sidekiq_might_not_need_inline do
           find('#ci-badge-manual-build .ci-action-icon-container').click
+          wait_for_requests
 
           expect(page).not_to have_content('Play job')
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
       end
 
@@ -411,10 +423,17 @@ RSpec.describe 'Pipeline', :js do
       context 'when retrying' do
         before do
           find('[data-testid="retryPipeline"]').click
+          wait_for_requests
         end
 
         it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do
           expect(page).not_to have_content('Retry')
+        end
+
+        it 'shows running status in pipeline header', :sidekiq_might_not_need_inline do
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
       end
     end
@@ -437,44 +456,28 @@ RSpec.describe 'Pipeline', :js do
       end
     end
 
-    shared_context 'delete pipeline' do
-      context 'deleting pipeline' do
-        context 'when user can not delete' do
-          before do
-            visit_pipeline
-          end
-
-          it { expect(page).not_to have_button('Delete') }
-        end
-
-        context 'when deleting' do
-          before do
-            group.add_owner(user)
-
-            visit_pipeline
-
-            click_button 'Delete'
-            click_button 'Delete pipeline'
-          end
-
-          it 'redirects to pipeline overview page', :sidekiq_inline do
-            expect(page).to have_content('The pipeline has been deleted')
-            expect(current_path).to eq(project_pipelines_path(project))
-          end
-        end
-      end
-    end
-
-    context 'when cancel_pipelines_prior_to_destroy is enabled' do
-      include_context 'delete pipeline'
-    end
-
-    context 'when cancel_pipelines_prior_to_destroy is disabled' do
+    context 'when user can not delete' do
       before do
-        stub_feature_flags(cancel_pipelines_prior_to_destroy: false)
+        visit_pipeline
       end
 
-      include_context 'delete pipeline'
+      it { expect(page).not_to have_button('Delete') }
+    end
+
+    context 'when deleting' do
+      before do
+        group.add_owner(user)
+
+        visit_pipeline
+
+        click_button 'Delete'
+        click_button 'Delete pipeline'
+      end
+
+      it 'redirects to pipeline overview page', :sidekiq_inline do
+        expect(page).to have_content('The pipeline has been deleted')
+        expect(current_path).to eq(project_pipelines_path(project))
+      end
     end
 
     context 'when pipeline ref does not exist in repository anymore' do
@@ -775,65 +778,10 @@ RSpec.describe 'Pipeline', :js do
     describe 'GET /:project/-/pipelines/:id' do
       subject { visit project_pipeline_path(project, pipeline) }
 
-      # remove when :graphql_pipeline_details flag is removed
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/299112
-      context 'when :graphql_pipeline_details flag is off' do
-        before do
-          stub_feature_flags(graphql_pipeline_details: false)
-          stub_feature_flags(graphql_pipeline_details_users: false)
-        end
-
-        it 'shows deploy job as created' do
-          subject
-
-          within('.pipeline-header-container') do
-            expect(page).to have_content('pending')
-          end
-
-          within('.js-pipeline-graph') do
-            within '.stage-column:nth-child(1)' do
-              expect(page).to have_content('test')
-              expect(page).to have_css('.ci-status-icon-pending')
-            end
-
-            within '.stage-column:nth-child(2)' do
-              expect(page).to have_content('deploy')
-              expect(page).to have_css('.ci-status-icon-created')
-            end
-          end
-        end
-
-        context 'when test job succeeded' do
-          before do
-            test_job.success!
-          end
-
-          it 'shows deploy job as pending' do
-            subject
-
-            within('.pipeline-header-container') do
-              expect(page).to have_content('running')
-            end
-
-            within('.pipeline-graph') do
-              within '.stage-column:nth-child(1)' do
-                expect(page).to have_content('test')
-                expect(page).to have_css('.ci-status-icon-success')
-              end
-
-              within '.stage-column:nth-child(2)' do
-                expect(page).to have_content('deploy')
-                expect(page).to have_css('.ci-status-icon-pending')
-              end
-            end
-          end
-        end
-      end
-
       it 'shows deploy job as created' do
         subject
 
-        within('.pipeline-header-container') do
+        within('.js-pipeline-header-container') do
           expect(page).to have_content('pending')
         end
 
@@ -858,7 +806,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows deploy job as pending' do
           subject
 
-          within('.pipeline-header-container') do
+          within('.js-pipeline-header-container') do
             expect(page).to have_content('running')
           end
 
@@ -887,7 +835,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows deploy job as waiting for resource' do
           subject
 
-          within('.pipeline-header-container') do
+          within('.js-pipeline-header-container') do
             expect(page).to have_content('waiting')
           end
 
@@ -895,29 +843,6 @@ RSpec.describe 'Pipeline', :js do
             within(all('[data-testid="stage-column"]')[1]) do
               expect(page).to have_content('deploy')
               expect(page).to have_css('.ci-status-icon-waiting-for-resource')
-            end
-          end
-        end
-
-        # remove when :graphql_pipeline_details flag is removed
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/299112
-        context 'when :graphql_pipeline_details flag is off' do
-          before do
-            stub_feature_flags(graphql_pipeline_details: false)
-            stub_feature_flags(graphql_pipeline_details_users: false)
-          end
-          it 'shows deploy job as waiting for resource' do
-            subject
-
-            within('.pipeline-header-container') do
-              expect(page).to have_content('waiting')
-            end
-
-            within('.pipeline-graph') do
-              within '.stage-column:nth-child(2)' do
-                expect(page).to have_content('deploy')
-                expect(page).to have_css('.ci-status-icon-waiting-for-resource')
-              end
             end
           end
         end
@@ -930,7 +855,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as pending' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('running')
             end
 
@@ -938,29 +863,6 @@ RSpec.describe 'Pipeline', :js do
               within(all('[data-testid="stage-column"]')[1]) do
                 expect(page).to have_content('deploy')
                 expect(page).to have_css('.ci-status-icon-pending')
-              end
-            end
-          end
-
-          # remove when :graphql_pipeline_details flag is removed
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/299112
-          context 'when :graphql_pipeline_details flag is off' do
-            before do
-              stub_feature_flags(graphql_pipeline_details: false)
-              stub_feature_flags(graphql_pipeline_details_users: false)
-            end
-            it 'shows deploy job as pending' do
-              subject
-
-              within('.pipeline-header-container') do
-                expect(page).to have_content('running')
-              end
-
-              within('.pipeline-graph') do
-                within '.stage-column:nth-child(2)' do
-                  expect(page).to have_content('deploy')
-                  expect(page).to have_css('.ci-status-icon-pending')
-                end
               end
             end
           end
@@ -975,7 +877,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as waiting for resource' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('waiting')
             end
 
@@ -997,7 +899,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as waiting for resource' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('waiting')
             end
 
@@ -1230,23 +1132,6 @@ RSpec.describe 'Pipeline', :js do
         expect(current_path).to eq(pipeline_path(pipeline))
         expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.js-pipeline-graph')
-      end
-
-      # remove when :graphql_pipeline_details flag is removed
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/299112
-      context 'when :graphql_pipeline_details flag is off' do
-        before do
-          stub_feature_flags(graphql_pipeline_details: false)
-          stub_feature_flags(graphql_pipeline_details_users: false)
-        end
-
-        it 'displays the pipeline graph' do
-          subject
-
-          expect(current_path).to eq(pipeline_path(pipeline))
-          expect(page).not_to have_content('Failed Jobs')
-          expect(page).to have_selector('.pipeline-visualization')
-        end
       end
     end
   end

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.issues_using_zoom_quick_actions
 description: Count of issues where a user have added AND removed a zoom meeting using
   slash commands
@@ -18,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

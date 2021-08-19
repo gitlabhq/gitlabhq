@@ -32,7 +32,7 @@ module QA
 
         def enabled?(key, **scopes)
           feature = JSON.parse(get_features).find { |flag| flag['name'] == key.to_s }
-          feature && (feature['state'] == 'on' || feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], scopes))
+          feature && (feature['state'] == 'on' || feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], **scopes))
         end
 
         private
@@ -43,7 +43,7 @@ module QA
           raise AuthorizationError, "Administrator access is required to enable/disable feature flags. #{e.message}"
         end
 
-        def enabled_scope?(gates, scopes)
+        def enabled_scope?(gates, **scopes)
           scopes.each do |key, value|
             case key
             when :project, :group, :user
@@ -71,16 +71,16 @@ module QA
         #   scopes: Any scope (user, project, group) to restrict the change to
         def set_and_verify(key, enable:, **scopes)
           msg = "#{enable ? 'En' : 'Dis'}abling feature: #{key}"
-          msg += " for scope \"#{scopes_to_s(scopes)}\"" if scopes.present?
+          msg += " for scope \"#{scopes_to_s(**scopes)}\"" if scopes.present?
           QA::Runtime::Logger.info(msg)
 
           Support::Retrier.retry_on_exception(sleep_interval: 2) do
-            set_feature(key, enable, scopes)
+            set_feature(key, enable, **scopes)
 
             is_enabled = nil
 
             QA::Support::Waiter.wait_until(sleep_interval: 1) do
-              is_enabled = enabled?(key, scopes)
+              is_enabled = enabled?(key, **scopes)
               is_enabled == enable || !enable && scopes.present?
             end
 

@@ -22,7 +22,7 @@ module Issuable
       SQL
 
       loop do
-        result = ActiveRecord::Base.connection.execute(delete_query)
+        result = LabelLink.connection.execute(delete_query)
 
         break if result.cmd_tuples == 0
       end

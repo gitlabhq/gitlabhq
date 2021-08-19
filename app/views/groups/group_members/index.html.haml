@@ -2,11 +2,10 @@
 - page_title _('Group members')
 - groups_select_tag_data = group_select_data(@group).merge({ skip_groups: @skip_groups })
 
-.js-remove-member-modal
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap
-      - if can_manage_members?
+      - if can_admin_group_member?(@group)
         .gl-w-half.gl-xs-w-full
           %h4
             = _('Group members')
@@ -21,7 +20,7 @@
                 trigger_source: 'group-members-page',
                 display_text: _('Invite members') } }
           = render 'groups/invite_members_modal', group: @group
-    - if can_manage_members? && Feature.disabled?(:invite_members_group_modal, @group)
+    - if can_admin_group_member?(@group) && Feature.disabled?(:invite_members_group_modal, @group)
       %hr.gl-mt-4
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }
@@ -36,9 +35,9 @@
 
     = render_if_exists 'groups/group_members/ldap_sync'
 
-    .js-group-members-list-app{ data: { members_data: group_members_app_data_json(@group,
-                                                                                  members: @members,
-                                                                                  invited: @invited_members,
-                                                                                  access_requests: @requesters) } }
+    .js-group-members-list-app{ data: { members_data: group_members_app_data(@group,
+                                                                             members: @members,
+                                                                             invited: @invited_members,
+                                                                             access_requests: @requesters).to_json } }
       .loading
         .gl-spinner.gl-spinner-md

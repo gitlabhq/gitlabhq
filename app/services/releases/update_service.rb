@@ -7,8 +7,6 @@ module Releases
         return error
       end
 
-      track_protected_tag_access_error!
-
       if param_for_milestone_titles_provided?
         previous_milestones = release.milestones.map(&:title)
         params[:milestones] = milestones
@@ -18,7 +16,7 @@ module Releases
       # when it does assign_attributes instead of actual saving
       # this leads to the validation error being raised
       # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43385
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         if release.update(params)
           execute_hooks(release, 'update')
           success(tag: existing_tag, release: release, milestones_updated: milestones_updated?(previous_milestones))

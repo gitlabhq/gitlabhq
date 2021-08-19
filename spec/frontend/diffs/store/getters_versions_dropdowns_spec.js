@@ -1,3 +1,4 @@
+import setWindowLocation from 'helpers/set_window_location_helper';
 import {
   DIFF_COMPARE_BASE_VERSION_INDEX,
   DIFF_COMPARE_HEAD_VERSION_INDEX,
@@ -47,15 +48,12 @@ describe('Compare diff version dropdowns', () => {
     let expectedFirstVersion;
     let expectedBaseVersion;
     let expectedHeadVersion;
-    const originalLocation = window.location;
+    const originalLocation = window.location.href;
 
     const setupTest = (includeDiffHeadParam) => {
       const diffHeadParam = includeDiffHeadParam ? '?diff_head=true' : '';
 
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: { search: diffHeadParam },
-      });
+      setWindowLocation(diffHeadParam);
 
       expectedFirstVersion = {
         ...diffsMockData[1],
@@ -91,7 +89,7 @@ describe('Compare diff version dropdowns', () => {
     };
 
     afterEach(() => {
-      window.location = originalLocation;
+      setWindowLocation(originalLocation);
     });
 
     it('base version selected', () => {

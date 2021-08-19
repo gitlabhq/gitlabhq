@@ -1,0 +1,10 @@
+- add_to_breadcrumbs _('Integrations'), scoped_integrations_path
+- breadcrumb_title @integration.title
+- page_title @integration.title, _('Integrations')
+- @content_class = 'limit-container-width' unless fluid_layout
+
+%h3.page-title
+  = @integration.title
+
+= render 'shared/integrations/tabs', integration: @integration, active_tab: 'overrides' do
+  .js-vue-integration-overrides{ data: integration_overrides_data(@integration) }

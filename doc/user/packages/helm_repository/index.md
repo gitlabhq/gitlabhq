@@ -8,10 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18997) in GitLab 14.1.
 
-WARNING:
-The Helm package registry for GitLab is under development and isn't ready for production use due to
-limited functionality.
-
 Publish Helm packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 
@@ -20,7 +16,10 @@ clients use, see the [Helm API documentation](../../../api/packages/helm.md).
 
 ## Build a Helm package
 
-Creating a Helm package is documented [in the Helm documentation](https://helm.sh/docs/intro/using_helm/#creating-your-own-charts).
+Read more in the Helm documentation about these topics:
+
+- [Create your own Helm charts](https://helm.sh/docs/intro/using_helm/#creating-your-own-charts)
+- [Package a Helm chart into a chart archive](https://helm.sh/docs/helm/helm_package/#helm-package)
 
 ## Authenticate to the Helm repository
 
@@ -31,6 +30,10 @@ To authenticate to the Helm repository, you need either:
 - A [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token).
 
 ## Publish a package
+
+NOTE:
+You can publish Helm charts with duplicate names or versions. If duplicates exist, GitLab always
+returns the chart with the latest version.
 
 Once built, a chart can be uploaded to the `stable` channel with `curl` or `helm-push`:
 
@@ -87,3 +90,12 @@ helm repo update
 To update the Helm client with the most currently available charts.
 
 See [Using Helm](https://helm.sh/docs/intro/using_helm/) for more information.
+
+## Troubleshooting
+
+### The chart is not visible in the Package Registry after uploading
+
+Check the [Sidekiq log](../../../administration/logs.md#sidekiqlog)
+for any related errors. If you see `Validation failed: Version is invalid`, it means that the
+version in your `Chart.yaml` file does not follow [Helm Chart versioning specifications](https://helm.sh/docs/topics/charts/#charts-and-versioning).
+To fix the error, use the correct version syntax and upload the chart again.

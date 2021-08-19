@@ -5,6 +5,8 @@ module Ci
     class CreateQualityReportWorker
       include ApplicationWorker
 
+      data_consistency :always
+
       sidekiq_options retry: 3
 
       queue_namespace :pipeline_background

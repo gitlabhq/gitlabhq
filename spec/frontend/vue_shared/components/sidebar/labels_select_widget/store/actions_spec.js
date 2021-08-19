@@ -1,8 +1,4 @@
-import MockAdapter from 'axios-mock-adapter';
-
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
-import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/vue_shared/components/sidebar/labels_select_widget/store/actions';
 import * as types from '~/vue_shared/components/sidebar/labels_select_widget/store/mutation_types';
 import defaultState from '~/vue_shared/components/sidebar/labels_select_widget/store/state';
@@ -69,90 +65,6 @@ describe('LabelsSelect Actions', () => {
         [],
         done,
       );
-    });
-  });
-
-  describe('requestLabels', () => {
-    it('sets value of `state.labelsFetchInProgress` to `true`', (done) => {
-      testAction(actions.requestLabels, {}, state, [{ type: types.REQUEST_LABELS }], [], done);
-    });
-  });
-
-  describe('receiveLabelsSuccess', () => {
-    it('sets provided labels to `state.labels`', (done) => {
-      const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-
-      testAction(
-        actions.receiveLabelsSuccess,
-        labels,
-        state,
-        [{ type: types.RECEIVE_SET_LABELS_SUCCESS, payload: labels }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('receiveLabelsFailure', () => {
-    it('sets value `state.labelsFetchInProgress` to `false`', (done) => {
-      testAction(
-        actions.receiveLabelsFailure,
-        {},
-        state,
-        [{ type: types.RECEIVE_SET_LABELS_FAILURE }],
-        [],
-        done,
-      );
-    });
-
-    it('shows flash error', () => {
-      actions.receiveLabelsFailure({ commit: () => {} });
-
-      expect(createFlash).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
-    });
-  });
-
-  describe('fetchLabels', () => {
-    let mock;
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-      state.labelsFetchPath = 'labels.json';
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    describe('on success', () => {
-      it('dispatches `requestLabels` & `receiveLabelsSuccess` actions', (done) => {
-        const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-        mock.onGet(/labels.json/).replyOnce(200, labels);
-
-        testAction(
-          actions.fetchLabels,
-          {},
-          state,
-          [],
-          [{ type: 'requestLabels' }, { type: 'receiveLabelsSuccess', payload: labels }],
-          done,
-        );
-      });
-    });
-
-    describe('on failure', () => {
-      it('dispatches `requestLabels` & `receiveLabelsFailure` actions', (done) => {
-        mock.onGet(/labels.json/).replyOnce(500, {});
-
-        testAction(
-          actions.fetchLabels,
-          {},
-          state,
-          [],
-          [{ type: 'requestLabels' }, { type: 'receiveLabelsFailure' }],
-          done,
-        );
-      });
     });
   });
 

@@ -9,28 +9,27 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upstream/roundtripper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
 
 func TestGetGeoProxyURLWhenGeoSecondary(t *testing.T) {
 	geoProxyURL, err := getGeoProxyURLGivenResponse(t, `{"geo_proxy_url":"http://primary"}`)
 
 	require.NoError(t, err)
-	require.NotNil(t, geoProxyURL)
 	require.Equal(t, "http://primary", geoProxyURL.String())
 }
 
 func TestGetGeoProxyURLWhenGeoPrimaryOrNonGeo(t *testing.T) {
 	geoProxyURL, err := getGeoProxyURLGivenResponse(t, "{}")
 
-	require.Error(t, err)
-	require.Equal(t, ErrNotGeoSecondary, err)
-	require.Nil(t, geoProxyURL)
+	require.NoError(t, err)
+	require.Equal(t, "", geoProxyURL.String())
 }
 
 func getGeoProxyURLGivenResponse(t *testing.T, givenInternalApiResponse string) (*url.URL, error) {

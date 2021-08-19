@@ -8,6 +8,14 @@
   markdown: '_emphasized text_'
 - name: inline_code
   markdown: '`code`'
+- name: inline_diff
+  markdown: |-
+    * {-deleted-}
+    * {+added+}
+- name: subscript
+  markdown: H<sub>2</sub>O
+- name: superscript
+  markdown: 2<sup>8</sup> = 256
 - name: strike
   markdown: '~~del~~'
 - name: horizontal_rule
@@ -68,6 +76,22 @@
     1. list item 1
     2. list item 2
     3. list item 3
+- name: task_list
+  markdown: |-
+    * [x] hello
+    * [x] world
+    * [ ] example
+      * [ ] of nested
+        * [x] task list
+        * [ ] items
+- name: ordered_task_list
+  markdown: |-
+    1. [x] hello
+    2. [x] world
+    3. [ ] example
+       1. [ ] of nested
+          1. [x] task list
+          2. [ ] items
 - name: image
   markdown: '![alt text](https://gitlab.com/logo.png)'
 - name: hard_break
@@ -86,4 +110,9 @@
     |--------|------------|----------|
     | cell | cell | cell |
     | cell | cell | cell |
-
+- name: emoji
+  markdown: ':sparkles: :heart: :100:'
+- name: reference
+  context: project_wiki
+  markdown: |-
+    Hi @gitlab - thank you for reporting this ~bug (#1) we hope to fix it in %1.1 as part of !1

@@ -7,7 +7,7 @@ RSpec.describe NotificationService, :mailer do
   include ExternalAuthorizationServiceHelpers
   include NotificationHelpers
 
-  let_it_be(:project, reload: true) { create(:project, :public) }
+  let_it_be_with_refind(:project) { create(:project, :public) }
   let_it_be_with_refind(:assignee) { create(:user) }
 
   let(:notification) { described_class.new }
@@ -3367,10 +3367,6 @@ RSpec.describe NotificationService, :mailer do
         project.add_maintainer(u_maintainer1)
         project.add_maintainer(u_maintainer2)
         project.add_developer(u_developer)
-
-        # Mock remote update
-        allow(project.repository).to receive(:async_remove_remote)
-        allow(project.repository).to receive(:add_remote)
 
         reset_delivered_emails!
       end

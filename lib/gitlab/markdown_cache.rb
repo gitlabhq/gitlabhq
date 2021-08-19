@@ -2,10 +2,14 @@
 
 module Gitlab
   module MarkdownCache
-    # Increment this number every time the renderer changes its output.
+    # Increment this number to invalidate cached HTML from Markdown documents.
+    # Even when reverting an MR, we should increment this because we only
+    # persist the cache when the new version is higher.
+    #
     # Changing this value puts strain on the database, as every row with
-    # cached markdown needs to be updated. As a result, this line should
-    # not be changed.
+    # cached markdown needs to be updated. As a result, avoid changing
+    # this if the change to the renderer output is a new feature or a
+    # minor bug fix.
     # See: https://gitlab.com/gitlab-org/gitlab/-/issues/330313
     CACHE_COMMONMARK_VERSION        = 28
     CACHE_COMMONMARK_VERSION_START  = 10

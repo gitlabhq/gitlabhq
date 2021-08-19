@@ -20,15 +20,11 @@ Gitlab.ee do
   end
 end
 
-db_config = Gitlab::Database.config ||
-            Rails.application.config.database_configuration[Rails.env]
-
-db_config['pool'] = Gitlab::Database.default_pool_size
-ActiveRecord::Base.establish_connection(db_config)
+ActiveRecord::Base.establish_connection(Gitlab::Database.main.db_config_with_default_pool_size)
 
 Gitlab.ee do
   if Gitlab::Runtime.sidekiq? && Gitlab::Geo.geo_database_configured?
-    Rails.configuration.geo_database['pool'] = Gitlab::Database.default_pool_size
+    Rails.configuration.geo_database['pool'] = Gitlab::Database.main.default_pool_size
     Geo::TrackingBase.establish_connection(Rails.configuration.geo_database)
   end
 end

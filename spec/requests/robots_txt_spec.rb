@@ -28,6 +28,7 @@ RSpec.describe 'Robots.txt Requests', :aggregate_failures do
 
   it 'blocks the requests' do
     requests = [
+      Gitlab::Experiment::Configuration.mount_at,
       '/autocomplete/users',
       '/autocomplete/projects',
       '/search',

@@ -123,6 +123,15 @@ export const multipleCollapsibleSectionsMockData = [
   },
 ];
 
+export const backwardsCompatibilityTrace = [
+  {
+    offset: 2365,
+    content: [],
+    section: 'download-artifacts',
+    section_duration: '00:01',
+  },
+];
+
 export const originalTrace = [
   {
     offset: 1,

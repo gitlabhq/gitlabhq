@@ -38,7 +38,7 @@ RSpec.describe 'Terraform', :js do
 
         it 'displays a table with terraform states' do
           expect(page).to have_selector(
-            '[data-testid="terraform-states-table-name"]',
+            "[data-testid='terraform-states-table-name']",
             count: project.terraform_states.size
           )
         end
@@ -64,12 +64,27 @@ RSpec.describe 'Terraform', :js do
           expect(page).to have_content(additional_state.name)
 
           find("[data-testid='terraform-state-actions-#{additional_state.name}']").click
-          find('[data-testid="terraform-state-remove"]').click
+          find("[data-testid='terraform-state-remove']").click
           fill_in "terraform-state-remove-input-#{additional_state.name}", with: additional_state.name
           click_button 'Remove'
 
           expect(page).to have_content("#{additional_state.name} successfully removed")
           expect { additional_state.reload }.to raise_error ActiveRecord::RecordNotFound
+        end
+      end
+
+      context 'when clicking on copy Terraform init command' do
+        it 'shows the modal with the init command' do
+          visit project_terraform_index_path(project)
+
+          expect(page).to have_content(terraform_state.name)
+
+          page.within("[data-testid='terraform-state-actions-#{terraform_state.name}']") do
+            click_button class: 'gl-dropdown-toggle'
+            click_button 'Copy Terraform init command'
+          end
+
+          expect(page).to have_content("To get access to this terraform state from your local computer, run the following command at the command line.")
         end
       end
     end
@@ -87,11 +102,11 @@ RSpec.describe 'Terraform', :js do
     context 'when user visits the index page' do
       it 'displays a table without an action dropdown', :aggregate_failures do
         expect(page).to have_selector(
-          '[data-testid="terraform-states-table-name"]',
+          "[data-testid='terraform-states-table-name']",
           count: project.terraform_states.size
         )
 
-        expect(page).not_to have_selector('[data-testid*="terraform-state-actions"]')
+        expect(page).not_to have_selector("[data-testid*='terraform-state-actions']")
       end
     end
   end

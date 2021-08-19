@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly
 description: Count of unique users per week who edited a comment on a MR
 product_section: dev
@@ -10,10 +10,15 @@ value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_code_review_user_edit_mr_comment
 distribution:
 - ce
 - ee
 tier:
- - free
- - premium
- - ultimate
+- free
+- premium
+- ultimate
+performance_indicator_type: []

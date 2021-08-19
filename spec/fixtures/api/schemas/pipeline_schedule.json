@@ -18,6 +18,7 @@
         "sha": { "type": "string" },
         "ref": { "type": "string" },
         "status": { "type": "string" },
+        "source": { "type": "string" },
         "web_url": { "type": ["string", "null"] },
         "created_at": { "type": ["string", "null"], "format": "date-time" },
         "updated_at": { "type": ["string", "null"], "format": "date-time" }

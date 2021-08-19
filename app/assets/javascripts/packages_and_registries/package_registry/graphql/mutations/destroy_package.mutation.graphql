@@ -1,0 +1,5 @@
+mutation destroyPackage($id: PackagesPackageID!) {
+  destroyPackage(input: { id: $id }) {
+    errors
+  }
+}

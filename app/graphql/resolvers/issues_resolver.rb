@@ -37,7 +37,8 @@ module Resolvers
       [
         {
           project: [:project_feature]
-        }
+        },
+        :author
       ]
     end
 

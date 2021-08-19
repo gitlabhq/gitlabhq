@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -41,14 +41,14 @@ Click on the service links to see further configuration instructions and details
 | [Flowdock](../../../api/services.md#flowdock)             | Send notifications from GitLab to Flowdock flows. | **{dotted-circle}** No |
 | [GitHub](github.md)                                       | Obtain statuses for commits and pull requests.                                               | **{dotted-circle}** No |
 | [Google Chat](hangouts_chat.md)                           | Send notifications from your GitLab project to a room in Google Chat.| **{dotted-circle}** No |
-| [Irker (IRC gateway)](irker.md)                           | Send IRC messages.                                                                           | **{dotted-circle}** No |
+| [irker (IRC gateway)](irker.md)                           | Send IRC messages.                                                                           | **{dotted-circle}** No |
 | [Jenkins](../../../integration/jenkins.md)                | Run CI/CD pipelines with Jenkins.                                                            | **{check-circle}** Yes |
 | JetBrains TeamCity CI                                     | Run CI/CD pipelines with TeamCity.                                                           | **{check-circle}** Yes |
-| [Jira](jira.md)                                           | Use Jira as the issue tracker.                                                               | **{dotted-circle}** No |
+| [Jira](../../../integration/jira/index.md)                | Use Jira as the issue tracker.                                                               | **{dotted-circle}** No |
 | [Mattermost notifications](mattermost.md)                 | Send notifications about project events to Mattermost channels.                              | **{dotted-circle}** No |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Perform common tasks with slash commands.                                                    | **{dotted-circle}** No |
 | [Microsoft Teams notifications](microsoft_teams.md)       | Receive event notifications.                                                                 | **{dotted-circle}** No |
-| Packagist                                                 | Update your projects.                                                                        | **{check-circle}** Yes |
+| Packagist                                                 | Keep your PHP dependencies updated on Packagist.                                             | **{check-circle}** Yes |
 | Pipelines emails                                          | Send the pipeline status to a list of recipients by email.                                   | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                      | Add commit messages as comments to Pivotal Tracker stories.                                                    | **{dotted-circle}** No |
 | [Prometheus](prometheus.md)                               | Monitor application metrics.                                                                 | **{dotted-circle}** No |

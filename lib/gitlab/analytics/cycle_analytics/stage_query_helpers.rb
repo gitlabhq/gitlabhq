@@ -5,7 +5,7 @@ module Gitlab
     module CycleAnalytics
       module StageQueryHelpers
         def execute_query(query)
-          ActiveRecord::Base.connection.execute(query.to_sql)
+          ApplicationRecord.connection.execute(query.to_sql)
         end
 
         def zero_interval

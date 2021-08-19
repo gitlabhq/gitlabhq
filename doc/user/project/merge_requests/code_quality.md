@@ -65,7 +65,7 @@ See also the Code Climate list of [Supported Languages for Maintainability](http
 Changes to files in merge requests can cause Code Quality to fall if merged. In these cases,
 the merge request's diff view displays an indicator next to lines with new Code Quality violations. For example:
 
-![Code Quality MR diff report](img/code_quality_mr_diff_report_v14.png)
+![Code Quality MR diff report](img/code_quality_mr_diff_report_v14_2.png)
 
 ## Example configuration
 
@@ -296,6 +296,40 @@ code_quality:
     - if: '$CI_COMMIT_TAG'                               # Run code quality job in pipelines for tags
 ```
 
+### Configure Code Quality to use a private container image registry
+
+> [Introduced](https://gitlab.com/gitlab-org/ci-cd/codequality/-/merge_requests/30) in 13.7.
+
+To reduce network time and external dependency, you can use your own
+container image registry to host the Code Quality Docker images. Because of
+the nested architecture of container execution, the registry prefix must
+be specifically configured to be passed down into CodeClimate's subsequent
+`docker pull` commands for individual engines.
+
+The following two variables can address all of the required image pulls:
+
+- `CODE_QUALITY_IMAGE`: A fully prefixed image name that can be located anywhere
+  accessible from your job environment. GitLab Container Registry can be used here
+  to host your own copy.
+- `CODECLIMATE_PREFIX`: The domain of your intended container image registry. This
+  is a configuration option supported by [CodeClimate CLI](https://github.com/codeclimate/codeclimate/pull/948). You must:
+  - Include a trailing slash (`/`).
+  - Not include a protocol prefix, such as `https://`.
+
+```yaml
+include:
+  - template: Jobs/Code-Quality.gitlab-ci.yml
+
+code_quality:
+  variables:
+    CODE_QUALITY_IMAGE: "my-private-registry.local:12345/codequality:0.85.24"
+    CODECLIMATE_PREFIX: "my-private-registry.local:12345/"
+```
+
+This example is specific to GitLab Code Quality. For more general
+instructions on how to configure DinD with a registry mirror, see the
+relevant [documentation](../../../ci/docker/using_docker_build.md#enable-registry-mirror-for-dockerdind-service).
+
 ## Configuring jobs using variables
 
 The Code Quality job supports environment variables that users can set to
@@ -511,7 +545,7 @@ This can be due to multiple reasons:
 - You just added the Code Quality job in your `.gitlab-ci.yml`. The report does not
   have anything to compare to yet, so no information can be displayed. It only displays
   after future merge requests have something to compare to.
-- Your pipeline is not set to run the code quality job on your target branch. If there is no report generated from the target branch, your MR branch reports have nothing to compare to.
+- Your pipeline is not set to run the code quality job on your target branch. If there is no report generated from the target branch, your MR branch reports have nothing to compare to. In this situation you will see an error stating `Base pipeline codequality artifact not found`.
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
   nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in) CI/CD

@@ -260,7 +260,7 @@ Here is a list and description of each **machine** and the assigned **IP**:
 - `10.0.0.3`: Redis Replica 2 + Sentinel 3
 - `10.0.0.4`: GitLab application
 
-Please note that after the initial configuration, if a failover is initiated
+After the initial configuration, if a failover is initiated
 by the Sentinel nodes, the Redis nodes are reconfigured and the **Primary**
 changes permanently (including in `redis.conf`) from one node to the other,
 until a new failover is initiated again.

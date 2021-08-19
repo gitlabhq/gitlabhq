@@ -43,15 +43,15 @@ RSpec.describe Admin::IntegrationsController do
       stub_jira_integration_test
       allow(PropagateIntegrationWorker).to receive(:perform_async)
 
-      put :update, params: { id: integration.class.to_param, service: { url: url } }
+      put :update, params: { id: integration.class.to_param, service: params }
     end
 
     context 'valid params' do
-      let(:url) { 'https://jira.gitlab-example.com' }
+      let(:params) { { url: 'https://jira.gitlab-example.com', password: 'password' } }
 
       it 'updates the integration' do
         expect(response).to have_gitlab_http_status(:found)
-        expect(integration.reload.url).to eq(url)
+        expect(integration.reload).to have_attributes(params)
       end
 
       it 'calls to PropagateIntegrationWorker' do
@@ -60,12 +60,12 @@ RSpec.describe Admin::IntegrationsController do
     end
 
     context 'invalid params' do
-      let(:url) { 'invalid' }
+      let(:params) { { url: 'invalid', password: 'password' } }
 
       it 'does not update the integration' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:edit)
-        expect(integration.reload.url).not_to eq(url)
+        expect(integration.reload).not_to have_attributes(params)
       end
 
       it 'does not call to PropagateIntegrationWorker' do
@@ -95,6 +95,42 @@ RSpec.describe Admin::IntegrationsController do
     it 'deletes the integration and all inheriting integrations' do
       expect { subject }.to change { Integrations::Jira.for_instance.count }.by(-1)
         .and change { Integrations::Jira.inherit_from_id(integration.id).count }.by(-1)
+    end
+  end
+
+  describe '#overrides' do
+    let_it_be(:instance_integration) { create(:bugzilla_integration, :instance) }
+    let_it_be(:non_overridden_integration) { create(:bugzilla_integration, inherit_from_id: instance_integration.id) }
+    let_it_be(:overridden_integration) { create(:bugzilla_integration) }
+    let_it_be(:overridden_other_integration) { create(:confluence_integration) }
+
+    subject do
+      get :overrides, params: { id: instance_integration.class.to_param }, format: format
+    end
+
+    context 'when format is JSON' do
+      let(:format) { :json }
+
+      include_context 'JSON response'
+
+      it 'returns projects with overrides', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to contain_exactly(a_hash_including('full_name' => overridden_integration.project.full_name))
+      end
+    end
+
+    context 'when format is HTML' do
+      let(:format) { :html }
+
+      it 'renders template' do
+        subject
+
+        expect(response).to render_template 'shared/integrations/overrides'
+        expect(assigns(:integration)).to eq(instance_integration)
+      end
     end
   end
 end

@@ -14,6 +14,11 @@ enable you to store the state file in a remote, shared store. GitLab uses the
 to securely store the state files in local storage (the default) or
 [the remote store of your choice](../../administration/terraform_state.md).
 
+WARNING:
+Using local storage (the default) on clustered deployments of GitLab will result in
+a split state across nodes, making subsequent executions of Terraform inconsistent.
+You are highly advised to use a remote storage in that case.
+
 The GitLab managed Terraform state backend can store your Terraform state easily and
 securely, and spares you from setting up additional remote resources like
 Amazon S3 or Google Cloud Storage. Its features include:
@@ -82,6 +87,14 @@ local machine, this is a simple way to get started:
        -backend-config="unlock_method=DELETE" \
        -backend-config="retry_wait_min=5"
    ```
+
+If you already have a GitLab-managed Terraform state, you can use the `terraform init` command
+with the prepopulated parameters values:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Infrastructure > Terraform**.
+1. Next to the environment you want to use, select the [Actions menu](#managing-state-files)
+   **{ellipsis_v}** and select **Copy Terraform init command**.
 
 You can now run `terraform plan` and `terraform apply` as you normally would.
 
@@ -222,7 +235,7 @@ An example setup is shown below:
    ```plaintext
    example_remote_state_address=https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>
    example_username=<GitLab username>
-   example_access_token=<GitLab Personal Acceess Token>
+   example_access_token=<GitLab Personal Access Token>
    ```
 
 1. Define the data source by adding the following code block in a `.tf` file (such as `data.tf`):
@@ -362,10 +375,8 @@ contains these fields:
   state file is locked.
 - **Pipeline**: A link to the most recent pipeline and its status.
 - **Details**: Information about when the state file was created or changed.
-- **Actions**: Actions you can take on the state file, including downloading,
-  locking, unlocking, or [removing](#remove-a-state-file) the state file and versions:
-
-  ![Terraform state list](img/terraform_list_view_actions_v13_8.png)
+- **Actions**: Actions you can take on the state file, including copying the `terraform init` command,
+  downloading, locking, unlocking, or [removing](#remove-a-state-file) the state file and versions.
 
 NOTE:
 Additional improvements to the

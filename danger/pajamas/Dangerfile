@@ -20,11 +20,6 @@ PATTERNS = %w[
   <tabs
   bs-callout
   deprecated-modal
-  gl-deprecated-button
-  gl-deprecated-dropdown
-  gl-deprecated-dropdown-divider
-  gl-deprecated-dropdown-header
-  gl-deprecated-dropdown-item
   has-tooltip
   has_tooltip
   initDeprecatedJQueryDropdown

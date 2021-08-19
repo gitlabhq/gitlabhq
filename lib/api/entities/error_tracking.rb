@@ -8,6 +8,7 @@ module API
         expose :project_name
         expose :sentry_external_url
         expose :api_url
+        expose :integrated
       end
     end
   end

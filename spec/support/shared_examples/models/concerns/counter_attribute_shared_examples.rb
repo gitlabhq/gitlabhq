@@ -62,26 +62,6 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
               .to raise_error(ActiveModel::MissingAttributeError)
           end
         end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(efficient_counter_attribute: false)
-          end
-
-          it 'delegates to ActiveRecord update!' do
-            expect { subject }
-              .to change { model.reset.read_attribute(attribute) }.by(increment)
-          end
-
-          it 'does not increment the counter in Redis' do
-            subject
-
-            Gitlab::Redis::SharedState.with do |redis|
-              counter = redis.get(model.counter_key(attribute))
-              expect(counter).to be_nil
-            end
-          end
-        end
       end
     end
   end

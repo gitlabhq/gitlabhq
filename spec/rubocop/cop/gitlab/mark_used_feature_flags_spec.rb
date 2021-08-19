@@ -194,6 +194,10 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     include_examples 'sets flag as used', 'self.limit_feature_flag = :foo', 'foo'
   end
 
+  describe 'self.limit_feature_flag_for_override = :foo' do
+    include_examples 'sets flag as used', 'self.limit_feature_flag_for_override = :foo', 'foo'
+  end
+
   describe 'FEATURE_FLAG = :foo' do
     include_examples 'sets flag as used', 'FEATURE_FLAG = :foo', 'foo'
   end
@@ -218,7 +222,7 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     include_examples 'does not set any flags as used', 'field :solution'
     include_examples 'does not set any flags as used', 'field :runners, Types::Ci::RunnerType.connection_type'
     include_examples 'does not set any flags as used', 'field :runners, Types::Ci::RunnerType.connection_type, null: true, description: "hello world"'
-    include_examples 'does not set any flags as used', 'field :solution, type: GraphQL::STRING_TYPE, null: true, description: "URL to the vulnerabilitys details page."'
+    include_examples 'does not set any flags as used', 'field :solution, type: GraphQL::Types::String, null: true, description: "URL to the vulnerabilitys details page."'
   end
 
   describe "tracking of usage data metrics known events happens at the beginning of inspection" do

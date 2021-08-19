@@ -12,25 +12,25 @@ module Types
       field :status, Types::Ci::TestCaseStatusEnum, null: true,
         description: "Status of the test case (#{::Gitlab::Ci::Reports::TestCase::STATUS_TYPES.join(', ')})."
 
-      field :name, GraphQL::STRING_TYPE, null: true,
+      field :name, GraphQL::Types::String, null: true,
         description: 'Name of the test case.'
 
-      field :classname, GraphQL::STRING_TYPE, null: true,
+      field :classname, GraphQL::Types::String, null: true,
         description: 'Classname of the test case.'
 
       field :execution_time, GraphQL::FLOAT_TYPE, null: true,
         description: 'Test case execution time in seconds.'
 
-      field :file, GraphQL::STRING_TYPE, null: true,
+      field :file, GraphQL::Types::String, null: true,
         description: 'Path to the file of the test case.'
 
-      field :attachment_url, GraphQL::STRING_TYPE, null: true,
+      field :attachment_url, GraphQL::Types::String, null: true,
         description: 'URL of the test case attachment file.'
 
-      field :system_output, GraphQL::STRING_TYPE, null: true,
+      field :system_output, GraphQL::Types::String, null: true,
         description: 'System output of the test case.'
 
-      field :stack_trace, GraphQL::STRING_TYPE, null: true,
+      field :stack_trace, GraphQL::Types::String, null: true,
         description: 'Stack trace of the test case.'
 
       field :recent_failures, Types::Ci::RecentFailuresType, null: true,

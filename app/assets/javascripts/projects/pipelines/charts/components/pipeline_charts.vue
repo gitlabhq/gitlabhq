@@ -239,7 +239,7 @@ export default {
       };
     },
   },
-  successColor: '#608b2f',
+  successColor: '#366800',
   chartContainerHeight: CHART_CONTAINER_HEIGHT,
   timesChartOptions: {
     height: INNER_CHART_HEIGHT,

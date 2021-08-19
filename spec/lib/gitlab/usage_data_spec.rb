@@ -568,7 +568,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_custom_issue_tracker_active]).to eq(1)
       expect(count_data[:projects_mattermost_active]).to eq(1)
       expect(count_data[:groups_mattermost_active]).to eq(1)
-      expect(count_data[:templates_mattermost_active]).to eq(1)
       expect(count_data[:instances_mattermost_active]).to eq(1)
       expect(count_data[:projects_inheriting_mattermost_active]).to eq(1)
       expect(count_data[:groups_inheriting_slack_active]).to eq(1)
@@ -623,6 +622,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:deployments]).to eq(4)
       expect(count_data[:successful_deployments]).to eq(2)
       expect(count_data[:failed_deployments]).to eq(2)
+      expect(count_data[:feature_flags]).to eq(1)
       expect(count_data[:snippets]).to eq(6)
       expect(count_data[:personal_snippets]).to eq(2)
       expect(count_data[:project_snippets]).to eq(4)
@@ -892,9 +892,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
         expect(subject[:gitlab_pages][:version]).to eq(Gitlab::Pages::VERSION)
         expect(subject[:git][:version]).to eq(Gitlab::Git.version)
-        expect(subject[:database][:adapter]).to eq(Gitlab::Database.adapter_name)
-        expect(subject[:database][:version]).to eq(Gitlab::Database.version)
-        expect(subject[:database][:pg_system_id]).to eq(Gitlab::Database.system_id)
+        expect(subject[:database][:adapter]).to eq(Gitlab::Database.main.adapter_name)
+        expect(subject[:database][:version]).to eq(Gitlab::Database.main.version)
+        expect(subject[:database][:pg_system_id]).to eq(Gitlab::Database.main.system_id)
         expect(subject[:mail][:smtp_server]).to eq(ActionMailer::Base.smtp_settings[:address])
         expect(subject[:gitaly][:version]).to be_present
         expect(subject[:gitaly][:servers]).to be >= 1
@@ -1067,8 +1067,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       subject { described_class.system_usage_data_settings }
 
-      it 'gathers settings usage data', :aggregate_failures do
+      it 'gathers encrypted secrets usage data', :aggregate_failures do
         expect(subject[:settings][:ldap_encrypted_secrets_enabled]).to eq(Gitlab::Auth::Ldap::Config.encrypted_secrets.active?)
+        expect(subject[:settings][:smtp_encrypted_secrets_enabled]).to eq(Gitlab::Email::SmtpConfig.encrypted_secrets.active?)
       end
 
       it 'populates operating system information' do
@@ -1080,7 +1081,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       it 'reports collected data categories' do
-        expected_value = %w[Standard Subscription Operational Optional]
+        expected_value = %w[standard subscription operational optional]
 
         allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
           expect(instance).to receive(:execute).and_return(expected_value)
@@ -1360,6 +1361,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           "in_product_marketing_email_create_1_cta_clicked" => -1,
           "in_product_marketing_email_create_2_sent" => -1,
           "in_product_marketing_email_create_2_cta_clicked" => -1,
+          "in_product_marketing_email_team_short_0_sent" => -1,
+          "in_product_marketing_email_team_short_0_cta_clicked" => -1,
+          "in_product_marketing_email_trial_short_0_sent" => -1,
+          "in_product_marketing_email_trial_short_0_cta_clicked" => -1,
+          "in_product_marketing_email_admin_verify_0_sent" => -1,
+          "in_product_marketing_email_admin_verify_0_cta_clicked" => -1,
           "in_product_marketing_email_verify_0_sent" => -1,
           "in_product_marketing_email_verify_0_cta_clicked" => -1,
           "in_product_marketing_email_verify_1_sent" => -1,
@@ -1399,6 +1406,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           "in_product_marketing_email_create_1_cta_clicked" => 0,
           "in_product_marketing_email_create_2_sent" => 0,
           "in_product_marketing_email_create_2_cta_clicked" => 0,
+          "in_product_marketing_email_team_short_0_sent" => 0,
+          "in_product_marketing_email_team_short_0_cta_clicked" => 0,
+          "in_product_marketing_email_trial_short_0_sent" => 0,
+          "in_product_marketing_email_trial_short_0_cta_clicked" => 0,
+          "in_product_marketing_email_admin_verify_0_sent" => 0,
+          "in_product_marketing_email_admin_verify_0_cta_clicked" => 0,
           "in_product_marketing_email_verify_0_sent" => 1,
           "in_product_marketing_email_verify_0_cta_clicked" => 0,
           "in_product_marketing_email_verify_1_sent" => 0,

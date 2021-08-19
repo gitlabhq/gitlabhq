@@ -6,8 +6,8 @@ module Gitlab
       module Observers
         class QueryDetails < MigrationObserver
           def before
-            @file_path = File.join(Instrumentation::RESULT_DIR, 'current-details.json')
-            @file = File.open(@file_path, 'wb')
+            file_path = File.join(Instrumentation::RESULT_DIR, "#{observation.version}_#{observation.name}-query-details.json")
+            @file = File.open(file_path, 'wb')
             @writer = Oj::StreamWriter.new(@file, {})
             @writer.push_array
             @subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*args|
@@ -22,8 +22,8 @@ module Gitlab
             @file.close
           end
 
-          def record(observation)
-            File.rename(@file_path, File.join(Instrumentation::RESULT_DIR, "#{observation.migration}-query-details.json"))
+          def record
+            # no-op
           end
 
           def record_sql_event(_name, started, finished, _unique_id, payload)

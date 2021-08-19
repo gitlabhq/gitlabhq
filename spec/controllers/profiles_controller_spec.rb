@@ -110,6 +110,17 @@ RSpec.describe ProfilesController, :request_store do
       expect(user.reload.pronouns).to eq(pronouns)
       expect(response).to have_gitlab_http_status(:found)
     end
+
+    it 'allows updating user specified pronunciation', :aggregate_failures do
+      user = create(:user, name: 'Example')
+      pronunciation = 'uhg-zaam-pl'
+      sign_in(user)
+
+      put :update, params: { user: { pronunciation: pronunciation } }
+
+      expect(user.reload.pronunciation).to eq(pronunciation)
+      expect(response).to have_gitlab_http_status(:found)
+    end
   end
 
   describe 'GET audit_log' do

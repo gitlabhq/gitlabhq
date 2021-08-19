@@ -21,7 +21,7 @@ RSpec.describe BulkCreateIntegrationService do
       described_class.new(integration, batch, association).execute
 
       expect(created_integration.attributes.except(*excluded_attributes))
-        .to eq(integration.attributes.except(*excluded_attributes))
+        .to eq(integration.reload.attributes.except(*excluded_attributes))
     end
 
     context 'integration with data fields' do
@@ -94,20 +94,6 @@ RSpec.describe BulkCreateIntegrationService do
 
       it_behaves_like 'creates integration from batch ids'
       it_behaves_like 'updates inherit_from_id'
-    end
-  end
-
-  context 'passing a template integration' do
-    let(:integration) { template_integration }
-
-    context 'with a project association' do
-      let!(:project) { create(:project) }
-      let(:created_integration) { project.jira_integration }
-      let(:batch) { Project.where(id: project.id) }
-      let(:association) { 'project' }
-      let(:inherit_from_id) { integration.id }
-
-      it_behaves_like 'creates integration from batch ids'
     end
   end
 end

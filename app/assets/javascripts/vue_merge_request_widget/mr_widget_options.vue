@@ -38,6 +38,7 @@ import RebaseState from './components/states/mr_widget_rebase.vue';
 import NothingToMergeState from './components/states/nothing_to_merge.vue';
 import PipelineFailedState from './components/states/pipeline_failed.vue';
 import ReadyToMergeState from './components/states/ready_to_merge.vue';
+import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
 // import ExtensionsContainer from './components/extensions/container';
@@ -72,7 +73,7 @@ export default {
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
-    'sha-mismatch': ReadyToMergeState,
+    'sha-mismatch': ShaMismatch,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
@@ -150,7 +151,7 @@ export default {
       );
     },
     shouldRenderCodeQuality() {
-      return this.mr?.codeclimate?.head_path;
+      return this.mr?.codequalityReportsPath;
     },
     shouldRenderRelatedLinks() {
       return Boolean(this.mr.relatedLinks) && !this.mr.isNothingToMergeState;
@@ -496,8 +497,6 @@ export default {
       <!-- <extensions-container :mr="mr" /> -->
       <grouped-codequality-reports-app
         v-if="shouldRenderCodeQuality"
-        :base-path="mr.codeclimate.base_path"
-        :head-path="mr.codeclimate.head_path"
         :head-blob-path="mr.headBlobPath"
         :base-blob-path="mr.baseBlobPath"
         :codequality-reports-path="mr.codequalityReportsPath"

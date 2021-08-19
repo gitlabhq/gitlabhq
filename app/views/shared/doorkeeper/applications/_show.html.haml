@@ -1,3 +1,5 @@
+- show_trusted_row = local_assigns.fetch(:show_trusted_row, false)
+
 .table-holder.oauth-application-show
   %table.table
     %tr
@@ -13,11 +15,7 @@
       %td
         = _('Secret')
       %td
-        .clipboard-group
-          .input-group
-            %input.label.label-monospace.monospace{ id: "secret", type: "text", autocomplete: 'off', value: @application.secret, readonly: true }
-            .input-group-append
-              = clipboard_button(target: '#secret', title: _("Copy secret"), class: "gl-button btn btn-default")
+        = clipboard_button(clipboard_text: @application.secret, button_text: _('Copy'), title: _("Copy secret"), class: "btn btn-default btn-md gl-button")
     %tr
       %td
         = _('Callback URL')
@@ -25,6 +23,13 @@
         - @application.redirect_uri.split.each do |uri|
           %div
             %span.monospace= uri
+
+    - if show_trusted_row
+      %tr
+        %td
+          = _('Trusted')
+        %td
+          = @application.trusted? ? _('Yes') : _('No')
 
     %tr
       %td

@@ -33,21 +33,6 @@ export default {
       type: Object,
       required: true,
     },
-    showVisualReviewApp: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    visualReviewAppMeta: {
-      type: Object,
-      required: false,
-      default: () => ({
-        sourceProjectId: '',
-        sourceProjectPath: '',
-        mergeRequestId: '',
-        appUrl: '',
-      }),
-    },
   },
   data() {
     return {
@@ -178,8 +163,6 @@ export default {
       v-if="hasExternalUrls"
       :app-button-text="appButtonText"
       :deployment="deployment"
-      :show-visual-review-app="showVisualReviewApp"
-      :visual-review-app-meta="visualReviewAppMeta"
     />
     <deployment-action-button
       v-if="stopUrl"

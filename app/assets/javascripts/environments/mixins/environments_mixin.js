@@ -108,7 +108,19 @@ export default {
 
         this.service
           .postAction(endpoint)
-          .then(() => this.fetchEnvironments())
+          .then(() => {
+            // Originally, the detail page buttons were implemented as <form>s that POSTed
+            // to the server, which would naturally result in a page refresh.
+            // When environment details page was converted to Vue, the buttons were updated to trigger
+            // HTTP requests using `axios`, which did not cause a refresh on completion.
+            // To preserve the original behavior, we manually reload the page when
+            // network requests complete successfully.
+            if (!this.isDetailView) {
+              this.fetchEnvironments();
+            } else {
+              window.location.reload();
+            }
+          })
           .catch((err) => {
             this.isLoading = false;
             createFlash({

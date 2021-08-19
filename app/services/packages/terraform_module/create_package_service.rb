@@ -11,7 +11,7 @@ module Packages
         return error('Package version already exists.', 403) if current_package_version_exists?
         return error('File is too large.', 400) if file_size_exceeded?
 
-        ActiveRecord::Base.transaction { create_terraform_module_package! }
+        ApplicationRecord.transaction { create_terraform_module_package! }
       end
 
       private

@@ -1,4 +1,5 @@
 import {
+  isGid,
   getIdFromGraphQLId,
   convertToGraphQLId,
   convertToGraphQLIds,
@@ -9,6 +10,16 @@ import {
 const mockType = 'Group';
 const mockId = 12;
 const mockGid = `gid://gitlab/Group/12`;
+
+describe('isGid', () => {
+  it('returns true if passed id is gid', () => {
+    expect(isGid(mockGid)).toBe(true);
+  });
+
+  it('returns false if passed id is not gid', () => {
+    expect(isGid(mockId)).toBe(false);
+  });
+});
 
 describe('getIdFromGraphQLId', () => {
   [
@@ -66,6 +77,10 @@ describe('convertToGraphQLId', () => {
     ${null}     | ${mockId} | ${'type must be a string; got object'}
   `('throws TypeError with "$message" if a param is missing', ({ type, id, message }) => {
     expect(() => convertToGraphQLId(type, id)).toThrow(new TypeError(message));
+  });
+
+  it('returns id as is if it follows the gid format', () => {
+    expect(convertToGraphQLId(mockType, mockGid)).toStrictEqual(mockGid);
   });
 });
 

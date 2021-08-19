@@ -132,7 +132,7 @@ export const logLinesParserLegacy = (lines = [], accumulator = []) =>
   );
 
 export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLines = []) => {
-  let currentLine = previousTraceState?.prevLineCount ?? 0;
+  let currentLineCount = previousTraceState?.prevLineCount ?? 0;
   let currentHeader = previousTraceState?.currentHeader;
   let isPreviousLineHeader = previousTraceState?.isPreviousLineHeader ?? false;
   const parsedLines = prevParsedLines.length > 0 ? prevParsedLines : [];
@@ -141,27 +141,27 @@ export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLi
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     // First run we can use the current index, later runs we have to retrieve the last number of lines
-    currentLine = previousTraceState?.prevLineCount ? currentLine + 1 : i + 1;
+    currentLineCount = previousTraceState?.prevLineCount ? currentLineCount + 1 : i + 1;
 
     if (line.section_header && !isPreviousLineHeader) {
       // If there's no previous line header that means we're at the root of the log
 
       isPreviousLineHeader = true;
-      parsedLines.push(parseHeaderLine(line, currentLine));
+      parsedLines.push(parseHeaderLine(line, currentLineCount));
       currentHeader = { index: parsedLines.length - 1 };
     } else if (line.section_header && isPreviousLineHeader) {
       // If there's a current section, we can't push to the parsedLines array
       sectionsQueue.push(currentHeader);
-      currentHeader = parseHeaderLine(line, currentLine); // Let's parse the incoming header line
+      currentHeader = parseHeaderLine(line, currentLineCount); // Let's parse the incoming header line
     } else if (line.section && !line.section_duration) {
       // We're inside a collapsible section and want to parse a standard line
       if (currentHeader?.index) {
         // If the current section header is only an index, add the line as part of the lines
         // array of the current collapsible section
-        parsedLines[currentHeader.index].lines.push(parseLine(line, currentLine));
+        parsedLines[currentHeader.index].lines.push(parseLine(line, currentLineCount));
       } else {
         // Otherwise add it to the innermost collapsible section lines array
-        currentHeader.lines.push(parseLine(line, currentLine));
+        currentHeader.lines.push(parseLine(line, currentLineCount));
       }
     } else if (line.section && line.section_duration) {
       // NOTE: This marks the end of a section_header
@@ -174,7 +174,7 @@ export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLi
         parsedLines[currentHeader.index].line.section_duration = line.section_duration;
         isPreviousLineHeader = false;
         currentHeader = null;
-      } else {
+      } else if (currentHeader?.isHeader) {
         currentHeader.line.section_duration = line.section_duration;
 
         if (previousSection && previousSection?.index) {
@@ -185,9 +185,14 @@ export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLi
         }
 
         currentHeader = previousSection;
+      } else {
+        // On older job logs, there's no `section_header: true` response, it's just an object
+        // with the `section_duration` and `section` props, so we just parse it
+        // as a standard line
+        parsedLines.push(parseLine(line, currentLineCount));
       }
     } else {
-      parsedLines.push(parseLine(line, currentLine));
+      parsedLines.push(parseLine(line, currentLineCount));
     }
   }
 
@@ -197,7 +202,7 @@ export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLi
       isPreviousLineHeader,
       currentHeader,
       sectionsQueue,
-      prevLineCount: lines.length,
+      prevLineCount: currentLineCount,
     },
   };
 };

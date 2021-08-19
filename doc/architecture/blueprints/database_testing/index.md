@@ -64,7 +64,7 @@ We already use Database Lab from [postgres.ai](https://postgres.ai/), which is a
 
 Internally, this is based on ZFS and implements a "thin-cloning technology". That is, ZFS snapshots are being used to clone the data and it exposes a full read/write PostgreSQL cluster based on the cloned data. This is called a *thin clone*. It is rather short lived and is going to be destroyed again shortly after we are finished using it.
 
-It is important to note that a thin clone is fully read/write. This allows us to execute migrations on top of it.
+A thin clone is fully read/write. This allows us to execute migrations on top of it.
 
 Database Lab provides an API we can interact with to manage thin clones. In order to automate the migration and query testing, we add steps to the `gitlab/gitlab-org` CI pipeline. This triggers automation that performs the following steps for a given merge request:
 

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_container_user_monthly
 description: A monthly count of users that have published a container image to the registry
 product_section: ops
@@ -10,6 +10,10 @@ value_type: number
 status: deprecated
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_package_container_user
 distribution:
 - ee
 - ce

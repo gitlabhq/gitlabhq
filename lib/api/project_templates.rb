@@ -12,7 +12,7 @@ module API
 
     before { authenticate_non_get! }
 
-    feature_category :templates
+    feature_category :source_code_management
 
     params do
       requires :id, type: String, desc: 'The ID of a project'

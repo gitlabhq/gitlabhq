@@ -62,24 +62,6 @@ module Gitlab
         encode!(response.name.dup)
       end
 
-      def list_new_commits(newrev)
-        request = Gitaly::ListNewCommitsRequest.new(
-          repository: @gitaly_repo,
-          commit_id: newrev
-        )
-
-        commits = []
-
-        response = GitalyClient.call(@storage, :ref_service, :list_new_commits, request, timeout: GitalyClient.medium_timeout)
-        response.each do |msg|
-          msg.commits.each do |c|
-            commits << Gitlab::Git::Commit.new(@repository, c)
-          end
-        end
-
-        commits
-      end
-
       def list_new_blobs(newrev, limit = 0, dynamic_timeout: nil)
         request = Gitaly::ListNewBlobsRequest.new(
           repository: @gitaly_repo,
@@ -194,6 +176,27 @@ module Gitlab
         end
 
         messages
+      end
+
+      def get_tag_signatures(tag_ids)
+        request = Gitaly::GetTagSignaturesRequest.new(repository: @gitaly_repo, tag_revisions: tag_ids)
+        response = GitalyClient.call(@repository.storage, :ref_service, :get_tag_signatures, request, timeout: GitalyClient.fast_timeout)
+
+        signatures = Hash.new { |h, k| h[k] = [+''.b, +''.b] }
+        current_tag_id = nil
+
+        response.each do |message|
+          message.signatures.each do |tag_signature|
+            current_tag_id = tag_signature.tag_id if tag_signature.tag_id.present?
+
+            signatures[current_tag_id].first << tag_signature.signature
+            signatures[current_tag_id].last << tag_signature.content
+          end
+        end
+
+        signatures
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def pack_refs

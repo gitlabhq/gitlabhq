@@ -128,10 +128,6 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
       it { is_expected.not_to allow_value(12.hours.to_i).for(:valid_time_duration_seconds) }
     end
 
-    describe '#signing_keys' do
-      it { is_expected.to validate_absence_of(:signing_keys) }
-    end
-
     describe '#file' do
       it { is_expected.not_to validate_presence_of(:file) }
     end
@@ -141,7 +137,15 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
     end
 
     describe '#file_signature' do
-      it { is_expected.to validate_absence_of(:file_signature) }
+      it { is_expected.not_to validate_absence_of(:file_signature) }
+    end
+
+    describe '#signed_file' do
+      it { is_expected.not_to validate_presence_of(:signed_file) }
+    end
+
+    describe '#signed_file_store' do
+      it { is_expected.to validate_presence_of(:signed_file_store) }
     end
   end
 

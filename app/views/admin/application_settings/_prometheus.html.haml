@@ -2,26 +2,23 @@
   = form_errors(@application_setting)
 
   %fieldset
-    %p
-      - link_to_restart = link_to(_('restart'), help_page_path('administration/restart_gitlab'))
-      = _('Enable a Prometheus metrics endpoint at %{metrics_path} to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available %{link}.').html_safe % { metrics_path: "<code>#{metrics_path}</code>".html_safe, link: link_to(_('here'), admin_health_check_path) }
-      = _('This setting requires a %{link_to_restart} to take effect.').html_safe % { link_to_restart: link_to_restart }
-      = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/prometheus/index')
     .form-group
       .form-check
         = f.check_box :prometheus_metrics_enabled, class: 'form-check-input'
         = f.label :prometheus_metrics_enabled, class: 'form-check-label' do
-          = _("Enable Prometheus Metrics")
+          = _("Enable health and performance metrics endpoint")
+        .form-text.text-muted
+          = _('Enable a Prometheus endpoint that exposes health and performance statistics. The Health Check menu item appears in the Monitoring section of the Admin Area. Restart required.')
+          = link_to _('Learn More.'), help_page_path('administration/monitoring/prometheus/gitlab_metrics.md'), target: '_blank'
         - unless Gitlab::Metrics.metrics_folder_present?
           .form-text.text-muted
             %strong.cred= _("WARNING:")
             = _("Environment variable %{code_start}%{environment_variable}%{code_end} does not exist or is not pointing to a valid directory.").html_safe % { environment_variable: prometheus_multiproc_dir, code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
             = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
     .form-group
-      = f.label :metrics_method_call_threshold, _('Method Call Threshold (ms)'), class: 'label-bold'
+      = f.label :metrics_method_call_threshold, _('Method call threshold (ms)'), class: 'label-bold'
       = f.number_field :metrics_method_call_threshold, class: 'form-control gl-form-input'
       .form-text.text-muted
-        A method call is only tracked when it takes longer to complete than
-        the given amount of milliseconds.
+        Only track method calls that take longer to complete than the given duration.
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

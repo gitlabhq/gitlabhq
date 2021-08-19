@@ -8,7 +8,7 @@ RSpec.describe MergeRequests::AddSpentTimeService do
   let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, :unique_branches, source_project: project) }
 
   let(:duration) { 1500 }
-  let(:params) { { spend_time: { duration: duration, user_id: user.id } } }
+  let(:params) { { spend_time: { duration: duration, summary: 'summary', user_id: user.id } } }
   let(:service) { described_class.new(project: project, current_user: user, params: params) }
 
   describe '#execute' do
@@ -16,13 +16,14 @@ RSpec.describe MergeRequests::AddSpentTimeService do
       project.add_developer(user)
     end
 
-    it 'creates a new timelog with the specified duration' do
+    it 'creates a new timelog with the specified duration and summary' do
       expect { service.execute(merge_request) }.to change { Timelog.count }.from(0).to(1)
 
       timelog = merge_request.timelogs.last
 
       expect(timelog).not_to be_nil
       expect(timelog.time_spent).to eq(1500)
+      expect(timelog.summary).to eq('summary')
     end
 
     it 'creates a system note with the time added' do

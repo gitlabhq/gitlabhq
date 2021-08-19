@@ -11,7 +11,7 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Enable and configure Prometheus metrics.')
+      = _('Monitor the health and performance of GitLab with Prometheus.')
   .settings-content
     = render 'prometheus'
 
@@ -22,7 +22,9 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Enable and configure Grafana.')
+      = _('Link to your Grafana instance.')
+      = link_to s_('Learn more.'), help_page_path('administration/monitoring/performance/grafana_configuration.md'), target: '_blank', rel: 'noopener noreferrer'
+
   .settings-content
     = render 'grafana'
 
@@ -33,8 +35,8 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Enable access to the Performance Bar for a given group.')
-      = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/performance/performance_bar')
+      = _('Enable access to the performance bar for non-administrators in a given group.')
+      = link_to s_('Learn more.'), help_page_path('administration/monitoring/performance/performance_bar.md', anchor: 'enable-the-performance-bar-for-non-administrators'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'performance_bar'
 

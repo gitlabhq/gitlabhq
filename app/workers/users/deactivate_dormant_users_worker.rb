@@ -4,6 +4,8 @@ module Users
   class DeactivateDormantUsersWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     include CronjobQueue
 
     feature_category :utilization

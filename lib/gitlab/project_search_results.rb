@@ -8,7 +8,8 @@ module Gitlab
       @project = project
       @repository_ref = repository_ref.presence
 
-      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters)
+      # use the default filter for project searches since we are already limiting by a single project
+      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters, default_project_filter: true)
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
@@ -24,7 +25,7 @@ module Gitlab
       when 'users'
         users.page(page).per(per_page)
       else
-        super(scope, page: page, per_page: per_page, without_count: false)
+        super(scope, page: page, per_page: per_page, without_count: true)
       end
     end
 

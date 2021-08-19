@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { initStoreFromElement, initPropsFromElement } from '~/import_entities/import_projects';
 import BitbucketStatusTable from '~/import_entities/import_projects/components/bitbucket_status_table.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+function importBitBucket() {
   const mountElement = document.getElementById('import-projects-mount-element');
   if (!mountElement) return undefined;
 
@@ -16,4 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return createElement(BitbucketStatusTable, { attrs });
     },
   });
-});
+}
+
+importBitBucket();

@@ -178,4 +178,66 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
       thing.refresh_markdown_cache!
     end
   end
+
+  context 'with note' do
+    let(:klass) do
+      Class.new(ActiveRecord::Base) do
+        self.table_name = 'notes'
+        include CacheMarkdownField
+        include Importable
+        include Mentionable
+
+        attr_mentionable :note, pipeline: :note
+        cache_markdown_field :note, pipeline: :note
+      end
+    end
+
+    let(:thing) { klass.new(note: markdown) }
+
+    before do
+      thing.note = "hello world"
+    end
+
+    it 'calls store_mentions!' do
+      expect(thing).to receive(:store_mentions!).and_call_original
+
+      thing.save!
+    end
+
+    context 'during import' do
+      before do
+        thing.importing = true
+      end
+
+      it 'does not call store_mentions!' do
+        expect(thing).not_to receive(:store_mentions!)
+
+        thing.save!
+      end
+    end
+  end
+
+  context 'when persisted cache is newer than current version' do
+    before do
+      thing.update_column(:cached_markdown_version, thing.cached_markdown_version + 1)
+    end
+
+    it 'does not save the generated HTML' do
+      expect(thing).not_to receive(:update_columns)
+
+      thing.refresh_markdown_cache!
+    end
+  end
+
+  context 'when persisted cache is nil' do
+    before do
+      thing.update_column(:cached_markdown_version, nil)
+    end
+
+    it 'does not save the generated HTML' do
+      expect(thing).to receive(:update_columns)
+
+      thing.refresh_markdown_cache!
+    end
+  end
 end

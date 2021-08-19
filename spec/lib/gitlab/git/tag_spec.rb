@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.tagger.timezone).to eq("+0200") }
     end
 
-    describe 'signed tag' do
+    shared_examples 'signed tag' do
       let(:project) { create(:project, :repository) }
       let(:tag) { project.repository.find_tag('v1.1.1') }
 
@@ -52,6 +52,18 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.tagger.email).to eq("r.meier@siemens.com") }
       it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1574261780)) }
       it { expect(tag.tagger.timezone).to eq("+0100") }
+    end
+
+    context 'with :get_tag_signatures enabled' do
+      it_behaves_like 'signed tag'
+    end
+
+    context 'with :get_tag_signatures disabled' do
+      before do
+        stub_feature_flags(get_tag_signatures: false)
+      end
+
+      it_behaves_like 'signed tag'
     end
 
     it { expect(repository.tags.size).to eq(SeedRepo::Repo::TAGS.size) }
@@ -74,6 +86,75 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
       described_class.get_message(other_repository, tag_ids.first)
 
       expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
+    end
+  end
+
+  describe '.extract_signature_lazily' do
+    let(:project) { create(:project, :repository) }
+
+    subject { described_class.extract_signature_lazily(project.repository, tag_id).itself }
+
+    context 'when the tag is signed' do
+      let(:tag_id) { project.repository.find_tag('v1.1.1').id }
+
+      it 'returns signature and signed text' do
+        signature, signed_text = subject
+
+        expect(signature).to eq(X509Helpers::User1.signed_tag_signature.chomp)
+        expect(signature).to be_a_binary_string
+        expect(signed_text).to eq(X509Helpers::User1.signed_tag_base_data)
+        expect(signed_text).to be_a_binary_string
+      end
+    end
+
+    context 'when the tag has no signature' do
+      let(:tag_id) { project.repository.find_tag('v1.0.0').id }
+
+      it 'returns empty signature and message as signed text' do
+        signature, signed_text = subject
+
+        expect(signature).to be_empty
+        expect(signed_text).to eq(X509Helpers::User1.unsigned_tag_base_data)
+        expect(signed_text).to be_a_binary_string
+      end
+    end
+
+    context 'when the tag cannot be found' do
+      let(:tag_id) { Gitlab::Git::BLANK_SHA }
+
+      it 'raises GRPC::Internal' do
+        expect { subject }.to raise_error(GRPC::Internal)
+      end
+    end
+
+    context 'when the tag ID is invalid' do
+      let(:tag_id) { '4b4918a572fa86f9771e5ba40fbd48e' }
+
+      it 'raises GRPC::Internal' do
+        expect { subject }.to raise_error(GRPC::Internal)
+      end
+    end
+
+    context 'when loading signatures in batch once' do
+      it 'fetches signatures in batch once' do
+        tag_ids = [project.repository.find_tag('v1.1.1').id, project.repository.find_tag('v1.0.0').id]
+        signatures = tag_ids.map do |tag_id|
+          described_class.extract_signature_lazily(repository, tag_id)
+        end
+
+        other_repository = double(:repository)
+        described_class.extract_signature_lazily(other_repository, tag_ids.first)
+
+        expect(described_class).to receive(:batch_signature_extraction)
+          .with(repository, tag_ids)
+          .once
+          .and_return({})
+
+        expect(described_class).not_to receive(:batch_signature_extraction)
+          .with(other_repository, tag_ids.first)
+
+        2.times { signatures.each(&:itself) }
+      end
     end
   end
 

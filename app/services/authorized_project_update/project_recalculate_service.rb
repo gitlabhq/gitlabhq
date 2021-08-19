@@ -26,7 +26,7 @@ module AuthorizedProjectUpdate
 
     def current_authorizations
       strong_memoize(:current_authorizations) do
-        project.project_authorizations
+        apply_scopes(project.project_authorizations)
           .pluck(:user_id, :access_level) # rubocop: disable CodeReuse/ActiveRecord
       end
     end
@@ -35,8 +35,7 @@ module AuthorizedProjectUpdate
       strong_memoize(:fresh_authorizations) do
         result = []
 
-        Projects::Members::EffectiveAccessLevelFinder.new(project)
-          .execute
+        effective_access_levels
           .each_batch(of: BATCH_SIZE, column: :user_id) do |member_batch|
             result += member_batch.pluck(:user_id, 'MAX(access_level)') # rubocop: disable CodeReuse/ActiveRecord
           end
@@ -75,6 +74,14 @@ module AuthorizedProjectUpdate
           ProjectAuthorization.insert_all(authorizations_to_create)
         end
       end
+    end
+
+    def apply_scopes(project_authorizations)
+      project_authorizations
+    end
+
+    def effective_access_levels
+      Projects::Members::EffectiveAccessLevelFinder.new(project).execute
     end
   end
 end

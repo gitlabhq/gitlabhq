@@ -1,13 +1,13 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Jira integration issue management **(FREE)**
 
 Integrating issue management with Jira requires you to [configure Jira](index.md#jira-integration)
-and [enable the Jira service](development_panel.md#configure-gitlab) in GitLab.
+and [enable the Jira integration](configure.md) in GitLab.
 After you configure and enable the integration, you can reference and close Jira
 issues by mentioning the Jira ID in GitLab commits and merge requests.
 
@@ -45,21 +45,18 @@ ENTITY_TITLE
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
-### Require associated Jira issue for merge requests to be merged
+### Require associated Jira issue for merge requests to be merged **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.12 behind a feature flag, disabled by default.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in GitLab 13.12, disabled behind `jira_issue_association_on_merge_request` [feature flag](../../administration/feature_flags.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61722) in GitLab 14.1.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-ability-to-require-an-associated-jira-issue-on-merge-requests). **(ULTIMATE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335280) in GitLab 14.2.
 
 You can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enforce this:
 
 1. Navigate to your project's **Settings > General** page.
 1. Expand the **Merge requests** section.
-1. Under **Merge checks**, select the **Require an associated issue from Jira** check box.
+1. Under **Merge checks**, select the **Require an associated issue from Jira** checkbox.
 1. Select **Save** for the changes to take effect.
 
 After you enable this feature, a merge request that doesn't reference an associated
@@ -102,7 +99,7 @@ Consider this example:
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3622) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 You can browse, search, and view issues from a selected Jira project directly in GitLab,
-if your GitLab administrator [has configured it](development_panel.md#configure-gitlab).
+if your GitLab administrator [has configured it](configure.md).
 
 To do this, in GitLab, go to your project and select **Jira > Issues list**. The issue list
 sorts by **Created date** by default, with the newest issues listed at the top:
@@ -149,8 +146,8 @@ When you configure automatic issue transitions, you can transition a referenced
 Jira issue to the next available status with a category of **Done**. To configure
 this setting:
 
-1. Refer to the [Configure GitLab](development_panel.md#configure-gitlab) instructions.
-1. Select the **Enable Jira transitions** check box.
+1. Refer to the [Configure GitLab](configure.md) instructions.
+1. Select the **Enable Jira transitions** checkbox.
 1. Select the **Move to Done** option.
 
 ## Custom issue transitions
@@ -167,7 +164,7 @@ For advanced workflows, you can specify custom Jira transition IDs:
        **action** parameter in the URL.
    The transition ID may vary between workflows (for example, a bug instead of a
    story), even if the status you're changing to is the same.
-1. Refer to the [Configure GitLab](development_panel.md#configure-gitlab) instructions.
+1. Refer to the [Configure GitLab](configure.md) instructions.
 1. Select the **Enable Jira transitions** setting.
 1. Select the **Custom transitions** option.
 1. Enter your transition IDs in the text field. If you insert multiple transition IDs
@@ -179,24 +176,5 @@ For advanced workflows, you can specify custom Jira transition IDs:
 GitLab can cross-link source commits or merge requests with Jira issues without
 adding a comment to the Jira issue:
 
-1. Refer to the [Configure GitLab](development_panel.md#configure-gitlab) instructions.
-1. Clear the **Enable comments** check box.
-
-## Enable or disable the ability to require an associated Jira issue on merge requests
-
-The ability to require an associated Jira issue on merge requests is under development
-but ready for production use. It is deployed behind a feature flag that is
-**enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:jira_issue_association_on_merge_request)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:jira_issue_association_on_merge_request)
-```
+1. Refer to the [Configure GitLab](configure.md) instructions.
+1. Clear the **Enable comments** checkbox.

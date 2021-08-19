@@ -3,9 +3,9 @@ package senddata
 import (
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/headers"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata/contentprocessor"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata/contentprocessor"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"

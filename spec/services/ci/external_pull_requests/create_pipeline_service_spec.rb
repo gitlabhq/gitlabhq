@@ -6,14 +6,13 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
   describe '#execute' do
     let_it_be(:project) { create(:project, :auto_devops, :repository) }
     let_it_be(:user) { create(:user) }
-
-    let(:pull_request) { create(:external_pull_request, project: project) }
+    let_it_be_with_reload(:pull_request) { create(:external_pull_request, project: project) }
 
     before do
       project.add_maintainer(user)
     end
 
-    subject { described_class.new(project, user).execute(pull_request) }
+    subject(:response) { described_class.new(project, user).execute(pull_request) }
 
     context 'when pull request is open' do
       before do
@@ -28,17 +27,20 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
           pull_request.update!(source_branch: source_branch.name, source_sha: source_branch.target)
         end
 
-        it 'creates a pipeline for external pull request' do
-          expect(subject).to be_valid
-          expect(subject).to be_persisted
-          expect(subject).to be_external_pull_request_event
-          expect(subject).to eq(project.ci_pipelines.last)
-          expect(subject.external_pull_request).to eq(pull_request)
-          expect(subject.user).to eq(user)
-          expect(subject.status).to eq('created')
-          expect(subject.ref).to eq(pull_request.source_branch)
-          expect(subject.sha).to eq(pull_request.source_sha)
-          expect(subject.source_sha).to eq(pull_request.source_sha)
+        it 'creates a pipeline for external pull request', :aggregate_failures do
+          pipeline = response.payload
+
+          expect(response).to be_success
+          expect(pipeline).to be_valid
+          expect(pipeline).to be_persisted
+          expect(pipeline).to be_external_pull_request_event
+          expect(pipeline).to eq(project.ci_pipelines.last)
+          expect(pipeline.external_pull_request).to eq(pull_request)
+          expect(pipeline.user).to eq(user)
+          expect(pipeline.status).to eq('created')
+          expect(pipeline.ref).to eq(pull_request.source_branch)
+          expect(pipeline.sha).to eq(pull_request.source_sha)
+          expect(pipeline.source_sha).to eq(pull_request.source_sha)
         end
       end
 
@@ -50,10 +52,12 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
           pull_request.update!(source_branch: source_branch.name, source_sha: commit.sha)
         end
 
-        it 'does nothing' do
+        it 'does nothing', :aggregate_failures do
           expect(Ci::CreatePipelineService).not_to receive(:new)
 
-          expect(subject).to be_nil
+          expect(response).to be_error
+          expect(response.message).to eq('The source sha is not the head of the source branch')
+          expect(response.payload).to be_nil
         end
       end
     end
@@ -63,10 +67,12 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
         pull_request.update!(status: :closed)
       end
 
-      it 'does nothing' do
+      it 'does nothing', :aggregate_failures do
         expect(Ci::CreatePipelineService).not_to receive(:new)
 
-        expect(subject).to be_nil
+        expect(response).to be_error
+        expect(response.message).to eq('The pull request is not opened')
+        expect(response.payload).to be_nil
       end
     end
   end

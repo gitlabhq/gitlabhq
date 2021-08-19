@@ -6,20 +6,24 @@
       .form-check
         = f.check_box :auto_devops_enabled, class: 'form-check-input'
         = f.label :auto_devops_enabled, class: 'form-check-label' do
-          %strong= s_('CICD|Default to Auto DevOps pipeline for all projects')
+          = s_('CICD|Default to Auto DevOps pipeline for all projects')
         .form-text.text-muted
           = s_('CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file.')
           = link_to _('What is Auto DevOps?'), help_page_path('topics/autodevops/index.md'), target: '_blank'
     .form-group
       = f.label :auto_devops_domain, s_('AdminSettings|Auto DevOps domain'), class: 'label-bold'
-      = f.text_field :auto_devops_domain, class: 'form-control gl-form-input', placeholder: 'domain.com'
+      = f.text_field :auto_devops_domain, class: 'form-control gl-form-input', placeholder: 'example.com'
       .form-text.text-muted
-        = s_("AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.")
+        = s_("AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects.")
+        = link_to _('Learn more.'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-review-apps'), target: '_blank'
+
     .form-group
       .form-check
         = f.check_box :shared_runners_enabled, class: 'form-check-input'
         = f.label :shared_runners_enabled, class: 'form-check-label' do
           = s_("AdminSettings|Enable shared runners for new projects")
+          .form-text.text-muted
+            = s_("AdminSettings|All new projects can use the instance's shared runners by default.")
 
     = render_if_exists 'admin/application_settings/shared_runners_minutes_setting', form: f
 
@@ -31,32 +35,32 @@
       = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
       = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
       .form-text.text-muted
-        = _("Set the maximum file size for each job's artifacts")
-        = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+        = _("The maximum file size for job artifacts.")
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
     .form-group
       = f.label :default_artifacts_expire_in, _('Default artifacts expiration'), class: 'label-bold'
       = f.text_field :default_artifacts_expire_in, class: 'form-control gl-form-input'
       .form-text.text-muted
-        = html_escape(_("Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: %{code_open}4 mins 2 sec%{code_close}, %{code_open}2h42min%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-        = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
+        = html_escape(_("The default expiration time for job artifacts. 0 for unlimited. The default unit is in seconds, but you can use other units, for example %{code_open}4 mins 2 sec%{code_close}, %{code_open}2h42min%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
     .form-group
       .form-check
         = f.check_box :keep_latest_artifact, class: 'form-check-input'
         = f.label :keep_latest_artifact, class: 'form-check-label' do
-          %strong
-            = s_('AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines')
+          = s_('AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines')
         .form-text.text-muted
           = s_('AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire.')
     .form-group
       = f.label :archive_builds_in_human_readable, _('Archive jobs'), class: 'label-bold'
-      = f.text_field :archive_builds_in_human_readable, class: 'form-control gl-form-input', placeholder: 'never'
+      = f.text_field :archive_builds_in_human_readable, class: 'form-control gl-form-input'
       .form-text.text-muted
-        = html_escape(_("Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+        = html_escape(_("Jobs older than the configured time are considered expired and are archived. Archived jobs can no longer be retried. Leave empty to never archive jobs automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'archive-jobs')
     .form-group
       .form-check
         = f.check_box :protected_ci_variables, class: 'form-check-input'
         = f.label :protected_ci_variables, class: 'form-check-label' do
-          %strong= s_('AdminSettings|Protect CI/CD variables by default')
+          = s_('AdminSettings|Protect CI/CD variables by default')
         .form-text.text-muted
           = s_('AdminSettings|New CI/CD variables in projects and groups default to protected.')
     .form-group

@@ -6,7 +6,7 @@ module Resolvers
       type Types::Metrics::DashboardType, null: true
       calls_gitaly!
 
-      argument :path, GraphQL::STRING_TYPE,
+      argument :path, GraphQL::Types::String,
                required: true,
                description: <<~MD
                  Path to a file which defines a metrics dashboard eg: `"config/prometheus/common_metrics.yml"`.

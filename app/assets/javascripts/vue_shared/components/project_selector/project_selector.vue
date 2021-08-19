@@ -15,6 +15,11 @@ export default {
     ProjectListItem,
   },
   props: {
+    maxListHeight: {
+      type: Number,
+      required: false,
+      default: 402,
+    },
     projectSearchResults: {
       type: Array,
       required: true,
@@ -101,7 +106,7 @@ export default {
     <div class="d-flex flex-column">
       <gl-loading-icon v-if="showLoadingIndicator" size="sm" class="py-2 px-4" />
       <gl-infinite-scroll
-        :max-list-height="402"
+        :max-list-height="maxListHeight"
         :fetched-items="projectSearchResults.length"
         :total-items="totalResults"
         @bottomReached="bottomReached"

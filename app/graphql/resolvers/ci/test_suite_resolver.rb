@@ -11,7 +11,7 @@ module Resolvers
 
       alias_method :pipeline, :object
 
-      argument :build_ids, [GraphQL::ID_TYPE],
+      argument :build_ids, [GraphQL::Types::ID],
         required: true,
         description: 'IDs of the builds used to run the test suite.'
 

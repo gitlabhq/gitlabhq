@@ -4,6 +4,8 @@ module Ci
   class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
     include PipelineQueue
 
@@ -31,7 +33,6 @@ module Ci
     # @param [Ci::Build] build The build to process.
     def process_build(build)
       # We execute these in sync to reduce IO.
-      build.parse_trace_sections!
       build.update_coverage
       Ci::BuildReportResultService.new.execute(build)
 

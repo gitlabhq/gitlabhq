@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: object_store.uploads.enabled
 description: Whether Object Storage is enabled for Uploads
 product_section: enablement
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

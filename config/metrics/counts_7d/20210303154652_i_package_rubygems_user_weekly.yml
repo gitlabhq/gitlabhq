@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_rubygems_user_weekly
 description: A weekly count of distinct RubyGems packages published by a user
 product_section: ops
@@ -12,6 +12,10 @@ milestone: '13.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53480
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_package_rubygems_user
 distribution:
 - ce
 - ee

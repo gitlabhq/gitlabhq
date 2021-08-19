@@ -43,9 +43,13 @@ class DiffDiscussion < Discussion
   end
 
   def cache_key
+    positions_json = diff_note_positions.map { |dnp| dnp.position.to_json }
+    positions_sha = Digest::SHA1.hexdigest(positions_json.join(':')) if positions_json.any?
+
     [
       super,
-      Digest::SHA1.hexdigest(position.to_json)
+      Digest::SHA1.hexdigest(position.to_json),
+      positions_sha
     ].join(':')
   end
 

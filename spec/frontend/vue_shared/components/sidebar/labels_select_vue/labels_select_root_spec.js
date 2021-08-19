@@ -238,4 +238,14 @@ describe('LabelsSelectRoot', () => {
 
     expect(store.dispatch).not.toHaveBeenCalled();
   });
+
+  it('calls updateLabelsSetState after selected labels were updated', async () => {
+    createComponent();
+
+    jest.spyOn(store, 'dispatch').mockResolvedValue();
+    await wrapper.setProps({ selectedLabels: [] });
+    jest.advanceTimersByTime(100);
+
+    expect(store.dispatch).toHaveBeenCalledWith('updateLabelsSetState');
+  });
 });

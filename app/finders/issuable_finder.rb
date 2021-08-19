@@ -15,7 +15,8 @@
 #     state: 'opened' or 'closed' or 'locked' or 'all'
 #     group_id: integer
 #     project_id: integer
-#     milestone_title: string
+#     milestone_title: string (cannot be simultaneously used with milestone_wildcard_id)
+#     milestone_wildcard_id: 'none', 'any', 'upcoming', 'started' (cannot be simultaneously used with milestone_title)
 #     release_tag: string
 #     author_id: integer
 #     author_username: string

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.package_events_i_package_push_package
 description: A count of packages that have been published to the package registry
 product_section: ops
@@ -9,7 +9,7 @@ product_category: package registry
 value_type: number
 status: data_available
 time_frame: all
-data_source:  redis
+data_source: redis
 distribution:
 - ee
 - ce
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

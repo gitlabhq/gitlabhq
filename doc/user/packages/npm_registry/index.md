@@ -353,6 +353,13 @@ In this configuration:
 You cannot publish a package if a package of the same name and version already exists.
 You must delete the existing package first.
 
+This rule has a different impact depending on the package name:
+
+- For packages following the [naming convention](#package-naming-convention), you can't publish a
+  package with a duplicate name and version to the root namespace.
+- For packages not following the [naming convention](#package-naming-convention), you can't publish
+  a package with a duplicate name and version to the project you target with the upload.
+
 This aligns with npmjs.org's behavior. However, npmjs.org does not ever let you publish
 the same version more than once, even if it has been deleted.
 
@@ -594,3 +601,8 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 - `npm view`: Show package metadata.
 - `yarn add`: Install an npm package.
 - `yarn update`: Update your dependencies.
+
+## Dependency Proxy
+
+The NPM Dependency Proxy for NPM packages isn't available. For more information, see
+[this epic](https://gitlab.com/groups/gitlab-org/-/epics/3608).

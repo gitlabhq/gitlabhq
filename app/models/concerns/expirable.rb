@@ -13,6 +13,9 @@ module Expirable
     expires? && expires_at <= Time.current
   end
 
+  # Used in subclasses that override expired?
+  alias_method :expired_original?, :expired?
+
   def expires?
     expires_at.present?
   end

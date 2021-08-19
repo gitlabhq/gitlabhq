@@ -6,29 +6,29 @@ module IssueResolverArguments
   prepended do
     include LooksAhead
 
-    argument :iid, GraphQL::STRING_TYPE,
+    argument :iid, GraphQL::Types::String,
              required: false,
              description: 'IID of the issue. For example, "1".'
-    argument :iids, [GraphQL::STRING_TYPE],
+    argument :iids, [GraphQL::Types::String],
              required: false,
              description: 'List of IIDs of issues. For example, `["1", "2"]`.'
-    argument :label_name, [GraphQL::STRING_TYPE, null: true],
+    argument :label_name, [GraphQL::Types::String, null: true],
              required: false,
              description: 'Labels applied to this issue.'
-    argument :milestone_title, [GraphQL::STRING_TYPE, null: true],
+    argument :milestone_title, [GraphQL::Types::String, null: true],
              required: false,
              description: 'Milestone applied to this issue.'
-    argument :author_username, GraphQL::STRING_TYPE,
+    argument :author_username, GraphQL::Types::String,
              required: false,
              description: 'Username of the author of the issue.'
-    argument :assignee_username, GraphQL::STRING_TYPE,
+    argument :assignee_username, GraphQL::Types::String,
              required: false,
              description: 'Username of a user assigned to the issue.',
              deprecated: { reason: 'Use `assigneeUsernames`', milestone: '13.11' }
-    argument :assignee_usernames, [GraphQL::STRING_TYPE],
+    argument :assignee_usernames, [GraphQL::Types::String],
              required: false,
              description: 'Usernames of users assigned to the issue.'
-    argument :assignee_id, GraphQL::STRING_TYPE,
+    argument :assignee_id, GraphQL::Types::String,
              required: false,
              description: 'ID of a user assigned to the issues, "none" and "any" values are supported.'
     argument :created_before, Types::TimeType,
@@ -49,13 +49,16 @@ module IssueResolverArguments
     argument :closed_after, Types::TimeType,
              required: false,
              description: 'Issues closed after this date.'
-    argument :search, GraphQL::STRING_TYPE,
+    argument :search, GraphQL::Types::String,
              required: false,
              description: 'Search query for issue title or description.'
     argument :types, [Types::IssueTypeEnum],
              as: :issue_types,
              description: 'Filter issues by the given issue types.',
              required: false
+    argument :milestone_wildcard_id, ::Types::MilestoneWildcardIdEnum,
+              required: false,
+              description: 'Filter issues by milestone ID wildcard.'
     argument :not, Types::Issues::NegatedIssueFilterInputType,
              description: 'Negated arguments.',
              prepare: ->(negated_args, ctx) { negated_args.to_h },
@@ -82,10 +85,9 @@ module IssueResolverArguments
   end
 
   def ready?(**args)
-    if args.slice(*mutually_exclusive_assignee_username_args).compact.size > 1
-      arg_str = mutually_exclusive_assignee_username_args.map { |x| x.to_s.camelize(:lower) }.join(', ')
-      raise Gitlab::Graphql::Errors::ArgumentError, "only one of [#{arg_str}] arguments is allowed at the same time."
-    end
+    params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
+    params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
+    params_not_mutually_exclusive(args.fetch(:not, {}), mutually_exclusive_milestone_args)
 
     super
   end
@@ -104,6 +106,17 @@ module IssueResolverArguments
   def prepare_assignee_username_params(args)
     args[:assignee_username] = args.delete(:assignee_usernames) if args[:assignee_usernames].present?
     args[:not][:assignee_username] = args[:not].delete(:assignee_usernames) if args.dig(:not, :assignee_usernames).present?
+  end
+
+  def params_not_mutually_exclusive(args, mutually_exclusive_args)
+    if args.slice(*mutually_exclusive_args).compact.size > 1
+      arg_str = mutually_exclusive_args.map { |x| x.to_s.camelize(:lower) }.join(', ')
+      raise ::Gitlab::Graphql::Errors::ArgumentError, "only one of [#{arg_str}] arguments is allowed at the same time."
+    end
+  end
+
+  def mutually_exclusive_milestone_args
+    [:milestone_title, :milestone_wildcard_id]
   end
 
   def mutually_exclusive_assignee_username_args

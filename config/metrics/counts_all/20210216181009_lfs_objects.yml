@@ -1,11 +1,11 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.lfs_objects
-description:
+description: 
 product_section: ops
 product_stage: create
 product_group: group::create
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: all
@@ -15,3 +15,4 @@ distribution:
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

@@ -1,17 +1,22 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.analytics.p_analytics_pipelines_monthly
 description: Unique visitors to /groups/:group/-/analytics/ci_cd by month
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - p_analytics_pipelines
 distribution:
 - ce
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

@@ -54,7 +54,7 @@
 
 .common-note-form {
   .md-area {
-    padding: $gl-padding-top $gl-padding;
+    padding: $gl-padding-8 $gl-padding;
     border: 1px solid $border-color;
     border-radius: $border-radius-base;
     transition: border-color ease-in-out 0.15s,
@@ -293,12 +293,6 @@ table {
       &:first-child:not(:last-child) > div {
         border-right: 0;
       }
-    }
-  }
-
-  @include media-breakpoint-down(xs) {
-    .btn {
-      width: 100%;
     }
   }
 }

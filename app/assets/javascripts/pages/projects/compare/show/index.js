@@ -5,9 +5,7 @@ import initCompareSelector from '~/projects/compare';
 
 initCompareSelector();
 
-document.addEventListener('DOMContentLoaded', () => {
-  new Diff(); // eslint-disable-line no-new
-  const paddingTop = 16;
-  initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
-  GpgBadges.fetch();
-});
+new Diff(); // eslint-disable-line no-new
+const paddingTop = 16;
+initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
+GpgBadges.fetch();

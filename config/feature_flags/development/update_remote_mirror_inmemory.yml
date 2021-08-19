@@ -1,8 +1,0 @@
----
-name: update_remote_mirror_inmemory
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63962
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333517
-milestone: '14.0'
-type: development
-group: group::gitaly
-default_enabled: true

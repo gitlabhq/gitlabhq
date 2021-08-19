@@ -24,37 +24,25 @@ RSpec.describe RepositoryRemoveRemoteWorker do
           .and_return(project)
       end
 
-      it 'does not remove remote when cannot obtain lease' do
+      it 'does nothing when cannot obtain lease' do
         stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
 
         expect(project.repository)
           .not_to receive(:remove_remote)
-
         expect(subject)
-          .to receive(:log_error)
-          .with("Cannot obtain an exclusive lease for #{lease_key}. There must be another instance already in execution.")
+          .not_to receive(:log_error)
 
         subject.perform(project.id, remote_name)
       end
 
-      it 'removes remote from repository when obtain a lease' do
+      it 'does nothing when obtain a lease' do
         stub_exclusive_lease(lease_key, timeout: lease_timeout)
-        masterrev = project.repository.find_branch('master').dereferenced_target
-        create_remote_branch(remote_name, 'remote_branch', masterrev)
 
         expect(project.repository)
-          .to receive(:remove_remote)
-          .with(remote_name)
-          .and_call_original
+          .not_to receive(:remove_remote)
 
         subject.perform(project.id, remote_name)
       end
     end
-  end
-
-  def create_remote_branch(remote_name, branch_name, target)
-    rugged = rugged_repo(project.repository)
-
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 end

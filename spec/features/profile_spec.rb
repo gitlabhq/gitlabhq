@@ -74,8 +74,6 @@ RSpec.describe 'Profile account page', :js do
 
         expect(find('#feed_token').value).not_to eq(previous_token)
       end
-
-      expect(page).to have_content 'Feed token was successfully reset'
     end
   end
 

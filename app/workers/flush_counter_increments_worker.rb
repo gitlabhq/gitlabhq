@@ -8,6 +8,8 @@
 class FlushCounterIncrementsWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
 
   feature_category_not_owned!

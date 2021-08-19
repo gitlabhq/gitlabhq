@@ -4,6 +4,10 @@ module Repositories
   class LfsLocksApiController < Repositories::GitHttpClientController
     include LfsRequest
 
+    # added here as a part of the refactor, will be removed
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/328692
+    delegate :deploy_token, :user, to: :authentication_result, allow_nil: true
+
     def create
       @result = Lfs::LockFileService.new(project, user, lfs_params).execute
 

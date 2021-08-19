@@ -12,8 +12,6 @@ RSpec.describe 'Pipelines', :js do
 
     before do
       sign_in(user)
-      stub_feature_flags(graphql_pipeline_details: false)
-      stub_feature_flags(graphql_pipeline_details_users: false)
 
       project.add_developer(user)
       project.update!(auto_devops_attributes: { enabled: false })
@@ -583,6 +581,26 @@ RSpec.describe 'Pipelines', :js do
           page.find('.page-link.next-page-item').click
 
           expect(page).to have_selector('.gl-pagination .page-link', count: 4)
+        end
+      end
+
+      context 'with pipeline key selection' do
+        before do
+          visit project_pipelines_path(project)
+          wait_for_requests
+        end
+
+        it 'changes the Pipeline ID column for Pipeline IID' do
+          page.find('[data-testid="pipeline-key-dropdown"]').click
+
+          within '.gl-new-dropdown-contents' do
+            dropdown_options = page.find_all '.gl-new-dropdown-item'
+
+            dropdown_options[1].click
+          end
+
+          expect(page.find('[data-testid="pipeline-th"]')).to have_content 'Pipeline IID'
+          expect(page.find('[data-testid="pipeline-url-link"]')).to have_content "##{pipeline.iid}"
         end
       end
     end

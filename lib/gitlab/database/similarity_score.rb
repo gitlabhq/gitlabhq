@@ -67,7 +67,7 @@ module Gitlab
       def self.build_expression(search:, rules:)
         return EXPRESSION_ON_INVALID_INPUT if search.blank? || rules.empty?
 
-        quoted_search = ActiveRecord::Base.connection.quote(search.to_s)
+        quoted_search = ApplicationRecord.connection.quote(search.to_s)
 
         first_expression, *expressions = rules.map do |rule|
           rule_to_arel(quoted_search, rule)
@@ -110,7 +110,7 @@ module Gitlab
 
       # CAST(multiplier AS numeric)
       def self.multiplier_expression(rule)
-        quoted_multiplier = ActiveRecord::Base.connection.quote(rule.fetch(:multiplier, DEFAULT_MULTIPLIER).to_s)
+        quoted_multiplier = ApplicationRecord.connection.quote(rule.fetch(:multiplier, DEFAULT_MULTIPLIER).to_s)
 
         Arel::Nodes::NamedFunction.new('CAST', [Arel.sql(quoted_multiplier).as('numeric')])
       end

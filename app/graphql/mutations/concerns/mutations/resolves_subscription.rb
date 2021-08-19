@@ -6,9 +6,9 @@ module Mutations
 
     included do
       argument :subscribed_state,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: true,
-               description: 'The desired state of the subscription.'
+               description: 'Desired state of the subscription.'
     end
 
     def resolve(project_path:, iid:, subscribed_state:)

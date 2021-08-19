@@ -14,7 +14,7 @@ module Projects
         result = move_repositories
 
         if result
-          project.write_repository_config
+          project.set_full_path
           project.track_project_repository
         else
           rollback_folder_move

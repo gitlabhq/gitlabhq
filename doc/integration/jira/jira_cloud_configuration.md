@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -15,8 +15,8 @@ on Atlassian cloud. To create the API token:
 1. Select **Create API token** to display a modal window with an API token.
 1. To copy the API token, select **Copy to clipboard**, or select **View** and write
    down the new API token. You need this value when you
-   [configure GitLab](development_panel.md#configure-gitlab).
+   [configure GitLab](configure.md).
 
 You need the newly created token, and the email
 address you used when you created it, when you
-[configure GitLab](development_panel.md#configure-gitlab).
+[configure GitLab](configure.md).

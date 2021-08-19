@@ -73,9 +73,9 @@ end
 This works as-is, however, it has a couple of downside that:
 
 - Someone could define a key/value pair in EE that is **conflicted** with a value defined in FOSS.
-  e.g. Define `activity_limit_exceeded: 1` in `EE::Enums::Pipeline`.
+  For example, define `activity_limit_exceeded: 1` in `EE::Enums::Pipeline`.
 - When it happens, the feature works totally different.
-  e.g. We cannot figure out `failure_reason` is either `config_error` or `activity_limit_exceeded`.
+  For example, we cannot figure out `failure_reason` is either `config_error` or `activity_limit_exceeded`.
 - When it happens, we have to ship a database migration to fix the data integrity,
   which might be impossible if you cannot recover the original value.
 
@@ -98,7 +98,7 @@ end
 This looks working as a workaround, however, this approach has some downsides that:
 
 - Features could move from EE to FOSS or vice versa. Therefore, the offset might be mixed between FOSS and EE in the future.
-  e.g. When you move `activity_limit_exceeded` to FOSS, you'll see `{ unknown_failure: 0, config_error: 1, activity_limit_exceeded: 1_000 }`.
+  For example, when you move `activity_limit_exceeded` to FOSS, you'll see `{ unknown_failure: 0, config_error: 1, activity_limit_exceeded: 1_000 }`.
 - The integer column for the `enum` is likely created [as `SMALLINT`](#creating-enums).
   Therefore, you need to be careful of that the offset doesn't exceed the maximum value of 2 bytes integer.
 

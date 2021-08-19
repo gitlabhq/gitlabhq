@@ -5,6 +5,8 @@ module Projects
     def execute(source_project)
       return unless source_project && source_project.namespace == @project.namespace
 
+      start_time = ::Gitlab::Metrics::System.monotonic_time
+
       Project.transaction do
         move_before_destroy_relationships(source_project)
         # Reset is required in order to get the proper
@@ -25,9 +27,24 @@ module Projects
       else
         raise
       end
+
+    ensure
+      track_service(start_time, source_project, e)
     end
 
     private
+
+    def track_service(start_time, source_project, exception)
+      return if ::Feature.disabled?(:project_overwrite_service_tracking, source_project, default_enabled: :yaml)
+
+      duration = ::Gitlab::Metrics::System.monotonic_time - start_time
+
+      Gitlab::AppJsonLogger.info(class: self.class.name,
+                                 namespace_id: source_project.namespace.id,
+                                 project_id: source_project.id,
+                                 duration_s: duration.to_f,
+                                 error: exception.class.name)
+    end
 
     def move_before_destroy_relationships(source_project)
       options = { remove_remaining_elements: false }

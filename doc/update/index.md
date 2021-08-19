@@ -72,46 +72,32 @@ from the chart version to GitLab version to determine the [upgrade path](#upgrad
 
 ## Checking for background migrations before upgrading
 
-Certain major/minor releases may require a set of background migrations to be
-finished. The number of remaining migrations jobs can be found by running the
-following command:
+Certain major/minor releases may require different migrations to be
+finished before you update to the newer version.
+
+**For GitLab 14.0 and newer**
+
+To check the status of [batched background migrations](../user/admin_area/monitoring/background_migrations.md):
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Monitoring > Background Migrations**.
+
+   ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
 
 **For Omnibus installations**
 
-If using GitLab 12.9 and newer, run:
+You can also run:
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
-If using GitLab 12.8 and older, run the following using a [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):
-
-```ruby
-puts Sidekiq::Queue.new("background_migration").size
-Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
-```
-
 **For installations from source**
-
-If using GitLab 12.9 and newer, run:
 
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
-
-If using GitLab 12.8 and older, run the following using a [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):
-
-```ruby
-Sidekiq::Queue.new("background_migration").size
-Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
-```
-
-### Batched background migrations
-
-Batched background migrations need to finish before you update to a newer version.
-
-Read more about [batched background migrations](../user/admin_area/monitoring/background_migrations.md).
 
 ### What do I do if my background migrations are stuck?
 
@@ -201,15 +187,15 @@ accordingly, while also consulting the
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
 
-| Target version | Your version | Supported upgrade path | Note |
-| --------------------- | ------------ | ------------------------ | ---- |
-| `14.1.0`                | `13.9.2`      | `13.9.2` -> `13.12.6` -> `14.0.5` -> `14.1.0` | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`. |
-| `13.5.4`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4` | Three intermediate versions are required: `12.10`, `13.0` and `13.1`, then `13.5.4`. |
-| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`. |
-| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`. |
-| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`   | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`. |
-| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2.5`. |
-| `11.3.4`              | `8.13.4`       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
+| Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
+| -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `14.1.2`       | `13.9.2`     | `13.9.2` -> `13.12.9` -> `14.0.7` -> `14.1.2`                                                        | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`.                                                          |
+| `13.5.4`       | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4`                                        | Three intermediate versions are required: `12.10`, `13.0` and `13.1`, then `13.5.4`.                                              |
+| `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
+| `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
+| `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                              | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`.                                       |
+| `12.2.5`       | `9.2.6`      | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5`                   | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2.5`.                                   |
+| `11.3.4`       | `8.13.4`     | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4`                                             | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
 
 ## Upgrading to a new major version
 
@@ -220,7 +206,7 @@ cannot guarantee that upgrading between major versions will be seamless.
 
 It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
 
-1. Upgrade to the latest minor version of the preceeding major version.
+1. Upgrade to the latest minor version of the preceding major version.
 1. Upgrade to the first minor version (`X.0.Z`) of the target major version.
 1. Proceed with upgrading to a newer release.
 
@@ -271,9 +257,10 @@ migrating data. Background migrations are only added in the monthly releases.
 Certain major/minor releases may require a set of background migrations to be
 finished. To guarantee this, such a release processes any remaining jobs
 before continuing the upgrading procedure. While this doesn't require downtime
-(if the above conditions are met) we recommend users to keep at least 1 week
-between upgrading major/minor releases, allowing the background migrations to
-finish. The time necessary to complete these migrations can be reduced by
+(if the above conditions are met) we require that you [wait for background
+migrations to complete](#checking-for-background-migrations-before-upgrading)
+between each major/minor release upgrade.
+The time necessary to complete these migrations can be reduced by
 increasing the number of Sidekiq workers that can process jobs in the
 `background_migration` queue. To see the size of this queue,
 [Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
@@ -376,7 +363,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
   [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
   for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  and a [14.0.Z](#1400) version was released. If you haven't udpated to 14.0.Z, you need
+  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.Z, you need
   to update to at least 14.1.0 that contains the same fix before you update to
   a later version.
 

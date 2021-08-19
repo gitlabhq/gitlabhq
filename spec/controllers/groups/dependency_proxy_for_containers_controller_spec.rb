@@ -7,11 +7,12 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   include DependencyProxyHelpers
 
   let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group, :private) }
 
-  let(:group) { create(:group) }
   let(:token_response) { { status: :success, token: 'abcd1234' } }
   let(:jwt) { build_jwt(user) }
   let(:token_header) { "Bearer #{jwt.encoded}" }
+  let(:snowplow_gitlab_standard_context) { { namespace: group, user: user } }
 
   shared_examples 'without a token' do
     before do
@@ -19,6 +20,8 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     end
 
     context 'feature flag disabled' do
+      let_it_be(:group) { create(:group) }
+
       before do
         stub_feature_flags(dependency_proxy_for_private_groups: false)
       end
@@ -34,13 +37,12 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       stub_feature_flags(dependency_proxy_for_private_groups: false)
     end
 
-    it 'redirects', :aggregate_failures do
+    it 'returns not found' do
       group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
       subject
 
-      expect(response).to have_gitlab_http_status(:redirect)
-      expect(response.location).to end_with(new_user_session_path)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -52,16 +54,47 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         request.headers['HTTP_AUTHORIZATION'] = token_header
       end
 
-      it { is_expected.to have_gitlab_http_status(:not_found) }
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
     end
 
     context 'with valid user that does not have access' do
-      let(:group) { create(:group, :private) }
-
       before do
-        user = double('bad_user', id: 999)
-        token_header = "Bearer #{build_jwt(user).encoded}"
         request.headers['HTTP_AUTHORIZATION'] = token_header
+      end
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'with deploy token from a different group,' do
+      let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'with revoked deploy token' do
+      let_it_be(:user) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+
+    context 'with expired deploy token' do
+      let_it_be(:user) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+
+    context 'with deploy token with insufficient scopes' do
+      let_it_be(:user) { create(:deploy_token, :group) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when a group is not found' do
+      before do
+        expect(Group).to receive(:find_by_full_path).and_return(nil)
       end
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
@@ -104,7 +137,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   describe 'GET #manifest' do
     let_it_be(:manifest) { create(:dependency_proxy_manifest) }
 
-    let(:pull_response) { { status: :success, manifest: manifest } }
+    let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
 
     before do
       allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|
@@ -132,6 +165,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           }
         end
 
+        before do
+          group.add_guest(user)
+        end
+
         it 'proxies status from the remote token request', :aggregate_failures do
           subject
 
@@ -149,6 +186,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           }
         end
 
+        before do
+          group.add_guest(user)
+        end
+
         it 'proxies status from the remote manifest request', :aggregate_failures do
           subject
 
@@ -157,21 +198,39 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
       end
 
-      it 'sends a file' do
-        expect(controller).to receive(:send_file).with(manifest.file.path, type: manifest.content_type)
+      context 'a valid user' do
+        before do
+          group.add_guest(user)
+        end
 
-        subject
+        it_behaves_like 'a successful manifest pull'
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
+
+        context 'with a cache entry' do
+          let(:pull_response) { { status: :success, manifest: manifest, from_cache: true } }
+
+          it_behaves_like 'returning response status', :success
+          it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest_from_cache'
+        end
       end
 
-      it 'returns Content-Disposition: attachment' do
-        subject
+      context 'a valid deploy token' do
+        let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group) }
+        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['Docker-Content-Digest']).to eq(manifest.digest)
-        expect(response.headers['Content-Length']).to eq(manifest.size)
-        expect(response.headers['Docker-Distribution-Api-Version']).to eq(DependencyProxy::DISTRIBUTION_API_VERSION)
-        expect(response.headers['Etag']).to eq("\"#{manifest.digest}\"")
-        expect(response.headers['Content-Disposition']).to match(/^attachment/)
+        it_behaves_like 'a successful manifest pull'
+
+        context 'pulling from a subgroup' do
+          let_it_be_with_reload(:parent_group) { create(:group) }
+          let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+
+          before do
+            parent_group.create_dependency_proxy_setting!(enabled: true)
+            group_deploy_token.update_column(:group_id, parent_group.id)
+          end
+
+          it_behaves_like 'a successful manifest pull'
+        end
       end
     end
 
@@ -186,7 +245,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     let_it_be(:blob) { create(:dependency_proxy_blob) }
 
     let(:blob_sha) { blob.file_name.sub('.gz', '') }
-    let(:blob_response) { { status: :success, blob: blob } }
+    let(:blob_response) { { status: :success, blob: blob, from_cache: false } }
 
     before do
       allow_next_instance_of(DependencyProxy::FindOrCreateBlobService) do |instance|
@@ -214,6 +273,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           }
         end
 
+        before do
+          group.add_guest(user)
+        end
+
         it 'proxies status from the remote blob request', :aggregate_failures do
           subject
 
@@ -222,17 +285,39 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
       end
 
-      it 'sends a file' do
-        expect(controller).to receive(:send_file).with(blob.file.path, {})
+      context 'a valid user' do
+        before do
+          group.add_guest(user)
+        end
 
-        subject
+        it_behaves_like 'a successful blob pull'
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
+
+        context 'with a cache entry' do
+          let(:blob_response) { { status: :success, blob: blob, from_cache: true } }
+
+          it_behaves_like 'returning response status', :success
+          it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
+        end
       end
 
-      it 'returns Content-Disposition: attachment', :aggregate_failures do
-        subject
+      context 'a valid deploy token' do
+        let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['Content-Disposition']).to match(/^attachment/)
+        it_behaves_like 'a successful blob pull'
+
+        context 'pulling from a subgroup' do
+          let_it_be_with_reload(:parent_group) { create(:group) }
+          let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+
+          before do
+            parent_group.create_dependency_proxy_setting!(enabled: true)
+            group_deploy_token.update_column(:group_id, parent_group.id)
+          end
+
+          it_behaves_like 'a successful blob pull'
+        end
       end
     end
 

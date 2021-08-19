@@ -34,10 +34,24 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
         subject.execute
       end
 
-      it 'retrieves the download links of non existent objects' do
-        expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with(all_oids)
+      context 'when no LFS objects exist' do
+        before do
+          project.lfs_objects.delete_all
+        end
 
-        subject.execute
+        it 'retrieves all LFS objects' do
+          expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with(all_oids)
+
+          subject.execute
+        end
+      end
+
+      context 'when some LFS objects already exist' do
+        it 'retrieves the download links of non-existent objects' do
+          expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with(oids)
+
+          subject.execute
+        end
       end
     end
 

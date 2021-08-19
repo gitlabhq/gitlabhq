@@ -22,15 +22,15 @@ module Gitlab
             end
           end
 
-          def skipped?
-            !@command.ignore_skip_ci && (commit_message_skips_ci? || push_option_skips_ci?)
-          end
-
           def break?
             skipped?
           end
 
           private
+
+          def skipped?
+            !@command.ignore_skip_ci && (commit_message_skips_ci? || push_option_skips_ci?)
+          end
 
           def commit_message_skips_ci?
             return false unless @pipeline.git_commit_message

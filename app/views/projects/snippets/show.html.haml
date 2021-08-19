@@ -3,7 +3,7 @@
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 
-#js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id} }
+#js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id, 'report-abuse-path': snippet_report_abuse_path(@snippet) } }
 
 .row-content-block.top-block.content-component-block
   = render 'award_emoji/awards_block', awardable: @snippet, inline: true, api_awards_path: project_snippets_award_api_path(@snippet)

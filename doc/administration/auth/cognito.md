@@ -12,8 +12,7 @@ The following documentation enables Cognito as an OAuth2 provider.
 
 ## Configure AWS Cognito
 
-To enable the [AWS Cognito](https://aws.amazon.com/cognito/) OAuth2 OmniAuth provider, register your application with Cognito,
-where it will generate a Client ID and Client Secret for your application.
+To enable the [AWS Cognito](https://aws.amazon.com/cognito/) OAuth2 OmniAuth provider, register your application with Cognito. This process generates a Client ID and Client Secret for your application.
 Any settings you configure in the following procedure can be modified later.
 The following steps enable AWS Cognito as an authentication provider:
 
@@ -24,7 +23,7 @@ The following steps enable AWS Cognito as an authentication provider:
 1. Under **How do you want your end users to sign in?**, select **Email address or phone number** and **Allow email addresses**.
 1. Under **Which standard attributes do you want to require?**, select **email**.
 1. Go to the next steps of configuration and set the rest of the settings to suit your needs - in the basic setup they are not related to GitLab configuration.
-1. In the **App clients** settings, click **Add an app client**, add **App client name** and select the **Enable username password based authentication** check box.
+1. In the **App clients** settings, click **Add an app client**, add **App client name** and select the **Enable username password based authentication** checkbox.
 1. Click **Create app client**.
 1. In the next step, you can set up AWS Lambda functions for sending emails. You can then finish creating the pool.
 1. After creating the user pool, go to **App client settings** and provide the required information:
@@ -86,7 +85,7 @@ Include the code block in the `/etc/gitlab/gitlab.rb` file:
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 Your sign-in page should now display a Cognito button below the regular sign-in form.
-To begin the authentication process, click the icon, and AWS Cognito will ask the user to sign in and authorize the GitLab application.
-If successful, the user will be redirected and signed in to your GitLab instance.
+To begin the authentication process, click the icon, and AWS Cognito asks the user to sign in and authorize the GitLab application.
+If successful, the user is redirected and signed in to your GitLab instance.
 
 For more information, see the [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration).

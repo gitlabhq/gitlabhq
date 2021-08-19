@@ -105,7 +105,7 @@ module Gitlab
       end
 
       def commit_attrs
-        @commit_attrs ||= { branch_name: 'master', message: 'Initial commit' }
+        @commit_attrs ||= { branch_name: 'main', message: 'Initial commit' }
       end
 
       def create_commit(snippet)

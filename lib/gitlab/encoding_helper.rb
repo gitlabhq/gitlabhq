@@ -64,6 +64,15 @@ module Gitlab
       detect && detect[:type] == :binary
     end
 
+    # This is like encode_utf8 except we skip autodetection of the encoding. We
+    # assume the data must be interpreted as UTF-8.
+    def encode_utf8_no_detect(message)
+      message = force_encode_utf8(message)
+      return message if message.valid_encoding?
+
+      message.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
+    end
+
     def encode_utf8(message, replace: "")
       message = force_encode_utf8(message)
       return message if message.valid_encoding?

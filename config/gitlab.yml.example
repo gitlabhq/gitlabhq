@@ -33,6 +33,10 @@ production: &base
     host: localhost
     port: 80 # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
+
+    # Uncomment this line if you want to configure the Rails asset host for a CDN.
+    # cdn_host: localhost
+
     # The maximum time Puma can spend on the request. This needs to be smaller than the worker timeout.
     # Default is 95% of the worker timeout
     max_request_duration_seconds: 57
@@ -114,6 +118,8 @@ production: &base
       # ca_certs_file: /home/git/gitlab/.gitlab_smime_ca_certs
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
+    # File location to read encrypted SMTP secrets from
+    # email_smtp_secret_file: /mnt/gitlab/smtp.yaml.enc # Default: shared/encrypted_settings/smtp.yaml.enc
 
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change their username/namespace
@@ -470,6 +476,9 @@ production: &base
     # Stop expired environments
     environments_auto_stop_cron_worker:
       cron: "24 * * * *"
+    # Delete stopped environments
+    environments_auto_delete_cron_worker:
+      cron: "34 * * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:

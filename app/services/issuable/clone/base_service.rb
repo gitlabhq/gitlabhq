@@ -14,7 +14,7 @@ module Issuable
         # Using transaction because of a high resources footprint
         # on rewriting notes (unfolding references)
         #
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           @new_entity = create_new_entity
 
           update_new_entity

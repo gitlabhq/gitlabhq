@@ -55,12 +55,34 @@ RSpec.shared_examples 'namespace traversal' do
   end
 
   describe '#ancestors' do
-    it 'returns the correct ancestors' do
+    before do
       # #reload is called to make sure traversal_ids are reloaded
-      expect(very_deep_nested_group.reload.ancestors).to contain_exactly(group, nested_group, deep_nested_group)
-      expect(deep_nested_group.reload.ancestors).to contain_exactly(group, nested_group)
-      expect(nested_group.reload.ancestors).to contain_exactly(group)
-      expect(group.reload.ancestors).to eq([])
+      reload_models(group, nested_group, deep_nested_group, very_deep_nested_group)
+    end
+
+    it 'returns the correct ancestors' do
+      expect(very_deep_nested_group.ancestors).to contain_exactly(group, nested_group, deep_nested_group)
+      expect(deep_nested_group.ancestors).to contain_exactly(group, nested_group)
+      expect(nested_group.ancestors).to contain_exactly(group)
+      expect(group.ancestors).to eq([])
+    end
+
+    context 'with asc hierarchy_order' do
+      it 'returns the correct ancestors' do
+        expect(very_deep_nested_group.ancestors(hierarchy_order: :asc)).to eq [deep_nested_group, nested_group, group]
+        expect(deep_nested_group.ancestors(hierarchy_order: :asc)).to eq [nested_group, group]
+        expect(nested_group.ancestors(hierarchy_order: :asc)).to eq [group]
+        expect(group.ancestors(hierarchy_order: :asc)).to eq([])
+      end
+    end
+
+    context 'with desc hierarchy_order' do
+      it 'returns the correct ancestors' do
+        expect(very_deep_nested_group.ancestors(hierarchy_order: :desc)).to eq [group, nested_group, deep_nested_group]
+        expect(deep_nested_group.ancestors(hierarchy_order: :desc)).to eq [group, nested_group]
+        expect(nested_group.ancestors(hierarchy_order: :desc)).to eq [group]
+        expect(group.ancestors(hierarchy_order: :desc)).to eq([])
+      end
     end
 
     describe '#recursive_ancestors' do
@@ -78,6 +100,24 @@ RSpec.shared_examples 'namespace traversal' do
       expect(group.ancestor_ids).to be_empty
     end
 
+    context 'with asc hierarchy_order' do
+      it 'returns the correct ancestor ids' do
+        expect(very_deep_nested_group.ancestor_ids(hierarchy_order: :asc)).to eq [deep_nested_group.id, nested_group.id, group.id]
+        expect(deep_nested_group.ancestor_ids(hierarchy_order: :asc)).to eq [nested_group.id, group.id]
+        expect(nested_group.ancestor_ids(hierarchy_order: :asc)).to eq [group.id]
+        expect(group.ancestor_ids(hierarchy_order: :asc)).to eq([])
+      end
+    end
+
+    context 'with desc hierarchy_order' do
+      it 'returns the correct ancestor ids' do
+        expect(very_deep_nested_group.ancestor_ids(hierarchy_order: :desc)).to eq [group.id, nested_group.id, deep_nested_group.id]
+        expect(deep_nested_group.ancestor_ids(hierarchy_order: :desc)).to eq [group.id, nested_group.id]
+        expect(nested_group.ancestor_ids(hierarchy_order: :desc)).to eq [group.id]
+        expect(group.ancestor_ids(hierarchy_order: :desc)).to eq([])
+      end
+    end
+
     describe '#recursive_ancestor_ids' do
       let_it_be(:groups) { [nested_group, deep_nested_group, very_deep_nested_group] }
 
@@ -93,6 +133,24 @@ RSpec.shared_examples 'namespace traversal' do
       expect(group.self_and_ancestors).to contain_exactly(group)
     end
 
+    context 'with asc hierarchy_order' do
+      it 'returns the correct ancestors' do
+        expect(very_deep_nested_group.self_and_ancestors(hierarchy_order: :asc)).to eq [very_deep_nested_group, deep_nested_group, nested_group, group]
+        expect(deep_nested_group.self_and_ancestors(hierarchy_order: :asc)).to eq [deep_nested_group, nested_group, group]
+        expect(nested_group.self_and_ancestors(hierarchy_order: :asc)).to eq [nested_group, group]
+        expect(group.self_and_ancestors(hierarchy_order: :asc)).to eq([group])
+      end
+    end
+
+    context 'with desc hierarchy_order' do
+      it 'returns the correct ancestors' do
+        expect(very_deep_nested_group.self_and_ancestors(hierarchy_order: :desc)).to eq [group, nested_group, deep_nested_group, very_deep_nested_group]
+        expect(deep_nested_group.self_and_ancestors(hierarchy_order: :desc)).to eq [group, nested_group, deep_nested_group]
+        expect(nested_group.self_and_ancestors(hierarchy_order: :desc)).to eq [group, nested_group]
+        expect(group.self_and_ancestors(hierarchy_order: :desc)).to eq([group])
+      end
+    end
+
     describe '#recursive_self_and_ancestors' do
       let_it_be(:groups) { [nested_group, deep_nested_group, very_deep_nested_group] }
 
@@ -106,6 +164,24 @@ RSpec.shared_examples 'namespace traversal' do
       expect(deep_nested_group.self_and_ancestor_ids).to contain_exactly(group.id, nested_group.id, deep_nested_group.id)
       expect(nested_group.self_and_ancestor_ids).to contain_exactly(group.id, nested_group.id)
       expect(group.self_and_ancestor_ids).to contain_exactly(group.id)
+    end
+
+    context 'with asc hierarchy_order' do
+      it 'returns the correct ancestor ids' do
+        expect(very_deep_nested_group.self_and_ancestor_ids(hierarchy_order: :asc)).to eq [very_deep_nested_group.id, deep_nested_group.id, nested_group.id, group.id]
+        expect(deep_nested_group.self_and_ancestor_ids(hierarchy_order: :asc)).to eq [deep_nested_group.id, nested_group.id, group.id]
+        expect(nested_group.self_and_ancestor_ids(hierarchy_order: :asc)).to eq [nested_group.id, group.id]
+        expect(group.self_and_ancestor_ids(hierarchy_order: :asc)).to eq([group.id])
+      end
+    end
+
+    context 'with desc hierarchy_order' do
+      it 'returns the correct ancestor ids' do
+        expect(very_deep_nested_group.self_and_ancestor_ids(hierarchy_order: :desc)).to eq [group.id, nested_group.id, deep_nested_group.id, very_deep_nested_group.id]
+        expect(deep_nested_group.self_and_ancestor_ids(hierarchy_order: :desc)).to eq [group.id, nested_group.id, deep_nested_group.id]
+        expect(nested_group.self_and_ancestor_ids(hierarchy_order: :desc)).to eq [group.id, nested_group.id]
+        expect(group.self_and_ancestor_ids(hierarchy_order: :desc)).to eq([group.id])
+      end
     end
 
     describe '#recursive_self_and_ancestor_ids' do

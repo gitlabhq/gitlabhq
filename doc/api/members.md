@@ -27,7 +27,7 @@ for owner.
 
 The `group_saml_identity` attribute is only visible to a group owner for [SSO enabled groups](../user/group/saml_sso/index.md).
 
-The `email` attribute is only visible to a group owner who manages the user through [Group Managed Accounts](../user/group/saml_sso/group_managed_accounts.md).
+The `email` attribute is only visible for users with public emails.
 
 ## List all members of a group or project
 
@@ -292,7 +292,8 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-27",
     "membership_type": "group_member",
-    "removable": true
+    "removable": true,
+    "created_at": "2021-01-03T12:16:02.000Z"
   },
   {
     "id": 2,
@@ -304,7 +305,8 @@ Example response:
     "email": "john@example.com",
     "last_activity_on": "2021-01-25",
     "membership_type": "group_member",
-    "removable": true
+    "removable": true,
+    "created_at": "2021-01-04T18:46:42.000Z"
   },
   {
     "id": 3,
@@ -315,7 +317,8 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-20",
     "membership_type": "group_invite",
-    "removable": false
+    "removable": false,
+    "created_at": "2021-01-09T07:12:31.000Z"
   }
 ]
 ```
@@ -418,6 +421,7 @@ POST /projects/:id/members
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327120). |
+| `areas_of_focus` | string | no | Areas the inviter wants the member to focus upon. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

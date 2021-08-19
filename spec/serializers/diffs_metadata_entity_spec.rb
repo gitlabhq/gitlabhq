@@ -9,12 +9,17 @@ RSpec.describe DiffsMetadataEntity do
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.last }
+  let(:options) { {} }
 
   let(:entity) do
-    described_class.new(merge_request_diff.diffs,
-                        request: request,
-                        merge_request: merge_request,
-                        merge_request_diffs: merge_request_diffs)
+    described_class.new(
+      merge_request_diff.diffs,
+      options.merge(
+        request: request,
+        merge_request: merge_request,
+        merge_request_diffs: merge_request_diffs
+      )
+    )
   end
 
   context 'as json' do
@@ -38,19 +43,60 @@ RSpec.describe DiffsMetadataEntity do
     end
 
     describe 'diff_files' do
-      it 'returns diff files metadata' do
-        raw_diff_files = merge_request_diff.diffs.raw_diff_files
+      let!(:raw_diff_files) { merge_request_diff.diffs.raw_diff_files }
 
+      before do
         expect_next_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff) do |instance|
           # Use lightweight version instead. Several methods delegate to it, so putting a 5
           # calls limit.
           expect(instance).to receive(:raw_diff_files).at_most(5).times.and_call_original
           expect(instance).not_to receive(:diff_files)
         end
+      end
 
+      it 'returns diff files metadata' do
         payload = DiffFileMetadataEntity.represent(raw_diff_files).as_json
 
         expect(subject[:diff_files]).to eq(payload)
+      end
+
+      context 'when merge_ref_head_diff and allow_tree_conflicts options are set' do
+        let(:conflict_file) { double(path: raw_diff_files.first.new_path, conflict_type: :both_modified) }
+        let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: false) }
+
+        before do
+          allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
+        end
+
+        context 'when merge_ref_head_diff is true and allow_tree_conflicts is false' do
+          let(:options) { { merge_ref_head_diff: true, allow_tree_conflicts: false } }
+
+          it 'returns diff files metadata without conflicts' do
+            payload = DiffFileMetadataEntity.represent(raw_diff_files).as_json
+
+            expect(subject[:diff_files]).to eq(payload)
+          end
+        end
+
+        context 'when merge_ref_head_diff is false and allow_tree_conflicts is true' do
+          let(:options) { { merge_ref_head_diff: false, allow_tree_conflicts: true } }
+
+          it 'returns diff files metadata without conflicts' do
+            payload = DiffFileMetadataEntity.represent(raw_diff_files).as_json
+
+            expect(subject[:diff_files]).to eq(payload)
+          end
+        end
+
+        context 'when merge_ref_head_diff and allow_tree_conflicts are true' do
+          let(:options) { { merge_ref_head_diff: true, allow_tree_conflicts: true } }
+
+          it 'returns diff files metadata with conflicts' do
+            payload = DiffFileMetadataEntity.represent(raw_diff_files, conflicts: { conflict_file.path => conflict_file }).as_json
+
+            expect(subject[:diff_files]).to eq(payload)
+          end
+        end
       end
     end
   end

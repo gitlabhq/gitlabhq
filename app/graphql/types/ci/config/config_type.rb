@@ -7,9 +7,9 @@ module Types
       class ConfigType < BaseObject
         graphql_name 'CiConfig'
 
-        field :errors, [GraphQL::STRING_TYPE], null: true,
+        field :errors, [GraphQL::Types::String], null: true,
               description: 'Linting errors.'
-        field :merged_yaml, GraphQL::STRING_TYPE, null: true,
+        field :merged_yaml, GraphQL::Types::String, null: true,
               description: 'Merged CI configuration YAML.'
         field :stages, Types::Ci::Config::StageType.connection_type, null: true,
               description: 'Stages of the pipeline.'

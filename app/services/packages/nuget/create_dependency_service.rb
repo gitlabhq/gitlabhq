@@ -41,7 +41,7 @@ module Packages
           }
         end
 
-        ::Gitlab::Database.bulk_insert(::Packages::Nuget::DependencyLinkMetadatum.table_name, rows.compact) # rubocop:disable Gitlab/BulkInsert
+        ::Gitlab::Database.main.bulk_insert(::Packages::Nuget::DependencyLinkMetadatum.table_name, rows.compact) # rubocop:disable Gitlab/BulkInsert
       end
 
       def raw_dependency_for(dependency)

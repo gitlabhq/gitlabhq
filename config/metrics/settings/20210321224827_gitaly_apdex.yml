@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: settings.gitaly_apdex
 description: Gitaly application performance
 product_section: dev
@@ -19,3 +19,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

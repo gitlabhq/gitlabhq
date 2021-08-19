@@ -121,7 +121,7 @@ configuration. Otherwise, the Okta SCIM app may not work properly.
 1. In the **Application** tab, click **Add Application**.
 1. Search for **GitLab**, find and click on the 'GitLab' application.
 1. On the GitLab application overview page, click **Add**.
-1. Under **Application Visibility** select both check boxes. Currently the GitLab application does not support SAML authentication so the icon should not be shown to users.
+1. Under **Application Visibility** select both checkboxes. Currently the GitLab application does not support SAML authentication so the icon should not be shown to users.
 1. Click **Done** to finish adding the application.
 1. In the **Provisioning** tab, click **Configure API integration**.
 1. Select **Enable API integration**.

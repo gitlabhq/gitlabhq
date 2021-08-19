@@ -11,7 +11,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/correlation"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/badgateway"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/badgateway"
 )
 
 func mustParseAddress(address, scheme string) string {

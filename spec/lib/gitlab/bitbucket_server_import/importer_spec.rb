@@ -32,8 +32,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       expect(subject).to receive(:delete_temp_branches)
       expect(project.repository).to receive(:fetch_as_mirror)
                                      .with('http://bitbucket:test@my-bitbucket',
-                                           refmap: [:heads, :tags, '+refs/pull-requests/*/to:refs/merge-requests/*/head'],
-                                           remote_name: 'bitbucket_server')
+                                           refmap: [:heads, :tags, '+refs/pull-requests/*/to:refs/merge-requests/*/head'])
 
       subject.execute
     end

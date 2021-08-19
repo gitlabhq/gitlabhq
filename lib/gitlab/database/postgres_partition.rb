@@ -7,10 +7,14 @@ module Gitlab
 
       belongs_to :postgres_partitioned_table, foreign_key: 'parent_identifier', primary_key: 'identifier'
 
-      scope :by_identifier, ->(identifier) do
+      scope :for_identifier, ->(identifier) do
         raise ArgumentError, "Partition name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
 
-        find(identifier)
+        where(primary_key => identifier)
+      end
+
+      scope :by_identifier, ->(identifier) do
+        for_identifier(identifier).first!
       end
 
       scope :for_parent_table, ->(name) { where("parent_identifier = concat(current_schema(), '.', ?)", name).order(:name) }

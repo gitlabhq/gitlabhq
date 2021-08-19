@@ -29,6 +29,21 @@ with sibling pages listed in alphabetical order. To view a list of all pages, se
 
 ![Wiki sidebar](img/wiki_sidebar_v13_5.png)
 
+## Configure a default branch for your wiki
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221159) in GitLab 14.1.
+
+The default branch for your wiki repository depends on your version of GitLab:
+
+- *GitLab versions 14.1 and later:* Wikis inherit the
+  [default branch name](../repository/branches/default.md) configured for
+  your instance or group. If no custom value is configured, GitLab uses `main`.
+- *GitLab versions 14.0 and earlier:* GitLab uses `master`.
+
+For any version of GitLab, you can
+[rename this default branch](../repository/branches/default.md#update-the-default-branch-name-in-your-repository)
+for previously created wikis.
+
 ## Create the wiki home page
 
 When a wiki is created, it is empty. On your first visit, create the landing page
@@ -210,7 +225,7 @@ A `_sidebar` example, formatted with Markdown:
 - [Sidebar](_sidebar)
 ```
 
-Support for displaying a generated table of contents with a custom side navigation is planned.
+Support for displaying a generated table of contents with a custom side navigation is being considered.
 
 ## Enable or disable a project wiki
 
@@ -237,6 +252,14 @@ For updates, follow [the epic that tracks feature parity with project wikis](htt
 Group wikis can be edited by members with the [Developer role](../../permissions.md#group-members-permissions)
 and above. Group wiki repositories can be moved using the
 [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
+
+### Export a group wiki **(PREMIUM)**
+
+Users with the [Owner role](../../permissions.md) in a group can
+[import and export group wikis](../../group/settings/import_export.md) when importing
+or exporting a group.
+
+Content created in a group wiki is not deleted when an account is downgraded or a GitLab trial ends.
 
 ## Link an external wiki
 

@@ -10,17 +10,17 @@ module Mutations
       field :label,
             Types::LabelType,
             null: true,
-            description: 'The label after mutation.'
+            description: 'Label after mutation.'
 
-      argument :title, GraphQL::STRING_TYPE,
+      argument :title, GraphQL::Types::String,
                required: true,
                description: 'Title of the label.'
 
-      argument :description, GraphQL::STRING_TYPE,
+      argument :description, GraphQL::Types::String,
                required: false,
                description: 'Description of the label.'
 
-      argument :color, GraphQL::STRING_TYPE,
+      argument :color, GraphQL::Types::String,
                required: false,
                default_value: Label::DEFAULT_COLOR,
                see: {

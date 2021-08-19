@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: prometheus_metrics_enabled
 description: Whether Prometheus Metrics endpoint is enabled
 product_section: growth
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

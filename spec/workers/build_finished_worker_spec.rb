@@ -15,7 +15,6 @@ RSpec.describe BuildFinishedWorker do
       end
 
       it 'calculates coverage and calls hooks', :aggregate_failures do
-        expect(build).to receive(:parse_trace_sections!).ordered
         expect(build).to receive(:update_coverage).ordered
 
         expect_next_instance_of(Ci::BuildReportResultService) do |build_report_result_service|

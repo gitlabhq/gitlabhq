@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.clusters_enabled
 description: Number of Kubernetes clusters attached to GitLab currently enabled
 product_section: ops
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

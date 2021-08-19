@@ -17,6 +17,7 @@ import {
   MOCK_GROUP,
   FRESH_STORED_DATA,
   MOCK_FRESH_DATA_RES,
+  PRELOAD_EXPECTED_MUTATIONS,
   PROMISE_ALL_EXPECTED_MUTATIONS,
 } from '../mock_data';
 
@@ -68,31 +69,31 @@ describe('Global Search Store Actions', () => {
   });
 
   describe.each`
-    action                          | axiosMock                         | type         | expectedMutations                                                                            | flashCallCount | lsKey
-    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initGroups, PROMISE_ALL_EXPECTED_MUTATIONS.resGroups]}     | ${0}           | ${GROUPS_LOCAL_STORAGE_KEY}
-    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initGroups]}                                               | ${1}           | ${GROUPS_LOCAL_STORAGE_KEY}
-    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initProjects, PROMISE_ALL_EXPECTED_MUTATIONS.resProjects]} | ${0}           | ${PROJECTS_LOCAL_STORAGE_KEY}
-    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initProjects]}                                             | ${1}           | ${PROJECTS_LOCAL_STORAGE_KEY}
-  `(
-    'Promise.all calls',
-    ({ action, axiosMock, type, expectedMutations, flashCallCount, lsKey }) => {
-      describe(action.name, () => {
-        describe(`on ${type}`, () => {
-          beforeEach(() => {
-            storeUtils.loadDataFromLS = jest.fn().mockReturnValue(FRESH_STORED_DATA);
-            mock[axiosMock.method]().reply(axiosMock.code, MOCK_FRESH_DATA_RES);
-          });
+    action                          | axiosMock                         | type         | expectedMutations                               | flashCallCount
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.resGroups]}   | ${0}
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[]}                                           | ${1}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.resProjects]} | ${0}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[]}                                           | ${1}
+  `('Promise.all calls', ({ action, axiosMock, type, expectedMutations, flashCallCount }) => {
+    describe(action.name, () => {
+      describe(`on ${type}`, () => {
+        beforeEach(() => {
+          state.frequentItems = {
+            [GROUPS_LOCAL_STORAGE_KEY]: FRESH_STORED_DATA,
+            [PROJECTS_LOCAL_STORAGE_KEY]: FRESH_STORED_DATA,
+          };
 
-          it(`should dispatch the correct mutations`, () => {
-            return testAction({ action, state, expectedMutations }).then(() => {
-              expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(lsKey);
-              flashCallback(flashCallCount);
-            });
+          mock[axiosMock.method]().reply(axiosMock.code, MOCK_FRESH_DATA_RES);
+        });
+
+        it(`should dispatch the correct mutations`, () => {
+          return testAction({ action, state, expectedMutations }).then(() => {
+            flashCallback(flashCallCount);
           });
         });
       });
-    },
-  );
+    });
+  });
 
   describe('getGroupsData', () => {
     const mockCommit = () => {};
@@ -182,14 +183,38 @@ describe('Global Search Store Actions', () => {
     });
   });
 
-  describe('setFrequentGroup', () => {
+  describe('preloadStoredFrequentItems', () => {
     beforeEach(() => {
-      storeUtils.setFrequentItemToLS = jest.fn();
+      storeUtils.loadDataFromLS = jest.fn().mockReturnValue(FRESH_STORED_DATA);
     });
 
-    it(`calls setFrequentItemToLS with ${GROUPS_LOCAL_STORAGE_KEY} and item data`, async () => {
+    it('calls preloadStoredFrequentItems for both groups and projects and commits LOAD_FREQUENT_ITEMS', async () => {
+      await testAction({
+        action: actions.preloadStoredFrequentItems,
+        state,
+        expectedMutations: PRELOAD_EXPECTED_MUTATIONS,
+      });
+
+      expect(storeUtils.loadDataFromLS).toHaveBeenCalledTimes(2);
+      expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(GROUPS_LOCAL_STORAGE_KEY);
+      expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(PROJECTS_LOCAL_STORAGE_KEY);
+    });
+  });
+
+  describe('setFrequentGroup', () => {
+    beforeEach(() => {
+      storeUtils.setFrequentItemToLS = jest.fn().mockReturnValue(FRESH_STORED_DATA);
+    });
+
+    it(`calls setFrequentItemToLS with ${GROUPS_LOCAL_STORAGE_KEY} and item data then commits LOAD_FREQUENT_ITEMS`, async () => {
       await testAction({
         action: actions.setFrequentGroup,
+        expectedMutations: [
+          {
+            type: types.LOAD_FREQUENT_ITEMS,
+            payload: { key: GROUPS_LOCAL_STORAGE_KEY, data: FRESH_STORED_DATA },
+          },
+        ],
         payload: MOCK_GROUP,
         state,
       });
@@ -204,12 +229,18 @@ describe('Global Search Store Actions', () => {
 
   describe('setFrequentProject', () => {
     beforeEach(() => {
-      storeUtils.setFrequentItemToLS = jest.fn();
+      storeUtils.setFrequentItemToLS = jest.fn().mockReturnValue(FRESH_STORED_DATA);
     });
 
     it(`calls setFrequentItemToLS with ${PROJECTS_LOCAL_STORAGE_KEY} and item data`, async () => {
       await testAction({
         action: actions.setFrequentProject,
+        expectedMutations: [
+          {
+            type: types.LOAD_FREQUENT_ITEMS,
+            payload: { key: PROJECTS_LOCAL_STORAGE_KEY, data: FRESH_STORED_DATA },
+          },
+        ],
         payload: MOCK_PROJECT,
         state,
       });

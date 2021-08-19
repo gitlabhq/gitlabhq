@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-ActiveSupport::Dependencies.autoload_paths << 'app/services'
+require_relative '../../app/services/service_response'
 
 RSpec.describe ServiceResponse do
   describe '.success' do

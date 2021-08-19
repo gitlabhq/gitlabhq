@@ -34,6 +34,7 @@ FactoryBot.define do
       end
       metrics_dashboard_access_level { ProjectFeature::PRIVATE }
       operations_access_level { ProjectFeature::ENABLED }
+      container_registry_access_level { ProjectFeature::ENABLED }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -50,7 +51,7 @@ FactoryBot.define do
       ci_job_token_scope_enabled { nil }
     end
 
-    before(:create) do |project, evaluator|
+    after(:build) do |project, evaluator|
       # Builds and MRs can't have higher visibility level than repository access level.
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
@@ -66,7 +67,8 @@ FactoryBot.define do
         pages_access_level: evaluator.pages_access_level,
         metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level,
         operations_access_level: evaluator.operations_access_level,
-        analytics_access_level: evaluator.analytics_access_level
+        analytics_access_level: evaluator.analytics_access_level,
+        container_registry_access_level: evaluator.container_registry_access_level
       }
 
       project.build_project_feature(hash)
@@ -263,7 +265,6 @@ FactoryBot.define do
 
     trait :remote_mirror do
       transient do
-        remote_name { "remote_mirror_#{SecureRandom.hex}" }
         url { "http://foo.com" }
         enabled { true }
       end
@@ -344,6 +345,9 @@ FactoryBot.define do
     trait(:analytics_enabled)           { analytics_access_level { ProjectFeature::ENABLED } }
     trait(:analytics_disabled)          { analytics_access_level { ProjectFeature::DISABLED } }
     trait(:analytics_private)           { analytics_access_level { ProjectFeature::PRIVATE } }
+    trait(:container_registry_enabled)  { container_registry_access_level { ProjectFeature::ENABLED } }
+    trait(:container_registry_disabled) { container_registry_access_level { ProjectFeature::DISABLED } }
+    trait(:container_registry_private)  { container_registry_access_level { ProjectFeature::PRIVATE } }
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops

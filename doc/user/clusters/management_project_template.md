@@ -53,13 +53,13 @@ project. This image consists of a set of Bash utility scripts to support [Helm v
 This file has a list of paths to other Helmfiles for each app. They're all commented out by default, so you must uncomment
 the paths for the apps that you would like to manage.
 
-By default, each `helmfile.yaml` in these sub-paths will have the attribute `installed: true`, which signifies that everytime
-the pipeline runs, Helmfile will try to either install or update your apps according to the current state of your
-cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile will try to uninstall this app
+By default, each `helmfile.yaml` in these sub-paths have the attribute `installed: true`. This signifies that every time
+the pipeline runs, Helmfile tries to either install or update your apps according to the current state of your
+cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile tries try to uninstall this app
 from your cluster. [Read more](https://github.com/roboll/helmfile) about how Helmfile works.
 
 Furthermore, each app has an `applications/{app}/values.yaml` file. This is the
-place where you can define some default values for your app's Helm chart. Some apps will already have defaults
+place where you can define some default values for your app's Helm chart. Some apps already have defaults
 pre-defined by GitLab.
 
 #### Built-in applications
@@ -68,19 +68,19 @@ The built-in applications are intended to provide an easy way to get started wit
 
 The [built-in supported applications](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/tree/master/applications) are:
 
-- Apparmor
-- Cert-manager
-- Cilium
-- Elastic Stack
-- Falco
-- Fluentd
-- GitLab Runner
-- Ingress
-- Prometheus
-- Sentry
-- Vault
+- [Apparmor](../infrastructure/clusters/manage/management_project_applications/apparmor.md)
+- [Cert-manager](../infrastructure/clusters/manage/management_project_applications/certmanager.md)
+- [Cilium](../infrastructure/clusters/manage/management_project_applications/cilium.md)
+- [Elastic Stack](../infrastructure/clusters/manage/management_project_applications/elasticstack.md)
+- [Falco](../infrastructure/clusters/manage/management_project_applications/falco.md)
+- [Fluentd](../infrastructure/clusters/manage/management_project_applications/fluentd.md)
+- [GitLab Runner](../infrastructure/clusters/manage/management_project_applications/runner.md)
+- [Ingress](../infrastructure/clusters/manage/management_project_applications/ingress.md)
+- [Prometheus](../infrastructure/clusters/manage/management_project_applications/prometheus.md)
+- [Sentry](../infrastructure/clusters/manage/management_project_applications/sentry.md)
+- [Vault](../infrastructure/clusters/manage/management_project_applications/vault.md)
 
-### Migrating from GitLab Managed Apps
+### Migrate from GitLab Managed Apps
 
 If you had GitLab Managed Apps, either One-Click or CI/CD install, read the docs on how to
 [migrate from GitLab Managed Apps to project template](migrating_from_gma_to_project_template.md)

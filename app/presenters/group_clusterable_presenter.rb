@@ -9,16 +9,6 @@ class GroupClusterablePresenter < ClusterablePresenter
     cluster_status_group_cluster_path(clusterable, cluster, params)
   end
 
-  override :install_applications_cluster_path
-  def install_applications_cluster_path(cluster, application)
-    install_applications_group_cluster_path(clusterable, cluster, application)
-  end
-
-  override :update_applications_cluster_path
-  def update_applications_cluster_path(cluster, application)
-    update_applications_group_cluster_path(clusterable, cluster, application)
-  end
-
   override :clear_cluster_cache_path
   def clear_cluster_cache_path(cluster)
     clear_cache_group_cluster_path(clusterable, cluster)

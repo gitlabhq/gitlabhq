@@ -24,9 +24,10 @@
 
   %p.jira-connect-app-body.gl-px-5.gl-mt-7.gl-font-base.gl-text-center
     %strong= s_('Integrations|Browser limitations')
-    - firefox_link_url = 'https://www.mozilla.org/en-US/firefox/'
-    - firefox_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: firefox_link_url }
-    = s_('Integrations|Adding a namespace works only in browsers that allow cross‑site cookies. Use %{firefox_link_start}Firefox%{firefox_link_end}, or enable cross‑site cookies in your browser, when adding a namespace.').html_safe % { firefox_link_start: firefox_link_start, firefox_link_end: '</a>'.html_safe }
+    - browser_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'
+    - firefox_link_start = browser_link_start.html_safe % { url: 'https://www.mozilla.org/en-US/firefox/' }
+    - chrome_link_start = browser_link_start.html_safe % { url: 'https://www.google.com/chrome/' }
+    = s_('Integrations|Adding a namespace works only in browsers that allow cross‑site cookies. Use %{firefox_link_start}Firefox%{link_end}, %{chrome_link_start}Google Chrome%{link_end}, or enable cross‑site cookies in your browser, when adding a namespace.').html_safe % { firefox_link_start: firefox_link_start, chrome_link_start: chrome_link_start, link_end: '</a>'.html_safe }
     = link_to _('Learn more'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/284211', target: '_blank', rel: 'noopener noreferrer'
 
 = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?

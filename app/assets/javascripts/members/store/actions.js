@@ -25,6 +25,14 @@ export const hideRemoveGroupLinkModal = ({ commit }) => {
   commit(types.HIDE_REMOVE_GROUP_LINK_MODAL);
 };
 
+export const showRemoveMemberModal = ({ commit }, modalData) => {
+  commit(types.SHOW_REMOVE_MEMBER_MODAL, modalData);
+};
+
+export const hideRemoveMemberModal = ({ commit }) => {
+  commit(types.HIDE_REMOVE_MEMBER_MODAL);
+};
+
 export const updateMemberExpiration = async ({ state, commit }, { memberId, expiresAt }) => {
   try {
     await axios.put(

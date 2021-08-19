@@ -1,9 +1,9 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.clusters
 description: Total GitLab Managed clusters both enabled and disabled
 product_section: ops
-product_stage:
+product_stage: 
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 skip_validation: true
+performance_indicator_type: []

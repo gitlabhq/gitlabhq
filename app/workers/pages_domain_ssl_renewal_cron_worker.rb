@@ -3,10 +3,12 @@
 class PagesDomainSslRenewalCronWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  sidekiq_options retry: 3
+  data_consistency :always
+
   include CronjobQueue
 
   feature_category :pages
+  worker_resource_boundary :cpu
 
   def perform
     return unless ::Gitlab::LetsEncrypt.enabled?

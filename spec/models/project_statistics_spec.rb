@@ -401,12 +401,6 @@ RSpec.describe ProjectStatistics do
       let(:stat) { :build_artifacts_size }
 
       it_behaves_like 'a statistic that increases storage_size asynchronously'
-
-      it_behaves_like 'a statistic that increases storage_size' do
-        before do
-          stub_feature_flags(efficient_counter_attribute: false)
-        end
-      end
     end
 
     context 'when adjusting :pipeline_artifacts_size' do

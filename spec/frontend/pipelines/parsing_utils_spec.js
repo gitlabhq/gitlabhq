@@ -120,8 +120,8 @@ describe('DAG visualization parsing utilities', () => {
 
   describe('generateColumnsFromLayersList', () => {
     const pipeline = generateResponse(mockPipelineResponse, 'root/fungi-xoxo');
-    const layers = listByLayers(pipeline);
-    const columns = generateColumnsFromLayersListBare(pipeline, layers);
+    const { pipelineLayers } = listByLayers(pipeline);
+    const columns = generateColumnsFromLayersListBare(pipeline, pipelineLayers);
 
     it('returns stage-like objects with default name, id, and status', () => {
       columns.forEach((col, idx) => {
@@ -136,7 +136,7 @@ describe('DAG visualization parsing utilities', () => {
     it('creates groups that match the list created in listByLayers', () => {
       columns.forEach((col, idx) => {
         const groupNames = col.groups.map(({ name }) => name);
-        expect(groupNames).toEqual(layers[idx]);
+        expect(groupNames).toEqual(pipelineLayers[idx]);
       });
     });
 

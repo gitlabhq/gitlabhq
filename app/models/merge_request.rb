@@ -329,16 +329,16 @@ class MergeRequest < ApplicationRecord
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
-  scope :order_merged_at, ->(direction) do
+  scope :order_by_metric, ->(metric, direction) do
     reverse_direction = { 'ASC' => 'DESC', 'DESC' => 'ASC' }
     reversed_direction = reverse_direction[direction] || raise("Unknown sort direction was given: #{direction}")
 
     order = Gitlab::Pagination::Keyset::Order.build([
       Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'merge_request_metrics_merged_at',
-        column_expression: MergeRequest::Metrics.arel_table[:merged_at],
-        order_expression: Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', direction),
-        reversed_order_expression: Gitlab::Database.nulls_first_order('merge_request_metrics.merged_at', reversed_direction),
+        attribute_name: "merge_request_metrics_#{metric}",
+        column_expression: MergeRequest::Metrics.arel_table[metric],
+        order_expression: Gitlab::Database.nulls_last_order("merge_request_metrics.#{metric}", direction),
+        reversed_order_expression: Gitlab::Database.nulls_first_order("merge_request_metrics.#{metric}", reversed_direction),
         order_direction: direction,
         nullable: :nulls_last,
         distinct: false,
@@ -353,8 +353,10 @@ class MergeRequest < ApplicationRecord
 
     order.apply_cursor_conditions(join_metrics).order(order)
   end
-  scope :order_merged_at_asc, -> { order_merged_at('ASC') }
-  scope :order_merged_at_desc, -> { order_merged_at('DESC') }
+  scope :order_merged_at_asc, -> { order_by_metric(:merged_at, 'ASC') }
+  scope :order_merged_at_desc, -> { order_by_metric(:merged_at, 'DESC') }
+  scope :order_closed_at_asc, -> { order_by_metric(:latest_closed_at, 'ASC') }
+  scope :order_closed_at_desc, -> { order_by_metric(:latest_closed_at, 'DESC') }
   scope :preload_source_project, -> { preload(:source_project) }
   scope :preload_target_project, -> { preload(:target_project) }
   scope :preload_routables, -> do
@@ -452,7 +454,9 @@ class MergeRequest < ApplicationRecord
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'merged_at', 'merged_at_asc' then order_merged_at_asc
+    when 'closed_at', 'closed_at_asc' then order_closed_at_asc
     when 'merged_at_desc' then order_merged_at_desc
+    when 'closed_at_desc' then order_closed_at_desc
     else
       super
     end

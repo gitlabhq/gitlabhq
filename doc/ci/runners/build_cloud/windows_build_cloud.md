@@ -4,24 +4,24 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Windows shared runners (beta)
+# Build Cloud runners for Windows (beta)
 
-The Windows shared runners are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+GitLab Build Cloud runners for Windows are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
 and shouldn't be used for production workloads.
 
 During this beta period, the [shared runner pipeline quota](../../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
 applies for groups and projects in the same manner as Linux runners. This may
 change when the beta period ends, as discussed in this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30834).
 
-Windows shared runners on GitLab.com autoscale by launching virtual machines on
+Windows runners on GitLab.com autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
 [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
-Windows shared runners execute your CI/CD jobs on `n1-standard-2` instances with
+Windows runners execute your CI/CD jobs on `n1-standard-2` instances with
 2 vCPUs and 7.5 GB RAM. You can find a full list of available Windows packages in
 the [package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
 
-We want to keep iterating to get Windows shared runners in a stable state and
+We want to keep iterating to get Windows runners in a stable state and
 [generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).
 You can follow our work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
@@ -89,10 +89,9 @@ VMTag = "windows"
   Directory = "C:\\GitLab-Runner\\autoscaler\\machines"
 ```
 
-## Example
+## Example `.gitlab-ci.yml` file
 
-Below is a simple `.gitlab-ci.yml` file to show how to start using the
-Windows shared runners:
+Below is a sample `.gitlab-ci.yml` file that shows how to start using the runners for Windows:
 
 ```yaml
 .shared_windows_runners:
@@ -131,14 +130,14 @@ test:
   definition](https://about.gitlab.com/handbook/product/#beta).
 - The average provisioning time for a new Windows VM is 5 minutes.
   This means that you may notice slower build start times
-  on the Windows shared runner fleet during the beta. In a future
+  on the Windows runner fleet during the beta. In a future
   release we intend to update the autoscaler to enable
   the pre-provisioning of virtual machines. This is intended to significantly reduce
   the time it takes to provision a VM on the Windows fleet. You can
   follow along in the [related issue](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/issues/32).
-- The Windows shared runner fleet may be unavailable occasionally
+- The Windows runner fleet may be unavailable occasionally
   for maintenance or updates.
-- The Windows shared runner virtual machine instances do not use the
+- The Windows runner virtual machine instances do not use the
   GitLab Docker executor. This means that you can't specify
   [`image`](../../../ci/yaml/index.md#image) or [`services`](../../../ci/yaml/index.md#services) in
   your pipeline configuration.
@@ -150,7 +149,7 @@ test:
   installation of additional software packages needs to be repeated for
   each job in your pipeline.
 - The job may stay in a pending state for longer than the
-  Linux shared runners.
+  Linux runners.
 - There is the possibility that we introduce breaking changes which will
-  require updates to pipelines that are using the Windows shared runner
+  require updates to pipelines that are using the Windows runner
   fleet.

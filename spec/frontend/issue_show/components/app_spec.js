@@ -2,7 +2,6 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
-import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import '~/behaviors/markdown/render_gfm';
 import IssuableApp from '~/issue_show/components/app.vue';
 import DescriptionComponent from '~/issue_show/components/description.vue';
@@ -30,8 +29,6 @@ jest.mock('~/issue_show/event_hub');
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
 describe('Issuable output', () => {
-  useMockIntersectionObserver();
-
   let mock;
   let realtimeRequestCount = 0;
   let wrapper;

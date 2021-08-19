@@ -13,6 +13,7 @@ import {
   scrollUp,
 } from '~/lib/utils/scroll_utils';
 import { __ } from '~/locale';
+import { reportToSentry } from '../utils';
 import * as types from './mutation_types';
 
 export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
@@ -175,11 +176,14 @@ export const fetchTrace = ({ dispatch, state }) =>
         dispatch('startPollingTrace');
       }
     })
-    .catch((e) =>
-      e.response.status === httpStatusCodes.FORBIDDEN
-        ? dispatch('receiveTraceUnauthorizedError')
-        : dispatch('receiveTraceError'),
-    );
+    .catch((e) => {
+      if (e.response.status === httpStatusCodes.FORBIDDEN) {
+        dispatch('receiveTraceUnauthorizedError');
+      } else {
+        reportToSentry('job_actions', e);
+        dispatch('receiveTraceError');
+      }
+    });
 
 export const startPollingTrace = ({ dispatch, commit }) => {
   const traceTimeout = setTimeout(() => {

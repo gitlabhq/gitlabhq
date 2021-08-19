@@ -11,7 +11,7 @@ module Gitlab
       retry_attempts = 0
 
       begin
-        ActiveRecord::Base.transaction do
+        ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
           yield(subject)
         end
       rescue ActiveRecord::StaleObjectError

@@ -27,6 +27,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
 
       expect(data[:status]).to eq('failed')
       expect(data[:status_changed_at]).to eq(status_changed_at)
+      expect(data[:deployment_id]).to eq(deployment.id)
       expect(data[:deployable_id]).to eq(deployable.id)
       expect(data[:deployable_url]).to eq(expected_deployable_url)
       expect(data[:environment]).to eq("somewhere")

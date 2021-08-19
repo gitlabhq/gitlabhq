@@ -12,7 +12,7 @@ RSpec.describe 'Jobs/Build.gitlab-ci.yml' do
     let(:default_branch) { 'master' }
     let(:pipeline_ref) { default_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref) }
-    let(:pipeline) { service.execute!(:push) }
+    let(:pipeline) { service.execute!(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do
@@ -47,7 +47,7 @@ RSpec.describe 'Jobs/Build.gitlab-ci.yml' do
     context 'on merge request' do
       let(:service) { MergeRequests::CreatePipelineService.new(project: project, current_user: user) }
       let(:merge_request) { create(:merge_request, :simple, source_project: project) }
-      let(:pipeline) { service.execute(merge_request) }
+      let(:pipeline) { service.execute(merge_request).payload }
 
       it 'has no jobs' do
         expect(pipeline).to be_merge_request_event

@@ -1,10 +1,10 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.templates_hipchat_active
 description: Count of active service templates for HipChat
 product_section: dev
-product_stage: create
-product_group: group::ecosystem
+product_stage: ecosystem
+product_group: group::integrations
 product_category: integrations
 value_type: number
 status: removed
@@ -18,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

@@ -38,6 +38,12 @@ RSpec.describe GroupMembersFinder, '#execute' do
       }
     end
 
+    it 'raises an error if a non-supported relation type is used' do
+      expect do
+        described_class.new(group).execute(include_relations: [:direct, :invalid_relation_type])
+      end.to raise_error(ArgumentError, "invalid_relation_type is not a valid relation type. Valid relation types are direct, inherited, descendants.")
+    end
+
     using RSpec::Parameterized::TableSyntax
 
     where(:subject_relations, :subject_group, :expected_members) do

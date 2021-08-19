@@ -28,6 +28,10 @@ export default {
     GlLoadingIcon,
     GlIcon,
     UserAccessRoleBadge,
+    ComplianceFrameworkLabel: () =>
+      import(
+        'ee_component/vue_shared/components/compliance_framework_label/compliance_framework_label.vue'
+      ),
     itemCaret,
     itemTypeIcon,
     itemStats,
@@ -67,6 +71,9 @@ export default {
     hasAvatar() {
       return this.group.avatarUrl !== null;
     },
+    hasComplianceFramework() {
+      return Boolean(this.group.complianceFramework?.name);
+    },
     isGroup() {
       return this.group.type === 'group';
     },
@@ -81,6 +88,9 @@ export default {
     },
     microdata() {
       return this.group.microdata || {};
+    },
+    complianceFramework() {
+      return this.group.complianceFramework;
     },
   },
   methods: {
@@ -167,6 +177,13 @@ export default {
             <user-access-role-badge v-if="group.permission" class="gl-mt-3">
               {{ group.permission }}
             </user-access-role-badge>
+            <compliance-framework-label
+              v-if="hasComplianceFramework"
+              class="gl-mt-3"
+              :name="complianceFramework.name"
+              :color="complianceFramework.color"
+              :description="complianceFramework.description"
+            />
           </div>
           <div v-if="group.description" class="description">
             <span

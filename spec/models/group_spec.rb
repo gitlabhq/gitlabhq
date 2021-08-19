@@ -640,6 +640,12 @@ RSpec.describe Group do
       it { is_expected.to match_array([private_group, internal_group]) }
     end
 
+    describe 'private_only' do
+      subject { described_class.private_only.to_a }
+
+      it { is_expected.to match_array([private_group]) }
+    end
+
     describe 'with_onboarding_progress' do
       subject { described_class.with_onboarding_progress }
 
@@ -2596,6 +2602,21 @@ RSpec.describe Group do
     subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
 
     it { is_expected.to eq(Set.new([child_1.id])) }
+  end
+
+  describe '.timelogs' do
+    let(:project) { create(:project, namespace: group) }
+    let(:issue) { create(:issue, project: project) }
+    let(:other_project) { create(:project, namespace: create(:group)) }
+    let(:other_issue) { create(:issue, project: other_project) }
+
+    let!(:timelog1) { create(:timelog, issue: issue) }
+    let!(:timelog2) { create(:timelog, issue: other_issue) }
+    let!(:timelog3) { create(:timelog, issue: issue) }
+
+    it 'returns timelogs belonging to the group' do
+      expect(group.timelogs).to contain_exactly(timelog1, timelog3)
+    end
   end
 
   describe '#to_ability_name' do

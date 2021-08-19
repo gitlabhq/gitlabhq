@@ -1,11 +1,11 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: topology
 description: Topology data
 product_section: enablement
 product_stage: enablement
 product_group: group::memory
-product_category:
+product_category: 
 value_type: object
 status: data_available
 milestone: "13.11"
@@ -20,3 +20,4 @@ tier:
 - premium
 - ultimate
 value_json_schema: 'config/metrics/objects_schemas/topology_schema.json'
+performance_indicator_type: []

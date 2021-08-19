@@ -911,14 +911,16 @@ describe '#show', :snowplow do
     expect_snowplow_event(
       category: 'Experiment',
       action: 'start',
-      standard_context: { namespace: group, project: project }
+      namespace: group,
+      project: project
     )
     expect_snowplow_event(
       category: 'Experiment',
       action: 'sent',
       property: 'property',
       label: 'label',
-      standard_context: { namespace: group, project: project }
+      namespace: group,
+      project: project
     )
   end
 end
@@ -972,11 +974,16 @@ range of inputs, might look like this:
 describe "#==" do
   using RSpec::Parameterized::TableSyntax
 
+  let(:one) { 1 }
+  let(:two) { 2 }
+
   where(:a, :b, :result) do
-    1         | 1        | true
-    1         | 2        | false
-    true      | true     | true
-    true      | false    | false
+    1         | 1         | true
+    1         | 2         | false
+    true      | true      | true
+    true      | false     | false
+    ref(:one) | ref(:one) | true  # let variables must be referenced using `ref`
+    ref(:one) | ref(:two) | false
   end
 
   with_them do
@@ -989,11 +996,13 @@ describe "#==" do
 end
 ```
 
+<!-- vale gitlab.Spelling = NO -->
+
 WARNING:
-Only use simple values as input in the `where` block. Using
-<!-- vale gitlab.Spelling = NO --> procs, stateful
+Only use simple values as input in the `where` block. Using procs, stateful
 objects, FactoryBot-created objects, and similar items can lead to
 [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
+
 <!-- vale gitlab.Spelling = YES -->
 
 ### Prometheus tests

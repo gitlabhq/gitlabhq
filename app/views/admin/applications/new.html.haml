@@ -1,6 +1,7 @@
-- breadcrumb_title _("Applications")
-- page_title _("New Application")
+- breadcrumb_title _("Add new application")
+- page_title _("Add new application")
 
-%h3.page-title New application
+%h3.page-title
+  = _("Add new application")
 - @url = admin_applications_path
 = render 'form', application: @application

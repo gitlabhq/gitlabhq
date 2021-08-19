@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Trigger < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class Trigger < Ci::ApplicationRecord
     include Presentable
 
     belongs_to :project

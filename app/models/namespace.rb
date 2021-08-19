@@ -24,6 +24,7 @@ class Namespace < ApplicationRecord
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
   SHARED_RUNNERS_SETTINGS = %w[disabled_and_unoverridable disabled_with_override enabled].freeze
+  URL_MAX_LENGTH = 255
 
   cache_markdown_field :description, pipeline: :description
 
@@ -33,6 +34,7 @@ class Namespace < ApplicationRecord
 
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
+  has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_one :onboarding_progress
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set
@@ -58,7 +60,7 @@ class Namespace < ApplicationRecord
   validates :description, length: { maximum: 255 }
   validates :path,
     presence: true,
-    length: { maximum: 255 },
+    length: { maximum: URL_MAX_LENGTH },
     namespace_path: true
 
   # Introduce minimal path length of 2 characters.
@@ -464,10 +466,34 @@ class Namespace < ApplicationRecord
   end
 
   def refresh_access_of_projects_invited_groups
-    Group
-      .joins(project_group_links: :project)
-      .where(projects: { namespace_id: id })
-      .find_each(&:refresh_members_authorized_projects)
+    if Feature.enabled?(:specialized_worker_for_group_lock_update_auth_recalculation)
+      Project
+        .where(namespace_id: id)
+        .joins(:project_group_links)
+        .distinct
+        .find_each do |project|
+        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
+      end
+
+      # Until we compare the inconsistency rates of the new specialized worker and
+      # the old approach, we still run AuthorizedProjectsWorker
+      # but with some delay and lower urgency as a safety net.
+      Group
+        .joins(project_group_links: :project)
+        .where(projects: { namespace_id: id })
+        .distinct
+        .find_each do |group|
+        group.refresh_members_authorized_projects(
+          blocking: false,
+          priority: UserProjectAccessChangedService::LOW_PRIORITY
+        )
+      end
+    else
+      Group
+        .joins(project_group_links: :project)
+        .where(projects: { namespace_id: id })
+        .find_each(&:refresh_members_authorized_projects)
+    end
   end
 
   def nesting_level_allowed
@@ -503,7 +529,7 @@ class Namespace < ApplicationRecord
 
   def write_projects_repository_config
     all_projects.find_each do |project|
-      project.write_repository_config
+      project.set_full_path
       project.track_project_repository
     end
   end

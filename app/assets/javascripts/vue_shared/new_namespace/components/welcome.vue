@@ -1,12 +1,12 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import Vue from 'vue';
 import Tracking from '~/tracking';
 
 export default {
   directives: {
     SafeHtml,
   },
+  mixins: [Tracking.mixin()],
   props: {
     title: {
       type: String,
@@ -16,16 +16,6 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  created() {
-    const trackingMixin = Tracking.mixin();
-    const trackingInstance = new Vue({
-      ...trackingMixin,
-      render() {
-        return null;
-      },
-    });
-    this.track = trackingInstance.track;
   },
 };
 </script>

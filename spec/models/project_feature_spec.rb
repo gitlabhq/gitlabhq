@@ -8,6 +8,8 @@ RSpec.describe ProjectFeature do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
+  it { is_expected.to belong_to(:project) }
+
   describe 'PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT' do
     it 'has higher level than that of PRIVATE_FEATURES_MIN_ACCESS_LEVEL' do
       described_class::PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT.each do |feature, level|
@@ -189,27 +191,57 @@ RSpec.describe ProjectFeature do
   end
 
   describe 'container_registry_access_level' do
-    context 'when the project is created with container_registry_enabled false' do
-      it 'creates project with DISABLED container_registry_access_level' do
-        project = create(:project, container_registry_enabled: false)
+    context 'with default value' do
+      let(:project) { Project.new }
 
-        expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+      context 'when the default is false' do
+        it 'creates project_feature with `disabled` container_registry_access_level' do
+          stub_config_setting(default_projects_features: { container_registry: false })
+
+          expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+        end
+      end
+
+      context 'when the default is true' do
+        before do
+          stub_config_setting(default_projects_features: { container_registry: true })
+        end
+
+        it 'creates project_feature with `enabled` container_registry_access_level' do
+          expect(project.project_feature.container_registry_access_level).to eq(described_class::ENABLED)
+        end
+      end
+
+      context 'when the default is nil' do
+        it 'creates project_feature with `disabled` container_registry_access_level' do
+          stub_config_setting(default_projects_features: { container_registry: nil })
+
+          expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+        end
       end
     end
 
-    context 'when the project is created with container_registry_enabled true' do
-      it 'creates project with ENABLED container_registry_access_level' do
-        project = create(:project, container_registry_enabled: true)
+    context 'test build factory' do
+      let(:project) { build(:project, container_registry_access_level: level) }
 
-        expect(project.project_feature.container_registry_access_level).to eq(described_class::ENABLED)
+      subject { project.container_registry_access_level }
+
+      context 'private' do
+        let(:level) { ProjectFeature::PRIVATE }
+
+        it { is_expected.to eq(level) }
       end
-    end
 
-    context 'when the project is created with container_registry_enabled nil' do
-      it 'creates project with DISABLED container_registry_access_level' do
-        project = create(:project, container_registry_enabled: nil)
+      context 'enabled' do
+        let(:level) { ProjectFeature::ENABLED }
 
-        expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+        it { is_expected.to eq(level) }
+      end
+
+      context 'disabled' do
+        let(:level) { ProjectFeature::DISABLED }
+
+        it { is_expected.to eq(level) }
       end
     end
   end

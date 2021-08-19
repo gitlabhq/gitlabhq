@@ -33,7 +33,7 @@ To use this in a [`script` definition](../ci/yaml/index.md#script) inside
 
 - The `JOB-TOKEN` header with the GitLab-provided `CI_JOB_TOKEN` variable.
   For example, the following job downloads the artifacts of the job with ID
-  `42`. Note that the command is wrapped into single quotes because it contains a
+  `42`. The command is wrapped in single quotes because it contains a
   colon (`:`):
 
   ```yaml
@@ -98,7 +98,7 @@ To use this in a [`script` definition](../ci/yaml/index.md#script) inside
 
 - The `JOB-TOKEN` header with the GitLab-provided `CI_JOB_TOKEN` variable.
   For example, the following job downloads the artifacts of the `test` job
-  of the `main` branch. Note that the command is wrapped into single quotes
+  of the `main` branch. The command is wrapped in single quotes
   because it contains a colon (`:`):
 
   ```yaml

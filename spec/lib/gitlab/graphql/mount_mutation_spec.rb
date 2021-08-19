@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Graphql::MountMutation do
     Class.new(Mutations::BaseMutation) do
       graphql_name 'TestMutation'
 
-      argument :foo, GraphQL::STRING_TYPE, required: false
-      field :bar, GraphQL::STRING_TYPE, null: true
+      argument :foo, GraphQL::Types::String, required: false
+      field :bar, GraphQL::Types::String, null: true
     end
   end
 

@@ -15,11 +15,11 @@ module Resolvers
                required: false,
                description: 'Filter runners by type.'
 
-      argument :tag_list, [GraphQL::STRING_TYPE],
+      argument :tag_list, [GraphQL::Types::String],
                required: false,
                description: 'Filter by tags associated with the runner (comma-separated or array).'
 
-      argument :search, GraphQL::STRING_TYPE,
+      argument :search, GraphQL::Types::String,
                required: false,
                description: 'Filter by full token or partial text in description field.'
 

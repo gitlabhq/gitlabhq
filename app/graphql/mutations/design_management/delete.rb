@@ -7,16 +7,16 @@ module Mutations
 
       graphql_name "DesignManagementDelete"
 
-      argument :filenames, [GraphQL::STRING_TYPE],
+      argument :filenames, [GraphQL::Types::String],
                required: true,
-               description: "The filenames of the designs to delete.",
+               description: "Filenames of the designs to delete.",
                prepare: ->(names, _ctx) do
                  names.presence || (raise Errors::ArgumentError, 'no filenames')
                end
 
       field :version, Types::DesignManagement::VersionType,
             null: true, # null on error
-            description: 'The new version in which the designs are deleted.'
+            description: 'New version in which the designs are deleted.'
 
       authorize :destroy_design
 

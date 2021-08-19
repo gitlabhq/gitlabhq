@@ -3,6 +3,7 @@
 class Commit
   extend ActiveModel::Naming
   extend Gitlab::Cache::RequestCache
+  extend Gitlab::Utils::Override
 
   include ActiveModel::Conversion
   include Noteable
@@ -327,7 +328,7 @@ class Commit
   end
 
   def user_mentions
-    CommitUserMention.where(commit_id: self.id)
+    user_mention_class.where(commit_id: self.id)
   end
 
   def discussion_notes
@@ -552,6 +553,19 @@ class Commit
 
   def readable_by?(user)
     Ability.allowed?(user, :read_commit, self)
+  end
+
+  override :user_mention_class
+  def user_mention_class
+    CommitUserMention
+  end
+
+  override :user_mention_identifier
+  def user_mention_identifier
+    {
+      commit_id: id,
+      note_id: nil
+    }
   end
 
   private

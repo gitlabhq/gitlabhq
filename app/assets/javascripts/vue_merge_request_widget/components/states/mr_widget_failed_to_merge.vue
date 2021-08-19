@@ -17,7 +17,6 @@ export default {
     mr: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
   },
 

@@ -56,7 +56,7 @@ export const requestCreateProjectSuccess = ({ commit, dispatch }, selfMonitorDat
   commit(types.SET_LOADING, false);
   commit(types.SET_PROJECT_URL, selfMonitorData.project_full_path);
   commit(types.SET_ALERT_CONTENT, {
-    message: s__('SelfMonitoring|Self monitoring project has been successfully created.'),
+    message: s__('SelfMonitoring|Self monitoring project successfully created.'),
     actionText: __('View project'),
     actionName: 'viewSelfMonitorProject',
   });
@@ -108,7 +108,7 @@ export const requestDeleteProjectSuccess = ({ commit }) => {
   commit(types.SET_PROJECT_URL, '');
   commit(types.SET_PROJECT_CREATED, false);
   commit(types.SET_ALERT_CONTENT, {
-    message: s__('SelfMonitoring|Self monitoring project has been successfully deleted.'),
+    message: s__('SelfMonitoring|Self monitoring project successfully deleted.'),
     actionText: __('Undo'),
     actionName: 'createProject',
   });

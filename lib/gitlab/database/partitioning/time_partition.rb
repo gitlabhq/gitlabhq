@@ -47,6 +47,13 @@ module Gitlab
           SQL
         end
 
+        def to_detach_sql
+          <<~SQL
+            ALTER TABLE #{conn.quote_table_name(table)}
+            DETACH PARTITION #{fully_qualified_partition}
+          SQL
+        end
+
         def ==(other)
           table == other.table && partition_name == other.partition_name && from == other.from && to == other.to
         end

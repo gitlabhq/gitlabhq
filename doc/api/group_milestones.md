@@ -89,8 +89,8 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `title` | string | yes | The title of a milestone |
 | `description` | string | no | The description of the milestone |
-| `due_date` | date | no | The due date of the milestone, in YYYY-MM-DD format (ISO 8601) |
-| `start_date` | date | no | The start date of the milestone, in YYYY-MM-DD format (ISO 8601) |
+| `due_date` | date | no | The due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`) |
+| `start_date` | date | no | The start date of the milestone, in ISO 8601 format (`YYYY-MM-DD`) |
 
 ## Edit milestone
 
@@ -108,8 +108,8 @@ Parameters:
 | `milestone_id` | integer | yes | The ID of a group milestone |
 | `title` | string | no | The title of a milestone |
 | `description` | string | no | The description of a milestone |
-| `due_date` | date | no | The due date of the milestone, in YYYY-MM-DD format (ISO 8601) |
-| `start_date` | date | no | The start date of the milestone, in YYYY-MM-DD format (ISO 8601) |
+| `due_date` | date | no | The due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`) |
+| `start_date` | date | no | The start date of the milestone, in ISO 8601 format (`YYYY-MM-DD`) |
 | `state_event` | string | no | The state event of the milestone _(`close` or `activate`)_ |
 
 ## Delete group milestone

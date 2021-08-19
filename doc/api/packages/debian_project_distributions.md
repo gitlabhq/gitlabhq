@@ -4,30 +4,26 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Debian project distributions API **(FREE)**
+# Debian project distributions API **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5835) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
+> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
-See the [Debian package registry documentation](../../user/packages/debian_repository/index.md)
-for more information about working with Debian packages.
+This is the reference documentation for the Debian project distributions API. This API is behind a
+feature flag that is disabled by default. To use this API, you must [enable the Debian API](#enable-the-debian-api).
 
-## Enable Debian repository feature
+WARNING:
+This API is under development and is not meant for production use.
 
-Debian repository support is gated behind a feature flag that is **disabled by default**.
+For more information about working with Debian packages, see the
+[Debian package registry documentation](../../user/packages/debian_repository/index.md).
+
+## Enable the Debian API
+
+The Debian API is behind a feature flag that is disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:debian_packages)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:debian_packages)
-```
+can opt to enable it. To enable it, follow the instructions in
+[Enable the Debian API](../../user/packages/debian_repository/index.md#enable-the-debian-api).
 
 ## List all Debian distributions in a project
 

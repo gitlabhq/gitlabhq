@@ -30,7 +30,6 @@ RSpec.describe 'factories' do
       [:pages_domain, :with_trusted_expired_chain],
       [:pages_domain, :explicit_ecdsa],
       [:project_member, :blocked],
-      [:project, :remote_mirror],
       [:remote_mirror, :ssh],
       [:user_preference, :only_comments],
       [:ci_pipeline_artifact, :remote_store]

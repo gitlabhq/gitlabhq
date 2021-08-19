@@ -99,7 +99,7 @@ class Projects::ForksController < Projects::ApplicationController
       current_user: current_user
     ).execute
 
-    forks.includes(:route, :creator, :group, namespace: [:route, :owner])
+    forks.includes(:route, :creator, :group, :topics, namespace: [:route, :owner])
   end
 
   def fork_service

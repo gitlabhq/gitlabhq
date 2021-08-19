@@ -8,12 +8,12 @@ RSpec.describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shar
   subject { Class.new.extend(described_class) }
 
   before do
-    stub_application_setting(usage_ping_enabled: setting_value)
+    allow(::ServicePing::ServicePingSettings).to receive(:enabled?).and_return(service_ping_enabled)
   end
 
   describe '.increment' do
     context 'when usage_ping is disabled' do
-      let(:setting_value) { false }
+      let(:service_ping_enabled) { false }
 
       it 'counter is not increased' do
         expect do
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shar
     end
 
     context 'when usage_ping is enabled' do
-      let(:setting_value) { true }
+      let(:service_ping_enabled) { true }
 
       it 'counter is increased' do
         expect do
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shar
 
   describe '.increment_by' do
     context 'when usage_ping is disabled' do
-      let(:setting_value) { false }
+      let(:service_ping_enabled) { false }
 
       it 'counter is not increased' do
         expect do
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shar
     end
 
     context 'when usage_ping is enabled' do
-      let(:setting_value) { true }
+      let(:service_ping_enabled) { true }
 
       it 'counter is increased' do
         expect do

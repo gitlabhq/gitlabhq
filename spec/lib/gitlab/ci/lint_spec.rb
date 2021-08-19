@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Lint do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   let(:lint) { described_class.new(project: project, current_user: user) }
@@ -85,6 +85,15 @@ RSpec.describe Gitlab::Ci::Lint do
           'another-gitlab-ci.yml',
           included_content,
           message: 'Automatically created another-gitlab-ci.yml',
+          branch_name: 'master'
+        )
+      end
+
+      after do
+        project.repository.delete_file(
+          project.creator,
+          'another-gitlab-ci.yml',
+          message: 'Remove another-gitlab-ci.yml',
           branch_name: 'master'
         )
       end

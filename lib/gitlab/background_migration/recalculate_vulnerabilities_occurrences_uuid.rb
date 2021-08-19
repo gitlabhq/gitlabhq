@@ -9,6 +9,8 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
   end
 
   class VulnerabilitiesFinding < ActiveRecord::Base
+    include ShaAttribute
+
     self.table_name = "vulnerability_occurrences"
     belongs_to :primary_identifier, class_name: 'VulnerabilitiesIdentifier', inverse_of: :primary_findings, foreign_key: 'primary_identifier_id'
     REPORT_TYPES = {
@@ -21,6 +23,9 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
       api_fuzzing: 6
     }.with_indifferent_access.freeze
     enum report_type: REPORT_TYPES
+
+    sha_attribute :fingerprint
+    sha_attribute :location_fingerprint
   end
 
   class CalculateFindingUUID

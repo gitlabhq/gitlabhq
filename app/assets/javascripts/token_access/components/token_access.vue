@@ -187,12 +187,7 @@ export default {
             />
           </template>
           <template #footer>
-            <gl-button
-              variant="confirm"
-              :disabled="isProjectPathEmpty"
-              data-testid="add-project-button"
-              @click="addProject"
-            >
+            <gl-button variant="confirm" :disabled="isProjectPathEmpty" @click="addProject">
               {{ $options.i18n.addProject }}
             </gl-button>
             <gl-button @click="clearTargetProjectPath">{{ $options.i18n.cancel }}</gl-button>

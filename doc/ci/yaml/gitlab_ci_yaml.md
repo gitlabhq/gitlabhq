@@ -4,11 +4,8 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
-<!-- markdownlint-disable MD044 -->
-<!-- vale gitlab.Spelling = NO -->
-# The .gitlab-ci.yml file **(FREE)**
-<!-- vale gitlab.Spelling = YES -->
-<!-- markdownlint-enable MD044 -->
+
+# The `.gitlab-ci.yml` file **(FREE)**
 
 To use GitLab CI/CD, you need:
 

@@ -3,6 +3,8 @@
 class GroupImportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: false, dead: false
   feature_category :importers
 

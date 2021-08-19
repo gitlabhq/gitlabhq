@@ -12,6 +12,7 @@ module Sidebars
     include ::Sidebars::Concerns::Renderable
     include ::Sidebars::Concerns::ContainerWithHtmlOptions
     include ::Sidebars::Concerns::HasActiveRoutes
+    include ::Sidebars::Concerns::HasPartial
 
     attr_reader :context
     delegate :current_user, :container, to: :@context
@@ -29,7 +30,7 @@ module Sidebars
 
     override :render?
     def render?
-      has_renderable_items?
+      has_renderable_items? || menu_with_partial?
     end
 
     # Menus might have or not a link

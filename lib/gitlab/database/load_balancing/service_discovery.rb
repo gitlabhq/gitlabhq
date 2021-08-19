@@ -13,7 +13,8 @@ module Gitlab
       # balancer with said hosts. Requests may continue to use the old hosts
       # until they complete.
       class ServiceDiscovery
-        attr_reader :interval, :record, :record_type, :disconnect_timeout
+        attr_reader :interval, :record, :record_type, :disconnect_timeout,
+                    :load_balancer
 
         MAX_SLEEP_ADJUSTMENT = 10
 
@@ -40,7 +41,17 @@ module Gitlab
         # disconnect_timeout - The time after which an old host should be
         #                      forcefully disconnected.
         # use_tcp - Use TCP instaed of UDP to look up resources
-        def initialize(nameserver:, port:, record:, record_type: 'A', interval: 60, disconnect_timeout: 120, use_tcp: false)
+        # load_balancer - The load balancer instance to use
+        def initialize(
+          nameserver:,
+          port:,
+          record:,
+          record_type: 'A',
+          interval: 60,
+          disconnect_timeout: 120,
+          use_tcp: false,
+          load_balancer: LoadBalancing.proxy.load_balancer
+        )
           @nameserver = nameserver
           @port = port
           @record = record
@@ -48,32 +59,34 @@ module Gitlab
           @interval = interval
           @disconnect_timeout = disconnect_timeout
           @use_tcp = use_tcp
+          @load_balancer = load_balancer
         end
 
         def start
           Thread.new do
             loop do
-              interval =
-                begin
-                  refresh_if_necessary
-                rescue StandardError => error
-                  # Any exceptions that might occur should be reported to
-                  # Sentry, instead of silently terminating this thread.
-                  Gitlab::ErrorTracking.track_exception(error)
-
-                  Gitlab::AppLogger.error(
-                    "Service discovery encountered an error: #{error.message}"
-                  )
-
-                  self.interval
-                end
+              next_sleep_duration = perform_service_discovery
 
               # We slightly randomize the sleep() interval. This should reduce
               # the likelihood of _all_ processes refreshing at the same time,
               # possibly putting unnecessary pressure on the DNS server.
-              sleep(interval + rand(MAX_SLEEP_ADJUSTMENT))
+              sleep(next_sleep_duration + rand(MAX_SLEEP_ADJUSTMENT))
             end
           end
+        end
+
+        def perform_service_discovery
+          refresh_if_necessary
+        rescue StandardError => error
+          # Any exceptions that might occur should be reported to
+          # Sentry, instead of silently terminating this thread.
+          Gitlab::ErrorTracking.track_exception(error)
+
+          Gitlab::AppLogger.error(
+            "Service discovery encountered an error: #{error.message}"
+          )
+
+          interval
         end
 
         # Refreshes the hosts, but only if the DNS record returned a new list of
@@ -108,7 +121,7 @@ module Gitlab
           # host/connection. While this connection will be checked in and out,
           # it won't be explicitly disconnected.
           old_hosts.each do |host|
-            host.disconnect!(disconnect_timeout)
+            host.disconnect!(timeout: disconnect_timeout)
           end
         end
 
@@ -145,10 +158,6 @@ module Gitlab
           load_balancer.host_list.host_names_and_ports.map do |hostname, port|
             Address.new(hostname, port)
           end.sort
-        end
-
-        def load_balancer
-          LoadBalancing.proxy.load_balancer
         end
 
         def resolver

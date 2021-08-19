@@ -52,7 +52,7 @@ class MockIntersectionObserver extends MockObserver {
  *   const { trigger: triggerMutate } = useMockMutationObserver();
  *
  *   it('test', () => {
- *     trigger(el, { options: { childList: true }, entry: { } });
+ *     triggerMutate(el, { options: { childList: true }, entry: { } });
  *   });
  * })
  * ```
@@ -60,33 +60,31 @@ class MockIntersectionObserver extends MockObserver {
  * @param {String} key
  */
 const useMockObserver = (key, createMock) => {
-  let mockObserver;
+  let mockObservers = [];
   let origObserver;
 
   beforeEach(() => {
     origObserver = global[key];
     global[key] = jest.fn().mockImplementation((...args) => {
-      mockObserver = createMock(...args);
+      const mockObserver = createMock(...args);
+      mockObservers.push(mockObserver);
       return mockObserver;
     });
   });
 
   afterEach(() => {
-    mockObserver = null;
+    mockObservers.forEach((x) => x.disconnect());
+    mockObservers = [];
     global[key] = origObserver;
   });
 
   const trigger = (...args) => {
-    if (!mockObserver) {
-      return;
-    }
-
-    mockObserver.$_triggerObserve(...args);
+    mockObservers.forEach((observer) => {
+      observer.$_triggerObserve(...args);
+    });
   };
 
-  const observersCount = () => mockObserver.$_observers.length;
-
-  return { trigger, observersCount };
+  return { trigger };
 };
 
 export const useMockIntersectionObserver = () =>

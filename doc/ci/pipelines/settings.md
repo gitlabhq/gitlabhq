@@ -122,8 +122,13 @@ If the CI/CD configuration file is on an external site, the URL must end with `.
 
 - `http://example.com/generate/ci/config.yml`
 
-If the CI/CD configuration file is in a different project, the path must be relative
-to the root directory in the other project. Include the group and project name at the end:
+If the CI/CD configuration file is in a different project:
+
+- The file must exist on its default branch.
+- The path must be relative to the root directory in the other project.
+- The path must include the group and project name at the end.
+
+For example:
 
 - `.gitlab-ci.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project`
@@ -228,6 +233,7 @@ Use this regex for commonly used test tools.
 - `go test -cover` (Go). Example: `coverage: \d+.\d+% of statements`.
 - .NET (OpenCover). Example: `(Visited Points).*\((.*)\)`.
 - .NET (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+(?:\.\d+)?)`.
+- tarpaulin (Rust). Example: `^\d+.\d+% coverage`.
 
 <!-- vale gitlab.Spelling = YES -->
 
@@ -260,6 +266,7 @@ when merging a merge request would cause the project's test coverage to decline.
 
 Follow these steps to enable the `Coverage-Check` MR approval rule:
 
+1. Set up a [`coverage:`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request approvals**.
 1. Select **Enable** next to the `Coverage-Check` approval rule.

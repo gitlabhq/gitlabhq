@@ -5,8 +5,8 @@ module Gitlab
     module Metrics
       module Instrumentations
         class CollectedDataCategoriesMetric < GenericMetric
-          def value
-            ::ServicePing::PermitDataCategoriesService.new.execute
+          value do
+            ::ServicePing::PermitDataCategoriesService.new.execute.to_a
           end
         end
       end

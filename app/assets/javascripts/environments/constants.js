@@ -38,3 +38,5 @@ export const CANARY_STATUS = {
 };
 
 export const CANARY_UPDATE_MODAL = 'confirm-canary-change';
+
+export const ENVIRONMENTS_SURVEY_DISMISSED_COOKIE_NAME = 'environments_survey_alert_dismissed';

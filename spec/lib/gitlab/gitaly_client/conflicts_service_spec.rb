@@ -15,18 +15,31 @@ RSpec.describe Gitlab::GitalyClient::ConflictsService do
   end
 
   describe '#list_conflict_files' do
+    let(:allow_tree_conflicts) { false }
     let(:request) do
       Gitaly::ListConflictFilesRequest.new(
-        repository: target_gitaly_repository, our_commit_oid: our_commit_oid,
-        their_commit_oid: their_commit_oid
+        repository: target_gitaly_repository,
+        our_commit_oid: our_commit_oid,
+        their_commit_oid: their_commit_oid,
+        allow_tree_conflicts: allow_tree_conflicts
       )
     end
 
-    it 'sends an RPC request' do
-      expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:list_conflict_files)
-        .with(request, kind_of(Hash)).and_return([].to_enum)
+    shared_examples_for 'listing conflicts' do
+      it 'sends an RPC request' do
+        expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:list_conflict_files)
+          .with(request, kind_of(Hash)).and_return([].to_enum)
 
-      client.list_conflict_files
+        client.list_conflict_files(allow_tree_conflicts: allow_tree_conflicts)
+      end
+    end
+
+    it_behaves_like 'listing conflicts'
+
+    context 'when allow_tree_conflicts is set to true' do
+      let(:allow_tree_conflicts) { true }
+
+      it_behaves_like 'listing conflicts'
     end
   end
 

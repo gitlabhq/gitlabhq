@@ -8,18 +8,6 @@ module QA
       module ContextSelector
         extend self
 
-        def configure_rspec
-          ::RSpec.configure do |config|
-            config.before do |example|
-              if example.metadata.key?(:only)
-                skip('Test is not compatible with this environment or pipeline') unless ContextSelector.context_matches?(example.metadata[:only])
-              elsif example.metadata.key?(:except)
-                skip('Test is excluded in this job') if ContextSelector.except?(example.metadata[:except])
-              end
-            end
-          end
-        end
-
         def except?(*options)
           return false if Runtime::Env.ci_job_name.blank? && options.any? { |o| o.is_a?(Hash) && o[:job].present? }
           return false if Runtime::Env.ci_project_name.blank? && options.any? { |o| o.is_a?(Hash) && o[:pipeline].present? }

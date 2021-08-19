@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineConfig < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class PipelineConfig < Ci::ApplicationRecord
     self.table_name = 'ci_pipelines_config'
     self.primary_key = :pipeline_id
 

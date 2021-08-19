@@ -12,6 +12,7 @@ type: reference
 GitLab can read settings for certain features from encrypted settings files. The supported features are:
 
 - [LDAP `user_bn` and `password`](auth/ldap/index.md#using-encrypted-credentials)
+- [SMTP `user_name` and `password`](raketasks/smtp.md#secrets)
 
 In order to enable the encrypted configuration settings, a new base key needs to be generated for
 `encrypted_settings_key_base`. The secret can be generated in the following ways:

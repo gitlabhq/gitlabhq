@@ -1,3 +1,4 @@
+import { getJSONFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import { DEFAULT_VALUE_STREAM, DEFAULT_DAYS_IN_PAST } from '~/cycle_analytics/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -6,10 +7,32 @@ import { getDateInPast } from '~/lib/utils/datetime_utility';
 export const createdBefore = new Date(2019, 0, 14);
 export const createdAfter = getDateInPast(createdBefore, DEFAULT_DAYS_IN_PAST);
 
+export const deepCamelCase = (obj) => convertObjectPropsToCamelCase(obj, { deep: true });
+
 export const getStageByTitle = (stages, title) =>
   stages.find((stage) => stage.title && stage.title.toLowerCase().trim() === title) || {};
 
+const fixtureEndpoints = {
+  customizableCycleAnalyticsStagesAndEvents: 'projects/analytics/value_stream_analytics/stages',
+  stageEvents: (stage) => `projects/analytics/value_stream_analytics/events/${stage}`,
+  metricsData: 'projects/analytics/value_stream_analytics/summary',
+};
+
+export const metricsData = getJSONFixture(fixtureEndpoints.metricsData);
+
+export const customizableStagesAndEvents = getJSONFixture(
+  fixtureEndpoints.customizableCycleAnalyticsStagesAndEvents,
+);
+
 export const defaultStages = ['issue', 'plan', 'review', 'code', 'test', 'staging'];
+
+const stageFixtures = defaultStages.reduce((acc, stage) => {
+  const events = getJSONFixture(fixtureEndpoints.stageEvents(stage));
+  return {
+    ...acc,
+    [stage]: events,
+  };
+}, {});
 
 export const summary = [
   { value: '20', title: 'New Issues' },
@@ -18,7 +41,7 @@ export const summary = [
   { value: null, title: 'Deployment Frequency', unit: 'per day' },
 ];
 
-const issueStage = {
+export const issueStage = {
   id: 'issue',
   title: 'Issue',
   name: 'issue',
@@ -27,7 +50,7 @@ const issueStage = {
   value: null,
 };
 
-const planStage = {
+export const planStage = {
   id: 'plan',
   title: 'Plan',
   name: 'plan',
@@ -36,7 +59,7 @@ const planStage = {
   value: 75600,
 };
 
-const codeStage = {
+export const codeStage = {
   id: 'code',
   title: 'Code',
   name: 'code',
@@ -45,7 +68,7 @@ const codeStage = {
   value: 172800,
 };
 
-const testStage = {
+export const testStage = {
   id: 'test',
   title: 'Test',
   name: 'test',
@@ -54,7 +77,7 @@ const testStage = {
   value: 17550,
 };
 
-const reviewStage = {
+export const reviewStage = {
   id: 'review',
   title: 'Review',
   name: 'review',
@@ -63,7 +86,7 @@ const reviewStage = {
   value: null,
 };
 
-const stagingStage = {
+export const stagingStage = {
   id: 'staging',
   title: 'Staging',
   name: 'staging',
@@ -79,7 +102,7 @@ export const selectedStage = {
   isUserAllowed: true,
   emptyStageText:
     'The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.',
-  component: 'stage-issue-component',
+
   slug: 'issue',
 };
 
@@ -109,52 +132,29 @@ export const convertedData = {
   ],
 };
 
-export const rawEvents = [
-  {
-    title: 'Brockfunc-1617160796',
-    author: {
-      id: 275,
-      name: 'VSM User4',
-      username: 'vsm-user-4-1617160796',
-      state: 'active',
-      avatar_url:
-        'https://www.gravatar.com/avatar/6a6f5480ae582ba68982a34169420747?s=80&d=identicon',
-      web_url: 'http://gdk.test:3001/vsm-user-4-1617160796',
-      show_status: false,
-      path: '/vsm-user-4-1617160796',
-    },
-    iid: '16',
-    total_time: { days: 1, hours: 9 },
-    created_at: 'about 1 month ago',
-    url: 'http://gdk.test:3001/vsa-life/ror-project-vsa/-/issues/16',
-    short_sha: 'some_sha',
-    commit_url: 'some_commit_url',
-  },
-  {
-    title: 'Subpod-1617160796',
-    author: {
-      id: 274,
-      name: 'VSM User3',
-      username: 'vsm-user-3-1617160796',
-      state: 'active',
-      avatar_url:
-        'https://www.gravatar.com/avatar/fde853fc3ab7dc552e649dcb4fcf5f7f?s=80&d=identicon',
-      web_url: 'http://gdk.test:3001/vsm-user-3-1617160796',
-      show_status: false,
-      path: '/vsm-user-3-1617160796',
-    },
-    iid: '20',
-    total_time: { days: 2, hours: 18 },
-    created_at: 'about 1 month ago',
-    url: 'http://gdk.test:3001/vsa-life/ror-project-vsa/-/issues/20',
-  },
-];
-
-export const convertedEvents = rawEvents.map((ev) =>
-  convertObjectPropsToCamelCase(ev, { deep: true }),
-);
+export const rawIssueEvents = stageFixtures.issue;
+export const issueEvents = deepCamelCase(rawIssueEvents);
+export const reviewEvents = deepCamelCase(stageFixtures.review);
 
 export const pathNavIssueMetric = 172800;
+
+export const rawStageCounts = [
+  { id: 'issue', count: 6 },
+  { id: 'plan', count: 6 },
+  { id: 'code', count: 1 },
+  { id: 'test', count: 5 },
+  { id: 'review', count: 12 },
+  { id: 'staging', count: 3 },
+];
+
+export const stageCounts = {
+  code: 1,
+  issue: 6,
+  plan: 6,
+  review: 12,
+  staging: 3,
+  test: 5,
+};
 
 export const rawStageMedians = [
   { id: 'issue', value: 172800 },
@@ -189,7 +189,7 @@ export const transformedProjectStagePathData = [
   {
     metric: 172800,
     selected: true,
-    stageCount: undefined,
+    stageCount: 6,
     icon: null,
     id: 'issue',
     title: 'Issue',
@@ -201,7 +201,7 @@ export const transformedProjectStagePathData = [
   {
     metric: 86400,
     selected: false,
-    stageCount: undefined,
+    stageCount: 6,
     icon: null,
     id: 'plan',
     title: 'Plan',
@@ -213,7 +213,7 @@ export const transformedProjectStagePathData = [
   {
     metric: 129600,
     selected: false,
-    stageCount: undefined,
+    stageCount: 1,
     icon: null,
     id: 'code',
     title: 'Code',
@@ -251,46 +251,8 @@ export const selectedProjects = [
   },
 ];
 
-export const rawValueStreamStages = [
-  {
-    title: 'Issue',
-    hidden: false,
-    legend: '',
-    description: 'Time before an issue gets scheduled',
-    id: 'issue',
-    custom: false,
-    start_event_html_description:
-      '\u003cp data-sourcepos="1:1-1:13" dir="auto"\u003eIssue created\u003c/p\u003e',
-    end_event_html_description:
-      '\u003cp data-sourcepos="1:1-1:71" dir="auto"\u003eIssue first associated with a milestone or issue first added to a board\u003c/p\u003e',
-  },
-  {
-    title: 'Plan',
-    hidden: false,
-    legend: '',
-    description: 'Time before an issue starts implementation',
-    id: 'plan',
-    custom: false,
-    start_event_html_description:
-      '\u003cp data-sourcepos="1:1-1:71" dir="auto"\u003eIssue first associated with a milestone or issue first added to a board\u003c/p\u003e',
-    end_event_html_description:
-      '\u003cp data-sourcepos="1:1-1:33" dir="auto"\u003eIssue first mentioned in a commit\u003c/p\u003e',
-  },
-  {
-    title: 'Code',
-    hidden: false,
-    legend: '',
-    description: 'Time until first merge request',
-    id: 'code',
-    custom: false,
-    start_event_html_description:
-      '\u003cp data-sourcepos="1:1-1:33" dir="auto"\u003eIssue first mentioned in a commit\u003c/p\u003e',
-    end_event_html_description:
-      '\u003cp data-sourcepos="1:1-1:21" dir="auto"\u003eMerge request created\u003c/p\u003e',
-  },
-];
+export const rawValueStreamStages = customizableStagesAndEvents.stages;
 
-export const valueStreamStages = rawValueStreamStages.map((s) => ({
-  ...convertObjectPropsToCamelCase(s, { deep: true }),
-  component: `stage-${s.id}-component`,
-}));
+export const valueStreamStages = rawValueStreamStages.map((s) =>
+  convertObjectPropsToCamelCase(s, { deep: true }),
+);

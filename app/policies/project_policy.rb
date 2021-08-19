@@ -159,10 +159,6 @@ class ProjectPolicy < BasePolicy
     ::Feature.enabled?(:build_service_proxy, @subject)
   end
 
-  condition(:respect_protected_tag_for_release_permissions) do
-    ::Feature.enabled?(:evalute_protected_tag_for_release_permissions, @subject, default_enabled: :yaml)
-  end
-
   condition(:user_defined_variables_allowed) do
     !@subject.restrict_user_defined_variables?
   end
@@ -341,7 +337,7 @@ class ProjectPolicy < BasePolicy
     enable :read_metrics_user_starred_dashboard
   end
 
-  rule { packages_disabled | repository_disabled }.policy do
+  rule { packages_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:package))
   end
 
@@ -375,6 +371,7 @@ class ProjectPolicy < BasePolicy
     enable :update_deployment
     enable :create_release
     enable :update_release
+    enable :destroy_release
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
@@ -538,7 +535,7 @@ class ProjectPolicy < BasePolicy
     enable :read_project_for_iids
   end
 
-  rule { ~project_allowed_for_job_token }.prevent_all
+  rule { ~public_project & ~internal_access & ~project_allowed_for_job_token }.prevent_all
 
   rule { can?(:public_access) }.policy do
     enable :read_package
@@ -659,10 +656,6 @@ class ProjectPolicy < BasePolicy
   rule { can?(:create_pipeline) & can?(:maintainer_access) }.enable :create_web_ide_terminal
 
   rule { build_service_proxy_enabled }.enable :build_service_proxy_enabled
-
-  rule { respect_protected_tag_for_release_permissions & can?(:developer_access) }.policy do
-    enable :destroy_release
-  end
 
   rule { can?(:download_code) }.policy do
     enable :read_repository_graphs

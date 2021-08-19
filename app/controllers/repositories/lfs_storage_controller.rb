@@ -8,6 +8,10 @@ module Repositories
 
     skip_before_action :verify_workhorse_api!, only: :download
 
+    # added here as a part of the refactor, will be removed
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/328692
+    delegate :deploy_token, :user, to: :authentication_result, allow_nil: true
+
     def download
       lfs_object = LfsObject.find_by_oid(oid)
       unless lfs_object && lfs_object.file.exists?

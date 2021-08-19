@@ -17,6 +17,7 @@ export const rawMockData = {
   supportedSyntaxLinkUrl: '/supported/syntax/link',
   emailRestrictions: 'user1@domain.com, user2@domain.com',
   afterSignUpText: 'Congratulations on your successful sign-up!',
+  pendingUserCount: '0',
 };
 
 export const mockData = {
@@ -38,4 +39,5 @@ export const mockData = {
   supportedSyntaxLinkUrl: '/supported/syntax/link',
   emailRestrictions: 'user1@domain.com, user2@domain.com',
   afterSignUpText: 'Congratulations on your successful sign-up!',
+  pendingUserCount: '0',
 };

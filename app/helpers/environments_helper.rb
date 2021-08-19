@@ -45,6 +45,14 @@ module EnvironmentsHelper
     can?(current_user, :destroy_environment, environment)
   end
 
+  def environment_data(environment)
+    Gitlab::Json.generate({
+      id: environment.id,
+      name: environment.name,
+      external_url: environment.external_url
+    })
+  end
+
   private
 
   def project_metrics_data(project)

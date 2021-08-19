@@ -10,7 +10,7 @@ module Gitlab
         # We _must not_ use quote_table_name as this will produce double
         # quotes on PostgreSQL and for "has_table_privilege" we need single
         # quotes.
-        connection = ActiveRecord::Base.connection
+        connection = ActiveRecord::Base.connection # rubocop: disable Database/MultipleDatabases
         quoted_table = connection.quote(table)
 
         begin

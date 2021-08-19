@@ -4,6 +4,8 @@ module Gitlab
     class ImportTasksWorker < BaseWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
 
+      data_consistency :always
+
       sidekiq_options retry: 3
       include ProjectImportOptions # This marks the project as failed after too many tries
 

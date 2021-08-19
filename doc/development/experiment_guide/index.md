@@ -63,6 +63,7 @@ Therefore, you should postpone this effort until the [experiment cleanup process
 
 We recommend the following workflow:
 
+1. Review the Pajamas guidelines for [icons](https://design.gitlab.com/product-foundations/iconography) and [illustrations](https://design.gitlab.com/product-foundations/illustration).
 1. Add an icon or illustration as an `.svg` file in the `/app/assets/images` (or EE) path in the GitLab repository.
 1. Use `image_tag` or `image_path` to render it via the asset pipeline.
 1. **If the experiment is a success**, designers add the new icon or illustration to the Pajamas UI kit as part of the cleanup process.

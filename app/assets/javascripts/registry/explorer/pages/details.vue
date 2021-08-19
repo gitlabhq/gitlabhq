@@ -161,7 +161,7 @@ export default {
     },
     deleteImage() {
       this.deleteImageAlert = true;
-      this.itemsToBeDeleted = [{ path: this.containerRepository.path }];
+      this.itemsToBeDeleted = [{ ...this.containerRepository }];
       this.$refs.deleteModal.show();
     },
     deleteImageError() {
@@ -188,7 +188,7 @@ export default {
       <partial-cleanup-alert
         v-if="showPartialCleanupWarning"
         :run-cleanup-policies-help-page-path="config.runCleanupPoliciesHelpPagePath"
-        :cleanup-policies-help-page-path="config.cleanupPoliciesHelpPagePath"
+        :cleanup-policies-help-page-path="config.expirationPolicyHelpPagePath"
         @dismiss="dismissPartialCleanupWarning"
       />
 

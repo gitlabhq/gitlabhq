@@ -35,7 +35,7 @@
       = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
       .error-alert
 
-    .note-form-actions.clearfix
+    .note-form-actions.clearfix.gl-display-flex.gl-flex-wrap
       = render partial: 'shared/notes/comment_button'
 
       %a.btn.gl-button.btn-cancel.js-close-discussion-note-form.hide{ role: "button", data: { cancel_text: _("Cancel") } }

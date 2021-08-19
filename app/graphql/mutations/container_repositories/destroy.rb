@@ -15,7 +15,7 @@ module Mutations
       field :container_repository,
             Types::ContainerRepositoryType,
             null: false,
-            description: 'The container repository policy after scheduling the deletion.'
+            description: 'Container repository policy after scheduling the deletion.'
 
       def resolve(id:)
         container_repository = authorized_find!(id: id)

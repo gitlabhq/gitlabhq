@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -166,6 +167,8 @@ describe('PersistentUserCallout', () => {
     let mockAxios;
     let persistentUserCallout;
 
+    useMockLocationHelper();
+
     beforeEach(() => {
       const fixture = createFollowLinkFixture();
       const container = fixture.querySelector('.container');
@@ -174,9 +177,6 @@ describe('PersistentUserCallout', () => {
 
       persistentUserCallout = new PersistentUserCallout(container);
       jest.spyOn(persistentUserCallout.container, 'remove').mockImplementation(() => {});
-
-      delete window.location;
-      window.location = { assign: jest.fn() };
     });
 
     afterEach(() => {

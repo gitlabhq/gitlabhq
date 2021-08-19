@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.snippets.i_snippets_show_weekly
 description: Weekly number of users viewing snippets
 product_section: dev
@@ -10,6 +10,10 @@ value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_snippets_show
 distribution:
 - ce
 - ee
@@ -17,3 +21,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

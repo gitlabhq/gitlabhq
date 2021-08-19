@@ -17,11 +17,6 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       project.add_developer(current_user)
     end
 
-    shared_examples 'an unmodified token' do
-      it_behaves_like 'a valid token'
-      it { expect(payload['access']).not_to include(have_key('migration_eligible')) }
-    end
-
     shared_examples 'a modified token with migration eligibility' do |eligible|
       it_behaves_like 'a valid token'
       it { expect(payload['access']).to include(include('migration_eligible' => eligible)) }
@@ -71,7 +66,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
         { scopes: ["repository:#{project.full_path}:pull"] }
       end
 
-      it_behaves_like 'an unmodified token'
+      it_behaves_like 'a modified token'
     end
 
     context 'with push action' do
@@ -82,20 +77,12 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       it_behaves_like 'a modified token'
     end
 
-    context 'with multiple actions including push' do
+    context 'with multiple actions' do
       let(:current_params) do
         { scopes: ["repository:#{project.full_path}:pull,push,delete"] }
       end
 
       it_behaves_like 'a modified token'
-    end
-
-    context 'with multiple actions excluding push' do
-      let(:current_params) do
-        { scopes: ["repository:#{project.full_path}:pull,delete"] }
-      end
-
-      it_behaves_like 'an unmodified token'
     end
   end
 end

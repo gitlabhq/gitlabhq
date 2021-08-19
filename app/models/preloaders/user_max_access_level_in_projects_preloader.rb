@@ -10,9 +10,13 @@ module Preloaders
     end
 
     def execute
+      # Use reselect to override the existing select to prevent
+      # the error `subquery has too many columns`
+      # NotificationsController passes in an Array so we need to check the type
+      project_ids = @projects.is_a?(ActiveRecord::Relation) ? @projects.reselect(:id) : @projects
       access_levels = @user
         .project_authorizations
-        .where(project_id: @projects)
+        .where(project_id: project_ids)
         .group(:project_id)
         .maximum(:access_level)
 

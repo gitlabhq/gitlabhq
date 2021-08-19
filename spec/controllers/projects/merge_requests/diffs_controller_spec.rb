@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::MergeRequests::DiffsController do
   include ProjectForksHelper
+  include TrackingHelpers
 
   shared_examples '404 for unexistent diffable' do
     context 'when diffable does not exists' do
@@ -141,6 +142,24 @@ RSpec.describe Projects::MergeRequests::DiffsController do
   end
 
   describe 'GET diffs_metadata' do
+    shared_examples_for 'serializes diffs metadata with expected arguments' do
+      it 'returns success' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'serializes paginated merge request diff collection' do
+        expect_next_instance_of(DiffsMetadataSerializer) do |instance|
+          expect(instance).to receive(:represent)
+            .with(an_instance_of(collection), expected_options)
+            .and_call_original
+        end
+
+        subject
+      end
+    end
+
     def go(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,
@@ -179,32 +198,25 @@ RSpec.describe Projects::MergeRequests::DiffsController do
     end
 
     context 'with valid diff_id' do
-      it 'returns success' do
-        go(diff_id: merge_request.merge_request_diff.id)
+      subject { go(diff_id: merge_request.merge_request_diff.id) }
 
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'serializes diffs metadata with expected arguments' do
-        expected_options = {
-          environment: nil,
-          merge_request: merge_request,
-          merge_request_diff: merge_request.merge_request_diff,
-          merge_request_diffs: merge_request.merge_request_diffs,
-          start_version: nil,
-          start_sha: nil,
-          commit: nil,
-          latest_diff: true,
-          only_context_commits: false
-        }
-
-        expect_next_instance_of(DiffsMetadataSerializer) do |instance|
-          expect(instance).to receive(:represent)
-            .with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), expected_options)
-            .and_call_original
+      it_behaves_like 'serializes diffs metadata with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiff }
+        let(:expected_options) do
+          {
+            environment: nil,
+            merge_request: merge_request,
+            merge_request_diff: merge_request.merge_request_diff,
+            merge_request_diffs: merge_request.merge_request_diffs,
+            start_version: nil,
+            start_sha: nil,
+            commit: nil,
+            latest_diff: true,
+            only_context_commits: false,
+            allow_tree_conflicts: true,
+            merge_ref_head_diff: false
+          }
         end
-
-        go(diff_id: merge_request.merge_request_diff.id)
       end
     end
 
@@ -261,62 +273,75 @@ RSpec.describe Projects::MergeRequests::DiffsController do
     end
 
     context 'with MR regular diff params' do
-      it 'returns success' do
-        go
+      subject { go }
 
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'serializes diffs metadata with expected arguments' do
-        expected_options = {
-          environment: nil,
-          merge_request: merge_request,
-          merge_request_diff: merge_request.merge_request_diff,
-          merge_request_diffs: merge_request.merge_request_diffs,
-          start_version: nil,
-          start_sha: nil,
-          commit: nil,
-          latest_diff: true,
-          only_context_commits: false
-        }
-
-        expect_next_instance_of(DiffsMetadataSerializer) do |instance|
-          expect(instance).to receive(:represent)
-            .with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), expected_options)
-            .and_call_original
+      it_behaves_like 'serializes diffs metadata with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiff }
+        let(:expected_options) do
+          {
+            environment: nil,
+            merge_request: merge_request,
+            merge_request_diff: merge_request.merge_request_diff,
+            merge_request_diffs: merge_request.merge_request_diffs,
+            start_version: nil,
+            start_sha: nil,
+            commit: nil,
+            latest_diff: true,
+            only_context_commits: false,
+            allow_tree_conflicts: true,
+            merge_ref_head_diff: nil
+          }
         end
-
-        go
       end
     end
 
     context 'with commit param' do
-      it 'returns success' do
-        go(commit_id: merge_request.diff_head_sha)
+      subject { go(commit_id: merge_request.diff_head_sha) }
 
-        expect(response).to have_gitlab_http_status(:ok)
+      it_behaves_like 'serializes diffs metadata with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::Commit }
+        let(:expected_options) do
+          {
+            environment: nil,
+            merge_request: merge_request,
+            merge_request_diff: nil,
+            merge_request_diffs: merge_request.merge_request_diffs,
+            start_version: nil,
+            start_sha: nil,
+            commit: merge_request.diff_head_commit,
+            latest_diff: nil,
+            only_context_commits: false,
+            allow_tree_conflicts: true,
+            merge_ref_head_diff: nil
+          }
+        end
+      end
+    end
+
+    context 'when display_merge_conflicts_in_diff is disabled' do
+      subject { go }
+
+      before do
+        stub_feature_flags(display_merge_conflicts_in_diff: false)
       end
 
-      it 'serializes diffs metadata with expected arguments' do
-        expected_options = {
-          environment: nil,
-          merge_request: merge_request,
-          merge_request_diff: nil,
-          merge_request_diffs: merge_request.merge_request_diffs,
-          start_version: nil,
-          start_sha: nil,
-          commit: merge_request.diff_head_commit,
-          latest_diff: nil,
-          only_context_commits: false
-        }
-
-        expect_next_instance_of(DiffsMetadataSerializer) do |instance|
-          expect(instance).to receive(:represent)
-            .with(an_instance_of(Gitlab::Diff::FileCollection::Commit), expected_options)
-            .and_call_original
+      it_behaves_like 'serializes diffs metadata with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiff }
+        let(:expected_options) do
+          {
+            environment: nil,
+            merge_request: merge_request,
+            merge_request_diff: merge_request.merge_request_diff,
+            merge_request_diffs: merge_request.merge_request_diffs,
+            start_version: nil,
+            start_sha: nil,
+            commit: nil,
+            latest_diff: true,
+            only_context_commits: false,
+            allow_tree_conflicts: false,
+            merge_ref_head_diff: nil
+          }
         end
-
-        go(commit_id: merge_request.diff_head_sha)
       end
     end
   end
@@ -423,7 +448,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       context 'when DNT is enabled' do
         before do
-          request.headers['DNT'] = '1'
+          stub_do_not_track('1')
         end
 
         it 'does not track any mr_diffs event' do
@@ -471,6 +496,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         merge_request: merge_request,
         diff_view: :inline,
         merge_ref_head_diff: nil,
+        allow_tree_conflicts: true,
         pagination_data: {
           total_pages: nil
         }.merge(pagination_data)
@@ -584,6 +610,21 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
         let(:expected_options) { collection_arguments(total_pages: 20) }
+      end
+
+      it_behaves_like 'successful request'
+    end
+
+    context 'when display_merge_conflicts_in_diff is disabled' do
+      before do
+        stub_feature_flags(display_merge_conflicts_in_diff: false)
+      end
+
+      subject { go }
+
+      it_behaves_like 'serializes diffs with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(total_pages: 20).merge(allow_tree_conflicts: false) }
       end
 
       it_behaves_like 'successful request'

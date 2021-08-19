@@ -87,12 +87,6 @@
   padding-bottom: $gl-spacing-scale-8;
 }
 
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1495
-.gl-py-13 {
-  padding-top: $gl-spacing-scale-13;
-  padding-bottom: $gl-spacing-scale-13;
-}
-
 .gl-transition-property-stroke-opacity {
   transition-property: stroke-opacity;
 }
@@ -203,6 +197,10 @@
   margin-bottom: -$gl-spacing-scale-3;
 }
 
+.gl-mr-n2 {
+  margin-right: -$gl-spacing-scale-2;
+}
+
 // Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1408
 $gl-line-height-42: px-to-rem(42px);
 
@@ -228,6 +226,10 @@ $gl-line-height-42: px-to-rem(42px);
   max-height: none !important;
 }
 
+.gl-max-w-50p {
+  max-width: 50%;
+}
+
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
 .gl-popover {
   .popover-header {
@@ -246,4 +248,13 @@ $gl-line-height-42: px-to-rem(42px);
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1491
 .gl-min-w-8 {
   min-width: $gl-spacing-scale-8;
+}
+
+// Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1526
+.gl-opacity-6 {
+  opacity: 0.6;
+}
+
+.gl-opacity-7 {
+  opacity: 0.7;
 }

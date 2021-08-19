@@ -6,7 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Debian packages in the Package Registry **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5835) in GitLab 14.1.
+> - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
+> - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 
 WARNING:
 The Debian package registry for GitLab is under development and isn't ready for production use due to
@@ -20,7 +22,7 @@ Project and Group packages are supported.
 For documentation of the specific API endpoints that Debian package manager
 clients use, see the [Debian API documentation](../../../api/packages/debian.md).
 
-## Enable Debian repository feature
+## Enable the Debian API **(FREE SELF)**
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's
 **disabled by default**.
@@ -39,9 +41,34 @@ To disable it:
 Feature.disable(:debian_packages)
 ```
 
+## Enable the Debian group API **(FREE SELF)**
+
+The Debian group repository is also behind a second feature flag that is disabled by default.
+
+To enable it:
+
+```ruby
+Feature.enable(:debian_group_packages)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:debian_group_packages)
+```
+
 ## Build a Debian package
 
 Creating a Debian package is documented [on the Debian Wiki](https://wiki.debian.org/Packaging).
+
+## Authenticate to the Package Registry
+
+To create a distribution, publish a package, or install a private package, you need one of the
+following:
+
+- [Personal access token](../../../api/index.md#personalproject-access-tokens)
+- [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token)
+- [Deploy token](../../project/deploy_tokens/index.md)
 
 ## Create a Distribution
 
@@ -98,7 +125,7 @@ To upload these files, you can use `dput-ng >= 1.32` (Debian bullseye):
 cat <<EOF > dput.cf
 [gitlab]
 method = https
-fqdn = <login>:<your_access_token>@gitlab.example.com
+fqdn = <username>:<your_access_token>@gitlab.example.com
 incoming = /api/v4/projects/<project_id>/packages/debian
 EOF
 
@@ -107,5 +134,27 @@ dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 
 ## Install a package
 
-The Debian package registry for GitLab is under development, and isn't ready for production use. You
-cannot install packages from the registry. However, you can download files directly from the UI.
+To install a package:
+
+1. Configure the repository:
+
+    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt config:
+
+    ```shell
+    echo 'machine gitlab.example.com login <username> password <your_access_token>' \
+      | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
+    ```
+
+    Add your project as a source:
+
+    ```shell
+    echo 'deb [trusted=yes] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
+      | sudo tee /etc/apt/sources.list.d/gitlab_project.list
+    sudo apt-get update
+    ```
+
+1. Install the package:
+
+    ```shell
+    sudo apt-get -y install -t <codename> <package-name>
+    ```

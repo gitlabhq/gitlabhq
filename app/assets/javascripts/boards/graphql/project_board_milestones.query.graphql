@@ -1,0 +1,10 @@
+query ProjectBoardMilestones($fullPath: ID!, $searchTerm: String) {
+  project(fullPath: $fullPath) {
+    milestones(searchTitle: $searchTerm, includeAncestors: true) {
+      nodes {
+        id
+        title
+      }
+    }
+  }
+}

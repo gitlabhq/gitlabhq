@@ -35,7 +35,7 @@ GET /projects/:id/pipelines
 | `ref`     | string  | no       | The ref of pipelines |
 | `sha`     | string  | no       | The SHA of pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
-| `name`| string  | no       | The name of the user who triggered pipelines |
+| `name`| string  | no       | _([Deprecated in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336953))_ The name of the user who triggered pipelines |
 | `username`| string  | no       | The username of the user who triggered pipelines |
 | `updated_after` | datetime | no | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime | no | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -52,6 +52,7 @@ Example of response
 [
   {
     "id": 47,
+    "iid": 12,
     "project_id": 1,
     "status": "pending",
     "ref": "new-pipeline",
@@ -62,6 +63,7 @@ Example of response
   },
   {
     "id": 48,
+    "iid": 13,
     "project_id": 1,
     "status": "pending",
     "ref": "new-pipeline",
@@ -93,6 +95,7 @@ Example of response
 ```json
 {
   "id": 46,
+  "iid": 11,
   "project_id": 1,
   "status": "success",
   "ref": "main",
@@ -207,6 +210,59 @@ Sample response:
 }
 ```
 
+### Get a pipeline's test report summary
+
+> Introduced in [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471)
+
+NOTE:
+This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.
+
+```plaintext
+GET /projects/:id/pipelines/:pipeline_id/test_report_summary
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+Sample request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
+```
+
+Sample response:
+
+```json
+{
+    "total": {
+        "time": 1904,
+        "count": 3363,
+        "success": 3351,
+        "failed": 0,
+        "skipped": 12,
+        "error": 0,
+        "suite_error": null
+    },
+    "test_suites": [
+        {
+            "name": "test",
+            "total_time": 1904,
+            "total_count": 3363,
+            "success_count": 3351,
+            "failed_count": 0,
+            "skipped_count": 12,
+            "error_count": 0,
+            "build_ids": [
+                66004
+            ],
+            "suite_error": null
+        }
+    ]
+}
+```
+
 ## Create a new pipeline
 
 ```plaintext
@@ -228,6 +284,7 @@ Example of response
 ```json
 {
   "id": 61,
+  "iid": 21,
   "project_id": 1,
   "sha": "384c444e840a515b23f21915ee5766b87068a70d",
   "ref": "main",
@@ -275,6 +332,7 @@ Response:
 ```json
 {
   "id": 46,
+  "iid": 11,
   "project_id": 1,
   "status": "pending",
   "ref": "main",
@@ -322,6 +380,7 @@ Response:
 ```json
 {
   "id": 46,
+  "iid": 11,
   "project_id": 1,
   "status": "canceled",
   "ref": "main",

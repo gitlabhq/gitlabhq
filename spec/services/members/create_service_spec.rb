@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, :sidekiq_inline do
-  let_it_be(:source) { create(:project) }
+  let_it_be(:source, reload: true) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:member) { create(:user) }
   let_it_be(:user_ids) { member.id.to_s }
@@ -89,7 +89,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     context 'when invite_source is not passed' do
       let(:additional_params) { {} }
 
-      it 'tracks the invite source as unknown' do
+      it 'raises an error' do
         expect { execute_service }.to raise_error(ArgumentError, 'No invite source provided.')
 
         expect_no_snowplow_event
@@ -122,6 +122,76 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           label: '_invite_source_',
           property: 'net_new_user',
           user: user
+        )
+      end
+    end
+  end
+
+  context 'when tracking the areas of focus', :snowplow do
+    context 'when areas_of_focus is not passed' do
+      it 'does not track' do
+        execute_service
+
+        expect_no_snowplow_event(category: described_class.name, action: 'area_of_focus')
+      end
+    end
+
+    context 'when 1 areas_of_focus is passed' do
+      let(:additional_params) { { invite_source: '_invite_source_', areas_of_focus: ['no_selection'] } }
+
+      it 'tracks the areas_of_focus from params' do
+        execute_service
+
+        expect_snowplow_event(
+          category: described_class.name,
+          action: 'area_of_focus',
+          label: 'no_selection',
+          property: source.members.last.id.to_s
+        )
+      end
+
+      context 'when passing many user ids' do
+        let(:another_user) { create(:user) }
+        let(:user_ids) { [member.id, another_user.id].join(',') }
+
+        it 'tracks the areas_of_focus from params' do
+          execute_service
+
+          members = source.members.last(2)
+
+          expect_snowplow_event(
+            category: described_class.name,
+            action: 'area_of_focus',
+            label: 'no_selection',
+            property: members.first.id.to_s
+          )
+          expect_snowplow_event(
+            category: described_class.name,
+            action: 'area_of_focus',
+            label: 'no_selection',
+            property: members.last.id.to_s
+          )
+        end
+      end
+    end
+
+    context 'when multiple areas_of_focus are passed' do
+      let(:additional_params) { { invite_source: '_invite_source_', areas_of_focus: %w[no_selection Other] } }
+
+      it 'tracks the areas_of_focus from params' do
+        execute_service
+
+        expect_snowplow_event(
+          category: described_class.name,
+          action: 'area_of_focus',
+          label: 'no_selection',
+          property: source.members.last.id.to_s
+        )
+        expect_snowplow_event(
+          category: described_class.name,
+          action: 'area_of_focus',
+          label: 'Other',
+          property: source.members.last.id.to_s
         )
       end
     end

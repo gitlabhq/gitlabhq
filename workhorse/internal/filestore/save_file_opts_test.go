@@ -6,10 +6,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/filestore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore/test"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
 )
 
 func TestSaveFileOptsLocalAndRemote(t *testing.T) {

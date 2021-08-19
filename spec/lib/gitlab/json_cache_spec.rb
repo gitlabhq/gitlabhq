@@ -130,7 +130,7 @@ RSpec.describe Gitlab::JsonCache do
         .with(expanded_key)
         .and_return(nil)
 
-      expect(ActiveSupport::JSON).not_to receive(:decode)
+      expect(Gitlab::Json).not_to receive(:parse)
       expect(cache.read(key)).to be_nil
     end
 
@@ -140,7 +140,7 @@ RSpec.describe Gitlab::JsonCache do
           .with(expanded_key)
           .and_return(true)
 
-        expect(ActiveSupport::JSON).to receive(:decode).with("true").and_call_original
+        expect(Gitlab::Json).to receive(:parse).with("true").and_call_original
         expect(cache.read(key, BroadcastMessage)).to eq(true)
       end
     end
@@ -151,7 +151,7 @@ RSpec.describe Gitlab::JsonCache do
           .with(expanded_key)
           .and_return(false)
 
-        expect(ActiveSupport::JSON).to receive(:decode).with("false").and_call_original
+        expect(Gitlab::Json).to receive(:parse).with("false").and_call_original
         expect(cache.read(key, BroadcastMessage)).to eq(false)
       end
     end

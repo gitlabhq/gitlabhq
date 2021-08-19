@@ -54,7 +54,7 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
       let(:removed) { [labels[1]] }
 
       it 'creates all label events in a single query' do
-        expect(Gitlab::Database).to receive(:bulk_insert).once.and_call_original
+        expect(Gitlab::Database.main).to receive(:bulk_insert).once.and_call_original
         expect { subject }.to change { resource.resource_label_events.count }.from(0).to(2)
       end
     end

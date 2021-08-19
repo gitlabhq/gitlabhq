@@ -6,6 +6,7 @@ RSpec.describe Project, factory_default: :keep do
   include ProjectForksHelper
   include GitHelpers
   include ExternalAuthorizationServiceHelpers
+  include ReloadHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:namespace) { create_default(:namespace).freeze }
@@ -86,7 +87,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
     it { is_expected.to have_many(:builds) }
-    it { is_expected.to have_many(:build_trace_section_names)}
     it { is_expected.to have_many(:build_report_results) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
@@ -135,6 +135,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:pipeline_artifacts) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }
+    it { is_expected.to have_many(:error_tracking_errors).class_name('ErrorTracking::Error') }
+    it { is_expected.to have_many(:error_tracking_client_keys).class_name('ErrorTracking::ClientKey') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -317,7 +319,8 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'validates presence of project_feature' do
-      project = build(:project, project_feature: nil)
+      project = build(:project)
+      project.project_feature = nil
 
       expect(project).not_to be_valid
     end
@@ -654,7 +657,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:allow_editing_commit_messages?).to(:project_setting) }
     it { is_expected.to delegate_method(:container_registry_enabled?).to(:project_feature) }
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
 
@@ -825,8 +827,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#merge_method' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:ff, :rebase, :method) do
       true  | true  | :ff
       true  | false | :ff
@@ -1485,33 +1485,21 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '.with_active_jira_integrations' do
-    it 'returns the correct integrations' do
-      active_jira_integration = create(:jira_integration)
-      active_service = create(:service, active: true)
-
-      expect(described_class.with_active_jira_integrations).to include(active_jira_integration.project)
-      expect(described_class.with_active_jira_integrations).not_to include(active_service.project)
-    end
-  end
-
   describe '.with_jira_dvcs_cloud' do
     it 'returns the correct project' do
       jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
-      jira_dvcs_server_project = create(:project, :jira_dvcs_server)
+      create(:project, :jira_dvcs_server)
 
-      expect(described_class.with_jira_dvcs_cloud).to include(jira_dvcs_cloud_project)
-      expect(described_class.with_jira_dvcs_cloud).not_to include(jira_dvcs_server_project)
+      expect(described_class.with_jira_dvcs_cloud).to contain_exactly(jira_dvcs_cloud_project)
     end
   end
 
   describe '.with_jira_dvcs_server' do
     it 'returns the correct project' do
       jira_dvcs_server_project = create(:project, :jira_dvcs_server)
-      jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
+      create(:project, :jira_dvcs_cloud)
 
-      expect(described_class.with_jira_dvcs_server).to include(jira_dvcs_server_project)
-      expect(described_class.with_jira_dvcs_server).not_to include(jira_dvcs_cloud_project)
+      expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
     end
   end
 
@@ -1597,15 +1585,39 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '.with_integration' do
-    before do
-      create_list(:prometheus_project, 2)
+    it 'returns the correct projects' do
+      active_confluence_integration = create(:confluence_integration)
+      inactive_confluence_integration = create(:confluence_integration, active: false)
+      create(:bugzilla_integration)
+
+      expect(described_class.with_integration(::Integrations::Confluence)).to contain_exactly(
+        active_confluence_integration.project,
+        inactive_confluence_integration.project
+      )
     end
+  end
 
-    let(:integration) { :prometheus_integration }
+  describe '.with_active_integration' do
+    it 'returns the correct projects' do
+      active_confluence_integration = create(:confluence_integration)
+      create(:confluence_integration, active: false)
+      create(:bugzilla_integration, active: true)
 
-    it 'avoids n + 1' do
-      expect { described_class.with_integration(integration).map(&integration) }
-        .not_to exceed_query_limit(1)
+      expect(described_class.with_active_integration(::Integrations::Confluence)).to contain_exactly(
+        active_confluence_integration.project
+      )
+    end
+  end
+
+  describe '.include_integration' do
+    it 'avoids n + 1', :aggregate_failures do
+      create(:prometheus_integration)
+      run_test = -> { described_class.include_integration(:prometheus_integration).map(&:prometheus_integration) }
+      control_count = ActiveRecord::QueryRecorder.new { run_test.call }
+      create(:prometheus_integration)
+
+      expect(run_test.call.count).to eq(2)
+      expect { run_test.call }.not_to exceed_query_limit(control_count)
     end
   end
 
@@ -1938,8 +1950,6 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'when set to INTERNAL in application settings' do
-      using RSpec::Parameterized::TableSyntax
-
       before do
         stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
       end
@@ -2000,8 +2010,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#default_branch_protected?' do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace) }
 
@@ -2405,35 +2413,17 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#set_container_registry_access_level' do
+  describe '#container_registry_enabled=' do
     let_it_be_with_reload(:project) { create(:project) }
 
     it 'updates project_feature', :aggregate_failures do
-      # Simulate an existing project that has container_registry enabled
-      project.update_column(:container_registry_enabled, true)
-      project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
-
       project.update!(container_registry_enabled: false)
 
-      expect(project.read_attribute(:container_registry_enabled)).to eq(false)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::DISABLED)
 
       project.update!(container_registry_enabled: true)
 
-      expect(project.read_attribute(:container_registry_enabled)).to eq(true)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::ENABLED)
-    end
-
-    it 'rollsback both projects and project_features row in case of error', :aggregate_failures do
-      project.update_column(:container_registry_enabled, true)
-      project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
-
-      allow(project).to receive(:valid?).and_return(false)
-
-      expect { project.update!(container_registry_enabled: false) }.to raise_error(ActiveRecord::RecordInvalid)
-
-      expect(project.reload.read_attribute(:container_registry_enabled)).to eq(true)
-      expect(project.project_feature.reload.container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
   end
 
@@ -2441,7 +2431,6 @@ RSpec.describe Project, factory_default: :keep do
     let_it_be_with_reload(:project) { create(:project) }
 
     it 'delegates to project_feature', :aggregate_failures do
-      project.update_column(:container_registry_enabled, true)
       project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
 
       expect(project.container_registry_enabled).to eq(false)
@@ -2870,6 +2859,36 @@ RSpec.describe Project, factory_default: :keep do
     it { expect(project.import?).to be true }
   end
 
+  describe '#github_import?' do
+    let_it_be(:project) { build(:project, import_type: 'github') }
+
+    it { expect(project.github_import?).to be true }
+  end
+
+  describe '#github_enterprise_import?' do
+    let_it_be(:github_com_project) do
+      build(
+        :project,
+        import_type: 'github',
+        import_url: 'https://api.github.com/user/repo'
+      )
+    end
+
+    let_it_be(:github_enterprise_project) do
+      build(
+        :project,
+        import_type: 'github',
+        import_url: 'https://othergithub.net/user/repo'
+      )
+    end
+
+    it { expect(github_com_project.github_import?).to be true }
+    it { expect(github_com_project.github_enterprise_import?).to be false }
+
+    it { expect(github_enterprise_project.github_import?).to be true }
+    it { expect(github_enterprise_project.github_enterprise_import?).to be true }
+  end
+
   describe '#remove_import_data' do
     let(:import_data) { ProjectImportData.new(data: { 'test' => 'some data' }) }
 
@@ -2912,10 +2931,6 @@ RSpec.describe Project, factory_default: :keep do
 
     subject { project.has_remote_mirror? }
 
-    before do
-      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
-    end
-
     it 'returns true when a remote mirror is enabled' do
       is_expected.to be_truthy
     end
@@ -2931,10 +2946,6 @@ RSpec.describe Project, factory_default: :keep do
     let(:project) { create(:project, :remote_mirror, :import_started) }
 
     delegate :update_remote_mirrors, to: :project
-
-    before do
-      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
-    end
 
     it 'syncs enabled remote mirror' do
       expect_any_instance_of(RemoteMirror).to receive(:sync)
@@ -3011,28 +3022,105 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  shared_context 'project with group ancestry' do
+    let(:parent) { create(:group) }
+    let(:child) { create(:group, parent: parent) }
+    let(:child2) { create(:group, parent: child) }
+    let(:project) { create(:project, namespace: child2) }
+
+    before do
+      reload_models(parent, child, child2)
+    end
+  end
+
+  shared_context 'project with namespace ancestry' do
+    let(:namespace) { create :namespace }
+    let(:project) { create :project, namespace: namespace }
+  end
+
+  shared_examples 'project with group ancestors' do
+    it 'returns all ancestors' do
+      is_expected.to contain_exactly(child2, child, parent)
+    end
+  end
+
+  shared_examples 'project with ordered group ancestors' do
+    let(:hierarchy_order) { :desc }
+
+    it 'returns ancestors ordered by descending hierarchy' do
+      is_expected.to eq([parent, child, child2])
+    end
+  end
+
+  shared_examples '#ancestors' do
+    context 'group ancestory' do
+      include_context 'project with group ancestry'
+
+      it_behaves_like 'project with group ancestors' do
+        subject { project.ancestors }
+      end
+
+      it_behaves_like 'project with ordered group ancestors' do
+        subject { project.ancestors(hierarchy_order: hierarchy_order) }
+      end
+    end
+
+    context 'namespace ancestry' do
+      include_context 'project with namespace ancestry'
+
+      subject { project.ancestors }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '#ancestors' do
+    context 'with linear_project_ancestors feature flag enabled' do
+      before do
+        stub_feature_flags(linear_project_ancestors: true)
+      end
+
+      include_examples '#ancestors'
+    end
+
+    context 'with linear_project_ancestors feature flag disabled' do
+      before do
+        stub_feature_flags(linear_project_ancestors: false)
+      end
+
+      include_examples '#ancestors'
+    end
+  end
+
   describe '#ancestors_upto' do
-    let_it_be(:parent) { create(:group) }
-    let_it_be(:child) { create(:group, parent: parent) }
-    let_it_be(:child2) { create(:group, parent: child) }
-    let_it_be(:project) { create(:project, namespace: child2) }
+    context 'group ancestry' do
+      include_context 'project with group ancestry'
 
-    it 'returns all ancestors when no namespace is given' do
-      expect(project.ancestors_upto).to contain_exactly(child2, child, parent)
-    end
-
-    it 'includes ancestors upto but excluding the given ancestor' do
-      expect(project.ancestors_upto(parent)).to contain_exactly(child2, child)
-    end
-
-    describe 'with hierarchy_order' do
-      it 'returns ancestors ordered by descending hierarchy' do
-        expect(project.ancestors_upto(hierarchy_order: :desc)).to eq([parent, child, child2])
+      it_behaves_like 'project with group ancestors' do
+        subject { project.ancestors_upto }
       end
 
-      it 'can be used with upto option' do
-        expect(project.ancestors_upto(parent, hierarchy_order: :desc)).to eq([child, child2])
+      it_behaves_like 'project with ordered group ancestors' do
+        subject { project.ancestors_upto(hierarchy_order: hierarchy_order) }
       end
+
+      it 'includes ancestors upto but excluding the given ancestor' do
+        expect(project.ancestors_upto(parent)).to contain_exactly(child2, child)
+      end
+
+      describe 'with hierarchy_order' do
+        it 'can be used with upto option' do
+          expect(project.ancestors_upto(parent, hierarchy_order: :desc)).to eq([child, child2])
+        end
+      end
+    end
+
+    context 'namespace ancestry' do
+      include_context 'project with namespace ancestry'
+
+      subject { project.ancestors_upto }
+
+      it { is_expected.to be_empty }
     end
   end
 
@@ -5194,9 +5282,24 @@ RSpec.describe Project, factory_default: :keep do
       expect(InternalId).to receive(:flush_records!).with(project: project)
       expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
-      expect(project).to receive(:write_repository_config)
+      expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
+      expect(project).to receive(:set_full_path)
 
       project.after_import
+    end
+
+    context 'project authorizations refresh' do
+      it 'updates user authorizations' do
+        create(:import_state, :started, project: project)
+
+        member = build(:project_member, project: project)
+        member.importing = true
+        member.save!
+
+        Sidekiq::Testing.inline! { project.after_import }
+
+        expect(member.user.authorized_project?(project)).to be true
+      end
     end
 
     context 'branch protection' do
@@ -5263,25 +5366,25 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#write_repository_config' do
+  describe '#set_full_path' do
     let_it_be(:project) { create(:project, :repository) }
 
     it 'writes full path in .git/config when key is missing' do
-      project.write_repository_config
+      project.set_full_path
 
       expect(rugged_config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
-      project.write_repository_config(gl_full_path: 'old/path')
+      project.set_full_path(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.set_full_path }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
       project = create(:project_empty_repo)
 
-      expect { project.write_repository_config }.not_to raise_error
+      expect { project.set_full_path }.not_to raise_error
     end
   end
 
@@ -5911,10 +6014,9 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
-    context 'with an instance-level and template integrations' do
+    context 'with an instance-level integration' do
       before do
         create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/')
-        create(:prometheus_integration, :template, api_url: 'https://prometheus.template.com/')
       end
 
       it 'builds the integration from the instance integration' do
@@ -5922,17 +6024,7 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
-    context 'with a template integration and no instance-level' do
-      before do
-        create(:prometheus_integration, :template, api_url: 'https://prometheus.template.com/')
-      end
-
-      it 'builds the integration from the template' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.template.com/')
-      end
-    end
-
-    context 'without an exisiting integration, or instance-level or template' do
+    context 'without an existing integration or instance-level' do
       it 'builds the integration' do
         expect(subject.find_or_initialize_integration('prometheus')).to be_a(::Integrations::Prometheus)
         expect(subject.find_or_initialize_integration('prometheus').api_url).to be_nil
@@ -6834,28 +6926,46 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#package_already_taken?' do
-    let(:namespace) { create(:namespace) }
-    let(:project) { create(:project, :public, namespace: namespace) }
-    let!(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
+    let_it_be(:namespace) { create(:namespace, path: 'test') }
+    let_it_be(:project) { create(:project, :public, namespace: namespace) }
+    let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo", version: '1.2.3') }
 
-    context 'no package exists with the same name' do
-      it 'returns false' do
-        result = project.package_already_taken?("@#{namespace.path}/bar")
-        expect(result).to be false
+    subject { project.package_already_taken?(package_name, package_version, package_type: :npm) }
+
+    context 'within the package project' do
+      where(:package_name, :package_version, :expected_result) do
+        '@test/bar' | '1.2.3' | false
+        '@test/bar' | '5.5.5' | false
+        '@test/foo' | '1.2.3' | false
+        '@test/foo' | '5.5.5' | false
       end
 
-      it 'returns false if it is the project that the package belongs to' do
-        result = project.package_already_taken?("@#{namespace.path}/foo")
-        expect(result).to be false
+      with_them do
+        it { is_expected.to eq expected_result}
       end
     end
 
-    context 'a package already exists with the same name' do
-      let(:alt_project) { create(:project, :public, namespace: namespace) }
+    context 'within a different project' do
+      let_it_be(:alt_project) { create(:project, :public, namespace: namespace) }
 
-      it 'returns true' do
-        result = alt_project.package_already_taken?("@#{namespace.path}/foo")
-        expect(result).to be true
+      subject { alt_project.package_already_taken?(package_name, package_version, package_type: :npm) }
+
+      where(:package_name, :package_version, :expected_result) do
+        '@test/bar' | '1.2.3' | false
+        '@test/bar' | '5.5.5' | false
+        '@test/foo' | '1.2.3' | true
+        '@test/foo' | '5.5.5' | false
+      end
+
+      with_them do
+        it { is_expected.to eq expected_result}
+      end
+
+      context 'for a different package type' do
+        it 'returns false' do
+          result = alt_project.package_already_taken?(package.name, package.version, package_type: :nuget)
+          expect(result).to be false
+        end
       end
     end
   end

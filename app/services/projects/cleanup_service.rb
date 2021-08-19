@@ -65,7 +65,7 @@ module Projects
     def cleanup_diffs(response)
       old_commit_shas = extract_old_commit_shas(response.entries)
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         cleanup_merge_request_diffs(old_commit_shas)
         cleanup_note_diff_files(old_commit_shas)
       end

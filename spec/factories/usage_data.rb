@@ -25,7 +25,6 @@ FactoryBot.define do
       create(:service, project: projects[2], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'MattermostService', active: false)
       create(:service, group: group, project: nil, type: 'MattermostService', active: true)
-      create(:service, :template, type: 'MattermostService', active: true)
       mattermost_instance = create(:service, :instance, type: 'MattermostService', active: true)
       create(:service, project: projects[1], type: 'MattermostService', active: true, inherit_from_id: mattermost_instance.id)
       create(:service, group: group, project: nil, type: 'SlackService', active: true, inherit_from_id: mattermost_instance.id)
@@ -124,6 +123,8 @@ FactoryBot.define do
         create_list(:project_snippet, 2, project: projects[0], created_at: n.days.ago)
         create(:personal_snippet, created_at: n.days.ago)
       end
+
+      create(:operations_feature_flag, project: projects[0])
     end
   end
 end

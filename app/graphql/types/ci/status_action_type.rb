@@ -5,19 +5,19 @@ module Types
     class StatusActionType < BaseObject
       graphql_name 'StatusAction'
 
-      field :id, GraphQL::STRING_TYPE, null: false,
+      field :id, GraphQL::Types::String, null: false,
             description: 'ID for a status action.',
             extras: [:parent]
-      field :button_title, GraphQL::STRING_TYPE, null: true,
+      field :button_title, GraphQL::Types::String, null: true,
             description: 'Title for the button, for example: Retry this job.'
-      field :icon, GraphQL::STRING_TYPE, null: true,
+      field :icon, GraphQL::Types::String, null: true,
             description: 'Icon used in the action button.'
-      field :method, GraphQL::STRING_TYPE, null: true,
+      field :method, GraphQL::Types::String, null: true,
             description: 'Method for the action, for example: :post.',
             resolver_method: :action_method
-      field :path, GraphQL::STRING_TYPE, null: true,
+      field :path, GraphQL::Types::String, null: true,
             description: 'Path for the action.'
-      field :title, GraphQL::STRING_TYPE, null: true,
+      field :title, GraphQL::Types::String, null: true,
             description: 'Title for the action, for example: Retry.'
 
       def id(parent:)

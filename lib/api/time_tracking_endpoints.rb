@@ -88,6 +88,7 @@ module API
         update_params = {
           spend_time: {
             duration: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)),
+            summary: params.delete(:summary),
             user_id: current_user.id
           }
         }

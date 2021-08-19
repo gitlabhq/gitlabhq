@@ -3,14 +3,13 @@
 module GroupLink
   class ProjectGroupLinkEntity < GroupLink::GroupLinkEntity
     include RequestAwareEntity
-    include Projects::ProjectMembersHelper
 
     expose :can_update do |group_link|
-      can_manage_project_members?(group_link.project)
+      can?(current_user, :admin_project_member, group_link.project)
     end
 
     expose :can_remove do |group_link|
-      can_manage_project_members?(group_link.project)
+      can?(current_user, :admin_project_member, group_link.project)
     end
 
     private

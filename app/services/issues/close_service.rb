@@ -32,7 +32,7 @@ module Issues
 
         notification_service.async.close_issue(issue, current_user, { closed_via: closed_via }) if notifications
         todo_service.close_issue(issue, current_user)
-        resolve_alert(issue)
+        perform_incident_management_actions(issue)
         execute_hooks(issue, 'close')
         invalidate_cache_counts(issue, users: issue.assignees)
         issue.update_project_counter_caches
@@ -50,6 +50,10 @@ module Issues
     end
 
     private
+
+    def perform_incident_management_actions(issue)
+      resolve_alert(issue)
+    end
 
     def close_external_issue(issue, closed_via)
       return unless project.external_issue_tracker&.support_close_issue?
@@ -89,3 +93,5 @@ module Issues
     end
   end
 end
+
+Issues::CloseService.prepend_mod_with('Issues::CloseService')

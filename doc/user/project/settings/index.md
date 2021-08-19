@@ -30,32 +30,39 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 ![general project settings](img/general_settings_v13_11.png)
 
-The project description also partially supports [standard Markdown](../../markdown.md#features-extended-from-standard-markdown). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
+The project description also partially supports [standard Markdown](../../markdown.md#features-extended-from-standard-markdown).
+You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and
+[line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
 #### Compliance frameworks **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.12.
 
-You can create a framework label to identify that your project has certain compliance requirements or needs additional oversight.
+You can create a framework label to identify that your project has certain compliance requirements
+or needs additional oversight.
 
-Group owners can create, edit and delete compliance frameworks by going to **Settings** > **General** and expanding the **Compliance frameworks** section.
-Compliance frameworks created can then be assigned to any number of projects via the project settings page inside the group or subgroups.
+Group owners can create, edit, and delete compliance frameworks:
+
+1. Go to the group's **Settings** > **General**.
+1. Expand the **Compliance frameworks** section.
+
+Compliance frameworks created can then be assigned to any number of projects using:
+
+- The project settings page inside the group or subgroups.
+- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
+  [GraphQL API](../../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework).
 
 NOTE:
-Attempting to create compliance frameworks on subgroups via GraphQL will cause the framework to be created on the root ancestor if the user has the correct permissions.
-The web UI presents a read-only view to discourage this behavior.
+Creating compliance frameworks on subgroups with GraphQL causes the framework to be
+created on the root ancestor if the user has the correct permissions. The GitLab UI presents a
+read-only view to discourage this behavior.
 
 #### Compliance pipeline configuration **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9.
-> - [Deployed behind a feature flag](../../feature_flags.md).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../../administration/feature_flags.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
 
 Group owners can use the compliance pipeline configuration to define compliance requirements
 such as scans or tests, and enforce them in individual projects.
@@ -135,6 +142,7 @@ audit trail:
 include: # Execute individual project's configuration
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
+  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch.
 ```
 
 ##### Ensure compliance jobs are always run
@@ -227,7 +235,7 @@ Some features depend on others:
 - Metrics dashboard access requires reading both project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
 
-#### Disabling the CVE ID request button
+#### Disabling the CVE ID request button **(FREE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
@@ -263,7 +271,7 @@ Enable [Service Desk](../service_desk.md) for your project to offer customer sup
 
 ### Export project
 
-Learn how to [export a project](import_export.md#importing-the-project) in GitLab.
+Learn how to [export a project](import_export.md#import-the-project) in GitLab.
 
 ### Advanced settings
 
@@ -296,7 +304,7 @@ available in project listings. Only project owners and administrators have the
 
 To find an archived project:
 
-1. Sign in to GitLab as a user with project owner or administrator permissions.
+1. Sign in to GitLab as the project owner or a user with the Administrator role.
 1. If you:
    - Have the project's URL, open the project's page in your browser.
    - Don't have the project's URL:
@@ -362,6 +370,14 @@ NOTE:
 GitLab administrators can use the administration interface to move any project to any
 namespace if needed.
 
+##### Transferring a GitLab.com project to a different subscription tier
+
+When you transfer a project from a namespace that's licensed for GitLab SaaS Premium or Ultimate to Free, some data related to the paid features is deleted.
+
+For example, [project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked, and
+[pipeline subscriptions](../../../ci/pipelines/multi_project_pipelines.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
+and [test cases](../../../ci/test_cases/index.md) are deleted.
+
 #### Delete a project
 
 You can mark a project to be deleted.
@@ -409,8 +425,10 @@ To immediately delete a project marked for deletion:
 1. In the "Permanently delete project" section, select **Delete project**.
 1. Confirm the action when asked to.
 
-Your project, its repository, and all related resources, including issues and merge requests,
-are deleted.
+The following are deleted:
+
+- Your project and its repository.
+- All related resources including issues and merge requests.
 
 #### Restore a project **(PREMIUM)**
 

@@ -6,7 +6,7 @@ module Mutations
       graphql_name 'MergeRequestSetWip'
 
       argument :wip,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: true,
                description: <<~DESC
                  Whether or not to set the merge request as a draft.

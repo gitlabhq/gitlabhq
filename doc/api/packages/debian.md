@@ -4,7 +4,11 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Debian API
+# Debian API **(FREE SELF)**
+
+> - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
+> - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
+> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
 This is the API documentation for [Debian](../../user/packages/debian_repository/index.md).
 
@@ -24,20 +28,17 @@ for details on which headers and token types are supported.
 
 ## Enable the Debian API
 
-The Debian API for GitLab is behind a feature flag that is disabled by default. GitLab
-administrators with access to the GitLab Rails console can enable this API for your instance.
+The Debian API is behind a feature flag that is disabled by default.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to enable it. To enable it, follow the instructions in
+[Enable the Debian API](../../user/packages/debian_repository/index.md#enable-the-debian-api).
 
-To enable it:
+## Enable the Debian group API
 
-```ruby
-Feature.enable(:debian_packages)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:debian_packages)
-```
+The Debian group API is behind a feature flag that is disabled by default.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to enable it. To enable it, follow the instructions in
+[Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
 
 ## Upload a package file
 
@@ -60,6 +61,38 @@ curl --request PUT \
      --header "Private-Token: <personal_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/packages/debian/mypkg.deb"
 ```
+
+## Download a package
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+
+Download a package file.
+
+```plaintext
+GET projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:package_version/:file_name
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
+| `letter`          | string | yes      | The Debian Classification (first-letter or lib-first-letter). |
+| `package_name`    | string | yes      | The source package name. |
+| `package_version` | string | yes      | The source package version. |
+| `file_name`       | string | yes      | The file name. |
+
+```shell
+curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Private-Token: <personal_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/1/packages/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb" \
+     --remote-name
+```
+
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Route prefix
 
@@ -95,7 +128,7 @@ The examples in this document all use the project-level prefix.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
 
-Download a Debian package file.
+Download a Debian distribution file.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/Release
@@ -117,16 +150,13 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file to `Release` in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a signed distribution Release file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
 
-Download a Debian package file.
-
-Signed releases are [not supported](https://gitlab.com/groups/gitlab-org/-/epics/6057#note_582697034).
-Therefore, this endpoint downloads the unsigned release file.
+Download a signed Debian distribution file.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/InRelease
@@ -148,4 +178,62 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file to `InRelease` in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
+
+## Download a release file signature
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+
+Download a Debian release file signature.
+
+```plaintext
+GET <route-prefix>/dists/*distribution/Release.gpg
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
+
+```shell
+curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/Release.gpg"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Private-Token: <personal_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/Release.gpg" \
+     --remote-name
+```
+
+This writes the downloaded file using the remote file name in the current directory.
+
+## Download a binary file's index
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+
+Download a distribution index.
+
+```plaintext
+GET <route-prefix>/dists/*distribution/:component/binary-:architecture/Packages
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
+| `component`       | string | yes      | The distribution component name. |
+| `architecture`    | string | yes      | The distribution architecture type. |
+
+```shell
+curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/amd64/Packages"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Private-Token: <personal_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/amd64/Packages" \
+     --remote-name
+```
+
+This writes the downloaded file using the remote file name in the current directory.

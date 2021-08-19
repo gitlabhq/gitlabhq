@@ -46,10 +46,10 @@ RSpec.describe Gitlab::SQL::Glob do
   end
 
   def query(sql)
-    ActiveRecord::Base.connection.select_all(sql)
+    ApplicationRecord.connection.select_all(sql)
   end
 
   def quote(string)
-    ActiveRecord::Base.connection.quote(string)
+    ApplicationRecord.connection.quote(string)
   end
 end

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: analytics_unique_visits.p_analytics_valuestream
 description: Unique visitors to /:group/:project/-/value_stream_analytics
 product_section: dev

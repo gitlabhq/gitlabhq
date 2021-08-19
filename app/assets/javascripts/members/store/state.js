@@ -20,4 +20,6 @@ export default ({
   errorMessage: '',
   removeGroupLinkModalVisible: false,
   groupLinkToRemove: null,
+  removeMemberModalData: {},
+  removeMemberModalVisible: false,
 });

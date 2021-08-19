@@ -200,21 +200,21 @@ RSpec.describe Integrations::Jenkins do
 
       it 'resets password if url changed' do
         jenkins_integration.jenkins_url = 'http://jenkins-edited.example.com/'
-        jenkins_integration.save!
+        jenkins_integration.valid?
 
         expect(jenkins_integration.password).to be_nil
       end
 
       it 'resets password if username is blank' do
         jenkins_integration.username = ''
-        jenkins_integration.save!
+        jenkins_integration.valid?
 
         expect(jenkins_integration.password).to be_nil
       end
 
       it 'does not reset password if username changed' do
         jenkins_integration.username = 'some_name'
-        jenkins_integration.save!
+        jenkins_integration.valid?
 
         expect(jenkins_integration.password).to eq('password')
       end
@@ -222,7 +222,7 @@ RSpec.describe Integrations::Jenkins do
       it 'does not reset password if new url is set together with password, even if it\'s the same password' do
         jenkins_integration.jenkins_url = 'http://jenkins_edited.example.com/'
         jenkins_integration.password = 'password'
-        jenkins_integration.save!
+        jenkins_integration.valid?
 
         expect(jenkins_integration.password).to eq('password')
         expect(jenkins_integration.jenkins_url).to eq('http://jenkins_edited.example.com/')
@@ -231,7 +231,7 @@ RSpec.describe Integrations::Jenkins do
       it 'resets password if url changed, even if setter called multiple times' do
         jenkins_integration.jenkins_url = 'http://jenkins1.example.com/'
         jenkins_integration.jenkins_url = 'http://jenkins1.example.com/'
-        jenkins_integration.save!
+        jenkins_integration.valid?
 
         expect(jenkins_integration.password).to be_nil
       end
@@ -253,8 +253,10 @@ RSpec.describe Integrations::Jenkins do
         jenkins_integration.password = 'password'
         jenkins_integration.save!
 
-        expect(jenkins_integration.password).to eq('password')
-        expect(jenkins_integration.jenkins_url).to eq('http://jenkins_edited.example.com/')
+        expect(jenkins_integration.reload).to have_attributes(
+          jenkins_url: 'http://jenkins_edited.example.com/',
+          password: 'password'
+        )
       end
     end
   end

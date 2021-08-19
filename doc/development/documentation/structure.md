@@ -183,8 +183,8 @@ A paragraph that explains what the tutorial does, and the expected outcome.
 
 To create a website:
 
-- [Step 1: Do the first task](#do-the-first-task)
-- [Step 2: Do the second task](#do-the-second-task)
+1. [Do the first task](#do-the-first-task)
+1. [Do the second task](#do-the-second-task)
 
 Prerequisites (optional):
 
@@ -197,8 +197,8 @@ Prerequisites (optional):
 To do step 1:
 
 1. First step.
-2. Another step.
-3. Another step.
+1. Another step.
+1. Another step.
 
 ## Do the second task
 
@@ -207,8 +207,8 @@ Before you begin, make sure you have [done the first task](#do-the-first-task).
 To do step 2:
 
 1. First step.
-2. Another step.
-3. Another step.
+1. Another step.
+1. Another step.
 ```
 
 ### Get started

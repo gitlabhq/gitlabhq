@@ -128,7 +128,7 @@ To disable it completely for a job, use an empty hash:
 
 ```yaml
 job:
-  cache: {}
+  cache: []
 ```
 
 ## Inherit global configuration, but override specific settings per job

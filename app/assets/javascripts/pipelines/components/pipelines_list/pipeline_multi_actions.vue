@@ -16,6 +16,7 @@ export const i18n = {
   downloadArtifact: __('Download %{name} artifact'),
   artifactSectionHeader: __('Download artifacts'),
   artifactsFetchErrorMessage: s__('Pipelines|Could not load artifacts.'),
+  emptyArtifactsMessage: __('No artifacts found'),
 };
 
 export default {
@@ -98,6 +99,10 @@ export default {
     </gl-alert>
 
     <gl-loading-icon v-if="isLoading" size="sm" />
+
+    <gl-dropdown-item v-if="!artifacts.length" data-testid="artifacts-empty-message">
+      {{ $options.i18n.emptyArtifactsMessage }}
+    </gl-dropdown-item>
 
     <gl-dropdown-item
       v-for="(artifact, i) in artifacts"

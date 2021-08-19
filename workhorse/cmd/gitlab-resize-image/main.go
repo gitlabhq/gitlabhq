@@ -8,7 +8,7 @@ import (
 
 	"github.com/disintegration/imaging"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/cmd/gitlab-resize-image/png"
+	"gitlab.com/gitlab-org/gitlab/workhorse/cmd/gitlab-resize-image/png"
 )
 
 func main() {

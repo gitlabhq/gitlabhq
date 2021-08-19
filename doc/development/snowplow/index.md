@@ -279,7 +279,8 @@ export default {
 ```
 
 The event data can be provided with a `tracking` object, declared in the `data` function,
-or as a `computed property`.
+or as a `computed property`. A `tracking` object is convenient when the default
+event properties are dynamic or provided at runtime.
 
 ```javascript
 export default {
@@ -292,6 +293,7 @@ export default {
         // category: '',
         // property: '',
         // value: '',
+        // experiment: '',
         // extra: {},
       },
     };
@@ -549,14 +551,14 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
    update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
    ```
 
-1. Update `DEFAULT_SNOWPLOW_OPTIONS` in `app/assets/javascripts/tracking/index.js` to remove `forceSecureTracker: true`:
+1. Update `DEFAULT_SNOWPLOW_OPTIONS` in `app/assets/javascripts/tracking/constants.js` to remove `forceSecureTracker: true`:
 
    ```diff
-   diff --git a/app/assets/javascripts/tracking/index.js b/app/assets/javascripts/tracking/index.js
-   index 0a1211d0a76..3b98c8f28f2 100644
-   --- a/app/assets/javascripts/tracking/index.js
-   +++ b/app/assets/javascripts/tracking/index.js
-   @@ -7,7 +7,6 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
+   diff --git a/app/assets/javascripts/tracking/constants.js b/app/assets/javascripts/tracking/constants.js
+   index 598111e4086..eff38074d4c 100644
+   --- a/app/assets/javascripts/tracking/constants.js
+   +++ b/app/assets/javascripts/tracking/constants.js
+   @@ -7,7 +7,6 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
       appId: '',
       userFingerprint: false,
       respectDoNotTrack: true,
@@ -564,7 +566,6 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
       eventMethod: 'post',
       contexts: { webPage: true, performanceTiming: true },
       formTracking: false,
-
    ```
 
 1. Update `snowplow_options` in `lib/gitlab/tracking.rb` to add `protocol` and `port`:

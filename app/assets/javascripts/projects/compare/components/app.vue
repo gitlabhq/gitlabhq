@@ -122,7 +122,7 @@ export default {
       />
     </div>
     <div class="gl-mt-4">
-      <gl-button category="primary" variant="success" @click="onSubmit">
+      <gl-button category="primary" variant="confirm" @click="onSubmit">
         {{ s__('CompareRevisions|Compare') }}
       </gl-button>
       <gl-button data-testid="swapRevisionsButton" class="btn btn-default" @click="onSwapRevision">

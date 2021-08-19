@@ -247,7 +247,7 @@ function deploy() {
   gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-ee"
   gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-ee"
   gitlab_webservice_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
-  gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-ee"
+  gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-toolbox-ee"
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
   gitaly_image_tag=$(parse_gitaly_image_tag)
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"

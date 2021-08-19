@@ -256,7 +256,7 @@ RSpec.describe 'Admin Groups' do
 
       visit group_group_members_path(group)
 
-      page.within '[data-qa-selector="members_list"]' do
+      page.within '[data-qa-selector="members_list"]' do # rubocop:disable QA/SelectorUsage
         expect(page).to have_content(current_user.name)
         expect(page).to have_content('Developer')
       end
@@ -265,7 +265,7 @@ RSpec.describe 'Admin Groups' do
 
       visit group_group_members_path(group)
 
-      page.within '[data-qa-selector="members_list"]' do
+      page.within '[data-qa-selector="members_list"]' do # rubocop:disable QA/SelectorUsage
         expect(page).not_to have_content(current_user.name)
         expect(page).not_to have_content('Developer')
       end

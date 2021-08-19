@@ -90,4 +90,4 @@ In addition, any system dependencies used in Omnibus packages or the Cloud Nativ
 
 If the service component needs to be updated or released with the monthly GitLab release, then the component should be added to the [release tools automation](https://gitlab.com/gitlab-org/release-tools). This project is maintained by the [Delivery team](https://about.gitlab.com/handbook/engineering/infrastructure/team/delivery/). A list of the projects managed this way can be found in the [release tools project directory](https://about.gitlab.com/handbook/engineering/infrastructure/team/delivery/).
 
-For example, during the monthly GitLab release, the desired version of Gitaly, GitLab Workhorse, GitLab Shell, etc., need to synchronized through the various release pipelines.
+For example, during the monthly GitLab release, the desired version of Gitaly, GitLab Workhorse and GitLab Shell need to be synchronized through the various release pipelines.

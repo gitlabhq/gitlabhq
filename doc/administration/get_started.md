@@ -1,7 +1,5 @@
 ---
-stage:
-group:
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: For assistance with this TAM Onboarding page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Get started administering GitLab **(FREE)**
@@ -85,6 +83,8 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 - Configure [user and IP rate limits](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
 - Limit [webhooks local access](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#webhooks).
 - Set [rate limits for protected paths](../user/admin_area/settings/protected_paths.md).
+- Sign up for [Security Alerts](https://about.gitlab.com/company/preference-center/) from the Communication Preference Center.
+- Keep track of security best practices on our [blog page](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/).
 
 ## Monitor GitLab performance
 
@@ -146,7 +146,7 @@ Backups of GitLab databases and filesystems are taken every 24 hours, and are ke
 - GitLab SaaS creates backups to ensure your data is secure, but you can't use these methods to export or back up your data yourself.
 - Issues are stored in the database. They can't be stored in Git itself.
 - You can use the project export option in:
-  - [The UI](../user/project/settings/import_export.md#exporting-a-project-and-its-data).
+  - [The UI](../user/project/settings/import_export.md#export-a-project-and-its-data).
   - [The API](../api/project_import_export.md#schedule-an-export).
 - [Group export](../user/group/settings/import_export.md) does *not* export the projects in it, but does export:
   - Epics

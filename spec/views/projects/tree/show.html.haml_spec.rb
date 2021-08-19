@@ -15,7 +15,6 @@ RSpec.describe 'projects/tree/show' do
   before do
     assign(:project, project)
     assign(:repository, repository)
-    assign(:lfs_blob_ids, [])
 
     allow(view).to receive(:can?).and_return(true)
     allow(view).to receive(:can_collaborate_with_project?).and_return(true)

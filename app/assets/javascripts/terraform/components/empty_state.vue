@@ -1,17 +1,22 @@
 <script>
-import { GlEmptyState, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLink } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
     GlEmptyState,
     GlIcon,
     GlLink,
-    GlSprintf,
   },
   props: {
     image: {
       type: String,
       required: true,
+    },
+  },
+  computed: {
+    docsUrl() {
+      return helpPagePath('user/infrastructure/terraform_state');
     },
   },
 };
@@ -21,23 +26,10 @@ export default {
   <gl-empty-state :svg-path="image" :title="s__('Terraform|Get started with Terraform')">
     <template #description>
       <p>
-        <gl-sprintf
-          :message="
-            s__(
-              'Terraform|Find out how to use the %{linkStart}GitLab managed Terraform State%{linkEnd}',
-            )
-          "
-        >
-          <template #link="{ content }">
-            <gl-link
-              href="https://docs.gitlab.com/ee/user/infrastructure/index.html"
-              target="_blank"
-            >
-              {{ content }}
-              <gl-icon name="external-link" />
-            </gl-link>
-          </template>
-        </gl-sprintf>
+        <gl-link :href="docsUrl" target="_blank"
+          >{{ s__('Terraform|How to use GitLab-managed Terraform State?') }}
+          <gl-icon name="external-link"
+        /></gl-link>
       </p>
     </template>
   </gl-empty-state>

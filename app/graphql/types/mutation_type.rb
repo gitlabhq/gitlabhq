@@ -99,14 +99,18 @@ module Types
     mount_mutation Mutations::Ci::CiCdSettingsUpdate
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry
+    mount_mutation Mutations::Ci::Job::Cancel
+    mount_mutation Mutations::Ci::Job::Unschedule
     mount_mutation Mutations::Ci::JobTokenScope::AddProject
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::Runner::Update, feature_flag: :runner_graphql_query
     mount_mutation Mutations::Ci::Runner::Delete, feature_flag: :runner_graphql_query
     mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset, feature_flag: :runner_graphql_query
     mount_mutation Mutations::Namespace::PackageSettings::Update
+    mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create
     mount_mutation Mutations::Packages::Destroy
+    mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Echo
   end
 end

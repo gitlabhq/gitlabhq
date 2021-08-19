@@ -73,7 +73,7 @@ module QA
       it 'can still merge MR successfully', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/971' do
         Page::MergeRequest::Show.perform do |show|
           # waiting for manual action status shows status badge 'blocked' on pipelines page
-          show.wait_until(reload: false) { show.has_pipeline_status?('waiting for manual action') }
+          show.has_pipeline_status?('waiting for manual action')
           show.merge!
 
           expect(show).to be_merged

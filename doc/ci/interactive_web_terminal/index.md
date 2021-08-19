@@ -33,8 +33,8 @@ Two things need to be configured for the interactive web terminal to work:
 
 NOTE:
 Interactive web terminals are not yet supported by
-[`gitlab-runner` Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-runner/index.html),
-but support [is planned](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/79).
+[`gitlab-runner` Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-runner/index.html).
+Support is tracked [in this issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/79).
 
 ## Debugging a running job
 

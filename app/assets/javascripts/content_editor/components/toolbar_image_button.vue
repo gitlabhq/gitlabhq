@@ -8,9 +8,8 @@ import {
   GlDropdownItem,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { Editor as TiptapEditor } from '@tiptap/vue-2';
-import { acceptedMimes } from '../extensions/image';
-import { getImageAlt } from '../services/utils';
+import { acceptedMimes } from '../services/upload_helpers';
+import { extractFilename } from '../services/utils';
 
 export default {
   components: {
@@ -24,12 +23,7 @@ export default {
   directives: {
     GlTooltip,
   },
-  props: {
-    tiptapEditor: {
-      type: TiptapEditor,
-      required: true,
-    },
-  },
+  inject: ['tiptapEditor'],
   data() {
     return {
       imgSrc: '',
@@ -47,7 +41,7 @@ export default {
         .setImage({
           src: this.imgSrc,
           canonicalSrc: this.imgSrc,
-          alt: getImageAlt(this.imgSrc),
+          alt: extractFilename(this.imgSrc),
         })
         .run();
 
@@ -64,7 +58,7 @@ export default {
       this.tiptapEditor
         .chain()
         .focus()
-        .uploadImage({
+        .uploadAttachment({
           file: e.target.files[0],
         })
         .run();
@@ -73,7 +67,7 @@ export default {
       this.emitExecute('upload');
     },
   },
-  acceptedMimes,
+  acceptedMimes: acceptedMimes.image,
 };
 </script>
 <template>
@@ -104,6 +98,7 @@ export default {
       name="content_editor_image"
       :accept="$options.acceptedMimes"
       class="gl-display-none"
+      data-qa-selector="file_upload_field"
       @change="onFileSelect"
     />
   </gl-dropdown>

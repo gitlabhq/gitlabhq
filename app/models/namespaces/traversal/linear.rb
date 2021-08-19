@@ -37,6 +37,7 @@ module Namespaces
   module Traversal
     module Linear
       extend ActiveSupport::Concern
+      include LinearScopes
 
       UnboundedSearch = Class.new(StandardError)
 
@@ -44,14 +45,6 @@ module Namespaces
         before_update :lock_both_roots, if: -> { sync_traversal_ids? && parent_id_changed? }
         after_create :sync_traversal_ids, if: -> { sync_traversal_ids? }
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
-
-        scope :traversal_ids_contains, ->(ids) { where("traversal_ids @> (?)", ids) }
-        # When filtering namespaces by the traversal_ids column to compile a
-        # list of namespace IDs, it's much faster to reference the ID in
-        # traversal_ids than the primary key ID column.
-        # WARNING This scope must be used behind a linear query feature flag
-        # such as `use_traversal_ids`.
-        scope :as_ids, -> { select('traversal_ids[array_length(traversal_ids, 1)] AS id') }
       end
 
       def sync_traversal_ids?
@@ -59,7 +52,7 @@ module Namespaces
       end
 
       def use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids, root_ancestor, default_enabled: :yaml)
+        return false unless Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
 
         traversal_ids.present?
       end
@@ -164,20 +157,14 @@ module Namespaces
         Namespace.lock.select(:id).where(id: roots).order(id: :asc).load
       end
 
-      # Make sure we drop the STI `type = 'Group'` condition for better performance.
-      # Logically equivalent so long as hierarchies remain homogeneous.
-      def without_sti_condition
-        self.class.unscope(where: :type)
-      end
-
       # Search this namespace's lineage. Bound inclusively by top node.
       def lineage(top: nil, bottom: nil, hierarchy_order: nil)
         raise UnboundedSearch, 'Must bound search by either top or bottom' unless top || bottom
 
-        skope = without_sti_condition
+        skope = self.class.without_sti_condition
 
         if top
-          skope = skope.traversal_ids_contains("{#{top.id}}")
+          skope = skope.where("traversal_ids @> ('{?}')", top.id)
         end
 
         if bottom
@@ -190,7 +177,13 @@ module Namespaces
         if hierarchy_order
           depth_sql = "ABS(#{traversal_ids.count} - array_length(traversal_ids, 1))"
           skope = skope.select(skope.arel_table[Arel.star], "#{depth_sql} as depth")
-                       .order(depth: hierarchy_order)
+          # The SELECT includes an extra depth attribute. We wrap the SQL in a
+          # standard SELECT to avoid mismatched attribute errors when trying to
+          # chain future ActiveRelation commands, and retain the ordering.
+          skope = self.class
+            .without_sti_condition
+            .from(skope, self.class.table_name)
+            .order(depth: hierarchy_order)
         end
 
         skope

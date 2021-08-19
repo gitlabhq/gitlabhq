@@ -66,6 +66,16 @@ module MergeRequests
     end
 
     def commit
+      if Feature.enabled?(:cache_merge_to_ref_calls, project, default_enabled: false)
+        Rails.cache.fetch(cache_key, expires_in: 1.day) do
+          extracted_merge_to_ref
+        end
+      else
+        extracted_merge_to_ref
+      end
+    end
+
+    def extracted_merge_to_ref
       repository.merge_to_ref(current_user,
         source_sha: source,
         branch: merge_request.target_branch,
@@ -75,6 +85,10 @@ module MergeRequests
         allow_conflicts: allow_conflicts)
     rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => error
       raise MergeError, error.message
+    end
+
+    def cache_key
+      [:merge_to_ref_service, project.full_path, merge_request.target_branch_sha, merge_request.source_branch_sha]
     end
   end
 end

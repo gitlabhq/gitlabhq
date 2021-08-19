@@ -37,7 +37,7 @@ Like projects, a group can be configured to limit the visibility of it to:
 - All signed-in users.
 - Only explicit group members.
 
-The restriction for [visibility levels](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels)
+The restriction for [visibility levels](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 on the application setting level also applies to groups. If set to internal, the explore page is
 empty for anonymous users. The group page has a visibility level icon.
 
@@ -220,10 +220,10 @@ To change this setting for a specific group:
 1. Select the desired option in the **Default branch protection** dropdown list.
 1. Click **Save changes**.
 
-To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
+To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#protect-default-branches).
 
 NOTE:
-In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection).
+In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#prevent-overrides-of-default-branch-protection).
 
 ## Add projects to a group
 
@@ -248,7 +248,7 @@ To change this setting for a specific group:
 1. Select the desired option in the **Allowed to create projects** dropdown list.
 1. Click **Save changes**.
 
-To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
+To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
 
 ## Group activity analytics **(PREMIUM)**
 
@@ -430,6 +430,28 @@ Specifically:
 - In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
 deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
+## Remove a group immediately **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
+
+If you don't want to wait, you can remove a group immediately.
+
+Prerequisites:
+
+- You must have at least the Owner role for a group.
+- You have [marked the group for deletion](#remove-a-group).
+
+To immediately remove a group marked for deletion:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. In the "Permanently remove group" section, select **Remove group**.
+1. Confirm the action when asked to.
+
+Your group, its subgroups, projects, and all related resources, including issues and merge requests,
+are deleted.
+
 ## Restore a group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
@@ -493,6 +515,19 @@ To prevent members from being added to a group:
 
 All users who previously had permissions can no longer add members to a group.
 API requests to add a new user to a project are not possible.
+
+## Export members as CSV **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the :ff_group_membership_export flag](../../administration/feature_flags.md). On GitLab.com, this feature is available.
+
+You can export a list of members in a group as a CSV.
+
+1. Go to your project and select **Project information > Members**.
+1. Select **Export as CSV**.
+1. Once the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
 ## Restrict group access by IP address **(PREMIUM)**
 
@@ -623,15 +658,24 @@ To disable group mentions:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 > - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
+> - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
 
-By default, projects in a group are deleted immediately.
-Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
-you can configure the projects in a group to be deleted after a delayed interval.
+Projects can be configured to be deleted either:
 
-During this interval period, the projects are in a read-only state and can be restored, if required.
-The interval period defaults to 7 days, and can be modified by an administrator in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- Immediately.
+- After a delayed interval. During this interval period, the projects are in a read-only state
+  and can be restored, if required. The default interval period is seven days but
+  [is configurable](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
-To enable delayed deletion of projects:
+On:
+
+- GitLab self-managed instances, projects are deleted immediately by default. In GitLab
+  14.2 and later, an administrator can
+  [change the default setting](../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion) for projects in newly-created groups.
+- GitLab.com, see [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
+  the default setting.
+
+To enable delayed deletion of projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
@@ -650,16 +694,20 @@ By default, projects in a group can be forked.
 Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-Previously this setting was available only for groups enforcing group managed account. This setting will be
-removed from SAML setting page and migrated to group settings. In the interim period, both of these settings are taken into consideration.
-If even one is set to `true` then it will be assumed the group does not allow forking projects outside.
+Previously, this setting was available only for groups enforcing a
+[Group Managed Account](saml_sso/group_managed_accounts.md) in SAML.
+This setting will be removed from the SAML setting page, and migrated to the
+group settings page. In the interim period, both of these settings are taken into consideration.
+If even one is set to `true`, then the group does not allow outside forks.
 
-To enable prevent project forking:
+To prevent projects from being forked outside the group:
 
 1. Go to the top-level group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
+
+Existing forks are not removed.
 
 ## Group push rules **(PREMIUM)**
 
@@ -704,6 +752,7 @@ The group's new subgroups have push rules set for them based on either:
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
+- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md)..
 
 ## Troubleshooting
 

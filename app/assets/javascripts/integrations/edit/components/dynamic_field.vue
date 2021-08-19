@@ -1,6 +1,12 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlFormCheckbox,
+  GlFormInput,
+  GlFormSelect,
+  GlFormTextarea,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { mapGetters } from 'vuex';
 import eventHub from '../event_hub';
@@ -13,6 +19,9 @@ export default {
     GlFormInput,
     GlFormSelect,
     GlFormTextarea,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     choices: {
@@ -122,6 +131,9 @@ export default {
       this.validated = true;
     },
   },
+  helpHtmlConfig: {
+    ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
+  },
 };
 </script>
 
@@ -133,7 +145,7 @@ export default {
     :state="valid"
   >
     <template #description>
-      <span v-html="help"></span>
+      <span v-safe-html:[$options.helpHtmlConfig]="help"></span>
     </template>
 
     <template v-if="isCheckbox">

@@ -14,7 +14,7 @@ module Gitlab
       Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP::ReadTotalTimeout
     ].freeze
     HTTP_ERRORS = HTTP_TIMEOUT_ERRORS + [
-      SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
+      EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH,
       Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep
     ].freeze
@@ -43,16 +43,29 @@ module Gitlab
           options
         end
 
-      unless options.has_key?(:use_read_total_timeout)
+      options[:skip_read_total_timeout] = true if options[:skip_read_total_timeout].nil? && options[:stream_body]
+
+      if options[:skip_read_total_timeout]
         return httparty_perform_request(http_method, path, options_with_timeouts, &block)
       end
 
       start_time = Gitlab::Metrics::System.monotonic_time
       read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
+      tracked_timeout_error = false
 
       httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
         elapsed = Gitlab::Metrics::System.monotonic_time - start_time
-        raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
+
+        if elapsed > read_total_timeout
+          error = ReadTotalTimeout.new("Request timed out after #{elapsed} seconds")
+
+          raise error if options[:use_read_total_timeout]
+
+          unless tracked_timeout_error
+            Gitlab::ErrorTracking.track_exception(error)
+            tracked_timeout_error = true
+          end
+        end
 
         block.call fragment if block
       end

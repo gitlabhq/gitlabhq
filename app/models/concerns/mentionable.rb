@@ -161,6 +161,21 @@ module Mentionable
     create_cross_references!(author)
   end
 
+  def user_mention_class
+    user_mention_association.klass
+  end
+
+  # Identifier for the user mention that is parsed from model description rather then its related notes.
+  # Models that have a description attribute like Issue, MergeRequest, Epic, Snippet may have such a user mention.
+  # Other mentionable models like DesignManagement::Design, will never have such record as those do not have
+  # a description attribute.
+  def user_mention_identifier
+    {
+      user_mention_association.foreign_key => id,
+      note_id: nil
+    }
+  end
+
   private
 
   def extracted_mentionables(refs)
@@ -197,6 +212,10 @@ module Mentionable
 
   def mentionable_params
     {}
+  end
+
+  def user_mention_association
+    association(:user_mentions).reflection
   end
 
   # User mention that is parsed from model description rather then its related notes.

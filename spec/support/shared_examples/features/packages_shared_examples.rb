@@ -14,7 +14,7 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 
   def package_table_row(index)
-    page.all("#{packages_table_selector} > [data-qa-selector=\"package_row\"]")[index].text
+    page.all("#{packages_table_selector} > [data-qa-selector=\"package_row\"]")[index].text # rubocop:disable QA/SelectorUsage
   end
 end
 
@@ -34,10 +34,8 @@ RSpec.shared_examples 'package details link' do |property|
 
     expect(page).to have_css('.packages-app h1[data-testid="title"]', text: package.name)
 
-    page.within(%Q([name="#{package.name}"])) do
-      expect(page).to have_content('Installation')
-      expect(page).to have_content('Registry setup')
-    end
+    expect(page).to have_content('Installation')
+    expect(page).to have_content('Registry setup')
   end
 end
 
@@ -92,7 +90,7 @@ RSpec.shared_examples 'shared package sorting' do
 end
 
 def packages_table_selector
-  '[data-qa-selector="packages-table"]'
+  '[data-qa-selector="packages-table"]' # rubocop:disable QA/SelectorUsage
 end
 
 def click_sort_option(option, ascending)
@@ -100,7 +98,7 @@ def click_sort_option(option, ascending)
     # Reset the sort direction
     click_button 'Sort direction' if page.has_selector?('svg[aria-label="Sorting Direction: Ascending"]', wait: 0)
 
-    find('button.dropdown-menu-toggle').click
+    find('button.gl-dropdown-toggle').click
 
     page.within('.dropdown-menu') do
       click_button option

@@ -33,7 +33,7 @@ export default {
     issuableTemplates: {
       type: [Object, Array],
       required: false,
-      default: () => {},
+      default: () => [],
     },
     issuableType: {
       type: String,

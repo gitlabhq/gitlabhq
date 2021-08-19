@@ -14,9 +14,12 @@ module Gitlab
           include Gitlab::Git::RuggedImpl::UseRugged
 
           override :tree_entries
-          def tree_entries(repository, sha, path, recursive)
+          def tree_entries(repository, sha, path, recursive, pagination_params = nil)
             if use_rugged?(repository, :rugged_tree_entries)
-              execute_rugged_call(:tree_entries_with_flat_path_from_rugged, repository, sha, path, recursive)
+              [
+                execute_rugged_call(:tree_entries_with_flat_path_from_rugged, repository, sha, path, recursive),
+                nil
+              ]
             else
               super
             end

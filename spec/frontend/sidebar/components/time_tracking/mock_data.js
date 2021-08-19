@@ -16,9 +16,10 @@ export const getIssueTimelogsQueryResponse = {
             },
             spentAt: '2020-05-01T00:00:00Z',
             note: {
-              body: 'I paired with @root on this last week.',
+              body: 'A note',
               __typename: 'Note',
             },
+            summary: 'A summary',
           },
           {
             __typename: 'Timelog',
@@ -29,6 +30,7 @@ export const getIssueTimelogsQueryResponse = {
             },
             spentAt: '2021-05-07T13:19:01Z',
             note: null,
+            summary: 'A summary',
           },
           {
             __typename: 'Timelog',
@@ -39,9 +41,10 @@ export const getIssueTimelogsQueryResponse = {
             },
             spentAt: '2021-05-01T00:00:00Z',
             note: {
-              body: 'I did some work on this last week.',
+              body: 'A note',
               __typename: 'Note',
             },
+            summary: null,
           },
         ],
         __typename: 'TimelogConnection',
@@ -70,6 +73,7 @@ export const getMrTimelogsQueryResponse = {
               body: 'Thirty minutes!',
               __typename: 'Note',
             },
+            summary: null,
           },
           {
             __typename: 'Timelog',
@@ -80,6 +84,7 @@ export const getMrTimelogsQueryResponse = {
             },
             spentAt: '2021-05-07T14:44:39Z',
             note: null,
+            summary: null,
           },
           {
             __typename: 'Timelog',
@@ -93,6 +98,7 @@ export const getMrTimelogsQueryResponse = {
               body: 'A note with some time',
               __typename: 'Note',
             },
+            summary: null,
           },
         ],
         __typename: 'TimelogConnection',

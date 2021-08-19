@@ -39,6 +39,12 @@ module SnippetsHelper
     end
   end
 
+  def snippet_report_abuse_path(snippet)
+    return unless snippet.submittable_as_spam_by?(current_user)
+
+    mark_as_spam_snippet_path(snippet)
+  end
+
   def embedded_raw_snippet_button(snippet, blob)
     return if blob.empty? || blob.binary? || blob.stored_externally?
 

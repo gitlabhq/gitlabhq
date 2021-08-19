@@ -40,12 +40,11 @@ feature is available.
 ## DevOps Adoption **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59267) in GitLab 14.0.
-> - Enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-devops-adoption). **(ULTIMATE SELF)**
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
+> - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
+> - Dependency Scanning metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328034) in GitLab 14.2.
+> - Multi-select [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
 
 DevOps Adoption shows you which groups in your organization are using the most essential features of GitLab:
 
@@ -56,36 +55,20 @@ DevOps Adoption shows you which groups in your organization are using the most e
   - Merge requests
 - Sec
   - DAST
+  - Dependency Scanning
+  - Fuzz Testing
   - SAST
 - Ops
   - Deployments
   - Pipelines
   - Runners
 
-To add your groups, in the top right-hand section the page, select **Add group to table**.
+To add or remove your groups, in the top right-hand section the page, select **Add or remove groups**.
 
 DevOps Adoption allows you to:
 
 - Verify whether you are getting the return on investment that you expected from GitLab.
-- Identify specific groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
-- Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
+- Identify specific groups that are lagging in their adoption of GitLab, so you can help them along in their DevOps journey.
+- Find the groups that have adopted certain features, and can provide guidance to other groups on how to use those features.
 
-![DevOps Report](img/admin_devops_adoption_v14_1.png)
-
-### Disable or enable DevOps Adoption
-
-DevOps Adoption is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:devops_adoption_feature)
-```
-
-To reenable it:
-
-```ruby
-Feature.enable(:devops_adoption_feature)
-```
+![DevOps Report](img/admin_devops_adoption_v14_2.png)

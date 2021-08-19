@@ -1,4 +1,4 @@
-import { tiptapExtension as HardBreak } from '~/content_editor/extensions/hard_break';
+import HardBreak from '~/content_editor/extensions/hard_break';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
 describe('content_editor/extensions/hard_break', () => {

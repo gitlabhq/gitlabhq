@@ -5,8 +5,21 @@ module Gitlab
     module RedisInterceptor
       APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax xread xreadgroup].freeze
 
+      # These are temporary to help with investigating
+      # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1183
+      DURATION_ERROR_THRESHOLD = 1.25.seconds
+
+      class MysteryRedisDurationError < StandardError
+        attr_reader :backtrace
+
+        def initialize(backtrace)
+          @backtrace = backtrace
+        end
+      end
+
       def call(*args, &block)
         start = Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
+        start_real_time = Time.now
         instrumentation_class.instance_count_request
         instrumentation_class.redis_cluster_validate!(args.first)
 
@@ -26,6 +39,13 @@ module Gitlab
           instrumentation_class.increment_request_count
           instrumentation_class.add_duration(duration)
           instrumentation_class.add_call_details(duration, args)
+        end
+
+        if duration > DURATION_ERROR_THRESHOLD && Feature.enabled?(:report_on_long_redis_durations, default_enabled: :yaml)
+          Gitlab::ErrorTracking.track_exception(MysteryRedisDurationError.new(caller),
+                                                command: command_from_args(args),
+                                                duration: duration,
+                                                timestamp: start_real_time.iso8601(5))
         end
       end
 

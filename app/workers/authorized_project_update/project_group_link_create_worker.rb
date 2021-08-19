@@ -4,6 +4,8 @@ module AuthorizedProjectUpdate
   class ProjectGroupLinkCreateWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
 
     feature_category :authentication_and_authorization

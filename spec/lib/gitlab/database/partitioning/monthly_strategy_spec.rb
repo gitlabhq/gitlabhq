@@ -237,16 +237,6 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
 
           expect(subject).to contain_exactly(min_value_to_may)
         end
-
-        context 'when the feature flag is toggled off' do
-          before do
-            stub_feature_flags(partition_pruning_dry_run: false)
-          end
-
-          it 'is empty' do
-            expect(subject).to eq([])
-          end
-        end
       end
 
       context 'with a time retention policy of 2 months' do
@@ -257,16 +247,6 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
             Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01', partition_name: 'partitioned_test_000000'),
                                Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01', partition_name: 'partitioned_test_202005')
           )
-        end
-
-        context 'when the feature flag is toggled off' do
-          before do
-            stub_feature_flags(partition_pruning_dry_run: false)
-          end
-
-          it 'is empty' do
-            expect(subject).to eq([])
-          end
         end
       end
     end

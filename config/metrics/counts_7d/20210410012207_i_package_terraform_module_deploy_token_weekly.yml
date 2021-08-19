@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_terraform_module_deploy_token_weekly
 description: Number of distinct users authorized via deploy token creating Terraform Module packages in recent 7 days
 product_section: ops
@@ -12,6 +12,10 @@ milestone: '13.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55018
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_package_terraform_module_deploy_token
 distribution:
 - ce
 - ee

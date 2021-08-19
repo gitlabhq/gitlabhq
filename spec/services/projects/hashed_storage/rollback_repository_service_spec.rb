@@ -96,13 +96,13 @@ RSpec.describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab
       end
 
       it 'handles Gitlab::Git::CommandError' do
-        expect(project).to receive(:write_repository_config).and_raise(Gitlab::Git::CommandError)
+        expect(project).to receive(:set_full_path).and_raise(Gitlab::Git::CommandError)
 
         expect { service.execute }.not_to raise_exception
       end
 
       it 'ensures rollback when Gitlab::Git::CommandError' do
-        expect(project).to receive(:write_repository_config).and_raise(Gitlab::Git::CommandError)
+        expect(project).to receive(:set_full_path).and_raise(Gitlab::Git::CommandError)
         expect(service).to receive(:rollback_folder_move).and_call_original
 
         service.execute

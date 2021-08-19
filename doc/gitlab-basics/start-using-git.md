@@ -450,11 +450,11 @@ You can learn more about the different ways Git can undo changes in the
 ### Merge a branch with default branch
 
 When you are ready to add your changes to
-the default branch, you `merge` the two together:
+the default branch, you merge the feature branch into it:
 
 ```shell
-git checkout <feature-branch>
-git merge <default-branch>
+git checkout <default-branch>
+git merge <feature-branch>
 ```
 
 In GitLab, you typically use a [merge request](../user/project/merge_requests/) to merge your changes, instead of using the command line.

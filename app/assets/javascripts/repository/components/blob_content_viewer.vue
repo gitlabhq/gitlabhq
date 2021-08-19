@@ -8,6 +8,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import BlobButtonGroup from './blob_button_group.vue';
 import BlobEdit from './blob_edit.vue';
@@ -21,6 +22,12 @@ export default {
     BlobContent,
     GlLoadingIcon,
   },
+  mixins: [getRefMixin],
+  inject: {
+    originalBranch: {
+      default: '',
+    },
+  },
   apollo: {
     project: {
       query: blobInfoQuery,
@@ -28,6 +35,7 @@ export default {
         return {
           projectPath: this.projectPath,
           filePath: this.path,
+          ref: this.originalBranch || this.ref,
         };
       },
       result() {
@@ -67,6 +75,10 @@ export default {
       project: {
         userPermissions: {
           pushCode: false,
+          downloadCode: false,
+        },
+        pathLocks: {
+          nodes: [],
         },
         repository: {
           empty: true,
@@ -87,9 +99,6 @@ export default {
                 externalStorageUrl: '',
                 replacePath: '',
                 deletePath: '',
-                canLock: false,
-                isLocked: false,
-                lockLink: '',
                 forkPath: '',
                 simpleViewer: {},
                 richViewer: null,
@@ -108,8 +117,11 @@ export default {
     isLoading() {
       return this.$apollo.queries.project.loading || this.isLoadingLegacyViewer;
     },
+    isBinaryFileType() {
+      return this.isBinary || this.viewer.fileType === 'download';
+    },
     blobInfo() {
-      const nodes = this.project?.repository?.blobs?.nodes;
+      const nodes = this.project?.repository?.blobs?.nodes || [];
 
       return nodes[0] || {};
     },
@@ -130,6 +142,14 @@ export default {
     viewerProps() {
       const { fileType } = this.viewer;
       return viewerProps(fileType, this.blobInfo);
+    },
+    canLock() {
+      const { pushCode, downloadCode } = this.project.userPermissions;
+
+      return pushCode && downloadCode;
+    },
+    isLocked() {
+      return this.project.pathLocks.nodes.some((node) => node.path === this.path);
     },
   },
   methods: {
@@ -161,13 +181,14 @@ export default {
       <blob-header
         :blob="blobInfo"
         :hide-viewer-switcher="!hasRichViewer || isBinary"
+        :is-binary="isBinaryFileType"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         @viewer-changed="switchViewer"
       >
         <template #actions>
           <blob-edit
-            v-if="!isBinary"
+            :show-edit-button="!isBinary"
             :edit-path="blobInfo.editBlobPath"
             :web-ide-path="blobInfo.ideEditPath"
           />
@@ -179,6 +200,9 @@ export default {
             :delete-path="blobInfo.webPath"
             :can-push-code="project.userPermissions.pushCode"
             :empty-repo="project.repository.empty"
+            :project-path="projectPath"
+            :is-locked="isLocked"
+            :can-lock="canLock"
           />
         </template>
       </blob-header>
