@@ -613,7 +613,7 @@ table.code {
     grid-template-columns: 1fr 1fr;
   }
 
-  &.inline {
+  &.inline-diff-view {
     .diff-grid-comments {
       display: grid;
       grid-template-columns: 1fr;

@@ -133,7 +133,10 @@ export default {
 
 <template>
   <div
-    :class="[$options.userColorScheme, { inline, 'with-codequality': hasCodequalityChanges }]"
+    :class="[
+      $options.userColorScheme,
+      { 'inline-diff-view': inline, 'with-codequality': hasCodequalityChanges },
+    ]"
     :data-commit-id="commitId"
     class="diff-grid diff-table code diff-wrap-lines js-syntax-highlight text-file"
     @mousedown="handleParallelLineMouseDown"

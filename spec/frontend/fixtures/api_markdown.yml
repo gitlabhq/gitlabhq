@@ -102,14 +102,10 @@
   markdown: |-
     | header | header |
     |--------|--------|
-    | cell | cell |
-    | cell | cell |
-- name: table_with_alignment
-  markdown: |-
-    | header | : header : | header : |
-    |--------|------------|----------|
-    | cell | cell | cell |
-    | cell | cell | cell |
+    | `code` | cell with **bold** |
+    | ~~strike~~ | cell with _italic_ |
+
+    # content after table
 - name: emoji
   markdown: ':sparkles: :heart: :100:'
 - name: reference
