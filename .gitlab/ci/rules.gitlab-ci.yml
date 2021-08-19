@@ -46,6 +46,9 @@
 .if-merge-request-title-run-all-rspec: &if-merge-request-title-run-all-rspec
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
 
+.if-merge-request-run-decomposed: &if-merge-request-run-decomposed
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-decomposed/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -216,6 +219,7 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
+  - "lib/gitlab/markdown_cache/active_record/**/*"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
   - "GITALY_SERVER_VERSION" # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
@@ -607,6 +611,11 @@
 ###############
 # Rails rules #
 ###############
+.rails:rules:decomposed-databases:
+  rules:
+    - <<: *if-merge-request-run-decomposed
+      allow_failure: true
+
 .rails:rules:ee-and-foss-migration:
   rules:
     - <<: *if-merge-request-title-run-all-rspec

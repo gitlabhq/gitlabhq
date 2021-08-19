@@ -23,6 +23,10 @@
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
 
+.decomposed-database-rspec:
+  variables:
+    DECOMPOSED_DB: "true"
+
 .rspec-base:
   extends: .rails-job-base
   stage: test
@@ -296,6 +300,12 @@ rspec migration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-migration:minimal
 
+rspec migration pg12 decomposed:
+  extends:
+    - rspec migration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec unit pg12:
   extends:
     - .rspec-base-pg12
@@ -307,6 +317,12 @@ rspec unit pg12 minimal:
     - rspec unit pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-unit:minimal
+
+rspec unit pg12 decomposed:
+  extends:
+    - rspec unit pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec integration pg12:
   extends:
@@ -320,6 +336,12 @@ rspec integration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-integration:minimal
 
+rspec integration pg12 decomposed:
+  extends:
+    - rspec integration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec system pg12:
   extends:
     - .rspec-base-pg12
@@ -331,6 +353,12 @@ rspec system pg12 minimal:
     - rspec system pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-system:minimal
+
+rspec system pg12 decomposed:
+  extends:
+    - rspec system pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 # Dedicated job to test DB library code against PG11.
 # Note that these are already tested against PG12 in the `rspec unit pg12` / `rspec-ee unit pg12` jobs.
@@ -554,6 +582,12 @@ rspec migration pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-migration:minimal
 
+rspec migration pg12-as-if-foss decomposed:
+  extends:
+    - rspec migration pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec unit pg12-as-if-foss:
   extends:
     - .rspec-base-pg12-as-if-foss
@@ -565,6 +599,12 @@ rspec unit pg12-as-if-foss minimal:
     - rspec unit pg12-as-if-foss
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-unit:minimal
+
+rspec unit pg12-as-if-foss decomposed:
+  extends:
+    - rspec unit pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec integration pg12-as-if-foss:
   extends:
@@ -578,6 +618,12 @@ rspec integration pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-integration:minimal
 
+rspec integration pg12-as-if-foss decomposed:
+  extends:
+    - rspec integration pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec system pg12-as-if-foss:
   extends:
     - .rspec-base-pg12-as-if-foss
@@ -589,6 +635,12 @@ rspec system pg12-as-if-foss minimal:
     - rspec system pg12-as-if-foss
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-system:minimal
+
+rspec system pg12-as-if-foss decomposed:
+  extends:
+    - rspec system pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec-ee migration pg12:
   extends:
@@ -603,6 +655,12 @@ rspec-ee migration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-migration:minimal
 
+rspec-ee migration pg12 decomposed:
+  extends:
+    - rspec-ee migration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec-ee unit pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -614,6 +672,12 @@ rspec-ee unit pg12 minimal:
     - rspec-ee unit pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-only-unit:minimal
+
+rspec-ee unit pg12 decomposed:
+  extends:
+    - rspec-ee unit pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec-ee integration pg12:
   extends:
@@ -627,6 +691,12 @@ rspec-ee integration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-integration:minimal
 
+rspec-ee integration pg12 decomposed:
+  extends:
+    - rspec-ee integration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec-ee system pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -638,6 +708,12 @@ rspec-ee system pg12 minimal:
     - rspec-ee system pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-only-system:minimal
+
+rspec-ee system pg12 decomposed:
+  extends:
+    - rspec-ee system pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec-ee unit pg12 geo:
   extends:

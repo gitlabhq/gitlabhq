@@ -133,6 +133,24 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Disable notification emails                                                            |          |          |           |            | ✓     |
 | [Projects](project/index.md):<br>Rename project                                                                         |          |          |           |            | ✓     |
 | [Projects](project/index.md):<br>Transfer project to another namespace                                                  |          |          |           |            | ✓     |
+| [Repository](project/repository/index.md):<br>Pull project code                                                         | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>View project code                                                         | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>View a commit status                                                      |          | ✓        | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Add tags                                                                  |          |          | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Create new branches                                                       |          |          | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Create or update commit status                                            |          |          | ✓ (*5*)   | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Force push to non-protected branches                                      |          |          | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Push to non-protected branches                                            |          |          | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Remove non-protected branches                                             |          |          | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Rewrite or remove Git tags                                                |          |          | ✓         | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Enable or disable branch protection                                       |          |          |           | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Enable or disable tag protection                                          |          |          |           | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Manage [push rules](../push_rules/push_rules.md)                          |          |          |           | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Push to protected branches                                                |          |          |           | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Turn on or off protected branch push for developers                          |          |          |           | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Remove fork relationship                                                  |          |          |           |            | ✓     |
+| [Repository](project/repository/index.md):<br>Force push to protected branches (*4*)                                    |          |          |           |            |       |
+| [Repository](project/repository/index.md):<br>Remove protected branches (*4*)                                           |          |          |           |            |       |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                           | ✓ (*3*) | ✓ | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**         |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create vulnerability from vulnerability finding **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
@@ -144,12 +162,10 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability **(ULTIMATE)**                              |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
 | Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
 | View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
 | Create new [test case](../ci/test_cases/index.md) |         | ✓          | ✓           | ✓        | ✓      |
@@ -158,43 +174,27 @@ The following table lists project permissions available for each role:
 | Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
-| See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
 | View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
-| Add tags                                          |         |            | ✓           | ✓        | ✓      |
-| Create new branches                               |         |            | ✓           | ✓        | ✓      |
-| Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
 | Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
 | Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
-| Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
-| Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
 | Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
-| Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
-| Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Update a container registry                       |         |            | ✓           | ✓        | ✓      |
 | View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
 | Delete [packages](packages/index.md)              |         |            |             | ✓        | ✓      |
-| Enable/disable branch protection                  |         |            |             | ✓        | ✓      |
-| Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
-| Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
 | Manage clusters                                   |         |            |             | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
-| Push to protected branches                        |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
-| Turn on/off protected branch push for developers  |         |            |             | ✓        | ✓      |
-| Remove fork relationship                          |         |            |             |          | ✓      |
-| Force push to protected branches (*4*)            |         |            |             |          |        |
-| Remove protected branches (*4*)                   |         |            |             |          |        |
 
 1. Guest users are able to perform this action on public and internal projects, but not private projects. This doesn't apply to [external users](#external-users) where explicit access must be given even if the project is internal.
 1. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves.
