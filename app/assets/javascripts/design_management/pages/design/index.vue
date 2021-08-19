@@ -309,9 +309,7 @@ export default {
         this.isLatestVersion,
       );
 
-      if (this.glFeatures.usageDataDesignAction) {
-        servicePingDesignDetailView();
-      }
+      servicePingDesignDetailView();
     },
     updateActiveDiscussion(id, source = ACTIVE_DISCUSSION_SOURCE_TYPES.discussion) {
       this.$apollo.mutate({

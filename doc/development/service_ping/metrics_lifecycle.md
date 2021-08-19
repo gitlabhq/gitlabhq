@@ -10,7 +10,7 @@ The following guidelines explain the steps to follow at each stage of a metric's
 
 ## Add a new metric
 
-Please follow the [Implementing Service Ping](index.md#implementing-service-ping) guide.
+Follow the [Implement Service Ping](implement.md) guide.
 
 ## Change an existing metric
 

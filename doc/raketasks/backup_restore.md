@@ -1138,7 +1138,8 @@ There are a few possible downsides to this:
   the last project that gets backed up.
 - Fork networks should be entirely read-only while the projects inside get backed up to prevent potential changes to the pool repository.
 
-There is an **experimental** script that attempts to automate this process in [Snippet 2149205](https://gitlab.com/-/snippets/2149205).
+There is an **experimental** script that attempts to automate this process in
+[the Geo team Runbooks project](https://gitlab.com/gitlab-org/geo-team/runbooks/-/tree/main/experimental-online-backup-through-rsync).
 
 ## Backup and restore for installations using PgBouncer
 

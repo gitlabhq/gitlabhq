@@ -16,7 +16,7 @@ class Groups::ApplicationController < ApplicationController
   private
 
   def group
-    @group ||= find_routable!(Group, params[:group_id] || params[:id], request.path_info)
+    @group ||= find_routable!(Group, params[:group_id] || params[:id], request.fullpath)
   end
 
   def group_projects

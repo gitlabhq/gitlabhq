@@ -358,6 +358,36 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.2.0
+
+- Due to an issue where `BatchedBackgroundMigrationWorkers` were
+  [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
+  for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
+  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.Z, you need
+  to update to at least 14.1.0 that contains the same fix before you update to
+  to 14.2.
+- GitLab 14.2.0 contains background migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
+
+  - [`ci_build_needs`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65216)
+  - [`ci_build_trace_chunks`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66123)
+  - [`ci_builds_runner_session`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66433)
+  - [`deployments`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67341)
+  - [`geo_job_artifact_deleted_events`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66763)
+  - [`push_event_payloads`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67299)
+  - `ci_job_artifacts`:
+    - [Finalize job_id conversion to `bigint` for `ci_job_artifacts`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67774)
+    - [Finalize `ci_job_artifacts` conversion to `bigint`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65601)
+
+  If the migrations are executed as part of a no-downtime deployment, there's a risk of failure due to lock conflicts with the application logic, resulting in lock timeout or deadlocks. In each case, these migrations are safe to re-run until successful:
+
+  ```shell
+  # For Omnibus GitLab
+  sudo gitlab-rake db:migrate
+
+  # For source installations
+  sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
+  ```
+
 ### 14.1.0
 
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were

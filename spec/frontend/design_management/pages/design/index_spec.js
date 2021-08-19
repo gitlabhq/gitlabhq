@@ -390,28 +390,13 @@ describe('Design management design index page', () => {
         );
       });
 
-      describe('with usage_data_design_action enabled', () => {
-        it('tracks design view service ping', () => {
-          createComponent(
-            { loading: true },
-            {
-              provide: {
-                glFeatures: { usageDataDesignAction: true },
-              },
-            },
-          );
-          expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
-          expect(Api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-            DESIGN_SERVICE_PING_EVENT_TYPES.DESIGN_ACTION,
-          );
-        });
-      });
+      it('tracks design view service ping', () => {
+        createComponent({ loading: true });
 
-      describe('with usage_data_design_action disabled', () => {
-        it("doesn't track design view service ping", () => {
-          createComponent({ loading: true });
-          expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(0);
-        });
+        expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+        expect(Api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          DESIGN_SERVICE_PING_EVENT_TYPES.DESIGN_ACTION,
+        );
       });
     });
   });

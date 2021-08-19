@@ -307,7 +307,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def user
-    @user ||= find_routable!(User, params[:id], request.path_info)
+    @user ||= find_routable!(User, params[:id], request.fullpath)
   end
 
   def build_canonical_path(user)

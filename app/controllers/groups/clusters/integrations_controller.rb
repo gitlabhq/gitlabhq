@@ -13,6 +13,6 @@ class Groups::Clusters::IntegrationsController < Clusters::IntegrationsControlle
   end
 
   def group
-    @group ||= find_routable!(Group, params[:group_id] || params[:id], request.path_info)
+    @group ||= find_routable!(Group, params[:group_id] || params[:id], request.fullpath)
   end
 end

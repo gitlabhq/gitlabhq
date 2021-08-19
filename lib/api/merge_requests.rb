@@ -202,7 +202,7 @@ module API
         options[:project] = user_project
 
         if Feature.enabled?(:api_caching_merge_requests, user_project, type: :development, default_enabled: :yaml)
-          present_cached merge_requests, expires_in: 10.minutes, **options
+          present_cached merge_requests, expires_in: 12.hours, **options
         else
           present merge_requests, options
         end
