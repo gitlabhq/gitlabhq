@@ -272,3 +272,11 @@ The last log entry reports the number of objects fetched and imported:
   "import_stage": "Gitlab::GithubImport::Stage::FinishImportWorker"
 }
 ```
+
+## Errors when importing large projects
+
+The GitHub importer may encounter errors when importing large projects. For help with this, see the
+documentation for the following use cases:
+
+- [Alternative way to import notes and diff notes](../user/project/import/github.md#alternative-way-to-import-notes-and-diff-notes)
+- [Reduce GitHub API request objects per page](../user/project/import/github.md#reduce-github-api-request-objects-per-page)

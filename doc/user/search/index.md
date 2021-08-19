@@ -217,12 +217,12 @@ filters them for you as you type.
 You can also **Explore** all public and internal groups available in GitLab.com,
 and sort them by **Last created**, **Oldest created**, **Last updated**, or **Oldest updated**.
 
-## Issue Boards
+## Issue boards
 
-From an [Issue Board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
+From an [issue board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
 You can also filter them by name (issue title), from the field **Filter by name**, which is loaded as you type.
 
-To search for issues to add to lists present in your Issue Board, click
+To search for issues to add to lists present in your issue board, click
 the button **Add issues** on the top-right of your screen, opening a modal window from which
 you can, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
 and **Labels**, select multiple issues to add to a list of your choice:

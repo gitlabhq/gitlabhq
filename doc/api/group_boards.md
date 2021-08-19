@@ -244,7 +244,7 @@ Example response:
 
 ## Create a group issue board **(PREMIUM)**
 
-Creates a Group Issue Board.
+Creates a group issue board.
 
 ```plaintext
 POST /groups/:id/boards
@@ -283,7 +283,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in GitLab 11.1.
 
-Updates a Group Issue Board.
+Updates a group issue board.
 
 ```plaintext
 PUT /groups/:id/boards/:board_id
@@ -351,7 +351,7 @@ Example response:
 
 ## Delete a group issue board **(PREMIUM)**
 
-Deletes a Group Issue Board.
+Deletes a group issue board.
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id
@@ -452,7 +452,7 @@ Example response:
 
 ## New group issue board list
 
-Creates a new Issue Board list.
+Creates an issue board list.
 
 ```plaintext
 POST /groups/:id/boards/:board_id/lists
@@ -493,7 +493,7 @@ Example response:
 
 ## Edit group issue board list
 
-Updates an existing Issue Board list. This call is used to change list position.
+Updates an existing issue board list. This call is used to change list position.
 
 ```plaintext
 PUT /groups/:id/boards/:board_id/lists/:list_id

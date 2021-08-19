@@ -1,0 +1,8 @@
+---
+name: upsert_issue_metrics
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68509
+rollout_issue_url: 
+milestone: '14.3'
+type: development
+group: group::project management
+default_enabled: false

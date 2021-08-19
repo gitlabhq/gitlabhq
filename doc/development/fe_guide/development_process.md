@@ -88,7 +88,7 @@ With the purpose of being [respectful of others' time](https://about.gitlab.com/
    GitLab architecture.
 1. Add a diagram to the issue and ask a frontend maintainer in the Slack channel `#frontend_maintainers` about it.
 
-   ![Diagram of Issue Boards Architecture](img/boards_diagram.png)
+   ![Diagram of issue boards architecture](img/boards_diagram.png)
 
 1. Don't take more than one week between starting work on a feature and
    sharing a Merge Request with a reviewer or a maintainer.

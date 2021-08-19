@@ -7,6 +7,8 @@ module Gitlab
         # The default timeout of the cache keys.
         TIMEOUT = 24.hours.to_i
 
+        LONGER_TIMEOUT = 72.hours.to_i
+
         WRITE_IF_GREATER_SCRIPT = <<-EOF.strip_heredoc.freeze
         local key, value, ttl = KEYS[1], tonumber(ARGV[1]), ARGV[2]
         local existing = tonumber(redis.call("get", key))

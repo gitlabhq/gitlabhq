@@ -4,9 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Boards **(FREE)**
+# Issue boards **(FREE)**
 
-The GitLab Issue Board is a software project management tool used to plan,
+The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
 It can be used as a [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) or a
 [Scrum](https://en.wikipedia.org/wiki/Scrum_(software_development)) board.
@@ -46,7 +46,7 @@ To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enter
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/vjccjHI7aGI) of
-the Issue Board feature.
+the issue board feature.
 
 ## Multiple issue boards
 
@@ -70,7 +70,7 @@ GitLab automatically loads the last board you visited.
 
 To create a new issue board:
 
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click the dropdown with the current board name in the upper left corner of the issue boards page.
 1. Click **Create new board**.
 1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
 
@@ -78,7 +78,7 @@ To create a new issue board:
 
 To delete the currently active issue board:
 
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click the dropdown with the current board name in the upper left corner of the issue boards page.
 1. Click **Delete board**.
 1. Click **Delete** to confirm.
 
@@ -195,7 +195,7 @@ card includes:
 ## Permissions
 
 Users with the [Reporter and higher roles](../permissions.md) can use all the functionality of the
-Issue Board feature to create or delete lists. They can also drag issues from one list to another.
+issue board feature to create or delete lists. They can also drag issues from one list to another.
 
 ## How GitLab orders issues in a list
 
@@ -271,7 +271,7 @@ clicking **View scope**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/m5UTNCSqaDk) of
-the Configurable Issue Board feature.
+the configurable issue board feature.
 
 ### Focus mode
 

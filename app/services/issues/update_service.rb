@@ -77,6 +77,7 @@ module Issues
       end
 
       handle_severity_change(issue, old_severity)
+      handle_issue_type_change(issue)
     end
 
     def handle_assignee_changes(issue, old_assignees)
@@ -217,6 +218,16 @@ module Issues
     override :remove_incident_label?
     def remove_incident_label?(issue)
       issue.issue_type != params[:issue_type] && issue.incident?
+    end
+
+    def handle_issue_type_change(issue)
+      return unless issue.previous_changes.include?('issue_type')
+
+      do_handle_issue_type_change(issue)
+    end
+
+    def do_handle_issue_type_change(issue)
+      SystemNoteService.change_issue_type(issue, current_user)
     end
   end
 end

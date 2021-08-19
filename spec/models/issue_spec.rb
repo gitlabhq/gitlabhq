@@ -102,7 +102,7 @@ RSpec.describe Issue do
       end
 
       it 'records current metrics' do
-        expect_any_instance_of(Issue::Metrics).to receive(:record!)
+        expect(Issue::Metrics).to receive(:record!)
 
         create(:issue, project: reusable_project)
       end
@@ -111,7 +111,6 @@ RSpec.describe Issue do
         before do
           subject.metrics.delete
           subject.reload
-          subject.metrics # make sure metrics association is cached (currently nil)
         end
 
         it 'creates the metrics record' do

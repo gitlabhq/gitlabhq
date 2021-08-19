@@ -64,7 +64,7 @@ Items aren't included in the stage time calculation if they have not reached the
 
 | Stage   | Description   |
 |---------|---------------|
-| Issue   | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whichever comes first. The label is tracked only if it already includes an [Issue Board list](../project/issue_board.md) created for it. |
+| Issue   | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whichever comes first. The label is tracked only if it already includes an [issue board list](../project/issue_board.md) created for it. |
 | Plan    | Measures the median time between the action you took for the previous stage, and pushing the first commit to the branch. That first branch commit triggers the separation between **Plan** and **Code**, and at least one of the commits in the branch must include the related issue number (such as `#42`). If the issue number is *not* included in a commit, that data is not included in the measurement time of the stage. |
 | Code    | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR). The process is tracked with the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically) in the description of the merge request. For example, if the issue is closed with `Closes #xxx`, it's assumed that `xxx` is issue number for the merge request). If there is no closing pattern, the start time is set to the create time of the first commit. |
 | Test    | Essentially the start to finish time for all pipelines. Measures the median time to run the entire pipeline for that project. Related to the time required by GitLab CI/CD to run every job for the commits pushed to that merge request, as defined in the previous stage. |
@@ -85,7 +85,7 @@ How this works:
 In short, the Value Stream Analytics dashboard tracks data related to [GitLab flow](../../topics/gitlab_flow.md). It does not include data for:
 
 - Merge requests that do not close an issue.
-- Issues that do not include labels present in the Issue Board
+- Issues that do not include labels present in the issue board.
 - Issues without a milestone.
 - Staging stages, in projects without a [production environment](#how-the-production-environment-is-identified).
 

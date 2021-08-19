@@ -19,6 +19,8 @@ module Gitlab
       attr_reader :octokit
 
       SEARCH_MAX_REQUESTS_PER_MINUTE = 30
+      DEFAULT_PER_PAGE = 100
+      LOWER_PER_PAGE = 50
 
       # A single page of data and the corresponding page number.
       Page = Struct.new(:objects, :number)
@@ -44,7 +46,7 @@ module Gitlab
       #            this value to `true` for parallel importing is crucial as
       #            otherwise hitting the rate limit will result in a thread
       #            being blocked in a `sleep()` call for up to an hour.
-      def initialize(token, host: nil, per_page: 100, parallel: true)
+      def initialize(token, host: nil, per_page: DEFAULT_PER_PAGE, parallel: true)
         @host = host
         @octokit = ::Octokit::Client.new(
           access_token: token,

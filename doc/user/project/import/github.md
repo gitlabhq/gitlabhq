@@ -184,3 +184,51 @@ servers. For 4 servers with 8 cores this means you can import up to 32 objects (
 Reducing the time spent in cloning a repository can be done by increasing network throughput, CPU capacity, and disk
 performance (by using high performance SSDs, for example) of the disks that store the Git repositories (for your GitLab instance).
 Increasing the number of Sidekiq workers will *not* reduce the time spent cloning repositories.
+
+## Alternative way to import notes and diff notes
+
+When GitHub Importer runs on extremely large projects not all notes & diff notes can be imported due to GitHub API `issues_comments` & `pull_requests_comments` endpoints limitation.
+Not all pages can be fetched due to the following error coming from GitHub API: `In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.`.
+
+Because of that, alternative approach for importing notes & diff notes is available that is behind a feature flag.
+
+Instead of using `issues_comments` & `pull_requests_comments`, use individual resources `issue_comments` & `pull_request_comments` instead in order to pull notes from 1 object at a time.
+This allows us to carry over any missing comments, however it increases the number of network requests required to perform the import, which means its execution is going to be much longer.
+
+In order to use alternative way of importing notes `github_importer_single_endpoint_notes_import` feature flag needs to be enabled on the group project is being imported into.
+
+Start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+```ruby
+group = Group.find_by_full_path('my/group/fullpath')
+
+# Enable
+Feature.enable(:github_importer_single_endpoint_notes_import, group)
+
+# Disable
+Feature.disable(:github_importer_single_endpoint_notes_import, group)
+```
+
+## Reduce GitHub API request objects per page
+
+Some GitHub API endpoints may return a 500 or 502 error for project imports from large repositories.
+To reduce the chance of such errors, you can enable the feature flag
+`github_importer_lower_per_page_limit` in the group project importing the data. This reduces the
+page size from 100 to 50.
+
+To enable this feature flag, start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+and run the following `enable` command:
+
+```ruby
+group = Group.find_by_full_path('my/group/fullpath')
+
+# Enable
+Feature.enable(:github_importer_lower_per_page_limit, group)
+```
+
+To disable the feature, run this command:
+
+```ruby
+# Disable
+Feature.disable(:github_importer_lower_per_page_limit, group)
+```

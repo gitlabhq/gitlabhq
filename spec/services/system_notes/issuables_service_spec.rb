@@ -773,4 +773,16 @@ RSpec.describe ::SystemNotes::IssuablesService do
       expect(event.state).to eq('closed')
     end
   end
+
+  describe '#change_issue_type' do
+    let(:noteable) { create(:incident, project: project) }
+
+    subject { service.change_issue_type }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'issue_type' }
+    end
+
+    it { expect(subject.note).to eq "changed issue type to incident" }
+  end
 end

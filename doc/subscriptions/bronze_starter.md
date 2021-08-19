@@ -32,7 +32,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Overriding user permissions](../user/group/index.md#override-user-permissions)
   - [User contribution analytics](../user/group/contribution_analytics/index.md)
   - [Kerberos integration](../integration/kerberos.md)
-- Issue Boards:
+- Issue boards:
   - [Configurable issue boards](../user/project/issue_board.md#configurable-issue-boards)
   - [Sum of issue weights](../user/project/issue_board.md#sum-of-issue-weights)
   - [Work In Progress limits](../user/project/issue_board.md#work-in-progress-limits)

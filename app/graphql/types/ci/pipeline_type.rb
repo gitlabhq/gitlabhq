@@ -97,7 +97,7 @@ module Types
             type: ::Types::Ci::JobType,
             null: true,
             authorize: :read_commit_status,
-            description: 'A specific job in this pipeline, either by name or ID.' do
+            description: 'Specific job in this pipeline, either by name or ID.' do
         argument :id,
                  type: ::Types::GlobalIDType[::CommitStatus],
                  required: false,

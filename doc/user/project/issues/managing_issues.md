@@ -44,7 +44,7 @@ There are many ways to get to the New Issue form from a project's page:
 
   ![New issue from a project's dashboard](img/new_issue_from_projects_dashboard.png)
 
-- From an **Issue Board**, create a new issue by clicking on the plus sign (**+**) at the top of a list.
+- From an **issue board**, create a new issue by clicking on the plus sign (**+**) at the top of a list.
   It opens a new issue for that project, pre-labeled with its respective list.
 
   ![From the issue board](img/new_issue_from_issue_board.png)
@@ -237,10 +237,10 @@ using the close button:
 
 ![close issue - button](img/button_close_issue_v13_6.png)
 
-You can also close an issue from the [Issue Boards](../issue_board.md) by dragging an issue card
+You can also close an issue from the [issue boards](../issue_board.md) by dragging an issue card
 from its list and dropping it into the **Closed** list.
 
-![close issue from the Issue Board](img/close_issue_from_board.gif)
+![close issue from the issue board](img/close_issue_from_board.gif)
 
 ### Closing issues automatically
 

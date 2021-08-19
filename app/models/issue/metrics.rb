@@ -9,6 +9,33 @@ class Issue::Metrics < ApplicationRecord
       .or(where(arel_table['first_mentioned_in_commit_at'].gteq(timestamp)))
   }
 
+  class << self
+    def record!(issue)
+      now = connection.quote(Time.current)
+      first_associated_with_milestone_at = issue.milestone_id.present? ? now : 'NULL'
+      first_added_to_board_at = issue_assigned_to_list_label?(issue) ? now : 'NULL'
+
+      sql = <<~SQL
+        INSERT INTO #{self.table_name} (issue_id, first_associated_with_milestone_at, first_added_to_board_at, created_at, updated_at)
+        VALUES (#{issue.id}, #{first_associated_with_milestone_at}, #{first_added_to_board_at}, NOW(), NOW())
+        ON CONFLICT (issue_id)
+        DO UPDATE SET
+          first_associated_with_milestone_at = LEAST(#{self.table_name}.first_associated_with_milestone_at, EXCLUDED.first_associated_with_milestone_at),
+          first_added_to_board_at = LEAST(#{self.table_name}.first_added_to_board_at, EXCLUDED.first_added_to_board_at),
+          updated_at = NOW()
+        RETURNING id
+      SQL
+
+      connection.execute(sql)
+    end
+
+    private
+
+    def issue_assigned_to_list_label?(issue)
+      issue.labels.joins(:lists).exists?
+    end
+  end
+
   def record!
     if issue.milestone_id.present? && self.first_associated_with_milestone_at.blank?
       self.first_associated_with_milestone_at = Time.current
@@ -24,10 +51,6 @@ class Issue::Metrics < ApplicationRecord
   private
 
   def issue_assigned_to_list_label?
-    # Avoid another DB lookup when issue.labels are empty by adding a guard clause here
-    # We can't use issue.labels.empty? because that will cause a `Label Exists?` DB lookup
-    return false if issue.labels.length == 0 # rubocop:disable Style/ZeroLengthPredicate
-
-    issue.labels.includes(:lists).any? { |label| label.lists.present? }
+    issue.labels.joins(:lists).exists?
   end
 end

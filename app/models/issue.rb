@@ -584,9 +584,10 @@ class Issue < ApplicationRecord
       confidential_changed?(from: true, to: false)
   end
 
-  # Ensure that the metrics association is safely created and respecting the unique constraint on issue_id
   override :ensure_metrics
   def ensure_metrics
+    return Issue::Metrics.record!(self) if Feature.enabled?(:upsert_issue_metrics, default_enabled: :yaml)
+
     if !association(:metrics).loaded? || metrics.blank?
       metrics_record = Issue::Metrics.safe_find_or_create_by(issue: self)
       self.metrics = metrics_record

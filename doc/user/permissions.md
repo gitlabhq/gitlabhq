@@ -242,10 +242,10 @@ to learn more.
 Find the current permissions on the Value Stream Analytics dashboard, as described in
 [related documentation](analytics/value_stream_analytics.md#permissions).
 
-### Issue Board permissions
+### Issue board permissions
 
-Find the current permissions for interacting with the Issue Board feature in the
-[Issue Boards permissions page](project/issue_board.md#permissions).
+Find the current permissions for interacting with the issue board feature in the
+[issue boards permissions page](project/issue_board.md#permissions).
 
 ### File Locking permissions **(PREMIUM)**
 

@@ -113,7 +113,7 @@ Each stage of Value Stream Analytics is further described in the table below.
 
 | **Stage** | **Description** |
 | --------- | --------------- |
-| Issue     | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whatever comes first. The label is tracked only if it already has an [Issue Board list](../../project/issue_board.md) created for it. |
+| Issue     | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whatever comes first. The label is tracked only if it already has an [issue board list](../../project/issue_board.md) created for it. |
 | Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the branch. The very first commit of the branch is the one that triggers the separation between **Plan** and **Code**, and at least one of the commits in the branch needs to contain the related issue number (for example, `#42`). If none of the commits in the branch mention the related issue number, it is not considered to the measurement time of the stage. |
 | Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR) related to that commit. The key to keep the process tracked is to include the [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically) to the description of the merge request (for example, `Closes #xxx`, where `xxx` is the number of the issue related to this merge request). If the closing pattern is not present, then the calculation takes the creation time of the first commit in the merge request as the start time. |
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
@@ -136,7 +136,7 @@ To sum up, anything that doesn't follow [GitLab flow](../../../topics/gitlab_flo
 Value Stream Analytics dashboard does not present any data for:
 
 - Merge requests that do not close an issue.
-- Issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
+- Issues not labeled with a label present in the issue board or for issues not assigned a milestone.
 - Staging stage, if the project has no [production environment](#how-the-production-environment-is-identified).
 
 ## How the production environment is identified

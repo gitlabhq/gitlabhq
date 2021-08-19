@@ -10,7 +10,7 @@ module Resolvers
 
     argument :search_term, GraphQL::Types::String,
              required: false,
-             description: 'A search term to find labels with.'
+             description: 'Search term to find labels with.'
 
     argument :include_ancestor_groups, GraphQL::Types::Boolean,
              required: false,

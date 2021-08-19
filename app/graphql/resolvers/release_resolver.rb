@@ -6,7 +6,7 @@ module Resolvers
 
     argument :tag_name, GraphQL::Types::String,
             required: true,
-            description: 'The name of the tag associated to the release.'
+            description: 'Name of the tag associated to the release.'
 
     alias_method :project, :object
 

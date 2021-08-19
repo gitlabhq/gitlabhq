@@ -321,7 +321,7 @@ For the listed web browsers, GitLab supports:
 
 NOTE:
 We don't support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
-in the future because we have features such as Issue Boards which require JavaScript extensively.
+in the future because we have features such as issue boards which require JavaScript extensively.
 
 <!-- ## Troubleshooting
 

@@ -23,7 +23,7 @@ module Gitlab
       #
       # This method will return `nil` if no ID could be found.
       def database_id
-        val = Gitlab::Cache::Import::Caching.read(cache_key)
+        val = Gitlab::Cache::Import::Caching.read(cache_key, timeout: timeout)
 
         val.to_i if val.present?
       end
@@ -32,7 +32,7 @@ module Gitlab
       #
       # database_id - The ID of the corresponding database row.
       def cache_database_id(database_id)
-        Gitlab::Cache::Import::Caching.write(cache_key, database_id)
+        Gitlab::Cache::Import::Caching.write(cache_key, database_id, timeout: timeout)
       end
 
       private
@@ -74,6 +74,14 @@ module Gitlab
             TypeError,
             "Instances of #{object.class} are not supported"
           )
+        end
+      end
+
+      def timeout
+        if project.group.present? && ::Feature.enabled?(:github_importer_single_endpoint_notes_import, project.group, type: :ops, default_enabled: :yaml)
+          Gitlab::Cache::Import::Caching::LONGER_TIMEOUT
+        else
+          Gitlab::Cache::Import::Caching::TIMEOUT
         end
       end
     end

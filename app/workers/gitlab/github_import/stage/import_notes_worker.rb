@@ -15,16 +15,30 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          info(project.id, message: "starting importer", importer: 'Importer::NotesImporter')
-          waiter = Importer::NotesImporter
-            .new(project, client)
-            .execute
+          waiters = importers(project).each_with_object({}) do |klass, hash|
+            info(project.id, message: "starting importer", importer: klass.name)
+            waiter = klass.new(project, client).execute
+            hash[waiter.key] = waiter.jobs_remaining
+          end
 
           AdvanceStageWorker.perform_async(
             project.id,
-            { waiter.key => waiter.jobs_remaining },
+            waiters,
             :lfs_objects
           )
+        end
+
+        def importers(project)
+          if project.group.present? && Feature.enabled?(:github_importer_single_endpoint_notes_import, project.group, type: :ops, default_enabled: :yaml)
+            [
+              Importer::SingleEndpointMergeRequestNotesImporter,
+              Importer::SingleEndpointIssueNotesImporter
+            ]
+          else
+            [
+              Importer::NotesImporter
+            ]
+          end
         end
       end
     end

@@ -793,4 +793,16 @@ RSpec.describe SystemNoteService do
       described_class.log_resolving_alert(alert, monitoring_tool)
     end
   end
+
+  describe '.change_issue_type' do
+    let(:incident) { build(:incident) }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:change_issue_type)
+      end
+
+      described_class.change_issue_type(incident, author)
+    end
+  end
 end

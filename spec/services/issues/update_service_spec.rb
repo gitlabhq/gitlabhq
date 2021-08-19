@@ -189,6 +189,14 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect(issue.labels.pluck(:title)).to eq(['incident'])
           end
 
+          it 'creates system note about issue type' do
+            update_issue(issue_type: 'incident')
+
+            note = find_note('changed issue type to incident')
+
+            expect(note).not_to eq(nil)
+          end
+
           context 'for an issue with multiple labels' do
             let(:issue) { create(:incident, project: project, labels: [label_1]) }
 

@@ -122,12 +122,12 @@ module Types
       field :details_url,
             GraphQL::Types::String,
             null: false,
-            description: 'The URL of the alert detail page.'
+            description: 'URL of the alert detail page.'
 
       field :prometheus_alert,
             Types::PrometheusAlertType,
             null: true,
-            description: 'The alert condition for Prometheus.'
+            description: 'Alert condition for Prometheus.'
 
       def notes
         object.ordered_notes

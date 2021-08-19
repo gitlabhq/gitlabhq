@@ -34,7 +34,7 @@ RSpec.describe Issue::Metrics do
     end
   end
 
-  describe "when recording the default set of issue metrics on issue save" do
+  shared_examples "when recording the default set of issue metrics on issue save" do
     context "milestones" do
       it "records the first time an issue is associated with a milestone" do
         time = Time.current
@@ -80,20 +80,21 @@ RSpec.describe Issue::Metrics do
         expect(metrics.first_added_to_board_at).to be_like_time(time)
       end
     end
+  end
 
-    describe "#record!" do
-      it "does not cause an N+1 query" do
-        label = create(:label)
-        subject.update!(label_ids: [label.id])
-
-        control_count = ActiveRecord::QueryRecorder.new { Issue::Metrics.find_by(issue: subject).record! }.count
-
-        additional_labels = create_list(:label, 4)
-
-        subject.update!(label_ids: additional_labels.map(&:id))
-
-        expect { Issue::Metrics.find_by(issue: subject).record! }.not_to exceed_query_limit(control_count)
-      end
+  context 'when upsert_issue_metrics is enabled' do
+    before do
+      stub_feature_flags(upsert_issue_metrics: true)
     end
+
+    it_behaves_like 'when recording the default set of issue metrics on issue save'
+  end
+
+  context 'when upsert_issue_metrics is disabled' do
+    before do
+      stub_feature_flags(upsert_issue_metrics: false)
+    end
+
+    it_behaves_like 'when recording the default set of issue metrics on issue save'
   end
 end
