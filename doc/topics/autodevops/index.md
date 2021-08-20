@@ -105,7 +105,7 @@ test your application.
 
 If you want to build, test, and deploy your app:
 
-1. See the [requirements for deployment](requirements.md).
+1. View the [requirements for deployment](requirements.md).
 1. [Enable Auto DevOps](#enable-or-disable-auto-devops).
 1. Follow the [quick start guide](#quick-start).
 
@@ -153,16 +153,18 @@ precedence over the Auto DevOps pipeline.
 
 To enable Auto DevOps for a project:
 
-1. Go to your project's **Settings > CI/CD > Auto DevOps**.
-1. Select the **Default to Auto DevOps pipeline**.
-1. (Recommended) Add the [base domain](requirements.md#auto-devops-base-domain).
-1. (Recommended) Choose the [deployment strategy](requirements.md#auto-devops-deployment-strategy).
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Auto DevOps**.
+1. Select the **Default to Auto DevOps pipeline** checkbox.
+1. Optional but recommended. Add the [base domain](requirements.md#auto-devops-base-domain).
+1. Optional but recommended. Choose the [deployment strategy](requirements.md#auto-devops-deployment-strategy).
 1. Select **Save changes**.
 
 GitLab triggers the Auto DevOps pipeline on the default branch.
 
-To disable it, follow the same process and deselect **Default to Auto
-DevOps pipeline**.
+To disable it, follow the same process and clear the
+**Default to Auto DevOps pipeline** checkbox.
 
 #### At the group level
 
@@ -180,20 +182,22 @@ at the group level.
 
 To enable Auto DevOps for a group:
 
-1. Go to your group's **Settings > CI/CD > Auto DevOps**.
-1. Select **Default to Auto DevOps pipeline**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Auto DevOps**.
+1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Select **Save changes**.
+
+To disable Auto DevOps on the group level, follow the same process and
+clear the **Default to Auto DevOps pipeline** checkbox.
 
 After enabling Auto DevOps at the group level, you can trigger the
 Auto DevOps pipeline for any project that belongs to that group. To do so:
 
-1. Go to the project's homepage.
+1. On the top bar, select **Menu > Projects** and find your project.
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
-1. From the project's sidebar, go to **CI/CD > Pipelines**.
-1. Select **Run pipeline** to trigger the Auto DevOps pipeline.
-
-To disable Auto DevOps on the group level, follow the same process and
-deselect **Default to Auto DevOps pipeline**.
+1. On the left sidebar, select **CI/CD > Pipelines**.
+1. To trigger the Auto DevOps pipeline, select **Run pipeline**.
 
 #### At the instance level **(FREE SELF)**
 
@@ -210,10 +214,11 @@ can still enable Auto DevOps at the group and project levels.
 
 To enable Auto DevOps for your instance:
 
-1. From the top bar, select **Menu >** **{admin}** **Admin**.
-1. Go to **Settings > CI/CD > Continuous Integration and Deployment**.
-1. Select **Default to Auto DevOps pipeline**.
-1. (Optional) Add the Auto DevOps [base domain](requirements.md#auto-devops-base-domain).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Auto DevOps**.
+1. Select the **Default to Auto DevOps pipeline** checkbox.
+1. Optional. Add the Auto DevOps [base domain](requirements.md#auto-devops-base-domain).
 1. Select **Save changes**.
 
 When enabled, it attempts to run Auto DevOps pipelines in every project. If the
@@ -224,7 +229,7 @@ If a [CI/CD configuration file](../../ci/yaml/index.md) is present,
 it remains unchanged and Auto DevOps doesn't affect it.
 
 To disable Auto DevOps in the instance level, follow the same process
-and deselect the **Default to Auto DevOps pipeline** checkbox.
+and clear the **Default to Auto DevOps pipeline** checkbox.
 
 ### Quick start
 

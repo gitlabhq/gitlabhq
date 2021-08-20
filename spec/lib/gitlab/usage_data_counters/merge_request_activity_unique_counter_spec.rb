@@ -206,18 +206,32 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
   end
 
   describe '.track_add_suggestion_action' do
-    subject { described_class.track_add_suggestion_action(user: user) }
+    subject { described_class.track_add_suggestion_action(note: note) }
+
+    before do
+      note.suggestions << build(:suggestion, id: 1, note: note)
+    end
 
     it_behaves_like 'a tracked merge request unique event' do
-      let(:action) { described_class::MR_ADD_SUGGESTION_ACTION }
+      let(:action) { described_class::MR_USER_ADD_SUGGESTION_ACTION }
+    end
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_TOTAL_ADD_SUGGESTION_ACTION }
     end
   end
 
   describe '.track_apply_suggestion_action' do
-    subject { described_class.track_apply_suggestion_action(user: user) }
+    subject { described_class.track_apply_suggestion_action(user: user, suggestions: suggestions) }
+
+    let(:suggestions) { [build(:suggestion, id: 1, note: note)] }
 
     it_behaves_like 'a tracked merge request unique event' do
-      let(:action) { described_class::MR_APPLY_SUGGESTION_ACTION }
+      let(:action) { described_class::MR_USER_APPLY_SUGGESTION_ACTION }
+    end
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_TOTAL_APPLY_SUGGESTION_ACTION }
     end
   end
 

@@ -237,3 +237,11 @@
   category: code_review
   aggregation: weekly
   feature_flag: diff_searching_usage_data
+- name: i_code_review_total_suggestions_applied
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_total_suggestions_added
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

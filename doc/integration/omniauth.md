@@ -73,14 +73,13 @@ earlier version, you must explicitly enable it.
 - `auto_link_ldap_user` can be used if you have [LDAP / ActiveDirectory](../administration/auth/ldap/index.md)
   integration enabled. It defaults to `false`. When enabled, users automatically
   created through an OmniAuth provider have their LDAP identity created in GitLab as well.
-- `block_auto_created_users` defaults to `true`. If `true` auto created users will
-  be blocked by default and must be unblocked by an administrator before
-  they are able to sign in.
+- `block_auto_created_users` defaults to `true`. If `true`, auto created users will
+  be blocked pending approval by an administrator before they are able to sign in.
 
 NOTE:
 If you set `block_auto_created_users` to `false`, make sure to only
 define providers under `allow_single_sign_on` that you are able to control, like
-SAML, Shibboleth, Crowd, or Google. Otherwise, set it to `false`, or any user on
+SAML, Shibboleth, Crowd, or Google. Otherwise, set it to `true`, or any user on
 the Internet can successfully sign in to your GitLab without
 administrative approval.
 

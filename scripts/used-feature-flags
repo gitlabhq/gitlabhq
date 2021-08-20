@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'set'
+require 'fileutils'
 
 class String
   def red

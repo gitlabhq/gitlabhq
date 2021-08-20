@@ -317,7 +317,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
           it 'denies sign-in if sign-up is enabled, but block_auto_created_users is set' do
             post :atlassian_oauth2
 
-            expect(flash[:alert]).to start_with 'Your account has been blocked.'
+            expect(flash[:alert]).to start_with 'Your account is pending approval'
           end
 
           it 'accepts sign-in if sign-up is enabled' do
@@ -399,7 +399,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
       it 'denies login if sign up is enabled, but block_auto_created_users is set' do
         post :saml, params: { SAMLResponse: mock_saml_response }
 
-        expect(flash[:alert]).to start_with 'Your account has been blocked.'
+        expect(flash[:alert]).to start_with 'Your account is pending approval'
       end
 
       it 'accepts login if sign up is enabled' do

@@ -34,10 +34,6 @@ RSpec.describe WikiPages::EventCreateService do
       it 'does not create an event' do
         expect { response }.not_to change(Event, :count)
       end
-
-      it 'does not create a metadata record' do
-        expect { response }.not_to change(WikiPage::Meta, :count)
-      end
     end
 
     it 'returns a successful response' do

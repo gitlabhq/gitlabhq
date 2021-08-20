@@ -88,11 +88,15 @@ module Gitlab
       end
 
       def build_attributes
-        @attributes_finder.included_attributes.each(&method(:add_permitted_attributes))
+        @attributes_finder.included_attributes.each do |model_name, attributes|
+          add_permitted_attributes(model_name, attributes)
+        end
       end
 
       def build_methods
-        @attributes_finder.methods.each(&method(:add_permitted_attributes))
+        @attributes_finder.methods.each do |model_name, attributes|
+          add_permitted_attributes(model_name, attributes)
+        end
       end
 
       def add_permitted_attributes(model_name, attributes)

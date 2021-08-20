@@ -857,12 +857,8 @@ RSpec.describe User do
       end
 
       context 'maximum value' do
-        before do
-          allow(Devise.password_length).to receive(:max).and_return(201)
-        end
-
         it 'is determined by the current value of `Devise.password_length.max`' do
-          expect(password_length.max).to eq(201)
+          expect(password_length.max).to eq(Devise.password_length.max)
         end
       end
     end

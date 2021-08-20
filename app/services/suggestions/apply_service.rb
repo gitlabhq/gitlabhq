@@ -33,7 +33,7 @@ module Suggestions
         .update_all(commit_id: result[:result], applied: true)
 
       Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
-        .track_apply_suggestion_action(user: current_user)
+        .track_apply_suggestion_action(user: current_user, suggestions: suggestion_set.suggestions)
     end
 
     def author
