@@ -14,6 +14,10 @@ class ErrorTracking::ClientKey < ApplicationRecord
     find_by(public_key: key)
   end
 
+  def sentry_dsn
+    @sentry_dsn ||= ErrorTracking::Collector::Dsn.build_url(public_key, project_id)
+  end
+
   private
 
   def generate_key

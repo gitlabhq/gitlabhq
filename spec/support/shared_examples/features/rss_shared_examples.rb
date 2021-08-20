@@ -25,3 +25,23 @@ RSpec.shared_examples "it has an RSS button without a feed token" do
       .to have_css("a:has(.qa-rss-icon):not([href*='feed_token'])") # rubocop:disable QA/SelectorUsage
   end
 end
+
+RSpec.shared_examples "updates atom feed link" do |type|
+  it "for #{type}" do
+    sign_in(user)
+    visit path
+
+    link = find_link('Subscribe to RSS feed')
+    params = CGI.parse(URI.parse(link[:href]).query)
+    auto_discovery_link = find("link[type='application/atom+xml']", visible: false)
+    auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
+
+    expected = {
+      'feed_token' => [user.feed_token],
+      'assignee_id' => [user.id.to_s]
+    }
+
+    expect(params).to include(expected)
+    expect(auto_discovery_params).to include(expected)
+  end
+end

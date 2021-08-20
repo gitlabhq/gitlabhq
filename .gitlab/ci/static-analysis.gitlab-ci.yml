@@ -1,0 +1,42 @@
+.static-analysis-base:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .static-analysis-cache
+  needs: []
+  variables:
+    SETUP_DB: "false"
+    ENABLE_SPRING: "1"
+    # Disable warnings in browserslist which can break on backports
+    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
+
+update-static-analysis-cache:
+  extends:
+    - .static-analysis-base
+    - .static-analysis-cache-push
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - run_timed_command "bundle exec rubocop --parallel"  # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
+
+static-analysis:
+  extends:
+    - .static-analysis-base
+    - .static-analysis:rules:ee-and-foss
+  stage: test
+  parallel: 4
+  script:
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - scripts/static-analysis
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - tmp/feature_flags/
+
+static-analysis as-if-foss:
+  extends:
+    - static-analysis
+    - .static-analysis:rules:as-if-foss
+    - .as-if-foss

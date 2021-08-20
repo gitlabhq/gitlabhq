@@ -96,6 +96,14 @@ You can filter issues and merge requests by specific terms included in titles or
 
 ![filter issues by specific terms](img/issue_search_by_term.png)
 
+### Retrieving search results as feed
+
+> Feeds for merge requests were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66336) in GitLab 14.3.
+
+You can subscribe to the results of your search query for issues or merge requests within a project as an Atom feed by clicking on the feed symbol **{rss}**.
+
+This will generate a feed URL containing both a feed token and your search query, which can be added to your feed reader.
+
 ### Filtering by ID
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.

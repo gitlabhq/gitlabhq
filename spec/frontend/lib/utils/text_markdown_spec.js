@@ -70,6 +70,25 @@ describe('init markdown', () => {
         expect(textArea.value).toContain('# Does not parse the `$` currently.');
       });
 
+      it('inserts a new line correctly', () => {
+        const initialValue = '';
+
+        textArea.value = initialValue;
+        textArea.selectionStart = 0;
+        textArea.selectionEnd = 0;
+
+        insertMarkdownText({
+          textArea,
+          text: textArea.value,
+          tag: '```suggestion:-0+0\n{text}\n```',
+          blockTag: true,
+          selected: '# Does not parse the \\n currently.',
+          wrap: false,
+        });
+
+        expect(textArea.value).toContain('# Does not parse the \\n currently.');
+      });
+
       it('inserts the tag on a new line if the current one is not empty', () => {
         const initialValue = 'some text';
 

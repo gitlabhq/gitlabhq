@@ -12041,6 +12041,34 @@ CREATE SEQUENCE custom_emoji_id_seq
 
 ALTER SEQUENCE custom_emoji_id_seq OWNED BY custom_emoji.id;
 
+CREATE TABLE customer_relations_contacts (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    organization_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 1 NOT NULL,
+    phone text,
+    first_name text NOT NULL,
+    last_name text NOT NULL,
+    email text,
+    description text,
+    CONSTRAINT check_1195f4c929 CHECK ((char_length(first_name) <= 255)),
+    CONSTRAINT check_40c70da037 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_cd2d67c484 CHECK ((char_length(last_name) <= 255)),
+    CONSTRAINT check_f4b7f78c89 CHECK ((char_length(phone) <= 32)),
+    CONSTRAINT check_fc0adabf60 CHECK ((char_length(email) <= 255))
+);
+
+CREATE SEQUENCE customer_relations_contacts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE customer_relations_contacts_id_seq OWNED BY customer_relations_contacts.id;
+
 CREATE TABLE customer_relations_organizations (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -20291,6 +20319,8 @@ ALTER TABLE ONLY csv_issue_imports ALTER COLUMN id SET DEFAULT nextval('csv_issu
 
 ALTER TABLE ONLY custom_emoji ALTER COLUMN id SET DEFAULT nextval('custom_emoji_id_seq'::regclass);
 
+ALTER TABLE ONLY customer_relations_contacts ALTER COLUMN id SET DEFAULT nextval('customer_relations_contacts_id_seq'::regclass);
+
 ALTER TABLE ONLY customer_relations_organizations ALTER COLUMN id SET DEFAULT nextval('customer_relations_organizations_id_seq'::regclass);
 
 ALTER TABLE ONLY dast_profile_schedules ALTER COLUMN id SET DEFAULT nextval('dast_profile_schedules_id_seq'::regclass);
@@ -21581,6 +21611,9 @@ ALTER TABLE ONLY csv_issue_imports
 
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY customer_relations_contacts
+    ADD CONSTRAINT customer_relations_contacts_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY customer_relations_organizations
     ADD CONSTRAINT customer_relations_organizations_pkey PRIMARY KEY (id);
@@ -23694,6 +23727,10 @@ CREATE INDEX index_csv_issue_imports_on_user_id ON csv_issue_imports USING btree
 CREATE INDEX index_custom_emoji_on_creator_id ON custom_emoji USING btree (creator_id);
 
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON custom_emoji USING btree (namespace_id, name);
+
+CREATE INDEX index_customer_relations_contacts_on_group_id ON customer_relations_contacts USING btree (group_id);
+
+CREATE INDEX index_customer_relations_contacts_on_organization_id ON customer_relations_contacts USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_customer_relations_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name));
 
@@ -26677,6 +26714,9 @@ ALTER TABLE ONLY issue_assignees
 ALTER TABLE ONLY ci_trigger_requests
     ADD CONSTRAINT fk_b8ec8b7245 FOREIGN KEY (trigger_id) REFERENCES ci_triggers(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY customer_relations_contacts
+    ADD CONSTRAINT fk_b91ddd9345 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_b9a3851b82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -28524,6 +28564,9 @@ ALTER TABLE ONLY packages_nuget_metadata
 
 ALTER TABLE incident_management_pending_alert_escalations
     ADD CONSTRAINT fk_rails_fcbfd9338b FOREIGN KEY (schedule_id) REFERENCES incident_management_oncall_schedules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY customer_relations_contacts
+    ADD CONSTRAINT fk_rails_fd3f2e7572 FOREIGN KEY (organization_id) REFERENCES customer_relations_organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY external_approval_rules
     ADD CONSTRAINT fk_rails_fd4f9ac573 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

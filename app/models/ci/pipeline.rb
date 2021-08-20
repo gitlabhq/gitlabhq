@@ -1220,24 +1220,12 @@ module Ci
       self.ci_ref = Ci::Ref.ensure_for(self)
     end
 
-    # We need `base_and_ancestors` in a specific order to "break" when needed.
-    # If we use `find_each`, then the order is broken.
-    # rubocop:disable Rails/FindEach
     def reset_source_bridge!(current_user)
-      if ::Feature.enabled?(:ci_reset_bridge_with_subsequent_jobs, project, default_enabled: :yaml)
-        return unless bridge_waiting?
+      return unless bridge_waiting?
 
-        source_bridge.pending!
-        Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
-      else
-        self_and_upstreams.includes(:source_bridge).each do |pipeline|
-          break unless pipeline.bridge_waiting?
-
-          pipeline.source_bridge.pending!
-        end
-      end
+      source_bridge.pending!
+      Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
     end
-    # rubocop:enable Rails/FindEach
 
     # EE-only
     def merge_train_pipeline?

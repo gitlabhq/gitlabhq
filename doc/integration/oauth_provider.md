@@ -4,17 +4,17 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab as OAuth2 authentication service provider
+# GitLab as an OAuth 2.0 authentication service provider
 
-This document describes how you can use GitLab as an OAuth 2
+This document describes how you can use GitLab as an OAuth 2.0
 authentication service provider.
 
 If you want to use:
 
-- The [OAuth2](https://oauth.net/2/) protocol to access GitLab resources on user's behalf,
-  see [OAuth2 provider](../api/oauth2.md).
-- Other OAuth 2 authentication service providers to sign in to
-  GitLab, see the [OAuth2 client documentation](omniauth.md).
+- The [OAuth 2.0](https://oauth.net/2/) protocol to access GitLab resources on
+  a user's behalf, see [OAuth 2.0 provider](../api/oauth2.md).
+- Other OAuth 2.0 authentication service providers to sign in to
+  GitLab, see the [OAuth 2.0 client documentation](omniauth.md).
 - The related API, see [Applications API](../api/applications.md).
 
 ## Introduction to OAuth

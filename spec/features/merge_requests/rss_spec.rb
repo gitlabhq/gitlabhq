@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Issues RSS' do
+RSpec.describe 'Project Merge Requests RSS' do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let_it_be(:path) { project_issues_path(project) }
-  let_it_be(:issue) { create(:issue, project: project, assignees: [user]) }
+  let_it_be(:project) { create(:project, :repository, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project, assignees: [user]) }
+  let_it_be(:path) { project_merge_requests_path(project) }
 
   before_all do
     group.add_developer(user)
@@ -40,11 +40,7 @@ RSpec.describe 'Project Issues RSS' do
 
   describe 'feeds' do
     it_behaves_like 'updates atom feed link', :project do
-      let(:path) { project_issues_path(project, assignee_id: user.id) }
-    end
-
-    it_behaves_like 'updates atom feed link', :group do
-      let(:path) { issues_group_path(group, assignee_id: user.id) }
+      let(:path) { project_merge_requests_path(project, assignee_id: user.id) }
     end
   end
 end

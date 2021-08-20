@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # OmniAuth **(FREE)**
 
 GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and
-other popular services. [OmniAuth](https://rubygems.org/gems/omniauth/) is
-"a generalized Rack framework for multiple-provider authentication, built on Ruby.
+other popular services. [OmniAuth](https://rubygems.org/gems/omniauth/) is a
+"generalized Rack framework for multiple-provider authentication" built on Ruby.
 
 Configuring OmniAuth does not prevent standard GitLab authentication or LDAP
 (if configured) from continuing to work. Users can choose to sign in using any
@@ -22,36 +22,38 @@ of the configured mechanisms.
 
 ## Supported Providers
 
-This is a list of the current supported OmniAuth providers. Before proceeding on each provider's documentation,
-make sure to first read this document as it contains some settings that are common for all providers.
+This is a list of the current supported OmniAuth providers. Before proceeding on
+each provider's documentation, make sure to first read this document as it
+contains some settings that are common for all providers.
 
-|Provider documentation                                           |OmniAuth provider name    |
-|-----------------------------------------------------------------|--------------------------|
-|[Atlassian Crowd](../administration/auth/crowd.md)               |`crowd`                   |
-|[Atlassian](../administration/auth/atlassian.md)                 |`atlassian_oauth2`        |
-|[Auth0](auth0.md)                                                |`auth0`                   |
-|[Authentiq](../administration/auth/authentiq.md)                 |`authentiq`               |
-|[AWS Cognito](../administration/auth/cognito.md)                 |`cognito`                 |
-|[Azure v2](azure.md#microsoft-azure-oauth2-omniauth-provider-v2) |`azure_activedirectory_v2`|
-|[Azure v1](azure.md)                                             |`azure_oauth2`            |
-|[Bitbucket Cloud](bitbucket.md)                                  |`bitbucket`               |
-|[CAS](cas.md)                                                    |`cas3`                    |
-|[Facebook](facebook.md)                                          |`facebook`                |
-|[Generic OAuth2](oauth2_generic.md)                              |`oauth2_generic`          |
-|[GitHub](github.md)                                              |`github`                  |
-|[GitLab.com](gitlab.md)                                          |`gitlab`                  |
-|[Google](google.md)                                              |`google_oauth2`           |
-|[JWT](../administration/auth/jwt.md)                             |`jwt`                     |
-|[Kerberos](kerberos.md)                                          |`kerberos`                |
-|[OpenID Connect](../administration/auth/oidc.md)                 |`openid_connect`          |
-|[Salesforce](salesforce.md)                                      |`salesforce`              |
-|[SAML](saml.md)                                                  |`saml`                    |
-|[Shibboleth](shibboleth.md)                                      |`shibboleth`              |
-|[Twitter](twitter.md)                                            |`twitter`                 |
+| Provider documentation                                              | OmniAuth provider name     |
+|---------------------------------------------------------------------|----------------------------|
+| [Atlassian Crowd](../administration/auth/crowd.md)                  | `crowd`                    |
+| [Atlassian](../administration/auth/atlassian.md)                    | `atlassian_oauth2`         |
+| [Auth0](auth0.md)                                                   | `auth0`                    |
+| [Authentiq](../administration/auth/authentiq.md)                    | `authentiq`                |
+| [AWS Cognito](../administration/auth/cognito.md)                    | `cognito`                  |
+| [Azure v2](azure.md#microsoft-azure-oauth-20-omniauth-provider-v2) | `azure_activedirectory_v2` |
+| [Azure v1](azure.md)                                                | `azure_oauth2`             |
+| [Bitbucket Cloud](bitbucket.md)                                     | `bitbucket`                |
+| [CAS](cas.md)                                                       | `cas3`                     |
+| [Facebook](facebook.md)                                             | `facebook`                 |
+| [Generic OAuth 2.0](oauth2_generic.md)                              | `oauth2_generic`           |
+| [GitHub](github.md)                                                 | `github`                   |
+| [GitLab.com](gitlab.md)                                             | `gitlab`                   |
+| [Google](google.md)                                                 | `google_oauth2`            |
+| [JWT](../administration/auth/jwt.md)                                | `jwt`                      |
+| [Kerberos](kerberos.md)                                             | `kerberos`                 |
+| [OpenID Connect](../administration/auth/oidc.md)                    | `openid_connect`           |
+| [Salesforce](salesforce.md)                                         | `salesforce`               |
+| [SAML](saml.md)                                                     | `saml`                     |
+| [Shibboleth](shibboleth.md)                                         | `shibboleth`               |
+| [Twitter](twitter.md)                                               | `twitter`                  |
 
 ## Initial OmniAuth Configuration
 
-The OmniAuth provider names from the table above are needed to configure a few global settings that are in common for all providers.
+The OmniAuth provider names from the table above are needed to configure a few
+global settings that are in common for all providers.
 
 NOTE:
 Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
@@ -65,7 +67,9 @@ earlier version, you must explicitly enable it.
   gitlab_rails['omniauth_allow_single_sign_on'] = ['azure_activedirectory_v2', 'google_oauth2']
   ```
 
-  The value defaults to `false`. If `false` users must be created manually, or they can't sign in by using OmniAuth.
+  The value defaults to `false`. If `false` users must be created manually, or
+  they can't sign in by using OmniAuth.
+
 - `auto_link_ldap_user` can be used if you have [LDAP / ActiveDirectory](../administration/auth/ldap/index.md)
   integration enabled. It defaults to `false`. When enabled, users automatically
   created through an OmniAuth provider have their LDAP identity created in GitLab as well.
@@ -166,23 +170,21 @@ Automatic linking using this method works for all providers
 [except the SAML provider](https://gitlab.com/gitlab-org/gitlab/-/issues/338293). For automatic
 linking using the SAML provider, see [SAML-specific](saml.md#general-setup) instructions.
 
-As an example, the following configuration is used to enable the auto link feature for both:
+As an example, the following configuration is used to enable the auto link
+feature for both an **OpenID Connect provider** and a **Twitter OAuth provider**.
 
-- OpenID Connect provider.
-- Twitter OAuth provider.
+- **For Omnibus installations**
 
-**For Omnibus installations**
+  ```ruby
+  gitlab_rails['omniauth_auto_link_user'] = ["openid_connect", "twitter"]
+  ```
 
-```ruby
-gitlab_rails['omniauth_auto_link_user'] = ["openid_connect", "twitter"]
-```
+- **For installations from source**
 
-**For installations from source**
-
-```yaml
-omniauth:
-  auto_link_user: ["openid_connect", "twitter"]
-```
+  ```yaml
+  omniauth:
+    auto_link_user: ["openid_connect", "twitter"]
+  ```
 
 ## Configure OmniAuth Providers as External
 
@@ -197,18 +199,18 @@ If you decide to remove an OmniAuth provider from the external providers list,
 you must manually update the users that use this method to sign in if you want
 their accounts to be upgraded to full internal accounts.
 
-**For Omnibus installations**
+- **For Omnibus installations**
 
-```ruby
-gitlab_rails['omniauth_external_providers'] = ['twitter', 'google_oauth2']
-```
+  ```ruby
+  gitlab_rails['omniauth_external_providers'] = ['twitter', 'google_oauth2']
+  ```
 
-**For installations from source**
+- **For installations from source**
 
-```yaml
-omniauth:
-  external_providers: ['twitter', 'google_oauth2']
-```
+  ```yaml
+  omniauth:
+    external_providers: ['twitter', 'google_oauth2']
+  ```
 
 ## Using Custom OmniAuth Providers
 
@@ -217,7 +219,7 @@ The following information only applies for installations from source.
 
 GitLab uses [OmniAuth](https://github.com/omniauth/omniauth) for authentication and already ships
 with a few providers pre-installed, such as LDAP, GitHub, and Twitter. You may also
-need to integrate with other authentication solutions. For
+have to integrate with other authentication solutions. For
 these cases, you can use the OmniAuth provider.
 
 ### Steps
@@ -283,18 +285,18 @@ has an effect if providers are configured and [enabled](#enable-or-disable-sign-
 If OmniAuth providers are causing problems even when individually disabled, you
 can disable the entire OmniAuth subsystem by modifying the configuration file:
 
-**For Omnibus installations**
+- **For Omnibus installations**
 
-```ruby
-gitlab_rails['omniauth_enabled'] = false
-```
+  ```ruby
+  gitlab_rails['omniauth_enabled'] = false
+  ```
 
-**For installations from source**
+- **For installations from source**:
 
-```yaml
-omniauth:
-  enabled: false
-```
+  ```yaml
+  omniauth:
+    enabled: false
+  ```
 
 ## Keep OmniAuth user profiles up to date
 
@@ -302,18 +304,20 @@ You can enable profile syncing from selected OmniAuth providers and for all or f
 
 When authenticating using LDAP, the user's name and email are always synced.
 
-```ruby
-gitlab_rails['omniauth_sync_profile_from_provider'] = ['twitter', 'google_oauth2']
-gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email', 'location']
-```
+- **For Omnibus installations**
 
-**For installations from source**
+  ```ruby
+  gitlab_rails['omniauth_sync_profile_from_provider'] = ['twitter', 'google_oauth2']
+  gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email', 'location']
+  ```
 
-```yaml
-omniauth:
-  sync_profile_from_provider: ['twitter', 'google_oauth2']
-  sync_profile_attributes: ['email', 'location']
-```
+- **For installations from source**
+
+  ```yaml
+  omniauth:
+    sync_profile_from_provider: ['twitter', 'google_oauth2']
+    sync_profile_attributes: ['email', 'location']
+  ```
 
 ## Bypassing two factor authentication
 
@@ -325,16 +329,18 @@ or as `true` or `false` to allow all providers (or none). This option should be
 configured only for providers which already have two factor authentication
 (default: false). This configuration doesn't apply to SAML.
 
-```ruby
-gitlab_rails['omniauth_allow_bypass_two_factor'] = ['twitter', 'google_oauth2']
-```
+- **For Omnibus package**
 
-**For installations from source**
+  ```ruby
+  gitlab_rails['omniauth_allow_bypass_two_factor'] = ['twitter', 'google_oauth2']
+  ```
 
-```yaml
-omniauth:
-  allow_bypass_two_factor: ['twitter', 'google_oauth2']
-```
+- **For installations from source**
+
+  ```yaml
+  omniauth:
+    allow_bypass_two_factor: ['twitter', 'google_oauth2']
+  ```
 
 ## Automatically sign in with provider
 
@@ -342,25 +348,25 @@ You can add the `auto_sign_in_with_provider` setting to your GitLab
 configuration to redirect login requests to your OmniAuth provider for
 authentication. This removes the need to click a button before actually signing in.
 
-For example, when using the [Azure v2 integration](azure.md#microsoft-azure-oauth2-omniauth-provider-v2), set the following to enable auto
+For example, when using the [Azure v2 integration](azure.md#microsoft-azure-oauth-20-omniauth-provider-v2), set the following to enable auto
 sign-in:
 
-For Omnibus package:
+- **For Omnibus package**
 
-```ruby
-gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'azure_activedirectory_v2'
-```
+  ```ruby
+  gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'azure_activedirectory_v2'
+  ```
 
-For installations from source:
+- **For installations from source**
 
-```yaml
-omniauth:
-  auto_sign_in_with_provider: azure_activedirectory_v2
-```
+  ```yaml
+  omniauth:
+    auto_sign_in_with_provider: azure_activedirectory_v2
+  ```
 
 Keep in mind that every sign-in attempt is redirected to the OmniAuth
 provider; you can't sign in using local credentials. Ensure at least
-one of the OmniAuth users has administrator permissions.
+one of the OmniAuth users has an administrator role.
 
 You may also bypass the auto sign in feature by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
@@ -378,18 +384,22 @@ After you ensure your image is optimized for rendering at 64 x 64 pixels,
 you can override this icon in one of two ways:
 
 - **Provide a custom image path**:
+
   1. *If you are hosting the image outside of your GitLab server domain,* ensure
      your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration.html#content-security-policy)
      are configured to allow access to the image file.
   1. Depending on your method of installing GitLab, add a custom `icon` parameter
      to your GitLab configuration file. Read [OpenID Connect OmniAuth provider](../administration/auth/oidc.md)
      for an example for the OpenID Connect provider.
+
 - **Directly embed an image in a configuration file**: This example creates a Base64-encoded
   version of your image you can serve through a
   [Data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs):
+
   1. Encode your image file with GNU `base64` command (such as `base64 -w 0 <logo.png>`)
      which returns a single-line `<base64-data>` string.
-  1. Add the Base64-encoded data to a custom `icon` parameter in your GitLab configuration file:
+  1. Add the Base64-encoded data to a custom `icon` parameter in your GitLab
+     configuration file:
 
      ```yaml
      omniauth:

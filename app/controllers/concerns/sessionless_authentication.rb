@@ -8,7 +8,6 @@ module SessionlessAuthentication
   # This filter handles personal access tokens, atom requests with rss tokens, and static object tokens
   def authenticate_sessionless_user!(request_format)
     user = request_authenticator.find_sessionless_user(request_format)
-
     sessionless_sign_in(user) if user
   end
 

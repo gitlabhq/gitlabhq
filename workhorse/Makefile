@@ -6,7 +6,12 @@ VERSION_STRING := $(shell git describe)
 ifeq ($(strip $(VERSION_STRING)),)
 VERSION_STRING := v$(shell cat VERSION)
 endif
-BUILD_TIME := $(shell date -u +%Y%m%d.%H%M%S)
+DATE_FMT = +%Y%m%d.%H%M%S
+ifdef SOURCE_DATE_EPOCH
+	BUILD_TIME := $(shell date -u -d "@$(SOURCE_DATE_EPOCH)" "$(DATE_FMT)" 2>/dev/null || date -u -r "$(SOURCE_DATE_EPOCH)" "$(DATE_FMT)" 2>/dev/null || date -u "$(DATE_FMT)")
+else
+	BUILD_TIME := $(shell date -u "$(DATE_FMT)")
+endif
 GOBUILD := go build -ldflags "-X main.Version=$(VERSION_STRING) -X main.BuildTime=$(BUILD_TIME)"
 EXE_ALL := gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata gitlab-workhorse
 INSTALL := install

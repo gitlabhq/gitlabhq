@@ -353,6 +353,7 @@ If there are multiple Praefect nodes:
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
+WARNING:
 Praefect should be run on a dedicated node. Do not run Praefect on the
 application server, or a Gitaly node.
 
