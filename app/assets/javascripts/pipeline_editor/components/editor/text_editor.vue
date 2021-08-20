@@ -3,7 +3,6 @@ import { EDITOR_READY_EVENT } from '~/editor/constants';
 import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 
 export default {
   components: {
@@ -12,14 +11,11 @@ export default {
   mixins: [glFeatureFlagMixin()],
   inject: ['ciConfigPath', 'projectPath', 'projectNamespace', 'defaultBranch'],
   inheritAttrs: false,
-  data() {
-    return {
-      commitSha: '',
-    };
-  },
-  apollo: {
+  props: {
     commitSha: {
-      query: getCommitSha,
+      type: String,
+      required: false,
+      default: '',
     },
   },
   methods: {

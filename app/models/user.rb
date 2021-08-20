@@ -254,8 +254,7 @@ class User < ApplicationRecord
     message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
 
   before_validation :sanitize_attrs
-  before_validation :set_public_email, if: :public_email_changed?
-  before_validation :set_commit_email, if: :commit_email_changed?
+  before_validation :reset_secondary_emails, if: :email_changed?
   before_save :default_private_profile_to_false
   before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
   before_save :set_commit_email, if: :commit_email_changed? # in case validation is skipped
@@ -928,24 +927,6 @@ class User < ApplicationRecord
     end
   end
 
-  def notification_email_verified
-    return if read_attribute(:notification_email).blank? || temp_oauth_email?
-
-    errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email)
-  end
-
-  def public_email_verified
-    return if public_email.blank?
-
-    errors.add(:public_email, _("must be an email you have verified")) unless verified_emails.include?(public_email)
-  end
-
-  def commit_email_verified
-    return if read_attribute(:commit_email).blank?
-
-    errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email)
-  end
-
   # Define commit_email-related attribute methods explicitly instead of relying
   # on ActiveRecord to provide them. Some of the specs use the current state of
   # the model code but an older database schema, so we need to guard against the
@@ -1296,24 +1277,6 @@ class User < ApplicationRecord
     return unless self.name
 
     self.name = self.name.gsub(%r{</?[^>]*>}, '')
-  end
-
-  def set_notification_email
-    if notification_email.blank? || all_emails.exclude?(notification_email)
-      self.notification_email = email
-    end
-  end
-
-  def set_public_email
-    if public_email.blank? || all_emails.exclude?(public_email)
-      self.public_email = ''
-    end
-  end
-
-  def set_commit_email
-    if commit_email.blank? || verified_emails.exclude?(commit_email)
-      self.commit_email = nil
-    end
   end
 
   def unset_secondary_emails_matching_deleted_email!(deleted_email)
@@ -2024,6 +1987,48 @@ class User < ApplicationRecord
   end
 
   private
+
+  def notification_email_verified
+    return if read_attribute(:notification_email).blank? || temp_oauth_email?
+
+    errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email)
+  end
+
+  def public_email_verified
+    return if public_email.blank?
+
+    errors.add(:public_email, _("must be an email you have verified")) unless verified_emails.include?(public_email)
+  end
+
+  def commit_email_verified
+    return if read_attribute(:commit_email).blank?
+
+    errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email)
+  end
+
+  def set_notification_email
+    if notification_email.blank? || verified_emails.exclude?(notification_email)
+      self.notification_email = nil
+    end
+  end
+
+  def set_public_email
+    if public_email.blank? || verified_emails.exclude?(public_email)
+      self.public_email = ''
+    end
+  end
+
+  def set_commit_email
+    if commit_email.blank? || verified_emails.exclude?(commit_email)
+      self.commit_email = nil
+    end
+  end
+
+  def reset_secondary_emails
+    set_public_email
+    set_commit_email
+    set_notification_email
+  end
 
   def callouts_by_feature_name
     @callouts_by_feature_name ||= callouts.index_by(&:feature_name)

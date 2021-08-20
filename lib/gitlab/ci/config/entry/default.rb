@@ -53,7 +53,7 @@ module Gitlab
             description: 'Set retry default value.',
             inherit: false
 
-          entry :tags, ::Gitlab::Config::Entry::ArrayOfStrings,
+          entry :tags, Entry::Tags,
             description: 'Set the default tags.',
             inherit: false
 

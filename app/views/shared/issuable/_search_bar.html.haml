@@ -207,10 +207,7 @@
           #js-board-epics-swimlanes-toggle
         .js-board-config{ data: { can_admin_list: user_can_admin_list.to_s, has_scope: board.scoped?.to_s } }
         - if user_can_admin_list
-          - if Feature.enabled?(:board_new_list, board.resource_parent, default_enabled: :yaml) || board.to_type == "EpicBoard"
-            .js-create-column-trigger{ data: board_list_data }
-          - else
-            = render 'shared/issuable/board_create_list_dropdown', board: board
+          .js-create-column-trigger{ data: board_list_data }
         #js-toggle-focus-btn
       - elsif type != :productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

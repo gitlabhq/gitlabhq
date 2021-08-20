@@ -1,6 +1,5 @@
 import produce from 'immer';
 import axios from '~/lib/utils/axios_utils';
-import getCommitShaQuery from './queries/client/commit_sha.graphql';
 import getCurrentBranchQuery from './queries/client/current_branch.graphql';
 import getLastCommitBranchQuery from './queries/client/last_commit_branch.query.graphql';
 
@@ -31,14 +30,6 @@ export const resolvers = {
         }),
         __typename: 'CiLintContent',
       }));
-    },
-    updateCommitSha: (_, { commitSha }, { cache }) => {
-      cache.writeQuery({
-        query: getCommitShaQuery,
-        data: produce(cache.readQuery({ query: getCommitShaQuery }), (draftData) => {
-          draftData.commitSha = commitSha;
-        }),
-      });
     },
     updateCurrentBranch: (_, { currentBranch }, { cache }) => {
       cache.writeQuery({

@@ -1885,6 +1885,9 @@ variables:
       - echo "Hello runner selector feature"
 ```
 
+NOTE:
+In [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/338479) and later, the number of tags must be less than `50`.
+
 ### `allow_failure`
 
 Use `allow_failure` when you want to let a job fail without impacting the rest of the CI

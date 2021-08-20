@@ -7,12 +7,7 @@ import { mapActions, mapGetters } from 'vuex';
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
-import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
-import {
-  setWeightFetchingState,
-  setEpicFetchingState,
-  getMilestoneTitle,
-} from 'ee_else_ce/boards/ee_functions';
+import { setWeightFetchingState, setEpicFetchingState } from 'ee_else_ce/boards/ee_functions';
 import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
@@ -310,20 +305,6 @@ export default () => {
       getNodes(data) {
         return data[this.parent]?.board?.lists.nodes;
       },
-    },
-  });
-
-  // eslint-disable-next-line no-new, @gitlab/no-runtime-template-compiler
-  new Vue({
-    el: document.getElementById('js-add-list'),
-    data() {
-      return {
-        filters: boardsStore.state.filters,
-        ...getMilestoneTitle($boardApp),
-      };
-    },
-    mounted() {
-      initNewListDropdown();
     },
   });
 

@@ -10903,7 +10903,8 @@ CREATE TABLE ci_pending_builds (
     protected boolean DEFAULT false NOT NULL,
     instance_runners_enabled boolean DEFAULT false NOT NULL,
     namespace_id bigint,
-    minutes_exceeded boolean DEFAULT false NOT NULL
+    minutes_exceeded boolean DEFAULT false NOT NULL,
+    tag_ids integer[] DEFAULT '{}'::integer[]
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -23471,6 +23472,8 @@ CREATE UNIQUE INDEX index_ci_pending_builds_on_build_id ON ci_pending_builds USI
 CREATE INDEX index_ci_pending_builds_on_namespace_id ON ci_pending_builds USING btree (namespace_id);
 
 CREATE INDEX index_ci_pending_builds_on_project_id ON ci_pending_builds USING btree (project_id);
+
+CREATE INDEX index_ci_pending_builds_on_tag_ids ON ci_pending_builds USING btree (tag_ids) WHERE (cardinality(tag_ids) > 0);
 
 CREATE INDEX index_ci_pipeline_artifacts_failed_verification ON ci_pipeline_artifacts USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 

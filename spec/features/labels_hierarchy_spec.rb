@@ -17,7 +17,6 @@ RSpec.describe 'Labels Hierarchy', :js do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
-    stub_feature_flags(board_new_list: false)
     grandparent.add_owner(user)
 
     sign_in(user)
@@ -305,90 +304,6 @@ RSpec.describe 'Labels Hierarchy', :js do
       end
 
       it_behaves_like 'filtering by ancestor labels for groups', true
-    end
-  end
-
-  context 'creating boards lists' do
-    before do
-      stub_feature_flags(board_new_list: false)
-    end
-
-    context 'on project boards' do
-      let(:board) { create(:board, project: project_1) }
-
-      before do
-        project_1.add_developer(user)
-        visit project_board_path(project_1, board)
-        find('.js-new-board-list').click
-        wait_for_requests
-      end
-
-      it 'creates lists from all ancestor labels' do
-        [grandparent_group_label, parent_group_label, project_label_1].each do |label|
-          find('a', text: label.title).click
-        end
-
-        wait_for_requests
-
-        expect(page).to have_selector('.board-title-text', text: grandparent_group_label.title)
-        expect(page).to have_selector('.board-title-text', text: parent_group_label.title)
-        expect(page).to have_selector('.board-title-text', text: project_label_1.title)
-      end
-    end
-
-    context 'on group boards' do
-      let(:board) { create(:board, group: parent) }
-
-      before do
-        parent.add_developer(user)
-        visit group_board_path(parent, board)
-        find('.js-new-board-list').click
-        wait_for_requests
-      end
-
-      context 'when graphql_board_lists FF enabled' do
-        it 'creates lists from all ancestor group labels' do
-          [grandparent_group_label, parent_group_label].each do |label|
-            find('a', text: label.title).click
-          end
-
-          wait_for_requests
-
-          expect(page).to have_selector('.board-title-text', text: grandparent_group_label.title)
-          expect(page).to have_selector('.board-title-text', text: parent_group_label.title)
-        end
-
-        it 'does not create lists from descendant groups' do
-          expect(page).not_to have_selector('a', text: child_group_label.title)
-        end
-      end
-    end
-
-    context 'when graphql_board_lists FF disabled' do
-      let(:board) { create(:board, group: parent) }
-
-      before do
-        stub_feature_flags(graphql_board_lists: false)
-        parent.add_developer(user)
-        visit group_board_path(parent, board)
-        find('.js-new-board-list').click
-        wait_for_requests
-      end
-
-      it 'creates lists from all ancestor group labels' do
-        [grandparent_group_label, parent_group_label].each do |label|
-          find('a', text: label.title).click
-        end
-
-        wait_for_requests
-
-        expect(page).to have_selector('.board-title-text', text: grandparent_group_label.title)
-        expect(page).to have_selector('.board-title-text', text: parent_group_label.title)
-      end
-
-      it 'does not create lists from descendant groups' do
-        expect(page).not_to have_selector('a', text: child_group_label.title)
-      end
     end
   end
 end

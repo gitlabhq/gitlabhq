@@ -618,6 +618,29 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         end
       end
     end
+
+    context 'when job is using tags' do
+      context 'when limit is reached' do
+        let(:tags) { Array.new(100) { |i| "tag-#{i}" } }
+        let(:config) { { tags: tags, script: 'test' } }
+
+        it 'returns error', :aggregate_failures do
+          expect(entry).not_to be_valid
+          expect(entry.errors)
+            .to include "tags config must be less than the limit of #{Gitlab::Ci::Config::Entry::Tags::TAGS_LIMIT} tags"
+        end
+      end
+
+      context 'when limit is not reached' do
+        let(:config) { { tags: %w[tag1 tag2], script: 'test' } }
+
+        it 'returns a valid entry', :aggregate_failures do
+          expect(entry).to be_valid
+          expect(entry.errors).to be_empty
+          expect(entry.tags).to eq(%w[tag1 tag2])
+        end
+      end
+    end
   end
 
   describe '#manual_action?' do

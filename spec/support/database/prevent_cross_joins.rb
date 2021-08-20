@@ -27,18 +27,13 @@ module Database
       # PgQuery might fail in some cases due to limited nesting:
       # https://github.com/pganalyze/pg_query/issues/209
       tables = PgQuery.parse(sql).tables
+      schemas = Database::GitlabSchema.table_schemas(tables)
 
-      unless only_ci_or_only_main?(tables)
+      if schemas.many?
         raise CrossJoinAcrossUnsupportedTablesError,
-          "Unsupported cross-join across '#{tables.join(", ")}' discovered " \
+          "Unsupported cross-join across '#{tables.join(", ")}' modifying '#{schemas.to_a.join(", ")}' discovered " \
           "when executing query '#{sql}'"
       end
-    end
-
-    # Returns true if a set includes only CI tables, or includes only non-CI tables
-    def self.only_ci_or_only_main?(tables)
-      tables.all? { |table| CiTables.include?(table) } ||
-        tables.none? { |table| CiTables.include?(table) }
     end
 
     module SpecHelpers

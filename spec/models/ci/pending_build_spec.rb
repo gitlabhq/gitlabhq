@@ -113,5 +113,31 @@ RSpec.describe Ci::PendingBuild do
         end
       end
     end
+
+    context 'when build has tags' do
+      let!(:build) { create(:ci_build, :tags) }
+
+      subject(:ci_pending_build) { described_class.last }
+
+      context 'when ci_pending_builds_maintain_tags_data is enabled' do
+        it 'sets tag_ids' do
+          described_class.upsert_from_build!(build)
+
+          expect(ci_pending_build.tag_ids).to eq(build.tags_ids)
+        end
+      end
+
+      context 'when ci_pending_builds_maintain_tags_data is disabled' do
+        before do
+          stub_feature_flags(ci_pending_builds_maintain_tags_data: false)
+        end
+
+        it 'does not set tag_ids' do
+          described_class.upsert_from_build!(build)
+
+          expect(ci_pending_build.tag_ids).to be_empty
+        end
+      end
+    end
   end
 end

@@ -247,15 +247,6 @@ describe('Pipeline editor branch switcher', () => {
 
       expect(wrapper.emitted('refetchContent')).toBeUndefined();
     });
-
-    it('emits the updateCommitSha event when selecting a different branch', async () => {
-      expect(wrapper.emitted('updateCommitSha')).toBeUndefined();
-
-      const branch = findDropdownItems().at(1);
-      branch.vm.$emit('click');
-
-      expect(wrapper.emitted('updateCommitSha')).toHaveLength(1);
-    });
   });
 
   describe('when searching', () => {

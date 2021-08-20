@@ -298,9 +298,13 @@ coverage-frontend:
     - *yarn-install
     - run_timed_command "retry yarn run webpack-prod"
 
-qa-frontend-node:10:
+qa-frontend-node:12:
   extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY}node:dubnium
+  image: ${GITLAB_DEPENDENCY_PROXY}node:12
+
+qa-frontend-node:14:
+  extends: .qa-frontend-node
+  image: ${GITLAB_DEPENDENCY_PROXY}node:14
 
 qa-frontend-node:latest:
   extends:

@@ -4650,9 +4650,6 @@ msgstr ""
 msgid "Assignee lists not available with your current license"
 msgstr ""
 
-msgid "Assignee lists show all issues assigned to the selected user."
-msgstr ""
-
 msgid "Assignee(s)"
 msgstr ""
 
@@ -19448,9 +19445,6 @@ msgstr ""
 msgid "Label actions dropdown"
 msgstr ""
 
-msgid "Label lists show all issues with the selected label."
-msgstr ""
-
 msgid "Label priority"
 msgstr ""
 
@@ -21524,9 +21518,6 @@ msgid "Milestone due date"
 msgstr ""
 
 msgid "Milestone lists not available with your current license"
-msgstr ""
-
-msgid "Milestone lists show all issues from the selected milestone."
 msgstr ""
 
 msgid "MilestoneCombobox|An error occurred while searching for milestones"
@@ -39960,6 +39951,9 @@ msgid "must be greater than start date"
 msgstr ""
 
 msgid "must be inside the fork network"
+msgstr ""
+
+msgid "must be less than the limit of %{tag_limit} tags"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"

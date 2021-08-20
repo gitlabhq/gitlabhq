@@ -739,6 +739,22 @@ module Ci
 
           include_examples 'handles runner assignment'
         end
+
+        context 'with ci_queueing_denormalize_tags_information enabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_tags_information: true)
+          end
+
+          include_examples 'handles runner assignment'
+        end
+
+        context 'with ci_queueing_denormalize_tags_information disabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_tags_information: false)
+          end
+
+          include_examples 'handles runner assignment'
+        end
       end
 
       context 'when not using pending builds table' do

@@ -17,6 +17,8 @@ RSpec.describe 'User adds lists', :js do
   let_it_be(:project_label) { create(:label, project: project) }
   let_it_be(:group_backlog_list) { create(:backlog_list, board: group_board) }
   let_it_be(:project_backlog_list) { create(:backlog_list, board: project_board) }
+  let_it_be(:backlog) { create(:group_label, group: group, name: 'Backlog') }
+  let_it_be(:closed) { create(:group_label, group: group, name: 'Closed') }
 
   let_it_be(:issue) { create(:labeled_issue, project: project, labels: [group_label, project_label]) }
 
@@ -25,15 +27,11 @@ RSpec.describe 'User adds lists', :js do
     group.add_owner(user)
   end
 
-  where(:board_type, :graphql_board_lists_enabled, :board_new_list_enabled) do
-    :project | true  | true
-    :project | false | true
-    :project | true  | false
-    :project | false | false
-    :group   | true  | true
-    :group   | false | true
-    :group   | true  | false
-    :group   | false | false
+  where(:board_type, :graphql_board_lists_enabled) do
+    :project | true
+    :project | false
+    :group   | true
+    :group   | false
   end
 
   with_them do
@@ -43,8 +41,7 @@ RSpec.describe 'User adds lists', :js do
       set_cookie('sidebar_collapsed', 'true')
 
       stub_feature_flags(
-        graphql_board_lists: graphql_board_lists_enabled,
-        board_new_list: board_new_list_enabled
+        graphql_board_lists: graphql_board_lists_enabled
       )
 
       if board_type == :project
@@ -57,39 +54,44 @@ RSpec.describe 'User adds lists', :js do
     end
 
     it 'creates new column for label containing labeled issue' do
-      click_button button_text(board_new_list_enabled)
+      click_button 'Create list'
       wait_for_all_requests
 
-      select_label(board_new_list_enabled, group_label)
+      select_label(group_label)
 
       wait_for_all_requests
 
       expect(page).to have_selector('.board', text: group_label.title)
       expect(find('.board:nth-child(2) .board-card')).to have_content(issue.title)
     end
-  end
 
-  def select_label(board_new_list_enabled, label)
-    if board_new_list_enabled
-      click_button 'Select a label'
+    it 'creates new list for Backlog and closed labels' do
+      click_button 'Create list'
+      wait_for_requests
 
-      find('label', text: label.title).click
+      select_label(backlog)
 
-      click_button 'Add to board'
+      click_button 'Create list'
+      wait_for_requests
 
-      wait_for_all_requests
-    else
-      page.within('.dropdown-menu-issues-board-new') do
-        click_link label.title
-      end
+      select_label(closed)
+
+      wait_for_requests
+
+      expect(page).to have_selector('.board', text: closed.title)
+      expect(find('.board:nth-child(2) .board-header')).to have_content(backlog.title)
+      expect(find('.board:nth-child(3) .board-header')).to have_content(closed.title)
+      expect(find('.board:nth-child(4) .board-header')).to have_content('Closed')
     end
   end
 
-  def button_text(board_new_list_enabled)
-    if board_new_list_enabled
-      'Create list'
-    else
-      'Add list'
-    end
+  def select_label(label)
+    click_button 'Select a label'
+
+    find('label', text: label.title).click
+
+    click_button 'Add to board'
+
+    wait_for_all_requests
   end
 end

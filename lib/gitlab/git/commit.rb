@@ -116,13 +116,9 @@ module Gitlab
           return [] if Gitlab::Git.blank_ref?(base) || Gitlab::Git.blank_ref?(head)
 
           wrapped_gitaly_errors do
-            if Feature.enabled?(:between_uses_list_commits, default_enabled: :yaml)
-              revisions = [head, "^#{base}"] # base..head
+            revisions = [head, "^#{base}"] # base..head
 
-              repo.gitaly_commit_client.list_commits(revisions, reverse: true)
-            else
-              repo.gitaly_commit_client.between(base, head)
-            end
+            repo.gitaly_commit_client.list_commits(revisions, reverse: true)
           end
         end
 

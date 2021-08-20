@@ -66,7 +66,7 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
             pipeline.touch
           end
         end
-      end.to raise_error /Cross-database data modification queries/
+      end.to raise_error /Cross-database data modification/
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
       context 'when data modification happens in a transaction' do
         it 'raises error' do
           Project.transaction do
-            expect { run_queries }.to raise_error /Cross-database data modification queries/
+            expect { run_queries }.to raise_error /Cross-database data modification/
           end
         end
 
@@ -93,7 +93,7 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
             Project.transaction(requires_new: true) do
               project.touch
               Project.transaction(requires_new: true) do
-                expect { pipeline.touch }.to raise_error /Cross-database data modification queries/
+                expect { pipeline.touch }.to raise_error /Cross-database data modification/
               end
             end
           end
@@ -127,7 +127,7 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
           ApplicationRecord.transaction do
             create(:ci_pipeline)
           end
-        end.to raise_error /Cross-database data modification queries/
+        end.to raise_error /Cross-database data modification/
       end
 
       it 'skips raising error on factory creation' do

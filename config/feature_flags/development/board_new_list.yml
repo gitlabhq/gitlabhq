@@ -1,8 +1,0 @@
----
-name: board_new_list
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52061
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299366
-milestone: '13.8'
-type: development
-group: group::project management
-default_enabled: true

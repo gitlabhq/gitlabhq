@@ -34,7 +34,7 @@ RSpec.describe "User views issues" do
           .and have_content(open_issue2.title)
           .and have_no_content(closed_issue.title)
           .and have_content(moved_open_issue.title)
-          .and have_no_selector(".js-new-board-list")
+          .and have_no_content('Create list')
       end
 
       it "opens issues by label" do
@@ -65,7 +65,7 @@ RSpec.describe "User views issues" do
           .and have_no_content(open_issue1.title)
           .and have_no_content(open_issue2.title)
           .and have_no_content(moved_open_issue.title)
-          .and have_no_selector(".js-new-board-list")
+          .and have_no_content('Create list')
       end
 
       include_examples "opens issue from list" do
@@ -87,7 +87,7 @@ RSpec.describe "User views issues" do
           .and have_content(open_issue2.title)
           .and have_content(moved_open_issue.title)
           .and have_no_content('CLOSED (MOVED)')
-          .and have_no_selector(".js-new-board-list")
+          .and have_no_content('Create list')
       end
 
       include_examples "opens issue from list" do

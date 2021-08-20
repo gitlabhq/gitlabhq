@@ -69,6 +69,11 @@ export default {
       type: String,
       required: true,
     },
+    commitSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   apollo: {
     appStatus: {
@@ -110,7 +115,7 @@ export default {
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
       <ci-editor-header />
-      <text-editor :value="ciFileContent" v-on="$listeners" />
+      <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="$listeners" />
     </editor-tab>
     <editor-tab
       class="gl-mb-3"

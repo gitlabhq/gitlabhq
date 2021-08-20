@@ -42,14 +42,11 @@ describe('Pipeline Editor | Text editor component', () => {
         defaultBranch: mockDefaultBranch,
         glFeatures,
       },
+      propsData: {
+        commitSha: mockCommitSha,
+      },
       attrs: {
         value: mockCiYml,
-      },
-      // Simulate graphQL client query result
-      data() {
-        return {
-          commitSha: mockCommitSha,
-        };
       },
       listeners: {
         [EDITOR_READY_EVENT]: editorReadyListener,

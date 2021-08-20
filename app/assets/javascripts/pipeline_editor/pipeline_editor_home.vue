@@ -25,6 +25,11 @@ export default {
       type: String,
       required: true,
     },
+    commitSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
     isNewCiConfigFile: {
       type: Boolean,
       required: true,
@@ -56,15 +61,22 @@ export default {
     <pipeline-editor-file-nav v-on="$listeners" />
     <pipeline-editor-header
       :ci-config-data="ciConfigData"
+      :commit-sha="commitSha"
       :is-new-ci-config-file="isNewCiConfigFile"
     />
     <pipeline-editor-tabs
       :ci-config-data="ciConfigData"
       :ci-file-content="ciFileContent"
+      :commit-sha="commitSha"
       v-on="$listeners"
       @set-current-tab="setCurrentTab"
     />
-    <commit-section v-if="showCommitForm" :ci-file-content="ciFileContent" v-on="$listeners" />
+    <commit-section
+      v-if="showCommitForm"
+      :ci-file-content="ciFileContent"
+      :commit-sha="commitSha"
+      v-on="$listeners"
+    />
     <pipeline-editor-drawer v-if="showPipelineDrawer" />
   </div>
 </template>

@@ -2548,8 +2548,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/views/projects/settings/operations/_status_page.html.haml'
     - 'ee/app/views/projects/settings/repository/_protected_branches.html.haml'
     - 'ee/app/views/projects/sidebar/_repository_locked_files.html.haml'
-    - 'ee/app/views/shared/issuable/_board_create_list_dropdown.html.haml'
-    - 'ee/app/views/shared/issuable/_board_create_list_dropdown.html.haml'
     - 'ee/app/views/shared/issuable/_group_bulk_update_sidebar.html.haml'
     - 'ee/app/views/shared/issuable/form/_default_templates.html.haml'
     - 'ee/app/views/shared/labels/_create_label_help_text.html.haml'

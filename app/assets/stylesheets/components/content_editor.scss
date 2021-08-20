@@ -2,7 +2,7 @@
   td,
   th,
   li {
-    :only-child {
+    :first-child {
       margin-bottom: 0 !important;
     }
   }

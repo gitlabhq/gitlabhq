@@ -85,7 +85,7 @@ module Gitlab
             description: 'Retry configuration for this job.',
             inherit: true
 
-          entry :tags, ::Gitlab::Config::Entry::ArrayOfStrings,
+          entry :tags, Entry::Tags,
             description: 'Set the tags.',
             inherit: true
 

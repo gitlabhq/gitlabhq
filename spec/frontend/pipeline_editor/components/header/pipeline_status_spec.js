@@ -27,13 +27,11 @@ describe('Pipeline Status', () => {
     wrapper = shallowMount(PipelineStatus, {
       localVue,
       apolloProvider: mockApollo,
+      propsData: {
+        commitSha: mockCommitSha,
+      },
       provide: mockProvide,
       stubs: { GlLink, GlSprintf },
-      data() {
-        return {
-          commitSha: mockCommitSha,
-        };
-      },
     });
   };
 

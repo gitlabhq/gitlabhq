@@ -4,11 +4,23 @@ require 'spec_helper'
 
 RSpec.describe 'Issues Feed' do
   describe 'GET /issues' do
-    let_it_be_with_reload(:user) { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
-    let_it_be(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:issue) { create(:issue, author: user, assignees: [assignee], project: project, due_date: Date.today) }
+    let_it_be_with_reload(:user) do
+      user = create(:user, email: 'private1@example.com')
+      public_email = create(:email, :confirmed, user: user, email: 'public1@example.com')
+      user.update!(public_email: public_email.email)
+      user
+    end
+
+    let_it_be(:assignee) do
+      user = create(:user, email: 'private2@example.com')
+      public_email = create(:email, :confirmed, user: user, email: 'public2@example.com')
+      user.update!(public_email: public_email.email)
+      user
+    end
+
+    let_it_be(:group)    { create(:group) }
+    let_it_be(:project)  { create(:project) }
+    let_it_be(:issue)    { create(:issue, author: user, assignees: [assignee], project: project, due_date: Date.today) }
     let_it_be(:issuable) { issue } # "alias" for shared examples
 
     before_all do

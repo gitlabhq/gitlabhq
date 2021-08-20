@@ -3,7 +3,6 @@ import { GlButton, GlIcon, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
-import getCommitSha from '~/pipeline_editor/graphql/queries/client/commit_sha.graphql';
 import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
 import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.graphql';
 import {
@@ -33,10 +32,14 @@ export default {
     GlSprintf,
   },
   inject: ['projectFullPath'],
-  apollo: {
+  props: {
     commitSha: {
-      query: getCommitSha,
+      type: String,
+      required: false,
+      default: '',
     },
+  },
+  apollo: {
     pipelineEtag: {
       query: getPipelineEtag,
     },
@@ -51,7 +54,7 @@ export default {
           sha: this.commitSha,
         };
       },
-      update: (data) => {
+      update(data) {
         const { id, commitPath = '', detailedStatus = {} } = data.project?.pipeline || {};
 
         return {
@@ -59,6 +62,11 @@ export default {
           commitPath,
           detailedStatus,
         };
+      },
+      result(res) {
+        if (res.data?.project?.pipeline) {
+          this.hasError = false;
+        }
       },
       error() {
         this.hasError = true;
@@ -68,7 +76,6 @@ export default {
   },
   data() {
     return {
-      commitSha: '',
       hasError: false,
     };
   },
@@ -84,7 +91,11 @@ export default {
       // (e.g. pipeline is null during fetch when the pipeline hasn't been
       // triggered yet), we can just show the loading state until the pipeline
       // details are ready to be fetched
-      return this.$apollo.queries.pipeline.loading || (!this.hasPipelineData && !this.hasError);
+      return (
+        this.$apollo.queries.pipeline.loading ||
+        this.commitSha.length === 0 ||
+        (!this.hasPipelineData && !this.hasError)
+      );
     },
     shortSha() {
       return truncateSha(this.commitSha);

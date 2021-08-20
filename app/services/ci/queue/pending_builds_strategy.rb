@@ -17,11 +17,19 @@ module Ci
       end
 
       def builds_matching_tag_ids(relation, ids)
-        relation.merge(CommitStatus.matches_tag_ids(ids, table: 'ci_pending_builds', column: 'build_id'))
+        if ::Feature.enabled?(:ci_queueing_denormalize_tags_information, runner, default_enabled: :yaml)
+          relation.where('tag_ids <@ ARRAY[?]::int[]', runner.tags_ids)
+        else
+          relation.merge(CommitStatus.matches_tag_ids(ids, table: 'ci_pending_builds', column: 'build_id'))
+        end
       end
 
       def builds_with_any_tags(relation)
-        relation.merge(CommitStatus.with_any_tags(table: 'ci_pending_builds', column: 'build_id'))
+        if ::Feature.enabled?(:ci_queueing_denormalize_tags_information, runner, default_enabled: :yaml)
+          relation.where('cardinality(tag_ids) > 0')
+        else
+          relation.merge(CommitStatus.with_any_tags(table: 'ci_pending_builds', column: 'build_id'))
+        end
       end
 
       def order(relation)

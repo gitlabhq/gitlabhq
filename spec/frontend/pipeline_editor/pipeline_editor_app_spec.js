@@ -26,9 +26,10 @@ import {
   mockBlobContentQueryResponseNoCiFile,
   mockCiYml,
   mockCommitSha,
+  mockCommitShaResults,
   mockDefaultBranch,
+  mockEmptyCommitShaResults,
   mockProjectFullPath,
-  mockNewCommitShaResults,
 } from './mock_data';
 
 const localVue = createLocalVue();
@@ -54,7 +55,6 @@ describe('Pipeline editor app component', () => {
   let mockBlobContentData;
   let mockCiConfigData;
   let mockGetTemplate;
-  let mockUpdateCommitSha;
   let mockLatestCommitShaQuery;
   let mockPipelineQuery;
 
@@ -70,6 +70,11 @@ describe('Pipeline editor app component', () => {
         PipelineEditorMessages,
         SourceEditor: MockSourceEditor,
         PipelineEditorEmptyState,
+      },
+      data() {
+        return {
+          commitSha: '',
+        };
       },
       mocks: {
         $apollo: {
@@ -96,18 +101,7 @@ describe('Pipeline editor app component', () => {
       [getPipelineQuery, mockPipelineQuery],
     ];
 
-    const resolvers = {
-      Query: {
-        commitSha() {
-          return mockCommitSha;
-        },
-      },
-      Mutation: {
-        updateCommitSha: mockUpdateCommitSha,
-      },
-    };
-
-    mockApollo = createMockApollo(handlers, resolvers);
+    mockApollo = createMockApollo(handlers);
 
     const options = {
       localVue,
@@ -137,7 +131,6 @@ describe('Pipeline editor app component', () => {
     mockBlobContentData = jest.fn();
     mockCiConfigData = jest.fn();
     mockGetTemplate = jest.fn();
-    mockUpdateCommitSha = jest.fn();
     mockLatestCommitShaQuery = jest.fn();
     mockPipelineQuery = jest.fn();
   });
@@ -159,11 +152,16 @@ describe('Pipeline editor app component', () => {
     beforeEach(() => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
       mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
+      mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
     });
 
     describe('when file exists', () => {
       beforeEach(async () => {
         await createComponentWithApollo();
+
+        jest
+          .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
+          .mockImplementation(jest.fn());
       });
 
       it('shows pipeline editor home component', () => {
@@ -181,16 +179,30 @@ describe('Pipeline editor app component', () => {
           sha: mockCommitSha,
         });
       });
+
+      it('does not poll for the commit sha', () => {
+        expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('when no CI config file exists', () => {
-      it('shows an empty state and does not show editor home component', async () => {
+      beforeEach(async () => {
         mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
         await createComponentWithApollo();
 
+        jest
+          .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
+          .mockImplementation(jest.fn());
+      });
+
+      it('shows an empty state and does not show editor home component', async () => {
         expect(findEmptyState().exists()).toBe(true);
         expect(findAlert().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(false);
+      });
+
+      it('does not poll for the commit sha', () => {
+        expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(0);
       });
 
       describe('because of a fetching error', () => {
@@ -230,6 +242,7 @@ describe('Pipeline editor app component', () => {
     describe('when landing on the empty state with feature flag on', () => {
       it('user can click on CTA button and see an empty editor', async () => {
         mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
+        mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
 
         await createComponentWithApollo({
           provide: {
@@ -254,9 +267,9 @@ describe('Pipeline editor app component', () => {
       const updateSuccessMessage = 'Your changes have been successfully committed.';
 
       describe('and the commit mutation succeeds', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           window.scrollTo = jest.fn();
-          createComponent();
+          await createComponentWithApollo();
 
           findEditorHome().vm.$emit('commit', { type: COMMIT_SUCCESS });
         });
@@ -268,7 +281,32 @@ describe('Pipeline editor app component', () => {
         it('scrolls to the top of the page to bring attention to the confirmation message', () => {
           expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
         });
+
+        it('polls for commit sha while pipeline data is not yet available', async () => {
+          jest
+            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
+            .mockImplementation(jest.fn());
+
+          // simulate updating current branch (which triggers commitSha refetch)
+          // while pipeline data is not yet available
+          mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
+          await wrapper.vm.$apollo.queries.commitSha.refetch();
+
+          expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(1);
+        });
+
+        it('stops polling for commit sha when pipeline data is available', async () => {
+          jest
+            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'stopPolling')
+            .mockImplementation(jest.fn());
+
+          mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
+          await wrapper.vm.$apollo.queries.commitSha.refetch();
+
+          expect(wrapper.vm.$apollo.queries.commitSha.stopPolling).toHaveBeenCalledTimes(1);
+        });
       });
+
       describe('and the commit mutation fails', () => {
         const commitFailedReasons = ['Commit failed'];
 
@@ -320,6 +358,10 @@ describe('Pipeline editor app component', () => {
   });
 
   describe('when refetching content', () => {
+    beforeEach(() => {
+      mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
+    });
+
     it('refetches blob content', async () => {
       await createComponentWithApollo();
       jest
@@ -352,6 +394,7 @@ describe('Pipeline editor app component', () => {
     const originalLocation = window.location.href;
 
     beforeEach(() => {
+      mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
       setWindowLocation('?template=Android');
     });
 
@@ -369,47 +412,6 @@ describe('Pipeline editor app component', () => {
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findTextEditor().exists()).toBe(true);
-    });
-  });
-
-  describe('when updating commit sha', () => {
-    const newCommitSha = mockNewCommitShaResults.data.project.pipelines.nodes[0].sha;
-
-    beforeEach(async () => {
-      mockUpdateCommitSha.mockResolvedValue(newCommitSha);
-      mockLatestCommitShaQuery.mockResolvedValue(mockNewCommitShaResults);
-      await createComponentWithApollo();
-    });
-
-    it('fetches updated commit sha for the new branch', async () => {
-      expect(mockLatestCommitShaQuery).not.toHaveBeenCalled();
-
-      wrapper
-        .findComponent(PipelineEditorHome)
-        .vm.$emit('updateCommitSha', { newBranch: 'new-branch' });
-      await waitForPromises();
-
-      expect(mockLatestCommitShaQuery).toHaveBeenCalledWith({
-        projectPath: mockProjectFullPath,
-        ref: 'new-branch',
-      });
-    });
-
-    it('updates commit sha with the newly fetched commit sha', async () => {
-      expect(mockUpdateCommitSha).not.toHaveBeenCalled();
-
-      wrapper
-        .findComponent(PipelineEditorHome)
-        .vm.$emit('updateCommitSha', { newBranch: 'new-branch' });
-      await waitForPromises();
-
-      expect(mockUpdateCommitSha).toHaveBeenCalled();
-      expect(mockUpdateCommitSha).toHaveBeenCalledWith(
-        expect.any(Object),
-        { commitSha: mockNewCommitShaResults.data.project.pipelines.nodes[0].sha },
-        expect.any(Object),
-        expect.any(Object),
-      );
     });
   });
 });
