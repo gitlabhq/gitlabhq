@@ -90,6 +90,10 @@ Do not use. Instead, use **select** with buttons, links, menu items, and lists.
 
 Do not use when talking about the product or its features. The documentation describes the product as it is today. ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
+## deploy board
+
+Lowercase.
+
 ## Developer
 
 When writing about the Developer role:

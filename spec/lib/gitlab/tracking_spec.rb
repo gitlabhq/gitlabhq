@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Tracking do
       it "delegates to #{klass} destination" do
         other_context = double(:context)
 
-        project = double(:project)
+        project = build_stubbed(:project)
         user = double(:user)
 
         expect(Gitlab::Tracking::StandardContext)

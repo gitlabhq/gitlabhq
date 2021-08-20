@@ -7568,9 +7568,19 @@ Describes a rule for who can approve merge requests.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="approvalruleapprovalsrequired"></a>`approvalsRequired` | [`Int`](#int) | Number of required approvals. |
+| <a id="approvalruleapproved"></a>`approved` | [`Boolean`](#boolean) | Indicates if the rule is satisfied. |
+| <a id="approvalruleapprovedby"></a>`approvedBy` | [`UserCoreConnection`](#usercoreconnection) | List of users defined in the rule that approved the merge request. (see [Connections](#connections)) |
+| <a id="approvalrulecontainshiddengroups"></a>`containsHiddenGroups` | [`Boolean`](#boolean) | Indicates if the rule contains approvers from a hidden group. |
+| <a id="approvalruleeligibleapprovers"></a>`eligibleApprovers` | [`UserCoreConnection`](#usercoreconnection) | List of all users eligible to approve the merge request (defined explicitly and from associated groups). (see [Connections](#connections)) |
+| <a id="approvalrulegroups"></a>`groups` | [`GroupConnection`](#groupconnection) | List of groups added as approvers for the rule. (see [Connections](#connections)) |
 | <a id="approvalruleid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
 | <a id="approvalrulename"></a>`name` | [`String`](#string) | Name of the rule. |
+| <a id="approvalruleoverridden"></a>`overridden` | [`Boolean`](#boolean) | Indicates if the rule was overridden for the merge request. |
+| <a id="approvalrulesection"></a>`section` | [`String`](#string) | Named section of the Code Owners file that the rule applies to. |
+| <a id="approvalrulesourcerule"></a>`sourceRule` | [`ApprovalRule`](#approvalrule) | Source rule used to create the rule. |
 | <a id="approvalruletype"></a>`type` | [`ApprovalRuleType`](#approvalruletype) | Type of the rule. |
+| <a id="approvalruleusers"></a>`users` | [`UserCoreConnection`](#usercoreconnection) | List of users added as approvers for the rule. (see [Connections](#connections)) |
 
 ### `AwardEmoji`
 
@@ -10600,6 +10610,7 @@ Maven metadata.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestallowcollaboration"></a>`allowCollaboration` | [`Boolean`](#boolean) | Indicates if members of the target project can push to the fork. |
+| <a id="mergerequestapprovalstate"></a>`approvalState` | [`MergeRequestApprovalState!`](#mergerequestapprovalstate) | Information relating to rules that must be satisfied to merge this merge request. |
 | <a id="mergerequestapprovalsleft"></a>`approvalsLeft` | [`Int`](#int) | Number of approvals left. |
 | <a id="mergerequestapprovalsrequired"></a>`approvalsRequired` | [`Int`](#int) | Number of approvals required. |
 | <a id="mergerequestapproved"></a>`approved` | [`Boolean!`](#boolean) | Indicates if the merge request has all the required approvals. Returns true if no required approvals are configured. |
@@ -10745,6 +10756,17 @@ Returns [`String!`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreferencefull"></a>`full` | [`Boolean`](#boolean) | Boolean option specifying whether the reference should be returned in full. |
+
+### `MergeRequestApprovalState`
+
+Information relating to rules that must be satisfied to merge this merge request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestapprovalstateapprovalrulesoverwritten"></a>`approvalRulesOverwritten` | [`Boolean`](#boolean) | Indicates if the merge request approval rules are overwritten for the merge request. |
+| <a id="mergerequestapprovalstaterules"></a>`rules` | [`[ApprovalRule!]`](#approvalrule) | List of approval rules associated with the merge request. |
 
 ### `MergeRequestAssignee`
 

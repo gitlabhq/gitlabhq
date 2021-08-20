@@ -338,6 +338,13 @@ describe('Design management index page', () => {
                     __typename: 'DesignVersion',
                     id: expect.anything(),
                     sha: expect.anything(),
+                    createdAt: '',
+                    author: {
+                      __typename: 'UserCore',
+                      id: expect.anything(),
+                      name: '',
+                      avatarUrl: '',
+                    },
                   },
                 },
               },

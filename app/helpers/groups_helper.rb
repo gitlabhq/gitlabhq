@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 module GroupsHelper
-  def group_sidebar_links
-    @group_sidebar_links ||= get_group_sidebar_links
-  end
-
-  def group_sidebar_link?(link)
-    group_sidebar_links.include?(link)
-  end
-
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end
@@ -31,20 +23,6 @@ module GroupsHelper
 
   def can_admin_group_member?(group)
     Ability.allowed?(current_user, :admin_group_member, group)
-  end
-
-  def group_issues_count(state:)
-    IssuesFinder
-      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
-      .execute
-      .count
-  end
-
-  def group_merge_requests_count(state:)
-    MergeRequestsFinder
-      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
-      .execute
-      .count
   end
 
   def group_dependency_proxy_image_prefix(group)
@@ -179,36 +157,6 @@ module GroupsHelper
 
   def multiple_members?(group)
     group.member_count > 1 || group.members_with_parents.count > 1
-  end
-
-  def get_group_sidebar_links
-    links = [:overview, :group_members]
-
-    resources = [:activity, :issues, :boards, :labels, :milestones,
-                 :merge_requests]
-    links += resources.select do |resource|
-      can?(current_user, "read_group_#{resource}".to_sym, @group)
-    end
-
-    # TODO Proper policies, such as `read_group_runners, should be implemented per
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
-    if can?(current_user, :admin_group, @group) && Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
-      links << :runners
-    end
-
-    if can?(current_user, :read_cluster, @group)
-      links << :kubernetes
-    end
-
-    if can?(current_user, :admin_group, @group)
-      links << :settings
-    end
-
-    if can?(current_user, :read_wiki, @group)
-      links << :wiki
-    end
-
-    links
   end
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

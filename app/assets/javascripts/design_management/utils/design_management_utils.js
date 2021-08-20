@@ -85,6 +85,13 @@ export const designUploadOptimisticResponse = (files) => {
         __typename: 'DesignVersion',
         id: -uniqueId(),
         sha: -uniqueId(),
+        createdAt: '',
+        author: {
+          __typename: 'UserCore',
+          id: -uniqueId(),
+          name: '',
+          avatarUrl: '',
+        },
       },
     },
   }));

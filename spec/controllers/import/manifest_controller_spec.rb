@@ -75,16 +75,6 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state do
         expect(json_response.dig("provider_repos", 0, "id")).to eq(repo1[:id])
         expect(json_response.dig("provider_repos", 1, "id")).to eq(repo2[:id])
       end
-
-      it "does not show already added project" do
-        project = create(:project, import_type: 'manifest', namespace: user.namespace, import_status: :finished, import_url: repo1[:url])
-
-        get :status, format: :json
-
-        expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
-        expect(json_response.dig("provider_repos").length).to eq(1)
-        expect(json_response.dig("provider_repos", 0, "id")).not_to eq(repo1[:id])
-      end
     end
 
     context 'when the data is stored via Gitlab::ManifestImport::Metadata' do

@@ -118,8 +118,6 @@ const defaultSerializerConfig = {
   },
 };
 
-const wrapHtmlPayload = (payload) => `<div>${payload}</div>`;
-
 /**
  * A markdown serializer converts arbitrary Markdown content
  * into a ProseMirror document and viceversa. To convert Markdown
@@ -144,15 +142,15 @@ export default ({ render = () => null, serializerConfig = {} } = {}) => ({
   deserialize: async ({ schema, content }) => {
     const html = await render(content);
 
-    if (!html) {
-      return null;
-    }
+    if (!html) return null;
 
     const parser = new DOMParser();
-    const {
-      body: { firstElementChild },
-    } = parser.parseFromString(wrapHtmlPayload(html), 'text/html');
-    const state = ProseMirrorDOMParser.fromSchema(schema).parse(firstElementChild);
+    const { body } = parser.parseFromString(html, 'text/html');
+
+    // append original source as a comment that nodes can access
+    body.append(document.createComment(content));
+
+    const state = ProseMirrorDOMParser.fromSchema(schema).parse(body);
 
     return state.toJSON();
   },

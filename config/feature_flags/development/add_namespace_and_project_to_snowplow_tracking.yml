@@ -1,0 +1,8 @@
+---
+name: add_namespace_and_project_to_snowplow_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68277
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338670
+milestone: '14.3'
+type: development
+group: group::product intelligence
+default_enabled: false

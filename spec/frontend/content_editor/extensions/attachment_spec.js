@@ -76,9 +76,7 @@ describe('content_editor/extensions/attachment', () => {
       const base64EncodedFile = 'data:image/png;base64,Zm9v';
 
       beforeEach(() => {
-        renderMarkdown.mockResolvedValue(
-          loadMarkdownApiResult('project_wiki_attachment_image').body,
-        );
+        renderMarkdown.mockResolvedValue(loadMarkdownApiResult('project_wiki_attachment_image'));
       });
 
       describe('when uploading succeeds', () => {
@@ -153,7 +151,7 @@ describe('content_editor/extensions/attachment', () => {
     });
 
     describe('when the file has a zip (or any other attachment) mime type', () => {
-      const markdownApiResult = loadMarkdownApiResult('project_wiki_attachment_link').body;
+      const markdownApiResult = loadMarkdownApiResult('project_wiki_attachment_link');
 
       beforeEach(() => {
         renderMarkdown.mockResolvedValue(markdownApiResult);

@@ -39,16 +39,10 @@ class Import::GitlabController < Import::BaseController
 
   protected
 
-  # rubocop: disable CodeReuse/ActiveRecord
   override :importable_repos
   def importable_repos
-    repos = client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS)
-
-    already_added_projects_names = already_added_projects.map(&:import_source)
-
-    repos.reject { |repo| already_added_projects_names.include? repo["path_with_namespace"] }
+    client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   override :incompatible_repos
   def incompatible_repos

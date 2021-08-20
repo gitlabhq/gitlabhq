@@ -66,7 +66,7 @@ With GitLab Enterprise Edition, you can also:
 - [Mirror a repository](project/repository/repository_mirroring.md) from elsewhere on your local server.
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](../ci/pipelines/multi_project_pipelines.md).
 - [Lock files](project/file_lock.md) to prevent conflicts.
-- View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](project/deploy_boards.md).
+- View the current health and status of each CI environment running on Kubernetes with [deploy boards](project/deploy_boards.md).
 - Leverage continuous delivery method with [Canary Deployments](project/canary_deployments.md).
 - Scan your code for vulnerabilities and [display them in merge requests](application_security/sast/index.md).
 

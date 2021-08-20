@@ -30,7 +30,7 @@ features such as:
 - Use [role-based or attribute-based access controls](cluster_access.md).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 - Connect GitLab to in-cluster applications using [cluster integrations](../../clusters/integrations.md).
-- Use [Deploy Boards](../deploy_boards.md) to see the health and status of each CI [environment](../../../ci/environments/index.md) running on your Kubernetes cluster.
+- Use [deploy boards](../deploy_boards.md) to see the health and status of each CI [environment](../../../ci/environments/index.md) running on your Kubernetes cluster.
 - Use [Canary deployments](../canary_deployments.md) to update only a portion of your fleet with the latest version of your application.
 - View your [Kubernetes podlogs](kubernetes_pod_logs.md) directly in GitLab.
 - Connect to your cluster through GitLab [web terminals](deploy_to_cluster.md#web-terminals-for-kubernetes-clusters).

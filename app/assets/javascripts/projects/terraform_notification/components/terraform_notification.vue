@@ -3,6 +3,10 @@ import { GlBanner } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { setCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
+import Tracking from '~/tracking';
+import { EVENT_LABEL, DISMISS_EVENT, CLICK_EVENT } from '../constants';
+
+const trackingMixin = Tracking.mixin({ label: EVENT_LABEL });
 
 export default {
   name: 'TerraformNotification',
@@ -16,6 +20,7 @@ export default {
   components: {
     GlBanner,
   },
+  mixins: [trackingMixin],
   inject: ['terraformImagePath', 'bannerDismissedKey'],
   data() {
     return {
@@ -31,6 +36,10 @@ export default {
     handleClose() {
       setCookie(this.bannerDismissedKey, true);
       this.isVisible = false;
+      this.track(DISMISS_EVENT);
+    },
+    buttonClick() {
+      this.track(CLICK_EVENT);
     },
   },
 };
@@ -43,6 +52,7 @@ export default {
       :button-link="docsUrl"
       :svg-path="terraformImagePath"
       variant="promotion"
+      @primary="buttonClick"
       @close="handleClose"
     >
       <p>{{ $options.i18n.description }}</p>

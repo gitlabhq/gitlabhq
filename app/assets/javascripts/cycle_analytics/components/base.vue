@@ -98,12 +98,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'fetchCycleAnalyticsData',
-      'fetchStageData',
-      'setSelectedStage',
-      'setDateRange',
-    ]),
+    ...mapActions(['fetchStageData', 'setSelectedStage', 'setDateRange']),
     handleDateSelect(daysInPast) {
       this.setDateRange(daysInPast);
     },

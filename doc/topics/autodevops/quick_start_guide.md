@@ -244,7 +244,7 @@ you to common environment tasks:
 - **Stop environment** (**{stop}**) - For more information, see
   [Stopping an environment](../../ci/environments/index.md#stop-an-environment)
 
-GitLab displays the [Deploy Board](../../user/project/deploy_boards.md) below the
+GitLab displays the [deploy board](../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your
 Kubernetes cluster, color-coded to show their status. Hovering over a square on
 the deploy board displays the state of the deployment, and selecting the square

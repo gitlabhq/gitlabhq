@@ -11,10 +11,8 @@ describe('content_editor/extensions/code_block_highlight', () => {
   const preElement = () => parsedCodeBlockHtmlFixture.querySelector('pre');
 
   beforeEach(() => {
-    const { html } = loadMarkdownApiResult('code_block');
-
     tiptapEditor = createTestEditor({ extensions: [CodeBlockHighlight] });
-    codeBlockHtmlFixture = html;
+    codeBlockHtmlFixture = loadMarkdownApiResult('code_block');
     parsedCodeBlockHtmlFixture = parseHTML(codeBlockHtmlFixture);
 
     tiptapEditor.commands.setContent(codeBlockHtmlFixture);

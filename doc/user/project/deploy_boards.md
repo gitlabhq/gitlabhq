@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto, reference
 ---
 
-# Deploy Boards **(FREE)**
+# Deploy boards **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to GitLab Free in 13.8.
@@ -16,7 +16,7 @@ type: howto, reference
 >   This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60525) in
 >   GitLab 13.12.
 
-GitLab Deploy Boards offer a consolidated view of the current health and
+GitLab deploy boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
 of the pods in the deployment. Developers and other teammates can view the
 progress and status of a rollout, pod by pod, in the workflow they already use
@@ -28,23 +28,23 @@ environments by using [Auto DevOps](../../topics/autodevops/index.md).
 
 ## Overview
 
-With Deploy Boards you can gain more insight into deploys with benefits such as:
+With deploy boards you can gain more insight into deploys with benefits such as:
 
 - Following a deploy from the start, not just when it's done
 - Watching the rollout of a build across multiple servers
 - Finer state detail (Succeeded, Running, Failed, Pending, Unknown)
 - See [Canary Deployments](canary_deployments.md)
 
-Here's an example of a Deploy Board of the production environment.
+Here's an example of a deploy board of the production environment.
 
-![Deploy Boards landing page](img/deploy_boards_landing_page.png)
+![deploy boards landing page](img/deploy_boards_landing_page.png)
 
 The squares represent pods in your Kubernetes cluster that are associated with
 the given environment. Hovering above each square you can see the state of a
 deploy rolling out. The percentage is the percent of the pods that are updated
 to the latest release.
 
-Since Deploy Boards are tightly coupled with Kubernetes, there is some required
+Since deploy boards are tightly coupled with Kubernetes, there is some required
 knowledge. In particular, you should be familiar with:
 
 - [Kubernetes pods](https://kubernetes.io/docs/concepts/workloads/pods/)
@@ -54,7 +54,7 @@ knowledge. In particular, you should be familiar with:
 
 ## Use cases
 
-Since the Deploy Board is a visual representation of the Kubernetes pods for a
+Since the deploy board is a visual representation of the Kubernetes pods for a
 specific environment, there are a lot of use cases. To name a few:
 
 - You want to promote what's running in staging, to production. You go to the
@@ -73,9 +73,9 @@ specific environment, there are a lot of use cases. To name a few:
   list, find the [Review App](../../ci/review_apps/index.md) you're interested in, and click the
   manual action to deploy it to staging.
 
-## Enabling Deploy Boards
+## Enabling deploy boards
 
-To display the Deploy Boards for a specific [environment](../../ci/environments/index.md) you should:
+To display the deploy boards for a specific [environment](../../ci/environments/index.md) you should:
 
 1. Have [defined an environment](../../ci/environments/index.md) with a deploy stage.
 
@@ -83,7 +83,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
 
    NOTE:
    If you're using OpenShift, ensure that you're using the `Deployment` resource
-   instead of `DeploymentConfiguration`. Otherwise, the Deploy Boards don't render
+   instead of `DeploymentConfiguration`. Otherwise, the deploy boards don't render
    correctly. For more information, read the
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
    and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
@@ -114,17 +114,17 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
 
    If you use GCP to manage clusters, you can see the deployment details in GCP itself by navigating to **Workloads > deployment name > Details**:
 
-   ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
+   ![deploy boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Deployments > Environments**.
 
-Deploy Boards are visible by default. You can explicitly click
+Deploy boards are visible by default. You can explicitly click
 the triangle next to their respective environment name in order to hide them.
 
 ### Example manifest file
 
-The following example is an extract of a Kubernetes manifest deployment file, using the two annotations `app.gitlab.com/env` and `app.gitlab.com/app` to enable the **Deploy Boards**:
+The following example is an extract of a Kubernetes manifest deployment file, using the two annotations `app.gitlab.com/env` and `app.gitlab.com/app` to enable the **deploy boards**:
 
 ```yaml
 apiVersion: apps/v1

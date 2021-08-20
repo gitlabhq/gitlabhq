@@ -732,7 +732,7 @@ the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
 - [Use GitLab CI to deploy to multiple environments (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
 - [Review Apps](../review_apps/index.md): Use dynamic environments to deploy your code for every branch.
-- [Deploy Boards](../../user/project/deploy_boards.md): View the status of your applications running on Kubernetes.
+- [Deploy boards](../../user/project/deploy_boards.md): View the status of your applications running on Kubernetes.
 - [Protected environments](protected_environments.md): Determine who can deploy code to your environments.
 - [Environments Dashboard](../environments/environments_dashboard.md): View a summary of each
   environment's operational health. **(PREMIUM)**

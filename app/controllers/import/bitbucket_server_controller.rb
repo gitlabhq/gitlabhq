@@ -62,16 +62,10 @@ class Import::BitbucketServerController < Import::BaseController
 
   protected
 
-  # rubocop: disable CodeReuse/ActiveRecord
   override :importable_repos
   def importable_repos
-    # Use the import URL to filter beyond what BaseService#find_already_added_projects
-    already_added_projects = filter_added_projects('bitbucket_server', bitbucket_repos.map(&:browse_url))
-    already_added_projects_names = already_added_projects.map(&:import_source)
-
-    bitbucket_repos.reject { |repo| already_added_projects_names.include?(repo.browse_url) || !repo.valid? }
+    bitbucket_repos.filter { |repo| repo.valid? }
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   override :incompatible_repos
   def incompatible_repos
@@ -89,12 +83,6 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   private
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def filter_added_projects(import_type, import_sources)
-    current_user.created_projects.where(import_type: import_type, import_source: import_sources).with_import_state
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def client
     @client ||= BitbucketServer::Client.new(credentials)

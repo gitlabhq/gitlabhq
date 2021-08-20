@@ -3,10 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user, developer_projects: [project]) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, developer_projects: [project]) }
+
   let(:pipeline) { Ci::Pipeline.new }
-  let(:step) { described_class.new(pipeline, command) }
+  let(:bridge) { nil }
+
+  let(:variables_attributes) do
+    [{ key: 'first', secret_value: 'world' },
+     { key: 'second', secret_value: 'second_world' }]
+  end
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -20,7 +26,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations do
       merge_request: nil,
       project: project,
       current_user: user,
-      bridge: bridge)
+      bridge: bridge,
+      variables_attributes: variables_attributes)
+  end
+
+  let(:step) { described_class.new(pipeline, command) }
+
+  shared_examples 'breaks the chain' do
+    it 'returns true' do
+      step.perform!
+
+      expect(step.break?).to be true
+    end
+  end
+
+  shared_examples 'does not break the chain' do
+    it 'returns false' do
+      step.perform!
+
+      expect(step.break?).to be false
+    end
   end
 
   context 'when a bridge is passed in to the pipeline creation' do
@@ -37,26 +62,83 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations do
       )
     end
 
-    it 'never breaks the chain' do
-      step.perform!
-
-      expect(step.break?).to eq(false)
-    end
+    it_behaves_like 'does not break the chain'
   end
 
   context 'when a bridge is not passed in to the pipeline creation' do
-    let(:bridge) { nil }
-
     it 'leaves the source pipeline empty' do
       step.perform!
 
       expect(pipeline.source_pipeline).to be_nil
     end
 
-    it 'never breaks the chain' do
+    it_behaves_like 'does not break the chain'
+  end
+
+  it 'sets pipeline variables' do
+    step.perform!
+
+    expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
+      .to eq variables_attributes.map(&:with_indifferent_access)
+  end
+
+  context 'when project setting restrict_user_defined_variables is enabled' do
+    before do
+      project.update!(restrict_user_defined_variables: true)
+    end
+
+    context 'when user is developer' do
+      it_behaves_like 'breaks the chain'
+
+      it 'returns an error on variables_attributes', :aggregate_failures do
+        step.perform!
+
+        expect(pipeline.errors.full_messages).to eq(['Insufficient permissions to set pipeline variables'])
+        expect(pipeline.variables).to be_empty
+      end
+
+      context 'when variables_attributes is not specified' do
+        let(:variables_attributes) { nil }
+
+        it_behaves_like 'does not break the chain'
+
+        it 'assigns empty variables' do
+          step.perform!
+
+          expect(pipeline.variables).to be_empty
+        end
+      end
+    end
+
+    context 'when user is maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it_behaves_like 'does not break the chain'
+
+      it 'assigns variables_attributes' do
+        step.perform!
+
+        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
+          .to eq variables_attributes.map(&:with_indifferent_access)
+      end
+    end
+  end
+
+  context 'with duplicate pipeline variables' do
+    let(:variables_attributes) do
+      [{ key: 'first', secret_value: 'world' },
+       { key: 'first', secret_value: 'second_world' }]
+    end
+
+    it_behaves_like 'breaks the chain'
+
+    it 'returns an error for variables_attributes' do
       step.perform!
 
-      expect(step.break?).to eq(false)
+      expect(pipeline.errors.full_messages).to eq(['Duplicate variable name: first'])
+      expect(pipeline.variables).to be_empty
     end
   end
 end

@@ -32,7 +32,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['filter', 'repositories', 'namespaces', 'defaultTargetNamespace']),
+    ...mapState(['filter', 'repositories', 'namespaces', 'defaultTargetNamespace', 'pageInfo']),
     ...mapGetters([
       'isLoading',
       'isImportingAnyRepo',
@@ -43,7 +43,7 @@ export default {
     ]),
 
     pagePaginationStateKey() {
-      return `${this.filter}-${this.repositories.length}`;
+      return `${this.filter}-${this.repositories.length}-${this.pageInfo.page}`;
     },
 
     availableNamespaces() {

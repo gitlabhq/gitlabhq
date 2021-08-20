@@ -6,7 +6,8 @@ import { getJSONFixture } from 'helpers/fixtures';
 export const loadMarkdownApiResult = (testName) => {
   const fixturePathPrefix = `api/markdown/${testName}.json`;
 
-  return getJSONFixture(fixturePathPrefix);
+  const fixture = getJSONFixture(fixturePathPrefix);
+  return fixture.body || fixture.html;
 };
 
 export const loadMarkdownApiExamples = () => {
@@ -15,4 +16,10 @@ export const loadMarkdownApiExamples = () => {
   const apiMarkdownExampleObjects = jsYaml.safeLoad(apiMarkdownYamlText);
 
   return apiMarkdownExampleObjects.map(({ name, context, markdown }) => [name, context, markdown]);
+};
+
+export const loadMarkdownApiExample = (testName) => {
+  return loadMarkdownApiExamples().find(([name, context]) => {
+    return (context ? `${context}_${name}` : name) === testName;
+  })[2];
 };

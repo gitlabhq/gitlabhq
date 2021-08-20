@@ -66,11 +66,21 @@
 - name: thematic_break
   markdown: |-
     ---
-- name: bullet_list
+- name: bullet_list_style_1
   markdown: |-
     * list item 1
     * list item 2
       * embedded list item 3
+- name: bullet_list_style_2
+  markdown: |-
+    - list item 1
+    - list item 2
+      * embedded list item 3
+- name: bullet_list_style_3
+  markdown: |-
+    + list item 1
+    + list item 2
+      - embedded list item 3
 - name: ordered_list
   markdown: |-
     1. list item 1

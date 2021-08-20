@@ -26,7 +26,7 @@ percentage of users are affected and the change can either be fixed or quickly
 reverted.
 
 Leveraging [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments), visualize your canary
-deployments right inside the [Deploy Board](deploy_boards.md), without the need to leave GitLab.
+deployments right inside the [deploy board](deploy_boards.md), without the need to leave GitLab.
 
 ## Use cases
 
@@ -47,9 +47,9 @@ this document.
 
 ## Enabling Canary Deployments
 
-Canary deployments require that you properly configure Deploy Boards:
+Canary deployments require that you properly configure deploy boards:
 
-1. Follow the steps to [enable Deploy Boards](deploy_boards.md#enabling-deploy-boards).
+1. Follow the steps to [enable deploy boards](deploy_boards.md#enabling-deploy-boards).
 1. To track canary deployments you need to label your Kubernetes deployments and
    pods with `track: canary`. To get started quickly, you can use the [Auto Deploy](../../topics/autodevops/stages.md#auto-deploy)
    template for canary deployments that GitLab provides.
@@ -61,13 +61,13 @@ This allows GitLab to discover whether a deployment is stable or canary (tempora
 
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Pipelines > Environments**.
-As the pipeline executes, Deploy Boards clearly mark canary pods, enabling
+As the pipeline executes, deploy boards clearly mark canary pods, enabling
 quick and easy insight into the status of each environment and deployment.
 
-Canary deployments are marked with a yellow dot in the Deploy Board so that you
+Canary deployments are marked with a yellow dot in the deploy board so that you
 can easily notice them.
 
-![Canary deployments on Deploy Board](img/deploy_boards_canary_deployments.png)
+![Canary deployments on deploy board](img/deploy_boards_canary_deployments.png)
 
 ### Advanced traffic control with Canary Ingress
 
@@ -104,17 +104,17 @@ Here's an example setup flow from scratch:
 
 #### How to check the current traffic weight on a Canary Ingress
 
-1. Visit the [Deploy Board](../../user/project/deploy_boards.md).
+1. Visit the [deploy board](../../user/project/deploy_boards.md).
 1. View the current weights on the right.
 
    ![Rollout Status Canary Ingress](img/canary_weight.png)
 
 #### How to change the traffic weight on a Canary Ingress
 
-You can change the traffic weight within your environment's Deploy Board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
+You can change the traffic weight within your environment's deploy board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
 or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).
 
-To use your [Deploy Board](../../user/project/deploy_boards.md):
+To use your [deploy board](../../user/project/deploy_boards.md):
 
 1. Navigate to **Deployments > Environments** for your project.
 1. Set the new weight with the dropdown on the right side.

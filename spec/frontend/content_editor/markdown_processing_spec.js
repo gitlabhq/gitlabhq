@@ -9,8 +9,9 @@ describe('markdown processing', () => {
     'correctly handles %s (context: %s)',
     async (name, context, markdown) => {
       const testName = context ? `${context}_${name}` : name;
-      const { html, body } = loadMarkdownApiResult(testName);
-      const contentEditor = createContentEditor({ renderMarkdown: () => html || body });
+      const contentEditor = createContentEditor({
+        renderMarkdown: () => loadMarkdownApiResult(testName),
+      });
       await contentEditor.setSerializedContent(markdown);
 
       expect(contentEditor.getSerializedContent()).toBe(markdown);

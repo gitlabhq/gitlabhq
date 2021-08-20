@@ -267,61 +267,6 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#group_sidebar_links' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be(:user) { create(:user) }
-
-    before do
-      group.add_owner(user)
-      allow(helper).to receive(:current_user) { user }
-      allow(helper).to receive(:can?) { |*args| Ability.allowed?(*args) }
-      helper.instance_variable_set(:@group, group)
-    end
-
-    it 'returns all the expected links' do
-      links = [
-        :overview, :activity, :issues, :labels, :milestones, :merge_requests,
-        :runners, :group_members, :settings
-      ]
-
-      expect(helper.group_sidebar_links).to include(*links)
-    end
-
-    it 'excludes runners when the user cannot admin the group' do
-      expect(helper).to receive(:current_user) { user }
-      # TODO Proper policies, such as `read_group_runners, should be implemented per
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
-      expect(helper).to receive(:can?).twice.with(user, :admin_group, group) { false }
-
-      expect(helper.group_sidebar_links).not_to include(:runners)
-    end
-
-    it 'excludes runners when the feature "runner_list_group_view_vue_ui" is disabled' do
-      stub_feature_flags(runner_list_group_view_vue_ui: false)
-
-      expect(helper.group_sidebar_links).not_to include(:runners)
-    end
-
-    it 'excludes settings when the user can admin the group' do
-      expect(helper).to receive(:current_user) { user }
-      expect(helper).to receive(:can?).twice.with(user, :admin_group, group) { false }
-
-      expect(helper.group_sidebar_links).not_to include(:settings)
-    end
-
-    it 'excludes cross project features when the user cannot read cross project' do
-      cross_project_features = [:activity, :issues, :labels, :milestones,
-                                :merge_requests]
-
-      allow(Ability).to receive(:allowed?).and_call_original
-      cross_project_features.each do |feature|
-        expect(Ability).to receive(:allowed?).with(user, "read_group_#{feature}".to_sym, group) { false }
-      end
-
-      expect(helper.group_sidebar_links).not_to include(*cross_project_features)
-    end
-  end
-
   describe '#parent_group_options' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:group) { create(:group, name: 'group') }

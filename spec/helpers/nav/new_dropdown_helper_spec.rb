@@ -99,7 +99,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has project menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'GitLab',
+              title: _('GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_project',
                 title: 'New project/repository',
@@ -117,7 +117,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has group menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'GitLab',
+              title: _('GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_group',
                 title: 'New group',
@@ -135,7 +135,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has new snippet menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'GitLab',
+              title: _('GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_snippet',
                 title: 'New snippet',

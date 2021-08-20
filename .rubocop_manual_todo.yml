@@ -2113,6 +2113,7 @@ Gitlab/NamespacedClass:
     - 'ee/app/models/weight_note.rb'
     - 'ee/app/policies/approval_merge_request_rule_policy.rb'
     - 'ee/app/policies/approval_project_rule_policy.rb'
+    - 'ee/app/policies/approval_state_policy.rb'
     - 'ee/app/policies/dast_scanner_profile_policy.rb'
     - 'ee/app/policies/dast_site_profile_policy.rb'
     - 'ee/app/policies/dast_site_validation_policy.rb'

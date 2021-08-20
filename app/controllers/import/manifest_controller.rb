@@ -41,7 +41,7 @@ class Import::ManifestController < Import::BaseController
   end
 
   def create
-    repository = repositories.find do |project|
+    repository = importable_repos.find do |project|
       project[:id] == params[:repo_id].to_i
     end
 
@@ -56,14 +56,10 @@ class Import::ManifestController < Import::BaseController
 
   protected
 
-  # rubocop: disable CodeReuse/ActiveRecord
   override :importable_repos
   def importable_repos
-    already_added_projects_names = already_added_projects.pluck(:import_url)
-
-    repositories.reject { |repo| already_added_projects_names.include?(repo[:url]) }
+    @importable_repos ||= manifest_import_metadata.repositories
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   override :incompatible_repos
   def incompatible_repos
@@ -88,7 +84,7 @@ class Import::ManifestController < Import::BaseController
   private
 
   def ensure_import_vars
-    unless group && repositories.present?
+    unless group && importable_repos.present?
       redirect_to(new_import_manifest_path)
     end
   end
@@ -101,10 +97,6 @@ class Import::ManifestController < Import::BaseController
 
   def manifest_import_metadata
     @manifest_import_status ||= Gitlab::ManifestImport::Metadata.new(current_user, fallback: session)
-  end
-
-  def repositories
-    @repositories ||= manifest_import_metadata.repositories
   end
 
   def find_jobs

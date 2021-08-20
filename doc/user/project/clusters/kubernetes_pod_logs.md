@@ -46,15 +46,15 @@ a [metrics dashboard](../../../operations/metrics/index.md) and select **View lo
    [permissions](../../permissions.md#project-members-permissions) in the project.
 1. To navigate to the **Log Explorer** from the sidebar menu, go to **Monitor > Logs**
    ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.).
-1. To navigate to the **Log Explorer** from a specific pod on a [Deploy Board](../deploy_boards.md):
+1. To navigate to the **Log Explorer** from a specific pod on a [deploy board](../deploy_boards.md):
 
    1. Go to **Deployments > Environments** and find the environment
       which contains the desired pod, like `production`.
    1. On the **Environments** page, you should see the status of the environment's
-      pods with [Deploy Boards](../deploy_boards.md).
+      pods with [deploy boards](../deploy_boards.md).
    1. When mousing over the list of pods, GitLab displays a tooltip with the exact pod name
       and status.
-      ![Deploy Boards pod list](img/pod_logs_deploy_board.png)
+      ![deploy boards pod list](img/pod_logs_deploy_board.png)
    1. Click on the desired pod to display the **Log Explorer**.
 
 ### Logs view

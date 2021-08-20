@@ -101,7 +101,13 @@ describe('optimistic responses', () => {
             discussions: { __typename: 'DesignDiscussion', nodes: [] },
             versions: {
               __typename: 'DesignVersionConnection',
-              nodes: { __typename: 'DesignVersion', id: -1, sha: -1 },
+              nodes: {
+                __typename: 'DesignVersion',
+                id: expect.anything(),
+                sha: expect.anything(),
+                createdAt: '',
+                author: { __typename: 'UserCore', avatarUrl: '', name: '', id: expect.anything() },
+              },
             },
           },
         ],

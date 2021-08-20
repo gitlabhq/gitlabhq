@@ -577,9 +577,9 @@ panel_groups:
 
 See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard) for the maximum number of displayed projects.
 
-## Environment data on Deploy Boards
+## Environment data on deploy boards
 
-[Deploy Boards](../user/project/deploy_boards.md) load information from Kubernetes about
+[Deploy boards](../user/project/deploy_boards.md) load information from Kubernetes about
 Pods and Deployments. However, data over 10 MB for a certain environment read from
 Kubernetes won't be shown.
 

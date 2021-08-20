@@ -86,6 +86,11 @@ describe('WebIDE utils', () => {
       expect(isTextFile({ name: 'abc.dat', content: '' })).toBe(true);
       expect(isTextFile({ name: 'abc.dat', content: '  ' })).toBe(true);
     });
+
+    it('returns true if there is a `binary` property already set on the file object', () => {
+      expect(isTextFile({ name: 'abc.txt', content: '' })).toBe(true);
+      expect(isTextFile({ name: 'abc.txt', content: '', binary: true })).toBe(false);
+    });
   });
 
   describe('trimPathComponents', () => {

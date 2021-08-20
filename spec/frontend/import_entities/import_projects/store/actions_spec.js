@@ -85,7 +85,7 @@ describe('import_projects store actions', () => {
 
     afterEach(() => mock.restore());
 
-    it('commits SET_PAGE, REQUEST_REPOS, RECEIVE_REPOS_SUCCESS mutations on a successful request', () => {
+    it('commits REQUEST_REPOS, SET_PAGE, RECEIVE_REPOS_SUCCESS mutations on a successful request', () => {
       mock.onGet(MOCK_ENDPOINT).reply(200, payload);
 
       return testAction(
@@ -93,8 +93,8 @@ describe('import_projects store actions', () => {
         null,
         localState,
         [
-          { type: SET_PAGE, payload: 1 },
           { type: REQUEST_REPOS },
+          { type: SET_PAGE, payload: 1 },
           {
             type: RECEIVE_REPOS_SUCCESS,
             payload: convertObjectPropsToCamelCase(payload, { deep: true }),
@@ -104,19 +104,14 @@ describe('import_projects store actions', () => {
       );
     });
 
-    it('commits SET_PAGE, REQUEST_REPOS, RECEIVE_REPOS_ERROR and SET_PAGE again mutations on an unsuccessful request', () => {
+    it('commits REQUEST_REPOS, RECEIVE_REPOS_ERROR mutations on an unsuccessful request', () => {
       mock.onGet(MOCK_ENDPOINT).reply(500);
 
       return testAction(
         fetchRepos,
         null,
         localState,
-        [
-          { type: SET_PAGE, payload: 1 },
-          { type: REQUEST_REPOS },
-          { type: SET_PAGE, payload: 0 },
-          { type: RECEIVE_REPOS_ERROR },
-        ],
+        [{ type: REQUEST_REPOS }, { type: RECEIVE_REPOS_ERROR }],
         [],
       );
     });
@@ -135,7 +130,7 @@ describe('import_projects store actions', () => {
       expect(requestedUrl).toBe(`${MOCK_ENDPOINT}?page=${localStateWithPage.pageInfo.page + 1}`);
     });
 
-    it('correctly updates current page on an unsuccessful request', () => {
+    it('correctly keeps current page on an unsuccessful request', () => {
       mock.onGet(MOCK_ENDPOINT).reply(500);
       const CURRENT_PAGE = 5;
 
@@ -143,10 +138,7 @@ describe('import_projects store actions', () => {
         fetchRepos,
         null,
         { ...localState, pageInfo: { page: CURRENT_PAGE } },
-        expect.arrayContaining([
-          { type: SET_PAGE, payload: CURRENT_PAGE + 1 },
-          { type: SET_PAGE, payload: CURRENT_PAGE },
-        ]),
+        expect.arrayContaining([]),
         [],
       );
     });
@@ -159,12 +151,7 @@ describe('import_projects store actions', () => {
           fetchRepos,
           null,
           { ...localState, filter: 'filter' },
-          [
-            { type: SET_PAGE, payload: 1 },
-            { type: REQUEST_REPOS },
-            { type: SET_PAGE, payload: 0 },
-            { type: RECEIVE_REPOS_ERROR },
-          ],
+          [{ type: REQUEST_REPOS }, { type: RECEIVE_REPOS_ERROR }],
           [],
         );
 
@@ -183,8 +170,8 @@ describe('import_projects store actions', () => {
           null,
           { ...localState, filter: 'filter' },
           [
-            { type: SET_PAGE, payload: 1 },
             { type: REQUEST_REPOS },
+            { type: SET_PAGE, payload: 1 },
             {
               type: RECEIVE_REPOS_SUCCESS,
               payload: convertObjectPropsToCamelCase(payload, { deep: true }),

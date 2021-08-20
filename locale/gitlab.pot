@@ -15905,6 +15905,12 @@ msgstr ""
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
 msgstr ""
 
+msgid "GroupRoadmap|This quarter"
+msgstr ""
+
+msgid "GroupRoadmap|This year"
+msgstr ""
+
 msgid "GroupRoadmap|To make your epics appear in the roadmap, add start or due dates to them."
 msgstr ""
 
@@ -15915,6 +15921,9 @@ msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your 
 msgstr ""
 
 msgid "GroupRoadmap|To widen your search, change or remove filters; from %{startDate} to %{endDate}."
+msgstr ""
+
+msgid "GroupRoadmap|Within 3 years"
 msgstr ""
 
 msgid "GroupSAML|%{strongOpen}Warning%{strongClose} - Enabling %{linkStart}SSO enforcement%{linkEnd} can reduce security risks."

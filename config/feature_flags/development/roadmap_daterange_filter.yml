@@ -1,0 +1,8 @@
+---
+name: roadmap_daterange_filter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55639
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323917
+milestone: '14.3'
+type: development
+group: group::product planning
+default_enabled: false
