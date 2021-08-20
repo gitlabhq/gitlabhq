@@ -30,7 +30,7 @@ module QA
                   content: <<~EOF
                     test:
                       tags: ["runner-for-#{project.name}"]
-                      script: sleep 10
+                      script: sleep 20
                       only:
                         - merge_requests
                   EOF

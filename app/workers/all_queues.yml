@@ -673,24 +673,6 @@
   :idempotent:
   :tags:
   - :exclude_from_kubernetes
-- :name: deployment:deployments_finished
-  :worker_name: Deployments::FinishedWorker
-  :feature_category: :continuous_delivery
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent:
-  :tags: []
-- :name: deployment:deployments_forward_deployment
-  :worker_name: Deployments::ForwardDeploymentWorker
-  :feature_category: :continuous_delivery
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 3
-  :idempotent:
-  :tags: []
 - :name: deployment:deployments_hooks
   :worker_name: Deployments::HooksWorker
   :feature_category: :continuous_delivery
@@ -708,15 +690,6 @@
   :resource_boundary: :cpu
   :weight: 3
   :idempotent: true
-  :tags: []
-- :name: deployment:deployments_success
-  :worker_name: Deployments::SuccessWorker
-  :feature_category: :continuous_delivery
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent:
   :tags: []
 - :name: deployment:deployments_update_environment
   :worker_name: Deployments::UpdateEnvironmentWorker

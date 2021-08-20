@@ -33,7 +33,8 @@ RSpec.describe DraftNotes::PublishService do
     end
 
     it 'does not skip notification', :sidekiq_might_not_need_inline do
-      expect(Notes::CreateService).to receive(:new).with(project, user, drafts.first.publish_params).and_call_original
+      note_params = drafts.first.publish_params.merge(skip_keep_around_commits: false)
+      expect(Notes::CreateService).to receive(:new).with(project, user, note_params).and_call_original
       expect_next_instance_of(NotificationService) do |notification_service|
         expect(notification_service).to receive(:new_note)
       end
@@ -127,12 +128,17 @@ RSpec.describe DraftNotes::PublishService do
       publish
     end
 
-    context 'capturing diff notes positions' do
+    context 'capturing diff notes positions and keeping around commits' do
       before do
         # Need to execute this to ensure that we'll be able to test creation of
         # DiffNotePosition records as that only happens when the `MergeRequest#merge_ref_head`
         # is present. This service creates that for the specified merge request.
         MergeRequests::MergeToRefService.new(project: project, current_user: user).execute(merge_request)
+
+        # Need to re-stub this and call original as we are stubbing
+        # `Gitlab::Git::KeepAround#execute` in spec_helper for performance reason.
+        # Enabling it here so we can test the Gitaly calls it makes.
+        allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
       end
 
       it 'creates diff_note_positions for diff notes' do
@@ -143,11 +149,26 @@ RSpec.describe DraftNotes::PublishService do
         expect(notes.last.diff_note_positions).to be_any
       end
 
+      it 'keeps around the commits of each published note' do
+        publish
+
+        repository = project.repository
+        notes = merge_request.notes.order(id: :asc)
+
+        notes.first.shas.each do |sha|
+          expect(repository.ref_exists?("refs/keep-around/#{sha}")).to be_truthy
+        end
+
+        notes.last.shas.each do |sha|
+          expect(repository.ref_exists?("refs/keep-around/#{sha}")).to be_truthy
+        end
+      end
+
       it 'does not requests a lot from Gitaly', :request_store do
         # NOTE: This should be reduced as we work on reducing Gitaly calls.
         # Gitaly requests shouldn't go above this threshold as much as possible
         # as it may add more to the Gitaly N+1 issue we are experiencing.
-        expect { publish }.to change { Gitlab::GitalyClient.get_request_count }.by(11)
+        expect { publish }.to change { Gitlab::GitalyClient.get_request_count }.by(21)
       end
     end
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# TODO remove duplication from spec/lib/gitlab/ci/parsers/security/common_spec.rb and spec/lib/gitlab/ci/parsers/security/common_spec.rb
-# See https://gitlab.com/gitlab-org/gitlab/-/issues/336589
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Security::Common do

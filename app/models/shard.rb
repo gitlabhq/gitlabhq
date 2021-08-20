@@ -18,10 +18,6 @@ class Shard < ApplicationRecord
   end
 
   def self.by_name(name)
-    transaction(requires_new: true) do
-      find_or_create_by(name: name)
-    end
-  rescue ActiveRecord::RecordNotUnique
-    retry
+    safe_find_or_create_by(name: name)
   end
 end

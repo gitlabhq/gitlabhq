@@ -33,19 +33,21 @@ RSpec.describe Shard do
       expect(result.name).to eq('foo')
     end
 
-    it 'retries if creation races' do
+    it 'returns existing record if creation races' do
+      shard_created_by_others = double(described_class)
+
       expect(described_class)
-        .to receive(:find_or_create_by)
-        .with(name: 'default')
+        .to receive(:find_by)
+        .with(name: 'new_shard')
+        .and_return(nil, shard_created_by_others)
+
+      expect(described_class)
+        .to receive(:create)
+        .with(name: 'new_shard')
         .and_raise(ActiveRecord::RecordNotUnique, 'fail')
         .once
 
-      expect(described_class)
-        .to receive(:find_or_create_by)
-        .with(name: 'default')
-        .and_call_original
-
-      expect(described_class.by_name('default')).to eq(default_shard)
+      expect(described_class.by_name('new_shard')).to eq(shard_created_by_others)
     end
   end
 end

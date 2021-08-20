@@ -34,22 +34,24 @@ module DraftNotes
 
       created_notes = draft_notes.map do |draft_note|
         draft_note.review = review
-        create_note_from_draft(draft_note, skip_capture_diff_note_position: true)
+        create_note_from_draft(draft_note, skip_capture_diff_note_position: true, skip_keep_around_commits: true)
       end
 
       capture_diff_note_positions(created_notes)
+      keep_around_commits(created_notes)
       draft_notes.delete_all
       set_reviewed
       notification_service.async.new_review(review)
       MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
     end
 
-    def create_note_from_draft(draft, skip_capture_diff_note_position: false)
+    def create_note_from_draft(draft, skip_capture_diff_note_position: false, skip_keep_around_commits: false)
       # Make sure the diff file is unfolded in order to find the correct line
       # codes.
       draft.diff_file&.unfold_diff_lines(draft.original_position)
 
-      note = Notes::CreateService.new(draft.project, draft.author, draft.publish_params).execute(
+      note_params = draft.publish_params.merge(skip_keep_around_commits: skip_keep_around_commits)
+      note = Notes::CreateService.new(draft.project, draft.author, note_params).execute(
         skip_capture_diff_note_position: skip_capture_diff_note_position
       )
 
@@ -84,6 +86,18 @@ module DraftNotes
 
       notes.each do |note|
         capture_service.execute(note.discussion) if note.diff_note? && note.start_of_discussion?
+      end
+    end
+
+    def keep_around_commits(notes)
+      shas = notes.flat_map do |note|
+        note.shas if note.diff_note?
+      end.uniq
+
+      # We are allowing this since gitaly call will be created for each sha and
+      # even though they're unique, there will still be multiple Gitaly calls.
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        project.repository.keep_around(*shas)
       end
     end
   end

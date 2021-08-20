@@ -75,9 +75,16 @@ Use lowercase for **boards**, **issue boards**, and **epic boards**.
 
 One word, **checkbox**. Do not use **check box**.
 
+You **select** (not **check** or **enable**) and **clear** (not **deselect** or **disable**) checkboxes.
+
 ## CI/CD
 
 Always uppercase. No need to spell out on first use.
+
+## click
+
+Do not use. Instead, use **select** with buttons, links, menu items, and lists.
+**Select** applies to more devices, while **click** is more specific to a mouse.
 
 ## currently
 
@@ -116,6 +123,10 @@ Do not use. If the user doesn't find the process to be easy, we lose their trust
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+
+## expand
+
+Use instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
 ## email
 
@@ -202,6 +213,13 @@ Do not use when talking about version numbers.
 
 - Avoid: In GitLab 14.1 and higher.
 - Use instead: In GitLab 14.1 and later.
+
+## hit
+
+Don't use to mean **press**.
+
+- Avoid: Hit the **ENTER** button.
+- Use instead: Press **ENTER**.
 
 ## I
 
@@ -293,6 +311,13 @@ Lowercase. If you use **MR** as the acronym, spell it out on first use.
 
 Lowercase.
 
+## navigate
+
+Do not use. Use **go** instead. For example:
+
+- Go to this webpage.
+- Open a terminal and go to the `runner` directory.
+
 ## need to, should
 
 Try to avoid. If something is required, use **must**.
@@ -333,6 +358,12 @@ Do not use roles and permissions interchangeably. Each user is assigned a role. 
 ## please
 
 Do not use. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+
+## press
+
+Use when talking about keyboard keys. For example:
+
+- To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
 ## profanity
 
@@ -453,6 +484,12 @@ Use lowercase. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.com
 ## To-Do List
 
 Use title case. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
+
+## toggle
+
+You **turn on** or **turn off** a toggle. For example:
+
+- Turn on the **blah** toggle.
 
 ## useful
 

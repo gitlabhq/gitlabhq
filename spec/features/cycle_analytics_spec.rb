@@ -43,6 +43,10 @@ RSpec.describe 'Value Stream Analytics', :js do
     end
 
     context "when there's value stream analytics data" do
+      around do |example|
+        travel_to(5.days.ago) { example.run }
+      end
+
       before do
         project.add_maintainer(user)
 
@@ -53,10 +57,10 @@ RSpec.describe 'Value Stream Analytics', :js do
         merge_request = issue.merge_requests_closing_issues.first.merge_request
         merge_request.update!(created_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
         merge_request.metrics.update!(
-          latest_build_started_at: 4.hours.ago,
-          latest_build_finished_at: 3.hours.ago,
-          merged_at: merge_request.created_at + 1.hour,
-          first_deployed_to_production_at: merge_request.created_at + 2.hours
+          latest_build_started_at: merge_request.created_at + 3.hours,
+          latest_build_finished_at: merge_request.created_at + 4.hours,
+          merged_at: merge_request.created_at + 4.hours,
+          first_deployed_to_production_at: merge_request.created_at + 5.hours
         )
 
         sign_in(user)

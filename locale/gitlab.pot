@@ -1539,10 +1539,10 @@ msgstr ""
 msgid "API?"
 msgstr ""
 
-msgid "APIFuzzing|$VariableWithPassword"
+msgid "APIFuzzing|$VARIABLE_WITH_PASSWORD"
 msgstr ""
 
-msgid "APIFuzzing|$VariableWithUsername"
+msgid "APIFuzzing|$VARIABLE_WITH_USERNAME"
 msgstr ""
 
 msgid "APIFuzzing|API Fuzzing Configuration"
@@ -1569,10 +1569,10 @@ msgstr ""
 msgid "APIFuzzing|Enable authentication"
 msgstr ""
 
-msgid "APIFuzzing|Enter the name of the variable containing the password. For example, $VariableWithPassword."
+msgid "APIFuzzing|Enter the name of the CI variable containing the password. For example, $VARIABLE_WITH_PASSWORD."
 msgstr ""
 
-msgid "APIFuzzing|Enter the name of the variable containing the username. For example, $VariableWithUsername."
+msgid "APIFuzzing|Enter the name of the CI variable containing the username. For example, $VARIABLE_WITH_USERNAME."
 msgstr ""
 
 msgid "APIFuzzing|File path or URL to APIs to be tested. For example, folder/example_fuzz.har. HAR files may contain sensitive information such as authentication tokens, API keys, and session cookies. We recommend that you review the HAR files' contents before adding them to a repository."

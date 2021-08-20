@@ -1456,27 +1456,9 @@ Follow these styles when you're describing user interface elements in an
 application:
 
 - For elements with a visible label, use that label in bold with matching case.
-  For example, `the **Cancel** button`.
+  For example, `Select **Cancel**`.
 - For elements with a tooltip or hover label, use that label in bold with
-  matching case. For example, `the **Add status emoji** button`.
-
-### Verbs for UI elements
-
-Use these verbs for specific uses with user interface
-elements:
-
-| Recommended         | Used for                              | Replaces              |
-|:--------------------|:--------------------------------------|:----------------------|
-| select              | buttons, links, menu items, dropdowns | click, press, hit     |
-| select or clear     | checkboxes                            | enable, click, press  |
-| expand              | expandable sections                   | open                  |
-| turn on or turn off | toggles                               | flip, enable, disable |
-
-### Other Verbs
-
-| Recommended | Used for                        | Replaces              |
-|:------------|:--------------------------------|:----------------------|
-| go to       | making a browser go to location | navigate to, open     |
+  matching case. For example, `Select **Add status emoji**`.
 
 ## GitLab versions
 
