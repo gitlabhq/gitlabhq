@@ -17,11 +17,11 @@ For guidance not on this page, we defer to these style guides:
 <!-- vale off -->
 <!-- markdownlint-disable -->
 
-## @mention
+## `@mention`
 
-Try to avoid. Say "mention" instead, and consider linking to the
+Try to avoid. Say **mention** instead, and consider linking to the
 [mentions topic](../../../user/project/issues/issue_data_and_actions.md#mentions).
-Don't use `code formatting`.
+Don't use backticks.
 
 ## above
 

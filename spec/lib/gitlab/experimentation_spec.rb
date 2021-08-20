@@ -7,10 +7,6 @@ RSpec.describe Gitlab::Experimentation do
 
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
-      backwards_compatible_test_experiment: {
-        tracking_category: 'Team',
-        use_backwards_compatible_subject_index: true
-      },
       test_experiment: {
         tracking_category: 'Team'
       },
@@ -22,7 +18,6 @@ RSpec.describe Gitlab::Experimentation do
 
     skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
-    Feature.enable_percentage_of_time(:backwards_compatible_test_experiment_experiment_percentage, enabled_percentage)
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
     allow(Gitlab).to receive(:com?).and_return(true)
   end
@@ -65,97 +60,47 @@ RSpec.describe Gitlab::Experimentation do
   end
 
   describe '.in_experiment_group?' do
-    context 'with new index calculation' do
-      let(:enabled_percentage) { 50 }
-      let(:experiment_subject) { 'z' } # Zlib.crc32('test_experimentz') % 100 = 33
+    let(:enabled_percentage) { 50 }
+    let(:experiment_subject) { 'z' } # Zlib.crc32('test_experimentz') % 100 = 33
 
-      subject { described_class.in_experiment_group?(:test_experiment, subject: experiment_subject) }
+    subject { described_class.in_experiment_group?(:test_experiment, subject: experiment_subject) }
 
-      context 'when experiment is active' do
-        context 'when subject is part of the experiment' do
-          it { is_expected.to eq(true) }
-        end
-
-        context 'when subject is not part of the experiment' do
-          let(:experiment_subject) { 'a' } # Zlib.crc32('test_experimenta') % 100 = 61
-
-          it { is_expected.to eq(false) }
-        end
-
-        context 'when subject has a global_id' do
-          let(:experiment_subject) { double(:subject, to_global_id: 'z') }
-
-          it { is_expected.to eq(true) }
-        end
-
-        context 'when subject is nil' do
-          let(:experiment_subject) { nil }
-
-          it { is_expected.to eq(false) }
-        end
-
-        context 'when subject is an empty string' do
-          let(:experiment_subject) { '' }
-
-          it { is_expected.to eq(false) }
-        end
+    context 'when experiment is active' do
+      context 'when subject is part of the experiment' do
+        it { is_expected.to eq(true) }
       end
 
-      context 'when experiment is not active' do
-        before do
-          allow(described_class).to receive(:active?).and_return(false)
-        end
+      context 'when subject is not part of the experiment' do
+        let(:experiment_subject) { 'a' } # Zlib.crc32('test_experimenta') % 100 = 61
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when subject has a global_id' do
+        let(:experiment_subject) { double(:subject, to_global_id: 'z') }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when subject is nil' do
+        let(:experiment_subject) { nil }
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when subject is an empty string' do
+        let(:experiment_subject) { '' }
 
         it { is_expected.to eq(false) }
       end
     end
 
-    context 'with backwards compatible index calculation' do
-      let(:experiment_subject) { 'abcd' } # Digest::SHA1.hexdigest('abcd').hex % 100 = 7
-
-      subject { described_class.in_experiment_group?(:backwards_compatible_test_experiment, subject: experiment_subject) }
-
-      context 'when experiment is active' do
-        before do
-          allow(described_class).to receive(:active?).and_return(true)
-        end
-
-        context 'when subject is part of the experiment' do
-          it { is_expected.to eq(true) }
-        end
-
-        context 'when subject is not part of the experiment' do
-          let(:experiment_subject) { 'abc' } # Digest::SHA1.hexdigest('abc').hex % 100 = 17
-
-          it { is_expected.to eq(false) }
-        end
-
-        context 'when subject has a global_id' do
-          let(:experiment_subject) { double(:subject, to_global_id: 'abcd') }
-
-          it { is_expected.to eq(true) }
-        end
-
-        context 'when subject is nil' do
-          let(:experiment_subject) { nil }
-
-          it { is_expected.to eq(false) }
-        end
-
-        context 'when subject is an empty string' do
-          let(:experiment_subject) { '' }
-
-          it { is_expected.to eq(false) }
-        end
+    context 'when experiment is not active' do
+      before do
+        allow(described_class).to receive(:active?).and_return(false)
       end
 
-      context 'when experiment is not active' do
-        before do
-          allow(described_class).to receive(:active?).and_return(false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
+      it { is_expected.to eq(false) }
     end
   end
 

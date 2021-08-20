@@ -274,6 +274,11 @@ class Namespace < ApplicationRecord
     projects.with_shared_runners.any?
   end
 
+  # Internal Gitlab owned namespaces only (example: gitlab-org)
+  def unlimited_minutes?
+    shared_runners_minutes_limit == 0
+  end
+
   def user_ids_for_project_authorizations
     [owner_id]
   end

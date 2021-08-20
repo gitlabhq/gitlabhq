@@ -48,7 +48,7 @@ module Gitlab
 
         Experimentation.log_invalid_rollout(experiment_key, subject)
 
-        subject ||= fallback_experimentation_subject_index(experiment_key)
+        subject ||= experimentation_subject_id
 
         Experimentation.in_experiment_group?(experiment_key, subject: subject)
       end
@@ -106,16 +106,6 @@ module Gitlab
         cookies.signed[:experimentation_subject_id]
       end
 
-      def fallback_experimentation_subject_index(experiment_key)
-        return if experimentation_subject_id.blank?
-
-        if Experimentation.get_experiment(experiment_key).use_backwards_compatible_subject_index
-          experimentation_subject_id.delete('-')
-        else
-          experimentation_subject_id
-        end
-      end
-
       def track_experiment_event_for(experiment_key, action, value, subject: nil)
         return unless Experimentation.active?(experiment_key)
 
@@ -139,7 +129,7 @@ module Gitlab
       def tracking_group(experiment_key, suffix = nil, subject: nil)
         return unless Experimentation.active?(experiment_key)
 
-        subject ||= fallback_experimentation_subject_index(experiment_key)
+        subject ||= experimentation_subject_id
         group = experiment_enabled?(experiment_key, subject: subject) ? GROUP_EXPERIMENTAL : GROUP_CONTROL
 
         suffix ? "#{group}#{suffix}" : group

@@ -388,9 +388,11 @@ RSpec.describe API::GenericPackages do
       end
 
       context 'event tracking' do
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
+
         subject { upload_file(params, workhorse_headers.merge(personal_access_token_header)) }
 
-        it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
+        it_behaves_like 'a package tracking event', described_class.name, 'push_package'
       end
 
       it 'rejects request without a file from workhorse' do
@@ -542,13 +544,15 @@ RSpec.describe API::GenericPackages do
     end
 
     context 'event tracking' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
+
       before do
         project.add_developer(user)
       end
 
       subject { download_file(personal_access_token_header) }
 
-      it_behaves_like 'a gitlab tracking event', described_class.name, 'pull_package'
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
     end
 
     it 'rejects a malicious file name request' do
