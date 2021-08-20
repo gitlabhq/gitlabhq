@@ -247,7 +247,7 @@ setting **Enable CVE ID requests in the issue sidebar**.
 
 #### Disabling email notifications
 
-Project owners can disable all [email notifications](../../profile/notifications.md#gitlab-notification-emails)
+Project owners can disable all [email notifications](../../profile/notifications.md)
 related to the project by selecting the **Disable email notifications** checkbox.
 
 ### Merge request settings
