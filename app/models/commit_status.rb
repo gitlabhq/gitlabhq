@@ -63,8 +63,12 @@ class CommitStatus < Ci::ApplicationRecord
     where('(ci_builds.created_at BETWEEN ? AND ?) AND (ci_builds.updated_at BETWEEN ? AND ?)', lookback, timeout, lookback, timeout)
   }
 
+  # The scope applies `pluck` to split the queries. Use with care.
   scope :for_project_paths, -> (paths) do
-    where(project: Project.where_full_path_in(Array(paths)))
+    # Pluck is used to split this query. Splitting the query is required for database decomposition for `ci_*` tables.
+    # https://docs.gitlab.com/ee/development/database/transaction_guidelines.html#database-decomposition-and-sharding
+    project_ids = Project.where_full_path_in(Array(paths)).pluck(:id)
+    where(project: project_ids)
   end
 
   scope :with_preloads, -> do

@@ -56,6 +56,11 @@ export default {
       return this.$apollo.queries.participants.loading;
     },
   },
+  methods: {
+    toggleSidebar() {
+      this.$emit('toggleSidebar');
+    },
+  },
 };
 </script>
 
@@ -66,5 +71,6 @@ export default {
     :number-of-less-participants="7"
     :lazy="false"
     class="block participants"
+    @toggleSidebar="toggleSidebar"
   />
 </template>

@@ -10780,6 +10780,9 @@ msgstr ""
 msgid "Delete badge"
 msgstr ""
 
+msgid "Delete column"
+msgstr ""
+
 msgid "Delete comment"
 msgstr ""
 
@@ -10810,6 +10813,9 @@ msgstr ""
 msgid "Delete project. Are you ABSOLUTELY SURE?"
 msgstr ""
 
+msgid "Delete row"
+msgstr ""
+
 msgid "Delete self monitoring project"
 msgstr ""
 
@@ -10826,6 +10832,9 @@ msgid "Delete source branch"
 msgstr ""
 
 msgid "Delete subscription"
+msgstr ""
+
+msgid "Delete table"
 msgstr ""
 
 msgid "Delete this attachment"
@@ -12126,6 +12135,9 @@ msgid "Edit public deploy key"
 msgstr ""
 
 msgid "Edit sidebar"
+msgstr ""
+
+msgid "Edit table"
 msgstr ""
 
 msgid "Edit this file only."
@@ -17811,6 +17823,12 @@ msgstr ""
 msgid "Insert code"
 msgstr ""
 
+msgid "Insert column after"
+msgstr ""
+
+msgid "Insert column before"
+msgstr ""
+
 msgid "Insert image"
 msgstr ""
 
@@ -17818,6 +17836,12 @@ msgid "Insert inline code"
 msgstr ""
 
 msgid "Insert link"
+msgstr ""
+
+msgid "Insert row after"
+msgstr ""
+
+msgid "Insert row before"
 msgstr ""
 
 msgid "Insert suggestion"
@@ -35180,13 +35204,19 @@ msgstr ""
 msgid "TransferProject|Project cannot be transferred, because tags are present in its container registry"
 msgstr ""
 
+msgid "TransferProject|Project is already in this namespace."
+msgstr ""
+
 msgid "TransferProject|Project with same name or path in target namespace already exists"
 msgstr ""
 
 msgid "TransferProject|Root namespace can't be updated if project has NPM packages"
 msgstr ""
 
-msgid "TransferProject|Transfer failed, please contact an admin."
+msgid "TransferProject|You don't have permission to transfer projects into that namespace."
+msgstr ""
+
+msgid "TransferProject|You don't have permission to transfer this project."
 msgstr ""
 
 msgid "Tree view"

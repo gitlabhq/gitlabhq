@@ -549,17 +549,12 @@
       margin: 0;
       font-size: $gl-font-size-small;
     }
+  }
 
-    ul.dropdown-menu {
-      margin-top: 4px;
-      margin-bottom: 24px;
-      padding: 8px 0;
-
-      li {
-        margin: 0;
-        padding: 0 1px;
-      }
-    }
+  .gl-new-dropdown-item {
+    margin: 0;
+    padding: 0;
+    line-height: 1rem;
   }
 
   /* AsciiDoc(tor) built-in alignment roles */

@@ -20,8 +20,16 @@ module Projects
         raise TransferError, s_('TransferProject|Please select a new namespace for your project.')
       end
 
-      unless allowed_transfer?(current_user, project)
-        raise TransferError, s_('TransferProject|Transfer failed, please contact an admin.')
+      if @new_namespace.id == project.namespace_id
+        raise TransferError, s_('TransferProject|Project is already in this namespace.')
+      end
+
+      unless allowed_transfer_project?(current_user, project)
+        raise TransferError, s_("TransferProject|You don't have permission to transfer this project.")
+      end
+
+      unless allowed_to_transfer_to_namespace?(current_user, @new_namespace)
+        raise TransferError, s_("TransferProject|You don't have permission to transfer projects into that namespace.")
       end
 
       transfer(project)
@@ -121,11 +129,12 @@ module Projects
       Milestones::TransferService.new(current_user, group, project).execute
     end
 
-    def allowed_transfer?(current_user, project)
-      @new_namespace &&
-        can?(current_user, :change_namespace, project) &&
-        @new_namespace.id != project.namespace_id &&
-        current_user.can?(:transfer_projects, @new_namespace)
+    def allowed_transfer_project?(current_user, project)
+      current_user.can?(:change_namespace, project)
+    end
+
+    def allowed_to_transfer_to_namespace?(current_user, namespace)
+      current_user.can?(:transfer_projects, namespace)
     end
 
     def update_namespace_and_visibility(to_namespace)

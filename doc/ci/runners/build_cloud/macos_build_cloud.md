@@ -16,7 +16,7 @@ and shouldn't be relied upon for mission-critical production jobs.
 
 ## Quickstart
 
-To start using Build Cloud for macOS Beta, you must submit an access request issue. After your
+To start using Build Cloud for macOS Beta, you must submit an access request [issue](https://gitlab.com/gitlab-com/macos-buildcloud-runners-beta/-/issues/new?issuable_template=beta_access_request). After your
 access has been granted and your build environment configured, you must configure your
 `.gitlab-ci.yml` pipeline file:
 

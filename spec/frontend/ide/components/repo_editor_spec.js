@@ -166,11 +166,6 @@ describe('RepoEditor', () => {
       expect(tabs).toHaveLength(1);
       expect(tabs.at(0).text()).toBe('Edit');
     });
-
-    it('does not get markdown extension by default', async () => {
-      await createComponent();
-      expect(vm.editor.projectPath).toBeUndefined();
-    });
   });
 
   describe('when file is markdown', () => {
@@ -217,11 +212,6 @@ describe('RepoEditor', () => {
         activeFile,
       });
       expect(findTabs()).toHaveLength(0);
-    });
-
-    it('uses the markdown extension and sets it up correctly', async () => {
-      await createComponent({ activeFile });
-      expect(vm.editor.projectPath).toBe(vm.currentProjectId);
     });
   });
 
@@ -271,6 +261,31 @@ describe('RepoEditor', () => {
           expect(vm.editor[fn]).toBe(EditorWebIdeExtension.prototype[fn]);
         });
     });
+
+    it.each`
+      prefix          | activeFile            | viewer              | shouldHaveMarkdownExtension
+      ${'Should not'} | ${createActiveFile()} | ${viewerTypes.edit} | ${false}
+      ${'Should'}     | ${dummyFile.markdown} | ${viewerTypes.edit} | ${true}
+      ${'Should not'} | ${dummyFile.empty}    | ${viewerTypes.edit} | ${false}
+      ${'Should not'} | ${createActiveFile()} | ${viewerTypes.diff} | ${false}
+      ${'Should not'} | ${dummyFile.markdown} | ${viewerTypes.diff} | ${false}
+      ${'Should not'} | ${dummyFile.empty}    | ${viewerTypes.diff} | ${false}
+      ${'Should not'} | ${createActiveFile()} | ${viewerTypes.mr}   | ${false}
+      ${'Should not'} | ${dummyFile.markdown} | ${viewerTypes.mr}   | ${false}
+      ${'Should not'} | ${dummyFile.empty}    | ${viewerTypes.mr}   | ${false}
+    `(
+      '$prefix install markdown extension for $activeFile.name in $viewer viewer',
+      async ({ activeFile, viewer, shouldHaveMarkdownExtension } = {}) => {
+        await createComponent({ state: { viewer }, activeFile });
+        if (shouldHaveMarkdownExtension) {
+          expect(vm.editor.projectPath).toBe(vm.currentProjectId);
+          expect(vm.editor.togglePreview).toBeDefined();
+        } else {
+          expect(vm.editor.projectPath).toBeUndefined();
+          expect(vm.editor.togglePreview).toBeUndefined();
+        }
+      },
+    );
   });
 
   describe('setupEditor', () => {

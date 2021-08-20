@@ -245,9 +245,14 @@ $gl-line-height-42: px-to-rem(42px);
   width: $grid-size * 28;
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1491
+// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
 .gl-min-w-8 {
   min-width: $gl-spacing-scale-8;
+}
+
+// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
+.gl-min-w-10 {
+  min-width: $gl-spacing-scale-10;
 }
 
 // Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1526

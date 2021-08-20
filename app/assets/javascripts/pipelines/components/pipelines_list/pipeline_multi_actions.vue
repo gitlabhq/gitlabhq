@@ -110,6 +110,7 @@ export default {
       :href="artifact.path"
       rel="nofollow"
       download
+      class="gl-word-break-word"
       data-testid="artifact-item"
     >
       <gl-sprintf :message="$options.i18n.downloadArtifact">

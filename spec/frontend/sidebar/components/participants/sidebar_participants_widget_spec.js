@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -43,6 +43,14 @@ describe('Sidebar Participants Widget', () => {
     createComponent();
 
     expect(findParticipants().props('loading')).toBe(true);
+  });
+
+  it('emits toggleSidebar event when participants child component emits toggleSidebar', async () => {
+    createComponent();
+    findParticipants().vm.$emit('toggleSidebar');
+
+    await nextTick();
+    expect(wrapper.emitted('toggleSidebar')).toEqual([[]]);
   });
 
   describe('when participants are loaded', () => {

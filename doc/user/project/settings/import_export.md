@@ -45,6 +45,8 @@ Note the following:
   a maintainer or administrator role in the group where the exported project lives.
 - Project members with the [Owner role](../../permissions.md) are imported as Maintainers.
 - Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
+  Additionally, the user must be an existing member of the namespace, or the user can be added as a
+member of the project for contributions to be mapped.
   Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues are owned by the importer.
   - For project migration imports performed over GitLab.com Groups, preserving author information is
