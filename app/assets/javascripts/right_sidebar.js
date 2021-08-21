@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import { hide } from '~/tooltips';
+import { hide, fixTitle } from '~/tooltips';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
@@ -75,6 +75,9 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   }
 
   $this.attr('data-original-title', tooltipLabel);
+  $this.attr('title', tooltipLabel);
+  fixTitle($this);
+  hide($this);
 
   if (!triggered) {
     Cookies.set('collapsed_gutter', $('.right-sidebar').hasClass('right-sidebar-collapsed'));
