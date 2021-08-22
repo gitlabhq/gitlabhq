@@ -287,7 +287,7 @@ We execute both analyzers because they use different sources of vulnerability da
 
 #### Python
 
-We only execute one build in the directory where a requirements file has been detected, such as `requirements.txt` or any
+We only execute one installation in the directory where a requirements file has been detected, such as `requirements.txt` or any
 variation of this file (for example, `requirements.pip` or `requires.txt`).
 
 #### Java and Scala
