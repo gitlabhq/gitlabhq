@@ -9102,7 +9102,8 @@ CREATE TABLE analytics_cycle_analytics_group_stages (
     custom boolean DEFAULT true NOT NULL,
     name character varying(255) NOT NULL,
     group_value_stream_id bigint NOT NULL,
-    stage_event_hash_id bigint
+    stage_event_hash_id bigint,
+    CONSTRAINT check_e6bd4271b5 CHECK ((stage_event_hash_id IS NOT NULL))
 );
 
 CREATE SEQUENCE analytics_cycle_analytics_group_stages_id_seq
@@ -9146,7 +9147,8 @@ CREATE TABLE analytics_cycle_analytics_project_stages (
     custom boolean DEFAULT true NOT NULL,
     name character varying(255) NOT NULL,
     project_value_stream_id bigint NOT NULL,
-    stage_event_hash_id bigint
+    stage_event_hash_id bigint,
+    CONSTRAINT check_8f6019de1e CHECK ((stage_event_hash_id IS NOT NULL))
 );
 
 CREATE SEQUENCE analytics_cycle_analytics_project_stages_id_seq

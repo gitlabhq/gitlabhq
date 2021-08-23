@@ -133,7 +133,7 @@ module QA
       it 'imports large Github repo via api' do
         start = Time.now
 
-        imported_project # import the project
+        Runtime::Logger.info("Importing project '#{imported_project.full_path}'") # import the project and log path
         fetch_github_objects # fetch all objects right after import has started
 
         import_status = lambda do
@@ -221,32 +221,39 @@ module QA
       # @return [void]
       def verify_mrs_or_issues(type)
         msg = ->(title) { "expected #{type} with title '#{title}' to have" }
-        expected = type == 'mr' ? mrs : gl_issues
-        actual = type == 'mr' ? gh_prs : gh_issues
 
         # Compare length to have easy to read overview how many objects are missing
-        expect(expected.length).to(
-          eq(actual.length),
-          "Expected to contain same amount of #{type}s. Expected: #{expected.length}, actual: #{actual.length}"
-        )
+        expected = type == 'mr' ? mrs : gl_issues
+        actual = type == 'mr' ? gh_prs : gh_issues
+        count_msg = "Expected to contain same amount of #{type}s. Gitlab: #{expected.length}, Github: #{actual.length}"
+        expect(expected.length).to eq(actual.length), count_msg
+
         logger.debug("= Comparing #{type}s =")
         actual.each do |title, actual_item|
           print "." # indicate that it is still going but don't spam the output with newlines
 
           expected_item = expected[title]
 
+          # Print title in the error message to see which object is missing
           expect(expected_item).to be_truthy, "#{msg.call(title)} been imported"
           next unless expected_item
 
-          expect(expected_item[:body]).to(
-            include(actual_item[:body]),
-            "#{msg.call(title)} same description. diff:\n#{differ.diff(expected_item[:body], actual_item[:body])}"
-          )
-          expect(expected_item[:comments].length).to(
-            eq(actual_item[:comments].length),
-            "#{msg.call(title)} same amount of comments"
-          )
-          expect(expected_item[:comments]).to match_array(actual_item[:comments])
+          # Print difference in the description
+          expected_body = expected_item[:body]
+          actual_body = actual_item[:body]
+          body_msg = <<~MSG
+            #{msg.call(title)} same description. diff:\n#{differ.diff(expected_item[:body], actual_item[:body])}
+          MSG
+          expect(expected_body).to include(actual_body), body_msg
+
+          # Print amount difference first
+          expected_comments = expected_item[:comments]
+          actual_comments = actual_item[:comments]
+          comment_count_msg = <<~MSG
+            #{msg.call(title)} same amount of comments. Gitlab: #{expected_comments.length}, Github: #{actual_comments.length}
+          MSG
+          expect(expected_comments.length).to eq(actual_comments.length), comment_count_msg
+          expect(expected_comments).to match_array(actual_comments)
         end
         puts # print newline after last print to make output pretty
       end

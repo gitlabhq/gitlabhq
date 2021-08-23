@@ -8,6 +8,10 @@ module QA
       extend self
       extend Support::Api
 
+      RETRY_MAX_ITERATION = 10
+      RETRY_SLEEP_INTERVAL = 12
+      INSERT_RECALL_THRESHOLD = RETRY_MAX_ITERATION * RETRY_SLEEP_INTERVAL
+
       ElasticSearchServerError = Class.new(RuntimeError)
 
       def assert_elasticsearch_responding
@@ -85,7 +89,7 @@ module QA
       private
 
       def find_target_in_scope(scope, search_term)
-        QA::Support::Retrier.retry_until(max_attempts: 10, sleep_interval: 10, raise_on_failure: true, retry_on_exception: true) do
+        QA::Support::Retrier.retry_until(max_attempts: RETRY_MAX_ITERATION, sleep_interval: RETRY_SLEEP_INTERVAL, raise_on_failure: true, retry_on_exception: true) do
           result = search(scope, search_term)
           result && result.any? { |record| yield record }
         end

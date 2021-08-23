@@ -18,12 +18,14 @@ module QA
                  :iid,
                  :assignee_ids,
                  :labels,
-                 :title
+                 :title,
+                 :description
 
       def initialize
         @assignee_ids = []
         @labels = []
         @title = "Issue title #{SecureRandom.hex(8)}"
+        @description = "Issue description #{SecureRandom.hex(8)}"
       end
 
       def fabricate!
@@ -34,7 +36,7 @@ module QA
         Page::Project::Issue::New.perform do |new_page|
           new_page.fill_title(@title)
           new_page.choose_template(@template) if @template
-          new_page.fill_description(@description) if @description
+          new_page.fill_description(@description) if @description && !@template
           new_page.choose_milestone(@milestone) if @milestone
           new_page.create_new_issue
         end
@@ -64,6 +66,7 @@ module QA
         }.tap do |hash|
           hash[:milestone_id] = @milestone.id if @milestone
           hash[:weight] = @weight if @weight
+          hash[:description] = @description if @description
         end
       end
 

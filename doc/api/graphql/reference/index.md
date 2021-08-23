@@ -4459,6 +4459,39 @@ Input type: `VulnerabilityConfirmInput`
 | <a id="mutationvulnerabilityconfirmerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilityconfirmvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | The vulnerability after state change. |
 
+### `Mutation.vulnerabilityCreate`
+
+Input type: `VulnerabilityCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitycreateconfidence"></a>`confidence` | [`VulnerabilityConfidence`](#vulnerabilityconfidence) | Confidence of the vulnerability (defaults to `unknown`). |
+| <a id="mutationvulnerabilitycreateconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to confirmed (defaults to creation time if status is `confirmed`). |
+| <a id="mutationvulnerabilitycreatedescription"></a>`description` | [`String!`](#string) | Description of the vulnerability. |
+| <a id="mutationvulnerabilitycreatedetectedat"></a>`detectedAt` | [`Time`](#time) | Timestamp of when the vulnerability was first detected (defaults to creation time). |
+| <a id="mutationvulnerabilitycreatedismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to dismissed (defaults to creation time if status is `dismissed`). |
+| <a id="mutationvulnerabilitycreateidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifierInput!]!`](#vulnerabilityidentifierinput) | Array of CVE or CWE identifiers for the vulnerability. |
+| <a id="mutationvulnerabilitycreatemessage"></a>`message` | [`String`](#string) | Additional information about the vulnerability. |
+| <a id="mutationvulnerabilitycreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the vulnerability to. |
+| <a id="mutationvulnerabilitycreateresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to resolved (defaults to creation time if status is `resolved`). |
+| <a id="mutationvulnerabilitycreatescannername"></a>`scannerName` | [`String!`](#string) | Name of the security scanner used to discover the vulnerability. |
+| <a id="mutationvulnerabilitycreatescannertype"></a>`scannerType` | [`SecurityScannerType!`](#securityscannertype) | Type of the security scanner used to discover the vulnerability. |
+| <a id="mutationvulnerabilitycreateseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (defaults to `unknown`). |
+| <a id="mutationvulnerabilitycreatesolution"></a>`solution` | [`String`](#string) | How to fix this vulnerability. |
+| <a id="mutationvulnerabilitycreatestate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (defaults to `detected`). |
+| <a id="mutationvulnerabilitycreatetitle"></a>`title` | [`String!`](#string) | Title of the vulnerability. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilitycreatevulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability created. |
+
 ### `Mutation.vulnerabilityDismiss`
 
 Input type: `VulnerabilityDismissInput`
@@ -10004,6 +10037,27 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupprojectssearch"></a>`search` | [`String`](#string) | Search project with most similar names or paths. |
 | <a id="groupprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by this criteria. |
 
+##### `Group.runners`
+
+Find runners visible to the current user. Available only when feature flag `runner_graphql_query` is enabled. This flag is enabled by default.
+
+Returns [`CiRunnerConnection`](#cirunnerconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouprunnersmembership"></a>`membership` | [`RunnerMembershipFilter`](#runnermembershipfilter) | Control which runners to include in the results. |
+| <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
+| <a id="grouprunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
+| <a id="grouprunnersstatus"></a>`status` | [`CiRunnerStatus`](#cirunnerstatus) | Filter runners by status. |
+| <a id="grouprunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
+| <a id="grouprunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
+
 ##### `Group.timelogs`
 
 Time logged on issues and merge requests in the group and its subgroups.
@@ -13261,6 +13315,7 @@ Represents summary of a security report.
 | <a id="securityreportsummarycoveragefuzzing"></a>`coverageFuzzing` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `coverage_fuzzing` scan. |
 | <a id="securityreportsummarydast"></a>`dast` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dast` scan. |
 | <a id="securityreportsummarydependencyscanning"></a>`dependencyScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dependency_scanning` scan. |
+| <a id="securityreportsummarygeneric"></a>`generic` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `generic` scan. |
 | <a id="securityreportsummarysast"></a>`sast` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `sast` scan. |
 | <a id="securityreportsummarysecretdetection"></a>`secretDetection` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `secret_detection` scan. |
 
@@ -14141,7 +14196,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitynotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | The project on which the vulnerability was found. |
-| <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING). `Scan Type` in the UI. |
+| <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, GENERIC). `Scan Type` in the UI. |
 | <a id="vulnerabilityresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to resolved. |
 | <a id="vulnerabilityresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | The user that resolved the vulnerability. |
 | <a id="vulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
@@ -14434,6 +14489,16 @@ Represents the location of a vulnerability found by a dependency security scan.
 | <a id="vulnerabilitylocationdependencyscanningblobpath"></a>`blobPath` | [`String`](#string) | Blob path to the vulnerable file. |
 | <a id="vulnerabilitylocationdependencyscanningdependency"></a>`dependency` | [`VulnerableDependency`](#vulnerabledependency) | Dependency containing the vulnerability. |
 | <a id="vulnerabilitylocationdependencyscanningfile"></a>`file` | [`String`](#string) | Path to the vulnerable file. |
+
+### `VulnerabilityLocationGeneric`
+
+Represents the location of a vulnerability found by a generic scanner.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitylocationgenericdescription"></a>`description` | [`String`](#string) | Free-form description of where the vulnerability is located. |
 
 ### `VulnerabilityLocationSast`
 
@@ -15626,6 +15691,15 @@ Status of a requirement based on last test report.
 | <a id="requirementstatusfiltermissing"></a>`MISSING` | Requirements without any test report. |
 | <a id="requirementstatusfilterpassed"></a>`PASSED` |  |
 
+### `RunnerMembershipFilter`
+
+Values for filtering runners in namespaces.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="runnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct relationship or a relationship with descendants. These can be project runners or group runners (in the case where group is queried). |
+| <a id="runnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
+
 ### `SastUiComponentSize`
 
 Size of UI component in SAST configuration page.
@@ -15872,6 +15946,20 @@ Possible states of a user.
 | <a id="visibilityscopesenumprivate"></a>`private` | The snippet is visible only to the snippet creator. |
 | <a id="visibilityscopesenumpublic"></a>`public` | The snippet can be accessed without any authentication. |
 
+### `VulnerabilityConfidence`
+
+Confidence that a given vulnerability is present in the codebase.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityconfidenceconfirmed"></a>`CONFIRMED` |  |
+| <a id="vulnerabilityconfidenceexperimental"></a>`EXPERIMENTAL` |  |
+| <a id="vulnerabilityconfidencehigh"></a>`HIGH` |  |
+| <a id="vulnerabilityconfidenceignore"></a>`IGNORE` |  |
+| <a id="vulnerabilityconfidencelow"></a>`LOW` |  |
+| <a id="vulnerabilityconfidencemedium"></a>`MEDIUM` |  |
+| <a id="vulnerabilityconfidenceunknown"></a>`UNKNOWN` |  |
+
 ### `VulnerabilityDismissalReason`
 
 The dismissal reason of the Vulnerability.
@@ -15933,6 +16021,7 @@ The type of the security scan that found the vulnerability.
 | <a id="vulnerabilityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` |  |
 | <a id="vulnerabilityreporttypedast"></a>`DAST` |  |
 | <a id="vulnerabilityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` |  |
+| <a id="vulnerabilityreporttypegeneric"></a>`GENERIC` |  |
 | <a id="vulnerabilityreporttypesast"></a>`SAST` |  |
 | <a id="vulnerabilityreporttypesecret_detection"></a>`SECRET_DETECTION` |  |
 
@@ -16573,6 +16662,7 @@ One of:
 - [`VulnerabilityLocationCoverageFuzzing`](#vulnerabilitylocationcoveragefuzzing)
 - [`VulnerabilityLocationDast`](#vulnerabilitylocationdast)
 - [`VulnerabilityLocationDependencyScanning`](#vulnerabilitylocationdependencyscanning)
+- [`VulnerabilityLocationGeneric`](#vulnerabilitylocationgeneric)
 - [`VulnerabilityLocationSast`](#vulnerabilitylocationsast)
 - [`VulnerabilityLocationSecretDetection`](#vulnerabilitylocationsecretdetection)
 
@@ -17351,3 +17441,14 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="updatediffimagepositioninputwidth"></a>`width` | [`Int`](#int) | Total width of the image. |
 | <a id="updatediffimagepositioninputx"></a>`x` | [`Int`](#int) | X position of the note. |
 | <a id="updatediffimagepositioninputy"></a>`y` | [`Int`](#int) | Y position of the note. |
+
+### `VulnerabilityIdentifierInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityidentifierinputexternalid"></a>`externalId` | [`String`](#string) | External ID of the vulnerability identifier. |
+| <a id="vulnerabilityidentifierinputexternaltype"></a>`externalType` | [`String`](#string) | External type of the vulnerability identifier. |
+| <a id="vulnerabilityidentifierinputname"></a>`name` | [`String!`](#string) | Name of the vulnerability identifier. |
+| <a id="vulnerabilityidentifierinputurl"></a>`url` | [`String!`](#string) | URL of the vulnerability identifier. |

@@ -34,7 +34,7 @@ module Resolvers
             .execute)
       end
 
-      private
+      protected
 
       def runners_finder_params(params)
         {
@@ -47,6 +47,19 @@ module Resolvers
             tag_name: node_selection&.selects?(:tag_list)
           }
         }.compact
+         .merge(parent_param)
+      end
+
+      def parent_param
+        return {} unless parent
+
+        raise "Unexpected parent type: #{parent.class}"
+      end
+
+      private
+
+      def parent
+        object.respond_to?(:sync) ? object.sync : object
       end
     end
   end

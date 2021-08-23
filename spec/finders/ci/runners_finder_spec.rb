@@ -18,6 +18,13 @@ RSpec.describe Ci::RunnersFinder do
           end
         end
 
+        context 'with nil group' do
+          it 'returns all runners' do
+            expect(Ci::Runner).to receive(:with_tags).and_call_original
+            expect(described_class.new(current_user: admin, params: { group: nil }).execute).to match_array [runner1, runner2]
+          end
+        end
+
         context 'with preload param set to :tag_name true' do
           it 'requests tags' do
             expect(Ci::Runner).to receive(:with_tags).and_call_original
@@ -158,6 +165,7 @@ RSpec.describe Ci::RunnersFinder do
     let_it_be(:project_4) { create(:project, group: sub_group_2) }
     let_it_be(:project_5) { create(:project, group: sub_group_3) }
     let_it_be(:project_6) { create(:project, group: sub_group_4) }
+    let_it_be(:runner_instance) { create(:ci_runner, :instance, contacted_at: 13.minutes.ago) }
     let_it_be(:runner_group) { create(:ci_runner, :group, contacted_at: 12.minutes.ago) }
     let_it_be(:runner_sub_group_1) { create(:ci_runner, :group, active: false, contacted_at: 11.minutes.ago) }
     let_it_be(:runner_sub_group_2) { create(:ci_runner, :group, contacted_at: 10.minutes.ago) }
@@ -171,7 +179,10 @@ RSpec.describe Ci::RunnersFinder do
     let_it_be(:runner_project_6) { create(:ci_runner, :project, contacted_at: 2.minutes.ago, projects: [project_5])}
     let_it_be(:runner_project_7) { create(:ci_runner, :project, contacted_at: 1.minute.ago, projects: [project_6])}
 
-    let(:params) { {} }
+    let(:target_group) { nil }
+    let(:membership) { nil }
+    let(:extra_params) { {} }
+    let(:params) { { group: target_group, membership: membership }.merge(extra_params).reject { |_, v| v.nil? } }
 
     before do
       group.runners << runner_group
@@ -182,65 +193,104 @@ RSpec.describe Ci::RunnersFinder do
     end
 
     describe '#execute' do
-      subject { described_class.new(current_user: user, group: group, params: params).execute }
+      subject { described_class.new(current_user: user, params: params).execute }
+
+      shared_examples 'membership equal to :descendants' do
+        it 'returns all descendant runners' do
+          expect(subject).to eq([runner_project_7, runner_project_6, runner_project_5,
+                                 runner_project_4, runner_project_3, runner_project_2,
+                                 runner_project_1, runner_sub_group_4, runner_sub_group_3,
+                                 runner_sub_group_2, runner_sub_group_1, runner_group])
+        end
+      end
 
       context 'with user as group owner' do
         before do
           group.add_owner(user)
         end
 
-        context 'passing no params' do
-          it 'returns all descendant runners' do
-            expect(subject).to eq([runner_project_7, runner_project_6, runner_project_5,
-                                   runner_project_4, runner_project_3, runner_project_2,
-                                   runner_project_1, runner_sub_group_4, runner_sub_group_3,
-                                   runner_sub_group_2, runner_sub_group_1, runner_group])
+        context 'with :group as target group' do
+          let(:target_group) { group }
+
+          context 'passing no params' do
+            it_behaves_like 'membership equal to :descendants'
           end
-        end
 
-        context 'with sort param' do
-          let(:params) { { sort: 'contacted_asc' } }
+          context 'with :descendants membership' do
+            let(:membership) { :descendants }
 
-          it 'sorts by specified attribute' do
-            expect(subject).to eq([runner_group, runner_sub_group_1, runner_sub_group_2,
-                                   runner_sub_group_3, runner_sub_group_4, runner_project_1,
-                                   runner_project_2, runner_project_3, runner_project_4,
-                                   runner_project_5, runner_project_6, runner_project_7])
+            it_behaves_like 'membership equal to :descendants'
           end
-        end
 
-        context 'filtering' do
-          context 'by search term' do
-            let(:params) { { search: 'runner_project_search' } }
+          context 'with :direct membership' do
+            let(:membership) { :direct }
 
-            it 'returns correct runner' do
-              expect(subject).to eq([runner_project_3])
+            it 'returns runners belonging to group' do
+              expect(subject).to eq([runner_group])
             end
           end
 
-          context 'by status' do
-            let(:params) { { status_status: 'paused' } }
+          context 'with unknown membership' do
+            let(:membership) { :unsupported }
 
-            it 'returns correct runner' do
-              expect(subject).to eq([runner_sub_group_1])
+            it 'raises an error' do
+              expect { subject }.to raise_error(ArgumentError, 'Invalid membership filter')
             end
           end
 
-          context 'by tag_name' do
-            let(:params) { { tag_name: %w[runner_tag] } }
+          context 'with nil group' do
+            let(:target_group) { nil }
 
-            it 'returns correct runner' do
-              expect(subject).to eq([runner_project_5])
+            it 'returns no runners' do
+              # Query should run against all runners, however since user is not admin, query returns no results
+              expect(subject).to eq([])
             end
           end
 
-          context 'by runner type' do
-            let(:params) { { type_type: 'project_type' } }
+          context 'with sort param' do
+            let(:extra_params) { { sort: 'contacted_asc' } }
 
-            it 'returns correct runners' do
-              expect(subject).to eq([runner_project_7, runner_project_6,
-                                     runner_project_5, runner_project_4,
-                                     runner_project_3, runner_project_2, runner_project_1])
+            it 'sorts by specified attribute' do
+              expect(subject).to eq([runner_group, runner_sub_group_1, runner_sub_group_2,
+                                     runner_sub_group_3, runner_sub_group_4, runner_project_1,
+                                     runner_project_2, runner_project_3, runner_project_4,
+                                     runner_project_5, runner_project_6, runner_project_7])
+            end
+          end
+
+          context 'filtering' do
+            context 'by search term' do
+              let(:extra_params) { { search: 'runner_project_search' } }
+
+              it 'returns correct runner' do
+                expect(subject).to eq([runner_project_3])
+              end
+            end
+
+            context 'by status' do
+              let(:extra_params) { { status_status: 'paused' } }
+
+              it 'returns correct runner' do
+                expect(subject).to eq([runner_sub_group_1])
+              end
+            end
+
+            context 'by tag_name' do
+              let(:extra_params) { { tag_name: %w[runner_tag] } }
+
+              it 'returns correct runner' do
+                expect(subject).to eq([runner_project_5])
+              end
+            end
+
+            context 'by runner type' do
+              let(:extra_params) { { type_type: 'project_type' } }
+
+              it 'returns correct runners' do
+                expect(subject).to eq([runner_project_7, runner_project_6,
+                                       runner_project_5, runner_project_4,
+                                       runner_project_3, runner_project_2, runner_project_1])
+              end
             end
           end
         end
@@ -278,7 +328,7 @@ RSpec.describe Ci::RunnersFinder do
     end
 
     describe '#sort_key' do
-      subject { described_class.new(current_user: user, group: group, params: params).sort_key }
+      subject { described_class.new(current_user: user, params: params.merge(group: group)).sort_key }
 
       context 'without params' do
         it 'returns created_at_desc' do
@@ -287,7 +337,7 @@ RSpec.describe Ci::RunnersFinder do
       end
 
       context 'with params' do
-        let(:params) { { sort: 'contacted_asc' } }
+        let(:extra_params) { { sort: 'contacted_asc' } }
 
         it 'returns contacted_asc' do
           expect(subject).to eq('contacted_asc')

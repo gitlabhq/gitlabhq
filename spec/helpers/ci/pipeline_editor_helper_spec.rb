@@ -42,7 +42,6 @@ RSpec.describe Ci::PipelineEditorHelper do
           "ci-config-path": project.ci_config_path_or_default,
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
           "ci-help-page-path" => help_page_path('ci/index'),
-          "commit-sha" => project.commit.sha,
           "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'foo',
           "initial-branch-name" => nil,
@@ -69,7 +68,6 @@ RSpec.describe Ci::PipelineEditorHelper do
           "ci-config-path": project.ci_config_path_or_default,
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
           "ci-help-page-path" => help_page_path('ci/index'),
-          "commit-sha" => '',
           "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'foo',
           "initial-branch-name" => nil,
@@ -97,10 +95,7 @@ RSpec.describe Ci::PipelineEditorHelper do
       end
 
       it 'returns correct values' do
-        latest_feature_sha = project.repository.commit('feature').sha
-
         expect(pipeline_editor_data['initial-branch-name']).to eq('feature')
-        expect(pipeline_editor_data['commit-sha']).to eq(latest_feature_sha)
       end
     end
   end

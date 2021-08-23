@@ -2,40 +2,56 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::RunnersResolver do
+RSpec.describe Resolvers::Ci::GroupRunnersResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    let(:obj) { nil }
-    let(:args) { {} }
-
     subject { resolve(described_class, obj: obj, ctx: { current_user: user }, args: args) }
 
     include_context 'runners resolver setup'
 
+    let(:obj) { group }
+    let(:args) { {} }
+
     # First, we can do a couple of basic real tests to verify common cases. That ensures that the code works.
     context 'when user cannot see runners' do
-      let(:user) { build(:user) }
-
       it 'returns no runners' do
         expect(subject.items.to_a).to eq([])
       end
     end
 
-    context 'when user can see runners' do
-      let(:obj) { nil }
+    context 'with user as group owner' do
+      before do
+        group.add_owner(user)
+      end
 
       it 'returns all the runners' do
-        expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
+        expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner)
+      end
+
+      context 'with membership direct' do
+        let(:args) { { membership: :direct } }
+
+        it 'returns only direct runners' do
+          expect(subject.items.to_a).to contain_exactly(group_runner)
+        end
       end
     end
 
     # Then, we can check specific edge cases for this resolver
-    context 'with obj not set to nil' do
+    context 'with obj set to nil' do
+      let(:obj) { nil }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error('Expected group missing')
+      end
+    end
+
+    context 'with obj not set to group' do
       let(:obj) { build(:project) }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(a_string_including('Unexpected parent type'))
+        expect { subject }.to raise_error('Expected group missing')
       end
     end
 
@@ -46,21 +62,24 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
       let(:args) do
         {
           status: 'active',
-          type: :instance_type,
+          type: :group_type,
           tag_list: ['active_runner'],
           search: 'abc',
-          sort: :contacted_asc
+          sort: :contacted_asc,
+          membership: :descendants
         }
       end
 
       let(:expected_params) do
         {
           status_status: 'active',
-          type_type: :instance_type,
+          type_type: :group_type,
           tag_name: ['active_runner'],
           preload: { tag_name: nil },
           search: 'abc',
-          sort: 'contacted_asc'
+          sort: 'contacted_asc',
+          membership: :descendants,
+          group: group
         }
       end
 
