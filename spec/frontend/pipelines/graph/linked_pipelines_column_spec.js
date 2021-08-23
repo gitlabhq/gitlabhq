@@ -4,7 +4,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import {
   DOWNSTREAM,
-  GRAPHQL,
   UPSTREAM,
   LAYER_VIEW,
   STAGE_VIEW,
@@ -51,9 +50,6 @@ describe('Linked Pipelines Column', () => {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      provide: {
-        dataMethod: GRAPHQL,
       },
     });
   };

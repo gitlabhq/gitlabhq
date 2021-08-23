@@ -4,11 +4,7 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import mockData from './linked_pipelines_mock_data';
-
-const mockPipeline = mockData.triggered[0];
-const validTriggeredPipelineId = mockPipeline.project.id;
-const invalidTriggeredPipelineId = mockPipeline.project.id + 5;
+import mockPipeline from './linked_pipelines_mock_data';
 
 describe('Linked pipeline', () => {
   let wrapper;
@@ -39,10 +35,10 @@ describe('Linked pipeline', () => {
   describe('rendered output', () => {
     const props = {
       pipeline: mockPipeline,
-      projectId: invalidTriggeredPipelineId,
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
       expanded: false,
+      isLoading: false,
     };
 
     beforeEach(() => {
@@ -60,7 +56,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render the pipeline status icon svg', () => {
-      expect(wrapper.find('.ci-status-icon-failed svg').exists()).toBe(true);
+      expect(wrapper.find('.ci-status-icon-success svg').exists()).toBe(true);
     });
 
     it('should have a ci-status child component', () => {
@@ -73,8 +69,8 @@ describe('Linked pipeline', () => {
 
     it('should correctly compute the tooltip text', () => {
       expect(wrapper.vm.tooltipText).toContain(mockPipeline.project.name);
-      expect(wrapper.vm.tooltipText).toContain(mockPipeline.details.status.label);
-      expect(wrapper.vm.tooltipText).toContain(mockPipeline.source_job.name);
+      expect(wrapper.vm.tooltipText).toContain(mockPipeline.status.label);
+      expect(wrapper.vm.tooltipText).toContain(mockPipeline.sourceJob.name);
       expect(wrapper.vm.tooltipText).toContain(mockPipeline.id);
     });
 
@@ -82,11 +78,7 @@ describe('Linked pipeline', () => {
       const titleAttr = findLinkedPipeline().attributes('title');
 
       expect(titleAttr).toContain(mockPipeline.project.name);
-      expect(titleAttr).toContain(mockPipeline.details.status.label);
-    });
-
-    it('sets the loading prop to false', () => {
-      expect(findButton().props('loading')).toBe(false);
+      expect(titleAttr).toContain(mockPipeline.status.label);
     });
 
     it('should display multi-project label when pipeline project id is not the same as triggered pipeline project id', () => {
@@ -96,18 +88,20 @@ describe('Linked pipeline', () => {
 
   describe('parent/child', () => {
     const downstreamProps = {
-      pipeline: mockPipeline,
-      projectId: validTriggeredPipelineId,
+      pipeline: {
+        ...mockPipeline,
+        multiproject: false,
+      },
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
       expanded: false,
+      isLoading: false,
     };
 
     const upstreamProps = {
       ...downstreamProps,
       columnTitle: 'Upstream',
       type: UPSTREAM,
-      expanded: false,
     };
 
     it('parent/child label container should exist', () => {
@@ -122,7 +116,7 @@ describe('Linked pipeline', () => {
 
     it('should have the name of the trigger job on the card when it is a child pipeline', () => {
       createWrapper(downstreamProps);
-      expect(findDownstreamPipelineTitle().text()).toBe(mockPipeline.source_job.name);
+      expect(findDownstreamPipelineTitle().text()).toBe(mockPipeline.sourceJob.name);
     });
 
     it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {
@@ -132,12 +126,12 @@ describe('Linked pipeline', () => {
 
     it('downstream pipeline should contain the correct link', () => {
       createWrapper(downstreamProps);
-      expect(findPipelineLink().attributes('href')).toBe(mockData.triggered_by.path);
+      expect(findPipelineLink().attributes('href')).toBe(downstreamProps.pipeline.path);
     });
 
     it('upstream pipeline should contain the correct link', () => {
       createWrapper(upstreamProps);
-      expect(findPipelineLink().attributes('href')).toBe(mockData.triggered_by.path);
+      expect(findPipelineLink().attributes('href')).toBe(upstreamProps.pipeline.path);
     });
 
     it.each`
@@ -183,11 +177,11 @@ describe('Linked pipeline', () => {
 
   describe('when isLoading is true', () => {
     const props = {
-      pipeline: { ...mockPipeline, isLoading: true },
-      projectId: invalidTriggeredPipelineId,
+      pipeline: mockPipeline,
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
       expanded: false,
+      isLoading: true,
     };
 
     beforeEach(() => {
@@ -202,10 +196,10 @@ describe('Linked pipeline', () => {
   describe('on click/hover', () => {
     const props = {
       pipeline: mockPipeline,
-      projectId: validTriggeredPipelineId,
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
       expanded: false,
+      isLoading: false,
     };
 
     beforeEach(() => {
@@ -228,7 +222,7 @@ describe('Linked pipeline', () => {
 
     it('should emit downstreamHovered with job name on mouseover', () => {
       findLinkedPipeline().trigger('mouseover');
-      expect(wrapper.emitted().downstreamHovered).toStrictEqual([['trigger_job']]);
+      expect(wrapper.emitted().downstreamHovered).toStrictEqual([['test_c']]);
     });
 
     it('should emit downstreamHovered with empty string on mouseleave', () => {
@@ -238,7 +232,7 @@ describe('Linked pipeline', () => {
 
     it('should emit pipelineExpanded with job name and expanded state on click', () => {
       findExpandButton().trigger('click');
-      expect(wrapper.emitted().pipelineExpandToggle).toStrictEqual([['trigger_job', true]]);
+      expect(wrapper.emitted().pipelineExpandToggle).toStrictEqual([['test_c', true]]);
     });
   });
 });

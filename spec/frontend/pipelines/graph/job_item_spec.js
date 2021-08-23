@@ -14,7 +14,29 @@ describe('pipeline graph job item', () => {
   };
 
   const triggerActiveClass = 'gl-shadow-x0-y0-b3-s1-blue-500';
-  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
+
+  const delayedJob = {
+    __typename: 'CiJob',
+    name: 'delayed job',
+    scheduledAt: '2015-07-03T10:01:00.000Z',
+    needs: [],
+    status: {
+      __typename: 'DetailedStatus',
+      icon: 'status_scheduled',
+      tooltip: 'delayed manual action (%{remainingTime})',
+      hasDetails: true,
+      detailsPath: '/root/kinder-pipe/-/jobs/5339',
+      group: 'scheduled',
+      action: {
+        __typename: 'StatusAction',
+        icon: 'time-out',
+        title: 'Unschedule',
+        path: '/frontend-fixtures/builds-project/-/jobs/142/unschedule',
+        buttonTitle: 'Unschedule job',
+      },
+    },
+  };
+
   const mockJob = {
     id: 4256,
     name: 'test',
@@ -24,8 +46,8 @@ describe('pipeline graph job item', () => {
       label: 'passed',
       tooltip: 'passed',
       group: 'success',
-      details_path: '/root/ci-mock/builds/4256',
-      has_details: true,
+      detailsPath: '/root/ci-mock/builds/4256',
+      hasDetails: true,
       action: {
         icon: 'retry',
         title: 'Retry',
@@ -42,8 +64,8 @@ describe('pipeline graph job item', () => {
       text: 'passed',
       label: 'passed',
       group: 'success',
-      details_path: '/root/ci-mock/builds/4257',
-      has_details: false,
+      detailsPath: '/root/ci-mock/builds/4257',
+      hasDetails: false,
     },
   };
 
@@ -58,7 +80,7 @@ describe('pipeline graph job item', () => {
       wrapper.vm.$nextTick(() => {
         const link = wrapper.find('a');
 
-        expect(link.attributes('href')).toBe(mockJob.status.details_path);
+        expect(link.attributes('href')).toBe(mockJob.status.detailsPath);
 
         expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
 
@@ -145,7 +167,7 @@ describe('pipeline graph job item', () => {
   describe('for delayed job', () => {
     it('displays remaining time in tooltip', () => {
       createWrapper({
-        job: delayedJobFixture,
+        job: delayedJob,
       });
 
       expect(findJobWithLink().attributes('title')).toBe(

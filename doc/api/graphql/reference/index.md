@@ -10176,6 +10176,7 @@ Represents a Group Membership.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | Indicates the user can perform `create_projects` on this resource. |
 | <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | Indicates the user can perform `read_group` on this resource. |
 
 ### `GroupReleaseStats`
@@ -10910,6 +10911,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestassigneeauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
 | <a id="mergerequestassigneeauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
 
+##### `MergeRequestAssignee.groups`
+
+Groups where the user has access.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestassigneegroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
+| <a id="mergerequestassigneegroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+
 ##### `MergeRequestAssignee.reviewRequestedMergeRequests`
 
 Merge requests assigned to the user for review.
@@ -11138,6 +11156,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestreviewerauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestreviewerauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
 | <a id="mergerequestreviewerauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+
+##### `MergeRequestReviewer.groups`
+
+Groups where the user has access.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
+| <a id="mergerequestreviewergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
 
 ##### `MergeRequestReviewer.reviewRequestedMergeRequests`
 
@@ -14010,6 +14045,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="usercoreauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
 | <a id="usercoreauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
 
+##### `UserCore.groups`
+
+Groups where the user has access.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercoregroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
+| <a id="usercoregroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+
 ##### `UserCore.reviewRequestedMergeRequests`
 
 Merge requests assigned to the user for review.
@@ -15161,6 +15213,14 @@ Group member relation.
 | <a id="groupmemberrelationdescendants"></a>`DESCENDANTS` | Members in the group's subgroups. |
 | <a id="groupmemberrelationdirect"></a>`DIRECT` | Members in the group itself. |
 | <a id="groupmemberrelationinherited"></a>`INHERITED` | Members in the group's ancestor groups. |
+
+### `GroupPermission`
+
+User permission on groups.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="grouppermissioncreate_projects"></a>`CREATE_PROJECTS` | Groups where the user can create projects. |
 
 ### `HealthStatus`
 
@@ -16960,6 +17020,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="userauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="userauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
 | <a id="userauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+
+###### `User.groups`
+
+Groups where the user has access.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
+| <a id="usergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
 
 ###### `User.reviewRequestedMergeRequests`
 

@@ -33,6 +33,7 @@ RSpec.describe GitlabSchema.types['MergeRequestReviewer'] do
       merge_request_interaction
       namespace
       timelogs
+      groups
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

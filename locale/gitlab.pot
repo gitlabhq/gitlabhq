@@ -27665,6 +27665,9 @@ msgstr ""
 msgid "Related merge requests"
 msgstr ""
 
+msgid "Related to #%{issue_id}."
+msgstr ""
+
 msgid "Relates to"
 msgstr ""
 

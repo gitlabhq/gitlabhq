@@ -5,7 +5,7 @@ module Types
     class Group < BasePermissionType
       graphql_name 'GroupPermissions'
 
-      abilities :read_group
+      abilities :read_group, :create_projects
     end
   end
 end

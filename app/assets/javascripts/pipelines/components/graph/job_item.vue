@@ -7,8 +7,7 @@ import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
 import ActionComponent from '../jobs_shared/action_component.vue';
 import JobNameComponent from '../jobs_shared/job_name_component.vue';
-import { accessValue } from './accessors';
-import { REST, SINGLE_JOB } from './constants';
+import { SINGLE_JOB } from './constants';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -47,11 +46,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [delayedJobMixin],
-  inject: {
-    dataMethod: {
-      default: REST,
-    },
-  },
   props: {
     job: {
       type: Object,
@@ -111,10 +105,10 @@ export default {
       return this.pipelineId > -1 ? `${this.job.name}-${this.pipelineId}` : '';
     },
     detailsPath() {
-      return accessValue(this.dataMethod, 'detailsPath', this.status);
+      return this.status.detailsPath;
     },
     hasDetails() {
-      return accessValue(this.dataMethod, 'hasDetails', this.status);
+      return this.status.hasDetails;
     },
     isSingleItem() {
       return this.type === SINGLE_JOB;
@@ -189,7 +183,7 @@ export default {
       if (this.isSingleItem) {
         /*
           This is so the jobDropdown still toggles. Issue to refactor:
-          https://gitlab.com/gitlab-org/gitlab/-/issues/267117 
+          https://gitlab.com/gitlab-org/gitlab/-/issues/267117
         */
         evt.stopPropagation();
       }

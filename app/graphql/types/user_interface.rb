@@ -59,6 +59,9 @@ module Types
           type: Types::GroupMemberType.connection_type,
           null: true,
           description: 'Group memberships of the user.'
+    field :groups,
+          resolver: Resolvers::Users::GroupsResolver,
+          description: 'Groups where the user has access.'
     field :group_count,
           resolver: Resolvers::Users::GroupCountResolver,
           description: 'Group count for the user.'

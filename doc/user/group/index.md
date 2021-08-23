@@ -664,16 +664,16 @@ Projects can be configured to be deleted either:
 
 - Immediately.
 - After a delayed interval. During this interval period, the projects are in a read-only state
-  and can be restored, if required. The default interval period is seven days but
+  and can be restored. The default interval period is seven days but
   [is configurable](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
-On:
+On self-managed GitLab, projects are deleted immediately by default.
+In GitLab 14.2 and later, an administrator can
+[change the default setting](../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion)
+for projects in newly-created groups.
 
-- GitLab self-managed instances, projects are deleted immediately by default. In GitLab
-  14.2 and later, an administrator can
-  [change the default setting](../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion) for projects in newly-created groups.
-- GitLab.com, see [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
-  the default setting.
+On GitLab.com, see the [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
+the default setting.
 
 To enable delayed deletion of projects in a group:
 

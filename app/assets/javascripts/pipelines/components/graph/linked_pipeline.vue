@@ -4,8 +4,7 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
-import { accessValue } from './accessors';
-import { DOWNSTREAM, REST, UPSTREAM } from './constants';
+import { DOWNSTREAM, UPSTREAM } from './constants';
 
 export default {
   directives: {
@@ -17,11 +16,6 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlBadge,
-  },
-  inject: {
-    dataMethod: {
-      default: REST,
-    },
   },
   props: {
     columnTitle: {
@@ -40,20 +34,9 @@ export default {
       type: String,
       required: true,
     },
-    /*
-      The next two props will be removed or required
-      once the graph transition is done.
-      See: https://gitlab.com/gitlab-org/gitlab/-/issues/291043
-    */
     isLoading: {
       type: Boolean,
-      required: false,
-      default: false,
-    },
-    projectId: {
-      type: Number,
-      required: false,
-      default: -1,
+      required: true,
     },
   },
   computed: {
@@ -65,7 +48,7 @@ export default {
       return `js-linked-pipeline-${this.pipeline.id}`;
     },
     pipelineStatus() {
-      return accessValue(this.dataMethod, 'pipelineStatus', this.pipeline);
+      return this.pipeline.status;
     },
     projectName() {
       return this.pipeline.project.name;
@@ -97,12 +80,10 @@ export default {
       return this.type === UPSTREAM;
     },
     isSameProject() {
-      return this.projectId > -1
-        ? this.projectId === this.pipeline.project.id
-        : !this.pipeline.multiproject;
+      return !this.pipeline.multiproject;
     },
     sourceJobName() {
-      return accessValue(this.dataMethod, 'sourceJob', this.pipeline);
+      return this.pipeline.sourceJob?.name ?? '';
     },
     sourceJobInfo() {
       return this.isDownstream ? sprintf(__('Created by %{job}'), { job: this.sourceJobName }) : '';
