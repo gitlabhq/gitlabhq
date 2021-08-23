@@ -3807,11 +3807,11 @@ step-3:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
-Sometimes running multiple jobs or pipelines at the same time in an environment
+Sometimes running multiple jobs at the same time in an environment
 can lead to errors during the deployment.
 
 To avoid these errors, use the `resource_group` attribute to make sure that
-the runner doesn't run certain jobs simultaneously. Resource groups behave similar
+the runner doesn't run certain jobs concurrently. Resource groups behave similar
 to semaphores in other programming languages.
 
 When the `resource_group` keyword is defined for a job in the `.gitlab-ci.yml` file,
