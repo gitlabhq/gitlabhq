@@ -201,30 +201,55 @@ class InternalId < ApplicationRecord
       InternalId.find_by(**scope, usage: usage_value)
     end
 
+    def initial_value(subject, scope)
+      raise ArgumentError, 'Cannot initialize without init!' unless init
+
+      # `init` computes the maximum based on actual records. We use the
+      # primary to make sure we have up to date results
+      Gitlab::Database::LoadBalancing::Session.current.use_primary do
+        instance = subject.is_a?(::Class) ? nil : subject
+
+        init.call(instance, scope) || 0
+      end
+    end
+
     def usage_value
       @usage_value ||= InternalId.usages[usage.to_s]
     end
 
     # Create InternalId record for (scope, usage) combination, if it doesn't exist
     #
-    # We blindly insert without synchronization. If another process
-    # was faster in doing this, we'll realize once we hit the unique key constraint
-    # violation. We can safely roll-back the nested transaction and perform
-    # a lookup instead to retrieve the record.
+    # We blindly insert ignoring conflicts on the unique key constraint.
+    # If another process was faster in doing this, we'll end up with that record
+    # when we do the lookup after the insert.
     def create_record
-      raise ArgumentError, 'Cannot initialize without init!' unless init
+      if Feature.enabled?(:use_insert_all_in_internal_id, default_enabled: :yaml)
+        scope[:project].save! if scope[:project] && !scope[:project].persisted?
+        scope[:namespace].save! if scope[:namespace] && !scope[:namespace].persisted?
 
-      instance = subject.is_a?(::Class) ? nil : subject
-
-      subject.transaction(requires_new: true) do
-        InternalId.create!(
-          **scope,
+        attributes = {
+          project_id: scope[:project]&.id || scope[:project_id],
+          namespace_id: scope[:namespace]&.id || scope[:namespace_id],
           usage: usage_value,
-          last_value: init.call(instance, scope) || 0
-        )
+          last_value: initial_value(subject, scope)
+        }
+
+        InternalId.insert_all([attributes])
+
+        lookup
+      else
+        begin
+          subject.transaction(requires_new: true) do
+            InternalId.create!(
+              **scope,
+              usage: usage_value,
+              last_value: initial_value(subject, scope)
+            )
+          end
+        rescue ActiveRecord::RecordNotUnique
+          lookup
+        end
       end
-    rescue ActiveRecord::RecordNotUnique
-      lookup
     end
   end
 
@@ -246,6 +271,8 @@ class InternalId < ApplicationRecord
     # usage: Symbol to define the usage of the internal id, see InternalId.usages
     # init: Proc that accepts the subject and the scope and returns Integer|NilClass
     attr_reader :subject, :scope, :scope_attrs, :usage, :init
+
+    RecordAlreadyExists = Class.new(StandardError)
 
     def initialize(subject, scope, usage, init = nil)
       @subject = subject
@@ -270,10 +297,8 @@ class InternalId < ApplicationRecord
 
       return next_iid if next_iid
 
-      create_record!(subject, scope, usage, init) do |iid|
-        iid.last_value += 1
-      end
-    rescue ActiveRecord::RecordNotUnique
+      create_record!(subject, scope, usage, initial_value(subject, scope) + 1)
+    rescue RecordAlreadyExists
       retry
     end
 
@@ -302,10 +327,8 @@ class InternalId < ApplicationRecord
       next_iid = update_record!(subject, scope, usage, function)
       return next_iid if next_iid
 
-      create_record!(subject, scope, usage, init) do |object|
-        object.last_value = [object.last_value, new_value].max
-      end
-    rescue ActiveRecord::RecordNotUnique
+      create_record!(subject, scope, usage, [initial_value(subject, scope), new_value].max)
+    rescue RecordAlreadyExists
       retry
     end
 
@@ -317,27 +340,56 @@ class InternalId < ApplicationRecord
       stmt.set(arel_table[:last_value] => new_value)
       stmt.wheres = InternalId.filter_by(scope, usage).arel.constraints
 
-      ActiveRecord::Base.connection.insert(stmt, 'Update InternalId', 'last_value') # rubocop: disable Database/MultipleDatabases
+      InternalId.connection.insert(stmt, 'Update InternalId', 'last_value')
     end
 
-    def create_record!(subject, scope, usage, init)
-      raise ArgumentError, 'Cannot initialize without init!' unless init
+    def create_record!(subject, scope, usage, value)
+      if Feature.enabled?(:use_insert_all_in_internal_id, default_enabled: :yaml)
+        scope[:project].save! if scope[:project] && !scope[:project].persisted?
+        scope[:namespace].save! if scope[:namespace] && !scope[:namespace].persisted?
 
-      instance = subject.is_a?(::Class) ? nil : subject
+        attributes = {
+          project_id: scope[:project]&.id || scope[:project_id],
+          namespace_id: scope[:namespace]&.id || scope[:namespace_id],
+          usage: usage_value,
+          last_value: value
+        }
 
-      subject.transaction(requires_new: true) do
-        last_value = init.call(instance, scope) || 0
+        result = InternalId.insert_all([attributes])
 
-        internal_id = InternalId.create!(**scope, usage: usage, last_value: last_value) do |subject|
-          yield subject if block_given?
+        raise RecordAlreadyExists if result.empty?
+
+        value
+      else
+        begin
+          subject.transaction(requires_new: true) do
+            internal_id = InternalId.create!(**scope, usage: usage, last_value: value)
+            internal_id.last_value
+          end
+        rescue ActiveRecord::RecordNotUnique
+          raise RecordAlreadyExists
         end
-
-        internal_id.last_value
       end
     end
 
     def arel_table
       InternalId.arel_table
+    end
+
+    def initial_value(subject, scope)
+      raise ArgumentError, 'Cannot initialize without init!' unless init
+
+      # `init` computes the maximum based on actual records. We use the
+      # primary to make sure we have up to date results
+      Gitlab::Database::LoadBalancing::Session.current.use_primary do
+        instance = subject.is_a?(::Class) ? nil : subject
+
+        init.call(instance, scope) || 0
+      end
+    end
+
+    def usage_value
+      @usage_value ||= InternalId.usages[usage.to_s]
     end
   end
 end

@@ -93,6 +93,44 @@ RSpec.describe API::Internal::Kubernetes do
     end
   end
 
+  describe 'POST /internal/kubernetes/agent_configuration' do
+    def send_request(headers: {}, params: {})
+      post api('/internal/kubernetes/agent_configuration'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:agent) { create(:cluster_agent, project: project) }
+    let_it_be(:config) do
+      {
+        ci_access: {
+          groups: [
+            { id: group.full_path, default_namespace: 'production' }
+          ]
+        }
+      }
+    end
+
+    include_examples 'authorization'
+
+    context 'agent exists' do
+      it 'configures the agent and returns a 204' do
+        send_request(params: { agent_id: agent.id, agent_config: config })
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(agent.authorized_groups).to contain_exactly(group)
+      end
+    end
+
+    context 'agent does not exist' do
+      it 'returns a 404' do
+        send_request(params: { agent_id: -1, agent_config: config })
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /internal/kubernetes/agent_info' do
     def send_request(headers: {}, params: {})
       get api('/internal/kubernetes/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)

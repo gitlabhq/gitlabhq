@@ -10,7 +10,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
   let_it_be(:finished_migration) { create(:batched_background_migration, table_name: 'finished', status: :finished) }
 
   before_all do
-    create(:batched_background_migration_job, batched_migration: failed_migration, batch_size: 30, status: :succeeded)
+    create(:batched_background_migration_job, batched_migration: failed_migration, batch_size: 10, min_value: 6, max_value: 15, status: :failed, attempts: 3)
   end
 
   before do
@@ -53,22 +53,35 @@ RSpec.describe "Admin > Admin sees background migrations" do
     end
   end
 
-  it 'can view failed migrations' do
-    visit admin_background_migrations_path
+  context 'when there are failed migrations' do
+    before do
+      allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+        allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
+      end
+    end
 
-    within '#content-body' do
-      tab = find_link 'Failed'
-      tab.click
+    it 'can view and retry them' do
+      visit admin_background_migrations_path
 
-      expect(page).to have_current_path(admin_background_migrations_path(tab: 'failed'))
-      expect(tab[:class]).to include('gl-tab-nav-item-active', 'gl-tab-nav-item-active-indigo')
+      within '#content-body' do
+        tab = find_link 'Failed'
+        tab.click
 
-      expect(page).to have_selector('tbody tr', count: 1)
+        expect(page).to have_current_path(admin_background_migrations_path(tab: 'failed'))
+        expect(tab[:class]).to include('gl-tab-nav-item-active', 'gl-tab-nav-item-active-indigo')
 
-      expect(page).to have_content(failed_migration.job_class_name)
-      expect(page).to have_content(failed_migration.table_name)
-      expect(page).to have_content('30.00%')
-      expect(page).to have_content(failed_migration.status.humanize)
+        expect(page).to have_selector('tbody tr', count: 1)
+
+        expect(page).to have_content(failed_migration.job_class_name)
+        expect(page).to have_content(failed_migration.table_name)
+        expect(page).to have_content('0.00%')
+        expect(page).to have_content(failed_migration.status.humanize)
+
+        click_button('Retry')
+        expect(page).not_to have_content(failed_migration.job_class_name)
+        expect(page).not_to have_content(failed_migration.table_name)
+        expect(page).not_to have_content('0.00%')
+      end
     end
   end
 

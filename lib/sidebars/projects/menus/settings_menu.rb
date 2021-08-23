@@ -21,11 +21,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          edit_project_path(context.project)
-        end
-
         override :title
         def title
           _('Settings')

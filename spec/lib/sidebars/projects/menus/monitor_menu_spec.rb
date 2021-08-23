@@ -49,25 +49,6 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
     end
   end
 
-  describe '#link' do
-    let(:foo_path) { '/foo_path'}
-
-    let(:foo_menu) do
-      ::Sidebars::MenuItem.new(
-        title: 'foo',
-        link: foo_path,
-        active_routes: {},
-        item_id: :foo
-      )
-    end
-
-    it 'returns first visible item link' do
-      subject.insert_element_before(subject.renderable_items, subject.renderable_items.first.item_id, foo_menu)
-
-      expect(subject.link).to eq foo_path
-    end
-  end
-
   context 'Menu items' do
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 

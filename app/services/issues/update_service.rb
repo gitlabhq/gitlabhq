@@ -54,28 +54,10 @@ module Issues
       end
 
       handle_assignee_changes(issue, old_assignees)
-
-      if issue.previous_changes.include?('confidential')
-        # don't enqueue immediately to prevent todos removal in case of a mistake
-        TodosDestroyer::ConfidentialIssueWorker.perform_in(Todo::WAIT_FOR_DELETE, issue.id) if issue.confidential?
-        create_confidentiality_note(issue)
-        track_usage_event(:incident_management_incident_change_confidential, current_user.id)
-      end
-
-      added_labels = issue.labels - old_labels
-
-      if added_labels.present?
-        notification_service.async.relabeled_issue(issue, added_labels, current_user)
-      end
-
+      handle_confidential_change(issue)
+      handle_added_labels(issue, old_labels)
       handle_milestone_change(issue)
-
-      added_mentions = issue.mentioned_users(current_user) - old_mentioned_users
-
-      if added_mentions.present?
-        notification_service.async.new_mentions_in_issue(issue, added_mentions, current_user)
-      end
-
+      handle_added_mentions(issue, old_mentioned_users)
       handle_severity_change(issue, old_severity)
       handle_issue_type_change(issue)
     end
@@ -157,6 +139,23 @@ module Issues
       MergeRequests::CreateFromIssueService.new(project: project, current_user: current_user, mr_params: create_merge_request_params).execute
     end
 
+    def handle_confidential_change(issue)
+      if issue.previous_changes.include?('confidential')
+        # don't enqueue immediately to prevent todos removal in case of a mistake
+        TodosDestroyer::ConfidentialIssueWorker.perform_in(Todo::WAIT_FOR_DELETE, issue.id) if issue.confidential?
+        create_confidentiality_note(issue)
+        track_usage_event(:incident_management_incident_change_confidential, current_user.id)
+      end
+    end
+
+    def handle_added_labels(issue, old_labels)
+      added_labels = issue.labels - old_labels
+
+      if added_labels.present?
+        notification_service.async.relabeled_issue(issue, added_labels, current_user)
+      end
+    end
+
     def handle_milestone_change(issue)
       return unless issue.previous_changes.include?('milestone_id')
 
@@ -182,6 +181,14 @@ module Issues
         notification_service.async.removed_milestone_issue(issue, current_user)
       else
         notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
+      end
+    end
+
+    def handle_added_mentions(issue, old_mentioned_users)
+      added_mentions = issue.mentioned_users(current_user) - old_mentioned_users
+
+      if added_mentions.present?
+        notification_service.async.new_mentions_in_issue(issue, added_mentions, current_user)
       end
     end
 

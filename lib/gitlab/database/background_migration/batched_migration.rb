@@ -68,6 +68,17 @@ module Gitlab
           )
         end
 
+        def retry_failed_jobs!
+          batched_jobs.failed.each_batch(of: 100) do |batch|
+            self.class.transaction do
+              batch.lock.each(&:split_and_retry!)
+              self.active!
+            end
+          end
+
+          self.active!
+        end
+
         def next_min_value
           last_job&.max_value&.next || min_value
         end

@@ -250,6 +250,10 @@
   .commit-row-description {
     display: none;
     flex: 1;
+
+    a {
+      color: $blue-600;
+    }
   }
 
   &.inline-commit {

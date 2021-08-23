@@ -33,10 +33,9 @@ module Sidebars
       has_renderable_items? || menu_with_partial?
     end
 
-    # Menus might have or not a link
     override :link
     def link
-      nil
+      renderable_items.first&.link
     end
 
     # This method normalizes the information retrieved from the submenus and this menu

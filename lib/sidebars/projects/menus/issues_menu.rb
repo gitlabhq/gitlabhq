@@ -18,11 +18,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          project_issues_path(context.project)
-        end
-
         override :extra_container_html_options
         def extra_container_html_options
           {

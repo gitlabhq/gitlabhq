@@ -8958,6 +8958,22 @@ CREATE SEQUENCE abuse_reports_id_seq
 
 ALTER SEQUENCE abuse_reports_id_seq OWNED BY abuse_reports.id;
 
+CREATE TABLE agent_group_authorizations (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    agent_id bigint NOT NULL,
+    config jsonb NOT NULL
+);
+
+CREATE SEQUENCE agent_group_authorizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE agent_group_authorizations_id_seq OWNED BY agent_group_authorizations.id;
+
 CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -9746,7 +9762,7 @@ CREATE TABLE approval_project_rules (
     name character varying NOT NULL,
     rule_type smallint DEFAULT 0 NOT NULL,
     scanners text[],
-    vulnerabilities_allowed smallint,
+    vulnerabilities_allowed smallint DEFAULT 0 NOT NULL,
     severity_levels text[] DEFAULT '{}'::text[] NOT NULL
 );
 
@@ -20066,6 +20082,8 @@ ALTER SEQUENCE zoom_meetings_id_seq OWNED BY zoom_meetings.id;
 
 ALTER TABLE ONLY abuse_reports ALTER COLUMN id SET DEFAULT nextval('abuse_reports_id_seq'::regclass);
 
+ALTER TABLE ONLY agent_group_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_group_authorizations_id_seq'::regclass);
+
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_user_mentions ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_user_mentions_id_seq'::regclass);
@@ -21189,6 +21207,9 @@ ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY agent_group_authorizations
+    ADD CONSTRAINT agent_group_authorizations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
@@ -23112,6 +23133,10 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_issue_
 CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_type ON vulnerability_issue_links USING btree (vulnerability_id, link_type) WHERE (link_type = 2);
 
 CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);
+
+CREATE UNIQUE INDEX index_agent_group_authorizations_on_agent_id_and_group_id ON agent_group_authorizations USING btree (agent_id, group_id);
+
+CREATE INDEX index_agent_group_authorizations_on_group_id ON agent_group_authorizations USING btree (group_id);
 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
@@ -26293,6 +26318,9 @@ ALTER TABLE ONLY geo_event_log
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_289bba3222 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY agent_group_authorizations
+    ADD CONSTRAINT fk_2c9f941965 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_freeze_periods
     ADD CONSTRAINT fk_2e02bbd1a6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -26952,6 +26980,9 @@ ALTER TABLE ONLY dep_ci_build_trace_section_names
 
 ALTER TABLE ONLY ci_stages
     ADD CONSTRAINT fk_fb57e6cc56 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY agent_group_authorizations
+    ADD CONSTRAINT fk_fb70782616 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_fbd87415c9 FOREIGN KEY (description_version_id) REFERENCES description_versions(id) ON DELETE SET NULL;

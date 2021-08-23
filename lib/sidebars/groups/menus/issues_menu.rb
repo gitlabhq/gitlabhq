@@ -17,11 +17,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          issues_group_path(context.group)
-        end
-
         override :title
         def title
           _('Issues')

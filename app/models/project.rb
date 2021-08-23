@@ -2093,6 +2093,10 @@ class Project < ApplicationRecord
         # Docker doesn't allow. The proxy expects it to be downcased.
         value: "#{Gitlab.host_with_port}/#{namespace.root_ancestor.path.downcase}#{DependencyProxy::URL_SUFFIX}"
       )
+      variables.append(
+        key: 'CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX',
+        value: "#{Gitlab.host_with_port}/#{namespace.full_path.downcase}#{DependencyProxy::URL_SUFFIX}"
+      )
     end
   end
 

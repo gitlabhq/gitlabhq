@@ -4,6 +4,7 @@ module Gitlab
   module Database
     module BackgroundMigration
       class BatchedJob < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
+        include EachBatch
         include FromUnion
 
         self.table_name = :batched_background_migration_jobs

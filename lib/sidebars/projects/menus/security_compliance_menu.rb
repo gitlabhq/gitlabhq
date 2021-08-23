@@ -15,11 +15,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          renderable_items.first&.link
-        end
-
         override :title
         def title
           _('Security & Compliance')

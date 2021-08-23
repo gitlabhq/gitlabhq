@@ -41,7 +41,8 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. Read-only inside a running pipeline. |
 | `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](index.md#debug-logging) is enabled. |
 | `CI_DEFAULT_BRANCH`                      | 12.4   | all    | The name of the project's default branch. |
-| `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` | 13.7   | all    | The image prefix for pulling images through the Dependency Proxy. |
+| `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` | 13.7   | all    | The top-level group image prefix for pulling images through the Dependency Proxy. |
+| `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX` | 14.3   | all    | The direct group image prefix for pulling images through the Dependency Proxy. |
 | `CI_DEPENDENCY_PROXY_PASSWORD`           | 13.7   | all    | The password to pull images through the Dependency Proxy. |
 | `CI_DEPENDENCY_PROXY_SERVER`             | 13.7   | all    | The server for logging in to the Dependency Proxy. This is equivalent to `$CI_SERVER_HOST:$CI_SERVER_PORT`. |
 | `CI_DEPENDENCY_PROXY_USER`               | 13.7   | all    | The username to pull images through the Dependency Proxy. |

@@ -19,11 +19,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          edit_group_path(context.group)
-        end
-
         override :title
         def title
           _('Settings')

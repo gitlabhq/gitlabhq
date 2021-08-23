@@ -238,16 +238,48 @@ RSpec.describe InternalId do
     end
   end
 
-  context 'when the feature flag is disabled' do
-    stub_feature_flags(generate_iids_without_explicit_locking: false)
+  context 'when the explicit locking feature flag is disabled' do
+    before do
+      stub_feature_flags(generate_iids_without_explicit_locking: false)
+    end
 
-    it_behaves_like 'a monotonically increasing id generator'
+    context 'when the insert all feature flag is enabled' do
+      before do
+        stub_feature_flags(use_insert_all_in_internal_id: true)
+      end
+
+      it_behaves_like 'a monotonically increasing id generator'
+    end
+
+    context 'when the insert all feature flag is disabled' do
+      before do
+        stub_feature_flags(use_insert_all_in_internal_id: false)
+      end
+
+      it_behaves_like 'a monotonically increasing id generator'
+    end
   end
 
-  context 'when the feature flag is enabled' do
-    stub_feature_flags(generate_iids_without_explicit_locking: true)
+  context 'when the explicit locking feature flag is enabled' do
+    before do
+      stub_feature_flags(generate_iids_without_explicit_locking: true)
+    end
 
-    it_behaves_like 'a monotonically increasing id generator'
+    context 'when the insert all feature flag is enabled' do
+      before do
+        stub_feature_flags(use_insert_all_in_internal_id: true)
+      end
+
+      it_behaves_like 'a monotonically increasing id generator'
+    end
+
+    context 'when the insert all feature flag is disabled' do
+      before do
+        stub_feature_flags(use_insert_all_in_internal_id: false)
+      end
+
+      it_behaves_like 'a monotonically increasing id generator'
+    end
   end
 
   describe '#increment_and_save!' do
