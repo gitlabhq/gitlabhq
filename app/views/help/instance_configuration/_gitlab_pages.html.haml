@@ -28,8 +28,3 @@
           %td= _('Port')
           %td
             %code= instance_configuration_cell_html(gitlab_pages[:port])
-  %br
-
-  %p
-    - link_to_gitlab_ci = link_to(_('GitLab CI'), '#gitlab-ci')
-    = _("The maximum size of your Pages site is regulated by the artifacts maximum size which is part of %{link_to_gitlab_ci}.").html_safe % { link_to_gitlab_ci: link_to_gitlab_ci }

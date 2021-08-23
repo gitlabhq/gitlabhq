@@ -169,6 +169,22 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
           it { expect(entry).to be_valid }
         end
       end
+
+      context 'when rules are used' do
+        let(:config) { { script: 'ls', cache: { key: 'test' }, rules: rules } }
+
+        let(:rules) do
+          [
+            { if: '$CI_PIPELINE_SOURCE == "schedule"', when: 'never' },
+            [
+              { if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+              { if: '$CI_PIPELINE_SOURCE == "merge_request_event"' }
+            ]
+          ]
+        end
+
+        it { expect(entry).to be_valid }
+      end
     end
 
     context 'when entry value is not correct' do
@@ -483,6 +499,70 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
             expect(entry).not_to be_valid
             expect(entry.errors).to include "release description can't be blank"
           end
+        end
+      end
+
+      context 'when invalid rules are used' do
+        let(:config) { { script: 'ls', cache: { key: 'test' }, rules: rules } }
+
+        context 'with rules nested more than max allowed levels' do
+          let(:sample_rule) { { if: '$THIS == "other"', when: 'always' } }
+
+          let(:rules) do
+            [
+              { if: '$THIS == "that"', when: 'always' },
+              [
+                { if: '$SKIP', when: 'never' },
+                [
+                  sample_rule,
+                  [
+                    sample_rule,
+                    [
+                      sample_rule,
+                      [
+                        sample_rule,
+                        [
+                          sample_rule,
+                          [
+                            sample_rule,
+                            [
+                              sample_rule,
+                              [
+                                sample_rule,
+                                [
+                                  sample_rule,
+                                  [
+                                    sample_rule,
+                                    [sample_rule]
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          end
+
+          it { expect(entry).not_to be_valid }
+        end
+
+        context 'with rules with invalid keys' do
+          let(:rules) do
+            [
+              { invalid_key: 'invalid' },
+              [
+                { if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+                { if: '$CI_PIPELINE_SOURCE == "merge_request_event"' }
+              ]
+            ]
+          end
+
+          it { expect(entry).not_to be_valid }
         end
       end
     end

@@ -76,24 +76,46 @@ RSpec.describe InstanceConfiguration do
         end
       end
 
-      describe '#gitlab_ci' do
-        let(:gitlab_ci) { subject.settings[:gitlab_ci] }
-
-        it 'returns Settings.gitalb_ci' do
-          gitlab_ci.delete(:artifacts_max_size)
-
-          expect(gitlab_ci).to eq(Settings.gitlab_ci.symbolize_keys)
+      describe '#size_limits' do
+        before do
+          Gitlab::CurrentSettings.current_application_settings.update!(
+            max_attachment_size: 10,
+            receive_max_input_size: 20,
+            max_import_size: 30,
+            diff_max_patch_bytes: 409600,
+            max_artifacts_size: 50,
+            max_pages_size: 60,
+            snippet_size_limit: 70
+          )
         end
 
-        it 'returns the key artifacts_max_size' do
-          expect(gitlab_ci.keys).to include(:artifacts_max_size)
+        it 'returns size limits from application settings' do
+          size_limits = subject.settings[:size_limits]
+
+          expect(size_limits[:max_attachment_size]).to eq(10.megabytes)
+          expect(size_limits[:receive_max_input_size]).to eq(20.megabytes)
+          expect(size_limits[:max_import_size]).to eq(30.megabytes)
+          expect(size_limits[:diff_max_patch_bytes]).to eq(400.kilobytes)
+          expect(size_limits[:max_artifacts_size]).to eq(50.megabytes)
+          expect(size_limits[:max_pages_size]).to eq(60.megabytes)
+          expect(size_limits[:snippet_size_limit]).to eq(70.bytes)
         end
 
-        it 'returns the key artifacts_max_size with values' do
-          stub_application_setting(max_artifacts_size: 200)
+        it 'returns nil if receive_max_input_size not set' do
+          Gitlab::CurrentSettings.current_application_settings.update!(receive_max_input_size: nil)
 
-          expect(gitlab_ci[:artifacts_max_size][:default]).to eq(100.megabytes)
-          expect(gitlab_ci[:artifacts_max_size][:value]).to eq(200.megabytes)
+          size_limits = subject.settings[:size_limits]
+
+          expect(size_limits[:receive_max_input_size]).to be_nil
+        end
+
+        it 'returns nil if set to 0 (unlimited)' do
+          Gitlab::CurrentSettings.current_application_settings.update!(max_import_size: 0, max_pages_size: 0)
+
+          size_limits = subject.settings[:size_limits]
+
+          expect(size_limits[:max_import_size]).to be_nil
+          expect(size_limits[:max_pages_size]).to be_nil
         end
       end
 

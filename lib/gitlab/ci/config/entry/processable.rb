@@ -16,6 +16,7 @@ module Gitlab
 
           PROCESSABLE_ALLOWED_KEYS = %i[extends stage only except rules variables
                                         inherit allow_failure when needs resource_group].freeze
+          MAX_NESTING_LEVEL = 10
 
           included do
             validations do
@@ -31,7 +32,7 @@ module Gitlab
 
               with_options allow_nil: true do
                 validates :extends, array_of_strings_or_string: true
-                validates :rules, nested_array_of_hashes: true
+                validates :rules, nested_array_of_hashes_or_arrays: { max_level: MAX_NESTING_LEVEL }
                 validates :resource_group, type: String
               end
             end

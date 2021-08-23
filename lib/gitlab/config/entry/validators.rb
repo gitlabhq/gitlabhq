@@ -90,13 +90,21 @@ module Gitlab
           end
         end
 
-        class NestedArrayOfHashesValidator < ArrayOfHashesValidator
+        class NestedArrayOfHashesOrArraysValidator < ArrayOfHashesValidator
           include NestedArrayHelpers
 
           def validate_each(record, attribute, value)
-            unless validate_nested_array(value, 1, &method(:validate_array_of_hashes))
+            max_level = options.fetch(:max_level, 1)
+
+            unless validate_nested_array(value, max_level, &method(:validate_hash))
               record.errors.add(attribute, 'should be an array containing hashes and arrays of hashes')
             end
+          end
+
+          private
+
+          def validate_hash(value)
+            value.is_a?(Hash)
           end
         end
 

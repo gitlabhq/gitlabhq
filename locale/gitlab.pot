@@ -4531,9 +4531,6 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-msgid "Artifacts maximum size"
-msgstr ""
-
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
@@ -5136,9 +5133,6 @@ msgid "Before this can be merged, a Jira issue must be linked in the title or de
 msgstr ""
 
 msgid "Begin with the selected commit"
-msgstr ""
-
-msgid "Below are the current settings regarding"
 msgstr ""
 
 msgid "Below are the fingerprints for the current instance SSH host keys."
@@ -10660,9 +10654,6 @@ msgstr ""
 msgid "Decrease"
 msgstr ""
 
-msgid "Default"
-msgstr ""
-
 msgid "Default CI/CD configuration file"
 msgstr ""
 
@@ -15231,9 +15222,6 @@ msgid "GitLab Account Request"
 msgstr ""
 
 msgid "GitLab Billing Team."
-msgstr ""
-
-msgid "GitLab CI"
 msgstr ""
 
 msgid "GitLab Import"
@@ -20622,6 +20610,9 @@ msgstr ""
 msgid "Maximum artifacts size (MB)"
 msgstr ""
 
+msgid "Maximum attachment size"
+msgstr ""
+
 msgid "Maximum attachment size (MB)"
 msgstr ""
 
@@ -20638,6 +20629,9 @@ msgid "Maximum concurrency of Elasticsearch bulk requests per indexing operation
 msgstr ""
 
 msgid "Maximum delay (Minutes)"
+msgstr ""
+
+msgid "Maximum diff patch size"
 msgstr ""
 
 msgid "Maximum diff patch size (Bytes)"
@@ -20667,7 +20661,13 @@ msgstr ""
 msgid "Maximum files in a diff"
 msgstr ""
 
+msgid "Maximum import size"
+msgstr ""
+
 msgid "Maximum import size (MB)"
+msgstr ""
+
+msgid "Maximum job artifact size"
 msgstr ""
 
 msgid "Maximum job timeout"
@@ -20703,6 +20703,12 @@ msgstr ""
 msgid "Maximum page reached"
 msgstr ""
 
+msgid "Maximum page size"
+msgstr ""
+
+msgid "Maximum push size"
+msgstr ""
+
 msgid "Maximum push size (MB)"
 msgstr ""
 
@@ -20725,6 +20731,9 @@ msgid "Maximum size of individual attachments in comments."
 msgstr ""
 
 msgid "Maximum size of pages (MB)"
+msgstr ""
+
+msgid "Maximum snippet size"
 msgstr ""
 
 msgid "Maximum time between updates that a mirror can have when scheduled to synchronize."
@@ -30949,6 +30958,9 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
+msgid "Size Limits"
+msgstr ""
+
 msgid "Size limit per repository (MB)"
 msgstr ""
 
@@ -33337,9 +33349,6 @@ msgstr ""
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
 msgstr ""
 
-msgid "The maximum size of your Pages site is regulated by the artifacts maximum size which is part of %{link_to_gitlab_ci}."
-msgstr ""
-
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
 msgstr ""
 
@@ -33635,6 +33644,9 @@ msgid "There are several file size limits in place for the Package Registry."
 msgstr ""
 
 msgid "There are several rate limits in place to protect the system."
+msgstr ""
+
+msgid "There are several size limits in place."
 msgstr ""
 
 msgid "There is a halted Elasticsearch migration"
