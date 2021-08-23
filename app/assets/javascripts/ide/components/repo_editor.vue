@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   EDITOR_TYPE_DIFF,
+  EDITOR_TYPE_CODE,
   EDITOR_CODE_INSTANCE_FN,
   EDITOR_DIFF_INSTANCE_FN,
 } from '~/editor/constants';
@@ -311,7 +312,10 @@ export default {
           }),
         );
 
-        if (this.fileType === MARKDOWN_FILE_TYPE) {
+        if (
+          this.fileType === MARKDOWN_FILE_TYPE &&
+          this.editor?.getEditorType() === EDITOR_TYPE_CODE
+        ) {
           import('~/editor/extensions/source_editor_markdown_ext')
             .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
               this.editor.use(
