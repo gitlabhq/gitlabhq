@@ -742,6 +742,9 @@ database encryption. Proceed with caution.
    gitlab_pages['gitlab_server'] = 'http://<gitlab_server_IP_or_URL>'
    ```
 
+1. If you have custom UID/GID settings on the **GitLab server**, add them to the **Pages server** `/etc/gitlab/gitlab.rb` as well,
+   otherwise running a `gitlab-ctl reconfigure` on the **GitLab server** can change file ownership and cause Pages requests to fail.
+
 1. Create a backup of the secrets file on the **Pages server**:
 
    ```shell

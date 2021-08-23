@@ -2,6 +2,7 @@ import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -14,16 +15,20 @@ import RunnerPagination from '~/runner/components/runner_pagination.vue';
 import RunnerTypeHelp from '~/runner/components/runner_type_help.vue';
 
 import {
+  ADMIN_FILTERED_SEARCH_NAMESPACE,
   CREATED_ASC,
   CREATED_DESC,
   DEFAULT_SORT,
   INSTANCE_TYPE,
   PARAM_KEY_STATUS,
+  PARAM_KEY_RUNNER_TYPE,
+  PARAM_KEY_TAG,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import { captureException } from '~/runner/sentry_utils';
+import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 import { runnersData, runnersDataPaginated } from '../mock_data';
 
@@ -47,10 +52,14 @@ describe('AdminRunnersApp', () => {
   const findRunnerTypeHelp = () => wrapper.findComponent(RunnerTypeHelp);
   const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
-  const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
+  const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
+  const findRunnerPaginationPrev = () =>
+    findRunnerPagination().findByLabelText('Go to previous page');
+  const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
+  const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
-  const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
     const handlers = [[getRunnersQuery, mockRunnersQuery]];
 
     wrapper = mountFn(AdminRunnersApp, {
@@ -68,7 +77,7 @@ describe('AdminRunnersApp', () => {
     setWindowLocation('/admin/runners');
 
     mockRunnersQuery = jest.fn().mockResolvedValue(runnersData);
-    createComponentWithApollo();
+    createComponent();
     await waitForPromises();
   });
 
@@ -77,8 +86,16 @@ describe('AdminRunnersApp', () => {
     wrapper.destroy();
   });
 
+  it('shows the runner type help', () => {
+    expect(findRunnerTypeHelp().exists()).toBe(true);
+  });
+
+  it('shows the runner setup instructions', () => {
+    expect(findRunnerManualSetupHelp().props('registrationToken')).toBe(mockRegistrationToken);
+  });
+
   it('shows the runners list', () => {
-    expect(runnersData.data.runners.nodes).toMatchObject(findRunnerList().props('runners'));
+    expect(findRunnerList().props('runners')).toEqual(runnersData.data.runners.nodes);
   });
 
   it('requests the runners with no filters', () => {
@@ -90,20 +107,38 @@ describe('AdminRunnersApp', () => {
     });
   });
 
-  it('shows the runner type help', () => {
-    expect(findRunnerTypeHelp().exists()).toBe(true);
+  it('sets tokens in the filtered search', () => {
+    createComponent({ mountFn: mount });
+
+    expect(findFilteredSearch().props('tokens')).toEqual([
+      expect.objectContaining({
+        type: PARAM_KEY_STATUS,
+        options: expect.any(Array),
+      }),
+      expect.objectContaining({
+        type: PARAM_KEY_RUNNER_TYPE,
+        options: expect.any(Array),
+      }),
+      expect.objectContaining({
+        type: PARAM_KEY_TAG,
+        recentTokenValuesStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
+      }),
+    ]);
   });
 
-  it('shows the runner setup instructions', () => {
-    expect(findRunnerManualSetupHelp().exists()).toBe(true);
-    expect(findRunnerManualSetupHelp().props('registrationToken')).toBe(mockRegistrationToken);
+  it('shows the active runner count', () => {
+    createComponent({ mountFn: mount });
+
+    expect(findRunnerFilteredSearchBar().text()).toMatch(
+      `Runners currently online: ${mockActiveRunnersCount}`,
+    );
   });
 
   describe('when a filter is preselected', () => {
     beforeEach(async () => {
       setWindowLocation(`?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
 
-      createComponentWithApollo();
+      createComponent();
       await waitForPromises();
     });
 
@@ -133,7 +168,7 @@ describe('AdminRunnersApp', () => {
   describe('when a filter is selected by the user', () => {
     beforeEach(() => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
-        filters: [{ type: PARAM_KEY_STATUS, value: { data: 'ACTIVE', operator: '=' } }],
+        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } }],
         sort: CREATED_ASC,
       });
     });
@@ -154,11 +189,19 @@ describe('AdminRunnersApp', () => {
     });
   });
 
+  it('when runners have not loaded, shows a loading state', () => {
+    createComponent();
+    expect(findRunnerList().props('loading')).toBe(true);
+  });
+
   describe('when no runners are found', () => {
     beforeEach(async () => {
-      mockRunnersQuery = jest.fn().mockResolvedValue({ data: { runners: { nodes: [] } } });
-      createComponentWithApollo();
-      await waitForPromises();
+      mockRunnersQuery = jest.fn().mockResolvedValue({
+        data: {
+          runners: { nodes: [] },
+        },
+      });
+      createComponent();
     });
 
     it('shows a message for no results', async () => {
@@ -166,17 +209,14 @@ describe('AdminRunnersApp', () => {
     });
   });
 
-  it('when runners have not loaded, shows a loading state', () => {
-    createComponentWithApollo();
-    expect(findRunnerList().props('loading')).toBe(true);
-  });
-
   describe('when runners query fails', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mockRunnersQuery = jest.fn().mockRejectedValue(new Error('Error!'));
-      createComponentWithApollo();
+      createComponent();
+    });
 
-      await waitForPromises();
+    it('error is shown to the user', async () => {
+      expect(createFlash).toHaveBeenCalledTimes(1);
     });
 
     it('error is reported to sentry', async () => {
@@ -185,17 +225,13 @@ describe('AdminRunnersApp', () => {
         component: 'AdminRunnersApp',
       });
     });
-
-    it('error is shown to the user', async () => {
-      expect(createFlash).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('Pagination', () => {
     beforeEach(() => {
       mockRunnersQuery = jest.fn().mockResolvedValue(runnersDataPaginated);
 
-      createComponentWithApollo({ mountFn: mount });
+      createComponent({ mountFn: mount });
     });
 
     it('more pages can be selected', () => {
@@ -203,14 +239,11 @@ describe('AdminRunnersApp', () => {
     });
 
     it('cannot navigate to the previous page', () => {
-      expect(findRunnerPagination().find('[aria-disabled]').text()).toBe('Prev');
+      expect(findRunnerPaginationPrev().attributes('aria-disabled')).toBe('true');
     });
 
     it('navigates to the next page', async () => {
-      const nextPageBtn = findRunnerPagination().find('a');
-      expect(nextPageBtn.text()).toBe('Next');
-
-      await nextPageBtn.trigger('click');
+      await findRunnerPaginationNext().trigger('click');
 
       expect(mockRunnersQuery).toHaveBeenLastCalledWith({
         sort: CREATED_DESC,

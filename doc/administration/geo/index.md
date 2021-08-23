@@ -214,7 +214,7 @@ For information on configuring Geo, see [Geo configuration](replication/configur
 
 ### Updating Geo
 
-For information on how to update your Geo site(s) to the latest GitLab version, see [Updating the Geo sites](replication/updating_the_geo_nodes.md).
+For information on how to update your Geo site(s) to the latest GitLab version, see [Updating the Geo sites](replication/updating_the_geo_sites.md).
 
 ### Pausing and resuming replication
 
@@ -230,7 +230,7 @@ WARNING:
 Pausing and resuming of replication is currently only supported for Geo installations using an
 Omnibus GitLab-managed database. External databases are currently not supported.
 
-In some circumstances, like during [upgrades](replication/updating_the_geo_nodes.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
+In some circumstances, like during [upgrades](replication/updating_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the a node in the secondary site where the `postgresql` service is enabled.
 

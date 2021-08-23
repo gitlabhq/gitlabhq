@@ -1,0 +1,35 @@
+#import "~/runner/graphql/runner_node.fragment.graphql"
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
+query getGroupRunners(
+  $groupFullPath: ID!
+  $before: String
+  $after: String
+  $first: Int
+  $last: Int
+  $status: CiRunnerStatus
+  $type: CiRunnerType
+  $search: String
+  $sort: CiRunnerSort
+) {
+  group(fullPath: $groupFullPath) {
+    runners(
+      membership: DESCENDANTS
+      before: $before
+      after: $after
+      first: $first
+      last: $last
+      status: $status
+      type: $type
+      search: $search
+      sort: $sort
+    ) {
+      nodes {
+        ...RunnerNode
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

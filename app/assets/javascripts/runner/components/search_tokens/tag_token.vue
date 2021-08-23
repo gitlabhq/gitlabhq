@@ -33,6 +33,7 @@ export default {
       // The API should
       // 1) scope to the rights of the user
       // 2) stay up to date to the removal of old tags
+      // 3) consider the scope of search, like searching within the tags of a group
       // See: https://gitlab.com/gitlab-org/gitlab/-/issues/333796
       return axios
         .get(TAG_SUGGESTIONS_PATH, {

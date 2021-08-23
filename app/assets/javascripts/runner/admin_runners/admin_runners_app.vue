@@ -2,12 +2,16 @@
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
+import { formatNumber, sprintf, __ } from '~/locale';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerManualSetupHelp from '../components/runner_manual_setup_help.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeHelp from '../components/runner_type_help.vue';
-import { INSTANCE_TYPE, I18N_FETCH_ERROR } from '../constants';
+import { statusTokenConfig } from '../components/search_tokens/status_token_config';
+import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
+import { typeTokenConfig } from '../components/search_tokens/type_token_config';
+import { ADMIN_FILTERED_SEARCH_NAMESPACE, INSTANCE_TYPE, I18N_FETCH_ERROR } from '../constants';
 import getRunnersQuery from '../graphql/get_runners.query.graphql';
 import {
   fromUrlQueryToSearch,
@@ -78,6 +82,21 @@ export default {
     noRunnersFound() {
       return !this.runnersLoading && !this.runners.items.length;
     },
+    activeRunnersMessage() {
+      return sprintf(__('Runners currently online: %{active_runners_count}'), {
+        active_runners_count: formatNumber(this.activeRunnersCount),
+      });
+    },
+    searchTokens() {
+      return [
+        statusTokenConfig,
+        typeTokenConfig,
+        {
+          ...tagTokenConfig,
+          recentTokenValuesStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,
+        },
+      ];
+    },
   },
   watch: {
     search: {
@@ -99,6 +118,7 @@ export default {
       captureException({ error, component: this.$options.name });
     },
   },
+  filteredSearchNamespace: ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
 };
 </script>
@@ -118,9 +138,13 @@ export default {
 
     <runner-filtered-search-bar
       v-model="search"
-      namespace="admin_runners"
-      :active-runners-count="activeRunnersCount"
-    />
+      :tokens="searchTokens"
+      :namespace="$options.filteredSearchNamespace"
+    >
+      <template #runner-count>
+        {{ activeRunnersMessage }}
+      </template>
+    </runner-filtered-search-bar>
 
     <div v-if="noRunnersFound" class="gl-text-center gl-p-5">
       {{ __('No runners found') }}

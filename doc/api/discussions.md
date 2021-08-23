@@ -15,7 +15,9 @@ Discussions are a set of related notes on:
 - Merge requests
 - Commits
 
-This includes system notes, which are notes about changes to the object (for example, when a milestone changes, a corresponding system note is added). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
+This includes system notes, which are notes about changes to the object (for example,
+when a milestone changes, a corresponding system note is added). Label notes are
+not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
 
 ## Discussions pagination
 
@@ -118,7 +120,8 @@ GET /projects/:id/issues/:issue_iid/discussions
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions"
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions"
 ```
 
 ### Get single issue discussion item
@@ -138,7 +141,8 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7"
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>"
 ```
 
 ### Create new issue thread
@@ -159,7 +163,8 @@ Parameters:
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions?body=comment"
 ```
 
 ### Add note to existing issue thread
@@ -185,7 +190,8 @@ Parameters:
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
 ### Modify existing issue thread note
@@ -207,7 +213,8 @@ Parameters:
 | `body`          | string         | yes      | The content of the note/reply |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>/notes/1108?body=comment"
 ```
 
 ### Delete an issue thread note
@@ -228,7 +235,8 @@ Parameters:
 | `note_id`       | integer        | yes      | The ID of a discussion note |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/636"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/636"
 ```
 
 ## Snippets
@@ -326,7 +334,8 @@ GET /projects/:id/snippets/:snippet_id/discussions
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions"
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions"
 ```
 
 ### Get single snippet discussion item
@@ -346,7 +355,8 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>"
 ```
 
 ### Create new snippet thread
@@ -368,7 +378,8 @@ Parameters:
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions?body=comment"
 ```
 
 ### Add note to existing snippet thread
@@ -391,7 +402,8 @@ Parameters:
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
 ### Modify existing snippet thread note
@@ -413,7 +425,8 @@ Parameters:
 | `body`          | string         | yes      | The content of the note/reply |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>/notes/1108?body=comment"
 ```
 
 ### Delete a snippet thread note
@@ -434,7 +447,8 @@ Parameters:
 | `note_id`       | integer        | yes      | The ID of a discussion note |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636"
 ```
 
 ## Epics **(ULTIMATE)**
@@ -533,7 +547,8 @@ GET /groups/:id/epics/:epic_id/discussions
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions"
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions"
 ```
 
 ### Get single epic discussion item
@@ -553,7 +568,8 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>"
 ```
 
 ### Create new epic thread
@@ -575,7 +591,8 @@ Parameters:
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions?body=comment"
 ```
 
 ### Add note to existing epic thread
@@ -599,7 +616,8 @@ Parameters:
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
 ### Modify existing epic thread note
@@ -621,7 +639,8 @@ Parameters:
 | `body`          | string         | yes      | The content of note/reply |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>/notes/1108?body=comment"
 ```
 
 ### Delete an epic thread note
@@ -642,7 +661,8 @@ Parameters:
 | `note_id`       | integer        | yes      | The ID of a thread note |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/636"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/636"
 ```
 
 ## Merge requests
@@ -805,7 +825,8 @@ Diff comments also contain position:
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
 ```
 
 ### Get single merge request discussion item
@@ -825,7 +846,8 @@ Parameters:
 | `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>"
 ```
 
 ### Create new merge request thread
@@ -866,57 +888,67 @@ Parameters for all comments:
 #### Create a new thread on the overview page
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment"
 ```
 
 #### Create a new thread in the merge request diff
 
-- Both `position[old_path]` and `position[new_path]` are required and must refer to the file path before and after the change.
-- To create a thread on an added line (highlighted in green in the merge request diff), use `position[new_line]` and don't include `position[old_line]`.
-- To create a thread on a removed line (highlighted in red in the merge request diff), use `position[old_line]` and don't include `position[new_line]`.
-- To create a thread on an unchanged line, include both `position[new_line]` and `position[old_line]` for the line. These positions might not be the same if earlier changes in the file changed the line number. This is a bug that we plan to fix in [GraphQL `createDiffNote` forces clients to compute redundant information (#325161)](https://gitlab.com/gitlab-org/gitlab/-/issues/325161).
-- If you specify incorrect `base`/`head`/`start` `SHA` parameters, you might run into the following bug: [Merge request comments receive "download" link instead of inline code (#296829)](https://gitlab.com/gitlab-org/gitlab/-/issues/296829).
+- Both `position[old_path]` and `position[new_path]` are required and must refer
+  to the file path before and after the change.
+- To create a thread on an added line (highlighted in green in the merge request diff),
+  use `position[new_line]` and don't include `position[old_line]`.
+- To create a thread on a removed line (highlighted in red in the merge request diff),
+  use `position[old_line]` and don't include `position[new_line]`.
+- To create a thread on an unchanged line, include both `position[new_line]` and
+  `position[old_line]` for the line. These positions might not be the same if earlier
+  changes in the file changed the line number. This is a bug that we plan to fix in
+  [GraphQL `createDiffNote` forces clients to compute redundant information (#325161)](https://gitlab.com/gitlab-org/gitlab/-/issues/325161).
+- If you specify incorrect `base`/`head`/`start` `SHA` parameters, you might run
+  into the following bug:
+  [Merge request comments receive "download" link instead of inline code (#296829)](https://gitlab.com/gitlab-org/gitlab/-/issues/296829).
 
 To create a new thread:
 
 1. [Get the latest merge request version](merge_requests.md#get-mr-diff-versions):
 
-    ```shell
-    curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/versions"
-    ````
+   ```shell
+   curl --header "PRIVATE-TOKEN: <your_access_token>"\
+     "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/versions"
+   ```
 
 1. Note the details of the latest version, which is listed first in the response array.
 
-    ```json
-    [
-      {
-        "id": 164560414,
-        "head_commit_sha": "f9ce7e16e56c162edbc9e480108041cf6b0291fe",
-        "base_commit_sha": "5e6dffa282c5129aa67cd227a0429be21bfdaf80",
-        "start_commit_sha": "5e6dffa282c5129aa67cd227a0429be21bfdaf80",
-        "created_at": "2021-03-30T09:18:27.351Z",
-        "merge_request_id": 93958054,
-        "state": "collected",
-        "real_size": "2"
-      },
-      "previous versions are here"
-    ]
-    ```
+   ```json
+   [
+     {
+       "id": 164560414,
+       "head_commit_sha": "f9ce7e16e56c162edbc9e480108041cf6b0291fe",
+       "base_commit_sha": "5e6dffa282c5129aa67cd227a0429be21bfdaf80",
+       "start_commit_sha": "5e6dffa282c5129aa67cd227a0429be21bfdaf80",
+       "created_at": "2021-03-30T09:18:27.351Z",
+       "merge_request_id": 93958054,
+       "state": "collected",
+       "real_size": "2"
+     },
+     "previous versions are here"
+   ]
+   ```
 
 1. Create a new diff thread. This example creates a thread on an added line:
 
-    ```shell
-    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
-      --form 'position[position_type]=text'\
-      --form 'position[base_sha]=<use base_commit_sha from the versions response>'\
-      --form 'position[head_sha]=<use head_commit_sha from the versions response>'\
-      --form 'position[start_sha]=<use start_commit_sha from the versions response>'\
-      --form 'position[new_path]=file.js'\
-      --form 'position[old_path]=file.js'\
-      --form 'position[new_line]=18'\
-      --form 'body=test comment body'\
-      "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
-    ```
+   ```shell
+   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+     --form 'position[position_type]=text'\
+     --form 'position[base_sha]=<use base_commit_sha from the versions response>'\
+     --form 'position[head_sha]=<use head_commit_sha from the versions response>'\
+     --form 'position[start_sha]=<use start_commit_sha from the versions response>'\
+     --form 'position[new_path]=file.js'\
+     --form 'position[old_path]=file.js'\
+     --form 'position[new_line]=18'\
+     --form 'body=test comment body'\
+     "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
+   ```
 
 #### Parameters for multiline comments
 
@@ -960,7 +992,8 @@ Parameters:
 | `resolved`          | boolean        | yes      | Resolve/unresolve the discussion |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7?resolved=true"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>?resolved=true"
 ```
 
 ### Add note to existing merge request thread
@@ -984,7 +1017,8 @@ Parameters:
 | `created_at`        | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
 ### Modify an existing merge request thread note
@@ -1007,13 +1041,15 @@ Parameters:
 | `resolved`          | boolean        | no       | Resolve/unresolve the note (exactly one of `body` or `resolved` must be set |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes/1108?body=comment"
 ```
 
 Resolving a note:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?resolved=true"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes/1108?resolved=true"
 ```
 
 ### Delete a merge request thread note
@@ -1034,7 +1070,8 @@ Parameters:
 | `note_id`           | integer        | yes      | The ID of a thread note |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/636"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/636"
 ```
 
 ## Commits
@@ -1177,7 +1214,8 @@ Diff comments contain also position:
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions"
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions"
 ```
 
 ### Get single commit discussion item
@@ -1197,7 +1235,8 @@ Parameters:
 | `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7"
+curl --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>"
 ```
 
 ### Create new commit thread
@@ -1232,7 +1271,8 @@ Parameters:
 | `position[y]`             | integer        | no       | Y coordinate (for `image` diff notes) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions?body=comment"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions?body=comment"
 ```
 
 The rules for creating the API request are the same as when
@@ -1259,7 +1299,8 @@ Parameters:
 | `created_at`        | string         | no       | Date time string, ISO 8601 formatted, such `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>/notes?body=comment
 ```
 
 ### Modify an existing commit thread note
@@ -1281,13 +1322,15 @@ Parameters:
 | `body`              | string         | no       | The content of a note |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>/notes/1108?body=comment"
 ```
 
 Resolving a note:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?resolved=true"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>/notes/1108?resolved=true"
 ```
 
 ### Delete a commit thread note
@@ -1308,5 +1351,6 @@ Parameters:
 | `note_id`           | integer        | yes      | The ID of a thread note |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/636"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"\
+  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/636"
 ```

@@ -1,0 +1,17 @@
+- page_title s_("UsageQuota|Usage")
+
+%h3.page-title
+  = s_('UsageQuota|Usage Quotas')
+
+.row
+  .col-sm-6
+    = s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project').html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_name: @project.name }
+
+.top-area.scrolling-tabs-container.inner-page-scroll-tabs
+  %ul.nav.nav-tabs.nav-links.scrolling-tabs.separator.js-usage-quota-tabs{ role: 'tablist' }
+    %li.nav-item
+      %a.nav-link#storage-quota{ data: { toggle: "tab", action: '#storage-quota-tab' }, href: '#storage-quota-tab', 'aria-controls': '#storage-quota-tab', 'aria-selected': 'true' }
+        = s_('UsageQuota|Storage')
+.tab-content
+  .tab-pane#storage-quota-tab
+    #js-project-storage-count-app

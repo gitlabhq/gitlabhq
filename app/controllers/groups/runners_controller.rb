@@ -10,6 +10,8 @@ class Groups::RunnersController < Groups::ApplicationController
   feature_category :runner
 
   def index
+    finder = Ci::RunnersFinder.new(current_user: current_user, params: { group: @group })
+    @group_runners_limited_count = finder.execute.except(:limit, :offset).page.total_count_with_limit(:all, limit: 1000)
   end
 
   def runner_list_group_view_vue_ui_enabled

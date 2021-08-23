@@ -7,9 +7,11 @@ module SystemCheck
 
     def multi_check
       if Gitlab.config.incoming_email.enabled
-        checks = [
-          SystemCheck::IncomingEmail::ImapAuthenticationCheck
-        ]
+        checks = []
+
+        if Gitlab.config.incoming_email.inbox_method == 'imap'
+          checks << SystemCheck::IncomingEmail::ImapAuthenticationCheck
+        end
 
         if Rails.env.production?
           checks << SystemCheck::IncomingEmail::InitdConfiguredCheck

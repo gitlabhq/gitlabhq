@@ -3,4 +3,4 @@
 %h2.page-title
   = s_('Runners|Group Runners')
 
-#js-group-runners{ data: { registration_token: @group.runners_token, group_id: @group.id } }
+#js-group-runners{ data: { registration_token: @group.runners_token, runner_install_help_page: 'https://docs.gitlab.com/runner/install/', group_id: @group.id, group_full_path: @group.full_path, group_runners_limited_count: @group_runners_limited_count } }

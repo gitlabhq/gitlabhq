@@ -134,7 +134,7 @@ export default {
       update(data) {
         const { ciConfig } = data || {};
         const stageNodes = ciConfig?.stages?.nodes || [];
-        const stages = unwrapStagesWithNeeds(stageNodes);
+        const stages = unwrapStagesWithNeeds(JSON.parse(JSON.stringify(stageNodes)));
 
         return { ...ciConfig, stages };
       },

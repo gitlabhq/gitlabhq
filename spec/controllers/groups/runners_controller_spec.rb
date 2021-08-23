@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Groups::RunnersController do
-  let(:user)   { create(:user) }
-  let(:group)  { create(:group) }
-  let(:runner) { create(:ci_runner, :group, groups: [group]) }
-  let(:project) { create(:project, group: group) }
-  let(:runner_project) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be(:user)   { create(:user) }
+  let_it_be(:group)  { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+
+  let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+  let!(:runner_project) { create(:ci_runner, :project, projects: [project]) }
+
   let(:params_runner_project) { { group_id: group, id: runner_project } }
   let(:params) { { group_id: group, id: runner } }
 
@@ -26,6 +28,7 @@ RSpec.describe Groups::RunnersController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:index)
+        expect(assigns(:group_runners_limited_count)).to be(2)
       end
     end
 

@@ -56,7 +56,11 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, { typeDefs, useGet: true }),
+    defaultClient: createDefaultClient(resolvers, {
+      typeDefs,
+      useGet: true,
+      assumeImmutableResults: true,
+    }),
   });
   const { cache } = apolloProvider.clients.defaultClient;
 

@@ -2,6 +2,7 @@ import { s__ } from '~/locale';
 
 export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
+export const GROUP_RUNNER_COUNT_LIMIT = 1000;
 
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
@@ -50,3 +51,8 @@ export const CONTACTED_DESC = 'CONTACTED_DESC'; // TODO Add this to the API
 export const CONTACTED_ASC = 'CONTACTED_ASC';
 
 export const DEFAULT_SORT = CREATED_DESC;
+
+// Local storage namespaces
+
+export const ADMIN_FILTERED_SEARCH_NAMESPACE = 'admin_runners';
+export const GROUP_FILTERED_SEARCH_NAMESPACE = 'group_runners';

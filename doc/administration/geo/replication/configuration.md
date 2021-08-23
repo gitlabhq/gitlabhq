@@ -338,7 +338,7 @@ when:
 
 ## Upgrading Geo
 
-See the [updating the Geo sites document](updating_the_geo_nodes.md).
+See the [updating the Geo sites document](updating_the_geo_sites.md).
 
 ## Troubleshooting
 

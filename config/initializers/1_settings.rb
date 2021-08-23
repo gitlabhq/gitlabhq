@@ -251,6 +251,7 @@ Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci
 #
 Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
+Settings.incoming_email['inbox_method'] ||= 'imap'
 
 #
 # Service desk email

@@ -8,7 +8,7 @@ type: howto
 # Version-specific update instructions **(PREMIUM SELF)**
 
 Review this page for update instructions for your version. These steps
-accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
+accompany the [general steps](updating_the_geo_sites.md#general-update-steps)
 for updating Geo nodes.
 
 ## Updating to GitLab 14.0/14.1

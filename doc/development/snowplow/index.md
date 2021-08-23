@@ -609,7 +609,7 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 1. Restart GDK:
 
    ```shell
-   `gdk restart`
+   gdk restart
    ```
 
 1. Send a test Snowplow event from the Rails console:

@@ -968,6 +968,32 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         end
       end
     end
+
+    describe 'Usage Quotas' do
+      context 'with project_storage_ui feature flag enabled' do
+        before do
+          stub_feature_flags(project_storage_ui: true)
+        end
+
+        it 'has a link to Usage Quotas' do
+          render
+
+          expect(rendered).to have_link('Usage Quotas', href: project_usage_quotas_path(project))
+        end
+      end
+
+      context 'with project_storage_ui feature flag disabled' do
+        before do
+          stub_feature_flags(project_storage_ui: false)
+        end
+
+        it 'does not have a link to Usage Quotas' do
+          render
+
+          expect(rendered).not_to have_link('Usage Quotas', href: project_usage_quotas_path(project))
+        end
+      end
+    end
   end
 
   describe 'Hidden menus' do

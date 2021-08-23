@@ -56,7 +56,7 @@ describe('RunnerList', () => {
   });
 
   it('Displays a list of runners', () => {
-    expect(findRows()).toHaveLength(3);
+    expect(findRows()).toHaveLength(4);
 
     expect(findSkeletonLoader().exists()).toBe(false);
   });
