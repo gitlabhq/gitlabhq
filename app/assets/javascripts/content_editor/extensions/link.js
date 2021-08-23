@@ -42,6 +42,14 @@ export default Link.extend({
           };
         },
       },
+      title: {
+        title: null,
+        parseHTML: (element) => {
+          return {
+            title: element.getAttribute('title'),
+          };
+        },
+      },
       canonicalSrc: {
         default: null,
         parseHTML: (element) => {

@@ -50,6 +50,16 @@ export default Image.extend({
           };
         },
       },
+      title: {
+        default: null,
+        parseHTML: (element) => {
+          const img = resolveImageEl(element);
+
+          return {
+            title: img.getAttribute('title'),
+          };
+        },
+      },
     };
   },
   parseHTML() {

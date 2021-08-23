@@ -9,15 +9,17 @@ RSpec.describe API::Issues do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
-  let(:user2)             { create(:user) }
-  let(:non_member)        { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
   let_it_be(:guest)       { create(:user) }
   let_it_be(:author)      { create(:author) }
   let_it_be(:assignee)    { create(:assignee) }
-  let(:admin)             { create(:user, :admin) }
-  let(:issue_title)       { 'foo' }
-  let(:issue_description) { 'closed' }
-  let!(:closed_issue) do
+  let_it_be(:admin) { create(:user, :admin) }
+
+  let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  let_it_be(:empty_milestone) { create(:milestone, title: '2.0.0', project: project) }
+
+  let_it_be(:closed_issue) do
     create :closed_issue,
            author: user,
            assignees: [user],
@@ -29,7 +31,7 @@ RSpec.describe API::Issues do
            closed_at: 1.hour.ago
   end
 
-  let!(:confidential_issue) do
+  let_it_be(:confidential_issue) do
     create :issue,
            :confidential,
            project: project,
@@ -39,7 +41,7 @@ RSpec.describe API::Issues do
            updated_at: 2.hours.ago
   end
 
-  let!(:issue) do
+  let_it_be(:issue) do
     create :issue,
            author: user,
            assignees: [user],
@@ -47,21 +49,16 @@ RSpec.describe API::Issues do
            milestone: milestone,
            created_at: generate(:past_time),
            updated_at: 1.hour.ago,
-           title: issue_title,
-           description: issue_description
+           title: 'foo',
+           description: 'bar'
   end
 
   let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
 
-  let!(:label_link) { create(:label_link, label: label, target: issue) }
-  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  let_it_be(:empty_milestone) do
-    create(:milestone, title: '2.0.0', project: project)
-  end
-
-  let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
+  let_it_be(:label_link) { create(:label_link, label: label, target: issue) }
+  let_it_be(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let(:no_milestone_title) { 'None' }
   let(:any_milestone_title) { 'Any' }
@@ -711,8 +708,8 @@ RSpec.describe API::Issues do
                    milestone: milestone,
                    created_at: closed_issue.created_at,
                    updated_at: 1.hour.ago,
-                   title: issue_title,
-                   description: issue_description
+                   title: 'foo',
+                   description: 'bar'
           end
 
           it 'page breaks first page correctly' do
@@ -1001,13 +998,15 @@ RSpec.describe API::Issues do
   end
 
   describe 'DELETE /projects/:id/issues/:issue_iid' do
+    let(:issue_for_deletion) { create(:issue, author: user, assignees: [user], project: project) }
+
     it 'rejects a non member from deleting an issue' do
-      delete api("/projects/#{project.id}/issues/#{issue.iid}", non_member)
+      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", non_member)
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it 'rejects a developer from deleting an issue' do
-      delete api("/projects/#{project.id}/issues/#{issue.iid}", author)
+      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", author)
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
@@ -1016,13 +1015,13 @@ RSpec.describe API::Issues do
       let(:project)   { create(:project, namespace: owner.namespace) }
 
       it 'deletes the issue if an admin requests it' do
-        delete api("/projects/#{project.id}/issues/#{issue.iid}", owner)
+        delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", owner)
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}", owner) }
+        let(:request) { api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", owner) }
       end
     end
 
@@ -1035,7 +1034,7 @@ RSpec.describe API::Issues do
     end
 
     it 'returns 404 when using the issue ID instead of IID' do
-      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
+      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

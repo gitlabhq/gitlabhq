@@ -15,8 +15,8 @@ To effectively use GitLab CI/CD, you need:
 
 You can read our [quick start guide](quick_start/index.md) to get you started.
 
-If you are using an external CI/CD server like Jenkins or Drone CI, it is advised
-to disable GitLab CI/CD in order to not have any conflicts with the commits status
+If you use an external CI/CD server like Jenkins or Drone CI, you should
+disable GitLab CI/CD to avoid conflicts with the commits status
 API.
 
 GitLab CI/CD is exposed by using the `/pipelines` and `/jobs` pages of a project.
@@ -24,17 +24,15 @@ Disabling GitLab CI/CD in a project does not delete any previous jobs.
 In fact, the `/pipelines` and `/jobs` pages can still be accessed, although
 it's hidden from the left sidebar menu.
 
-GitLab CI/CD is enabled by default on new installations and can be disabled
-either:
+GitLab CI/CD is enabled by default on all new projects. You can:
 
-- Individually under each project's settings.
-- Site-wide by modifying the settings in `gitlab.yml` and `gitlab.rb` for source
-  and Omnibus installations respectively.
+- Disable GitLab CI/CD [under each project's settings](#enable-cicd-in-a-project).
+- Set GitLab CI/CD to be [disabled in all new projects on an instance](../administration/cicd.md).
 
 This only applies to pipelines run as part of GitLab CI/CD. This doesn't enable or disable
 pipelines that are run from an [external integration](../user/project/integrations/overview.md#integrations-listing).
 
-## Per-project user setting
+## Enable CI/CD in a project
 
 To enable or disable GitLab CI/CD pipelines in your project:
 
@@ -50,54 +48,6 @@ To enable or disable GitLab CI/CD pipelines in your project:
   or **Everyone With Access** by using the dropdown box.
 
 Press **Save changes** for the settings to take effect.
-
-## Make GitLab CI/CD disabled by default in new projects
-
-You can set GitLab CI/CD to be disabled by default in all new projects by modifying the settings in:
-
-- `gitlab.yml` for source installations.
-- `gitlab.rb` for Omnibus GitLab installations.
-
-Existing projects that already had CI/CD enabled are unchanged. Also, this setting only changes
-the project default, so project owners can still enable CI/CD in the project settings.
-
-For installations from source:
-
-1. Open `gitlab.yml` with your editor and set `builds` to `false`:
-
-   ```yaml
-   ## Default project features settings
-   default_projects_features:
-     issues: true
-     merge_requests: true
-     wiki: true
-     snippets: false
-     builds: false
-   ```
-
-1. Save the `gitlab.yml` file.
-
-1. Restart GitLab:
-
-   ```shell
-   sudo service gitlab restart
-   ```
-
-For Omnibus GitLab installations:
-
-1. Edit `/etc/gitlab/gitlab.rb` and add this line:
-
-   ```ruby
-   gitlab_rails['gitlab_default_projects_features_builds'] = false
-   ```
-
-1. Save the `/etc/gitlab/gitlab.rb` file.
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
 
 <!-- ## Troubleshooting
 

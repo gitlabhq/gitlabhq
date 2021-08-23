@@ -23,12 +23,18 @@ GitLab uses its own certificate store and therefore defines the trust chain.
 
 For a commit or tag to be *verified* by GitLab:
 
-- The signing certificate email must match a verified email address used by the committer in GitLab.
-- The Certificate Authority has to be trusted by the GitLab instance, see also
-  [Omnibus install custom public certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+- The signing certificate email must match a verified email address in GitLab.
+- The GitLab instance must be able to establish a full trust chain from the certificate
+  in the signature to a trusted certificate in the GitLab certificate store. This chain
+  may include intermediate certificates supplied in the signature. Additional
+  certificates, such as the Certificate Authority root,
+  [may need to be added to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 - The signing time has to be within the time range of the [certificate validity](https://www.rfc-editor.org/rfc/rfc5280.html#section-4.1.2.5)
   which is usually up to three years.
 - The signing time is equal or later than commit time.
+- If the status of a commit has already been determined and stored in the database,
+  [use the Rake task to re-check the status](../../../../raketasks/x509_signatures.md).
+  [Read more about this and detailed troubleshooting steps](#troubleshooting).
 
 NOTE:
 Certificate revocation lists are checked on a daily basis via background worker.
@@ -152,3 +158,196 @@ To verify that a tag is signed, you can use the `--verify` flag:
 ```shell
 git tag --verify v1.1.1
 ```
+
+## Troubleshooting
+
+### Re-verify commits
+
+GitLab stores the status of any checked commits in the database. You can use a
+Rake task to [check the status of any previously checked commits](../../../../raketasks/x509_signatures.md).
+
+After you make any changes, run this command:
+
+```shell
+sudo gitlab-rake gitlab:x509:update_signatures
+```
+
+### Main verification checks
+
+The code performs
+[six key checks](https://gitlab.com/gitlab-org/gitlab/-/blob/v14.1.0-ee/lib/gitlab/x509/signature.rb#L33),
+which all must return `verified`:
+
+- `x509_certificate.nil?` should be false.
+- `x509_certificate.revoked?` should be false.
+- `verified_signature` should be true.
+- `user.nil?`should be false.
+- `user.verified_emails.include?(@email)` should be true.
+- `certificate_email == @email` should be true.
+
+To investigate why a commit shows as `Unverified`:
+
+1. [Start a Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Identify the project (either by path or ID) and full commit SHA that you're investigating.
+   Use this information to create `signature` to run other checks against:
+
+   ```ruby
+   project = Project.find_by_full_path('group/subgroup/project')
+   project = Project.find_by_id('121')
+   commit = project.repository.commit_by(oid: '87fdbd0f9382781442053b0b76da729344e37653')
+   signedcommit=Gitlab::X509::Commit.new(commit)
+   signature=Gitlab::X509::Signature.new(signedcommit.signature_text, signedcommit.signed_text, commit.committer_email, commit.created_at)
+   ```
+
+   If you make changes to address issues identified running through the checks, restart the
+   Rails console and run though the checks again from the start.
+
+1. Check the certificate on the commit:
+
+   ```ruby
+   signature.x509_certificate.nil?
+   signature.x509_certificate.revoked?
+   ```
+
+   Both checks should return `false`:
+
+   ```ruby
+   > signature.x509_certificate.nil?
+   => false
+   > signature.x509_certificate.revoked?
+   => false
+   ```
+
+   A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332503) causes
+   these checks to fail with `Validation failed: Subject key identifier is invalid`.
+
+1. Run a cryptographic check on the signature. The code must return `true`:
+
+   ```ruby
+   signature.verified_signature
+   ```
+
+   If it returns `false` then [investigate this check further](#cryptographic-verification-checks).
+
+1. Confirm the email addresses match on the commit and the signature:
+
+   - The Rails console displays the email addresses being compared.
+   - The final command must return `true`:
+
+   ```ruby
+   sigemail=signature.__send__:certificate_email
+   commitemail=commit.committer_email
+   sigemail == commitemail
+   ```
+
+   A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336677) exists:
+   only the first email in the `Subject Alternative Name` list is compared. To
+   display the `Subject Alternative Name` list, run:
+
+   ```ruby
+   signature.__send__ :get_certificate_extension,'subjectAltName'
+   ```
+
+   If the developer's email address is not the first one in the list, this check
+   will not work, and the commit will be `unverified`.
+
+1. The email address on the commit must be associated with an account in GitLab.
+   This check should return `false`:
+
+   ```ruby
+   signature.user.nil?
+   ```
+
+1. Check the email address is associated with a user in GitLab. This check should
+   return a user, such as `#<User id:1234 @user_handle>`:
+
+   ```ruby
+   User.find_by_any_email(commit.committer_email)
+   ```
+
+   If it returns `nil`, the email address is not associated with a user, and the check fails.
+
+1. Confirm the developer's email address is verified. This check must return true:
+
+   ```ruby
+   signature.user.verified_emails.include?(commit.committer_email)
+   ```
+
+   If the previous check returned `nil`, this command displays an error:
+
+   ```plaintext
+   NoMethodError (undefined method `verified_emails' for nil:NilClass)
+   ```
+
+1. The verification status is stored in the database. To display the database record:
+
+   ```ruby
+   pp X509CommitSignature.by_commit_sha(commit.sha);nil
+   ```
+
+   If all the previous checks returned the correct values:
+
+   - `verification_status: "unverified"` indicates the database record needs
+     updating. [Use the Rake task](#re-verify-commits).
+
+   - `[]` indicates the database doesn't have a record yet. Locate the commit
+     in GitLab to check the signature and store the result.
+
+#### Cryptographic verification checks
+
+If GitLab determines that `verified_signature` is `false`, investigate the reason
+in the Rails console. These checks require `signature` to exist. Refer to the `signature`
+step of the previous [main verification checks](#main-verification-checks).
+
+1. Check the signature, without checking the issuer, returns `true`:
+
+   ```ruby
+   signature.__send__ :valid_signature?
+   ```
+
+1. Check the signing time and date. This check must return `true`:
+
+   ```ruby
+   signature.__send__ :valid_signing_time?
+   ```
+
+   - The code allows for code signing certificates to expire.
+   - A commit must be signed during the validity period of the certificate,
+     and at or after the commit's datestamp. Display the commit time and
+     certificate details including `not_before`, `not_after` with:
+
+     ```ruby
+     commit.created_at
+     pp signature.__send__ :cert; nil
+     ```
+
+1. Check the signature, including that TLS trust can be established. This check must return `true`:
+
+   ```ruby
+   signature.__send__(:p7).verify([], signature.__send__(:cert_store), signature.__send__(:signed_text))
+   ```
+
+   1. If this fails, add the missing certificate(s) required to establish trust
+      [to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+
+   1. After adding more certificates, (if these troubleshooting steps then pass)
+      run the Rake task to [re-verify commits](#re-verify-commits).
+
+   1. Display the certificates, including in the signature:
+
+      ```ruby
+      pp signature.__send__(:p7).certificates ; nil
+      ```
+
+Ensure any additional intermediate certificate(s) and the root certificate are added
+to the certificate store. For consistency with how certificate chains are built on
+web servers, Git clients that are signing commits should include the certificate
+and all intermediate certificates in the signature, and the GitLab certificate
+store should only contain the root. If you remove a root certificate from the GitLab
+trust store, such as when it expires, commit signatures which chain back to that
+root display as `unverified`.

@@ -14,6 +14,7 @@ Migration/UpdateLargeTable:
     - :events
     - :gitlab_subscriptions
     - :issues
+    - :members
     - :merge_request_diff_commits
     - :merge_request_diff_files
     - :merge_request_diffs

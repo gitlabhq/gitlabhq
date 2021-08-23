@@ -712,3 +712,8 @@ QA/SelectorUsage:
     - 'ee/spec/**/*.rb'
   Exclude:
     - 'spec/rubocop/**/*_spec.rb'
+
+Performance/ActiveRecordSubtransactions:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'

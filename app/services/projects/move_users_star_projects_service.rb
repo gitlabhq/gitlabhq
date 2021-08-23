@@ -9,7 +9,7 @@ module Projects
 
       return unless user_stars.any?
 
-      Project.transaction(requires_new: true) do
+      Project.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         user_stars.update_all(project_id: @project.id)
 
         Project.reset_counters @project.id, :users_star_projects

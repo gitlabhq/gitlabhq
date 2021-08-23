@@ -164,16 +164,16 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
 - [Static objects external storage](static_objects_external_storage.md): Set external storage for static objects in a repository.
 
-## Continuous Integration settings
+## CI/CD settings
 
-- [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#make-gitlab-cicd-disabled-by-default-in-new-projects): Enable or disable GitLab CI/CD for your instance.
+- [Enable or disable GitLab CI/CD](cicd.md#disable-gitlab-cicd-in-new-projects): Set new projects in your instance to have GitLab CI/CD enabled or disabled by default.
 - [GitLab CI/CD administration settings](../user/admin_area/settings/continuous_integration.md): Enable or disable Auto DevOps site-wide and define the artifacts' max size and expiration time.
 - [External Pipeline Validation](external_pipeline_validation.md): Enable, disable, and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job logs](job_logs.md): Information about the job logs.
 - [Register runners](../ci/runners/runners_scope.md): Learn how to register and configure runners.
 - [Shared runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for shared runners.
-- [Enable/disable Auto DevOps](../topics/autodevops/index.md#enable-or-disable-auto-devops): Enable or disable Auto DevOps for your instance.
+- [Enable or disable Auto DevOps](../topics/autodevops/index.md#enable-or-disable-auto-devops): Enable or disable Auto DevOps for your instance.
 
 ## Snippet settings
 

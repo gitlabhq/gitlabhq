@@ -122,7 +122,7 @@ module Gitlab
       end
 
       def run_block_with_lock_timeout
-        ActiveRecord::Base.transaction(requires_new: true) do
+        ActiveRecord::Base.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
           execute("SET LOCAL lock_timeout TO '#{current_lock_timeout_in_ms}ms'")
 
           log(message: 'Lock timeout is set', current_iteration: current_iteration, lock_timeout_in_ms: current_lock_timeout_in_ms)

@@ -31,7 +31,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.safe_ensure_unique(retries: 0)
-    transaction(requires_new: true) do
+    transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
       yield
     end
   rescue ActiveRecord::RecordNotUnique
@@ -55,7 +55,7 @@ class ApplicationRecord < ActiveRecord::Base
   # currently one third of the default 15-second timeout
   def self.with_fast_read_statement_timeout(timeout_ms = 5000)
     ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
-      transaction(requires_new: true) do
+      transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         connection.exec_query("SET LOCAL statement_timeout = #{timeout_ms}")
 
         yield
@@ -80,7 +80,7 @@ class ApplicationRecord < ActiveRecord::Base
     #
     # When calling this method on an association, just calling `self.create` would call `ActiveRecord::Persistence.create`
     # and that skips some code that adds the newly created record to the association.
-    transaction(requires_new: true) { all.create(*args, &block) }
+    transaction(requires_new: true) { all.create(*args, &block) } # rubocop:disable Performance/ActiveRecordSubtransactions
   rescue ActiveRecord::RecordNotUnique
     find_by(*args)
   end

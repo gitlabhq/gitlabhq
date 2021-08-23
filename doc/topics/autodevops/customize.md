@@ -491,9 +491,9 @@ these prefixed variables available to the deployed application as environment va
 
 To configure your application variables:
 
-1. Go to your project's **Settings > CI/CD**, then expand the
-   **Variables** section.
-
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Variables**.
 1. Create a CI/CD variable, ensuring the key is prefixed with
    `K8S_SECRET_`. For example, you can create a variable with key
    `K8S_SECRET_RAILS_MASTER_KEY`.

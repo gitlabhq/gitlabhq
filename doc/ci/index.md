@@ -135,8 +135,9 @@ of GitLab CI/CD for:
 
 See also:
 
-- [How to enable or disable GitLab CI/CD](enable_or_disable_ci.md).
-- Other [CI administration settings](../administration/index.md#continuous-integration-settings).
+- [Enable or disable GitLab CI/CD in a project](enable_or_disable_ci.md).
+- [Disable GitLab CI/CD by default in new projects](../administration/cicd.md). **(FREE SELF)**
+- Other [CI administration settings](../administration/index.md#cicd-settings).
 
 ## References
 

@@ -21,7 +21,7 @@ module Gitlab
           shard_id = shards.fetch(name, nil)
           return shard_id if shard_id.present?
 
-          Shard.transaction(requires_new: true) do
+          Shard.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
             create!(name)
           end
         rescue ActiveRecord::RecordNotUnique

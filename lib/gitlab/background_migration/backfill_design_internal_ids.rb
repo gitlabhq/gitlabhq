@@ -73,7 +73,7 @@ module Gitlab
         # violation. We can safely roll-back the nested transaction and perform
         # a lookup instead to retrieve the record.
         def create_record
-          subject.transaction(requires_new: true) do
+          subject.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
             InternalId.create!(
               **scope,
               usage: usage_value,

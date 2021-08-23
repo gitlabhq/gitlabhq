@@ -9,7 +9,7 @@ module Projects
     def execute(source_project, remove_remaining_elements: true)
       return unless super
 
-      Project.transaction(requires_new: true) do
+      Project.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         move_project_authorizations
 
         remove_remaining_authorizations if remove_remaining_elements

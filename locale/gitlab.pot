@@ -3698,6 +3698,12 @@ msgstr ""
 msgid "An error occurred while loading merge requests."
 msgstr ""
 
+msgid "An error occurred while loading the Needs tab."
+msgstr ""
+
+msgid "An error occurred while loading the Test Reports tab."
+msgstr ""
+
 msgid "An error occurred while loading the access tokens form, please try again."
 msgstr ""
 
@@ -10721,6 +10727,9 @@ msgid "Define custom rules for what constitutes spam, independent of Akismet"
 msgstr ""
 
 msgid "Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here."
+msgstr ""
+
+msgid "Define how approval rules are applied as a merge request moves toward completion."
 msgstr ""
 
 msgid "Definition"
@@ -19588,9 +19597,6 @@ msgstr ""
 msgid "Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages."
 msgstr ""
 
-msgid "Last repository check run"
-msgstr ""
-
 msgid "Last seen"
 msgstr ""
 
@@ -19607,6 +19613,9 @@ msgid "Last successful sync"
 msgstr ""
 
 msgid "Last successful update"
+msgstr ""
+
+msgid "Last time checked"
 msgstr ""
 
 msgid "Last time verified"

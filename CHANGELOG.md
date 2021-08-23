@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.2.1 (2021-08-23)
+
+### Fixed (1 change)
+
+- [Drop un-used db/ci_migrate symlink](gitlab-org/gitlab@1154311625345e120407c0c397c7d4a27848a739) ([merge request](gitlab-org/gitlab!68723))
+
+### Changed (2 changes)
+
+- [Reorder vuln check criteria](gitlab-org/gitlab@9bbb20db46362a859632e7bb88deba985318ca2c) ([merge request](gitlab-org/gitlab!68723)) **GitLab Enterprise Edition**
+- [Don't override vulnerability feedback UUID anymore](gitlab-org/gitlab@5f8372fb782c9416ae5ab582009a4399cb7d3750) ([merge request](gitlab-org/gitlab!68723)) **GitLab Enterprise Edition**
+
 ## 14.2.0 (2021-08-20)
 
 ### Added (128 changes)

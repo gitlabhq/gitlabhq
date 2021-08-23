@@ -21,10 +21,23 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
       expect(response).to match_response_schema('public_api/v4/packages/npm_package')
       expect(json_response['name']).to eq(package.name)
       expect(json_response['versions'][package.version]).to match_schema('public_api/v4/packages/npm_package_version')
-      ::Packages::Npm::PackagePresenter::NPM_VALID_DEPENDENCY_TYPES.each do |dependency_type|
+      ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
         expect(json_response.dig('versions', package.version, dependency_type.to_s)).to be_any
       end
       expect(json_response['dist-tags']).to match_schema('public_api/v4/packages/npm_package_tags')
+    end
+
+    it 'avoids N+1 database queries' do
+      control = ActiveRecord::QueryRecorder.new { get(url, headers: headers) }
+
+      create_list(:npm_package, 5, project: project, name: package_name).each do |npm_package|
+        ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
+          create(:packages_dependency_link, package: package, dependency_type: dependency_type)
+        end
+      end
+
+      # query count can slightly change between the examples so we're using a custom threshold
+      expect { get(url, headers: headers) }.not_to exceed_query_limit(control).with_threshold(4)
     end
   end
 

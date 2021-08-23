@@ -8,13 +8,13 @@
 
 ## Author's checklist
 
-- Consider taking [the GitLab Technical Writing Fundamentals course](https://gitlab.edcast.com/pathways/ECL-02528ee2-c334-4e16-abf3-e9d8b8260de4)
+- [ ] Consider taking [the GitLab Technical Writing Fundamentals course](https://gitlab.edcast.com/pathways/ECL-02528ee2-c334-4e16-abf3-e9d8b8260de4)
 - [ ] Follow the:
   - [Documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html).
   - [Documentation guidelines](https://docs.gitlab.com/ee/development/documentation/).
   - [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
 - [ ] Ensure that the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) is added to topic's `h1`.
-- [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on the:
+- [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on:
   - The documentation page's [metadata](https://docs.gitlab.com/ee/development/documentation/#metadata).
   - The [associated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
 

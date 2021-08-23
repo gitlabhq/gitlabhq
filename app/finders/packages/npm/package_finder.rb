@@ -12,11 +12,16 @@ module Packages
       end
 
       def execute
-        base.npm
-            .with_name(@package_name)
-            .installable
-            .last_of_each_version
-            .preload_files
+        results = base.npm
+                      .with_name(@package_name)
+                      .installable
+                      .last_of_each_version
+
+        unless Feature.enabled?(:npm_presenter_queries_tuning)
+          results = results.preload_files
+        end
+
+        results
       end
 
       private

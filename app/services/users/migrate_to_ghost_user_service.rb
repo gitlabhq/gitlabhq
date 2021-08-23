@@ -39,7 +39,7 @@ module Users
     private
 
     def migrate_records_in_transaction
-      user.transaction(requires_new: true) do
+      user.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         @ghost_user = User.ghost
 
         migrate_records

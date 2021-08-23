@@ -5,7 +5,7 @@ module Projects
     def execute(source_project, remove_remaining_elements: true)
       return unless super
 
-      Project.transaction(requires_new: true) do
+      Project.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         move_deploy_keys_projects
         remove_remaining_deploy_keys_projects if remove_remaining_elements
 

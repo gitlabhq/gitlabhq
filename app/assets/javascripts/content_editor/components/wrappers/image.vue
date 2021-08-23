@@ -22,6 +22,7 @@ export default {
       <img
         data-testid="image"
         class="gl-max-w-full gl-h-auto"
+        :title="node.attrs.title"
         :class="{ 'gl-opacity-5': node.attrs.uploading }"
         :src="node.attrs.src"
       />

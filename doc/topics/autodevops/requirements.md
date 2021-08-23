@@ -42,7 +42,9 @@ that works best for your needs:
 
 You can choose the deployment method when enabling Auto DevOps or later:
 
-1. In GitLab, go to your project's **Settings > CI/CD > Auto DevOps**.
+1. In GitLab, on the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Auto DevOps**.
 1. Choose the deployment strategy.
 1. Select **Save changes**.
 
@@ -181,9 +183,9 @@ You can choose to target [AWS ECS](../../ci/cloud_deployment/index.md) as a depl
 To get started on Auto DevOps to AWS ECS, you must add a specific CI/CD variable.
 To do so, follow these steps:
 
-1. In your project, go to **Settings > CI/CD** and expand the **Variables**
-   section.
-
+1. In GitLab, on the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Auto DevOps**.
 1. Specify which AWS platform to target during the Auto DevOps deployment
    by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable with one of the following values:
    - `FARGATE` if the service you're targeting must be of launch type FARGATE.

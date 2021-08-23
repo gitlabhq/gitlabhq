@@ -239,7 +239,7 @@ class InternalId < ApplicationRecord
         lookup
       else
         begin
-          subject.transaction(requires_new: true) do
+          subject.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
             InternalId.create!(
               **scope,
               usage: usage_value,
@@ -362,7 +362,7 @@ class InternalId < ApplicationRecord
         value
       else
         begin
-          subject.transaction(requires_new: true) do
+          subject.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
             internal_id = InternalId.create!(**scope, usage: usage, last_value: value)
             internal_id.last_value
           end

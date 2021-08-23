@@ -425,9 +425,9 @@ including support for `Deployment` in the `extensions/v1beta1` version.
 To use Auto Deploy on a Kubernetes 1.16+ cluster:
 
 1. If you are deploying your application for the first time in GitLab 13.0 or
-   newer, no configuration should be required.
+   later, no configuration should be required.
 
-1. In GitLab 12.10 or older, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
+1. In GitLab 12.10 and earlier, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
    ```yaml
    deploymentApiVersion: apps/v1
@@ -696,11 +696,12 @@ To use Auto Monitoring:
 
 1. [Install and configure the Auto DevOps requirements](requirements.md).
 1. [Enable Auto DevOps](index.md#enable-or-disable-auto-devops), if you haven't done already.
-1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** and click **Run pipeline**.
+1. On the left sidebar, select **CI/CD > Pipelines**. 
+1. Select **Run pipeline**.
 1. After the pipeline finishes successfully, open the
    [monitoring dashboard for a deployed environment](../../ci/environments/index.md#monitor-environments)
    to view the metrics of your deployed application. To view the metrics of the
-   whole Kubernetes cluster, navigate to **Operations > Metrics**.
+   whole Kubernetes cluster, on the left sidebar, select **Monitor > Metrics**.
 
 ![Auto Metrics](img/auto_monitoring.png)
 

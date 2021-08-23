@@ -622,7 +622,7 @@ class ApplicationSetting < ApplicationRecord
   def self.create_from_defaults
     check_schema!
 
-    transaction(requires_new: true) do
+    transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
       super
     end
   rescue ActiveRecord::RecordNotUnique

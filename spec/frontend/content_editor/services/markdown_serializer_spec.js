@@ -115,6 +115,64 @@ describe('markdownSerializer', () => {
     expect(serialize(paragraph('hello', hardBreak(), 'world'))).toBe('hello\\\nworld');
   });
 
+  it('correctly serializes a link', () => {
+    expect(serialize(paragraph(link({ href: 'https://example.com' }, 'example url')))).toBe(
+      '[example url](https://example.com)',
+    );
+  });
+
+  it('correctly serializes a link with a title', () => {
+    expect(
+      serialize(
+        paragraph(link({ href: 'https://example.com', title: 'click this link' }, 'example url')),
+      ),
+    ).toBe('[example url](https://example.com "click this link")');
+  });
+
+  it('correctly serializes a link with a canonicalSrc', () => {
+    expect(
+      serialize(
+        paragraph(
+          link(
+            {
+              href: '/uploads/abcde/file.zip',
+              canonicalSrc: 'file.zip',
+              title: 'click here to download',
+            },
+            'download file',
+          ),
+        ),
+      ),
+    ).toBe('[download file](file.zip "click here to download")');
+  });
+
+  it('correctly serializes an image', () => {
+    expect(serialize(paragraph(image({ src: 'img.jpg', alt: 'foo bar' })))).toBe(
+      '![foo bar](img.jpg)',
+    );
+  });
+
+  it('correctly serializes an image with a title', () => {
+    expect(serialize(paragraph(image({ src: 'img.jpg', title: 'baz', alt: 'foo bar' })))).toBe(
+      '![foo bar](img.jpg "baz")',
+    );
+  });
+
+  it('correctly serializes an image with a canonicalSrc', () => {
+    expect(
+      serialize(
+        paragraph(
+          image({
+            src: '/uploads/abcde/file.png',
+            alt: 'this is an image',
+            canonicalSrc: 'file.png',
+            title: 'foo bar baz',
+          }),
+        ),
+      ),
+    ).toBe('![this is an image](file.png "foo bar baz")');
+  });
+
   it('correctly serializes a table with inline content', () => {
     expect(
       serialize(

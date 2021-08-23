@@ -23024,6 +23024,8 @@ CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_me
 
 CREATE INDEX idx_geo_con_rep_updated_events_on_container_repository_id ON geo_container_repository_updated_events USING btree (container_repository_id);
 
+CREATE INDEX idx_installable_npm_pkgs_on_project_id_name_version_id ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 2) AND (status = 0));
+
 CREATE INDEX idx_issues_on_health_status_not_null ON issues USING btree (health_status) WHERE (health_status IS NOT NULL);
 
 CREATE INDEX idx_issues_on_project_id_and_created_at_and_id_and_state_id ON issues USING btree (project_id, created_at, id, state_id);

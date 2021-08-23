@@ -5,7 +5,7 @@ module Projects
     def execute(source_project, remove_remaining_elements: true)
       return unless super && source_project.fork_network
 
-      Project.transaction(requires_new: true) do
+      Project.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         move_fork_network_members
         update_root_project
         refresh_forks_count

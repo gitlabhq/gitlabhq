@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 class Packages::Package < ApplicationRecord
+  include EachBatch
   include Sortable
   include Gitlab::SQL::Pattern
   include UsageStatistics
@@ -104,6 +105,7 @@ class Packages::Package < ApplicationRecord
   scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
+  scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
 
   scope :with_conan_channel, ->(package_channel) do
     joins(:conan_metadatum).where(packages_conan_metadata: { package_channel: package_channel })

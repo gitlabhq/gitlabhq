@@ -68,6 +68,20 @@ RSpec.describe ::Packages::Npm::PackageFinder do
 
         it { is_expected.to be_empty }
       end
+
+      context 'with npm_presenter_queries_tuning disabled' do
+        before do
+          stub_feature_flags(npm_presenter_queries_tuning: false)
+        end
+
+        it_behaves_like 'finding packages by name'
+
+        context 'set to nil' do
+          let(:project) { nil }
+
+          it { is_expected.to be_empty }
+        end
+      end
     end
 
     context 'with a namespace' do
@@ -79,6 +93,20 @@ RSpec.describe ::Packages::Npm::PackageFinder do
         let_it_be(:namespace) { nil }
 
         it { is_expected.to be_empty }
+      end
+
+      context 'with npm_presenter_queries_tuning disabled' do
+        before do
+          stub_feature_flags(npm_presenter_queries_tuning: false)
+        end
+
+        it_behaves_like 'accepting a namespace for', 'finding packages by name'
+
+        context 'set to nil' do
+          let_it_be(:namespace) { nil }
+
+          it { is_expected.to be_empty }
+        end
       end
     end
   end
@@ -109,6 +137,24 @@ RSpec.describe ::Packages::Npm::PackageFinder do
 
       it_behaves_like 'accepting a namespace for', 'finding packages by version'
     end
+
+    context 'with npm_presenter_queries_tuning disabled' do
+      before do
+        stub_feature_flags(npm_presenter_queries_tuning: false)
+      end
+
+      context 'with a project' do
+        let(:finder) { described_class.new(package_name, project: project) }
+
+        it_behaves_like 'finding packages by version'
+      end
+
+      context 'with a namespace' do
+        let(:finder) { described_class.new(package_name, namespace: namespace) }
+
+        it_behaves_like 'accepting a namespace for', 'finding packages by version'
+      end
+    end
   end
 
   describe '#last' do
@@ -118,31 +164,43 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       it { is_expected.to eq(package) }
     end
 
-    context 'with a project' do
-      let(:finder) { described_class.new(package_name, project: project) }
+    shared_examples 'handling project or namespace parameter' do
+      context 'with a project' do
+        let(:finder) { described_class.new(package_name, project: project) }
 
-      it_behaves_like 'finding package by last'
+        it_behaves_like 'finding package by last'
+      end
+
+      context 'with a namespace' do
+        let(:finder) { described_class.new(package_name, namespace: namespace) }
+
+        it_behaves_like 'accepting a namespace for', 'finding package by last'
+
+        context 'with duplicate packages' do
+          let_it_be(:namespace) { create(:group) }
+          let_it_be(:subgroup1) { create(:group, parent: namespace) }
+          let_it_be(:subgroup2) { create(:group, parent: namespace) }
+          let_it_be(:project2) { create(:project, namespace: subgroup2) }
+          let_it_be(:package2) { create(:npm_package, name: package.name, project: project2) }
+
+          before do
+            project.update!(namespace: subgroup1)
+          end
+
+          # the most recent one is returned
+          it { is_expected.to eq(package2) }
+        end
+      end
     end
 
-    context 'with a namespace' do
-      let(:finder) { described_class.new(package_name, namespace: namespace) }
+    it_behaves_like 'handling project or namespace parameter'
 
-      it_behaves_like 'accepting a namespace for', 'finding package by last'
-
-      context 'with duplicate packages' do
-        let_it_be(:namespace) { create(:group) }
-        let_it_be(:subgroup1) { create(:group, parent: namespace) }
-        let_it_be(:subgroup2) { create(:group, parent: namespace) }
-        let_it_be(:project2) { create(:project, namespace: subgroup2) }
-        let_it_be(:package2) { create(:npm_package, name: package.name, project: project2) }
-
-        before do
-          project.update!(namespace: subgroup1)
-        end
-
-        # the most recent one is returned
-        it { is_expected.to eq(package2) }
+    context 'with npm_presenter_queries_tuning disabled' do
+      before do
+        stub_feature_flags(npm_presenter_queries_tuning: false)
       end
+
+      it_behaves_like 'handling project or namespace parameter'
     end
   end
 end
