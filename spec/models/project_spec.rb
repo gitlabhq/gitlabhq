@@ -1257,19 +1257,19 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'returns an active external wiki' do
-      create(:service, project: project, type: 'ExternalWikiService', active: true)
+      create(:external_wiki_integration, project: project, active: true)
 
       is_expected.to be_kind_of(Integrations::ExternalWiki)
     end
 
     it 'does not return an inactive external wiki' do
-      create(:service, project: project, type: 'ExternalWikiService', active: false)
+      create(:external_wiki_integration, project: project, active: false)
 
       is_expected.to eq(nil)
     end
 
     it 'sets Project#has_external_wiki when it is nil' do
-      create(:service, project: project, type: 'ExternalWikiService', active: true)
+      create(:external_wiki_integration, project: project, active: true)
       project.update_column(:has_external_wiki, nil)
 
       expect { subject }.to change { project.has_external_wiki }.from(nil).to(true)
@@ -1279,36 +1279,40 @@ RSpec.describe Project, factory_default: :keep do
   describe '#has_external_wiki' do
     let_it_be(:project) { create(:project) }
 
-    def subject
+    def has_external_wiki
       project.reload.has_external_wiki
     end
 
-    specify { is_expected.to eq(false) }
+    specify { expect(has_external_wiki).to eq(false) }
 
-    context 'when there is an active external wiki service' do
-      let!(:service) do
-        create(:service, project: project, type: 'ExternalWikiService', active: true)
+    context 'when there is an active external wiki integration' do
+      let(:active) { true }
+
+      let!(:integration) do
+        create(:external_wiki_integration, project: project, active: active)
       end
 
-      specify { is_expected.to eq(true) }
+      specify { expect(has_external_wiki).to eq(true) }
 
       it 'becomes false if the external wiki service is destroyed' do
         expect do
-          Integration.find(service.id).delete
-        end.to change { subject }.to(false)
+          Integration.find(integration.id).delete
+        end.to change { has_external_wiki }.to(false)
       end
 
       it 'becomes false if the external wiki service becomes inactive' do
         expect do
-          service.update_column(:active, false)
-        end.to change { subject }.to(false)
+          integration.update_column(:active, false)
+        end.to change { has_external_wiki }.to(false)
       end
-    end
 
-    it 'is false when external wiki service is not active' do
-      create(:service, project: project, type: 'ExternalWikiService', active: false)
+      context 'when created as inactive' do
+        let(:active) { false }
 
-      is_expected.to eq(false)
+        it 'is false' do
+          expect(has_external_wiki).to eq(false)
+        end
+      end
     end
   end
 
