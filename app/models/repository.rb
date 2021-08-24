@@ -1125,7 +1125,11 @@ class Repository
       copy_gitattributes(branch)
       after_change_head
     else
-      container.errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
+      # For example, `Wiki` does not have `errors` because it is not an `ActiveModel`
+      if container.respond_to?(:errors)
+        container.errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
+      end
+
       false
     end
   end

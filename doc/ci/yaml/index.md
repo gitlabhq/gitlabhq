@@ -1595,7 +1595,9 @@ production:
   can refer to jobs in the same stage as the job you are configuring. This feature is
   enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
   this feature is available by default.
-- In GitLab 14.0 and older, you can only refer to jobs in earlier stages.
+- In GitLab 14.0 and older, you can only refer to jobs in earlier stages. Stages must be
+  explicitly defined for all jobs that use the `needs:` keyword, or are referenced
+  in a job's `needs:` section.
 - In GitLab 13.9 and older, if `needs:` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.
 - The maximum number of jobs that a single job can need in the `needs:` array is limited:
@@ -1609,8 +1611,6 @@ production:
 - `needs:` is similar to `dependencies:` in that it must use jobs from prior stages,
   meaning it's impossible to create circular dependencies. Depending on jobs in the
   current stage is not possible either, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/30632).
-- Stages must be explicitly defined for all jobs
-  that have the keyword `needs:` or are referred to by one.
 
 ##### Changing the `needs:` job limit **(FREE SELF)**
 
