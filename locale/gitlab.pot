@@ -29646,6 +29646,9 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
+msgstr ""
+
 msgid "SecurityOrchestration|Network"
 msgstr ""
 
@@ -29676,7 +29679,16 @@ msgstr ""
 msgid "SecurityOrchestration|Select security project"
 msgstr ""
 
+msgid "SecurityOrchestration|Sorry, your filter produced no results."
+msgstr ""
+
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
+msgstr ""
+
+msgid "SecurityOrchestration|This project does not contain any security policies."
+msgstr ""
+
+msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan execution policies"

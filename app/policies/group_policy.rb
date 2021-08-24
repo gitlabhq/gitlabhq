@@ -111,7 +111,10 @@ class GroupPolicy < BasePolicy
     enable :read_issue_board
     enable :read_group_member
     enable :read_custom_emoji
+    enable :read_counts
   end
+
+  rule { ~public_group & ~has_access }.prevent :read_counts
 
   rule { ~can?(:read_group) }.policy do
     prevent :read_design_activity

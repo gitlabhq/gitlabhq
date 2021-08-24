@@ -87,7 +87,7 @@ RSpec.describe GroupChildEntity do
       expect(json[:children_count]).to eq(2)
     end
 
-    %w[children_count leave_path parent_id number_projects_with_delimiter number_users_with_delimiter project_count subgroup_count].each do |attribute|
+    %w[children_count leave_path parent_id number_users_with_delimiter project_count subgroup_count].each do |attribute|
       it "includes #{attribute}" do
         expect(json[attribute.to_sym]).to be_present
       end
@@ -112,6 +112,40 @@ RSpec.describe GroupChildEntity do
     end
 
     it_behaves_like 'group child json'
+  end
+
+  describe 'for a private group' do
+    let(:object) do
+      create(:group, :private)
+    end
+
+    describe 'user is member of the group' do
+      before do
+        object.add_owner(user)
+      end
+
+      it 'includes the counts' do
+        expect(json.keys).to include(*%i(project_count subgroup_count))
+      end
+    end
+
+    describe 'user is not a member of the group' do
+      it 'does not include the counts' do
+        expect(json.keys).not_to include(*%i(project_count subgroup_count))
+      end
+    end
+
+    describe 'user is only a member of a project in the group' do
+      let(:project) { create(:project, namespace: object) }
+
+      before do
+        project.add_guest(user)
+      end
+
+      it 'does not include the counts' do
+        expect(json.keys).not_to include(*%i(project_count subgroup_count))
+      end
+    end
   end
 
   describe 'for a project with external authorization enabled' do

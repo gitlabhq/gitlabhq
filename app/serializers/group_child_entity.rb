@@ -37,8 +37,12 @@ class GroupChildEntity < Grape::Entity
          if: lambda { |_instance, _options| project? }
 
   # Group only attributes
-  expose :children_count, :parent_id, :project_count, :subgroup_count,
+  expose :children_count, :parent_id,
          unless: lambda { |_instance, _options| project? }
+
+  expose :subgroup_count, if: lambda { |group| access_group_counts?(group) }
+
+  expose :project_count, if: lambda { |group| access_group_counts?(group) }
 
   expose :leave_path, unless: lambda { |_instance, _options| project? } do |instance|
     leave_group_members_path(instance)
@@ -52,10 +56,6 @@ class GroupChildEntity < Grape::Entity
     end
   end
 
-  expose :number_projects_with_delimiter, unless: lambda { |_instance, _options| project? } do |instance|
-    number_with_delimiter(instance.project_count)
-  end
-
   expose :number_users_with_delimiter, unless: lambda { |_instance, _options| project? } do |instance|
     number_with_delimiter(instance.member_count)
   end
@@ -65,6 +65,10 @@ class GroupChildEntity < Grape::Entity
   end
 
   private
+
+  def access_group_counts?(group)
+    !project? && can?(request.current_user, :read_counts, group)
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def membership

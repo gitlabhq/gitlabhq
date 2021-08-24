@@ -5,15 +5,19 @@ module Packages
     protected
 
     def find_or_create_package!(package_type, name: params[:name], version: params[:version])
+      # safe_find_or_create_by! was originally called here.
+      # We merely switched to `find_or_create_by!`
+      # rubocop: disable CodeReuse/ActiveRecord
       project
         .packages
         .with_package_type(package_type)
-        .safe_find_or_create_by!(name: name, version: version) do |package|
+        .find_or_create_by!(name: name, version: version) do |package|
           package.status = params[:status] if params[:status]
           package.creator = package_creator
 
           add_build_info(package)
         end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     def create_package!(package_type, attrs = {})

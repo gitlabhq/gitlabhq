@@ -64,6 +64,8 @@ import syntaxHighlight from './syntax_highlight';
 //   </div>
 //
 
+// <100ms is typically indistinguishable from "instant" for users, but allows for re-rendering
+const FAST_DELAY_FOR_RERENDER = 75;
 // Store the `location` object, allowing for easier stubbing in tests
 let { location } = window;
 
@@ -82,6 +84,8 @@ export default class MergeRequestTabs {
     this.navbar = document.querySelector('.navbar-gitlab');
     this.peek = document.getElementById('js-peek');
     this.paddingTop = 16;
+
+    this.scrollPositions = {};
 
     this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
 
@@ -136,10 +140,29 @@ export default class MergeRequestTabs {
     }
   }
 
+  storeScroll() {
+    if (this.currentTab) {
+      this.scrollPositions[this.currentTab] = document.documentElement.scrollTop;
+    }
+  }
+  recallScroll(action) {
+    const storedPosition = this.scrollPositions[action];
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: storedPosition && storedPosition > 0 ? storedPosition : 0,
+        left: 0,
+        behavior: 'auto',
+      });
+    }, FAST_DELAY_FOR_RERENDER);
+  }
+
   clickTab(e) {
     if (e.currentTarget) {
       e.stopImmediatePropagation();
       e.preventDefault();
+
+      this.storeScroll();
 
       const { action } = e.currentTarget.dataset || {};
 
@@ -210,8 +233,14 @@ export default class MergeRequestTabs {
         this.resetViewContainer();
         this.mountPipelinesView();
       } else {
-        this.mergeRequestTabPanes.querySelector('#notes').style.display = 'block';
-        this.mergeRequestTabs.querySelector('.notes-tab').classList.add('active');
+        const notesTab = this.mergeRequestTabs.querySelector('.notes-tab');
+        const notesPane = this.mergeRequestTabPanes.querySelector('#notes');
+        if (notesPane) {
+          notesPane.style.display = 'block';
+        }
+        if (notesTab) {
+          notesTab.classList.add('active');
+        }
 
         if (bp.getBreakpointSize() !== 'xs') {
           this.expandView();
@@ -221,6 +250,8 @@ export default class MergeRequestTabs {
       }
 
       $('.detail-page-description').renderGFM();
+
+      this.recallScroll(action);
     } else if (action === this.currentAction) {
       // ContentTop is used to handle anything at the top of the page before the main content
       const mainContentContainer = document.querySelector('.content-wrapper');

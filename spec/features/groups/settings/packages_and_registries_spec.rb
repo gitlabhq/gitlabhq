@@ -90,9 +90,10 @@ RSpec.describe 'Group Packages & Registries settings' do
         expect(page).to have_content('Do not allow duplicates')
 
         fill_in 'Exceptions', with: ')'
+
+        # simulate blur event
+        find('#maven-duplicated-settings-regex-input').native.send_keys(:tab)
       end
-      # simulate blur event
-      find('body').click
 
       expect(page).to have_content('is an invalid regexp')
     end

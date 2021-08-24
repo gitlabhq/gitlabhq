@@ -21,6 +21,8 @@ module Gitlab
         gon.sentry_environment   = Gitlab.config.sentry.environment
       end
 
+      gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
+      gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence

@@ -60,6 +60,8 @@ Redis version 6.0 or higher is recommended, as this is what ships with
 
 The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repositories combined take up.
 
+The Omnibus GitLab package requires about 2.5 GB of storage space for installation.
+
 If you want to be flexible about growing your hard drive space in the future consider mounting it using [logical volume management (LVM)](https://en.wikipedia.org/wiki/Logical_volume_management) so you can add more hard drives when you need them.
 
 Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.

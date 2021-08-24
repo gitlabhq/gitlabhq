@@ -108,3 +108,68 @@ clicking the **Resolve** button near the top of the page.
 Marking an error as resolved indicates that the error has stopped firing events. If a GitLab issue is linked to the error, then the issue closes.
 
 If another event occurs, the error reverts to unresolved.
+
+## Integrated error tracking
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) in GitLab 14.3.
+
+Integrated error tracking is a lightweight alternative to Sentry backend.
+You still use Sentry SDK with your application. But you don't need to deploy Sentry
+or set up for cloud-hosted Sentry. Instead, you use GitLab as a backend for it.
+
+Sentry backend automatically assigns a Data Source Name (DSN) for every project you create.
+GitLab does the same. You should be able to find a DSN for your project in the GitLab error tracking
+settings. By using a GitLab-provided DSN, your application connects to GitLab to report an error.
+Those errors are stored in the GitLab database and rendered by the GitLab UI, in the same way as
+Sentry integration.
+
+### Feature flag
+
+The integrated error tracking feature is behind a feature flag that is disabled by default.
+
+To enable it:
+
+```ruby
+Feature.enable(:integrated_error_tracking)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:integrated_error_tracking)
+```
+
+### Project settings
+
+The feature should be enabled on the project level. However, there is no UI to enable this feature yet.
+You must use the GitLab API to enable it.
+
+#### How to enable
+
+1. Enable the `integrated` error tracking setting for your project:
+
+   ```shell
+   curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+       "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/settings?active=true&integrated=true"
+   ```
+
+1. Create a client key (DSN) to use with Sentry SDK in your application. Make sure to save the
+   response, as it contains a DSN:
+
+   ```shell
+   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+       "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/client_keys"
+   ```
+
+1. Take the DSN from the previous step and configure your Sentry SDK with it. Errors are now
+   reported to the GitLab collector and are visible in the [GitLab UI](#error-tracking-list).
+
+#### How to disable
+
+To disable the feature, run this command. This is the same command as the one that enables the
+feature, but with a `false` value instead:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+    "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/settings?active=false&integrated=false"
+```

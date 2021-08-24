@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ItemStats from '~/groups/components/item_stats.vue';
 import ItemStatsValue from '~/groups/components/item_stats_value.vue';
 
@@ -12,7 +12,7 @@ describe('ItemStats', () => {
   };
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(ItemStats, {
+    wrapper = shallowMountExtended(ItemStats, {
       propsData: { ...defaultProps, ...props },
     });
   };
@@ -45,6 +45,32 @@ describe('ItemStats', () => {
       expect(findItemStatsValue().exists()).toBe(true);
       expect(findItemStatsValue().props('cssClass')).toBe('project-stars');
       expect(wrapper.find('.last-updated').exists()).toBe(true);
+    });
+
+    describe('group specific rendering', () => {
+      describe.each`
+        provided | state                 | data
+        ${true}  | ${'displays'}         | ${null}
+        ${false} | ${'does not display'} | ${{ subgroupCount: undefined, projectCount: undefined }}
+      `('when provided = $provided', ({ provided, state, data }) => {
+        beforeEach(() => {
+          const item = {
+            ...mockParentGroupItem,
+            ...data,
+            type: ITEM_TYPE.GROUP,
+          };
+
+          createComponent({ item });
+        });
+
+        it.each`
+          entity         | testId
+          ${'subgroups'} | ${'subgroups-count'}
+          ${'projects'}  | ${'projects-count'}
+        `(`${state} $entity count`, ({ testId }) => {
+          expect(wrapper.findByTestId(testId).exists()).toBe(provided);
+        });
+      });
     });
   });
 });

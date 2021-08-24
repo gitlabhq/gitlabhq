@@ -23,8 +23,3 @@ running on.
 
 [strace-parser](https://gitlab.com/wchandler/strace-parser) is a small tool to analyze
 and summarize raw `strace` data.
-
-## Pritaly
-
-[Pritaly](https://gitlab.com/wchandler/pritaly) takes Gitaly logs and colorizes output
-or converts the logs to JSON.
