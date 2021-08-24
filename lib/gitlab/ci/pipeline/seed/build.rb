@@ -15,12 +15,7 @@ module Gitlab
             @context = context
             @pipeline = context.pipeline
             @seed_attributes = attributes
-            @stages_for_needs_lookup = if Feature.enabled?(:ci_same_stage_job_needs, @pipeline.project, default_enabled: :yaml)
-                                         (previous_stages + [current_stage]).compact
-                                       else
-                                         previous_stages
-                                       end
-
+            @stages_for_needs_lookup = (previous_stages + [current_stage]).compact
             @needs_attributes = dig(:needs_attributes)
             @resource_group_key = attributes.delete(:resource_group_key)
             @job_variables = @seed_attributes.delete(:job_variables)

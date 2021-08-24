@@ -232,7 +232,9 @@ export function insertMarkdownText({
         .join('\n');
     }
   } else if (tag.indexOf(textPlaceholder) > -1) {
-    textToInsert = tag.replace(textPlaceholder, () => selected.replace(/\\n/g, '\n'));
+    textToInsert = tag.replace(textPlaceholder, () =>
+      selected.replace(/\\n/g, '\n').replace(/\/(n|t|r)/g, '\\$1'),
+    );
   } else {
     textToInsert = String(startChar) + tag + selected + (wrap ? tag : '');
   }

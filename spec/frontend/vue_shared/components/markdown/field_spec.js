@@ -32,7 +32,7 @@ describe('Markdown field component', () => {
     axiosMock.restore();
   });
 
-  function createSubject() {
+  function createSubject(lines = []) {
     // We actually mount a wrapper component so that we can force Vue to rerender classes in order to test a regression
     // caused by mixing Vanilla JS and Vue.
     subject = mount(
@@ -60,6 +60,7 @@ describe('Markdown field component', () => {
           markdownPreviewPath,
           isSubmitting: false,
           textareaValue,
+          lines,
         },
       },
     );
@@ -241,6 +242,16 @@ describe('Markdown field component', () => {
 
         expect(dropzoneSpy).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('suggestions', () => {
+    it('escapes new line characters', () => {
+      createSubject([{ rich_text: 'hello world\\n' }]);
+
+      expect(subject.find('[data-testid="markdownHeader"]').props('lineContent')).toBe(
+        'hello world/n',
+      );
     });
   });
 });

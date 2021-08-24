@@ -15,6 +15,14 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
+function cleanUpLine(content) {
+  return unescape(
+    stripHtml(content)
+      .replace(/\\(n|t|r)/g, '/$1')
+      .replace(/\n/g, ''),
+  );
+}
+
 export default {
   components: {
     GfmAutocomplete,
@@ -129,7 +137,7 @@ export default {
               return text;
             }
 
-            return unescape(stripHtml(richText).replace(/\n/g, ''));
+            return cleanUpLine(richText);
           })
           .join('\\n');
       }
@@ -141,7 +149,7 @@ export default {
           return text;
         }
 
-        return unescape(stripHtml(richText).replace(/\n/g, ''));
+        return cleanUpLine(richText);
       }
 
       return '';
@@ -272,6 +280,7 @@ export default {
       :can-suggest="canSuggest"
       :show-suggest-popover="showSuggestPopover"
       :suggestion-start-index="suggestionsStartIndex"
+      data-testid="markdownHeader"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"

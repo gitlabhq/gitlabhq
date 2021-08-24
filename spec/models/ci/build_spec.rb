@@ -1307,7 +1307,9 @@ RSpec.describe Ci::Build do
 
     shared_examples_for 'avoid deadlock' do
       it 'executes UPDATE in the right order' do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
+        recorded = with_cross_database_modification_prevented do
+          ActiveRecord::QueryRecorder.new { subject }
+        end
 
         index_for_build = recorded.log.index { |l| l.include?("UPDATE \"ci_builds\"") }
         index_for_deployment = recorded.log.index { |l| l.include?("UPDATE \"deployments\"") }
@@ -1322,7 +1324,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'avoid deadlock'
 
       it 'transits deployment status to running' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_running
       end
@@ -1340,7 +1344,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to success' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_success
       end
@@ -1353,7 +1359,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to failed' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_failed
       end
@@ -1365,7 +1373,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'avoid deadlock'
 
       it 'transits deployment status to skipped' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_skipped
       end
@@ -1378,7 +1388,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to canceled' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_canceled
       end

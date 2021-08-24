@@ -1140,16 +1140,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       it 'does not have errors' do
         expect(subject.errors).to be_empty
       end
-
-      context 'when ci_same_stage_job_needs FF is disabled' do
-        before do
-          stub_feature_flags(ci_same_stage_job_needs: false)
-        end
-
-        it 'has errors' do
-          expect(subject.errors).to contain_exactly("'rspec' job needs 'build' job, but 'build' is not in any previous stage")
-        end
-      end
     end
 
     context 'when using 101 needs' do

@@ -11,3 +11,4 @@ export const TYPE_SCANNER_PROFILE = 'DastScannerProfile';
 export const TYPE_SITE_PROFILE = 'DastSiteProfile';
 export const TYPE_USER = 'User';
 export const TYPE_VULNERABILITY = 'Vulnerability';
+export const TYPE_NOTE = 'Note';

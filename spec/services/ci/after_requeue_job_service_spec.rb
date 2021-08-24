@@ -44,16 +44,6 @@ RSpec.describe Ci::AfterRequeueJobService do
     it 'marks subsequent skipped jobs as processable' do
       expect { execute_service }.to change { test4.reload.status }.from('skipped').to('created')
     end
-
-    context 'with ci_same_stage_job_needs FF disabled' do
-      before do
-        stub_feature_flags(ci_same_stage_job_needs: false)
-      end
-
-      it 'does nothing with the build' do
-        expect { execute_service }.not_to change { test4.reload.status }
-      end
-    end
   end
 
   context 'when the pipeline is a downstream pipeline and the bridge is depended' do

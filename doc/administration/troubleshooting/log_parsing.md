@@ -55,6 +55,12 @@ zcat @400000006026b71d1a7af804.s | (head -1; tail -1) | jq '.time'
 zcat some_json.log.25.gz | (head -1; tail -1) | jq '.time'
 ```
 
+#### Get activity for correlation ID across multiple JSON logs in chronological order 
+
+```shell
+grep -hR <correlationID> | jq -c -R 'fromjson?' | jq -C -s 'sort_by(.time)'  | less -R
+```
+
 ### Parsing `production_json.log` and `api_json.log`
 
 #### Find all requests with a 5XX status code

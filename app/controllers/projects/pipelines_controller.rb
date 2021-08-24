@@ -297,7 +297,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def index_params
-    params.permit(:scope, :username, :ref, :status)
+    permitted_params = [:scope, :username, :ref, :status]
+    permitted_params << :source if Feature.enabled?(:pipeline_source_filter, project, default_enabled: :yaml)
+
+    params.permit(*permitted_params)
   end
 
   def enable_code_quality_walkthrough_experiment

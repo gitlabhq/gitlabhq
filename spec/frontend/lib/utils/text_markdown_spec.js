@@ -88,6 +88,25 @@ describe('init markdown', () => {
         expect(textArea.value).toEqual(`${initialValue}\n- `);
       });
 
+      it('unescapes new line characters', () => {
+        const initialValue = '';
+
+        textArea.value = initialValue;
+        textArea.selectionStart = 0;
+        textArea.selectionEnd = 0;
+
+        insertMarkdownText({
+          textArea,
+          text: textArea.value,
+          tag: '```suggestion:-0+0\n{text}\n```',
+          blockTag: true,
+          selected: '# Does not parse the /n currently.',
+          wrap: false,
+        });
+
+        expect(textArea.value).toContain('# Does not parse the \\n currently.');
+      });
+
       it('inserts the tag on the same line if the current line only contains spaces', () => {
         const initialValue = '  ';
 

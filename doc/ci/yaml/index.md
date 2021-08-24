@@ -1594,8 +1594,7 @@ production:
 - In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) you
   can refer to jobs in the same stage as the job you are configuring. This feature is
   enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
-  this feature is available by default. To hide the feature, ask an administrator to
-  [disable the `ci_same_stage_job_needs` flag](../../administration/feature_flags.md).
+  this feature is available by default.
 - In GitLab 14.0 and older, you can only refer to jobs in earlier stages.
 - In GitLab 13.9 and older, if `needs:` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.

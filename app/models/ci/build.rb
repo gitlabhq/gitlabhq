@@ -306,7 +306,9 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.deployment&.run
+        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+          build.deployment&.run
+        end
 
         build.run_after_commit do
           build.pipeline.persistent_ref.create
@@ -328,7 +330,9 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        build.deployment&.succeed
+        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+          build.deployment&.succeed
+        end
 
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
@@ -341,7 +345,9 @@ module Ci
         next unless build.deployment
 
         begin
-          build.deployment.drop!
+          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+            build.deployment.drop!
+          end
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
         end
@@ -362,10 +368,12 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build, transition|
-        if transition.to_name == :skipped
-          build.deployment&.skip
-        else
-          build.deployment&.cancel
+        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+          if transition.to_name == :skipped
+            build.deployment&.skip
+          else
+            build.deployment&.cancel
+          end
         end
       end
     end

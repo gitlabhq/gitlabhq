@@ -54,7 +54,6 @@ class ProjectFeature < ApplicationRecord
   validates :project, presence: true
 
   validate :repository_children_level
-  validate :allowed_access_levels
 
   default_value_for :builds_access_level, value: ENABLED, allows_nil: false
   default_value_for :issues_access_level, value: ENABLED, allows_nil: false
@@ -110,17 +109,6 @@ class ProjectFeature < ApplicationRecord
     %i(merge_requests_access_level builds_access_level).each(&validator)
   end
 
-  # Validates access level for other than pages cannot be PUBLIC
-  def allowed_access_levels
-    validator = lambda do |field|
-      level = public_send(field) || ENABLED # rubocop:disable GitlabSecurity/PublicSend
-      not_allowed = level > ENABLED
-      self.errors.add(field, "cannot have public visibility level") if not_allowed
-    end
-
-    (FEATURES - %i(pages)).each {|f| validator.call("#{f}_access_level")}
-  end
-
   def get_permission(user, feature)
     case access_level(feature)
     when DISABLED
@@ -141,6 +129,10 @@ class ProjectFeature < ApplicationRecord
     return true if user.can_read_all_resources?
 
     project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
+  end
+
+  def feature_validation_exclusion
+    %i(pages)
   end
 end
 
