@@ -14,37 +14,36 @@ module Users
 
     def initialize(user)
       @user = user
+      @ghost_user = User.ghost
     end
 
     def execute
       transition = user.block_transition
 
-      user.transaction do
-        # Block the user before moving records to prevent a data race.
-        # For example, if the user creates an issue after `migrate_issues`
-        # runs and before the user is destroyed, the destroy will fail with
-        # an exception.
-        user.block
+      # Block the user before moving records to prevent a data race.
+      # For example, if the user creates an issue after `migrate_issues`
+      # runs and before the user is destroyed, the destroy will fail with
+      # an exception.
+      user.block
 
+      begin
+        user.transaction do
+          migrate_records
+        end
+      rescue Exception # rubocop:disable Lint/RescueException
         # Reverse the user block if record migration fails
-        if !migrate_records_in_transaction && transition
+        if transition
           transition.rollback
           user.save!
         end
+
+        raise
       end
 
       user.reset
     end
 
     private
-
-    def migrate_records_in_transaction
-      user.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
-        @ghost_user = User.ghost
-
-        migrate_records
-      end
-    end
 
     def migrate_records
       migrate_issues

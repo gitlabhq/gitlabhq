@@ -42,9 +42,9 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 ]
 ```
 
-## Set approval status of an external status check
+## Set status of an external status check
 
-For a single merge request, use the API to inform GitLab that a merge request has been approved by an external service.
+For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses

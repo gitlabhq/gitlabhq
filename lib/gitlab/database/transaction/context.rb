@@ -6,9 +6,9 @@ module Gitlab
       class Context
         attr_reader :context
 
-        LOG_DEPTH_THRESHOLD = 8
-        LOG_SAVEPOINTS_THRESHOLD = 32
-        LOG_DURATION_S_THRESHOLD = 300
+        LOG_DEPTH_THRESHOLD = 4         # 3 nested subtransactions + 1 real transaction
+        LOG_SAVEPOINTS_THRESHOLD = 5    # 5 `SAVEPOINTS` created in sequence or nested
+        LOG_DURATION_S_THRESHOLD = 120  # 2 minutes long transaction
         LOG_THROTTLE_DURATION = 1
 
         def initialize
@@ -46,15 +46,15 @@ module Gitlab
         end
 
         def depth_threshold_exceeded?
-          @context[:depth].to_i > LOG_DEPTH_THRESHOLD
+          @context[:depth].to_i >= LOG_DEPTH_THRESHOLD
         end
 
         def savepoints_threshold_exceeded?
-          @context[:savepoints].to_i > LOG_SAVEPOINTS_THRESHOLD
+          @context[:savepoints].to_i >= LOG_SAVEPOINTS_THRESHOLD
         end
 
         def duration_threshold_exceeded?
-          duration.to_i > LOG_DURATION_S_THRESHOLD
+          duration.to_i >= LOG_DURATION_S_THRESHOLD
         end
 
         def log_savepoints?

@@ -280,3 +280,8 @@ documentation for the following use cases:
 
 - [Alternative way to import notes and diff notes](../user/project/import/github.md#alternative-way-to-import-notes-and-diff-notes)
 - [Reduce GitHub API request objects per page](../user/project/import/github.md#reduce-github-api-request-objects-per-page)
+
+## Metrics dashboards
+
+To assess the GitHub importer health, the [GitHub importer dashboard](https://dashboards.gitlab.net/d/importers-github-importer/importers-github-importer)
+provides information about the total number of objects fetched vs. imported over time.

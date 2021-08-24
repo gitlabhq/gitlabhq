@@ -125,7 +125,7 @@ the status checks as `pending`:
 
 ![Status checks widget pending](img/status_checks_widget_pending_v14_0.png)
 
-After GitLab [receives a response](../../../api/status_checks.md#set-approval-status-of-an-external-status-check)
+After GitLab [receives a response](../../../api/status_checks.md#set-status-of-an-external-status-check)
 from the external status check, the widget updates accordingly.
 
 NOTE:

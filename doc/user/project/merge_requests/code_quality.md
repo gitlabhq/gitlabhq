@@ -56,11 +56,10 @@ See also the Code Climate list of [Supported Languages for Maintainability](http
 
 ## Code Quality in diff view **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267612) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.11.
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267612) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.11, disabled by default behind the `codequality_mr_diff` [feature flag](../../../administration/feature_flags.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 13.12.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 14.1.
-> - [Inline annotation added](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) in GitLab 14.1.
+> - [Disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) in GitLab 14.0 due to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334116).
+> - [Inline annotation added](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 14.1.
 
 Changes to files in merge requests can cause Code Quality to fall if merged. In these cases,
 the merge request's diff view displays an indicator next to lines with new Code Quality violations. For example:

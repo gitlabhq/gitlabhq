@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Restrict allowed SSH key technologies and minimum length
+# Restrict allowed SSH key technologies and minimum length **(FREE SELF)**
 
 `ssh-keygen` allows users to create RSA keys with as few as 768 bits, which
 falls well below recommendations from certain standards groups (such as the US

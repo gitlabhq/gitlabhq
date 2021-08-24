@@ -116,7 +116,7 @@ before this occurs.
 To remove a license file from a self-managed instance:
 
 1. From the top menu, select the Admin Area **{admin}**.
-1. From the left sidebar, select **Subscription**
+1. From the left sidebar, select **Subscription**.
 1. Select **Remove license**.
 
 These steps may need to be repeated to completely remove all licenses, including those applied in the past.
@@ -124,8 +124,10 @@ These steps may need to be repeated to completely remove all licenses, including
 ## License history
 
 You can upload and view more than one license, but only the latest license in the current date
-range is used as the active license. When you upload a future-dated license, it
-doesn't take effect until its applicable date.
+range is used as the active license.
+
+When you upload a future-dated license, it doesn't take effect until its applicable date.
+You can view all of your active subscriptions in the **Subscription history** table.
 
 NOTE:
 In GitLab 13.6 and earlier, a notification banner about an expiring license may continue to be displayed even after a new license has been uploaded.

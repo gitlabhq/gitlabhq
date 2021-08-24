@@ -32,7 +32,7 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
       expect(user).to be_blocked
     end
 
-    it 'migrates all associated fields to te "Ghost user"' do
+    it 'migrates all associated fields to the "Ghost user"' do
       service.execute
 
       migrated_record = record_class.find_by_id(record.id)
@@ -46,40 +46,19 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
       context "when #{record_class_name} migration fails and is rolled back" do
         before do
           expect_any_instance_of(ActiveRecord::Associations::CollectionProxy)
-            .to receive(:update_all).and_raise(ActiveRecord::Rollback)
+            .to receive(:update_all).and_raise(ActiveRecord::StatementTimeout)
         end
 
         it 'rolls back the user block' do
-          service.execute
+          expect { service.execute }.to raise_error(ActiveRecord::StatementTimeout)
 
           expect(user.reload).not_to be_blocked
         end
 
-        it "doesn't unblock an previously-blocked user" do
+        it "doesn't unblock a previously-blocked user" do
           user.block
 
-          service.execute
-
-          expect(user.reload).to be_blocked
-        end
-      end
-
-      context "when #{record_class_name} migration fails with a non-rollback exception" do
-        before do
-          expect_any_instance_of(ActiveRecord::Associations::CollectionProxy)
-            .to receive(:update_all).and_raise(ArgumentError)
-        end
-
-        it 'rolls back the user block' do
-          service.execute rescue nil
-
-          expect(user.reload).not_to be_blocked
-        end
-
-        it "doesn't unblock an previously-blocked user" do
-          user.block
-
-          service.execute rescue nil
+          expect { service.execute }.to raise_error(ActiveRecord::StatementTimeout)
 
           expect(user.reload).to be_blocked
         end
