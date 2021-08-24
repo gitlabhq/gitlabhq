@@ -293,6 +293,13 @@ class Packages::Package < ApplicationRecord
     ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project.id, name)
   end
 
+  def create_build_infos!(build)
+    return unless build&.pipeline
+
+    # TODO: use an upsert call when https://gitlab.com/gitlab-org/gitlab/-/issues/339093 is implemented
+    build_infos.find_or_create_by!(pipeline: build.pipeline)
+  end
+
   private
 
   def composer_tag_version?

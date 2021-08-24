@@ -63,6 +63,7 @@ RSpec.describe API::ErrorTrackingClientKeys do
 
         expect(json_response['id']).to eq(new_key.id)
         expect(json_response['public_key']).to eq(new_key.public_key)
+        expect(json_response['sentry_dsn']).to eq(new_key.sentry_dsn)
       end
     end
   end

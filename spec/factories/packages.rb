@@ -354,4 +354,12 @@ FactoryBot.define do
     package
     sequence(:name) { |n| "tag-#{n}"}
   end
+
+  factory :packages_build_info, class: 'Packages::BuildInfo' do
+    package
+
+    trait :with_pipeline do
+      association :pipeline, factory: [:ci_pipeline, :with_job]
+    end
+  end
 end

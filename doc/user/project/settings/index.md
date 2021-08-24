@@ -87,59 +87,64 @@ Example `.compliance-gitlab-ci.yml`
 # Allows compliance team to control the ordering and interweaving of stages/jobs.
 # Stages without jobs defined will remain hidden.
 stages:
-- pre-compliance
-- build
-- test
-- pre-deploy-compliance
-- deploy
-- post-compliance
+  - pre-compliance
+  - build
+  - test
+  - pre-deploy-compliance
+  - deploy
+  - post-compliance
 
-variables: # can be overriden by a developer's local .gitlab-ci.yml
+variables: # Can be overridden by setting a job-specific variable in project's local .gitlab-ci.yml
   FOO: sast
 
-sast: # none of these attributes can be overriden by a developer's local .gitlab-ci.yml
+sast: # None of these attributes can be overridden by a project's local .gitlab-ci.yml
   variables:
     FOO: sast
   image: ruby:2.6
   stage: pre-compliance
   rules:
-        - when: always
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - when: always  # or when: on_success
   allow_failure: false
   before_script:
-  - "# No before scripts."
+    - "# No before scripts."
   script:
-  - echo "running $FOO"
+    - echo "running $FOO"
   after_script:
-  - "# No after scripts."
+    - "# No after scripts."
 
 sanity check:
   image: ruby:2.6
   stage: pre-deploy-compliance
   rules:
-        - when: always
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - when: always  # or when: on_success
   allow_failure: false
   before_script:
-  - "# No before scripts."
+    - "# No before scripts."
   script:
-  - echo "running $FOO"
+    - echo "running $FOO"
   after_script:
-  - "# No after scripts."
-
+    - "# No after scripts."
 
 audit trail:
   image: ruby:2.6
   stage: post-compliance
   rules:
-        - when: always
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - when: always  # or when: on_success
   allow_failure: false
   before_script:
-  - "# No before scripts."
+    - "# No before scripts."
   script:
-  - echo "running $FOO"
+    - echo "running $FOO"
   after_script:
-  - "# No after scripts."
+    - "# No after scripts."
 
-include: # Execute individual project's configuration
+include: # Execute individual project's configuration (if project contains .gitlab-ci.yml)
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
   ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch.
@@ -187,7 +192,7 @@ section.
 You can now change the [Project visibility](../../../public_access/public_access.md).
 If you set **Project Visibility** to public, you can limit access to some features
 to **Only Project Members**. In addition, you can select the option to
-[Allow users to request access](../members/index.md#prevent-users-from-requesting-access-to-a-project).
+[Allow users to request access](../members/index.md#request-access-to-a-project).
 
 Use the switches to enable or disable the following features:
 
@@ -350,7 +355,7 @@ to transfer a project.
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-- You have at least the Maintainer** role in that group.
+- You have at least **Maintainer** [role](../../permissions.md#project-members-permissions) in that group.
 - You're at least an **Owner** of the project to be transferred.
 - The group to which the project is being transferred to must allow creation of new projects.
 
@@ -457,7 +462,7 @@ To do so:
 1. Confirm the action by typing the project's path as instructed.
 
 NOTE:
-Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
+Only project owners have the [permissions](../../permissions.md#project-members-permissions)
 to remove a fork relationship.
 
 ## Monitor settings

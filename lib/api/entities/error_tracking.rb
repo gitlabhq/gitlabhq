@@ -15,6 +15,7 @@ module API
         expose :id
         expose :active
         expose :public_key
+        expose :sentry_dsn
       end
     end
   end

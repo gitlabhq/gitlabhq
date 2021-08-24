@@ -51,7 +51,7 @@ module Packages
                                                    .execute
         end
 
-        package.build_infos.safe_find_or_create_by!(pipeline: params[:build].pipeline) if params[:build].present?
+        package.create_build_infos!(params[:build])
 
         ServiceResponse.success(payload: { package: package })
       end

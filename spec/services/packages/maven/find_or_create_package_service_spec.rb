@@ -98,6 +98,19 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
       it 'creates a build_info' do
         expect { subject }.to change { Packages::BuildInfo.count }.by(1)
       end
+
+      context 'with multiple files for the same package and the same pipeline' do
+        let(:file_2_params) { params.merge(file_name: 'test2.jar') }
+        let(:file_3_params) { params.merge(file_name: 'test3.jar') }
+
+        it 'creates a single build info' do
+          expect do
+            described_class.new(project, user, params).execute
+            described_class.new(project, user, file_2_params).execute
+            described_class.new(project, user, file_3_params).execute
+          end.to change { ::Packages::BuildInfo.count }.by(1)
+        end
+      end
     end
 
     context 'when package duplicates are not allowed' do

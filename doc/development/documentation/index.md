@@ -405,76 +405,7 @@ on how the left-side navigation menu is built and updated.
 
 ## Previewing the changes live
 
-NOTE:
-To preview your changes to documentation locally, follow this
-[development guide](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
-
-The live preview is currently enabled for the following projects:
-
-- [`gitlab`](https://gitlab.com/gitlab-org/gitlab)
-- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab)
-- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner)
-
-If your merge request has docs changes, you can use the manual `review-docs-deploy` job
-to deploy the docs review app for your merge request.
-
-![Manual trigger a docs build](img/manual_build_docs.png)
-
-You must push a branch to those repositories, as it doesn't work for forks.
-
-The `review-docs-deploy*` job:
-
-1. Triggers a cross project pipeline and build the docs site with your changes.
-
-In case the review app URL returns 404, this means that either the site is not
-yet deployed, or something went wrong with the remote pipeline. Give it a few
-minutes and it should appear online, otherwise you can check the status of the
-remote pipeline from the link in the merge request's job output.
-If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
-
-NOTE:
-Someone with no merge rights to the GitLab projects (think of forks from
-contributors) cannot run the manual job. In that case, you can
-ask someone from the GitLab team who has the permissions to do that for you.
-
-### Troubleshooting review apps
-
-In case the review app URL returns 404, follow these steps to debug:
-
-1. **Did you follow the URL from the merge request widget?** If yes, then check if
-   the link is the same as the one in the job output.
-1. **Did you follow the URL from the job output?** If yes, then it means that
-   either the site is not yet deployed or something went wrong with the remote
-   pipeline. Give it a few minutes and it should appear online, otherwise you
-   can check the status of the remote pipeline from the link in the job output.
-   If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
-
-### Technical aspects
-
-If you want to know the in-depth details, here's what's really happening:
-
-1. You manually run the `review-docs-deploy` job in a merge request.
-1. The job runs the [`scripts/trigger-build`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/trigger-build)
-   script with the `docs deploy` flag, which triggers the "Triggered from `gitlab-org/gitlab` 'review-docs-deploy' job"
-   pipeline trigger in the `gitlab-org/gitlab-docs` project for the `$DOCS_BRANCH` (defaults to `main`).
-1. The preview URL is shown both at the job output and in the merge request
-   widget. You also get the link to the remote pipeline.
-1. In the `gitlab-org/gitlab-docs` project, the pipeline is created and it
-   [skips the test jobs](https://gitlab.com/gitlab-org/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
-   to lower the build time.
-1. Once the docs site is built, the HTML files are uploaded as artifacts.
-1. A specific runner tied only to the docs project, runs the Review App job
-   that downloads the artifacts and uses `rsync` to transfer the files over
-   to a location where NGINX serves them.
-
-The following GitLab features are used among others:
-
-- [Manual jobs](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually)
-- [Multi project pipelines](../../ci/pipelines/multi_project_pipelines.md)
-- [Review Apps](../../ci/review_apps/index.md)
-- [Artifacts](../../ci/yaml/index.md#artifacts)
-- [Specific runner](../../ci/runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
-- [Pipelines for merge requests](../../ci/pipelines/merge_request_pipelines.md)
+See how you can use review apps to [preview your changes live](review_apps.md).
 
 ## Testing
 

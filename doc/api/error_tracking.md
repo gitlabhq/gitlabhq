@@ -96,12 +96,14 @@ Example response:
   {
     "id": 1,
     "active": true,
-    "public_key": "glet_aa77551d849c083f76d0bc545ed053a3"
+    "public_key": "glet_aa77551d849c083f76d0bc545ed053a3",
+    "sentry_dsn": "https://glet_aa77551d849c083f76d0bc545ed053a3@gitlab.example.com/api/v4/error_tracking/collector/5"
   },
   {
     "id": 3,
     "active": true,
-    "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3"
+    "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3",
+    "sentry_dsn": "https://glet_0ff98b1d849c083f76d0bc545ed053a3@gitlab.example.com/api/v4/error_tracking/collector/5"
   }
 ]
 ```
@@ -129,7 +131,8 @@ Example response:
 {
   "id": 3,
   "active": true,
-  "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3"
+  "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3",
+  "sentry_dsn": "https://glet_0ff98b1d849c083f76d0bc545ed053a3@gitlab.example.com/api/v4/error_tracking/collector/5"
 }
 ```
 
