@@ -96,28 +96,6 @@ RSpec.describe 'Group issues page' do
     end
   end
 
-  context 'projects with issues disabled' do
-    describe 'issue dropdown' do
-      let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
-
-      before do
-        [project, project_with_issues_disabled].each { |project| project.add_maintainer(user_in_group) }
-        sign_in(user_in_group)
-        visit issues_group_path(group)
-      end
-
-      it 'shows projects only with issues feature enabled', :js do
-        find('.empty-state .js-lazy-loaded')
-        find('.empty-state .new-project-item-link').click
-
-        page.within('.select2-results') do
-          expect(page).to have_content(project.full_name)
-          expect(page).not_to have_content(project_with_issues_disabled.full_name)
-        end
-      end
-    end
-  end
-
   context 'manual ordering', :js do
     let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 

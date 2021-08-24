@@ -36265,6 +36265,9 @@ msgstr ""
 msgid "Use one line per URI"
 msgstr ""
 
+msgid "Use primary email (%{email})"
+msgstr ""
+
 msgid "Use shortcuts"
 msgstr ""
 

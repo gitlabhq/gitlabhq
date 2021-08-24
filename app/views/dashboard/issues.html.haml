@@ -9,10 +9,6 @@
 .page-title-holder.d-flex.align-items-center
   %h1.page-title= _('Issues')
 
-  - if current_user
-    .page-title-controls
-      = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
-
 .top-area
   = render 'shared/issuable/nav', type: :issues, display_count: !@no_filters_set
   .nav-controls

@@ -25,24 +25,6 @@ RSpec.describe 'Dashboard Merge Requests' do
     expect(page).not_to have_selector('#js-dropdown-target-branch', visible: false)
   end
 
-  context 'new merge request dropdown' do
-    let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
-
-    before do
-      project_with_disabled_merge_requests.add_maintainer(current_user)
-      visit merge_requests_dashboard_path
-    end
-
-    it 'shows projects only with merge requests feature enabled', :js do
-      find('.new-project-item-select-button').click
-
-      page.within('.select2-results') do
-        expect(page).to have_content(project.full_name)
-        expect(page).not_to have_content(project_with_disabled_merge_requests.full_name)
-      end
-    end
-  end
-
   context 'no merge requests exist' do
     it 'shows an empty state' do
       visit merge_requests_dashboard_path(assignee_username: current_user.username)

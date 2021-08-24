@@ -32,20 +32,6 @@ RSpec.describe 'Dashboard > Milestones' do
       expect(page).to have_content(group.name)
       expect(first('.milestone')).to have_content('Merge requests')
     end
-
-    describe 'new milestones dropdown', :js do
-      it 'takes user to a new milestone page', :js do
-        find('.new-project-item-select-button').click
-
-        page.within('.select2-results') do
-          first('.select2-result-label').click
-        end
-
-        find('.new-project-item-link').click
-
-        expect(current_path).to eq(new_group_milestone_path(group))
-      end
-    end
   end
 
   describe 'with merge requests disabled' do

@@ -2,7 +2,6 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import initManualOrdering from '~/manual_ordering';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
-import projectSelect from '~/project_select';
 
 initFilteredSearch({
   page: FILTERED_SEARCH.ISSUES,
@@ -10,5 +9,4 @@ initFilteredSearch({
   useDefaultState: true,
 });
 
-projectSelect();
 initManualOrdering();

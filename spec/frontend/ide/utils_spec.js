@@ -90,6 +90,9 @@ describe('WebIDE utils', () => {
     it('returns true if there is a `binary` property already set on the file object', () => {
       expect(isTextFile({ name: 'abc.txt', content: '' })).toBe(true);
       expect(isTextFile({ name: 'abc.txt', content: '', binary: true })).toBe(false);
+
+      expect(isTextFile({ name: 'abc.tex', content: 'éêė' })).toBe(false);
+      expect(isTextFile({ name: 'abc.tex', content: 'éêė', binary: false })).toBe(true);
     });
   });
 

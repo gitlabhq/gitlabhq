@@ -606,14 +606,6 @@ class Note < ApplicationRecord
 
   private
 
-  # Using this method followed by a call to *save* may result in *ActiveRecord::RecordNotUnique* exception
-  # in a multi-threaded environment. Make sure to use it within a *safe_ensure_unique* block.
-  def model_user_mention
-    return if user_mentions.is_a?(ActiveRecord::NullRelation)
-
-    user_mentions.first_or_initialize
-  end
-
   def system_note_viewable_by?(user)
     return true unless system_note_metadata
 

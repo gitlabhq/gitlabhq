@@ -59,23 +59,6 @@ RSpec.describe 'Group merge requests page' do
     end
   end
 
-  describe 'new merge request dropdown' do
-    let(:project_with_merge_requests_disabled) { create(:project, :merge_requests_disabled, group: group) }
-
-    before do
-      visit path
-    end
-
-    it 'shows projects only with merge requests feature enabled', :js do
-      find('.new-project-item-link').click
-
-      page.within('.select2-results') do
-        expect(page).to have_content(project.name_with_namespace)
-        expect(page).not_to have_content(project_with_merge_requests_disabled.name_with_namespace)
-      end
-    end
-  end
-
   context 'empty state with no merge requests' do
     before do
       MergeRequest.delete_all
@@ -85,7 +68,6 @@ RSpec.describe 'Group merge requests page' do
       visit path
 
       expect(page).to have_selector('.empty-state')
-      expect(page).to have_link('Select project to create merge request')
       expect(page).not_to have_selector('.issues-filters')
     end
 
@@ -95,7 +77,6 @@ RSpec.describe 'Group merge requests page' do
         visit path
 
         expect(page).to have_selector('.empty-state')
-        expect(page).to have_link('Select project to create merge request')
         expect(page).to have_selector('.issues-filters')
       end
     end

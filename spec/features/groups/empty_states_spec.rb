@@ -92,20 +92,6 @@ RSpec.describe 'Group empty states' do
           it 'displays an empty state' do
             expect(page).to have_selector('.empty-state')
           end
-
-          it "shows a new #{issuable_name} button" do
-            within '.empty-state' do
-              expect(page).to have_content("create #{issuable_name}")
-            end
-          end
-
-          it "the new #{issuable_name} button opens a project dropdown" do
-            within '.empty-state' do
-              find('.new-project-item-select-button').click
-            end
-
-            expect(page).to have_selector('.ajax-project-dropdown')
-          end
         end
       end
 

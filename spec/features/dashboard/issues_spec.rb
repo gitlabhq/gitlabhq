@@ -46,38 +46,4 @@ RSpec.describe 'Dashboard Issues' do
     it_behaves_like "it has an RSS button with current_user's feed token"
     it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
-
-  describe 'new issue dropdown' do
-    it 'shows projects only with issues feature enabled', :js do
-      find('.new-project-item-select-button').click
-
-      page.within('.select2-results') do
-        expect(page).to have_content(project.full_name)
-        expect(page).not_to have_content(project_with_issues_disabled.full_name)
-      end
-    end
-
-    it 'shows the new issue page', :js do
-      find('.new-project-item-select-button').click
-
-      wait_for_requests
-
-      project_path = "/#{project.full_path}"
-      project_json = { name: project.full_name, url: project_path }.to_json
-
-      # simulate selection, and prevent overlap by dropdown menu
-      first('.project-item-select', visible: false)
-      execute_script("$('.project-item-select').val('#{project_json}').trigger('change');")
-      find('#select2-drop-mask', visible: false)
-      execute_script("$('#select2-drop-mask').remove();")
-
-      find('.new-project-item-link').click
-
-      expect(page).to have_current_path("#{project_path}/-/issues/new")
-
-      page.within('#content-body') do
-        expect(page).to have_selector('.issue-form')
-      end
-    end
-  end
 end

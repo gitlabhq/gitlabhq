@@ -70,6 +70,7 @@ Your **Global notification settings** are the default settings unless you select
 different values for a project or a group.
 
 - **Notification email**: the email address your notifications are sent to.
+  Defaults to your primary email address.
 - **Receive product marketing emails**: select this checkbox to receive
   [periodic emails](#product-marketing-emails) about GitLab features.
 - **Global notification level**: the default [notification level](#notification-levels)

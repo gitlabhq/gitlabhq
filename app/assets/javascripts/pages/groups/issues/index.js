@@ -4,7 +4,6 @@ import { mountIssuablesListApp } from '~/issues_list';
 import initManualOrdering from '~/manual_ordering';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
-import projectSelect from '~/project_select';
 
 const ISSUE_BULK_UPDATE_PREFIX = 'issue_';
 
@@ -18,7 +17,6 @@ initFilteredSearch({
   useDefaultState: true,
   filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
 });
-projectSelect();
 initManualOrdering();
 
 if (gon.features?.vueIssuablesList) {

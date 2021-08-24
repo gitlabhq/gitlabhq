@@ -3,7 +3,6 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import issuableInitBulkUpdateSidebar from '~/issuable_bulk_update_sidebar/issuable_init_bulk_update_sidebar';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
-import projectSelect from '~/project_select';
 
 const ISSUABLE_BULK_UPDATE_PREFIX = 'merge_request_';
 
@@ -16,4 +15,3 @@ initFilteredSearch({
   useDefaultState: true,
   filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
 });
-projectSelect();

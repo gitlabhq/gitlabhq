@@ -25,6 +25,12 @@ If you just want to delete everything and start over with an empty DB (approxima
 bundle exec rake db:reset RAILS_ENV=development
 ```
 
+If you want to seed the empty DB with sample data (approximately 4 minutes):
+
+```shell
+bundle exec rake dev:setup
+```
+
 If you just want to delete everything and start over with sample data (approximately 4 minutes). This
 also does `db:reset` and runs DB-specific migrations:
 
