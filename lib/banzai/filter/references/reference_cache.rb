@@ -28,11 +28,18 @@ module Banzai
           @references_per_parent[parent_type] ||= begin
             refs = Hash.new { |hash, key| hash[key] = Set.new }
 
-            if Feature.enabled?(:milestone_reference_pattern, default_enabled: :yaml)
-              doc_search(refs)
-            else
-              node_search(nodes, refs)
+            prepare_doc_for_scan(filter.doc).to_enum(:scan, regex).each do
+              parent_path = if parent_type == :project
+                              full_project_path($~[:namespace], $~[:project])
+                            else
+                              full_group_path($~[:group])
+                            end
+
+              ident = filter.identifier($~)
+              refs[parent_path] << ident if ident
             end
+
+            refs
           end
         end
 
@@ -163,39 +170,6 @@ module Banzai
 
         delegate :project, :group, :parent, :parent_type, to: :filter
 
-        # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/336268
-        def node_search(nodes, refs)
-          nodes.each do |node|
-            prepare_node_for_scan(node).scan(regex) do
-              parent_path = if parent_type == :project
-                              full_project_path($~[:namespace], $~[:project])
-                            else
-                              full_group_path($~[:group])
-                            end
-
-              ident = filter.identifier($~)
-              refs[parent_path] << ident if ident
-            end
-          end
-
-          refs
-        end
-
-        def doc_search(refs)
-          prepare_doc_for_scan(filter.doc).to_enum(:scan, regex).each do
-            parent_path = if parent_type == :project
-                            full_project_path($~[:namespace], $~[:project])
-                          else
-                            full_group_path($~[:group])
-                          end
-
-            ident = filter.identifier($~)
-            refs[parent_path] << ident if ident
-          end
-
-          refs
-        end
-
         def regex
           strong_memoize(:regex) do
             [
@@ -211,13 +185,6 @@ module Banzai
 
         def prepare_doc_for_scan(doc)
           html = doc.to_html
-
-          filter.requires_unescaping? ? unescape_html_entities(html) : html
-        end
-
-        # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/336268
-        def prepare_node_for_scan(node)
-          html = node.to_html
 
           filter.requires_unescaping? ? unescape_html_entities(html) : html
         end

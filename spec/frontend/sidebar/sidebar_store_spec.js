@@ -16,17 +16,6 @@ const ANOTHER_ASSINEE = {
   avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
 };
 
-const PARTICIPANT = {
-  id: 1,
-  state: 'active',
-  username: 'marcene',
-  name: 'Allie Will',
-  web_url: 'foo.com',
-  avatar_url: 'gravatar.com/avatar/xxx',
-};
-
-const PARTICIPANT_LIST = [PARTICIPANT, { ...PARTICIPANT, id: 2 }, { ...PARTICIPANT, id: 3 }];
-
 describe('Sidebar store', () => {
   let testContext;
 
@@ -113,28 +102,6 @@ describe('Sidebar store', () => {
     expect(testContext.store.changing).toBe(true);
   });
 
-  it('sets participants data', () => {
-    expect(testContext.store.participants.length).toEqual(0);
-
-    testContext.store.setParticipantsData({
-      participants: PARTICIPANT_LIST,
-    });
-
-    expect(testContext.store.isFetching.participants).toEqual(false);
-    expect(testContext.store.participants.length).toEqual(PARTICIPANT_LIST.length);
-  });
-
-  it('sets subcriptions data', () => {
-    expect(testContext.store.subscribed).toEqual(null);
-
-    testContext.store.setSubscriptionsData({
-      subscribed: true,
-    });
-
-    expect(testContext.store.isFetching.subscriptions).toEqual(false);
-    expect(testContext.store.subscribed).toEqual(true);
-  });
-
   it('set assigned data', () => {
     const users = {
       assignees: UsersMockHelper.createNumberRandomUsers(3),
@@ -147,11 +114,11 @@ describe('Sidebar store', () => {
   });
 
   it('sets fetching state', () => {
-    expect(testContext.store.isFetching.participants).toEqual(true);
+    expect(testContext.store.isFetching.assignees).toEqual(true);
 
-    testContext.store.setFetchingState('participants', false);
+    testContext.store.setFetchingState('assignees', false);
 
-    expect(testContext.store.isFetching.participants).toEqual(false);
+    expect(testContext.store.isFetching.assignees).toEqual(false);
   });
 
   it('sets loading state', () => {

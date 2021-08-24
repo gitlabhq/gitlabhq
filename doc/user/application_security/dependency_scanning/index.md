@@ -57,8 +57,8 @@ However, you can override the selection using the variable `DS_EXCLUDED_ANALYZER
 
 The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) and searches a
 maximum of two directory levels from the repository's root. For example, the
-`gemnasium-dependency_scanning` job is enabled if a repository contains either a `Gemfile` or
-`api/Gemfile` file, but not if the only supported dependency file is `api/client/Gemfile`.
+`gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
+`api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is `api/v1/client/Gemfile`.
 
 The following languages and dependency managers are supported:
 
@@ -262,7 +262,7 @@ GitLab relies on [`rules:exists`](../../../ci/yaml/index.md#rulesexists) to star
 `Supported files` in the repository as shown in the [table above](#supported-languages-and-package-managers).
 
 The current detection logic limits the maximum search depth to two levels. For example, the `gemnasium-dependency_scanning` job is enabled if
-a repository contains either a `Gemfile.lock` or `api/Gemfile.lock` file, but not if the only supported dependency file is `api/client/Gemfile.lock`.
+a repository contains either a `Gemfile.lock`, `api/Gemfile.lock`, or `api/client/Gemfile.lock`, but not if the only supported dependency file is `api/v1/client/Gemfile.lock`.
 
 ### How multiple files are processed
 

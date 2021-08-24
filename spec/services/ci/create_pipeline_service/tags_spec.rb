@@ -20,7 +20,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       it 'creates a pipeline', :aggregate_failures do
         expect(pipeline).to be_created_successfully
-        expect(pipeline.builds.first.tag_list).to eq(%w[tag1 tag2])
+        expect(pipeline.builds.first.tag_list).to match_array(%w[tag1 tag2])
       end
     end
 

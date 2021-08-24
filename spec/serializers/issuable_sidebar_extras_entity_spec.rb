@@ -10,11 +10,7 @@ RSpec.describe IssuableSidebarExtrasEntity do
 
   subject { described_class.new(resource, request: request).as_json }
 
-  it 'have subscribe attributes' do
-    expect(subject).to include(:participants,
-                               :project_emails_disabled,
-                               :subscribe_disabled_description,
-                               :subscribed,
-                               :assignees)
+  it 'have assignee attribute' do
+    expect(subject).to include(:assignees)
   end
 end

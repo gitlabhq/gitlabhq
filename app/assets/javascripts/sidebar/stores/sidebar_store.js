@@ -22,8 +22,6 @@ export default class SidebarStore {
     this.isFetching = {
       assignees: true,
       reviewers: true,
-      participants: true,
-      subscriptions: true,
     };
     this.isLoading = {};
     this.autocompleteProjects = [];
@@ -61,18 +59,6 @@ export default class SidebarStore {
     this.totalTimeSpent = data.total_time_spent;
     this.humanTimeEstimate = data.human_time_estimate;
     this.humanTotalTimeSpent = data.human_total_time_spent;
-  }
-
-  setParticipantsData(data) {
-    this.isFetching.participants = false;
-    this.participants = data.participants || [];
-  }
-
-  setSubscriptionsData(data) {
-    this.projectEmailsDisabled = data.project_emails_disabled || false;
-    this.subscribeDisabledDescription = data.subscribe_disabled_description;
-    this.isFetching.subscriptions = false;
-    this.subscribed = data.subscribed || false;
   }
 
   setFetchingState(key, value) {
