@@ -103,6 +103,8 @@ class Project < ApplicationRecord
 
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
+  after_save :save_topics
+
   after_create -> { create_or_load_association(:project_feature) }
 
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -127,12 +129,31 @@ class Project < ApplicationRecord
   after_initialize :use_hashed_storage
   after_create :check_repository_absence!
 
+  # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
+  # TODO: remove 'acts_as_ordered_taggable_on'  and ':topics_acts_as_taggable' in the further process of the migration
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
   acts_as_ordered_taggable_on :topics
+  has_many :topics_acts_as_taggable, -> { order("#{ActsAsTaggableOn::Tagging.table_name}.id") },
+                     class_name: 'ActsAsTaggableOn::Tag',
+                     through: :topic_taggings,
+                     source: :tag
+
+  has_many :project_topics, -> { order(:id) }, class_name: 'Projects::ProjectTopic'
+  has_many :topics, through: :project_topics, class_name: 'Projects::Topic'
+
+  # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
+  # TODO: remove 'topics' in the further process of the migration
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
+  alias_method :topics_new, :topics
+  def topics
+    self.topics_acts_as_taggable + self.topics_new
+  end
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
   attr_accessor :skip_disk_validation
+  attr_writer :topic_list
 
   alias_attribute :title, :name
 
@@ -623,6 +644,19 @@ class Project < ApplicationRecord
     joins(:service_desk_setting).where('service_desk_settings.project_key' => key)
   end
 
+  scope :with_topic, ->(topic_name) do
+    topic = Projects::Topic.find_by_name(topic_name)
+    acts_as_taggable_on_topic = ActsAsTaggableOn::Tag.find_by_name(topic_name)
+
+    return none unless topic || acts_as_taggable_on_topic
+
+    relations = []
+    relations << where(id: topic.project_topics.select(:project_id)) if topic
+    relations << where(id: acts_as_taggable_on_topic.taggings.select(:taggable_id)) if acts_as_taggable_on_topic
+
+    Project.from_union(relations)
+  end
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
@@ -638,7 +672,7 @@ class Project < ApplicationRecord
   mount_uploader :bfg_object_map, AttachmentUploader
 
   def self.with_api_entity_associations
-    preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
+    preload(:project_feature, :route, :topics, :topics_acts_as_taggable, :group, :timelogs, namespace: [:route, :owner])
   end
 
   def self.with_web_entity_associations
@@ -2673,7 +2707,31 @@ class Project < ApplicationRecord
     ci_cd_settings.group_runners_enabled?
   end
 
+  def topic_list
+    self.topics.map(&:name)
+  end
+
   private
+
+  def save_topics
+    return if @topic_list.nil?
+
+    @topic_list = @topic_list.split(',') if @topic_list.instance_of?(String)
+    @topic_list = @topic_list.map(&:strip).uniq.reject(&:empty?)
+
+    if @topic_list != self.topic_list || self.topics_acts_as_taggable.any?
+      self.topics_new.delete_all
+      self.topics = @topic_list.map { |topic| Projects::Topic.find_or_create_by(name: topic) }
+
+      # Remove old topics (ActsAsTaggableOn::Tag)
+      # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
+      # TODO: remove in the further process of the migration
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
+      self.topic_taggings.clear
+    end
+
+    @topic_list = nil
+  end
 
   def find_integration(integrations, name)
     integrations.find { _1.to_param == name }

@@ -1,0 +1,8 @@
+---
+name: load_balancing_for_expire_job_cache_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68791
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339137
+milestone: '14.3'
+type: development
+group: group::pipeline authoring
+default_enabled: false

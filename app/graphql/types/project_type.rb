@@ -406,6 +406,10 @@ module Types
       object.topic_list
     end
 
+    def topics
+      object.topic_list
+    end
+
     private
 
     def project

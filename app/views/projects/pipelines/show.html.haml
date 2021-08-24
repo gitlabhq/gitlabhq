@@ -28,4 +28,4 @@
 
   = render "projects/pipelines/with_tabs", pipeline: @pipeline, stages: @stages, pipeline_has_errors: pipeline_has_errors
 
-.js-pipeline-details-vue{ data: { endpoint: project_pipeline_path(@project, @pipeline, format: :json), metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: @project.namespace, project_id: @project, format: :json), pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@pipeline) } }
+.js-pipeline-details-vue{ data: { metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: @project.namespace, project_id: @project, format: :json), pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@pipeline) } }

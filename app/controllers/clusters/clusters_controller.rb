@@ -38,7 +38,7 @@ class Clusters::ClustersController < Clusters::BaseController
 
   def new
     if params[:provider] == 'aws'
-      @aws_role = Aws::Role.create_or_find_by!(user: current_user)
+      @aws_role = Aws::Role.create_or_find_by!(user: current_user) # rubocop:disable Performance/ActiveRecordSubtransactionMethods
       @instance_types = load_instance_types.to_json
 
     elsif params[:provider] == 'gcp'

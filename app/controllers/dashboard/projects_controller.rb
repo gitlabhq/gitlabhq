@@ -36,7 +36,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def starred
     @projects = load_projects(params.merge(starred: true))
-      .includes(:forked_from_project, :topics)
+      .includes(:forked_from_project, :topics, :topics_acts_as_taggable)
 
     @groups = []
 

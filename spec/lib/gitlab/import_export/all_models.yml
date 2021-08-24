@@ -354,6 +354,8 @@ project:
 - taggings
 - base_tags
 - topic_taggings
+- topics_acts_as_taggable
+- project_topics
 - topics
 - chat_services
 - cluster

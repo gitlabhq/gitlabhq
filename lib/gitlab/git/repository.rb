@@ -869,12 +869,6 @@ module Gitlab
         end
       end
 
-      def squash_in_progress?(squash_id)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.squash_in_progress?(squash_id)
-        end
-      end
-
       def bundle_to_disk(save_path)
         wrapped_gitaly_errors do
           gitaly_repository_client.create_bundle(save_path)

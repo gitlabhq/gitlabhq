@@ -63,6 +63,7 @@ export function initIde(el, options = {}) {
         editorTheme: window.gon?.user_color_scheme || DEFAULT_THEME,
         codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
         environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
+        previewMarkdownPath: el.dataset.previewMarkdownPath,
       });
     },
     beforeDestroy() {

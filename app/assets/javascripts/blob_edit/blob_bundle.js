@@ -69,6 +69,7 @@ export default () => {
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
     const isMarkdown = editBlobForm.data('is-markdown');
+    const previewMarkdownPath = editBlobForm.data('previewMarkdownPath');
     const commitButton = $('.js-commit-button');
     const cancelLink = $('.btn.btn-cancel');
 
@@ -80,6 +81,7 @@ export default () => {
           currentAction,
           projectId,
           isMarkdown,
+          previewMarkdownPath,
         });
         initPopovers();
         initCodeQualityWalkthroughStep();

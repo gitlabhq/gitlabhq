@@ -66,7 +66,7 @@ class ApplicationRecord < ActiveRecord::Base
   def self.safe_find_or_create_by(*args, &block)
     return optimized_safe_find_or_create_by(*args, &block) if Feature.enabled?(:optimize_safe_find_or_create_by, default_enabled: :yaml)
 
-    safe_ensure_unique(retries: 1) do
+    safe_ensure_unique(retries: 1) do # rubocop:disable Performance/ActiveRecordSubtransactionMethods
       find_or_create_by(*args, &block)
     end
   end
@@ -102,19 +102,6 @@ class ApplicationRecord < ActiveRecord::Base
   def self.declarative_enum(enum_mod)
     values = enum_mod.definition.transform_values { |v| v[:value] }
     enum(enum_mod.key => values)
-  end
-
-  def self.transaction(**options, &block)
-    if options[:requires_new] && track_subtransactions?
-      ::Gitlab::Database::Metrics.subtransactions_increment(self.name)
-    end
-
-    super(**options, &block)
-  end
-
-  def self.track_subtransactions?
-    ::Feature.enabled?(:active_record_subtransactions_counter, type: :ops, default_enabled: :yaml) &&
-      connection.transaction_open?
   end
 
   def self.cached_column_list

@@ -79,6 +79,7 @@ export default {
       'editorTheme',
       'entries',
       'currentProjectId',
+      'previewMarkdownPath',
     ]),
     ...mapGetters([
       'getAlert',
@@ -314,14 +315,15 @@ export default {
 
         if (
           this.fileType === MARKDOWN_FILE_TYPE &&
-          this.editor?.getEditorType() === EDITOR_TYPE_CODE
+          this.editor?.getEditorType() === EDITOR_TYPE_CODE &&
+          this.previewMarkdownPath
         ) {
           import('~/editor/extensions/source_editor_markdown_ext')
             .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
               this.editor.use(
                 new MarkdownExtension({
                   instance: this.editor,
-                  projectPath: this.currentProjectId,
+                  previewMarkdownPath: this.previewMarkdownPath,
                 }),
               );
             })

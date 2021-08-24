@@ -24,6 +24,8 @@ import axios from '~/lib/utils/axios_utils';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import { file } from '../helpers';
 
+const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
+
 const defaultFileProps = {
   ...file('file.txt'),
   content: 'hello world',
@@ -77,6 +79,7 @@ const prepareStore = (state, activeFile) => {
     entries: {
       [activeFile.path]: activeFile,
     },
+    previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
   };
   const storeOptions = createStoreOptions();
   return new Vuex.Store({
@@ -278,10 +281,10 @@ describe('RepoEditor', () => {
       async ({ activeFile, viewer, shouldHaveMarkdownExtension } = {}) => {
         await createComponent({ state: { viewer }, activeFile });
         if (shouldHaveMarkdownExtension) {
-          expect(vm.editor.projectPath).toBe(vm.currentProjectId);
+          expect(vm.editor.previewMarkdownPath).toBe(PREVIEW_MARKDOWN_PATH);
           expect(vm.editor.togglePreview).toBeDefined();
         } else {
-          expect(vm.editor.projectPath).toBeUndefined();
+          expect(vm.editor.previewMarkdownPath).toBeUndefined();
           expect(vm.editor.togglePreview).toBeUndefined();
         }
       },

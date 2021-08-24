@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 
-class ExpireJobCacheWorker
+class ExpireJobCacheWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  data_consistency :always
+  data_consistency :delayed, feature_flag: :load_balancing_for_expire_job_cache_worker
 
   sidekiq_options retry: 3
   include PipelineQueue
 
   queue_namespace :pipeline_cache
   urgency :high
-  idempotent!
+  # This worker should be idempotent, but we're switching to data_consistency
+  # :sticky and there is an ongoing incompatibility, so it needs to be disabled for
+  # now. The following line can be uncommented and this comment removed once
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/325291 is resolved.
+  # idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(job_id)

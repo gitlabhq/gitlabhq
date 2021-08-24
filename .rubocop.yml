@@ -717,3 +717,8 @@ Performance/ActiveRecordSubtransactions:
   Exclude:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
+
+Performance/ActiveRecordSubtransactionMethods:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'

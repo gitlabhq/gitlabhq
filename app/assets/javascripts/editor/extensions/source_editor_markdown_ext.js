@@ -14,17 +14,9 @@ import {
 } from '../constants';
 import { SourceEditorExtension } from './source_editor_extension_base';
 
-const getPreview = (text, projectPath = '') => {
-  let url;
-
-  if (projectPath) {
-    url = `/${projectPath}/preview_markdown`;
-  } else {
-    const { group, project } = document.body.dataset;
-    url = `/${group}/${project}/preview_markdown`;
-  }
+const getPreview = (text, previewMarkdownPath) => {
   return axios
-    .post(url, {
+    .post(previewMarkdownPath, {
       text,
     })
     .then(({ data }) => {
@@ -43,10 +35,10 @@ const setupDomElement = ({ injectToEl = null } = {}) => {
 };
 
 export class EditorMarkdownExtension extends SourceEditorExtension {
-  constructor({ instance, projectPath, ...args } = {}) {
+  constructor({ instance, previewMarkdownPath, ...args } = {}) {
     super({ instance, ...args });
     Object.assign(instance, {
-      projectPath,
+      previewMarkdownPath,
       preview: {
         el: undefined,
         action: undefined,
@@ -112,7 +104,7 @@ export class EditorMarkdownExtension extends SourceEditorExtension {
 
   fetchPreview() {
     const { el: previewEl } = this.preview;
-    getPreview(this.getValue(), this.projectPath)
+    getPreview(this.getValue(), this.previewMarkdownPath)
       .then((data) => {
         previewEl.innerHTML = sanitize(data);
         syntaxHighlight(previewEl.querySelectorAll('.js-syntax-highlight'));

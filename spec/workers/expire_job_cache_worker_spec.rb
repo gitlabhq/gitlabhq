@@ -13,27 +13,6 @@ RSpec.describe ExpireJobCacheWorker do
 
       let(:job_args) { job.id }
 
-      include_examples 'an idempotent worker' do
-        it 'invalidates Etag caching for the job path' do
-          job_path = "/#{project.full_path}/builds/#{job.id}.json"
-
-          spy_store = Gitlab::EtagCaching::Store.new
-
-          allow(Gitlab::EtagCaching::Store).to receive(:new) { spy_store }
-
-          expect(spy_store).to receive(:touch)
-            .exactly(worker_exec_times).times
-            .with(job_path)
-            .and_call_original
-
-          expect(ExpirePipelineCacheWorker).to receive(:perform_async)
-            .with(pipeline.id)
-            .exactly(worker_exec_times).times
-
-          subject
-        end
-      end
-
       it 'does not perform extra queries', :aggregate_failures do
         worker = described_class.new
         recorder = ActiveRecord::QueryRecorder.new { worker.perform(job.id) }
@@ -51,6 +30,11 @@ RSpec.describe ExpireJobCacheWorker do
         expect(namespace_queries.size).to eq(0)
         expect(route_queries.size).to eq(0)
       end
+
+      it_behaves_like 'worker with data consistency',
+        described_class,
+        feature_flag: :load_balancing_for_expire_job_cache_worker,
+        data_consistency: :delayed
     end
 
     context 'when there is no job in the pipeline' do

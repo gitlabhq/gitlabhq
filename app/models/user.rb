@@ -2007,19 +2007,19 @@ class User < ApplicationRecord
   end
 
   def set_notification_email
-    if notification_email.blank? || verified_emails.exclude?(notification_email)
+    if verified_emails.exclude?(notification_email)
       self.notification_email = nil
     end
   end
 
   def set_public_email
-    if public_email.blank? || verified_emails.exclude?(public_email)
+    if verified_emails.exclude?(public_email)
       self.public_email = ''
     end
   end
 
   def set_commit_email
-    if commit_email.blank? || verified_emails.exclude?(commit_email)
+    if verified_emails.exclude?(commit_email)
       self.commit_email = nil
     end
   end

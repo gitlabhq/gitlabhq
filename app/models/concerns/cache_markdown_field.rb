@@ -171,7 +171,7 @@ module CacheMarkdownField
 
     # One retry is enough as next time `model_user_mention` should return the existing mention record,
     # that threw the `ActiveRecord::RecordNotUnique` exception in first place.
-    self.class.safe_ensure_unique(retries: 1) do
+    self.class.safe_ensure_unique(retries: 1) do # rubocop:disable Performance/ActiveRecordSubtransactionMethods
       user_mention = model_user_mention
 
       # this may happen due to notes polymorphism, so noteable_id may point to a record

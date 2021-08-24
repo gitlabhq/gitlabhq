@@ -89,7 +89,7 @@ class ExternalPullRequest < ApplicationRecord
   end
 
   def self.safe_find_or_initialize_and_update(find:, update:)
-    safe_ensure_unique(retries: 1) do
+    safe_ensure_unique(retries: 1) do # rubocop:disable Performance/ActiveRecordSubtransactionMethods
       model = find_or_initialize_by(find)
 
       if model.update(update)

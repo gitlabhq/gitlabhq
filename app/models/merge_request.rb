@@ -1835,13 +1835,6 @@ class MergeRequest < ApplicationRecord
       Ability.allowed?(user, :push_code, source_project)
   end
 
-  def squash_in_progress?
-    # The source project can be deleted
-    return false unless source_project
-
-    source_project.repository.squash_in_progress?(id)
-  end
-
   def find_actual_head_pipeline
     all_pipelines.for_sha_or_source_sha(diff_head_sha).first
   end

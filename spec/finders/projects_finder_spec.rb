@@ -135,6 +135,7 @@ RSpec.describe ProjectsFinder do
 
       describe 'filter by tags (deprecated)' do
         before do
+          public_project.reload
           public_project.topic_list = 'foo'
           public_project.save!
         end
@@ -146,6 +147,7 @@ RSpec.describe ProjectsFinder do
 
       describe 'filter by topics' do
         before do
+          public_project.reload
           public_project.topic_list = 'foo, bar'
           public_project.save!
         end

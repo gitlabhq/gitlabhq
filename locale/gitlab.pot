@@ -21072,9 +21072,6 @@ msgstr ""
 msgid "MergeRequestDiffs|Select comment starting line"
 msgstr ""
 
-msgid "MergeRequests|An error occurred while checking whether another squash is in progress."
-msgstr ""
-
 msgid "MergeRequests|An error occurred while saving the draft comment."
 msgstr ""
 
@@ -21085,9 +21082,6 @@ msgid "MergeRequests|Resolve this thread in a new issue"
 msgstr ""
 
 msgid "MergeRequests|Saving the comment failed"
-msgstr ""
-
-msgid "MergeRequests|Squash task canceled: another squash is already in progress."
 msgstr ""
 
 msgid "MergeRequests|This project does not allow squashing commits when merge requests are accepted."
@@ -36026,9 +36020,6 @@ msgid "UsageQuota|Learn more about excess storage usage"
 msgstr ""
 
 msgid "UsageQuota|Learn more about usage quotas"
-msgstr ""
-
-msgid "UsageQuota|Other Storage"
 msgstr ""
 
 msgid "UsageQuota|Packages"

@@ -8,6 +8,8 @@ jest.mock('~/editor/source_editor');
 jest.mock('~/editor/extensions/source_editor_markdown_ext');
 jest.mock('~/editor/extensions/source_editor_file_template_ext');
 
+const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
+
 describe('Blob Editing', () => {
   const useMock = jest.fn();
   const mockInstance = {
@@ -34,6 +36,7 @@ describe('Blob Editing', () => {
   const editorInst = (isMarkdown) => {
     return new EditBlob({
       isMarkdown,
+      previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
     });
   };
 
@@ -44,6 +47,7 @@ describe('Blob Editing', () => {
 
   it('loads FileTemplateExtension by default', async () => {
     await initEditor();
+    expect(useMock).toHaveBeenCalledWith(expect.any(FileTemplateExtension));
     expect(FileTemplateExtension).toHaveBeenCalledTimes(1);
   });
 
@@ -55,9 +59,12 @@ describe('Blob Editing', () => {
 
     it('loads MarkdownExtension only for the markdown files', async () => {
       await initEditor(true);
-      expect(useMock).toHaveBeenCalledTimes(2);
-      expect(FileTemplateExtension).toHaveBeenCalledTimes(1);
+      expect(useMock).toHaveBeenCalledWith(expect.any(EditorMarkdownExtension));
       expect(EditorMarkdownExtension).toHaveBeenCalledTimes(1);
+      expect(EditorMarkdownExtension).toHaveBeenCalledWith({
+        instance: mockInstance,
+        previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
+      });
     });
   });
 

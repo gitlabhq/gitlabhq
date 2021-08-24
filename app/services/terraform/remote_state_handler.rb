@@ -70,7 +70,7 @@ module Terraform
 
       return find_state!(find_params) if find_only
 
-      state = Terraform::State.create_or_find_by(find_params)
+      state = Terraform::State.create_or_find_by(find_params) # rubocop:disable Performance/ActiveRecordSubtransactionMethods
 
       # https://github.com/rails/rails/issues/36027
       return state unless state.errors.of_kind? :name, :taken

@@ -244,8 +244,8 @@ Graph API instead of IMAP. Follow the [documentation in the incoming email secti
   gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
   gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
   gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
-  gitlab_rails['service_desk_inbox_method'] = 'microsoft_graph'
-  gitlab_rails['service_desk_inbox_options'] = {
+  gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
+  gitlab_rails['service_desk_email_inbox_options'] = {
    'tenant_id': '<YOUR-TENANT-ID>',
    'client_id': '<YOUR-CLIENT-ID>',
    'client_secret': '<YOUR-CLIENT-SECRET>',

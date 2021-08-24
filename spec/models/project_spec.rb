@@ -7135,15 +7135,96 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'topics' do
-    let_it_be(:project) { create(:project, topic_list: 'topic1, topic2, topic3') }
+    let_it_be(:project) { create(:project, name: 'topic-project', topic_list: 'topic1, topic2, topic3') }
 
     it 'topic_list returns correct string array' do
-      expect(project.topic_list).to match_array(%w[topic1 topic2 topic3])
+      expect(project.topic_list).to eq(%w[topic1 topic2 topic3])
     end
 
-    it 'topics returns correct tag records' do
-      expect(project.topics.first.class.name).to eq('ActsAsTaggableOn::Tag')
-      expect(project.topics.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+    it 'topics returns correct topic records' do
+      expect(project.topics.first.class.name).to eq('Projects::Topic')
+      expect(project.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+    end
+
+    context 'topic_list=' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:topic_list, :expected_result) do
+        ['topicA', 'topicB']              | %w[topicA topicB] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
+        ['topicB', 'topicA']              | %w[topicB topicA] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
+        ['   topicC  ', ' topicD    ']    | %w[topicC topicD]
+        ['topicE', 'topicF', 'topicE']    | %w[topicE topicF] # rubocop:disable Style/WordArray
+        ['topicE  ', 'topicF', ' topicE'] | %w[topicE topicF]
+        'topicA, topicB'                  | %w[topicA topicB]
+        'topicB, topicA'                  | %w[topicB topicA]
+        '   topicC  , topicD    '         | %w[topicC topicD]
+        'topicE, topicF, topicE'          | %w[topicE topicF]
+        'topicE  , topicF,  topicE'       | %w[topicE topicF]
+      end
+
+      with_them do
+        it 'set topics' do
+          project.topic_list = topic_list
+          project.save!
+
+          expect(project.topics.map(&:name)).to eq(expected_result)
+        end
+      end
+
+      it 'set topics if only the order is changed' do
+        project.topic_list = 'topicA, topicB'
+        project.save!
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topicA topicB])
+
+        project.topic_list = 'topicB, topicA'
+        project.save!
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topicB topicA])
+      end
+
+      it 'does not persist topics before project is saved' do
+        project.topic_list = 'topicA, topicB'
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+      end
+
+      it 'does not update topics if project is not valid' do
+        project.name = nil
+        project.topic_list = 'topicA, topicB'
+
+        expect(project.save).to be_falsy
+        expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+      end
+    end
+
+    context 'during ExtractProjectTopicsIntoSeparateTable migration' do
+      before do
+        topic_a = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicA')
+        topic_b = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicB')
+
+        project.reload.topics_acts_as_taggable = [topic_a, topic_b]
+        project.save!
+        project.reload
+      end
+
+      it 'topic_list returns correct string array' do
+        expect(project.topic_list).to eq(%w[topicA topicB topic1 topic2 topic3])
+      end
+
+      it 'topics returns correct topic records' do
+        expect(project.topics.map(&:class)).to eq([ActsAsTaggableOn::Tag, ActsAsTaggableOn::Tag, Projects::Topic, Projects::Topic, Projects::Topic])
+        expect(project.topics.map(&:name)).to eq(%w[topicA topicB topic1 topic2 topic3])
+      end
+
+      it 'topic_list= sets new topics and removes old topics' do
+        project.topic_list = 'new-topic1, new-topic2'
+        project.save!
+        project.reload
+
+        expect(project.topics.map(&:class)).to eq([Projects::Topic, Projects::Topic])
+        expect(project.topics.map(&:name)).to eq(%w[new-topic1 new-topic2])
+      end
     end
   end
 

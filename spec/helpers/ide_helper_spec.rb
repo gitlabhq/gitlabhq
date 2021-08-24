@@ -18,7 +18,8 @@ RSpec.describe IdeHelper do
             'file-path' => nil,
             'merge-request' => nil,
             'fork-info' => nil,
-            'project' => nil
+            'project' => nil,
+            'preview-markdown-path' => nil
           )
       end
     end
@@ -41,7 +42,8 @@ RSpec.describe IdeHelper do
             'file-path' => 'foo/bar',
             'merge-request' => '1',
             'fork-info' => fork_info.to_json,
-            'project' => serialized_project
+            'project' => serialized_project,
+            'preview-markdown-path' => Gitlab::Routing.url_helpers.preview_markdown_project_path(project)
           )
       end
     end

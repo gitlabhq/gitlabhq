@@ -23,7 +23,7 @@ describe('Markdown Extension for Source Editor', () => {
   let editorEl;
   let panelSpy;
   let mockAxios;
-  const projectPath = 'fooGroup/barProj';
+  const previewMarkdownPath = '/gitlab/fooGroup/barProj/preview_markdown';
   const firstLine = 'This is a';
   const secondLine = 'multiline';
   const thirdLine = 'string with some **markup**';
@@ -57,7 +57,7 @@ describe('Markdown Extension for Source Editor', () => {
       blobPath: markdownPath,
       blobContent: text,
     });
-    editor.use(new EditorMarkdownExtension({ instance, projectPath }));
+    editor.use(new EditorMarkdownExtension({ instance, previewMarkdownPath }));
     panelSpy = jest.spyOn(EditorMarkdownExtension, 'togglePreviewPanel');
   });
 
@@ -74,7 +74,7 @@ describe('Markdown Extension for Source Editor', () => {
       shown: false,
       modelChangeListener: undefined,
     });
-    expect(instance.projectPath).toBe(projectPath);
+    expect(instance.previewMarkdownPath).toBe(previewMarkdownPath);
   });
 
   describe('model language changes listener', () => {
@@ -223,34 +223,24 @@ describe('Markdown Extension for Source Editor', () => {
   });
 
   describe('fetchPreview', () => {
-    const group = 'foo';
-    const project = 'bar';
-    const setData = (path, g, p) => {
-      instance.projectPath = path;
-      document.body.setAttribute('data-group', g);
-      document.body.setAttribute('data-project', p);
-    };
     const fetchPreview = async () => {
       instance.fetchPreview();
       await waitForPromises();
     };
 
+    let previewMarkdownSpy;
+
     beforeEach(() => {
-      mockAxios.onPost().reply(200, { body: responseData });
+      previewMarkdownSpy = jest.fn().mockImplementation(() => [200, { body: responseData }]);
+      mockAxios.onPost(previewMarkdownPath).replyOnce((req) => previewMarkdownSpy(req));
     });
 
-    it('correctly fetches preview based on projectPath', async () => {
-      setData(projectPath, group, project);
+    it('correctly fetches preview based on previewMarkdownPath', async () => {
       await fetchPreview();
-      expect(mockAxios.history.post[0].url).toBe(`/${projectPath}/preview_markdown`);
-      expect(mockAxios.history.post[0].data).toEqual(JSON.stringify({ text }));
-    });
 
-    it('correctly fetches preview based on group and project data attributes', async () => {
-      setData(undefined, group, project);
-      await fetchPreview();
-      expect(mockAxios.history.post[0].url).toBe(`/${group}/${project}/preview_markdown`);
-      expect(mockAxios.history.post[0].data).toEqual(JSON.stringify({ text }));
+      expect(previewMarkdownSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ data: JSON.stringify({ text }) }),
+      );
     });
 
     it('puts the fetched content into the preview DOM element', async () => {

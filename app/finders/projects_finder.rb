@@ -180,7 +180,14 @@ class ProjectsFinder < UnionFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def by_topics(items)
-    params[:topic].present? ? items.tagged_with(params[:topic]) : items
+    return items unless params[:topic].present?
+
+    topics = params[:topic].instance_of?(String) ? params[:topic].strip.split(/\s*,\s*/) : params[:topic]
+    topics.each do |topic|
+      items = items.with_topic(topic)
+    end
+
+    items
   end
 
   def by_search(items)

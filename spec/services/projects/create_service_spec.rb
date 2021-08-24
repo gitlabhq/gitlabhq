@@ -86,7 +86,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     subject(:project) { create_project(user, opts) }
 
     context "with 'topics' parameter" do
-      let(:opts) { { topics: 'topics' } }
+      let(:opts) { { name: 'topic-project', topics: 'topics' } }
 
       it 'keeps them as specified' do
         expect(project.topic_list).to eq(%w[topics])
@@ -94,7 +94,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     context "with 'topic_list' parameter" do
-      let(:opts) { { topic_list: 'topic_list' } }
+      let(:opts) { { name: 'topic-project', topic_list: 'topic_list' } }
 
       it 'keeps them as specified' do
         expect(project.topic_list).to eq(%w[topic_list])
@@ -102,7 +102,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     context "with 'tag_list' parameter (deprecated)" do
-      let(:opts) { { tag_list: 'tag_list' } }
+      let(:opts) { { name: 'topic-project', tag_list: 'tag_list' } }
 
       it 'keeps them as specified' do
         expect(project.topic_list).to eq(%w[tag_list])
