@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.8 (2021-08-25)
+
+### Fixed (1 change)
+
+- [Fix: Sidekiq workers delete each other's metrics](gitlab-org/gitlab@98a85fcbcdf2f8dfef83e552a850591e8952c057) ([merge request](gitlab-org/gitlab!68761))
+
+### Changed (1 change)
+
+- [Resolve "operator does not exist: integer[] || bigint in...](gitlab-org/gitlab@273cc43f7928e89fd11237b58fdfdfb8a24e5493) ([merge request](gitlab-org/gitlab!68761))
+
+### Other (1 change)
+
+- [Revert backfill on ci_build_trace_sections](gitlab-org/gitlab@10a5ad9dce9014eb8af6493402dcdd1658dbd62a) ([merge request](gitlab-org/gitlab!68761))
+
 ## 14.0.7 (2021-08-03)
 
 ### Security (18 changes)
