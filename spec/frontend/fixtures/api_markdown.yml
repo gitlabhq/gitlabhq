@@ -12,14 +12,27 @@
   markdown: |-
     * {-deleted-}
     * {+added+}
-- name: subscript
-  markdown: H<sub>2</sub>O
-- name: superscript
-  markdown: 2<sup>8</sup> = 256
 - name: strike
   markdown: '~~del~~'
 - name: horizontal_rule
   markdown: '---'
+- name: html_marks
+  markdown: |-
+    * Content editor is ~~great~~<ins>amazing</ins>.
+    * If the changes <abbr title="Looks good to merge">LGTM</abbr>, please <abbr title="Merge when pipeline succeeds">MWPS</abbr>.
+    * The English song <q>Oh I do like to be beside the seaside</q> looks like this in Hebrew: <span dir="rtl">אה, אני אוהב להיות ליד חוף הים</span>. In the computer's memory, this is stored as <bdo dir="ltr">אה, אני אוהב להיות ליד חוף הים</bdo>.
+    * <cite>The Scream</cite> by Edvard Munch. Painted in 1893.
+    * <dfn>HTML</dfn> is the standard markup language for creating web pages.
+    * Do not forget to buy <mark>milk</mark> today.
+    * This is a paragraph and <small>smaller text goes here</small>.
+    * The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.
+    * Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).
+    * WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.
+    * The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
+    * The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.
+    * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
+    * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
+    * The **Pythagorean theorem** is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var>
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
 - name: attachment_link

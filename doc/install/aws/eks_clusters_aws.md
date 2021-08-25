@@ -1,0 +1,53 @@
+---
+type: reference, concepts
+stage: Enablement
+group: Alliances
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
+# EKS cluster provisioning best practices
+
+GitLab can be used to provision an EKS cluster into AWS, however, it necessarily focuses on a basic EKS configuration. Using the AWS tools can help with advanced cluster configuration, automation, and maintenance.
+
+This documentation is not for clusters for deployment of GitLab itself, but instead clusters purpose built for:
+
+- EKS Clusters for GitLab Runners
+- Application Deployment Clusters for GitLab review apps
+- Application Deployment Cluster for production applications
+
+Information on deploying GitLab onto EKS can be found in [Provisioning GitLab Cloud Native Hybrid on AWS EKS](gitlab_hybrid_on_aws.md).
+
+## Use AWS EKS quick start or `eksctl`
+
+Using the EKS Quick Start or `eksctl` enables the following when building an EKS Cluster:
+
+- It can be part of CloudFormation IaC or [CLI (`eksctl`)](https://eksctl.io/) automation
+- You have various cluster configuration options:
+  - Selection of operating system: Amazon Linux 2, Windows, Bottlerocket
+  - Selection of Hardware Architecture: x86, ARM, GPU
+  - Selection of Fargate backend
+- It can deploy high value-add items to the cluster, including:
+  - A bastion host to keep the cluster endpoint private and possible perform performance testing.
+  - Prometheus and Grafana for monitoring.
+- EKS Autoscaler for automatic K8s Node scaling. 
+- 2 or 3 Availability Zones (AZ) spread for balance between High Availability (HA) and cost control.
+- Ability to specify spot compute.
+
+Read more about Amazon EKS architecture quick start guide:
+
+- [Landing page](https://aws.amazon.com/quickstart/architecture/amazon-eks/)
+- [Reference guide](https://aws-quickstart.github.io/quickstart-amazon-eks/)
+- [Reference guide deployment steps](https://aws-quickstart.github.io/quickstart-amazon-eks/#_deployment_steps)
+- [Reference guide parameter reference](https://aws-quickstart.github.io/quickstart-amazon-eks/#_parameter_reference)
+
+## Inject GitLab configuration for integrating clusters
+
+Read more how to [configure an App Deployment cluster](../../user/project/clusters/add_existing_cluster.md) and extract information from it to integrate it into GitLab.
+
+## Provision GitLab Runners using Helm charts
+
+Read how to [use the GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html) to deploy a runner into a cluster.
+
+## Runner Cache
+
+Since the EKS Quick Start provides for EFS provisioning, the best approach is to use EFS for runner caching. Eventually we will publish information on using an S3 bucket for runner caching here.

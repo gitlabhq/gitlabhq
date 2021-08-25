@@ -1263,7 +1263,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 merge request selected"
-msgid_plural "%d merge request selected"
+msgid_plural "%d merge requests selected"
 msgstr[0] ""
 msgstr[1] ""
 

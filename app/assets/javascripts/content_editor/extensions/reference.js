@@ -1,4 +1,10 @@
 import { Node } from '@tiptap/core';
+import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
+
+const getAnchor = (element) => {
+  if (element.nodeName === 'A') return element;
+  return element.querySelector('a');
+};
 
 export default Node.create({
   name: 'reference',
@@ -15,7 +21,7 @@ export default Node.create({
         default: null,
         parseHTML: (element) => {
           return {
-            className: element.className,
+            className: getAnchor(element).className,
           };
         },
       },
@@ -23,7 +29,7 @@ export default Node.create({
         default: null,
         parseHTML: (element) => {
           return {
-            referenceType: element.dataset.referenceType,
+            referenceType: getAnchor(element).dataset.referenceType,
           };
         },
       },
@@ -31,7 +37,7 @@ export default Node.create({
         default: null,
         parseHTML: (element) => {
           return {
-            originalText: element.dataset.original,
+            originalText: getAnchor(element).dataset.original,
           };
         },
       },
@@ -39,7 +45,7 @@ export default Node.create({
         default: null,
         parseHTML: (element) => {
           return {
-            href: element.getAttribute('href'),
+            href: getAnchor(element).getAttribute('href'),
           };
         },
       },
@@ -47,7 +53,7 @@ export default Node.create({
         default: null,
         parseHTML: (element) => {
           return {
-            text: element.textContent,
+            text: getAnchor(element).textContent,
           };
         },
       },
@@ -58,7 +64,10 @@ export default Node.create({
     return [
       {
         tag: 'a.gfm:not([data-link=true])',
-        priority: 51,
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
+      },
+      {
+        tag: 'span.gl-label',
       },
     ];
   },

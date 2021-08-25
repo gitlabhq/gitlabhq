@@ -12,6 +12,7 @@ import Emoji from '../extensions/emoji';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import HorizontalRule from '../extensions/horizontal_rule';
+import HTMLMarks from '../extensions/html_marks';
 import Image from '../extensions/image';
 import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
@@ -35,6 +36,8 @@ import {
   renderTable,
   renderTableCell,
   renderTableRow,
+  openTag,
+  closeTag,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -70,6 +73,19 @@ const defaultSerializerConfig = {
       mixable: true,
       expelEnclosingWhitespace: true,
     },
+    ...HTMLMarks.reduce(
+      (acc, { name }) => ({
+        ...acc,
+        [name]: {
+          mixable: true,
+          open(state, node) {
+            return openTag(name, node.attrs);
+          },
+          close: closeTag(name),
+        },
+      }),
+      {},
+    ),
   },
 
   nodes: {

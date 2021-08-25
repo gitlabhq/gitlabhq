@@ -1,8 +1,0 @@
----
-name: runner_graphql_query
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59763
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328700
-type: development
-group: group::runner
-default_enabled: true
-milestone: '13.12'

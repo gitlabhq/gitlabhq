@@ -1,5 +1,6 @@
 import { mergeAttributes } from '@tiptap/core';
 import { TaskList } from '@tiptap/extension-task-list';
+import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 export default TaskList.extend({
   addAttributes() {
@@ -19,7 +20,7 @@ export default TaskList.extend({
     return [
       {
         tag: '.task-list',
-        priority: 100,
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
     ];
   },

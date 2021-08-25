@@ -120,14 +120,12 @@ module Types
           null: true,
           resolver: Resolvers::Ci::RunnerResolver,
           extras: [:lookahead],
-          description: "Find a runner.",
-          feature_flag: :runner_graphql_query
+          description: "Find a runner."
 
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::RunnersResolver,
-          description: "Find runners visible to the current user.",
-          feature_flag: :runner_graphql_query
+          description: "Find runners visible to the current user."
 
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
 

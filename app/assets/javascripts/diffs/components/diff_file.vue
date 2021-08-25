@@ -170,10 +170,7 @@ export default {
       return !this.isCollapsed && !this.isFileTooLarge;
     },
     showLocalFileReviews() {
-      const loggedIn = Boolean(gon.current_user_id);
-      const featureOn = this.glFeatures.localFileReviews;
-
-      return loggedIn && featureOn;
+      return Boolean(gon.current_user_id);
     },
     codequalityDiffForFile() {
       return this.codequalityDiff?.files?.[this.file.file_path] || [];

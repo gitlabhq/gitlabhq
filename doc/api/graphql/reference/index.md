@@ -304,7 +304,7 @@ Returns [`QueryComplexity`](#querycomplexity).
 
 ### `Query.runner`
 
-Find a runner. Available only when feature flag `runner_graphql_query` is enabled. This flag is enabled by default.
+Find a runner.
 
 Returns [`CiRunner`](#cirunner).
 
@@ -341,7 +341,7 @@ Returns [`RunnerSetup`](#runnersetup).
 
 ### `Query.runners`
 
-Find runners visible to the current user. Available only when feature flag `runner_graphql_query` is enabled. This flag is enabled by default.
+Find runners visible to the current user.
 
 Returns [`CiRunnerConnection`](#cirunnerconnection).
 
@@ -3769,8 +3769,6 @@ Input type: `RepositionImageDiffNoteInput`
 
 ### `Mutation.runnerDelete`
 
-Available only when feature flag `runner_graphql_query` is enabled. This flag is enabled by default.
-
 Input type: `RunnerDeleteInput`
 
 #### Arguments
@@ -3788,8 +3786,6 @@ Input type: `RunnerDeleteInput`
 | <a id="mutationrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.runnerUpdate`
-
-Available only when feature flag `runner_graphql_query` is enabled. This flag is enabled by default.
 
 Input type: `RunnerUpdateInput`
 
@@ -3818,8 +3814,6 @@ Input type: `RunnerUpdateInput`
 | <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner after mutation. |
 
 ### `Mutation.runnersRegistrationTokenReset`
-
-Available only when feature flag `runner_graphql_query` is enabled. This flag is enabled by default.
 
 Input type: `RunnersRegistrationTokenResetInput`
 
@@ -10039,7 +10033,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.runners`
 
-Find runners visible to the current user. Available only when feature flag `runner_graphql_query` is enabled. This flag is enabled by default.
+Find runners visible to the current user.
 
 Returns [`CiRunnerConnection`](#cirunnerconnection).
 

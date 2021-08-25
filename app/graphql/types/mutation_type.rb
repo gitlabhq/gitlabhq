@@ -103,9 +103,9 @@ module Types
     mount_mutation Mutations::Ci::Job::Unschedule
     mount_mutation Mutations::Ci::JobTokenScope::AddProject
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
-    mount_mutation Mutations::Ci::Runner::Update, feature_flag: :runner_graphql_query
-    mount_mutation Mutations::Ci::Runner::Delete, feature_flag: :runner_graphql_query
-    mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset, feature_flag: :runner_graphql_query
+    mount_mutation Mutations::Ci::Runner::Update
+    mount_mutation Mutations::Ci::Runner::Delete
+    mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create

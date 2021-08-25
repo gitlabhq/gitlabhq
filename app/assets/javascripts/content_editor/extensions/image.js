@@ -1,6 +1,7 @@
 import { Image } from '@tiptap/extension-image';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import ImageWrapper from '../components/wrappers/image.vue';
+import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 const resolveImageEl = (element) =>
   element.nodeName === 'IMG' ? element : element.querySelector('img');
@@ -65,7 +66,7 @@ export default Image.extend({
   parseHTML() {
     return [
       {
-        priority: 100,
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
         tag: 'a.no-attachment-icon',
       },
       {

@@ -63,7 +63,7 @@ export default {
         </gl-sprintf>
         <gl-sprintf
           v-else
-          :message="n__('1 merge request selected', '%d merge request selected', issuableCount)"
+          :message="n__('1 merge request selected', '%d merge requests selected', issuableCount)"
         >
           <template #issuableCount>{{ issuableCount }}</template>
         </gl-sprintf>

@@ -97,11 +97,8 @@ a merge request. You can choose to hide or show whitespace changes:
 
 ## Mark files as viewed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9.
-> - Deployed behind a feature flag, enabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-views). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9 behind a feature flag, enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296674) in GitLab 14.3.
 
 When reviewing a merge request with many files multiple times, it may be useful to the reviewer
 to focus on new changes and ignore the files that they have already reviewed and don't want to
@@ -115,25 +112,6 @@ To mark a file as viewed:
 
 Once checked, the file remains marked for that reviewer unless there are newly introduced
 changes to its content or the checkbox is unchecked.
-
-### Enable or disable file views **(FREE SELF)**
-
-The file view feature is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:local_file_reviews)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:local_file_reviews)
-```
 
 ## Show merge request conflicts in diff
 

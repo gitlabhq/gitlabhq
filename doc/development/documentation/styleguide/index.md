@@ -1003,9 +1003,23 @@ document to ensure it links to the most recent version of the file.
 
 ## Navigation
 
-When documenting navigation through the user interface, use these terms and styles.
+When documenting how to navigate through the GitLab UI:
 
-### What to call the menus
+- Always use location, then action.
+  - `From the **Visibility** list,` (location) `select **Public**.` (action)
+- Be brief and specific. For example:
+  - Avoid: `Select **Save** for the changes to take effect.`
+  - Use instead: `Select **Save**.`
+- When selecting from high-level UI elements, use the word **on**.
+  - Avoid: `From the left sidebar...` or `In the left sidebar...`
+  - Use instead: `On the left sidebar...`
+- If a step must include a reason, start the step with it.
+  - Avoid: `Select the link in the merge request to view the changes.`
+  - Use instead: `To view the changes, select the link in the merge request.`
+- If a step is optional, start the step with the word `Optional` followed by a period.
+  - `1. Optional. Enter a name for the dog.`
+
+### Names for menus
 
 Use these terms when referring to the main GitLab user interface
 elements:
@@ -1017,9 +1031,14 @@ elements:
 - **Right sidebar**: This is the navigation sidebar on the right of the user
   interface, specific to the open issue, merge request, or epic.
 
-### How to document the menus
+### Names for UI elements
 
-To be consistent, use this format when you write about UI navigation.
+UI elements, like button and checkbox names, should be **bold**.
+Guidance for each individual UI element is in [the word list](word_list.md).
+
+### How to write navigation task steps
+
+To be consistent, use this format when you write navigation steps in a task topic.
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -1034,12 +1053,14 @@ Another example:
 An Admin Area example:
 
 ```markdown
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 ```
 
-This text renders this output:
+To select your avatar:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+```markdown
+1. On the top bar, in the top right corner, select your avatar.
+```
 
 ## Images
 
@@ -1288,64 +1309,22 @@ For a complete reference on code blocks, see the [Kramdown guide](https://about.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
-directly in the documentation.
+directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
 
-This way, you can achieve a consistent look when writing about interacting with
-GitLab user interface elements.
+In most cases, you should avoid using the icons in text.
+However, you can use an icon when hover text is the only
+available way to describe a UI element. For example, **Delete** or **Edit** buttons
+often have hover text only.
 
-Usage examples:
+When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
 
-- Icon with default size (16px): `**{icon-name}**`
+- Avoid: `Select **{pencil}** **Edit**.` This generates as: Select **{pencil}** **Edit**.
+- Use instead: `Select **Edit** (**{pencil}**).` This generates as: Select **Edit** (**{pencil}**).
 
-  Example: `**{tanuki}**` renders as: **{tanuki}**.
-- Icon with custom size: `**{icon-name, size}**`
+Do not use words to describe the icon:
 
-  Available sizes (in pixels): 8, 10, 12, 14, 16, 18, 24, 32, 48, and 72
-
-  Example: `**{tanuki, 24}**` renders as: **{tanuki, 24}**.
-- Icon with custom size and class: `**{icon-name, size, class-name}**`.
-
-  You can access any class available to this element in GitLab documentation CSS.
-
-  Example with `float-right`, a
-  [Bootstrap utility class](https://getbootstrap.com/docs/4.4/utilities/float/):
-  `**{tanuki, 32, float-right}**` renders as: **{tanuki, 32, float-right}**
-
-### When to use icons
-
-Icons should be used sparingly, and only in ways that aid and do not hinder the
-readability of the text.
-
-For example, this Markdown adds little to the accompanying text:
-
-```markdown
-1. Go to **{home}** **Project information > Details**.
-```
-
-1. Go to **{home}** **Project information > Details**.
-
-However, these tables might help the reader connect the text to the user
-interface:
-
-```markdown
-| Section                  | Description                                                                                                                 |
-|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
-| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
-| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit events. |
-| **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
-```
-
-| Section                  | Description                                                                                                                 |
-|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
-| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
-| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit events. |
-| **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
-
-Use an icon when you find yourself having to describe an interface element. For
-example:
-
-- Do: Select the Admin Area icon ( **{admin}** ).
-- Don't: Select the Admin Area icon (the wrench icon).
+- Avoid: `Select **Erase job log** (the trash icon).`
+- Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
 
 ## Alert boxes
 

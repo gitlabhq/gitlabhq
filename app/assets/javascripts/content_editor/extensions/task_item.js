@@ -1,4 +1,5 @@
 import { TaskItem } from '@tiptap/extension-task-item';
+import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 export default TaskItem.extend({
   defaultOptions: {
@@ -26,7 +27,7 @@ export default TaskItem.extend({
     return [
       {
         tag: 'li.task-list-item',
-        priority: 100,
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
     ];
   },

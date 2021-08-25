@@ -80,21 +80,30 @@ function shouldRenderHTMLTable(table) {
   return true;
 }
 
-function openTag(state, tagName, attrs) {
+function htmlEncode(str = '') {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&#34;');
+}
+
+export function openTag(tagName, attrs) {
   let str = `<${tagName}`;
 
   str += Object.entries(attrs || {})
     .map(([key, value]) => {
       if (defaultAttrs[tagName]?.[key] === value) return '';
 
-      return ` ${key}=${state.quote(value?.toString() || '')}`;
+      return ` ${key}="${htmlEncode(value?.toString())}"`;
     })
     .join('');
 
   return `${str}>`;
 }
 
-function closeTag(state, tagName) {
+export function closeTag(tagName) {
   return `</${tagName}>`;
 }
 
@@ -131,11 +140,11 @@ function unsetIsInBlockTable(table) {
 
 function renderTagOpen(state, tagName, attrs) {
   state.ensureNewLine();
-  state.write(openTag(state, tagName, attrs));
+  state.write(openTag(tagName, attrs));
 }
 
 function renderTagClose(state, tagName, insertNewline = true) {
-  state.write(closeTag(state, tagName));
+  state.write(closeTag(tagName));
   if (insertNewline) state.ensureNewLine();
 }
 

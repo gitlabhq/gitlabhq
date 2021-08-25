@@ -48,7 +48,7 @@ so that your credentials are not exposed through the code. To do so, follow the 
 1. On your computer, encode the JSON file to `base64` (replace `/path/to/sa-key.json` to the path to your key):
 
    ```shell
-   base64 /path/to/sa-key.json | tr -d \\n`
+   base64 /path/to/sa-key.json | tr -d \\n
    ```
 
 1. Use the output of this command as the `BASE64_GOOGLE_CREDENTIALS` environment variable in the next step.

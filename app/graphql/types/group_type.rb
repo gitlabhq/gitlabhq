@@ -158,8 +158,7 @@ module Types
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::GroupRunnersResolver,
-          description: "Find runners visible to the current user.",
-          feature_flag: :runner_graphql_query
+          description: "Find runners visible to the current user."
 
     def avatar_url
       object.avatar_url(only_path: false)

@@ -52,6 +52,10 @@ in the handbook when writing about Alpha features.
 
 Instead of **and/or**, use or or rewrite the sentence to spell out both options.
 
+## area
+
+Use [section](#section) instead. The only exception is [the Admin Area](#admin-admin-area).
+
 ## below
 
 Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **following** instead.
@@ -71,6 +75,19 @@ Do not use. Another option is **denylist**. ([Vale](../testing.md#vale) rule: [`
 
 Use lowercase for **boards**, **issue boards**, and **epic boards**.
 
+## box
+
+Use instead of **field** or **text box**. For example:
+
+- In the **Variable name** box, enter `my text`.
+
+## button
+
+Don't use a descriptor.
+
+- Avoid: Select the **Run pipelines** button.
+- Use instead: Select **Run pipelines**.
+
 ## checkbox
 
 One word, **checkbox**. Do not use **check box**.
@@ -85,6 +102,16 @@ Always uppercase. No need to spell out on first use.
 
 Do not use. Instead, use **select** with buttons, links, menu items, and lists.
 **Select** applies to more devices, while **click** is more specific to a mouse.
+
+## collapse
+
+Use instead of **close** when you are talking about expanding or collapsing a section in the UI.
+
+## confirmation dialog
+
+Use to describe the dialog box that asks you to confirm your action. For example:
+
+- From the confirmation dialog, select **OK**.
 
 ## currently
 
@@ -113,6 +140,15 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
+## dropdown, dropdown list
+
+Do not use. Use **list** instead.
+
+Include the descriptor when writing about lists. Start with the list name,
+then follow with the item the user should select. For example:
+
+- From the **Visibility** list, select **Public**.
+
 ## earlier
 
 Use when talking about version numbers.
@@ -127,10 +163,6 @@ Do not use. If the user doesn't find the process to be easy, we lose their trust
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
-
-## expand
-
-Use instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
 ## email
 
@@ -155,6 +187,17 @@ Try to avoid. Be as specific as you can. Do not use **and so on** as a replaceme
 
 - Avoid: You can update objects, like merge requests, issues, etc.
 - Use instead: You can update objects, like merge requests and issues.
+
+## expand
+
+Use instead of **open** when you are talking about expanding or collapsing a section in the UI.
+
+## field
+
+Use **box** instead of **field** or **text box**.
+
+- Avoid: In the **Variable name** field, enter `my text`.
+- Use instead: In the **Variable name** box, enter `my text`.
 
 ## foo
 
@@ -261,6 +304,14 @@ Use when talking about version numbers.
 
 - Avoid: In GitLab 14.1 and higher.
 - Use instead: In GitLab 14.1 and later.
+
+## list
+
+Use instead of **dropdown**, **drop-down** or **dropdown list**. You select an item from a list. For example:
+
+- From the **Availability** list, select **public**.
+
+The list name, and the items you select, should be bold.
 
 ## log in, log on
 
@@ -406,6 +457,22 @@ Do not use. Use **check for completeness** instead. ([Vale](../testing.md#vale) 
 ## scalability
 
 Do not use when talking about increasing GitLab performance for additional users. The words scale or scaling are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page.
+
+## section
+
+Use to describe an area on a page. For example, if a page has lines that separate the UI
+into separate areas, refer to these areas as sections.
+
+We often think of expandable/collapsible areas as **sections**. When you refer to expanding
+or collapsing a section, don't include the word **section**.
+
+- Avoid: Expand the **Auto DevOps** section.
+- Use instead: Expand **Auto DevOps**.
+
+## select
+
+Use with buttons, links, menu items, and lists. **Select** applies to more devices,
+while **click** is more specific to a mouse.
 
 ## setup, set up
 
