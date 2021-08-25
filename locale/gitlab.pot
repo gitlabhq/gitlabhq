@@ -14737,13 +14737,10 @@ msgstr ""
 msgid "Geo|Remove node"
 msgstr ""
 
-msgid "Geo|Remove secondary node"
-msgstr ""
-
 msgid "Geo|Remove tracking database entry"
 msgstr ""
 
-msgid "Geo|Removing a Geo secondary node stops the synchronization to that node. Are you sure?"
+msgid "Geo|Removing a Geo node stops the synchronization to and from that node. Are you sure?"
 msgstr ""
 
 msgid "Geo|Replicated data is verified with the secondary node(s) using checksums"

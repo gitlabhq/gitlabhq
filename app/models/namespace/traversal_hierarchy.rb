@@ -36,7 +36,7 @@ class Namespace
             SET traversal_ids = cte.traversal_ids
             FROM (#{recursive_traversal_ids}) as cte
             WHERE namespaces.id = cte.id
-              AND namespaces.traversal_ids <> cte.traversal_ids
+              AND namespaces.traversal_ids::bigint[] <> cte.traversal_ids
             """
       Namespace.transaction do
         @root.lock!
@@ -51,7 +51,7 @@ class Namespace
     def incorrect_traversal_ids
       Namespace
         .joins("INNER JOIN (#{recursive_traversal_ids}) as cte ON namespaces.id = cte.id")
-        .where('namespaces.traversal_ids <> cte.traversal_ids')
+        .where('namespaces.traversal_ids::bigint[] <> cte.traversal_ids')
     end
 
     private
@@ -66,9 +66,9 @@ class Namespace
 
       <<~SQL
       WITH RECURSIVE cte(id, traversal_ids, cycle) AS (
-        VALUES(#{root_id}, ARRAY[#{root_id}], false)
+        VALUES(#{root_id}::bigint, ARRAY[#{root_id}]::bigint[], false)
       UNION ALL
-        SELECT n.id, cte.traversal_ids || n.id, n.id = ANY(cte.traversal_ids)
+        SELECT n.id, cte.traversal_ids || n.id::bigint, n.id = ANY(cte.traversal_ids)
         FROM namespaces n, cte
         WHERE n.parent_id = cte.id AND NOT cycle
       )
