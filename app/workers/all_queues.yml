@@ -1470,6 +1470,15 @@
   :weight: 3
   :idempotent:
   :tags: []
+- :name: pipeline_creation:ci_external_pull_requests_create_pipeline
+  :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
+  :feature_category: :pipeline_authoring
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 4
+  :idempotent:
+  :tags: []
 - :name: pipeline_creation:create_pipeline
   :worker_name: CreatePipelineWorker
   :feature_category: :continuous_integration

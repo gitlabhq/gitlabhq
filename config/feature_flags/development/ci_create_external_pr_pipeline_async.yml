@@ -1,0 +1,8 @@
+---
+name: ci_create_external_pr_pipeline_async
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68567
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338908
+milestone: '14.3'
+type: development
+group: group::pipeline authoring
+default_enabled: false

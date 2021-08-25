@@ -72,6 +72,18 @@ $indigo-900: #ebebfa;
 $indigo-950: #f7f7ff;
 $indigo-900-alpha-008: rgba($indigo-900, 0.08);
 
+$purple-50: #232150;
+$purple-100: #2f2a6b;
+$purple-200: #453894;
+$purple-300: #5943b6;
+$purple-400: #694cc0;
+$purple-500: #7b58cf;
+$purple-600: #9475db;
+$purple-700: #ac93e6;
+$purple-800: #cbbbf2;
+$purple-900: #e1d8f9;
+$purple-950: #f4f0ff;
+
 $gray-lightest: #222;
 $gray-light: $gray-50;
 $gray-lighter: #303030;
@@ -162,6 +174,18 @@ body.gl-dark {
   --indigo-900: #{$indigo-900};
   --indigo-950: #{$indigo-950};
   --indigo-900-alpha-008: #{$indigo-900-alpha-008};
+
+  --purple-50: #{$purple-50};
+  --purple-100: #{$purple-100};
+  --purple-200: #{$purple-200};
+  --purple-300: #{$purple-300};
+  --purple-400: #{$purple-400};
+  --purple-500: #{$purple-500};
+  --purple-600: #{$purple-600};
+  --purple-700: #{$purple-700};
+  --purple-800: #{$purple-800};
+  --purple-900: #{$purple-900};
+  --purple-950: #{$purple-950};
 
   --gl-text-color: #{$gray-900};
   --border-color: #{$border-color};

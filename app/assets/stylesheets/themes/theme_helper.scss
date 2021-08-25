@@ -184,7 +184,7 @@
       a:hover,
       &.active a,
       .fly-out-top-item-container {
-        background-color: $purple-900;
+        background-color: var(--purple-100, $purple-900);
         color: var(--black, $white);
       }
     }

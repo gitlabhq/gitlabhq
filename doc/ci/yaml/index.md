@@ -1141,6 +1141,9 @@ The job is not added to the pipeline:
 - If no rules match.
 - If a rule matches and has `when: never`.
 
+You can use [`!reference` tags](#reference-tags) to [reuse `rules` configuration](../jobs/job_control.md#reuse-rules-in-different-jobs)
+in different jobs.
+
 #### `rules:if`
 
 Use `rules:if` clauses to specify when to add a job to a pipeline:
@@ -4765,6 +4768,7 @@ into templates.
 ### `!reference` tags
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/266173) in GitLab 13.9.
+> - `rules` keyword support [introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) GitLab 14.3.
 
 Use the `!reference` custom YAML tag to select keyword configuration from other job
 sections and reuse it in the current section. Unlike [YAML anchors](#anchors), you can

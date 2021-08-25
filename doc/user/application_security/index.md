@@ -337,6 +337,16 @@ For more details about which findings or vulnerabilities you can view in each of
 
 ## Troubleshooting
 
+### Secure job failing with exit code 1
+
+If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for
+more verbose output that is helpful for troubleshooting.
+
+```yaml
+variables:
+  SECURE_LOG_LEVEL: "debug"
+```
+
 ### Outdated security reports
 
 When a security report generated for a merge request becomes outdated, the merge request shows a warning

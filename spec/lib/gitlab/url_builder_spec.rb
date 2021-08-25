@@ -69,6 +69,27 @@ RSpec.describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing a compare' do
+      # NOTE: The Compare requires an actual repository, which isn't available
+      # with the `build_stubbed` strategy used by the table tests above
+      let_it_be(:compare) { create(:compare) }
+      let_it_be(:project) { compare.project }
+
+      it 'returns the full URL' do
+        expect(subject.build(compare)).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/-/compare/#{compare.base_commit_sha}...#{compare.head_commit_sha}")
+      end
+
+      it 'returns only the path if only_path is given' do
+        expect(subject.build(compare, only_path: true)).to eq("/#{project.full_path}/-/compare/#{compare.base_commit_sha}...#{compare.head_commit_sha}")
+      end
+
+      it 'returns an empty string for missing project' do
+        expect(compare).to receive(:project).and_return(nil)
+
+        expect(subject.build(compare)).to eq('')
+      end
+    end
+
     context 'when passing a commit without a project' do
       let(:commit) { build_stubbed(:commit) }
 

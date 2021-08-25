@@ -11,7 +11,7 @@ RSpec.describe API::GoProxy do
   let_it_be(:base) { "#{Settings.build_gitlab_go_url}/#{project.full_path}" }
 
   let_it_be(:oauth) { create :oauth_access_token, scopes: 'api', resource_owner: user }
-  let_it_be(:job) { create :ci_build, user: user, status: :running }
+  let_it_be(:job) { create :ci_build, user: user, status: :running, project: project }
   let_it_be(:pa_token) { create :personal_access_token, user: user }
 
   let_it_be(:modules) do

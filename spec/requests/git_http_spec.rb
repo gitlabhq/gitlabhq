@@ -882,6 +882,10 @@ RSpec.describe 'Git HTTP requests' do
             before do
               build.update!(user: user)
               project.add_reporter(user)
+              create(:ci_job_token_project_scope_link,
+                     source_project: project,
+                     target_project: other_project,
+                     added_by: user)
             end
 
             shared_examples 'can download code only' do
@@ -1447,6 +1451,10 @@ RSpec.describe 'Git HTTP requests' do
 
           before do
             build.update!(project: project) # can't associate it on factory create
+            create(:ci_job_token_project_scope_link,
+                    source_project: project,
+                    target_project: other_project,
+                    added_by: user)
           end
 
           context 'when build created by system is authenticated' do
