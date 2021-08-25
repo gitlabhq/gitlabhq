@@ -1,11 +1,16 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
+import { __ } from '~/locale';
 
 export default {
   components: {
     GlIcon,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  inject: ['hidden'],
   computed: {
     ...mapGetters(['getNoteableData']),
     isLocked() {
@@ -26,6 +31,12 @@ export default {
           visible: this.isConfidential,
           dataTestId: 'confidential',
         },
+        {
+          iconName: 'spam',
+          visible: this.hidden,
+          dataTestId: 'hidden',
+          tooltip: __('This issue is hidden because its author has been banned'),
+        },
       ];
     },
   },
@@ -35,8 +46,15 @@ export default {
 <template>
   <div class="gl-display-inline-block">
     <template v-for="meta in warningIconsMeta">
-      <div v-if="meta.visible" :key="meta.iconName" class="issuable-warning-icon inline">
-        <gl-icon :name="meta.iconName" :data-testid="meta.dataTestId" class="icon" />
+      <div
+        v-if="meta.visible"
+        :key="meta.iconName"
+        v-gl-tooltip
+        :data-testid="meta.dataTestId"
+        :title="meta.tooltip || null"
+        class="issuable-warning-icon inline"
+      >
+        <gl-icon :name="meta.iconName" class="icon" />
       </div>
     </template>
   </div>

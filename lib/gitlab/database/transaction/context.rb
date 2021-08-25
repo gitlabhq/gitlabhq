@@ -6,9 +6,8 @@ module Gitlab
       class Context
         attr_reader :context
 
-        LOG_DEPTH_THRESHOLD = 4         # 3 nested subtransactions + 1 real transaction
-        LOG_SAVEPOINTS_THRESHOLD = 5    # 5 `SAVEPOINTS` created in sequence or nested
-        LOG_DURATION_S_THRESHOLD = 120  # 2 minutes long transaction
+        LOG_SAVEPOINTS_THRESHOLD = 1    # 1 `SAVEPOINT` created in a transaction
+        LOG_DURATION_S_THRESHOLD = 120  # transaction that is running for 2 minutes or longer
         LOG_THROTTLE_DURATION = 1
 
         def initialize
@@ -17,6 +16,10 @@ module Gitlab
 
         def set_start_time
           @context[:start_time] = current_timestamp
+        end
+
+        def set_depth(depth)
+          @context[:depth] = [@context[:depth].to_i, depth].max
         end
 
         def increment_savepoints
@@ -31,10 +34,6 @@ module Gitlab
           @context[:releases] = @context[:releases].to_i + 1
         end
 
-        def set_depth(depth)
-          @context[:depth] = [@context[:depth].to_i, depth].max
-        end
-
         def track_sql(sql)
           (@context[:queries] ||= []).push(sql)
         end
@@ -45,10 +44,6 @@ module Gitlab
           current_timestamp - @context[:start_time]
         end
 
-        def depth_threshold_exceeded?
-          @context[:depth].to_i >= LOG_DEPTH_THRESHOLD
-        end
-
         def savepoints_threshold_exceeded?
           @context[:savepoints].to_i >= LOG_SAVEPOINTS_THRESHOLD
         end
@@ -57,16 +52,10 @@ module Gitlab
           duration.to_i >= LOG_DURATION_S_THRESHOLD
         end
 
-        def log_savepoints?
-          depth_threshold_exceeded? || savepoints_threshold_exceeded?
-        end
-
-        def log_duration?
-          duration_threshold_exceeded?
-        end
-
         def should_log?
-          !logged_already? && (log_savepoints? || log_duration?)
+          return false if logged_already?
+
+          savepoints_threshold_exceeded? || duration_threshold_exceeded?
         end
 
         def commit

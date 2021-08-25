@@ -1,5 +1,7 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createStore as createMrStore } from '~/mr_notes/stores';
 import createIssueStore from '~/notes/stores';
 import IssuableHeaderWarnings from '~/vue_shared/components/issuable/issuable_header_warnings.vue';
@@ -12,52 +14,53 @@ localVue.use(Vuex);
 
 describe('IssuableHeaderWarnings', () => {
   let wrapper;
-  let store;
 
-  const findConfidentialIcon = () => wrapper.find('[data-testid="confidential"]');
-  const findLockedIcon = () => wrapper.find('[data-testid="locked"]');
+  const findConfidentialIcon = () => wrapper.findByTestId('confidential');
+  const findLockedIcon = () => wrapper.findByTestId('locked');
+  const findHiddenIcon = () => wrapper.findByTestId('hidden');
 
   const renderTestMessage = (renders) => (renders ? 'renders' : 'does not render');
 
-  const setLock = (locked) => {
-    store.getters.getNoteableData.discussion_locked = locked;
-  };
-
-  const setConfidential = (confidential) => {
-    store.getters.getNoteableData.confidential = confidential;
-  };
-
-  const createComponent = () => {
-    wrapper = shallowMount(IssuableHeaderWarnings, { store, localVue });
+  const createComponent = ({ store, provide }) => {
+    wrapper = shallowMountExtended(IssuableHeaderWarnings, {
+      store,
+      localVue,
+      provide,
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
+    });
   };
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    store = null;
   });
 
   describe.each`
     issuableType
     ${ISSUABLE_TYPE_ISSUE} | ${ISSUABLE_TYPE_MR}
   `(`when issuableType=$issuableType`, ({ issuableType }) => {
-    beforeEach(() => {
-      store = issuableType === ISSUABLE_TYPE_ISSUE ? createIssueStore() : createMrStore();
-      createComponent();
-    });
-
     describe.each`
-      lockStatus | confidentialStatus
-      ${true}    | ${true}
-      ${true}    | ${false}
-      ${false}   | ${true}
-      ${false}   | ${false}
+      lockStatus | confidentialStatus | hiddenStatus
+      ${true}    | ${true}            | ${false}
+      ${true}    | ${false}           | ${false}
+      ${false}   | ${true}            | ${false}
+      ${false}   | ${false}           | ${false}
+      ${true}    | ${true}            | ${true}
+      ${true}    | ${false}           | ${true}
+      ${false}   | ${true}            | ${true}
+      ${false}   | ${false}           | ${true}
     `(
-      `when locked=$lockStatus and confidential=$confidentialStatus`,
-      ({ lockStatus, confidentialStatus }) => {
+      `when locked=$lockStatus, confidential=$confidentialStatus, and hidden=$hiddenStatus`,
+      ({ lockStatus, confidentialStatus, hiddenStatus }) => {
+        const store = issuableType === ISSUABLE_TYPE_ISSUE ? createIssueStore() : createMrStore();
+
         beforeEach(() => {
-          setLock(lockStatus);
-          setConfidential(confidentialStatus);
+          store.getters.getNoteableData.confidential = confidentialStatus;
+          store.getters.getNoteableData.discussion_locked = lockStatus;
+
+          createComponent({ store, provide: { hidden: hiddenStatus } });
         });
 
         it(`${renderTestMessage(lockStatus)} the locked icon`, () => {
@@ -66,6 +69,19 @@ describe('IssuableHeaderWarnings', () => {
 
         it(`${renderTestMessage(confidentialStatus)} the confidential icon`, () => {
           expect(findConfidentialIcon().exists()).toBe(confidentialStatus);
+        });
+
+        it(`${renderTestMessage(confidentialStatus)} the hidden icon`, () => {
+          const hiddenIcon = findHiddenIcon();
+
+          expect(hiddenIcon.exists()).toBe(hiddenStatus);
+
+          if (hiddenStatus) {
+            expect(hiddenIcon.attributes('title')).toBe(
+              'This issue is hidden because its author has been banned',
+            );
+            expect(getBinding(hiddenIcon.element, 'gl-tooltip')).not.toBeUndefined();
+          }
         });
       },
     );

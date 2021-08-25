@@ -10,6 +10,8 @@ export const MWPS_MERGE_STRATEGY = 'merge_when_pipeline_succeeds';
 export const MTWPS_MERGE_STRATEGY = 'add_to_merge_train_when_pipeline_succeeds';
 export const MT_MERGE_STRATEGY = 'merge_train';
 
+export const PIPELINE_FAILED_STATE = 'failed';
+
 export const AUTO_MERGE_STRATEGIES = [MWPS_MERGE_STRATEGY, MTWPS_MERGE_STRATEGY, MT_MERGE_STRATEGY];
 
 // SP - "Suggest Pipelines"

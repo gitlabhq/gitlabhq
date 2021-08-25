@@ -216,6 +216,20 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
           end
         end
 
+        context 'with invite email acceptance for the invite_email_from experiment', :experiment do
+          let(:extra_params) do
+            { invite_type: Emails::Members::INITIAL_INVITE, experiment_name: 'invite_email_from' }
+          end
+
+          it 'tracks the accepted invite' do
+            expect(experiment(:invite_email_from)).to track(:accepted)
+                                                                .with_context(actor: group_invite)
+                                                                .on_next_instance
+
+            fill_in_sign_up_form(new_user)
+          end
+        end
+
         it 'signs up and redirects to the group activity page with all the project/groups invitation automatically accepted' do
           fill_in_sign_up_form(new_user)
           fill_in_welcome_form

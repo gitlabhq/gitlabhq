@@ -898,17 +898,7 @@ module Gitlab
         # This guard avoids Gitaly log/error spam
         raise NoRepository, 'repository does not exist' unless exists?
 
-        if Feature.enabled?(:set_full_path)
-          gitaly_repository_client.set_full_path(full_path)
-        else
-          set_config('gitlab.fullpath' => full_path)
-        end
-      end
-
-      def set_config(entries)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.set_config(entries)
-        end
+        gitaly_repository_client.set_full_path(full_path)
       end
 
       def disconnect_alternates

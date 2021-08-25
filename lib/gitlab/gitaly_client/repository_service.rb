@@ -264,25 +264,6 @@ module Gitlab
         nil
       end
 
-      def set_config(entries)
-        return if entries.empty?
-
-        request = Gitaly::SetConfigRequest.new(repository: @gitaly_repo)
-        entries.each do |key, value|
-          request.entries << build_set_config_entry(key, value)
-        end
-
-        GitalyClient.call(
-          @storage,
-          :repository_service,
-          :set_config,
-          request,
-          timeout: GitalyClient.fast_timeout
-        )
-
-        nil
-      end
-
       def license_short_name
         request = Gitaly::FindLicenseRequest.new(repository: @gitaly_repo)
 

@@ -28,6 +28,7 @@ import {
   CONFIRM,
   WARNING,
   MT_MERGE_STRATEGY,
+  PIPELINE_FAILED_STATE,
 } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -39,7 +40,6 @@ import CommitsHeader from './commits_header.vue';
 import SquashBeforeMerge from './squash_before_merge.vue';
 
 const PIPELINE_RUNNING_STATE = 'running';
-const PIPELINE_FAILED_STATE = 'failed';
 const PIPELINE_PENDING_STATE = 'pending';
 const PIPELINE_SUCCESS_STATE = 'success';
 
@@ -105,6 +105,10 @@ export default {
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
       ),
+    MergeTrainFailedPipelineConfirmationDialog: () =>
+      import(
+        'ee_component/vue_merge_request_widget/components/merge_train_failed_pipeline_confirmation_dialog.vue'
+      ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -125,6 +129,7 @@ export default {
       squashBeforeMerge: this.mr.squashIsSelected,
       isSquashReadOnly: this.mr.squashIsReadonly,
       squashCommitMessage: this.mr.squashCommitMessage,
+      isPipelineFailedModalVisible: false,
     };
   },
   computed: {
@@ -327,7 +332,12 @@ export default {
         : this.mr.commitMessageWithDescription;
       this.commitMessage = includeDescription ? commitMessageWithDescription : commitMessage;
     },
-    handleMergeButtonClick(useAutoMerge, mergeImmediately = false) {
+    handleMergeButtonClick(useAutoMerge, mergeImmediately = false, confirmationClicked = false) {
+      if (this.showFailedPipelineModal && !confirmationClicked) {
+        this.isPipelineFailedModalVisible = true;
+        return;
+      }
+
       if (mergeImmediately) {
         this.isMergingImmediately = true;
       }
@@ -522,6 +532,11 @@ export default {
                   @mergeImmediately="onMergeImmediatelyConfirmation"
                 />
               </gl-dropdown>
+              <merge-train-failed-pipeline-confirmation-dialog
+                :visible="isPipelineFailedModalVisible"
+                @startMergeTrain="onStartMergeTrainConfirmation"
+                @cancel="isPipelineFailedModalVisible = false"
+              />
             </gl-button-group>
             <div
               v-if="shouldShowMergeControls"

@@ -70,6 +70,28 @@ RSpec.describe NotifyHelper do
         expect(helper.invited_join_url(token, member))
           .to eq("http://test.host/-/invites/#{token}?experiment_name=invite_email_preview_text&invite_type=initial_email")
       end
+
+      context 'when invite_email_from is enabled' do
+        before do
+          stub_experiments(invite_email_from: :control)
+        end
+
+        it 'has correct params' do
+          expect(helper.invited_join_url(token, member))
+            .to eq("http://test.host/-/invites/#{token}?experiment_name=invite_email_from&invite_type=initial_email")
+        end
+      end
+    end
+
+    context 'when invite_email_from is enabled' do
+      before do
+        stub_experiments(invite_email_from: :control)
+      end
+
+      it 'has correct params' do
+        expect(helper.invited_join_url(token, member))
+          .to eq("http://test.host/-/invites/#{token}?experiment_name=invite_email_from&invite_type=initial_email")
+      end
     end
 
     context 'when invite_email_preview_text is disabled' do

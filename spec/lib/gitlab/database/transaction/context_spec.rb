@@ -70,24 +70,6 @@ RSpec.describe Gitlab::Database::Transaction::Context do
     it { expect(subject.duration).to be >= 0 }
   end
 
-  context 'when depth is low' do
-    it 'does not log data upon COMMIT' do
-      expect(subject).not_to receive(:application_info)
-
-      subject.commit
-    end
-
-    it 'does not log data upon ROLLBACK' do
-      expect(subject).not_to receive(:application_info)
-
-      subject.rollback
-    end
-
-    it '#should_log? returns false' do
-      expect(subject.should_log?).to be false
-    end
-  end
-
   shared_examples 'logs transaction data' do
     it 'logs once upon COMMIT' do
       expect(subject).to receive(:application_info).and_call_original
@@ -116,17 +98,9 @@ RSpec.describe Gitlab::Database::Transaction::Context do
     end
   end
 
-  context 'when depth exceeds threshold' do
-    before do
-      subject.set_depth(described_class::LOG_DEPTH_THRESHOLD + 1)
-    end
-
-    it_behaves_like 'logs transaction data'
-  end
-
   context 'when savepoints count exceeds threshold' do
     before do
-      data[:savepoints] = described_class::LOG_SAVEPOINTS_THRESHOLD + 1
+      data[:savepoints] = 1
     end
 
     it_behaves_like 'logs transaction data'

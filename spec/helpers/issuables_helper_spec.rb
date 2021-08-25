@@ -285,7 +285,8 @@ RSpec.describe IssuablesHelper do
         initialDescriptionText: 'issue text',
         initialTaskStatus: '0 of 0 tasks completed',
         issueType: 'issue',
-        iid: issue.iid.to_s
+        iid: issue.iid.to_s,
+        isHidden: false
       }
       expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
     end

@@ -4379,6 +4379,9 @@ msgstr ""
 msgid "Are you sure you want to %{action} %{name}?"
 msgstr ""
 
+msgid "Are you sure you want to attempt to merge?"
+msgstr ""
+
 msgid "Are you sure you want to cancel editing this comment?"
 msgstr ""
 
@@ -20784,6 +20787,9 @@ msgstr ""
 msgid "MemberInviteEmail|%{member_name} invited you to join GitLab"
 msgstr ""
 
+msgid "MemberInviteEmail|I've invited you to join me in GitLab"
+msgstr ""
+
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
@@ -33332,6 +33338,9 @@ msgid "The latest artifacts created by jobs in the most recent successful pipeli
 msgstr ""
 
 msgid "The latest pipeline for this merge request did not complete successfully."
+msgstr ""
+
+msgid "The latest pipeline for this merge request has failed."
 msgstr ""
 
 msgid "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc."

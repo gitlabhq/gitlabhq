@@ -834,6 +834,35 @@ RSpec.describe Notify do
                                                     invite_type: Emails::Members::INITIAL_INVITE,
                                                     experiment_name: 'invite_email_preview_text'))
         end
+
+        it 'tracks the sent invite' do
+          expect(experiment(:invite_email_preview_text)).to track(:assignment)
+                                                      .with_context(actor: project_member)
+                                                      .on_next_instance
+
+          invite_email.deliver_now
+        end
+      end
+
+      context 'with invite_email_from enabled', :experiment do
+        before do
+          stub_experiments(invite_email_from: :control)
+        end
+
+        it 'has the correct invite_url with params' do
+          is_expected.to have_link('Join now',
+                                   href: invite_url(project_member.invite_token,
+                                                    invite_type: Emails::Members::INITIAL_INVITE,
+                                                    experiment_name: 'invite_email_from'))
+        end
+
+        it 'tracks the sent invite' do
+          expect(experiment(:invite_email_from)).to track(:assignment)
+                                                      .with_context(actor: project_member)
+                                                      .on_next_instance
+
+          invite_email.deliver_now
+        end
       end
 
       context 'when invite email sent is tracked', :snowplow do

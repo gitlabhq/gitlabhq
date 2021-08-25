@@ -15,7 +15,7 @@
         = _('Open')
 
     .issuable-meta
-      #js-issuable-header-warnings
+      #js-issuable-header-warnings{ data: { hidden: issue_hidden?(issuable).to_s } }
       = issuable_meta(issuable, @project)
 
     %a.btn.gl-button.btn-default.btn-icon.float-right.gl-display-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }

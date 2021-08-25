@@ -1,7 +1,8 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import '~/behaviors/markdown/render_gfm';
 import IssuableApp from '~/issue_show/components/app.vue';
 import DescriptionComponent from '~/issue_show/components/description.vue';
@@ -33,13 +34,17 @@ describe('Issuable output', () => {
   let realtimeRequestCount = 0;
   let wrapper;
 
-  const findStickyHeader = () => wrapper.find('[data-testid="issue-sticky-header"]');
-  const findLockedBadge = () => wrapper.find('[data-testid="locked"]');
-  const findConfidentialBadge = () => wrapper.find('[data-testid="confidential"]');
+  const findStickyHeader = () => wrapper.findByTestId('issue-sticky-header');
+  const findLockedBadge = () => wrapper.findByTestId('locked');
+  const findConfidentialBadge = () => wrapper.findByTestId('confidential');
+  const findHiddenBadge = () => wrapper.findByTestId('hidden');
   const findAlert = () => wrapper.find('.alert');
 
   const mountComponent = (props = {}, options = {}, data = {}) => {
-    wrapper = mount(IssuableApp, {
+    wrapper = mountExtended(IssuableApp, {
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
       propsData: { ...appProps, ...props },
       provide: {
         fullPath: 'gitlab-org/incidents',
@@ -539,8 +544,8 @@ describe('Issuable output', () => {
 
       it.each`
         title                                                                | isConfidential
-        ${'does not show confidential badge when issue is not confidential'} | ${true}
-        ${'shows confidential badge when issue is confidential'}             | ${false}
+        ${'does not show confidential badge when issue is not confidential'} | ${false}
+        ${'shows confidential badge when issue is confidential'}             | ${true}
       `('$title', async ({ isConfidential }) => {
         wrapper.setProps({ isConfidential });
 
@@ -551,14 +556,35 @@ describe('Issuable output', () => {
 
       it.each`
         title                                                    | isLocked
-        ${'does not show locked badge when issue is not locked'} | ${true}
-        ${'shows locked badge when issue is locked'}             | ${false}
+        ${'does not show locked badge when issue is not locked'} | ${false}
+        ${'shows locked badge when issue is locked'}             | ${true}
       `('$title', async ({ isLocked }) => {
         wrapper.setProps({ isLocked });
 
         await nextTick();
 
         expect(findLockedBadge().exists()).toBe(isLocked);
+      });
+
+      it.each`
+        title                                                    | isHidden
+        ${'does not show hidden badge when issue is not hidden'} | ${false}
+        ${'shows hidden badge when issue is hidden'}             | ${true}
+      `('$title', async ({ isHidden }) => {
+        wrapper.setProps({ isHidden });
+
+        await nextTick();
+
+        const hiddenBadge = findHiddenBadge();
+
+        expect(hiddenBadge.exists()).toBe(isHidden);
+
+        if (isHidden) {
+          expect(hiddenBadge.attributes('title')).toBe(
+            'This issue is hidden because its author has been banned',
+          );
+          expect(getBinding(hiddenBadge.element, 'gl-tooltip')).not.toBeUndefined();
+        }
       });
     });
   });

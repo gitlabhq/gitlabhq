@@ -227,6 +227,40 @@ RSpec.describe RegistrationsController do
                   end
                 end
               end
+
+              context 'with the invite_email_preview_text experiment', :experiment do
+                let(:extra_session_params) { { invite_email_experiment_name: 'invite_email_from' } }
+
+                context 'when member and invite_email_experiment_name exists from the session key value' do
+                  it 'tracks the invite acceptance' do
+                    expect(experiment(:invite_email_from)).to track(:accepted)
+                                                                .with_context(actor: member)
+                                                                .on_next_instance
+
+                    subject
+                  end
+                end
+
+                context 'when member does not exist from the session key value' do
+                  let(:originating_member_id) { -1 }
+
+                  it 'does not track invite acceptance' do
+                    expect(experiment(:invite_email_from)).not_to track(:accepted)
+
+                    subject
+                  end
+                end
+
+                context 'when invite_email_experiment_name does not exist from the session key value' do
+                  let(:extra_session_params) { {} }
+
+                  it 'does not track invite acceptance' do
+                    expect(experiment(:invite_email_from)).not_to track(:accepted)
+
+                    subject
+                  end
+                end
+              end
             end
 
             context 'when invite email matches email used on registration' do

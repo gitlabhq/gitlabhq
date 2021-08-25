@@ -57,7 +57,7 @@ module Emails
 
       Gitlab::Tracking.event(self.class.name, 'invite_email_sent', label: 'invite_email', property: member_id.to_s)
 
-      mail(to: member.invite_email, subject: invite_email_subject, **invite_email_headers) do |format|
+      mail(to: member.invite_email, subject: invite_email_subject, **invite_email_headers.merge(additional_invite_settings)) do |format|
         format.html { render layout: 'unknown_user_mailer' }
         format.text { render layout: 'unknown_user_mailer' }
       end
@@ -147,7 +147,17 @@ module Emails
 
     def invite_email_subject
       if member.created_by
-        subject(s_("MemberInviteEmail|%{member_name} invited you to join GitLab") % { member_name: member.created_by.name })
+        experiment(:invite_email_from, actor: member) do |experiment_instance|
+          experiment_instance.use do
+            subject(s_("MemberInviteEmail|%{member_name} invited you to join GitLab") % { member_name: member.created_by.name })
+          end
+
+          experiment_instance.candidate do
+            subject(s_("MemberInviteEmail|I've invited you to join me in GitLab"))
+          end
+
+          experiment_instance.run
+        end
       else
         subject(s_("MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}") % { project_or_group: member_source.human_name, project_or_group_name: member_source.model_name.singular })
       end
@@ -161,6 +171,21 @@ module Emails
         }
       else
         {}
+      end
+    end
+
+    def additional_invite_settings
+      return {} unless member.created_by
+
+      experiment(:invite_email_from, actor: member) do |experiment_instance|
+        experiment_instance.use { {} }
+        experiment_instance.candidate do
+          {
+            from: "#{member.created_by.name} <#{member.created_by.email}>"
+          }
+        end
+
+        experiment_instance.run
       end
     end
 

@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
+import { GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
@@ -31,6 +31,9 @@ export default {
     editedComponent,
     formComponent,
     PinnedLinks,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     endpoint: {
@@ -182,6 +185,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    isHidden: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -507,6 +515,15 @@ export default {
               </span>
               <span v-if="isConfidential" data-testid="confidential" class="issuable-warning-icon">
                 <gl-icon name="eye-slash" :aria-label="__('Confidential')" />
+              </span>
+              <span
+                v-if="isHidden"
+                v-gl-tooltip
+                :title="__('This issue is hidden because its author has been banned')"
+                data-testid="hidden"
+                class="issuable-warning-icon"
+              >
+                <gl-icon name="spam" />
               </span>
               <p
                 class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"

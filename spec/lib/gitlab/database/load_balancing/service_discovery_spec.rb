@@ -69,18 +69,69 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   end
 
   describe '#perform_service_discovery' do
-    it 'reports exceptions to Sentry' do
-      error = StandardError.new
+    context 'without any failures' do
+      it 'runs once' do
+        expect(service)
+          .to receive(:refresh_if_necessary).once
 
-      expect(service)
-        .to receive(:refresh_if_necessary)
-        .and_raise(error)
+        expect(service).not_to receive(:sleep)
 
-      expect(Gitlab::ErrorTracking)
-        .to receive(:track_exception)
-        .with(error)
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-      service.perform_service_discovery
+        service.perform_service_discovery
+      end
+    end
+    context 'with failures' do
+      before do
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+        allow(service).to receive(:sleep)
+      end
+
+      let(:valid_retry_sleep_duration) { satisfy { |val| described_class::RETRY_DELAY_RANGE.include?(val) } }
+
+      it 'retries service discovery when under the retry limit' do
+        error = StandardError.new
+
+        expect(service)
+          .to receive(:refresh_if_necessary)
+          .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES - 1).times.ordered
+
+        expect(service)
+          .to receive(:sleep).with(valid_retry_sleep_duration)
+          .exactly(described_class::MAX_DISCOVERY_RETRIES - 1).times
+
+        expect(service).to receive(:refresh_if_necessary).and_return(45).ordered
+
+        expect(service.perform_service_discovery).to eq(45)
+      end
+
+      it 'does not retry service discovery after exceeding the limit' do
+        error = StandardError.new
+
+        expect(service)
+          .to receive(:refresh_if_necessary)
+          .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
+
+        expect(service)
+          .to receive(:sleep).with(valid_retry_sleep_duration)
+          .exactly(described_class::MAX_DISCOVERY_RETRIES).times
+
+        service.perform_service_discovery
+      end
+
+      it 'reports exceptions to Sentry' do
+        error = StandardError.new
+
+        expect(service)
+          .to receive(:refresh_if_necessary)
+                .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
+
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+                .with(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
+
+        service.perform_service_discovery
+      end
     end
   end
 
@@ -222,6 +273,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
         ]
 
         expect(service.addresses_from_dns).to eq([90, addresses])
+      end
+    end
+
+    context 'when the resolver returns an empty response' do
+      let(:packet) { double(:packet, answer: []) }
+
+      let(:record_type) { 'A' }
+
+      it 'raises EmptyDnsResponse' do
+        expect { service.addresses_from_dns }.to raise_error(Gitlab::Database::LoadBalancing::ServiceDiscovery::EmptyDnsResponse)
       end
     end
   end
