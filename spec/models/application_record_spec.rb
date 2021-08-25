@@ -39,7 +39,7 @@ RSpec.describe ApplicationRecord do
 
     let(:suggestion_attributes) { attributes_for(:suggestion).merge!(note_id: note.id) }
 
-    shared_examples '.safe_find_or_create_by' do
+    describe '.safe_find_or_create_by' do
       it 'creates the suggestion avoiding race conditions' do
         existing_suggestion = double(:Suggestion)
 
@@ -63,7 +63,7 @@ RSpec.describe ApplicationRecord do
       end
     end
 
-    shared_examples '.safe_find_or_create_by!' do
+    describe '.safe_find_or_create_by!' do
       it 'creates a record using safe_find_or_create_by' do
         expect(Suggestion.safe_find_or_create_by!(suggestion_attributes))
           .to be_a(Suggestion)
@@ -87,24 +87,6 @@ RSpec.describe ApplicationRecord do
         expect { Suggestion.safe_find_or_create_by!(attributes) }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
-    end
-
-    context 'when optimized_safe_find_or_create_by is enabled' do
-      before do
-        stub_feature_flags(optimized_safe_find_or_create_by: true)
-      end
-
-      it_behaves_like '.safe_find_or_create_by'
-      it_behaves_like '.safe_find_or_create_by!'
-    end
-
-    context 'when optimized_safe_find_or_create_by is disabled' do
-      before do
-        stub_feature_flags(optimized_safe_find_or_create_by: false)
-      end
-
-      it_behaves_like '.safe_find_or_create_by'
-      it_behaves_like '.safe_find_or_create_by!'
     end
   end
 

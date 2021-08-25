@@ -25,7 +25,7 @@ module QA
                  :state
 
       attribute :project do
-        Project.fabricate! do |resource|
+        Project.fabricate_via_api! do |resource|
           resource.name = 'project-with-merge-request'
         end
       end

@@ -1,0 +1,8 @@
+---
+name: env_vars_resource_group
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67876
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339024
+milestone: '14.3'
+type: development
+group: group::release
+default_enabled: false

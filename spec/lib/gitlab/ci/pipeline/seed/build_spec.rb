@@ -490,11 +490,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
 
       context 'when job belongs to a resource group' do
-        let(:attributes) { { name: 'rspec', ref: 'master', resource_group_key: 'iOS' } }
+        let(:resource_group) { 'iOS' }
+        let(:attributes) { { name: 'rspec', ref: 'master', resource_group_key: resource_group, environment: 'production' }}
 
         it 'returns a job with resource group' do
           expect(subject.resource_group).not_to be_nil
           expect(subject.resource_group.key).to eq('iOS')
+        end
+
+        context 'when resource group has $CI_ENVIRONMENT_NAME in it' do
+          let(:resource_group) { 'test/$CI_ENVIRONMENT_NAME' }
+
+          it 'expands environment name' do
+            expect(subject.resource_group.key).to eq('test/production')
+          end
         end
       end
     end

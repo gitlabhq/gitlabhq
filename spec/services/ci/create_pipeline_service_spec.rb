@@ -991,6 +991,74 @@ RSpec.describe Ci::CreatePipelineService do
       end
     end
 
+    context 'when resource group is defined for review app deployment' do
+      before do
+        config = YAML.dump(
+          review_app: {
+            stage: 'test',
+            script: 'deploy',
+            environment: {
+              name: 'review/$CI_COMMIT_REF_SLUG',
+              on_stop: 'stop_review_app'
+            },
+            resource_group: '$CI_ENVIRONMENT_NAME'
+          },
+          stop_review_app: {
+            stage: 'test',
+            script: 'stop',
+            when: 'manual',
+            environment: {
+              name: 'review/$CI_COMMIT_REF_SLUG',
+              action: 'stop'
+            },
+            resource_group: '$CI_ENVIRONMENT_NAME'
+          }
+        )
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'persists the association correctly' do
+        result = execute_service.payload
+        deploy_job = result.builds.find_by_name!(:review_app)
+        stop_job = result.builds.find_by_name!(:stop_review_app)
+
+        expect(result).to be_persisted
+        expect(deploy_job.resource_group.key).to eq('review/master')
+        expect(stop_job.resource_group.key).to eq('review/master')
+        expect(project.resource_groups.count).to eq(1)
+      end
+
+      it 'initializes scoped variables only once for each build' do
+        # Bypassing `stub_build` hack because it distrubs the expectations below.
+        allow_next_instances_of(Gitlab::Ci::Build::Context::Build, 2) do |build_context|
+          allow(build_context).to receive(:variables) { Gitlab::Ci::Variables::Collection.new }
+        end
+
+        expect_next_instances_of(::Ci::Build, 2) do |ci_build|
+          expect(ci_build).to receive(:scoped_variables).once.and_call_original
+        end
+
+        expect(execute_service.payload).to be_created_successfully
+      end
+
+      context 'when the env_vars_resource_group feature flag is disabled' do
+        before do
+          stub_feature_flags(env_vars_resource_group: false)
+        end
+
+        it 'does not create a resource group because its key contains an invalid character' do
+          result = execute_service.payload
+          deploy_job = result.builds.find_by_name!(:review_app)
+          stop_job = result.builds.find_by_name!(:stop_review_app)
+          expect(result).to be_persisted
+          expect(deploy_job.resource_group).to be_nil
+          expect(stop_job.resource_group).to be_nil
+          expect(project.resource_groups.count).to eq(0)
+        end
+      end
+    end
+
     context 'with timeout' do
       context 'when builds with custom timeouts are configured' do
         before do

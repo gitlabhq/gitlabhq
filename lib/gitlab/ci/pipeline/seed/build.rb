@@ -118,6 +118,8 @@ module Gitlab
               return { environment: nil }
             end
 
+            build.persisted_environment = environment
+
             {
               deployment: Seed::Deployment.new(build, environment).to_resource,
               metadata_attributes: {

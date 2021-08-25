@@ -127,6 +127,32 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
           end
         end
       end
+
+      context 'when resource group key includes a variable' do
+        let(:config) do
+          <<~YAML
+          instrumentation_test:
+            stage: test
+            resource_group: $CI_ENVIRONMENT_NAME
+            trigger:
+              include: path/to/child.yml
+              strategy: depend
+          YAML
+        end
+
+        it 'ignores the resource group keyword because it fails to expand the variable', :aggregate_failures do
+          pipeline = create_pipeline!
+          Ci::InitialPipelineProcessWorker.new.perform(pipeline.id)
+
+          test = pipeline.statuses.find_by(name: 'instrumentation_test')
+          expect(pipeline).to be_created_successfully
+          expect(pipeline.triggered_pipelines).not_to be_exist
+          expect(project.resource_groups.count).to eq(0)
+          expect(test).to be_a Ci::Bridge
+          expect(test).to be_pending
+          expect(test.resource_group).to be_nil
+        end
+      end
     end
   end
 

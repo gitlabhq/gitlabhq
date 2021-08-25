@@ -90,6 +90,10 @@ module Ci
       end
     end
 
+    def persisted_environment=(environment)
+      strong_memoize(:persisted_environment) { environment }
+    end
+
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 

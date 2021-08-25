@@ -7605,7 +7605,7 @@ Describes a rule for who can approve merge requests.
 | <a id="approvalruleapproved"></a>`approved` | [`Boolean`](#boolean) | Indicates if the rule is satisfied. |
 | <a id="approvalruleapprovedby"></a>`approvedBy` | [`UserCoreConnection`](#usercoreconnection) | List of users defined in the rule that approved the merge request. (see [Connections](#connections)) |
 | <a id="approvalrulecontainshiddengroups"></a>`containsHiddenGroups` | [`Boolean`](#boolean) | Indicates if the rule contains approvers from a hidden group. |
-| <a id="approvalruleeligibleapprovers"></a>`eligibleApprovers` | [`UserCoreConnection`](#usercoreconnection) | List of all users eligible to approve the merge request (defined explicitly and from associated groups). (see [Connections](#connections)) |
+| <a id="approvalruleeligibleapprovers"></a>`eligibleApprovers` | [`[UserCore!]`](#usercore) | List of all users eligible to approve the merge request (defined explicitly and from associated groups). |
 | <a id="approvalrulegroups"></a>`groups` | [`GroupConnection`](#groupconnection) | List of groups added as approvers for the rule. (see [Connections](#connections)) |
 | <a id="approvalruleid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
 | <a id="approvalrulename"></a>`name` | [`String`](#string) | Name of the rule. |

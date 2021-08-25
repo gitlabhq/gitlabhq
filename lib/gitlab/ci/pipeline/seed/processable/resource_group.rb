@@ -28,7 +28,16 @@ module Gitlab
 
             def expanded_resource_group_key
               strong_memoize(:expanded_resource_group_key) do
-                ExpandVariables.expand(resource_group_key, -> { processable.simple_variables })
+                ExpandVariables.expand(resource_group_key, -> { variables })
+              end
+            end
+
+            def variables
+              processable.simple_variables.tap do |variables|
+                # Adding persisted environment variables
+                if Feature.enabled?(:env_vars_resource_group) && processable.persisted_environment.present?
+                  variables.concat(processable.persisted_environment.predefined_variables)
+                end
               end
             end
           end
