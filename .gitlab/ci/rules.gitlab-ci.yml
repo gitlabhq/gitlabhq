@@ -621,6 +621,8 @@
     - <<: *if-merge-request-title-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
+    - <<: *if-merge-request
+      changes: *db-patterns
     - <<: *if-automated-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-not-approved
@@ -640,6 +642,7 @@
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
+      when: never
 
 .rails:rules:ee-and-foss-mr-with-migration:
   rules:
@@ -767,6 +770,8 @@
     - <<: *if-merge-request-title-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
+    - <<: *if-merge-request
+      changes: *db-patterns
     - <<: *if-automated-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-not-approved
@@ -788,6 +793,7 @@
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
+      when: never
 
 .rails:rules:ee-only-unit:
   rules:
@@ -883,14 +889,14 @@
     - <<: *if-merge-request-title-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
-    - <<: *if-automated-merge-request
-      changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-security-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-title-as-if-foss
       changes: *db-patterns
+    - <<: *if-automated-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
 
 .rails:rules:as-if-foss-migration:minimal:
   rules:
@@ -905,8 +911,10 @@
       when: never
     - <<: *if-security-merge-request
       changes: *db-patterns
+      when: never
     - <<: *if-merge-request-title-as-if-foss
       changes: *db-patterns
+      when: never
 
 .rails:rules:as-if-foss-unit:
   rules:

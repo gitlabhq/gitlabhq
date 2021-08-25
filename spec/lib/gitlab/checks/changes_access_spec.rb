@@ -8,53 +8,35 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
   subject { changes_access }
 
   describe '#validate!' do
-    shared_examples '#validate!' do
-      before do
-        allow(project).to receive(:lfs_enabled?).and_return(true)
+    before do
+      allow(project).to receive(:lfs_enabled?).and_return(true)
+    end
+
+    context 'without failed checks' do
+      it "doesn't raise an error" do
+        expect { subject.validate! }.not_to raise_error
       end
 
-      context 'without failed checks' do
-        it "doesn't raise an error" do
-          expect { subject.validate! }.not_to raise_error
+      it 'calls lfs checks' do
+        expect_next_instance_of(Gitlab::Checks::LfsCheck) do |instance|
+          expect(instance).to receive(:validate!)
         end
 
-        it 'calls lfs checks' do
-          expect_next_instance_of(Gitlab::Checks::LfsCheck) do |instance|
-            expect(instance).to receive(:validate!)
-          end
-
-          subject.validate!
-        end
-      end
-
-      context 'when time limit was reached' do
-        it 'raises a TimeoutError' do
-          logger = Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout)
-          access = described_class.new(changes,
-                                       project: project,
-                                       user_access: user_access,
-                                       protocol: protocol,
-                                       logger: logger)
-
-          expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
-        end
+        subject.validate!
       end
     end
 
-    context 'with batched commits enabled' do
-      before do
-        stub_feature_flags(changes_batch_commits: true)
+    context 'when time limit was reached' do
+      it 'raises a TimeoutError' do
+        logger = Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout)
+        access = described_class.new(changes,
+                                     project: project,
+                                     user_access: user_access,
+                                     protocol: protocol,
+                                     logger: logger)
+
+        expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end
-
-      it_behaves_like '#validate!'
-    end
-
-    context 'with batched commits disabled' do
-      before do
-        stub_feature_flags(changes_batch_commits: false)
-      end
-
-      it_behaves_like '#validate!'
     end
   end
 

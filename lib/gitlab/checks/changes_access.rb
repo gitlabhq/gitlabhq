@@ -81,7 +81,7 @@ module Gitlab
       def single_access_checks!
         # Iterate over all changes to find if user allowed all of them to be applied
         changes.each do |change|
-          commits = Gitlab::Lazy.new { commits_for(change[:newrev]) } if Feature.enabled?(:changes_batch_commits)
+          commits = Gitlab::Lazy.new { commits_for(change[:newrev]) }
 
           # If user does not have access to make at least one change, cancel all
           # push by allowing the exception to bubble up

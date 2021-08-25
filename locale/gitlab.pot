@@ -27483,6 +27483,12 @@ msgstr ""
 msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
 msgstr ""
 
+msgid "Ready to merge by members who can write to the target branch."
+msgstr ""
+
+msgid "Ready to merge!"
+msgstr ""
+
 msgid "Reauthenticating with SAML provider."
 msgstr ""
 

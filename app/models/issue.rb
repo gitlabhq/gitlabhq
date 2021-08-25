@@ -586,14 +586,7 @@ class Issue < ApplicationRecord
 
   override :ensure_metrics
   def ensure_metrics
-    return Issue::Metrics.record!(self) if Feature.enabled?(:upsert_issue_metrics, default_enabled: :yaml)
-
-    if !association(:metrics).loaded? || metrics.blank?
-      metrics_record = Issue::Metrics.safe_find_or_create_by(issue: self)
-      self.metrics = metrics_record
-    end
-
-    metrics.record!
+    Issue::Metrics.record!(self)
   end
 
   def record_create_action

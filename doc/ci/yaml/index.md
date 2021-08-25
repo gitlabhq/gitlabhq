@@ -1594,6 +1594,14 @@ production:
 
 #### Requirements and limitations
 
+- The maximum number of jobs that a single job can need in the `needs:` array is limited:
+  - For GitLab.com, the limit is 50. For more information, see our
+    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7541).
+  - For self-managed instances, the default limit is 50. This limit [can be changed](#changing-the-needs-job-limit).
+- If `needs:` refers to a job that uses the [`parallel`](#parallel) keyword,
+  it depends on all jobs created in parallel, not just one job. It also downloads
+  artifacts from all the parallel jobs by default. If the artifacts have the same
+  name, they overwrite each other and only the last one downloaded is saved.
 - In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) you
   can refer to jobs in the same stage as the job you are configuring. This feature is
   enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
@@ -1603,17 +1611,6 @@ production:
   in a job's `needs:` section.
 - In GitLab 13.9 and older, if `needs:` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.
-- The maximum number of jobs that a single job can need in the `needs:` array is limited:
-  - For GitLab.com, the limit is 50. For more information, see our
-    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7541).
-  - For self-managed instances, the limit is: 50. This limit [can be changed](#changing-the-needs-job-limit).
-- If `needs:` refers to a job that uses the [`parallel`](#parallel) keyword,
-  it depends on all jobs created in parallel, not just one job. It also downloads
-  artifacts from all the parallel jobs by default. If the artifacts have the same
-  name, they overwrite each other and only the last one downloaded is saved.
-- `needs:` is similar to `dependencies:` in that it must use jobs from prior stages,
-  meaning it's impossible to create circular dependencies. Depending on jobs in the
-  current stage is not possible either, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/30632).
 
 ##### Changing the `needs:` job limit **(FREE SELF)**
 

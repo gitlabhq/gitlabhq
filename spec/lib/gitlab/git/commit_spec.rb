@@ -364,12 +364,40 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
     end
 
     describe '.between' do
-      subject do
-        commits = described_class.between(repository, SeedRepo::Commit::PARENT_ID, SeedRepo::Commit::ID)
-        commits.map { |c| c.id }
+      let(:limit) { nil }
+      let(:commit_ids) { commits.map(&:id) }
+
+      subject(:commits) { described_class.between(repository, from, to, limit: limit) }
+
+      context 'requesting a single commit' do
+        let(:from) { SeedRepo::Commit::PARENT_ID }
+        let(:to) { SeedRepo::Commit::ID }
+
+        it { expect(commit_ids).to contain_exactly(to) }
       end
 
-      it { is_expected.to contain_exactly(SeedRepo::Commit::ID) }
+      context 'requesting a commit range' do
+        let(:from) { 'v1.0.0' }
+        let(:to) { 'v1.2.0' }
+
+        let(:commits_in_range) do
+          %w[
+            570e7b2abdd848b95f2f578043fc23bd6f6fd24d
+            5937ac0a7beb003549fc5fd26fc247adbce4a52e
+            eb49186cfa5c4338011f5f590fac11bd66c5c631
+          ]
+        end
+
+        context 'no limit' do
+          it { expect(commit_ids).to eq(commits_in_range) }
+        end
+
+        context 'limited' do
+          let(:limit) { 2 }
+
+          it { expect(commit_ids).to eq(commits_in_range.last(2)) }
+        end
+      end
     end
 
     describe '.shas_with_signatures' do

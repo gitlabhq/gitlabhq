@@ -34,7 +34,7 @@ RSpec.describe Issue::Metrics do
     end
   end
 
-  shared_examples "when recording the default set of issue metrics on issue save" do
+  context "when recording the default set of issue metrics on issue save" do
     context "milestones" do
       it "records the first time an issue is associated with a milestone" do
         time = Time.current
@@ -80,21 +80,5 @@ RSpec.describe Issue::Metrics do
         expect(metrics.first_added_to_board_at).to be_like_time(time)
       end
     end
-  end
-
-  context 'when upsert_issue_metrics is enabled' do
-    before do
-      stub_feature_flags(upsert_issue_metrics: true)
-    end
-
-    it_behaves_like 'when recording the default set of issue metrics on issue save'
-  end
-
-  context 'when upsert_issue_metrics is disabled' do
-    before do
-      stub_feature_flags(upsert_issue_metrics: false)
-    end
-
-    it_behaves_like 'when recording the default set of issue metrics on issue save'
   end
 end

@@ -72,7 +72,9 @@ export default {
     'mr-widget-nothing-to-merge': NothingToMergeState,
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
-    'mr-widget-ready-to-merge': ReadyToMergeState,
+    'mr-widget-ready-to-merge': window.gon?.features?.restructuredMrWidget
+      ? () => import('./components/states/new_ready_to_merge.vue')
+      : ReadyToMergeState,
     'sha-mismatch': ShaMismatch,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,

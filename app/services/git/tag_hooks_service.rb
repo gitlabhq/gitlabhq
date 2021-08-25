@@ -8,8 +8,12 @@ module Git
       :tag_push_hooks
     end
 
-    def commits
+    def limited_commits
       [tag_commit].compact
+    end
+
+    def commits_count
+      limited_commits.count
     end
 
     def event_message

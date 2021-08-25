@@ -255,11 +255,12 @@ module Gitlab
         consume_commits_response(response)
       end
 
-      def list_commits(revisions, reverse: false)
+      def list_commits(revisions, reverse: false, pagination_params: nil)
         request = Gitaly::ListCommitsRequest.new(
           repository: @gitaly_repo,
           revisions: Array.wrap(revisions),
-          reverse: reverse
+          reverse: reverse,
+          pagination_params: pagination_params
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits, request, timeout: GitalyClient.medium_timeout)

@@ -161,8 +161,8 @@ class Repository
     CommitCollection.new(container, commits, ref)
   end
 
-  def commits_between(from, to)
-    commits = Gitlab::Git::Commit.between(raw_repository, from, to)
+  def commits_between(from, to, limit: nil)
+    commits = Gitlab::Git::Commit.between(raw_repository, from, to, limit: limit)
     commits = Commit.decorate(commits, container) if commits.present?
     commits
   end

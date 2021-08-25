@@ -147,7 +147,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td rowspan="2">Java</td>
-      <td><a href="https://gradle.org/">Gradle</a></td>
+      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers">1</a></b></sup></td>
       <td>Any</td>
       <td>
         <ul>
@@ -228,7 +228,7 @@ table.supported-languages ul {
       <td>
         <ul>
             <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile</code></a></li>
-            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers">1</a></b></sup></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers">2</a></b></sup></li>
         </ul>
       </td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -236,7 +236,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td>Scala</td>
-      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers">2</a></b></sup></td>
+      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers">3</a></b></sup></td>
       <td>Any</td>
       <td><code>build.sbt</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -246,6 +246,8 @@ table.supported-languages ul {
 </table>
 
 ### Notes regarding supported languages and package managers
+
+1. Although Gradle with Java 8 is supported, there are other issues such that Android project builds are not supported at this time. Please see the backlog issue [Android support for Dependency Scanning (gemnasium-maven)](https://gitlab.com/gitlab-org/gitlab/-/issues/336866) for more details.
 
 1. The presence of a `Pipfile.lock` file alone will _not_ trigger the analyzer; the presence of a `Pipfile` is still required in order
 for the analyzer to be executed. However, if a `Pipfile.lock` file is found, it will be used by `Gemnasium` to scan the exact package

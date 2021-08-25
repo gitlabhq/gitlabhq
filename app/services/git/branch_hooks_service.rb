@@ -18,20 +18,25 @@ module Git
       :push_hooks
     end
 
-    def commits
-      strong_memoize(:commits) do
+    def limited_commits
+      strong_memoize(:limited_commits) { threshold_commits.last(PROCESS_COMMIT_LIMIT) }
+    end
+
+    # Taking limit+1 commits allows us to detect when the limit is in effect
+    def threshold_commits
+      strong_memoize(:threshold_commits) do
         if creating_default_branch?
           # The most recent PROCESS_COMMIT_LIMIT commits in the default branch.
           # They are returned newest-to-oldest, but we need to present them oldest-to-newest
-          project.repository.commits(newrev, limit: PROCESS_COMMIT_LIMIT).reverse
+          project.repository.commits(newrev, limit: PROCESS_COMMIT_LIMIT + 1).reverse!
         elsif creating_branch?
           # Use the pushed commits that aren't reachable by the default branch
           # as a heuristic. This may include more commits than are actually
           # pushed, but that shouldn't matter because we check for existing
           # cross-references later.
-          project.repository.commits_between(project.default_branch, newrev)
+          project.repository.commits_between(project.default_branch, newrev, limit: PROCESS_COMMIT_LIMIT + 1)
         elsif updating_branch?
-          project.repository.commits_between(oldrev, newrev)
+          project.repository.commits_between(oldrev, newrev, limit: PROCESS_COMMIT_LIMIT + 1)
         else # removing branch
           []
         end
@@ -39,9 +44,21 @@ module Git
     end
 
     def commits_count
-      return count_commits_in_branch if creating_default_branch?
+      strong_memoize(:commits_count) do
+        next threshold_commits.count if
+          strong_memoized?(:threshold_commits) &&
+          threshold_commits.count <= PROCESS_COMMIT_LIMIT
 
-      super
+        if creating_default_branch?
+          project.repository.commit_count_for_ref(ref)
+        elsif creating_branch?
+          project.repository.count_commits_between(project.default_branch, newrev)
+        elsif updating_branch?
+          project.repository.count_commits_between(oldrev, newrev)
+        else # removing branch
+          0
+        end
+      end
     end
 
     override :invalidated_file_types
@@ -177,12 +194,6 @@ module Git
 
     def creating_default_branch?
       creating_branch? && default_branch?
-    end
-
-    def count_commits_in_branch
-      strong_memoize(:count_commits_in_branch) do
-        project.repository.commit_count_for_ref(ref)
-      end
     end
 
     def default_branch?

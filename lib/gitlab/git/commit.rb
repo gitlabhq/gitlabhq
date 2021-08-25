@@ -108,17 +108,26 @@ module Gitlab
         # See also #repository.commits_between
         #
         # Ex.
-        #   Commit.between(repo, '29eda46b', 'master')
+        #   Commit.between(repo, '29eda46b', 'master') # all commits, ordered oldest to newest
+        #   Commit.between(repo, '29eda46b', 'master', limit: 100) # 100 newest commits, ordered oldest to newest
         #
-        def between(repo, base, head)
+        def between(repo, base, head, limit: nil)
           # In either of these cases, we are guaranteed to return no commits, so
           # shortcut the RPC call
           return [] if Gitlab::Git.blank_ref?(base) || Gitlab::Git.blank_ref?(head)
 
           wrapped_gitaly_errors do
             revisions = [head, "^#{base}"] # base..head
+            client = repo.gitaly_commit_client
 
-            repo.gitaly_commit_client.list_commits(revisions, reverse: true)
+            # We must return the commits in chronological order but using both
+            # limit and reverse in the Gitaly RPC would return the oldest N,
+            # rather than newest N, commits, so reorder in Ruby with limit
+            if limit
+              client.list_commits(revisions, pagination_params: { limit: limit }).reverse!
+            else
+              client.list_commits(revisions, reverse: true)
+            end
           end
         end
 

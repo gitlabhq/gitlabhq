@@ -88,6 +88,19 @@ RSpec.describe Ci::RunnersHelper do
     end
   end
 
+  describe '#group_runners_data_attributes' do
+    let(:group) { create(:group) }
+
+    it 'returns group data to render a runner list' do
+      data = group_runners_data_attributes(group)
+
+      expect(data[:registration_token]).to eq(group.runners_token)
+      expect(data[:group_id]).to eq(group.id)
+      expect(data[:group_full_path]).to eq(group.full_path)
+      expect(data[:runner_install_help_page]).to eq('https://docs.gitlab.com/runner/install/')
+    end
+  end
+
   describe '#toggle_shared_runners_settings_data' do
     let_it_be(:group) { create(:group) }
 

@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`New ready to merge state component renders permission text if canMerge (false) is false 1`] = `
+<div
+  class="mr-widget-body media"
+>
+  <status-icon-stub
+    status="success"
+  />
+   
+  <p
+    class="media-body gl-m-0! gl-font-weight-bold"
+  >
+    
+      Ready to merge by members who can write to the target branch.
+    
+  </p>
+</div>
+`;
+
+exports[`New ready to merge state component renders permission text if canMerge (true) is false 1`] = `
+<div
+  class="mr-widget-body media"
+>
+  <status-icon-stub
+    status="success"
+  />
+   
+  <p
+    class="media-body gl-m-0! gl-font-weight-bold"
+  >
+    
+      Ready to merge!
+    
+  </p>
+</div>
+`;

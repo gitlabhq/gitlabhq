@@ -470,6 +470,29 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#commits_between' do
+    let(:commit) { project.commit }
+
+    it 'delegates to Gitlab::Git::Commit#between, returning decorated commits' do
+      expect(Gitlab::Git::Commit)
+        .to receive(:between)
+        .with(repository.raw_repository, commit.parent_id, commit.id, limit: 5)
+        .and_call_original
+
+      result = repository.commits_between(commit.parent_id, commit.id, limit: 5)
+
+      expect(result).to contain_exactly(instance_of(Commit), instance_of(Commit))
+    end
+
+    it 'defaults to no limit' do
+      expect(Gitlab::Git::Commit)
+        .to receive(:between)
+        .with(repository.raw_repository, commit.parent_id, commit.id, limit: nil)
+
+      repository.commits_between(commit.parent_id, commit.id)
+    end
+  end
+
   describe '#find_commits_by_message' do
     it 'returns commits with messages containing a given string' do
       commit_ids = repository.find_commits_by_message('submodule').map(&:id)

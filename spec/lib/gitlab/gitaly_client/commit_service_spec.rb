@@ -311,6 +311,10 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   end
 
   describe '#list_commits' do
+    let(:revisions) { 'master' }
+    let(:reverse) { false }
+    let(:pagination_params) { nil }
+
     shared_examples 'a ListCommits request' do
       before do
         ::Gitlab::GitalyClient.clear_stubs!
@@ -318,26 +322,35 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
 
       it 'sends a list_commits message' do
         expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
-          expect(service)
-            .to receive(:list_commits)
-            .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-            .and_return([])
+          expected_request = gitaly_request_with_params(
+            Array.wrap(revisions),
+            reverse: reverse,
+            pagination_params: pagination_params
+          )
+
+          expect(service).to receive(:list_commits).with(expected_request, kind_of(Hash)).and_return([])
         end
 
-        client.list_commits(revisions)
+        client.list_commits(revisions, reverse: reverse, pagination_params: pagination_params)
       end
     end
 
-    context 'with a single revision' do
-      let(:revisions) { 'master' }
-      let(:expected_params) { %w[master] }
+    it_behaves_like 'a ListCommits request'
+
+    context 'with multiple revisions' do
+      let(:revisions) { %w[master --not --all] }
 
       it_behaves_like 'a ListCommits request'
     end
 
-    context 'with multiple revisions' do
-      let(:revisions) { %w[master --not --all] }
-      let(:expected_params) { %w[master --not --all] }
+    context 'with reverse: true' do
+      let(:reverse) { true }
+
+      it_behaves_like 'a ListCommits request'
+    end
+
+    context 'with pagination params' do
+      let(:pagination_params) { { limit: 1, page_token: 'foo' } }
 
       it_behaves_like 'a ListCommits request'
     end

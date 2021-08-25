@@ -25,7 +25,7 @@ export default function deviseState() {
     return stateKey.shaMismatch;
   } else if (this.autoMergeEnabled && !this.mergeError) {
     return stateKey.autoMergeEnabled;
-  } else if (!this.canMerge) {
+  } else if (!this.canMerge && !window.gon?.features?.restructuredMrWidget) {
     return stateKey.notAllowedToMerge;
   } else if (this.canBeMerged) {
     return stateKey.readyToMerge;
