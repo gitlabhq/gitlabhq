@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'faker'
-
 module QA
   RSpec.describe 'Verify', :runner do
     describe 'Include multiple files from a project' do

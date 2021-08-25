@@ -535,8 +535,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="timeframeend"></a>`end` | [`Date!`](#date) | The end of the range. |
-          | <a id="timeframestart"></a>`start` | [`Date!`](#date) | The start of the range. |
+          | <a id="timeframeend"></a>`end` | [`Date!`](#date) | End of the range. |
+          | <a id="timeframestart"></a>`start` | [`Date!`](#date) | Start of the range. |
         DOC
       end
 

@@ -72,7 +72,7 @@ module QA
         Support::Retrier.retry_until(max_duration: QA::EE::Runtime::Geo.max_db_replication_time, sleep_interval: 3) do
           response = get Runtime::API::Request.new(api_client, api_get_path).url
 
-          response.code == QA::Support::Api::HTTP_STATUS_OK &&
+          response.code == QA::Support::API::HTTP_STATUS_OK &&
             parse_body(response)[:title].include?(title)
         end
       end

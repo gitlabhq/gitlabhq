@@ -64,7 +64,7 @@ module Types
           description: 'Diff head SHA of the merge request.'
     field :diff_stats, [Types::DiffStatsType], null: true, calls_gitaly: true,
           description: 'Details about which files were changed in this merge request.' do
-      argument :path, GraphQL::Types::String, required: false, description: 'A specific file-path.'
+      argument :path, GraphQL::Types::String, required: false, description: 'Specific file path.'
     end
 
     field :diff_stats_summary, Types::DiffStatsSummaryType, null: true, calls_gitaly: true,
@@ -129,14 +129,14 @@ module Types
           description: 'Number of downvotes for the merge request.'
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline,
-          description: 'The pipeline running on the branch HEAD of the merge request.'
+          description: 'Pipeline running on the branch HEAD of the merge request.'
     field :pipelines,
           null: true,
           description: 'Pipelines for the merge request. Note: for performance reasons, no more than the most recent 500 pipelines will be returned.',
           resolver: Resolvers::MergeRequestPipelinesResolver
 
     field :milestone, Types::MilestoneType, null: true,
-          description: 'The milestone of the merge request.'
+          description: 'Milestone of the merge request.'
     field :assignees,
           type: Types::MergeRequests::AssigneeType.connection_type,
           null: true,

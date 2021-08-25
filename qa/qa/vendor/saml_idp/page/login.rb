@@ -4,7 +4,7 @@ require 'capybara/dsl'
 
 module QA
   module Vendor
-    module SAMLIdp
+    module SamlIdp
       module Page
         class Login < Page::Base
           def login(username, password)

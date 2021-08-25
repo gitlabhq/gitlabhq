@@ -8,8 +8,8 @@ module Types
       authorize :read_package
 
       field :id, ::Types::GlobalIDType[::Packages::PackageFile], null: false, description: 'ID of the file.'
-      field :created_at, Types::TimeType, null: false, description: 'The created date.'
-      field :updated_at, Types::TimeType, null: false, description: 'The updated date.'
+      field :created_at, Types::TimeType, null: false, description: 'Created date.'
+      field :updated_at, Types::TimeType, null: false, description: 'Updated date.'
       field :size, GraphQL::Types::String, null: false, description: 'Size of the package file.'
       field :file_name, GraphQL::Types::String, null: false, description: 'Name of the package file.'
       field :download_path, GraphQL::Types::String, null: false, description: 'Download path of the package file.'

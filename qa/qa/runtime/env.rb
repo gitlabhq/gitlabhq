@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_support/deprecation'
-require 'gitlab/qa'
 require 'uri'
 
 module QA

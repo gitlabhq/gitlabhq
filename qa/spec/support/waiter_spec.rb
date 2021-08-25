@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 RSpec.describe QA::Support::Waiter do
   before do
     logger = ::Logger.new $stdout

@@ -43,12 +43,22 @@ RSpec.describe MergeRequests::MergeToRefService do
 
         # warm the cache
         #
-        service.execute(merge_request)
+        service.execute(merge_request, true)
       end
 
-      it 'caches the response', :request_store do
-        expect { 3.times { service.execute(merge_request) } }
-          .not_to change(Gitlab::GitalyClient, :get_request_count)
+      context 'when cache_merge_to_ref_calls parameter is true' do
+        it 'caches the response', :request_store do
+          expect { 3.times { service.execute(merge_request, true) } }
+            .not_to change(Gitlab::GitalyClient, :get_request_count)
+        end
+      end
+
+      context 'when cache_merge_to_ref_calls parameter is false' do
+        it 'does not cache the response', :request_store do
+          expect(Gitlab::GitalyClient).to receive(:call).at_least(3).times.and_call_original
+
+          3.times { service.execute(merge_request, false) }
+        end
       end
     end
 
@@ -58,13 +68,15 @@ RSpec.describe MergeRequests::MergeToRefService do
 
         # warm the cache
         #
-        service.execute(merge_request)
+        service.execute(merge_request, true)
       end
 
-      it 'does not cache the response', :request_store do
-        expect(Gitlab::GitalyClient).to receive(:call).at_least(3).times.and_call_original
+      [true, false].each do |cache_merge_to_ref_calls|
+        it 'does not cache the response, regardless of cache_merge_to_ref_calls state', :request_store do
+          expect(Gitlab::GitalyClient).to receive(:call).at_least(3).times.and_call_original
 
-        3.times { service.execute(merge_request) }
+          3.times { service.execute(merge_request, cache_merge_to_ref_calls) }
+        end
       end
     end
   end

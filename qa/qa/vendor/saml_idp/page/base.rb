@@ -2,7 +2,7 @@
 
 module QA
   module Vendor
-    module SAMLIdp
+    module SamlIdp
       module Page
         class Base
           include Capybara::DSL

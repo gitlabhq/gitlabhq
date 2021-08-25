@@ -209,6 +209,7 @@ fixup
 Flawfinder
 Flowdock
 Fluentd
+Flycheck
 Forgerock
 formatters
 Fugit

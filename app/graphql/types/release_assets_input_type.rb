@@ -7,6 +7,6 @@ module Types
 
     argument :links, [Types::ReleaseAssetLinkInputType],
              required: false,
-             description: 'A list of asset links to associate to the release.'
+             description: 'List of asset links to associate to the release.'
   end
 end

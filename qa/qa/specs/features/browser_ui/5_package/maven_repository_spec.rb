@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :reliable, :object_storage do
     describe 'Maven Repository' do

@@ -38,6 +38,8 @@ Are there any other stages or teams involved that need to be kept in the loop?
 <!-- If applicable, any groups/projects that are happy to have this feature turned on early. Some organizations may wish to test big changes they are interested in with a small subset of users ahead of time for example. -->
 
 - `gitlab-org/gitlab` project
+- `gitlab-org/gitlab-foss` project
+- `gitlab-com/www-gitlab-com` project
 - `gitlab-org`/`gitlab-com` groups
 - ...
 
@@ -79,19 +81,24 @@ Are there any other stages or teams involved that need to be kept in the loop?
 - [ ] Ensure that documentation has been updated ([More info](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#features-that-became-enabled-by-default)).
 - [ ] Announce on [the feature issue](ISSUE LINK) an estimated time this will be enabled on GitLab.com.
 - [ ] If the feature might impact the user experience, notify `#support_gitlab-com` and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
-- [ ] If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), enable it on GitLab.com for [testing groups/projects](#testing-groupsprojectsusers).
-    - [ ] `/chatops run feature set --<actor-type>=<actor> <feature-flag-name> true`
-- [ ] Verify that the feature works as expected. Posting the QA result in this issue is preferable.
 
 ### Global rollout on production
+
+All `/chatops` commands that target production should be done in the `#production` slack channel for visibility.
+
+- [ ] Confirm the feature flag is enabled on `staging` without incident
+- [ ] Roll out the feature to targeted testing projects/groups first
+    - [ ] `/chatops run feature set --project=gitlab-org/gitlab <feature-flag-name> true`
+    - [ ] `/chatops run feature set --project=gitlab-org/gitlab-foss <feature-flag-name> true`
+    - [ ] `/chatops run feature set --project=gitlab-com/www-gitlab-com <feature-flag-name> true`
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
   - If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage>`
-  - Enable the feature globally on production environment.
-    - [ ] `/chatops run feature set <feature-flag-name> true`
+- [ ] Verify the change has the desired outcome with the limited rollout before enabling the feature globally on production.
+- [ ] Enable the feature globally on production environment. `/chatops run feature set <feature-flag-name> true`
 - [ ] Announce on [the feature issue](ISSUE LINK) that the feature has been globally enabled.
 - [ ] Wait for [at least one day for the verification term](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release).
 

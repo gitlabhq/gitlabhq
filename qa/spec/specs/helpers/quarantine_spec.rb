@@ -3,7 +3,7 @@
 require 'rspec/core/sandbox'
 
 RSpec.describe QA::Specs::Helpers::Quarantine do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
   include QA::Specs::Helpers::RSpec
 
   around do |ex|

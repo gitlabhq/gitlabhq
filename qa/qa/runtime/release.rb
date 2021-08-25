@@ -13,10 +13,6 @@ module QA
     # CE to EE.
     #
     class Release
-      def initialize
-        require "qa/#{version.downcase}/strategy"
-      end
-
       def version
         @version ||= ::File.directory?("#{__dir__}/../ee") ? :EE : :CE
       end

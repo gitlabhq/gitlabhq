@@ -4,7 +4,7 @@ module QA
   module Runtime
     class ApplicationSettings
       class << self
-        include Support::Api
+        include Support::API
 
         APPLICATION_SETTINGS_PATH = '/application/settings'
 
@@ -18,7 +18,7 @@ module QA
 
           QA::Runtime::Logger.info("Setting application settings: #{application_settings}")
           r = put(Runtime::API::Request.new(api_client, APPLICATION_SETTINGS_PATH).url, **application_settings)
-          raise "Couldn't set application settings #{application_settings.inspect}" unless r.code == QA::Support::Api::HTTP_STATUS_OK
+          raise "Couldn't set application settings #{application_settings.inspect}" unless r.code == QA::Support::API::HTTP_STATUS_OK
         end
 
         def get_application_settings

@@ -4,7 +4,7 @@ require 'airborne'
 
 module QA
   RSpec.describe 'Plan' do
-    include Support::Api
+    include Support::API
 
     describe 'Issue' do
       let(:issue) do

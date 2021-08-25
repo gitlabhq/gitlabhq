@@ -4,7 +4,7 @@ require 'socket'
 module QA
   module Runtime
     module IPAddress
-      include Support::Api
+      include Support::API
       HostUnreachableError = Class.new(StandardError)
 
       LOOPBACK_ADDRESS = '127.0.0.1'
@@ -15,7 +15,7 @@ module QA
         # we use the public facing IP address
         ip_address = if Env.running_in_ci? && !URI.parse(Scenario.gitlab_address).host.include?('test')
                        response = get(PUBLIC_IP_ADDRESS_API)
-                       raise HostUnreachableError, "#{PUBLIC_IP_ADDRESS_API} is unreachable" unless response.code == Support::Api::HTTP_STATUS_OK
+                       raise HostUnreachableError, "#{PUBLIC_IP_ADDRESS_API} is unreachable" unless response.code == Support::API::HTTP_STATUS_OK
 
                        response.body
                      elsif page.current_host.include?('localhost')

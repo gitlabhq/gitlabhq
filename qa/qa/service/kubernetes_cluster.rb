@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'securerandom'
 require 'mkmf'
-require 'pathname'
 
 module QA
   module Service

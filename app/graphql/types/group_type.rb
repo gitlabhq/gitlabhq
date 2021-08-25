@@ -33,12 +33,12 @@ module Types
           type: GraphQL::Types::String,
           null: true,
           method: :project_creation_level_str,
-          description: 'The permission level required to create projects in the group.'
+          description: 'Permission level required to create projects in the group.'
     field :subgroup_creation_level,
           type: GraphQL::Types::String,
           null: true,
           method: :subgroup_creation_level_str,
-          description: 'The permission level required to create subgroups within the group.'
+          description: 'Permission level required to create subgroups within the group.'
 
     field :require_two_factor_authentication,
           type: GraphQL::Types::Boolean,
@@ -101,7 +101,7 @@ module Types
     field :label,
           Types::LabelType,
           null: true,
-          description: 'A label available on this group.' do
+          description: 'Label available on this group.' do
             argument :title,
                      type: GraphQL::Types::String,
                      required: true,

@@ -15,6 +15,6 @@ module Types
     field :humanized_text,
           GraphQL::Types::String,
           null: false,
-          description: 'The human-readable text of the alert condition.'
+          description: 'Human-readable text of the alert condition.'
   end
 end

@@ -40,7 +40,7 @@ module Types
     field :package_settings,
           Types::Namespace::PackageSettingsType,
           null: true,
-          description: 'The package settings for the namespace.'
+          description: 'Package settings for the namespace.'
 
     field :shared_runners_setting,
           Types::Namespace::SharedRunnersSettingEnum,

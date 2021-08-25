@@ -74,7 +74,7 @@ Returns [`ContainerRepositoryDetails`](#containerrepositorydetails).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querycontainerrepositoryid"></a>`id` | [`ContainerRepositoryID!`](#containerrepositoryid) | The global ID of the container repository. |
+| <a id="querycontainerrepositoryid"></a>`id` | [`ContainerRepositoryID!`](#containerrepositoryid) | Global ID of the container repository. |
 
 ### `Query.currentLicense`
 
@@ -185,7 +185,7 @@ Returns [`Issue`](#issue).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryissueid"></a>`id` | [`IssueID!`](#issueid) | The global ID of the issue. |
+| <a id="queryissueid"></a>`id` | [`IssueID!`](#issueid) | Global ID of the issue. |
 
 ### `Query.iteration`
 
@@ -219,7 +219,7 @@ Returns [`MergeRequest`](#mergerequest).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querymergerequestid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | The global ID of the merge request. |
+| <a id="querymergerequestid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
 
 ### `Query.metadata`
 
@@ -1186,7 +1186,7 @@ Input type: `CreateDiffNoteInput`
 | <a id="mutationcreatediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
 | <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
-| <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | The position of this note on a diff. |
+| <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | Position of this note on a diff. |
 
 #### Fields
 
@@ -1236,7 +1236,7 @@ Input type: `CreateImageDiffNoteInput`
 | <a id="mutationcreateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
 | <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
-| <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | The position of this note on a diff. |
+| <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | Position of this note on a diff. |
 
 #### Fields
 
@@ -3601,7 +3601,7 @@ Input type: `ReleaseAssetLinkCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseassetlinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkcreatedirectassetpath"></a>`directAssetPath` | [`String`](#string) | Relative path for a direct asset link. |
-| <a id="mutationreleaseassetlinkcreatelinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | The type of the asset link. |
+| <a id="mutationreleaseassetlinkcreatelinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | Type of the asset link. |
 | <a id="mutationreleaseassetlinkcreatename"></a>`name` | [`String!`](#string) | Name of the asset link. |
 | <a id="mutationreleaseassetlinkcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the asset link is associated with. |
 | <a id="mutationreleaseassetlinkcreatetagname"></a>`tagName` | [`String!`](#string) | Name of the associated release's tag. |
@@ -3757,7 +3757,7 @@ Input type: `RepositionImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrepositionimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrepositionimagediffnoteid"></a>`id` | [`DiffNoteID!`](#diffnoteid) | Global ID of the DiffNote to update. |
-| <a id="mutationrepositionimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput!`](#updatediffimagepositioninput) | The position of this note on a diff. |
+| <a id="mutationrepositionimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput!`](#updatediffimagepositioninput) | Position of this note on a diff. |
 
 #### Fields
 
@@ -4251,7 +4251,7 @@ Input type: `UpdateImageDiffNoteInput`
 | <a id="mutationupdateimagediffnotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateimagediffnoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
-| <a id="mutationupdateimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput`](#updatediffimagepositioninput) | The position of this note on a diff. |
+| <a id="mutationupdateimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput`](#updatediffimagepositioninput) | Position of this note on a diff. |
 
 #### Fields
 
@@ -7752,7 +7752,7 @@ Represents an epic on an issue board.
 | <a id="boardepicduedatefixed"></a>`dueDateFixed` | [`Time`](#time) | Fixed due date of the epic. |
 | <a id="boardepicduedatefrommilestones"></a>`dueDateFromMilestones` | [`Time`](#time) | Inherited due date of the epic from milestones. |
 | <a id="boardepicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates if the due date has been manually set. |
-| <a id="boardepicevents"></a>`events` | [`EventConnection`](#eventconnection) | A list of events associated with the object. (see [Connections](#connections)) |
+| <a id="boardepicevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
 | <a id="boardepicgroup"></a>`group` | [`Group!`](#group) | Group to which the epic belongs. |
 | <a id="boardepichaschildren"></a>`hasChildren` | [`Boolean!`](#boolean) | Indicates if the epic has children. |
 | <a id="boardepichasissues"></a>`hasIssues` | [`Boolean!`](#boolean) | Indicates if the epic has direct issues. |
@@ -8580,18 +8580,18 @@ A single design.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | The diff refs for this design. |
+| <a id="designdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="designevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
-| <a id="designfilename"></a>`filename` | [`String!`](#string) | The filename of the design. |
-| <a id="designfullpath"></a>`fullPath` | [`String!`](#string) | The full path to the design file. |
-| <a id="designid"></a>`id` | [`ID!`](#id) | The ID of this design. |
-| <a id="designimage"></a>`image` | [`String!`](#string) | The URL of the full-sized image. |
+| <a id="designfilename"></a>`filename` | [`String!`](#string) | Filename of the design. |
+| <a id="designfullpath"></a>`fullPath` | [`String!`](#string) | Full path to the design file. |
+| <a id="designid"></a>`id` | [`ID!`](#id) | ID of this design. |
+| <a id="designimage"></a>`image` | [`String!`](#string) | URL of the full-sized image. |
 | <a id="designimagev432x230"></a>`imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
-| <a id="designissue"></a>`issue` | [`Issue!`](#issue) | The issue the design belongs to. |
+| <a id="designissue"></a>`issue` | [`Issue!`](#issue) | Issue the design belongs to. |
 | <a id="designnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
-| <a id="designnotescount"></a>`notesCount` | [`Int!`](#int) | The total count of user-created notes for this design. |
-| <a id="designproject"></a>`project` | [`Project!`](#project) | The project the design belongs to. |
+| <a id="designnotescount"></a>`notesCount` | [`Int!`](#int) | Total count of user-created notes for this design. |
+| <a id="designproject"></a>`project` | [`Project!`](#project) | Project the design belongs to. |
 
 #### Fields with arguments
 
@@ -8636,18 +8636,18 @@ A design pinned to a specific version. The image field reflects the design as of
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designatversiondesign"></a>`design` | [`Design!`](#design) | The underlying design. |
-| <a id="designatversiondiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | The diff refs for this design. |
+| <a id="designatversiondesign"></a>`design` | [`Design!`](#design) | Underlying design. |
+| <a id="designatversiondiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designatversionevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
-| <a id="designatversionfilename"></a>`filename` | [`String!`](#string) | The filename of the design. |
-| <a id="designatversionfullpath"></a>`fullPath` | [`String!`](#string) | The full path to the design file. |
-| <a id="designatversionid"></a>`id` | [`ID!`](#id) | The ID of this design. |
-| <a id="designatversionimage"></a>`image` | [`String!`](#string) | The URL of the full-sized image. |
+| <a id="designatversionfilename"></a>`filename` | [`String!`](#string) | Filename of the design. |
+| <a id="designatversionfullpath"></a>`fullPath` | [`String!`](#string) | Full path to the design file. |
+| <a id="designatversionid"></a>`id` | [`ID!`](#id) | ID of this design. |
+| <a id="designatversionimage"></a>`image` | [`String!`](#string) | URL of the full-sized image. |
 | <a id="designatversionimagev432x230"></a>`imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
-| <a id="designatversionissue"></a>`issue` | [`Issue!`](#issue) | The issue the design belongs to. |
-| <a id="designatversionnotescount"></a>`notesCount` | [`Int!`](#int) | The total count of user-created notes for this design. |
-| <a id="designatversionproject"></a>`project` | [`Project!`](#project) | The project the design belongs to. |
-| <a id="designatversionversion"></a>`version` | [`DesignVersion!`](#designversion) | The version this design-at-versions is pinned to. |
+| <a id="designatversionissue"></a>`issue` | [`Issue!`](#issue) | Issue the design belongs to. |
+| <a id="designatversionnotescount"></a>`notesCount` | [`Int!`](#int) | Total count of user-created notes for this design. |
+| <a id="designatversionproject"></a>`project` | [`Project!`](#project) | Project the design belongs to. |
+| <a id="designatversionversion"></a>`version` | [`DesignVersion!`](#designversion) | Version this design-at-versions is pinned to. |
 
 ### `DesignCollection`
 
@@ -8995,9 +8995,9 @@ Describes where code is deployed for a project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="environmentid"></a>`id` | [`ID!`](#id) | ID of the environment. |
-| <a id="environmentlatestopenedmostseverealert"></a>`latestOpenedMostSevereAlert` | [`AlertManagementAlert`](#alertmanagementalert) | The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned. |
+| <a id="environmentlatestopenedmostseverealert"></a>`latestOpenedMostSevereAlert` | [`AlertManagementAlert`](#alertmanagementalert) | Most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned. |
 | <a id="environmentname"></a>`name` | [`String!`](#string) | Human-readable name of the environment. |
-| <a id="environmentpath"></a>`path` | [`String!`](#string) | The path to the environment. |
+| <a id="environmentpath"></a>`path` | [`String!`](#string) | Path to the environment. |
 | <a id="environmentstate"></a>`state` | [`String!`](#string) | State of the environment, for example: available/stopped. |
 
 #### Fields with arguments
@@ -9037,7 +9037,7 @@ Represents an epic.
 | <a id="epicduedatefixed"></a>`dueDateFixed` | [`Time`](#time) | Fixed due date of the epic. |
 | <a id="epicduedatefrommilestones"></a>`dueDateFromMilestones` | [`Time`](#time) | Inherited due date of the epic from milestones. |
 | <a id="epicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates if the due date has been manually set. |
-| <a id="epicevents"></a>`events` | [`EventConnection`](#eventconnection) | A list of events associated with the object. (see [Connections](#connections)) |
+| <a id="epicevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
 | <a id="epicgroup"></a>`group` | [`Group!`](#group) | Group to which the epic belongs. |
 | <a id="epichaschildren"></a>`hasChildren` | [`Boolean!`](#boolean) | Indicates if the epic has children. |
 | <a id="epichasissues"></a>`hasIssues` | [`Boolean!`](#boolean) | Indicates if the epic has direct issues. |
@@ -9616,10 +9616,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
-| <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | The package settings for the namespace. |
+| <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
-| <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | The permission level required to create projects in the group. |
+| <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="grouprepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int!`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. |
 | <a id="grouprequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
 | <a id="grouprequiretwofactorauthentication"></a>`requireTwoFactorAuthentication` | [`Boolean`](#boolean) | Indicates if all users in this group are required to set up two-factor authentication. |
@@ -9628,7 +9628,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
-| <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | The permission level required to create subgroups within the group. |
+| <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
@@ -9913,7 +9913,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.label`
 
-A label available on this group.
+Label available on this group.
 
 Returns [`Label`](#label).
 
@@ -10587,7 +10587,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="kasenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the Kubernetes Agent Server is enabled. |
-| <a id="kasexternalurl"></a>`externalUrl` | [`String`](#string) | The URL used by the Agents to communicate with KAS. |
+| <a id="kasexternalurl"></a>`externalUrl` | [`String`](#string) | URL used by the Agents to communicate with KAS. |
 | <a id="kasversion"></a>`version` | [`String`](#string) | KAS version. |
 
 ### `Label`
@@ -10695,7 +10695,7 @@ Maven metadata.
 | <a id="mergerequestforceremovesourcebranch"></a>`forceRemoveSourceBranch` | [`Boolean`](#boolean) | Indicates if the project settings will lead to source branch deletion after merge. |
 | <a id="mergerequesthasci"></a>`hasCi` | [`Boolean!`](#boolean) | Indicates if the merge request has CI. |
 | <a id="mergerequesthassecurityreports"></a>`hasSecurityReports` | [`Boolean!`](#boolean) | Indicates if the source branch has any security reports. |
-| <a id="mergerequestheadpipeline"></a>`headPipeline` | [`Pipeline`](#pipeline) | The pipeline running on the branch HEAD of the merge request. |
+| <a id="mergerequestheadpipeline"></a>`headPipeline` | [`Pipeline`](#pipeline) | Pipeline running on the branch HEAD of the merge request. |
 | <a id="mergerequesthumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the merge request. |
 | <a id="mergerequesthumantotaltimespent"></a>`humanTotalTimeSpent` | [`String`](#string) | Human-readable total time reported as spent on the merge request. |
 | <a id="mergerequestid"></a>`id` | [`ID!`](#id) | ID of the merge request. |
@@ -10713,7 +10713,7 @@ Maven metadata.
 | <a id="mergerequestmergeable"></a>`mergeable` | [`Boolean!`](#boolean) | Indicates if the merge request is mergeable. |
 | <a id="mergerequestmergeablediscussionsstate"></a>`mergeableDiscussionsState` | [`Boolean`](#boolean) | Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged. |
 | <a id="mergerequestmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the merge request was merged, null if not merged. |
-| <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | The milestone of the merge request. |
+| <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the merge request. |
 | <a id="mergerequestnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
 | <a id="mergerequestproject"></a>`project` | [`Project!`](#project) | Alias for target_project. |
@@ -10780,7 +10780,7 @@ Returns [`[DiffStats!]`](#diffstats).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestdiffstatspath"></a>`path` | [`String`](#string) | A specific file-path. |
+| <a id="mergerequestdiffstatspath"></a>`path` | [`String`](#string) | Specific file path. |
 
 ##### `MergeRequest.pipelines`
 
@@ -11397,7 +11397,7 @@ Contains statistics about a milestone.
 | <a id="namespaceistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
-| <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | The package settings for the namespace. |
+| <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="namespacepath"></a>`path` | [`String!`](#string) | Path of the namespace. |
 | <a id="namespacerepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int!`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. |
 | <a id="namespacerequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
@@ -11476,9 +11476,9 @@ Represents the network policy.
 | <a id="notebodyhtml"></a>`bodyHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `note`. |
 | <a id="noteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if this note is confidential. |
 | <a id="notecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
-| <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | The discussion this note is a part of. |
+| <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion this note is a part of. |
 | <a id="noteid"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
-| <a id="noteposition"></a>`position` | [`DiffPosition`](#diffposition) | The position of this note on a diff. |
+| <a id="noteposition"></a>`position` | [`DiffPosition`](#diffposition) | Position of this note on a diff. |
 | <a id="noteproject"></a>`project` | [`Project`](#project) | Project associated with the note. |
 | <a id="noteresolvable"></a>`resolvable` | [`Boolean!`](#boolean) | Indicates if the object can be resolved. |
 | <a id="noteresolved"></a>`resolved` | [`Boolean!`](#boolean) | Indicates if the object is resolved. |
@@ -11580,10 +11580,10 @@ Represents a composer JSON file.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="packagecomposerjsontypelicense"></a>`license` | [`String`](#string) | The license set in the Composer JSON file. |
-| <a id="packagecomposerjsontypename"></a>`name` | [`String`](#string) | The name set in the Composer JSON file. |
-| <a id="packagecomposerjsontypetype"></a>`type` | [`String`](#string) | The type set in the Composer JSON file. |
-| <a id="packagecomposerjsontypeversion"></a>`version` | [`String`](#string) | The version set in the Composer JSON file. |
+| <a id="packagecomposerjsontypelicense"></a>`license` | [`String`](#string) | License set in the Composer JSON file. |
+| <a id="packagecomposerjsontypename"></a>`name` | [`String`](#string) | Name set in the Composer JSON file. |
+| <a id="packagecomposerjsontypetype"></a>`type` | [`String`](#string) | Type set in the Composer JSON file. |
+| <a id="packagecomposerjsontypeversion"></a>`version` | [`String`](#string) | Version set in the Composer JSON file. |
 
 ### `PackageDependency`
 
@@ -11631,7 +11631,7 @@ Represents a package details in the Package Registry. Note that this type is in 
 | <a id="packagedetailstypetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagedetailstypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 | <a id="packagedetailstypeversion"></a>`version` | [`String`](#string) | Version string. |
-| <a id="packagedetailstypeversions"></a>`versions` | [`PackageConnection`](#packageconnection) | The other versions of the package. (see [Connections](#connections)) |
+| <a id="packagedetailstypeversions"></a>`versions` | [`PackageConnection`](#packageconnection) | Other versions of the package. (see [Connections](#connections)) |
 
 ### `PackageFile`
 
@@ -11641,7 +11641,7 @@ Represents a package file.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="packagefilecreatedat"></a>`createdAt` | [`Time!`](#time) | The created date. |
+| <a id="packagefilecreatedat"></a>`createdAt` | [`Time!`](#time) | Created date. |
 | <a id="packagefiledownloadpath"></a>`downloadPath` | [`String!`](#string) | Download path of the package file. |
 | <a id="packagefilefilemd5"></a>`fileMd5` | [`String`](#string) | Md5 of the package file. |
 | <a id="packagefilefilemetadata"></a>`fileMetadata` | [`PackageFileMetadata`](#packagefilemetadata) | File metadata. |
@@ -11650,7 +11650,7 @@ Represents a package file.
 | <a id="packagefilefilesha256"></a>`fileSha256` | [`String`](#string) | Sha256 of the package file. |
 | <a id="packagefileid"></a>`id` | [`PackagesPackageFileID!`](#packagespackagefileid) | ID of the file. |
 | <a id="packagefilesize"></a>`size` | [`String!`](#string) | Size of the package file. |
-| <a id="packagefileupdatedat"></a>`updatedAt` | [`Time!`](#time) | The updated date. |
+| <a id="packagefileupdatedat"></a>`updatedAt` | [`Time!`](#time) | Updated date. |
 
 ### `PackageFileRegistry`
 
@@ -11690,10 +11690,10 @@ Represents a package tag.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="packagetagcreatedat"></a>`createdAt` | [`Time!`](#time) | The created date. |
-| <a id="packagetagid"></a>`id` | [`ID!`](#id) | The ID of the tag. |
-| <a id="packagetagname"></a>`name` | [`String!`](#string) | The name of the tag. |
-| <a id="packagetagupdatedat"></a>`updatedAt` | [`Time!`](#time) | The updated date. |
+| <a id="packagetagcreatedat"></a>`createdAt` | [`Time!`](#time) | Created date. |
+| <a id="packagetagid"></a>`id` | [`ID!`](#id) | ID of the tag. |
+| <a id="packagetagname"></a>`name` | [`String!`](#string) | Name of the tag. |
+| <a id="packagetagupdatedat"></a>`updatedAt` | [`Time!`](#time) | Updated date. |
 
 ### `PageInfo`
 
@@ -11910,7 +11910,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectclusteragents"></a>`clusterAgents` | [`ClusterAgentConnection`](#clusteragentconnection) | Cluster agents associated with the project. (see [Connections](#connections)) |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
-| <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | The container expiration policy of the project. |
+| <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy of the project. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
@@ -11966,7 +11966,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectsshurltorepo"></a>`sshUrlToRepo` | [`String`](#string) | URL to connect to the project via SSH. |
 | <a id="projectstarcount"></a>`starCount` | [`Int!`](#int) | Number of times the project has been starred. |
 | <a id="projectstatistics"></a>`statistics` | [`ProjectStatistics`](#projectstatistics) | Statistics of the project. |
-| <a id="projectsuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | The commit message used to apply merge request suggestions. |
+| <a id="projectsuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
 | <a id="projecttaglist"></a>`tagList` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.12. Use `topics`. |
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
@@ -12408,7 +12408,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.label`
 
-A label available on this project.
+Label available on this project.
 
 Returns [`Label`](#label).
 
@@ -12896,7 +12896,7 @@ The alert condition for Prometheus.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="prometheusalerthumanizedtext"></a>`humanizedText` | [`String!`](#string) | The human-readable text of the alert condition. |
+| <a id="prometheusalerthumanizedtext"></a>`humanizedText` | [`String!`](#string) | Human-readable text of the alert condition. |
 | <a id="prometheusalertid"></a>`id` | [`ID!`](#id) | ID of the alert condition. |
 
 ### `PushRules`
@@ -12950,7 +12950,7 @@ Represents a release.
 | ---- | ---- | ----------- |
 | <a id="releaseassets"></a>`assets` | [`ReleaseAssets`](#releaseassets) | Assets of the release. |
 | <a id="releaseauthor"></a>`author` | [`UserCore`](#usercore) | User that created the release. |
-| <a id="releasecommit"></a>`commit` | [`Commit`](#commit) | The commit associated with the release. |
+| <a id="releasecommit"></a>`commit` | [`Commit`](#commit) | Commit associated with the release. |
 | <a id="releasecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the release was created. |
 | <a id="releasedescription"></a>`description` | [`String`](#string) | Description (also known as "release notes") of the release. |
 | <a id="releasedescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
@@ -15100,7 +15100,7 @@ Type of file the position refers to.
 | Value | Description |
 | ----- | ----------- |
 | <a id="diffpositiontypeimage"></a>`image` | An image. |
-| <a id="diffpositiontypetext"></a>`text` | A text file. |
+| <a id="diffpositiontypetext"></a>`text` | Text file. |
 
 ### `DoraMetricBucketingInterval`
 
@@ -15522,7 +15522,7 @@ Milestone ID wildcard values.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="milestonewildcardidany"></a>`ANY` | A milestone is assigned. |
+| <a id="milestonewildcardidany"></a>`ANY` | Milestone is assigned. |
 | <a id="milestonewildcardidnone"></a>`NONE` | No milestone is assigned. |
 | <a id="milestonewildcardidstarted"></a>`STARTED` | An open, started milestone (start date <= today). |
 | <a id="milestonewildcardidupcoming"></a>`UPCOMING` | An open milestone due in the future (due date >= today). |
@@ -16787,16 +16787,16 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designfieldsdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | The diff refs for this design. |
+| <a id="designfieldsdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designfieldsevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
-| <a id="designfieldsfilename"></a>`filename` | [`String!`](#string) | The filename of the design. |
-| <a id="designfieldsfullpath"></a>`fullPath` | [`String!`](#string) | The full path to the design file. |
-| <a id="designfieldsid"></a>`id` | [`ID!`](#id) | The ID of this design. |
-| <a id="designfieldsimage"></a>`image` | [`String!`](#string) | The URL of the full-sized image. |
+| <a id="designfieldsfilename"></a>`filename` | [`String!`](#string) | Filename of the design. |
+| <a id="designfieldsfullpath"></a>`fullPath` | [`String!`](#string) | Full path to the design file. |
+| <a id="designfieldsid"></a>`id` | [`ID!`](#id) | ID of this design. |
+| <a id="designfieldsimage"></a>`image` | [`String!`](#string) | URL of the full-sized image. |
 | <a id="designfieldsimagev432x230"></a>`imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
-| <a id="designfieldsissue"></a>`issue` | [`Issue!`](#issue) | The issue the design belongs to. |
-| <a id="designfieldsnotescount"></a>`notesCount` | [`Int!`](#int) | The total count of user-created notes for this design. |
-| <a id="designfieldsproject"></a>`project` | [`Project!`](#project) | The project the design belongs to. |
+| <a id="designfieldsissue"></a>`issue` | [`Issue!`](#issue) | Issue the design belongs to. |
+| <a id="designfieldsnotescount"></a>`notesCount` | [`Int!`](#int) | Total count of user-created notes for this design. |
+| <a id="designfieldsproject"></a>`project` | [`Project!`](#project) | Project the design belongs to. |
 
 #### `Entry`
 
@@ -16828,7 +16828,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="eventableevents"></a>`events` | [`EventConnection`](#eventconnection) | A list of events associated with the object. (see [Connections](#connections)) |
+| <a id="eventableevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
 
 #### `MemberInterface`
 
@@ -17251,8 +17251,8 @@ Input type for DastSiteProfile authentication.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="diffpathsinputnewpath"></a>`newPath` | [`String`](#string) | The path of the file on the head sha. |
-| <a id="diffpathsinputoldpath"></a>`oldPath` | [`String`](#string) | The path of the file on the start sha. |
+| <a id="diffpathsinputnewpath"></a>`newPath` | [`String`](#string) | Path of the file on the HEAD SHA. |
+| <a id="diffpathsinputoldpath"></a>`oldPath` | [`String`](#string) | Path of the file on the start SHA. |
 
 ### `DiffPositionInput`
 
@@ -17434,7 +17434,7 @@ Fields that are available when modifying a release asset link.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="releaseassetlinkinputdirectassetpath"></a>`directAssetPath` | [`String`](#string) | Relative path for a direct asset link. |
-| <a id="releaseassetlinkinputlinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | The type of the asset link. |
+| <a id="releaseassetlinkinputlinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | Type of the asset link. |
 | <a id="releaseassetlinkinputname"></a>`name` | [`String!`](#string) | Name of the asset link. |
 | <a id="releaseassetlinkinputurl"></a>`url` | [`String!`](#string) | URL of the asset link. |
 
@@ -17446,7 +17446,7 @@ Fields that are available when modifying release assets.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="releaseassetsinputlinks"></a>`links` | [`[ReleaseAssetLinkInput!]`](#releaseassetlinkinput) | A list of asset links to associate to the release. |
+| <a id="releaseassetsinputlinks"></a>`links` | [`[ReleaseAssetLinkInput!]`](#releaseassetlinkinput) | List of asset links to associate to the release. |
 
 ### `SastCiConfigurationAnalyzersEntityInput`
 
@@ -17505,8 +17505,8 @@ A time-frame defined as a closed inclusive range of two dates.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="timeframeend"></a>`end` | [`Date!`](#date) | The end of the range. |
-| <a id="timeframestart"></a>`start` | [`Date!`](#date) | The start of the range. |
+| <a id="timeframeend"></a>`end` | [`Date!`](#date) | End of the range. |
+| <a id="timeframestart"></a>`start` | [`Date!`](#date) | Start of the range. |
 
 ### `UpdateDiffImagePositionInput`
 

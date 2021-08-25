@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   RSpec.describe 'Create' do
     describe 'Default branch name instance setting', :requires_admin, :skip_live_env do

@@ -13,12 +13,12 @@ module MergeRequests
   class MergeToRefService < MergeRequests::MergeBaseService
     extend ::Gitlab::Utils::Override
 
-    def execute(merge_request)
+    def execute(merge_request, cache_merge_to_ref_calls = false)
       @merge_request = merge_request
 
       error_check!
 
-      commit_id = commit
+      commit_id = commit(cache_merge_to_ref_calls)
 
       raise_error('Conflicts detected during merge') unless commit_id
 
@@ -65,8 +65,9 @@ module MergeRequests
       params[:allow_conflicts] || false
     end
 
-    def commit
-      if Feature.enabled?(:cache_merge_to_ref_calls, project, default_enabled: false)
+    def commit(cache_merge_to_ref_calls = false)
+      if cache_merge_to_ref_calls &&
+        Feature.enabled?(:cache_merge_to_ref_calls, project, default_enabled: false)
         Rails.cache.fetch(cache_key, expires_in: 1.day) do
           extracted_merge_to_ref
         end

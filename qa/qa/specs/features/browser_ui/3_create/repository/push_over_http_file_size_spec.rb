@@ -9,7 +9,7 @@ module QA
       # tests are run in parallel).
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/218620#note_361634705
 
-      include Support::Api
+      include Support::API
 
       before(:context) do
         @project = Resource::Project.fabricate_via_api! do |p|

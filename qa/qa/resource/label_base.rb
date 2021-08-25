@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   module Resource
     # Base label class for GroupLabel and ProjectLabel

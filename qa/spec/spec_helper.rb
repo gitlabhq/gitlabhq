@@ -1,18 +1,16 @@
 # frozen_string_literal: true
 
 require_relative '../qa'
-require 'rspec/retry'
-require 'rspec-parameterized'
+
+require 'securerandom'
+require 'pathname'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 
 require_relative 'qa_deprecation_toolkit_env'
 QaDeprecationToolkitEnv.configure!
 
-if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
-  require 'knapsack'
-  Knapsack::Adapters::RSpecAdapter.bind
-end
+Knapsack::Adapters::RSpecAdapter.bind if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
 
 QA::Runtime::Browser.configure!
 QA::Runtime::AllureReport.configure!
@@ -24,7 +22,8 @@ Dir[::File.join(__dir__, "support/shared_contexts/*.rb")].sort.each { |f| requir
 Dir[::File.join(__dir__, "support/shared_examples/*.rb")].sort.each { |f| require f }
 
 RSpec.configure do |config|
-  config.include ::Matchers
+  config.include QA::Support::Matchers::EventuallyMatcher
+  config.include QA::Support::Matchers::HaveMatcher
 
   config.add_formatter QA::Specs::Helpers::ContextFormatter
   config.add_formatter QA::Specs::Helpers::QuarantineFormatter

@@ -10,7 +10,7 @@ require_relative '../../qa'
 module QA
   module Tools
     class DeleteSubgroups
-      include Support::Api
+      include Support::API
 
       def initialize
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']

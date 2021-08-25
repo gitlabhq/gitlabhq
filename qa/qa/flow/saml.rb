@@ -67,7 +67,7 @@ module QA
       end
 
       def login_to_idp_if_required(username, password)
-        Vendor::SAMLIdp::Page::Login.perform { |login_page| login_page.login_if_required(username, password) }
+        Vendor::SamlIdp::Page::Login.perform { |login_page| login_page.login_if_required(username, password) }
       end
     end
   end

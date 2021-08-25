@@ -23,7 +23,7 @@ module Types
       field :metadata, Types::Packages::MetadataType, null: true,
         description: 'Package metadata.'
       field :versions, ::Types::Packages::PackageType.connection_type, null: true,
-        description: 'The other versions of the package.',
+        description: 'Other versions of the package.',
         deprecated: { reason: 'This field is now only returned in the PackageDetailsType', milestone: '13.11' }
       field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
 

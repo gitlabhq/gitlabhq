@@ -49,7 +49,7 @@ module QA
 
     def configure_code_coverage(coverage_tool_pattern)
       Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-      Page::Project::Settings::CICD.perform do |settings|
+      Page::Project::Settings::CiCd.perform do |settings|
         settings.expand_general_pipelines do |coverage|
           coverage.configure_coverage_regex(coverage_tool_pattern)
         end

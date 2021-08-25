@@ -30,23 +30,4 @@ RSpec.describe QA::Runtime::Release do
       end
     end
   end
-
-  context 'when release version does not have extension strategy' do
-    before do
-      allow_any_instance_of(described_class)
-        .to receive(:version).and_return('something')
-    end
-
-    describe '#strategy' do
-      it 'raises error' do
-        expect { subject.strategy }.to raise_error(LoadError)
-      end
-    end
-
-    describe 'delegated class methods' do
-      it 'raises error' do
-        expect { described_class.some_method(2, 3) }.to raise_error(LoadError)
-      end
-    end
-  end
 end

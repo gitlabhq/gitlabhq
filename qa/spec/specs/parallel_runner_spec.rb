@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Specs::ParallelRunner do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
 
   before do
     allow(QA::Runtime::Scenario).to receive(:attributes).and_return(parallel: true)

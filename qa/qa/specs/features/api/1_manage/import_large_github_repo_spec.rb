@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'octokit'
-
 # rubocop:disable Rails/Pluck
 module QA
   # Only executes in custom job/pipeline

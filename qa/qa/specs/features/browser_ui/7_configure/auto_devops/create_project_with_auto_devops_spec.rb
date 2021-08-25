@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-
 module QA
   RSpec.describe 'Configure' do
     let(:project) do
@@ -102,7 +100,7 @@ module QA
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-        Page::Project::Settings::CICD.perform(&:expand_auto_devops)
+        Page::Project::Settings::CiCd.perform(&:expand_auto_devops)
         Page::Project::Settings::AutoDevops.perform(&:enable_autodevops)
 
         # Create AutoDevOps repo

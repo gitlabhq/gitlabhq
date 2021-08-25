@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'securerandom'
 
 module QA
   RSpec.describe 'Create', :requires_admin, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/195179', type: :flaky } do

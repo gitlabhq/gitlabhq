@@ -319,6 +319,38 @@ To configure Vale in your editor, install one of the following as appropriate:
     cases, `vale` should work. To find the location, run `which vale` in a terminal.
 
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
+- Emacs [Flycheck extension](https://github.com/flycheck/flycheck).
+  This requires some configuration:
+
+  - `Flycheck` supports `markdownlint-cli` out of the box, but you must point it
+  to the `.markdownlint.yml` at the base of the project directory. A `.dir-locals.el`
+  file can accomplish this:
+
+  ```lisp
+  ;; Place this code in a file called `.dir-locals.el` at the root of the gitlab project.
+  ((markdown-mode . ((flycheck-markdown-markdownlint-cli-config . ".markdownlint.yml"))))
+
+  ```
+
+  - A minimal configuration for Flycheck to work with Vale could look like this:
+
+  ```lisp
+  (flycheck-define-checker vale
+    "A checker for prose"
+    :command ("vale" "--output" "line" "--no-wrap"
+              source)
+    :standard-input nil
+    :error-patterns
+      ((error line-start (file-name) ":" line ":" column ":" (id (one-or-more (not (any ":")))) ":" (message)   line-end))
+    :modes (markdown-mode org-mode text-mode)
+    :next-checkers ((t . markdown-markdownlint-cli))
+  )
+
+  (add-to-list 'flycheck-checkers 'vale)
+  ```
+
+  In this setup the `markdownlint` checker is set as a "next" checker from the defined `vale` checker.
+  Enabling this custom Vale checker provides error linting from both Vale and markdownlint.
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 

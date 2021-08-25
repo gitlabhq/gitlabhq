@@ -19,7 +19,7 @@ module Types
 
       argument :link_type, Types::ReleaseAssetLinkTypeEnum,
              required: false, default_value: 'other',
-             description: 'The type of the asset link.'
+             description: 'Type of the asset link.'
     end
   end
 end

@@ -8,7 +8,7 @@ module Types
       authorize :read_package
 
       field :versions, ::Types::Packages::PackageType.connection_type, null: true,
-        description: 'The other versions of the package.'
+        description: 'Other versions of the package.'
 
       field :package_files, Types::Packages::PackageFileType.connection_type, null: true, description: 'Package files.'
 

@@ -4,7 +4,7 @@ require 'airborne'
 
 module QA
   RSpec.describe 'Package', only: { subdomain: %i[staging pre] } do
-    include Support::Api
+    include Support::API
 
     describe 'Container Registry' do
       let(:api_client) { Runtime::API::Client.new(:gitlab) }

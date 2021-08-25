@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 require 'airborne'
-require 'securerandom'
 require 'digest'
 
 module QA
   RSpec.describe 'Create' do
     describe 'Compare archives of different user projects with the same name and check they\'re different' do
-      include Support::Api
+      include Support::API
       let(:project_name) { "project-archive-download-#{SecureRandom.hex(8)}" }
 
       let(:archive_types) { %w(tar.gz tar.bz2 tar zip) }

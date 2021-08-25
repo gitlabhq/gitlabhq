@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'faker'
-
 module QA
   RSpec.describe 'Verify', :runner do
     context 'When job is configured to only run on merge_request_events' do

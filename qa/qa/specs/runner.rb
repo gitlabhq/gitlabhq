@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'knapsack'
 require 'rspec/core'
 require 'rspec/expectations'
 

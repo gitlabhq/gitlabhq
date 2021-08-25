@@ -3,6 +3,7 @@
 *.mo
 *.edit.po
 *.rej
+.dir-locals.el
 .DS_Store
 .bundle
 .chef

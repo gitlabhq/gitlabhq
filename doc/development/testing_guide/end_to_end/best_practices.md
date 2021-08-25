@@ -8,6 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This is a tailored extension of the Best Practices [found in the testing guide](../best_practices.md).
 
+## Class and module naming
+
+The QA framework uses [Zeitwerk](https://github.com/fxn/zeitwerk) for class and module autoloading. The default Zeitwerk [inflector](https://github.com/fxn/zeitwerk#zeitwerkinflector) simply converts snake_cased file names to PascalCased module or class names. It is advised to stick to this pattern to avoid manual maintenance of inflections.
+
+In case custom inflection logic is needed, custom inflectors are added in the [qa.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa.rb) file in the `loader.inflector.inflect` method invocation.
+
 ## Link a test to its test-case issue
 
 Every test should have a corresponding issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/).
@@ -342,7 +348,7 @@ end
 
 When something requires waiting to be matched, use `eventually_` matchers with clear wait duration definition.
 
-`Eventually` matchers use the following naming pattern: `eventually_${rspec_matcher_name}`. They are defined in [eventually_matcher.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/spec/support/matchers/eventually_matcher.rb).
+`Eventually` matchers use the following naming pattern: `eventually_${rspec_matcher_name}`. They are defined in [eventually_matcher.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/support/matchers/eventually_matcher.rb).
 
 ```ruby
 expect { async_value }.to eventually_eq(value).within(max_duration: 120, max_attempts: 60, reload_page: page)

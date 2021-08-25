@@ -49,7 +49,7 @@ module Types
 
     field :commit, Types::CommitType, null: true,
           complexity: 10, calls_gitaly: true,
-          description: 'The commit associated with the release.'
+          description: 'Commit associated with the release.'
 
     def commit
       return if release.sha.nil?

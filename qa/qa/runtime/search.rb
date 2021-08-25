@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   module Runtime
     module Search
       extend self
-      extend Support::Api
+      extend Support::API
 
       RETRY_MAX_ITERATION = 10
       RETRY_SLEEP_INTERVAL = 12

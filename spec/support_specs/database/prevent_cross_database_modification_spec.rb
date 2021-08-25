@@ -99,6 +99,25 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
           end
         end
       end
+
+      context 'when executing a SELECT FOR UPDATE query' do
+        def run_queries
+          project.touch
+          pipeline.lock!
+        end
+
+        context 'outside transaction' do
+          it { expect { run_queries }.not_to raise_error }
+        end
+
+        context 'when data modification happens in a transaction' do
+          it 'raises error' do
+            Project.transaction do
+              expect { run_queries }.to raise_error /Cross-database data modification/
+            end
+          end
+        end
+      end
     end
 
     context 'when CI association is modified through project' do

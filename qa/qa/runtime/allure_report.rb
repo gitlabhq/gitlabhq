@@ -12,8 +12,6 @@ module QA
         def configure!
           return unless Env.generate_allure_report?
 
-          require 'allure-rspec'
-
           configure_allure
           configure_attachments
           configure_rspec

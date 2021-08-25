@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Git::Repository do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
 
   shared_context 'unresolvable git directory' do
     let(:repo_uri) { 'http://foo/bar.git' }

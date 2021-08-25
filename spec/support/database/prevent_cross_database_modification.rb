@@ -74,7 +74,9 @@ module Database
 
       return if cross_database_context[:transaction_depth_by_db].values.all?(&:zero?)
 
-      tables = PgQuery.parse(sql).dml_tables
+      parsed_query = PgQuery.parse(sql)
+      tables = sql.downcase.include?(' for update') ? parsed_query.tables : parsed_query.dml_tables
+
       return if tables.empty?
 
       cross_database_context[:modified_tables_by_db][database].merge(tables)

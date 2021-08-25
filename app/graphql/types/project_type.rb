@@ -118,7 +118,7 @@ module Types
     field :autoclose_referenced_issues, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically.'
     field :suggestion_commit_message, GraphQL::Types::String, null: true,
-          description: 'The commit message used to apply merge request suggestions.'
+          description: 'Commit message used to apply merge request suggestions.'
     field :squash_read_only, GraphQL::Types::Boolean, null: false, method: :squash_readonly?,
           description: 'Indicates if `squashReadOnly` is enabled.'
 
@@ -310,7 +310,7 @@ module Types
     field :container_expiration_policy,
           Types::ContainerExpirationPolicyType,
           null: true,
-          description: 'The container expiration policy of the project.'
+          description: 'Container expiration policy of the project.'
 
     field :container_repositories,
           Types::ContainerRepositoryType.connection_type,
@@ -324,7 +324,7 @@ module Types
     field :label,
           Types::LabelType,
           null: true,
-          description: 'A label available on this project.' do
+          description: 'Label available on this project.' do
             argument :title, GraphQL::Types::String,
               required: true,
               description: 'Title of the label.'

@@ -315,9 +315,9 @@ fieldset:disabled a.btn {
   -moz-appearance: none;
 }
 .gl-form-input:disabled,
-.gl-form-input:not(.form-control-plaintext):read-only,
+.gl-form-input:not(.form-control-plaintext):not([type="color"]):read-only,
 .gl-form-input.form-control:disabled,
-.gl-form-input.form-control:not(.form-control-plaintext):read-only {
+.gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
   background-color: #fafafa;
   color: #868686;
   box-shadow: inset 0 0 0 1px #dbdbdb;
