@@ -90,6 +90,7 @@ callstack
 callstacks
 Camo
 canonicalized
+captcha
 CentOS
 Certbot
 changeset

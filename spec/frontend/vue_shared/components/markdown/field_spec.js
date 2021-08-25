@@ -250,7 +250,7 @@ describe('Markdown field component', () => {
       createSubject([{ rich_text: 'hello world\\n' }]);
 
       expect(subject.find('[data-testid="markdownHeader"]').props('lineContent')).toBe(
-        'hello world/n',
+        'hello world%br',
       );
     });
   });

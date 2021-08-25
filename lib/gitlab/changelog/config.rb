@@ -89,7 +89,7 @@ module Gitlab
       end
 
       def contributor?(user)
-        @project.team.contributor?(user)
+        @project.team.contributor?(user&.id)
       end
 
       def category(name)

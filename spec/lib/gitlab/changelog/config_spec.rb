@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Changelog::Config do
+  include ProjectForksHelper
+
   let(:project) { build_stubbed(:project) }
 
   describe '.from_git' do
@@ -66,20 +68,33 @@ RSpec.describe Gitlab::Changelog::Config do
   end
 
   describe '#contributor?' do
-    it 'returns true if a user is a contributor' do
-      user = build_stubbed(:author)
+    let(:project) { create(:project, :public, :repository) }
 
-      allow(project.team).to receive(:contributor?).with(user).and_return(true)
+    context 'when user is a member of project' do
+      let(:user) { create(:user) }
 
-      expect(described_class.new(project).contributor?(user)).to eq(true)
+      before do
+        project.add_developer(user)
+      end
+
+      it { expect(described_class.new(project).contributor?(user)).to eq(false) }
     end
 
-    it "returns true if a user isn't a contributor" do
-      user = build_stubbed(:author)
+    context 'when user has at least one merge request merged into default_branch' do
+      let(:contributor) { create(:user) }
+      let(:user_without_access) { create(:user) }
+      let(:user_fork) { fork_project(project, contributor, repository: true) }
 
-      allow(project.team).to receive(:contributor?).with(user).and_return(false)
+      before do
+        create(:merge_request, :merged,
+               author: contributor,
+               target_project: project,
+               source_project: user_fork,
+               target_branch: project.default_branch.to_s)
+      end
 
-      expect(described_class.new(project).contributor?(user)).to eq(false)
+      it { expect(described_class.new(project).contributor?(contributor)).to eq(true) }
+      it { expect(described_class.new(project).contributor?(user_without_access)).to eq(false) }
     end
   end
 

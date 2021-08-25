@@ -16,11 +16,7 @@ import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
 function cleanUpLine(content) {
-  return unescape(
-    stripHtml(content)
-      .replace(/\\(n|t|r)/g, '/$1')
-      .replace(/\n/g, ''),
-  );
+  return unescape(stripHtml(content).replace(/\\n/g, '%br').replace(/\n/g, ''));
 }
 
 export default {

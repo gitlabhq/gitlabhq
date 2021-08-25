@@ -30,6 +30,13 @@ module Resolvers
              required: false,
              description: 'Type of the todo.'
 
+    before_connection_authorization do |nodes, current_user|
+      Preloaders::UserMaxAccessLevelInProjectsPreloader.new(
+        nodes.map(&:project).compact,
+        current_user
+      ).execute
+    end
+
     def resolve(**args)
       return Todo.none unless current_user.present? && target.present?
       return Todo.none if target.is_a?(User) && target != current_user
