@@ -34,7 +34,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
 | `value_type`        | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type.html).                                                     |
-| `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `data_available`, `implemented`, `not_used`, `deprecated`, `removed`, `broken`. |
+| `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `deprecated`, `removed`, `broken`. |
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
 | `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`. |
 | `data_category`     | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`.|
@@ -53,11 +53,8 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 
 Metric definitions can have one of the following statuses:
 
-- `data_available`: Metric data is available and used in a Sisense dashboard.
-- `implemented`: Metric is implemented but data is not yet available. This is a temporary
-  status for newly added metrics awaiting inclusion in a new release.
+- `active`: Metric is used and reports data.
 - `broken`: Metric reports broken data (for example, -1 fallback), or does not report data at all. A metric marked as `broken` must also have the `repair_issue_url` attribute.
-- `not_used`: Metric is not used in any dashboard.
 - `deprecated`: Metric is deprecated and possibly planned to be removed.
 - `removed`: Metric was removed, but it may appear in Service Ping payloads sent from instances running on older versions of GitLab.
 
@@ -177,7 +174,7 @@ product_section: growth
 product_stage: growth
 product_group: group::product intelligence
 value_type: string
-status: data_available
+status: active
 milestone: 9.1
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
 time_frame: none

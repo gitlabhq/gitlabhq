@@ -37,7 +37,7 @@ Example response:
   product_group: group::global search
   product_category: global_search
   value_type: number
-  status: data_available
+  status: active
   time_frame: 28d
   data_source: redis_hll
   distribution:

@@ -128,6 +128,36 @@ module Types
           description: 'Packages of the group.',
           resolver: Resolvers::GroupPackagesResolver
 
+    field :dependency_proxy_setting,
+          Types::DependencyProxy::GroupSettingType,
+          null: true,
+          description: 'Dependency Proxy settings for the group.'
+
+    field :dependency_proxy_manifests,
+          Types::DependencyProxy::ManifestType.connection_type,
+          null: true,
+          description: 'Dependency Proxy manifests.'
+
+    field :dependency_proxy_blobs,
+          Types::DependencyProxy::BlobType.connection_type,
+          null: true,
+          description: 'Dependency Proxy blobs.'
+
+    field :dependency_proxy_image_count,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Number of dependency proxy images cached in the group.'
+
+    field :dependency_proxy_blob_count,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Number of dependency proxy blobs cached in the group.'
+
+    field :dependency_proxy_total_size,
+          GraphQL::Types::String,
+          null: false,
+          description: 'Total size of the dependency proxy cached images.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder
@@ -170,6 +200,20 @@ module Types
 
     def container_repositories_count
       group.container_repositories.size
+    end
+
+    def dependency_proxy_image_count
+      group.dependency_proxy_manifests.count
+    end
+
+    def dependency_proxy_blob_count
+      group.dependency_proxy_blobs.count
+    end
+
+    def dependency_proxy_total_size
+      ActiveSupport::NumberHelper.number_to_human_size(
+        group.dependency_proxy_manifests.sum(:size) + group.dependency_proxy_blobs.sum(:size)
+      )
     end
 
     private

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Validate the CI YAML configuration
 
 Checks if CI/CD YAML configuration is valid. This endpoint validates basic CI/CD
-configuration syntax. It doesn't have any namespace specific context.
+configuration syntax. It doesn't have any namespace-specific context.
 
 Access to this endpoint does not require authentication when the instance
 [allows new sign ups](../user/admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups)

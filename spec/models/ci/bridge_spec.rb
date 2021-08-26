@@ -74,18 +74,18 @@ RSpec.describe Ci::Bridge do
         it "schedules downstream pipeline creation when the status is #{status}" do
           bridge.status = status
 
-          expect(bridge).to receive(:schedule_downstream_pipeline!)
-
           bridge.enqueue!
+
+          expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
         end
       end
 
       it "schedules downstream pipeline creation when the status is waiting for resource" do
         bridge.status = :waiting_for_resource
 
-        expect(bridge).to receive(:schedule_downstream_pipeline!)
-
         bridge.enqueue_waiting_for_resource!
+
+        expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
       end
 
       it 'raises error when the status is failed' do

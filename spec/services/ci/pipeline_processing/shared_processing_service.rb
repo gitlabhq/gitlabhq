@@ -908,6 +908,39 @@ RSpec.shared_examples 'Pipeline Processing Service' do
     end
   end
 
+  context 'when a bridge job has invalid downstream project', :sidekiq_inline do
+    let(:config) do
+      <<-EOY
+      test:
+        stage: test
+        script: echo test
+
+      deploy:
+        stage: deploy
+        trigger:
+          project: invalid-project
+      EOY
+    end
+
+    let(:pipeline) do
+      Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+    end
+
+    before do
+      stub_ci_pipeline_yaml_file(config)
+    end
+
+    it 'creates a pipeline, then fails the bridge job' do
+      expect(all_builds_names).to contain_exactly('test', 'deploy')
+      expect(all_builds_statuses).to contain_exactly('pending', 'created')
+
+      succeed_pending
+
+      expect(all_builds_names).to contain_exactly('test', 'deploy')
+      expect(all_builds_statuses).to contain_exactly('success', 'failed')
+    end
+  end
+
   private
 
   def all_builds

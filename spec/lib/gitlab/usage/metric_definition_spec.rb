@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       value_type: 'string',
       product_category: 'collection',
       product_stage: 'growth',
-      status: 'data_available',
+      status: 'active',
       default_generation: 'generation_1',
       key_path: 'uuid',
       product_group: 'group::product analytics',
@@ -127,9 +127,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     where(:status, :skip_validation?) do
       'deprecated'     | true
       'removed'        | true
-      'data_available' | false
-      'implemented'    | false
-      'not_used'       | false
+      'active'         | false
     end
 
     with_them do
@@ -191,7 +189,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
         value_type: 'string',
         product_category: 'collection',
         product_stage: 'growth',
-        status: 'data_available',
+        status: 'active',
         default_generation: 'generation_1',
         key_path: 'counter.category.event',
         product_group: 'group::product analytics',

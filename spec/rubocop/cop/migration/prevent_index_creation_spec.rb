@@ -6,28 +6,35 @@ require_relative '../../../../rubocop/cop/migration/prevent_index_creation'
 RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
   subject(:cop) { described_class.new }
 
+  let(:forbidden_tables) { %w(ci_builds taggings ci_builds_metadata events) }
+  let(:forbidden_tables_list) { forbidden_tables.join(', ') }
+
   context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
 
     context 'when adding an index to a forbidden table' do
-      it 'registers an offense when add_index is used' do
-        expect_offense(<<~RUBY)
-          def change
-            add_index :ci_builds, :protected
-            ^^^^^^^^^ Adding new index to ci_builds is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
-          end
-        RUBY
+      it "registers an offense when add_index is used", :aggregate_failures do
+        forbidden_tables.each do |table|
+          expect_offense(<<~RUBY)
+            def change
+              add_index :#{table}, :protected
+              ^^^^^^^^^ Adding new index to #{forbidden_tables_list} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
+            end
+          RUBY
+        end
       end
 
-      it 'registers an offense when add_concurrent_index is used' do
-        expect_offense(<<~RUBY)
-          def change
-            add_concurrent_index :ci_builds, :protected
-            ^^^^^^^^^^^^^^^^^^^^ Adding new index to ci_builds is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
-          end
-        RUBY
+      it "registers an offense when add_concurrent_index is used", :aggregate_failures do
+        forbidden_tables.each do |table|
+          expect_offense(<<~RUBY)
+            def change
+              add_concurrent_index :#{table}, :protected
+              ^^^^^^^^^^^^^^^^^^^^ Adding new index to #{forbidden_tables_list} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
+            end
+          RUBY
+        end
       end
     end
 

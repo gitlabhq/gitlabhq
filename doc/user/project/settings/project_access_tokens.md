@@ -60,10 +60,7 @@ API calls made with a project access token are associated with the corresponding
 These bot users are included in a project's **Project information > Members** list but cannot be modified. Also, a bot
 user cannot be added to any other project.
 
-- The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
-- The username is set to `project_{project_id}_bot{bot_count}` for further access tokens, such as `project_123_bot1`.
-
-When the project access token is [revoked](#revoking-a-project-access-token) the bot user is deleted
+When the project access token is [revoked](#revoking-a-project-access-token), the bot user is deleted
 and all records are moved to a system-wide user with the username "Ghost User". For more
 information, see [Associated Records](../../profile/account/delete_account.md#associated-records).
 

@@ -23,6 +23,7 @@ query getFiles(
   $nextPageCursor: String
 ) {
   project(fullPath: $projectPath) {
+    id
     __typename
     repository {
       __typename

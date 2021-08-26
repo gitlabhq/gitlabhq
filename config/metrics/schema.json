@@ -30,7 +30,7 @@
     },
     "status": {
       "type": ["string"],
-      "enum": ["data_available", "implemented", "not_used", "deprecated", "removed", "broken"]
+      "enum": ["active", "data_available", "implemented", "deprecated", "removed", "broken"]
     },
     "milestone": {
       "type": ["string", "null"],

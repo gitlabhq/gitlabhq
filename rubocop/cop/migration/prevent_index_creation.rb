@@ -8,7 +8,7 @@ module RuboCop
       class PreventIndexCreation < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        FORBIDDEN_TABLES = %i[ci_builds].freeze
+        FORBIDDEN_TABLES = %i[ci_builds taggings ci_builds_metadata events].freeze
 
         MSG = "Adding new index to #{FORBIDDEN_TABLES.join(", ")} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886"
 

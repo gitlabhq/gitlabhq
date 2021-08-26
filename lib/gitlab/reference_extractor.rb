@@ -6,16 +6,11 @@ module Gitlab
     REFERABLES = %i(user issue label milestone mentioned_user mentioned_group mentioned_project
                     merge_request snippet commit commit_range directly_addressed_user epic iteration vulnerability).freeze
     attr_accessor :project, :current_user, :author
-    # This counter is increased by a number of references filtered out by
-    # banzai reference exctractor. Note that this counter is stateful and
-    # not idempotent and is increased whenever you call `references`.
-    attr_reader :stateful_not_visible_counter
 
     def initialize(project, current_user = nil)
       @project = project
       @current_user = current_user
       @references = {}
-      @stateful_not_visible_counter = 0
 
       super()
     end
@@ -26,14 +21,19 @@ module Gitlab
 
     def references(type, ids_only: false)
       refs = super(type, project, current_user, ids_only: ids_only)
-      @stateful_not_visible_counter += refs[:not_visible].count
+      update_visible_nodes_set(refs[:nodes], refs[:visible_nodes])
 
       refs[:visible]
     end
 
+    # this method is stateful, it tracks if all nodes from `references`
+    # calls are visible or not
+    def all_visible?
+      not_visible_nodes.empty?
+    end
+
     def reset_memoized_values
       @references = {}
-      @stateful_not_visible_counter = 0
       super()
     end
 
@@ -75,6 +75,17 @@ module Gitlab
       end.uniq
 
       @pattern = Regexp.union(patterns.compact)
+    end
+
+    private
+
+    def update_visible_nodes_set(all, visible)
+      not_visible_nodes.merge(all)
+      not_visible_nodes.subtract(visible)
+    end
+
+    def not_visible_nodes
+      @not_visible_nodes ||= Set.new
     end
   end
 end

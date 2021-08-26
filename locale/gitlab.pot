@@ -5888,6 +5888,9 @@ msgstr ""
 msgid "Buy CI Minutes"
 msgstr ""
 
+msgid "Buy Storage"
+msgstr ""
+
 msgid "Buy more Pipeline minutes"
 msgstr ""
 

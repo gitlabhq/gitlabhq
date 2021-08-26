@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Usage::Metric do
       product_group: "group::plan",
       product_category: "issue_tracking",
       value_type: "number",
-      status: "data_available",
+      status: "active",
       time_frame: "all",
       data_source: "database",
       instrumentation_class: "CountIssuesMetric",

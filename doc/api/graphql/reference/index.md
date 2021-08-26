@@ -5408,6 +5408,52 @@ The edge type for [`DastSiteValidation`](#dastsitevalidation).
 | <a id="dastsitevalidationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="dastsitevalidationedgenode"></a>`node` | [`DastSiteValidation`](#dastsitevalidation) | The item at the end of the edge. |
 
+#### `DependencyProxyBlobConnection`
+
+The connection type for [`DependencyProxyBlob`](#dependencyproxyblob).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyblobconnectionedges"></a>`edges` | [`[DependencyProxyBlobEdge]`](#dependencyproxyblobedge) | A list of edges. |
+| <a id="dependencyproxyblobconnectionnodes"></a>`nodes` | [`[DependencyProxyBlob]`](#dependencyproxyblob) | A list of nodes. |
+| <a id="dependencyproxyblobconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DependencyProxyBlobEdge`
+
+The edge type for [`DependencyProxyBlob`](#dependencyproxyblob).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyblobedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="dependencyproxyblobedgenode"></a>`node` | [`DependencyProxyBlob`](#dependencyproxyblob) | The item at the end of the edge. |
+
+#### `DependencyProxyManifestConnection`
+
+The connection type for [`DependencyProxyManifest`](#dependencyproxymanifest).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestconnectionedges"></a>`edges` | [`[DependencyProxyManifestEdge]`](#dependencyproxymanifestedge) | A list of edges. |
+| <a id="dependencyproxymanifestconnectionnodes"></a>`nodes` | [`[DependencyProxyManifest]`](#dependencyproxymanifest) | A list of nodes. |
+| <a id="dependencyproxymanifestconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DependencyProxyManifestEdge`
+
+The edge type for [`DependencyProxyManifest`](#dependencyproxymanifest).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="dependencyproxymanifestedgenode"></a>`node` | [`DependencyProxyManifest`](#dependencyproxymanifest) | The item at the end of the edge. |
+
 #### `DesignAtVersionConnection`
 
 The connection type for [`DesignAtVersion`](#designatversion).
@@ -8565,6 +8611,44 @@ The response from the AdminSidekiqQueuesDeleteJobs mutation.
 | <a id="deletejobsresponsedeletedjobs"></a>`deletedJobs` | [`Int`](#int) | Number of matching jobs deleted. |
 | <a id="deletejobsresponsequeuesize"></a>`queueSize` | [`Int`](#int) | Queue size after processing. |
 
+### `DependencyProxyBlob`
+
+Dependency proxy blob.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyblobcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="dependencyproxyblobfilename"></a>`fileName` | [`String!`](#string) | Name of the blob. |
+| <a id="dependencyproxyblobsize"></a>`size` | [`String!`](#string) | Size of the blob file. |
+| <a id="dependencyproxyblobupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
+### `DependencyProxyManifest`
+
+Dependency proxy manifest.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="dependencyproxymanifestdigest"></a>`digest` | [`String!`](#string) | Digest of the manifest. |
+| <a id="dependencyproxymanifestfilename"></a>`fileName` | [`String!`](#string) | Name of the manifest. |
+| <a id="dependencyproxymanifestimagename"></a>`imageName` | [`String!`](#string) | Name of the image. |
+| <a id="dependencyproxymanifestsize"></a>`size` | [`String!`](#string) | Size of the manifest file. |
+| <a id="dependencyproxymanifestupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
+### `DependencyProxySetting`
+
+Group-level Dependency Proxy settings.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxysettingenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the dependency proxy is enabled for the group. |
+
 ### `Design`
 
 A single design.
@@ -9596,6 +9680,12 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcustomemoji"></a>`customEmoji` | [`CustomEmojiConnection`](#customemojiconnection) | Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
+| <a id="groupdependencyproxyblobcount"></a>`dependencyProxyBlobCount` | [`Int!`](#int) | Number of dependency proxy blobs cached in the group. |
+| <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
+| <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |
+| <a id="groupdependencyproxymanifests"></a>`dependencyProxyManifests` | [`DependencyProxyManifestConnection`](#dependencyproxymanifestconnection) | Dependency Proxy manifests. (see [Connections](#connections)) |
+| <a id="groupdependencyproxysetting"></a>`dependencyProxySetting` | [`DependencyProxySetting`](#dependencyproxysetting) | Dependency Proxy settings for the group. |
+| <a id="groupdependencyproxytotalsize"></a>`dependencyProxyTotalSize` | [`String!`](#string) | Total size of the dependency proxy cached images. |
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="groupdora"></a>`dora` | [`Dora`](#dora) | The group's DORA metrics. |

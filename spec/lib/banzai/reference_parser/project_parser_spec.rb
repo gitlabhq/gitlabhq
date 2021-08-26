@@ -17,7 +17,7 @@ RSpec.describe Banzai::ReferenceParser::ProjectParser do
         it 'returns an Array of projects' do
           link['data-project'] = project.id.to_s
 
-          expect_gathered_references(subject.gather_references([link]), [project], 0)
+          expect_gathered_references(subject.gather_references([link]), [project], [link], [link])
         end
       end
 
@@ -25,7 +25,7 @@ RSpec.describe Banzai::ReferenceParser::ProjectParser do
         it 'returns an empty Array' do
           link['data-project'] = ''
 
-          expect_gathered_references(subject.gather_references([link]), [], 1)
+          expect_gathered_references(subject.gather_references([link]), [], [link], [])
         end
       end
 
@@ -35,7 +35,7 @@ RSpec.describe Banzai::ReferenceParser::ProjectParser do
 
           link['data-project'] = private_project.id.to_s
 
-          expect_gathered_references(subject.gather_references([link]), [], 1)
+          expect_gathered_references(subject.gather_references([link]), [], [link], [])
         end
 
         it 'returns an Array when authorized' do
@@ -43,7 +43,7 @@ RSpec.describe Banzai::ReferenceParser::ProjectParser do
 
           link['data-project'] = private_project.id.to_s
 
-          expect_gathered_references(subject.gather_references([link]), [private_project], 0)
+          expect_gathered_references(subject.gather_references([link]), [private_project], [link], [link])
         end
       end
     end

@@ -28,10 +28,10 @@ module Ci
 
     state_machine :status do
       after_transition [:created, :manual, :waiting_for_resource] => :pending do |bridge|
-        next unless bridge.downstream_project
+        next unless bridge.triggers_downstream_pipeline?
 
         bridge.run_after_commit do
-          bridge.schedule_downstream_pipeline!
+          ::Ci::CreateCrossProjectPipelineWorker.perform_async(bridge.id)
         end
       end
 
@@ -62,12 +62,6 @@ module Ci
         downstream_pipeline: [project: [:route, { namespace: :route }]],
         project: [:namespace]
       )
-    end
-
-    def schedule_downstream_pipeline!
-      raise InvalidBridgeTypeError unless downstream_project
-
-      ::Ci::CreateCrossProjectPipelineWorker.perform_async(self.id)
     end
 
     def inherit_status_from_downstream!(pipeline)
@@ -112,8 +106,16 @@ module Ci
       pipeline if triggers_child_pipeline?
     end
 
+    def triggers_downstream_pipeline?
+      triggers_child_pipeline? || triggers_cross_project_pipeline?
+    end
+
     def triggers_child_pipeline?
       yaml_for_downstream.present?
+    end
+
+    def triggers_cross_project_pipeline?
+      downstream_project_path.present?
     end
 
     def tags

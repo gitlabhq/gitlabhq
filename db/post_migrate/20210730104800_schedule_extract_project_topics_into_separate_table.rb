@@ -20,7 +20,7 @@ class ScheduleExtractProjectTopicsIntoSeparateTable < ActiveRecord::Migration[6.
 
   def up
     # this index is used in 20210730104800_schedule_extract_project_topics_into_separate_table
-    add_concurrent_index :taggings, :id, where: INDEX_CONDITION, name: INDEX_NAME
+    add_concurrent_index :taggings, :id, where: INDEX_CONDITION, name: INDEX_NAME # rubocop:disable Migration/PreventIndexCreation
 
     queue_background_migration_jobs_by_range_at_intervals(
       Tagging.where(taggable_type: 'Project'),
