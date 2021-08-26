@@ -387,7 +387,7 @@ appears on the right. There you can see and edit the issue's:
 
 - Title
 - Assignees
-- Epic **PREMIUM**
+- Epic **(PREMIUM)**
 - Milestone
 - Time tracking value (view only)
 - Due date

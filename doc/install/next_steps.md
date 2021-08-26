@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Steps after installing GitLab
+# Steps after installing GitLab **(FREE SELF)**
 
 Here are a few resources you might want to check out after completing the
 installation.

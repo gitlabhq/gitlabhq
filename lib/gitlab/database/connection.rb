@@ -174,8 +174,11 @@ module Gitlab
       end
 
       def exists?
-        connection
-
+        # We can't _just_ check if `connection` raises an error, as it will
+        # point to a `ConnectionProxy`, and obtaining those doesn't involve any
+        # database queries. So instead we obtain the database version, which is
+        # cached after the first call.
+        connection.schema_cache.database_version
         true
       rescue StandardError
         false

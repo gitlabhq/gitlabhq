@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Cleaning up stale Redis sessions
+# Cleaning up stale Redis sessions **(FREE SELF)**
 
 Since version 6.2, GitLab stores web user sessions as key-value pairs in Redis.
 Prior to GitLab 7.3, user sessions did not automatically expire from Redis. If

@@ -393,34 +393,28 @@ RSpec.describe Gitlab::Database::Connection do
   end
 
   describe '#cached_column_exists?' do
-    it 'only retrieves data once' do
-      expect(connection.scope.connection)
-        .to receive(:columns)
-        .once.and_call_original
-
-      2.times do
-        expect(connection.cached_column_exists?(:projects, :id)).to be_truthy
-        expect(connection.cached_column_exists?(:projects, :bogus_column)).to be_falsey
+    it 'only retrieves the data from the schema cache' do
+      queries = ActiveRecord::QueryRecorder.new do
+        2.times do
+          expect(connection.cached_column_exists?(:projects, :id)).to be_truthy
+          expect(connection.cached_column_exists?(:projects, :bogus_column)).to be_falsey
+        end
       end
+
+      expect(queries.count).to eq(0)
     end
   end
 
   describe '#cached_table_exists?' do
-    it 'only retrieves data once per table' do
-      expect(connection.scope.connection)
-        .to receive(:data_source_exists?)
-        .with(:projects)
-        .once.and_call_original
-
-      expect(connection.scope.connection)
-        .to receive(:data_source_exists?)
-        .with(:bogus_table_name)
-        .once.and_call_original
-
-      2.times do
-        expect(connection.cached_table_exists?(:projects)).to be_truthy
-        expect(connection.cached_table_exists?(:bogus_table_name)).to be_falsey
+    it 'only retrieves the data from the schema cache' do
+      queries = ActiveRecord::QueryRecorder.new do
+        2.times do
+          expect(connection.cached_table_exists?(:projects)).to be_truthy
+          expect(connection.cached_table_exists?(:bogus_table_name)).to be_falsey
+        end
       end
+
+      expect(queries.count).to eq(0)
     end
 
     it 'returns false when database does not exist' do
@@ -433,16 +427,14 @@ RSpec.describe Gitlab::Database::Connection do
   end
 
   describe '#exists?' do
-    it 'returns true if `ActiveRecord::Base.connection` succeeds' do
-      expect(connection.scope).to receive(:connection)
-
+    it 'returns true if the database exists' do
       expect(connection.exists?).to be(true)
     end
 
-    it 'returns false if `ActiveRecord::Base.connection` fails' do
-      expect(connection.scope).to receive(:connection) do
-        raise ActiveRecord::NoDatabaseError, 'broken'
-      end
+    it "returns false if the database doesn't exist" do
+      expect(connection.scope.connection.schema_cache)
+        .to receive(:database_version)
+        .and_raise(ActiveRecord::NoDatabaseError)
 
       expect(connection.exists?).to be(false)
     end

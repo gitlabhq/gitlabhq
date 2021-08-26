@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Configure your GitLab installation
+# Configure your GitLab installation **(FREE SELF)**
 
 Customize and configure your self-managed GitLab installation.
 

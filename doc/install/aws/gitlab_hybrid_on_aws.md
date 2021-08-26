@@ -57,10 +57,12 @@ A set of performance testing instructions have been abbreviated for testing a Gi
 The AWS Quick Start for GitLab Cloud Native Hybrid on EKS has been tested with GovCloud and works with the following restrictions and understandings.
 
 - GovCloud does not have public Route53 hosted zones, so you must set the following parameters:
-    | CloudFormation Quick Start form field               | CloudFormation Parameter | Setting |
-    | --------------------------------------------------- | ------------------------ | ------- |
-    | **Create Route 53 hosted zone**                     | CreatedHostedZone        | No      |
-    | **Request AWS Certificate Manager SSL certificate** | CreateSslCertificate     | No      |
+
+  | CloudFormation Quick Start form field               | CloudFormation Parameter | Setting |
+  | --------------------------------------------------- | ------------------------ | ------- |
+  | **Create Route 53 hosted zone**                     | CreatedHostedZone        | No      |
+  | **Request AWS Certificate Manager SSL certificate** | CreateSslCertificate     | No      |
+
 - The Quick Start creates public load balancer IPs, so that you can easily configure your local hosts file to get to the GUI for GitLab when deploying tests. However, you may need to manually alter this if public load balancers are not part of your provisioning plan. We are planning to make non-public load balancers a configuration option issue link: [Short Term: Documentation and/or Automation for private GitLab instance with no internet Ingress](https://github.com/aws-quickstart/quickstart-eks-gitlab/issues/55)
 - As of 2021-08-19, AWS GovCloud has Graviton instances for Aurora PostgreSQL available, but does not for ElastiCache Redis.
 - It is challenging to get the Quick Start template to load in GovCloud from the Standard Quick Start URL, so the generic ones are provided here:
