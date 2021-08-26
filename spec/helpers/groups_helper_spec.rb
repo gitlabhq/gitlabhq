@@ -486,4 +486,10 @@ RSpec.describe GroupsHelper do
       expect(helper.can_admin_group_member?(group)).to be(false)
     end
   end
+
+  describe '#localized_jobs_to_be_done_choices' do
+    it 'has a translation for all `jobs_to_be_done` values' do
+      expect(localized_jobs_to_be_done_choices.keys).to match_array(NamespaceSetting.jobs_to_be_dones.keys)
+    end
+  end
 end

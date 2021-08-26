@@ -64,6 +64,7 @@ class GroupsController < Groups::ApplicationController
 
   def new
     @group = Group.new(params.permit(:parent_id))
+    @group.build_namespace_settings
   end
 
   def create
@@ -269,7 +270,9 @@ class GroupsController < Groups::ApplicationController
       :default_branch_name,
       :allow_mfa_for_subgroups,
       :resource_access_token_creation_allowed,
-      :prevent_sharing_groups_outside_hierarchy
+      :prevent_sharing_groups_outside_hierarchy,
+      :setup_for_company,
+      :jobs_to_be_done
     ]
   end
 
@@ -342,7 +345,15 @@ class GroupsController < Groups::ApplicationController
     render action: 'new'
   end
 
-  def successful_creation_hooks; end
+  def successful_creation_hooks
+    update_user_role_and_setup_for_company
+  end
+
+  def update_user_role_and_setup_for_company
+    user_params = params.fetch(:user, {}).permit(:role)
+    user_params[:setup_for_company] = @group.setup_for_company if !@group.setup_for_company.nil? && current_user.setup_for_company.nil?
+    Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute if user_params.present?
+  end
 
   def groups
     if @group.supports_events?

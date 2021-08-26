@@ -219,6 +219,18 @@ module GroupsHelper
   def group_url_error_message
     s_('GroupSettings|Please choose a group URL with no special characters or spaces.')
   end
+
+  # Maps `jobs_to_be_done` values to option texts
+  def localized_jobs_to_be_done_choices
+    {
+      basics: _('I want to learn the basics of Git'),
+      move_repository: _('I want to move my repository to GitLab from somewhere else'),
+      code_storage: _('I want to store my code'),
+      exploring: _('I want to explore GitLab to see if it’s worth switching to'),
+      ci: _('I want to use GitLab CI with my existing repository'),
+      other: _('A different reason')
+    }.with_indifferent_access.freeze
+  end
 end
 
 GroupsHelper.prepend_mod_with('GroupsHelper')

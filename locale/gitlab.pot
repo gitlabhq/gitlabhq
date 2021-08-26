@@ -12911,6 +12911,9 @@ msgstr ""
 msgid "Environments|Your feedback helps GitLab make environments better for you and other users. Participate and enter a sweepstake to win a USD 30 gift card."
 msgstr ""
 
+msgid "Environments|by %{avatar}"
+msgstr ""
+
 msgid "Environments|protected"
 msgstr ""
 
@@ -20808,6 +20811,9 @@ msgstr ""
 msgid "Members of a group may only view projects they have permission to access"
 msgstr ""
 
+msgid "Membership"
+msgstr ""
+
 msgid "Members|%{time} by %{user}"
 msgstr ""
 
@@ -23069,6 +23075,9 @@ msgid "November"
 msgstr ""
 
 msgid "Novice"
+msgstr ""
+
+msgid "Now, personalize your GitLab experience"
 msgstr ""
 
 msgid "Nuget metadatum must have at least license_url, project_url or icon_url set"
@@ -37346,6 +37355,9 @@ msgstr ""
 msgid "We'll continuously validate your pipeline configuration. The validation results will appear here."
 msgstr ""
 
+msgid "We'll use this to help surface the right features and information to you."
+msgstr ""
+
 msgid "We've found no vulnerabilities"
 msgstr ""
 
@@ -37601,6 +37613,9 @@ msgstr ""
 msgid "What is your job title? (optional)"
 msgstr ""
 
+msgid "What will you use this group for?"
+msgstr ""
+
 msgid "What's new"
 msgstr ""
 
@@ -37658,6 +37673,9 @@ msgid "Who will be using this GitLab subscription?"
 msgstr ""
 
 msgid "Who will be using this GitLab trial?"
+msgstr ""
+
+msgid "Who will be using this group?"
 msgstr ""
 
 msgid "Why are you signing up? (Optional)"

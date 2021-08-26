@@ -13,18 +13,13 @@ module API
       post '/lint' do
         unauthorized! if (Gitlab::CurrentSettings.signup_disabled? || Gitlab::CurrentSettings.signup_limited?) && current_user.nil?
 
-        result = Gitlab::Ci::YamlProcessor.new(params[:content], user: current_user).execute
+        result = Gitlab::Ci::Lint.new(project: nil, current_user: current_user)
+          .validate(params[:content], dry_run: false)
 
         status 200
-
-        response = if result.errors.empty?
-                     { status: 'valid', errors: [], warnings: result.warnings }
-                   else
-                     { status: 'invalid', errors: result.errors, warnings: result.warnings }
-                   end
-
-        response.tap do |response|
-          response[:merged_yaml] = result.merged_yaml if params[:include_merged_yaml]
+        Entities::Ci::Lint::Result.represent(result, current_user: current_user).serializable_hash.tap do |presented_result|
+          presented_result[:status] = presented_result[:valid] ? 'valid' : 'invalid'
+          presented_result.delete(:merged_yaml) unless params[:include_merged_yaml]
         end
       end
     end

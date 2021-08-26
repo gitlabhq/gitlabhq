@@ -30,5 +30,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Checks::BaseSingleChecker.prepend_mod_with('Gitlab::Checks::BaseSingleChecker')

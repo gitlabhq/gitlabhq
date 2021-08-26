@@ -76,23 +76,33 @@ module Gitlab
         result
       end
 
+      def single_change_accesses
+        @single_changes_accesses ||=
+          changes.map do |change|
+            commits =
+              if change[:newrev].blank? || Gitlab::Git.blank_ref?(change[:newrev])
+                []
+              else
+                Gitlab::Lazy.new { commits_for(change[:newrev]) }
+              end
+
+            Checks::SingleChangeAccess.new(
+              change,
+              user_access: user_access,
+              project: project,
+              protocol: protocol,
+              logger: logger,
+              commits: commits
+            )
+          end
+      end
+
       protected
 
       def single_access_checks!
         # Iterate over all changes to find if user allowed all of them to be applied
-        changes.each do |change|
-          commits = Gitlab::Lazy.new { commits_for(change[:newrev]) }
-
-          # If user does not have access to make at least one change, cancel all
-          # push by allowing the exception to bubble up
-          Checks::SingleChangeAccess.new(
-            change,
-            user_access: user_access,
-            project: project,
-            protocol: protocol,
-            logger: logger,
-            commits: commits
-          ).validate!
+        single_change_accesses.each do |single_change_access|
+          single_change_access.validate!
         end
       end
 
@@ -102,3 +112,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Checks::ChangesAccess.prepend_mod_with('Gitlab::Checks::ChangesAccess')

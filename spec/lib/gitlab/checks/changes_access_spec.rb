@@ -174,6 +174,101 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
     end
   end
 
+  describe '#single_change_accesses' do
+    let(:commits_for) { {} }
+    let(:expected_accesses) { [] }
+
+    shared_examples '#single_change_access' do
+      before do
+        commits_for.each do |id, commits|
+          expect(subject)
+            .to receive(:commits_for)
+            .with(id)
+            .and_return(commits)
+        end
+      end
+
+      it 'returns an array of SingleChangeAccess' do
+        # Commits are wrapped in a Gitlab::Lazy and thus need to be resolved
+        # first such that we can directly compare types.
+        actual_accesses = subject.single_change_accesses
+          .each { |access| access.instance_variable_set(:@commits, access.commits.to_a) }
+
+        expect(actual_accesses).to match_array(expected_accesses)
+      end
+    end
+
+    context 'with no changes' do
+      let(:changes) { [] }
+
+      it_behaves_like '#single_change_access'
+    end
+
+    context 'with a single change and no new commits' do
+      let(:commits_for) { { 'new' => [] } }
+      let(:changes) do
+        [
+          { oldrev: 'old', newrev: 'new', ref: 'refs/heads/branch' }
+        ]
+      end
+
+      let(:expected_accesses) do
+        [
+          have_attributes(oldrev: 'old', newrev: 'new', ref: 'refs/heads/branch', commits: [])
+        ]
+      end
+
+      it_behaves_like '#single_change_access'
+    end
+
+    context 'with a single change and new commits' do
+      let(:commits_for) { { 'new' => [create_commit('new', [])] } }
+      let(:changes) do
+        [
+          { oldrev: 'old', newrev: 'new', ref: 'refs/heads/branch' }
+        ]
+      end
+
+      let(:expected_accesses) do
+        [
+          have_attributes(oldrev: 'old', newrev: 'new', ref: 'refs/heads/branch', commits: [create_commit('new', [])])
+        ]
+      end
+
+      it_behaves_like '#single_change_access'
+    end
+
+    context 'with multiple changes' do
+      let(:commits_for) do
+        {
+          'a' => [create_commit('a', [])],
+          'c' => [create_commit('c', [])],
+          'd' => []
+        }
+      end
+
+      let(:changes) do
+        [
+          { newrev: 'a', ref: 'refs/heads/a' },
+          { oldrev: 'b', ref: 'refs/heads/b' },
+          { oldrev: 'a', newrev: 'c', ref: 'refs/heads/c' },
+          { newrev: 'd', ref: 'refs/heads/d' }
+        ]
+      end
+
+      let(:expected_accesses) do
+        [
+          have_attributes(newrev: 'a', ref: 'refs/heads/a', commits: [create_commit('a', [])]),
+          have_attributes(oldrev: 'b', ref: 'refs/heads/b', commits: []),
+          have_attributes(oldrev: 'a', newrev: 'c', ref: 'refs/heads/c', commits: [create_commit('c', [])]),
+          have_attributes(newrev: 'd', ref: 'refs/heads/d', commits: [])
+        ]
+      end
+
+      it_behaves_like '#single_change_access'
+    end
+  end
+
   def create_commit(id, parent_ids)
     Gitlab::Git::Commit.new(project.repository, {
       id: id,

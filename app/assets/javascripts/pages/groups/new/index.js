@@ -5,6 +5,7 @@ import Group from '~/group';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import NewGroupCreationApp from './components/app.vue';
 import GroupPathValidator from './group_path_validator';
+import initToggleInviteMembers from './toggle_invite_members';
 
 new GroupPathValidator(); // eslint-disable-line no-new
 
@@ -31,3 +32,5 @@ function initNewGroupCreation(el) {
 const el = document.querySelector('.js-new-group-creation');
 
 initNewGroupCreation(el);
+
+initToggleInviteMembers();

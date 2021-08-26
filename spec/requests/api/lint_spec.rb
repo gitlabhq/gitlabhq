@@ -113,7 +113,6 @@ RSpec.describe API::Lint do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to eq('valid')
           expect(json_response['warnings']).not_to be_empty
-          expect(json_response['status']).to eq('valid')
           expect(json_response['errors']).to eq([])
         end
       end

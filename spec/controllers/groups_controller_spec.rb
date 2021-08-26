@@ -370,6 +370,57 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
       end
     end
+
+    context 'when creating a group with the `role` attribute present' do
+      it 'changes the users role' do
+        sign_in(user)
+
+        expect do
+          post :create, params: { group: { name: 'new_group', path: 'new_group' }, user: { role: 'devops_engineer' } }
+        end.to change { user.reload.role }.to('devops_engineer')
+      end
+    end
+
+    context 'when creating a group with the `setup_for_company` attribute present' do
+      before do
+        sign_in(user)
+      end
+
+      subject do
+        post :create, params: { group: { name: 'new_group', path: 'new_group', setup_for_company: 'false' } }
+      end
+
+      it 'sets the groups `setup_for_company` value' do
+        subject
+        expect(Group.last.setup_for_company).to be(false)
+      end
+
+      context 'when the user already has a value for `setup_for_company`' do
+        before do
+          user.update_attribute(:setup_for_company, true)
+        end
+
+        it 'does not change the users `setup_for_company` value' do
+          expect(Users::UpdateService).not_to receive(:new)
+          expect { subject }.not_to change { user.reload.setup_for_company }.from(true)
+        end
+      end
+
+      context 'when the user has no value for `setup_for_company`' do
+        it 'changes the users `setup_for_company` value' do
+          expect(Users::UpdateService).to receive(:new).and_call_original
+          expect { subject }.to change { user.reload.setup_for_company }.to(false)
+        end
+      end
+    end
+
+    context 'when creating a group with the `jobs_to_be_done` attribute present' do
+      it 'sets the groups `jobs_to_be_done` value' do
+        sign_in(user)
+        post :create, params: { group: { name: 'new_group', path: 'new_group', jobs_to_be_done: 'other' } }
+        expect(Group.last.jobs_to_be_done).to eq('other')
+      end
+    end
   end
 
   describe 'GET #index' do

@@ -1,6 +1,5 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
-import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
@@ -32,6 +31,7 @@ export default {
     ExternalUrlComponent,
     GlIcon,
     GlLink,
+    GlSprintf,
     MonitoringButtonComponent,
     PinComponent,
     DeleteComponent,
@@ -647,14 +647,17 @@ export default {
       </span>
 
       <span v-if="!isFolder && deploymentHasUser" class="text-break-word">
-        by
-        <user-avatar-link
-          :link-href="deploymentUser.web_url"
-          :img-src="deploymentUser.avatar_url"
-          :img-alt="userImageAltDescription"
-          :tooltip-text="deploymentUser.username"
-          class="js-deploy-user-container float-none"
-        />
+        <gl-sprintf :message="s__('Environments|by %{avatar}')">
+          <template #avatar>
+            <user-avatar-link
+              :link-href="deploymentUser.web_url"
+              :img-src="deploymentUser.avatar_url"
+              :img-alt="userImageAltDescription"
+              :tooltip-text="deploymentUser.username"
+              class="js-deploy-user-container float-none"
+            />
+          </template>
+        </gl-sprintf>
       </span>
 
       <div v-if="showNoDeployments" class="commit-title table-mobile-content">
@@ -743,13 +746,16 @@ export default {
         </div>
         <div class="gl-display-flex">
           <span v-if="upcomingDeployment.user" class="text-break-word">
-            by
-            <user-avatar-link
-              :link-href="upcomingDeployment.user.web_url"
-              :img-src="upcomingDeployment.user.avatar_url"
-              :img-alt="upcomingDeploymentUserImageAltDescription"
-              :tooltip-text="upcomingDeployment.user.username"
-            />
+            <gl-sprintf :message="s__('Environments|by %{avatar}')">
+              <template #avatar>
+                <user-avatar-link
+                  :link-href="upcomingDeployment.user.web_url"
+                  :img-src="upcomingDeployment.user.avatar_url"
+                  :img-alt="upcomingDeploymentUserImageAltDescription"
+                  :tooltip-text="upcomingDeployment.user.username"
+                />
+              </template>
+            </gl-sprintf>
           </span>
         </div>
       </div>

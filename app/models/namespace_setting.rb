@@ -16,9 +16,12 @@ class NamespaceSetting < ApplicationRecord
 
   before_validation :normalize_default_branch_name
 
+  enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
+
   NAMESPACE_SETTINGS_PARAMS = [:default_branch_name, :delayed_project_removal,
                                :lock_delayed_project_removal, :resource_access_token_creation_allowed,
-                               :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap].freeze
+                               :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap,
+                               :setup_for_company, :jobs_to_be_done].freeze
 
   self.primary_key = :namespace_id
 
