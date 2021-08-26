@@ -13,7 +13,7 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 
 To access sign-in restriction settings:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 

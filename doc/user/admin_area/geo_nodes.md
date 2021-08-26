@@ -12,7 +12,7 @@ You can configure various settings for GitLab Geo sites. For more information, s
 
 On either the primary or secondary site:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 
 ## Common settings
@@ -65,7 +65,7 @@ which is used by users. Internal URL does not need to be a private address.
 
 Internal URL defaults to external URL, but you can also customize it:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Select **Edit** on the site you want to customize.
 1. Edit the internal URL.

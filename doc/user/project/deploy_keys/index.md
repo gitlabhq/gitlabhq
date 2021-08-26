@@ -121,7 +121,7 @@ repositories to secure, shared services, such as CI/CD.
 
 Instance administrators can add public deploy keys:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Deploy Keys**.
 1. Select **New deploy key**.
 

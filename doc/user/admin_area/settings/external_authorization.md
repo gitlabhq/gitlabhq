@@ -41,7 +41,7 @@ the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/logs
 
 The external authorization service can be enabled by an administrator:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > General**:
    ![Enable external authorization service](img/external_authorization_service_settings.png)
 

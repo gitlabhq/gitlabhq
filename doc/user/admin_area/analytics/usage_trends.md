@@ -19,7 +19,7 @@ Usage Trends gives you an overview of how much data your instance contains, and 
 
 To see Usage Trends:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Analytics > Usage Trends**.
 
 ## Total counts

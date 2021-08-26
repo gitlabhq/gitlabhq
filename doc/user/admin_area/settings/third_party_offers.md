@@ -15,7 +15,7 @@ for using [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/
 
 To toggle the display of third-party offers:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings**, and expand **Third-party offers**.
 1. Select **Do not display offers from third parties**.
 1. Select **Save changes**.

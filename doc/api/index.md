@@ -237,6 +237,13 @@ A job token can access a project's resources without any configuration, but it m
 give extra permissions that aren't necessary. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
 to redesign the feature for more strategic control of the access permissions.
 
+You can also use the job token to authenticate and clone a repository from a private project
+in a CI/CD job:
+
+```shell
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>/<project>
+```
+
 #### GitLab CI/CD job token security
 
 To make sure that this token doesn't leak, GitLab:

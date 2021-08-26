@@ -49,7 +49,7 @@ Prorated charges are not possible without a quarterly usage report.
 
 You can view users for your license and determine if you've gone over your subscription.
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left menu, select **Subscription**.
 
 The lists of users are displayed.
@@ -154,7 +154,7 @@ See the [quarterly subscription reconciliation section](../quarterly_reconciliat
 
 1. When you purchase a GitLab self-managed plan, an activation code is generated.
    This activation code is sent to the email address associated with the Customers Portal account.
-1. In GitLab, on the top bar, select **Menu >** **{admin}** **Admin**.
+1. In GitLab, on the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Subscription** and paste the activation code in the text field.
 1. Select **Activate**.
 
@@ -237,7 +237,7 @@ The daily job provides **only** the following information to the Customers Porta
 
 You can manually sync your subscription details at any time.
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Subscription**.
 1. In the **Subscription details** section, select **Sync subscription details**.
 
@@ -265,7 +265,7 @@ instance, ensure you're purchasing enough seats to
 
 If you are an administrator, you can view the status of your subscription:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **License**.
 
 The **License** page includes the following details:

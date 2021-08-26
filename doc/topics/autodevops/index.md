@@ -214,7 +214,7 @@ can still enable Auto DevOps at the group and project levels.
 
 To enable Auto DevOps for your instance:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.

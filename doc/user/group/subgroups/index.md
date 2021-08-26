@@ -88,7 +88,7 @@ The setting can be changed for any group by:
   1. On the left sidebar, select **Settings > General**.
   1. Expand the **Permissions, LFS, 2FA** section.
 - An administrator:
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Overview > Groups**.
   1. Select the group, and select **Edit**.
 

@@ -116,7 +116,7 @@ Only instance administrators can set instance-level templates.
 
 To set the instance-level description template repository:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Templates**.
 1. Expand **Templates**
 1. From the dropdown, select your template project as the template repository at instance level.

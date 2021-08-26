@@ -24,6 +24,7 @@ module Gitlab
           elsif cmd.start_with?('SAVEPOINT', 'EXCEPTION')
             context.set_depth(manager.open_transactions)
             context.increment_savepoints
+            context.track_backtrace(caller)
           elsif cmd.start_with?('ROLLBACK TO SAVEPOINT')
             context.increment_rollbacks
           elsif cmd.start_with?('RELEASE SAVEPOINT ')

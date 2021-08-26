@@ -352,6 +352,10 @@ class User < ApplicationRecord
       transition active: :banned
     end
 
+    event :unban do
+      transition banned: :active
+    end
+
     event :deactivate do
       # Any additional changes to this event should be also
       # reflected in app/workers/users/deactivate_dormant_users_worker.rb

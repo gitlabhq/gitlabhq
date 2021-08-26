@@ -5,7 +5,11 @@ module Users
     private
 
     def update_user(user)
-      user.activate
+      user.unban
+    end
+
+    def valid_state?(user)
+      user.banned?
     end
 
     def action

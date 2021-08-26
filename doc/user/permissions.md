@@ -381,7 +381,7 @@ An administrator can flag a user as external by either of the following methods:
 
 - [Through the API](../api/users.md#user-modification).
 - Using the GitLab UI:
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Overview > Users** to create a new user or edit an existing one.
      There, you can find the option to flag the user as external.
 
@@ -393,7 +393,7 @@ and [LDAP groups](../administration/auth/ldap/index.md#external-groups).
 By default, new users are not set as external users. This behavior can be changed
 by an administrator:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 

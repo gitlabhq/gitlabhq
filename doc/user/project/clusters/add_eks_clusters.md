@@ -48,7 +48,7 @@ To create a new EKS cluster:
 1. Go to your:
    - Project's **Infrastructure > Kubernetes clusters** page, for a project-level cluster.
    - Group's **Kubernetes** page, for a group-level cluster.
-   - **Menu >** **{admin}** **Admin > Kubernetes**, for an instance-level cluster.
+   - **Menu > Admin > Kubernetes**, for an instance-level cluster.
 1. Select **Integrate with a cluster certificate**.
 1. Under the **Create new cluster** tab, click **Amazon EKS** to display an
    `Account ID` and `External ID` needed for later steps.
@@ -240,7 +240,7 @@ For example, the following policy document allows assuming a role whose name sta
 To configure Amazon authentication in GitLab, generate an access key for the
 IAM user in the Amazon AWS console, and follow these steps:
 
-1. In GitLab, on the top bar, select **Menu >** **{admin}** **Admin > Settings > General** and expand the **Amazon EKS** section.
+1. In GitLab, on the top bar, select **Menu > Admin > Settings > General** and expand the **Amazon EKS** section.
 1. Check **Enable Amazon EKS integration**.
 1. Enter your **Account ID**.
 1. Enter your [access key and ID](#eks-access-key-and-id).

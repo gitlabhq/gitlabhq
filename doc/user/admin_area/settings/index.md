@@ -17,7 +17,7 @@ documentation for all current settings and limits on the GitLab.com instance.
 
 To access the default page for Admin Area settings:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > General**.
 
 | Option | Description |
@@ -124,6 +124,6 @@ To access the default page for Admin Area settings:
 You can change the [Default first day of the week](../../profile/preferences.md)
 for the entire GitLab instance:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > Preferences**.
 1. Scroll to the **Localization** section, and select your desired first day of the week.

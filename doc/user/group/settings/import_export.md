@@ -22,7 +22,7 @@ See also:
 Users with the [Owner role](../../permissions.md) for a group can enable
 import and export for that group:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General > Visibility and access controls**.
 1. Scroll to **Import sources**.
 1. Enable the desired **Import sources**.

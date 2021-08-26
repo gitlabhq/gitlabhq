@@ -61,7 +61,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 1. Navigate to your:
    1. Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level cluster.
    1. Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   1. **Menu >** **{admin}** **Admin >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   1. **Menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Click the **Add existing cluster** tab and fill in the details:
    1. **Kubernetes cluster name** (required) - The name you wish to give the cluster.

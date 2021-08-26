@@ -28,7 +28,7 @@ cannot leave the 2FA configuration area at `/-/profile/two_factor_auth`.
 
 To enable 2FA for all users:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
 1. Expand the **Sign-in restrictions** section, where you can configure both.
 

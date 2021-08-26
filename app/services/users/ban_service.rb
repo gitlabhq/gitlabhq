@@ -8,6 +8,10 @@ module Users
       user.ban
     end
 
+    def valid_state?(user)
+      user.active?
+    end
+
     def action
       :ban
     end

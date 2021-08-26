@@ -79,7 +79,7 @@ finished before you update to the newer version.
 
 To check the status of [batched background migrations](../user/admin_area/monitoring/background_migrations.md):
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Migrations**.
 
    ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)

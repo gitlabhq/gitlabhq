@@ -1919,15 +1919,15 @@ RSpec.describe User do
         user.ban!
       end
 
-      it 'activates the user' do
-        user.activate
+      it 'unbans the user' do
+        user.unban
 
         expect(user.banned?).to eq(false)
         expect(user.active?).to eq(true)
       end
 
       it 'deletes the BannedUser record' do
-        expect { user.activate }.to change { Users::BannedUser.count }.by(-1)
+        expect { user.unban }.to change { Users::BannedUser.count }.by(-1)
         expect(Users::BannedUser.where(user_id: user.id)).not_to exist
       end
     end

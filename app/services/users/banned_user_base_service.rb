@@ -8,6 +8,7 @@ module Users
 
     def execute(user)
       return permission_error unless allowed?
+      return state_error(user) unless valid_state?(user)
 
       if update_user(user)
         log_event(user)
@@ -21,6 +22,10 @@ module Users
     private
 
     attr_reader :current_user
+
+    def state_error(user)
+      error(_("You cannot %{action} %{state} users." % { action: action.to_s, state: user.state }), :forbidden)
+    end
 
     def allowed?
       can?(current_user, :admin_all_resources)

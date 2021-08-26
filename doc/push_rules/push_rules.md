@@ -87,7 +87,7 @@ at the project level or the [group level](../user/group/index.md#group-push-rule
 
 To create global push rules:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Push Rules**.
 
 To override global push rules in a project's settings:

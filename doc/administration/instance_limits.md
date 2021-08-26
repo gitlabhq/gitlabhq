@@ -526,7 +526,7 @@ number of alerts or duplicate issues.
 
 To set inbound incident management alert limits:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand General **Incident Management Limits**.
 1. Select the **Enable Incident Management inbound alert limit** checkbox.

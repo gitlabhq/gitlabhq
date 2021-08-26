@@ -38,6 +38,11 @@ module Gitlab
           (@context[:queries] ||= []).push(sql)
         end
 
+        def track_backtrace(backtrace)
+          cleaned_backtrace = Gitlab::BacktraceCleaner.clean_backtrace(backtrace)
+          (@context[:backtraces] ||= []).push(cleaned_backtrace)
+        end
+
         def duration
           return unless @context[:start_time].present?
 
@@ -64,6 +69,10 @@ module Gitlab
 
         def rollback
           log(:rollback)
+        end
+
+        def backtraces
+          @context[:backtraces].to_a
         end
 
         private
@@ -99,7 +108,8 @@ module Gitlab
             savepoints_count: @context[:savepoints].to_i,
             rollbacks_count: @context[:rollbacks].to_i,
             releases_count: @context[:releases].to_i,
-            sql: queries
+            sql: queries,
+            savepoint_backtraces: backtraces
           }
 
           application_info(attributes)

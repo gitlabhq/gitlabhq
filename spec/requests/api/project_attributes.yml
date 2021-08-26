@@ -149,6 +149,7 @@ build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
     - project_id
     - issue_template_key
+    - file_template_project_id
     - outgoing_name
   remapped_attributes:
     project_key: service_desk_address

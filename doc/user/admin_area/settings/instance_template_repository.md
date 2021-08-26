@@ -19,7 +19,7 @@ while the project remains secure.
 
 To select a project to serve as the custom template repository:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > Templates**.
 1. Select the project:
 

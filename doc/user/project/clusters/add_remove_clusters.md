@@ -62,7 +62,7 @@ one to GitLab, the cluster connection to GitLab becomes enabled. To disable it:
 1. Go to your:
    - Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   - **Menu >** **{admin}** **Admin >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   - **Menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. Select the name of the cluster you want to disable.
 1. Toggle **GitLab Integration** off (in gray).
 1. Click **Save changes**.

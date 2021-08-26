@@ -212,6 +212,7 @@ export default {
           <linked-pipelines-mini-list
             v-if="item.triggered.length"
             :triggered="item.triggered"
+            :pipeline-path="item.path"
             data-testid="mini-graph-downstream"
           />
         </div>

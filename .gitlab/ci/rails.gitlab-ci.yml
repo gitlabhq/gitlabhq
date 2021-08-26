@@ -351,18 +351,12 @@ db:migrate-from-previous-major-version:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
     PROJECT_TO_CHECKOUT: "gitlab-foss"
-    TAG_TO_CHECKOUT: "v12.10.14"
+    TAG_TO_CHECKOUT: "v13.12.9"
   script:
     - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
     - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
     - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
     - git checkout -f FETCH_HEAD
-    # Patch Gemfile of the previous major version for compatibility.
-    - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
-    - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12'/" Gemfile
-    - sed -i -e "s/gem 'nokogiri', '~> 1.10.5'/gem 'nokogiri', '~> 1.11.0'/" Gemfile
-    - sed -i -e "s/gem 'mimemagic', '~> 0.3.2'/gem 'ruby-magic', '~> 0.4.0'/" Gemfile
-    - run_timed_command "bundle update --bundler google-protobuf nokogiri grpc mimemagic bootsnap"
     - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
     - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
     - git checkout -f $CI_COMMIT_SHA

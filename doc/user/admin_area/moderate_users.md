@@ -40,7 +40,7 @@ sign in.
 
 To view user sign ups pending approval:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
 
@@ -50,7 +50,7 @@ A user sign up pending approval can be approved or rejected from the Admin Area.
 
 To approve or reject a user sign up:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
 1. (Optional) Select a user.
@@ -75,7 +75,7 @@ administrators can choose to block the user.
 Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
 or directly from the Admin Area. To do this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. (Optional) Select a user.
 1. Select the **{settings}** **User administration** dropdown.
@@ -98,7 +98,7 @@ Users can also be blocked using the [GitLab API](../../api/users.md#block-user).
 
 A blocked user can be unblocked from the Admin Area. To do this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select on the **Blocked** tab.
 1. (Optional) Select a user.
@@ -139,7 +139,7 @@ Personal projects, and group and user history of the deactivated user are left i
 
 A user can be deactivated from the Admin Area. To do this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. (Optional) Select a user.
 1. Select the **{settings}** **User administration** dropdown.
@@ -160,7 +160,7 @@ Users can also be deactivated using the [GitLab API](../../api/users.md#deactiva
 Administrators can enable automatic deactivation of users who have not signed in, or have no activity
 in the last 90 days. To do this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Under **Dormant users**, check **Deactivate dormant users after 90 days of inactivity**.
@@ -178,7 +178,7 @@ A deactivated user can be activated from the Admin Area.
 
 To do this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Deactivated** tab.
 1. (Optional) Select a user.
@@ -205,7 +205,7 @@ To block a user and hide their contributions, administrators can ban the user.
 
 Users can be banned using the Admin Area. To do this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. (Optional) Select a user.
 1. Select the **{settings}** **User administration** dropdown.
@@ -217,7 +217,7 @@ The banned user does not consume a [seat](../../subscriptions/self_managed/index
 
 A banned user can be unbanned using the Admin Area. To do this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
 1. (Optional) Select a user.

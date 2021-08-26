@@ -15,7 +15,7 @@ job artifacts.
 To enable (or disable) [Auto DevOps](../../../topics/autodevops/index.md)
 for all projects:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
 1. Optionally, set up the [Auto DevOps base domain](../../../topics/autodevops/requirements.md#auto-devops-base-domain)
@@ -33,7 +33,7 @@ If you want to disable it for a specific project, you can do so in
 To display details about the instance's shared runners in all projects'
 runner settings:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Enter your shared runner details in the **Shared runner details** field.
@@ -64,7 +64,7 @@ To change it at the:
 
 - Instance level:
 
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > CI/CD**.
   1. Change the value of maximum artifacts size (in MB).
   1. Click **Save changes** for the changes to take effect.
@@ -91,7 +91,7 @@ can be set in the Admin Area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Change the value of default expiration time.
 1. Click **Save changes** for the changes to take effect.
@@ -122,7 +122,7 @@ If disabled at the instance level, you cannot enable this per-project.
 
 To disable the setting:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
@@ -148,7 +148,7 @@ On GitLab.com, the quota is calculated based on your
 
 To change the pipelines minutes quota:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Pipeline minutes quota** box, enter the maximum number of minutes.
@@ -181,7 +181,7 @@ but persisting the traces and artifacts for auditing purposes.
 
 To set the duration for which the jobs are considered as old and expired:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
 1. Set the value of **Archive jobs**.
@@ -198,7 +198,7 @@ As of June 22, 2020 the [value is set](../../gitlab_com/index.md#gitlab-cicd) to
 To set all new [CI/CD variables](../../../ci/variables/index.md) as
 [protected](../../../ci/variables/index.md#protect-a-cicd-variable) by default:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Select **Protect CI/CD variables by default**.
 
@@ -209,7 +209,7 @@ To set all new [CI/CD variables](../../../ci/variables/index.md) as
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Input the new file and path in the **Default CI/CD configuration file** field.
 1. Hit **Save changes** for the changes to take effect.
@@ -245,7 +245,7 @@ in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Required pipeline configuration** section.
 1. Select a CI/CD template from the dropdown.
@@ -259,7 +259,7 @@ GitLab administrators can disable the forwarding of npm requests to [npmjs.com](
 
 To disable it:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
 1. Clear the checkbox **Forward npm package requests to the npm Registry if the packages are not found in the GitLab Package Registry**.
@@ -271,7 +271,7 @@ GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](
 
 To disable it:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
 1. Clear the checkbox **Forward PyPI package requests to the PyPI Registry if the packages are not found in the GitLab Package Registry**.
@@ -283,7 +283,7 @@ GitLab administrators can adjust the maximum allowed file size for each package 
 
 To set the maximum file size:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
 1. Find the package type you would like to adjust.
@@ -304,7 +304,7 @@ By default, all members of a project and group are able to register runners.
 
 To change this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. Go to **Settings > CI/CD**.
 1. Expand the **Runner registration** section.
 1. Select the desired options.

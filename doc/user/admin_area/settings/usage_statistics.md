@@ -73,7 +73,7 @@ If your GitLab instance is behind a proxy, set the appropriate
 
 To enable or disable Service Ping and version check:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > Metrics and profiling**, and expand **Usage statistics**.
 1. Select or clear the **Version check** and **Service ping** checkboxes.
 1. Select **Save changes**.

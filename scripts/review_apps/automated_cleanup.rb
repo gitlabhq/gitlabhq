@@ -95,6 +95,40 @@ class AutomatedCleanup
     delete_helm_releases(releases_to_delete)
   end
 
+  def perform_gitlab_docs_environment_cleanup!(days_for_stop:, days_for_delete:)
+    puts "Checking for Docs Review Apps not updated in the last #{days_for_stop} days..."
+
+    checked_environments = []
+    stop_threshold = threshold_time(days: days_for_stop)
+    delete_threshold = threshold_time(days: days_for_delete)
+
+    max_delete_count = 1000
+    delete_count = 0
+
+    gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc').auto_paginate do |deployment|
+      environment = deployment.environment
+
+      next unless environment
+      next unless environment.name.start_with?('review-docs/')
+      next if checked_environments.include?(environment.slug)
+
+      last_deploy = deployment.created_at
+      deployed_at = Time.parse(last_deploy)
+
+      if deployed_at < delete_threshold
+        delete_environment(environment, deployment)
+        delete_count += 1
+
+        break if delete_count > max_delete_count
+      elsif deployed_at < stop_threshold
+        environment_state = fetch_environment(environment)&.state
+        stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
+      end
+
+      checked_environments << environment.slug
+    end
+  end
+
   def perform_helm_releases_cleanup!(days:)
     puts "Checking for Helm releases that are failed or not updated in the last #{days} days..."
 
@@ -201,6 +235,10 @@ automated_cleanup = AutomatedCleanup.new
 
 timed('Review Apps cleanup') do
   automated_cleanup.perform_gitlab_environment_cleanup!(days_for_stop: 5, days_for_delete: 6)
+end
+
+timed('Docs Review Apps cleanup') do
+  automated_cleanup.perform_gitlab_docs_environment_cleanup!(days_for_stop: 20, days_for_delete: 30)
 end
 
 puts

@@ -14,53 +14,8 @@ CREATE FUNCTION integrations_set_type_new() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-WITH mapping(old_type, new_type) AS (VALUES
-  ('AsanaService',                   'Integrations::Asana'),
-  ('AssemblaService',                'Integrations::Assembla'),
-  ('BambooService',                  'Integrations::Bamboo'),
-  ('BugzillaService',                'Integrations::Bugzilla'),
-  ('BuildkiteService',               'Integrations::Buildkite'),
-  ('CampfireService',                'Integrations::Campfire'),
-  ('ConfluenceService',              'Integrations::Confluence'),
-  ('CustomIssueTrackerService',      'Integrations::CustomIssueTracker'),
-  ('DatadogService',                 'Integrations::Datadog'),
-  ('DiscordService',                 'Integrations::Discord'),
-  ('DroneCiService',                 'Integrations::DroneCi'),
-  ('EmailsOnPushService',            'Integrations::EmailsOnPush'),
-  ('EwmService',                     'Integrations::Ewm'),
-  ('ExternalWikiService',            'Integrations::ExternalWiki'),
-  ('FlowdockService',                'Integrations::Flowdock'),
-  ('HangoutsChatService',            'Integrations::HangoutsChat'),
-  ('IrkerService',                   'Integrations::Irker'),
-  ('JenkinsService',                 'Integrations::Jenkins'),
-  ('JiraService',                    'Integrations::Jira'),
-  ('MattermostService',              'Integrations::Mattermost'),
-  ('MattermostSlashCommandsService', 'Integrations::MattermostSlashCommands'),
-  ('MicrosoftTeamsService',          'Integrations::MicrosoftTeams'),
-  ('MockCiService',                  'Integrations::MockCi'),
-  ('MockMonitoringService',          'Integrations::MockMonitoring'),
-  ('PackagistService',               'Integrations::Packagist'),
-  ('PipelinesEmailService',          'Integrations::PipelinesEmail'),
-  ('PivotaltrackerService',          'Integrations::Pivotaltracker'),
-  ('PrometheusService',              'Integrations::Prometheus'),
-  ('PushoverService',                'Integrations::Pushover'),
-  ('RedmineService',                 'Integrations::Redmine'),
-  ('SlackService',                   'Integrations::Slack'),
-  ('SlackSlashCommandsService',      'Integrations::SlackSlashCommands'),
-  ('TeamcityService',                'Integrations::Teamcity'),
-  ('UnifyCircuitService',            'Integrations::UnifyCircuit'),
-  ('YoutrackService',                'Integrations::Youtrack'),
-  ('WebexTeamsService',              'Integrations::WebexTeams'),
-
-  -- EE-only integrations
-  ('GithubService',                  'Integrations::Github'),
-  ('GitlabSlackApplicationService',  'Integrations::GitlabSlackApplication')
-)
-
-UPDATE integrations SET type_new = mapping.new_type
-FROM mapping
-WHERE integrations.id = NEW.id
-  AND mapping.old_type = NEW.type;
+UPDATE integrations SET type_new = regexp_replace(NEW.type, '\A(.+)Service\Z', 'Integrations::\1')
+WHERE integrations.id = NEW.id;
 RETURN NULL;
 
 END
@@ -18336,7 +18291,8 @@ CREATE TABLE service_desk_settings (
     project_id bigint NOT NULL,
     issue_template_key character varying(255),
     outgoing_name character varying(255),
-    project_key character varying(255)
+    project_key character varying(255),
+    file_template_project_id bigint
 );
 
 CREATE TABLE shards (
@@ -25404,6 +25360,8 @@ CREATE INDEX index_serverless_domain_cluster_on_pages_domain_id ON serverless_do
 
 CREATE INDEX index_service_desk_enabled_projects_on_id_creator_id_created_at ON projects USING btree (id, creator_id, created_at) WHERE (service_desk_enabled = true);
 
+CREATE INDEX index_service_desk_settings_on_file_template_project_id ON service_desk_settings USING btree (file_template_project_id);
+
 CREATE UNIQUE INDEX index_shards_on_name ON shards USING btree (name);
 
 CREATE UNIQUE INDEX index_site_profile_secret_variables_on_site_profile_id_and_key ON dast_site_profile_secret_variables USING btree (dast_site_profile_id, key);
@@ -26264,6 +26222,9 @@ ALTER TABLE ONLY clusters_applications_runners
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY service_desk_settings
+    ADD CONSTRAINT fk_03afb71f06 FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;

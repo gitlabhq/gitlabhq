@@ -16,7 +16,7 @@ the GitLab sign-in page.
 You can add a help message, which is shown at the top of the GitLab `/help` page (for example,
 <https://gitlab.com/help>):
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Sign-in and Help page**.
 1. In **Additional text to show on the Help page**, enter the information you want to display on `/help`.
@@ -34,7 +34,7 @@ is restricted, `/help` is visible only to signed-in users.
 You can add a help message, which is shown on the GitLab sign-in page. The message appears in a new
 section titled **Need Help?**, located below the sign-in page message:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Sign-in and Help page**.
 1. In **Additional text to show on the sign-in page**, enter the information you want to
@@ -47,7 +47,7 @@ You can now see the message on the sign-in page.
 
 GitLab marketing-related entries are occasionally shown on the Help page. To hide these entries:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Sign-in and Help page**.
 1. Select the **Hide marketing-related entries from the Help page** checkbox.
@@ -60,7 +60,7 @@ You can specify a custom URL to which users are directed when they:
 - Select **Support** from the Help dropdown.
 - Select **See our website for help** on the Help page.
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Sign-in and Help page**.
 1. In the **Support page URL** field, enter the URL.
@@ -85,7 +85,7 @@ You can redirect these `/help` links to either:
 - The more navigable and searchable version published at [`docs.gitlab.com`](https://docs.gitlab.com).
 - A destination that meets [necessary requirements](#destination-requirements).
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > Preferences**.
 1. Expand **Sign-in and Help page**.
 1. In the **Documentation pages URL** field, enter the URL.

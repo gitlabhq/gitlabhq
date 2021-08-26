@@ -297,6 +297,7 @@ excluded_attributes:
     - :integrated
   service_desk_setting:
     - :outgoing_name
+    - :file_template_project_id
   priorities:
     - :label_id
   events:

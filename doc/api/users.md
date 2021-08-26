@@ -1467,6 +1467,46 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
 
+## Ban user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
+
+Bans the specified user. Available only for admin.
+
+```plaintext
+POST /users/:id/ban
+```
+
+Parameters:
+
+- `id` (required) - ID of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to ban a user that is not active.
+
+## Unban user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
+
+Unbans the specified user. Available only for admin.
+
+```plaintext
+POST /users/:id/unban
+```
+
+Parameters:
+
+- `id` (required) - ID of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if the user cannot be found.
+- `403 Forbidden` when trying to unban a user that is not banned.
+
 ### Get user contribution events
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)

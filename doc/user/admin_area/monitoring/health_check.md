@@ -146,7 +146,7 @@ Access token has been deprecated in GitLab 9.4 in favor of [IP whitelist](#ip-wh
 An access token needs to be provided while accessing the probe endpoints. You can
 find the current accepted token in the user interface:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Monitoring > Health Check**. (`admin/health_check`)
 
 ![access token](img/health_check_token.png)

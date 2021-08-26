@@ -46,7 +46,7 @@ to `127.0.0.1`, `::1` and `0.0.0.0`, as well as IPv4 `10.0.0.0/8`, `172.16.0.0/1
 
 This behavior can be overridden:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > Network**.
 1. Expand the **Outbound requests** section:
    ![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
@@ -65,7 +65,7 @@ You can allow certain domains and IP addresses to be accessible to both *system 
 and *webhooks* even when local requests are not allowed by adding them to the
 allowlist:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left sidebar, select **Settings > Network** (`/admin/application_settings/network`)
    and expand **Outbound requests**:
 

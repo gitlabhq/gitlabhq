@@ -62,6 +62,26 @@ RSpec.describe Gitlab::Database::Transaction::Context do
     it { expect(data[:queries]).to eq(['SELECT 1', 'SELECT * FROM users']) }
   end
 
+  describe '#track_backtrace' do
+    before do
+      subject.track_backtrace(caller)
+    end
+
+    it { expect(data[:backtraces]).to be_a(Array) }
+    it { expect(data[:backtraces]).to all(be_a(Array)) }
+    it { expect(data[:backtraces].length).to eq(1) }
+    it { expect(data[:backtraces][0][0]).to be_a(String) }
+
+    it 'appends the backtrace' do
+      subject.track_backtrace(caller)
+
+      expect(data[:backtraces].length).to eq(2)
+      expect(subject.backtraces).to be_a(Array)
+      expect(subject.backtraces).to all(be_a(Array))
+      expect(subject.backtraces[1][0]).to be_a(String)
+    end
+  end
+
   describe '#duration' do
     before do
       subject.set_start_time
