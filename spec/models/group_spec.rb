@@ -30,6 +30,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_one(:dependency_proxy_setting) }
+    it { is_expected.to have_one(:dependency_proxy_image_ttl_policy) }
     it { is_expected.to have_many(:dependency_proxy_blobs) }
     it { is_expected.to have_many(:dependency_proxy_manifests) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }

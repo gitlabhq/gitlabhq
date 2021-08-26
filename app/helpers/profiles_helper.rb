@@ -38,6 +38,21 @@ module ProfilesHelper
     status&.availability == availability_values[:busy]
   end
 
+  def middle_dot_divider_classes(stacking, breakpoint)
+    ['gl-mb-3'].tap do |classes|
+      if stacking
+        classes.concat(%w(middle-dot-divider-sm gl-display-block gl-sm-display-inline-block))
+      else
+        classes << 'gl-display-inline-block'
+        classes << if breakpoint.nil?
+                     'middle-dot-divider'
+                   else
+                     "middle-dot-divider-#{breakpoint}"
+                   end
+      end
+    end
+  end
+
   # Overridden in EE::ProfilesHelper#ssh_key_expiration_tooltip
   def ssh_key_expiration_tooltip(key)
     return key.errors.full_messages.join(', ') if key.errors.full_messages.any?

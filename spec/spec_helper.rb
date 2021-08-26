@@ -160,7 +160,6 @@ RSpec.configure do |config|
   config.include GitlabRoutingHelper
   config.include StubExperiments
   config.include StubGitlabCalls
-  config.include StubGitlabData
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include TestEnv

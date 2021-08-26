@@ -7640,11 +7640,6 @@ jquery.caret@^0.3.1:
   resolved "https://registry.yarnpkg.com/jquery.caret/-/jquery.caret-0.3.1.tgz#9c093318faf327eff322e826ca9f3241368bc7b8"
   integrity sha1-nAkzGPrzJ+/zIugmyp8yQTaLx7g=
 
-jquery.waitforimages@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/jquery.waitforimages/-/jquery.waitforimages-2.2.0.tgz#63f23131055a1b060dc913e6d874bcc9b9e6b16b"
-  integrity sha1-Y/IxMQVaGwYNyRPm2HS8ybnmsWs=
-
 "jquery@>= 1.9.1", jquery@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"

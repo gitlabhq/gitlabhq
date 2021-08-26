@@ -11,7 +11,7 @@ You can use [`git fsck`](https://git-scm.com/docs/git-fsck) to verify the integr
 committed to a repository. GitLab administrators can trigger this check for a project using the
 GitLab UI:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Projects**.
 1. Select the project to check.
 1. In the **Repository check** section, select **Trigger repository check**.
@@ -25,7 +25,7 @@ This setting is off by default, because it can cause many false alarms.
 
 Instead of checking repositories manually, GitLab can be configured to run the checks periodically:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
 1. Expand the **Repository maintenance** section.
 1. Enable **Enable repository checks**.
@@ -50,7 +50,7 @@ disk at:
 
 If periodic repository checks cause false alarms, you can clear all repository check states:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
 1. Expand the **Repository maintenance** section.
 1. Select **Clear all repository checks**.

@@ -11,7 +11,7 @@ RSpec.describe Ci::CreatePipelineService do
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
+    stub_ci_pipeline_to_return_yaml_file
   end
 
   describe '#execute' do

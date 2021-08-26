@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Chat::Command do
     let(:pipeline) { command.create_pipeline }
 
     before do
-      stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
+      stub_ci_pipeline_to_return_yaml_file
 
       project.add_developer(chat_name.user)
     end

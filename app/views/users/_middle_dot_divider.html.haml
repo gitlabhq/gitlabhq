@@ -1,0 +1,5 @@
+- stacking = local_assigns.delete(:stacking)
+- breakpoint = local_assigns.delete(:breakpoint)
+
+%div{ class: middle_dot_divider_classes(stacking, breakpoint), **local_assigns }
+  = yield

@@ -18,6 +18,10 @@ module StubGitlabCalls
     stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
   end
 
+  def gitlab_ci_yaml
+    File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+  end
+
   def stub_ci_pipeline_yaml_file(ci_yaml_content)
     allow_any_instance_of(Repository)
       .to receive(:gitlab_ci_yml_for)

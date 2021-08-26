@@ -27,7 +27,7 @@ Before attempting more advanced troubleshooting:
 
 On the **primary** node:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 
 We perform the following health checks on each **secondary** node
@@ -610,7 +610,7 @@ to start again from scratch, there are a few steps that can help you:
 
 ### Design repository failures on mirrored projects and project imports
 
-On the top bar, under **Menu >** **{admin}** **Admin > Geo > Nodes**,
+On the top bar, under **Menu > Admin > Geo > Nodes**,
 if the Design repositories progress bar shows
 `Synced` and `Failed` greater than 100%, and negative `Queued`, then the instance
 is likely affected by
@@ -836,7 +836,7 @@ node's URL matches its external URL.
 
 On the **primary** node:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`

@@ -10,6 +10,7 @@ module Gitlab
           attr_reader :compare_key
           attr_reader :confidence
           attr_reader :identifiers
+          attr_reader :flags
           attr_reader :links
           attr_reader :location
           attr_reader :metadata_version
@@ -30,10 +31,11 @@ module Gitlab
 
           delegate :file_path, :start_line, :end_line, to: :location
 
-          def initialize(compare_key:, identifiers:, links: [], remediations: [], location:, metadata_version:, name:, raw_metadata:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false) # rubocop:disable Metrics/ParameterLists
+          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, metadata_version:, name:, raw_metadata:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false) # rubocop:disable Metrics/ParameterLists
             @compare_key = compare_key
             @confidence = confidence
             @identifiers = identifiers
+            @flags = flags
             @links = links
             @location = location
             @metadata_version = metadata_version
@@ -58,6 +60,7 @@ module Gitlab
               compare_key
               confidence
               identifiers
+              flags
               links
               location
               metadata_version

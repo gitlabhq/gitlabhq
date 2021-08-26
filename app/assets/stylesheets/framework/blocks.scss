@@ -154,12 +154,6 @@
     }
   }
 
-  .cover-desc {
-    &.username:last-child {
-      padding-bottom: $gl-padding;
-    }
-  }
-
   .cover-controls {
     @include media-breakpoint-up(sm) {
       position: absolute;

@@ -12,6 +12,12 @@ FactoryBot.define do
     issue_tracker
   end
 
+  factory :datadog_integration, class: 'Integrations::Datadog' do
+    project
+    active { true }
+    api_key { 'secret' }
+  end
+
   factory :emails_on_push_integration, class: 'Integrations::EmailsOnPush' do
     project
     type { 'EmailsOnPushService' }

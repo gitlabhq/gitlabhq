@@ -14,7 +14,7 @@ in the background.
 
 On the **primary** site:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Select **Edit** of the secondary node you want to tune.
 1. Under **Tuning settings**, there are several variables that can be tuned to

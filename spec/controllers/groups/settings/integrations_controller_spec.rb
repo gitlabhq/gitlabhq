@@ -10,6 +10,21 @@ RSpec.describe Groups::Settings::IntegrationsController do
     sign_in(user)
   end
 
+  it_behaves_like IntegrationsActions do
+    let(:integration_attributes) { { group: group, project: nil } }
+
+    let(:routing_params) do
+      {
+        group_id: group,
+        id: integration.to_param
+      }
+    end
+
+    before do
+      group.add_owner(user)
+    end
+  end
+
   describe '#index' do
     context 'when user is not owner' do
       it 'renders not_found' do

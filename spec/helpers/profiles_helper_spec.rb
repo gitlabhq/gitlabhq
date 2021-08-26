@@ -152,6 +152,22 @@ RSpec.describe ProfilesHelper do
     end
   end
 
+  describe '#middle_dot_divider_classes' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:stacking, :breakpoint, :expected) do
+      nil  | nil | %w(gl-mb-3 gl-display-inline-block middle-dot-divider)
+      true | nil | %w(gl-mb-3 middle-dot-divider-sm gl-display-block gl-sm-display-inline-block)
+      nil  | :sm | %w(gl-mb-3 gl-display-inline-block middle-dot-divider-sm)
+    end
+
+    with_them do
+      it 'returns CSS classes needed to render the middle dot divider' do
+        expect(helper.middle_dot_divider_classes(stacking, breakpoint)).to eq expected
+      end
+    end
+  end
+
   def stub_cas_omniauth_provider
     provider = OpenStruct.new(
       'name' => 'cas3',

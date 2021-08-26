@@ -26,15 +26,15 @@ class Projects::ServicesController < Projects::ApplicationController
     attributes = integration_params[:integration]
 
     if use_inherited_settings?(attributes)
-      @integration.inherit_from_id = default_integration.id
+      integration.inherit_from_id = default_integration.id
 
-      if saved = @integration.save(context: :manual_change)
-        BulkUpdateIntegrationService.new(default_integration, [@integration]).execute
+      if saved = integration.save(context: :manual_change)
+        BulkUpdateIntegrationService.new(default_integration, [integration]).execute
       end
     else
       attributes[:inherit_from_id] = nil
-      @integration.attributes = attributes
-      saved = @integration.save(context: :manual_change)
+      integration.attributes = attributes
+      saved = integration.save(context: :manual_change)
     end
 
     respond_to do |format|
@@ -65,15 +65,15 @@ class Projects::ServicesController < Projects::ApplicationController
   private
 
   def redirect_path
-    safe_redirect_path(params[:redirect_to]).presence || edit_project_service_path(@project, @integration)
+    safe_redirect_path(params[:redirect_to]).presence || edit_project_service_path(project, integration)
   end
 
   def service_test_response
-    unless @integration.update(integration_params[:integration])
-      return { error: true, message: _('Validations failed.'), service_response: @integration.errors.full_messages.join(','), test_failed: false }
+    unless integration.update(integration_params[:integration])
+      return { error: true, message: _('Validations failed.'), service_response: integration.errors.full_messages.join(','), test_failed: false }
     end
 
-    result = ::Integrations::Test::ProjectService.new(@integration, current_user, params[:event]).execute
+    result = ::Integrations::Test::ProjectService.new(integration, current_user, params[:event]).execute
 
     unless result[:success]
       return { error: true, message: s_('Integrations|Connection failed. Please check your settings.'), service_response: result[:message].to_s, test_failed: true }
@@ -93,7 +93,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def integration
-    @integration ||= @project.find_or_initialize_integration(params[:id])
+    @integration ||= project.find_or_initialize_integration(params[:id])
   end
   alias_method :service, :integration
 

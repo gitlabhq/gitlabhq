@@ -357,6 +357,10 @@ class Integration < ApplicationRecord
     []
   end
 
+  def password_fields
+    fields.select { |f| f[:type] == 'password' }.pluck(:name)
+  end
+
   # Expose a list of fields in the JSON endpoint.
   #
   # This list is used in `Integration#as_json(only: json_fields)`.

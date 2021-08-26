@@ -143,7 +143,7 @@ Instance events do not include group or project audit events.
 
 To view the server-wide audit events:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 
 The following user actions are recorded:
@@ -249,7 +249,7 @@ audit events.
 
 To export the Audit Events to CSV:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. Select the available search [filters](#search).
 1. Select **Export as CSV**.

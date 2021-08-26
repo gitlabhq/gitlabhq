@@ -85,7 +85,7 @@ Registration is not yet required for participation, but will be added in a futur
 You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
 
 1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. Select **Preview payload**.
@@ -107,7 +107,7 @@ configuration file.
 To disable Service Ping in the GitLab UI:
 
 1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. Clear the **Enable service ping** checkbox.
@@ -494,7 +494,7 @@ checking the configuration file of your GitLab instance:
 
 - Using the Admin Area:
 
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
   1. Are you able to check or uncheck the checkbox to disable Service Ping?
@@ -551,7 +551,7 @@ To work around this bug, you have two options:
      sudo gitlab-ctl reconfigure
      ```
 
-  1. In GitLab, on the top bar, select **Menu >** **{admin}** **Admin**.
+  1. In GitLab, on the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
   1. Clear the **Enable service ping** checkbox.

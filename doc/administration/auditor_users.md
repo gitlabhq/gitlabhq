@@ -57,7 +57,7 @@ helpful:
 
 To create an Auditor user:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Create a new user or edit an existing one, and in the **Access** section
    select Auditor.

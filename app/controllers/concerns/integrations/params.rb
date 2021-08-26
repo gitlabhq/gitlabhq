@@ -77,18 +77,15 @@ module Integrations
       :webhook
     ].freeze
 
-    # Parameters to ignore if no value is specified
-    FILTER_BLANK_PARAMS = [:password].freeze
-
     def integration_params
-      dynamic_params = @integration.event_channel_names + @integration.event_names # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      dynamic_params = integration.event_channel_names + integration.event_names
       allowed = allowed_integration_params + dynamic_params
       return_value = params.permit(:id, integration: allowed, service: allowed)
       return_value[:integration] ||= return_value.delete(:service)
       param_values = return_value[:integration]
 
       if param_values.is_a?(ActionController::Parameters)
-        FILTER_BLANK_PARAMS.each do |param|
+        integration.password_fields.each do |param|
           param_values.delete(param) if param_values[param].blank?
         end
       end

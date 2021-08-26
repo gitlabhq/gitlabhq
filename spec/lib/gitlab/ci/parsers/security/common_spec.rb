@@ -13,11 +13,18 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
       # The path 'yarn.lock' was initially used by DependencyScanning, it is okay for SAST locations to use it, but this could be made better
       let(:location) { ::Gitlab::Ci::Reports::Security::Locations::Sast.new(file_path: 'yarn.lock', start_line: 1, end_line: 1) }
       let(:tracking_data) { nil }
+      let(:vulnerability_flags_data) do
+        [
+          ::Gitlab::Ci::Reports::Security::Flag.new(type: 'flagged-as-likely-false-positive', origin: 'post analyzer X', description: 'static string to sink'),
+          ::Gitlab::Ci::Reports::Security::Flag.new(type: 'flagged-as-likely-false-positive', origin: 'post analyzer Y', description: 'integer to sink')
+        ]
+      end
 
       before do
         allow_next_instance_of(described_class) do |parser|
           allow(parser).to receive(:create_location).and_return(location)
           allow(parser).to receive(:tracking_data).and_return(tracking_data)
+          allow(parser).to receive(:create_flags).and_return(vulnerability_flags_data)
         end
 
         artifact.each_blob { |blob| described_class.parse!(blob, report, vulnerability_finding_signatures_enabled) }
@@ -228,6 +235,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
           described_class.parse!({}.to_json, empty_report)
 
           expect(empty_report.analyzer).to be_nil
+        end
+      end
+
+      describe 'parsing flags' do
+        it 'returns flags object for each finding' do
+          flags = report.findings.first.flags
+
+          expect(flags).to contain_exactly(
+            have_attributes(type: 'flagged-as-likely-false-positive', origin: 'post analyzer X', description: 'static string to sink'),
+            have_attributes(type: 'flagged-as-likely-false-positive', origin: 'post analyzer Y', description: 'integer to sink')
+          )
         end
       end
 

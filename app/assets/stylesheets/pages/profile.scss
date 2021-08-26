@@ -70,14 +70,6 @@
   }
 }
 
-.profile-link-holder {
-  display: inline;
-
-  a:not(.text-link) {
-    text-decoration: none;
-  }
-}
-
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
   @include middle-dot-divider;

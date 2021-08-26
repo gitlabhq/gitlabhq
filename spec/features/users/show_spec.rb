@@ -186,7 +186,17 @@ RSpec.describe 'User page' do
   end
 
   context 'with blocked profile' do
-    let_it_be(:user) { create(:user, state: :blocked) }
+    let_it_be(:user) do
+      create(
+        :user,
+        state: :blocked,
+        organization: 'GitLab - work info test',
+        job_title: 'Frontend Engineer',
+        pronunciation: 'pruh-nuhn-see-ay-shn'
+      )
+    end
+
+    let_it_be(:status) { create(:user_status, user: user, message: "Working hard!") }
 
     it 'shows no tab' do
       subject
@@ -211,7 +221,10 @@ RSpec.describe 'User page' do
       subject
 
       expect(page).not_to have_css(".profile-user-bio")
-      expect(page).not_to have_css(".profile-link-holder")
+      expect(page).not_to have_content('GitLab - work info test')
+      expect(page).not_to have_content('Frontend Engineer')
+      expect(page).not_to have_content('Working hard!')
+      expect(page).not_to have_content("Pronounced as: pruh-nuhn-see-ay-shn")
     end
 
     it 'shows username' do
@@ -222,7 +235,17 @@ RSpec.describe 'User page' do
   end
 
   context 'with unconfirmed user' do
-    let_it_be(:user) { create(:user, :unconfirmed) }
+    let_it_be(:user) do
+      create(
+        :user,
+        :unconfirmed,
+        organization: 'GitLab - work info test',
+        job_title: 'Frontend Engineer',
+        pronunciation: 'pruh-nuhn-see-ay-shn'
+      )
+    end
+
+    let_it_be(:status) { create(:user_status, user: user, message: "Working hard!") }
 
     shared_examples 'unconfirmed user profile' do
       before do
@@ -240,7 +263,10 @@ RSpec.describe 'User page' do
 
       it 'shows no additional fields' do
         expect(page).not_to have_css(".profile-user-bio")
-        expect(page).not_to have_css(".profile-link-holder")
+        expect(page).not_to have_content('GitLab - work info test')
+        expect(page).not_to have_content('Frontend Engineer')
+        expect(page).not_to have_content('Working hard!')
+        expect(page).not_to have_content("Pronounced as: pruh-nuhn-see-ay-shn")
       end
 
       it 'shows private profile message' do
