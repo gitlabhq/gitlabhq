@@ -6,10 +6,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   let(:load_balancer) { Gitlab::Database::LoadBalancing::LoadBalancer.new([]) }
   let(:service) do
     described_class.new(
+      load_balancer,
       nameserver: 'localhost',
       port: 8600,
-      record: 'foo',
-      load_balancer: load_balancer
+      record: 'foo'
     )
   end
 
@@ -26,11 +26,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
     describe ':record_type' do
       subject do
         described_class.new(
+          load_balancer,
           nameserver: 'localhost',
           port: 8600,
           record: 'foo',
-          record_type: record_type,
-          load_balancer: load_balancer
+          record_type: record_type
         )
       end
 
@@ -217,11 +217,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   describe '#addresses_from_dns' do
     let(:service) do
       described_class.new(
+        load_balancer,
         nameserver: 'localhost',
         port: 8600,
         record: 'foo',
-        record_type: record_type,
-        load_balancer: load_balancer
+        record_type: record_type
       )
     end
 

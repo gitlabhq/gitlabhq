@@ -102,7 +102,9 @@ module Gitlab
       def self.start_service_discovery
         return unless service_discovery_enabled?
 
-        ServiceDiscovery.new(service_discovery_configuration).start
+        ServiceDiscovery
+          .new(proxy.load_balancer, **service_discovery_configuration)
+          .start
       end
 
       # Configures proxying of requests.
@@ -111,7 +113,9 @@ module Gitlab
 
         # Populate service discovery immediately if it is configured
         if service_discovery_enabled?
-          ServiceDiscovery.new(service_discovery_configuration).perform_service_discovery
+          ServiceDiscovery
+            .new(proxy.load_balancer, **service_discovery_configuration)
+            .perform_service_discovery
         end
       end
 

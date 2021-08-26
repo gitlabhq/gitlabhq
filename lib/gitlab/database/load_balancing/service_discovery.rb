@@ -49,14 +49,14 @@ module Gitlab
         # use_tcp - Use TCP instaed of UDP to look up resources
         # load_balancer - The load balancer instance to use
         def initialize(
+          load_balancer,
           nameserver:,
           port:,
           record:,
           record_type: 'A',
           interval: 60,
           disconnect_timeout: 120,
-          use_tcp: false,
-          load_balancer: LoadBalancing.proxy.load_balancer
+          use_tcp: false
         )
           @nameserver = nameserver
           @port = port

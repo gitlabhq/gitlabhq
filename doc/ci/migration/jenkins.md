@@ -199,7 +199,7 @@ GitLab takes advantage of our connected ecosystem to automatically pull these ki
 your Merge Requests, pipeline details pages, and other locations. You may find that you actually don't
 need to configure anything to have these appear.
 
-If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../index.md#feature-set) has the full list
+If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../index.md#features) has the full list
 of bundled features and links to the documentation for each.
 
 ### Templates

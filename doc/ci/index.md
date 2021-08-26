@@ -9,33 +9,23 @@ type: index
 
 # GitLab CI/CD **(FREE)**
 
-GitLab CI/CD is a tool built into GitLab for software development
-through the [continuous methodologies](introduction/index.md):
+GitLab CI/CD is a tool for software development using the continuous methodologies:
 
-- Continuous Integration (CI)
-- Continuous Delivery (CD)
-- Continuous Deployment (CD)
+- [Continuous Integration (CI)](introduction/index.md#continuous-integration)
+- [Continuous Delivery (CD)](introduction/index.md#continuous-delivery)
+- [Continuous Deployment (CD)](introduction/index.md#continuous-deployment)
 
 NOTE:
 Out-of-the-box management systems can decrease hours spent on maintaining toolchains by 10% or more.
 Watch our ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
-webcast to learn about continuous methods and how the GitLab built-in CI can help you simplify and scale software development.
+webcast to learn about continuous methods and how GitLab CI/CD can help you simplify and scale software development.
 
-Continuous Integration works by pushing small code chunks to your
-application's codebase hosted in a Git repository, and to every
-push, run a pipeline of scripts to build, test, and validate the
-code changes before merging them into the main branch.
-
-Continuous Delivery and Deployment consist of a step further CI,
-deploying your application to production at every
-push to the default branch of the repository.
-
-These methodologies allow you to catch bugs and errors early in
-the development cycle, ensuring that all the code deployed to
+Use GitLab CI/CD to catch bugs and errors early in
+the development cycle. Ensure that all the code deployed to
 production complies with the code standards you established for
 your app.
 
-GitLab can also automatically detect, build, test, deploy, and
+GitLab CI/CD can automatically build, test, deploy, and
 monitor your applications by using [Auto DevOps](../topics/autodevops/index.md).
 
 For a complete overview of these methodologies and GitLab CI/CD,
@@ -82,21 +72,20 @@ GitLab CI/CD supports numerous configuration options:
 Certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
-## Feature set
+## Features
 
-Use the vast GitLab CI/CD to easily configure it for specific purposes.
-Its feature set is listed on the table below according to DevOps stages.
+GitLab CI/CD features, grouped by DevOps stage, include:
 
 | Feature                                                                                         | Description                                                                                                                    |
 |:------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
 | **Configure**                                                                                   |                                                                                                                                |
 | [Auto DevOps](../topics/autodevops/index.md)                                                    | Set up your app's entire lifecycle.                                                                                            |
-| [ChatOps](chatops/index.md)                                                                    | Trigger CI jobs from chat, with results sent back to the channel.                                                              |
+| [ChatOps](chatops/index.md)                                                                     | Trigger CI jobs from chat, with results sent back to the channel.                                                              |
 |-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
 | **Verify**                                                                                      |                                                                                                                                |
 | [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md)    | Quickly determine the browser performance impact of pending code changes.                                                      |
 | [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md)          | Quickly determine the server performance impact of pending code changes.                                                       |
-| [CI services](services/index.md)                                                               | Link Docker containers with your base image.                                                                                   |
+| [CI services](services/index.md)                                                                | Link Docker containers with your base image.                                                                                   |
 | [Code Quality](../user/project/merge_requests/code_quality.md)                                  | Analyze your source code quality.                                                                                              |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)**       | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud.                                     |
 | [Interactive Web Terminals](interactive_web_terminal/index.md) **(FREE SELF)**                  | Open an interactive web terminal to debug the running jobs.                                                                    |
@@ -122,28 +111,27 @@ Its feature set is listed on the table below according to DevOps stages.
 
 ## Examples
 
-Find example project code and tutorials for using GitLab CI/CD with a variety of app frameworks, languages, and platforms
-on the [CI Examples](examples/README.md) page.
+See the [CI/CD examples](examples/README.md) page for example project code and tutorials for
+using GitLab CI/CD with various:
 
-## Administration **(FREE SELF)**
+- App frameworks
+- Languages
+- Platforms
 
-As a GitLab administrator, you can change the default behavior
-of GitLab CI/CD for:
+## Administration
 
-- An [entire GitLab instance](../user/admin_area/settings/continuous_integration.md).
-- Specific projects, using [pipelines settings](pipelines/settings.md).
+You can change the default behavior of GitLab CI/CD for:
+
+- An entire GitLab instance in the [CI/CD administration settings](../administration/index.md#cicd-settings).
+- Specific projects in the [pipelines settings](pipelines/settings.md).
 
 See also:
 
 - [Enable or disable GitLab CI/CD in a project](enable_or_disable_ci.md).
-- [Disable GitLab CI/CD by default in new projects](../administration/cicd.md). **(FREE SELF)**
-- Other [CI administration settings](../administration/index.md#cicd-settings).
 
 ## References
 
-### Why GitLab CI/CD?
-
-Learn more about:
+Learn more about GitLab CI/CD:
 
 - [Why you might choose GitLab CI/CD](https://about.gitlab.com/blog/2016/10/17/gitlab-ci-oohlala/).
 - [Reasons you might migrate from another platform](https://about.gitlab.com/blog/2016/07/22/building-our-web-app-on-gitlab-ci/).
@@ -151,10 +139,10 @@ Learn more about:
 
 See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJaIOzCX4Vqg3dlwfELC3u2jEeCBbDk) presentation.
 
-### Breaking changes
+### Major version changes (breaking)
 
 As GitLab CI/CD has evolved, certain breaking changes have
-been necessary. These are:
+been necessary.
 
 #### 13.0
 

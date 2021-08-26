@@ -204,9 +204,11 @@ RSpec.describe Gitlab::Database::LoadBalancing do
   end
 
   describe '.configure_proxy' do
-    it 'configures the connection proxy' do
+    before do
       allow(ActiveRecord::Base).to receive(:load_balancing_proxy=)
+    end
 
+    it 'configures the connection proxy' do
       described_class.configure_proxy
 
       expect(ActiveRecord::Base).to have_received(:load_balancing_proxy=)
@@ -214,15 +216,22 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
 
     context 'when service discovery is enabled' do
-      let(:service_discovery) { double(Gitlab::Database::LoadBalancing::ServiceDiscovery) }
-
       it 'runs initial service discovery when configuring the connection proxy' do
+        discover = instance_spy(Gitlab::Database::LoadBalancing::ServiceDiscovery)
+
         allow(described_class)
           .to receive(:configuration)
           .and_return('discover' => { 'record' => 'foo' })
 
-        expect(Gitlab::Database::LoadBalancing::ServiceDiscovery).to receive(:new).and_return(service_discovery)
-        expect(service_discovery).to receive(:perform_service_discovery)
+        expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
+          .to receive(:new)
+          .with(
+            an_instance_of(Gitlab::Database::LoadBalancing::LoadBalancer),
+            an_instance_of(Hash)
+          )
+          .and_return(discover)
+
+        expect(discover).to receive(:perform_service_discovery)
 
         described_class.configure_proxy
       end
@@ -297,10 +306,16 @@ RSpec.describe Gitlab::Database::LoadBalancing do
         .and_return(true)
 
       instance = double(:instance)
+      lb = instance_spy(Gitlab::Database::LoadBalancing::LoadBalancer)
+      proxy = double(:proxy, load_balancer: lb)
+
+      allow(Gitlab::Database::LoadBalancing)
+        .to receive(:proxy)
+        .and_return(proxy)
 
       expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
         .to receive(:new)
-        .with(an_instance_of(Hash))
+        .with(lb, an_instance_of(Hash))
         .and_return(instance)
 
       expect(instance)

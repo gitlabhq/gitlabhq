@@ -36085,6 +36085,9 @@ msgstr ""
 msgid "UsageQuota|Snippets"
 msgstr ""
 
+msgid "UsageQuota|Something went wrong while fetching project storage statistics"
+msgstr ""
+
 msgid "UsageQuota|Storage"
 msgstr ""
 

@@ -3,7 +3,7 @@
 class ExpireJobCacheWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  data_consistency :delayed, feature_flag: :load_balancing_for_expire_job_cache_worker
+  data_consistency :delayed
 
   sidekiq_options retry: 3
   include PipelineQueue

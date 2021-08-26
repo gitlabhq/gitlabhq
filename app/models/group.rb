@@ -823,9 +823,15 @@ class Group < Namespace
   end
 
   def self.groups_including_descendants_by(group_ids)
-    Gitlab::ObjectHierarchy
-      .new(Group.where(id: group_ids))
+    groups = Group.where(id: group_ids)
+
+    if Feature.enabled?(:linear_group_including_descendants_by, default_enabled: :yaml)
+      groups.self_and_descendants
+    else
+      Gitlab::ObjectHierarchy
+      .new(groups)
       .base_and_descendants
+    end
   end
 
   def disable_shared_runners!

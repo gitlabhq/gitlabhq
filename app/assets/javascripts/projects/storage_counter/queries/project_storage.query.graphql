@@ -1,0 +1,15 @@
+query getProjectStorageCount($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    statistics {
+      buildArtifactsSize
+      lfsObjectsSize
+      packagesSize
+      repositorySize
+      snippetsSize
+      storageSize
+      uploadsSize
+      wikiSize
+    }
+  }
+}
