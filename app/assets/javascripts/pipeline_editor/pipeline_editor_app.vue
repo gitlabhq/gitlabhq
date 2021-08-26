@@ -10,6 +10,7 @@ import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue';
 import {
+  COMMIT_SHA_POLL_INTERVAL,
   EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_ERROR,
   EDITOR_APP_STATUS_LOADING,
@@ -48,6 +49,7 @@ export default {
       failureType: null,
       failureReasons: [],
       initialCiFileContent: '',
+      isFetchingCommitSha: false,
       isNewCiConfigFile: false,
       lastCommittedContent: '',
       currentCiFileContent: '',
@@ -170,15 +172,22 @@ export default {
         // in this case, we start polling until we get a commit sha.
         if (pipelineNodes.length === 0) {
           if (![EDITOR_APP_STATUS_LOADING, EDITOR_APP_STATUS_EMPTY].includes(this.appStatus)) {
-            this.$apollo.queries.commitSha.startPolling(1000);
+            this.$apollo.queries.commitSha.startPolling(COMMIT_SHA_POLL_INTERVAL);
             return this.commitSha;
           }
 
           return '';
         }
 
+        const latestCommitSha = pipelineNodes[0].sha;
+        if (this.isFetchingCommitSha && latestCommitSha === this.commitSha) {
+          this.$apollo.queries.commitSha.startPolling(COMMIT_SHA_POLL_INTERVAL);
+          return this.commitSha;
+        }
+
+        this.isFetchingCommitSha = false;
         this.$apollo.queries.commitSha.stopPolling();
-        return pipelineNodes[0].sha;
+        return latestCommitSha;
       },
     },
     currentBranch: {
@@ -280,6 +289,10 @@ export default {
     updateCiConfig(ciFileContent) {
       this.currentCiFileContent = ciFileContent;
     },
+    updateCommitSha() {
+      this.isFetchingCommitSha = true;
+      this.$apollo.queries.commitSha.refetch();
+    },
     updateOnCommit({ type }) {
       this.reportSuccess(type);
 
@@ -333,6 +346,7 @@ export default {
         @showError="showErrorAlert"
         @refetchContent="refetchContent"
         @updateCiConfig="updateCiConfig"
+        @updateCommitSha="updateCommitSha"
       />
       <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />
     </div>

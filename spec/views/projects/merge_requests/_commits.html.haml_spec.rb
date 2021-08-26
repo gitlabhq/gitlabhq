@@ -21,7 +21,7 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
     controller.prepend_view_path('app/views/projects')
 
     assign(:merge_request, merge_request)
-    assign(:commits, merge_request.commits)
+    assign(:commits, merge_request.commits(load_from_gitaly: true))
     assign(:hidden_commit_count, 0)
   end
 
@@ -32,6 +32,12 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
     href = diffs_project_merge_request_path(target_project, merge_request, commit_id: commit)
 
     expect(rendered).to have_link(href: href)
+  end
+
+  it 'shows signature verification badge' do
+    render
+
+    expect(rendered).to have_css('.gpg-status-box')
   end
 
   context 'when there are hidden commits' do

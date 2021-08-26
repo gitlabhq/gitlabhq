@@ -175,7 +175,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # or from cache if already merged
     @commits =
       set_commits_for_rendering(
-        @merge_request.recent_commits.with_latest_pipeline(@merge_request.source_branch).with_markdown_cache,
+        @merge_request.recent_commits(load_from_gitaly: true).with_latest_pipeline(@merge_request.source_branch).with_markdown_cache,
         commits_count: @merge_request.commits_count
       )
 

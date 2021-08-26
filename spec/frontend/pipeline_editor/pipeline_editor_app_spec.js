@@ -29,6 +29,7 @@ import {
   mockCommitShaResults,
   mockDefaultBranch,
   mockEmptyCommitShaResults,
+  mockNewCommitShaResults,
   mockProjectFullPath,
 } from './mock_data';
 
@@ -282,7 +283,7 @@ describe('Pipeline editor app component', () => {
           expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
         });
 
-        it('polls for commit sha while pipeline data is not yet available', async () => {
+        it('polls for commit sha while pipeline data is not yet available for newly committed branch', async () => {
           jest
             .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
             .mockImplementation(jest.fn());
@@ -295,13 +296,37 @@ describe('Pipeline editor app component', () => {
           expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(1);
         });
 
-        it('stops polling for commit sha when pipeline data is available', async () => {
+        it('polls for commit sha while pipeline data is not yet available for current branch', async () => {
+          jest
+            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
+            .mockImplementation(jest.fn());
+
+          // simulate a commit to the current branch
+          findEditorHome().vm.$emit('updateCommitSha');
+          await waitForPromises();
+
+          expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(1);
+        });
+
+        it('stops polling for commit sha when pipeline data is available for newly committed branch', async () => {
           jest
             .spyOn(wrapper.vm.$apollo.queries.commitSha, 'stopPolling')
             .mockImplementation(jest.fn());
 
           mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
           await wrapper.vm.$apollo.queries.commitSha.refetch();
+
+          expect(wrapper.vm.$apollo.queries.commitSha.stopPolling).toHaveBeenCalledTimes(1);
+        });
+
+        it('stops polling for commit sha when pipeline data is available for current branch', async () => {
+          jest
+            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'stopPolling')
+            .mockImplementation(jest.fn());
+
+          mockLatestCommitShaQuery.mockResolvedValue(mockNewCommitShaResults);
+          findEditorHome().vm.$emit('updateCommitSha');
+          await waitForPromises();
 
           expect(wrapper.vm.$apollo.queries.commitSha.stopPolling).toHaveBeenCalledTimes(1);
         });

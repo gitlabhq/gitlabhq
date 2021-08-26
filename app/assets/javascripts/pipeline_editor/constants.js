@@ -43,3 +43,5 @@ export const pipelineEditorTrackingOptions = {
 
 export const TEMPLATE_REPOSITORY_URL =
   'https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates';
+
+export const COMMIT_SHA_POLL_INTERVAL = 1000;

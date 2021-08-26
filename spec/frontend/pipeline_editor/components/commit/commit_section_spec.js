@@ -177,6 +177,10 @@ describe('Pipeline Editor | Commit section', () => {
       expect(wrapper.emitted('commit')[0]).toEqual([{ type: COMMIT_SUCCESS }]);
     });
 
+    it('emits an event to refetch the commit sha', () => {
+      expect(wrapper.emitted('updateCommitSha')).toHaveLength(1);
+    });
+
     it('shows no saving state', () => {
       expect(findCommitBtnLoadingIcon().exists()).toBe(false);
     });
@@ -215,6 +219,10 @@ describe('Pipeline Editor | Commit section', () => {
           branch: newBranch,
         },
       });
+    });
+
+    it('does not emit an event to refetch the commit sha', () => {
+      expect(wrapper.emitted('updateCommitSha')).toBeUndefined();
     });
   });
 

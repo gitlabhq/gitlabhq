@@ -9,6 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
 
+## SSH key restrictions
+
+GitLab.com uses the default [SSH key restrictions](../../security/ssh_keys_restrictions.md).
+
 ## SSH host keys fingerprints
 
 Below are the fingerprints for SSH host keys on GitLab.com. The first time you

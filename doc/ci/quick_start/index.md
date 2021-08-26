@@ -141,8 +141,22 @@ The pipeline starts when the commit is committed.
   [CI Lint tool](../lint.md), which is available in every project.
 - You can also use [CI/CD configuration visualization](../pipeline_editor/index.md#visualize-ci-configuration) to
   view a graphical representation of your `.gitlab-ci.yml` file.
-- For the complete `.gitlab-ci.yml` syntax, see
-  [the `.gitlab-ci.yml` reference topic](../yaml/index.md).
+- Each job contains scripts and stages:
+  - The [`default`](../yaml/index.md#custom-default-keyword-values) keyword is for
+    custom defaults, for example with [`before_script`](../yaml/index.md#before_script)
+    and [`after_script`](../yaml/index.md#after_script).
+  - [`stage`](../yaml/index.md#stage) describes the sequential execution of jobs.
+    Jobs in a single stage run in parallel as long as there are available runners.
+  - Use [Directed Acyclic Graphs (DAG)](../directed_acyclic_graph/index.md) keywords
+    to run jobs out of stage order.
+- You can set additional configuration to customize how your jobs and stages perform:
+  - Use the [`rules`](../yaml/index.md#rules) keyword to specify when to run or skip jobs.
+    The `only` and `except` legacy keywords are still supported, but can't be used
+    with `rules` in the same job.
+  - Keep information across jobs and stages persistent in a pipeline with [`cache`](../yaml/index.md#cache))
+    and [`artifacts`](../yaml/index.md#artifacts). These keywords are ways to store
+    dependencies and job output, even when using ephemeral runners for each job.
+- For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` reference topic](../yaml/index.md).
 
 ### View the status of your pipeline and jobs
 

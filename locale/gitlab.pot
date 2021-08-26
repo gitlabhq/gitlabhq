@@ -8497,9 +8497,6 @@ msgstr ""
 msgid "Configure limits for web and API requests."
 msgstr ""
 
-msgid "Configure limits on the number of inbound alerts able to be sent to a project."
-msgstr ""
-
 msgid "Configure paths to be protected by Rack Attack."
 msgstr ""
 
@@ -12350,9 +12347,6 @@ msgstr ""
 msgid "Enable Gitpod?"
 msgstr ""
 
-msgid "Enable Incident Management inbound alert limit"
-msgstr ""
-
 msgid "Enable Invisible Captcha during sign up"
 msgstr ""
 
@@ -12438,6 +12432,9 @@ msgid "Enable health and performance metrics endpoint"
 msgstr ""
 
 msgid "Enable in-product marketing emails"
+msgstr ""
+
+msgid "Enable incident management inbound alert limit"
 msgstr ""
 
 msgid "Enable integration"
@@ -16499,9 +16496,6 @@ msgstr ""
 msgid "Helps prevent malicious users hide their activity"
 msgstr ""
 
-msgid "Helps reduce alert volume (e.g. if creating too many issues)"
-msgstr ""
-
 msgid "Helps reduce request volume (e.g. from crawlers or abusive bots)"
 msgstr ""
 
@@ -20063,6 +20057,9 @@ msgid "Limit sign in from multiple ips"
 msgstr ""
 
 msgid "Limit the number of concurrent operations this secondary node can run in the background."
+msgstr ""
+
+msgid "Limit the number of inbound incident management alerts that can be sent to a project."
 msgstr ""
 
 msgid "Limit the number of issues and epics per minute a user can create through web and API requests."
@@ -27558,6 +27555,9 @@ msgstr ""
 msgid "Redis"
 msgstr ""
 
+msgid "Reduce incident management alert volume (for example, if too many issues are being created)."
+msgstr ""
+
 msgid "Reduce project visibility"
 msgstr ""
 
@@ -33536,6 +33536,9 @@ msgid "The subject will be used as the title of the new issue, and the message w
 msgstr ""
 
 msgid "The tag name can't be changed for an existing release."
+msgstr ""
+
+msgid "The time period in seconds that the maximum requests per project limit applies to."
 msgstr ""
 
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."

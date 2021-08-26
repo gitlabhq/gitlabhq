@@ -98,7 +98,7 @@ To access the default page for Admin Area settings:
 | [Package Registry Rate Limits](package_registry_rate_limits.md) | Configure specific limits for Packages API requests that supersede the user and IP rate limits. |
 | [Outbound requests](../../../security/webhooks.md) | Allow requests to the local network from hooks and services. |
 | [Protected Paths](protected_paths.md) | Configure paths to be protected by Rack Attack. |
-| [Incident Management](../../../operations/incident_management/index.md) Limits | Configure limits on the number of inbound alerts able to be sent to a project. |
+| [Incident Management](../../../operations/incident_management/index.md) Limits | Limit the number of inbound alerts that can be sent to a project. |
 | [Notes creation limit](rate_limit_on_notes_creation.md)| Set a rate limit on the note creation requests. |
 
 ## Geo

@@ -288,9 +288,9 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 
-  def commits(limit: nil)
-    strong_memoize(:"commits_#{limit || 'all'}") do
-      load_commits(limit: limit)
+  def commits(limit: nil, load_from_gitaly: false)
+    strong_memoize(:"commits_#{limit || 'all'}_#{load_from_gitaly}") do
+      load_commits(limit: limit, load_from_gitaly: load_from_gitaly)
     end
   end
 
@@ -700,9 +700,14 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 
-  def load_commits(limit: nil)
-    commits = merge_request_diff_commits.with_users.limit(limit)
-      .map { |commit| Commit.from_hash(commit.to_hash, project) }
+  def load_commits(limit: nil, load_from_gitaly: false)
+    if load_from_gitaly
+      commits = Gitlab::Git::Commit.batch_by_oid(repository, merge_request_diff_commits.limit(limit).map(&:sha))
+      commits = Commit.decorate(commits, project)
+    else
+      commits = merge_request_diff_commits.with_users.limit(limit)
+        .map { |commit| Commit.from_hash(commit.to_hash, project) }
+    end
 
     CommitCollection
       .new(merge_request.source_project, commits, merge_request.source_branch)

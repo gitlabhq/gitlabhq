@@ -36,6 +36,16 @@ An icon is visible to the user of a restricted key in the SSH keys section of th
 
 Hovering over this icon tells you why the key is restricted.
 
+## Default settings
+
+By default, the GitLab.com and self-managed settings for the
+[supported key types](../ssh/index.md#supported-ssh-key-types) are:
+
+- RSA SSH keys are allowed.
+- DSA SSH keys are forbidden ([since GitLab 11.0](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys)).
+- ECDSA SSH keys are allowed.
+- ED25519 SSH keys are allowed.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

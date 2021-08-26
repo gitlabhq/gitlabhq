@@ -109,6 +109,10 @@ already many such examples that need to be fixed in
 The following are some real examples that have resulted from this and these
 patterns may apply to future cases.
 
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68620) in GitLab 14.3, any
+queries detected that join across databases raises an error (except
+for pre-existing queries).
+
 #### Remove the code
 
 The simplest solution we've seen several times now has been an existing scope

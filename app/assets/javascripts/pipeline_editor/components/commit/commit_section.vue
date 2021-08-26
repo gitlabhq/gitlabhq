@@ -112,6 +112,9 @@ export default {
           this.$emit('commit', { type: COMMIT_SUCCESS });
           this.updateLastCommitBranch(targetBranch);
           this.updateCurrentBranch(targetBranch);
+          if (this.currentBranch === targetBranch) {
+            this.$emit('updateCommitSha');
+          }
         }
       } catch (error) {
         this.$emit('showError', { type: COMMIT_FAILURE, reasons: [error?.message] });
