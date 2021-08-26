@@ -4,9 +4,10 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Facebook OAuth2 OmniAuth Provider **(FREE)**
+# Facebook OAuth 2.0 OmniAuth Provider **(FREE)**
 
-To enable the Facebook OmniAuth provider you must register your application with Facebook. Facebook generates an app ID and secret key for you to use.
+To enable the Facebook OmniAuth provider you must register your application with
+Facebook. Facebook generates an app ID and secret key for you to use.
 
 1. Sign in to the [Facebook Developer Platform](https://developers.facebook.com/).
 
@@ -14,8 +15,9 @@ To enable the Facebook OmniAuth provider you must register your application with
 
 1. Select the type "Website"
 
-1. Enter a name for your app. This can be anything. Consider something like "&lt;Organization&gt;'s GitLab" or "&lt;Your Name&gt;'s GitLab" or
-   something else descriptive.
+1. Enter a name for your app. This can be anything. Consider something like
+   "&lt;Organization&gt;'s GitLab" or "&lt;Your Name&gt;'s GitLab" or something
+   else descriptive.
 
 1. Choose "Create New Facebook App ID"
 
@@ -49,7 +51,8 @@ To enable the Facebook OmniAuth provider you must register your application with
 
 1. Choose "Show" next to the hidden "App Secret"
 
-1. You should now see an app key and app secret (see screenshot). Keep this page open as you continue configuration.
+1. You should now see an app key and app secret (see screenshot). Keep this page
+   open as you continue configuration.
 
    ![Facebook API Keys](img/facebook_api_keys.png)
 
@@ -101,4 +104,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect if you
    installed GitLab via Omnibus or from source respectively.
 
-On the sign in page there should now be a Facebook icon below the regular sign in form. Click the icon to begin the authentication process. Facebook asks the user to sign in and authorize the GitLab application. If everything goes well the user is returned to GitLab and signed in.
+On the sign in page there should now be a Facebook icon below the regular sign
+in form. Click the icon to begin the authentication process. Facebook asks the
+user to sign in and authorize the GitLab application. If everything goes well
+the user is returned to GitLab and signed in.

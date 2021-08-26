@@ -4,8 +4,19 @@ import ListItem from '~/content_editor/extensions/list_item';
 import Paragraph from '~/content_editor/extensions/paragraph';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
 import { getMarkdownSource } from '~/content_editor/services/markdown_sourcemap';
-import { loadMarkdownApiResult, loadMarkdownApiExample } from '../markdown_processing_examples';
 import { createTestEditor, createDocBuilder } from '../test_utils';
+
+const BULLET_LIST_MARKDOWN = `+ list item 1
++ list item 2
+  - embedded list item 3`;
+const BULLET_LIST_HTML = `<ul data-sourcepos="1:1-3:24" dir="auto">
+  <li data-sourcepos="1:1-1:13">list item 1</li>
+  <li data-sourcepos="2:1-3:24">list item 2
+    <ul data-sourcepos="3:3-3:24">
+      <li data-sourcepos="3:3-3:24">embedded list item 3</li>
+    </ul>
+  </li>
+</ul>`;
 
 const SourcemapExtension = Extension.create({
   // lets add `source` attribute to every element using `getMarkdownSource`
@@ -44,11 +55,11 @@ const {
 describe('content_editor/services/markdown_sourcemap', () => {
   it('gets markdown source for a rendered HTML element', async () => {
     const deserialized = await markdownSerializer({
-      render: () => loadMarkdownApiResult('bullet_list_style_3'),
+      render: () => BULLET_LIST_HTML,
       serializerConfig: {},
     }).deserialize({
       schema: tiptapEditor.schema,
-      content: loadMarkdownApiExample('bullet_list_style_3'),
+      content: BULLET_LIST_MARKDOWN,
     });
 
     const expected = doc(

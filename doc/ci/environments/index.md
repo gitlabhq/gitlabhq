@@ -728,6 +728,19 @@ like [Review Apps](../review_apps/index.md) (`review/*`).
 The most specific spec takes precedence over the other wildcard matching. In this case,
 the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
+### Rename an environment
+
+> Renaming environments through the UI [was removed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550). Renaming environments through the API was deprected and [will be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338897).
+
+Renaming an environment through the UI is not possible.
+Instead, you need to delete the old environment and create a new one:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Find the environment and stop it.
+1. Delete the environment.
+1. Create a new environment with your preferred name.
+
 ## Related topics
 
 - [Use GitLab CI to deploy to multiple environments (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)

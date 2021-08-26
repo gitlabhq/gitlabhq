@@ -4,12 +4,12 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Google OAuth2 OmniAuth Provider **(FREE)**
+# Google OAuth 2.0 OmniAuth Provider **(FREE)**
 
-To enable the Google OAuth2 OmniAuth provider you must register your application
+To enable the Google OAuth 2.0 OmniAuth provider you must register your application
 with Google. Google generates a client ID and secret key for you to use.
 
-## Enabling Google OAuth
+## Enable Google OAuth
 
 In Google's side:
 
@@ -47,7 +47,7 @@ In Google's side:
    - Cloud Resource Manager API
    - Cloud Billing API
 
-   To do so you need to:
+   To do so you should:
 
    1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard).
    1. Click on **ENABLE APIS AND SERVICES** button at the top of the page.
@@ -98,8 +98,8 @@ On your GitLab server:
 
 1. Change `YOUR_APP_ID` to the client ID from the Google Developer page
 1. Similarly, change `YOUR_APP_SECRET` to the client secret
-1. Make sure that you configure GitLab to use a fully-qualified domain name, as Google doesn't accept
-   raw IP addresses.
+1. Make sure that you configure GitLab to use a fully-qualified domain name, as
+   Google doesn't accept raw IP addresses.
 
    For Omnibus packages:
 
@@ -115,8 +115,10 @@ On your GitLab server:
    ```
 
 1. Save the configuration file.
-1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect if you
-   installed GitLab via Omnibus or from source respectively.
+1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+   or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for
+   the changes to take effect if you installed GitLab via Omnibus or from source
+   respectively.
 
 On the sign in page there should now be a Google icon below the regular sign in
 form. Click the icon to begin the authentication process. Google asks the

@@ -9,8 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To enable the Auth0 OmniAuth provider, you must create an Auth0 account, and an
 application.
 
-1. Sign in to the [Auth0 Console](https://auth0.com/auth/login). If you need to
-   create an account, you can do so at the same link.
+1. Sign in to the [Auth0 Console](https://auth0.com/auth/login). You can also
+   create an account using the same link.
 
 1. Select **New App/API**.
 

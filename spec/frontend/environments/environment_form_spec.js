@@ -102,4 +102,52 @@ describe('~/environments/components/form.vue', () => {
     wrapper = createWrapper({ loading: true });
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
+  describe('when a new environment is being created', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        environment: {
+          name: '',
+          externalUrl: '',
+        },
+      });
+    });
+
+    it('renders an enabled "Name" field', () => {
+      const nameInput = wrapper.findByLabelText('Name');
+
+      expect(nameInput.attributes().disabled).toBeUndefined();
+      expect(nameInput.element.value).toBe('');
+    });
+
+    it('renders an "External URL" field', () => {
+      const urlInput = wrapper.findByLabelText('External URL');
+
+      expect(urlInput.element.value).toBe('');
+    });
+  });
+
+  describe('when an existing environment is being edited', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        environment: {
+          id: 1,
+          name: 'test',
+          externalUrl: 'https://example.com',
+        },
+      });
+    });
+
+    it('renders a disabled "Name" field', () => {
+      const nameInput = wrapper.findByLabelText('Name');
+
+      expect(nameInput.attributes().disabled).toBe('disabled');
+      expect(nameInput.element.value).toBe('test');
+    });
+
+    it('renders an "External URL" field', () => {
+      const urlInput = wrapper.findByLabelText('External URL');
+
+      expect(urlInput.element.value).toBe('https://example.com');
+    });
+  });
 });

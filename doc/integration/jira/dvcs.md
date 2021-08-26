@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use the Jira DVCS (distributed version control system) connector if you self-host
 your Jira instance, and you want to sync information
 between GitLab and Jira. If you use Jira Cloud and GitLab.com, you should use the
-[GitLab.com for Jira Cloud app](connect-app.md) unless you specifically need the DVCS connector.
+[GitLab.com for Jira Cloud app](connect-app.md) unless you specifically need the
+DVCS connector.
 
 When you configure the Jira DVCS connector, make sure your GitLab and Jira instances
 are accessible.
@@ -61,14 +62,13 @@ you can still perform multiple actions in a single commit:
 
 ## Configure a GitLab application for DVCS
 
-We recommend you create and use a `jira` user in GitLab, and use the account only
-for integration work. A separate account ensures regular account maintenance does not affect
-your integration.
+We recommend you create and use a `jira` user in GitLab, and use the account
+only for integration work. A separate account ensures regular account
+maintenance does not affect your integration.
 
 1. In GitLab, [create a user](../../user/profile/account/create_accounts.md) for Jira to
    use to connect to GitLab. For Jira to access all projects,
-   a user with [administrator](../../user/permissions.md) permissions must
-   create the user with administrator permissions.
+   this user must have an [Administrator](../../user/permissions.md) role.
 1. Sign in as the `jira` user.
 1. In the top right corner, click the account's avatar, and select **Edit profile**.
 1. In the left sidebar, select **Applications**.
@@ -141,7 +141,7 @@ can refresh the data manually from the Jira interface:
    column, select the icon:
    ![Refresh GitLab information in Jira](img/jira_dev_panel_manual_refresh.png)
 
-## Troubleshooting your DVCS connection
+## Troubleshoot your DVCS connection
 
 Refer to the items in this section if you're having problems with your DVCS connector.
 
@@ -174,7 +174,8 @@ Error obtaining access token. Cannot access https://gitlab.example.com from Jira
   must have the appropriate certificate (such as your organization's
   root certificate) added to it .
 
-Refer to Atlassian's documentation and Atlassian Support for assistance setting up Jira correctly:
+Refer to Atlassian's documentation and Atlassian Support for assistance setting
+up Jira correctly:
 
 - [Add a certificate](https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html)
   to the trust store.
@@ -234,7 +235,7 @@ To resolve this issue:
 
 ### Fix synchronization issues
 
-If Jira displays incorrect information, such as deleted branches, you may need to
+If Jira displays incorrect information, such as deleted branches, you may have to
 resynchronize the information. To do so:
 
 1. In Jira, go to **Jira Administration > Applications > DVCS accounts**.

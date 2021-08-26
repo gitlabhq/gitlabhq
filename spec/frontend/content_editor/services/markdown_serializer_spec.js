@@ -8,6 +8,7 @@ import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
 import Image from '~/content_editor/extensions/image';
+import InlineDiff from '~/content_editor/extensions/inline_diff';
 import Italic from '~/content_editor/extensions/italic';
 import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
@@ -18,6 +19,8 @@ import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TableHeader from '~/content_editor/extensions/table_header';
 import TableRow from '~/content_editor/extensions/table_row';
+import TaskItem from '~/content_editor/extensions/task_item';
+import TaskList from '~/content_editor/extensions/task_list';
 import Text from '~/content_editor/extensions/text';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
 import { createTestEditor, createDocBuilder } from '../test_utils';
@@ -40,6 +43,7 @@ const tiptapEditor = createTestEditor({
     Heading,
     HorizontalRule,
     Image,
+    InlineDiff,
     Italic,
     Link,
     ListItem,
@@ -50,6 +54,8 @@ const tiptapEditor = createTestEditor({
     TableCell,
     TableHeader,
     TableRow,
+    TaskItem,
+    TaskList,
     Text,
   ],
 });
@@ -67,6 +73,7 @@ const {
     hardBreak,
     horizontalRule,
     image,
+    inlineDiff,
     italic,
     link,
     listItem,
@@ -77,6 +84,8 @@ const {
     tableCell,
     tableHeader,
     tableRow,
+    taskItem,
+    taskList,
   },
 } = createDocBuilder({
   tiptapEditor,
@@ -91,6 +100,7 @@ const {
     heading: { nodeType: Heading.name },
     horizontalRule: { nodeType: HorizontalRule.name },
     image: { nodeType: Image.name },
+    inlineDiff: { markType: InlineDiff.name },
     italic: { nodeType: Italic.name },
     link: { markType: Link.name },
     listItem: { nodeType: ListItem.name },
@@ -101,6 +111,8 @@ const {
     tableCell: { nodeType: TableCell.name },
     tableHeader: { nodeType: TableHeader.name },
     tableRow: { nodeType: TableRow.name },
+    taskItem: { nodeType: TaskItem.name },
+    taskList: { nodeType: TaskList.name },
   },
 });
 
@@ -111,6 +123,25 @@ const serialize = (...content) =>
   });
 
 describe('markdownSerializer', () => {
+  it('correctly serializes bold', () => {
+    expect(serialize(paragraph(bold('bold')))).toBe('**bold**');
+  });
+
+  it('correctly serializes italics', () => {
+    expect(serialize(paragraph(italic('italics')))).toBe('_italics_');
+  });
+
+  it('correctly serializes inline diff', () => {
+    expect(
+      serialize(
+        paragraph(
+          inlineDiff({ type: 'addition' }, '+30 lines'),
+          inlineDiff({ type: 'deletion' }, '-10 lines'),
+        ),
+      ),
+    ).toBe('{++30 lines+}{--10 lines-}');
+  });
+
   it('correctly serializes a line break', () => {
     expect(serialize(paragraph('hello', hardBreak(), 'world'))).toBe('hello\\\nworld');
   });
@@ -121,12 +152,28 @@ describe('markdownSerializer', () => {
     );
   });
 
+  it('correctly serializes a plain URL link', () => {
+    expect(serialize(paragraph(link({ href: 'https://example.com' }, 'https://example.com')))).toBe(
+      '<https://example.com>',
+    );
+  });
+
   it('correctly serializes a link with a title', () => {
     expect(
       serialize(
         paragraph(link({ href: 'https://example.com', title: 'click this link' }, 'example url')),
       ),
     ).toBe('[example url](https://example.com "click this link")');
+  });
+
+  it('correctly serializes a plain URL link with a title', () => {
+    expect(
+      serialize(
+        paragraph(
+          link({ href: 'https://example.com', title: 'link title' }, 'https://example.com'),
+        ),
+      ),
+    ).toBe('[https://example.com](https://example.com "link title")');
   });
 
   it('correctly serializes a link with a canonicalSrc', () => {
@@ -144,6 +191,115 @@ describe('markdownSerializer', () => {
         ),
       ),
     ).toBe('[download file](file.zip "click here to download")');
+  });
+
+  it('correctly serializes strikethrough', () => {
+    expect(serialize(paragraph(strike('deleted content')))).toBe('~~deleted content~~');
+  });
+
+  it('correctly serializes blockquotes with hard breaks', () => {
+    expect(serialize(blockquote('some text', hardBreak(), hardBreak(), 'new line'))).toBe(
+      `
+> some text\\
+> \\
+> new line
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes blockquote with multiple block nodes', () => {
+    expect(serialize(blockquote(paragraph('some paragraph'), codeBlock('var x = 10;')))).toBe(
+      `
+> some paragraph
+>
+> \`\`\`
+> var x = 10;
+> \`\`\`
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a multiline blockquote', () => {
+    expect(
+      serialize(
+        blockquote(
+          { multiline: true },
+          paragraph('some paragraph with ', bold('bold')),
+          codeBlock('var y = 10;'),
+        ),
+      ),
+    ).toBe(
+      `
+>>>
+some paragraph with **bold**
+
+\`\`\`
+var y = 10;
+\`\`\`
+
+>>>
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a code block with language', () => {
+    expect(
+      serialize(
+        codeBlock(
+          { language: 'json' },
+          'this is not really json but just trying out whether this case works or not',
+        ),
+      ),
+    ).toBe(
+      `
+\`\`\`json
+this is not really json but just trying out whether this case works or not
+\`\`\`
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes emoji', () => {
+    expect(serialize(paragraph(emoji({ name: 'dog' })))).toBe(':dog:');
+  });
+
+  it('correctly serializes headings', () => {
+    expect(
+      serialize(
+        heading({ level: 1 }, 'Heading 1'),
+        heading({ level: 2 }, 'Heading 2'),
+        heading({ level: 3 }, 'Heading 3'),
+        heading({ level: 4 }, 'Heading 4'),
+        heading({ level: 5 }, 'Heading 5'),
+        heading({ level: 6 }, 'Heading 6'),
+      ),
+    ).toBe(
+      `
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+
+##### Heading 5
+
+###### Heading 6
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes horizontal rule', () => {
+    expect(serialize(horizontalRule(), horizontalRule(), horizontalRule())).toBe(
+      `
+---
+
+---
+
+---
+      `.trim(),
+    );
   });
 
   it('correctly serializes an image', () => {
@@ -171,6 +327,210 @@ describe('markdownSerializer', () => {
         ),
       ),
     ).toBe('![this is an image](file.png "foo bar baz")');
+  });
+
+  it('correctly serializes bullet list', () => {
+    expect(
+      serialize(
+        bulletList(
+          listItem(paragraph('list item 1')),
+          listItem(paragraph('list item 2')),
+          listItem(paragraph('list item 3')),
+        ),
+      ),
+    ).toBe(
+      `
+* list item 1
+* list item 2
+* list item 3
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes bullet list with different bullet styles', () => {
+    expect(
+      serialize(
+        bulletList(
+          { bullet: '+' },
+          listItem(paragraph('list item 1')),
+          listItem(paragraph('list item 2')),
+          listItem(
+            paragraph('list item 3'),
+            bulletList(
+              { bullet: '-' },
+              listItem(paragraph('sub-list item 1')),
+              listItem(paragraph('sub-list item 2')),
+            ),
+          ),
+        ),
+      ),
+    ).toBe(
+      `
++ list item 1
++ list item 2
++ list item 3
+  - sub-list item 1
+  - sub-list item 2
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a numeric list', () => {
+    expect(
+      serialize(
+        orderedList(
+          listItem(paragraph('list item 1')),
+          listItem(paragraph('list item 2')),
+          listItem(paragraph('list item 3')),
+        ),
+      ),
+    ).toBe(
+      `
+1. list item 1
+2. list item 2
+3. list item 3
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a numeric list with parens', () => {
+    expect(
+      serialize(
+        orderedList(
+          { parens: true },
+          listItem(paragraph('list item 1')),
+          listItem(paragraph('list item 2')),
+          listItem(paragraph('list item 3')),
+        ),
+      ),
+    ).toBe(
+      `
+1) list item 1
+2) list item 2
+3) list item 3
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a numeric list with a different start order', () => {
+    expect(
+      serialize(
+        orderedList(
+          { start: 17 },
+          listItem(paragraph('list item 1')),
+          listItem(paragraph('list item 2')),
+          listItem(paragraph('list item 3')),
+        ),
+      ),
+    ).toBe(
+      `
+17. list item 1
+18. list item 2
+19. list item 3
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a numeric list with an invalid start order', () => {
+    expect(
+      serialize(
+        orderedList(
+          { start: NaN },
+          listItem(paragraph('list item 1')),
+          listItem(paragraph('list item 2')),
+          listItem(paragraph('list item 3')),
+        ),
+      ),
+    ).toBe(
+      `
+1. list item 1
+2. list item 2
+3. list item 3
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a bullet list inside an ordered list', () => {
+    expect(
+      serialize(
+        orderedList(
+          { start: 17 },
+          listItem(paragraph('list item 1')),
+          listItem(paragraph('list item 2')),
+          listItem(
+            paragraph('list item 3'),
+            bulletList(
+              listItem(paragraph('sub-list item 1')),
+              listItem(paragraph('sub-list item 2')),
+            ),
+          ),
+        ),
+      ),
+    ).toBe(
+      // notice that 4 space indent works fine in this case,
+      // when it usually wouldn't
+      `
+17. list item 1
+18. list item 2
+19. list item 3
+    * sub-list item 1
+    * sub-list item 2
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a task list', () => {
+    expect(
+      serialize(
+        taskList(
+          taskItem({ checked: true }, paragraph('list item 1')),
+          taskItem(paragraph('list item 2')),
+          taskItem(
+            paragraph('list item 3'),
+            taskList(
+              taskItem({ checked: true }, paragraph('sub-list item 1')),
+              taskItem(paragraph('sub-list item 2')),
+            ),
+          ),
+        ),
+      ),
+    ).toBe(
+      `
+* [x] list item 1
+* [ ] list item 2
+* [ ] list item 3
+  * [x] sub-list item 1
+  * [ ] sub-list item 2
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a numeric task list + with start order', () => {
+    expect(
+      serialize(
+        taskList(
+          { numeric: true },
+          taskItem({ checked: true }, paragraph('list item 1')),
+          taskItem(paragraph('list item 2')),
+          taskItem(
+            paragraph('list item 3'),
+            taskList(
+              { numeric: true, start: 1351, parens: true },
+              taskItem({ checked: true }, paragraph('sub-list item 1')),
+              taskItem(paragraph('sub-list item 2')),
+            ),
+          ),
+        ),
+      ),
+    ).toBe(
+      `
+1. [x] list item 1
+2. [ ] list item 2
+3. [ ] list item 3
+   1351) [x] sub-list item 1
+   1352) [ ] sub-list item 2
+      `.trim(),
+    );
   });
 
   it('correctly serializes a table with inline content', () => {

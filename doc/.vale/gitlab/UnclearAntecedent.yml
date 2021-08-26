@@ -1,0 +1,22 @@
+---
+# Suggestion: gitlab.UnclearAntecedent
+#
+# Checks for words that need a noun for clarity.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: "'%s' is not precise. Try rewriting with a specific subject and verb."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#this-these-that-those
+level: suggestion
+ignorecase: false
+tokens:
+  - 'That is'
+  - 'That was'
+  - 'These are'
+  - 'These were'
+  - 'There are'
+  - 'There were'
+  - 'This is'
+  - 'This was'
+  - 'Those are'
+  - 'Those were'

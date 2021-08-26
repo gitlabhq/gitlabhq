@@ -73,10 +73,10 @@ self-managed GitLab instances with Jira Cloud, you can either:
 You can configure your Atlassian Cloud instance to allow you to install applications
 from outside the Marketplace, which allows you to install the application:
 
-1. Sign in to your Jira instance as a user with administrator permissions.
+1. Sign in to your Jira instance as a user with an Administrator role.
 1. Place your Jira instance into
    [development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-2--enable-development-mode).
-1. Sign in to your GitLab application as a user with [Administrator](../../user/permissions.md) permissions.
+1. Sign in to your GitLab application as a user with an [Administrator](../../user/permissions.md) role.
 1. Install the GitLab application from your self-managed GitLab instance, as
    described in the [Atlassian developer guides](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app):
    1. In your Jira instance, go to **Apps > Manage Apps** and click **Upload app**:
@@ -104,7 +104,7 @@ application.
 ### Create a Marketplace listing **(FREE SELF)**
 
 If you prefer to not use development mode on your Jira instance, you can create
-your own Marketplace listing for your instance, which enables your application
+your own Marketplace listing for your instance. This enables your application
 to be installed from the Atlassian Marketplace.
 
 For full instructions, review the Atlassian [guide to creating a marketplace listing](https://developer.atlassian.com/platform/marketplace/installing-cloud-apps/#creating-the-marketplace-listing). To create a
@@ -124,9 +124,12 @@ for details.
 NOTE:
 DVCS means distributed version control system.
 
-## Troubleshooting GitLab.com for Jira Cloud app
+## Troubleshoot GitLab.com for Jira Cloud app
 
-The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the settings page. Some browsers block cross-site cookies, which can lead to a message saying that the user needs to log in on GitLab.com even though the user is already logged in.
+The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the
+settings page. Some browsers block cross-site cookies, which can lead to a
+message saying that the user needs to log in on GitLab.com even though the user
+is already logged in.
 
 > "You need to sign in or sign up before continuing."
 

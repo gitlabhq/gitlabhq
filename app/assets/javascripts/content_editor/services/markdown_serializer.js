@@ -32,12 +32,14 @@ import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
 import {
+  isPlainURL,
   renderHardBreak,
   renderTable,
   renderTableCell,
   renderTableRow,
   openTag,
   closeTag,
+  renderOrderedList,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -57,14 +59,15 @@ const defaultSerializerConfig = {
       },
     },
     [Link.name]: {
-      open() {
-        return '[';
+      open(state, mark, parent, index) {
+        return isPlainURL(mark, parent, index, 1) ? '<' : '[';
       },
-      close(state, mark) {
+      close(state, mark, parent, index) {
         const href = mark.attrs.canonicalSrc || mark.attrs.href;
-        return `](${state.esc(href)}${
-          mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''
-        })`;
+
+        return isPlainURL(mark, parent, index, -1)
+          ? '>'
+          : `](${state.esc(href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`;
       },
     },
     [Strike.name]: {
@@ -89,7 +92,18 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
-    [Blockquote.name]: defaultMarkdownSerializer.nodes.blockquote,
+    [Blockquote.name]: (state, node) => {
+      if (node.attrs.multiline) {
+        state.write('>>>');
+        state.ensureNewLine();
+        state.renderContent(node);
+        state.ensureNewLine();
+        state.write('>>>');
+        state.closeBlock(node);
+      } else {
+        state.wrapBlock('> ', null, node, () => state.renderContent(node));
+      }
+    },
     [BulletList.name]: defaultMarkdownSerializer.nodes.bullet_list,
     [CodeBlockHighlight.name]: (state, node) => {
       state.write(`\`\`\`${node.attrs.language || ''}\n`);
@@ -113,7 +127,7 @@ const defaultSerializerConfig = {
       state.write(`![${state.esc(alt || '')}](${state.esc(canonicalSrc || src)}${quotedTitle})`);
     },
     [ListItem.name]: defaultMarkdownSerializer.nodes.list_item,
-    [OrderedList.name]: defaultMarkdownSerializer.nodes.ordered_list,
+    [OrderedList.name]: renderOrderedList,
     [Paragraph.name]: defaultMarkdownSerializer.nodes.paragraph,
     [Reference.name]: (state, node) => {
       state.write(node.attrs.originalText || node.attrs.text);
@@ -127,8 +141,8 @@ const defaultSerializerConfig = {
       state.renderContent(node);
     },
     [TaskList.name]: (state, node) => {
-      if (node.attrs.type === 'ul') defaultMarkdownSerializer.nodes.bullet_list(state, node);
-      else defaultMarkdownSerializer.nodes.ordered_list(state, node);
+      if (node.attrs.numeric) renderOrderedList(state, node);
+      else defaultMarkdownSerializer.nodes.bullet_list(state, node);
     },
     [Text.name]: defaultMarkdownSerializer.nodes.text,
   },

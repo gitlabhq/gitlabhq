@@ -11,7 +11,7 @@ class SearchController < ApplicationController
 
   around_action :allow_gitaly_ref_name_caching
 
-  before_action :block_anonymous_global_searches, except: :opensearch
+  before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
   skip_before_action :authenticate_user!
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -154,6 +154,29 @@ class SearchController < ApplicationController
     store_location_for(:user, request.fullpath)
 
     redirect_to new_user_session_path, alert: _('You must be logged in to search across all of GitLab')
+  end
+
+  def check_scope_global_search_enabled
+    return if params[:project_id].present? || params[:group_id].present?
+
+    search_allowed = case params[:scope]
+                     when 'blobs'
+                       Feature.enabled?(:global_search_code_tab, current_user, type: :ops, default_enabled: true)
+                     when 'commits'
+                       Feature.enabled?(:global_search_commits_tab, current_user, type: :ops, default_enabled: true)
+                     when 'issues'
+                       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops, default_enabled: true)
+                     when 'merge_requests'
+                       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops, default_enabled: true)
+                     when 'wiki_blobs'
+                       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops, default_enabled: true)
+                     else
+                       true
+                     end
+
+    return if search_allowed
+
+    redirect_to search_path, alert: _('Global Search is disabled for this scope')
   end
 
   def render_timeout(exception)

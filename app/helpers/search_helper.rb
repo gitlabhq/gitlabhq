@@ -443,6 +443,10 @@ module SearchHelper
       _("Open")
     end
   end
+
+  def feature_flag_tab_enabled?(flag)
+    @group || Feature.enabled?(flag, current_user, type: :ops, default_enabled: true)
+  end
 end
 
 SearchHelper.prepend_mod_with('SearchHelper')

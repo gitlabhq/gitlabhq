@@ -420,6 +420,11 @@ Some contractions, however, should be avoided:
   | Requests to localhost are not allowed.   | Requests to localhost aren't allowed.   |
   | Specified URL cannot be used.            | Specified URL can't be used.            |
 
+### Acronyms
+
+If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
+When possible, try to avoid acronyms in headings.
+
 ## Text
 
 - [Write in Markdown](#markdown).

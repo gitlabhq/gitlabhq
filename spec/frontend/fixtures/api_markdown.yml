@@ -99,6 +99,11 @@
     1. list item 1
     2. list item 2
     3. list item 3
+- name: ordered_list_with_start_order
+  markdown: |-
+    134. list item 1
+    135. list item 2
+    136. list item 3
 - name: task_list
   markdown: |-
     * [x] hello
@@ -115,6 +120,11 @@
        1. [ ] of nested
           1. [x] task list
           2. [ ] items
+- name: ordered_task_list_with_order
+  markdown: |-
+    4893. [x] hello
+    4894. [x] world
+    4895. [ ] example
 - name: image
   markdown: '![alt text](https://gitlab.com/logo.png)'
 - name: hard_break

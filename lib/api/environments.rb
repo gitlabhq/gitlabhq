@@ -58,7 +58,8 @@ module API
       end
       params do
         requires :environment_id, type: Integer,  desc: 'The environment ID'
-        optional :name,           type: String,   desc: 'The new environment name'
+        # TODO: disallow renaming via the API https://gitlab.com/gitlab-org/gitlab/-/issues/338897
+        optional :name,           type: String,   desc: 'DEPRECATED: Renaming environment can lead to errors, this will be removed in 15.0'
         optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }
       end

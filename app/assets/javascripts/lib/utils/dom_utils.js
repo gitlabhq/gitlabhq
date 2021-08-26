@@ -77,3 +77,15 @@ export const isElementVisible = (element) =>
  * @returns {Boolean} `true` if the element is currently hidden, otherwise false
  */
 export const isElementHidden = (element) => !isElementVisible(element);
+
+export const getParents = (element) => {
+  const parents = [];
+  let parent = element.parentNode;
+
+  do {
+    parents.push(parent);
+    parent = parent.parentNode;
+  } while (parent);
+
+  return parents;
+};

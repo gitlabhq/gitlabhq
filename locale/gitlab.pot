@@ -15488,6 +15488,9 @@ msgstr ""
 msgid "Given epic is already related to this epic."
 msgstr ""
 
+msgid "Global Search is disabled for this scope"
+msgstr ""
+
 msgid "Global Shortcuts"
 msgstr ""
 
@@ -16633,6 +16636,9 @@ msgid "How do I generate it?"
 msgstr ""
 
 msgid "How do I mirror repositories?"
+msgstr ""
+
+msgid "How do I rename an environment?"
 msgstr ""
 
 msgid "How do I set up a Google Chat webhook?"
@@ -38258,6 +38264,9 @@ msgid "You cannot impersonate an internal user"
 msgstr ""
 
 msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."
+msgstr ""
+
+msgid "You cannot rename an environment after it's created."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

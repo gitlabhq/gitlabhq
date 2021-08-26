@@ -7,8 +7,16 @@ import Image from '~/content_editor/extensions/image';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
 import httpStatus from '~/lib/utils/http_status';
-import { loadMarkdownApiResult } from '../markdown_processing_examples';
 import { createTestEditor, createDocBuilder } from '../test_utils';
+
+const PROJECT_WIKI_ATTACHMENT_IMAGE_HTML = `<p data-sourcepos="1:1-1:27" dir="auto">
+  <a class="no-attachment-icon" href="/group1/project1/-/wikis/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="test-file.png">
+    <img alt="test-file" class="lazy" data-src="/group1/project1/-/wikis/test-file.png" data-canonical-src="test-file.png">
+  </a>
+</p>`;
+const PROJECT_WIKI_ATTACHMENT_LINK_HTML = `<p data-sourcepos="1:1-1:26" dir="auto">
+  <a href="/group1/project1/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a>
+</p>`;
 
 describe('content_editor/extensions/attachment', () => {
   let tiptapEditor;
@@ -76,7 +84,7 @@ describe('content_editor/extensions/attachment', () => {
       const base64EncodedFile = 'data:image/png;base64,Zm9v';
 
       beforeEach(() => {
-        renderMarkdown.mockResolvedValue(loadMarkdownApiResult('project_wiki_attachment_image'));
+        renderMarkdown.mockResolvedValue(PROJECT_WIKI_ATTACHMENT_IMAGE_HTML);
       });
 
       describe('when uploading succeeds', () => {
@@ -151,7 +159,7 @@ describe('content_editor/extensions/attachment', () => {
     });
 
     describe('when the file has a zip (or any other attachment) mime type', () => {
-      const markdownApiResult = loadMarkdownApiResult('project_wiki_attachment_link');
+      const markdownApiResult = PROJECT_WIKI_ATTACHMENT_LINK_HTML;
 
       beforeEach(() => {
         renderMarkdown.mockResolvedValue(markdownApiResult);

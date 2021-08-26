@@ -39,12 +39,17 @@ export default {
     ),
     nameLabel: __('Name'),
     nameFeedback: __('This field is required'),
+    nameDisabledHelp: __("You cannot rename an environment after it's created."),
+    nameDisabledLinkText: __('How do I rename an environment?'),
     urlLabel: __('External URL'),
     urlFeedback: __('The URL should start with http:// or https://'),
     save: __('Save'),
     cancel: __('Cancel'),
   },
   helpPagePath: helpPagePath('ci/environments/index.md'),
+  renamingDisabledHelpPagePath: helpPagePath('ci/environments/index.md', {
+    anchor: 'rename-an-environment',
+  }),
   data() {
     return {
       visited: {
@@ -54,6 +59,9 @@ export default {
     };
   },
   computed: {
+    isNameDisabled() {
+      return Boolean(this.environment.id);
+    },
     valid() {
       return {
         name: this.visited.name && this.environment.name !== '',
@@ -102,10 +110,17 @@ export default {
           :state="valid.name"
           :invalid-feedback="$options.i18n.nameFeedback"
         >
+          <template v-if="isNameDisabled" #description>
+            {{ $options.i18n.nameDisabledHelp }}
+            <gl-link :href="$options.renamingDisabledHelpPagePath" target="_blank">
+              {{ $options.i18n.nameDisabledLinkText }}
+            </gl-link>
+          </template>
           <gl-form-input
             id="environment_name"
             :value="environment.name"
             :state="valid.name"
+            :disabled="isNameDisabled"
             name="environment[name]"
             required
             @input="onChange({ ...environment, name: $event })"

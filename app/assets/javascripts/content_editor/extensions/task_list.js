@@ -1,17 +1,32 @@
 import { mergeAttributes } from '@tiptap/core';
 import { TaskList } from '@tiptap/extension-task-list';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
+import { getMarkdownSource } from '../services/markdown_sourcemap';
 
 export default TaskList.extend({
   addAttributes() {
     return {
-      type: {
-        default: 'ul',
-        parseHTML: (element) => {
-          return {
-            type: element.tagName.toLowerCase() === 'ol' ? 'ol' : 'ul',
-          };
-        },
+      numeric: {
+        default: false,
+        parseHTML: (element) => ({
+          numeric: element.tagName.toLowerCase() === 'ol',
+        }),
+      },
+
+      start: {
+        default: 1,
+        parseHTML: (element) => ({
+          start: element.hasAttribute('start')
+            ? parseInt(element.getAttribute('start') || '', 10)
+            : 1,
+        }),
+      },
+
+      parens: {
+        default: false,
+        parseHTML: (element) => ({
+          parens: /^[0-9]+\)/.test(getMarkdownSource(element)),
+        }),
       },
     };
   },
@@ -25,7 +40,7 @@ export default TaskList.extend({
     ];
   },
 
-  renderHTML({ HTMLAttributes: { type, ...HTMLAttributes } }) {
-    return [type, mergeAttributes(HTMLAttributes, { 'data-type': 'taskList' }), 0];
+  renderHTML({ HTMLAttributes: { numeric, ...HTMLAttributes } }) {
+    return [numeric ? 'ol' : 'ul', mergeAttributes(HTMLAttributes, { 'data-type': 'taskList' }), 0];
   },
 });

@@ -8,6 +8,22 @@ const defaultAttrs = {
 
 const tableMap = new WeakMap();
 
+// Source taken from
+// prosemirror-markdown/src/to_markdown.js
+export function isPlainURL(link, parent, index, side) {
+  if (link.attrs.title || !/^\w+:/.test(link.attrs.href)) return false;
+  const content = parent.child(index + (side < 0 ? -1 : 0));
+  if (
+    !content.isText ||
+    content.text !== link.attrs.href ||
+    content.marks[content.marks.length - 1] !== link
+  )
+    return false;
+  if (index === (side < 0 ? 1 : parent.childCount - 1)) return true;
+  const next = parent.child(index + (side < 0 ? -2 : 1));
+  return !link.isInSet(next.marks);
+}
+
 function shouldRenderCellInline(cell) {
   if (cell.childCount === 1) {
     const parent = cell.child(0);
@@ -204,6 +220,19 @@ function renderTableRowAsHTML(state, node) {
   });
 
   renderTagClose(state, 'tr');
+}
+
+export function renderOrderedList(state, node) {
+  const { parens } = node.attrs;
+  const start = node.attrs.start || 1;
+  const maxW = String(start + node.childCount - 1).length;
+  const space = state.repeat(' ', maxW + 2);
+  const delimiter = parens ? ')' : '.';
+
+  state.renderList(node, space, (i) => {
+    const nStr = String(start + i);
+    return `${state.repeat(' ', maxW - nStr.length) + nStr}${delimiter} `;
+  });
 }
 
 export function renderTableCell(state, node) {

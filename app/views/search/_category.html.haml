@@ -27,11 +27,11 @@
       = search_filter_link 'snippet_titles', _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }
     - else
       = search_filter_link 'projects', _("Projects"), data: { qa_selector: 'projects_tab' }
-      = render_if_exists 'search/category_code'
+      = render_if_exists 'search/category_code' if feature_flag_tab_enabled?(:global_search_code_tab)
       = render_if_exists 'search/epics_filter_link'
-      = search_filter_link 'issues', _("Issues")
-      = search_filter_link 'merge_requests', _("Merge requests")
-      = render_if_exists 'search/category_wiki'
+      = search_filter_link 'issues', _("Issues") if feature_flag_tab_enabled?(:global_search_issues_tab)
+      = search_filter_link 'merge_requests', _("Merge requests") if feature_flag_tab_enabled?(:global_search_merge_requests_tab)
+      = render_if_exists 'search/category_wiki' if feature_flag_tab_enabled?(:global_search_wiki_tab)
       = render_if_exists 'search/category_elasticsearch'
       = search_filter_link 'milestones', _("Milestones")
       = users

@@ -182,6 +182,37 @@ RSpec.describe SearchController do
             end
           end
         end
+
+        context 'tab feature flags' do
+          subject { get :show, params: { scope: scope, search: 'term' }, format: :html }
+
+          where(:feature_flag, :scope) do
+            :global_search_code_tab           | 'blobs'
+            :global_search_issues_tab         | 'issues'
+            :global_search_merge_requests_tab | 'merge_requests'
+            :global_search_wiki_tab           | 'wiki_blobs'
+            :global_search_commits_tab        | 'commits'
+          end
+
+          with_them do
+            it 'returns 200 if flag is enabled' do
+              stub_feature_flags(feature_flag => true)
+
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            it 'redirects with alert if flag is disabled' do
+              stub_feature_flags(feature_flag => false)
+
+              subject
+
+              expect(response).to redirect_to search_path
+              expect(controller).to set_flash[:alert].to(/Global Search is disabled for this scope/)
+            end
+          end
+        end
       end
 
       it 'finds issue comments' do

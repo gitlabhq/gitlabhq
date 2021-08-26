@@ -15,15 +15,12 @@ const DEFAULT_OPTS = {
     projectEnvironmentsPath: '/projects/environments',
     updateEnvironmentPath: '/proejcts/environments/1',
   },
-  propsData: { environment: { name: 'foo', externalUrl: 'https://foo.example.com' } },
+  propsData: { environment: { id: '0', name: 'foo', external_url: 'https://foo.example.com' } },
 };
 
 describe('~/environments/components/edit.vue', () => {
   let wrapper;
   let mock;
-  let name;
-  let url;
-  let form;
 
   const createWrapper = (opts = {}) =>
     mountExtended(EditEnvironment, {
@@ -34,9 +31,6 @@ describe('~/environments/components/edit.vue', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     wrapper = createWrapper();
-    name = wrapper.findByLabelText('Name');
-    url = wrapper.findByLabelText('External URL');
-    form = wrapper.findByRole('form', { name: 'Edit environment' });
   });
 
   afterEach(() => {
@@ -44,19 +38,22 @@ describe('~/environments/components/edit.vue', () => {
     wrapper.destroy();
   });
 
+  const findNameInput = () => wrapper.findByLabelText('Name');
+  const findExternalUrlInput = () => wrapper.findByLabelText('External URL');
+  const findForm = () => wrapper.findByRole('form', { name: 'Edit environment' });
+
   const showsLoading = () => wrapper.find(GlLoadingIcon).exists();
 
   const submitForm = async (expected, response) => {
     mock
       .onPut(DEFAULT_OPTS.provide.updateEnvironmentPath, {
-        name: expected.name,
         external_url: expected.url,
+        id: '0',
       })
       .reply(...response);
-    await name.setValue(expected.name);
-    await url.setValue(expected.url);
+    await findExternalUrlInput().setValue(expected.url);
 
-    await form.trigger('submit');
+    await findForm().trigger('submit');
     await waitForPromises();
   };
 
@@ -65,18 +62,8 @@ describe('~/environments/components/edit.vue', () => {
     expect(header.exists()).toBe(true);
   });
 
-  it.each`
-    input         | value
-    ${() => name} | ${'test'}
-    ${() => url}  | ${'https://example.org'}
-  `('it changes the value of the input to $value', async ({ input, value }) => {
-    await input().setValue(value);
-
-    expect(input().element.value).toBe(value);
-  });
-
   it('shows loader after form is submitted', async () => {
-    const expected = { name: 'test', url: 'https://google.ca' };
+    const expected = { url: 'https://google.ca' };
 
     expect(showsLoading()).toBe(false);
 
@@ -86,7 +73,7 @@ describe('~/environments/components/edit.vue', () => {
   });
 
   it('submits the updated environment on submit', async () => {
-    const expected = { name: 'test', url: 'https://google.ca' };
+    const expected = { url: 'https://google.ca' };
 
     await submitForm(expected, [200, { path: '/test' }]);
 
@@ -94,11 +81,24 @@ describe('~/environments/components/edit.vue', () => {
   });
 
   it('shows errors on error', async () => {
-    const expected = { name: 'test', url: 'https://google.ca' };
+    const expected = { url: 'https://google.ca' };
 
-    await submitForm(expected, [400, { message: ['name taken'] }]);
+    await submitForm(expected, [400, { message: ['uh oh!'] }]);
 
-    expect(createFlash).toHaveBeenCalledWith({ message: 'name taken' });
+    expect(createFlash).toHaveBeenCalledWith({ message: 'uh oh!' });
     expect(showsLoading()).toBe(false);
+  });
+
+  it('renders a disabled "Name" field', () => {
+    const nameInput = findNameInput();
+
+    expect(nameInput.attributes().disabled).toBe('disabled');
+    expect(nameInput.element.value).toBe('foo');
+  });
+
+  it('renders an "External URL" field', () => {
+    const urlInput = findExternalUrlInput();
+
+    expect(urlInput.element.value).toBe('https://foo.example.com');
   });
 });

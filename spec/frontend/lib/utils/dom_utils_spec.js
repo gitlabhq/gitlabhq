@@ -5,6 +5,7 @@ import {
   parseBooleanDataAttributes,
   isElementVisible,
   isElementHidden,
+  getParents,
 } from '~/lib/utils/dom_utils';
 
 const TEST_MARGIN = 5;
@@ -193,4 +194,18 @@ describe('DOM Utils', () => {
       });
     },
   );
+
+  describe('getParents', () => {
+    it('gets all parents of an element', () => {
+      const el = document.createElement('div');
+      el.innerHTML = '<p><span><strong><mark>hello world';
+
+      expect(getParents(el.querySelector('mark'))).toEqual([
+        el.querySelector('strong'),
+        el.querySelector('span'),
+        el.querySelector('p'),
+        el,
+      ]);
+    });
+  });
 });
