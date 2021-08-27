@@ -169,7 +169,11 @@ module Gitlab
           when ActiveRecord::StatementInvalid, ActionView::Template::Error
             # After connecting to the DB Rails will wrap query errors using this
             # class.
-            connection_error?(error.cause)
+            if (cause = error.cause)
+              connection_error?(cause)
+            else
+              false
+            end
           when *CONNECTION_ERRORS
             true
           else

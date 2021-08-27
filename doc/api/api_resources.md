@@ -15,7 +15,7 @@ Available resources for the [GitLab REST API](index.md) can be grouped in the fo
 See also:
 
 - [V3 to V4](v3_to_v4.md).
-- Adding [deploy keys for multiple projects](deploy_keys.md#adding-deploy-keys-to-multiple-projects).
+- Adding [deploy keys for multiple projects](deploy_keys.md#add-deploy-keys-to-multiple-projects).
 - [API Resources for various templates](#templates-api-resources).
 
 ## Project resources

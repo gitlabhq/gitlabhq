@@ -222,6 +222,16 @@ CREATE TABLE incident_management_pending_alert_escalations (
 )
 PARTITION BY RANGE (process_at);
 
+CREATE TABLE incident_management_pending_issue_escalations (
+    id bigint NOT NULL,
+    rule_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    process_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+)
+PARTITION BY RANGE (process_at);
+
 CREATE TABLE web_hook_logs (
     id bigint NOT NULL,
     web_hook_id integer NOT NULL,
@@ -9596,6 +9606,12 @@ CREATE TABLE application_settings (
     encrypted_customers_dot_jwt_signing_key bytea,
     encrypted_customers_dot_jwt_signing_key_iv bytea,
     pypi_package_requests_forwarding boolean DEFAULT true NOT NULL,
+    throttle_unauthenticated_files_api_requests_per_period integer DEFAULT 125 NOT NULL,
+    throttle_unauthenticated_files_api_period_in_seconds integer DEFAULT 15 NOT NULL,
+    throttle_authenticated_files_api_requests_per_period integer DEFAULT 500 NOT NULL,
+    throttle_authenticated_files_api_period_in_seconds integer DEFAULT 15 NOT NULL,
+    throttle_unauthenticated_files_api_enabled boolean DEFAULT false NOT NULL,
+    throttle_authenticated_files_api_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
@@ -14146,6 +14162,15 @@ CREATE SEQUENCE incident_management_pending_alert_escalations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE incident_management_pending_alert_escalations_id_seq OWNED BY incident_management_pending_alert_escalations.id;
+
+CREATE SEQUENCE incident_management_pending_issue_escalations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE incident_management_pending_issue_escalations_id_seq OWNED BY incident_management_pending_issue_escalations.id;
 
 CREATE TABLE index_statuses (
     id integer NOT NULL,
@@ -20531,6 +20556,8 @@ ALTER TABLE ONLY incident_management_oncall_shifts ALTER COLUMN id SET DEFAULT n
 
 ALTER TABLE ONLY incident_management_pending_alert_escalations ALTER COLUMN id SET DEFAULT nextval('incident_management_pending_alert_escalations_id_seq'::regclass);
 
+ALTER TABLE ONLY incident_management_pending_issue_escalations ALTER COLUMN id SET DEFAULT nextval('incident_management_pending_issue_escalations_id_seq'::regclass);
+
 ALTER TABLE ONLY index_statuses ALTER COLUMN id SET DEFAULT nextval('index_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY insights ALTER COLUMN id SET DEFAULT nextval('insights_id_seq'::regclass);
@@ -21966,6 +21993,9 @@ ALTER TABLE ONLY incident_management_oncall_shifts
 
 ALTER TABLE ONLY incident_management_pending_alert_escalations
     ADD CONSTRAINT incident_management_pending_alert_escalations_pkey PRIMARY KEY (id, process_at);
+
+ALTER TABLE ONLY incident_management_pending_issue_escalations
+    ADD CONSTRAINT incident_management_pending_issue_escalations_pkey PRIMARY KEY (id, process_at);
 
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT index_statuses_pkey PRIMARY KEY (id);
@@ -24265,6 +24295,10 @@ CREATE INDEX index_incident_management_pending_alert_escalations_on_alert_id ON 
 CREATE INDEX index_incident_management_pending_alert_escalations_on_rule_id ON ONLY incident_management_pending_alert_escalations USING btree (rule_id);
 
 CREATE INDEX index_incident_management_pending_alert_escalations_on_schedule ON ONLY incident_management_pending_alert_escalations USING btree (schedule_id);
+
+CREATE INDEX index_incident_management_pending_issue_escalations_on_issue_id ON ONLY incident_management_pending_issue_escalations USING btree (issue_id);
+
+CREATE INDEX index_incident_management_pending_issue_escalations_on_rule_id ON ONLY incident_management_pending_issue_escalations USING btree (rule_id);
 
 CREATE UNIQUE INDEX index_index_statuses_on_project_id ON index_statuses USING btree (project_id);
 
@@ -27077,6 +27111,9 @@ ALTER TABLE ONLY incident_management_oncall_participants
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_rails_0434b48643 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE incident_management_pending_issue_escalations
+    ADD CONSTRAINT fk_rails_0470889ee5 FOREIGN KEY (rule_id) REFERENCES incident_management_escalation_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ip_restrictions
     ADD CONSTRAINT fk_rails_04a93778d5 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -27685,6 +27722,9 @@ ALTER TABLE ONLY status_page_published_incidents
 
 ALTER TABLE ONLY deployment_clusters
     ADD CONSTRAINT fk_rails_6359a164df FOREIGN KEY (deployment_id) REFERENCES deployments(id) ON DELETE CASCADE;
+
+ALTER TABLE incident_management_pending_issue_escalations
+    ADD CONSTRAINT fk_rails_636678b3bd FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY evidences
     ADD CONSTRAINT fk_rails_6388b435a6 FOREIGN KEY (release_id) REFERENCES releases(id) ON DELETE CASCADE;

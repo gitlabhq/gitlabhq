@@ -58,11 +58,11 @@ Upload a package.
 PUT projects/:id/packages/npm/:package_name
 ```
 
-| Attribute         | Type   | Required | Description |
-| ----------------- | ------ | -------- | ----------- |
-| `id`              | string | yes      | The ID or full path of the project. |
-| `package_name`    | string | yes      | The name of the package. |
-| `versions`        | string | yes      | Package version info. |
+| Attribute      | Type   | Required | Description                         |
+|----------------|--------|----------|-------------------------------------|
+| `id`           | string | yes      | The ID or full path of the project. |
+| `package_name` | string | yes      | The name of the package.            |
+| `versions`     | string | yes      | Package version information.        |
 
 ```shell
 curl --request PUT

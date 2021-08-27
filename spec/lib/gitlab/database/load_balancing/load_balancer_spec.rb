@@ -283,6 +283,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
       expect(lb.connection_error?(error)).to eq(false)
     end
+
+    it 'returns false for ActiveRecord errors without a cause' do
+      error = ActiveRecord::RecordNotUnique.new
+
+      expect(lb.connection_error?(error)).to eq(false)
+    end
   end
 
   describe '#serialization_failure?' do

@@ -22203,19 +22203,10 @@ msgstr ""
 msgid "NetworkPolicies|Policy definition"
 msgstr ""
 
-msgid "NetworkPolicies|Policy description"
-msgstr ""
-
 msgid "NetworkPolicies|Policy editor"
 msgstr ""
 
 msgid "NetworkPolicies|Policy preview"
-msgstr ""
-
-msgid "NetworkPolicies|Policy status"
-msgstr ""
-
-msgid "NetworkPolicies|Policy type"
 msgstr ""
 
 msgid "NetworkPolicies|Rule"
@@ -29682,6 +29673,9 @@ msgstr ""
 msgid "SecurityOrchestration|Network"
 msgstr ""
 
+msgid "SecurityOrchestration|Network Policies can be used to limit which network traffic is allowed between containers inside the cluster."
+msgstr ""
+
 msgid "SecurityOrchestration|New policy"
 msgstr ""
 
@@ -29691,7 +29685,16 @@ msgstr ""
 msgid "SecurityOrchestration|Policies"
 msgstr ""
 
+msgid "SecurityOrchestration|Policy description"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy editor"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy status"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy type"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan Execution"

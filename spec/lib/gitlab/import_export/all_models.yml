@@ -58,6 +58,7 @@ issues:
 - test_reports
 - requirement
 - incident_management_issuable_escalation_status
+- pending_escalations
 work_item_type:
 - issues
 events:

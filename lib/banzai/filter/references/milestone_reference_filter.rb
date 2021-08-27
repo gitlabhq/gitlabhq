@@ -23,7 +23,8 @@ module Banzai
             milestone_relation = find_milestones(parent, false).where(name: milestone_names)
           end
 
-          return Milestone.none if (relation = [iid_relation, milestone_relation].compact).empty?
+          relation = [iid_relation, milestone_relation].compact
+          return Milestone.none if relation.all?(Milestone.none)
 
           Milestone.from_union(relation).includes(:project, :group)
         end
@@ -116,11 +117,11 @@ module Banzai
 
             # We don't support IID lookups because IIDs can clash between
             # group/project milestones and group/subgroup milestones.
-            params[:group_ids] = self_and_ancestors_ids(parent) unless find_by_iid
+            params[:group_ids] = group_and_ancestors_ids(parent) unless find_by_iid
           end
         end
 
-        def self_and_ancestors_ids(parent)
+        def group_and_ancestors_ids(parent)
           if group_context?(parent)
             parent.self_and_ancestors.select(:id)
           elsif project_context?(parent)

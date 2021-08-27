@@ -479,6 +479,14 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :throttle_unauthenticated_files_api_requests_per_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :throttle_unauthenticated_files_api_period_in_seconds,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   validates :throttle_authenticated_api_requests_per_period,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -500,6 +508,14 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than: 0 }
 
   validates :throttle_authenticated_packages_api_period_in_seconds,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :throttle_authenticated_files_api_requests_per_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :throttle_authenticated_files_api_period_in_seconds,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 

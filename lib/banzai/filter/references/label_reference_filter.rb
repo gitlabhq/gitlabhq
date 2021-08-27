@@ -23,7 +23,8 @@ module Banzai
             label_relation = labels.where(title: label_names)
           end
 
-          return Label.none if (relation = [id_relation, label_relation].compact).empty?
+          relation = [id_relation, label_relation].compact
+          return Label.none if relation.all?(Label.none)
 
           Label.from_union(relation)
         end

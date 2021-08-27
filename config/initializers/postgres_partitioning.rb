@@ -8,6 +8,7 @@ Gitlab::Database::Partitioning::PartitionManager.register(WebHookLog)
 
 if Gitlab.ee?
   Gitlab::Database::Partitioning::PartitionManager.register(IncidentManagement::PendingEscalations::Alert)
+  Gitlab::Database::Partitioning::PartitionManager.register(IncidentManagement::PendingEscalations::Issue)
 end
 
 begin

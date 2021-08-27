@@ -8,7 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## List all deploy keys
 
-Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires administrator access and is not available on GitLab.com.
+Get a list of all deploy keys across all projects of the GitLab instance. This
+endpoint requires an administrator role and is not available on GitLab.com.
 
 ```plaintext
 GET /deploy_keys
@@ -74,7 +75,7 @@ Example response:
 ]
 ```
 
-## Single deploy key
+## Get a single deploy key
 
 Get a single key.
 
@@ -213,10 +214,10 @@ Example response:
 }
 ```
 
-## Adding deploy keys to multiple projects
+## Add deploy keys to multiple projects
 
-If you want to easily add the same deploy key to multiple projects in the same
-group, this can be achieved quite easily with the API.
+If you want to add the same deploy key to multiple projects in the same
+group, this can be achieved with the API.
 
 First, find the ID of the projects you're interested in, by either listing all
 projects:

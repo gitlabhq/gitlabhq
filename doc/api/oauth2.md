@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab as an OAuth2 provider
+# GitLab as an OAuth 2.0 provider
 
 This document covers using the [OAuth2](https://oauth.net/2/) protocol to allow
 other services to access GitLab resources on user's behalf.
@@ -15,9 +15,9 @@ other services, see the [OAuth2 authentication service provider](../integration/
 documentation. This functionality is based on the
 [doorkeeper Ruby gem](https://github.com/doorkeeper-gem/doorkeeper).
 
-## Supported OAuth2 flows
+## Supported OAuth 2.0 flows
 
-GitLab currently supports the following authorization flows:
+GitLab supports the following authorization flows:
 
 - **Authorization code with [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636):**
   Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
@@ -26,14 +26,13 @@ GitLab currently supports the following authorization flows:
   server-side apps.
 - **Implicit grant:** Originally designed for user-agent only apps, such as
   single page web apps running on GitLab Pages).
-  The [IETF](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-09#section-2.1.2)
+  The [Internet Engineering Task Force (IETF)](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-09#section-2.1.2)
   recommends against Implicit grant flow.
 - **Resource owner password credentials:** To be used **only** for securely
   hosted, first-party services. GitLab recommends against use of this flow.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
-Implicit grant and Resource Owner Password Credentials flows.
-  it will be deprecated in the next OAuth specification version.
+Implicit grant and Resource Owner Password Credentials flows. It will be deprecated in the next OAuth specification version.
 
 Refer to the [OAuth RFC](https://tools.ietf.org/html/rfc6749) to find out
 how all those flows work and pick the right one for your use case.
@@ -57,7 +56,7 @@ parameter, which are securely bound to the user agent", with each request to the
 For production, please use HTTPS for your `redirect_uri`.
 For development, GitLab allows insecure HTTP redirect URIs.
 
-As OAuth2 bases its security entirely on the transport layer, you should not use unprotected
+As OAuth 2.0 bases its security entirely on the transport layer, you should not use unprotected
 URIs. For more information, see the [OAuth 2.0 RFC](https://tools.ietf.org/html/rfc6749#section-3.1.2.1)
 and the [OAuth 2.0 Threat Model RFC](https://tools.ietf.org/html/rfc6819#section-4.4.2.1).
 These factors are particularly important when using the
@@ -123,7 +122,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
     "created_at": 1607635748
    }
    ```
-   
+  
 1. To retrieve a new `access_token`, use the `refresh_token` parameter. Refresh tokens may
    be used even after the `access_token` itself expires. This request:
    - Invalidates the existing `access_token` and `refresh_token`.
@@ -135,7 +134,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    ```
 
    Example response:
-    
+   
    ```json
    {
      "access_token": "c97d1fe52119f38c7f67f0a14db68d60caa35ddc86fd12401718b649dcfa9c68",
@@ -203,7 +202,7 @@ be used as a CSRF token.
     "created_at": 1607635748
    }
    ```
-   
+  
 1. To retrieve a new `access_token`, use the `refresh_token` parameter. Refresh tokens may
    be used even after the `access_token` itself expires. This request:
    - Invalidates the existing `access_token` and `refresh_token`.
@@ -245,12 +244,13 @@ scheduled to be removed for existing applications.
 
 We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce) instead. If you choose to use Implicit flow, be sure to verify the
 `application id` (or `client_id`) associated with the access token before granting
-access to the data, as described in [Retrieving the token information](#retrieving-the-token-information)).
+access to the data. To learn more, read
+[Retrieving the token information](#retrieve-the-token-information)).
 
 Unlike the authorization code flow, the client receives an `access token`
-immediately as a result of the authorization request. The flow does not use
-the client secret or the authorization code because all of the application code
-and storage is easily accessible on client browsers and mobile devices.
+immediately as a result of the authorization request. The flow does not use the
+client secret or the authorization code, as the application
+code and storage is accessible on client browsers and mobile devices.
 
 To request the access token, you should redirect the user to the
 `/oauth/authorize` endpoint using `token` response type:
@@ -367,10 +367,11 @@ or you can put the token to the Authorization header:
 curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/api/v4/user"
 ```
 
-## Retrieving the token information
+## Retrieve the token information
 
-To verify the details of a token, use the `token/info` endpoint provided by the Doorkeeper gem.
-For more information, see [`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo).
+To verify the details of a token, use the `token/info` endpoint provided by the
+Doorkeeper gem. For more information, see
+[`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo).
 
 You must supply the access token, either:
 
@@ -407,9 +408,10 @@ prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doo
 
 Don't rely on these fields as they are slated for removal in a later release.
 
-## OAuth2 tokens and GitLab registries
+## OAuth 2.0 tokens and GitLab registries
 
-Standard OAuth2 tokens support different degrees of access to GitLab registries, as they:
+Standard OAuth 2.0 tokens support different degrees of access to GitLab
+registries, as they:
 
 - Do not allow users to authenticate to:
   - The GitLab [Container registry](../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
