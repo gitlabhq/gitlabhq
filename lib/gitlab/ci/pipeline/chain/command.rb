@@ -87,6 +87,13 @@ module Gitlab
             @metrics ||= ::Gitlab::Ci::Pipeline::Metrics
           end
 
+          def observe_step_duration(step_class, duration)
+            if Feature.enabled?(:ci_pipeline_creation_step_duration_tracking, default_enabled: :yaml)
+              metrics.pipeline_creation_step_duration_histogram
+                .observe({ step: step_class.name }, duration.seconds)
+            end
+          end
+
           def observe_creation_duration(duration)
             metrics.pipeline_creation_duration_histogram
               .observe({}, duration.seconds)

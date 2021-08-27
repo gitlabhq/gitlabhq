@@ -341,4 +341,40 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       end
     end
   end
+
+  describe '#observe_step_duration' do
+    context 'when ci_pipeline_creation_step_duration_tracking is enabled' do
+      it 'adds the duration to the step duration histogram' do
+        histogram = double(:histogram)
+        duration = 1.hour
+
+        expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_creation_step_duration_histogram)
+          .and_return(histogram)
+        expect(histogram).to receive(:observe)
+          .with({ step: 'Gitlab::Ci::Pipeline::Chain::Build' }, duration.seconds)
+
+        described_class.new.observe_step_duration(
+          Gitlab::Ci::Pipeline::Chain::Build,
+          duration
+        )
+      end
+    end
+
+    context 'when ci_pipeline_creation_step_duration_tracking is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_creation_step_duration_tracking: false)
+      end
+
+      it 'does nothing' do
+        duration = 1.hour
+
+        expect(::Gitlab::Ci::Pipeline::Metrics).not_to receive(:pipeline_creation_step_duration_histogram)
+
+        described_class.new.observe_step_duration(
+          Gitlab::Ci::Pipeline::Chain::Build,
+          duration
+        )
+      end
+    end
+  end
 end

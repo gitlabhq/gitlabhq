@@ -4,6 +4,8 @@ module Gitlab
   module Ci
     module Pipeline
       class Metrics
+        extend Gitlab::Utils::StrongMemoize
+
         def self.pipeline_creation_duration_histogram
           name = :gitlab_ci_pipeline_creation_duration_seconds
           comment = 'Pipeline creation duration'
@@ -11,6 +13,17 @@ module Gitlab
           buckets = [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 20.0, 50.0, 240.0]
 
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
+        end
+
+        def self.pipeline_creation_step_duration_histogram
+          strong_memoize(:pipeline_creation_step_histogram) do
+            name = :gitlab_ci_pipeline_creation_step_duration_seconds
+            comment = 'Duration of each pipeline creation step'
+            labels = { step: nil }
+            buckets = [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 15.0, 20.0, 50.0, 240.0]
+
+            ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
+          end
         end
 
         def self.pipeline_security_orchestration_policy_processing_duration_histogram
