@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36443
 rollout_issue_url: 
 milestone: '13.2'
 type: development
-group: group::product analytics
+group: group::product intelligence
 default_enabled: false
