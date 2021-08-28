@@ -186,32 +186,20 @@ RSpec.describe StuckCiJobsWorker do
     end
   end
 
-  shared_examples 'job is running' do
-    context 'when job is running' do
-      let(:status) { 'running' }
+  context 'when job is running' do
+    let(:status) { 'running' }
 
-      context 'when job was updated_at more than an hour ago' do
-        let(:updated_at) { 2.hours.ago }
+    context 'when job was updated_at more than an hour ago' do
+      let(:updated_at) { 2.hours.ago }
 
-        it_behaves_like 'job is dropped'
-      end
-
-      context 'when job was updated in less than 1 hour ago' do
-        let(:updated_at) { 30.minutes.ago }
-
-        it_behaves_like 'job is unchanged'
-      end
-    end
-  end
-
-  it_behaves_like 'job is running'
-
-  context 'when ci_new_query_for_running_stuck_jobs feature flag is disabled' do
-    before do
-      stub_feature_flags(ci_new_query_for_running_stuck_jobs: false)
+      it_behaves_like 'job is dropped'
     end
 
-    it_behaves_like 'job is running'
+    context 'when job was updated in less than 1 hour ago' do
+      let(:updated_at) { 30.minutes.ago }
+
+      it_behaves_like 'job is unchanged'
+    end
   end
 
   %w(success skipped failed canceled).each do |status|
