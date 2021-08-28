@@ -2,6 +2,7 @@ import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import Attachment from '../extensions/attachment';
+import Audio from '../extensions/audio';
 import Blockquote from '../extensions/blockquote';
 import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
@@ -63,6 +64,7 @@ export const createContentEditor = ({
 
   const builtInContentEditorExtensions = [
     Attachment.configure({ uploadsPath, renderMarkdown }),
+    Audio,
     Blockquote,
     Bold,
     BulletList,

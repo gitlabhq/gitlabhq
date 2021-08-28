@@ -41,6 +41,12 @@
     }
   }
 
+  .media-container {
+    display: inline-flex;
+    flex-direction: column;
+    margin-bottom: $gl-spacing-scale-2;
+  }
+
   img:not(.emoji) {
     margin: 0 0 8px;
   }

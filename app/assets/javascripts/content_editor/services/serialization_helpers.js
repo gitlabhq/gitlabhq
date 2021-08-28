@@ -286,3 +286,14 @@ export function renderHardBreak(state, node, parent, index) {
     }
   }
 }
+
+export function renderImage(state, node) {
+  const { alt, canonicalSrc, src, title } = node.attrs;
+  const quotedTitle = title ? ` ${state.quote(title)}` : '';
+
+  state.write(`![${state.esc(alt || '')}](${state.esc(canonicalSrc || src)}${quotedTitle})`);
+}
+
+export function renderPlayable(state, node) {
+  renderImage(state, node);
+}

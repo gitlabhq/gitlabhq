@@ -3,6 +3,7 @@ import {
   defaultMarkdownSerializer,
 } from 'prosemirror-markdown/src/to_markdown';
 import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
+import Audio from '../extensions/audio';
 import Blockquote from '../extensions/blockquote';
 import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
@@ -40,6 +41,8 @@ import {
   openTag,
   closeTag,
   renderOrderedList,
+  renderImage,
+  renderPlayable,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -92,6 +95,7 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
+    [Audio.name]: renderPlayable,
     [Blockquote.name]: (state, node) => {
       if (node.attrs.multiline) {
         state.write('>>>');
@@ -120,12 +124,7 @@ const defaultSerializerConfig = {
     [HardBreak.name]: renderHardBreak,
     [Heading.name]: defaultMarkdownSerializer.nodes.heading,
     [HorizontalRule.name]: defaultMarkdownSerializer.nodes.horizontal_rule,
-    [Image.name]: (state, node) => {
-      const { alt, canonicalSrc, src, title } = node.attrs;
-      const quotedTitle = title ? ` ${state.quote(title)}` : '';
-
-      state.write(`![${state.esc(alt || '')}](${state.esc(canonicalSrc || src)}${quotedTitle})`);
-    },
+    [Image.name]: renderImage,
     [ListItem.name]: defaultMarkdownSerializer.nodes.list_item,
     [OrderedList.name]: renderOrderedList,
     [Paragraph.name]: defaultMarkdownSerializer.nodes.paragraph,
