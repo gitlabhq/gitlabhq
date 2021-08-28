@@ -33,7 +33,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | npm with semantic-release     | [Publish npm packages to the GitLab Package Registry using semantic-release](semantic-release.md). |
 | PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md). |
 | PHP with npm, SCP             | [Running Composer and npm scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md). |
-| PHP with PHPunit, `atoum`       | [Testing PHP projects](php.md). |
+| PHP with PHPunit, `atoum`     | [Testing PHP projects](php.md). |
 | Secrets management with Vault | [Authenticating and Reading Secrets With HashiCorp Vault](authenticating-with-hashicorp-vault/index.md). |
 
 ### Contributed examples
@@ -58,7 +58,7 @@ separate example projects:
 Get started with GitLab CI/CD and your favorite programming language or framework by using a
 `.gitlab-ci.yml` [template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-When you create a `gitlab-ci.yml` file in the UI, you can
+When you create a `.gitlab-ci.yml` file in the UI, you can
 choose one of these templates:
 
 - [Android (`Android.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Android.gitlab-ci.yml)
@@ -76,7 +76,7 @@ choose one of these templates:
 - [dotNET Core (`dotNET-Core.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET-Core.gitlab-ci.yml)
 - [Elixir (`Elixir.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Elixir.gitlab-ci.yml)
 - [Flutter (`Flutter.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Flutter.gitlab-ci.yml)
-- [goLang (`Go.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml)
+- [Golang (`Go.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml)
 - [Gradle (`Gradle.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Gradle.gitlab-ci.yml)
 - [Grails (`Grails.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Grails.gitlab-ci.yml)
 - [iOS with fastlane (`iOS-Fastlane.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/iOS-Fastlane.gitlab-ci.yml)
@@ -117,15 +117,15 @@ Note that older articles and videos may not reflect the state of the latest GitL
 For examples of setting up GitLab CI/CD for cloud-based environments, see:
 
 - [How to set up multi-account AWS SAM deployments with GitLab CI](https://about.gitlab.com/blog/2019/02/04/multi-account-aws-sam-deployments-with-gitlab-ci/)
-- [Automating Kubernetes Deployments with GitLab CI/CD](https://www.youtube.com/watch?v=wEDRfAz6_Uw)
+- Video: [Automating Kubernetes Deployments with GitLab CI/CD](https://www.youtube.com/watch?v=wEDRfAz6_Uw)
 - [How to autoscale continuous deployment with GitLab Runner on DigitalOcean](https://about.gitlab.com/blog/2018/06/19/autoscale-continuous-deployment-gitlab-runner-digital-ocean/)
 - [How to create a CI/CD pipeline with Auto Deploy to Kubernetes using GitLab and Helm](https://about.gitlab.com/blog/2017/09/21/how-to-create-ci-cd-pipeline-with-autodeploy-to-kubernetes-using-gitlab-and-helm/)
-- [Demo - Deploying from GitLab to OpenShift Container Cluster](https://youtu.be/EwbhA53Jpp4)
+- Video: [Demo - Deploying from GitLab to OpenShift Container Cluster](https://youtu.be/EwbhA53Jpp4)
 
 See also the following video overviews:
 
-- [Kubernetes, GitLab, and Cloud Native](https://www.youtube.com/watch?v=d-9awBxEbvQ).
-- [Deploying to IBM Cloud with GitLab CI/CD](https://www.youtube.com/watch?v=6ZF4vgKMd-g).
+- Video: [Kubernetes, GitLab, and Cloud Native](https://www.youtube.com/watch?v=d-9awBxEbvQ)
+- Video: [Deploying to IBM Cloud with GitLab CI/CD](https://www.youtube.com/watch?v=6ZF4vgKMd-g)
 
 ### Customer stories
 
@@ -160,7 +160,9 @@ For examples of others who have implemented GitLab CI/CD, see:
 
 ### Migrating to GitLab from third-party CI tools
 
-- [Migrating from Jenkins to GitLab](https://youtu.be/RlEVGOpYF5Y)
+- [Migrating from CircleCI to GitLab](../migration/circleci.md)
+- [Migrating from Jenkins to GitLab](../migration/jenkins.md)
+- Video: [Migrating from Jenkins to GitLab](https://youtu.be/RlEVGOpYF5Y)
 
 ### Integrating GitLab CI/CD with other systems
 
