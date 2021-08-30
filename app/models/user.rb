@@ -1000,7 +1000,11 @@ class User < ApplicationRecord
 
   # Returns the groups a user is a member of, either directly or through a parent group
   def membership_groups
-    Gitlab::ObjectHierarchy.new(groups).base_and_descendants
+    if Feature.enabled?(:linear_user_membership_groups, self, default_enabled: :yaml)
+      groups.self_and_descendants
+    else
+      Gitlab::ObjectHierarchy.new(groups).base_and_descendants
+    end
   end
 
   # Returns a relation of groups the user has access to, including their parent

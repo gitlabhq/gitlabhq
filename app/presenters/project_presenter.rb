@@ -431,22 +431,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   private
 
   def integrations_anchor_data
-    experiment(:repo_integrations_link, project: project) do |e|
-      e.exclude! unless can?(current_user, :admin_project, project)
+    return unless can?(current_user, :admin_project, project)
 
-      e.use {} # nil control
-      e.try do
-        label = statistic_icon('settings') + _('Configure Integrations')
-        AnchorData.new(false, label, project_settings_integrations_path(project), nil, nil, nil, {
-          'track-event': 'click',
-          'track-experiment': e.name
-        })
-      end
-
-      e.run # call run so the return value will be the AnchorData (or nil)
-
-      e.track(:view, value: project.id) # track an event for the view, with project id
-    end
+    label = statistic_icon('settings') + _('Configure Integrations')
+    AnchorData.new(false, label, project_settings_integrations_path(project), nil, nil, nil)
   end
 
   def cicd_missing?

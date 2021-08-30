@@ -429,4 +429,27 @@ RSpec.describe 'User page' do
       end
     end
   end
+
+  context 'GPG keys' do
+    context 'when user has verified GPG keys' do
+      let_it_be(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
+      let_it_be(:gpg_key) { create(:gpg_key, user: user, key: GpgHelpers::User1.public_key) }
+      let_it_be(:gpg_key2) { create(:gpg_key, user: user, key: GpgHelpers::User1.public_key2) }
+
+      it 'shows link to public GPG keys' do
+        subject
+
+        expect(page).to have_link('View public GPG keys', href: user_gpg_keys_path(user))
+      end
+    end
+
+    context 'when user does not have verified GPG keys' do
+      it 'does not show link to public GPG keys' do
+        subject
+
+        expect(page).not_to have_link('View public GPG key', href: user_gpg_keys_path(user))
+        expect(page).not_to have_link('View public GPG keys', href: user_gpg_keys_path(user))
+      end
+    end
+  end
 end

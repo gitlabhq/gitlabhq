@@ -72,13 +72,10 @@ ALLOW_LIST = Set.new(YAML.load_file(Rails.root.join('.cross-join-allowlist.yml')
 RSpec.configure do |config|
   config.include(::Database::PreventCrossJoins::SpecHelpers)
 
-  config.around do |example|
+  # TODO: remove `:prevent_cross_joins` to enable the check by default
+  config.around(:each, :prevent_cross_joins) do |example|
     Thread.current[:has_cross_join_exception] = false
 
-    if ALLOW_LIST.include?(example.file_path)
-      example.run
-    else
-      with_cross_joins_prevented { example.run }
-    end
+    with_cross_joins_prevented { example.run }
   end
 end

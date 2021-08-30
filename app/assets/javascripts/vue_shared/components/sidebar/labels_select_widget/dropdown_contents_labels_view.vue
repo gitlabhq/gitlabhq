@@ -112,7 +112,7 @@ export default {
     this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   beforeDestroy() {
-    this.$emit('closeDropdown', this.localSelectedLabels);
+    this.$emit('setLabels', this.localSelectedLabels);
     this.debouncedSearchKeyUpdate.cancel();
   },
   methods: {
@@ -166,7 +166,7 @@ export default {
         this.updateSelectedLabels(this.visibleLabels[this.currentHighlightItem]);
         this.searchKey = '';
       } else if (e.keyCode === ESC_KEY_CODE) {
-        this.$emit('closeDropdown', this.localSelectedLabels);
+        this.$emit('setLabels', this.localSelectedLabels);
       }
 
       if (e.keyCode !== ESC_KEY_CODE) {
@@ -180,7 +180,7 @@ export default {
     handleLabelClick(label) {
       this.updateSelectedLabels(label);
       if (!this.allowMultiselect) {
-        this.$emit('closeDropdown', this.localSelectedLabels);
+        this.$emit('setLabels', this.localSelectedLabels);
       }
     },
     setSearchKey(value) {
@@ -240,7 +240,7 @@ export default {
           <gl-link
             class="gl-display-flex gl-flex-direction-row gl-w-full gl-overflow-break-word label-item"
             data-testid="create-label-button"
-            @click="$emit('toggleDropdownContentsCreateView')"
+            @click.stop="$emit('toggleDropdownContentsCreateView')"
           >
             {{ footerCreateLabelTitle }}
           </gl-link>

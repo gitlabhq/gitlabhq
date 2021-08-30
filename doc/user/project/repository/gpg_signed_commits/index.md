@@ -19,6 +19,11 @@ NOTE:
 The term GPG is used for all OpenPGP/PGP/GPG related material and
 implementations.
 
+To view a user's public GPG key, you can:
+
+- Go to `https://gitlab.example.com/<username>.gpg`.
+- Select **View public GPG keys** (**{key}**) in the top right of the user's profile.
+
 GPG verified tags are not supported yet.
 
 See the [further reading](#further-reading) section for more details on GPG.

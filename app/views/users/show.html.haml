@@ -26,6 +26,13 @@
           = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referer), class: link_classes + 'btn gl-button btn-default btn-icon',
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = sprite_icon('error')
+      - verified_gpg_keys = @user.gpg_keys.select(&:verified?)
+      - if verified_gpg_keys.any?
+        = link_to user_gpg_keys_path,
+          class: link_classes + 'btn btn-default btn-md gl-button btn-icon has-tooltip',
+          title: n_('View public GPG key', 'View public GPG keys', verified_gpg_keys.length),
+          data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+          = sprite_icon('key', css_class: 'gl-button-icon gl-icon')
       - if can?(current_user, :read_user_profile, @user)
         = link_to user_path(@user, rss_url_options), class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip',
           title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do

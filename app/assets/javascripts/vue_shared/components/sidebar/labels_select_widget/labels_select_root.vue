@@ -1,14 +1,12 @@
 <script>
-import $ from 'jquery';
 import Vue from 'vue';
 import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-
+import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { DropdownVariant } from './constants';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
-import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
 import issueLabelsQuery from './graphql/issue_labels.query.graphql';
@@ -19,11 +17,11 @@ Vue.use(Vuex);
 export default {
   store: new Vuex.Store(labelsSelectModule()),
   components: {
-    DropdownTitle,
     DropdownValue,
     DropdownButton,
     DropdownContents,
     DropdownValueCollapsed,
+    SidebarEditableItem,
   },
   inject: ['iid', 'projectPath'],
   props: {
@@ -139,15 +137,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(['showDropdownButton', 'showDropdownContents']),
+    ...mapState(['showDropdownContents']),
     ...mapGetters([
       'isDropdownVariantSidebar',
       'isDropdownVariantStandalone',
       'isDropdownVariantEmbedded',
     ]),
-    dropdownButtonVisible() {
-      return this.isDropdownVariantSidebar ? this.showDropdownButton : true;
-    },
   },
   watch: {
     selectedLabels(selectedLabels) {
@@ -182,99 +177,20 @@ export default {
       footerCreateLabelTitle: this.footerCreateLabelTitle,
       footerManageLabelTitle: this.footerManageLabelTitle,
     });
-
-    this.$store.subscribeAction({
-      after: this.handleVuexActionDispatch,
-    });
-
-    document.addEventListener('mousedown', this.handleDocumentMousedown);
-    document.addEventListener('click', this.handleDocumentClick);
-  },
-  beforeDestroy() {
-    document.removeEventListener('mousedown', this.handleDocumentMousedown);
-    document.removeEventListener('click', this.handleDocumentClick);
   },
   methods: {
-    ...mapActions(['setInitialState', 'toggleDropdownContents']),
-    /**
-     * This method stores a mousedown event's target.
-     * Required by the click listener because the click
-     * event itself has no reference to this element.
-     */
-    handleDocumentMousedown({ target }) {
-      this.mousedownTarget = target;
-    },
-    /**
-     * This method listens for document-wide click event
-     * and toggle dropdown if user clicks anywhere outside
-     * the dropdown while dropdown is visible.
-     */
-    handleDocumentClick({ target }) {
-      // We also perform the toggle exception check for the
-      // last mousedown event's target to avoid hiding the
-      // box when the mousedown happened inside the box and
-      // only the mouseup did not.
-      if (
-        this.showDropdownContents &&
-        !this.preventDropdownToggleOnClick(target) &&
-        !this.preventDropdownToggleOnClick(this.mousedownTarget)
-      ) {
-        this.toggleDropdownContents();
-      }
-    },
-    /**
-     * This method checks whether a given click target
-     * should prevent the dropdown from being toggled.
-     */
-    preventDropdownToggleOnClick(target) {
-      // This approach of element detection is needed
-      // as the dropdown wrapper is not using `GlDropdown` as
-      // it will also require us to use `BDropdownForm`
-      // which is yet to be implemented in GitLab UI.
-      const hasExceptionClass = [
-        'js-dropdown-button',
-        'js-btn-cancel-create',
-        'js-sidebar-dropdown-toggle',
-      ].some(
-        (className) =>
-          target?.classList.contains(className) ||
-          target?.parentElement?.classList.contains(className),
-      );
-
-      const hasExceptionParent = ['.js-btn-back', '.js-labels-list'].some(
-        (className) => $(target).parents(className).length,
-      );
-
-      const isInDropdownButtonCollapsed = this.$refs.dropdownButtonCollapsed?.$el.contains(target);
-
-      const isInDropdownContents = this.$refs.dropdownContents?.$el.contains(target);
-
-      return (
-        hasExceptionClass ||
-        hasExceptionParent ||
-        isInDropdownButtonCollapsed ||
-        isInDropdownContents
-      );
-    },
+    ...mapActions(['setInitialState']),
     handleDropdownClose(labels) {
-      // Only emit label updates if there are any labels to update
-      // on UI.
-      if (this.showDropdownContents) {
-        this.toggleDropdownContents();
-      }
       if (labels.length) this.$emit('updateSelectedLabels', labels);
       this.$emit('onDropdownClose');
+    },
+    collapseDropdown() {
+      this.$refs.editable.collapse();
     },
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');
     },
-    setContentIsOnViewport(showDropdownContents) {
-      if (!showDropdownContents) {
-        this.contentIsOnViewport = true;
-
-        return;
-      }
-
+    setContentIsOnViewport() {
       this.$nextTick(() => {
         if (this.$refs.dropdownContents) {
           this.contentIsOnViewport = isInViewport(this.$refs.dropdownContents.$el);
@@ -299,48 +215,55 @@ export default {
         :labels="issueLabels"
         @onValueClick="handleCollapsedValueClick"
       />
-      <dropdown-title
-        :allow-label-edit="allowLabelEdit"
-        :labels-select-in-progress="labelsSelectInProgress"
-      />
-      <dropdown-value
-        :disable-labels="labelsSelectInProgress"
-        :selected-labels="issueLabels"
-        :allow-label-remove="allowLabelRemove"
-        :allow-scoped-labels="allowScopedLabels"
-        :labels-filter-base-path="labelsFilterBasePath"
-        :labels-filter-param="labelsFilterParam"
-        @onLabelRemove="$emit('onLabelRemove', $event)"
+      <sidebar-editable-item
+        ref="editable"
+        :title="__('Labels')"
+        :loading="labelsSelectInProgress"
+        @open="setContentIsOnViewport"
+        @close="contentIsOnViewport = true"
       >
-        <slot></slot>
-      </dropdown-value>
-      <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />
-      <dropdown-contents
-        v-if="dropdownButtonVisible && showDropdownContents"
-        ref="dropdownContents"
-        :allow-multiselect="allowMultiselect"
-        :labels-list-title="labelsListTitle"
-        :footer-create-label-title="footerCreateLabelTitle"
-        :footer-manage-label-title="footerManageLabelTitle"
-        :render-on-top="!contentIsOnViewport"
-        :labels-create-title="labelsCreateTitle"
-        :selected-labels="selectedLabels"
-        @closeDropdown="handleDropdownClose"
-      />
-    </template>
-    <template v-if="isDropdownVariantStandalone || isDropdownVariantEmbedded">
-      <dropdown-button v-show="dropdownButtonVisible" />
-      <dropdown-contents
-        v-if="dropdownButtonVisible && showDropdownContents"
-        ref="dropdownContents"
-        :allow-multiselect="allowMultiselect"
-        :labels-list-title="labelsListTitle"
-        :footer-create-label-title="footerCreateLabelTitle"
-        :footer-manage-label-title="footerManageLabelTitle"
-        :render-on-top="!contentIsOnViewport"
-        :selected-labels="selectedLabels"
-        @closeDropdown="handleDropdownClose"
-      />
+        <template #collapsed>
+          <dropdown-value
+            :disable-labels="labelsSelectInProgress"
+            :selected-labels="issueLabels"
+            :allow-label-remove="allowLabelRemove"
+            :allow-scoped-labels="allowScopedLabels"
+            :labels-filter-base-path="labelsFilterBasePath"
+            :labels-filter-param="labelsFilterParam"
+            @onLabelRemove="$emit('onLabelRemove', $event)"
+          >
+            <slot></slot>
+          </dropdown-value>
+        </template>
+        <template #default="{ edit }">
+          <dropdown-value
+            :disable-labels="labelsSelectInProgress"
+            :selected-labels="issueLabels"
+            :allow-label-remove="allowLabelRemove"
+            :allow-scoped-labels="allowScopedLabels"
+            :labels-filter-base-path="labelsFilterBasePath"
+            :labels-filter-param="labelsFilterParam"
+            class="gl-mb-2"
+            @onLabelRemove="$emit('onLabelRemove', $event)"
+          >
+            <slot></slot>
+          </dropdown-value>
+          <dropdown-button />
+          <dropdown-contents
+            v-if="edit"
+            ref="dropdownContents"
+            :allow-multiselect="allowMultiselect"
+            :labels-list-title="labelsListTitle"
+            :footer-create-label-title="footerCreateLabelTitle"
+            :footer-manage-label-title="footerManageLabelTitle"
+            :render-on-top="!contentIsOnViewport"
+            :labels-create-title="labelsCreateTitle"
+            :selected-labels="selectedLabels"
+            @closeDropdown="collapseDropdown"
+            @setLabels="handleDropdownClose"
+          />
+        </template>
+      </sidebar-editable-item>
     </template>
   </div>
 </template>

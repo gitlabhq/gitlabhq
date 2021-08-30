@@ -23,10 +23,10 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker do
 
     subject { described_class.new.perform(channel, package_file_id) }
 
-    shared_examples 'handling error' do
+    shared_examples 'handling error' do |error_class = Packages::Helm::ExtractFileMetadataService::ExtractionError|
       it 'mark the package as errored', :aggregate_failures do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-          instance_of(Packages::Helm::ExtractFileMetadataService::ExtractionError),
+          instance_of(error_class),
           project_id: package_file.package.project_id
         )
         expect { subject }
@@ -87,6 +87,16 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker do
       end
 
       it_behaves_like 'handling error'
+    end
+
+    context 'with an invalid Chart.yaml' do
+      before do
+        expect_next_instance_of(Gem::Package::TarReader::Entry) do |entry|
+          expect(entry).to receive(:read).and_return('{}')
+        end
+      end
+
+      it_behaves_like 'handling error', ActiveRecord::RecordInvalid
     end
   end
 end

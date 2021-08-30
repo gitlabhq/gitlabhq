@@ -139,6 +139,10 @@ RSpec.describe Packages::PackageFile, type: :model do
     end
   end
 
+  describe '.most_recent!' do
+    it { expect(described_class.most_recent!).to eq(debian_package.package_files.last) }
+  end
+
   describe '#update_file_store callback' do
     let_it_be(:package_file) { build(:package_file, :nuget, size: nil) }
 

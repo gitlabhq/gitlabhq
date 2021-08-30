@@ -9,16 +9,18 @@ RSpec.describe API::HelmPackages do
   let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
-  let_it_be(:package) { create(:helm_package, project: project) }
+  let_it_be(:package) { create(:helm_package, project: project, without_package_files: true) }
+  let_it_be(:package_file1) { create(:helm_package_file, package: package) }
+  let_it_be(:package_file2) { create(:helm_package_file, package: package) }
 
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/index.yaml' do
     it_behaves_like 'handling helm chart index requests' do
-      let(:url) { "/projects/#{project.id}/packages/helm/#{package.package_files.first.helm_channel}/index.yaml" }
+      let(:url) { "/projects/#{project.id}/packages/helm/stable/index.yaml" }
     end
   end
 
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/charts/:file_name.tgz' do
-    let(:url) { "/projects/#{project.id}/packages/helm/#{package.package_files.first.helm_channel}/charts/#{package.name}-#{package.version}.tgz" }
+    let(:url) { "/projects/#{project.id}/packages/helm/stable/charts/#{package.name}-#{package.version}.tgz" }
 
     subject { get api(url), headers: headers }
 

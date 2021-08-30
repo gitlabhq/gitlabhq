@@ -3389,17 +3389,32 @@ RSpec.describe User do
   end
 
   describe '#membership_groups' do
-    let!(:user) { create(:user) }
-    let!(:parent_group) { create(:group) }
-    let!(:child_group) { create(:group, parent: parent_group) }
+    let_it_be(:user) { create(:user) }
 
-    before do
-      parent_group.add_user(user, Gitlab::Access::MAINTAINER)
+    let_it_be(:parent_group) do
+      create(:group).tap do |g|
+        g.add_user(user, Gitlab::Access::MAINTAINER)
+      end
     end
+
+    let_it_be(:child_group) { create(:group, parent: parent_group) }
+    let_it_be(:other_group) { create(:group) }
 
     subject { user.membership_groups }
 
-    it { is_expected.to contain_exactly parent_group, child_group }
+    shared_examples 'returns groups where the user is a member' do
+      specify { is_expected.to contain_exactly(parent_group, child_group) }
+    end
+
+    it_behaves_like 'returns groups where the user is a member'
+
+    context 'when feature flag :linear_user_membership_groups is disabled' do
+      before do
+        stub_feature_flags(linear_user_membership_groups: false)
+      end
+
+      it_behaves_like 'returns groups where the user is a member'
+    end
   end
 
   describe '#authorizations_for_projects' do

@@ -649,36 +649,18 @@ RSpec.describe ProjectPresenter do
         end
       end
 
-      describe 'experiment(:repo_integrations_link)' do
-        context 'when enabled' do
-          before do
-            stub_experiments(repo_integrations_link: :candidate)
-          end
+      it 'includes a button to configure integrations for maintainers' do
+        project.add_maintainer(user)
 
-          it 'includes a button to configure integrations for maintainers' do
-            project.add_maintainer(user)
+        expect(empty_repo_statistics_buttons.map(&:label)).to include(
+          a_string_including('Configure Integration')
+        )
+      end
 
-            expect(empty_repo_statistics_buttons.map(&:label)).to include(
-              a_string_including('Configure Integration')
-            )
-          end
-
-          it 'does not include a button if not a maintainer' do
-            expect(empty_repo_statistics_buttons.map(&:label)).not_to include(
-              a_string_including('Configure Integration')
-            )
-          end
-        end
-
-        context 'when disabled' do
-          it 'does not include a button' do
-            project.add_maintainer(user)
-
-            expect(empty_repo_statistics_buttons.map(&:label)).not_to include(
-              a_string_including('Configure Integration')
-            )
-          end
-        end
+      it 'does not include a button if not a maintainer' do
+        expect(empty_repo_statistics_buttons.map(&:label)).not_to include(
+          a_string_including('Configure Integration')
+        )
       end
 
       context 'for a developer' do

@@ -36989,6 +36989,11 @@ msgstr ""
 msgid "View project labels"
 msgstr ""
 
+msgid "View public GPG key"
+msgid_plural "View public GPG keys"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "View replaced file @ "
 msgstr ""
 

@@ -349,7 +349,7 @@ describe('Tracking', () => {
     it('includes experiment data if linked to an experiment', () => {
       const mockExperimentData = {
         variant: 'candidate',
-        experiment: 'repo_integrations_link',
+        experiment: 'example',
         key: '2bff73f6bb8cc11156c50a8ba66b9b8b',
       };
       getExperimentData.mockReturnValue(mockExperimentData);

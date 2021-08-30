@@ -1,10 +1,12 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
+const IS_JH = require('./config/helpers/is_jh_env');
 
 module.exports = (path, options = {}) => {
   const {
     moduleNameMapper: extModuleNameMapper = {},
     moduleNameMapperEE: extModuleNameMapperEE = {},
+    moduleNameMapperJH: extModuleNameMapperJH = {},
   } = options;
 
   const reporters = ['default'];
@@ -29,6 +31,9 @@ module.exports = (path, options = {}) => {
     testMatch.push(`<rootDir>/ee/${glob}`);
   }
 
+  if (IS_JH) {
+    testMatch.push(`<rootDir>/jh/${glob}`);
+  }
   // workaround for eslint-import-resolver-jest only resolving in test files
   // see https://github.com/JoinColony/eslint-import-resolver-jest#note
   if (isESLint(module)) {
@@ -41,8 +46,11 @@ module.exports = (path, options = {}) => {
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^ee_component(/.*)$':
       '<rootDir>/app/assets/javascripts/vue_shared/components/empty_component.js',
+    '^jh_component(/.*)$':
+      '<rootDir>/app/assets/javascripts/vue_shared/components/empty_component.js',
     '^shared_queries(/.*)$': '<rootDir>/app/graphql/queries$1',
     '^ee_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
+    '^jh_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
     [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures$1',
@@ -68,6 +76,19 @@ module.exports = (path, options = {}) => {
     });
 
     collectCoverageFrom.push(rootDirEE.replace('$1', '/**/*.{js,vue}'));
+  }
+
+  if (IS_JH) {
+    const rootDirJH = '<rootDir>/jh/app/assets/javascripts$1';
+    Object.assign(moduleNameMapper, {
+      '^jh(/.*)$': rootDirJH,
+      '^jh_component(/.*)$': rootDirJH,
+      '^jh_else_ce(/.*)$': rootDirJH,
+      '^jh_jest/(.*)$': '<rootDir>/jh/spec/frontend/$1',
+      ...extModuleNameMapperJH,
+    });
+
+    collectCoverageFrom.push(rootDirJH.replace('$1', '/**/*.{js,vue}'));
   }
 
   const coverageDirectory = () => {
@@ -107,6 +128,7 @@ module.exports = (path, options = {}) => {
     testEnvironment: '<rootDir>/spec/frontend/environment.js',
     testEnvironmentOptions: {
       IS_EE,
+      IS_JH,
     },
   };
 };

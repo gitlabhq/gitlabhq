@@ -41,7 +41,7 @@ RSpec.shared_examples 'process helm service index request' do |user_type, status
 
       package_entry = yaml_response['entries'][package.name]
 
-      expect(package_entry.length).to eq(1)
+      expect(package_entry.length).to eq(2)
       expect(package_entry.first.keys).to contain_exactly('name', 'version', 'apiVersion', 'created', 'digest', 'urls')
       expect(package_entry.first['digest']).to eq('fd2b2fa0329e80a2a602c2bb3b40608bcd6ee5cf96cf46fd0d2800a4c129c9db')
       expect(package_entry.first['urls']).to eq(["charts/#{package.name}-#{package.version}.tgz"])
@@ -174,6 +174,13 @@ RSpec.shared_examples 'process helm download content request' do |user_type, sta
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if user_type != :anonymous && user_type != :not_a_member
+
+      expect_next_found_instance_of(::Packages::PackageFile) do |package_file|
+        expect(package_file).to receive(:file).and_wrap_original do |m, *args|
+          expect(package_file.id).to eq(package_file2.id)
+          m.call(*args)
+        end
+      end
     end
 
     it_behaves_like 'a package tracking event', 'API::HelmPackages', 'pull_package'

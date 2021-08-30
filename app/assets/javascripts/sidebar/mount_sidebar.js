@@ -258,6 +258,7 @@ export function mountSidebarLabels() {
       allowScopedLabels: parseBoolean(el.dataset.allowScopedLabels),
       initiallySelectedLabels: JSON.parse(el.dataset.selectedLabels),
       variant: DropdownVariant.Sidebar,
+      canUpdate: parseBoolean(el.dataset.canEdit),
     },
     render: (createElement) => createElement(SidebarLabels),
   });

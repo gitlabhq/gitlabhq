@@ -37,6 +37,7 @@ import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
 
 import 'ee_else_ce/main_ee';
+import 'jh_else_ce/main_jh';
 
 applyGitLabUIConfig();
 

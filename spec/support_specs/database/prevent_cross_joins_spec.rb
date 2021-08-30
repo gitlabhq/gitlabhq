@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Database::PreventCrossJoins do
-  context 'when running in a default scope' do
+  context 'when running in :prevent_cross_joins scope', :prevent_cross_joins do
     context 'when only non-CI tables are used' do
       it 'does not raise exception' do
         expect { main_only_query }.not_to raise_error
@@ -28,6 +28,14 @@ RSpec.describe Database::PreventCrossJoins do
 
           expect { main_and_ci_query }.not_to raise_error
         end
+      end
+    end
+  end
+
+  context 'when running in a default scope' do
+    context 'when CI and non-CI tables are used' do
+      it 'does not raise exception' do
+        expect { main_and_ci_query }.not_to raise_error
       end
     end
   end

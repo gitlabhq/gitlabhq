@@ -89,8 +89,10 @@ module Gitlab
             # Sentry, instead of silently terminating this thread.
             Gitlab::ErrorTracking.track_exception(error)
 
-            Gitlab::AppLogger.error(
-              "Service discovery encountered an error: #{error.message}"
+            Gitlab::Database::LoadBalancing::Logger.error(
+              event: :service_discovery_failure,
+              message: "Service discovery encountered an error: #{error.message}",
+              host_list_length: load_balancer.host_list.length
             )
 
             # Slightly randomize the retry delay so that, in the case of a total

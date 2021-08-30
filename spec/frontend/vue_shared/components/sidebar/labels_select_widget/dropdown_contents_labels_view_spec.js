@@ -137,12 +137,6 @@ describe('DropdownContentsLabelsView', () => {
 
       expect(findLabels().at(0).attributes('islabelset')).toBe('true');
     });
-
-    it('emits `closeDropdown event` when Esc button is pressed', () => {
-      findDropdownWrapper().trigger('keydown.esc');
-
-      expect(wrapper.emitted('closeDropdown')).toEqual([[selectedLabels]]);
-    });
   });
 
   it('when search returns 0 results', async () => {
@@ -205,7 +199,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('emits `toggleDropdownContentsCreateView` event on create label button click', () => {
-      findCreateLabelButton().vm.$emit('click');
+      findCreateLabelButton().vm.$emit('click', new MouseEvent('click'));
 
       expect(wrapper.emitted('toggleDropdownContentsCreateView')).toEqual([[]]);
     });

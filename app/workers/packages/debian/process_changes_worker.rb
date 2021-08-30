@@ -22,12 +22,7 @@ module Packages
         return unless package_file && user
 
         ::Packages::Debian::ProcessChangesService.new(package_file, user).execute
-      rescue ArgumentError,
-             Packages::Debian::ExtractChangesMetadataService::ExtractionError,
-             Packages::Debian::ExtractDebMetadataService::CommandFailedError,
-             Packages::Debian::ExtractMetadataService::ExtractionError,
-             Packages::Debian::ParseDebian822Service::InvalidDebian822Error,
-             ActiveRecord::RecordNotFound => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, package_file_id: @package_file_id, user_id: @user_id)
         package_file.destroy!
       end

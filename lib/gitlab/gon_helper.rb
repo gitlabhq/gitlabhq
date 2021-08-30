@@ -37,6 +37,7 @@ module Gitlab
       gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
       gon.time_display_relative  = true
       gon.ee                     = Gitlab.ee?
+      gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
 
       if current_user

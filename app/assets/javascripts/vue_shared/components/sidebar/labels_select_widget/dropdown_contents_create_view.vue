@@ -1,8 +1,10 @@
 <script>
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import produce from 'immer';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
+import projectLabelsQuery from './graphql/project_labels.query.graphql';
 
 const errorMessage = __('Error creating label.');
 
@@ -47,6 +49,25 @@ export default {
     handleColorClick(color) {
       this.selectedColor = this.getColorCode(color);
     },
+    updateLabelsInCache(store, label) {
+      const sourceData = store.readQuery({
+        query: projectLabelsQuery,
+        variables: { fullPath: this.projectPath, searchTerm: '' },
+      });
+
+      const collator = new Intl.Collator('en');
+      const data = produce(sourceData, (draftData) => {
+        const { nodes } = draftData.workspace.labels;
+        nodes.push(label);
+        nodes.sort((a, b) => collator.compare(a.title, b.title));
+      });
+
+      store.writeQuery({
+        query: projectLabelsQuery,
+        variables: { fullPath: this.projectPath, searchTerm: '' },
+        data,
+      });
+    },
     async createLabel() {
       this.labelCreateInProgress = true;
       try {
@@ -59,6 +80,14 @@ export default {
             color: this.selectedColor,
             projectPath: this.projectPath,
           },
+          update: (
+            store,
+            {
+              data: {
+                labelCreate: { label },
+              },
+            },
+          ) => this.updateLabelsInCache(store, label),
         });
         if (labelCreate.errors.length) {
           createFlash({ message: errorMessage });

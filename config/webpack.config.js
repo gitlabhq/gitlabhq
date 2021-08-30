@@ -48,6 +48,8 @@ const INCREMENTAL_COMPILER_ENABLED =
   IS_DEV_SERVER &&
   process.env.DEV_SERVER_INCREMENTAL &&
   process.env.DEV_SERVER_INCREMENTAL !== 'false';
+const INCREMENTAL_COMPILER_TTL = Number(process.env.DEV_SERVER_INCREMENTAL_TTL) || Infinity;
+const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
@@ -69,8 +71,10 @@ let watchAutoEntries = [];
 const defaultEntries = ['./main'];
 
 const incrementalCompiler = createIncrementalWebpackCompiler(
+  INCREMENTAL_COMPILER_RECORD_HISTORY,
   INCREMENTAL_COMPILER_ENABLED,
   path.join(CACHE_PATH, 'incremental-webpack-compiler-history.json'),
+  INCREMENTAL_COMPILER_TTL,
 );
 
 function generateEntries() {
@@ -157,6 +161,9 @@ const alias = {
   // the following resolves files which are different between CE and EE
   ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
+  // the following resolves files which are different between CE and JH
+  jh_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
+
   // override loader path for icons.svg so we do not duplicate this asset
   '@gitlab/svgs/dist/icons.svg': path.join(
     ROOT_PATH,
@@ -180,10 +187,13 @@ if (IS_EE) {
 if (IS_JH) {
   Object.assign(alias, {
     jh: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
+    jh_component: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
+    jh_empty_states: path.join(ROOT_PATH, 'jh/app/views/shared/empty_states'),
     jh_icons: path.join(ROOT_PATH, 'jh/app/views/shared/icons'),
     jh_images: path.join(ROOT_PATH, 'jh/app/assets/images'),
     jh_spec: path.join(ROOT_PATH, 'jh/spec/javascripts'),
     jh_jest: path.join(ROOT_PATH, 'jh/spec/frontend'),
+    jh_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
   });
 }
 
@@ -519,6 +529,15 @@ module.exports = {
         );
       }),
 
+    !IS_JH &&
+      new webpack.NormalModuleReplacementPlugin(/^jh_component\/(.*)\.vue/, (resource) => {
+        // eslint-disable-next-line no-param-reassign
+        resource.request = path.join(
+          ROOT_PATH,
+          'app/assets/javascripts/vue_shared/components/empty_component.js',
+        );
+      }),
+
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -634,10 +653,12 @@ module.exports = {
       }),
 
     new webpack.DefinePlugin({
-      // This one is used to define window.gon.ee and other things properly in tests:
+      // These are used to define window.gon.ee, window.gon.jh and other things properly in tests:
       'process.env.IS_EE': JSON.stringify(IS_EE),
-      // This one is used to check against "EE" properly in application code
+      'process.env.IS_JH': JSON.stringify(IS_JH),
+      // These are used to check against "EE" properly in application code
       IS_EE: IS_EE ? 'window.gon && window.gon.ee' : JSON.stringify(false),
+      IS_JH: IS_JH ? 'window.gon && window.gon.jh' : JSON.stringify(false),
       // This is used by Sourcegraph because these assets are loaded dnamically
       'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
     }),

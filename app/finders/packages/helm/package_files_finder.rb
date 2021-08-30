@@ -6,6 +6,8 @@ module Packages
       DEFAULT_PACKAGE_FILES_COUNT = 20
       MAX_PACKAGE_FILES_COUNT = 1000
 
+      delegate :most_recent!, to: :execute
+
       def initialize(project, channel, params = {})
         @project = project
         @channel = channel

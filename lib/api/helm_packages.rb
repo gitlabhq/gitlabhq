@@ -66,7 +66,7 @@ module API
         get ":channel/charts/:file_name.tgz", requirements: FILE_NAME_REQUIREMENTS do
           authorize_read_package!(authorized_user_project)
 
-          package_file = Packages::Helm::PackageFilesFinder.new(authorized_user_project, params[:channel], file_name: "#{params[:file_name]}.tgz").execute.last!
+          package_file = Packages::Helm::PackageFilesFinder.new(authorized_user_project, params[:channel], file_name: "#{params[:file_name]}.tgz").most_recent!
 
           track_package_event('pull_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace)
 

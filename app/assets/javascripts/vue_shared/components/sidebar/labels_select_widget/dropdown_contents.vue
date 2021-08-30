@@ -60,7 +60,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDropdownContentsCreateView', 'toggleDropdownContents']),
+    ...mapActions(['toggleDropdownContentsCreateView']),
   },
 };
 </script>
@@ -83,7 +83,7 @@ export default {
         size="small"
         class="js-btn-back dropdown-header-button p-0"
         icon="arrow-left"
-        @click="toggleDropdownContentsCreateView"
+        @click.stop="toggleDropdownContentsCreateView"
       />
       <span class="flex-grow-1">{{ dropdownTitle }}</span>
       <gl-button
@@ -92,7 +92,7 @@ export default {
         size="small"
         class="dropdown-header-button gl-p-0!"
         icon="close"
-        @click="toggleDropdownContents"
+        @click="$emit('closeDropdown')"
       />
     </div>
     <component
@@ -103,7 +103,7 @@ export default {
       :footer-create-label-title="footerCreateLabelTitle"
       :footer-manage-label-title="footerManageLabelTitle"
       @hideCreateView="toggleDropdownContentsCreateView"
-      @closeDropdown="$emit('closeDropdown', $event)"
+      @setLabels="$emit('setLabels', $event)"
       @toggleDropdownContentsCreateView="toggleDropdownContentsCreateView"
     />
   </div>

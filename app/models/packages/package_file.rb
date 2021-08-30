@@ -77,6 +77,10 @@ class Packages::PackageFile < ApplicationRecord
       .where(packages_conan_file_metadata: { conan_package_reference: conan_package_reference })
   end
 
+  def self.most_recent!
+    recent.first!
+  end
+
   mount_file_store_uploader Packages::PackageFileUploader
 
   update_project_statistics project_statistics_name: :packages_size
