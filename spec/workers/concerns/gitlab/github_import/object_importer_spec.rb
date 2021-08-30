@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
     end)
   end
 
-  describe '#import', :clean_gitlab_redis_shared_state do
+  describe '#import', :clean_gitlab_redis_cache do
     let(:importer_class) { double(:importer_class, name: 'klass_name') }
     let(:importer_instance) { double(:importer_instance) }
     let(:project) { double(:project, full_path: 'foo/bar', id: 1) }
