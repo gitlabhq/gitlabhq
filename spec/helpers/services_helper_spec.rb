@@ -82,4 +82,19 @@ RSpec.describe ServicesHelper do
       end
     end
   end
+
+  describe '#jira_issue_breadcrumb_link' do
+    let(:issue_reference) { nil }
+
+    subject { helper.jira_issue_breadcrumb_link(issue_reference) }
+
+    context 'when issue_reference contains HTML' do
+      let(:issue_reference) { "<script>alert('XSS')</script>" }
+
+      it 'escapes issue reference' do
+        is_expected.not_to include(issue_reference)
+        is_expected.to include(html_escape(issue_reference))
+      end
+    end
+  end
 end
