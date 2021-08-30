@@ -46,7 +46,7 @@ The security dashboard and vulnerability report displays information about vulne
 
 ## Pipeline Security
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13496) in GitLab 12.3.
 
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of
 the project the pipeline ran against.
@@ -64,7 +64,7 @@ the analyzer outputs an
 
 ### Scan details
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3728) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3728) in GitLab 13.10.
 
 The **Scan details** section lists the scans run in the pipeline and the total number of
 vulnerabilities per scan. For the DAST scan, select **Download scanned resources** to download a
@@ -104,7 +104,7 @@ To download an SVG image of the chart, select **Save chart to an image** (**{dow
 
 ## Group Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in GitLab 11.5.
 
 The group Security Dashboard gives an overview of the vulnerabilities found in the default branches of the
 projects in a group and its subgroups. Access it by navigating to **Security > Security Dashboard**
@@ -139,7 +139,7 @@ Navigate to the group's [vulnerability report](../vulnerability_report/index.md)
 
 ## Security Center
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in GitLab 13.4.
 
 The Security Center is personal space where you manage vulnerabilities across all your projects. It
 displays the vulnerabilities present in the default branches of all the projects you configure. It includes

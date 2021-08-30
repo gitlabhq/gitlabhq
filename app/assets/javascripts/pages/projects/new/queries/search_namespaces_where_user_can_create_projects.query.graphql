@@ -1,0 +1,14 @@
+query searchNamespacesWhereUserCanCreateProjects($search: String) {
+  currentUser {
+    groups(permissionScope: CREATE_PROJECTS, search: $search) {
+      nodes {
+        id
+        fullPath
+      }
+    }
+    namespace {
+      id
+      fullPath
+    }
+  }
+}

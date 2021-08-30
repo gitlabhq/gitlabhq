@@ -162,8 +162,6 @@ describe('Commit component', () => {
 
       expect(refEl.attributes('href')).toBe(props.commitRef.ref_url);
 
-      expect(refEl.attributes('title')).toBe(props.commitRef.name);
-
       expect(findIcon('branch').exists()).toBe(true);
     });
   });
@@ -194,8 +192,6 @@ describe('Commit component', () => {
       expect(refEl.text()).toContain('1234');
 
       expect(refEl.attributes('href')).toBe(props.mergeRequestRef.path);
-
-      expect(refEl.attributes('title')).toBe(props.mergeRequestRef.title);
 
       expect(findIcon('git-merge').exists()).toBe(true);
     });

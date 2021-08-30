@@ -1,3 +1,5 @@
+export const MINIMUM_SEARCH_LENGTH = 3;
+
 export const TYPE_CI_RUNNER = 'Ci::Runner';
 export const TYPE_EPIC = 'Epic';
 export const TYPE_GROUP = 'Group';

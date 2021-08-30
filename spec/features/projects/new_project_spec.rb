@@ -6,6 +6,10 @@ RSpec.describe 'New project', :js do
   include Select2Helper
   include Spec::Support::Helpers::Features::TopNavSpecHelpers
 
+  before do
+    stub_feature_flags(paginatable_namespace_drop_down_for_project_creation: false)
+  end
+
   context 'as a user' do
     let(:user) { create(:user) }
 

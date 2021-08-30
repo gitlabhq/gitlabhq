@@ -127,3 +127,11 @@ some sort of log aggregation software like Loki, ELK, Splunk, or others.
 
 You can use a tool like Ansible or PSSH (parallel SSH) that can execute identical commands across your servers in
 parallel, or craft your own solution.
+
+### Viewing the request in the Performance Bar
+
+You can use the [performance bar](../monitoring/performance/performance_bar.md) to view interesting data including calls made to SQL and Gitaly.
+
+To view the data, the correlation ID of the request must match the same session as the user
+viewing the performance bar. For API requests, this means that you must perform the request
+using the session cookie of the signed-in user.

@@ -20820,9 +20820,6 @@ msgstr ""
 msgid "Members of a group may only view projects they have permission to access"
 msgstr ""
 
-msgid "Membership"
-msgstr ""
-
 msgid "Members|%{time} by %{user}"
 msgstr ""
 

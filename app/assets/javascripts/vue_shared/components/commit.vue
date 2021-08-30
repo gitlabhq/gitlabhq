@@ -136,6 +136,9 @@ export default {
     refUrl() {
       return this.commitRef.ref_url || this.commitRef.path;
     },
+    tooltipTitle() {
+      return this.mergeRequestRef ? this.mergeRequestRef.title : this.commitRef.name;
+    },
   },
 };
 </script>
@@ -148,23 +151,14 @@ export default {
         <gl-icon v-else name="branch" />
       </div>
 
-      <gl-link
-        v-if="mergeRequestRef"
-        v-gl-tooltip
-        :href="mergeRequestRef.path"
-        :title="mergeRequestRef.title"
-        class="ref-name"
-        >{{ mergeRequestRef.iid }}</gl-link
-      >
-      <gl-link
-        v-else
-        v-gl-tooltip
-        :href="refUrl"
-        :title="commitRef.name"
-        class="ref-name"
-        data-testid="ref-name"
-        >{{ commitRef.name }}</gl-link
-      >
+      <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
+        <gl-link v-if="mergeRequestRef" :href="mergeRequestRef.path" class="ref-name">
+          {{ mergeRequestRef.iid }}
+        </gl-link>
+        <gl-link v-else :href="refUrl" class="ref-name" data-testid="ref-name">
+          {{ commitRef.name }}
+        </gl-link>
+      </tooltip-on-truncate>
     </template>
     <gl-icon name="commit" class="commit-icon js-commit-icon" />
 

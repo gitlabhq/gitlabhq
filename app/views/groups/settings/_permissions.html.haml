@@ -4,9 +4,8 @@
 
   %fieldset
     %h5= _('Permissions')
-    - unless ::Feature.enabled?(:saas_user_caps)
-      .form-group
-        = render 'shared/allow_request_access', form: f
+    .form-group
+      = render 'shared/allow_request_access', form: f
 
     - if @group.root?
       .form-group.gl-mb-3
@@ -44,6 +43,5 @@
     = render_if_exists 'groups/settings/prevent_forking', f: f, group: @group
     = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
-    = render_if_exists 'groups/settings/membership', f: f
     = render_if_exists 'groups/member_lock_setting', f: f, group: @group
   = f.submit _('Save changes'), class: 'btn gl-button btn-confirm gl-mt-3 js-dirty-submit', data: { qa_selector: 'save_permissions_changes_button' }
