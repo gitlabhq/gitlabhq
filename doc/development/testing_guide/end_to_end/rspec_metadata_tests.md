@@ -44,3 +44,4 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:smtp`           | The test requires a GitLab instance to be configured to use an SMTP server. Tests SMTP notification email delivery from GitLab by using MailHog. |
 | `:testcase`       | The link to the test case issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/). |
 | `:transient`      | The test tests transient bugs. It is excluded by default. |
+| `:issue`, `:issue_${num}` | Optional links to issues which might be related to the spec. Helps keeping track of related issues and can also be used by tools that create test reports. Currently added automatically to `Allure` test report. Multiple tags can be used by adding optional number postfix like `issue_1`, `issue_2` etc. |

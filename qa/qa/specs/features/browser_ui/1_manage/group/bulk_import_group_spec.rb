@@ -54,10 +54,14 @@ module QA
         end
       end
 
-      # Non blocking issues:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/331252
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/333678 <- can cause 500 when creating user and group back to back
-      it 'imports group from UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785' do
+      it(
+        'imports group from UI',
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785',
+        issue_1: 'https://gitlab.com/gitlab-org/gitlab/-/issues/331252',
+        issue_2: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333678',
+        # mostly impacts testing as it makes small groups import slower
+        issue_3: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332351'
+      ) do
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(imported_group.path, imported_group.sandbox.path)
 

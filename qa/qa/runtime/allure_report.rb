@@ -29,6 +29,13 @@ module QA
           AllureRspec.configure do |config|
             config.results_directory = 'tmp/allure-results'
             config.clean_results_directory = true
+
+            # automatically attach links to testcases and issues
+            config.tms_tag = :testcase
+            config.link_tms_pattern = '{}'
+            config.issue_tag = :issue
+            config.link_issue_pattern = '{}'
+
             config.environment_properties = environment_info if Env.running_in_ci?
 
             # Set custom environment name to separate same specs executed on different environments

@@ -34,7 +34,6 @@ describe QA::Support::AllureMetadataFormatter do
     formatter.example_started(rspec_example_notification)
 
     aggregate_failures do
-      expect(rspec_example).to have_received(:tms).with('Testcase', 'testcase')
       expect(rspec_example).to have_received(:issue).with('Quarantine issue', 'issue')
       expect(rspec_example).to have_received(:add_link).with(name: "Job(#{ci_job})", url: ci_job_url)
       expect(rspec_example).to have_received(:issue).with(

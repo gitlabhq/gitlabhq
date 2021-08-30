@@ -12972,7 +12972,7 @@ CREATE SEQUENCE error_tracking_errors_id_seq
 ALTER SEQUENCE error_tracking_errors_id_seq OWNED BY error_tracking_errors.id;
 
 CREATE TABLE events (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer,
     author_id integer NOT NULL,
     target_id integer,
@@ -12982,7 +12982,7 @@ CREATE TABLE events (
     target_type character varying,
     group_id bigint,
     fingerprint bytea,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 

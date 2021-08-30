@@ -1,5 +1,5 @@
 import dateFormat from 'dateformat';
-import { isString, mapValues, reduce } from 'lodash';
+import { isString, mapValues, reduce, isDate } from 'lodash';
 import { s__, n__, __ } from '../../../locale';
 
 /**
@@ -256,5 +256,102 @@ export const parseSeconds = (
     unorderedMinutes -= periodCount * minutesPerPeriod;
 
     return periodCount;
+  });
+};
+
+/**
+ * Pads given items with zeros to reach a length of 2 characters.
+ *
+ * @param  {...any} args Items to be padded.
+ * @returns {Array<String>} Padded items.
+ */
+export const padWithZeros = (...args) => args.map((arg) => `${arg}`.padStart(2, '0'));
+
+/**
+ * This removes the timezone from an ISO date string.
+ * This can be useful when populating date/time fields along with a distinct timezone selector, in
+ * which case we'd want to ignore the timezone's offset when populating the date and time.
+ *
+ * Examples:
+ * stripTimezoneFromISODate('2021-08-16T00:00:00.000-02:00') => '2021-08-16T00:00:00.000'
+ * stripTimezoneFromISODate('2021-08-16T00:00:00.000Z') => '2021-08-16T00:00:00.000'
+ *
+ * @param {String} date The ISO date string representation.
+ * @returns {String} The ISO date string without the timezone.
+ */
+export const stripTimezoneFromISODate = (date) => {
+  if (Number.isNaN(Date.parse(date))) {
+    return null;
+  }
+  return date.replace(/(Z|[+-]\d{2}:\d{2})$/, '');
+};
+
+/**
+ * Extracts the year, month and day from a Date instance and returns them in an object.
+ * For example:
+ * dateToYearMonthDate(new Date('2021-08-16')) => { year: '2021', month: '08', day: '16' }
+ *
+ * @param {Date} date The date to be parsed
+ * @returns {Object} An object containing the extracted year, month and day.
+ */
+export const dateToYearMonthDate = (date) => {
+  if (!isDate(date)) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Argument should be a Date instance');
+  }
+  const [year, month, day] = date.toISOString().replace(/T.*$/, '').split('-');
+  return { year, month, day };
+};
+
+/**
+ * Extracts the hours and minutes from a string representing a time.
+ * For example:
+ * timeToHoursMinutes('12:46') => { hours: '12', minutes: '46' }
+ *
+ * @param {String} time The time to be parsed in the form HH:MM.
+ * @returns {Object} An object containing the hours and minutes.
+ */
+export const timeToHoursMinutes = (time = '') => {
+  if (!time || !time.match(/\d{1,2}:\d{1,2}/)) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Invalid time provided');
+  }
+  const [hours, minutes] = padWithZeros(...time.split(':'));
+  return { hours, minutes };
+};
+
+/**
+ * This combines a date and a time and returns the computed Date's ISO string representation.
+ *
+ * @param {Date} date Date object representing the base date.
+ * @param {String} time String representing the time to be used, in the form HH:MM.
+ * @param {String} offset An optional Date-compatible offset.
+ * @returns {String} The combined Date's ISO string representation.
+ */
+export const dateAndTimeToUTCString = (date, time, offset = '') => {
+  const { year, month, day } = dateToYearMonthDate(date);
+  const { hours, minutes } = timeToHoursMinutes(time);
+
+  return new Date(
+    `${year}-${month}-${day}T${hours}:${minutes}:00.000${offset || 'Z'}`,
+  ).toISOString();
+};
+
+/**
+ * Converts a Date instance to time input-compatible value consisting in a 2-digits hours and
+ * minutes, separated by a semi-colon, in the 24-hours format.
+ *
+ * @param {Date} date Date to be converted
+ * @returns {String} time input-compatible string in the form HH:MM.
+ */
+export const dateToTimeInputValue = (date) => {
+  if (!isDate(date)) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Argument should be a Date instance');
+  }
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
   });
 };

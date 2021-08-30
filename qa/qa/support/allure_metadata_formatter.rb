@@ -17,9 +17,6 @@ module QA
       def example_started(example_notification)
         example = example_notification.example
 
-        testcase = example.metadata[:testcase]
-        example.tms('Testcase', testcase) if testcase
-
         quarantine_issue = example.metadata.dig(:quarantine, :issue)
         example.issue('Quarantine issue', quarantine_issue) if quarantine_issue
 

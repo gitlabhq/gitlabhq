@@ -68,8 +68,7 @@ You can specify a custom URL to which users are directed when they:
 
 ## Redirect `/help` pages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43157) in GitLab 13.5.
-> - Enabled on GitLab.com and is ready for production use.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43157) in GitLab 13.5.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to

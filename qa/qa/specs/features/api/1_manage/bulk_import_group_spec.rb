@@ -71,9 +71,6 @@ module QA
         end
       end
 
-      # Non blocking issues:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/331252
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/333678 <- can cause 500 when creating user and group back to back
       it(
         'imports group with subgroups and labels',
         testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1871'
