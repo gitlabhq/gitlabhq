@@ -5,78 +5,82 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: concepts, howto
 ---
 
-# Signing commits and tags with X.509 **(FREE)**
+# Sign commits and tags with X.509 certificates **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17773) in GitLab 12.8.
 
 [X.509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
 certificates issued by a public or private Public Key Infrastructure (PKI).
 Personal X.509 certificates are used for authentication or signing purposes
-such as SMIME, but Git also supports signing of commits and tags
-with X.509 certificates in a similar way as with [GPG](../gpg_signed_commits/index.md).
-The main difference is the trust anchor which is the PKI for X.509 certificates
-instead of a web of trust with GPG.
+such as S/MIME (Secure/Multipurpose Internet Mail Extensions).
+However, Git also supports signing of commits and tags with X.509 certificates in a
+similar way as with [GPG (GnuPG, or GNU Privacy Guard)](../gpg_signed_commits/index.md).
+The main difference is the way GitLab determines whether or not the developer's signature is trusted:
 
-## How GitLab handles X.509
+- For X.509, a root certificate authority is added to the GitLab trust store.
+  (A trust store is a repository of trusted security certificates.) Combined with
+  any required intermediate certificates in the signature, the developer's certificate
+  can be chained back to a trusted root certificate.
+- For GPG, developers [add their GPG key](../gpg_signed_commits/index.md#adding-a-gpg-key-to-your-account)
+  to their account.
 
-GitLab uses its own certificate store and therefore defines the trust chain.
-
+GitLab uses its own certificate store and therefore defines the
+[trust chain](https://www.ssl.com/faqs/what-is-a-chain-of-trust/).
 For a commit or tag to be *verified* by GitLab:
 
 - The signing certificate email must match a verified email address in GitLab.
-- The GitLab instance must be able to establish a full trust chain from the certificate
-  in the signature to a trusted certificate in the GitLab certificate store. This chain
-  may include intermediate certificates supplied in the signature. Additional
-  certificates, such as the Certificate Authority root,
-  [may need to be added to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
-- The signing time has to be within the time range of the [certificate validity](https://www.rfc-editor.org/rfc/rfc5280.html#section-4.1.2.5)
+- The GitLab instance must be able to establish a full [trust chain](https://www.ssl.com/faqs/what-is-a-chain-of-trust/)
+  from the certificate in the signature to a trusted certificate in the GitLab certificate store.
+  This chain may include intermediate certificates supplied in the signature. You may
+  need to add certificates, such as Certificate Authority root certificates,
+  [to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+- The signing time must be in the time range of the
+  [certificate validity](https://www.rfc-editor.org/rfc/rfc5280.html#section-4.1.2.5),
   which is usually up to three years.
-- The signing time is equal or later than commit time.
-- If the status of a commit has already been determined and stored in the database,
-  [use the Rake task to re-check the status](../../../../raketasks/x509_signatures.md).
-  [Read more about this and detailed troubleshooting steps](#troubleshooting).
+- The signing time is equal to, or later than, the commit time.
 
-NOTE:
-Certificate revocation lists are checked on a daily basis via background worker.
-
-NOTE:
-Self signed certificates without `authorityKeyIdentifier`,
-`subjectKeyIdentifier`, and `crlDistributionPoints` are not supported. We
-recommend using certificates from a PKI that are in line with
-[RFC 5280](https://tools.ietf.org/html/rfc5280).
+If a commit's status has already been determined and stored in the database,
+use the Rake task [to re-check the status](../../../../raketasks/x509_signatures.md).
+Refer to the [Troubleshooting section](#troubleshooting).
+GitLab checks certificate revocation lists on a daily basis with a background worker.
 
 ## Limitations
 
+- Self-signed certificates without `authorityKeyIdentifier`,
+  `subjectKeyIdentifier`, and `crlDistributionPoints` are not supported. We
+  recommend using certificates from a PKI that are in line with
+  [RFC 5280](https://tools.ietf.org/html/rfc5280).
 - If you have more than one email in the Subject Alternative Name list in
   your signing certificate,
   [only the first one is used to verify commits](https://gitlab.com/gitlab-org/gitlab/-/issues/336677).
 - The `X509v3 Subject Key Identifier` (SKI) in the issuer certificate and the
   signing certificate
   [must be 40 characters long](https://gitlab.com/gitlab-org/gitlab/-/issues/332503).
-  If your SKI is shorter, commits will not show as verified in GitLab, and
+  If your SKI is shorter, commits don't show as verified in GitLab, and
   short subject key identifiers may also
   [cause errors when accessing the project](https://gitlab.com/gitlab-org/gitlab/-/issues/332464),
   such as 'An error occurred while loading commit signatures' and
   `HTTP 422 Unprocessable Entity` errors.
 
-## Obtaining an X.509 key pair
+## Configure for signed commits
+
+To sign your commits, tags, or both, you must:
+
+1. [Obtain an X.509 key pair](#obtain-an-x509-key-pair).
+1. [Associate your X.509 certificate with Git](#associate-your-x509-certificate-with-git).
+1. [Sign and verify commits](#sign-and-verify-commits).
+1. [Sign and verify tags](#sign-and-verify-tags).
+
+### Obtain an X.509 key pair
 
 If your organization has Public Key Infrastructure (PKI), that PKI provides
-an S/MIME key.
+an S/MIME key. If you do not have an S/MIME key pair from a PKI, you can either
+create your own self-signed pair, or purchase a pair.
 
-If you do not have an S/MIME key pair from a PKI, you can either create your
-own self-signed one, or purchase one. MozillaZine keeps a nice collection
-of [S/MIME-capable signing authorities](http://kb.mozillazine.org/Getting_an_SMIME_certificate)
-and some of them generate keys for free.
-
-## Associating your X.509 certificate with Git
+### Associate your X.509 certificate with Git
 
 To take advantage of X.509 signing, you need Git 2.19.0 or later. You can
-check your Git version with:
-
-```shell
-git --version
-```
+check your Git version with the command `git --version`.
 
 If you have the correct version, you can proceed to configure Git.
 
@@ -90,74 +94,73 @@ git config --global user.signingkey $signingkey
 git config --global gpg.format x509
 ```
 
-### Windows and MacOS
+#### Windows and macOS
 
-Install [S/MIME Sign](https://github.com/github/smimesign) by downloading the
-installer or via `brew install smimesign` on MacOS.
+To configure Windows or macOS:
 
-Get the ID of your certificate with `smimesign --list-keys` and set your
-signing key `git config --global user.signingkey ID`, then configure X.509:
+1. Install [S/MIME Sign](https://github.com/github/smimesign) by either:
+   - Downloading the installer.
+   - Running `brew install smimesign` on macOS.
+1. Get the ID of your certificate by running `smimesign --list-keys`.
+1. Set your signing key by running `git config --global user.signingkey ID`.
+1. Configure X.509 with this command:
 
-```shell
-git config --global gpg.x509.program smimesign
-git config --global gpg.format x509
-```
+   ```shell
+   git config --global gpg.x509.program smimesign
+   git config --global gpg.format x509
+   ```
 
-## Signing commits
+### Sign and verify commits
 
-After you have [associated your X.509 certificate with Git](#associating-your-x509-certificate-with-git) you
-can start signing your commits:
+After you have [associated your X.509 certificate with Git](#associate-your-x509-certificate-with-git) you
+can sign your commits:
 
-1. Commit like you used to, the only difference is the addition of the `-S` flag:
+1. When you create a Git commit, add the `-S` flag:
 
    ```shell
    git commit -S -m "feat: x509 signed commits"
    ```
 
-1. Push to GitLab and check that your commits [are verified](#verifying-commits).
+1. Push to GitLab, and check that your commits are verified with the `--show-signature` flag:
 
-If you don't want to type the `-S` flag every time you commit, you can tell Git
-to sign your commits automatically:
+   ```shell
+   git log --show-signature
+   ```
 
-```shell
-git config --global commit.gpgsign true
-```
+1. *If you don't want to type the `-S` flag every time you commit,* run this command
+   for Git to sign your commits every time:
 
-## Verifying commits
+   ```shell
+   git config --global commit.gpgsign true
+   ```
 
-To verify that a commit is signed, you can use the `--show-signature` flag:
+### Sign and verify tags
 
-```shell
-git log --show-signature
-```
-
-## Signing tags
-
-After you have [associated your X.509 certificate with Git](#associating-your-x509-certificate-with-git) you
+After you have [associated your X.509 certificate with Git](#associate-your-x509-certificate-with-git) you
 can start signing your tags:
 
-1. Tag like you used to, the only difference is the addition of the `-s` flag:
+1. When you create a Git tag, add the `-s` flag:
 
    ```shell
    git tag -s v1.1.1 -m "My signed tag"
    ```
 
-1. Push to GitLab and check that your tags [are verified](#verifying-tags).
+1. Push to GitLab and verify your tags are signed with this command:
 
-If you don't want to type the `-s` flag every time you tag, you can tell Git
-to sign your tags automatically:
+   ```shell
+   git tag --verify v1.1.1
+   ```
 
-```shell
-git config --global tag.gpgsign true
-```
+1. *If you don't want to type the `-s` flag every time you tag,* run this command
+   for Git to sign your tags each time:
 
-## Verifying tags
+   ```shell
+   git config --global tag.gpgsign true
+   ```
 
-To verify that a tag is signed, you can use the `--verify` flag:
+## Resources
 
-```shell
-git tag --verify v1.1.1
-```
+- [Rake task for X.509 signatures](../../../../raketasks/x509_signatures.md)
 
 ## Troubleshooting
 
@@ -175,13 +178,13 @@ sudo gitlab-rake gitlab:x509:update_signatures
 ### Main verification checks
 
 The code performs
-[six key checks](https://gitlab.com/gitlab-org/gitlab/-/blob/v14.1.0-ee/lib/gitlab/x509/signature.rb#L33),
+[these key checks](https://gitlab.com/gitlab-org/gitlab/-/blob/v14.1.0-ee/lib/gitlab/x509/signature.rb#L33),
 which all must return `verified`:
 
 - `x509_certificate.nil?` should be false.
 - `x509_certificate.revoked?` should be false.
 - `verified_signature` should be true.
-- `user.nil?`should be false.
+- `user.nil?` should be false.
 - `user.verified_emails.include?(@email)` should be true.
 - `certificate_email == @email` should be true.
 
@@ -254,7 +257,7 @@ To investigate why a commit shows as `Unverified`:
    ```
 
    If the developer's email address is not the first one in the list, this check
-   will not work, and the commit will be `unverified`.
+   fails, and the commit is marked `unverified`.
 
 1. The email address on the commit must be associated with an account in GitLab.
    This check should return `false`:
@@ -346,8 +349,12 @@ step of the previous [main verification checks](#main-verification-checks).
 
 Ensure any additional intermediate certificate(s) and the root certificate are added
 to the certificate store. For consistency with how certificate chains are built on
-web servers, Git clients that are signing commits should include the certificate
-and all intermediate certificates in the signature, and the GitLab certificate
-store should only contain the root. If you remove a root certificate from the GitLab
+web servers:
+
+- Git clients that are signing commits should include the certificate
+  and all intermediate certificates in the signature.
+- The GitLab certificate store should only contain the root.
+
+If you remove a root certificate from the GitLab
 trust store, such as when it expires, commit signatures which chain back to that
 root display as `unverified`.

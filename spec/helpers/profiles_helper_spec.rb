@@ -13,7 +13,8 @@ RSpec.describe ProfilesHelper do
       private_email = user.private_commit_email
 
       emails = [
-        ["Use a private email - #{private_email}", Gitlab::PrivateCommitEmail::TOKEN],
+        [s_('Use primary email (%{email})') % { email: user.email }, ''],
+        [s_("Profiles|Use a private email - %{email}").html_safe % { email: private_email }, Gitlab::PrivateCommitEmail::TOKEN],
         user.email,
         confirmed_email1.email,
         confirmed_email2.email

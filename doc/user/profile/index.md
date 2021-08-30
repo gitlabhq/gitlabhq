@@ -219,6 +219,7 @@ To set your time zone:
 A commit email is an email address displayed in every Git-related action carried out through the GitLab interface.
 
 Any of your own verified email addresses can be used as the commit email.
+Your primary email is used by default.
 
 To change your commit email:
 
