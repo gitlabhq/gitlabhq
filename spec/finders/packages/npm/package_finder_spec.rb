@@ -68,20 +68,6 @@ RSpec.describe ::Packages::Npm::PackageFinder do
 
         it { is_expected.to be_empty }
       end
-
-      context 'with npm_presenter_queries_tuning disabled' do
-        before do
-          stub_feature_flags(npm_presenter_queries_tuning: false)
-        end
-
-        it_behaves_like 'finding packages by name'
-
-        context 'set to nil' do
-          let(:project) { nil }
-
-          it { is_expected.to be_empty }
-        end
-      end
     end
 
     context 'with a namespace' do
@@ -93,20 +79,6 @@ RSpec.describe ::Packages::Npm::PackageFinder do
         let_it_be(:namespace) { nil }
 
         it { is_expected.to be_empty }
-      end
-
-      context 'with npm_presenter_queries_tuning disabled' do
-        before do
-          stub_feature_flags(npm_presenter_queries_tuning: false)
-        end
-
-        it_behaves_like 'accepting a namespace for', 'finding packages by name'
-
-        context 'set to nil' do
-          let_it_be(:namespace) { nil }
-
-          it { is_expected.to be_empty }
-        end
       end
     end
   end
@@ -136,24 +108,6 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       let(:finder) { described_class.new(package_name, namespace: namespace) }
 
       it_behaves_like 'accepting a namespace for', 'finding packages by version'
-    end
-
-    context 'with npm_presenter_queries_tuning disabled' do
-      before do
-        stub_feature_flags(npm_presenter_queries_tuning: false)
-      end
-
-      context 'with a project' do
-        let(:finder) { described_class.new(package_name, project: project) }
-
-        it_behaves_like 'finding packages by version'
-      end
-
-      context 'with a namespace' do
-        let(:finder) { described_class.new(package_name, namespace: namespace) }
-
-        it_behaves_like 'accepting a namespace for', 'finding packages by version'
-      end
     end
   end
 
@@ -194,13 +148,5 @@ RSpec.describe ::Packages::Npm::PackageFinder do
     end
 
     it_behaves_like 'handling project or namespace parameter'
-
-    context 'with npm_presenter_queries_tuning disabled' do
-      before do
-        stub_feature_flags(npm_presenter_queries_tuning: false)
-      end
-
-      it_behaves_like 'handling project or namespace parameter'
-    end
   end
 end

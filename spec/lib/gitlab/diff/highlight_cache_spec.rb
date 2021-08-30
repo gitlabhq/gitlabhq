@@ -185,6 +185,15 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       expect { cache.send(:write_to_redis_hash, diff_hash) }
         .to change { Gitlab::Redis::Cache.with { |r| r.hgetall(cache_key) } }
     end
+
+    context 'when diff contains unsupported characters' do
+      let(:diff_hash) { { 'README' => [{ line_code: nil, rich_text: nil, text: [0xff, 0xfe, 0x0, 0x23].pack("c*"), type: "match", index: 0, old_pos: 17, new_pos: 17 }] } }
+
+      it 'does not update the cache' do
+        expect { cache.send(:write_to_redis_hash, diff_hash) }
+          .not_to change { Gitlab::Redis::Cache.with { |r| r.hgetall(cache_key) } }
+      end
+    end
   end
 
   describe '#clear' do
