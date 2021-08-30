@@ -18,6 +18,8 @@ module ResourceAccessTokens
 
       member = create_membership(resource, user)
 
+      user.update!(external: true) if current_user.external?
+
       unless member.persisted?
         delete_failed_user(user)
         return error("Could not provision maintainer access to project access token")
