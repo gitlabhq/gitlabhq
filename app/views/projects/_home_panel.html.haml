@@ -31,7 +31,7 @@
       .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5
         - if current_user
           - if current_user.admin?
-            = link_to [:admin, @project], class: 'btn gl-button btn-icon gl-align-self-start gl-py-2! gl-mr-3', title: s_('View project in admin area'),
+            = link_to [:admin, @project], class: 'btn gl-button btn-icon gl-align-self-start gl-py-2! gl-mr-3', title: _('View project in admin area'),
               data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = sprite_icon('admin')
           .gl-display-flex.gl-align-items-start.gl-mr-3

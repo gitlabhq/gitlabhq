@@ -34,7 +34,7 @@ RSpec.describe ErrorTracking::CollectErrorService do
       expect(error.platform).to eq 'ruby'
       expect(error.last_seen_at).to eq '2021-07-08T12:59:16Z'
 
-      expect(event.description).to eq 'ActionView::MissingTemplate'
+      expect(event.description).to start_with 'Missing template posts/error2'
       expect(event.occurred_at).to eq '2021-07-08T12:59:16Z'
       expect(event.level).to eq 'error'
       expect(event.environment).to eq 'development'

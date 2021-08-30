@@ -26,6 +26,7 @@ update-tests-metadata:
     - .test-metadata:rules:update-tests-metadata
   stage: post-test
   dependencies:
+    - retrieve-tests-metadata
     - setup-test-env
     - rspec migration pg12
     - rspec frontend_fixture

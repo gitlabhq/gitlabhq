@@ -22,11 +22,15 @@ class ErrorTracking::Error < ApplicationRecord
   def self.report_error(name:, description:, actor:, platform:, timestamp:)
     safe_find_or_create_by(
       name: name,
-      description: description,
       actor: actor,
       platform: platform
-    ) do |error|
-      error.update!(last_seen_at: timestamp)
+    ).tap do |error|
+      error.update!(
+        # Description can contain object id, so it can't be
+        # used as a group criteria for similar errors.
+        description: description,
+        last_seen_at: timestamp
+      )
     end
   end
 

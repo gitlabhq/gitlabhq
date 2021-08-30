@@ -11,7 +11,7 @@
     = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", autofocus: true, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
-      %span= s_("Project URL")
+      %span= _('Project URL')
     .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
         - namespace_id = namespace_id_from(params)

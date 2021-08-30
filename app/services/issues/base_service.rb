@@ -84,7 +84,8 @@ module Issues
 
     # @param object [Issue, Project]
     def issue_type_allowed?(object)
-      can?(current_user, :"create_#{params[:issue_type]}", object)
+      WorkItem::Type.base_types.key?(params[:issue_type]) &&
+        can?(current_user, :"create_#{params[:issue_type]}", object)
     end
 
     # @param issue [Issue]

@@ -18,7 +18,7 @@ module ErrorTracking
       # Together with occured_at these are 2 main attributes that we need to save here.
       error.events.create!(
         environment: event['environment'],
-        description: exception['type'],
+        description: exception['value'],
         level: event['level'],
         occurred_at: event['timestamp'],
         payload: event

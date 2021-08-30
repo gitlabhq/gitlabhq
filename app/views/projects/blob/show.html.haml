@@ -1,4 +1,4 @@
-- breadcrumb_title "Repository"
+- breadcrumb_title _('Repository')
 - page_title @blob.path, @ref
 - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit, limit: 1)
 - content_for :prefetch_asset_tags do

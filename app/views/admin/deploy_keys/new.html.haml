@@ -7,4 +7,4 @@
     = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
       = f.submit 'Create', class: 'btn gl-button btn-confirm', data: { qa_selector: "add_deploy_key_button" }
-      = link_to 'Cancel', admin_deploy_keys_path, class: 'btn gl-button btn-default btn-cancel'
+      = link_to _('Cancel'), admin_deploy_keys_path, class: 'btn gl-button btn-default btn-cancel'

@@ -183,8 +183,8 @@ RSpec.describe Issues::BuildService do
           expect(issue).to be_incident
         end
 
-        it 'cannot set invalid type' do
-          issue = build_issue(issue_type: 'invalid type')
+        it 'cannot set invalid issue type' do
+          issue = build_issue(issue_type: 'project')
 
           expect(issue).to be_issue
         end

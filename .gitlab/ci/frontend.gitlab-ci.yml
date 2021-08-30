@@ -132,6 +132,7 @@ rspec frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs
+  parallel: 2
 
 rspec frontend_fixture as-if-foss:
   extends:

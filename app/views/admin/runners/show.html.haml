@@ -27,7 +27,7 @@
                         %strong
                           = project.full_name
                       .gl-alert-actions
-                        = link_to s_('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
+                        = link_to _('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
 
     %table.table{ data: { testid: 'unassigned-projects' } }
       %thead

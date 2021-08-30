@@ -132,6 +132,15 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     it_behaves_like 'mergeable merge request'
 
+    it 'calls MergeToRefService with cache parameter' do
+      service = instance_double(MergeRequests::MergeToRefService)
+
+      expect(MergeRequests::MergeToRefService).to receive(:new).once { service }
+      expect(service).to receive(:execute).once.with(merge_request, true).and_return(success: true)
+
+      described_class.new(merge_request).execute(recheck: true)
+    end
+
     context 'when concurrent calls' do
       it 'waits first lock and returns "cached" result in subsequent calls' do
         threads = execute_within_threads(amount: 3)

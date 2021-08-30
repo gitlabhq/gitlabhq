@@ -26,7 +26,9 @@ class ProtectedBranch < ApplicationRecord
   def self.protected?(project, ref_name)
     return true if project.empty_repo? && project.default_branch_protected?
 
-    self.matching(ref_name, protected_refs: protected_refs(project)).present?
+    Rails.cache.fetch("protected_ref-#{ref_name}-#{project.cache_key}") do
+      self.matching(ref_name, protected_refs: protected_refs(project)).present?
+    end
   end
 
   def self.allow_force_push?(project, ref_name)

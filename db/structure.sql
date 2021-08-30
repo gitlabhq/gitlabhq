@@ -12929,7 +12929,7 @@ CREATE TABLE error_tracking_error_events (
     payload jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    CONSTRAINT check_92ecc3077b CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_92ecc3077b CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_c67d5b8007 CHECK ((char_length(level) <= 255)),
     CONSTRAINT check_f4b52474ad CHECK ((char_length(environment) <= 255))
 );
