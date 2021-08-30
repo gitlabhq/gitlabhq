@@ -85,7 +85,7 @@ In GitLab 14.0 and later, API fuzzing configuration files must be in your reposi
 
 ### Web API fuzzing configuration form
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.

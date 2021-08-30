@@ -713,7 +713,7 @@ default weight, which is 1.
 
 ## Worker context
 
-> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
 
 To have some more information about workers in the logs, we add
 [metadata to the jobs in the form of an

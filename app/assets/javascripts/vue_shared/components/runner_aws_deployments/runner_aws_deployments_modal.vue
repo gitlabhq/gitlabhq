@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
+import awsCloudFormationImageUrl from 'images/aws-cloud-formation.png';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { getBaseURL, objectToQuery } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -21,6 +22,11 @@ export default {
     modalId: {
       type: String,
       required: true,
+    },
+    imgSrc: {
+      type: String,
+      required: false,
+      default: awsCloudFormationImageUrl,
     },
   },
   methods: {
@@ -76,7 +82,7 @@ export default {
           <img
             :title="easyButton.stackName"
             :alt="easyButton.stackName"
-            src="/assets/aws-cloud-formation.png"
+            :src="imgSrc"
             width="46"
             height="46"
             class="gl-mt-2 gl-mr-5 gl-mb-6"

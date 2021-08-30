@@ -32,6 +32,8 @@ Feature.disable(:ci_job_token_scope)
 
 ## Change the visibility of the Container Registry
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
+
 This controls who can view the Container Registry.
 
 ```plaintext

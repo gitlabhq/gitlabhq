@@ -74,7 +74,7 @@ See [Google Secure LDAP](google_secure_ldap.md) for detailed configuration instr
 
 ## Configuration
 
-To enable LDAP integration you need to add your LDAP server settings in
+To enable LDAP integration you must add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml` for Omnibus
 GitLab and installations from source respectively.
 
@@ -169,7 +169,7 @@ production:
 | `verify_certificates` | Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. Defaults to true. | **{dotted-circle}** No | boolean |
 | `timeout`          | Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of `0` means there is no timeout. (default: `10`) | **{dotted-circle}** No | `10` or `30` |
 | `active_directory` | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. | **{dotted-circle}** No | boolean |
-| `allow_username_or_email_login` | If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you need to disable this setting, because the userPrincipalName contains an `@`. | **{dotted-circle}** No | boolean |
+| `allow_username_or_email_login` | If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. | **{dotted-circle}** No | boolean |
 | `block_auto_created_users` | To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator (default: false). | **{dotted-circle}** No | boolean |
 | `base` | Base where we can search for users. | **{check-circle}** Yes | `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
 | `user_filter`      | Filter LDAP users. Format: [RFC 4515](https://tools.ietf.org/search/rfc4515) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | **{dotted-circle}** No | For examples, read [Examples of user filters](#examples-of-user-filters). |
@@ -187,7 +187,7 @@ Some examples of the `user_filter` field syntax:
 
 | Setting       | Description | Required | Examples |
 |---------------|-------------|----------|----------|
-| `ca_file`     | Specifies the path to a file containing a PEM-format CA certificate, for example, if you need to use an internal CA. | **{dotted-circle}** No | `'/etc/ca.pem'` |
+| `ca_file`     | Specifies the path to a file containing a PEM-format CA certificate, for example, if you need an internal CA. | **{dotted-circle}** No | `'/etc/ca.pem'` |
 | `ssl_version` | Specifies the SSL version for OpenSSL to use, if the OpenSSL default is not appropriate. | **{dotted-circle}** No | `'TLSv1_1'` |
 | `ciphers`     | Specific SSL ciphers to use in communication with LDAP servers. | **{dotted-circle}** No | `'ALL:!EXPORT:!LOW:!aNULL:!eNULL:!SSLv2'` |
 | `cert`        | Client certificate. | **{dotted-circle}** No | `'-----BEGIN CERTIFICATE----- <REDACTED> -----END CERTIFICATE -----'` |
@@ -365,7 +365,7 @@ This does not disable [using LDAP credentials for Git access](#git-password-auth
 ### Using encrypted credentials
 
 Instead of having the LDAP integration credentials stored in plaintext in the configuration files, you can optionally
-use an encrypted file for the LDAP credentials. To use this feature, you first need to enable
+use an encrypted file for the LDAP credentials. To use this feature, first you must enable
 [GitLab encrypted configuration](../../encrypted_configuration.md).
 
 The encrypted configuration for LDAP exists in an encrypted YAML file. By default the file is created at
@@ -635,7 +635,7 @@ following.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-To take advantage of group sync, group owners or maintainers need to [create one
+To take advantage of group sync, group owners or maintainers must [create one
 or more LDAP group links](#adding-group-links).
 
 ### Adding group links **(PREMIUM SELF)**
@@ -702,7 +702,7 @@ When enabled, the following applies:
 - Users are not allowed to share project with other groups or invite members to
   a project created in a group.
 
-To enable it you need to:
+To enable it, you must:
 
 1. [Enable LDAP](#configuration)
 1. On the top bar, select **Menu > Admin**.

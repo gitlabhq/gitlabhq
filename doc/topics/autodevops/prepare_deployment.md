@@ -12,7 +12,7 @@ recommend that you prepare them before enabling Auto DevOps.
 
 ## Deployment strategy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
 When using Auto DevOps to deploy your applications, choose the
 [continuous deployment strategy](../../ci/introduction/index.md)

@@ -190,7 +190,7 @@ bulk_imports = distinct_count(::BulkImport, :user_id)
 
 #### Estimated batch counters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233) in GitLab 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233) in GitLab 13.7.
 
 Estimated batch counter functionality handles `ActiveRecord::StatementInvalid` errors
 when used through the provided `estimate_batch_distinct_count` method.
@@ -972,7 +972,7 @@ Becomes:
 
 ### Redis sourced aggregated metrics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
 
 To declare the aggregate of events collected with [Redis HLL Counters](#redis-hll-counters),
 you must fulfill the following requirements:

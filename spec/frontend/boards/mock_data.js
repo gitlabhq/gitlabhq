@@ -7,6 +7,7 @@ import '~/boards/models/list';
 import { ListType } from '~/boards/constants';
 import boardsStore from '~/boards/stores/boards_store';
 import { __ } from '~/locale';
+import { DEFAULT_MILESTONES_GRAPHQL } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -547,17 +548,17 @@ export const mockMoveData = {
 
 export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
   {
-    icon: 'labels',
-    title: __('Label'),
-    type: 'label_name',
+    icon: 'user',
+    title: __('Assignee'),
+    type: 'assignee_username',
     operators: [
       { value: '=', description: 'is' },
       { value: '!=', description: 'is not' },
     ],
-    token: LabelToken,
-    unique: false,
-    symbol: '~',
-    fetchLabels,
+    token: AuthorToken,
+    unique: true,
+    fetchAuthors,
+    preloadedAuthors: [],
   },
   {
     icon: 'pencil',
@@ -574,17 +575,27 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     preloadedAuthors: [],
   },
   {
-    icon: 'user',
-    title: __('Assignee'),
-    type: 'assignee_username',
+    icon: 'labels',
+    title: __('Label'),
+    type: 'label_name',
     operators: [
       { value: '=', description: 'is' },
       { value: '!=', description: 'is not' },
     ],
-    token: AuthorToken,
+    token: LabelToken,
+    unique: false,
+    symbol: '~',
+    fetchLabels,
+  },
+  {
+    icon: 'clock',
+    title: __('Milestone'),
+    symbol: '%',
+    type: 'milestone_title',
+    token: MilestoneToken,
     unique: true,
-    fetchAuthors,
-    preloadedAuthors: [],
+    defaultMilestones: DEFAULT_MILESTONES_GRAPHQL,
+    fetchMilestones,
   },
   {
     icon: 'issues',
@@ -597,16 +608,6 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
       { icon: 'issue-type-issue', value: 'ISSUE', title: 'Issue' },
       { icon: 'issue-type-incident', value: 'INCIDENT', title: 'Incident' },
     ],
-  },
-  {
-    icon: 'clock',
-    title: __('Milestone'),
-    symbol: '%',
-    type: 'milestone_title',
-    token: MilestoneToken,
-    unique: true,
-    defaultMilestones: [],
-    fetchMilestones,
   },
   {
     icon: 'weight',

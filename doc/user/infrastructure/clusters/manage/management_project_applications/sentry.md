@@ -70,7 +70,7 @@ postgresql:
 ```
 
 Support for installing the Sentry managed application is provided by the
-GitLab Health group. If you run into unknown issues,
+GitLab Monitor group. If you run into unknown issues,
 [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
 least 2 people from the
-[Health group](https://about.gitlab.com/handbook/product/categories/#health-group).
+[Monitor group](https://about.gitlab.com/handbook/product/categories/#monitor-group).

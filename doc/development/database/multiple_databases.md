@@ -249,18 +249,88 @@ logic to delete these rows if or whenever necessary in your domain.
 Finally, this de-normalization and new query also improves performance because
 it does less joins and needs less filtering.
 
-#### Summary of cross-join removal patterns
+#### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
-A quick checklist for fixing a specific join query would be:
+Sometimes a join query is caused by using `has_one ... through:` or `has_many
+... through:` across tables that span the different databases. These joins
+sometimes can be solved by adding
+[`disable_joins:true`](https://edgeguides.rubyonrails.org/active_record_multiple_databases.html#handling-associations-with-joins-across-databases).
+This is a Rails feature which we
+[backported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66400). We
+also extended the feature to allow a lambda syntax for enabling `disable_joins`
+with a feature flag. If you use this feature we encourage using a feature flag
+as it mitigates risk if there is some serious performance regression.
 
-1. Is the code even used? If not just remove it
-1. If the code is used, then is this feature even used or can we implement the
-   feature in a simpler way and still meet the requirements. Always prefer the
-   simplest option.
-1. Can we remove the join if we de-normalize the data you are joining to by
-   adding a new column
-1. Can we remove the join by adding a new table in the correct database that
-   replicates the minimum data needed to do the join
+You can see an example where this was used in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66709/diffs>.
+
+With any change to DB queries it is important to analyze and compare the SQL
+before and after the change. `disable_joins` can introduce very poorly performing
+code depending on the actual logic of the `has_many` or `has_one` relationship.
+The key thing to look for is whether any of the intermediate result sets
+used to construct the final result set have an unbounded amount of data loaded.
+The best way to tell is by looking at the SQL generated and confirming that
+each one is limited in some way. You can tell by either a `LIMIT 1` clause or
+by `WHERE` clause that is limiting based on a unique column. Any unbounded
+intermediate dataset could lead to loading too many IDs into memory.
+
+An example where you may see very poor performance is the following
+hypothetical code:
+
+```ruby
+class Project
+  has_many :pipelines
+  has_many :builds, through: :pipelines
+end
+
+class Pipeline
+  has_many :builds
+end
+
+class Build
+  belongs_to :pipeline
+end
+
+def some_action
+  @builds = Project.find(5).builds.order(created_at: :desc).limit(10)
+end
+```
+
+In the above case `some_action` will generate a query like:
+
+```sql
+select * from builds
+inner join pipelines on builds.pipeline_id = pipelines.id
+where pipelines.project_id = 5
+order by builds.created_at desc
+limit 10
+```
+
+However, if you changed the relation to be:
+
+```ruby
+class Project
+  has_many :pipelines
+  has_many :builds, through: :pipelines, disable_joins: true
+end
+```
+
+Then you would get the following 2 queries:
+
+```sql
+select id from pipelines where project_id = 5;
+
+select * from builds where pipeline_id in (...)
+order by created_at desc
+limit 10;
+```
+
+Because the first query does not limit by any unique column or
+have a `LIMIT` clause, it can load an unlimited number of
+pipeline IDs into memory, which are then sent in the following query.
+This can lead to very poor performance in the Rails application and the
+database. In cases like this, you might need to re-write the
+query or look at other patterns described above for removing cross-joins.
 
 #### How to validate you have correctly removed a cross-join
 

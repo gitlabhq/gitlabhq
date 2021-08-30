@@ -108,10 +108,7 @@ module QA
             #
             # @return [String]
             def operator_msg
-              case operator
-              when 'eq' then 'equal'
-              else operator
-              end
+              operator == 'eq' ? 'equal' : operator
             end
 
             # Expect operator
@@ -127,7 +124,7 @@ module QA
             def expectation_args
               if operator.include?('truthy') || operator.include?('falsey') || operator.include?('empty')
                 operator
-              elsif operator == "include" && expected.is_a?(Array)
+              elsif operator == 'include' && expected.is_a?(Array)
                 [operator, *expected]
               else
                 [operator, expected]

@@ -27,6 +27,6 @@ management project. Refer to the
 of the Prometheus chart's README for the available configuration options.
 
 Support for installing the Prometheus managed application is provided by the
-GitLab APM group. If you run into unknown issues,
+GitLab Monitor group. If you run into unknown issues,
 [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the [APM group](https://about.gitlab.com/handbook/product/categories/#apm-group).
+least 2 people from the [Monitor group](https://about.gitlab.com/handbook/product/categories/#monitor-group).

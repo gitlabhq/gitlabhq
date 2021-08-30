@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 # Group import/export **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
 
 Existing groups running on any GitLab instance or GitLab.com can be exported with all their related data and moved to a
 new GitLab instance.

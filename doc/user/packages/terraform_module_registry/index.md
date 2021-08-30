@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Terraform module registry **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
 
 Publish Terraform modules in your project's Infrastructure Registry, then reference them using GitLab
 as a Terraform module registry.

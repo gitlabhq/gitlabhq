@@ -503,7 +503,7 @@ GET /projects/:id/services/emails-on-push
 
 ## Confluence service
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220934) in GitLab 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220934) in GitLab 13.2.
 
 Replaces the link to the internal wiki with a link to a Confluence Cloud Workspace.
 

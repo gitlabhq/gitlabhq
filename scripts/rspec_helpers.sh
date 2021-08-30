@@ -200,7 +200,7 @@ function rspec_matched_foss_tests() {
     echo "This job is intentionally failed because there are more than ${test_file_count_threshold} FOSS test files matched,"
     echo "which would take too long to run in this job."
     echo "To reduce the likelihood of breaking FOSS pipelines,"
-    echo "please add [RUN AS-IF-FOSS] to the MR title and restart the pipeline."
+    echo "please add ~\"pipeline:run-as-if-foss\" label to the merge request and trigger a new pipeline."
     echo "This would run all as-if-foss jobs in this merge request"
     echo "and remove this failing job from the pipeline."
     exit 1

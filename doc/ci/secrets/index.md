@@ -95,7 +95,7 @@ To configure your Vault server:
 
 ## Use Vault secrets in a CI job **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4 and GitLab Runner 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4 and GitLab Runner 13.4.
 
 After [configuring your Vault server](#configure-your-vault-server), you can use
 the secrets stored in Vault by defining them with the `vault` keyword:

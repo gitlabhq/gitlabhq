@@ -16,7 +16,7 @@ This feature might not be available to you. Check the **version history** note a
 
 ## Current group code coverage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263478) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263478) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
 
 The **Analytics > Repositories** group page displays the overall test coverage of all your projects in your group.
 In the **Overall activity** section, you can see:
@@ -27,13 +27,13 @@ In the **Overall activity** section, you can see:
 
 ## Average group test coverage from the last 30 days
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215140) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215140) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.9.
 
 The **Analytics > Repositories** group page displays the average test coverage of all your projects in your group in a graph for the last 30 days.
 
 ## Latest project test coverage list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267624) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267624) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
 
 To see the latest code coverage for each project in your group:
 

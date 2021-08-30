@@ -747,6 +747,8 @@ The **Packages & Registries > Container Registry** entry is removed from the pro
 
 ## Change visibility of the Container Registry
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
+
 By default, the Container Registry is visible to everyone with access to the project.
 You can, however, change the visibility of the Container Registry for a project.
 

@@ -107,6 +107,7 @@ tree:
       - lists:
         - label:
           - :priorities
+    - :service_desk_setting
   group_members:
     - :user
 
@@ -455,7 +456,6 @@ ee:
         - :unprotect_access_levels
       - protected_environments:
         - :deploy_access_levels
-      - :service_desk_setting
       - :security_setting
       - :push_rule
 

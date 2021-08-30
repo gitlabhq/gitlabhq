@@ -20,7 +20,10 @@ The Throughput chart shows the number of merge requests merged, by month. Merge 
 a common measure of productivity in software engineering. Although imperfect, the average throughput can
 be a meaningful benchmark of your team's overall productivity.
 
-To access Merge Request Analytics, from your project's menu, go to **Analytics > Merge Request**.
+To access Merge Request Analytics:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > Merge request**.
 
 ## Use cases
 
@@ -93,10 +96,10 @@ You can filter the data that is presented on the page based on the following par
 
 To filter results:
 
-1. Click on the filter bar.
+1. Select the filter bar.
 1. Select a parameter to filter by.
 1. Select a value from the autocompleted results, or enter search text to refine the results.
-1. Hit the "Return" key.
+1. Press Enter.
 
 ## Date range
 
