@@ -19,7 +19,8 @@ module Gitlab
             @exported_members.inject(missing_keys_tracking_hash) do |hash, member|
               if member['user']
                 old_user_id = member['user']['id']
-                existing_user = User.find_by(find_user_query(member))
+                old_user_email = member.dig('user', 'public_email') || member.dig('user', 'email')
+                existing_user = User.find_by(find_user_query(old_user_email)) if old_user_email
                 hash[old_user_id] = existing_user.id if existing_user && add_team_member(member, existing_user)
               else
                 add_team_member(member)
@@ -94,8 +95,8 @@ module Gitlab
                                                      relation_class: relation_class)
       end
 
-      def find_user_query(member)
-        user_arel[:email].eq(member['user']['email'])
+      def find_user_query(email)
+        user_arel[:email].eq(email)
       end
 
       def user_arel

@@ -110,6 +110,18 @@ RSpec.describe ResourceAccessTokens::CreateService do
             expect(resource.members.developers.map(&:user_id)).to include(bot_user.id)
           end
         end
+
+        context 'when user is external' do
+          let(:user) { create(:user, :external) }
+
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'creates resource bot user with external status' do
+            expect(subject.payload[:access_token].user.external).to eq true
+          end
+        end
       end
 
       context 'personal access token' do

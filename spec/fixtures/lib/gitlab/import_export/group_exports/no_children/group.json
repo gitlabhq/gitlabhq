@@ -299,7 +299,7 @@
       "override": false,
       "user": {
         "id": 42,
-        "email": "moriah@collinsmurphy.com",
+        "public_email": "moriah@collinsmurphy.com",
         "username": "reported_user_15"
       }
     },
@@ -322,7 +322,7 @@
       "override": false,
       "user": {
         "id": 271,
-        "email": "garret@connellystark.ca",
+        "public_email": "garret@connellystark.ca",
         "username": "charlesetta"
       }
     },
@@ -345,7 +345,7 @@
       "override": false,
       "user": {
         "id": 206,
-        "email": "margaret.bergnaum@reynolds.us",
+        "public_email": "margaret.bergnaum@reynolds.us",
         "username": "gwendolyn_robel"
       }
     },
@@ -368,7 +368,7 @@
       "override": false,
       "user": {
         "id": 39,
-        "email": "alexis_berge@kerlukeklein.us",
+        "public_email": "alexis_berge@kerlukeklein.us",
         "username": "reported_user_12"
       }
     },
@@ -391,7 +391,7 @@
       "override": false,
       "user": {
         "id": 1624,
-        "email": "nakesha.herzog@powlowski.com",
+        "public_email": "nakesha.herzog@powlowski.com",
         "username": "adriene.mcclure"
       }
     },
@@ -414,7 +414,7 @@
       "override": false,
       "user": {
         "id": 1,
-        "email": "admin@example.com",
+        "public_email": "admin@example.com",
         "username": "root"
       }
     }
