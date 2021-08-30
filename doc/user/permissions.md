@@ -74,9 +74,15 @@ The following table lists project permissions available for each role:
 | [CI/CD](../ci/README.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/README.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/README.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
-| [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete cleanup policies                 |          |          | ✓         | ✓          | ✓     |
+| [Clusters](project/clusters/index.md):<br>View pod logs                                                                 |          |          | ✓         | ✓          | ✓     |
+| [Clusters](project/clusters/index.md):<br>Manage clusters                                                               |          |          |           | ✓          | ✓     |
+| [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete cleanup policies                    |          |          | ✓         | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Remove a container registry image                        |          |          | ✓         | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Update container registry                                |          |          | ✓         | ✓          | ✓     |
+| [GitLab Pages](project/pages/index.md):<br>View Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓    | ✓    | ✓    | ✓    | ✓    |
+| [GitLab Pages](project/pages/index.md):<br>Manage                                                                       |          |          |           | ✓          | ✓     |
+| [GitLab Pages](project/pages/index.md):<br>Manage GitLab Pages domains and certificates                                 |          |          |           | ✓          | ✓     |
+| [GitLab Pages](project/pages/index.md):<br>Remove GitLab Pages                                                          |          |          |           | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Add Labels                                                                        | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Assign                                                                            | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Create                                                                            | ✓        | ✓        | ✓         | ✓          | ✓     |
@@ -172,29 +178,23 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard **(ULTIMATE)**                          |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability **(ULTIMATE)**                              |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
+| [Terraform](infrastructure/index.md):<br>Read Terraform state                                                           |          |          | ✓         | ✓          | ✓     |
+| [Terraform](infrastructure/index.md):<br>Manage Terraform state                                                         |          |          |           | ✓          | ✓     |
+| [Test cases](../ci/test_cases/index.md):<br>Archive                                                                     |          | ✓        | ✓         | ✓          | ✓     |
+| [Test cases](../ci/test_cases/index.md):<br>Create                                                                      |          | ✓        | ✓         | ✓          | ✓     |
+| [Test cases](../ci/test_cases/index.md):<br>Move                                                                        |          | ✓        | ✓         | ✓          | ✓     |
+| [Test cases](../ci/test_cases/index.md):<br>Reopen                                                                      |          | ✓        | ✓         | ✓          | ✓     |
 | Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
-| Create new [test case](../ci/test_cases/index.md) |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Import/export requirements **(ULTIMATE)**         |         | ✓          | ✓           | ✓        | ✓      |
-| Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
-| Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
 | View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
-| Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
-| View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
-| Manage clusters                                   |         |            |             | ✓        | ✓      |
-| Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
-| Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
-| Manage Terraform state                            |         |            |             | ✓        | ✓      |
-| Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
 
 1. Guest users are able to perform this action on public and internal projects, but not private projects. This doesn't apply to [external users](#external-users) where explicit access must be given even if the project is internal.
 1. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves.
