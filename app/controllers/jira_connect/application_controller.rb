@@ -38,12 +38,30 @@ class JiraConnect::ApplicationController < ApplicationController
   end
 
   def installation_from_jwt
-    return unless auth_token
-
     strong_memoize(:installation_from_jwt) do
+      next unless claims['iss']
+
+      JiraConnectInstallation.find_by_client_key(claims['iss'])
+    end
+  end
+
+  def claims
+    strong_memoize(:claims) do
+      next {} unless auth_token
+
       # Decode without verification to get `client_key` in `iss`
       payload, _ = Atlassian::Jwt.decode(auth_token, nil, false)
-      JiraConnectInstallation.find_by_client_key(payload['iss'])
+      payload
+    end
+  end
+
+  def jira_user
+    strong_memoize(:jira_user) do
+      next unless installation_from_jwt
+      next unless claims['sub']
+
+      # This only works for Jira Cloud installations.
+      installation_from_jwt.client.user_info(claims['sub'])
     end
   end
 

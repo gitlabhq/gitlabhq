@@ -5,8 +5,11 @@ module JiraConnectSubscriptions
     include Gitlab::Utils::StrongMemoize
     MERGE_REQUEST_SYNC_BATCH_SIZE = 20
     MERGE_REQUEST_SYNC_BATCH_DELAY = 1.minute.freeze
+    NOT_SITE_ADMIN = 'The Jira user is not a site administrator.'
 
     def execute
+      return error(NOT_SITE_ADMIN, 403) unless can_administer_jira?
+
       unless namespace && can?(current_user, :create_jira_connect_subscription, namespace)
         return error('Invalid namespace. Please make sure you have sufficient permissions', 401)
       end
@@ -15,6 +18,10 @@ module JiraConnectSubscriptions
     end
 
     private
+
+    def can_administer_jira?
+      @params[:jira_user]&.site_admin?
+    end
 
     def create_subscription
       subscription = JiraConnectSubscription.new(installation: jira_connect_installation, namespace: namespace)
