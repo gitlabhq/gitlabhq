@@ -145,6 +145,7 @@ module Gitlab
     def self.allow_cross_joins_across_databases(url:)
       # this method is implemented in:
       # spec/support/database/prevent_cross_joins.rb
+      yield
     end
 
     # This method will allow cross database modifications within the block

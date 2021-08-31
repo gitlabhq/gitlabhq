@@ -1,36 +1,47 @@
 import '~/boards/models/list';
 import { GlDrawer, GlLabel } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import { inactiveId, LIST } from '~/boards/constants';
-import { createStore } from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
+import actions from '~/boards/stores/actions';
+import getters from '~/boards/stores/getters';
+import mutations from '~/boards/stores/mutations';
 import sidebarEventHub from '~/sidebar/event_hub';
+import { mockLabelList } from '../mock_data';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('BoardSettingsSidebar', () => {
   let wrapper;
-  let mock;
-  let store;
-  const labelTitle = 'test';
-  const labelColor = '#FFFF';
-  const listId = 1;
+  const labelTitle = mockLabelList.label.title;
+  const labelColor = mockLabelList.label.color;
+  const listId = mockLabelList.id;
 
   const findRemoveButton = () => wrapper.findByTestId('remove-list');
 
-  const createComponent = ({ canAdminList = false } = {}) => {
+  const createComponent = ({
+    canAdminList = false,
+    list = {},
+    sidebarType = LIST,
+    activeId = inactiveId,
+  } = {}) => {
+    const boardLists = {
+      [listId]: list,
+    };
+    const store = new Vuex.Store({
+      state: { sidebarType, activeId, boardLists },
+      getters,
+      mutations,
+      actions,
+    });
+
     wrapper = extendedWrapper(
       shallowMount(BoardSettingsSidebar, {
         store,
-        localVue,
         provide: {
           canAdminList,
         },
@@ -40,16 +51,10 @@ describe('BoardSettingsSidebar', () => {
   const findLabel = () => wrapper.find(GlLabel);
   const findDrawer = () => wrapper.find(GlDrawer);
 
-  beforeEach(() => {
-    store = createStore();
-    store.state.activeId = inactiveId;
-    store.state.sidebarType = LIST;
-    boardsStore.create();
-  });
-
   afterEach(() => {
     jest.restoreAllMocks();
     wrapper.destroy();
+    wrapper = null;
   });
 
   it('finds a MountingPortal component', () => {
@@ -100,86 +105,40 @@ describe('BoardSettingsSidebar', () => {
     });
 
     describe('when activeId is greater than zero', () => {
-      beforeEach(() => {
-        mock = new MockAdapter(axios);
-
-        boardsStore.addList({
-          id: listId,
-          label: { title: labelTitle, color: labelColor },
-          list_type: 'label',
-        });
-        store.state.activeId = 1;
-        store.state.sidebarType = LIST;
-      });
-
-      afterEach(() => {
-        boardsStore.removeList(listId);
-      });
-
-      it('renders GlDrawer with open false', () => {
-        createComponent();
+      it('renders GlDrawer with open true', () => {
+        createComponent({ list: mockLabelList, activeId: listId });
 
         expect(findDrawer().props('open')).toBe(true);
       });
     });
 
-    describe('when activeId is in boardsStore', () => {
-      beforeEach(() => {
-        mock = new MockAdapter(axios);
-
-        boardsStore.addList({
-          id: listId,
-          label: { title: labelTitle, color: labelColor },
-          list_type: 'label',
-        });
-
-        store.state.activeId = listId;
-        store.state.sidebarType = LIST;
-
-        createComponent();
-      });
-
-      afterEach(() => {
-        mock.restore();
-      });
-
+    describe('when activeId is in state', () => {
       it('renders label title', () => {
+        createComponent({ list: mockLabelList, activeId: listId });
+
         expect(findLabel().props('title')).toBe(labelTitle);
       });
 
       it('renders label background color', () => {
+        createComponent({ list: mockLabelList, activeId: listId });
+
         expect(findLabel().props('backgroundColor')).toBe(labelColor);
       });
     });
 
-    describe('when activeId is not in boardsStore', () => {
-      beforeEach(() => {
-        mock = new MockAdapter(axios);
-
-        boardsStore.addList({ id: listId, label: { title: labelTitle, color: labelColor } });
-
-        store.state.activeId = inactiveId;
-
-        createComponent();
-      });
-
-      afterEach(() => {
-        mock.restore();
-      });
-
+    describe('when activeId is not in state', () => {
       it('does not render GlLabel', () => {
+        createComponent({ list: mockLabelList });
+
         expect(findLabel().exists()).toBe(false);
       });
     });
   });
 
   describe('when sidebarType is not List', () => {
-    beforeEach(() => {
-      store.state.sidebarType = '';
-      createComponent();
-    });
-
     it('does not render GlDrawer', () => {
+      createComponent({ sidebarType: '' });
+
       expect(findDrawer().exists()).toBe(false);
     });
   });
@@ -191,20 +150,9 @@ describe('BoardSettingsSidebar', () => {
   });
 
   describe('when user can admin the boards list', () => {
-    beforeEach(() => {
-      store.state.activeId = listId;
-      store.state.sidebarType = LIST;
-
-      boardsStore.addList({
-        id: listId,
-        label: { title: labelTitle, color: labelColor },
-        list_type: 'label',
-      });
-
-      createComponent({ canAdminList: true });
-    });
-
     it('renders "Remove list" button', () => {
+      createComponent({ canAdminList: true, activeId: listId, list: mockLabelList });
+
       expect(findRemoveButton().exists()).toBe(true);
     });
   });

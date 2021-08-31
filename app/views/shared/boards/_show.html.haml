@@ -1,5 +1,4 @@
 - board = local_assigns.fetch(:board, nil)
-- group = local_assigns.fetch(:group, false)
 - @no_breadcrumb_container = true
 - @no_container = true
 - @content_wrapper_class = "#{@content_wrapper_class} gl-relative"
@@ -20,6 +19,4 @@
 = render 'shared/issuable/search_bar', type: :boards, board: board
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
   %board-content{ ":lists" => "state.lists", ":disabled" => "disabled" }
-  - if !is_epic_board && !Feature.enabled?(:graphql_board_lists, default_enabled: :yaml)
-    = render "shared/boards/components/sidebar", group: group
   %board-settings-sidebar

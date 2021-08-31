@@ -97,7 +97,6 @@
 - "./ee/spec/services/ci/minutes/refresh_cached_data_service_spec.rb"
 - "./ee/spec/services/ci/pipeline_creation/drop_not_runnable_builds_service_spec.rb"
 - "./ee/spec/services/ci/process_pipeline_service_spec.rb"
-- "./ee/spec/services/ci/register_job_service_spec.rb"
 - "./ee/spec/services/ci/retry_build_service_spec.rb"
 - "./ee/spec/services/ci/retry_pipeline_service_spec.rb"
 - "./ee/spec/services/ci/trigger_downstream_subscription_service_spec.rb"

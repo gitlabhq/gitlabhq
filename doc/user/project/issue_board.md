@@ -229,8 +229,7 @@ and vice versa.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
 > - [Deployed behind a feature flag](../feature_flags.md), enabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-graphql-based-issue-boards). **(FREE SELF)**
+> - [Feature flag `graphql_board_lists`](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) removed in GitLab 14.3
 
 There can be
 [risks when disabling released features](../../administration/feature_flags.md#risks-when-disabling-released-features).
@@ -672,24 +671,6 @@ A few things to remember:
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues, start scrolling down and the next
   20 appear.
-
-### Enable or disable GraphQL-based issue boards **(FREE SELF)**
-
-It is deployed behind a feature flag that is **enabled by default** as of GitLab 14.1.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:graphql_board_lists)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:graphql_board_lists)
-```
 
 ### Enable or disable iteration lists in boards **(PREMIUM SELF)**
 

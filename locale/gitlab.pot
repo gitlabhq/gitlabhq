@@ -3626,9 +3626,6 @@ msgstr ""
 msgid "An error occurred while fetching terraform reports."
 msgstr ""
 
-msgid "An error occurred while fetching the board lists. Please try again."
-msgstr ""
-
 msgid "An error occurred while fetching the job log."
 msgstr ""
 
@@ -5512,9 +5509,6 @@ msgid "Boards|Blocked by %{blockedByCount} %{issuableType}"
 msgid_plural "Boards|Blocked by %{blockedByCount} %{issuableType}s"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Boards|Board"
-msgstr ""
 
 msgid "Boards|Collapse"
 msgstr ""

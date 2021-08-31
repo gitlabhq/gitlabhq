@@ -336,6 +336,22 @@ export const mockLabelList = {
   issuesCount: 0,
 };
 
+export const mockMilestoneList = {
+  id: 'gid://gitlab/List/3',
+  title: 'To Do',
+  position: 0,
+  listType: 'milestone',
+  collapsed: false,
+  label: null,
+  assignee: null,
+  milestone: {
+    webUrl: 'https://gitlab.com/h5bp/html5-boilerplate/-/milestones/1',
+    title: 'Backlog',
+  },
+  loading: false,
+  issuesCount: 0,
+};
+
 export const mockLists = [mockList, mockLabelList];
 
 export const mockListsById = keyBy(mockLists, 'id');

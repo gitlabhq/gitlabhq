@@ -2,7 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
-import { createStore } from '~/boards/stores';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -44,6 +43,12 @@ describe('BoardFilteredSearch', () => {
   ];
 
   const createComponent = ({ initialFilterParams = {} } = {}) => {
+    store = new Vuex.Store({
+      actions: {
+        performSearch: jest.fn(),
+      },
+    });
+
     wrapper = shallowMount(BoardFilteredSearch, {
       provide: { initialFilterParams, fullPath: '' },
       store,
@@ -55,22 +60,15 @@ describe('BoardFilteredSearch', () => {
 
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearchBarRoot);
 
-  beforeEach(() => {
-    // this needed for actions call for performSearch
-    window.gon = { features: {} };
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('default', () => {
     beforeEach(() => {
-      store = createStore();
+      createComponent();
 
       jest.spyOn(store, 'dispatch');
-
-      createComponent();
     });
 
     it('renders FilteredSearch', () => {
@@ -103,8 +101,6 @@ describe('BoardFilteredSearch', () => {
 
   describe('when searching', () => {
     beforeEach(() => {
-      store = createStore();
-
       createComponent();
 
       jest.spyOn(wrapper.vm, 'performSearch').mockImplementation();
@@ -133,11 +129,9 @@ describe('BoardFilteredSearch', () => {
 
   describe('when url params are already set', () => {
     beforeEach(() => {
-      store = createStore();
+      createComponent({ initialFilterParams: { authorUsername: 'root', labelName: ['label'] } });
 
       jest.spyOn(store, 'dispatch');
-
-      createComponent({ initialFilterParams: { authorUsername: 'root', labelName: ['label'] } });
     });
 
     it('passes the correct props to FilterSearchBar', () => {

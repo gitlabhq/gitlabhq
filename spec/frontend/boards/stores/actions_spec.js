@@ -107,12 +107,7 @@ describe('setFilters', () => {
 });
 
 describe('performSearch', () => {
-  it('should dispatch setFilters action', (done) => {
-    testAction(actions.performSearch, {}, {}, [], [{ type: 'setFilters', payload: {} }], done);
-  });
-
-  it('should dispatch setFilters, fetchLists and resetIssues action when graphqlBoardLists FF is on', (done) => {
-    window.gon = { features: { graphqlBoardLists: true } };
+  it('should dispatch setFilters, fetchLists and resetIssues action', (done) => {
     testAction(
       actions.performSearch,
       {},
@@ -496,12 +491,9 @@ describe('fetchLabels', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     const commit = jest.fn();
-    const getters = {
-      shouldUseGraphQL: () => true,
-    };
     const state = { boardType: 'group' };
 
-    await actions.fetchLabels({ getters, state, commit });
+    await actions.fetchLabels({ state, commit });
 
     expect(commit).toHaveBeenCalledWith(types.RECEIVE_LABELS_SUCCESS, labels);
   });
@@ -954,7 +946,7 @@ describe('moveIssue', () => {
 });
 
 describe('moveIssueCard and undoMoveIssueCard', () => {
-  describe('card should move without clonning', () => {
+  describe('card should move without cloning', () => {
     let state;
     let params;
     let moveMutations;

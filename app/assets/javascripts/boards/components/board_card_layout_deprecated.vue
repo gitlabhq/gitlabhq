@@ -62,17 +62,7 @@ export default {
       // Don't do anything if this happened on a no trigger element
       if (e.target.classList.contains('js-no-trigger')) return;
 
-      if (this.glFeatures.graphqlBoardLists || this.isSwimlanesOn) {
-        this.setActiveId({ id: this.issue.id, sidebarType: ISSUABLE });
-        return;
-      }
-
-      const isMultiSelect = e.ctrlKey || e.metaKey;
-
-      if (this.showDetail || isMultiSelect) {
-        this.showDetail = false;
-        this.$emit('show', { event: e, isMultiSelect });
-      }
+      this.setActiveId({ id: this.issue.id, sidebarType: ISSUABLE });
     },
   },
 };

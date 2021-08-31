@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'User adds lists', :js do
-  using RSpec::Parameterized::TableSyntax
-
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
   let_it_be(:group_board) { create(:board, group: group) }
@@ -27,11 +25,8 @@ RSpec.describe 'User adds lists', :js do
     group.add_owner(user)
   end
 
-  where(:board_type, :graphql_board_lists_enabled) do
-    :project | true
-    :project | false
-    :group   | true
-    :group   | false
+  where(:board_type) do
+    [[:project], [:group]]
   end
 
   with_them do
@@ -39,10 +34,6 @@ RSpec.describe 'User adds lists', :js do
       sign_in(user)
 
       set_cookie('sidebar_collapsed', 'true')
-
-      stub_feature_flags(
-        graphql_board_lists: graphql_board_lists_enabled
-      )
 
       if board_type == :project
         visit project_board_path(project, project_board)
@@ -53,13 +44,11 @@ RSpec.describe 'User adds lists', :js do
       wait_for_all_requests
     end
 
-    it 'creates new column for label containing labeled issue' do
+    it 'creates new column for label containing labeled issue', :aggregate_failures do
       click_button 'Create list'
       wait_for_all_requests
 
       select_label(group_label)
-
-      wait_for_all_requests
 
       expect(page).to have_selector('.board', text: group_label.title)
       expect(find('.board:nth-child(2) .board-card')).to have_content(issue.title)

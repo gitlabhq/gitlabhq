@@ -17,7 +17,7 @@ module Types
             null: true
 
       field :raw_plain_data, GraphQL::Types::String,
-            description: 'The raw content of the blob, if the blob is text data.',
+            description: 'Raw content of the blob, if the blob is text data.',
             null: true
 
       field :raw_path, GraphQL::Types::String,

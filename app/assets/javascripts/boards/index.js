@@ -2,7 +2,7 @@ import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import PortalVue from 'portal-vue';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
@@ -78,10 +78,7 @@ export default () => {
     initBoardsFilteredSearch(apolloProvider);
   }
 
-  if (!gon?.features?.graphqlBoardLists) {
-    boardsStore.create();
-    boardsStore.setTimeTrackingLimitToHours($boardApp.dataset.timeTrackingLimitToHours);
-  }
+  boardsStore.create();
 
   // eslint-disable-next-line @gitlab/no-runtime-template-compiler
   issueBoardsApp = new Vue({
@@ -133,7 +130,6 @@ export default () => {
       };
     },
     computed: {
-      ...mapGetters(['shouldUseGraphQL']),
       detailIssueVisible() {
         return Object.keys(this.detailIssue.issue).length;
       },
@@ -174,14 +170,12 @@ export default () => {
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
       eventHub.$on('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
-      eventHub.$on('initialBoardLoad', this.initialBoardLoad);
     },
     beforeDestroy() {
       eventHub.$off('updateTokens', this.updateTokens);
       eventHub.$off('newDetailIssue', this.updateDetailIssue);
       eventHub.$off('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
-      eventHub.$off('initialBoardLoad', this.initialBoardLoad);
     },
     mounted() {
       if (!gon?.features?.issueBoardsFilteredSearch) {
@@ -196,28 +190,9 @@ export default () => {
       this.performSearch();
 
       boardsStore.disabled = this.disabled;
-
-      if (!this.shouldUseGraphQL) {
-        this.initialBoardLoad();
-      }
     },
     methods: {
       ...mapActions(['setInitialBoardData', 'performSearch', 'setError']),
-      initialBoardLoad() {
-        boardsStore
-          .all()
-          .then((res) => res.data)
-          .then((lists) => {
-            lists.forEach((list) => boardsStore.addList(list));
-            this.loading = false;
-          })
-          .catch((error) => {
-            this.setError({
-              error,
-              message: __('An error occurred while fetching the board lists. Please try again.'),
-            });
-          });
-      },
       updateTokens() {
         this.filterManager.updateTokens();
       },

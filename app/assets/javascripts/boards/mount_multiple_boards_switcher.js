@@ -1,12 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { mapGetters } from 'vuex';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
-import BoardsSelectorDeprecated from '~/boards/components/boards_selector_deprecated.vue';
 import store from '~/boards/stores';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 Vue.use(VueApollo);
 
@@ -25,9 +22,7 @@ export default (params = {}) => {
     el: boardsSwitcherElement,
     components: {
       BoardsSelector,
-      BoardsSelectorDeprecated,
     },
-    mixins: [glFeatureFlagMixin()],
     apolloProvider,
     store,
     provide: {
@@ -52,16 +47,8 @@ export default (params = {}) => {
 
       return { boardsSelectorProps };
     },
-    computed: {
-      ...mapGetters(['shouldUseGraphQL', 'isEpicBoard']),
-    },
     render(createElement) {
-      if (this.shouldUseGraphQL || this.isEpicBoard) {
-        return createElement(BoardsSelector, {
-          props: this.boardsSelectorProps,
-        });
-      }
-      return createElement(BoardsSelectorDeprecated, {
+      return createElement(BoardsSelector, {
         props: this.boardsSelectorProps,
       });
     },

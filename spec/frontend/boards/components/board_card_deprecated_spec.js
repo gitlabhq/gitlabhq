@@ -8,7 +8,6 @@ import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import BoardCardDeprecated from '~/boards/components/board_card_deprecated.vue';
 import issueCardInner from '~/boards/components/issue_card_inner_deprecated.vue';
-import eventHub from '~/boards/eventhub';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import axios from '~/lib/utils/axios_utils';
@@ -165,46 +164,9 @@ describe('BoardCard', () => {
 
       expect(boardsStore.detail.issue).toEqual({});
     });
-
-    it('sets detail issue to card issue on mouse up', () => {
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-
-      mountComponent();
-
-      wrapper.trigger('mousedown');
-      wrapper.trigger('mouseup');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', wrapper.vm.issue, false);
-      expect(boardsStore.detail.list).toEqual(wrapper.vm.list);
-    });
-
-    it('resets detail issue to empty if already set', () => {
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-      const [issue] = list.issues;
-      boardsStore.detail.issue = issue;
-      mountComponent();
-
-      wrapper.trigger('mousedown');
-      wrapper.trigger('mouseup');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue', false);
-    });
   });
 
   describe('sidebarHub events', () => {
-    it('closes all sidebars before showing an issue if no issues are opened', () => {
-      jest.spyOn(sidebarEventHub, '$emit').mockImplementation(() => {});
-      boardsStore.detail.issue = {};
-      mountComponent();
-
-      // sets conditional so that event is emitted.
-      wrapper.trigger('mousedown');
-
-      wrapper.trigger('mouseup');
-
-      expect(sidebarEventHub.$emit).toHaveBeenCalledWith('sidebar.closeAll');
-    });
-
     it('it does not closes all sidebars before showing an issue if an issue is opened', () => {
       jest.spyOn(sidebarEventHub, '$emit').mockImplementation(() => {});
       const [issue] = list.issues;

@@ -29,17 +29,19 @@ module Ci
 
     # Fetch all pipelines without permission check.
     def all
-      strong_memoize(:all_pipelines) do
-        next Ci::Pipeline.none unless source_project
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+        strong_memoize(:all_pipelines) do
+          next Ci::Pipeline.none unless source_project
 
-        pipelines =
-          if merge_request.persisted?
-            pipelines_using_cte
-          else
-            triggered_for_branch.for_sha(commit_shas)
-          end
+          pipelines =
+            if merge_request.persisted?
+              pipelines_using_cte
+            else
+              triggered_for_branch.for_sha(commit_shas)
+            end
 
-        sort(pipelines)
+          sort(pipelines)
+        end
       end
     end
 

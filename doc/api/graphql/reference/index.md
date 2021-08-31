@@ -56,7 +56,7 @@ Returns [`CiConfig`](#ciconfig).
 
 ### `Query.ciMinutesUsage`
 
-The monthly CI minutes usage data for the current user.
+Monthly CI minutes usage data for the current user.
 
 Returns [`CiMinutesNamespaceMonthlyUsageConnection`](#ciminutesnamespacemonthlyusageconnection).
 
@@ -504,7 +504,7 @@ Returns [`Vulnerability`](#vulnerability).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryvulnerabilityid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | The Global ID of the Vulnerability. |
+| <a id="queryvulnerabilityid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | Global ID of the Vulnerability. |
 
 ## `Mutation` type
 
@@ -1261,7 +1261,7 @@ Input type: `CreateIssueInput`
 | <a id="mutationcreateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`. |
 | <a id="mutationcreateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
-| <a id="mutationcreateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of an epic to associate the issue with. |
+| <a id="mutationcreateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of an epic to associate the issue with. |
 | <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
 | <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | IID (internal ID) of a project issue. Only admins and project owners can modify. |
 | <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the issue. |
@@ -2413,8 +2413,8 @@ Input type: `HttpIntegrationCreateInput`
 | <a id="mutationhttpintegrationcreateactive"></a>`active` | [`Boolean!`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationhttpintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationcreatename"></a>`name` | [`String!`](#string) | Name of the integration. |
-| <a id="mutationhttpintegrationcreatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | The custom mapping of GitLab alert attributes to fields from the payload_example. |
-| <a id="mutationhttpintegrationcreatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | The example of an alert payload. |
+| <a id="mutationhttpintegrationcreatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | Custom mapping of GitLab alert attributes to fields from the payload example. |
+| <a id="mutationhttpintegrationcreatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | Example of an alert payload. |
 | <a id="mutationhttpintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the integration in. |
 
 #### Fields
@@ -2475,8 +2475,8 @@ Input type: `HttpIntegrationUpdateInput`
 | <a id="mutationhttpintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationupdateid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | ID of the integration to mutate. |
 | <a id="mutationhttpintegrationupdatename"></a>`name` | [`String`](#string) | Name of the integration. |
-| <a id="mutationhttpintegrationupdatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | The custom mapping of GitLab alert attributes to fields from the payload_example. |
-| <a id="mutationhttpintegrationupdatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | The example of an alert payload. |
+| <a id="mutationhttpintegrationupdatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | Custom mapping of GitLab alert attributes to fields from the payload example. |
+| <a id="mutationhttpintegrationupdatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | Example of an alert payload. |
 
 #### Fields
 
@@ -4268,7 +4268,7 @@ Input type: `UpdateIssueInput`
 | <a id="mutationupdateissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates the issue is confidential. |
 | <a id="mutationupdateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="mutationupdateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
-| <a id="mutationupdateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of the parent epic. NULL when removing the association. |
+| <a id="mutationupdateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of the parent epic. NULL when removing the association. |
 | <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
 | <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | IDs of labels to be set. Replaces existing issue labels. |
@@ -7563,7 +7563,7 @@ An endpoint and credentials used to accept alerts for a project.
 | <a id="alertmanagementhttpintegrationname"></a>`name` | [`String`](#string) | Name of the integration. |
 | <a id="alertmanagementhttpintegrationpayloadalertfields"></a>`payloadAlertFields` | [`[AlertManagementPayloadAlertField!]`](#alertmanagementpayloadalertfield) | Extract alert fields from payload example for custom mapping. |
 | <a id="alertmanagementhttpintegrationpayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertMappingField!]`](#alertmanagementpayloadalertmappingfield) | The custom mapping of GitLab alert attributes to fields from the payload_example. |
-| <a id="alertmanagementhttpintegrationpayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | The example of an alert payload. |
+| <a id="alertmanagementhttpintegrationpayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | Example of an alert payload. |
 | <a id="alertmanagementhttpintegrationtoken"></a>`token` | [`String`](#string) | Token used to authenticate alert notification requests. |
 | <a id="alertmanagementhttpintegrationtype"></a>`type` | [`AlertManagementIntegrationType!`](#alertmanagementintegrationtype) | Type of integration. |
 | <a id="alertmanagementhttpintegrationurl"></a>`url` | [`String`](#string) | Endpoint which accepts alert notifications. |
@@ -7719,14 +7719,14 @@ Represents a project or group issue board.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="boardassignee"></a>`assignee` | [`UserCore`](#usercore) | The board assignee. |
+| <a id="boardassignee"></a>`assignee` | [`UserCore`](#usercore) | Board assignee. |
 | <a id="boardcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the board was created. |
 | <a id="boardhidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="boardhideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="boardid"></a>`id` | [`ID!`](#id) | ID (global ID) of the board. |
-| <a id="boarditeration"></a>`iteration` | [`Iteration`](#iteration) | The board iteration. |
+| <a id="boarditeration"></a>`iteration` | [`Iteration`](#iteration) | Board iteration. |
 | <a id="boardlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the board. (see [Connections](#connections)) |
-| <a id="boardmilestone"></a>`milestone` | [`Milestone`](#milestone) | The board milestone. |
+| <a id="boardmilestone"></a>`milestone` | [`Milestone`](#milestone) | Board milestone. |
 | <a id="boardname"></a>`name` | [`String`](#string) | Name of the board. |
 | <a id="boardupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the board was last updated. |
 | <a id="boardwebpath"></a>`webPath` | [`String!`](#string) | Web path of the board. |
@@ -7943,7 +7943,7 @@ Represents a list for an issue board.
 | <a id="boardlistissuescount"></a>`issuesCount` | [`Int`](#int) | Count of issues in the list. |
 | <a id="boardlistiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the list. |
 | <a id="boardlistlabel"></a>`label` | [`Label`](#label) | Label of the list. |
-| <a id="boardlistlimitmetric"></a>`limitMetric` | [`ListLimitMetric`](#listlimitmetric) | The current limit metric for the list. |
+| <a id="boardlistlimitmetric"></a>`limitMetric` | [`ListLimitMetric`](#listlimitmetric) | Current limit metric for the list. |
 | <a id="boardlistlisttype"></a>`listType` | [`String!`](#string) | Type of the list. |
 | <a id="boardlistmaxissuecount"></a>`maxIssueCount` | [`Int`](#int) | Maximum number of issues in the list. |
 | <a id="boardlistmaxissueweight"></a>`maxIssueWeight` | [`Int`](#int) | Maximum weight of issues in the list. |
@@ -9676,7 +9676,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
-| <a id="groupbillablememberscount"></a>`billableMembersCount` | [`Int`](#int) | The number of billable users in the group. |
+| <a id="groupbillablememberscount"></a>`billableMembersCount` | [`Int`](#int) | Number of billable users in the group. |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcustomemoji"></a>`customEmoji` | [`CustomEmojiConnection`](#customemojiconnection) | Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
@@ -9688,7 +9688,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupdependencyproxytotalsize"></a>`dependencyProxyTotalSize` | [`String!`](#string) | Total size of the dependency proxy cached images. |
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
-| <a id="groupdora"></a>`dora` | [`Dora`](#dora) | The group's DORA metrics. |
+| <a id="groupdora"></a>`dora` | [`Dora`](#dora) | Group's DORA metrics. |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
@@ -10921,7 +10921,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneegroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestassigneegroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneeid"></a>`id` | [`ID!`](#id) | ID of the user. |
-| <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | The location of the user. |
+| <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestassigneemergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestassigneename"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
 | <a id="mergerequestassigneenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
@@ -11167,7 +11167,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestreviewergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerid"></a>`id` | [`ID!`](#id) | ID of the user. |
-| <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | The location of the user. |
+| <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestreviewermergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestreviewername"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
 | <a id="mergerequestreviewernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
@@ -11998,11 +11998,11 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectdastprofiles"></a>`dastProfiles` | [`DastProfileConnection`](#dastprofileconnection) | DAST Profiles associated with the project. (see [Connections](#connections)) |
-| <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | The DAST scanner profiles associated with the project. (see [Connections](#connections)) |
+| <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
-| <a id="projectdora"></a>`dora` | [`Dora`](#dora) | The project's DORA metrics. |
+| <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
@@ -12030,7 +12030,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
 | <a id="projectpublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
-| <a id="projectpushrules"></a>`pushRules` | [`PushRules`](#pushrules) | The project's push rules settings. |
+| <a id="projectpushrules"></a>`pushRules` | [`PushRules`](#pushrules) | Project's push rules settings. |
 | <a id="projectremovesourcebranchaftermerge"></a>`removeSourceBranchAfterMerge` | [`Boolean`](#boolean) | Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project. |
 | <a id="projectrepository"></a>`repository` | [`Repository`](#repository) | Git repository of the project. |
 | <a id="projectrepositorysizeexcess"></a>`repositorySizeExcess` | [`Float`](#float) | Size of repository that exceeds the limit in bytes. |
@@ -13197,7 +13197,7 @@ Returns [`Tree`](#tree).
 | <a id="repositoryblobcanmodifyblob"></a>`canModifyBlob` | [`Boolean`](#boolean) | Whether the current user can modify the blob. |
 | <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |
 | <a id="repositoryblobexternalstorageurl"></a>`externalStorageUrl` | [`String`](#string) | Web path to download the raw blob via external storage, if enabled. |
-| <a id="repositoryblobfiletype"></a>`fileType` | [`String`](#string) | The expected format of the blob based on the extension. |
+| <a id="repositoryblobfiletype"></a>`fileType` | [`String`](#string) | Expected format of the blob based on the extension. |
 | <a id="repositoryblobforkandeditpath"></a>`forkAndEditPath` | [`String`](#string) | Web path to edit this blob using a forked project. |
 | <a id="repositoryblobid"></a>`id` | [`ID!`](#id) | ID of the blob. |
 | <a id="repositoryblobideeditpath"></a>`ideEditPath` | [`String`](#string) | Web path to edit this blob in the Web IDE. |
@@ -13208,10 +13208,10 @@ Returns [`Tree`](#tree).
 | <a id="repositorybloboid"></a>`oid` | [`String!`](#string) | OID of the blob. |
 | <a id="repositoryblobpath"></a>`path` | [`String!`](#string) | Path of the blob. |
 | <a id="repositoryblobplaindata"></a>`plainData` | [`String`](#string) | Blob plain highlighted data. |
-| <a id="repositoryblobrawblob"></a>`rawBlob` | [`String`](#string) | The raw content of the blob. |
+| <a id="repositoryblobrawblob"></a>`rawBlob` | [`String`](#string) | Raw content of the blob. |
 | <a id="repositoryblobrawpath"></a>`rawPath` | [`String`](#string) | Web path to download the raw blob. |
 | <a id="repositoryblobrawsize"></a>`rawSize` | [`Int`](#int) | Size (in bytes) of the blob, or the blob target if stored externally. |
-| <a id="repositoryblobrawtextblob"></a>`rawTextBlob` | [`String`](#string) | The raw content of the blob, if the blob is text data. |
+| <a id="repositoryblobrawtextblob"></a>`rawTextBlob` | [`String`](#string) | Raw content of the blob, if the blob is text data. |
 | <a id="repositoryblobreplacepath"></a>`replacePath` | [`String`](#string) | Web path to replace the blob content. |
 | <a id="repositoryblobrichviewer"></a>`richViewer` | [`BlobViewer`](#blobviewer) | Blob content rich viewer. |
 | <a id="repositoryblobsimpleviewer"></a>`simpleViewer` | [`BlobViewer!`](#blobviewer) | Blob content simple viewer. |
@@ -13291,15 +13291,15 @@ Counts of requirements by their state.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="rootstoragestatisticsbuildartifactssize"></a>`buildArtifactsSize` | [`Float!`](#float) | The CI artifacts size in bytes. |
-| <a id="rootstoragestatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | The LFS objects size in bytes. |
-| <a id="rootstoragestatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | The packages size in bytes. |
-| <a id="rootstoragestatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float!`](#float) | The CI pipeline artifacts size in bytes. |
-| <a id="rootstoragestatisticsrepositorysize"></a>`repositorySize` | [`Float!`](#float) | The Git repository size in bytes. |
-| <a id="rootstoragestatisticssnippetssize"></a>`snippetsSize` | [`Float!`](#float) | The snippets size in bytes. |
-| <a id="rootstoragestatisticsstoragesize"></a>`storageSize` | [`Float!`](#float) | The total storage in bytes. |
-| <a id="rootstoragestatisticsuploadssize"></a>`uploadsSize` | [`Float!`](#float) | The uploads size in bytes. |
-| <a id="rootstoragestatisticswikisize"></a>`wikiSize` | [`Float!`](#float) | The wiki size in bytes. |
+| <a id="rootstoragestatisticsbuildartifactssize"></a>`buildArtifactsSize` | [`Float!`](#float) | CI artifacts size in bytes. |
+| <a id="rootstoragestatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | LFS objects size in bytes. |
+| <a id="rootstoragestatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | Packages size in bytes. |
+| <a id="rootstoragestatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float!`](#float) | CI pipeline artifacts size in bytes. |
+| <a id="rootstoragestatisticsrepositorysize"></a>`repositorySize` | [`Float!`](#float) | Git repository size in bytes. |
+| <a id="rootstoragestatisticssnippetssize"></a>`snippetsSize` | [`Float!`](#float) | Snippets size in bytes. |
+| <a id="rootstoragestatisticsstoragesize"></a>`storageSize` | [`Float!`](#float) | Total storage in bytes. |
+| <a id="rootstoragestatisticsuploadssize"></a>`uploadsSize` | [`Float!`](#float) | Uploads size in bytes. |
+| <a id="rootstoragestatisticswikisize"></a>`wikiSize` | [`Float!`](#float) | Wiki size in bytes. |
 
 ### `RunnerArchitecture`
 
@@ -13644,7 +13644,7 @@ Represents a snippet entry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="snippetauthor"></a>`author` | [`UserCore`](#usercore) | The owner of the snippet. |
+| <a id="snippetauthor"></a>`author` | [`UserCore`](#usercore) | Owner of the snippet. |
 | <a id="snippetcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp this snippet was created. |
 | <a id="snippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
 | <a id="snippetdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
@@ -13653,7 +13653,7 @@ Represents a snippet entry.
 | <a id="snippethttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | HTTP URL to the snippet repository. |
 | <a id="snippetid"></a>`id` | [`SnippetID!`](#snippetid) | ID of the snippet. |
 | <a id="snippetnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
-| <a id="snippetproject"></a>`project` | [`Project`](#project) | The project the snippet is associated with. |
+| <a id="snippetproject"></a>`project` | [`Project`](#project) | Project the snippet is associated with. |
 | <a id="snippetrawurl"></a>`rawUrl` | [`String!`](#string) | Raw URL of the snippet. |
 | <a id="snippetsshurltorepo"></a>`sshUrlToRepo` | [`String`](#string) | SSH URL to the snippet repository. |
 | <a id="snippettitle"></a>`title` | [`String!`](#string) | Title of the snippet. |
@@ -13695,7 +13695,7 @@ Represents the snippet blob.
 | <a id="snippetblobpath"></a>`path` | [`String`](#string) | Blob path. |
 | <a id="snippetblobplaindata"></a>`plainData` | [`String`](#string) | Blob plain highlighted data. |
 | <a id="snippetblobrawpath"></a>`rawPath` | [`String!`](#string) | Blob raw content endpoint path. |
-| <a id="snippetblobrawplaindata"></a>`rawPlainData` | [`String`](#string) | The raw content of the blob, if the blob is text data. |
+| <a id="snippetblobrawplaindata"></a>`rawPlainData` | [`String`](#string) | Raw content of the blob, if the blob is text data. |
 | <a id="snippetblobrenderedastext"></a>`renderedAsText` | [`Boolean!`](#boolean) | Shows whether the blob is rendered as text. |
 | <a id="snippetblobrichdata"></a>`richData` | [`String`](#string) | Blob highlighted data. |
 | <a id="snippetblobrichviewer"></a>`richViewer` | [`SnippetBlobViewer`](#snippetblobviewer) | Blob content rich viewer. |
@@ -13795,9 +13795,9 @@ Completion status of tasks.
 | ---- | ---- | ----------- |
 | <a id="terraformstatecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the Terraform state was created. |
 | <a id="terraformstateid"></a>`id` | [`ID!`](#id) | ID of the Terraform state. |
-| <a id="terraformstatelatestversion"></a>`latestVersion` | [`TerraformStateVersion`](#terraformstateversion) | The latest version of the Terraform state. |
+| <a id="terraformstatelatestversion"></a>`latestVersion` | [`TerraformStateVersion`](#terraformstateversion) | Latest version of the Terraform state. |
 | <a id="terraformstatelockedat"></a>`lockedAt` | [`Time`](#time) | Timestamp the Terraform state was locked. |
-| <a id="terraformstatelockedbyuser"></a>`lockedByUser` | [`UserCore`](#usercore) | The user currently holding a lock on the Terraform state. |
+| <a id="terraformstatelockedbyuser"></a>`lockedByUser` | [`UserCore`](#usercore) | User currently holding a lock on the Terraform state. |
 | <a id="terraformstatename"></a>`name` | [`String!`](#string) | Name of the Terraform state. |
 | <a id="terraformstateupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the Terraform state was updated. |
 
@@ -13808,10 +13808,10 @@ Completion status of tasks.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="terraformstateversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the version was created. |
-| <a id="terraformstateversioncreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | The user that created this version. |
+| <a id="terraformstateversioncreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User that created this version. |
 | <a id="terraformstateversiondownloadpath"></a>`downloadPath` | [`String`](#string) | URL for downloading the version's JSON file. |
 | <a id="terraformstateversionid"></a>`id` | [`ID!`](#id) | ID of the Terraform state version. |
-| <a id="terraformstateversionjob"></a>`job` | [`CiJob`](#cijob) | The job that created this version. |
+| <a id="terraformstateversionjob"></a>`job` | [`CiJob`](#cijob) | Job that created this version. |
 | <a id="terraformstateversionserial"></a>`serial` | [`Int`](#int) | Serial number of the version. |
 | <a id="terraformstateversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the version was updated. |
 
@@ -13966,13 +13966,13 @@ Represents a historically accurate report about the timebox.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="timelogissue"></a>`issue` | [`Issue`](#issue) | The issue that logged time was added to. |
-| <a id="timelogmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request that logged time was added to. |
-| <a id="timelognote"></a>`note` | [`Note`](#note) | The note where the quick action to add the logged time was executed. |
+| <a id="timelogissue"></a>`issue` | [`Issue`](#issue) | Issue that logged time was added to. |
+| <a id="timelogmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that logged time was added to. |
+| <a id="timelognote"></a>`note` | [`Note`](#note) | Note where the quick action was executed to add the logged time. |
 | <a id="timelogspentat"></a>`spentAt` | [`Time`](#time) | Timestamp of when the time tracked was spent at. |
-| <a id="timelogsummary"></a>`summary` | [`String`](#string) | The summary of how the time was spent. |
-| <a id="timelogtimespent"></a>`timeSpent` | [`Int!`](#int) | The time spent displayed in seconds. |
-| <a id="timeloguser"></a>`user` | [`UserCore!`](#usercore) | The user that logged the time. |
+| <a id="timelogsummary"></a>`summary` | [`String`](#string) | Summary of how the time was spent. |
+| <a id="timelogtimespent"></a>`timeSpent` | [`Int!`](#int) | Time spent displayed in seconds. |
+| <a id="timeloguser"></a>`user` | [`UserCore!`](#usercore) | User that logged the time. |
 
 ### `Todo`
 
@@ -13983,12 +13983,12 @@ Representing a to-do entry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="todoaction"></a>`action` | [`TodoActionEnum!`](#todoactionenum) | Action of the to-do item. |
-| <a id="todoauthor"></a>`author` | [`UserCore!`](#usercore) | The author of this to-do item. |
+| <a id="todoauthor"></a>`author` | [`UserCore!`](#usercore) | Author of this to-do item. |
 | <a id="todobody"></a>`body` | [`String!`](#string) | Body of the to-do item. |
 | <a id="todocreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp this to-do item was created. |
 | <a id="todogroup"></a>`group` | [`Group`](#group) | Group this to-do item is associated with. |
 | <a id="todoid"></a>`id` | [`ID!`](#id) | ID of the to-do item. |
-| <a id="todoproject"></a>`project` | [`Project`](#project) | The project this to-do item is associated with. |
+| <a id="todoproject"></a>`project` | [`Project`](#project) | Project this to-do item is associated with. |
 | <a id="todostate"></a>`state` | [`TodoStateEnum!`](#todostateenum) | State of the to-do item. |
 | <a id="todotargettype"></a>`targetType` | [`TodoTargetEnum!`](#todotargetenum) | Target type of the to-do item. |
 
@@ -14056,7 +14056,7 @@ Core represention of a GitLab user.
 | <a id="usercoregroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usercoregroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
-| <a id="usercorelocation"></a>`location` | [`String`](#string) | The location of the user. |
+| <a id="usercorelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="usercorename"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
 | <a id="usercorenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -14266,7 +14266,7 @@ fields relate to interactions between the two entities.
 | <a id="usermergerequestinteractionapproved"></a>`approved` | [`Boolean!`](#boolean) | Whether this user has approved this merge request. |
 | <a id="usermergerequestinteractioncanmerge"></a>`canMerge` | [`Boolean!`](#boolean) | Whether this user can merge this merge request. |
 | <a id="usermergerequestinteractioncanupdate"></a>`canUpdate` | [`Boolean!`](#boolean) | Whether this user can update this merge request. |
-| <a id="usermergerequestinteractionreviewstate"></a>`reviewState` | [`MergeRequestReviewState`](#mergerequestreviewstate) | The state of the review by this user. |
+| <a id="usermergerequestinteractionreviewstate"></a>`reviewState` | [`MergeRequestReviewState`](#mergerequestreviewstate) | State of the review by this user. |
 | <a id="usermergerequestinteractionreviewed"></a>`reviewed` | [`Boolean!`](#boolean) | Whether this user has provided a review for this merge request. |
 
 ### `UserPermissions`
@@ -16002,19 +16002,19 @@ State of a test report.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="todostateenumdone"></a>`done` | The state of the todo is done. |
-| <a id="todostateenumpending"></a>`pending` | The state of the todo is pending. |
+| <a id="todostateenumdone"></a>`done` | State of the todo is done. |
+| <a id="todostateenumpending"></a>`pending` | State of the todo is pending. |
 
 ### `TodoTargetEnum`
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="todotargetenumalert"></a>`ALERT` | An Alert. |
-| <a id="todotargetenumcommit"></a>`COMMIT` | A Commit. |
-| <a id="todotargetenumdesign"></a>`DESIGN` | A Design. |
+| <a id="todotargetenumalert"></a>`ALERT` | Alert. |
+| <a id="todotargetenumcommit"></a>`COMMIT` | Commit. |
+| <a id="todotargetenumdesign"></a>`DESIGN` | Design. |
 | <a id="todotargetenumepic"></a>`EPIC` | An Epic. |
-| <a id="todotargetenumissue"></a>`ISSUE` | An Issue. |
-| <a id="todotargetenummergerequest"></a>`MERGEREQUEST` | A MergeRequest. |
+| <a id="todotargetenumissue"></a>`ISSUE` | Issue. |
+| <a id="todotargetenummergerequest"></a>`MERGEREQUEST` | Merge request. |
 
 ### `TypeEnum`
 
@@ -16069,9 +16069,9 @@ Possible states of a user.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="userstateactive"></a>`active` | The user is active and is able to use the system. |
-| <a id="userstateblocked"></a>`blocked` | The user has been blocked and is prevented from using the system. |
-| <a id="userstatedeactivated"></a>`deactivated` | The user is no longer active and is unable to use the system. |
+| <a id="userstateactive"></a>`active` | User is active and is able to use the system. |
+| <a id="userstateblocked"></a>`blocked` | User has been blocked and is prevented from using the system. |
+| <a id="userstatedeactivated"></a>`deactivated` | User is no longer active and is unable to use the system. |
 
 ### `VisibilityLevelsEnum`
 
@@ -16085,9 +16085,9 @@ Possible states of a user.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="visibilityscopesenuminternal"></a>`internal` | The snippet is visible for any logged in user except external users. |
-| <a id="visibilityscopesenumprivate"></a>`private` | The snippet is visible only to the snippet creator. |
-| <a id="visibilityscopesenumpublic"></a>`public` | The snippet can be accessed without any authentication. |
+| <a id="visibilityscopesenuminternal"></a>`internal` | Snippet is visible for any logged in user except external users. |
+| <a id="visibilityscopesenumprivate"></a>`private` | Snippet is visible only to the snippet creator. |
+| <a id="visibilityscopesenumpublic"></a>`public` | Snippet can be accessed without any authentication. |
 
 ### `VulnerabilityConfidence`
 
@@ -17032,7 +17032,7 @@ Implementations:
 | <a id="usergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
-| <a id="userlocation"></a>`location` | [`String`](#string) | The location of the user. |
+| <a id="userlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="username"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
 | <a id="usernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |

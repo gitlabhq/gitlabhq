@@ -420,14 +420,18 @@ module Ci
     end
 
     def no_projects
-      if projects.any?
-        errors.add(:runner, 'cannot have projects assigned')
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        if projects.any?
+          errors.add(:runner, 'cannot have projects assigned')
+        end
       end
     end
 
     def no_groups
-      if groups.any?
-        errors.add(:runner, 'cannot have groups assigned')
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        if groups.any?
+          errors.add(:runner, 'cannot have groups assigned')
+        end
       end
     end
 

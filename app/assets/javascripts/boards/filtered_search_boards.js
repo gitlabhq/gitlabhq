@@ -4,7 +4,6 @@ import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable
 import { updateHistory } from '~/lib/utils/url_utility';
 import FilteredSearchContainer from '../filtered_search/container';
 import vuexstore from './stores';
-import boardsStore from './stores/boards_store';
 
 export default class FilteredSearchBoards extends FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {
@@ -26,7 +25,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
     this.cantEdit = cantEdit.filter((i) => typeof i === 'string');
     this.cantEditWithValue = cantEdit.filter((i) => typeof i === 'object');
 
-    if (vuexstore.getters.shouldUseGraphQL && vuexstore.state.boardConfig) {
+    if (vuexstore.state.boardConfig) {
       const boardConfigPath = transformBoardConfig(vuexstore.state.boardConfig);
       // TODO Refactor: https://gitlab.com/gitlab-org/gitlab/-/issues/329274
       // here we are using "window.location.search" as a temporary store
@@ -45,14 +44,10 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
     const groupByParam = new URLSearchParams(window.location.search).get('group_by');
     this.store.path = `${path.substr(1)}${groupByParam ? `&group_by=${groupByParam}` : ''}`;
 
-    if (vuexstore.getters.shouldUseGraphQL) {
-      updateHistory({
-        url: `?${path.substr(1)}${groupByParam ? `&group_by=${groupByParam}` : ''}`,
-      });
-      vuexstore.dispatch('performSearch');
-    } else if (this.updateUrl) {
-      boardsStore.updateFiltersUrl();
-    }
+    updateHistory({
+      url: `?${path.substr(1)}${groupByParam ? `&group_by=${groupByParam}` : ''}`,
+    });
+    vuexstore.dispatch('performSearch');
   }
 
   removeTokens() {

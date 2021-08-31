@@ -31,20 +31,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isSidebarOpen', 'shouldUseGraphQL', 'isEpicBoard']),
+    ...mapGetters(['isSidebarOpen', 'isEpicBoard']),
     ...mapState(['activeId', 'sidebarType', 'boardLists']),
     isWipLimitsOn() {
       return this.glFeatures.wipLimits && !this.isEpicBoard;
     },
     activeList() {
-      /*
-        Warning: Though a computed property it is not reactive because we are
-        referencing a List Model class. Reactivity only applies to plain JS objects
-      */
-      if (this.shouldUseGraphQL || this.isEpicBoard) {
-        return this.boardLists[this.activeId];
-      }
-      return boardsStore.state.lists.find(({ id }) => id === this.activeId);
+      return this.boardLists[this.activeId];
     },
     activeListLabel() {
       return this.activeList.label;
@@ -73,12 +66,8 @@ export default {
     deleteBoard() {
       // eslint-disable-next-line no-alert
       if (window.confirm(__('Are you sure you want to remove this list?'))) {
-        if (this.shouldUseGraphQL || this.isEpicBoard) {
-          this.track('click_button', { label: 'remove_list' });
-          this.removeList(this.activeId);
-        } else {
-          this.activeList.destroy();
-        }
+        this.track('click_button', { label: 'remove_list' });
+        this.removeList(this.activeId);
         this.unsetActiveId();
       }
     },

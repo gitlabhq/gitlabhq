@@ -82,11 +82,8 @@ export default {
       'setFilters',
       convertObjectPropsToCamelCase(queryToObject(window.location.search, { gatherArrays: true })),
     );
-
-    if (gon.features.graphqlBoardLists) {
-      dispatch('fetchLists');
-      dispatch('resetIssues');
-    }
+    dispatch('fetchLists');
+    dispatch('resetIssues');
   },
 
   fetchLists: ({ commit, state, dispatch }) => {
@@ -182,7 +179,7 @@ export default {
     });
   },
 
-  fetchLabels: ({ state, commit, getters }, searchTerm) => {
+  fetchLabels: ({ state, commit }, searchTerm) => {
     const { fullPath, boardType } = state;
 
     const variables = {
@@ -200,14 +197,7 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        let labels = data[boardType]?.labels.nodes;
-
-        if (!getters.shouldUseGraphQL && !getters.isEpicBoard) {
-          labels = labels.map((label) => ({
-            ...label,
-            id: getIdFromGraphQLId(label.id),
-          }));
-        }
+        const labels = data[boardType]?.labels.nodes;
 
         commit(types.RECEIVE_LABELS_SUCCESS, labels);
         return labels;

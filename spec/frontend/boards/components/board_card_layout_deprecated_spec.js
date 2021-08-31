@@ -111,18 +111,14 @@ describe('Board card layout', () => {
       expect(wrapper.vm.showDetail).toBe(false);
     });
 
-    it("calls 'setActiveId' when 'graphqlBoardLists' feature flag is turned on", async () => {
+    it("calls 'setActiveId'", async () => {
       const setActiveId = jest.fn();
       createStore({
         actions: {
           setActiveId,
         },
       });
-      mountComponent({
-        provide: {
-          glFeatures: { graphqlBoardLists: true },
-        },
-      });
+      mountComponent();
 
       wrapper.trigger('mouseup');
       await wrapper.vm.$nextTick();

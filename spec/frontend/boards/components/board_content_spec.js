@@ -5,7 +5,7 @@ import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
-import BoardColumnDeprecated from '~/boards/components/board_column_deprecated.vue';
+import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import { mockLists, mockListsWithModel } from '../mock_data';
 
@@ -33,12 +33,7 @@ describe('BoardContent', () => {
     });
   };
 
-  const createComponent = ({
-    state,
-    props = {},
-    graphqlBoardListsEnabled = false,
-    canAdminList = true,
-  } = {}) => {
+  const createComponent = ({ state, props = {}, canAdminList = true } = {}) => {
     const store = createStore({
       ...defaultState,
       ...state,
@@ -51,63 +46,41 @@ describe('BoardContent', () => {
       },
       provide: {
         canAdminList,
-        glFeatures: { graphqlBoardLists: graphqlBoardListsEnabled },
       },
       store,
     });
   };
 
+  beforeEach(() => {
+    createComponent();
+  });
+
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('renders a BoardColumnDeprecated component per list', () => {
-    createComponent();
-
-    expect(wrapper.findAllComponents(BoardColumnDeprecated)).toHaveLength(
-      mockListsWithModel.length,
-    );
+  it('renders a BoardColumn component per list', () => {
+    expect(wrapper.findAllComponents(BoardColumn)).toHaveLength(mockListsWithModel.length);
   });
 
   it('does not display EpicsSwimlanes component', () => {
-    createComponent();
-
     expect(wrapper.find(EpicsSwimlanes).exists()).toBe(false);
     expect(wrapper.find(GlAlert).exists()).toBe(false);
   });
 
-  describe('graphqlBoardLists feature flag enabled', () => {
+  describe('can admin list', () => {
     beforeEach(() => {
-      createComponent({ graphqlBoardListsEnabled: true });
-      gon.features = {
-        graphqlBoardLists: true,
-      };
+      createComponent({ canAdminList: true });
     });
 
-    describe('can admin list', () => {
-      beforeEach(() => {
-        createComponent({ graphqlBoardListsEnabled: true, canAdminList: true });
-      });
-
-      it('renders draggable component', () => {
-        expect(wrapper.find(Draggable).exists()).toBe(true);
-      });
-    });
-
-    describe('can not admin list', () => {
-      beforeEach(() => {
-        createComponent({ graphqlBoardListsEnabled: true, canAdminList: false });
-      });
-
-      it('does not render draggable component', () => {
-        expect(wrapper.find(Draggable).exists()).toBe(false);
-      });
+    it('renders draggable component', () => {
+      expect(wrapper.find(Draggable).exists()).toBe(true);
     });
   });
 
-  describe('graphqlBoardLists feature flag disabled', () => {
+  describe('can not admin list', () => {
     beforeEach(() => {
-      createComponent({ graphqlBoardListsEnabled: false });
+      createComponent({ canAdminList: false });
     });
 
     it('does not render draggable component', () => {

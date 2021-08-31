@@ -51,8 +51,4 @@ export default {
   isEpicBoard: () => {
     return false;
   },
-
-  shouldUseGraphQL: () => {
-    return gon?.features?.graphqlBoardLists;
-  },
 };

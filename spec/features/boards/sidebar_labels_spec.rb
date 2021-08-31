@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Project issue boards sidebar labels', :js do
   include BoardHelpers
 
+  let_it_be(:group)       { create(:group, :public) }
   let_it_be(:user)        { create(:user) }
-  let_it_be(:project)     { create(:project, :public) }
+  let_it_be(:project)     { create(:project, :public, namespace: group) }
   let_it_be(:development) { create(:label, project: project, name: 'Development') }
   let_it_be(:bug)         { create(:label, project: project, name: 'Bug') }
   let_it_be(:regression)  { create(:label, project: project, name: 'Regression') }

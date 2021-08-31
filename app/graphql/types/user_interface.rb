@@ -72,7 +72,7 @@ module Types
     field :location,
           type: ::GraphQL::Types::String,
           null: true,
-          description: 'The location of the user.'
+          description: 'Location of the user.'
     field :project_memberships,
           type: Types::ProjectMemberType.connection_type,
           null: true,

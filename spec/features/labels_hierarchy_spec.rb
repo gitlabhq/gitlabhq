@@ -214,44 +214,6 @@ RSpec.describe 'Labels Hierarchy', :js do
     end
   end
 
-  context 'issuable sidebar when graphql_board_lists FF disabled' do
-    let!(:issue) { create(:issue, project: project_1) }
-
-    before do
-      stub_feature_flags(graphql_board_lists: false)
-    end
-
-    context 'on project board issue sidebar' do
-      before do
-        project_1.add_developer(user)
-        board = create(:board, project: project_1)
-
-        visit project_board_path(project_1, board)
-
-        wait_for_requests
-
-        find('.board-card').click
-      end
-
-      it_behaves_like 'assigning labels from sidebar'
-    end
-
-    context 'on group board issue sidebar' do
-      before do
-        parent.add_developer(user)
-        board = create(:board, group: parent)
-
-        visit group_board_path(parent, board)
-
-        wait_for_requests
-
-        find('.board-card').click
-      end
-
-      it_behaves_like 'assigning labels from sidebar'
-    end
-  end
-
   context 'issuable filtering' do
     let!(:labeled_issue) { create(:labeled_issue, project: project_1, labels: [grandparent_group_label, parent_group_label, project_label_1]) }
     let!(:issue) { create(:issue, project: project_1) }

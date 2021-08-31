@@ -15,7 +15,7 @@ module Types
 
       field :created_by_user, Types::UserType,
             null: true,
-            description: 'The user that created this version.'
+            description: 'User that created this version.'
 
       field :download_path, GraphQL::Types::String,
             null: true,
@@ -23,7 +23,7 @@ module Types
 
       field :job, Types::Ci::JobType,
             null: true,
-            description: 'The job that created this version.'
+            description: 'Job that created this version.'
 
       field :serial, GraphQL::Types::Int,
             null: true,
