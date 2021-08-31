@@ -16,7 +16,3 @@ GitLab community members and their privileges/responsibilities.
 | Contributor | Can make contributions to all GitLab public projects | Have a GitLab.com account |
 
 [List of current reviewers/maintainers](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce).
-
----
-
-[Return to Contributing documentation](index.md)

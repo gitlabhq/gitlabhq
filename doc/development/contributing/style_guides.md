@@ -242,7 +242,3 @@ See the dedicated [Python Development Guidelines](../python_guide/index.md).
 ## Misc
 
 Code should be written in [US English](https://en.wikipedia.org/wiki/American_English).
-
----
-
-[Return to Contributing documentation](index.md)

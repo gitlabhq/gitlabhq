@@ -384,7 +384,7 @@ below will make it easy to manage this, without unnecessary overhead.
 1. If you don't agree with a set weight, discuss with other developers until
    consensus is reached about the weight
 1. Issue weights are an abstract measurement of complexity of the issue. Do not
-   relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring)
+   relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring_(cognitive_bias))
    and something you want to avoid.
 1. Something that has a weight of 1 (or no weight) is really small and simple.
    Something that is 9 is rewriting a large fundamental part of GitLab,
@@ -476,7 +476,3 @@ should be of the same quality as those created
 [in the usual manner](#technical-and-ux-debt) - in particular, the issue title
 **must not** begin with `Follow-up`! The creating maintainer should also expect
 to be involved in some capacity when work begins on the follow-up issue.
-
----
-
-[Return to Contributing documentation](index.md)

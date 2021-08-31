@@ -123,7 +123,7 @@ may not be able to check out the wiki locally afterward.
 
 ## Edit a wiki page
 
-You need the [Developer role](../../permissions.md) or higher to edit a wiki page:
+You need at least the [Developer role](../../permissions.md) to edit a wiki page:
 
 1. Go to your project or group and select **Wiki**.
 1. Go to the page you want to edit.
@@ -138,7 +138,7 @@ For an example, read [Table of contents](../../markdown.md#table-of-contents).
 
 ## Delete a wiki page
 
-You need the [Maintainer role](../../permissions.md) or higher to delete a wiki page:
+You need at least the [Maintainer role](../../permissions.md) to delete a wiki page:
 
 1. Go to your project or group and select **Wiki**.
 1. Go to the page you want to delete.
@@ -148,7 +148,7 @@ You need the [Maintainer role](../../permissions.md) or higher to delete a wiki 
 
 ## Move a wiki page
 
-You need the [Developer role](../../permissions.md) or higher to move a wiki page:
+You need at least the [Developer role](../../permissions.md) to move a wiki page:
 
 1. Go to your project or group and select **Wiki**.
 1. Go to the page you want to move.
@@ -203,7 +203,7 @@ Commits to wikis are not counted in [repository analytics](../../analytics/repos
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.
 
-You need Developer [permissions](../../permissions.md) or higher to customize the wiki
+You need at least the [Developer role](../../permissions.md) to customize the wiki
 navigation sidebar. This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
