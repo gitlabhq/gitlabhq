@@ -209,6 +209,7 @@ class Project < ApplicationRecord
   has_one :unify_circuit_integration, class_name: 'Integrations::UnifyCircuit'
   has_one :webex_teams_integration, class_name: 'Integrations::WebexTeams'
   has_one :youtrack_integration, class_name: 'Integrations::Youtrack'
+  has_one :zentao_integration, class_name: 'Integrations::Zentao'
 
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
@@ -1455,7 +1456,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    []
+    [:zentao]
   end
 
   def find_or_initialize_integration(name)

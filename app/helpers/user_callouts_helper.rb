@@ -27,7 +27,7 @@ module UserCalloutsHelper
   def render_dashboard_ultimate_trial(user)
   end
 
-  def render_account_recovery_regular_check
+  def render_two_factor_auth_recovery_settings_check
   end
 
   def show_suggest_popover?
@@ -53,7 +53,7 @@ module UserCalloutsHelper
     !user_dismissed?(REGISTRATION_ENABLED_CALLOUT)
   end
 
-  def dismiss_account_recovery_regular_check
+  def dismiss_two_factor_auth_recovery_settings_check
   end
 
   private

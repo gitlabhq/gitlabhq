@@ -9,7 +9,6 @@ module SshKeys
     include CronjobQueue
 
     feature_category :compliance_management
-    tags :exclude_from_kubernetes
     idempotent!
 
     BATCH_SIZE = 500

@@ -19,12 +19,13 @@ module Gitlab
         consume_blob_response(response)
       end
 
-      def list_blobs(revisions, limit: 0, bytes_limit: 0, dynamic_timeout: nil)
+      def list_blobs(revisions, limit: 0, bytes_limit: 0, with_paths: false, dynamic_timeout: nil)
         request = Gitaly::ListBlobsRequest.new(
           repository: @gitaly_repo,
           revisions: Array.wrap(revisions),
           limit: limit,
-          bytes_limit: bytes_limit
+          bytes_limit: bytes_limit,
+          with_paths: with_paths
         )
 
         timeout =

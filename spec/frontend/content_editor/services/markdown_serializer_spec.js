@@ -3,7 +3,10 @@ import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Division from '~/content_editor/extensions/division';
 import Emoji from '~/content_editor/extensions/emoji';
+import Figure from '~/content_editor/extensions/figure';
+import FigureCaption from '~/content_editor/extensions/figure_caption';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
@@ -38,7 +41,10 @@ const tiptapEditor = createTestEditor({
     BulletList,
     Code,
     CodeBlockHighlight,
+    Division,
     Emoji,
+    Figure,
+    FigureCaption,
     HardBreak,
     Heading,
     HorizontalRule,
@@ -68,7 +74,10 @@ const {
     bulletList,
     code,
     codeBlock,
+    division,
     emoji,
+    figure,
+    figureCaption,
     heading,
     hardBreak,
     horizontalRule,
@@ -95,7 +104,10 @@ const {
     bulletList: { nodeType: BulletList.name },
     code: { markType: Code.name },
     codeBlock: { nodeType: CodeBlockHighlight.name },
+    division: { nodeType: Division.name },
     emoji: { markType: Emoji.name },
+    figure: { nodeType: Figure.name },
+    figureCaption: { nodeType: FigureCaption.name },
     hardBreak: { nodeType: HardBreak.name },
     heading: { nodeType: Heading.name },
     horizontalRule: { nodeType: HorizontalRule.name },
@@ -529,6 +541,61 @@ this is not really json but just trying out whether this case works or not
 3. [ ] list item 3
    1351) [x] sub-list item 1
    1352) [ ] sub-list item 2
+      `.trim(),
+    );
+  });
+
+  it('correctly renders div', () => {
+    expect(
+      serialize(
+        division(paragraph('just a paragraph in a div')),
+        division(paragraph('just some ', bold('styled'), ' ', italic('content'), ' in a div')),
+      ),
+    ).toBe(
+      '<div>just a paragraph in a div</div>\n<div>\n\njust some **styled** _content_ in a div\n\n</div>',
+    );
+  });
+
+  it('correctly renders figure', () => {
+    expect(
+      serialize(
+        figure(
+          paragraph(image({ src: 'elephant.jpg', alt: 'An elephant at sunset' })),
+          figureCaption('An elephant at sunset'),
+        ),
+      ),
+    ).toBe(
+      `
+<figure>
+
+![An elephant at sunset](elephant.jpg)
+
+<figcaption>An elephant at sunset</figcaption>
+</figure>
+      `.trim(),
+    );
+  });
+
+  it('correctly renders figure with styled caption', () => {
+    expect(
+      serialize(
+        figure(
+          paragraph(image({ src: 'elephant.jpg', alt: 'An elephant at sunset' })),
+          figureCaption(italic('An elephant at sunset')),
+        ),
+      ),
+    ).toBe(
+      `
+<figure>
+
+![An elephant at sunset](elephant.jpg)
+
+<figcaption>
+
+_An elephant at sunset_
+
+</figcaption>
+</figure>
       `.trim(),
     );
   });

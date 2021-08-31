@@ -13,7 +13,7 @@ module HashedStorage
 
     # Gitlab::HashedStorage::Migrator#migration_pending? depends on the
     # queue size of this worker.
-    tags :exclude_from_gitlab_com, :needs_own_queue
+    tags :needs_own_queue
 
     # @param [Integer] start initial ID of the batch
     # @param [Integer] finish last ID of the batch

@@ -57,7 +57,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         @codes = user.generate_otp_backup_codes!
       end
 
-      helpers.dismiss_account_recovery_regular_check
+      helpers.dismiss_two_factor_auth_recovery_settings_check
 
       render 'create'
     else
@@ -108,7 +108,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     Users::UpdateService.new(current_user, user: current_user).execute! do |user|
       @codes = user.generate_otp_backup_codes!
 
-      helpers.dismiss_account_recovery_regular_check
+      helpers.dismiss_two_factor_auth_recovery_settings_check
     end
   end
 

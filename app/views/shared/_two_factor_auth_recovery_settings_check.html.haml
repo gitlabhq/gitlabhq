@@ -1,7 +1,7 @@
 = render 'shared/global_alert',
   variant: :warning,
   alert_class: 'js-recovery-settings-callout',
-  alert_data: { feature_id: 'account_recovery_regular_check', dismiss_endpoint: user_callouts_path, defer_links: 'true' },
+  alert_data: { feature_id: UserCalloutsHelper::TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK, dismiss_endpoint: user_callouts_path, defer_links: 'true' },
   close_button_data: { testid: 'close-account-recovery-regular-check-callout' } do
   .gl-alert-body
     = s_('Profiles|Ensure you have two-factor authentication recovery codes stored in a safe place.')

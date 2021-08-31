@@ -24,12 +24,20 @@ export function isPlainURL(link, parent, index, side) {
   return !link.isInSet(next.marks);
 }
 
-function shouldRenderCellInline(cell) {
+function containsOnlyText(node) {
+  if (node.childCount === 1) {
+    const child = node.child(0);
+    return child.isText && child.marks.length === 0;
+  }
+
+  return false;
+}
+
+function containsParagraphWithOnlyText(cell) {
   if (cell.childCount === 1) {
-    const parent = cell.child(0);
-    if (parent.type.name === 'paragraph' && parent.childCount === 1) {
-      const child = parent.child(0);
-      return child.isText && child.marks.length === 0;
+    const child = cell.child(0);
+    if (child.type.name === 'paragraph') {
+      return containsOnlyText(child);
     }
   }
 
@@ -208,7 +216,7 @@ function renderTableRowAsHTML(state, node) {
 
     renderTagOpen(state, tag, cell.attrs);
 
-    if (!shouldRenderCellInline(cell)) {
+    if (!containsParagraphWithOnlyText(cell)) {
       state.closeBlock(node);
       state.flushClose();
     }
@@ -220,6 +228,38 @@ function renderTableRowAsHTML(state, node) {
   });
 
   renderTagClose(state, 'tr');
+}
+
+export function renderContent(state, node, forceRenderInline) {
+  if (node.type.inlineContent) {
+    if (containsOnlyText(node)) {
+      state.renderInline(node);
+    } else {
+      state.closeBlock(node);
+      state.flushClose();
+      state.renderInline(node);
+      state.closeBlock(node);
+      state.flushClose();
+    }
+  } else {
+    const renderInline = forceRenderInline || containsParagraphWithOnlyText(node);
+    if (!renderInline) {
+      state.closeBlock(node);
+      state.flushClose();
+      state.renderContent(node);
+      state.ensureNewLine();
+    } else {
+      state.renderInline(forceRenderInline ? node : node.child(0));
+    }
+  }
+}
+
+export function renderHTMLNode(tagName, forceRenderInline = false) {
+  return (state, node) => {
+    renderTagOpen(state, tagName, node.attrs);
+    renderContent(state, node, forceRenderInline);
+    renderTagClose(state, tagName, false);
+  };
 }
 
 export function renderOrderedList(state, node) {
@@ -241,7 +281,7 @@ export function renderTableCell(state, node) {
     return;
   }
 
-  if (!isInBlockTable(node) || shouldRenderCellInline(node)) {
+  if (!isInBlockTable(node) || containsParagraphWithOnlyText(node)) {
     state.renderInline(node.child(0));
   } else {
     state.renderContent(node);

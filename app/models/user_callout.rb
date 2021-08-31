@@ -15,7 +15,7 @@ class UserCallout < ApplicationRecord
     suggest_popover_dismissed: 9,
     tabs_position_highlight: 10,
     threat_monitoring_info: 11,                # EE-only
-    account_recovery_regular_check: 12,        # EE-only
+    two_factor_auth_recovery_settings_check: 12, # EE-only
     web_ide_alert_dismissed: 16,               # no longer in use
     active_user_count_threshold: 18,           # EE-only
     buy_pipeline_minutes_notification_dot: 19, # EE-only

@@ -18815,6 +18815,9 @@ msgstr ""
 msgid "Iterations|Create cadence"
 msgstr ""
 
+msgid "Iterations|Create your first iteration"
+msgstr ""
+
 msgid "Iterations|Delete cadence"
 msgstr ""
 
@@ -38920,6 +38923,30 @@ msgid "Your subscription will expire in %{remaining_days}."
 msgstr ""
 
 msgid "Your username is %{username}."
+msgstr ""
+
+msgid "ZentaoIntegration|Base URL of the Zentao instance."
+msgstr ""
+
+msgid "ZentaoIntegration|Enter API token"
+msgstr ""
+
+msgid "ZentaoIntegration|If different from Web URL."
+msgstr ""
+
+msgid "ZentaoIntegration|Use Zentao as this project's issue tracker."
+msgstr ""
+
+msgid "ZentaoIntegration|Zentao API URL (optional)"
+msgstr ""
+
+msgid "ZentaoIntegration|Zentao API token"
+msgstr ""
+
+msgid "ZentaoIntegration|Zentao Product ID"
+msgstr ""
+
+msgid "ZentaoIntegration|Zentao Web URL"
 msgstr ""
 
 msgid "Zoom meeting added"

@@ -10,7 +10,6 @@ class IssueRebalancingWorker
   idempotent!
   urgency :low
   feature_category :issue_tracking
-  tags :exclude_from_kubernetes
   deduplicate :until_executed, including_scheduled: true
 
   def perform(ignore = nil, project_id = nil, root_namespace_id = nil)

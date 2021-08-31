@@ -12,8 +12,6 @@ module Gitlab
         include GithubImport::Queue
         include StageMethods
 
-        tags :exclude_from_kubernetes
-
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)

@@ -450,12 +450,12 @@ that proposes expanding this feature to support more variables.
 
 #### `rules` with `include`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276515) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276515) in GitLab 14.2.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3 and is ready for production use.
+> - [Enabled with `ci_include_rules` flag](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) for self-managed GitLab in GitLab 14.3 and is ready for production use.
 
-NOTE:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the `ci_include_rules` flag](../../administration/feature_flags.md).
-On GitLab.com, this feature is not available. The feature is not ready for production use.
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the `ci_include_rules` flag](../../administration/feature_flags.md). On GitLab.com, this feature is available.
 
 You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
 You can only use `rules:if` in `include` with [certain variables](#variables-with-include).
@@ -1627,7 +1627,7 @@ To disable directed acyclic graphs (DAG), set the limit to `0`.
 
 #### Artifact downloads with `needs`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab v12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.6.
 
 When a job uses `needs`, it no longer downloads all artifacts from previous stages
 by default, because jobs with `needs` can start before earlier stages complete. With
@@ -1679,7 +1679,7 @@ with `needs`.
 
 #### Cross project artifact downloads with `needs` **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab v12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
 Use `needs` to download artifacts from up to five jobs in pipelines:
 
@@ -1752,7 +1752,7 @@ pipelines running on the same ref could override the artifacts.
 
 #### Artifact downloads to child pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab v13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab 13.7.
 
 A [child pipeline](../pipelines/parent_child_pipelines.md) can download artifacts from a job in
 its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
@@ -2379,7 +2379,7 @@ cache-job:
 
 ##### `cache:key:files`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab v12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab 12.5.
 
 Use the `cache:key:files` keyword to generate a new key when one or two specific files
 change. `cache:key:files` lets you reuse some caches, and rebuild them less often,
@@ -2417,7 +2417,7 @@ fallback key is `default`.
 
 ##### `cache:key:prefix`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab v12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab 12.5.
 
 Use `cache:key:prefix` to combine a prefix with the SHA computed for [`cache:key:files`](#cachekeyfiles).
 

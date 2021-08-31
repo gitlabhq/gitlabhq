@@ -9,8 +9,6 @@ module TodosDestroyer
     sidekiq_options retry: 3
     include TodosDestroyerQueue
 
-    tags :exclude_from_kubernetes
-
     idempotent!
 
     def perform(target_id, target_type)

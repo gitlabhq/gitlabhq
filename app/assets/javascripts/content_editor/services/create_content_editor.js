@@ -8,9 +8,12 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import Division from '../extensions/division';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
+import Figure from '../extensions/figure';
+import FigureCaption from '../extensions/figure_caption';
 import Gapcursor from '../extensions/gapcursor';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
@@ -71,8 +74,11 @@ export const createContentEditor = ({
     Code,
     CodeBlockHighlight,
     Document,
+    Division,
     Dropcursor,
     Emoji,
+    Figure,
+    FigureCaption,
     Gapcursor,
     HardBreak,
     Heading,

@@ -1755,14 +1755,26 @@ RSpec.describe User do
       end
 
       describe '#manageable_groups' do
-        it 'includes all the namespaces the user can manage' do
-          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        shared_examples 'manageable groups examples' do
+          it 'includes all the namespaces the user can manage' do
+            expect(user.manageable_groups).to contain_exactly(group, subgroup)
+          end
+
+          it 'does not include duplicates if a membership was added for the subgroup' do
+            subgroup.add_owner(user)
+
+            expect(user.manageable_groups).to contain_exactly(group, subgroup)
+          end
         end
 
-        it 'does not include duplicates if a membership was added for the subgroup' do
-          subgroup.add_owner(user)
+        it_behaves_like 'manageable groups examples'
 
-          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        context 'when feature flag :linear_user_manageable_groups is disabled' do
+          before do
+            stub_feature_flags(linear_user_manageable_groups: false)
+          end
+
+          it_behaves_like 'manageable groups examples'
         end
       end
 

@@ -15,7 +15,6 @@ class GitlabPerformanceBarStatsWorker
   STATS_KEY_EXPIRE = 30.minutes.to_i
 
   feature_category :metrics
-  tags :exclude_from_kubernetes
   idempotent!
 
   def perform(lease_uuid)

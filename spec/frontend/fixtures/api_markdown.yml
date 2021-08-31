@@ -33,6 +33,32 @@
     * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
     * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
     * The **Pythagorean theorem** is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var>
+- name: div
+  markdown: |-
+    <div>plain text</div>
+    <div>
+
+    just a plain ol' div, not much to _expect_!
+
+    </div>
+- name: figure
+  markdown: |-
+    <figure>
+
+    ![Elephant at sunset](elephant-sunset.jpg)
+
+    <figcaption>An elephant at sunset</figcaption>
+    </figure>
+    <figure>
+
+    ![A crocodile wearing crocs](croc-crocs.jpg)
+
+    <figcaption>
+
+    A crocodile wearing _crocs_!
+
+    </figcaption>
+    </figure>
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
 - name: attachment_link

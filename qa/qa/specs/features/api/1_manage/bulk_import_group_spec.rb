@@ -54,7 +54,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:bulk_import) unless staging?
         Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
 
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
@@ -91,7 +90,6 @@ module QA
       after do
         user.remove_via_api!
       ensure
-        Runtime::Feature.disable(:bulk_import) unless staging?
         Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
       end
     end

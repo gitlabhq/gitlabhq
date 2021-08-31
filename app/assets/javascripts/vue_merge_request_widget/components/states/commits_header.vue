@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
+/* eslint-disable vue/no-v-html, @gitlab/require-string-literal-i18n-helpers */
 import { GlButton } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, n__, sprintf, s__ } from '~/locale';

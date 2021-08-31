@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ErrorTracking::Error < ApplicationRecord
+  include Sortable
+
   belongs_to :project
 
   has_many :events, class_name: 'ErrorTracking::ErrorEvent'
@@ -31,6 +33,19 @@ class ErrorTracking::Error < ApplicationRecord
         description: description,
         last_seen_at: timestamp
       )
+    end
+  end
+
+  def self.sort_by_attribute(method)
+    case method.to_s
+    when 'last_seen'
+      order(last_seen_at: :desc)
+    when 'first_seen'
+      order(first_seen_at: :desc)
+    when 'frequency'
+      order(events_count: :desc)
+    else
+      order_id_desc
     end
   end
 

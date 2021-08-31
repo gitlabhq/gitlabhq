@@ -936,6 +936,75 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#new_blobs' do
+    let(:repository) { mutable_repository }
+    let(:repository_rugged) { mutable_repository_rugged }
+    let(:new_blob) do
+      repository_rugged.write('This is a new blob', :blob)
+    end
+
+    let(:new_commit) do
+      author = { name: 'Test User', email: 'mail@example.com', time: Time.now }
+
+      index = repository_rugged.index
+      index.add(path: 'nested/new-blob.txt', oid: new_blob, mode: 0100644)
+
+      Rugged::Commit.create(repository_rugged,
+                            author: author,
+                            committer: author,
+                            message: "Message",
+                            parents: [],
+                            tree: index.write_tree(repository_rugged))
+    end
+
+    subject { repository.new_blobs(new_commit).to_a }
+
+    context 'with :new_blobs_via_list_blobs enabled' do
+      before do
+        stub_feature_flags(new_blobs_via_list_blobs: true)
+
+        expect_next_instance_of(Gitlab::GitalyClient::BlobService) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with(['--not', '--all', '--not', new_commit],
+                  limit: Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT,
+                  with_paths: true,
+                  dynamic_timeout: nil)
+            .and_call_original
+        end
+      end
+
+      it 'enumerates new blobs' do
+        expect(subject).to match_array(
+          [have_attributes(class: Gitlab::Git::Blob, id: new_blob, path: 'nested/new-blob.txt', size: 18)]
+        )
+      end
+    end
+
+    context 'with :new_blobs_via_list_blobs disabled' do
+      before do
+        stub_feature_flags(new_blobs_via_list_blobs: false)
+
+        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+          expect(service)
+            .to receive(:list_new_blobs)
+            .with(new_commit,
+                  Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT,
+                  dynamic_timeout: nil)
+            .and_call_original
+        end
+      end
+
+      it 'enumerates new blobs' do
+        expect(subject).to match_array([Gitaly::NewBlobObject.new(
+          size: 18,
+          oid: new_blob,
+          path: "nested/new-blob.txt"
+        )])
+      end
+    end
+  end
+
   describe '#new_commits' do
     let(:repository) { mutable_repository }
     let(:new_commit) do

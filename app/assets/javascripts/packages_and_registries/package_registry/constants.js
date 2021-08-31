@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { __, s__ } from '~/locale';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';

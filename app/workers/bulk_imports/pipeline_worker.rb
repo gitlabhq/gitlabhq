@@ -9,7 +9,6 @@ module BulkImports
     NDJSON_PIPELINE_PERFORM_DELAY = 1.minute
 
     feature_category :importers
-    tags :exclude_from_kubernetes
 
     sidekiq_options retry: false, dead: false
 

@@ -83,8 +83,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags:
-  - :exclude_from_gitlab_com
+  :tags: []
 - :name: chaos:chaos_db_spin
   :worker_name: Chaos::DbSpinWorker
   :feature_category: :not_owned
@@ -93,8 +92,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags:
-  - :exclude_from_gitlab_com
+  :tags: []
 - :name: chaos:chaos_kill
   :worker_name: Chaos::KillWorker
   :feature_category: :not_owned
@@ -103,8 +101,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags:
-  - :exclude_from_gitlab_com
+  :tags: []
 - :name: chaos:chaos_leak_mem
   :worker_name: Chaos::LeakMemWorker
   :feature_category: :not_owned
@@ -113,8 +110,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags:
-  - :exclude_from_gitlab_com
+  :tags: []
 - :name: chaos:chaos_sleep
   :worker_name: Chaos::SleepWorker
   :feature_category: :not_owned
@@ -123,8 +119,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags:
-  - :exclude_from_gitlab_com
+  :tags: []
 - :name: container_repository:cleanup_container_repository
   :worker_name: CleanupContainerRepositoryWorker
   :feature_category: :container_registry
@@ -142,8 +137,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: container_repository:delete_container_repository
   :worker_name: DeleteContainerRepositoryWorker
   :feature_category: :container_registry
@@ -170,8 +164,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   :feature_category: :source_code_management
@@ -207,8 +200,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:ci_platform_metrics_update_cron
   :worker_name: CiPlatformMetricsUpdateCronWorker
   :feature_category: :continuous_integration
@@ -226,8 +218,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:container_expiration_policy
   :worker_name: ContainerExpirationPolicyWorker
   :feature_category: :container_registry
@@ -245,8 +236,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:database_drop_detached_partitions
   :worker_name: Database::DropDetachedPartitionsWorker
   :feature_category: :database
@@ -345,8 +335,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:metrics_dashboard_schedule_annotations_prune
   :worker_name: Metrics::Dashboard::ScheduleAnnotationsPruneWorker
   :feature_category: :metrics
@@ -364,8 +353,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:namespaces_prune_aggregation_schedules
   :worker_name: Namespaces::PruneAggregationSchedulesWorker
   :feature_category: :source_code_management
@@ -383,8 +371,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:pages_domain_removal_cron
   :worker_name: PagesDomainRemovalCronWorker
   :feature_category: :pages
@@ -429,8 +416,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:personal_access_tokens_expiring
   :worker_name: PersonalAccessTokens::ExpiringWorker
   :feature_category: :authentication_and_authorization
@@ -466,8 +452,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:remove_expired_group_links
   :worker_name: RemoveExpiredGroupLinksWorker
   :feature_category: :authentication_and_authorization
@@ -494,8 +479,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:remove_unreferenced_lfs_objects
   :worker_name: RemoveUnreferencedLfsObjectsWorker
   :feature_category: :git_lfs
@@ -540,8 +524,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:schedule_migrate_external_diffs
   :worker_name: ScheduleMigrateExternalDiffsWorker
   :feature_category: :code_review
@@ -559,8 +542,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:ssh_keys_expiring_soon_notification
   :worker_name: SshKeys::ExpiringSoonNotificationWorker
   :feature_category: :compliance_management
@@ -569,8 +551,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:stuck_ci_jobs
   :worker_name: StuckCiJobsWorker
   :feature_category: :continuous_integration
@@ -624,8 +605,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:users_create_statistics
   :worker_name: Users::CreateStatisticsWorker
   :feature_category: :users
@@ -643,8 +623,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: cronjob:x509_issuer_crl_check
   :worker_name: X509IssuerCrlCheckWorker
   :feature_category: :source_code_management
@@ -671,8 +650,7 @@
   :resource_boundary: :unknown
   :weight: 3
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: deployment:deployments_hooks
   :worker_name: Deployments::HooksWorker
   :feature_category: :continuous_delivery
@@ -897,8 +875,7 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: github_importer:github_import_import_pull_request_review
   :worker_name: Gitlab::GithubImport::ImportPullRequestReviewWorker
   :feature_category: :importers
@@ -907,8 +884,7 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: github_importer:github_import_refresh_import_jid
   :worker_name: Gitlab::GithubImport::RefreshImportJidWorker
   :feature_category: :importers
@@ -980,8 +956,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests_reviews
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker
   :feature_category: :importers
@@ -990,8 +965,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: github_importer:github_import_stage_import_repository
   :worker_name: Gitlab::GithubImport::Stage::ImportRepositoryWorker
   :feature_category: :importers
@@ -1010,7 +984,6 @@
   :weight: 1
   :idempotent:
   :tags:
-  - :exclude_from_gitlab_com
   - :needs_own_queue
 - :name: hashed_storage:hashed_storage_project_migrate
   :worker_name: HashedStorage::ProjectMigrateWorker
@@ -1021,7 +994,6 @@
   :weight: 1
   :idempotent:
   :tags:
-  - :exclude_from_gitlab_com
   - :needs_own_queue
 - :name: hashed_storage:hashed_storage_project_rollback
   :worker_name: HashedStorage::ProjectRollbackWorker
@@ -1032,7 +1004,6 @@
   :weight: 1
   :idempotent:
   :tags:
-  - :exclude_from_gitlab_com
   - :needs_own_queue
 - :name: hashed_storage:hashed_storage_rollbacker
   :worker_name: HashedStorage::RollbackerWorker
@@ -1043,7 +1014,6 @@
   :weight: 1
   :idempotent:
   :tags:
-  - :exclude_from_gitlab_com
   - :needs_own_queue
 - :name: incident_management:clusters_applications_check_prometheus_health
   :worker_name: Clusters::Applications::CheckPrometheusHealthWorker
@@ -1062,8 +1032,7 @@
   :resource_boundary: :cpu
   :weight: 2
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: incident_management:incident_management_pager_duty_process_incident
   :worker_name: IncidentManagement::PagerDuty::ProcessIncidentWorker
   :feature_category: :incident_management
@@ -1117,8 +1086,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: jira_connect:jira_connect_sync_deployments
   :worker_name: JiraConnect::SyncDeploymentsWorker
   :feature_category: :integrations
@@ -1127,8 +1095,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: jira_connect:jira_connect_sync_feature_flags
   :worker_name: JiraConnect::SyncFeatureFlagsWorker
   :feature_category: :integrations
@@ -1137,8 +1104,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: jira_connect:jira_connect_sync_merge_request
   :worker_name: JiraConnect::SyncMergeRequestWorker
   :feature_category: :integrations
@@ -1156,8 +1122,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: jira_importer:jira_import_advance_stage
   :worker_name: Gitlab::JiraImport::AdvanceStageWorker
   :feature_category: :importers
@@ -1319,8 +1284,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: package_repositories:packages_go_sync_packages
   :worker_name: Packages::Go::SyncPackagesWorker
   :feature_category: :package_registry
@@ -1329,8 +1293,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: package_repositories:packages_helm_extraction
   :worker_name: Packages::Helm::ExtractionWorker
   :feature_category: :package_registry
@@ -1348,8 +1311,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: package_repositories:packages_nuget_extraction
   :worker_name: Packages::Nuget::ExtractionWorker
   :feature_category: :package_registry
@@ -1367,8 +1329,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pipeline_background:archive_trace
   :worker_name: ArchiveTraceWorker
   :feature_category: :continuous_integration
@@ -1422,8 +1383,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pipeline_background:ci_pipeline_success_unlock_artifacts
   :worker_name: Ci::PipelineSuccessUnlockArtifactsWorker
   :feature_category: :continuous_integration
@@ -1450,8 +1410,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pipeline_cache:expire_job_cache
   :worker_name: ExpireJobCacheWorker
   :feature_category: :continuous_integration
@@ -1523,8 +1482,7 @@
   :resource_boundary: :unknown
   :weight: 3
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pipeline_default:ci_merge_requests_add_todo_when_build_fails
   :worker_name: Ci::MergeRequests::AddTodoWhenBuildFailsWorker
   :feature_category: :continuous_integration
@@ -1533,8 +1491,7 @@
   :resource_boundary: :unknown
   :weight: 3
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pipeline_default:ci_pipeline_bridge_status
   :worker_name: Ci::PipelineBridgeStatusWorker
   :feature_category: :continuous_integration
@@ -1732,8 +1689,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: todos_destroyer:todos_destroyer_entity_leave
   :worker_name: TodosDestroyer::EntityLeaveWorker
   :feature_category: :issue_tracking
@@ -1805,8 +1761,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: approve_blocked_pending_approval_users
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
   :feature_category: :users
@@ -1815,8 +1770,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: authorized_keys
   :worker_name: AuthorizedKeysWorker
   :feature_category: :source_code_management
@@ -1852,8 +1806,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: bulk_imports_entity
   :worker_name: BulkImports::EntityWorker
   :feature_category: :importers
@@ -1862,8 +1815,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: bulk_imports_export_request
   :worker_name: BulkImports::ExportRequestWorker
   :feature_category: :importers
@@ -1881,8 +1833,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: bulk_imports_relation_export
   :worker_name: BulkImports::RelationExportWorker
   :feature_category: :importers
@@ -1891,8 +1842,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: chat_notification
   :worker_name: ChatNotificationWorker
   :feature_category: :chatops
@@ -1910,8 +1860,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: create_commit_signature
   :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management
@@ -1983,8 +1932,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: design_management_new_version
   :worker_name: DesignManagement::NewVersionWorker
   :feature_category: :design_management
@@ -2002,8 +1950,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: detect_repository_languages
   :worker_name: DetectRepositoryLanguagesWorker
   :feature_category: :source_code_management
@@ -2021,8 +1968,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: disallow_two_factor_for_subgroups
   :worker_name: DisallowTwoFactorForSubgroupsWorker
   :feature_category: :subgroups
@@ -2031,8 +1977,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: email_receiver
   :worker_name: EmailReceiverWorker
   :feature_category: :issue_tracking
@@ -2060,8 +2005,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: error_tracking_issue_link
   :worker_name: ErrorTrackingIssueLinkWorker
   :feature_category: :error_tracking
@@ -2079,8 +2023,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: expire_build_instance_artifacts
   :worker_name: ExpireBuildInstanceArtifactsWorker
   :feature_category: :continuous_integration
@@ -2125,8 +2068,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: github_import_advance_stage
   :worker_name: Gitlab::GithubImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2144,8 +2086,7 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: gitlab_shell
   :worker_name: GitlabShellWorker
   :feature_category: :source_code_management
@@ -2163,9 +2104,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :requires_disk_io
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: group_export
   :worker_name: GroupExportWorker
   :feature_category: :importers
@@ -2255,8 +2194,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: mailers
   :worker_name: ActionMailer::MailDeliveryJob
   :feature_category: :issue_tracking
@@ -2283,8 +2221,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: merge_request_mergeability_check
   :worker_name: MergeRequestMergeabilityCheckWorker
   :feature_category: :code_review
@@ -2338,8 +2275,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: migrate_external_diffs
   :worker_name: MigrateExternalDiffsWorker
   :feature_category: :code_review
@@ -2366,8 +2302,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: namespaces_onboarding_pipeline_created
   :worker_name: Namespaces::OnboardingPipelineCreatedWorker
   :feature_category: :subgroups
@@ -2376,8 +2311,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: namespaces_onboarding_progress
   :worker_name: Namespaces::OnboardingProgressWorker
   :feature_category: :product_analytics
@@ -2386,8 +2320,7 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: namespaces_onboarding_user_added
   :worker_name: Namespaces::OnboardingUserAddedWorker
   :feature_category: :users
@@ -2396,8 +2329,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: new_issue
   :worker_name: NewIssueWorker
   :feature_category: :issue_tracking
@@ -2433,8 +2365,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pages
   :worker_name: PagesWorker
   :feature_category: :pages
@@ -2443,9 +2374,7 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent:
-  :tags:
-  - :requires_disk_io
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pages_domain_ssl_renewal
   :worker_name: PagesDomainSslRenewalWorker
   :feature_category: :pages
@@ -2454,9 +2383,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :requires_disk_io
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pages_domain_verification
   :worker_name: PagesDomainVerificationWorker
   :feature_category: :pages
@@ -2465,9 +2392,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :requires_disk_io
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pages_remove
   :worker_name: PagesRemoveWorker
   :feature_category: :pages
@@ -2476,8 +2401,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pages_transfer
   :worker_name: PagesTransferWorker
   :feature_category: :pages
@@ -2486,8 +2410,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pages_update_configuration
   :worker_name: PagesUpdateConfigurationWorker
   :feature_category: :pages
@@ -2496,8 +2419,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: phabricator_import_import_tasks
   :worker_name: Gitlab::PhabricatorImport::ImportTasksWorker
   :feature_category: :importers
@@ -2551,9 +2473,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :requires_disk_io
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: project_export
   :worker_name: ProjectExportWorker
   :feature_category: :importers
@@ -2580,8 +2500,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: projects_post_creation
   :worker_name: Projects::PostCreationWorker
   :feature_category: :source_code_management
@@ -2590,8 +2509,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: projects_schedule_bulk_repository_shard_moves
   :worker_name: Projects::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
@@ -2636,8 +2554,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: propagate_integration_inherit
   :worker_name: PropagateIntegrationInheritWorker
   :feature_category: :integrations
@@ -2646,8 +2563,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: propagate_integration_inherit_descendant
   :worker_name: PropagateIntegrationInheritDescendantWorker
   :feature_category: :integrations
@@ -2656,8 +2572,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: propagate_integration_project
   :worker_name: PropagateIntegrationProjectWorker
   :feature_category: :integrations
@@ -2666,8 +2581,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: propagate_service_template
   :worker_name: PropagateServiceTemplateWorker
   :feature_category: :integrations
@@ -2703,8 +2617,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: remote_mirror_notification
   :worker_name: RemoteMirrorNotificationWorker
   :feature_category: :source_code_management
@@ -2876,8 +2789,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: web_hooks_log_execution
   :worker_name: WebHooks::LogExecutionWorker
   :feature_category: :integrations
@@ -2895,8 +2807,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: x509_certificate_revoke
   :worker_name: X509CertificateRevokeWorker
   :feature_category: :source_code_management

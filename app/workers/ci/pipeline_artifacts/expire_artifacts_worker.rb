@@ -15,7 +15,6 @@ module Ci
       deduplicate :until_executed, including_scheduled: true
       idempotent!
       feature_category :continuous_integration
-      tags :exclude_from_kubernetes
 
       def perform
         service = ::Ci::PipelineArtifacts::DestroyAllExpiredService.new

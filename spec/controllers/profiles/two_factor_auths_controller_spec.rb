@@ -70,8 +70,8 @@ RSpec.describe Profiles::TwoFactorAuthsController do
         go
       end
 
-      it 'dismisses the `ACCOUNT_RECOVERY_REGULAR_CHECK` callout' do
-        expect(controller.helpers).to receive(:dismiss_account_recovery_regular_check)
+      it 'dismisses the `TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` callout' do
+        expect(controller.helpers).to receive(:dismiss_two_factor_auth_recovery_settings_check)
 
         go
       end
@@ -124,8 +124,8 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       expect(user.otp_backup_codes).not_to be_empty
     end
 
-    it 'dismisses the `ACCOUNT_RECOVERY_REGULAR_CHECK` callout' do
-      expect(controller.helpers).to receive(:dismiss_account_recovery_regular_check)
+    it 'dismisses the `TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` callout' do
+      expect(controller.helpers).to receive(:dismiss_two_factor_auth_recovery_settings_check)
 
       post :codes
     end

@@ -8,6 +8,18 @@ RSpec.describe AddTriggersToIntegrationsTypeNew do
   let(:migration) { described_class.new }
   let(:integrations) { table(:integrations) }
 
+  # This matches Gitlab::Integrations::StiType at the time the trigger was added
+  let(:namespaced_integrations) do
+    %w[
+      Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
+      Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Irker Jenkins Jira Mattermost
+      MattermostSlashCommands MicrosoftTeams MockCi MockMonitoring Packagist PipelinesEmail Pivotaltracker
+      Prometheus Pushover Redmine Slack SlackSlashCommands Teamcity UnifyCircuit WebexTeams Youtrack
+
+      Github GitlabSlackApplication
+    ]
+  end
+
   describe '#up' do
     before do
       migrate!
@@ -15,7 +27,7 @@ RSpec.describe AddTriggersToIntegrationsTypeNew do
 
     describe 'INSERT trigger' do
       it 'sets `type_new` to the transformed `type` class name' do
-        Gitlab::Integrations::StiType.namespaced_integrations.each do |type|
+        namespaced_integrations.each do |type|
           integration = integrations.create!(type: "#{type}Service")
 
           expect(integration.reload).to have_attributes(

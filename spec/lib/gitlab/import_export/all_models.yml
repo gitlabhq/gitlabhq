@@ -320,6 +320,7 @@ integrations:
 - project
 - service_hook
 - jira_tracker_data
+- zentao_tracker_data
 - issue_tracker_data
 - open_project_tracker_data
 hooks:
@@ -399,6 +400,7 @@ project:
 - teamcity_integration
 - pushover_integration
 - jira_integration
+- zentao_integration
 - redmine_integration
 - youtrack_integration
 - custom_issue_tracker_integration

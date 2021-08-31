@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';

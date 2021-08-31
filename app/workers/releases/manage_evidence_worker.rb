@@ -9,7 +9,6 @@ module Releases
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :release_evidence
-    tags :exclude_from_kubernetes
 
     def perform
       releases = Release.without_evidence.released_within_2hrs

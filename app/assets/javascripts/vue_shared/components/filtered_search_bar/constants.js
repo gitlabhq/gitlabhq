@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { __ } from '~/locale';
 
 export const DEBOUNCE_DELAY = 200;

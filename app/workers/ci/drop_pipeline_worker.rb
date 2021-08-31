@@ -9,8 +9,6 @@ module Ci
     sidekiq_options retry: 3
     include PipelineQueue
 
-    tags :exclude_from_kubernetes
-
     idempotent!
 
     def perform(pipeline_id, failure_reason)

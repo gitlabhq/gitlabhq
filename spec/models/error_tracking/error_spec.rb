@@ -34,6 +34,44 @@ RSpec.describe ErrorTracking::Error, type: :model do
     end
   end
 
+  describe '.sort_by_attribute' do
+    let!(:error2) { create(:error_tracking_error, first_seen_at: Time.zone.now - 2.weeks, last_seen_at: Time.zone.now - 1.week) }
+    let!(:error3) { create(:error_tracking_error, first_seen_at: Time.zone.now - 3.weeks, last_seen_at: Time.zone.now.yesterday) }
+    let!(:errors) { [error, error2, error3] }
+
+    subject { described_class.where(id: errors).sort_by_attribute(sort) }
+
+    context 'id desc by default' do
+      let(:sort) { nil }
+
+      it { is_expected.to eq([error3, error2, error]) }
+    end
+
+    context 'first_seen' do
+      let(:sort) { 'first_seen' }
+
+      it { is_expected.to eq([error, error2, error3]) }
+    end
+
+    context 'last_seen' do
+      let(:sort) { 'last_seen' }
+
+      it { is_expected.to eq([error, error3, error2]) }
+    end
+
+    context 'frequency' do
+      let(:sort) { 'frequency' }
+
+      before do
+        create(:error_tracking_error_event, error: error2)
+        create(:error_tracking_error_event, error: error2)
+        create(:error_tracking_error_event, error: error3)
+      end
+
+      it { is_expected.to eq([error2, error3, error]) }
+    end
+  end
+
   describe '#title' do
     it { expect(error.title).to eq('ActionView::MissingTemplate Missing template posts/edit') }
   end

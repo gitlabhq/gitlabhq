@@ -5,8 +5,6 @@ module Wikis
     extend ::Gitlab::Utils::Override
     include GitGarbageCollectMethods
 
-    tags :exclude_from_kubernetes
-
     private
 
     override :find_resource

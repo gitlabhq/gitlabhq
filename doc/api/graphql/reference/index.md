@@ -16029,7 +16029,6 @@ Name of the feature that the callout is for.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="usercalloutfeaturenameenumaccount_recovery_regular_check"></a>`ACCOUNT_RECOVERY_REGULAR_CHECK` | Callout feature name for account_recovery_regular_check. |
 | <a id="usercalloutfeaturenameenumactive_user_count_threshold"></a>`ACTIVE_USER_COUNT_THRESHOLD` | Callout feature name for active_user_count_threshold. |
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
@@ -16058,6 +16057,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumthreat_monitoring_info"></a>`THREAT_MONITORING_INFO` | Callout feature name for threat_monitoring_info. |
 | <a id="usercalloutfeaturenameenumtrial_status_reminder_d14"></a>`TRIAL_STATUS_REMINDER_D14` | Callout feature name for trial_status_reminder_d14. |
 | <a id="usercalloutfeaturenameenumtrial_status_reminder_d3"></a>`TRIAL_STATUS_REMINDER_D3` | Callout feature name for trial_status_reminder_d3. |
+| <a id="usercalloutfeaturenameenumtwo_factor_auth_recovery_settings_check"></a>`TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` | Callout feature name for two_factor_auth_recovery_settings_check. |
 | <a id="usercalloutfeaturenameenumultimate_trial"></a>`ULTIMATE_TRIAL` | Callout feature name for ultimate_trial. |
 | <a id="usercalloutfeaturenameenumunfinished_tag_cleanup_callout"></a>`UNFINISHED_TAG_CLEANUP_CALLOUT` | Callout feature name for unfinished_tag_cleanup_callout. |
 | <a id="usercalloutfeaturenameenumweb_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |

@@ -85,6 +85,32 @@ FactoryBot.define do
     end
   end
 
+  factory :zentao_integration, class: 'Integrations::Zentao' do
+    project
+    active { true }
+    type { 'ZentaoService' }
+
+    transient do
+      create_data { true }
+      url { 'https://jihudemo.zentao.net' }
+      api_url { '' }
+      api_token { 'ZENTAO_TOKEN' }
+      zentao_product_xid { '3' }
+    end
+
+    after(:build) do |integration, evaluator|
+      if evaluator.create_data
+        integration.zentao_tracker_data = build(:zentao_tracker_data,
+          integration: integration,
+          url: evaluator.url,
+          api_url: evaluator.api_url,
+          api_token: evaluator.api_token,
+          zentao_product_xid: evaluator.zentao_product_xid
+        )
+      end
+    end
+  end
+
   factory :confluence_integration, class: 'Integrations::Confluence' do
     project
     active { true }

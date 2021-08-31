@@ -12,6 +12,7 @@ module Projects
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
       @default_branch = @params.delete(:default_branch)
+      @readme_template = @params.delete(:readme_template)
 
       build_topics
     end
@@ -149,10 +150,14 @@ module Projects
         branch_name: @default_branch.presence || @project.default_branch_or_main,
         commit_message: 'Initial commit',
         file_path: 'README.md',
-        file_content: experiment(:new_project_readme_content, namespace: @project.namespace).run_with(@project)
+        file_content: readme_content
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute
+    end
+
+    def readme_content
+      @readme_template.presence || experiment(:new_project_readme_content, namespace: @project.namespace).run_with(@project)
     end
 
     def skip_wiki?

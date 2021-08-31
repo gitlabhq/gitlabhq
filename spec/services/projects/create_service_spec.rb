@@ -601,6 +601,18 @@ RSpec.describe Projects::CreateService, '#execute' do
           MARKDOWN
         end
       end
+
+      context 'and readme_template is specified' do
+        before do
+          opts[:readme_template] = "# GitLab\nThis is customized template."
+        end
+
+        it_behaves_like 'creates README.md'
+
+        it 'creates README.md with specified template' do
+          expect(project.repository.readme.data).to include('This is customized template.')
+        end
+      end
     end
   end
 
