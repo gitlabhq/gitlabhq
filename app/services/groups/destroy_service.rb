@@ -29,14 +29,7 @@ module Groups
 
       group.chat_team&.remove_mattermost_team(current_user)
 
-      # If any other groups are shared with the group that is being destroyed,
-      # we should specifically trigger update of all project authorizations
-      # for users that are the direct members of this group.
-      # If not, the project authorization records of these users to projects within the shared groups
-      # will never be removed, causing inconsistencies with access permissions.
-      if any_other_groups_are_shared_with_this_group?
-        user_ids_for_project_authorizations_refresh = group.users_ids_of_direct_members
-      end
+      user_ids_for_project_authorizations_refresh = obtain_user_ids_for_project_authorizations_refresh
 
       group.destroy
 
@@ -52,8 +45,32 @@ module Groups
 
     private
 
-    def any_other_groups_are_shared_with_this_group?
+    def any_groups_shared_with_this_group?
       group.shared_group_links.any?
+    end
+
+    def any_projects_shared_with_this_group?
+      group.project_group_links.any?
+    end
+
+    # Destroying a group automatically destroys all project authorizations directly
+    # associated with the group and descendents. However, project authorizations
+    # for projects and groups this group is shared with are not. Without a manual
+    # refresh, the project authorization records of these users to shared projects
+    # and projects within the shared groups will never be removed, causing
+    # inconsistencies with access permissions.
+    #
+    # This method retrieves the user IDs that need to be refreshed. If only
+    # groups are shared with this group, only direct members need to be refreshed.
+    # If projects are also shared with the group, direct members *and* shared
+    # members of other groups need to be refreshed.
+    # `Group#user_ids_for_project_authorizations` returns both direct and shared
+    # members' user IDs.
+    def obtain_user_ids_for_project_authorizations_refresh
+      return unless any_projects_shared_with_this_group? || any_groups_shared_with_this_group?
+      return group.user_ids_for_project_authorizations if any_projects_shared_with_this_group?
+
+      group.users_ids_of_direct_members
     end
   end
 end

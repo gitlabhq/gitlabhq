@@ -2398,7 +2398,7 @@
       "requested_at": null,
       "user": {
         "id": 16,
-        "email": "bernard_willms@gitlabexample.com",
+        "public_email": "bernard_willms@gitlabexample.com",
         "username": "bernard_willms"
       }
     },
@@ -2418,7 +2418,7 @@
       "requested_at": null,
       "user": {
         "id": 6,
-        "email": "saul_will@gitlabexample.com",
+        "public_email": "saul_will@gitlabexample.com",
         "username": "saul_will"
       }
     },
@@ -2438,7 +2438,7 @@
       "requested_at": null,
       "user": {
         "id": 15,
-        "email": "breanna_sanford@wolf.com",
+        "public_email": "breanna_sanford@wolf.com",
         "username": "emmet.schamberger"
       }
     },
@@ -2458,7 +2458,7 @@
       "requested_at": null,
       "user": {
         "id": 26,
-        "email": "user4@example.com",
+        "public_email": "user4@example.com",
         "username": "user4"
       }
     }

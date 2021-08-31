@@ -90,11 +90,8 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter do
       [
         ['simple.png'],
         ['SIMPLE.PNG'],
-        ['has spaces.png'],
         ['has-hyphen.jpg'],
-        ['snake_case.svg'],
-        ['has "quotes".svg'],
-        ['has <special> characters [o].svg']
+        ['snake_case.svg']
       ]
     end
 
@@ -138,40 +135,25 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter do
     end
   end
 
-  context 'a design with a quoted filename' do
-    let(:filename) { %q{A "very" good file.png} }
-    let(:design) { create(:design, :with_versions, issue: issue, filename: filename) }
-
-    it 'links to the design' do
-      expect(doc.css('a').first.attr('href'))
-        .to eq url_for_design(design)
-    end
-  end
-
   context 'internal reference' do
     it_behaves_like 'a reference containing an element node'
 
-    context 'the reference is valid' do
-      it_behaves_like 'a good link reference'
+    it_behaves_like 'a good link reference'
 
-      context 'the filename needs to be escaped' do
-        where(:filename) do
-          [
-            ['with some spaces.png'],
-            ['with <script>console.log("pwded")<%2Fscript>.png']
-          ]
-        end
+    context 'the filename contains invalid characters' do
+      where(:filename) do
+        [
+          ['with some spaces.png'],
+          ['with <script>console.log("pwded")<%2Fscript>.png'],
+          ['foo"bar.png'],
+          ['A "very" good file.png']
+        ]
+      end
 
-        with_them do
-          let(:design) { create(:design, :with_versions, filename: filename, issue: issue) }
-          let(:link) { doc.css('a').first }
+      with_them do
+        let(:design) { create(:design, :with_versions, filename: filename, issue: issue) }
 
-          it 'replaces the content with the reference, but keeps the link', :aggregate_failures do
-            expect(doc.text).to eq(CGI.unescapeHTML("Added #{design.to_reference}"))
-            expect(link.attr('title')).to eq(design.filename)
-            expect(link.attr('href')).to eq(design_url)
-          end
-        end
+        it_behaves_like 'a no-op filter'
       end
     end
 

@@ -259,7 +259,7 @@ Only include the following attributes for the models specified:
 included_attributes:
   user:
     - :id
-    - :email
+    - :public_email
   # ...
 ```
 

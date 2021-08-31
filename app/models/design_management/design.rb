@@ -169,7 +169,7 @@ module DesignManagement
       @link_reference_pattern ||= begin
         path_segment = %r{issues/#{Gitlab::Regex.issue}/designs}
         ext = Regexp.new(Regexp.union(SAFE_IMAGE_EXT + DANGEROUS_IMAGE_EXT).source, Regexp::IGNORECASE)
-        valid_char = %r{[^/\s]} # any char that is not a forward slash or whitespace
+        valid_char = %r{[[:word:]\.\-\+]}
         filename_pattern = %r{
           (?<url_filename> #{valid_char}+ \. #{ext})
         }x

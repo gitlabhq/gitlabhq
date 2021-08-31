@@ -16,6 +16,8 @@ module ResourceAccessTokens
 
       return error(user.errors.full_messages.to_sentence) unless user.persisted?
 
+      user.update!(external: true) if current_user.external?
+
       access_level = params[:access_level] || Gitlab::Access::MAINTAINER
       member = create_membership(resource, user, access_level)
 

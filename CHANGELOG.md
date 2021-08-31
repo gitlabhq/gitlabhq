@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.2.2 (2021-08-31)
+
+### Security (9 changes)
+
+- [Prevent non-admins from configuring Jira connect app](gitlab-org/security/gitlab@1bc56361c9daa90accea65836d5a424168a2c544) ([merge request](gitlab-org/security/gitlab!1697))
+- [Only create jira connect NS subscriptions for admins](gitlab-org/security/gitlab@c160da2cb32a5774fef149155cfd397981bf9173) ([merge request](gitlab-org/security/gitlab!1698))
+- [Update apollo_upload_server dependency](gitlab-org/security/gitlab@5ef659b8c9a5a7338830171c62943d3b8bb16410) ([merge request](gitlab-org/security/gitlab!1699))
+- [Ensure shared group members lose project access after group deletion](gitlab-org/security/gitlab@c94e934234a90f82e7fe291ed0f1d6a763b9a977) ([merge request](gitlab-org/security/gitlab!1683))
+- [Update Import/Export to use public email when mapping users](gitlab-org/security/gitlab@13fb902c55c2dfe7ec2bf35f58a9cb3d93905d9a) ([merge request](gitlab-org/security/gitlab!1669)) **GitLab Enterprise Edition**
+- [Require sign in for .keys endpoint on non-public instances](gitlab-org/security/gitlab@0979dd458e8fa0d4f5e184ef0b9ea042d79f6c14) ([merge request](gitlab-org/security/gitlab!1676))
+- [Inherit user external status while creating project bots](gitlab-org/security/gitlab@93062909ffc093cb8f718a3ea3f2976292a9b9af) ([merge request](gitlab-org/security/gitlab!1675))
+- [Escape issue reference and title for Jira issues](gitlab-org/security/gitlab@d25ef8599ec03ee80ef1bff7067b2269836400cf) ([merge request](gitlab-org/security/gitlab!1673)) **GitLab Enterprise Edition**
+- [Fix stored XSS vulnerability in Datadog settings form](gitlab-org/security/gitlab@23b98dac7864992898992a153950247ac6ccb933) ([merge request](gitlab-org/security/gitlab!1670))
+
 ## 14.2.1 (2021-08-23)
 
 ### Fixed (1 change)

@@ -20,4 +20,8 @@ class JiraConnectInstallation < ApplicationRecord
         id: JiraConnectSubscription.for_project(project)
       })
   }
+
+  def client
+    Atlassian::JiraConnect::Client.new(base_url, shared_secret)
+  end
 end

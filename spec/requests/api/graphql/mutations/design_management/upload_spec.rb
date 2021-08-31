@@ -11,6 +11,7 @@ RSpec.describe "uploading designs" do
   let(:project) { issue.project }
   let(:files) { [fixture_file_upload("spec/fixtures/dk.png")] }
   let(:variables) { {} }
+  let(:mutation_response) { graphql_mutation_response(:design_management_upload) }
 
   def mutation
     input = {
@@ -21,12 +22,30 @@ RSpec.describe "uploading designs" do
     graphql_mutation(:design_management_upload, input)
   end
 
-  let(:mutation_response) { graphql_mutation_response(:design_management_upload) }
-
   before do
     enable_design_management
 
     project.add_developer(current_user)
+  end
+
+  context 'when the input does not include a null value for each mapped file' do
+    let(:operations) { { query: mutation.query, variables: mutation.variables.merge(files: []) } }
+    let(:mapping) { { '1' => ['variables.files.0'] } }
+    let(:params) do
+      { '1' => files.first, operations: operations.to_json, map: mapping.to_json }
+    end
+
+    it 'returns an error' do
+      workhorse_post_with_file(api('/', current_user, version: 'graphql'),
+                               params: params,
+                               file_key: '1'
+                              )
+
+      expect(response).to have_attributes(
+        code: eq('400'),
+        body: include('out-of-bounds')
+      )
+    end
   end
 
   it "returns an error if the user is not allowed to upload designs" do
