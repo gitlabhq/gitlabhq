@@ -274,7 +274,11 @@ RSpec.describe UsersController do
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
           end
 
-          it_behaves_like 'renders all public keys'
+          it 'redirects to sign in' do
+            get "/#{user.username}.keys"
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
         end
       end
     end

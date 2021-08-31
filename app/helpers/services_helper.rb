@@ -144,7 +144,7 @@ module ServicesHelper
   def jira_issue_breadcrumb_link(issue_reference)
     link_to '', { class: 'gl-display-flex gl-align-items-center gl-white-space-nowrap' } do
       icon = image_tag image_path('illustrations/logos/jira.svg'), width: 15, height: 15, class: 'gl-mr-2'
-      [icon, issue_reference].join.html_safe
+      [icon, html_escape(issue_reference)].join.html_safe
     end
   end
 

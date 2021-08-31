@@ -19,7 +19,7 @@ RSpec.shared_examples 'Notes user references' do
       'updated_at' => '2016-11-18T09:29:42.634Z',
       'user' => {
         'id' => 999,
-        'email' => mapped_user.email,
+        'public_email' => mapped_user.email,
         'username' => mapped_user.username
       }
     }

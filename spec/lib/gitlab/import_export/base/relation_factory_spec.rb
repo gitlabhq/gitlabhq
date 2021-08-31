@@ -102,7 +102,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory do
             "updated_at" => "2016-11-18T09:29:42.634Z",
             "user" => {
               "id" => 999,
-              "email" => new_user.email,
+              "public_email" => new_user.email,
               "username" => new_user.username
             }
           }

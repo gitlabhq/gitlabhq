@@ -7,8 +7,10 @@ RSpec.describe JiraConnectSubscriptions::CreateService do
   let(:current_user) { create(:user) }
   let(:group) { create(:group) }
   let(:path) { group.full_path }
+  let(:params) { { namespace_path: path, jira_user: jira_user } }
+  let(:jira_user) { double(:JiraUser, site_admin?: true) }
 
-  subject { described_class.new(installation, current_user, namespace_path: path).execute }
+  subject { described_class.new(installation, current_user, params).execute }
 
   before do
     group.add_maintainer(current_user)
@@ -20,6 +22,30 @@ RSpec.describe JiraConnectSubscriptions::CreateService do
     end
 
     it 'returns an error status' do
+      expect(subject[:status]).to eq(:error)
+    end
+  end
+
+  context 'remote user does not have access' do
+    let(:jira_user) { double(site_admin?: false) }
+
+    it 'does not create a subscription' do
+      expect { subject }.not_to change { installation.subscriptions.count }
+    end
+
+    it 'returns error' do
+      expect(subject[:status]).to eq(:error)
+    end
+  end
+
+  context 'remote user cannot be retrieved' do
+    let(:jira_user) { nil }
+
+    it 'does not create a subscription' do
+      expect { subject }.not_to change { installation.subscriptions.count }
+    end
+
+    it 'returns error' do
       expect(subject[:status]).to eq(:error)
     end
   end

@@ -20,7 +20,7 @@ class UsersController < ApplicationController
 
   skip_before_action :authenticate_user!
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
-  before_action :user, except: [:exists, :ssh_keys]
+  before_action :user, except: [:exists]
   before_action :authorize_read_user_profile!,
                 only: [:calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following]
 
@@ -44,12 +44,7 @@ class UsersController < ApplicationController
 
   # Get all keys of a user(params[:username]) in a text format
   # Helpful for sysadmins to put in respective servers
-  #
-  # Uses `UserFinder` rather than `find_routable!` because this endpoint should
-  # be publicly available regardless of instance visibility settings.
   def ssh_keys
-    user = UserFinder.new(params[:username]).find_by_username
-
     render plain: user.all_ssh_keys.join("\n")
   end
 

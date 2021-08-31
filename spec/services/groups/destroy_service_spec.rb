@@ -152,56 +152,125 @@ RSpec.describe Groups::DestroyService do
     end
 
     context 'for shared groups within different hierarchies' do
-      let(:shared_with_group) { group }
-      let!(:shared_group) { create(:group, :private) }
-      let!(:shared_group_child) { create(:group, :private, parent: shared_group) }
-      let!(:shared_group_user) { create(:user) }
+      let(:group1) { create(:group, :private) }
+      let(:group2) { create(:group, :private) }
 
-      let!(:project) { create(:project, group: shared_group) }
-      let!(:project_child) { create(:project, group: shared_group_child) }
+      let(:group1_user) { create(:user) }
+      let(:group2_user) { create(:user) }
 
       before do
-        shared_group.add_user(shared_group_user, Gitlab::Access::OWNER)
-
-        create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_group)
-        shared_with_group.refresh_members_authorized_projects
+        group1.add_user(group1_user, Gitlab::Access::OWNER)
+        group2.add_user(group2_user, Gitlab::Access::OWNER)
       end
 
-      context 'the shared group is deleted' do
-        it 'updates project authorization' do
-          expect(shared_group_user.can?(:read_project, project)).to eq(true)
-          expect(shared_group_user.can?(:read_project, project_child)).to eq(true)
+      context 'when a project is shared with a group' do
+        let!(:group1_project) { create(:project, :private, group: group1) }
 
-          destroy_group(shared_group, shared_group_user, false)
-
-          expect(shared_group_user.can?(:read_project, project)).to eq(false)
-          expect(shared_group_user.can?(:read_project, project_child)).to eq(false)
+        before do
+          create(:project_group_link, project: group1_project, group: group2)
         end
 
-        it 'does not make use of specific service to update project_authorizations records' do
-          expect(UserProjectAccessChangedService)
-            .not_to receive(:new).with(shared_group.user_ids_for_project_authorizations).and_call_original
+        context 'and the shared group is deleted' do
+          it 'updates project authorizations so group2 users no longer have access', :aggregate_failures do
+            expect(group1_user.can?(:read_project, group1_project)).to eq(true)
+            expect(group2_user.can?(:read_project, group1_project)).to eq(true)
 
-          destroy_group(shared_group, shared_group_user, false)
+            destroy_group(group2, group2_user, false)
+
+            expect(group1_user.can?(:read_project, group1_project)).to eq(true)
+            expect(group2_user.can?(:read_project, group1_project)).to eq(false)
+          end
+
+          it 'calls the service to update project authorizations only with necessary user ids' do
+            expect(UserProjectAccessChangedService)
+              .to receive(:new).with(array_including(group2_user.id)).and_call_original
+
+            destroy_group(group2, group2_user, false)
+          end
+        end
+
+        context 'and the group is shared with another group' do
+          let(:group3) { create(:group, :private) }
+          let(:group3_user) { create(:user) }
+
+          before do
+            group3.add_user(group3_user, Gitlab::Access::OWNER)
+
+            create(:group_group_link, shared_group: group2, shared_with_group: group3)
+            group3.refresh_members_authorized_projects
+          end
+
+          it 'updates project authorizations so group2 and group3 users no longer have access', :aggregate_failures do
+            expect(group1_user.can?(:read_project, group1_project)).to eq(true)
+            expect(group2_user.can?(:read_project, group1_project)).to eq(true)
+            expect(group3_user.can?(:read_project, group1_project)).to eq(true)
+
+            destroy_group(group2, group2_user, false)
+
+            expect(group1_user.can?(:read_project, group1_project)).to eq(true)
+            expect(group2_user.can?(:read_project, group1_project)).to eq(false)
+            expect(group3_user.can?(:read_project, group1_project)).to eq(false)
+          end
+
+          it 'calls the service to update project authorizations only with necessary user ids' do
+            expect(UserProjectAccessChangedService)
+              .to receive(:new).with(array_including(group2_user.id, group3_user.id)).and_call_original
+
+            destroy_group(group2, group2_user, false)
+          end
         end
       end
 
-      context 'the shared_with group is deleted' do
-        it 'updates project authorization' do
-          expect(user.can?(:read_project, project)).to eq(true)
-          expect(user.can?(:read_project, project_child)).to eq(true)
+      context 'when a group is shared with a group' do
+        let!(:group2_project) { create(:project, :private, group: group2) }
 
-          destroy_group(shared_with_group, user, false)
-
-          expect(user.can?(:read_project, project)).to eq(false)
-          expect(user.can?(:read_project, project_child)).to eq(false)
+        before do
+          create(:group_group_link, shared_group: group2, shared_with_group: group1)
+          group1.refresh_members_authorized_projects
         end
 
-        it 'makes use of a specific service to update project_authorizations records' do
-          expect(UserProjectAccessChangedService)
-            .to receive(:new).with(shared_with_group.user_ids_for_project_authorizations).and_call_original
+        context 'and the shared group is deleted' do
+          it 'updates project authorizations since the project has been deleted with the group', :aggregate_failures do
+            expect(group1_user.can?(:read_project, group2_project)).to eq(true)
+            expect(group2_user.can?(:read_project, group2_project)).to eq(true)
 
-          destroy_group(shared_with_group, user, false)
+            destroy_group(group2, group2_user, false)
+
+            expect(group1_user.can?(:read_project, group2_project)).to eq(false)
+            expect(group2_user.can?(:read_project, group2_project)).to eq(false)
+          end
+
+          it 'does not call the service to update project authorizations' do
+            expect(UserProjectAccessChangedService).not_to receive(:new)
+
+            destroy_group(group2, group2_user, false)
+          end
+        end
+
+        context 'the shared_with group is deleted' do
+          let!(:group2_subgroup) { create(:group, :private, parent: group2)}
+          let!(:group2_subgroup_project) { create(:project, :private, group: group2_subgroup) }
+
+          it 'updates project authorizations so users of both groups lose access', :aggregate_failures do
+            expect(group1_user.can?(:read_project, group2_project)).to eq(true)
+            expect(group2_user.can?(:read_project, group2_project)).to eq(true)
+            expect(group1_user.can?(:read_project, group2_subgroup_project)).to eq(true)
+            expect(group2_user.can?(:read_project, group2_subgroup_project)).to eq(true)
+
+            destroy_group(group1, group1_user, false)
+
+            expect(group1_user.can?(:read_project, group2_project)).to eq(false)
+            expect(group2_user.can?(:read_project, group2_project)).to eq(true)
+            expect(group1_user.can?(:read_project, group2_subgroup_project)).to eq(false)
+            expect(group2_user.can?(:read_project, group2_subgroup_project)).to eq(true)
+          end
+
+          it 'calls the service to update project authorizations only with necessary user ids' do
+            expect(UserProjectAccessChangedService)
+              .to receive(:new).with([group1_user.id]).and_call_original
+
+            destroy_group(group1, group1_user, false)
+          end
         end
       end
     end

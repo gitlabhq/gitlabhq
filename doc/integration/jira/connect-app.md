@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab.com for Jira Cloud app **(FREE SAAS)**
 
+NOTE:
+Only Jira users with administrator level access are able to install or configure
+the GitLab app for Jira Cloud.
+
 You can integrate GitLab.com and Jira Cloud using the
 [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
 app in the Atlassian Marketplace. The user configuring GitLab.com for Jira Cloud must have
@@ -36,7 +40,8 @@ For a walkthrough of the integration with GitLab.com for Jira Cloud, watch
    ![Sign in to GitLab.com in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_3_v13_9.png)
 1. Select **Add namespace** to open the list of available namespaces.
 
-1. Identify the namespace you want to link, and select **Link**.
+1. Identify the namespace you want to link, and select **Link**. Only Jira site
+   administrators are permitted to add or remove namespaces for an installation.
 
    ![Link namespace in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_4_v13_9.png)
 
