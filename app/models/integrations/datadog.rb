@@ -7,7 +7,6 @@ module Integrations
 
     DEFAULT_DOMAIN = 'datadoghq.com'
     URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_domain}/api/v2/webhook'
-    URL_TEMPLATE_API_KEYS = 'https://app.%{datadog_domain}/account/settings#api'
     URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_DOMAIN}/account_management/api-app-keys/"
 
     SUPPORTED_EVENTS = %w[
@@ -80,7 +79,7 @@ module Integrations
           title: _('API key'),
           non_empty_password_title: s_('ProjectService|Enter new API key'),
           non_empty_password_help: s_('ProjectService|Leave blank to use your current API key'),
-          help: "<a href=\"#{api_keys_url}\" target=\"_blank\">API key</a> used for authentication with Datadog",
+          help: "<a href=\"#{URL_API_KEYS_DOCS}\" target=\"_blank\">API key</a> used for authentication with Datadog",
           required: true
         },
         {
@@ -110,12 +109,6 @@ module Integrations
       }.compact
       url.query = query.to_query
       url.to_s
-    end
-
-    def api_keys_url
-      return URL_API_KEYS_DOCS unless datadog_site.presence
-
-      sprintf(URL_TEMPLATE_API_KEYS, datadog_domain: datadog_domain)
     end
 
     def execute(data)

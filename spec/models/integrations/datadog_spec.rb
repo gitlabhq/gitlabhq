@@ -126,18 +126,6 @@ RSpec.describe Integrations::Datadog do
     end
   end
 
-  describe '#api_keys_url' do
-    subject { instance.api_keys_url }
-
-    it { is_expected.to eq("https://app.#{dd_site}/account/settings#api") }
-
-    context 'with unset datadog_site' do
-      let(:dd_site) { '' }
-
-      it { is_expected.to eq("https://docs.datadoghq.com/account_management/api-app-keys/") }
-    end
-  end
-
   describe '#test' do
     context 'when request is succesful' do
       subject { saved_instance.test(pipeline_data) }

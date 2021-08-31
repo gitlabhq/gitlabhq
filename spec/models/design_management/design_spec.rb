@@ -572,6 +572,12 @@ RSpec.describe DesignManagement::Design do
       expect(described_class.link_reference_pattern).not_to match(url_for_designs(issue))
     end
 
+    it 'intentionally ignores filenames with any special character' do
+      design = build(:design, issue: issue, filename: '"invalid')
+
+      expect(described_class.link_reference_pattern).not_to match(url_for_design(design))
+    end
+
     where(:ext) do
       (described_class::SAFE_IMAGE_EXT + described_class::DANGEROUS_IMAGE_EXT).flat_map do |ext|
         [[ext], [ext.upcase]]
@@ -591,14 +597,6 @@ RSpec.describe DesignManagement::Design do
           'namespace' => design.project.namespace.to_param,
           'project' => design.project.name
         )
-      end
-
-      context 'the file needs to be encoded' do
-        let(:filename) { "my file.#{ext}" }
-
-        it 'extracts the encoded filename' do
-          expect(captures).to include('url_filename' => 'my%20file.' + ext)
-        end
       end
 
       context 'the file is all upper case' do

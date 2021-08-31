@@ -58,10 +58,14 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
       },
       postInstallPage: {
         key: 'gitlab-configuration',
-        name: {
-          value: 'GitLab Configuration'
-        },
-        url: relative_to_base_path(jira_connect_subscriptions_path)
+        name: { value: 'GitLab Configuration' },
+        url: relative_to_base_path(jira_connect_subscriptions_path),
+        conditions: [
+          {
+            condition: 'user_is_admin',
+            invert: false
+          }
+        ]
       }
     }
 

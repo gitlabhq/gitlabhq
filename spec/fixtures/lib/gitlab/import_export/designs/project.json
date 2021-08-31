@@ -425,7 +425,7 @@
          "override":false,
          "user":{
             "id":1,
-            "email":"admin@example.com",
+            "public_email":"admin@example.com",
             "username":"root"
          }
       },
@@ -448,7 +448,7 @@
          "override":false,
          "user":{
             "id":2,
-            "email":"user_2@gitlabexample.com",
+            "public_email":"user_2@gitlabexample.com",
             "username":"user_2"
          }
       }

@@ -377,7 +377,7 @@
       "override": false,
       "user": {
         "id": 42,
-        "email": "moriah@collinsmurphy.com",
+        "public_email": "moriah@collinsmurphy.com",
         "username": "reported_user_15"
       }
     },
@@ -400,7 +400,7 @@
       "override": false,
       "user": {
         "id": 271,
-        "email": "garret@connellystark.ca",
+        "public_email": "garret@connellystark.ca",
         "username": "charlesetta"
       }
     },
@@ -423,7 +423,7 @@
       "override": false,
       "user": {
         "id": 206,
-        "email": "gwendolyn_robel@gitlabexample.com",
+        "public_email": "gwendolyn_robel@gitlabexample.com",
         "username": "gwendolyn_robel"
       }
     },
@@ -446,7 +446,7 @@
       "override": false,
       "user": {
         "id": 39,
-        "email": "alexis_berge@kerlukeklein.us",
+        "public_email": "alexis_berge@kerlukeklein.us",
         "username": "reported_user_12"
       }
     },
@@ -469,7 +469,7 @@
       "override": false,
       "user": {
         "id": 1624,
-        "email": "adriene.mcclure@gitlabexample.com",
+        "public_email": "adriene.mcclure@gitlabexample.com",
         "username": "adriene.mcclure"
       }
     },
@@ -492,7 +492,7 @@
       "override": false,
       "user": {
         "id": 1,
-        "email": "admin@example.com",
+        "public_email": "admin@example.com",
         "username": "root"
       }
     }
@@ -1338,7 +1338,7 @@
           "override": false,
           "user": {
             "id": 1087,
-            "email": "paige@blanda.info",
+            "public_email": "paige@blanda.info",
             "username": "billi_auer"
           }
         },
@@ -1361,7 +1361,7 @@
           "override": false,
           "user": {
             "id": 171,
-            "email": "heidi@bosco.co.uk",
+            "public_email": "heidi@bosco.co.uk",
             "username": "gerard.cruickshank"
           }
         },
@@ -1384,7 +1384,7 @@
           "override": false,
           "user": {
             "id": 1157,
-            "email": "larisa.bruen@carroll.biz",
+            "public_email": "larisa.bruen@carroll.biz",
             "username": "milagros.reynolds"
           }
         },
@@ -1407,7 +1407,7 @@
           "override": false,
           "user": {
             "id": 14,
-            "email": "madlyn_kovacek@wiza.ca",
+            "public_email": "madlyn_kovacek@wiza.ca",
             "username": "monique.gusikowski"
           }
         },
@@ -1430,7 +1430,7 @@
           "override": false,
           "user": {
             "id": 1167,
-            "email": "mirella@koepp.ca",
+            "public_email": "mirella@koepp.ca",
             "username": "eileen"
           }
         },
@@ -1453,7 +1453,7 @@
           "override": false,
           "user": {
             "id": 1,
-            "email": "admin@example.com",
+            "public_email": "admin@example.com",
             "username": "root"
           }
         }
@@ -1909,7 +1909,7 @@
           "override": false,
           "user": {
             "id": 1533,
-            "email": "jose@cassin.ca",
+            "public_email": "jose@cassin.ca",
             "username": "buster"
           }
         },
@@ -1932,7 +1932,7 @@
           "override": false,
           "user": {
             "id": 1586,
-            "email": "carie@gleichner.us",
+            "public_email": "carie@gleichner.us",
             "username": "dominque"
           }
         },
@@ -1955,7 +1955,7 @@
           "override": false,
           "user": {
             "id": 190,
-            "email": "delois@funk.biz",
+            "public_email": "delois@funk.biz",
             "username": "kittie"
           }
         },
@@ -1978,7 +1978,7 @@
           "override": false,
           "user": {
             "id": 254,
-            "email": "tyra.lowe@whitemckenzie.co.uk",
+            "public_email": "tyra.lowe@whitemckenzie.co.uk",
             "username": "kassie"
           }
         },
@@ -2001,7 +2001,7 @@
           "override": false,
           "user": {
             "id": 503,
-            "email": "tyesha.brakus@bruen.ca",
+            "public_email": "tyesha.brakus@bruen.ca",
             "username": "charise"
           }
         },
@@ -2024,7 +2024,7 @@
           "override": false,
           "user": {
             "id": 1,
-            "email": "admin@example.com",
+            "public_email": "admin@example.com",
             "username": "root"
           }
         }
