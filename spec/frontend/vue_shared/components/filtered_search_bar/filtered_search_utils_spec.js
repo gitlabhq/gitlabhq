@@ -309,7 +309,14 @@ describe('urlQueryToFilter', () => {
       {
         [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
       },
-      { filteredSearchTermKey: 'search', legacySpacesDecode: false },
+      { filteredSearchTermKey: 'search' },
+    ],
+    [
+      'search=my+terms',
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'my+terms' }],
+      },
+      { filteredSearchTermKey: 'search', legacySpacesDecode: true },
     ],
     [
       'search=my terms&foo=bar&nop=xxx',

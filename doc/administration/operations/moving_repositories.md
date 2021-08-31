@@ -39,6 +39,11 @@ WARNING:
 To move repositories into a [Gitaly Cluster](../gitaly/index.md#gitaly-cluster) in GitLab versions
 13.12 to 14.1, you must [enable the `gitaly_replicate_repository_direct_fetch` feature flag](../feature_flags.md).
 
+WARNING:
+Repositories can be **permanently deleted** by a call to `/projects/:project_id/repository_storage_moves`
+that attempts to move a project already stored in a Gitaly Cluster back into that cluster.
+See [this issue for more details](https://gitlab.com/gitlab-org/gitaly/-/issues/3752).
+
 Each repository is made read-only for the duration of the move. The repository is not writable
 until the move has completed.
 

@@ -17,7 +17,7 @@ module QA
         end
       end
 
-      it 'removes the source branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1035' do
+      it 'removes the source branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1242' do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.branch_name = branch

@@ -32,7 +32,7 @@ module QA
           merge_request.visit!
         end
 
-        it 'views the merge-ref diff by default' do
+        it 'views the merge-ref diff by default', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1902' do
           Page::MergeRequest::Show.perform do |mr_page|
             mr_page.click_diffs_tab
             mr_page.click_target_version_dropdown
@@ -57,7 +57,7 @@ module QA
           merge_request.visit!
         end
 
-        it 'views the merge-base diff by default' do
+        it 'views the merge-base diff by default', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1903' do
           Page::MergeRequest::Show.perform do |mr_page|
             mr_page.click_diffs_tab
             mr_page.click_target_version_dropdown

@@ -30,7 +30,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'can trigger bridge job', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1049' do
+      it 'can trigger bridge job', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1237' do
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           expect(parent_pipeline).not_to have_child_pipeline
 

@@ -39,7 +39,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'runs the pipeline with composed config', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1082' do
+      it 'runs the pipeline with composed config', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1223' do
         Page::Project::Pipeline::Show.perform do |pipeline|
           aggregate_failures 'pipeline has all expected jobs' do
             expect(pipeline).to have_job('build')

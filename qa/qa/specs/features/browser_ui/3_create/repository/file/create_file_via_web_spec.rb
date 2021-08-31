@@ -11,7 +11,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user creates a file via the Web', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1093' do
+      it 'user creates a file via the Web', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1633' do
         Resource::File.fabricate_via_browser_ui! do |file|
           file.name = file_name
           file.content = file_content

@@ -29,7 +29,7 @@ module QA
         end
       end
 
-      it 'creates a merge request via custom template', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1230' do
+      it 'creates a merge request via custom template', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1680' do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
           merge_request.project = template_project
           merge_request.title = merge_request_title

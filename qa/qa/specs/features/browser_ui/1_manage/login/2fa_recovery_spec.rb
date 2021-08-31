@@ -33,7 +33,7 @@ module QA
         group.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
       end
 
-      it 'allows using 2FA recovery code once only', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/972' do
+      it 'allows using 2FA recovery code once only', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1271' do
         recovery_code = enable_2fa_for_user_and_fetch_recovery_code(developer_user)
 
         Flow::Login.sign_in(as: developer_user, skip_page_validation: true)

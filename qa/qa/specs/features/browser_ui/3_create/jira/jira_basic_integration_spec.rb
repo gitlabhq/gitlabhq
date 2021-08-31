@@ -36,7 +36,7 @@ module QA
         expect(page).not_to have_text("Requests to the local network are not allowed")
       end
 
-      it 'closes an issue via pushing a commit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/827' do
+      it 'closes an issue via pushing a commit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1362' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end
@@ -46,7 +46,7 @@ module QA
         expect_issue_done(issue_key)
       end
 
-      it 'closes an issue via a merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/828' do
+      it 'closes an issue via a merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1361' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end

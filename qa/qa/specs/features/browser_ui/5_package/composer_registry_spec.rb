@@ -102,7 +102,7 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes a composer package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1088' do
+      it 'publishes a composer package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1634' do
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|

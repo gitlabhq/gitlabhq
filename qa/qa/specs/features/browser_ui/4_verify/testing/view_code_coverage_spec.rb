@@ -33,7 +33,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'creates an MR with code coverage statistics', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1740' do
+      it 'creates an MR with code coverage statistics', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1373' do
         runner.project.visit!
         configure_code_coverage(simplecov)
         merge_request.visit!

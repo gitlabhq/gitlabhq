@@ -31,7 +31,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'creates 2 trigger jobs and passes corresponding matrix variables', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1732' do
+      it 'creates 2 trigger jobs and passes corresponding matrix variables', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1824' do
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           trigger_title1 = 'deploy: [ovh, monitoring]'
           trigger_title2 = 'deploy: [ovh, app]'

@@ -73,7 +73,7 @@ module QA
 
       it(
         'imports group with subgroups and labels',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1871'
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1873'
       ) do
         expect { imported_group.import_status }.to(
           eventually_eq('finished').within(max_duration: 300, sleep_interval: 2)

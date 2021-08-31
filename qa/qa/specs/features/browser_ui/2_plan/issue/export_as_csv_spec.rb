@@ -22,7 +22,7 @@ module QA
         Page::Project::Menu.perform(&:click_issues)
       end
 
-      it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1141' do
+      it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1210' do
         Page::Project::Issue::Index.perform do |index|
           index.click_export_as_csv_button
 

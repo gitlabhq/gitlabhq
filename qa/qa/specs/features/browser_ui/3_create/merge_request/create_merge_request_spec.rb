@@ -19,7 +19,7 @@ module QA
       it(
         'creates a basic merge request',
         :smoke,
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1850'
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1590'
       ) do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
           merge_request.project = project
@@ -35,7 +35,7 @@ module QA
 
       it(
         'creates a merge request with a milestone and label',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/514'
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1542'
       ) do
         gitlab_account_username = "@#{Runtime::User.username}"
 

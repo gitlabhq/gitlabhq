@@ -16,7 +16,7 @@ module QA
       end
 
       context 'when branch name contains slash, hash, double dash, and capital letter' do
-        it 'renders repository file tree correctly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1780' do
+        it 'renders repository file tree correctly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1809' do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.branch = branch_name

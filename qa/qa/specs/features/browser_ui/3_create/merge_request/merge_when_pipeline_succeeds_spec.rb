@@ -87,11 +87,11 @@ module QA
         end
       end
 
-      context 'when merging once', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1684' do
+      context 'when merging once', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1834' do
         it_behaves_like 'merge when pipeline succeeds'
       end
 
-      context 'when merging several times', :transient, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1684' do
+      context 'when merging several times', :transient, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1917' do
         it_behaves_like 'merge when pipeline succeeds', repeat: Runtime::Env.transient_trials
       end
     end

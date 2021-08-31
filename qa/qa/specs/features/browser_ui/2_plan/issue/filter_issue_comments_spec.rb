@@ -9,7 +9,7 @@ module QA
         Resource::Issue.fabricate_via_api!.visit!
       end
 
-      it 'filters comments and activities in an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/425' do
+      it 'filters comments and activities in an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1577' do
         Page::Project::Issue::Show.perform do |show|
           my_own_comment = "My own comment"
           made_the_issue_confidential = "made the issue confidential"

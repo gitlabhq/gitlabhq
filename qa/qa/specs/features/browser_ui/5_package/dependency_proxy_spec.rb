@@ -44,7 +44,7 @@ module QA
       end
 
       with_them do
-        it "pulls an image using the dependency proxy", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1862' do
+        it "pulls an image using the dependency proxy", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1922' do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'

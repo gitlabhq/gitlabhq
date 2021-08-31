@@ -23,7 +23,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can be reverted', :can_use_large_setup, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1745' do
+      it 'can be reverted', :can_use_large_setup, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1818' do
         revertable_merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|

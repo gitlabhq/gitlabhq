@@ -72,7 +72,7 @@ module QA
         registry&.remove_via_api!
       end
 
-      it 'pushes, pulls image to the registry and deletes image blob, manifest and tag', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1738' do
+      it 'pushes, pulls image to the registry and deletes image blob, manifest and tag', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1819' do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.api_client = api_client
           commit.commit_message = 'Add .gitlab-ci.yml'

@@ -7,7 +7,7 @@ module QA
         Runtime::Feature.enable(:invite_members_group_modal)
       end
 
-      it 'user adds project member', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/482' do
+      it 'user adds project member', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1543' do
         Flow::Login.sign_in
 
         user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)

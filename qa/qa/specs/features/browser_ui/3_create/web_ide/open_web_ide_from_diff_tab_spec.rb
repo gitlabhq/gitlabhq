@@ -49,7 +49,7 @@ module QA
         merge_request.visit!
       end
 
-      it 'opens and edits a multi-file merge request in Web IDE from Diff Tab', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/997' do
+      it 'opens and edits a multi-file merge request in Web IDE from Diff Tab', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1649' do
         Page::MergeRequest::Show.perform do |show|
           show.click_diffs_tab
           show.edit_file_in_web_ide('file1')

@@ -43,7 +43,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'publishes and deletes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1131' do
+      it 'publishes and deletes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1906' do
         Flow::Login.sign_in
 
         Resource::Repository::ProjectPush.fabricate! do |push|

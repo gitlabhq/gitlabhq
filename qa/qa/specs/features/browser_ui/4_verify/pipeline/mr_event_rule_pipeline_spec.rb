@@ -66,7 +66,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'only runs the job configured to run on merge requests', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/170' do
+      it 'only runs the job configured to run on merge requests', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1890' do
         Page::Project::Pipeline::Show.perform do |pipeline|
           aggregate_failures do
             expect(pipeline).to have_job(mr_only_job_name)

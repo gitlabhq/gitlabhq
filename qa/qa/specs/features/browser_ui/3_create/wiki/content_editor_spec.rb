@@ -16,7 +16,7 @@ module QA
         initial_wiki.project.remove_via_api!
       end
 
-      it 'creates a formatted Wiki page with an image uploaded', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1861' do
+      it 'creates a formatted Wiki page with an image uploaded', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1919' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_new_page)

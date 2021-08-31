@@ -39,7 +39,7 @@ module QA
           end
         end
 
-        it 'is not allowed to edit the project files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1663' do
+        it 'is not allowed to edit the project files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1709' do
           Flow::Login.sign_in(as: user)
           project.visit!
 

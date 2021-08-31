@@ -117,7 +117,7 @@ module QA
       end
 
       context 'when at the project level' do
-        it 'publishes and installs a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1087' do
+        it 'publishes and installs a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1635' do
           Page::Project::Menu.perform(&:click_packages_link)
 
           Page::Project::Packages::Index.perform do |index|
@@ -137,7 +137,7 @@ module QA
       end
 
       context 'Geo', :orchestrated, :geo do
-        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1120', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325556', type: :investigating } do
+        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1219', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325556', type: :investigating } do
           QA::Runtime::Logger.debug('Visiting the secondary Geo site')
 
           QA::Flow::Login.while_signed_in(address: :geo_secondary) do

@@ -183,7 +183,7 @@ module QA
         another_project.remove_via_api!
       end
 
-      it 'pushes and pulls a Maven package via CI and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1115' do
+      it 'pushes and pulls a Maven package via CI and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1627' do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add .gitlab-ci.yml'
@@ -256,7 +256,7 @@ module QA
           Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_disabled)
         end
 
-        it 'prevents users from publishing duplicate Maven packages at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1717' do
+        it 'prevents users from publishing duplicate Maven packages at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1830' do
           with_fixtures([pom_xml, settings_xml]) do |dir|
             Service::DockerRun::Maven.new(dir).publish!
           end
@@ -301,7 +301,7 @@ module QA
           Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_enabled)
         end
 
-        it 'allows users to publish duplicate Maven packages at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1722' do
+        it 'allows users to publish duplicate Maven packages at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1829' do
           with_fixtures([pom_xml, settings_xml]) do |dir|
             Service::DockerRun::Maven.new(dir).publish!
           end

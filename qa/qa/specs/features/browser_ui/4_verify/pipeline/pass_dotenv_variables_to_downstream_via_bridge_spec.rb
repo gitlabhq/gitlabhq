@@ -42,7 +42,7 @@ module QA
         [upstream_project, downstream_project].each(&:remove_via_api!)
       end
 
-      it 'runs the pipeline with composed config', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1086' do
+      it 'runs the pipeline with composed config', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1221' do
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           Support::Waiter.wait_until { parent_pipeline.has_child_pipeline? }
           parent_pipeline.expand_child_pipeline

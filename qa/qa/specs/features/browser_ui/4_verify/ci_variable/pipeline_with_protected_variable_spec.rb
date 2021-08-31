@@ -61,7 +61,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'exposes variable on protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/156' do
+      it 'exposes variable on protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1714' do
         create_protected_branch
 
         [developer, maintainer].each do |user|
@@ -74,7 +74,7 @@ module QA
         end
       end
 
-      it 'does not expose variable on unprotected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/156' do
+      it 'does not expose variable on unprotected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1885' do
         [developer, maintainer].each do |user|
           create_merge_request(Runtime::API::Client.new(:gitlab, user: user))
           go_to_pipeline_job(user)

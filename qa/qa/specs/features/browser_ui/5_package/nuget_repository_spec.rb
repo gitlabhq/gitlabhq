@@ -40,7 +40,7 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes a nuget package at the project level, installs and deletes it at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1073' do
+      it 'publishes a nuget package at the project level, installs and deletes it at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1641' do
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|

@@ -128,7 +128,7 @@ module QA
         )
       end
 
-      it 'imports large Github repo via api' do
+      it 'imports large Github repo via api', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1880' do
         start = Time.now
 
         Runtime::Logger.info("Importing project '#{imported_project.full_path}'") # import the project and log path

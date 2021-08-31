@@ -90,7 +90,7 @@ module QA
         end
       end
 
-      it 'runs the online garbage collector tool', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1854' do
+      it 'runs the online garbage collector tool', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1889' do
         imported_project.visit!
 
         Flow::Pipeline.visit_latest_pipeline

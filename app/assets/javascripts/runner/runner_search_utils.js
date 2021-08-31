@@ -43,7 +43,6 @@ export const fromUrlQueryToSearch = (query = window.location.search) => {
       urlQueryToFilter(query, {
         filterNamesAllowList: [PARAM_KEY_STATUS, PARAM_KEY_RUNNER_TYPE, PARAM_KEY_TAG],
         filteredSearchTermKey: PARAM_KEY_SEARCH,
-        legacySpacesDecode: false,
       }),
     ),
     sort: params[PARAM_KEY_SORT] || DEFAULT_SORT,

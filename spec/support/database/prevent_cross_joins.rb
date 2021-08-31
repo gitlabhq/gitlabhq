@@ -30,7 +30,15 @@ module Database
 
       # PgQuery might fail in some cases due to limited nesting:
       # https://github.com/pganalyze/pg_query/issues/209
-      tables = PgQuery.parse(sql).tables
+      #
+      # Also, we disable GC while parsing because of https://github.com/pganalyze/pg_query/issues/226
+      begin
+        GC.disable
+        tables = PgQuery.parse(sql).tables
+      ensure
+        GC.enable
+      end
+
       schemas = Database::GitlabSchema.table_schemas(tables)
 
       if schemas.include?(:gitlab_ci) && schemas.include?(:gitlab_main)
@@ -72,10 +80,13 @@ ALLOW_LIST = Set.new(YAML.load_file(Rails.root.join('.cross-join-allowlist.yml')
 RSpec.configure do |config|
   config.include(::Database::PreventCrossJoins::SpecHelpers)
 
-  # TODO: remove `:prevent_cross_joins` to enable the check by default
-  config.around(:each, :prevent_cross_joins) do |example|
+  config.around do |example|
     Thread.current[:has_cross_join_exception] = false
 
-    with_cross_joins_prevented { example.run }
+    if ALLOW_LIST.include?(example.file_path)
+      example.run
+    else
+      with_cross_joins_prevented { example.run }
+    end
   end
 end

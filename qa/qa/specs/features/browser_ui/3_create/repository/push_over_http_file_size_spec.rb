@@ -26,7 +26,7 @@ module QA
         set_file_size_limit(nil)
       end
 
-      it 'push successful when the file size is under the limit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/456' do
+      it 'push successful when the file size is under the limit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1556' do
         set_file_size_limit(5)
 
         retry_on_fail do
@@ -36,7 +36,7 @@ module QA
         end
       end
 
-      it 'push fails when the file size is above the limit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/458' do
+      it 'push fails when the file size is above the limit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1554' do
         set_file_size_limit(2)
 
         retry_on_fail do

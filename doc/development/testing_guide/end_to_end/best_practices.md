@@ -14,27 +14,27 @@ The QA framework uses [Zeitwerk](https://github.com/fxn/zeitwerk) for class and 
 
 In case custom inflection logic is needed, custom inflectors are added in the [qa.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa.rb) file in the `loader.inflector.inflect` method invocation.
 
-## Link a test to its test-case issue
+## Link a test to its test case
 
-Every test should have a corresponding issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/).
-It's recommended that you reuse the issue created to plan the test. If one does not already exist you
-can create the issue yourself. Alternatively, you can run the test in a pipeline that has reporting
-enabled and the test-case issue reporter will automatically create a new issue.
+Every test should have a corresponding test case as well as a results issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/).
+It's recommended that you reuse the issue created to plan the test as the results issue. If a test case or results issue does not already exist you
+can create them yourself. Alternatively, you can run the test in a pipeline that has reporting
+enabled and the test-case reporter will automatically create a new test case and/or results issue and link the results issue to it's corresponding test case.
 
-Whether you create a new test-case issue or one is created automatically, you will need to manually add
-a `testcase` RSpec metadata tag. In most cases, a single test will be associated with a single test-case
-issue ([see below for exceptions](#exceptions)).
+Whether you create a new test case or one is created automatically, you will need to manually add
+a `testcase` RSpec metadata tag. In most cases, a single test will be associated with a single test case
+ ([see below for exceptions](#exceptions)).
 
 For example:
 
 ```ruby
 RSpec.describe 'Stage' do
   describe 'General description of the feature under test' do
-    it 'test name', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/:issue_id' do
+    it 'test name', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/:test_case_id' do
       ...
     end
 
-    it 'another test', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/:another_issue_id' do
+    it 'another test', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/:another_test_case_id' do
       ...
     end
   end
@@ -44,10 +44,10 @@ end
 ### Exceptions
 
 Most tests are defined by a single line of a `spec` file, which is why those tests can be linked to a
-single test-case issue via the `testcase` tag.
+single test case via the `testcase` tag.
 
-However, some tests don't have a one-to-one relationship between a line of a `spec` file and a test-case
-issue. This is because some tests are defined in a way that means a single line is associated with
+However, some tests don't have a one-to-one relationship between a line of a `spec` file and a test case.
+This is because some tests are defined in a way that means a single line is associated with
 multiple tests, including:
 
 - Parallelized tests.
@@ -55,13 +55,13 @@ multiple tests, including:
 - Tests in shared examples that include more than one example.
 
 In those and similar cases we can't assign a single `testcase` tag and so we rely on the test-case
-reporter to programmatically determine the correct test-case issue based on the name and description of
-the test. In such cases, the test-case reporter will automatically create a test-case issue the first time
-the test runs, if no issue exists already.
+reporter to programmatically determine the correct test case based on the name and description of
+the test. In such cases, the test-case reporter will automatically create a test case and/or results issue
+the first time the test runs, if none exist already.
 
-In such a case, if you create the issue yourself or want to reuse an existing issue,
+In such a case, if you create the test case or results issue yourself or want to reuse an existing issue,
 you must use this [end-to-end test issue template](https://gitlab.com/gitlab-org/quality/testcases/-/blob/master/.gitlab/issue_templates/End-to-end%20Test.md)
-to format the issue description.
+to format the issue description. (Note you must copy/paste this for test cases as templates aren't currently available.)
 
 To illustrate, there are two tests in the shared examples in [`qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/47b17db82c38ab704a23b5ba5d296ea0c6a732c8/qa/qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb):
 
@@ -90,9 +90,37 @@ RSpec.describe 'Create' do
 end
 ```
 
-There would be two associated test-case issues, one for each shared example, with the following content:
+There would be two associated test cases, one for each shared example, with the following content:
 
-[Test 1](https://gitlab.com/gitlab-org/quality/testcases/-/issues/600):
+[Test 1 Test Case](https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1491):
+
+````markdown
+```markdown
+Title: browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb | Create Restricted
+protected branch push and merge when only one user is allowed to merge and push to a protected
+branch behaves like only user with access pushes and merges selecte...
+
+Description:
+### Full description
+
+Create Restricted protected branch push and merge when only one user is allowed to merge and push
+to a protected branch behaves like only user with access pushes and merges selected developer user
+pushes and merges
+
+### File path
+
+./qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb
+
+### DO NOT EDIT BELOW THIS LINE
+
+Active and historical test results:
+
+https://gitlab.com/gitlab-org/quality/testcases/-/issues/600
+
+```
+````
+
+[Test 1 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/600):
 
 ````markdown
 ```markdown
@@ -114,7 +142,35 @@ pushes and merges
 ```
 ````
 
-[Test 2](https://gitlab.com/gitlab-org/quality/testcases/-/issues/602):
+[Test 2 Test Case](https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/602):
+
+````markdown
+```markdown
+Title: browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb | Create Restricted
+protected branch push and merge when only one user is allowed to merge and push to a protected
+branch behaves like only user with access pushes and merges unselec...
+
+Description:
+### Full description
+
+Create Restricted protected branch push and merge when only one user is allowed to merge and push
+to a protected branch behaves like only user with access pushes and merges unselected maintainer
+user fails to push
+
+### File path
+
+./qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb
+
+### DO NOT EDIT BELOW THIS LINE
+
+Active and historical test results:
+
+https://gitlab.com/gitlab-org/quality/testcases/-/issues/602
+
+```
+````
+
+[Test 2 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/602):
 
 ````markdown
 ```markdown

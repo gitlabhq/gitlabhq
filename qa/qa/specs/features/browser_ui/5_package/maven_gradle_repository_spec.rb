@@ -194,7 +194,7 @@ module QA
           }
         end
 
-        it "pushes and pulls a maven package via gradle using #{params[:authentication_token_type]}", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1074' do
+        it "pushes and pulls a maven package via gradle using #{params[:authentication_token_type]}" do
           # pushing
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = package_project

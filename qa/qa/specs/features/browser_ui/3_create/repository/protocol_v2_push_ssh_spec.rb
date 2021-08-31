@@ -27,7 +27,7 @@ module QA
         Page::Main::Menu.perform(&:sign_out_if_signed_in)
       end
 
-      it 'user pushes to the repository', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1763' do
+      it 'user pushes to the repository', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1606' do
         project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'git-protocol-project'
         end

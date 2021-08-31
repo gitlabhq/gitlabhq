@@ -70,7 +70,7 @@ module QA
         Page::Main::Menu.perform(&:sign_out)
       end
 
-      it 'can switch branches and target branch field updates accordingly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1856' do
+      it 'can switch branches and target branch field updates accordingly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1891' do
         Page::Project::PipelineEditor::Show.perform do |show|
           expect(show).to have_branch_selector_button
 

@@ -41,7 +41,7 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes, installs, and deletes a Conan package', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1077' do
+      it 'publishes, installs, and deletes a Conan package', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1638' do
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|

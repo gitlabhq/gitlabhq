@@ -133,7 +133,7 @@ module QA
         another_project.remove_via_api!
       end
 
-      it 'push and pull a npm package via CI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1772' do
+      it 'push and pull a npm package via CI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1811' do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add .gitlab-ci.yml'

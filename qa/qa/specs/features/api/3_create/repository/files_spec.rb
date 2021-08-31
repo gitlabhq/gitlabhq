@@ -11,7 +11,7 @@ module QA
     let(:project_name) { "api-basics-#{SecureRandom.hex(8)}" }
     let(:sanitized_project_path) { CGI.escape("#{Runtime::User.username}/#{project_name}") }
 
-    it 'user creates a project with a file and deletes them afterwards', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/420' do
+    it 'user creates a project with a file and deletes them afterwards', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1581' do
       create_project_request = Runtime::API::Request.new(@api_client, '/projects')
       post create_project_request.url, path: project_name, name: project_name
 
@@ -77,7 +77,7 @@ module QA
         SVG
       end
 
-      it 'sets no-cache headers as expected', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/421' do
+      it 'sets no-cache headers as expected', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1580' do
         create_project_request = Runtime::API::Request.new(@api_client, '/projects')
         post create_project_request.url, path: project_name, name: project_name
 

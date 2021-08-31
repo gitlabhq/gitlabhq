@@ -56,7 +56,7 @@ module QA
 
       it(
         'imports group from UI',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785',
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1806',
         issue_1: 'https://gitlab.com/gitlab-org/gitlab/-/issues/331252',
         issue_2: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333678',
         # mostly impacts testing as it makes small groups import slower
