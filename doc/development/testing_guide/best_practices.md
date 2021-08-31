@@ -54,7 +54,7 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
 
-We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.2/Warning.html)
+We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.4/Warning.html)
 by default when running specs. Making these warnings more visible to developers
 helps upgrading to newer Ruby versions.
 

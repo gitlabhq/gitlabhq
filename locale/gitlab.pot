@@ -29652,10 +29652,22 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
+msgid "SecurityOrchestration|%{branches} %{plural}"
+msgstr ""
+
+msgid "SecurityOrchestration|%{branches} and %{lastBranch} %{plural}"
+msgstr ""
+
+msgid "SecurityOrchestration|Action"
+msgstr ""
+
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|Description"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit policy"
@@ -29667,7 +29679,16 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Enforcement Status"
+msgstr ""
+
+msgid "SecurityOrchestration|Executes a %{scanType} scan"
+msgstr ""
+
 msgid "SecurityOrchestration|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|Latest scan"
 msgstr ""
 
 msgid "SecurityOrchestration|Network"
@@ -29697,10 +29718,19 @@ msgstr ""
 msgid "SecurityOrchestration|Policy type"
 msgstr ""
 
+msgid "SecurityOrchestration|Rule"
+msgstr ""
+
 msgid "SecurityOrchestration|Scan Execution"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan execution"
+msgstr ""
+
+msgid "SecurityOrchestration|Scan to be performed every %{cadence} on the %{branches}"
+msgstr ""
+
+msgid "SecurityOrchestration|Scan to be performed on every pipeline on the %{branches}"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy project was linked successfully"
@@ -29727,28 +29757,19 @@ msgstr ""
 msgid "SecurityOrchestration|Update scan execution policies"
 msgstr ""
 
+msgid "SecurityOrchestration|view results"
+msgstr ""
+
+msgid "SecurityOrhestration|No rules defined - policy will not run."
+msgstr ""
+
 msgid "SecurityPolicies|+%{count} more"
-msgstr ""
-
-msgid "SecurityPolicies|Description"
-msgstr ""
-
-msgid "SecurityPolicies|Enforcement status"
 msgstr ""
 
 msgid "SecurityPolicies|Environment(s)"
 msgstr ""
 
-msgid "SecurityPolicies|Latest scan"
-msgstr ""
-
 msgid "SecurityPolicies|Policy type"
-msgstr ""
-
-msgid "SecurityPolicies|Scan execution"
-msgstr ""
-
-msgid "SecurityPolicies|view results"
 msgstr ""
 
 msgid "SecurityReports|%{firstProject} and %{secondProject}"
@@ -38980,6 +39001,11 @@ msgstr ""
 
 msgid "blocks"
 msgstr ""
+
+msgid "branch"
+msgid_plural "branches"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "branch name"
 msgstr ""

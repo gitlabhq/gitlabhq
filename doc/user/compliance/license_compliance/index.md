@@ -802,11 +802,11 @@ or using the appropriate [`ASDF_<tool>_VERSION`](https://asdf-vm.com/#/core-conf
 activate the appropriate version.
 
 For example, the following `.tool-versions` file activates version `12.16.3` of [Node.js](https://nodejs.org/)
-and version `2.7.2` of [Ruby](https://www.ruby-lang.org/).
+and version `2.7.4` of [Ruby](https://www.ruby-lang.org/).
 
 ```plaintext
 nodejs 12.16.3
-ruby 2.7.2
+ruby 2.7.4
 ```
 
 The next example shows how to activate the same versions of the tools mentioned above by using CI/CD variables defined in your
@@ -819,7 +819,7 @@ include:
 license_scanning:
   variables:
     ASDF_NODEJS_VERSION: '12.16.3'
-    ASDF_RUBY_VERSION: '2.7.2'
+    ASDF_RUBY_VERSION: '2.7.4'
 ```
 
 A full list of variables can be found in [CI/CD variables](#available-cicd-variables).

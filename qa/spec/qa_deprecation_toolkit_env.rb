@@ -12,7 +12,7 @@ module QaDeprecationToolkitEnv
   end
 
   def self.configure!
-    # Enable ruby deprecations for keywords, it's suppressed by default in Ruby 2.7.2
+    # Enable ruby deprecations for keywords, it's suppressed by default in Ruby 2.7
     Warning[:deprecated] = true
 
     DeprecationToolkit::Configuration.test_runner = :rspec
