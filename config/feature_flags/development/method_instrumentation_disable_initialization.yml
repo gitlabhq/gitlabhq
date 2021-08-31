@@ -1,0 +1,8 @@
+---
+name: method_instrumentation_disable_initialization
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69091
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339665
+milestone: '14.3'
+type: development
+group: group::memory
+default_enabled: false

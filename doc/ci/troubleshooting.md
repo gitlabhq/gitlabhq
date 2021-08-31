@@ -29,7 +29,7 @@ with your editor of choice.
 ### Verify syntax with CI Lint tool
 
 The [CI Lint tool](lint.md) is a simple way to ensure the syntax of a CI/CD configuration
-file is correct. Paste in full `gitlab-ci.yml` files or individual jobs configuration,
+file is correct. Paste in full `.gitlab-ci.yml` files or individual jobs configuration,
 to verify the basic syntax.
 
 When a `.gitlab-ci.yml` file is present in a project, you can also use the CI Lint
@@ -49,7 +49,7 @@ and check if their values are what you expect.
 
 ## GitLab CI/CD documentation
 
-The [complete `gitlab-ci.yml` reference](yaml/index.md) contains a full list of
+The [complete `.gitlab-ci.yml` reference](yaml/index.md) contains a full list of
 every keyword you may need to use to configure your pipelines.
 
 You can also look at a large number of pipeline configuration [examples](examples/index.md)

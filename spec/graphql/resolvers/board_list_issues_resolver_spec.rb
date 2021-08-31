@@ -20,18 +20,20 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
       let!(:issue1) { create(:issue, project: project, labels: [label], relative_position: 10) }
       let!(:issue2) { create(:issue, project: project, labels: [label, label2], relative_position: 12) }
       let!(:issue3) { create(:issue, project: project, labels: [label, label3], relative_position: 10) }
+      let!(:issue4) { create(:issue, project: project, labels: [label], relative_position: nil) }
 
-      it 'returns the issues in the correct order' do
+      it 'returns issues in the correct order with non-nil relative positions', :aggregate_failures do
         # by relative_position and then ID
-        issues = resolve_board_list_issues
+        result = resolve_board_list_issues
 
-        expect(issues.map(&:id)).to eq [issue3.id, issue1.id, issue2.id]
+        expect(result.map(&:id)).to eq [issue3.id, issue1.id, issue2.id, issue4.id]
+        expect(result.map(&:relative_position)).not_to include(nil)
       end
 
       it 'finds only issues matching filters' do
         result = resolve_board_list_issues(args: { filters: { label_name: [label.title], not: { label_name: [label2.title] } } })
 
-        expect(result).to match_array([issue1, issue3])
+        expect(result).to match_array([issue1, issue3, issue4])
       end
 
       it 'finds only issues matching search param' do
@@ -49,7 +51,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
       it 'accepts assignee wildcard id NONE' do
         result = resolve_board_list_issues(args: { filters: { assignee_wildcard_id: 'NONE' } })
 
-        expect(result).to match_array([issue1, issue2, issue3])
+        expect(result).to match_array([issue1, issue2, issue3, issue4])
       end
 
       it 'accepts assignee wildcard id ANY' do
@@ -89,6 +91,6 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
   end
 
   def resolve_board_list_issues(args: {}, current_user: user)
-    resolve(described_class, obj: list, args: args, ctx: { current_user: current_user })
+    resolve(described_class, obj: list, args: args, ctx: { current_user: current_user }).items
   end
 end

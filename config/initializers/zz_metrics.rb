@@ -178,27 +178,33 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
       ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
     )
 
-    Gitlab::Metrics::Instrumentation
-      .instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
-        # Instrumenting the ApplicationSetting class can lead to an infinite
-        # loop. Since the data is cached any way we don't really need to
-        # instrument it.
-        if klass == ApplicationSetting
-          false
-        else
-          loc = method.source_location
+    # We are removing the Instrumentation module entirely in steps.
+    # More in https://gitlab.com/gitlab-org/gitlab/-/issues/217978.
+    unless ::Feature.enabled?(:method_instrumentation_disable_initialization)
+      Gitlab::Metrics::Instrumentation
+        .instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
+          # Instrumenting the ApplicationSetting class can lead to an infinite
+          # loop. Since the data is cached any way we don't really need to
+          # instrument it.
+          if klass == ApplicationSetting
+            false
+          else
+            loc = method.source_location
 
-          loc && loc[0].start_with?(models_path) && method.source =~ regex
+            loc && loc[0].start_with?(models_path) && method.source =~ regex
+          end
         end
-      end
 
-    # Ability is in app/models, is not an ActiveRecord model, but should still
-    # be instrumented.
-    Gitlab::Metrics::Instrumentation.instrument_methods(Ability)
+      # Ability is in app/models, is not an ActiveRecord model, but should still
+      # be instrumented.
+      Gitlab::Metrics::Instrumentation.instrument_methods(Ability)
+    end
   end
 
-  Gitlab::Metrics::Instrumentation.configure do |config|
-    instrument_classes(config)
+  unless ::Feature.enabled?(:method_instrumentation_disable_initialization)
+    Gitlab::Metrics::Instrumentation.configure do |config|
+      instrument_classes(config)
+    end
   end
 
   GC::Profiler.enable

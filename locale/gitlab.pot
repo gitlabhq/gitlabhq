@@ -11068,6 +11068,18 @@ msgstr ""
 msgid "DeployFreeze|Add deploy freeze"
 msgstr ""
 
+msgid "DeployFreeze|Delete"
+msgstr ""
+
+msgid "DeployFreeze|Delete deploy freeze?"
+msgstr ""
+
+msgid "DeployFreeze|Delete freeze period"
+msgstr ""
+
+msgid "DeployFreeze|Deploy freeze from %{start} to %{end} in %{timezone} will be removed. Are you sure?"
+msgstr ""
+
 msgid "DeployFreeze|Edit"
 msgstr ""
 
@@ -13260,6 +13272,9 @@ msgid "Error: No AWS provision role found for user"
 msgstr ""
 
 msgid "Error: Unable to create deploy freeze"
+msgstr ""
+
+msgid "Error: Unable to delete deploy freeze"
 msgstr ""
 
 msgid "Error: Unable to find AWS role for current user"
@@ -28989,6 +29004,9 @@ msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot. Default choice for Windows Shell executor."
+msgstr ""
+
+msgid "Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared runner."

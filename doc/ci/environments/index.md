@@ -177,7 +177,7 @@ You can find the play button in the pipelines, environments, deployments, and jo
 
 If you are deploying to a [Kubernetes cluster](../../user/project/clusters/index.md)
 associated with your project, you can configure these deployments from your
-`gitlab-ci.yml` file.
+`.gitlab-ci.yml` file.
 
 NOTE:
 Kubernetes configuration isn't supported for Kubernetes clusters that are

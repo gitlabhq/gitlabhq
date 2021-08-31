@@ -21,9 +21,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     set_user_state
-    accept_pending_invitations
 
     super do |new_user|
+      accept_pending_invitations if new_user.persisted?
+
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
 

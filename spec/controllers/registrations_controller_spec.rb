@@ -283,6 +283,26 @@ RSpec.describe RegistrationsController do
           end
         end
 
+        context 'when the registration fails' do
+          let_it_be(:member) { create(:project_member, :invited) }
+          let_it_be(:missing_user_params) do
+            { username: '', email: member.invite_email, password: 'Any_password' }
+          end
+
+          let_it_be(:user_params) { { user: missing_user_params } }
+
+          let(:session_params) { { invite_email: member.invite_email } }
+
+          subject { post(:create, params: user_params, session: session_params) }
+
+          it 'does not delete the invitation or register the new user' do
+            subject
+
+            expect(member.invite_token).not_to be_nil
+            expect(controller.current_user).to be_nil
+          end
+        end
+
         context 'when soft email confirmation is enabled' do
           before do
             stub_feature_flags(soft_email_confirmation: true)

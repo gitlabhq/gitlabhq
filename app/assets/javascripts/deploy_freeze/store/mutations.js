@@ -1,15 +1,28 @@
+import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { secondsToHours } from '~/lib/utils/datetime_utility';
 import * as types from './mutation_types';
 
-const formatTimezoneName = (freezePeriod, timezoneList) =>
-  convertObjectPropsToCamelCase({
+const formatTimezoneName = (freezePeriod, timezoneList) => {
+  const tz = timezoneList.find((timezone) => timezone.identifier === freezePeriod.cron_timezone);
+  return convertObjectPropsToCamelCase({
     ...freezePeriod,
     cron_timezone: {
-      formattedTimezone: timezoneList.find((tz) => tz.identifier === freezePeriod.cron_timezone)
-        ?.name,
+      formattedTimezone: tz && `[UTC ${secondsToHours(tz.offset)}] ${tz.name}`,
       identifier: freezePeriod.cron_timezone,
     },
   });
+};
+
+const setFreezePeriodIsDeleting = (state, id, isDeleting) => {
+  const freezePeriod = state.freezePeriods.find((f) => f.id === id);
+
+  if (!freezePeriod) {
+    return;
+  }
+
+  Vue.set(freezePeriod, 'isDeleting', isDeleting);
+};
 
 export default {
   [types.REQUEST_FREEZE_PERIODS](state) {
@@ -51,6 +64,18 @@ export default {
 
   [types.SET_SELECTED_ID](state, id) {
     state.selectedId = id;
+  },
+
+  [types.REQUEST_DELETE_FREEZE_PERIOD](state, id) {
+    setFreezePeriodIsDeleting(state, id, true);
+  },
+
+  [types.RECEIVE_DELETE_FREEZE_PERIOD_SUCCESS](state, id) {
+    state.freezePeriods = state.freezePeriods.filter((f) => f.id !== id);
+  },
+
+  [types.RECEIVE_DELETE_FREEZE_PERIOD_ERROR](state, id) {
+    setFreezePeriodIsDeleting(state, id, false);
   },
 
   [types.RESET_MODAL](state) {

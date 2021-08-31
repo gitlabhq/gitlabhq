@@ -386,7 +386,7 @@ does not block triggered pipelines.
 > [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
 
 Use `include` to include external YAML files in your CI/CD configuration.
-You can break down one long `gitlab-ci.yml` file into multiple files to increase readability,
+You can break down one long `.gitlab-ci.yml` file into multiple files to increase readability,
 or reduce duplication of the same configuration in multiple places.
 
 You can also store template files in a central repository and `include` them in projects.
@@ -4483,7 +4483,7 @@ deploy_review_job:
 
 You can use only integers and strings for the variable's name and value.
 
-If you define a variable at the top level of the `gitlab-ci.yml` file, it is global,
+If you define a variable at the top level of the `.gitlab-ci.yml` file, it is global,
 meaning it applies to all jobs. If you define a variable in a job, it's available
 to that job only.
 

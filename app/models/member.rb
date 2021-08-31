@@ -278,11 +278,13 @@ class Member < ApplicationRecord
 
   def accept_invite!(new_user)
     return false unless invite?
+    return false unless new_user
+
+    self.user = new_user
+    return false unless self.user.save
 
     self.invite_token = nil
     self.invite_accepted_at = Time.current.utc
-
-    self.user = new_user
 
     saved = self.save
 

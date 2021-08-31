@@ -15,18 +15,23 @@ module Ci
     private
 
     def preload_statuses(statuses)
-      loaded_statuses = statuses.load
-      statuses.tap do |statuses|
-        # rubocop: disable CodeReuse/ActiveRecord
-        ActiveRecord::Associations::Preloader.new.preload(preloadable_statuses(loaded_statuses), %w[pipeline tags job_artifacts_archive metadata])
-        # rubocop: enable CodeReuse/ActiveRecord
-      end
-    end
+      common_relations = [:pipeline]
 
-    def preloadable_statuses(statuses)
-      statuses.reject do |status|
-        status.instance_of?(::GenericCommitStatus) || status.instance_of?(::Ci::Bridge)
+      preloaders = {
+        ::Ci::Build => [:metadata, :tags, :job_artifacts_archive],
+        ::Ci::Bridge => [:metadata, :downstream_pipeline],
+        ::GenericCommitStatus => []
+      }
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      preloaders.each do |klass, relations|
+        ActiveRecord::Associations::Preloader
+          .new
+          .preload(statuses.select { |job| job.is_a?(klass) }, relations + common_relations)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      statuses
     end
   end
 end

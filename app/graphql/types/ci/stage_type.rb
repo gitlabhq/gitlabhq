@@ -52,15 +52,22 @@ module Types
 
       # rubocop: disable CodeReuse/ActiveRecord
       def jobs_for_pipeline(pipeline, stage_ids, include_needs)
-        builds_results = pipeline.latest_builds.where(stage_id: stage_ids).preload(:job_artifacts, :project)
-        bridges_results = pipeline.bridges.where(stage_id: stage_ids).preload(:project)
-        builds_results = builds_results.preload(:needs) if include_needs
-        bridges_results = bridges_results.preload(:needs) if include_needs
-        commit_status_results = pipeline.latest_statuses.where(stage_id: stage_ids)
+        jobs = pipeline.statuses.latest.where(stage_id: stage_ids)
 
-        results = builds_results | bridges_results | commit_status_results
+        common_relations = [:project]
+        common_relations << :needs if include_needs
 
-        results.group_by(&:stage_id)
+        preloaders = {
+          ::Ci::Build => [:metadata, :job_artifacts],
+          ::Ci::Bridge => [:metadata, :downstream_pipeline],
+          ::GenericCommitStatus => []
+        }
+
+        preloaders.each do |klass, relations|
+          ActiveRecord::Associations::Preloader.new.preload(jobs.select { |job| job.is_a?(klass) }, relations + common_relations)
+        end
+
+        jobs.group_by(&:stage_id)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

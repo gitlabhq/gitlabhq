@@ -28,7 +28,6 @@ describe('Environment table', () => {
     factory({
       propsData: {
         environments: [folder],
-        canReadEnvironment: true,
         ...eeOnlyProps,
       },
     });
@@ -50,7 +49,6 @@ describe('Environment table', () => {
     await factory({
       propsData: {
         environments: [mockItem],
-        canReadEnvironment: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -78,7 +76,6 @@ describe('Environment table', () => {
       propsData: {
         environments: [mockItem],
         canCreateDeployment: false,
-        canReadEnvironment: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -114,7 +111,6 @@ describe('Environment table', () => {
       propsData: {
         environments: [mockItem],
         canCreateDeployment: false,
-        canReadEnvironment: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -151,7 +147,6 @@ describe('Environment table', () => {
     factory({
       propsData: {
         environments: [mockItem],
-        canReadEnvironment: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -179,7 +174,6 @@ describe('Environment table', () => {
       propsData: {
         environments: [mockItem],
         canCreateDeployment: false,
-        canReadEnvironment: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -230,7 +224,6 @@ describe('Environment table', () => {
       factory({
         propsData: {
           environments: mockItems,
-          canReadEnvironment: true,
           ...eeOnlyProps,
         },
       });
@@ -296,7 +289,6 @@ describe('Environment table', () => {
       factory({
         propsData: {
           environments: mockItems,
-          canReadEnvironment: true,
           ...eeOnlyProps,
         },
       });
@@ -335,7 +327,6 @@ describe('Environment table', () => {
       factory({
         propsData: {
           environments: mockItems,
-          canReadEnvironment: true,
           ...eeOnlyProps,
         },
       });
@@ -364,7 +355,6 @@ describe('Environment table', () => {
       factory({
         propsData: {
           environments: mockItems,
-          canReadEnvironment: true,
           ...eeOnlyProps,
         },
       });
@@ -415,7 +405,6 @@ describe('Environment table', () => {
       factory({
         propsData: {
           environments: mockItems,
-          canReadEnvironment: true,
           ...eeOnlyProps,
         },
       });

@@ -186,7 +186,8 @@ To subscribe to notifications for releases:
 
 ## Prevent unintentional releases by setting a deploy freeze
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
+> - The ability to delete freeze periods through the UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212451) in GitLab 14.3.
 
 Prevent unintended production releases during a period of time you specify by
 setting a [*deploy freeze* period](../../../ci/environments/deployment_safety.md).
@@ -199,7 +200,7 @@ If the job that's executing is within a freeze period, GitLab CI/CD creates an e
 variable named `$CI_DEPLOY_FREEZE`.
 
 To prevent the deployment job from executing, create a `rules` entry in your
-`gitlab-ci.yml`, for example:
+`.gitlab-ci.yml`, for example:
 
 ```yaml
 deploy_to_production:
@@ -219,11 +220,8 @@ To set a deploy freeze window in the UI, complete these steps:
 1. Click **Add deploy freeze** to open the deploy freeze modal.
 1. Enter the start time, end time, and timezone of the desired deploy freeze period.
 1. Click **Add deploy freeze** in the modal.
-1. After the deploy freeze is saved, you can edit it by selecting the edit button (**{pencil}**).
-   ![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v13_10.png)
-
-WARNING:
-To delete a deploy freeze, use the [Freeze Periods API](../../../api/freeze_periods.md).
+1. After the deploy freeze is saved, you can edit it by selecting the edit button (**{pencil}**) and remove it by selecting the delete button (**{remove}**).
+   ![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v14_3.png)
 
 If a project contains multiple freeze periods, all periods apply. If they overlap, the freeze covers the
 complete overlapping period.

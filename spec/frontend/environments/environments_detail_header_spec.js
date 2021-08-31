@@ -44,7 +44,6 @@ describe('Environments detail header component', () => {
         TimeAgo,
       },
       propsData: {
-        canReadEnvironment: false,
         canAdminEnvironment: false,
         canUpdateEnvironment: false,
         canStopEnvironment: false,
@@ -60,7 +59,7 @@ describe('Environments detail header component', () => {
 
   describe('default state with minimal access', () => {
     beforeEach(() => {
-      createWrapper({ props: { environment: createEnvironment() } });
+      createWrapper({ props: { environment: createEnvironment({ externalUrl: null }) } });
     });
 
     it('displays the environment name', () => {
@@ -164,7 +163,6 @@ describe('Environments detail header component', () => {
       createWrapper({
         props: {
           environment: createEnvironment({ hasTerminals: true, externalUrl }),
-          canReadEnvironment: true,
         },
       });
     });
@@ -178,8 +176,7 @@ describe('Environments detail header component', () => {
     beforeEach(() => {
       createWrapper({
         props: {
-          environment: createEnvironment(),
-          canReadEnvironment: true,
+          environment: createEnvironment({ metricsUrl: 'my metrics url' }),
           metricsPath,
         },
       });
@@ -195,7 +192,6 @@ describe('Environments detail header component', () => {
       createWrapper({
         props: {
           environment: createEnvironment(),
-          canReadEnvironment: true,
           canAdminEnvironment: true,
           canStopEnvironment: true,
           canUpdateEnvironment: true,

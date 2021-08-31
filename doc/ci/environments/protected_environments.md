@@ -251,7 +251,7 @@ To protect a group-level environment:
 
 1. Make sure your environments have the correct
    [`deployment_tier`](index.md#deployment-tier-of-environments) defined in
-   `gitlab-ci.yml`.
+   `.gitlab-ci.yml`.
 1. Configure the group-level protected environments via the
    [REST API](../../api/group_protected_environments.md).
 

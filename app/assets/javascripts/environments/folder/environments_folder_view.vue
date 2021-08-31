@@ -30,10 +30,6 @@ export default {
       required: false,
       default: '',
     },
-    canReadEnvironment: {
-      type: Boolean,
-      required: true,
-    },
   },
   methods: {
     successCallback(resp) {
@@ -72,7 +68,6 @@ export default {
       :is-loading="isLoading"
       :environments="state.environments"
       :pagination="state.paginationInformation"
-      :can-read-environment="canReadEnvironment"
       @onChangePage="onChangePage"
     />
   </div>

@@ -129,7 +129,7 @@ The `source` is ignored if the path does not follow this pattern. The parser ass
 
 ### JavaScript example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example uses [Mocha](https://mochajs.org/)
+The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example uses [Mocha](https://mochajs.org/)
 JavaScript testing and [nyc](https://github.com/istanbuljs/nyc) coverage-tooling to
 generate the coverage artifact:
 
@@ -147,7 +147,7 @@ test:
 
 #### Maven example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
+The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
 to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -185,7 +185,7 @@ coverage-jdk11:
 
 #### Gradle example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
+The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
 to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -223,7 +223,7 @@ coverage-jdk11:
 
 ### Python example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for Python uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data and [coverage.py](https://coverage.readthedocs.io/) to convert the report to use full relative paths.
+The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example for Python uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data and [coverage.py](https://coverage.readthedocs.io/) to convert the report to use full relative paths.
 The information isn't displayed without the conversion.
 
 This example assumes that the code for your package is in `src/` and your tests are in `tests.py`:
@@ -243,7 +243,7 @@ run tests:
 
 ### C/C++ example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for C/C++ with
+The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example for C/C++ with
 `gcc` or `g++` as the compiler uses [`gcovr`](https://gcovr.com/en/stable/) to generate the coverage
 output file in Cobertura XML format.
 

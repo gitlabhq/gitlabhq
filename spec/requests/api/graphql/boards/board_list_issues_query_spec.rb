@@ -48,13 +48,18 @@ RSpec.describe 'get board lists' do
     issues_data.map { |i| i['title'] }
   end
 
+  def issue_relative_positions
+    issues_data.map { |i| i['relativePosition'] }
+  end
+
   shared_examples 'group and project board list issues query' do
     let!(:board) { create(:board, resource_parent: board_parent) }
     let!(:label_list) { create(:list, board: board, label: label, position: 10) }
     let!(:issue1) { create(:issue, project: issue_project, labels: [label, label2], relative_position: 9) }
     let!(:issue2) { create(:issue, project: issue_project, labels: [label, label2], relative_position: 2) }
-    let!(:issue3) { create(:issue, project: issue_project, labels: [label], relative_position: 9) }
-    let!(:issue4) { create(:issue, project: issue_project, labels: [label2], relative_position: 432) }
+    let!(:issue3) { create(:issue, project: issue_project, labels: [label, label2], relative_position: nil) }
+    let!(:issue4) { create(:issue, project: issue_project, labels: [label], relative_position: 9) }
+    let!(:issue5) { create(:issue, project: issue_project, labels: [label2], relative_position: 432) }
 
     context 'when the user does not have access to the board' do
       it 'returns nil' do
@@ -69,10 +74,11 @@ RSpec.describe 'get board lists' do
         board_parent.add_reporter(user)
       end
 
-      it 'can access the issues' do
+      it 'can access the issues', :aggregate_failures do
         post_graphql(query("id: \"#{global_id_of(label_list)}\""), current_user: user)
 
-        expect(issue_titles).to eq([issue2.title, issue1.title])
+        expect(issue_titles).to eq([issue2.title, issue1.title, issue3.title])
+        expect(issue_relative_positions).not_to include(nil)
       end
     end
   end

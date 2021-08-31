@@ -1576,6 +1576,14 @@ RSpec.describe Note do
       expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}")
     end
 
+    context 'when note has no author' do
+      let(:note) { build(:note, author: nil) }
+
+      it 'returns cache key only' do
+        expect(note.post_processed_cache_key).to eq("#{note.cache_key}:")
+      end
+    end
+
     context 'when note has redacted_note_html' do
       let(:redacted_note_html) { 'redacted note html' }
 

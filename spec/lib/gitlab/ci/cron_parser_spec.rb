@@ -297,4 +297,65 @@ RSpec.describe Gitlab::Ci::CronParser do
       it { is_expected.to eq(true) }
     end
   end
+
+  describe '.parse_natural', :aggregate_failures do
+    let(:cron_line) { described_class.parse_natural_with_timestamp(time, { unit: 'day', duration: 1 }) }
+    let(:time) { Time.parse('Mon, 30 Aug 2021 06:29:44.067132000 UTC +00:00') }
+    let(:hours) { Fugit::Cron.parse(cron_line).hours }
+    let(:minutes) { Fugit::Cron.parse(cron_line).minutes }
+    let(:weekdays) { Fugit::Cron.parse(cron_line).weekdays.first }
+    let(:months) { Fugit::Cron.parse(cron_line).months }
+
+    context 'when repeat cycle is day' do
+      it 'generates daily cron expression', :aggregate_failures do
+        expect(hours).to include time.hour
+        expect(minutes).to include time.min
+      end
+    end
+
+    context 'when repeat cycle is week' do
+      let(:cron_line) { described_class.parse_natural_with_timestamp(time, { unit: 'week', duration: 1 }) }
+
+      it 'generates weekly cron expression', :aggregate_failures do
+        expect(hours).to include time.hour
+        expect(minutes).to include time.min
+        expect(weekdays).to include time.wday
+      end
+    end
+
+    context 'when repeat cycle is month' do
+      let(:cron_line) { described_class.parse_natural_with_timestamp(time, { unit: 'month', duration: 3 }) }
+
+      it 'generates monthly cron expression', :aggregate_failures do
+        expect(minutes).to include time.min
+        expect(months).to include time.month
+      end
+
+      context 'when an unsupported duration is specified' do
+        subject { described_class.parse_natural_with_timestamp(time, { unit: 'month', duration: 7 }) }
+
+        it 'raises an exception' do
+          expect { subject }.to raise_error(NotImplementedError, 'The cadence {:unit=>"month", :duration=>7} is not supported')
+        end
+      end
+    end
+
+    context 'when repeat cycle is year' do
+      let(:cron_line) { described_class.parse_natural_with_timestamp(time, { unit: 'year', duration: 1 }) }
+
+      it 'generates yearly cron expression', :aggregate_failures do
+        expect(hours).to include time.hour
+        expect(minutes).to include time.min
+        expect(months).to include time.month
+      end
+    end
+
+    context 'when the repeat cycle is not implemented' do
+      subject { described_class.parse_natural_with_timestamp(time, { unit: 'quarterly', duration: 1 }) }
+
+      it 'raises an exception' do
+        expect { subject }.to raise_error(NotImplementedError, 'The cadence unit quarterly is not implemented')
+      end
+    end
+  end
 end

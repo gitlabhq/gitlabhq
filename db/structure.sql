@@ -12089,7 +12089,11 @@ CREATE TABLE dast_profile_schedules (
     updated_at timestamp with time zone NOT NULL,
     active boolean DEFAULT true NOT NULL,
     cron text NOT NULL,
-    CONSTRAINT check_86531ea73f CHECK ((char_length(cron) <= 255))
+    cadence jsonb DEFAULT '{}'::jsonb NOT NULL,
+    timezone text NOT NULL,
+    starts_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT check_86531ea73f CHECK ((char_length(cron) <= 255)),
+    CONSTRAINT check_be4d1c3af1 CHECK ((char_length(timezone) <= 255))
 );
 
 COMMENT ON TABLE dast_profile_schedules IS '{"owner":"group::dynamic analysis","description":"Scheduling for scans using DAST Profiles"}';
@@ -23812,9 +23816,9 @@ CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_
 
 CREATE INDEX index_dast_profile_schedules_active_next_run_at ON dast_profile_schedules USING btree (active, next_run_at);
 
-CREATE INDEX index_dast_profile_schedules_on_dast_profile_id ON dast_profile_schedules USING btree (dast_profile_id);
+CREATE UNIQUE INDEX index_dast_profile_schedules_on_dast_profile_id ON dast_profile_schedules USING btree (dast_profile_id);
 
-CREATE UNIQUE INDEX index_dast_profile_schedules_on_project_id_and_dast_profile_id ON dast_profile_schedules USING btree (project_id, dast_profile_id);
+CREATE INDEX index_dast_profile_schedules_on_project_id ON dast_profile_schedules USING btree (project_id);
 
 CREATE INDEX index_dast_profile_schedules_on_user_id ON dast_profile_schedules USING btree (user_id);
 

@@ -14,7 +14,6 @@ describe('Environments Folder View', () => {
   const mockData = {
     endpoint: 'environments.json',
     folderName: 'review',
-    canReadEnvironment: true,
     cssContainerClass: 'container',
     userCalloutsPath: '/callouts',
     lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',

@@ -48,12 +48,6 @@ export default {
   mixins: [timeagoMixin],
 
   props: {
-    canReadEnvironment: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
     model: {
       type: Object,
       required: true,
@@ -790,14 +784,14 @@ export default {
         />
 
         <external-url-component
-          v-if="externalURL && canReadEnvironment"
+          v-if="externalURL"
           :external-url="externalURL"
           data-track-action="click_button"
           data-track-label="environment_url"
         />
 
         <monitoring-button-component
-          v-if="monitoringUrl && canReadEnvironment"
+          v-if="monitoringUrl"
           :monitoring-url="monitoringUrl"
           data-track-action="click_button"
           data-track-label="environment_monitoring"

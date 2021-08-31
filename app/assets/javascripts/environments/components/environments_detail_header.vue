@@ -27,10 +27,6 @@ export default {
       type: Object,
       required: true,
     },
-    canReadEnvironment: {
-      type: Boolean,
-      required: true,
-    },
     canAdminEnvironment: {
       type: Boolean,
       required: true,
@@ -84,7 +80,7 @@ export default {
       return this.environment.isAvailable && Boolean(this.environment.autoStopAt);
     },
     shouldShowExternalUrlButton() {
-      return this.canReadEnvironment && Boolean(this.environment.externalUrl);
+      return Boolean(this.environment.externalUrl);
     },
     shouldShowStopButton() {
       return this.canStopEnvironment && this.environment.isAvailable;
@@ -138,7 +134,7 @@ export default {
         >{{ $options.i18n.externalButtonText }}</gl-button
       >
       <gl-button
-        v-if="canReadEnvironment"
+        v-if="shouldShowExternalUrlButton"
         data-testid="metrics-button"
         :href="metricsPath"
         :title="$options.i18n.metricsButtonTitle"

@@ -6,8 +6,40 @@ module Gitlab
       VALID_SYNTAX_SAMPLE_TIME_ZONE = 'UTC'
       VALID_SYNTAX_SAMPLE_CRON = '* * * * *'
 
-      def self.parse_natural(expression, cron_timezone = 'UTC')
-        new(Fugit::Nat.parse(expression)&.original, cron_timezone)
+      class << self
+        def parse_natural(expression, cron_timezone = 'UTC')
+          new(Fugit::Nat.parse(expression)&.original, cron_timezone)
+        end
+
+        # This method generates compatible expressions that can be
+        # parsed by Fugit::Nat.parse to generate a cron line.
+        # It takes start date of the cron and cadence in the following format:
+        # cadence = {
+        #   unit: 'day/week/month/year'
+        #   duration: 1
+        # }
+        def parse_natural_with_timestamp(starts_at, cadence)
+          case cadence[:unit]
+          when 'day' # Currently supports only 'every 1 day'.
+            "#{starts_at.min} #{starts_at.hour} * * *"
+          when 'week' # Currently supports only 'every 1 week'.
+            "#{starts_at.min} #{starts_at.hour} * * #{starts_at.wday}"
+          when 'month'
+            unless [1, 3, 6, 12].include?(cadence[:duration])
+              raise NotImplementedError, "The cadence #{cadence} is not supported"
+            end
+
+            "#{starts_at.min} #{starts_at.hour} #{starts_at.mday} #{fall_in_months(cadence[:duration], starts_at)} *"
+          when 'year' # Currently supports only 'every 1 year'.
+            "#{starts_at.min} #{starts_at.hour} #{starts_at.mday} #{starts_at.month} *"
+          else
+            raise NotImplementedError, "The cadence unit #{cadence[:unit]} is not implemented"
+          end
+        end
+
+        def fall_in_months(offset, start_date)
+          (1..(12 / offset)).map { |i| start_date.next_month(offset * i).month }.join(',')
+        end
       end
 
       def initialize(cron, cron_timezone = 'UTC')

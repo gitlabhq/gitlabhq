@@ -31,7 +31,6 @@ describe('Environment item', () => {
     factory({
       propsData: {
         model: environment,
-        canReadEnvironment: true,
         tableData,
       },
     });
@@ -135,7 +134,6 @@ describe('Environment item', () => {
             factory({
               propsData: {
                 model: environmentWithoutDeployable,
-                canReadEnvironment: true,
                 tableData,
               },
             });
@@ -161,7 +159,6 @@ describe('Environment item', () => {
           factory({
             propsData: {
               model: environmentWithoutUpcomingDeployment,
-              canReadEnvironment: true,
               tableData,
             },
           });
@@ -177,7 +174,6 @@ describe('Environment item', () => {
           factory({
             propsData: {
               model: environment,
-              canReadEnvironment: true,
               tableData,
               shouldShowAutoStopDate: true,
             },
@@ -205,7 +201,6 @@ describe('Environment item', () => {
                   ...environment,
                   auto_stop_at: futureDate,
                 },
-                canReadEnvironment: true,
                 tableData,
                 shouldShowAutoStopDate: true,
               },
@@ -241,7 +236,6 @@ describe('Environment item', () => {
                   ...environment,
                   auto_stop_at: pastDate,
                 },
-                canReadEnvironment: true,
                 tableData,
                 shouldShowAutoStopDate: true,
               },
@@ -360,7 +354,6 @@ describe('Environment item', () => {
       factory({
         propsData: {
           model: folder,
-          canReadEnvironment: true,
           tableData,
         },
       });

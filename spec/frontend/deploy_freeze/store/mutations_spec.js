@@ -28,9 +28,9 @@ describe('Deploy freeze mutations', () => {
   describe('RECEIVE_FREEZE_PERIODS_SUCCESS', () => {
     it('should set freeze periods and format timezones from identifiers to names', () => {
       const timezoneNames = {
-        'Europe/Berlin': 'Berlin',
-        'Etc/UTC': 'UTC',
-        'America/New_York': 'Eastern Time (US & Canada)',
+        'Europe/Berlin': '[UTC 2] Berlin',
+        'Etc/UTC': '[UTC 0] UTC',
+        'America/New_York': '[UTC -4] Eastern Time (US & Canada)',
       };
 
       mutations[types.RECEIVE_FREEZE_PERIODS_SUCCESS](stateCopy, freezePeriodsFixture);

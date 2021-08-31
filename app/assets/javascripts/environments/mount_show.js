@@ -36,7 +36,6 @@ export const initHeader = () => {
           environment: this.environment,
           canDestroyEnvironment: dataset.canDestroyEnvironment,
           canUpdateEnvironment: dataset.canUpdateEnvironment,
-          canReadEnvironment: dataset.canReadEnvironment,
           canStopEnvironment: dataset.canStopEnvironment,
           canAdminEnvironment: dataset.canAdminEnvironment,
           cancelAutoStopPath: dataset.environmentCancelAutoStopPath,

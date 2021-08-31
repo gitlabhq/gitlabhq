@@ -136,10 +136,10 @@ connect the CD project to your development projects by using [multi-project pipe
 
 A `.gitlab-ci.yml` may contain rules to deploy an application to the production server. This
 deployment usually runs automatically after pushing a merge request. To prevent developers from
-changing the `gitlab-ci.yml`, you can define it in a different repository. The configuration can
+changing the `.gitlab-ci.yml`, you can define it in a different repository. The configuration can
 reference a file in another project with a completely different set of permissions (similar to
 [separating a project for deployments](#separate-project-for-deployments)).
-In this scenario, the `gitlab-ci.yml` is publicly accessible, but can only be edited by users with
+In this scenario, the `.gitlab-ci.yml` is publicly accessible, but can only be edited by users with
 appropriate permissions in the other project.
 
 For more information, see [Custom CI/CD configuration path](../pipelines/settings.md#specify-a-custom-cicd-configuration-file).

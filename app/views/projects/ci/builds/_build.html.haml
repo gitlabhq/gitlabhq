@@ -7,10 +7,14 @@
 - pipeline_link = local_assigns.fetch(:pipeline_link, false)
 - stage = local_assigns.fetch(:stage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
+-# This prevents initializing another Ci::Status object where 'status' is used
+- status = job.detailed_status(current_user)
 
 %tr.build.commit{ class: ('retried' if retried) }
   %td.status
-    = render "ci/status/badge", status: job.detailed_status(current_user), title: job.status_title
+    -# Sending 'status' prevents calling the user relation inside the presenter, generating N+1,
+    -# see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68743
+    = render "ci/status/badge", status: status, title: job.status_title(status)
 
   %td
     - if can?(current_user, :read_build, job)

@@ -74,7 +74,7 @@ If your application utilizes Docker containers you have another option for deplo
 After your Docker build job completes and your image is added to your container registry, you can use the image as a
 [service](../../../ci/services/index.md).
 
-By using service definitions in your `gitlab-ci.yml`, you can scan services with the DAST analyzer.
+By using service definitions in your `.gitlab-ci.yml`, you can scan services with the DAST analyzer.
 
 ```yaml
 stages:
@@ -1307,9 +1307,9 @@ dast:
 By default, DAST downloads all artifacts defined by previous jobs in the pipeline. If
 your DAST job does not rely on `environment_url.txt` to define the URL under test or any other files created
 in previous jobs, we recommend you don't download artifacts. To avoid downloading
-artifacts, add the following to your `gitlab-ci.yml` file:
+artifacts, add the following to your `.gitlab-ci.yml` file:
 
-```json
+```yaml
 dast:
    dependencies: []
 ```

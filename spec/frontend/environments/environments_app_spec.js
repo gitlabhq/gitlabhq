@@ -20,7 +20,6 @@ describe('Environment', () => {
   const mockData = {
     endpoint: 'environments.json',
     canCreateEnvironment: true,
-    canReadEnvironment: true,
     newEnvironmentPath: 'environments/new',
     helpPagePath: 'help',
     userCalloutsPath: '/callouts',

@@ -135,5 +135,5 @@ to switch to a different deployment. Both deployments are running in parallel, a
 can be switched to at any time.
 
 An [example deployable application](https://gitlab.com/gl-release/blue-green-example)
-is available, with a [`gitlab-ci.yml` CI/CD configuration file](https://gitlab.com/gl-release/blue-green-example/blob/master/.gitlab-ci.yml)
+is available, with a [`.gitlab-ci.yml` CI/CD configuration file](https://gitlab.com/gl-release/blue-green-example/blob/master/.gitlab-ci.yml)
 that demonstrates blue-green deployments.

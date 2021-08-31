@@ -316,7 +316,7 @@ The optional `runtime` parameter can refer to one of the following runtime alias
 | `openfaas/classic/python3` | OpenFaaS |
 | `openfaas/classic/ruby` | OpenFaaS |
 
-After the `gitlab-ci.yml` template has been added and the `serverless.yml` file
+After the `.gitlab-ci.yml` template has been added and the `serverless.yml` file
 has been created, pushing a commit to your project results in a CI pipeline
 being executed which deploys each function as a Knative service. After the
 deploy stage has finished, additional details for the function display

@@ -52,6 +52,22 @@ export const updateFreezePeriod = (store) =>
     }),
   );
 
+export const deleteFreezePeriod = ({ state, commit }, { id }) => {
+  commit(types.REQUEST_DELETE_FREEZE_PERIOD, id);
+
+  return Api.deleteFreezePeriod(state.projectId, id)
+    .then(() => commit(types.RECEIVE_DELETE_FREEZE_PERIOD_SUCCESS, id))
+    .catch((e) => {
+      createFlash({
+        message: __('Error: Unable to delete deploy freeze'),
+      });
+      commit(types.RECEIVE_DELETE_FREEZE_PERIOD_ERROR, id);
+
+      // eslint-disable-next-line no-console
+      console.error('[gitlab] Unable to delete deploy freeze:', e);
+    });
+};
+
 export const fetchFreezePeriods = ({ commit, state }) => {
   commit(types.REQUEST_FREEZE_PERIODS);
 

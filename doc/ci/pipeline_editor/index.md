@@ -56,7 +56,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 > - [Moved to **CI/CD > Editor**](https://gitlab.com/gitlab-org/gitlab/-/issues/263141) in GitLab 13.7.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290117) in GitLab 13.12.
 
-To view a visualization of your `gitlab-ci.yml` configuration, in your project,
+To view a visualization of your `.gitlab-ci.yml` configuration, in your project,
 go to **CI/CD > Editor**, and then select the **Visualize** tab. The
 visualization shows all stages and jobs. Any [`needs`](../yaml/index.md#needs)
 relationships are displayed as lines connecting jobs together, showing the

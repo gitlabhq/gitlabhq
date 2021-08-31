@@ -66,6 +66,7 @@ module Ci
     has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :generic_commit_statuses, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus'
     has_many :job_artifacts, through: :builds
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'

@@ -311,6 +311,10 @@ RSpec.describe 'getting pipeline information nested in a project' do
     end
 
     it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+      # create extra statuses
+      create(:generic_commit_status, :pending, name: 'generic-build-a', pipeline: pipeline, stage_idx: 0, stage: 'build')
+      create(:ci_bridge, :failed, name: 'deploy-a', pipeline: pipeline, stage_idx: 2, stage: 'deploy')
+
       # warm up
       post_graphql(query, current_user: current_user)
 
@@ -318,9 +322,11 @@ RSpec.describe 'getting pipeline information nested in a project' do
         post_graphql(query, current_user: current_user)
       end
 
-      create(:ci_build, name: 'test-a', pipeline: pipeline, stage_idx: 1, stage: 'test')
-      create(:ci_build, name: 'test-b', pipeline: pipeline, stage_idx: 1, stage: 'test')
-      create(:ci_build, name: 'deploy-a', pipeline: pipeline, stage_idx: 2, stage: 'deploy')
+      create(:generic_commit_status, :pending, name: 'generic-build-b', pipeline: pipeline, stage_idx: 0, stage: 'build')
+      create(:ci_build, :failed, name: 'test-a', pipeline: pipeline, stage_idx: 1, stage: 'test')
+      create(:ci_build, :running, name: 'test-b', pipeline: pipeline, stage_idx: 1, stage: 'test')
+      create(:ci_build, :pending, name: 'deploy-b', pipeline: pipeline, stage_idx: 2, stage: 'deploy')
+      create(:ci_bridge, :failed, name: 'deploy-c', pipeline: pipeline, stage_idx: 2, stage: 'deploy')
 
       expect do
         post_graphql(query, current_user: current_user)

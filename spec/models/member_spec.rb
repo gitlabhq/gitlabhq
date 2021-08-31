@@ -645,6 +645,16 @@ RSpec.describe Member do
 
       expect(user.authorized_projects.reload).to include(project)
     end
+
+    it 'does not accept the invite if saving a new user fails' do
+      invalid_user = User.new(first_name: '', last_name: '')
+
+      member.accept_invite! invalid_user
+
+      expect(member.invite_accepted_at).to be_nil
+      expect(member.invite_token).not_to be_nil
+      expect_any_instance_of(Member).not_to receive(:after_accept_invite)
+    end
   end
 
   describe "#decline_invite!" do

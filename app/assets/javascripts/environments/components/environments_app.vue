@@ -52,10 +52,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    canReadEnvironment: {
-      type: Boolean,
-      required: true,
-    },
     newEnvironmentPath: {
       type: String,
       required: true,
@@ -210,7 +206,6 @@ export default {
         :is-loading="isLoading"
         :environments="state.environments"
         :pagination="state.paginationInformation"
-        :can-read-environment="canReadEnvironment"
         @onChangePage="onChangePage"
       >
         <template v-if="!isLoading && state.environments.length === 0" #empty-state>

@@ -23,11 +23,6 @@ export default {
       required: true,
       default: () => [],
     },
-    canReadEnvironment: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -155,7 +150,6 @@ export default {
       <environment-item
         :key="`environment-item-${i}`"
         :model="model"
-        :can-read-environment="canReadEnvironment"
         :table-data="tableData"
         data-qa-selector="environment_item"
       />
@@ -191,7 +185,6 @@ export default {
             <environment-item
               :key="`environment-row-${i}-${index}`"
               :model="child"
-              :can-read-environment="canReadEnvironment"
               :table-data="tableData"
               data-qa-selector="environment_item"
             />

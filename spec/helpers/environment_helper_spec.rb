@@ -43,7 +43,6 @@ RSpec.describe EnvironmentHelper do
         external_url: environment.external_url,
         can_update_environment: true,
         can_destroy_environment: true,
-        can_read_environment: true,
         can_stop_environment: true,
         can_admin_environment: true,
         environment_metrics_path: environment_metrics_path(environment),
