@@ -27,10 +27,6 @@ class PagesDeployment < ApplicationRecord
 
   mount_file_store_uploader ::Pages::DeploymentUploader
 
-  def log_geo_deleted_event
-    # this is to be adressed in https://gitlab.com/groups/gitlab-org/-/epics/589
-  end
-
   def migrated?
     file.filename == MIGRATED_FILE_NAME
   end
@@ -41,3 +37,5 @@ class PagesDeployment < ApplicationRecord
     self.size = file.size
   end
 end
+
+PagesDeployment.prepend_mod

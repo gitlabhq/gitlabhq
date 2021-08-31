@@ -129,13 +129,14 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     let(:output) { StringIO.new }
 
     before do
-      structure_files = %w[db/structure.sql db/ci_structure.sql]
+      structure_files = %w[structure.sql ci_structure.sql]
 
       allow(File).to receive(:open).and_call_original
 
-      structure_files.each do |structure_file|
+      structure_files.each do |structure_file_name|
+        structure_file = File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, structure_file_name)
         stub_file_read(structure_file, content: input)
-        allow(File).to receive(:open).with(Rails.root.join(structure_file).to_s, any_args).and_yield(output)
+        allow(File).to receive(:open).with(structure_file.to_s, any_args).and_yield(output)
       end
     end
 

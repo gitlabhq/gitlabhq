@@ -1,0 +1,35 @@
+# This is a template for a feature deprecation
+# A deprecation typically occurs when a feature or capability is planned to be removed in a future release.
+# Deprecations should be announced at least two releases prior to removal.  Any breaking changes should only be done in major releases.
+#
+# Below is an example of what a single entry should look like, it's required attributes,
+# and what types we expect those attribute values to be.
+#
+# For more information please refer to the handbook documentation here:
+# {{LINK TBD}}
+#
+# Please delete this line and above before submitting your merge request.
+
+- name: # The name of the feature to be deprecated
+  removal_milestone: # XX.YY format - the milestone when this feature is planned to be removed
+  body: | # Do not modify this line, instead modify the lines below.
+    <!-- START OF BODY COMMENT
+
+    This area supports markdown.
+
+    It is recommended to copy and paste the release post entry content here.
+
+    You can shorten it if needed, but remember that the entry itself has already been reviewed by Tech Writing so don't feel like you need to reword anything.
+
+    Delete this entire comment and replace it with your markdown content.
+
+    END OF BODY COMMENT -->
+  stage: # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  tiers: # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: # (optional) This is a link to the deprecation issue in GitLab
+  documentation_url: # (optional) This is a link to the current documentation page
+  image_url: # (optional) This is a link to a thumbnail image depicting the feature
+  video_url: # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  announcement_milestone: # (optional - may be required in the future) XX.YY format - the milestone when this feature was first announced as deprecated
+  announcement_date: # (optional - may be required in the future) YYYY-MM-DD format - the date of the milestone release when this feature was first announced as deprecated
+  removal_date: # (optional - may be required in the future) YYYY-MM-DD format - the date of the milestone release when this feature is planned to be removed

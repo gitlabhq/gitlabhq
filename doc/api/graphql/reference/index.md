@@ -6450,6 +6450,29 @@ The edge type for [`PackageTag`](#packagetag).
 | <a id="packagetagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="packagetagedgenode"></a>`node` | [`PackageTag`](#packagetag) | The item at the end of the edge. |
 
+#### `PagesDeploymentRegistryConnection`
+
+The connection type for [`PagesDeploymentRegistry`](#pagesdeploymentregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentregistryconnectionedges"></a>`edges` | [`[PagesDeploymentRegistryEdge]`](#pagesdeploymentregistryedge) | A list of edges. |
+| <a id="pagesdeploymentregistryconnectionnodes"></a>`nodes` | [`[PagesDeploymentRegistry]`](#pagesdeploymentregistry) | A list of nodes. |
+| <a id="pagesdeploymentregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PagesDeploymentRegistryEdge`
+
+The edge type for [`PagesDeploymentRegistry`](#pagesdeploymentregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pagesdeploymentregistryedgenode"></a>`node` | [`PagesDeploymentRegistry`](#pagesdeploymentregistry) | The item at the end of the edge. |
+
 #### `PathLockConnection`
 
 The connection type for [`PathLock`](#pathlock).
@@ -9606,6 +9629,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="geonodepackagefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 
+##### `GeoNode.pagesDeploymentRegistries`
+
+Find Pages Deployment registries on this Geo node Available only when feature flag `geo_pages_deployment_replication` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Returns [`PagesDeploymentRegistryConnection`](#pagesdeploymentregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodepagesdeploymentregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+
 ##### `GeoNode.pipelineArtifactRegistries`
 
 Find pipeline artifact registries on this Geo node.
@@ -11790,6 +11829,23 @@ Information about pagination in a connection.
 | <a id="pageinfohasnextpage"></a>`hasNextPage` | [`Boolean!`](#boolean) | When paginating forwards, are there more items?. |
 | <a id="pageinfohaspreviouspage"></a>`hasPreviousPage` | [`Boolean!`](#boolean) | When paginating backwards, are there more items?. |
 | <a id="pageinfostartcursor"></a>`startCursor` | [`String`](#string) | When paginating backwards, the cursor to continue. |
+
+### `PagesDeploymentRegistry`
+
+Represents the Geo replication and verification state of a pages_deployment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PagesDeploymentRegistry was created. |
+| <a id="pagesdeploymentregistryid"></a>`id` | [`ID!`](#id) | ID of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistrypagesdeploymentid"></a>`pagesDeploymentId` | [`ID!`](#id) | ID of the Pages Deployment. |
+| <a id="pagesdeploymentregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry should be resynced. |
+| <a id="pagesdeploymentregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PagesDeploymentRegistry. |
 
 ### `PathLock`
 

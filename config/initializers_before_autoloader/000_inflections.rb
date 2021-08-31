@@ -25,6 +25,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     lfs_object_registry
     merge_request_diff_registry
     package_file_registry
+    pages_deployment_registry
     pipeline_artifact_registry
     project_auto_devops
     project_registry

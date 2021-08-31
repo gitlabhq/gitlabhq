@@ -186,17 +186,10 @@ following these rules:
 To override the default behavior, you can
 [specify a service alias](#available-settings-for-services).
 
-### Connecting Services
-
-> - [Deployed behind a feature flag](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/11751).
+### Connecting services
 
 You can use inter-dependent services with complex jobs, like end-to-end tests where an
 external API needs to communicate with its own database.
-
-This behavior is currently behind a
-[feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html),
-which you can enable by defining the `FF_NETWORK_PER_BUILD` CI/CD variable
-either in the job or globally.
 
 For example, for an end-to-end test for a front-end application that uses an API, and where the API needs a database:
 
@@ -217,6 +210,9 @@ end-to-end-tests:
     - npm install
     - npm test
 ```
+
+For this solution to work, you must use
+[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
 
 ## Passing CI/CD variables to services
 
@@ -345,11 +341,10 @@ The syntax of `command` is similar to [Dockerfile's `CMD`](https://docs.docker.c
 
 ## Using `services` with `docker run` (Docker-in-Docker) side-by-side
 
-In addition to letting services talk to each other via `FF_NETWORK_PER_BUILD`,
-containers started via `docker run` can also connect to services provided by GitLab.
+Containers started with `docker run` can also connect to services provided by GitLab.
 
-This can be useful in case booting the service is expensive or time consuming.
-This technique will allow running tests from multiple different client environments,
+When booting the service is expensive or time consuming, you can use
+this technique to run tests from different client environments,
 while only booting up the tested service once.
 
 ```yaml
@@ -368,6 +363,9 @@ access-service:
       --network=host                 \
       curlimages/curl:7.74.0 curl "http://tutum-wordpress"
 ```
+
+For this solution to work, you must use
+[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
 
 ## How Docker integration works
 

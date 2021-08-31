@@ -37,7 +37,7 @@ the [Git commands you need](#update-the-default-branch-name-in-your-repository) 
 
 To update the default branch name for an individual [project](../../index.md):
 
-1. Sign in to GitLab as a user with the [Administrator](../../../permissions.md) role.
+1. Sign in to GitLab with at least the [Maintainer](../../../permissions.md) role.
 1. In the left navigation menu, go to **Settings > Repository**.
 1. Expand **Default branch**, and select a new default branch.
 1. (Optional) Select the **Auto-close referenced issues on default branch** checkbox to close
@@ -77,7 +77,7 @@ overrides it.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
 
-Administrators of groups and subgroups can configure the default branch name for a group:
+Users with at least the Owner role of groups and subgroups can configure the default branch name for a group:
 
 1. Go to the group **Settings > Repository**.
 1. Expand **Default initial branch name**.
@@ -128,8 +128,8 @@ renames a Git repository's (`example`) default branch.
    git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
    ```
 
-1. Sign in to GitLab as an [administrator](../../../permissions.md) and follow
-   the instructions to
+1. Sign in to GitLab with at least the [Maintainer](../../../permissions.md)
+   role and follow the instructions to
    [change the default branch for this project](#change-the-default-branch-name-for-a-project).
    Select `main` as your new default branch.
 1. Protect your new `main` branch as described in the [protected branches documentation](../../protected_branches.md).

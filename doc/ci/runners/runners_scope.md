@@ -168,7 +168,7 @@ You must have the [Owner role](../../user/permissions.md#group-members-permissio
 
    | Attribute    | Description |
    | ------------ | ----------- |
-   | Type         | Displays the runner type: `group` or `specific`, together with the optional states `locked` and `paused` |
+   | Type         | Displays the runner type: `group` or `specific`, and the optional state `paused` |
    | Runner token | Token used to identify the runner, and that the runner uses to communicate with the GitLab instance |
    | Description  | Description given to the runner when it was created |
    | Version      | GitLab Runner version |
@@ -242,10 +242,10 @@ You can configure a specific runner so it is "locked" and cannot be enabled for 
 This setting can be enabled when you first [register a runner](https://docs.gitlab.com/runner/register/),
 but can also be changed later.
 
-To lock or unlock a runner:
+To lock or unlock a specific runner:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. Find the runner you want to lock or unlock. Make sure it's enabled.
+1. Find the specific runner you want to lock or unlock. Make sure it's enabled. You cannot lock shared or group runners.
 1. Click the pencil button.
 1. Check the **Lock to current projects** option.
 1. Click **Save changes**.

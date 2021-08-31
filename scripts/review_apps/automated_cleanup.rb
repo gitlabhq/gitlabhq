@@ -115,14 +115,16 @@ class AutomatedCleanup
       last_deploy = deployment.created_at
       deployed_at = Time.parse(last_deploy)
 
+      if deployed_at < stop_threshold
+        environment_state = fetch_environment(environment)&.state
+        stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
+      end
+
       if deployed_at < delete_threshold
         delete_environment(environment, deployment)
         delete_count += 1
 
         break if delete_count > max_delete_count
-      elsif deployed_at < stop_threshold
-        environment_state = fetch_environment(environment)&.state
-        stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
       end
 
       checked_environments << environment.slug

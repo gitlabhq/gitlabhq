@@ -252,6 +252,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_group_wiki_repositories_synced`           | Gauge   | 13.10 | Number of syncable group wikis synced on secondary | `url` |
 | `geo_group_wiki_repositories_failed`           | Gauge   | 13.10 | Number of syncable group wikis failed on secondary | `url` |
 | `geo_group_wiki_repositories_registry`         | Gauge   | 13.10 | Number of syncable group wikis in the registry | `url` |
+| `geo_pages_deployments`                        | Gauge   | 14.3  | Number of pages deployments on primary | `url` |
+| `geo_pages_deployments_checksum_total`         | Gauge   | 14.3  | Number of pages deployments tried to checksum on primary | `url` |
+| `geo_pages_deployments_checksummed`            | Gauge   | 14.3  | Number of pages deployments successfully checksummed on primary | `url` |
+| `geo_pages_deployments_checksum_failed`        | Gauge   | 14.3  | Number of pages deployments failed to calculate the checksum on primary | `url` |
+| `geo_pages_deployments_synced`                 | Gauge   | 14.3  | Number of syncable pages deployments synced on secondary | `url` |
+| `geo_pages_deployments_failed`                 | Gauge   | 14.3  | Number of syncable pages deployments failed to sync on secondary | `url` |
+| `geo_pages_deployments_registry`               | Gauge   | 14.3  | Number of pages deployments in the registry | `url` |
+| `geo_pages_deployments_verification_total`     | Gauge   | 14.3  | Number of pages deployments verifications tried on secondary | `url` |
+| `geo_pages_deployments_verified`               | Gauge   | 14.3  | Number of pages deployments verified on secondary | `url` |
+| `geo_pages_deployments_verification_failed`    | Gauge   | 14.3  | Number of pages deployments verifications failed on secondary | `url` |
 | `limited_capacity_worker_running_jobs`         | Gauge   | 13.5  | Number of running jobs | `worker` |
 | `limited_capacity_worker_max_running_jobs`     | Gauge   | 13.5  | Maximum number of running jobs | `worker` |
 | `limited_capacity_worker_remaining_work_count` | Gauge   | 13.5  | Number of jobs waiting to be enqueued | `worker` |
