@@ -37,24 +37,10 @@ RSpec.describe API::Ci::Pipelines do
       end
 
       describe 'keys in the response' do
-        context 'when `pipeline_source_filter` feature flag is disabled' do
-          before do
-            stub_feature_flags(pipeline_source_filter: false)
-          end
+        it 'includes pipeline source' do
+          get api("/projects/#{project.id}/pipelines", user)
 
-          it 'does not includes pipeline source' do
-            get api("/projects/#{project.id}/pipelines", user)
-
-            expect(json_response.first.keys).to contain_exactly(*%w[id project_id sha ref status web_url created_at updated_at])
-          end
-        end
-
-        context 'when `pipeline_source_filter` feature flag is disabled' do
-          it 'includes pipeline source' do
-            get api("/projects/#{project.id}/pipelines", user)
-
-            expect(json_response.first.keys).to contain_exactly(*%w[id project_id sha ref status web_url created_at updated_at source])
-          end
+          expect(json_response.first.keys).to contain_exactly(*%w[id project_id sha ref status web_url created_at updated_at source])
         end
       end
 
@@ -323,37 +309,20 @@ RSpec.describe API::Ci::Pipelines do
             create(:ci_pipeline, project: project, source: :api)
           end
 
-          context 'when `pipeline_source_filter` feature flag is disabled' do
-            before do
-              stub_feature_flags(pipeline_source_filter: false)
-            end
+          it 'returns matched pipelines' do
+            get api("/projects/#{project.id}/pipelines", user), params: { source: 'web' }
 
-            it 'returns all pipelines' do
-              get api("/projects/#{project.id}/pipelines", user), params: { source: 'web' }
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response).not_to be_empty
-              expect(json_response.length).to be >= 3
-            end
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).not_to be_empty
+            json_response.each { |r| expect(r['source']).to eq('web') }
           end
 
-          context 'when `pipeline_source_filter` feature flag is enabled' do
-            it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines", user), params: { source: 'web' }
+          context 'when source is invalid' do
+            it 'returns bad_request' do
+              get api("/projects/#{project.id}/pipelines", user), params: { source: 'invalid-source' }
 
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response).not_to be_empty
-              json_response.each { |r| expect(r['source']).to eq('web') }
-            end
-
-            context 'when source is invalid' do
-              it 'returns bad_request' do
-                get api("/projects/#{project.id}/pipelines", user), params: { source: 'invalid-source' }
-
-                expect(response).to have_gitlab_http_status(:bad_request)
-              end
+              expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
         end

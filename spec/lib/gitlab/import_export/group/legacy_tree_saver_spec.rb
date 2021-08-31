@@ -83,11 +83,12 @@ RSpec.describe Gitlab::ImportExport::Group::LegacyTreeSaver do
         let(:user2) { create(:user, email: 'group@member.com') }
         let(:member_emails) do
           saved_group_json['members'].map do |pm|
-            pm['user']['email']
+            pm['user']['public_email']
           end
         end
 
         before do
+          user2.update(public_email: user2.email)
           group.add_developer(user2)
         end
 

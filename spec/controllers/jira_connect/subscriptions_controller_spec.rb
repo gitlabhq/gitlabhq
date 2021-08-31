@@ -102,11 +102,17 @@ RSpec.describe JiraConnect::SubscriptionsController do
     end
 
     context 'with valid JWT' do
-      let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key }, installation.shared_secret) }
+      let(:claims) { { iss: installation.client_key, sub: 1234 } }
+      let(:jwt) { Atlassian::Jwt.encode(claims, installation.shared_secret) }
+      let(:jira_user) { { 'groups' => { 'items' => [{ 'name' => jira_group_name }] } } }
+      let(:jira_group_name) { 'site-admins' }
 
       context 'signed in to GitLab' do
         before do
           sign_in(user)
+          WebMock
+            .stub_request(:get, "#{installation.base_url}/rest/api/3/user?accountId=1234&expand=groups")
+            .to_return(body: jira_user.to_json, status: 200, headers: { 'Content-Type' => 'application/json' })
         end
 
         context 'dev panel integration is available' do
@@ -118,6 +124,16 @@ RSpec.describe JiraConnect::SubscriptionsController do
             subject
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when the Jira user is not a site-admin' do
+          let(:jira_group_name) { 'some-other-group' }
+
+          it 'returns forbidden' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
       end
@@ -134,8 +150,14 @@ RSpec.describe JiraConnect::SubscriptionsController do
 
   describe '#destroy' do
     let(:subscription) { create(:jira_connect_subscription, installation: installation) }
+    let(:jira_user) { { 'groups' => { 'items' => [{ 'name' => jira_group_name }] } } }
+    let(:jira_group_name) { 'site-admins' }
 
     before do
+      WebMock
+        .stub_request(:get, "#{installation.base_url}/rest/api/3/user?accountId=1234&expand=groups")
+        .to_return(body: jira_user.to_json, status: 200, headers: { 'Content-Type' => 'application/json' })
+
       delete :destroy, params: { jwt: jwt, id: subscription.id }
     end
 
@@ -148,11 +170,22 @@ RSpec.describe JiraConnect::SubscriptionsController do
     end
 
     context 'with valid JWT' do
-      let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key }, installation.shared_secret) }
+      let(:claims) { { iss: installation.client_key, sub: 1234 } }
+      let(:jwt) { Atlassian::Jwt.encode(claims, installation.shared_secret) }
 
       it 'deletes the subscription' do
         expect { subscription.reload }.to raise_error ActiveRecord::RecordNotFound
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when the Jira user is not a site admin' do
+        let(:jira_group_name) { 'some-other-group' }
+
+        it 'does not delete the subscription' do
+          expect(response).to have_gitlab_http_status(:forbidden)
+
+          expect { subscription.reload }.not_to raise_error
+        end
       end
     end
   end

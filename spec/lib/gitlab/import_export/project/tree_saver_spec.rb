@@ -299,12 +299,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
 
         let(:member_emails) do
           emails = subject.map do |pm|
-            pm['user']['email']
+            pm['user']['public_email']
           end
           emails
         end
 
         before do
+          user2.update(public_email: user2.email)
           group.add_developer(user2)
         end
 

@@ -29,8 +29,7 @@ module Ci
       items = by_username(items)
       items = by_yaml_errors(items)
       items = by_updated_at(items)
-
-      items = by_source(items) if Feature.enabled?(:pipeline_source_filter, project, default_enabled: :yaml)
+      items = by_source(items)
 
       sort_items(items)
     end

@@ -32,6 +32,7 @@ GET /projects/:id/pipelines
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `status`  | string  | no       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
+| `source`  | string  | no       | In [GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325439), how the pipeline was triggered, one of: `push`, `web`, `trigger`, `schedule`, `api`, `external`, `pipeline`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, `ondemand_dast_scan`, or `ondemand_dast_validation`. |
 | `ref`     | string  | no       | The ref of pipelines |
 | `sha`     | string  | no       | The SHA of pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
@@ -55,6 +56,7 @@ Example of response
     "iid": 12,
     "project_id": 1,
     "status": "pending",
+    "soure": "push",
     "ref": "new-pipeline",
     "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
     "web_url": "https://example.com/foo/bar/pipelines/47",
@@ -66,6 +68,7 @@ Example of response
     "iid": 13,
     "project_id": 1,
     "status": "pending",
+    "soure": "web",
     "ref": "new-pipeline",
     "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
     "web_url": "https://example.com/foo/bar/pipelines/48",

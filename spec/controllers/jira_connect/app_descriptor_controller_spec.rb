@@ -54,7 +54,10 @@ RSpec.describe JiraConnect::AppDescriptorController do
         postInstallPage: {
           key: 'gitlab-configuration',
           name: { value: 'GitLab Configuration' },
-          url: '/subscriptions'
+          url: '/subscriptions',
+          conditions: contain_exactly(
+            a_hash_including(condition: 'user_is_admin', invert: false)
+          )
         },
         jiraDevelopmentTool: {
           actions: {

@@ -115,7 +115,7 @@ tree:
 included_attributes:
   user:
     - :id
-    - :email
+    - :public_email
     - :username
   author:
     - :name

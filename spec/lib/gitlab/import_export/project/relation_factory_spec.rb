@@ -119,7 +119,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         "updated_at" => "2016-11-18T09:29:42.634Z",
         "user" => {
           "id" => admin.id,
-          "email" => admin.email,
+          "public_email" => admin.email,
           "username" => admin.username
         }
       }
@@ -187,7 +187,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         "updated_at" => "2016-11-18T09:29:42.634Z",
         "user" => {
           "id" => admin.id,
-          "email" => admin.email,
+          "public_email" => admin.email,
           "username" => admin.username
         }
       }

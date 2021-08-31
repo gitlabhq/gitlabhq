@@ -14,10 +14,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
 
-  before_action do
-    push_frontend_feature_flag(:pipeline_source_filter, project, type: :development, default_enabled: :yaml)
-  end
-
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
 
@@ -297,10 +293,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def index_params
-    permitted_params = [:scope, :username, :ref, :status]
-    permitted_params << :source if Feature.enabled?(:pipeline_source_filter, project, default_enabled: :yaml)
-
-    params.permit(*permitted_params)
+    params.permit(:scope, :username, :ref, :status, :source)
   end
 
   def enable_code_quality_walkthrough_experiment

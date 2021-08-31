@@ -432,6 +432,77 @@ RSpec.describe Backup::Manager do
       end
     end
 
+    context 'with AWS with server side encryption' do
+      let(:connection) { ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys) }
+      let(:encryption_key) { nil }
+      let(:encryption) { nil }
+      let(:storage_options) { nil }
+
+      before do
+        stub_backup_setting(
+          upload: {
+            connection: {
+              provider: 'AWS',
+              aws_access_key_id: 'AWS_ACCESS_KEY_ID',
+              aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY'
+            },
+            remote_directory: 'directory',
+            multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+            encryption: encryption,
+            encryption_key: encryption_key,
+            storage_options: storage_options,
+            storage_class: nil
+          }
+        )
+
+        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+      end
+
+      context 'with SSE-S3 without using storage_options' do
+        let(:encryption) { 'AES256' }
+
+        it 'sets encryption attributes' do
+          result = subject.upload
+
+          expect(result.key).to be_present
+          expect(result.encryption).to eq('AES256')
+          expect(result.encryption_key).to be_nil
+          expect(result.kms_key_id).to be_nil
+        end
+      end
+
+      context 'with SSE-C (customer-provided keys) options' do
+        let(:encryption) { 'AES256' }
+        let(:encryption_key) { SecureRandom.hex }
+
+        it 'sets encryption attributes' do
+          result = subject.upload
+
+          expect(result.key).to be_present
+          expect(result.encryption).to eq(encryption)
+          expect(result.encryption_key).to eq(encryption_key)
+          expect(result.kms_key_id).to be_nil
+        end
+      end
+
+      context 'with SSE-KMS options' do
+        let(:storage_options) do
+          {
+            server_side_encryption: 'aws:kms',
+            server_side_encryption_kms_key_id: 'arn:aws:kms:12345'
+          }
+        end
+
+        it 'sets encryption attributes' do
+          result = subject.upload
+
+          expect(result.key).to be_present
+          expect(result.encryption).to eq('aws:kms')
+          expect(result.kms_key_id).to eq('arn:aws:kms:12345')
+        end
+      end
+    end
+
     context 'with Google provider' do
       before do
         stub_backup_setting(
