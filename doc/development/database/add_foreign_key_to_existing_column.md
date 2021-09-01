@@ -66,9 +66,7 @@ In the example above, you'd be still able to update records in the `emails` tabl
 Migration file for adding `NOT VALID` foreign key:
 
 ```ruby
-class AddNotValidForeignKeyToEmailsUser < ActiveRecord::Migration[5.2]
-  include Gitlab::Database::MigrationHelpers
-
+class AddNotValidForeignKeyToEmailsUser < Gitlab::Database::Migration[1.0]
   def up
     # safe to use: it requires short lock on the table since we don't validate the foreign key
     add_foreign_key :emails, :users, on_delete: :cascade, validate: false
@@ -92,9 +90,7 @@ In case the data volume is higher (>1000 records), it's better to create a backg
 Example for cleaning up records in the `emails` table within a database migration:
 
 ```ruby
-class RemoveRecordsWithoutUserFromEmailsTable < ActiveRecord::Migration[5.2]
-  include Gitlab::Database::MigrationHelpers
-
+class RemoveRecordsWithoutUserFromEmailsTable < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   class Email < ActiveRecord::Base
@@ -126,9 +122,7 @@ Migration file for validating the foreign key:
 ```ruby
 # frozen_string_literal: true
 
-class ValidateForeignKeyOnEmailUsers < ActiveRecord::Migration[5.2]
-  include Gitlab::Database::MigrationHelpers
-
+class ValidateForeignKeyOnEmailUsers < Gitlab::Database::Migration[1.0]
   def up
     validate_foreign_key :emails, :user_id
   end

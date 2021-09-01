@@ -173,7 +173,7 @@ An example migration of partitioning the `audit_events` table by its
 `created_at` column would look like:
 
 ```ruby
-class PartitionAuditEvents < ActiveRecord::Migration[6.0]
+class PartitionAuditEvents < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -200,7 +200,7 @@ into the partitioned copy.
 Continuing the above example, the migration would look like:
 
 ```ruby
-class BackfillPartitionAuditEvents < ActiveRecord::Migration[6.0]
+class BackfillPartitionAuditEvents < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -233,7 +233,7 @@ failed jobs.
 Once again, continuing the example, this migration would look like:
 
 ```ruby
-class CleanupPartitionedAuditEventsBackfill < ActiveRecord::Migration[6.0]
+class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up

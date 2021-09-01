@@ -63,6 +63,13 @@ module Gitlab
       { limit: limit_proc, period: period_proc }
     end
 
+    def self.throttle_authenticated_git_lfs_options
+      limit_proc = proc { |req| settings.throttle_authenticated_git_lfs_requests_per_period }
+      period_proc = proc { |req| settings.throttle_authenticated_git_lfs_period_in_seconds.seconds }
+
+      { limit: limit_proc, period: period_proc }
+    end
+
     def self.rate_limiting_response_text
       (settings.rate_limiting_response_text.presence || DEFAULT_RATE_LIMITING_RESPONSE_TEXT) + "\n"
     end

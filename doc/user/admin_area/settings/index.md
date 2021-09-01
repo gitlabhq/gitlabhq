@@ -96,6 +96,7 @@ To access the default page for Admin Area settings:
 | Performance optimization | [Write to "authorized_keys" file](../../../administration/operations/fast_ssh_key_lookup.md#setting-up-fast-lookup-via-gitlab-shell) and [Push event activities limit and bulk push events](push_event_activities_limit.md). Various settings that affect GitLab performance. |
 | [User and IP rate limits](user_and_ip_rate_limits.md) | Configure limits for web and API requests. |
 | [Package Registry Rate Limits](package_registry_rate_limits.md) | Configure specific limits for Packages API requests that supersede the user and IP rate limits. |
+| [Git LFS Rate Limits](git_lfs_rate_limits.md) | Configure specific limits for Git LFS requests that supersede the user and IP rate limits. |
 | [Outbound requests](../../../security/webhooks.md) | Allow requests to the local network from hooks and services. |
 | [Protected Paths](protected_paths.md) | Configure paths to be protected by Rack Attack. |
 | [Incident Management](../../../operations/incident_management/index.md) Limits | Limit the number of inbound alerts that can be sent to a project. |

@@ -24,8 +24,13 @@ export default {
       return isScrollable ? scrollableStyles : null;
     },
   },
+  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 <template>
-  <pre class="code-block rounded" :style="styleObject"><code class="d-block">{{ code }}</code></pre>
+  <pre
+    class="code-block rounded code"
+    :class="$options.userColorScheme"
+    :style="styleObject"
+  ><code class="d-block">{{ code }}</code></pre>
 </template>

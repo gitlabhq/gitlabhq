@@ -136,6 +136,7 @@ The possible names are:
 - `throttle_authenticated_protected_paths_web`
 - `throttle_unauthenticated_packages_api`
 - `throttle_authenticated_packages_api`
+- `throttle_authenticated_git_lfs`
 
 For example, to try out throttles for all authenticated requests to
 non-protected paths can be done by setting

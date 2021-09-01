@@ -59,6 +59,24 @@
 
     </figcaption>
     </figure>
+- name: description_list
+  markdown: |-
+    <dl>
+    <dt>Frog</dt>
+    <dd>Wet green thing</dd>
+    <dt>Rabbit</dt>
+    <dd>Warm fluffy thing</dd>
+    <dt>Punt</dt>
+    <dd>Kick a ball</dd>
+    <dd>Take a bet</dd>
+    <dt>Color</dt>
+    <dt>Colour</dt>
+    <dd>
+
+    Any hue except _white_ or **black**
+
+    </dd>
+    </dl>
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
 - name: attachment_link

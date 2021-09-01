@@ -8,6 +8,8 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import DescriptionItem from '../extensions/description_item';
+import DescriptionList from '../extensions/description_list';
 import Division from '../extensions/division';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
@@ -74,6 +76,8 @@ export const createContentEditor = ({
     BulletList,
     Code,
     CodeBlockHighlight,
+    DescriptionItem,
+    DescriptionList,
     Document,
     Division,
     Dropcursor,

@@ -60,8 +60,6 @@ Consider the next release as "Release N.M".
 Execute a standard migration (not a post-migration):
 
 ```ruby
-  include Gitlab::Database::MigrationHelpers
-
   def up
     rename_table_safely(:issues, :tickets)
   end
@@ -96,8 +94,6 @@ At this point, we don't have applications using the old database table name in t
 1. Remove the database view through a post-migration:
 
    ```ruby
-     include Gitlab::Database::MigrationHelpers
-
      def up
        finalize_table_rename(:issues, :tickets)
      end

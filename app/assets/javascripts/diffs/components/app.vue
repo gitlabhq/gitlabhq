@@ -3,7 +3,6 @@ import { GlLoadingIcon, GlPagination, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Mousetrap from 'mousetrap';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import api from '~/api';
 import {
   keysFor,
@@ -55,13 +54,18 @@ import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
-import PreRenderer from './pre_renderer.vue';
 import TreeList from './tree_list.vue';
-import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 
 export default {
   name: 'DiffsApp',
   components: {
+    DynamicScroller: () =>
+      import('vendor/vue-virtual-scroller').then(({ DynamicScroller }) => DynamicScroller),
+    DynamicScrollerItem: () =>
+      import('vendor/vue-virtual-scroller').then(({ DynamicScrollerItem }) => DynamicScrollerItem),
+    PreRenderer: () => import('./pre_renderer.vue').then((PreRenderer) => PreRenderer),
+    VirtualScrollerScrollSync: () =>
+      import('./virtual_scroller_scroll_sync').then((VSSSync) => VSSSync),
     CompareVersions,
     DiffFile,
     NoChanges,
@@ -73,10 +77,6 @@ export default {
     PanelResizer,
     GlPagination,
     GlSprintf,
-    DynamicScroller,
-    DynamicScrollerItem,
-    PreRenderer,
-    VirtualScrollerScrollSync,
     MrWidgetHowToMergeModal,
   },
   alerts: {
@@ -189,25 +189,25 @@ export default {
       treeWidth,
       diffFilesLength: 0,
       virtualScrollCurrentIndex: -1,
+      subscribedToVirtualScrollingEvents: false,
     };
   },
   computed: {
-    ...mapState({
-      isLoading: (state) => state.diffs.isLoading,
-      isBatchLoading: (state) => state.diffs.isBatchLoading,
-      diffFiles: (state) => state.diffs.diffFiles,
-      diffViewType: (state) => state.diffs.diffViewType,
-      commit: (state) => state.diffs.commit,
-      renderOverflowWarning: (state) => state.diffs.renderOverflowWarning,
-      numTotalFiles: (state) => state.diffs.realSize,
-      numVisibleFiles: (state) => state.diffs.size,
-      plainDiffPath: (state) => state.diffs.plainDiffPath,
-      emailPatchPath: (state) => state.diffs.emailPatchPath,
-      retrievingBatches: (state) => state.diffs.retrievingBatches,
+    ...mapState('diffs', {
+      numTotalFiles: 'realSize',
+      numVisibleFiles: 'size',
     }),
     ...mapState('diffs', [
       'showTreeList',
       'isLoading',
+      'isBatchLoading',
+      'diffFiles',
+      'diffViewType',
+      'commit',
+      'renderOverflowWarning',
+      'plainDiffPath',
+      'emailPatchPath',
+      'retrievingBatches',
       'startVersion',
       'latestDiff',
       'currentDiffFileId',
@@ -316,6 +316,7 @@ export default {
       }
 
       this.adjustView();
+      this.subscribeToVirtualScrollingEvents();
     },
     isLoading: 'adjustView',
     renderFileTree: 'adjustView',
@@ -349,11 +350,6 @@ export default {
       this.setHighlightedRow(id.split('diff-content').pop().slice(1));
     }
 
-    if (window.gon?.features?.diffsVirtualScrolling) {
-      diffsEventHub.$on('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
-      diffsEventHub.$on('scrollToIndex', this.scrollVirtualScrollerToIndex);
-    }
-
     if (window.gon?.features?.diffSettingsUsageData) {
       const events = [];
 
@@ -383,6 +379,8 @@ export default {
 
       queueRedisHllEvents(events);
     }
+
+    this.subscribeToVirtualScrollingEvents();
   },
   beforeCreate() {
     diffsApp.instrument();
@@ -611,6 +609,18 @@ export default {
         }
       }
     },
+    subscribeToVirtualScrollingEvents() {
+      if (
+        window.gon?.features?.diffsVirtualScrolling &&
+        this.shouldShow &&
+        !this.subscribedToVirtualScrollingEvents
+      ) {
+        diffsEventHub.$on('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
+        diffsEventHub.$on('scrollToIndex', this.scrollVirtualScrollerToIndex);
+
+        this.subscribedToVirtualScrollingEvents = true;
+      }
+    },
   },
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: MAX_TREE_WIDTH,
@@ -672,7 +682,6 @@ export default {
           <template v-else-if="renderDiffFiles">
             <dynamic-scroller
               v-if="isVirtualScrollingEnabled"
-              ref="virtualScroller"
               :items="diffs"
               :min-item-size="70"
               :buffer="1000"

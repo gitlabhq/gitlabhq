@@ -6,6 +6,11 @@ const defaultAttrs = {
   th: { colspan: 1, rowspan: 1, colwidth: null },
 };
 
+const ignoreAttrs = {
+  dd: ['isTerm'],
+  dt: ['isTerm'],
+};
+
 const tableMap = new WeakMap();
 
 // Source taken from
@@ -118,7 +123,8 @@ export function openTag(tagName, attrs) {
 
   str += Object.entries(attrs || {})
     .map(([key, value]) => {
-      if (defaultAttrs[tagName]?.[key] === value) return '';
+      if ((ignoreAttrs[tagName] || []).includes(key) || defaultAttrs[tagName]?.[key] === value)
+        return '';
 
       return ` ${key}="${htmlEncode(value?.toString())}"`;
     })

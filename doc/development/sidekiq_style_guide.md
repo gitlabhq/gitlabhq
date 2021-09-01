@@ -1002,9 +1002,7 @@ When renaming queues, use the `sidekiq_queue_migrate` helper migration method
 in a **post-deployment migration**:
 
 ```ruby
-class MigrateTheRenamedSidekiqQueue < ActiveRecord::Migration[5.0]
-  include Gitlab::Database::MigrationHelpers
-
+class MigrateTheRenamedSidekiqQueue < Gitlab::Database::Migration[1.0]
   def up
     sidekiq_queue_migrate 'old_queue_name', to: 'new_queue_name'
   end

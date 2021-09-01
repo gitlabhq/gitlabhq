@@ -38,7 +38,7 @@ read the [Introduction to CI/CD with GitLab](introduction/index.md).
   <iframe src="https://www.youtube.com/embed/1iXFbchozdY" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
-## Concepts
+## GitLab CI/CD concepts
 
 GitLab CI/CD uses a number of concepts to describe and run your build and deploy.
 
@@ -53,7 +53,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                       |
 | [Test cases](test_cases/index.md)                       | Create testing scenarios.                                                      |
 
-## Configuration
+## GitLab CI/CD configuration
 
 GitLab CI/CD supports numerous configuration options:
 
@@ -72,7 +72,7 @@ GitLab CI/CD supports numerous configuration options:
 Certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
-## Features
+## GitLab CI/CD features
 
 GitLab CI/CD features, grouped by DevOps stage, include:
 
@@ -109,7 +109,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)**             | Search your project dependencies for their licenses.                                                                           |
 | [Security Test reports](../user/application_security/index.md) **(ULTIMATE)**                   | Check for app vulnerabilities.                                                                                                 |
 
-## Examples
+## GitLab CI/CD examples
 
 See the [CI/CD examples](examples/README.md) page for example project code and tutorials for
 using GitLab CI/CD with various:
@@ -118,7 +118,7 @@ using GitLab CI/CD with various:
 - Languages
 - Platforms
 
-## Administration
+## GitLab CI/CD Administration
 
 You can change the default behavior of GitLab CI/CD for:
 

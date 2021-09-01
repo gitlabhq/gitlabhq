@@ -70,7 +70,7 @@ graph LR
 
     H -->|Yes| E[Regular migration]
     H -->|No| I[Post-deploy migration<br/>+ feature flag]
- 
+
     D -->|Yes| F[Post-deploy migration]
     D -->|No| G[Background migration]
 ```
@@ -217,6 +217,39 @@ In case you need to insert, update, or delete a significant amount of data, you:
 - Must disable the single transaction with `disable_ddl_transaction!`.
 - Should consider doing it in a [Background Migration](background_migrations.md).
 
+## Migration helpers and versioning
+
+Various helper methods are available for many common patterns in database migrations. Those
+helpers can be found in `Gitlab::Database::MigrationHelpers` and related modules.
+
+In order to allow changing a helper's behavior over time, we implement a versioning scheme
+for migration helpers. This allows us to maintain the behavior of a helper for already
+existing migrations but change the behavior for any new migrations.
+
+For that purpose, all database migrations should inherit from `Gitlab::Database::Migration`,
+which is a "versioned" class. For new migrations, the latest version should be used (which
+can be looked up in `Gitlab::Database::Migration::MIGRATION_CLASSES`) to use the latest version
+of migration helpers.
+
+In this example, we use version 1.0 of the migration class:
+
+```ruby
+class TestMigration < Gitlab::Database::Migration[1.0]
+  def change
+  end
+end
+```
+
+NOTE:
+It is discouraged to include `Gitlab::Database::MigrationHelpers` directly into a
+migration. Instead, the latest version of `Gitlab::Database::Migration` will expose the latest
+version of migration helpers automatically.
+
+NOTE:
+Migration helpers and versioning are available starting from [14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986).
+For merge requests targeting previous stable branches, the old format needs to be used and we continue
+to inherit from `ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[1.0]` for those.
+
 ## Retry mechanism when acquiring database locks
 
 When changing the database schema, we use helper methods to invoke DDL (Data Definition
@@ -256,8 +289,6 @@ lock allow the database to process other statements.
 **Removing a column:**
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 def up
   with_lock_retries do
     remove_column :users, :full_name
@@ -278,8 +309,6 @@ you should do as much as possible inside the transaction rather than trying to g
 Be careful about running long database statements within the block. The acquired locks are kept until the transaction (block) finishes and depending on the lock type, it might block other database operations.
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 def up
   with_lock_retries do
     add_column :users, :full_name, :string
@@ -298,8 +327,6 @@ end
 **Removing a foreign key:**
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 def up
   with_lock_retries do
     remove_foreign_key :issues, :projects
@@ -316,8 +343,6 @@ end
 **Changing default value for a column:**
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 def up
   with_lock_retries do
     change_column_default :merge_requests, :lock_version, from: nil, to: 0
@@ -387,8 +412,6 @@ We can use the `add_concurrent_foreign_key` method in this case, as this helper 
 has the lock retries built into it.
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 disable_ddl_transaction!
 
 def up
@@ -405,8 +428,6 @@ end
 Adding foreign key to `users`:
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 disable_ddl_transaction!
 
 def up
@@ -498,11 +519,11 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
+class MyMigration < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
+
   def up
     remove_concurrent_index :table_name, :column_name, name: INDEX_NAME
   end
@@ -549,7 +570,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
+class MyMigration < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -594,7 +615,7 @@ The easiest way to test for existence of an index by name is to use the
 be used with a name option. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
+class MyMigration < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::MigrationHelpers
 
   INDEX_NAME = 'index_name'
@@ -631,7 +652,7 @@ Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.
 
 ```ruby
-class Migration < ActiveRecord::Migration[6.0]
+class Migration < Gitlab::Database::Migration[1.0]
 
   def change
     add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
@@ -677,7 +698,7 @@ expensive and disruptive operation for larger tables, but in reality it's not.
 Take the following migration as an example:
 
 ```ruby
-class DefaultRequestAccessGroups < ActiveRecord::Migration[5.2]
+class DefaultRequestAccessGroups < Gitlab::Database::Migration[1.0]
   def change
     change_column_default(:namespaces, :request_access_enabled, from: false, to: true)
   end
@@ -884,7 +905,7 @@ The Rails 5 natively supports `JSONB` (binary JSON) column type.
 Example migration adding this column:
 
 ```ruby
-class AddOptionsToBuildMetadata < ActiveRecord::Migration[5.0]
+class AddOptionsToBuildMetadata < Gitlab::Database::Migration[1.0]
   def change
     add_column :ci_builds_metadata, :config_options, :jsonb
   end
@@ -916,7 +937,7 @@ Do not store `attr_encrypted` attributes as `:text` in the database; use
 efficient:
 
 ```ruby
-class AddSecretToSomething < ActiveRecord::Migration[5.0]
+class AddSecretToSomething < Gitlab::Database::Migration[1.0]
   def change
     add_column :something, :encrypted_secret, :binary
     add_column :something, :encrypted_secret_iv, :binary
@@ -974,7 +995,7 @@ If you need more complex logic, you can define and use models local to a
 migration. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
+class MyMigration < Gitlab::Database::Migration[1.0]
   class Project < ActiveRecord::Base
     self.table_name = 'projects'
   end
@@ -1073,7 +1094,7 @@ in a previous migration.
 It is important not to leave out the `User.reset_column_information` command, in order to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
 
 ```ruby
-class AddAndSeedMyColumn < ActiveRecord::Migration[6.0]
+class AddAndSeedMyColumn < Gitlab::Database::Migration[1.0]
   class User < ActiveRecord::Base
     self.table_name = 'users'
   end

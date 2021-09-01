@@ -497,6 +497,14 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :throttle_authenticated_git_lfs_requests_per_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :throttle_authenticated_git_lfs_period_in_seconds,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   validates :throttle_authenticated_web_requests_per_period,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }

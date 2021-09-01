@@ -631,7 +631,7 @@ Input type: `ApiFuzzingCiConfigurationCreateInput`
 | <a id="mutationapifuzzingciconfigurationcreateauthusername"></a>`authUsername` | [`String`](#string) | CI variable containing the username for authenticating with the target API. |
 | <a id="mutationapifuzzingciconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationapifuzzingciconfigurationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="mutationapifuzzingciconfigurationcreatescanmode"></a>`scanMode` | [`ApiFuzzingScanMode!`](#apifuzzingscanmode) | The mode for API fuzzing scans. |
+| <a id="mutationapifuzzingciconfigurationcreatescanmode"></a>`scanMode` | [`ApiFuzzingScanMode!`](#apifuzzingscanmode) | Mode for API fuzzing scans. |
 | <a id="mutationapifuzzingciconfigurationcreatescanprofile"></a>`scanProfile` | [`String`](#string) | Name of a default profile to use for scanning. Ex: Quick-10. |
 | <a id="mutationapifuzzingciconfigurationcreatetarget"></a>`target` | [`String!`](#string) | URL for the target of API fuzzing scans. |
 
@@ -642,7 +642,7 @@ Input type: `ApiFuzzingCiConfigurationCreateInput`
 | <a id="mutationapifuzzingciconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationapifuzzingciconfigurationcreateconfigurationyaml"></a>`configurationYaml` | [`String`](#string) | A YAML snippet that can be inserted into the project's `.gitlab-ci.yml` to set up API fuzzing scans. |
 | <a id="mutationapifuzzingciconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` | [`String`](#string) | The location at which the project's `.gitlab-ci.yml` file can be edited in the browser. |
+| <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` | [`String`](#string) | Location at which the project's `.gitlab-ci.yml` file can be edited in the browser. |
 
 ### `Mutation.awardEmojiAdd`
 
@@ -760,10 +760,10 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationboardlistupdatelimitmetricsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationboardlistupdatelimitmetricslimitmetric"></a>`limitMetric` | [`ListLimitMetric`](#listlimitmetric) | The new limit metric type for the list. |
-| <a id="mutationboardlistupdatelimitmetricslistid"></a>`listId` | [`ListID!`](#listid) | The global ID of the list. |
-| <a id="mutationboardlistupdatelimitmetricsmaxissuecount"></a>`maxIssueCount` | [`Int`](#int) | The new maximum issue count limit. |
-| <a id="mutationboardlistupdatelimitmetricsmaxissueweight"></a>`maxIssueWeight` | [`Int`](#int) | The new maximum issue weight limit. |
+| <a id="mutationboardlistupdatelimitmetricslimitmetric"></a>`limitMetric` | [`ListLimitMetric`](#listlimitmetric) | New limit metric type for the list. |
+| <a id="mutationboardlistupdatelimitmetricslistid"></a>`listId` | [`ListID!`](#listid) | Global ID of the list. |
+| <a id="mutationboardlistupdatelimitmetricsmaxissuecount"></a>`maxIssueCount` | [`Int`](#int) | New maximum issue count limit. |
+| <a id="mutationboardlistupdatelimitmetricsmaxissueweight"></a>`maxIssueWeight` | [`Int`](#int) | New maximum issue weight limit. |
 
 #### Fields
 
@@ -771,7 +771,7 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | ---- | ---- | ----------- |
 | <a id="mutationboardlistupdatelimitmetricsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | The updated list. |
+| <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
 
 ### `Mutation.bulkEnableDevopsAdoptionNamespaces`
 
@@ -1149,7 +1149,7 @@ Input type: `CreateComplianceFrameworkInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatecomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatecomplianceframeworkframework"></a>`framework` | [`ComplianceFramework`](#complianceframework) | The created compliance framework. |
+| <a id="mutationcreatecomplianceframeworkframework"></a>`framework` | [`ComplianceFramework`](#complianceframework) | Created compliance framework. |
 
 ### `Mutation.createCustomEmoji`
 
@@ -1204,17 +1204,17 @@ Input type: `CreateEpicInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | The IDs of labels to be added to the epic. |
+| <a id="mutationcreateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the epic. |
 | <a id="mutationcreateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
-| <a id="mutationcreateepicdescription"></a>`description` | [`String`](#string) | The description of the epic. |
-| <a id="mutationcreateepicduedatefixed"></a>`dueDateFixed` | [`String`](#string) | The end date of the epic. |
+| <a id="mutationcreateepicdescription"></a>`description` | [`String`](#string) | Description of the epic. |
+| <a id="mutationcreateepicduedatefixed"></a>`dueDateFixed` | [`String`](#string) | End date of the epic. |
 | <a id="mutationcreateepicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates end date should be sourced from due_date_fixed field not the issue milestones. |
-| <a id="mutationcreateepicgrouppath"></a>`groupPath` | [`ID!`](#id) | The group the epic to mutate is in. |
-| <a id="mutationcreateepicremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | The IDs of labels to be removed from the epic. |
-| <a id="mutationcreateepicstartdatefixed"></a>`startDateFixed` | [`String`](#string) | The start date of the epic. |
+| <a id="mutationcreateepicgrouppath"></a>`groupPath` | [`ID!`](#id) | Group the epic to mutate is in. |
+| <a id="mutationcreateepicremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | IDs of labels to be removed from the epic. |
+| <a id="mutationcreateepicstartdatefixed"></a>`startDateFixed` | [`String`](#string) | Start date of the epic. |
 | <a id="mutationcreateepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates start date should be sourced from start_date_fixed field not the issue milestones. |
-| <a id="mutationcreateepictitle"></a>`title` | [`String`](#string) | The title of the epic. |
+| <a id="mutationcreateepictitle"></a>`title` | [`String`](#string) | Title of the epic. |
 
 #### Fields
 
@@ -1417,7 +1417,7 @@ Input type: `DastOnDemandScanCreateInput`
 | <a id="mutationdastondemandscancreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastondemandscancreatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile to be used for the scan. |
 | <a id="mutationdastondemandscancreatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be used for the scan. |
-| <a id="mutationdastondemandscancreatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the site profile belongs to. |
+| <a id="mutationdastondemandscancreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
 
 #### Fields
 
@@ -1435,13 +1435,13 @@ Input type: `DastProfileCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationdastprofilecreatebranchname"></a>`branchName` | [`String`](#string) | The associated branch. |
+| <a id="mutationdastprofilecreatebranchname"></a>`branchName` | [`String`](#string) | Associated branch. |
 | <a id="mutationdastprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastprofilecreatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be associated. |
 | <a id="mutationdastprofilecreatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be associated. |
-| <a id="mutationdastprofilecreatedescription"></a>`description` | [`String`](#string) | The description of the profile. Defaults to an empty string. |
-| <a id="mutationdastprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the profile belongs to. |
-| <a id="mutationdastprofilecreatename"></a>`name` | [`String!`](#string) | The name of the profile. |
+| <a id="mutationdastprofilecreatedescription"></a>`description` | [`String`](#string) | Description of the profile. Defaults to an empty string. |
+| <a id="mutationdastprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the profile belongs to. |
+| <a id="mutationdastprofilecreatename"></a>`name` | [`String!`](#string) | Name of the profile. |
 | <a id="mutationdastprofilecreaterunaftercreate"></a>`runAfterCreate` | [`Boolean`](#boolean) | Run scan using profile after creation. Defaults to false. |
 
 #### Fields
@@ -1449,9 +1449,9 @@ Input type: `DastProfileCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastprofilecreatedastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | The created profile. |
+| <a id="mutationdastprofilecreatedastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | Created profile. |
 | <a id="mutationdastprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastprofilecreatepipelineurl"></a>`pipelineUrl` | [`String`](#string) | The URL of the pipeline that was created. Requires `runAfterCreate` to be set to `true`. |
+| <a id="mutationdastprofilecreatepipelineurl"></a>`pipelineUrl` | [`String`](#string) | URL of the pipeline that was created. Requires `runAfterCreate` to be set to `true`. |
 
 ### `Mutation.dastProfileDelete`
 
@@ -1499,14 +1499,14 @@ Input type: `DastProfileUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationdastprofileupdatebranchname"></a>`branchName` | [`String`](#string) | The associated branch. |
+| <a id="mutationdastprofileupdatebranchname"></a>`branchName` | [`String`](#string) | Associated branch. |
 | <a id="mutationdastprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastprofileupdatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile to be associated. |
 | <a id="mutationdastprofileupdatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile to be associated. |
-| <a id="mutationdastprofileupdatedescription"></a>`description` | [`String`](#string) | The description of the profile. Defaults to an empty string. |
-| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the profile belongs to. |
+| <a id="mutationdastprofileupdatedescription"></a>`description` | [`String`](#string) | Description of the profile. Defaults to an empty string. |
+| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the profile belongs to. |
 | <a id="mutationdastprofileupdateid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile to be deleted. |
-| <a id="mutationdastprofileupdatename"></a>`name` | [`String`](#string) | The name of the profile. |
+| <a id="mutationdastprofileupdatename"></a>`name` | [`String`](#string) | Name of the profile. |
 | <a id="mutationdastprofileupdaterunafterupdate"></a>`runAfterUpdate` | [`Boolean`](#boolean) | Run scan using profile after update. Defaults to false. |
 
 #### Fields
@@ -1514,7 +1514,7 @@ Input type: `DastProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastprofileupdatedastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | The updated profile. |
+| <a id="mutationdastprofileupdatedastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | Updated profile. |
 | <a id="mutationdastprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdastprofileupdatepipelineurl"></a>`pipelineUrl` | [`String`](#string) | The URL of the pipeline that was created. Requires the input argument `runAfterUpdate` to be set to `true` when calling the mutation, otherwise no pipeline will be created. |
 
@@ -1527,12 +1527,12 @@ Input type: `DastScannerProfileCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the scanner profile belongs to. |
-| <a id="mutationdastscannerprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | The name of the scanner profile. |
+| <a id="mutationdastscannerprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the scanner profile belongs to. |
+| <a id="mutationdastscannerprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | Name of the scanner profile. |
 | <a id="mutationdastscannerprofilecreatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofilecreateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
-| <a id="mutationdastscannerprofilecreatespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | The maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="mutationdastscannerprofilecreatetargettimeout"></a>`targetTimeout` | [`Int`](#int) | The maximum number of seconds allowed for the site under test to respond to a request. |
+| <a id="mutationdastscannerprofilecreatespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
+| <a id="mutationdastscannerprofilecreatetargettimeout"></a>`targetTimeout` | [`Int`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofilecreateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
 #### Fields
@@ -1571,13 +1571,13 @@ Input type: `DastScannerProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the scanner profile belongs to. |
+| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the scanner profile belongs to. |
 | <a id="mutationdastscannerprofileupdateid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be updated. |
-| <a id="mutationdastscannerprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | The name of the scanner profile. |
+| <a id="mutationdastscannerprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the scanner profile. |
 | <a id="mutationdastscannerprofileupdatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofileupdateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
-| <a id="mutationdastscannerprofileupdatespidertimeout"></a>`spiderTimeout` | [`Int!`](#int) | The maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="mutationdastscannerprofileupdatetargettimeout"></a>`targetTimeout` | [`Int!`](#int) | The maximum number of seconds allowed for the site under test to respond to a request. |
+| <a id="mutationdastscannerprofileupdatespidertimeout"></a>`spiderTimeout` | [`Int!`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
+| <a id="mutationdastscannerprofileupdatetargettimeout"></a>`targetTimeout` | [`Int!`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofileupdateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
 #### Fields
@@ -1598,12 +1598,12 @@ Input type: `DastSiteProfileCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofilecreateauth"></a>`auth` | [`DastSiteProfileAuthInput`](#dastsiteprofileauthinput) | Parameters for authentication. |
 | <a id="mutationdastsiteprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsiteprofilecreateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | The URLs to skip during an authenticated scan. Defaults to `[]`. |
-| <a id="mutationdastsiteprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the site profile belongs to. |
-| <a id="mutationdastsiteprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | The name of the site profile. |
+| <a id="mutationdastsiteprofilecreateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. Defaults to `[]`. |
+| <a id="mutationdastsiteprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
+| <a id="mutationdastsiteprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofilecreaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
-| <a id="mutationdastsiteprofilecreatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | The type of target to be scanned. |
-| <a id="mutationdastsiteprofilecreatetargeturl"></a>`targetUrl` | [`String`](#string) | The URL of the target to be scanned. |
+| <a id="mutationdastsiteprofilecreatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
+| <a id="mutationdastsiteprofilecreatetargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 
 #### Fields
 
@@ -1622,7 +1622,7 @@ Input type: `DastSiteProfileDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` | [`ID!`](#id) | The project the site profile belongs to. |
+| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
 | <a id="mutationdastsiteprofiledeleteid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be deleted. |
 
 #### Fields
@@ -1642,13 +1642,13 @@ Input type: `DastSiteProfileUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofileupdateauth"></a>`auth` | [`DastSiteProfileAuthInput`](#dastsiteprofileauthinput) | Parameters for authentication. |
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | The URLs to skip during an authenticated scan. |
-| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the site profile belongs to. |
+| <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
+| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
-| <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | The name of the site profile. |
+| <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofileupdaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
-| <a id="mutationdastsiteprofileupdatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | The type of target to be scanned. |
-| <a id="mutationdastsiteprofileupdatetargeturl"></a>`targetUrl` | [`String`](#string) | The URL of the target to be scanned. |
+| <a id="mutationdastsiteprofileupdatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
+| <a id="mutationdastsiteprofileupdatetargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 
 #### Fields
 
@@ -1667,8 +1667,8 @@ Input type: `DastSiteTokenCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsitetokencreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsitetokencreatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the site token belongs to. |
-| <a id="mutationdastsitetokencreatetargeturl"></a>`targetUrl` | [`String`](#string) | The URL of the target to be validated. |
+| <a id="mutationdastsitetokencreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site token belongs to. |
+| <a id="mutationdastsitetokencreatetargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be validated. |
 
 #### Fields
 
@@ -1677,7 +1677,7 @@ Input type: `DastSiteTokenCreateInput`
 | <a id="mutationdastsitetokencreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsitetokencreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdastsitetokencreateid"></a>`id` | [`DastSiteTokenID`](#dastsitetokenid) | ID of the site token. |
-| <a id="mutationdastsitetokencreatestatus"></a>`status` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | The current validation status of the target. |
+| <a id="mutationdastsitetokencreatestatus"></a>`status` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | Current validation status of the target. |
 | <a id="mutationdastsitetokencreatetoken"></a>`token` | [`String`](#string) | Token string. |
 
 ### `Mutation.dastSiteValidationCreate`
@@ -1690,9 +1690,9 @@ Input type: `DastSiteValidationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdastsitevalidationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsitevalidationcreatedastsitetokenid"></a>`dastSiteTokenId` | [`DastSiteTokenID!`](#dastsitetokenid) | ID of the site token. |
-| <a id="mutationdastsitevalidationcreatefullpath"></a>`fullPath` | [`ID!`](#id) | The project the site profile belongs to. |
-| <a id="mutationdastsitevalidationcreatestrategy"></a>`strategy` | [`DastSiteValidationStrategyEnum`](#dastsitevalidationstrategyenum) | The validation strategy to be used. |
-| <a id="mutationdastsitevalidationcreatevalidationpath"></a>`validationPath` | [`String!`](#string) | The path to be requested during validation. |
+| <a id="mutationdastsitevalidationcreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
+| <a id="mutationdastsitevalidationcreatestrategy"></a>`strategy` | [`DastSiteValidationStrategyEnum`](#dastsitevalidationstrategyenum) | Validation strategy to be used. |
+| <a id="mutationdastsitevalidationcreatevalidationpath"></a>`validationPath` | [`String!`](#string) | Path to be requested during validation. |
 
 #### Fields
 
@@ -1701,7 +1701,7 @@ Input type: `DastSiteValidationCreateInput`
 | <a id="mutationdastsitevalidationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsitevalidationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdastsitevalidationcreateid"></a>`id` | [`DastSiteValidationID`](#dastsitevalidationid) | ID of the site validation. |
-| <a id="mutationdastsitevalidationcreatestatus"></a>`status` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | The current validation status. |
+| <a id="mutationdastsitevalidationcreatestatus"></a>`status` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | Current validation status. |
 
 ### `Mutation.dastSiteValidationRevoke`
 
@@ -1712,7 +1712,7 @@ Input type: `DastSiteValidationRevokeInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsitevalidationrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsitevalidationrevokefullpath"></a>`fullPath` | [`ID!`](#id) | The project the site validation belongs to. |
+| <a id="mutationdastsitevalidationrevokefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site validation belongs to. |
 | <a id="mutationdastsitevalidationrevokenormalizedtargeturl"></a>`normalizedTargetUrl` | [`String!`](#string) | Normalized URL of the target to be revoked. |
 
 #### Fields
@@ -1851,7 +1851,7 @@ Input type: `DestroyComplianceFrameworkInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroycomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroycomplianceframeworkid"></a>`id` | [`ComplianceManagementFrameworkID!`](#compliancemanagementframeworkid) | The global ID of the compliance framework to destroy. |
+| <a id="mutationdestroycomplianceframeworkid"></a>`id` | [`ComplianceManagementFrameworkID!`](#compliancemanagementframeworkid) | Global ID of the compliance framework to destroy. |
 
 #### Fields
 
@@ -2144,7 +2144,7 @@ Input type: `EpicBoardCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicboardcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicboardcreateepicboard"></a>`epicBoard` | [`EpicBoard`](#epicboard) | The created epic board. |
+| <a id="mutationepicboardcreateepicboard"></a>`epicBoard` | [`EpicBoard`](#epicboard) | Created epic board. |
 | <a id="mutationepicboardcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.epicBoardListCreate`
@@ -2187,7 +2187,7 @@ Input type: `EpicBoardListDestroyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationepicboardlistdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationepicboardlistdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationepicboardlistdestroylist"></a>`list` | [`EpicList`](#epiclist) | The epic board list. `null` if the board was destroyed successfully. |
+| <a id="mutationepicboardlistdestroylist"></a>`list` | [`EpicList`](#epiclist) | Epic board list. `null` if the board was destroyed successfully. |
 
 ### `Mutation.epicBoardUpdate`
 
@@ -2200,7 +2200,7 @@ Input type: `EpicBoardUpdateInput`
 | <a id="mutationepicboardupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationepicboardupdatehidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationepicboardupdatehideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
-| <a id="mutationepicboardupdateid"></a>`id` | [`BoardsEpicBoardID!`](#boardsepicboardid) | The epic board global ID. |
+| <a id="mutationepicboardupdateid"></a>`id` | [`BoardsEpicBoardID!`](#boardsepicboardid) | Epic board global ID. |
 | <a id="mutationepicboardupdatelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationepicboardupdatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationepicboardupdatename"></a>`name` | [`String`](#string) | Board name. |
@@ -2210,7 +2210,7 @@ Input type: `EpicBoardUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicboardupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicboardupdateepicboard"></a>`epicBoard` | [`EpicBoard`](#epicboard) | The updated epic board. |
+| <a id="mutationepicboardupdateepicboard"></a>`epicBoard` | [`EpicBoard`](#epicboard) | Updated epic board. |
 | <a id="mutationepicboardupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.epicMoveList`
@@ -2234,7 +2234,7 @@ Input type: `EpicMoveListInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicmovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicmovelistepic"></a>`epic` | [`Epic`](#epic) | The epic after mutation. |
+| <a id="mutationepicmovelistepic"></a>`epic` | [`Epic`](#epic) | Epic after mutation. |
 | <a id="mutationepicmovelisterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.epicSetSubscription`
@@ -4099,7 +4099,7 @@ Input type: `UpdateBoardEpicUserPreferencesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdateboardepicuserpreferencesboardid"></a>`boardId` | [`BoardID!`](#boardid) | The board global ID. |
+| <a id="mutationupdateboardepicuserpreferencesboardid"></a>`boardId` | [`BoardID!`](#boardid) | Board global ID. |
 | <a id="mutationupdateboardepicuserpreferencesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateboardepicuserpreferencescollapsed"></a>`collapsed` | [`Boolean!`](#boolean) | Whether the epic should be collapsed in the board. |
 | <a id="mutationupdateboardepicuserpreferencesepicid"></a>`epicId` | [`EpicID!`](#epicid) | ID of an epic to set preferences for. |
@@ -4142,7 +4142,7 @@ Input type: `UpdateComplianceFrameworkInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecomplianceframeworkid"></a>`id` | [`ComplianceManagementFrameworkID!`](#compliancemanagementframeworkid) | The global ID of the compliance framework to update. |
+| <a id="mutationupdatecomplianceframeworkid"></a>`id` | [`ComplianceManagementFrameworkID!`](#compliancemanagementframeworkid) | Global ID of the compliance framework to update. |
 | <a id="mutationupdatecomplianceframeworkparams"></a>`params` | [`ComplianceFrameworkInput!`](#complianceframeworkinput) | Parameters to update the compliance framework with. |
 
 #### Fields
@@ -4150,7 +4150,7 @@ Input type: `UpdateComplianceFrameworkInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecomplianceframeworkcomplianceframework"></a>`complianceFramework` | [`ComplianceFramework`](#complianceframework) | The compliance framework after mutation. |
+| <a id="mutationupdatecomplianceframeworkcomplianceframework"></a>`complianceFramework` | [`ComplianceFramework`](#complianceframework) | Compliance framework after mutation. |
 | <a id="mutationupdatecomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.updateContainerExpirationPolicy`
@@ -4186,19 +4186,19 @@ Input type: `UpdateEpicInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | The IDs of labels to be added to the epic. |
+| <a id="mutationupdateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the epic. |
 | <a id="mutationupdateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
-| <a id="mutationupdateepicdescription"></a>`description` | [`String`](#string) | The description of the epic. |
-| <a id="mutationupdateepicduedatefixed"></a>`dueDateFixed` | [`String`](#string) | The end date of the epic. |
+| <a id="mutationupdateepicdescription"></a>`description` | [`String`](#string) | Description of the epic. |
+| <a id="mutationupdateepicduedatefixed"></a>`dueDateFixed` | [`String`](#string) | End date of the epic. |
 | <a id="mutationupdateepicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates end date should be sourced from due_date_fixed field not the issue milestones. |
-| <a id="mutationupdateepicgrouppath"></a>`groupPath` | [`ID!`](#id) | The group the epic to mutate is in. |
+| <a id="mutationupdateepicgrouppath"></a>`groupPath` | [`ID!`](#id) | Group the epic to mutate is in. |
 | <a id="mutationupdateepiciid"></a>`iid` | [`ID!`](#id) | The IID of the epic to mutate. |
-| <a id="mutationupdateepicremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | The IDs of labels to be removed from the epic. |
-| <a id="mutationupdateepicstartdatefixed"></a>`startDateFixed` | [`String`](#string) | The start date of the epic. |
+| <a id="mutationupdateepicremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | IDs of labels to be removed from the epic. |
+| <a id="mutationupdateepicstartdatefixed"></a>`startDateFixed` | [`String`](#string) | Start date of the epic. |
 | <a id="mutationupdateepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates start date should be sourced from start_date_fixed field not the issue milestones. |
 | <a id="mutationupdateepicstateevent"></a>`stateEvent` | [`EpicStateEvent`](#epicstateevent) | State event for the epic. |
-| <a id="mutationupdateepictitle"></a>`title` | [`String`](#string) | The title of the epic. |
+| <a id="mutationupdateepictitle"></a>`title` | [`String`](#string) | Title of the epic. |
 
 #### Fields
 

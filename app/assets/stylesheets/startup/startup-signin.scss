@@ -634,16 +634,10 @@ svg {
   margin: 0;
 }
 .login-page .omniauth-container form {
-  width: 48%;
   padding: 0;
   border: 0;
   background: none;
   margin-bottom: 16px;
-}
-@media (max-width: 991.98px) {
-  .login-page .omniauth-container form {
-    width: 100%;
-  }
 }
 .login-page .omniauth-container .omniauth-btn {
   width: 100%;

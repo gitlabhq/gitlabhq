@@ -25,7 +25,7 @@ For example, consider a migration that creates a table with two `NOT NULL` colum
 `db/migrate/20200401000001_create_db_guides.rb`:
 
 ```ruby
-class CreateDbGuides < ActiveRecord::Migration[6.0]
+class CreateDbGuides < Gitlab::Database::Migration[1.0]
   def change
     create_table :db_guides do |t|
       t.bigint :stars, default: 0, null: false
@@ -44,7 +44,7 @@ For example, consider a migration that adds a new `NOT NULL` column `active` to 
 `db/migrate/20200501000001_add_active_to_db_guides.rb`:
 
 ```ruby
-class AddExtendedTitleToSprints < ActiveRecord::Migration[6.0]
+class AddExtendedTitleToSprints < Gitlab::Database::Migration[1.0]
   def change
     add_column :db_guides, :active, :boolean, default: true, null: false
   end
@@ -111,9 +111,7 @@ with `validate: false` in a post-deployment migration,
 `db/post_migrate/20200501000001_add_not_null_constraint_to_epics_description.rb`:
 
 ```ruby
-class AddNotNullConstraintToEpicsDescription < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class AddNotNullConstraintToEpicsDescription < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -144,9 +142,7 @@ so we are going to add a post-deployment migration for the 13.0 milestone (curre
 `db/post_migrate/20200501000002_cleanup_epics_with_null_description.rb`:
 
 ```ruby
-class CleanupEpicsWithNullDescription < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class CleanupEpicsWithNullDescription < Gitlab::Database::Migration[1.0]
   # With BATCH_SIZE=1000 and epics.count=29500 on GitLab.com
   # - 30 iterations will be run
   # - each requires on average ~150ms
@@ -184,9 +180,7 @@ migration helper in a final post-deployment migration,
 `db/post_migrate/20200601000001_validate_not_null_constraint_on_epics_description.rb`:
 
 ```ruby
-class ValidateNotNullConstraintOnEpicsDescription < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class ValidateNotNullConstraintOnEpicsDescription < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up

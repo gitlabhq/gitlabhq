@@ -3,10 +3,7 @@
 # See https://docs.gitlab.com/ee/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Migration.current_version %>]
-  # Uncomment the following include if you require helper functions:
-  # include Gitlab::Database::MigrationHelpers
-
+class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Database::Migration.current_version %>]
   # When using the methods "add_concurrent_index" or "remove_concurrent_index"
   # you must disable the use of transactions
   # as these methods can not run in an existing transaction.
@@ -20,6 +17,9 @@ class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Mi
   # comments:
   # disable_ddl_transaction!
 
-  def change
+  def up
+  end
+
+  def down
   end
 end

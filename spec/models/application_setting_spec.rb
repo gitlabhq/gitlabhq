@@ -939,6 +939,8 @@ RSpec.describe ApplicationSetting do
           throttle_unauthenticated_files_api_period_in_seconds
           throttle_authenticated_files_api_requests_per_period
           throttle_authenticated_files_api_period_in_seconds
+          throttle_authenticated_git_lfs_requests_per_period
+          throttle_authenticated_git_lfs_period_in_seconds
         ]
       end
 

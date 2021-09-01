@@ -3,6 +3,8 @@ import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import DescriptionItem from '~/content_editor/extensions/description_item';
+import DescriptionList from '~/content_editor/extensions/description_list';
 import Division from '~/content_editor/extensions/division';
 import Emoji from '~/content_editor/extensions/emoji';
 import Figure from '~/content_editor/extensions/figure';
@@ -41,6 +43,8 @@ const tiptapEditor = createTestEditor({
     BulletList,
     Code,
     CodeBlockHighlight,
+    DescriptionItem,
+    DescriptionList,
     Division,
     Emoji,
     Figure,
@@ -75,6 +79,8 @@ const {
     code,
     codeBlock,
     division,
+    descriptionItem,
+    descriptionList,
     emoji,
     figure,
     figureCaption,
@@ -105,6 +111,8 @@ const {
     code: { markType: Code.name },
     codeBlock: { nodeType: CodeBlockHighlight.name },
     division: { nodeType: Division.name },
+    descriptionItem: { nodeType: DescriptionItem.name },
+    descriptionList: { nodeType: DescriptionList.name },
     emoji: { markType: Emoji.name },
     figure: { nodeType: Figure.name },
     figureCaption: { nodeType: FigureCaption.name },
@@ -541,6 +549,41 @@ this is not really json but just trying out whether this case works or not
 3. [ ] list item 3
    1351) [x] sub-list item 1
    1352) [ ] sub-list item 2
+      `.trim(),
+    );
+  });
+
+  it('correctly renders a description list', () => {
+    expect(
+      serialize(
+        descriptionList(
+          descriptionItem(paragraph('Beast of Bodmin')),
+          descriptionItem({ isTerm: false }, paragraph('A large feline inhabiting Bodmin Moor.')),
+
+          descriptionItem(paragraph('Morgawr')),
+          descriptionItem({ isTerm: false }, paragraph('A sea serpent.')),
+
+          descriptionItem(paragraph('Owlman')),
+          descriptionItem(
+            { isTerm: false },
+            paragraph('A giant ', italic('owl-like'), ' creature.'),
+          ),
+        ),
+      ),
+    ).toBe(
+      `
+<dl>
+<dt>Beast of Bodmin</dt>
+<dd>A large feline inhabiting Bodmin Moor.</dd>
+<dt>Morgawr</dt>
+<dd>A sea serpent.</dd>
+<dt>Owlman</dt>
+<dd>
+
+A giant _owl-like_ creature.
+
+</dd>
+</dl>
       `.trim(),
     );
   });

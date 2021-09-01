@@ -4769,6 +4769,12 @@ msgstr ""
 msgid "Authenticated API requests"
 msgstr ""
 
+msgid "Authenticated Git LFS rate limit period in seconds"
+msgstr ""
+
+msgid "Authenticated Git LFS request rate limit"
+msgstr ""
+
 msgid "Authenticated web rate limit period in seconds"
 msgstr ""
 
@@ -8504,6 +8510,9 @@ msgid "Configure repository storage."
 msgstr ""
 
 msgid "Configure settings for Advanced Search with Elasticsearch."
+msgstr ""
+
+msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
 msgstr ""
 
 msgid "Configure specific limits for Packages API requests that supersede the general user and IP rate limits."
@@ -12413,6 +12422,9 @@ msgstr ""
 msgid "Enable authenticated API request rate limit"
 msgstr ""
 
+msgid "Enable authenticated Git LFS request rate limit"
+msgstr ""
+
 msgid "Enable authentication"
 msgstr ""
 
@@ -15203,6 +15215,9 @@ msgstr ""
 msgid "Git GC period"
 msgstr ""
 
+msgid "Git LFS Rate Limits"
+msgstr ""
+
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr ""
 
@@ -16524,6 +16539,9 @@ msgid "Helps prevent malicious users hide their activity"
 msgstr ""
 
 msgid "Helps reduce request volume (e.g. from crawlers or abusive bots)"
+msgstr ""
+
+msgid "Helps reduce request volume (for example, from crawlers or abusive bots)"
 msgstr ""
 
 msgid "Helps reduce request volume for protected paths"
@@ -20602,6 +20620,9 @@ msgid "Max Project Import requests per minute per user"
 msgstr ""
 
 msgid "Max authenticated API requests per period per user"
+msgstr ""
+
+msgid "Max authenticated Git LFS requests per period per user"
 msgstr ""
 
 msgid "Max authenticated web requests per period per user"

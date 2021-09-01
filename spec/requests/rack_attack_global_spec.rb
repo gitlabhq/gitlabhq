@@ -22,7 +22,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       throttle_unauthenticated_packages_api_requests_per_period: 100,
       throttle_unauthenticated_packages_api_period_in_seconds: 1,
       throttle_authenticated_packages_api_requests_per_period: 100,
-      throttle_authenticated_packages_api_period_in_seconds: 1
+      throttle_authenticated_packages_api_period_in_seconds: 1,
+      throttle_authenticated_git_lfs_requests_per_period: 100,
+      throttle_authenticated_git_lfs_period_in_seconds: 1
     }
   end
 
@@ -614,6 +616,95 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
               expect_rejection { do_request }
             end
+          end
+        end
+      end
+    end
+  end
+
+  describe 'authenticated git lfs requests', :api do
+    let_it_be(:project) { create(:project, :internal) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:token) { create(:personal_access_token, user: user) }
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
+
+    let(:request_method) { 'GET' }
+    let(:throttle_setting_prefix) { 'throttle_authenticated_git_lfs' }
+    let(:git_lfs_url) { "/#{project.full_path}.git/info/lfs/locks" }
+
+    before do
+      allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+      stub_application_setting(settings_to_set)
+    end
+
+    context 'with regular login' do
+      let(:url_that_requires_authentication) { git_lfs_url }
+
+      it_behaves_like 'rate-limited web authenticated requests'
+    end
+
+    context 'with the token in the headers' do
+      let(:request_args) { [git_lfs_url, { headers: basic_auth_headers(user, token) }] }
+      let(:other_user_request_args) { [git_lfs_url, { headers: basic_auth_headers(other_user, other_user_token) }] }
+
+      it_behaves_like 'rate-limited token-authenticated requests'
+    end
+
+    context 'precedence over authenticated web throttle' do
+      before do
+        settings_to_set[:throttle_authenticated_git_lfs_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_authenticated_git_lfs_period_in_seconds] = period_in_seconds
+      end
+
+      def do_request
+        get git_lfs_url, headers: basic_auth_headers(user, token)
+      end
+
+      context 'when authenticated git lfs throttle is enabled' do
+        before do
+          settings_to_set[:throttle_authenticated_git_lfs_enabled] = true
+        end
+
+        context 'when authenticated web throttle is lower' do
+          before do
+            settings_to_set[:throttle_authenticated_web_requests_per_period] = 0
+            settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_authenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores authenticated web throttle' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
+          end
+        end
+      end
+
+      context 'when authenticated git lfs throttle is disabled' do
+        before do
+          settings_to_set[:throttle_authenticated_git_lfs_enabled] = false
+        end
+
+        context 'when authenticated web throttle is enabled' do
+          before do
+            settings_to_set[:throttle_authenticated_web_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_authenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'rejects requests over the authenticated web rate limit' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
           end
         end
       end

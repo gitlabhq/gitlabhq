@@ -139,6 +139,12 @@ module Gitlab
         end
       end
 
+      throttle_or_track(rack_attack, 'throttle_authenticated_git_lfs', Gitlab::Throttle.throttle_authenticated_git_lfs_options) do |req|
+        if req.throttle_authenticated_git_lfs?
+          req.throttled_user_id([:api])
+        end
+      end
+
       rack_attack.safelist('throttle_bypass_header') do |req|
         Gitlab::Throttle.bypass_header.present? &&
           req.get_header(Gitlab::Throttle.bypass_header) == '1'

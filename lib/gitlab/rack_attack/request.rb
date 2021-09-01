@@ -73,6 +73,7 @@ module Gitlab
 
       def throttle_authenticated_web?
         web_request? &&
+        !throttle_authenticated_git_lfs? &&
         Gitlab::Throttle.settings.throttle_authenticated_web_enabled
       end
 
@@ -109,6 +110,11 @@ module Gitlab
         Gitlab::Throttle.settings.throttle_authenticated_packages_api_enabled
       end
 
+      def throttle_authenticated_git_lfs?
+        git_lfs_path? &&
+        Gitlab::Throttle.settings.throttle_authenticated_git_lfs_enabled
+      end
+
       private
 
       def authenticated_user_id(request_formats)
@@ -129,6 +135,10 @@ module Gitlab
 
       def packages_api_path?
         path =~ ::Gitlab::Regex::Packages::API_PATH_REGEX
+      end
+
+      def git_lfs_path?
+        path =~ Gitlab::PathRegex.repository_git_lfs_route_regex
       end
     end
   end

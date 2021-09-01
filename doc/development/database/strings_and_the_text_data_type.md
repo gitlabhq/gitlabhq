@@ -47,9 +47,7 @@ For example, consider a migration that creates a table with two text columns,
 `db/migrate/20200401000001_create_db_guides.rb`:
 
 ```ruby
-class CreateDbGuides < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class CreateDbGuides < Gitlab::Database::Migration[1.0]
   def up
     create_table_with_constraints :db_guides do |t|
       t.bigint :stars, default: 0, null: false
@@ -84,7 +82,7 @@ For example, consider a migration that adds a new text column `extended_title` t
 `db/migrate/20200501000001_add_extended_title_to_sprints.rb`:
 
 ```ruby
-class AddExtendedTitleToSprints < ActiveRecord::Migration[6.0]
+class AddExtendedTitleToSprints < Gitlab::Database::Migration[1.0]
 
   # rubocop:disable Migration/AddLimitToTextColumns
   # limit is added in 20200501000002_add_text_limit_to_sprints_extended_title
@@ -99,8 +97,7 @@ A second migration should follow the first one with a limit added to `extended_t
 `db/migrate/20200501000002_add_text_limit_to_sprints_extended_title.rb`:
 
 ```ruby
-class AddTextLimitToSprintsExtendedTitle < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
+class AddTextLimitToSprintsExtendedTitle < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -175,9 +172,7 @@ in a post-deployment migration,
 `db/post_migrate/20200501000001_add_text_limit_migration.rb`:
 
 ```ruby
-class AddTextLimitMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class AddTextLimitMigration < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -208,9 +203,7 @@ to add a background migration for the 13.0 milestone (current),
 `db/post_migrate/20200501000002_schedule_cap_title_length_on_issues.rb`:
 
 ```ruby
-class ScheduleCapTitleLengthOnIssues < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class ScheduleCapTitleLengthOnIssues < Gitlab::Database::Migration[1.0]
   # Info on how many records will be affected on GitLab.com
   # time each batch needs to run on average, etc ...
   BATCH_SIZE = 5000
@@ -255,9 +248,7 @@ helper in a final post-deployment migration,
 `db/post_migrate/20200601000001_validate_text_limit_migration.rb`:
 
 ```ruby
-class ValidateTextLimitMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class ValidateTextLimitMigration < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up

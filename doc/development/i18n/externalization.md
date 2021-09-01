@@ -171,6 +171,45 @@ If you need to translate strings in the Vue component's JavaScript, you can impo
 
 To test Vue translations, learn about [manually testing translations from the UI](#manually-test-translations-from-the-ui).
 
+### Test files
+
+Test expectations against externalized contents should not be hard coded,
+because we may need to run the tests with non-default locale, and tests with
+hard coded contents will fail.
+
+This means any expectations against externalized contents should call the
+same externalizing method to match the translation.
+
+Bad:
+
+```ruby
+click_button 'Submit review'
+
+expect(rendered).to have_content('Thank you for your feedback!')
+```
+
+Good:
+
+```ruby
+click_button _('Submit review')
+
+expect(rendered).to have_content(_('Thank you for your feedback!'))
+```
+
+This includes JavaScript tests:
+
+Bad:
+
+```javascript
+expect(findUpdateIgnoreStatusButton().text()).toBe('Ignore');
+```
+
+Good:
+
+```javascript
+expect(findUpdateIgnoreStatusButton().text()).toBe(__('Ignore'));
+```
+
 #### Recommendations
 
 If strings are reused throughout a component, it can be useful to define these strings as variables. We recommend defining an `i18n` property on the component's `$options` object. If there is a mixture of many-use and single-use strings in the component, consider using this approach to create a local [Single Source of Truth](https://about.gitlab.com/handbook/values/#single-source-of-truth) for externalized strings.

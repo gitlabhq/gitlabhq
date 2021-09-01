@@ -1,7 +1,9 @@
 .ProseMirror {
   td,
   th,
-  li {
+  li,
+  dd,
+  dt {
     :first-child {
       margin-bottom: 0 !important;
     }
@@ -31,6 +33,20 @@
       > label {
         padding: $gl-spacing-scale-1 $gl-spacing-scale-3 0 0;
         margin: 0;
+      }
+    }
+  }
+
+  .dl-content {
+    width: 100%;
+
+    > li {
+      list-style-type: none;
+      margin-left: $gl-spacing-scale-5;
+
+      &.dl-term {
+        margin: 0;
+        font-weight: 600;
       }
     }
   }

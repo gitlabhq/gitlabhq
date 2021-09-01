@@ -9,6 +9,8 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import DescriptionItem from '../extensions/description_item';
+import DescriptionList from '../extensions/description_list';
 import Division from '../extensions/division';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
@@ -122,6 +124,12 @@ const defaultSerializerConfig = {
       state.closeBlock(node);
     },
     [Division.name]: renderHTMLNode('div'),
+    [DescriptionList.name]: renderHTMLNode('dl', true),
+    [DescriptionItem.name]: (state, node, parent, index) => {
+      if (index === 1) state.ensureNewLine();
+      renderHTMLNode(node.attrs.isTerm ? 'dt' : 'dd')(state, node);
+      if (index === parent.childCount - 1) state.ensureNewLine();
+    },
     [Emoji.name]: (state, node) => {
       const { name } = node.attrs;
 

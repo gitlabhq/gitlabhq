@@ -78,6 +78,16 @@ This setting limits the request rate on the Packages API per user or IP. For mor
 
 - **Default rate limit**: Disabled by default.
 
+### Git LFS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68642) in GitLab 14.3.
+
+This setting limits the request rate on the [Git LFS](../topics/git/lfs/index.md)
+requests per user. For more information, read
+[GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md).
+
+- **Default rate limit**: Disabled by default.
+
 ### Import/Export
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35728) in GitLab 13.2.
