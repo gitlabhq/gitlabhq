@@ -50,7 +50,7 @@ in the handbook when writing about Alpha features.
 
 ## and/or
 
-Instead of **and/or**, use or or rewrite the sentence to spell out both options.
+Instead of **and/or**, use **or** or rewrite the sentence to spell out both options.
 
 ## area
 
@@ -130,8 +130,8 @@ When writing about the Developer role:
 - Do not use the phrase, **if you are a developer** to mean someone who is assigned the Developer
   role. Instead, write it out. For example, **if you are assigned the Developer role**.
 - To describe a situation where the Developer role is the minimum required:
-  - Avoid: **the Developer role or higher**
-  - Use instead: **at least the Developer role**
+  - Avoid: the Developer role or higher
+  - Use instead: at least the Developer role
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
@@ -205,7 +205,7 @@ Do not use in product documentation. You can use it in our API and contributor d
 
 ## future tense
 
-When possible, use present tense instead. For example, use `after you execute this command, GitLab displays the result` instead of `after you execute this command, GitLab will display the result`. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
+When possible, use present tense instead. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
 
 ## Geo
 
@@ -241,8 +241,8 @@ When writing about the Guest role:
 - Do not use the phrase, **if you are a guest** to mean someone who is assigned the Guest
   role. Instead, write it out. For example, **if you are assigned the Guest role**.
 - To describe a situation where the Guest role is the minimum required:
-  - Avoid: **the Guest role or higher**
-  - Use instead: **at least the Guest role**
+  - Avoid: the Guest role or higher
+  - Use instead: at least the Guest role
 
 Do not use **Guest permissions**. A user who is assigned the Guest role has a set of associated permissions.
 
@@ -333,8 +333,8 @@ When writing about the Maintainer role:
 - Do not use the phrase, **if you are a maintainer** to mean someone who is assigned the Maintainer
   role. Instead, write it out. For example, **if you are assigned the Maintainer role**.
 - To describe a situation where the Maintainer role is the minimum required:
-  - Avoid: **the Maintainer role or higher**
-  - Use instead: **at least the Maintainer role**
+  - Avoid: the Maintainer role or higher
+  - Use instead: at least the Maintainer role
 
 Do not use **Maintainer permissions**. A user who is assigned the Maintainer role has a set of associated permissions.
 
@@ -433,8 +433,8 @@ When writing about the Reporter role:
 - Do not use the phrase, **if you are a reporter** to mean someone who is assigned the Reporter
   role. Instead, write it out. For example, **if you are assigned the Reporter role**.
 - To describe a situation where the Reporter role is the minimum required:
-  - Avoid: **the Reporter role or higher**
-  - Use instead: **at least the Reporter role**
+  - Avoid: the Reporter role or higher
+  - Use instead: at least the Reporter role
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
 

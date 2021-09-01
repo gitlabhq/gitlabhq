@@ -135,6 +135,20 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       environment.stop
     end
+
+    context 'when environment has auto stop period' do
+      let!(:environment) { create(:environment, :available, :auto_stoppable, project: project) }
+
+      it 'clears auto stop period when the environment has stopped' do
+        environment.stop!
+
+        expect(environment.auto_stop_at).to be_nil
+      end
+
+      it 'does not clear auto stop period when the environment has not stopped' do
+        expect(environment.auto_stop_at).to be_present
+      end
+    end
   end
 
   describe '.for_name_like' do
@@ -230,55 +244,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       let!(:environment) { create(:environment) }
 
       it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.stop_actions' do
-    subject { environments.stop_actions }
-
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user) { create(:user) }
-
-    let(:environments) { Environment.all }
-
-    before_all do
-      project.add_developer(user)
-      project.repository.add_branch(user, 'review/feature-1', 'master')
-      project.repository.add_branch(user, 'review/feature-2', 'master')
-    end
-
-    shared_examples_for 'correct filtering' do
-      it 'returns stop actions for available environments only' do
-        expect(subject.count).to eq(1)
-        expect(subject.first.name).to eq('stop_review_app')
-        expect(subject.first.ref).to eq('review/feature-1')
-      end
-    end
-
-    before do
-      create_review_app(user, project, 'review/feature-1')
-      create_review_app(user, project, 'review/feature-2')
-    end
-
-    it 'returns stop actions for environments' do
-      expect(subject.count).to eq(2)
-      expect(subject).to match_array(Ci::Build.where(name: 'stop_review_app'))
-    end
-
-    context 'when one of the stop actions has already been executed' do
-      before do
-        Ci::Build.where(ref: 'review/feature-2').find_by_name('stop_review_app').enqueue!
-      end
-
-      it_behaves_like 'correct filtering'
-    end
-
-    context 'when one of the deployments does not have stop action' do
-      before do
-        Deployment.where(ref: 'review/feature-2').update_all(on_stop: nil)
-      end
-
-      it_behaves_like 'correct filtering'
     end
   end
 

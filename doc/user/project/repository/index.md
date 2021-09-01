@@ -50,10 +50,10 @@ to a branch in the repository. When you use the command line, you can commit mul
   on their respective thread.
 - **Cherry-pick a commit:**
   In GitLab, you can
-  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
+  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-commit)
   from the UI.
 - **Revert a commit:**
-  [Revert a commit](../merge_requests/revert_changes.md#reverting-a-commit)
+  [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
   from the UI to a selected branch.
 - **Sign a commit:**
   Use GPG to [sign your commits](gpg_signed_commits/index.md).

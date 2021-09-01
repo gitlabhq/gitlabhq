@@ -12,8 +12,6 @@ type: reference, concepts
 With squash and merge you can combine all your merge request's commits into one
 and retain a clean history.
 
-## Overview
-
 Squashing lets you tidy up the commit history of a branch when accepting a merge
 request. It applies all of the changes in the merge request as a single commit,
 and then merges that commit using the merge method set for the project.
@@ -58,7 +56,7 @@ meaningful commit messages and:
 - It's simpler to [revert](revert_changes.md) if necessary.
 - The merged branch retains the full commit history.
 
-## Enabling squash for a merge request
+## Enable squash for a merge request
 
 Anyone who can create or edit a merge request can choose for it to be squashed
 on the merge request form. Users can select or clear the checkbox when they
@@ -98,7 +96,7 @@ it. This is because squashing is only available when accepting a merge request,
 so a merge request may need to be rebased before squashing, even though
 squashing can itself be considered equivalent to rebasing.
 
-## Squash Commits Options
+## Squash commits options
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17613) in GitLab 13.2.
 > - Deployed behind a feature flag, disabled by default.

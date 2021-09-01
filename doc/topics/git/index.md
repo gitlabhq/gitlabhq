@@ -34,8 +34,8 @@ The following resources can help you get started with Git:
 - [Edit files through the command line](../../gitlab-basics/command-line-commands.md)
 - [GitLab Git Cheat Sheet (download)](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
 - Commits:
-  - [Revert a commit](../../user/project/merge_requests/revert_changes.md#reverting-a-commit)
-  - [Cherry-picking a commit](../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
+  - [Revert a commit](../../user/project/merge_requests/revert_changes.md#revert-a-commit)
+  - [Cherry-picking a commit](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-commit)
   - [Squashing commits](../gitlab_flow.md#squashing-commits-with-rebase)
   - [Squash-and-merge](../../user/project/merge_requests/squash_and_merge.md)
   - [Signing commits](../../user/project/repository/gpg_signed_commits/index.md)

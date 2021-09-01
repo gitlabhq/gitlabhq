@@ -77,6 +77,7 @@ class Environment < ApplicationRecord
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :preload_cluster, -> { preload(last_deployment: :cluster) }
+  scope :preload_project, -> { preload(:project) }
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
   scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
 
@@ -132,6 +133,10 @@ class Environment < ApplicationRecord
     state :available
     state :stopped
 
+    before_transition any => :stopped do |environment|
+      environment.auto_stop_at = nil
+    end
+
     after_transition do |environment|
       environment.expire_etag_cache
     end
@@ -168,48 +173,12 @@ class Environment < ApplicationRecord
   end
 
   class << self
-    ##
-    # This method returns stop actions (jobs) for multiple environments within one
-    # query. It's useful to avoid N+1 problem.
-    #
-    # NOTE: The count of environments should be small~medium (e.g. < 5000)
-    def stop_actions
-      cte = cte_for_deployments_with_stop_action
-      ci_builds = Ci::Build.arel_table
-
-      inner_join_stop_actions = ci_builds.join(cte.table).on(
-        ci_builds[:project_id].eq(cte.table[:project_id])
-          .and(ci_builds[:ref].eq(cte.table[:ref]))
-          .and(ci_builds[:name].eq(cte.table[:on_stop]))
-      ).join_sources
-
-      pipeline_ids = ci_builds.join(cte.table).on(
-        ci_builds[:id].eq(cte.table[:deployable_id])
-      ).project(:commit_id)
-
-      Ci::Build.joins(inner_join_stop_actions)
-               .with(cte.to_arel)
-               .where(ci_builds[:commit_id].in(pipeline_ids))
-               .where(status: Ci::HasStatus::BLOCKED_STATUS)
-               .preload_project_and_pipeline_project
-               .preload(:user, :metadata, :deployment)
-    end
-
     def count_by_state
       environments_count_by_state = group(:state).count
 
       valid_states.each_with_object({}) do |state, count_hash|
         count_hash[state] = environments_count_by_state[state.to_s] || 0
       end
-    end
-
-    private
-
-    def cte_for_deployments_with_stop_action
-      Gitlab::SQL::CTE.new(:deployments_with_stop_action,
-        Deployment.where(environment_id: select(:id))
-          .distinct_on_environment
-          .stoppable)
     end
   end
 

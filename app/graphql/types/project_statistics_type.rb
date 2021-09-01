@@ -23,6 +23,8 @@ module Types
           description: 'Wiki size of the project in bytes.'
     field :snippets_size, GraphQL::FLOAT_TYPE, null: true,
           description: 'Snippets size of the project in bytes.'
+    field :pipeline_artifacts_size, GraphQL::FLOAT_TYPE, null: true,
+          description: 'CI Pipeline artifacts size in bytes.'
     field :uploads_size, GraphQL::FLOAT_TYPE, null: true,
           description: 'Uploads size of the project in bytes.'
   end
