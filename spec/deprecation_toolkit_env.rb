@@ -56,9 +56,12 @@ module DeprecationToolkitEnv
   # In this case, we recommend to add a silence together with an issue to patch or update
   # the dependency causing the problem.
   # See https://gitlab.com/gitlab-org/gitlab/-/commit/aea37f506bbe036378998916d374966c031bf347#note_647515736
+  #
+  # - ruby/lib/grpc/generic/interceptors.rb: https://gitlab.com/gitlab-org/gitlab/-/issues/339305
   def self.allowed_kwarg_warning_paths
     %w[
       actionpack-6.1.3.2/lib/action_dispatch/routing/route_set.rb
+      ruby/lib/grpc/generic/interceptors.rb
     ]
   end
 

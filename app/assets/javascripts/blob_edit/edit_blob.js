@@ -11,7 +11,7 @@ import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
 
 export default class EditBlob {
   // The options object has:
-  // assetsPath, filePath, currentAction, projectId, isMarkdown
+  // assetsPath, filePath, currentAction, projectId, isMarkdown, previewMarkdownPath
   constructor(options) {
     this.options = options;
     this.configureMonacoEditor();
@@ -30,7 +30,10 @@ export default class EditBlob {
     import('~/editor/extensions/source_editor_markdown_ext')
       .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
         this.editor.use(
-          new MarkdownExtension({ instance: this.editor, projectPath: this.options.projectPath }),
+          new MarkdownExtension({
+            instance: this.editor,
+            previewMarkdownPath: this.options.previewMarkdownPath,
+          }),
         );
         this.hasMarkdownExtension = true;
         addEditorMarkdownListeners(this.editor);

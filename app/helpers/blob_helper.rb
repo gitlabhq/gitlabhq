@@ -220,7 +220,8 @@ module BlobHelper
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
       'blob-filename' => @blob && @blob.path,
       'project-id' => project.id,
-      'is-markdown' => @blob && @blob.path && Gitlab::MarkupHelper.gitlab_markdown?(@blob.path)
+      'is-markdown' => @blob && @blob.path && Gitlab::MarkupHelper.gitlab_markdown?(@blob.path),
+      'preview-markdown-path' => preview_markdown_path(project)
     }
   end
 

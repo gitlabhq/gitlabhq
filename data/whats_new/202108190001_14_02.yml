@@ -1,0 +1,85 @@
+- title: Add pronunciation to GitLab profile page
+  body: |
+    You can now add pronunciation to your user profile. In distributed teams where team members are from different countries, it can be difficult to determine how to say someone's name correctly. This will help others know how to pronounce your name.
+  stage: Manage
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/user/profile/#add-your-pronunciation'
+  image_url: https://about.gitlab.com/images/14_2/pronounce.png
+  published_at: 2021-08-22
+  release: 14.2
+- title: View historical CI pipeline minute usage
+  body: |
+     Before GitLab 14.2, the CI pipeline minutes usage on the [Usage Quotas](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#shared-runners-pipeline-minutes-quota) page only showed the current month's usage. This data would reset every month and there was no way to view activity from the past months for analyzing historical usage.
+
+     Now there are two charts that show historical CI pipeline minutes usage by month or by project, so you can make informed decisions about your pipeline usage.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/subscriptions/gitlab_com/index.html#ci-pipeline-minutes'
+  image_url: https://about.gitlab.com/images/14_2/CI_minutes_usage_graph.png
+  published_at: 2021-08-22
+  release: 14.2
+- title: Edit issue title from an issue board
+  body: |
+     Editing an issue in an issue board currently requires many steps and takes you out of your workflow. We've added an easy way to edit an issue's title right in the issue board, without navigating to another page. To edit the title, in the right sidebar, select the issue, then select **Edit**.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/user/project/issue_board.html#edit-an-issue'
+  image_url: https://about.gitlab.com/images/14_2/issue-board-edit-title.gif
+  published_at: 2021-08-22
+  release: 14.2
+- title: Preview Markdown live while editing
+  body: |
+      Markdown is a fast and intuitive syntax for writing rich web content. Until it isn't. Luckily, it's easy to preview the rendered output of Markdown to ensure the accuracy of your markup from the **Preview** tab. Unfortunately, the context switch required to move between the raw source code and the preview can be tedious and disruptive to your flow.
+
+      Now, in both the Web IDE and single file editor, Markdown files have a new live preview option available. Right-click the editor and select **Preview Markdown** or use `Command/Control + Shift + P` to toggle a split-screen live preview of your Markdown content. The preview refreshes as you type, so you can be confident that your markup is valid and will render as you intended.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/user/project/web_ide/#markdown-editing'
+  image_url: https://about.gitlab.com/images/14_2/create-markdown-live-preview.png
+  published_at: 2021-08-22
+  release: 14.2
+- title: Stageless pipelines
+  body: |
+      Using the [`needs`](https://docs.gitlab.com/ee/ci/yaml/#needs) keyword in your pipeline configuration helps to reduce cycle times by ignoring stage ordering and running jobs without waiting for others to complete. Previously, `needs` could only be used between jobs on different stages.
+
+      In this release, we've removed this limitation so you can define a `needs` relationship between any job you want. As a result, you can now create a complete CI/CD pipeline without using stages by including `needs` in every job to implicitly configure the execution order. This lets you define a less verbose pipeline that takes less time to create and can run even faster.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/ci/yaml/#needs'
+  image_url: https://about.gitlab.com/images/14_2/need.png
+  published_at: 2021-08-22
+  release: 14.2
+- title: New GitLab Kubernetes Agent UI
+  body: |
+      The GitLab Kubernetes Agent allows a secure bi-directional connection between GitLab and any Kubernetes cluster. Until now, registering a new Kubernetes Agent required writing GraphQL queries.
+
+      As of GitLab 14.2, GitLab ships with a user-friendly user interface and a registration form to help you get started with the Kubernetes Agent with ease.
+  stage: Configure
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/user/clusters/agent/'
+  image_url: https://about.gitlab.com/images/14_2/k8s-agent-registration.png
+  published_at: 2021-08-22
+  release: 14.2
+- title: Create a GitLab branch from a Jira issue
+  body: |
+       Users of the [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) application can now create GitLab branches directly from a Jira issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). This enables developers to begin work on issues without having to switch tools and lose context.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/integration/jira/connect-app.html'
+  image_url: https://about.gitlab.com/images/14_2/jira_dev_panel_jira_setup_3.png
+  published_at: 2021-08-22
+  release: 14.2

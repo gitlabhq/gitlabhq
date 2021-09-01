@@ -32,4 +32,5 @@ export default () => ({
   codesandboxBundlerUrl: null,
   environmentsGuidanceAlertDismissed: false,
   environmentsGuidanceAlertDetected: false,
+  previewMarkdownPath: '',
 });
