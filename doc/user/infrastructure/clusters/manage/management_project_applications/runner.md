@@ -18,6 +18,8 @@ uncomment this line from your `helmfile.yaml`:
 
 GitLab Runner is installed by default into the `gitlab-managed-apps` namespace of your cluster.
 
+## Required variables
+
 For GitLab Runner to function, you _must_ specify the following in your
 `applications/gitlab-runner/values.yaml.gotmpl` file:
 
@@ -28,7 +30,7 @@ For GitLab Runner to function, you _must_ specify the following in your
 
 These values can be specified using [CI/CD variables](../../../../../ci/variables/index.md):
 
-- `GITLAB_RUNNER_GITLAB_URL` is used for `gitlabUrl`.
+- `CI_SERVER_URL` is used for `gitlabUrl`. If you are using GitLab.com, you don't need to set this variable.
 - `GITLAB_RUNNER_REGISTRATION_TOKEN` is used for `runnerRegistrationToken`
 
 The methods of specifying these values are mutually exclusive. Either specify variables `GITLAB_RUNNER_REGISTRATION_TOKEN` and `GITLAB_RUNNER_TOKEN` as CI variables (recommended) or provide values for `runnerRegistrationToken:` and `runnerToken:` in `applications/gitlab-runner/values.yaml.gotmpl`.

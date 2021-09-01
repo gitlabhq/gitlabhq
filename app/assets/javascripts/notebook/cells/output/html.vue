@@ -1,6 +1,5 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
-import { sanitize } from '~/lib/dompurify';
 import Prompt from '../prompt.vue';
 
 export default {
@@ -25,9 +24,6 @@ export default {
     },
   },
   computed: {
-    sanitizedOutput() {
-      return sanitize(this.rawCode);
-    },
     showOutput() {
       return this.index === 0;
     },
@@ -38,6 +34,6 @@ export default {
 <template>
   <div class="output">
     <prompt type="Out" :count="count" :show-output="showOutput" />
-    <div v-safe-html="sanitizedOutput" class="gl-overflow-auto"></div>
+    <div v-safe-html="rawCode" class="gl-overflow-auto"></div>
   </div>
 </template>

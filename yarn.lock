@@ -1467,10 +1467,10 @@
     dom-accessibility-api "^0.5.1"
     pretty-format "^26.4.2"
 
-"@tiptap/core@^2.0.0-beta.101":
-  version "2.0.0-beta.101"
-  resolved "https://registry.yarnpkg.com/@tiptap/core/-/core-2.0.0-beta.101.tgz#e882836fcbe2b65d851039ddaa0401275a4afe9c"
-  integrity sha512-IhU+uZ+2F2jTKm2qoIxhzkef6OLYvuTuARhCRoZO7xhOMh314hps/QBC25X6OUqU57S/rn8jLMcyTo0V8Qv7og==
+"@tiptap/core@^2.0.0-beta.102":
+  version "2.0.0-beta.102"
+  resolved "https://registry.yarnpkg.com/@tiptap/core/-/core-2.0.0-beta.102.tgz#14afa2f00bef254ee34d78646a597269dd98dc8a"
+  integrity sha512-ykSAyYfyb14xiYWQ6mTaa+GF6j5dQvSDgeXQDNcy8xvBjZHm1g+51D0jm9FF/dsrY0rEps5h8yX883h7MaGFHA==
   dependencies:
     "@types/prosemirror-commands" "^1.0.4"
     "@types/prosemirror-inputrules" "^1.0.4"

@@ -17,7 +17,8 @@ module Types
             description: 'Detailed status of the stage.'
       field :jobs, Ci::JobType.connection_type, null: true,
             description: 'Jobs for the stage.',
-            method: 'latest_statuses'
+            method: 'latest_statuses',
+            max_page_size: 200
       field :status, GraphQL::Types::String,
             null: true,
             description: 'Status of the pipeline stage.'
