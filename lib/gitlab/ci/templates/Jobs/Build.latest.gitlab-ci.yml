@@ -1,0 +1,38 @@
+# WARNING: This latest template is for internal FEATURE-FLAG TESTING ONLY.
+#          It is not meant to be used with `include:`.
+#          This template is scheduled for removal when testing is complete: https://gitlab.com/gitlab-org/gitlab/-/issues/337987
+
+build:
+  stage: build
+  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.3.1'
+  variables:
+    DOCKER_TLS_CERTDIR: ''
+  services:
+    - name: 'docker:20.10.6-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+  script:
+    - |
+      if [[ -z "$CI_COMMIT_TAG" ]]; then
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+      else
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+      fi
+    - /build/build.sh
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
+build_artifact:
+  stage: build
+  script:
+    - printf "To build your project, please create a build_artifact job into your .gitlab-ci.yml file.\nMore information at https://docs.gitlab.com/ee/ci/cloud_deployment\n"
+    - exit 1
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'

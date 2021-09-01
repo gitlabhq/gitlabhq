@@ -866,7 +866,6 @@ RSpec/AnyInstanceOf:
     - 'spec/requests/api/ci/runner/runners_verify_post_spec.rb'
     - 'spec/requests/api/graphql/gitlab_schema_spec.rb'
     - 'spec/requests/api/graphql/project/error_tracking/sentry_detailed_error_request_spec.rb'
-    - 'spec/requests/api/graphql/project/error_tracking/sentry_errors_request_spec.rb'
     - 'spec/requests/api/graphql_spec.rb'
     - 'spec/requests/api/helpers_spec.rb'
     - 'spec/requests/api/internal/base_spec.rb'

@@ -102,7 +102,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Shared runners pipeline minutes quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
 - [Push rules](../push_rules/push_rules.md)
 - SAML for self-managed GitLab instance:
-  - [Administrator groups](../integration/saml.md#admin-groups)
+  - [Administrator groups](../integration/saml.md#administrator-groups)
   - [Auditor groups](../integration/saml.md#auditor-groups)
   - [External groups](../integration/saml.md#external-groups)
   - [Required groups](../integration/saml.md#required-groups)

@@ -162,6 +162,7 @@ dequarantine
 dequarantined
 dequarantining
 DevOps
+Dhall
 disambiguates
 discoverability
 dismissable
@@ -817,6 +818,7 @@ Worldline
 Xcode
 Xeon
 YouTrack
+ytt
 Yubico
 Zeitwerk
 Zendesk
