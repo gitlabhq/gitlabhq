@@ -124,7 +124,7 @@ GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec bin/qa Test::Instanc
 ```
 
 Some QA tests require logging in as an admin user. By default, the QA
-tests will use the the same `root` user seeded by the GDK.
+tests will use the same `root` user seeded by the GDK.
 
 If you need to authenticate with different admin credentials, you can
 provide the `GITLAB_ADMIN_USERNAME` and `GITLAB_ADMIN_PASSWORD`

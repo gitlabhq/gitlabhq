@@ -117,8 +117,14 @@ export default {
     exportCsvPath: {
       default: '',
     },
+    fullPath: {
+      default: '',
+    },
     groupEpicsPath: {
       default: '',
+    },
+    hasAnyIssues: {
+      default: false,
     },
     hasBlockedIssuesFeature: {
       default: false,
@@ -130,9 +136,6 @@ export default {
       default: false,
     },
     hasMultipleIssueAssigneesFeature: {
-      default: false,
-    },
-    hasProjectIssues: {
       default: false,
     },
     initialEmail: {
@@ -148,9 +151,6 @@ export default {
       default: '',
     },
     newIssuePath: {
-      default: '',
-    },
-    projectPath: {
       default: '',
     },
     rssPath: {
@@ -198,7 +198,7 @@ export default {
         createFlash({ message: this.$options.i18n.errorFetchingIssues, captureError: true, error });
       },
       skip() {
-        return !this.hasProjectIssues;
+        return !this.hasAnyIssues;
       },
       debounce: 200,
     },
@@ -211,7 +211,7 @@ export default {
         };
       },
       skip() {
-        return !this.hasProjectIssues;
+        return !this.hasAnyIssues;
       },
     },
     countClosed: {
@@ -223,7 +223,7 @@ export default {
         };
       },
       skip() {
-        return !this.hasProjectIssues;
+        return !this.hasAnyIssues;
       },
     },
     countAll: {
@@ -235,7 +235,7 @@ export default {
         };
       },
       skip() {
-        return !this.hasProjectIssues;
+        return !this.hasAnyIssues;
       },
     },
   },
@@ -243,7 +243,7 @@ export default {
     queryVariables() {
       return {
         isSignedIn: this.isSignedIn,
-        projectPath: this.projectPath,
+        fullPath: this.fullPath,
         search: this.searchQuery,
         sort: this.sortKey,
         state: this.state,
@@ -465,7 +465,7 @@ export default {
       return this.$apollo
         .query({
           query: searchLabelsQuery,
-          variables: { projectPath: this.projectPath, search },
+          variables: { fullPath: this.fullPath, search },
         })
         .then(({ data }) => data.project.labels.nodes);
     },
@@ -473,7 +473,7 @@ export default {
       return this.$apollo
         .query({
           query: searchMilestonesQuery,
-          variables: { projectPath: this.projectPath, search },
+          variables: { fullPath: this.fullPath, search },
         })
         .then(({ data }) => data.project.milestones.nodes);
     },
@@ -481,8 +481,8 @@ export default {
       const id = Number(search);
       const variables =
         !search || Number.isNaN(id)
-          ? { projectPath: this.projectPath, search }
-          : { projectPath: this.projectPath, id };
+          ? { fullPath: this.fullPath, search }
+          : { fullPath: this.fullPath, id };
 
       return this.$apollo
         .query({
@@ -495,7 +495,7 @@ export default {
       return this.$apollo
         .query({
           query: searchUsersQuery,
-          variables: { projectPath: this.projectPath, search },
+          variables: { fullPath: this.fullPath, search },
         })
         .then(({ data }) => data.project.projectMembers.nodes.map((member) => member.user));
     },
@@ -607,9 +607,9 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasProjectIssues">
+  <div v-if="hasAnyIssues">
     <issuable-list
-      :namespace="projectPath"
+      :namespace="fullPath"
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"

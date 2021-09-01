@@ -63,15 +63,15 @@ describe('IssuesListApp component', () => {
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
+    fullPath: 'path/to/project',
+    hasAnyIssues: true,
     hasBlockedIssuesFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
-    hasProjectIssues: true,
     isSignedIn: true,
     issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
-    projectPath: 'path/to/project',
     rssPath: 'rss/path',
     showNewIssueLink: true,
     signInPath: 'sign/in/path',
@@ -134,7 +134,7 @@ describe('IssuesListApp component', () => {
 
     it('renders', () => {
       expect(findIssuableList().props()).toMatchObject({
-        namespace: defaultProvide.projectPath,
+        namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
         searchInputPlaceholder: IssuesListApp.i18n.searchPlaceholder,
         sortOptions: getSortOptions(true, true),
@@ -349,7 +349,7 @@ describe('IssuesListApp component', () => {
         beforeEach(() => {
           setWindowLocation(`?search=no+results`);
 
-          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
         });
 
         it('shows empty state', () => {
@@ -363,7 +363,7 @@ describe('IssuesListApp component', () => {
 
       describe('when "Open" tab has no issues', () => {
         beforeEach(() => {
-          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
         });
 
         it('shows empty state', () => {
@@ -379,7 +379,7 @@ describe('IssuesListApp component', () => {
         beforeEach(() => {
           setWindowLocation(`?state=${IssuableStates.Closed}`);
 
-          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
         });
 
         it('shows empty state', () => {
@@ -395,7 +395,7 @@ describe('IssuesListApp component', () => {
       describe('when user is logged in', () => {
         beforeEach(() => {
           wrapper = mountComponent({
-            provide: { hasProjectIssues: false, isSignedIn: true },
+            provide: { hasAnyIssues: false, isSignedIn: true },
             mountFn: mount,
           });
         });
@@ -434,7 +434,7 @@ describe('IssuesListApp component', () => {
       describe('when user is logged out', () => {
         beforeEach(() => {
           wrapper = mountComponent({
-            provide: { hasProjectIssues: false, isSignedIn: false },
+            provide: { hasAnyIssues: false, isSignedIn: false },
           });
         });
 

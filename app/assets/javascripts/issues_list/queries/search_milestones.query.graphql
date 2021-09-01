@@ -1,5 +1,5 @@
-query searchMilestones($projectPath: ID!, $search: String) {
-  project(fullPath: $projectPath) {
+query searchMilestones($fullPath: ID!, $search: String) {
+  project(fullPath: $fullPath) {
     milestones(searchTitle: $search, includeAncestors: true) {
       nodes {
         id

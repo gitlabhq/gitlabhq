@@ -1,5 +1,5 @@
-query searchUsers($projectPath: ID!, $search: String) {
-  project(fullPath: $projectPath) {
+query searchUsers($fullPath: ID!, $search: String) {
+  project(fullPath: $fullPath) {
     projectMembers(search: $search) {
       nodes {
         user {

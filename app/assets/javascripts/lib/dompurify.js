@@ -52,4 +52,4 @@ addHook('afterSanitizeAttributes', (node) => {
   }
 });
 
-export const sanitize = (val, config = defaultConfig) => dompurifySanitize(val, config);
+export const sanitize = (val, config) => dompurifySanitize(val, { ...defaultConfig, ...config });

@@ -258,7 +258,7 @@ change. If that happens, the deployment job fails with a message similar to:
 ```plaintext
 *************************************************************************************
                                    [WARNING]
-Detected a major version difference between the the chart that is currently deploying (auto-deploy-app-v0.7.0), and the previously deployed chart (auto-deploy-app-v1.0.0).
+Detected a major version difference between the chart that is currently deploying (auto-deploy-app-v0.7.0), and the previously deployed chart (auto-deploy-app-v1.0.0).
 A new major version might not be backward compatible with the current release (production). The deployment could fail or be stuck in an unrecoverable status.
 ...
 ```

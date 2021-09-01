@@ -1,5 +1,5 @@
-query getProjectIssuesCount(
-  $projectPath: ID!
+query getIssuesCount(
+  $fullPath: ID!
   $search: String
   $state: IssuableState
   $assigneeId: String
@@ -11,7 +11,7 @@ query getProjectIssuesCount(
   $types: [IssueType!]
   $not: NegatedIssueFilterInput
 ) {
-  project(fullPath: $projectPath) {
+  project(fullPath: $fullPath) {
     issues(
       search: $search
       state: $state

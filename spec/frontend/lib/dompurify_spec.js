@@ -44,6 +44,19 @@ describe('~/lib/dompurify', () => {
     expect(sanitize('<strong></strong>', { ALLOWED_TAGS: [] })).toBe('');
   });
 
+  describe('includes default configuration', () => {
+    it('with empty config', () => {
+      const svgIcon = '<svg width="100"><use></use></svg>';
+      expect(sanitize(svgIcon, {})).toBe(svgIcon);
+    });
+
+    it('with valid config', () => {
+      expect(sanitize('<a href="#" data-remote="true"></a>', { ALLOWED_TAGS: ['a'] })).toBe(
+        '<a href="#"></a>',
+      );
+    });
+  });
+
   describe.each`
     type          | gon
     ${'root'}     | ${rootGon}
