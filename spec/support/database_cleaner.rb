@@ -52,6 +52,8 @@ RSpec.configure do |config|
     example.run
 
     delete_from_all_tables!(except: deletion_except_tables)
+
+    self.class.use_transactional_tests = true
   end
 
   config.around(:each, :migration) do |example|
@@ -60,5 +62,7 @@ RSpec.configure do |config|
     example.run
 
     delete_from_all_tables!
+
+    self.class.use_transactional_tests = true
   end
 end
