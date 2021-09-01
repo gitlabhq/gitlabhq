@@ -109,6 +109,8 @@ module ApplicationSettingImplementation
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         max_import_size: 0,
+        max_yaml_size_bytes: 1.megabyte,
+        max_yaml_depth: 100,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
         notes_create_limit: 300,

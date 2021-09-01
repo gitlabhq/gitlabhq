@@ -298,7 +298,7 @@ export default () => {
     });
   }
 
-  boardConfigToggle(boardsStore);
+  boardConfigToggle();
 
   toggleFocusMode();
   toggleLabels();

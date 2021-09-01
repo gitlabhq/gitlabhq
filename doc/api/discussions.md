@@ -965,14 +965,31 @@ Parameters for multiline comments only:
 
 #### Line code
 
-A line code is of the form `<SHA>_<old>_<new>`:
+A line code is of the form `<SHA>_<old>_<new>`, like this: `adc83b19e793491b1c6ea0fd8b46cd9f32e292fc_5_5`
 
 - `<SHA>` is the SHA1 hash of the filename.
 - `<old>` is the line number before the change.
 - `<new>` is the line number after the change.
 
-For example, when commenting on an added line number 5, the line code
-looks like `adc83b19e793491b1c6ea0fd8b46cd9f32e292fc_5_5`.
+For example, if a commit (`<COMMIT_ID>`) deletes line 463 in the README, you can comment
+on the deletion by referencing line 463 in the *old* file:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: [ACCESS_TOKEN]"\
+  --form "note=Very clever to remove this unnecessary line!"\
+  --form "path=README" --form "line=463" --form "line_type=old"\
+  "https://gitlab.com/api/v4/projects/47/repository/commits/<COMMIT_ID>/comments"
+```
+
+If a commit (`<COMMIT_ID>`) adds line 157 to `hello.rb`, you can comment on the
+addition by referencing line 157 in the *new* file:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: [ACCESS_TOKEN]"\
+  --form "note=This is brilliant!" --form "path=hello.rb"\
+  --form "line=157" --form "line_type=old"\
+  "https://gitlab.com/api/v4/projects/47/repository/commits/<COMMIT_ID>/comments"
+```
 
 ### Resolve a merge request thread
 

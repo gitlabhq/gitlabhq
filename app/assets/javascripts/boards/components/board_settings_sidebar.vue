@@ -3,7 +3,6 @@ import { GlButton, GlDrawer, GlLabel } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { LIST, ListType, ListTypeTitles } from '~/boards/constants';
-import boardsStore from '~/boards/stores/boards_store';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
@@ -23,7 +22,7 @@ export default {
       import('ee_component/boards/components/board_settings_list_types.vue'),
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
-  inject: ['canAdminList'],
+  inject: ['canAdminList', 'scopedLabelsAvailable'],
   inheritAttrs: false,
   data() {
     return {
@@ -61,7 +60,7 @@ export default {
   methods: {
     ...mapActions(['unsetActiveId', 'removeList']),
     showScopedLabels(label) {
-      return boardsStore.scopedLabels.enabled && isScopedLabel(label);
+      return this.scopedLabelsAvailable && isScopedLabel(label);
     },
     deleteBoard() {
       // eslint-disable-next-line no-alert

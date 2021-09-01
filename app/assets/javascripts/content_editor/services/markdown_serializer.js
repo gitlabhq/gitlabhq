@@ -35,6 +35,7 @@ import TableRow from '../extensions/table_row';
 import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
+import Video from '../extensions/video';
 import {
   isPlainURL,
   renderHardBreak,
@@ -151,6 +152,7 @@ const defaultSerializerConfig = {
       else defaultMarkdownSerializer.nodes.bullet_list(state, node);
     },
     [Text.name]: defaultMarkdownSerializer.nodes.text,
+    [Video.name]: renderPlayable,
   },
 };
 

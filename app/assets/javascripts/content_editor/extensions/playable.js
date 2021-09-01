@@ -1,9 +1,10 @@
+/* eslint-disable @gitlab/require-i18n-strings */
+
 import { Node } from '@tiptap/core';
 
 const queryPlayableElement = (element, mediaType) => element.querySelector(mediaType);
 
 export default Node.create({
-  name: 'playable',
   group: 'inline',
   inline: true,
   draggable: true,
@@ -46,7 +47,7 @@ export default Node.create({
   parseHTML() {
     return [
       {
-        tag: '.media-container',
+        tag: `.${this.options.mediaType}-container`,
       },
     ];
   },
@@ -54,7 +55,7 @@ export default Node.create({
   renderHTML({ node }) {
     return [
       'span',
-      { class: 'media-container' },
+      { class: `media-container ${this.options.mediaType}-container` },
       [
         this.options.mediaType,
         {

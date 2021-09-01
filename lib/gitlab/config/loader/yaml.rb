@@ -9,9 +9,6 @@ module Gitlab
 
         include Gitlab::Utils::StrongMemoize
 
-        MAX_YAML_SIZE = 1.megabyte
-        MAX_YAML_DEPTH = 100
-
         def initialize(config, additional_permitted_classes: [])
           @config = YAML.safe_load(config,
             permitted_classes: [Symbol, *additional_permitted_classes],
@@ -52,8 +49,8 @@ module Gitlab
         def deep_size
           strong_memoize(:deep_size) do
             Gitlab::Utils::DeepSize.new(@config,
-              max_size: MAX_YAML_SIZE,
-              max_depth: MAX_YAML_DEPTH)
+              max_size: Gitlab::CurrentSettings.current_application_settings.max_yaml_size_bytes,
+              max_depth: Gitlab::CurrentSettings.current_application_settings.max_yaml_depth)
           end
         end
       end

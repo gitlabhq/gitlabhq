@@ -263,6 +263,8 @@ module ApplicationSettingsHelper
       :max_attachment_size,
       :max_import_size,
       :max_pages_size,
+      :max_yaml_size_bytes,
+      :max_yaml_depth,
       :metrics_method_call_threshold,
       :minimum_password_length,
       :mirror_available,

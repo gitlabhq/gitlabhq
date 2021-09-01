@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import ConfigToggle from './components/config_toggle.vue';
 
-export default (boardsStore = undefined) => {
+export default () => {
   const el = document.querySelector('.js-board-config');
 
   if (!el) {
@@ -15,7 +15,6 @@ export default (boardsStore = undefined) => {
     render(h) {
       return h(ConfigToggle, {
         props: {
-          boardsStore,
           canAdminList: parseBoolean(el.dataset.canAdminList),
           hasScope: parseBoolean(el.dataset.hasScope),
         },

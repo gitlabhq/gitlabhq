@@ -173,13 +173,16 @@
     Hi @gitlab - thank you for reporting this ~bug (#1) we hope to fix it in %1.1 as part of !1
 - name: audio
   markdown: '![Sample Audio](https://gitlab.com/gitlab.mp3)'
-- name: audio_in_lists
+- name: video
+  markdown: '![Sample Video](https://gitlab.com/gitlab.mp4)'
+- name: audio_and_video_in_lists
   markdown: |-
     * ![Sample Audio](https://gitlab.com/1.mp3)
-    * ![Sample Audio](https://gitlab.com/2.mp3)
+    * ![Sample Video](https://gitlab.com/2.mp4)
 
-    1. ![Sample Audio](https://gitlab.com/1.mp3)
+    1. ![Sample Video](https://gitlab.com/1.mp4)
     2. ![Sample Audio](https://gitlab.com/2.mp3)
 
     * [x] ![Sample Audio](https://gitlab.com/1.mp3)
     * [x] ![Sample Audio](https://gitlab.com/2.mp3)
+    * [x] ![Sample Video](https://gitlab.com/3.mp4)

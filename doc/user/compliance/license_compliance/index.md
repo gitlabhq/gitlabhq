@@ -53,7 +53,7 @@ You can view and modify existing policies from the [policies](#policies) tab.
 
 The following languages and package managers are supported.
 
-Java 8 and Gradle 1.x projects are not supported. The minimum supported version of Maven is 3.2.5.
+Gradle 1.x projects are not supported. The minimum supported version of Maven is 3.2.5.
 
 | Language   | Package managers                                                                             | Notes |
 |------------|----------------------------------------------------------------------------------------------|-------|
@@ -140,12 +140,12 @@ License Compliance can be configured using CI/CD variables.
 | `ADDITIONAL_CA_CERT_BUNDLE` | no       | Bundle of trusted CA certificates (currently supported in Pip, Pipenv, Maven, Gradle, Yarn, and npm projects). |
 | `ASDF_JAVA_VERSION`         | no       | Version of Java to use for the scan. |
 | `ASDF_NODEJS_VERSION`       | no       | Version of Node.js to use for the scan. |
-| `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. |
+| `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. [Configuration](#selecting-the-version-of-python) |
 | `ASDF_RUBY_VERSION`         | no       | Version of Ruby to use for the scan. |
 | `GRADLE_CLI_OPTS`           | no       | Additional arguments for the Gradle executable. If not supplied, defaults to `--exclude-task=test`. |
 | `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if you have multiple projects in nested directories, you can update your `.gitlab-ci-yml` template to specify a recursive scan, like `LICENSE_FINDER_CLI_OPTS: '--recursive'`. |
-| `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. |
-| `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. |
+| `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. [Configuration](#selecting-the-version-of-java) |
+| `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. [Configuration](#selecting-the-version-of-python) |
 | `MAVEN_CLI_OPTS`            | no       | Additional arguments for the `mvn` executable. If not supplied, defaults to `-DskipTests`. |
 | `PIP_INDEX_URL`             | no       | Base URL of Python Package Index (default: `https://pypi.org/simple/`). |
 | `SECURE_ANALYZERS_PREFIX`   | no       | Set the Docker registry base address to download the analyzer from. |
@@ -245,6 +245,12 @@ Alternatively, you can use a Java key store to verify the TLS connection. For in
 generate a key store file, see the
 [Maven Guide to Remote repository access through authenticated HTTPS](http://maven.apache.org/guides/mini/guide-repository-ssl.html).
 
+### Selecting the version of Java
+
+License Compliance uses Java 8 by default. You can specify a different Java version using `LM_JAVA_VERSION`.
+
+`LM_JAVA_VERSION` only accepts versions: 8, 11, 14, 15. 
+
 ### Selecting the version of Python
 
 > - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
@@ -263,6 +269,8 @@ license_scanning:
   variables:
     LM_PYTHON_VERSION: 2
 ```
+
+`LM_PYTHON_VERSION` or `ASDF_PYTHON_VERSION` can be used to specify the desired version of Python. When both variables are specified `LM_PYTHON_VERSION` takes precedence.
 
 ### Custom root certificates for Python
 

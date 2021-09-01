@@ -673,3 +673,42 @@ Response:
 |-----------|---------------------------------|
 | 200       | Credentials are valid           |
 | 403       | Credentials are invalid         |
+
+## Reset instance's runner registration token
+
+Resets the runner registration token for the GitLab instance.
+
+```plaintext
+POST /runners/reset_registration_token
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/runners/reset_registration_token"
+```
+
+## Reset project's runner registration token
+
+Resets the runner registration token for a project.
+
+```plaintext
+POST /projects/:id/runners/reset_registration_token
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
+```
+
+## Reset group's runner registration token
+
+Resets the runner registration token for a group.
+
+```plaintext
+POST /groups/:id/runners/reset_registration_token
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/groups/9/runners/reset_registration_token"
+```

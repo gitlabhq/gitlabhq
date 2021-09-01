@@ -16,9 +16,22 @@ projects by providing an advanced editor with commit staging.
 ## Open the Web IDE
 
 You can open the Web IDE when viewing a file, from the repository file list,
-and from merge requests.
+and from merge requests:
 
-![Open Web IDE](img/open_web_ide.png)
+- *When viewing a file, or the repository file list* -
+  1. In the upper right corner of the page, select **Edit in Web IDE** if it is visible.
+  1. If **Edit in Web IDE** is not visible:
+     1. Select the **(angle-down)** next to **Edit** or **Gitpod**, depending on your configuration.
+     1. Select **Edit in Web IDE** from the list to display it as the editing option.
+     1. Select **Edit in Web IDE** to open the editor.
+- *When viewing a merge request* -
+  1. Go to your merge request, and select the **Overview** tab.
+  1. Scroll to the widgets area, after the merge request description.
+  1. Select **Edit in Web IDE** if it is visible.
+  1. If **Edit in Web IDE** is not visible:
+     1. Select the **(angle-down)** next to **Open in Gitpod**.
+     1. Select **Open in Web IDE** from the list to display it as the editing option.
+     1. Select **Open in Web IDE** to open the editor.
 
 ## File finder
 
@@ -249,7 +262,7 @@ The image is uploaded to the same directory and is named `image.png` by default.
 If another file already exists with the same name, a numeric suffix is automatically
 added to the filename.
 
-There are two ways to preview Markdown content in the Web IDE: 
+There are two ways to preview Markdown content in the Web IDE:
 
 1. At the top of the file's tab, select **Preview Markdown** to preview the formatting
    in your file. You can't edit the file in this view.

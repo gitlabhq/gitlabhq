@@ -1,4 +1,3 @@
-import '~/boards/models/list';
 import { GlDrawer, GlLabel } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
@@ -44,6 +43,7 @@ describe('BoardSettingsSidebar', () => {
         store,
         provide: {
           canAdminList,
+          scopedLabelsAvailable: false,
         },
       }),
     );

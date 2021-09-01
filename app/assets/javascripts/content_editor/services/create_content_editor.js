@@ -39,6 +39,7 @@ import TableRow from '../extensions/table_row';
 import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
+import Video from '../extensions/video';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
@@ -104,6 +105,7 @@ export const createContentEditor = ({
     TaskItem,
     TaskList,
     Text,
+    Video,
   ];
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];

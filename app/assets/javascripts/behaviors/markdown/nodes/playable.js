@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+/* eslint-disable @gitlab/require-i18n-strings */
 
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { Node } from 'tiptap';
@@ -30,19 +31,19 @@ export default class Playable extends Node {
 
     const parseDOM = [
       {
-        tag: `.media-container`,
+        tag: `.${this.mediaType}-container`,
         getAttrs: (el) => ({
-          src: el.querySelector('audio,video').src,
-          alt: el.querySelector('audio,video').dataset.title,
+          src: el.querySelector(this.mediaType).src,
+          alt: el.querySelector(this.mediaType).dataset.title,
         }),
       },
     ];
 
     const toDOM = (node) => [
       'span',
-      { class: 'media-container' },
+      { class: `media-container ${this.mediaType}-container` },
       [
-        this.options.mediaType,
+        this.mediaType,
         {
           src: node.attrs.src,
           controls: true,

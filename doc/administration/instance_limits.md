@@ -513,6 +513,29 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
 
+### Maximum size and depth of CI/CD configuration YAML files
+
+The default maximum size of a CI/CD configuration YAML file is 1 megabyte and the default depth is 100.
+
+You can change these limits in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+Update `max_yaml_size_bytes` with the new value in megabytes:
+
+```ruby
+ApplicationSetting.update!(max_yaml_size_bytes: 2.megabytes)
+```
+
+Update `max_yaml_depth` with the new value in megabytes:
+
+```ruby
+ApplicationSetting.update!(max_yaml_depth: 125)
+```
+
+To disable this limitation entirely, disable the feature flag in the console:
+
+```ruby
+Feature.disable(:ci_yaml_limit_size)
+```
+
 ## Instance monitoring and metrics
 
 ### Limit inbound incident management alerts
