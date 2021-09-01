@@ -14867,10 +14867,10 @@ msgstr ""
 msgid "Geo|Geo Status"
 msgstr ""
 
-msgid "Geo|Geo nodes are paused using a command run on the node"
+msgid "Geo|Geo sites"
 msgstr ""
 
-msgid "Geo|Geo sites"
+msgid "Geo|Geo sites are paused using a command run on the site"
 msgstr ""
 
 msgid "Geo|Geo supports replication of many data types."
@@ -14915,7 +14915,7 @@ msgstr ""
 msgid "Geo|Learn more about Geo"
 msgstr ""
 
-msgid "Geo|Learn more about Geo node statuses"
+msgid "Geo|Learn more about Geo site statuses"
 msgstr ""
 
 msgid "Geo|Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
@@ -14934,9 +14934,6 @@ msgid "Geo|Node name can't be blank"
 msgstr ""
 
 msgid "Geo|Node name should be between 1 and 255 characters"
-msgstr ""
-
-msgid "Geo|Node's status was updated %{timeAgo}."
 msgstr ""
 
 msgid "Geo|Not synced yet"
@@ -14999,10 +14996,10 @@ msgstr ""
 msgid "Geo|Removing a Geo node stops the synchronization to and from that node. Are you sure?"
 msgstr ""
 
-msgid "Geo|Replicated data is verified with the secondary node(s) using checksums"
+msgid "Geo|Replicated data is verified with the secondary site(s) using checksums"
 msgstr ""
 
-msgid "Geo|Replicated data is verified with the secondary node(s) using checksums."
+msgid "Geo|Replicated data is verified with the secondary site(s) using checksums."
 msgstr ""
 
 msgid "Geo|Replication Details"
@@ -15047,7 +15044,7 @@ msgstr ""
 msgid "Geo|Reverify all projects"
 msgstr ""
 
-msgid "Geo|Review replication status, and resynchronize and reverify items with the primary node."
+msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
 msgstr ""
 
 msgid "Geo|Secondary node"
@@ -15057,6 +15054,9 @@ msgid "Geo|Secondary site"
 msgstr ""
 
 msgid "Geo|Selective (%{syncLabel})"
+msgstr ""
+
+msgid "Geo|Site's status was updated %{timeAgo}."
 msgstr ""
 
 msgid "Geo|Status"
@@ -15083,10 +15083,10 @@ msgstr ""
 msgid "Geo|Synchronization status"
 msgstr ""
 
-msgid "Geo|The database is currently %{db_lag} behind the primary node."
+msgid "Geo|The database is currently %{db_lag} behind the primary site."
 msgstr ""
 
-msgid "Geo|The node is currently %{minutes_behind} behind the primary node."
+msgid "Geo|The site is currently %{minutes_behind} behind the primary site."
 msgstr ""
 
 msgid "Geo|There are no %{replicable_type} to show"
@@ -15158,7 +15158,7 @@ msgstr ""
 msgid "Geo|With GitLab Geo, you can install a special read-only and replicated instance anywhere. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
-msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo node."
+msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo site."
 msgstr ""
 
 msgid "Geo|You may be able to make a limited amount of changes or perform a limited amount of actions on this page."
@@ -15590,7 +15590,7 @@ msgstr ""
 msgid "Go to previous page"
 msgstr ""
 
-msgid "Go to primary node"
+msgid "Go to primary site"
 msgstr ""
 
 msgid "Go to project"
@@ -16797,7 +16797,7 @@ msgstr ""
 msgid "If disabled, only administrators can configure repository mirroring."
 msgstr ""
 
-msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}More information%{linkEnd}"
+msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
@@ -20089,7 +20089,7 @@ msgstr ""
 msgid "Limit sign in from multiple ips"
 msgstr ""
 
-msgid "Limit the number of concurrent operations this secondary node can run in the background."
+msgid "Limit the number of concurrent operations this secondary site can run in the background."
 msgstr ""
 
 msgid "Limit the number of inbound incident management alerts that can be sent to a project."
@@ -21979,7 +21979,7 @@ msgstr ""
 msgid "Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 
-msgid "Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}. %{linkStart}More information%{linkEnd}"
+msgid "Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "My Awesome Group"
@@ -30582,7 +30582,7 @@ msgstr ""
 msgid "Set the milestone to %{milestone_reference}."
 msgstr ""
 
-msgid "Set the timeout in seconds to send a secondary node status to the primary and IPs allowed for the secondary nodes."
+msgid "Set the timeout in seconds to send a secondary site status to the primary and IPs allowed for the secondary sites."
 msgstr ""
 
 msgid "Set time estimate"
@@ -30630,7 +30630,7 @@ msgstr ""
 msgid "Set weight to %{weight}."
 msgstr ""
 
-msgid "Set what should be replicated by this secondary node."
+msgid "Set what should be replicated by this secondary site."
 msgstr ""
 
 msgid "SetPasswordToCloneLink|set a password"
@@ -33191,7 +33191,7 @@ msgstr ""
 msgid "The URL defined on the primary node that secondary nodes should use to contact it."
 msgstr ""
 
-msgid "The URL defined on the primary node that secondary nodes should use to contact it. %{linkStart}More information%{linkEnd}"
+msgid "The URL defined on the primary node that secondary nodes should use to contact it. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "The URL of the Jenkins server."

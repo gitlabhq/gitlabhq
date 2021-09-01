@@ -44,14 +44,6 @@ module Gitlab
       show_trial_status_in_sidebar: {
         tracking_category: 'Growth::Conversion::Experiment::ShowTrialStatusInSidebar',
         rollout_strategy: :group
-      },
-      learn_gitlab_a: {
-        tracking_category: 'Growth::Conversion::Experiment::LearnGitLabA',
-        rollout_strategy: :user
-      },
-      learn_gitlab_b: {
-        tracking_category: 'Growth::Activation::Experiment::LearnGitLabB',
-        rollout_strategy: :user
       }
     }.freeze
 

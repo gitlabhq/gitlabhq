@@ -1,5 +1,6 @@
 import { escape, minBy } from 'lodash';
 import emojiAliases from 'emojis/aliases.json';
+import { sanitize } from '~/lib/dompurify';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
 import { CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from './constants';
@@ -34,7 +35,7 @@ async function loadEmoji() {
 
 async function loadEmojiWithNames() {
   return Object.entries(await loadEmoji()).reduce((acc, [key, value]) => {
-    acc[key] = { ...value, name: key };
+    acc[key] = { ...value, name: key, e: sanitize(value.e) };
 
     return acc;
   }, {});

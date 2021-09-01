@@ -235,4 +235,46 @@ RSpec.describe ApplicationRecord do
       end
     end
   end
+
+  describe '.default_select_columns' do
+    shared_examples_for 'selects identically to the default' do
+      it 'generates the same sql as the default' do
+        expected_sql = test_model.all.to_sql
+        generated_sql = test_model.all.select(test_model.default_select_columns).to_sql
+
+        expect(expected_sql).to eq(generated_sql)
+      end
+    end
+
+    before do
+      ApplicationRecord.connection.execute(<<~SQL)
+        create table tests (
+          id bigserial primary key not null,
+          ignore_me text
+        )
+      SQL
+    end
+    context 'without an ignored column' do
+      let(:test_model) do
+        Class.new(ApplicationRecord) do
+          self.table_name = 'tests'
+        end
+      end
+
+      it_behaves_like 'selects identically to the default'
+    end
+
+    context 'with an ignored column' do
+      let(:test_model) do
+        Class.new(ApplicationRecord) do
+          include IgnorableColumns
+          self.table_name = 'tests'
+
+          ignore_columns :ignore_me, remove_after: '2100-01-01', remove_with: '99.12'
+        end
+      end
+
+      it_behaves_like 'selects identically to the default'
+    end
+  end
 end

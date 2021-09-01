@@ -80,12 +80,10 @@ module Ci
       private
 
       def append_strings(old_data, new_data)
-        if Feature.enabled?(:ci_job_trace_force_encode, default_enabled: :yaml)
-          # When object storage is in use, old_data may be retrieved in UTF-8.
-          old_data = old_data.force_encoding(Encoding::ASCII_8BIT)
-          # new_data should already be in ASCII-8BIT, but just in case it isn't, do this.
-          new_data = new_data.force_encoding(Encoding::ASCII_8BIT)
-        end
+        # When object storage is in use, old_data may be retrieved in UTF-8.
+        old_data = old_data.force_encoding(Encoding::ASCII_8BIT)
+        # new_data should already be in ASCII-8BIT, but just in case it isn't, do this.
+        new_data = new_data.force_encoding(Encoding::ASCII_8BIT)
 
         old_data + new_data
       end

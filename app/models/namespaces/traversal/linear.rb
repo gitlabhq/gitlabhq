@@ -176,13 +176,14 @@ module Namespaces
         # if you are walking up the ancestors or down the descendants.
         if hierarchy_order
           depth_sql = "ABS(#{traversal_ids.count} - array_length(traversal_ids, 1))"
-          skope = skope.select(skope.arel_table[Arel.star], "#{depth_sql} as depth")
+          skope = skope.select(skope.default_select_columns, "#{depth_sql} as depth")
           # The SELECT includes an extra depth attribute. We wrap the SQL in a
           # standard SELECT to avoid mismatched attribute errors when trying to
           # chain future ActiveRelation commands, and retain the ordering.
           skope = self.class
             .without_sti_condition
             .from(skope, self.class.table_name)
+            .select(skope.arel_table[Arel.star])
             .order(depth: hierarchy_order)
         end
 

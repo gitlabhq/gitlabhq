@@ -1,8 +1,8 @@
-/* eslint-disable no-shadow, no-param-reassign,consistent-return */
+/* eslint-disable no-shadow, no-param-reassign, consistent-return */
 /* global List */
 /* global ListIssue */
+
 import { sortBy } from 'lodash';
-import Vue from 'vue';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createDefaultClient from '~/lib/graphql';
@@ -868,16 +868,5 @@ const boardsStore = {
 };
 
 BoardsStoreEE.initEESpecific(boardsStore);
-
-// hacks added in order to allow milestone_select to function properly
-// TODO: remove these
-
-export function boardStoreIssueSet(...args) {
-  Vue.set(boardsStore.detail.issue, ...args);
-}
-
-export function boardStoreIssueDelete(...args) {
-  Vue.delete(boardsStore.detail.issue, ...args);
-}
 
 export default boardsStore;

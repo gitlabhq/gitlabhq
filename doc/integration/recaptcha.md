@@ -18,8 +18,10 @@ To use reCAPTCHA, first you must create a site and private key.
 1. Fill out the form necessary to obtain reCAPTCHA v2 keys.
 1. Log in to your GitLab server, with administrator credentials.
 1. Go to Reporting Applications Settings in the Admin Area (`admin/application_settings/reporting`).
+1. Expand the **Spam and Anti-bot Protection** section.
 1. Fill all reCAPTCHA fields with keys from previous steps.
-1. Check the `Enable reCAPTCHA` checkbox.
+1. Select the **Enable reCAPTCHA** checkbox.
+1. To enable reCAPTCHA for logins via password, select the **Enable reCAPTCHA for login** checkbox.
 1. Save the configuration.
 1. Change the first line of the `#execute` method in `app/services/spam/spam_verdict_service.rb`
    to `return CONDITONAL_ALLOW` so that the spam check short-circuits and triggers the response to
@@ -28,11 +30,11 @@ To use reCAPTCHA, first you must create a site and private key.
 NOTE:
 Make sure you are viewing an issuable in a project that is public. If you're working with an issue, the issue is public.
 
-## Enabling reCAPTCHA for user logins via passwords
+## Enable reCAPTCHA for user logins using the HTTP header
 
-By default, reCAPTCHA is only enabled for user registrations. To enable it for
-user logins via passwords, the `X-GitLab-Show-Login-Captcha` HTTP header must
-be set. For example, in NGINX, this can be done via the `proxy_set_header`
+You can enable reCAPTCHA for user logins via password [in the user interface](#configuration)
+or by setting the `X-GitLab-Show-Login-Captcha` HTTP header.
+For example, in NGINX, this can be done via the `proxy_set_header`
 configuration variable:
 
 ```nginx

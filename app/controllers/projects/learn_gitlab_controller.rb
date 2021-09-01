@@ -7,8 +7,6 @@ class Projects::LearnGitlabController < Projects::ApplicationController
   feature_category :users
 
   def index
-    push_frontend_experiment(:learn_gitlab_a, subject: current_user)
-    push_frontend_experiment(:learn_gitlab_b, subject: current_user)
   end
 
   private

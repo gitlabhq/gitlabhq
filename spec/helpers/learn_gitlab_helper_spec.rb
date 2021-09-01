@@ -63,17 +63,14 @@ RSpec.describe LearnGitlabHelper do
 
     subject { helper.learn_gitlab_experiment_enabled?(project) }
 
-    where(:experiment_a, :experiment_b, :onboarding, :learn_gitlab_available, :result) do
-      true        | false         | true        | true                  | true
-      false       | true          | true        | true                  | true
-      false       | false         | true        | true                  | false
-      true        | true          | true        | false                 | false
-      true        | true          | false       | true                  | false
+    where(:onboarding, :learn_gitlab_available, :result) do
+      true        | true                  | true
+      true        | false                 | false
+      false       | true                  | false
     end
 
     with_them do
       before do
-        stub_experiment_for_subject(learn_gitlab_a: experiment_a, learn_gitlab_b: experiment_b)
         allow(OnboardingProgress).to receive(:onboarding?).with(project.namespace).and_return(onboarding)
         allow_next(LearnGitlab::Project, user).to receive(:available?).and_return(learn_gitlab_available)
       end
@@ -88,10 +85,6 @@ RSpec.describe LearnGitlabHelper do
     end
 
     context 'when not signed in' do
-      before do
-        stub_experiment_for_subject(learn_gitlab_a: true, learn_gitlab_b: true)
-      end
-
       it { is_expected.to eq(false) }
     end
   end
@@ -104,43 +97,6 @@ RSpec.describe LearnGitlabHelper do
     end
     it 'has the svg' do
       expect(sections.values.map { |section| section.keys }).to eq([[:svg]] * 3)
-    end
-  end
-
-  describe '.learn_gitlab_experiment_tracking_category' do
-    using RSpec::Parameterized::TableSyntax
-
-    let_it_be(:user) { create(:user) }
-
-    subject { helper.learn_gitlab_experiment_tracking_category }
-
-    where(:experiment_a, :experiment_b, :result) do
-      false       | false         | nil
-      false       | true          | 'Growth::Activation::Experiment::LearnGitLabB'
-      true        | false         | 'Growth::Conversion::Experiment::LearnGitLabA'
-      true        | true          | 'Growth::Conversion::Experiment::LearnGitLabA'
-    end
-
-    with_them do
-      before do
-        stub_experiment_for_subject(learn_gitlab_a: experiment_a, learn_gitlab_b: experiment_b)
-      end
-
-      context 'when signed in' do
-        before do
-          sign_in(user)
-        end
-
-        it { is_expected.to eq(result) }
-      end
-    end
-
-    context 'when not signed in' do
-      before do
-        stub_experiment_for_subject(learn_gitlab_a: true, learn_gitlab_b: true)
-      end
-
-      it { is_expected.to eq(nil) }
     end
   end
 end

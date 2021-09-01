@@ -100,6 +100,14 @@ class ApplicationRecord < ActiveRecord::Base
     self.column_names.map { |column_name| self.arel_table[column_name] }
   end
 
+  def self.default_select_columns
+    if ignored_columns.any?
+      cached_column_list
+    else
+      arel_table[Arel.star]
+    end
+  end
+
   def readable_by?(user)
     Ability.allowed?(user, "read_#{to_ability_name}".to_sym, self)
   end

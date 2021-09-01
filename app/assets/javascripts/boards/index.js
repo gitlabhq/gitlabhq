@@ -6,7 +6,6 @@ import { mapActions } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
-import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import { setWeightFetchingState, setEpicFetchingState } from 'ee_else_ce/boards/ee_functions';
 import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
@@ -85,7 +84,6 @@ export default () => {
     el: $boardApp,
     components: {
       BoardContent,
-      BoardSidebar,
       BoardSettingsSidebar: () => import('~/boards/components/board_settings_sidebar.vue'),
     },
     provide: {

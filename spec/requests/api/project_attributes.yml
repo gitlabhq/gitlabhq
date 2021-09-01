@@ -55,6 +55,7 @@ itself: # project
     - can_create_merge_request_in
     - compliance_frameworks
     - container_expiration_policy
+    - container_registry_enabled
     - container_registry_image_prefix
     - default_branch
     - empty_repo

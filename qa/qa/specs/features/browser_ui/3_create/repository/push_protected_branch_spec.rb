@@ -25,7 +25,7 @@ module QA
 
           push = push_new_file(branch_name)
 
-          expect(push.output).to match(/remote: To create a merge request for protected-branch, visit/)
+          expect(push.output).to match(/To create a merge request for protected-branch, visit/)
         end
       end
 
@@ -35,7 +35,7 @@ module QA
             roles: Resource::ProtectedBranch::Roles::NO_ONE
           })
 
-          expect { push_new_file(branch_name) }.to raise_error(QA::Support::Run::CommandError, /remote: GitLab: You are not allowed to push code to protected branches on this project\.([\s\S]+)\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
+          expect { push_new_file(branch_name) }.to raise_error(QA::Support::Run::CommandError, /You are not allowed to push code to protected branches on this project\.([\s\S]+)\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
         end
       end
 

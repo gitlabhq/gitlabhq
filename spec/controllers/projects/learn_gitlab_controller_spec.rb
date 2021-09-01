@@ -27,13 +27,6 @@ RSpec.describe Projects::LearnGitlabController do
 
       it { is_expected.to render_template(:index) }
 
-      it 'pushes experiment to frontend' do
-        expect(controller).to receive(:push_frontend_experiment).with(:learn_gitlab_a, subject: user)
-        expect(controller).to receive(:push_frontend_experiment).with(:learn_gitlab_b, subject: user)
-
-        subject
-      end
-
       context 'learn_gitlab experiment not enabled' do
         let(:learn_gitlab_experiment_enabled) { false }
 

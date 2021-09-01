@@ -3,19 +3,8 @@
 module LearnGitlabHelper
   def learn_gitlab_experiment_enabled?(project)
     return false unless current_user
-    return false unless continous_onboarding_experiment_enabled_for_user?
 
     learn_gitlab_onboarding_available?(project)
-  end
-
-  def learn_gitlab_experiment_tracking_category
-    return unless current_user
-
-    if Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_a, subject: current_user)
-      Gitlab::Experimentation.get_experiment(:learn_gitlab_a).tracking_category
-    elsif Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_b, subject: current_user)
-      Gitlab::Experimentation.get_experiment(:learn_gitlab_b).tracking_category
-    end
   end
 
   def onboarding_actions_data(project)
@@ -29,11 +18,6 @@ module LearnGitlabHelper
         svg: image_path("learn_gitlab/#{action}.svg")
       ]
     end
-  end
-
-  def continous_onboarding_experiment_enabled_for_user?
-    Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_a, subject: current_user) ||
-      Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_b, subject: current_user)
   end
 
   def onboarding_sections_data

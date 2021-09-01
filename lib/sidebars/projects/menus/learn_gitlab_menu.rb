@@ -40,8 +40,7 @@ module Sidebars
           {
             class: 'home',
             data: {
-              track_label: 'learn_gitlab',
-              track_property: context.learn_gitlab_experiment_tracking_category
+              track_label: 'learn_gitlab'
             }
           }
         end
