@@ -37,8 +37,9 @@ function bundle_install_script() {
   fi;
 
   bundle --version
-  bundle config set path 'vendor'
+  bundle config set path "$(pwd)/vendor"
   bundle config set clean 'true'
+  test -d jh && bundle config set gemfile 'jh/Gemfile'
 
   echo "${BUNDLE_WITHOUT}"
   bundle config

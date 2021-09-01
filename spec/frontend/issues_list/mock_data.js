@@ -70,10 +70,16 @@ export const getIssuesQueryResponse = {
   },
 };
 
-export const getIssuesCountQueryResponse = {
+export const getIssuesCountsQueryResponse = {
   data: {
     project: {
-      issues: {
+      openedIssues: {
+        count: 1,
+      },
+      closedIssues: {
+        count: 1,
+      },
+      allIssues: {
         count: 1,
       },
     },

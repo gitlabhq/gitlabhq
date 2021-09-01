@@ -1,0 +1,57 @@
+query getIssuesCount(
+  $fullPath: ID!
+  $search: String
+  $assigneeId: String
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $milestoneWildcardId: MilestoneWildcardId
+  $types: [IssueType!]
+  $not: NegatedIssueFilterInput
+) {
+  project(fullPath: $fullPath) {
+    openedIssues: issues(
+      state: opened
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    closedIssues: issues(
+      state: closed
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    allIssues: issues(
+      state: all
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+  }
+}

@@ -20,6 +20,15 @@ You can use [predefined CI/CD variables](#predefined-cicd-variables) or define c
 - [Group CI/CD variables](#add-a-cicd-variable-to-a-group).
 - [Instance CI/CD variables](#add-a-cicd-variable-to-an-instance).
 
+NOTE:
+Variables set in the GitLab UI are **not** passed down to [service containers](../docker/using_docker_images.md).
+To set them, assign them to variables in the UI, then re-assign them in your `.gitlab-ci.yml`:
+
+```yaml
+variables:
+  SA_PASSWORD: $SA_PASSWORD
+```
+
 > For more information about advanced use of GitLab CI/CD:
 >
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Get to productivity faster with these [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/)

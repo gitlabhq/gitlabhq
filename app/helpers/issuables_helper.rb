@@ -3,6 +3,7 @@
 module IssuablesHelper
   include GitlabRoutingHelper
   include IssuablesDescriptionTemplatesHelper
+  include ::Sidebars::Concerns::HasPill
 
   def sidebar_gutter_toggle_icon
     content_tag(:span, class: 'js-sidebar-toggle-container', data: { is_expanded: !sidebar_gutter_collapsed? }) do
@@ -187,19 +188,18 @@ module IssuablesHelper
   end
 
   def issuables_state_counter_text(issuable_type, state, display_count)
-    titles = {
-      opened: "Open"
-    }
-
+    titles = { opened: "Open" }
     state_title = titles[state] || state.to_s.humanize
     html = content_tag(:span, state_title)
 
     return html.html_safe unless display_count
 
     count = issuables_count_for_state(issuable_type, state)
-
     if count != -1
-      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm')
+      html << " " << content_tag(:span,
+        format_count(issuable_type, count, Gitlab::IssuablesCountForState::THRESHOLD),
+        class: 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm'
+      )
     end
 
     html.html_safe
@@ -284,7 +284,9 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    Gitlab::IssuablesCountForState.new(finder)[state]
+    store_in_cache = parent.is_a?(Group) ? parent.cached_issues_state_count_enabled? : false
+
+    Gitlab::IssuablesCountForState.new(finder, store_in_redis_cache: store_in_cache)[state]
   end
 
   def close_issuable_path(issuable)
@@ -437,6 +439,14 @@ module IssuablesHelper
 
   def parent
     @project || @group
+  end
+
+  def format_count(issuable_type, count, threshold)
+    if issuable_type == :issues && parent.is_a?(Group) && parent.cached_issues_state_count_enabled?
+      format_cached_count(threshold, count)
+    else
+      number_with_delimiter(count)
+    end
   end
 end
 

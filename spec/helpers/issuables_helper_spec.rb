@@ -123,7 +123,7 @@ RSpec.describe IssuablesHelper do
   end
 
   describe '#issuables_state_counter_text' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     describe 'state text' do
       context 'when number of issuables can be generated' do
@@ -157,6 +157,38 @@ RSpec.describe IssuablesHelper do
             .to eq('<span>Merged</span>')
           expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
             .to eq('<span>All</span>')
+        end
+      end
+
+      context 'when count is over the threshold' do
+        let_it_be(:group) { create(:group) }
+
+        before do
+          allow(helper).to receive(:issuables_count_for_state).and_return(1100)
+          allow(helper).to receive(:parent).and_return(group)
+          stub_const("Gitlab::IssuablesCountForState::THRESHOLD", 1000)
+        end
+
+        context 'when feature flag cached_issues_state_count is disabled' do
+          before do
+            stub_feature_flags(cached_issues_state_count: false)
+          end
+
+          it 'returns complete count' do
+            expect(helper.issuables_state_counter_text(:issues, :opened, true))
+              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">1,100</span>')
+          end
+        end
+
+        context 'when feature flag cached_issues_state_count is enabled' do
+          before do
+            stub_feature_flags(cached_issues_state_count: true)
+          end
+
+          it 'returns truncated count' do
+            expect(helper.issuables_state_counter_text(:issues, :opened, true))
+              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">1.1k</span>')
+          end
         end
       end
     end

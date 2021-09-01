@@ -1,15 +1,20 @@
 <script>
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
 
-const SCALE_STEP_SIZE = 0.2;
 const DEFAULT_SCALE = 1;
 const MIN_SCALE = 1;
-const MAX_SCALE = 2;
+const ZOOM_LEVELS = 5;
 
 export default {
   components: {
     GlButtonGroup,
     GlButton,
+  },
+  props: {
+    maxScale: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
@@ -24,7 +29,10 @@ export default {
       return this.scale === DEFAULT_SCALE;
     },
     disableIncrease() {
-      return this.scale >= MAX_SCALE;
+      return this.scale >= this.maxScale;
+    },
+    stepSize() {
+      return (this.maxScale - MIN_SCALE) / ZOOM_LEVELS;
     },
   },
   methods: {
@@ -37,10 +45,10 @@ export default {
       this.$emit('scale', this.scale);
     },
     incrementScale() {
-      this.setScale(this.scale + SCALE_STEP_SIZE);
+      this.setScale(Math.min(this.scale + this.stepSize, this.maxScale));
     },
     decrementScale() {
-      this.setScale(this.scale - SCALE_STEP_SIZE);
+      this.setScale(Math.max(this.scale - this.stepSize, MIN_SCALE));
     },
     resetScale() {
       this.setScale(DEFAULT_SCALE);

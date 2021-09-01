@@ -46,6 +46,7 @@ import {
 import { trackDesignDetailView, servicePingDesignDetailView } from '../../utils/tracking';
 
 const DEFAULT_SCALE = 1;
+const DEFAULT_MAX_SCALE = 2;
 
 export default {
   components: {
@@ -96,6 +97,7 @@ export default {
       scale: DEFAULT_SCALE,
       resolvedDiscussionsExpanded: false,
       prevCurrentUserTodos: null,
+      maxScale: DEFAULT_MAX_SCALE,
     };
   },
   apollo: {
@@ -328,6 +330,9 @@ export default {
     toggleResolvedComments() {
       this.resolvedDiscussionsExpanded = !this.resolvedDiscussionsExpanded;
     },
+    setMaxScale(event) {
+      this.maxScale = 1 / event;
+    },
   },
   createImageDiffNoteMutation,
   DESIGNS_ROUTE_NAME,
@@ -376,12 +381,13 @@ export default {
           @openCommentForm="openCommentForm"
           @closeCommentForm="closeCommentForm"
           @moveNote="onMoveNote"
+          @setMaxScale="setMaxScale"
         />
 
         <div
           class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
         >
-          <design-scaler @scale="scale = $event" />
+          <design-scaler :max-scale="maxScale" @scale="scale = $event" />
         </div>
       </div>
       <design-sidebar

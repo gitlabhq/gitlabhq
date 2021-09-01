@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.2.3 (2021-09-01)
+
+### Fixed (4 changes)
+
+- [Fix Live Markdown Preview in personal and subgroup projects](gitlab-org/gitlab@20553f93703c0bc076c8e1a4fbc4ce07e2e914b7) ([merge request](gitlab-org/gitlab!69316))
+- [Fix OrphanedInviteTokensCleanup migration](gitlab-org/gitlab@9c59b2fbdfeb250de66a9d2b9424cde9680f86c3) ([merge request](gitlab-org/gitlab!69316))
+- [Reset severity_levels default](gitlab-org/gitlab@34e65788679cfbdeec28357a01a8b303ba61418f) ([merge request](gitlab-org/gitlab!69316))
+- [Geo: Replicate multi-arch containers](gitlab-org/gitlab@fdf88767320016a84c83e896b9f9b90291de89e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624)) **GitLab Enterprise Edition**
+
 ## 14.2.2 (2021-08-31)
 
 ### Security (9 changes)

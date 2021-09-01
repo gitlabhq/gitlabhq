@@ -24,10 +24,9 @@ tests access to the GitLab API.
      GITLAB_ROOT_PASSWORD: "password"  # to access the api with user root:password
    ```
 
-1. To set values for the `GITLAB_HTTPS` and `GITLAB_ROOT_PASSWORD`,
-   [assign them to a variable in the user interface](../variables/index.md#add-a-cicd-variable-to-a-project).
-   Then assign that variable to the corresponding variable in your
-   `.gitlab-ci.yml` file.
+NOTE:
+Variables set in the GitLab UI are not passed down to the service containers.
+[Learn more](../variables/index.md#).
 
 Then, commands in `script:` sections in your `.gitlab-ci.yml` file can access the API at `http://gitlab/api/v4`.
 

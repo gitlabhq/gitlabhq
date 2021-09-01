@@ -16,6 +16,10 @@ do this with the Docker and Shell executors of GitLab Runner.
 If you're using [GitLab Runner](../runners/index.md) with the Docker executor,
 you basically have everything set up already.
 
+NOTE:
+Variables set in the GitLab UI are not passed down to the service containers.
+[Learn more](../variables/index.md).
+
 First, in your `.gitlab-ci.yml` add:
 
 ```yaml
@@ -23,25 +27,19 @@ services:
   - postgres:12.2-alpine
 
 variables:
-  POSTGRES_DB: nice_marmot
-  POSTGRES_USER: runner
-  POSTGRES_PASSWORD: ""
+  POSTGRES_DB: $POSTGRES_DB
+  POSTGRES_USER: $POSTGRES_USER
+  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
   POSTGRES_HOST_AUTH_METHOD: trust
 ```
-
-To set values for the `POSTGRES_DB`, `POSTGRES_USER`,
-`POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`,
-[assign them to a CI/CD variable in the user interface](../variables/index.md#custom-cicd-variables),
-then assign that variable to the corresponding variable in your
-`.gitlab-ci.yml` file.
 
 And then configure your application to use the database, for example:
 
 ```yaml
 Host: postgres
-User: runner
-Password: ''
-Database: nice_marmot
+User: $PG_USER
+Password: $PG_PASSWORD
+Database: $PG_DB
 ```
 
 If you're wondering why we used `postgres` for the `Host`, read more at

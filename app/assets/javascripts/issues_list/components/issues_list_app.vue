@@ -9,8 +9,8 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { cloneDeep } from 'lodash';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
+import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
 import createFlash from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -21,7 +21,6 @@ import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
   CREATED_DESC,
   i18n,
-  issuesCountSmartQueryBase,
   MAX_LIST_SIZE,
   PAGE_SIZE,
   PARAM_DUE_DATE,
@@ -164,18 +163,16 @@ export default {
     },
   },
   data() {
-    const filterTokens = getFilterTokens(window.location.search);
     const state = getParameterByName(PARAM_STATE);
     const sortKey = getSortKey(getParameterByName(PARAM_SORT));
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
 
-    this.initialFilterTokens = cloneDeep(filterTokens);
-
     return {
       dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
-      filterTokens,
+      filterTokens: getFilterTokens(window.location.search),
       issues: [],
+      issuesCounts: {},
       pageInfo: {},
       pageParams: getInitialPageParams(sortKey),
       showBulkEditSidebar: false,
@@ -202,40 +199,21 @@ export default {
       },
       debounce: 200,
     },
-    countOpened: {
-      ...issuesCountSmartQueryBase,
+    issuesCounts: {
+      query: getIssuesCountsQuery,
       variables() {
-        return {
-          ...this.queryVariables,
-          state: IssuableStates.Opened,
-        };
+        return this.queryVariables;
+      },
+      update: ({ project }) => project ?? {},
+      error(error) {
+        createFlash({ message: this.$options.i18n.errorFetchingCounts, captureError: true, error });
       },
       skip() {
         return !this.hasAnyIssues;
       },
-    },
-    countClosed: {
-      ...issuesCountSmartQueryBase,
-      variables() {
-        return {
-          ...this.queryVariables,
-          state: IssuableStates.Closed,
-        };
-      },
-      skip() {
-        return !this.hasAnyIssues;
-      },
-    },
-    countAll: {
-      ...issuesCountSmartQueryBase,
-      variables() {
-        return {
-          ...this.queryVariables,
-          state: IssuableStates.All,
-        };
-      },
-      skip() {
-        return !this.hasAnyIssues;
+      debounce: 200,
+      context: {
+        isSingleRequest: true,
       },
     },
   },
@@ -262,6 +240,9 @@ export default {
     },
     isOpenTab() {
       return this.state === IssuableStates.Opened;
+    },
+    showCsvButtons() {
+      return this.isSignedIn;
     },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
@@ -405,10 +386,11 @@ export default {
       return getSortOptions(this.hasIssueWeightsFeature, this.hasBlockedIssuesFeature);
     },
     tabCounts() {
+      const { openedIssues, closedIssues, allIssues } = this.issuesCounts;
       return {
-        [IssuableStates.Opened]: this.countOpened,
-        [IssuableStates.Closed]: this.countClosed,
-        [IssuableStates.All]: this.countAll,
+        [IssuableStates.Opened]: openedIssues?.count,
+        [IssuableStates.Closed]: closedIssues?.count,
+        [IssuableStates.All]: allIssues?.count,
       };
     },
     currentTabCount() {
@@ -584,13 +566,13 @@ export default {
         })
         .then(() => {
           const serializedVariables = JSON.stringify(this.queryVariables);
-          this.$apollo.mutate({
+          return this.$apollo.mutate({
             mutation: reorderIssuesMutation,
             variables: { oldIndex, newIndex, serializedVariables },
           });
         })
-        .catch(() => {
-          createFlash({ message: this.$options.i18n.reorderError });
+        .catch((error) => {
+          createFlash({ message: this.$options.i18n.reorderError, captureError: true, error });
         });
     },
     handleSort(sortKey) {
@@ -613,7 +595,7 @@ export default {
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
-      :initial-filter-value="initialFilterTokens"
+      :initial-filter-value="filterTokens"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"
@@ -653,7 +635,7 @@ export default {
           :aria-label="$options.i18n.calendarLabel"
         />
         <csv-import-export-buttons
-          v-if="isSignedIn"
+          v-if="showCsvButtons"
           class="gl-md-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="currentTabCount"
@@ -766,6 +748,7 @@ export default {
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
         <csv-import-export-buttons
+          v-if="showCsvButtons"
           class="gl-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="currentTabCount"

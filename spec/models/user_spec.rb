@@ -5999,4 +5999,49 @@ RSpec.describe User do
       end
     end
   end
+
+  describe '#groups_with_developer_maintainer_project_access' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group1) { create(:group) }
+
+    let_it_be(:developer_group1) do
+      create(:group).tap do |g|
+        g.add_developer(user)
+      end
+    end
+
+    let_it_be(:developer_group2) do
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+        g.add_developer(user)
+      end
+    end
+
+    let_it_be(:guest_group1) do
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+        g.add_guest(user)
+      end
+    end
+
+    let_it_be(:developer_group1) do
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+        g.add_maintainer(user)
+      end
+    end
+
+    subject { user.send(:groups_with_developer_maintainer_project_access) }
+
+    shared_examples 'groups_with_developer_maintainer_project_access examples' do
+      specify { is_expected.to contain_exactly(developer_group2) }
+    end
+
+    it_behaves_like 'groups_with_developer_maintainer_project_access examples'
+
+    context 'when feature flag :linear_user_groups_with_developer_maintainer_project_access is disabled' do
+      before do
+        stub_feature_flags(linear_user_groups_with_developer_maintainer_project_access: false)
+      end
+
+      it_behaves_like 'groups_with_developer_maintainer_project_access examples'
+    end
+  end
 end
