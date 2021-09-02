@@ -2,6 +2,9 @@
 
 module Gitlab
   module Database
+    DATABASE_NAMES = %w[main ci].freeze
+
+    MAIN_DATABASE_NAME = 'main'
     CI_DATABASE_NAME = 'ci'
 
     # This constant is used when renaming tables concurrently.

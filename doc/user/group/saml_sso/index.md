@@ -120,6 +120,13 @@ SSO has the following effects when enabled:
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 <!-- Add bullet for API activity when https://gitlab.com/gitlab-org/gitlab/-/issues/9152 is complete -->
 
+Notes:
+
+- When SSO is enforced users are not immediately revoked
+- If they are signed out then they cannot access the group after being removed from the identity provider
+- However, if the user has an active session they can continue accessing the group for up to 24 hours, until the identity provider session times out
+- Upon SCIM update, the user's access would be immediately revoked
+
 ## Providers
 
 The SAML standard means that a wide range of identity providers will work with GitLab. Your identity provider may have relevant documentation. It may be generic SAML documentation, or specifically targeted for GitLab.
@@ -140,13 +147,13 @@ Follow the Azure documentation on [configuring single sign-on to applications](h
 For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU). The video is outdated in regard to
 objectID mapping and the [SCIM documentation should be followed](scim_setup.md#azure-configuration-steps).
 
-| GitLab Setting | Azure Field |
-|--------------|----------------|
-| Identifier   | Identifier (Entity ID) |
-| Assertion consumer service URL | Reply URL (Assertion Consumer Service URL) |
-| GitLab single sign-on URL | Sign on URL |
-| Identity provider single sign-on URL | Login URL |
-| Certificate fingerprint | Thumbprint |
+| GitLab Setting                       | Azure Field                                |
+| ------------------------------------ | ------------------------------------------ |
+| Identifier                           | Identifier (Entity ID)                     |
+| Assertion consumer service URL       | Reply URL (Assertion Consumer Service URL) |
+| GitLab single sign-on URL            | Sign on URL                                |
+| Identity provider single sign-on URL | Login URL                                  |
+| Certificate fingerprint              | Thumbprint                                 |
 
 We recommend:
 
@@ -164,12 +171,12 @@ Please follow the Okta documentation on [setting up a SAML application in Okta](
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
 
-| GitLab Setting | Okta Field |
-|--------------|----------------|
-| Identifier | Audience URI |
-| Assertion consumer service URL | Single sign-on URL |
-| GitLab single sign-on URL | Login page URL (under **Application Login Page** settings) |
-| Identity provider single sign-on URL | Identity Provider Single Sign-On URL |
+| GitLab Setting                       | Okta Field                                                 |
+| ------------------------------------ | ---------------------------------------------------------- |
+| Identifier                           | Audience URI                                               |
+| Assertion consumer service URL       | Single sign-on URL                                         |
+| GitLab single sign-on URL            | Login page URL (under **Application Login Page** settings) |
+| Identity provider single sign-on URL | Identity Provider Single Sign-On URL                       |
 
 Under Okta's **Single sign-on URL** field, check the option **Use this for Recipient URL and Destination URL**.
 
@@ -186,14 +193,14 @@ application.
 If you decide to use the OneLogin generic [SAML Test Connector (Advanced)](https://onelogin.service-now.com/support?id=kb_article&sys_id=b2c19353dbde7b8024c780c74b9619fb&kb_category=93e869b0db185340d5505eea4b961934),
 we recommend the ["Use the OneLogin SAML Test Connector" documentation](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f) with the following settings:
 
-| GitLab Setting | OneLogin Field |
-|--------------|----------------|
-| Identifier | Audience |
-| Assertion consumer service URL | Recipient |
-| Assertion consumer service URL | ACS (Consumer) URL |
+| GitLab Setting                                   | OneLogin Field               |
+| ------------------------------------------------ | ---------------------------- |
+| Identifier                                       | Audience                     |
+| Assertion consumer service URL                   | Recipient                    |
+| Assertion consumer service URL                   | ACS (Consumer) URL           |
 | Assertion consumer service URL (escaped version) | ACS (Consumer) URL Validator |
-| GitLab single sign-on URL | Login URL |
-| Identity provider single sign-on URL | SAML 2.0 Endpoint |
+| GitLab single sign-on URL                        | Login URL                    |
+| Identity provider single sign-on URL             | SAML 2.0 Endpoint            |
 
 Recommended `NameID` value: `OneLogin ID`.
 
@@ -281,10 +288,7 @@ If a user is already a member of the group, linking the SAML identity does not c
 
 ### Blocking access
 
-To rescind access to the group, perform the following steps, in order:
-
-1. Remove the user from the user data store on the identity provider or the list of users on the specific app.
-1. Remove the user from the GitLab.com group.
+Please refer to [Blocking access via SCiM](scim_setup.md#blocking-access).
 
 ### Unlinking accounts
 
@@ -406,14 +410,14 @@ If you do not wish to use that GitLab user with the SAML login, you can [unlink 
 The user that you're signed in with already has SAML linked to a different identity.
 Here are possible causes and solutions:
 
-| Cause                                                                                          | Solution                                                                                                                                                                    |
-|------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Cause                                                                                          | Solution                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](#unlinking-accounts) from this GitLab account before attempting to sign in again. |
 
 ### Message: "SAML authentication failed: Email has already been taken"
 
 | Cause                                                                                                                                    | Solution                                                                 |
-|------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user will need to [link their account](#user-access-and-management). |
 
 ### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
@@ -439,8 +443,8 @@ Alternatively, when users need to [link SAML to their existing GitLab.com accoun
 
 ### The NameID has changed
 
-| Cause                                                                                                                                                                                     | Solution                                                                                                                                                                                                                                           |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Cause                                                                                                                                                                                    | Solution                                                                                                                                                               |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | As mentioned in the [NameID](#nameid) section, if the NameID changes for any user, the user can be locked out. This is a common problem when an email address is used as the identifier. | Follow the steps outlined in the ["SAML authentication failed: User has already been taken"](#message-saml-authentication-failed-user-has-already-been-taken) section. |
 
 ### I need to change my SAML app

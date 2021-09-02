@@ -9606,14 +9606,14 @@ CREATE TABLE application_settings (
     encrypted_customers_dot_jwt_signing_key bytea,
     encrypted_customers_dot_jwt_signing_key_iv bytea,
     pypi_package_requests_forwarding boolean DEFAULT true NOT NULL,
-    max_yaml_size_bytes bigint DEFAULT 1048576 NOT NULL,
-    max_yaml_depth integer DEFAULT 100 NOT NULL,
     throttle_unauthenticated_files_api_requests_per_period integer DEFAULT 125 NOT NULL,
     throttle_unauthenticated_files_api_period_in_seconds integer DEFAULT 15 NOT NULL,
     throttle_authenticated_files_api_requests_per_period integer DEFAULT 500 NOT NULL,
     throttle_authenticated_files_api_period_in_seconds integer DEFAULT 15 NOT NULL,
     throttle_unauthenticated_files_api_enabled boolean DEFAULT false NOT NULL,
     throttle_authenticated_files_api_enabled boolean DEFAULT false NOT NULL,
+    max_yaml_size_bytes bigint DEFAULT 1048576 NOT NULL,
+    max_yaml_depth integer DEFAULT 100 NOT NULL,
     throttle_authenticated_git_lfs_requests_per_period integer DEFAULT 1000 NOT NULL,
     throttle_authenticated_git_lfs_period_in_seconds integer DEFAULT 60 NOT NULL,
     throttle_authenticated_git_lfs_enabled boolean DEFAULT false NOT NULL,
@@ -23845,6 +23845,8 @@ CREATE INDEX index_dast_site_profiles_on_dast_site_id ON dast_site_profiles USIN
 CREATE UNIQUE INDEX index_dast_site_profiles_on_project_id_and_name ON dast_site_profiles USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_dast_site_profiles_pipelines_on_ci_pipeline_id ON dast_site_profiles_pipelines USING btree (ci_pipeline_id);
+
+CREATE UNIQUE INDEX index_dast_site_token_on_project_id_and_url ON dast_site_tokens USING btree (project_id, url);
 
 CREATE INDEX index_dast_site_tokens_on_project_id ON dast_site_tokens USING btree (project_id);
 

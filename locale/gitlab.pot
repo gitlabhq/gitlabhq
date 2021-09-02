@@ -621,9 +621,6 @@ msgstr ""
 msgid "%{issueType} actions"
 msgstr ""
 
-msgid "%{issuesCount} issues with a limit of %{maxIssueCount}"
-msgstr ""
-
 msgid "%{issuesSize} with a limit of %{maxIssueCount}"
 msgstr ""
 
@@ -20232,9 +20229,6 @@ msgstr ""
 msgid "Loading functions timed out. Please reload the page to try again."
 msgstr ""
 
-msgid "Loading issues"
-msgstr ""
-
 msgid "Loading more"
 msgstr ""
 
@@ -30904,9 +30898,6 @@ msgstr ""
 msgid "Showing %{pageSize} of %{total} %{issuableType}"
 msgstr ""
 
-msgid "Showing %{pageSize} of %{total} issues"
-msgstr ""
-
 msgid "Showing all epics"
 msgstr ""
 
@@ -31325,9 +31316,6 @@ msgid "Something went wrong while moving issues."
 msgstr ""
 
 msgid "Something went wrong while obtaining the Let's Encrypt certificate."
-msgstr ""
-
-msgid "Something went wrong while performing the action."
 msgstr ""
 
 msgid "Something went wrong while promoting the issue to an epic. Please try again."

@@ -2,56 +2,60 @@
 # PRODUCTION
 #
 production:
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_production
-  username: git
-  password: "secure password"
-  host: localhost
-  # load_balancing:
-  #   hosts:
-  #     - host1.example.com
-  #     - host2.example.com
-  #   discover:
-  #     nameserver: 1.2.3.4
-  #     port: 8600
-  #     record: secondary.postgresql.service.consul
-  #     interval: 300
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    username: git
+    password: "secure password"
+    host: localhost
+    # load_balancing:
+    #   hosts:
+    #     - host1.example.com
+    #     - host2.example.com
+    #   discover:
+    #     nameserver: 1.2.3.4
+    #     port: 8600
+    #     record: secondary.postgresql.service.consul
+    #     interval: 300
 
 #
 # Development specific
 #
 development:
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_development
-  username: postgres
-  password: "secure password"
-  host: localhost
-  variables:
-    statement_timeout: 15s
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_development
+    username: postgres
+    password: "secure password"
+    host: localhost
+    variables:
+      statement_timeout: 15s
 
 #
 # Staging specific
 #
 staging:
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_staging
-  username: git
-  password: "secure password"
-  host: localhost
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_staging
+    username: git
+    password: "secure password"
+    host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test: &test
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_test
-  username: postgres
-  password:
-  host: localhost
-  prepared_statements: false
-  variables:
-    statement_timeout: 15s
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_test
+    username: postgres
+    password:
+    host: localhost
+    prepared_statements: false
+    variables:
+      statement_timeout: 15s
