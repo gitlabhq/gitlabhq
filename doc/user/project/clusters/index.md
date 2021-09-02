@@ -54,20 +54,8 @@ Some GitLab features may support versions outside the range provided here.
 
 ## Add and remove clusters
 
-You can create new or add existing clusters to GitLab through different levels,
+You can create new or add existing clusters to GitLab through different [levels](#cluster-levels),
 using different methods.
-
-### Cluster levels
-
-You can connect clusters to GitLab in different levels, according to their purpose:
-
-- On the project level, to have a cluster dedicated to a project.
-- On the [group level](../../group/clusters/index.md), to use the same cluster across multiple projects within your group.
-- On the [instance level](../../instance/clusters/index.md), to use the same cluster across multiple groups and projects. **(FREE SELF)**
-
-### Methods to create new clusters
-
-To create new clusters, we **recommend** using [Infrastructure as Code](../../infrastructure/index.md).
 
 ### Methods to connect existing clusters
 
@@ -79,6 +67,18 @@ cluster at the group level](https://gitlab.com/groups/gitlab-org/-/epics/5784).
 You can use [cluster certificates](add_existing_cluster.md) to connect
 clusters in all levels (projects, group, instance). However, for
 [security implications](#security-implications), this method is no longer recommended.
+
+### Methods to create new clusters
+
+To create new clusters, we **recommend** using [Infrastructure as Code](../../infrastructure/index.md).
+
+### Cluster levels
+
+You can connect clusters to GitLab in different levels, according to their purpose:
+
+- On the project level, to have a cluster dedicated to a project.
+- On the [group level](../../group/clusters/index.md), to use the same cluster across multiple projects within your group.
+- On the [instance level](../../instance/clusters/index.md), to use the same cluster across multiple groups and projects. **(FREE SELF)**
 
 ## Security implications
 

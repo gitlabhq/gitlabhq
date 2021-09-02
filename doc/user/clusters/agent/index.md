@@ -77,6 +77,8 @@ The setup process involves a few steps to enable GitOps deployments:
 1. [Install the Agent into the cluster](#install-the-agent-into-the-cluster).
 1. [Create manifest files](#create-manifest-files).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walking-through video](https://www.youtube.com/watch?v=XuBpKtsgGkE) with this process.
+
 ### Upgrades and version compatibility
 
 As the GitLab Kubernetes Agent is a new product, we are constantly adding new features

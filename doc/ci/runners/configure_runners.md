@@ -107,10 +107,10 @@ We're always looking for contributions that can mitigate these
 ### Reset the runner registration token for a project
 
 If you think that a registration token for a project was revealed, you should
-reset it. A token can be used to register another runner for the project. That new runner
-may then be used to obtain the values of secret variables or to clone project code.
+reset it. A registration token can be used to register another runner for the project.
+That new runner may then be used to obtain the values of secret variables or to clone project code.
 
-To reset the token:
+To reset the registration token:
 
 1. Go to the project's **Settings > CI/CD**.
 1. Expand the **General pipelines settings** section.
@@ -123,6 +123,16 @@ From now on the old token is no longer valid and does not register
 any new runners to the project. If you are using any tools to provision and
 register new runners, the tokens used in those tools should be updated to reflect the
 value of the new token.
+
+### Reset the runner authentication token
+
+If you think that an authentication token for a runner was revealed, you should
+reset it. An attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+
+To reset the authentication token, [unregister the runner](https://docs.gitlab.com/runner/commands/#gitlab-runner-unregister)
+and then [register](https://docs.gitlab.com/runner/commands/#gitlab-runner-register) it again.
+
+To verify that the previous authentication token is no longer valid, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
 ## Determine the IP address of a runner
 

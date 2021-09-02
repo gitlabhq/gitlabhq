@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import waitUsingRealTimer from 'helpers/wait_using_real_timer';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
 import { EDITOR_CODE_INSTANCE_FN, EDITOR_DIFF_INSTANCE_FN } from '~/editor/constants';
+import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
 import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
 import SourceEditor from '~/editor/source_editor';
 import RepoEditor from '~/ide/components/repo_editor.vue';
@@ -25,6 +26,7 @@ import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer
 import { file } from '../helpers';
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
+const CURRENT_PROJECT_ID = 'gitlab-org/gitlab';
 
 const defaultFileProps = {
   ...file('file.txt'),
@@ -63,7 +65,7 @@ const prepareStore = (state, activeFile) => {
   const localState = {
     openFiles: [activeFile],
     projects: {
-      'gitlab-org/gitlab': {
+      [CURRENT_PROJECT_ID]: {
         branches: {
           main: {
             name: 'main',
@@ -74,7 +76,7 @@ const prepareStore = (state, activeFile) => {
         },
       },
     },
-    currentProjectId: 'gitlab-org/gitlab',
+    currentProjectId: CURRENT_PROJECT_ID,
     currentBranchId: 'main',
     entries: {
       [activeFile.path]: activeFile,
@@ -98,6 +100,7 @@ describe('RepoEditor', () => {
   let createInstanceSpy;
   let createDiffInstanceSpy;
   let createModelSpy;
+  let applyExtensionSpy;
 
   const waitForEditorSetup = () =>
     new Promise((resolve) => {
@@ -124,11 +127,28 @@ describe('RepoEditor', () => {
   const findEditor = () => wrapper.find('[data-testid="editor-container"]');
   const findTabs = () => wrapper.findAll('.ide-mode-tabs .nav-links li');
   const findPreviewTab = () => wrapper.find('[data-testid="preview-tab"]');
+  const expectEditorMarkdownExtension = (shouldHaveExtension) => {
+    if (shouldHaveExtension) {
+      expect(applyExtensionSpy).toHaveBeenCalledWith(
+        wrapper.vm.editor,
+        expect.any(EditorMarkdownExtension),
+      );
+      // TODO: spying on extensions causes Jest to blow up, so we have to assert on
+      // the public property the extension adds, as opposed to the args passed to the ctor
+      expect(wrapper.vm.editor.previewMarkdownPath).toBe(PREVIEW_MARKDOWN_PATH);
+    } else {
+      expect(applyExtensionSpy).not.toHaveBeenCalledWith(
+        wrapper.vm.editor,
+        expect.any(EditorMarkdownExtension),
+      );
+    }
+  };
 
   beforeEach(() => {
     createInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_CODE_INSTANCE_FN);
     createDiffInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_DIFF_INSTANCE_FN);
     createModelSpy = jest.spyOn(monacoEditor, 'createModel');
+    applyExtensionSpy = jest.spyOn(SourceEditor, 'instanceApplyExtension');
     jest.spyOn(service, 'getFileData').mockResolvedValue();
     jest.spyOn(service, 'getRawFileData').mockResolvedValue();
   });
@@ -280,13 +300,8 @@ describe('RepoEditor', () => {
       '$prefix install markdown extension for $activeFile.name in $viewer viewer',
       async ({ activeFile, viewer, shouldHaveMarkdownExtension } = {}) => {
         await createComponent({ state: { viewer }, activeFile });
-        if (shouldHaveMarkdownExtension) {
-          expect(vm.editor.previewMarkdownPath).toBe(PREVIEW_MARKDOWN_PATH);
-          expect(vm.editor.togglePreview).toBeDefined();
-        } else {
-          expect(vm.editor.previewMarkdownPath).toBeUndefined();
-          expect(vm.editor.togglePreview).toBeUndefined();
-        }
+
+        expectEditorMarkdownExtension(shouldHaveMarkdownExtension);
       },
     );
   });

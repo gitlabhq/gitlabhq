@@ -7,30 +7,31 @@ type: howto
 
 # How to enable or disable GitLab CI/CD **(FREE)**
 
-To effectively use GitLab CI/CD, you need:
+To use GitLab CI/CD, you need:
 
 - A valid [`.gitlab-ci.yml`](yaml/index.md) file present at the root directory
   of your project.
-- A [runner](runners/index.md) properly set up.
+- A [runner](runners/index.md) ready to run jobs.
 
 You can read our [quick start guide](quick_start/index.md) to get you started.
 
-If you use an external CI/CD server like Jenkins or Drone CI, you should
+If you use an external CI/CD server like Jenkins or Drone CI, you can
 disable GitLab CI/CD to avoid conflicts with the commits status
 API.
-
-GitLab CI/CD is exposed by using the `/pipelines` and `/jobs` pages of a project.
-Disabling GitLab CI/CD in a project does not delete any previous jobs.
-In fact, the `/pipelines` and `/jobs` pages can still be accessed, although
-it's hidden from the left sidebar menu.
 
 GitLab CI/CD is enabled by default on all new projects. You can:
 
 - Disable GitLab CI/CD [under each project's settings](#enable-cicd-in-a-project).
 - Set GitLab CI/CD to be [disabled in all new projects on an instance](../administration/cicd.md).
 
-This only applies to pipelines run as part of GitLab CI/CD. This doesn't enable or disable
-pipelines that are run from an [external integration](../user/project/integrations/overview.md#integrations-listing).
+If you disable GitLab CI/CD in a project:
+
+- The **CI/CD** item in the left sidebar is removed.
+- The `/pipelines` and `/jobs` pages are no longer available.
+- Existing jobs and pipelines are not deleted. Re-enable CI/CD to access them again.
+
+The project or instance settings do not enable or disable pipelines run in an
+[external integration](../user/project/integrations/overview.md#integrations-listing).
 
 ## Enable CI/CD in a project
 

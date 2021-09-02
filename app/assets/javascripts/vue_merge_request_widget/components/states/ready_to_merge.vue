@@ -396,7 +396,7 @@ export default {
       }
     },
     onMergeImmediatelyConfirmation() {
-      this.handleMergeButtonClick(false, true);
+      this.handleMergeButtonClick(false, true, true);
     },
     initiateMergePolling() {
       simplePoll(
