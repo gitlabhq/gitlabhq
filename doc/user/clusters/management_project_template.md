@@ -18,8 +18,12 @@ need, or even add new ones that are not built-in.
 
 ## How to use this template
 
-1. Create a new project, choosing "GitLab Cluster Management" from the list of [built-in project templates](../project/working_with_projects.md#built-in-templates).
-1. Make this project a [cluster management project](management_project.md).
+1. [Connect your cluster to GitLab](../project/clusters/index.md#add-and-remove-clusters).
+1. Create a new project for the purpose of managing your cluster from GitLab. To do so,
+[create a new project from a template](../project/working_with_projects.md#built-in-templates)
+and select **GitLab Cluster Management**.
+1. Configure this project as a [cluster management project](management_project.md#selecting-a-cluster-management-project)
+for the cluster you have integrated on the first step.
 1. If you used the [GitLab Managed Apps](applications.md), refer to
    [Migrating from GitLab Managed Apps](migrating_from_gma_to_project_template.md).
 

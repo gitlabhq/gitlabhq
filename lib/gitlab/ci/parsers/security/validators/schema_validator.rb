@@ -12,7 +12,7 @@ module Gitlab
               end
 
               def initialize(report_type)
-                @report_type = report_type
+                @report_type = report_type.to_sym
               end
 
               delegate :validate, to: :schemer

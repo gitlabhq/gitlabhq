@@ -177,14 +177,10 @@ function filteredSearchTermValue(value) {
  * @param  {Object} options
  * @param  {String} [options.filteredSearchTermKey] if set, a FILTERED_SEARCH_TERM filter is created to this parameter. `'search'` is suggested
  * @param  {String[]} [options.filterNamesAllowList] if set, only this list of filters names is mapped
- * @param  {Boolean} [options.legacySpacesDecode] if set to true, plus symbols (+) are not encoded as spaces.
  * @return {Object} filter object with filter names and their values
  */
-export function urlQueryToFilter(
-  query = '',
-  { filteredSearchTermKey, filterNamesAllowList, legacySpacesDecode = false } = {},
-) {
-  const filters = queryToObject(query, { gatherArrays: true, legacySpacesDecode });
+export function urlQueryToFilter(query = '', { filteredSearchTermKey, filterNamesAllowList } = {}) {
+  const filters = queryToObject(query, { gatherArrays: true });
   return Object.keys(filters).reduce((memo, key) => {
     const value = filters[key];
     if (!value) {

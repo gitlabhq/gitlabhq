@@ -30,3 +30,7 @@ workhorse:test using go 1.15:
 workhorse:test using go 1.16:
   extends: .workhorse:test
   image: ${GITLAB_DEPENDENCY_PROXY}golang:1.16
+
+workhorse:test using go 1.17:
+  extends: .workhorse:test
+  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.17

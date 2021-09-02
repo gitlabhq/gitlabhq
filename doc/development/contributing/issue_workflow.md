@@ -15,9 +15,7 @@ feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
 Please submit bugs using the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Bug.md) provided on the issue tracker.
-The text in the parenthesis is there to help you with what to include. Omit it
-when submitting the actual issue. You can copy-paste it and then edit as you
-see fit.
+The text in the comments (`<!-- ... -->`) is there to help you with what to include.
 
 ## Issue triaging
 
@@ -30,12 +28,12 @@ The most important thing is making sure valid issues receive feedback from the
 development team. Therefore the priority is mentioning developers that can help
 on those issues. Please select someone with relevant experience from the
 [GitLab team](https://about.gitlab.com/company/team/).
-If there is nobody mentioned with that expertise look in the commit history for
+If there is nobody mentioned with that expertise, look in the commit history for
 the affected files to find someone.
 
 We also use [GitLab Triage](https://gitlab.com/gitlab-org/gitlab-triage) to automate
 some triaging policies. This is currently set up as a scheduled pipeline
-(`https://gitlab.com/gitlab-org/quality/triage-ops/pipeline_schedules/10512/editpipeline_schedules/10512/edit`,
+(`https://gitlab.com/gitlab-org/quality/triage-ops/-/pipeline_schedules/10512/edit`,
 must have at least the Developer role in the project) running on [quality/triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops)
 project.
 
@@ -132,9 +130,9 @@ their color is `#A8D695`.
 <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml>,
 with `_` replaced with a space.
 
-For instance, the "Continuous Integration" group is represented by the
-~"group::continuous integration" label in the `gitlab-org` group since its key
-under `stages.manage.groups` is `continuous_integration`.
+For instance, the "Pipeline Execution" group is represented by the
+~"group::pipeline execution" label in the `gitlab-org` group since its key
+under `stages.manage.groups` is `pipeline_execution`.
 
 The current group labels can be found by [searching the labels list for `group::`](https://gitlab.com/groups/gitlab-org/-/labels?search=group::).
 
@@ -145,17 +143,6 @@ You can find the groups listed in the [Product Stages, Groups, and Categories](h
 
 We use the term group to map down product requirements from our product stages.
 As a team needs some way to collect the work their members are planning to be assigned to, we use the `~group::` labels to do so.
-
-Normally there is a 1:1 relationship between Stage labels and Group labels. In
-the spirit of "Everyone can contribute", any issue can be picked up by any group,
-depending on current priorities. When picking up an issue belonging to a different
-group, it should be relabeled. For example, if an issue labeled `~"devops::create"`
-and `~"group::knowledge"` is picked up by someone in the Access group of the Plan stage,
-the issue should be relabeled as `~"group::access"` while keeping the original
-`~"devops::create"` unchanged.
-
-We also use stage and group labels to help measure our [merge request rates](https://about.gitlab.com/handbook/engineering/metrics/#merge-request-rate).
-Please read [Stage and Group labels](https://about.gitlab.com/handbook/engineering/metrics/#stage-and-group-labels) for more information on how the labels are used in this context.
 
 ### Category labels
 

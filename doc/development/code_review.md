@@ -107,7 +107,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes adding a new JavaScript library (*1*)...
    - If the library significantly increases the
      [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md), it must
-     be **approved by a [frontend foundations member](https://about.gitlab.com/direction/create/ecosystem/frontend-ux-foundations/)**.
+     be **approved by a [frontend foundations member](https://about.gitlab.com/direction/ecosystem/foundations/)**.
    - If the license used by the new library hasn't been approved for use in
      GitLab, the license must be **approved by a [legal department member](https://about.gitlab.com/handbook/legal/)**.
      More information about license compatibility can be found in our

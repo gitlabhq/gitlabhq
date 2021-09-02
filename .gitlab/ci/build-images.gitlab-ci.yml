@@ -24,11 +24,46 @@ build-qa-image:
     - .base-image-build
     - .build-images:rules:build-qa-image
   stage: build-images
+  tags:
+    - high-cpu
   needs: []
   script:
     - !reference [.base-image-build, script]
     - echo $QA_IMAGE
     - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
+
+# This image is used by:
+# - The `review-qa-*` jobs
+# - The downstream `omnibus-gitlab-mirror` pipeline triggered by `package-and-qa` so that it doesn't have to rebuild it again.
+#   The downstream `omnibus-gitlab-mirror` pipeline itself passes the image name to the `gitlab-qa-mirror` pipeline so that
+#   it can use it instead of inferring an end-to-end image from the GitLab image built by the downstream `omnibus-gitlab-mirror` pipeline.
+# See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#testing-code-in-merge-requests for more details.
+build-qa-image-buildkit:
+  extends:
+    - .base-image-build
+    - .use-buildkit
+    - .build-images:rules:build-qa-image
+  stage: build-images
+  tags:
+    - docker
+    - high-cpu
+  needs: []
+  variables:
+    QA_IMAGE_BASE: ${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa
+  allow_failure: true
+  script:
+    - !reference [.base-image-build, script]
+    # Build image and push current sha tag and latest branch tag
+    # Fetch cache from latest branch image or latest main branch image
+    - |
+      buildctl-daemonless.sh build \
+        --frontend=dockerfile.v0 \
+        --local context="." \
+        --local dockerfile="qa" \
+        --export-cache type=inline \
+        --import-cache type=registry,ref="${QA_IMAGE_BASE}:${CI_COMMIT_REF_SLUG}-buildkit" \
+        --import-cache type=registry,ref="${QA_IMAGE_BASE}:${CI_DEFAULT_BRANCH}" \
+        --output type=image,\"name="${QA_IMAGE}-buildkit","${QA_IMAGE_BASE}:${CI_COMMIT_REF_SLUG}-buildkit"\",push=true
 
 # This image is used by:
 # - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335

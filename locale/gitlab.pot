@@ -92,6 +92,16 @@ msgstr ""
 msgid "#general, #development"
 msgstr ""
 
+msgid "%d Alert"
+msgid_plural "%d Alerts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d Alert:"
+msgid_plural "%d Alerts:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d Approval"
 msgid_plural "%d Approvals"
 msgstr[0] ""
@@ -2900,11 +2910,6 @@ msgstr ""
 
 msgid "Akismet API Key"
 msgstr ""
-
-msgid "Alert"
-msgid_plural "Alerts"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "AlertManagement|Acknowledged"
 msgstr ""
@@ -22110,9 +22115,6 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-msgid "Network Policy|New rule"
-msgstr ""
-
 msgid "NetworkPolicies|%{ifLabelStart}if%{ifLabelEnd} %{ruleType} %{isLabelStart}is%{isLabelEnd} %{ruleDirection} %{ruleSelector} %{directionLabelStart}and is inbound from a%{directionLabelEnd} %{rule} %{portsLabelStart}on%{portsLabelEnd} %{ports}"
 msgstr ""
 
@@ -22134,16 +22136,13 @@ msgstr ""
 msgid "NetworkPolicies|%{strongOpen}any%{strongClose} port"
 msgstr ""
 
-msgid "NetworkPolicies|+ Add alert"
-msgstr ""
-
 msgid "NetworkPolicies|.yaml"
 msgstr ""
 
 msgid "NetworkPolicies|.yaml mode"
 msgstr ""
 
-msgid "NetworkPolicies|Actions"
+msgid "NetworkPolicies|Add alert"
 msgstr ""
 
 msgid "NetworkPolicies|Alerts are intended to be selectively used for a limited number of events that are potentially concerning and warrant a manual review. Alerts should not be used as a substitute for a SIEM or a logging tool. High volume alerts are likely to be dropped so as to preserve the stability of GitLab's integration with Kubernetes."
@@ -22179,9 +22178,6 @@ msgstr ""
 msgid "NetworkPolicies|Deny all traffic"
 msgstr ""
 
-msgid "NetworkPolicies|Description"
-msgstr ""
-
 msgid "NetworkPolicies|Edit policy"
 msgstr ""
 
@@ -22206,10 +22202,10 @@ msgstr ""
 msgid "NetworkPolicies|Kubernetes error: %{error}"
 msgstr ""
 
-msgid "NetworkPolicies|Name"
+msgid "NetworkPolicies|Network"
 msgstr ""
 
-msgid "NetworkPolicies|Network"
+msgid "NetworkPolicies|Network Policies can be used to limit which network traffic is allowed between containers inside the cluster."
 msgstr ""
 
 msgid "NetworkPolicies|Network traffic"
@@ -22239,9 +22235,6 @@ msgstr ""
 msgid "NetworkPolicies|Policy editor"
 msgstr ""
 
-msgid "NetworkPolicies|Policy preview"
-msgstr ""
-
 msgid "NetworkPolicies|Rule"
 msgstr ""
 
@@ -22249,9 +22242,6 @@ msgid "NetworkPolicies|Rule mode"
 msgstr ""
 
 msgid "NetworkPolicies|Rule mode is unavailable for this policy. In some cases, we cannot parse the YAML file back into the rules editor."
-msgstr ""
-
-msgid "NetworkPolicies|Rules"
 msgstr ""
 
 msgid "NetworkPolicies|Save changes"
@@ -22264,9 +22254,6 @@ msgid "NetworkPolicies|Something went wrong, unable to fetch policies"
 msgstr ""
 
 msgid "NetworkPolicies|Traffic that does not match any rule will be blocked."
-msgstr ""
-
-msgid "NetworkPolicies|Unable to parse policy"
 msgstr ""
 
 msgid "NetworkPolicies|all DNS names"
@@ -29697,6 +29684,12 @@ msgstr ""
 msgid "SecurityOrchestration|Action"
 msgstr ""
 
+msgid "SecurityOrchestration|Actions"
+msgstr ""
+
+msgid "SecurityOrchestration|Add rule"
+msgstr ""
+
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
@@ -29730,9 +29723,6 @@ msgstr ""
 msgid "SecurityOrchestration|Network"
 msgstr ""
 
-msgid "SecurityOrchestration|Network Policies can be used to limit which network traffic is allowed between containers inside the cluster."
-msgstr ""
-
 msgid "SecurityOrchestration|New policy"
 msgstr ""
 
@@ -29748,6 +29738,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy editor"
 msgstr ""
 
+msgid "SecurityOrchestration|Policy preview"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy status"
 msgstr ""
 
@@ -29755,6 +29748,9 @@ msgid "SecurityOrchestration|Policy type"
 msgstr ""
 
 msgid "SecurityOrchestration|Rule"
+msgstr ""
+
+msgid "SecurityOrchestration|Rules"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan Execution"
@@ -29788,6 +29784,9 @@ msgid "SecurityOrchestration|This project does not contain any security policies
 msgstr ""
 
 msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."
+msgstr ""
+
+msgid "SecurityOrchestration|Unable to parse policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan execution policies"
