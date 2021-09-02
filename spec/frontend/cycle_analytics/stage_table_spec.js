@@ -22,6 +22,7 @@ const findStageEvents = () => wrapper.findAllByTestId('vsa-stage-event');
 const findPagination = () => wrapper.findByTestId('vsa-stage-pagination');
 const findTable = () => wrapper.findComponent(GlTable);
 const findTableHead = () => wrapper.find('thead');
+const findTableHeadColumns = () => findTableHead().findAll('th');
 const findStageEventTitle = (ev) => extendedWrapper(ev).findByTestId('vsa-stage-event-title');
 const findStageTime = () => wrapper.findByTestId('vsa-stage-event-time');
 const findIcon = (name) => wrapper.findByTestId(`${name}-icon`);
@@ -244,6 +245,12 @@ describe('StageTable', () => {
       wrapper.destroy();
     });
 
+    it('can sort the table by each column', () => {
+      findTableHeadColumns().wrappers.forEach((w) => {
+        expect(w.attributes('aria-sort')).toBe('none');
+      });
+    });
+
     it('clicking a table column will send tracking information', () => {
       triggerTableSort();
 
@@ -274,6 +281,18 @@ describe('StageTable', () => {
           sort: 'duration',
         },
       ]);
+    });
+
+    describe('with sortable=false', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ sortable: false });
+      });
+
+      it('cannot sort the table', () => {
+        findTableHeadColumns().wrappers.forEach((w) => {
+          expect(w.attributes('aria-sort')).toBeUndefined();
+        });
+      });
     });
   });
 });

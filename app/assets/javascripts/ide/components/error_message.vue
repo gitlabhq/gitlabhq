@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 
@@ -56,7 +55,7 @@ export default {
     @dismiss="dismiss"
     @primaryAction="doAction"
   >
-    <span v-html="message.text"></span>
+    <span v-html="message.text /* eslint-disable-line vue/no-v-html */"></span>
     <gl-loading-icon v-show="isLoading" size="sm" inline class="vertical-align-middle ml-1" />
   </gl-alert>
 </template>

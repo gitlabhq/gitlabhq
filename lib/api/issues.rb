@@ -14,6 +14,10 @@ module API
       params :negatable_issue_filter_params do
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
+        optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
+                 desc: 'Return issues assigned to milestones without the specified timebox value ("Any", "None", "Upcoming" or "Started")'
+        mutually_exclusive :milestone_id, :milestone
+
         optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
 
         optional :author_id, type: Integer, desc: 'Return issues which are not authored by the user with the given ID'
@@ -32,9 +36,14 @@ module API
       params :issues_stats_params do
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
+        # 'milestone_id' only accepts wildcard values 'Any', 'None', 'Upcoming', 'Started'
+        # the param has '_id' in the name to keep consistency (ex. assignee_id accepts id and wildcard values).
+        optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
+                 desc: 'Return issues assigned to milestones with the specified timebox value ("Any", "None", "Upcoming" or "Started")'
         optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
+        mutually_exclusive :milestone_id, :milestone
 
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :author_username, type: String, desc: 'Return issues which are authored by the user with the given username'

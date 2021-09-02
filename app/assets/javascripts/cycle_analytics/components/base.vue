@@ -173,6 +173,7 @@ export default {
       :empty-state-message="emptyStageText"
       :no-data-svg-path="noDataSvgPath"
       :pagination="null"
+      :sortable="false"
     />
   </div>
 </template>

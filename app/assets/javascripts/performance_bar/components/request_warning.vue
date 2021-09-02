@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlPopover } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
 
@@ -36,7 +35,10 @@ export default {
 </script>
 <template>
   <span v-if="hasWarnings" class="gl-cursor-default">
-    <span :id="htmlId" v-html="glEmojiTag('warning')"></span>
+    <span
+      :id="htmlId"
+      v-html="glEmojiTag('warning') /* eslint-disable-line vue/no-v-html */"
+    ></span>
     <gl-popover placement="bottom" :target="htmlId" :content="warningMessage" />
   </span>
 </template>

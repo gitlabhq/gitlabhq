@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButton, GlFormGroup, GlFormInput, GlIcon, GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';
@@ -142,13 +141,19 @@ export default {
         </div>
       </div>
       <div class="col-12 mb-3 mt-n3">
-        <p class="form-text text-muted" v-html="accountAndExternalIdsHelpText"></p>
+        <p
+          class="form-text text-muted"
+          v-html="accountAndExternalIdsHelpText /* eslint-disable-line vue/no-v-html */"
+        ></p>
       </div>
     </div>
     <div class="form-group">
       <label for="eks-provision-role-arn">{{ s__('ClusterIntegration|Provision Role ARN') }}</label>
       <gl-form-input id="eks-provision-role-arn" v-model="roleArn" />
-      <p class="form-text text-muted" v-html="provisionRoleArnHelpText"></p>
+      <p
+        class="form-text text-muted"
+        v-html="provisionRoleArnHelpText /* eslint-disable-line vue/no-v-html */"
+      ></p>
     </div>
 
     <gl-form-group :label="$options.i18n.regionInputLabel">

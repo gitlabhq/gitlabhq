@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlIcon } from '@gitlab/ui';
 import NoteHeader from '~/notes/components/note_header.vue';
 
@@ -40,7 +39,7 @@ export default {
 
       <div class="note-header">
         <note-header :author="noteAuthor" :created-at="note.createdAt" :note-id="note.id">
-          <span v-html="note.bodyHtml"></span>
+          <span v-html="note.bodyHtml /* eslint-disable-line vue/no-v-html */"></span>
         </note-header>
       </div>
     </div>

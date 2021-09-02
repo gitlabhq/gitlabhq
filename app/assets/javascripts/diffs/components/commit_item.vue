@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButtonGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
 
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
@@ -100,7 +99,10 @@ export default {
       <div
         class="commit-actions flex-row d-none d-sm-flex align-items-start flex-wrap justify-content-end"
       >
-        <div v-if="commit.signature_html" v-html="commit.signature_html"></div>
+        <div
+          v-if="commit.signature_html"
+          v-html="commit.signature_html /* eslint-disable-line vue/no-v-html */"
+        ></div>
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
           :endpoint="commit.pipeline_status_path"
@@ -142,7 +144,7 @@ export default {
             <a
               :href="commit.commit_url"
               class="commit-row-message item-title"
-              v-html="commit.title_html"
+              v-html="commit.title_html /* eslint-disable-line vue/no-v-html */"
             ></a>
 
             <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
@@ -174,7 +176,7 @@ export default {
         v-if="commit.description_html"
         :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
         class="commit-row-description gl-mb-3 gl-text-body"
-        v-html="commitDescription"
+        v-html="commitDescription /* eslint-disable-line vue/no-v-html */"
       ></pre>
     </div>
   </li>

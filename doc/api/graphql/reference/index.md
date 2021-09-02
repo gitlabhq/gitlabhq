@@ -5316,6 +5316,29 @@ The edge type for [`CustomEmoji`](#customemoji).
 | <a id="customemojiedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="customemojiedgenode"></a>`node` | [`CustomEmoji`](#customemoji) | The item at the end of the edge. |
 
+#### `CustomerRelationsOrganizationConnection`
+
+The connection type for [`CustomerRelationsOrganization`](#customerrelationsorganization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customerrelationsorganizationconnectionedges"></a>`edges` | [`[CustomerRelationsOrganizationEdge]`](#customerrelationsorganizationedge) | A list of edges. |
+| <a id="customerrelationsorganizationconnectionnodes"></a>`nodes` | [`[CustomerRelationsOrganization]`](#customerrelationsorganization) | A list of nodes. |
+| <a id="customerrelationsorganizationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomerRelationsOrganizationEdge`
+
+The edge type for [`CustomerRelationsOrganization`](#customerrelationsorganization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customerrelationsorganizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customerrelationsorganizationedgenode"></a>`node` | [`CustomerRelationsOrganization`](#customerrelationsorganization) | The item at the end of the edge. |
+
 #### `DastProfileConnection`
 
 The connection type for [`DastProfile`](#dastprofile).
@@ -8519,6 +8542,19 @@ A custom emoji uploaded by user.
 | <a id="customemojiname"></a>`name` | [`String!`](#string) | Name of the emoji. |
 | <a id="customemojiurl"></a>`url` | [`String!`](#string) | Link to file of the emoji. |
 
+### `CustomerRelationsOrganization`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customerrelationsorganizationcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the organization was created. |
+| <a id="customerrelationsorganizationdefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
+| <a id="customerrelationsorganizationdescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
+| <a id="customerrelationsorganizationid"></a>`id` | [`ID!`](#id) | Internal ID of the organization. |
+| <a id="customerrelationsorganizationname"></a>`name` | [`String`](#string) | Name of the organization. |
+| <a id="customerrelationsorganizationupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the organization was last updated. |
+
 ### `DastProfile`
 
 Represents a DAST Profile.
@@ -9738,6 +9774,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
+| <a id="grouporganizations"></a>`organizations` | [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizationconnection) | Find organizations of this group. (see [Connections](#connections)) |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
@@ -15664,8 +15701,8 @@ Milestone ID wildcard values.
 | ----- | ----------- |
 | <a id="milestonewildcardidany"></a>`ANY` | Milestone is assigned. |
 | <a id="milestonewildcardidnone"></a>`NONE` | No milestone is assigned. |
-| <a id="milestonewildcardidstarted"></a>`STARTED` | An open, started milestone (start date <= today). |
-| <a id="milestonewildcardidupcoming"></a>`UPCOMING` | An open milestone due in the future (due date >= today). |
+| <a id="milestonewildcardidstarted"></a>`STARTED` | Milestone assigned is open and started (start date <= today). |
+| <a id="milestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned is due closest in the future (due date > today). |
 
 ### `MoveType`
 
@@ -15709,8 +15746,8 @@ Negated Milestone ID wildcard values.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="negatedmilestonewildcardidstarted"></a>`STARTED` | An open, started milestone (start date <= today). |
-| <a id="negatedmilestonewildcardidupcoming"></a>`UPCOMING` | An open milestone due in the future (due date >= today). |
+| <a id="negatedmilestonewildcardidstarted"></a>`STARTED` | Milestone assigned is open and yet to be started (start date > today). |
+| <a id="negatedmilestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned is open but due in the past (due date <= today). |
 
 ### `NetworkPolicyKind`
 

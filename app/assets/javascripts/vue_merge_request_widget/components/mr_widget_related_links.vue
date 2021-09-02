@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { s__, n__ } from '~/locale';
 
 export default {
@@ -32,11 +31,16 @@ export default {
 </script>
 <template>
   <section class="mr-info-list gl-ml-7 gl-pb-5">
-    <p v-if="relatedLinks.closing">{{ closesText }} <span v-html="relatedLinks.closing"></span></p>
+    <p v-if="relatedLinks.closing">
+      {{ closesText }}
+      <span v-html="relatedLinks.closing /* eslint-disable-line vue/no-v-html */"></span>
+    </p>
     <p v-if="relatedLinks.mentioned">
       {{ n__('mrWidget|Mentions issue', 'mrWidget|Mentions issues', relatedLinks.mentionedCount) }}
-      <span v-html="relatedLinks.mentioned"></span>
+      <span v-html="relatedLinks.mentioned /* eslint-disable-line vue/no-v-html */"></span>
     </p>
-    <p v-if="relatedLinks.assignToMe"><span v-html="relatedLinks.assignToMe"></span></p>
+    <p v-if="relatedLinks.assignToMe">
+      <span v-html="relatedLinks.assignToMe /* eslint-disable-line vue/no-v-html */"></span>
+    </p>
   </section>
 </template>

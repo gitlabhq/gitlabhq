@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:private_mrs_project) do
@@ -676,6 +678,71 @@ RSpec.describe API::Issues do
             get api("/issues?not[milestone]=#{empty_milestone.title}&state=closed", user)
 
             expect_paginated_array_response(closed_issue.id)
+          end
+        end
+      end
+
+      context 'filtering by milestone_id' do
+        let_it_be(:upcoming_milestone) { create(:milestone, project: project, title: "upcoming milestone", start_date: 1.day.ago, due_date: 1.day.from_now) }
+        let_it_be(:started_milestone) { create(:milestone, project: project, title: "started milestone", start_date: 2.days.ago, due_date: 1.day.ago) }
+        let_it_be(:future_milestone) { create(:milestone, project: project, title: "future milestone", start_date: 7.days.from_now, due_date: 14.days.from_now) }
+        let_it_be(:issue_upcoming) { create(:issue, project: project, state: :opened, milestone: upcoming_milestone) }
+        let_it_be(:issue_started) { create(:issue, project: project, state: :opened, milestone: started_milestone) }
+        let_it_be(:issue_future) { create(:issue, project: project, state: :opened, milestone: future_milestone) }
+        let_it_be(:issue_none) { create(:issue, project: project, state: :opened) }
+
+        let(:wildcard_started) { 'Started' }
+        let(:wildcard_upcoming) { 'Upcoming' }
+        let(:wildcard_any) { 'Any' }
+        let(:wildcard_none) { 'None' }
+
+        where(:milestone_id, :not_milestone, :expected_issues) do
+          ref(:wildcard_none)     | nil | lazy { [issue_none.id] }
+          ref(:wildcard_any)      | nil | lazy { [issue_future.id, issue_started.id, issue_upcoming.id, issue.id, closed_issue.id] }
+          ref(:wildcard_started)  | nil | lazy { [issue_started.id, issue_upcoming.id] }
+          ref(:wildcard_upcoming) | nil | lazy { [issue_upcoming.id] }
+          ref(:wildcard_any)      | "upcoming milestone" | lazy { [issue_future.id, issue_started.id, issue.id, closed_issue.id] }
+          ref(:wildcard_upcoming) | "upcoming milestone" | []
+        end
+
+        with_them do
+          it "returns correct issues when filtering with 'milestone_id' and optionally negated 'milestone'" do
+            get api('/issues', user), params: { milestone_id: milestone_id, not: not_milestone ? { milestone: not_milestone } : {} }
+
+            expect_paginated_array_response(expected_issues)
+          end
+        end
+
+        context 'negated filtering' do
+          where(:not_milestone_id, :expected_issues) do
+            ref(:wildcard_started)  | lazy { [issue_future.id] }
+            ref(:wildcard_upcoming) | lazy { [issue_started.id] }
+          end
+
+          with_them do
+            it "returns correct issues when filtering with negated 'milestone_id'" do
+              get api('/issues', user), params: { not: { milestone_id: not_milestone_id } }
+
+              expect_paginated_array_response(expected_issues)
+            end
+          end
+        end
+
+        context 'when mutually exclusive params are passed' do
+          where(:params) do
+            [
+              [lazy { { milestone: "foo", milestone_id: wildcard_any } }],
+              [lazy { { not: { milestone: "foo", milestone_id: wildcard_any } } }]
+            ]
+          end
+
+          with_them do
+            it "raises an error", :aggregate_failures do
+              get api('/issues', user), params: params
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response["error"]).to include("mutually exclusive")
+            end
           end
         end
       end

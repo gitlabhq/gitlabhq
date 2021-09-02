@@ -739,6 +739,10 @@ class Group < Namespace
     Feature.enabled?(:cached_issues_state_count, self, default_enabled: :yaml)
   end
 
+  def organizations
+    ::CustomerRelations::Organization.where(group_id: self.id)
+  end
+
   private
 
   def max_member_access(user_ids)

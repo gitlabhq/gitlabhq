@@ -204,6 +204,8 @@ to request it, or you can [add it yourself](../development/audit_event_guide/).
 
 #### Repository push
 
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+
 The current architecture of audit events is not prepared to receive a very high amount of records.
 It may make the user interface for your project or audit events very busy, and the disk space consumed by the
 `audit_events` PostgreSQL table may increase considerably. It's disabled by default

@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { groupBy } from 'lodash';
 import EmojiPicker from '~/emoji/components/picker.vue';
@@ -180,7 +179,11 @@ export default {
       @click="handleAward(awardList.name)"
     >
       <template #emoji>
-        <span class="award-emoji-block" data-testid="award-html" v-html="awardList.html"></span>
+        <span
+          class="award-emoji-block"
+          data-testid="award-html"
+          v-html="awardList.html /* eslint-disable-line vue/no-v-html */"
+        ></span>
       </template>
       <span class="js-counter">{{ awardList.list.length }}</span>
     </gl-button>

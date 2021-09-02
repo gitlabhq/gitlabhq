@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
 import emptyStateSVG from 'icons/_mr_widget_empty_state.svg';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -30,7 +29,7 @@ export default {
       <div
         class="artwork col-md-5 order-md-last col-12 text-center d-flex justify-content-center align-items-center"
       >
-        <span v-html="emptyStateSVG"></span>
+        <span v-html="emptyStateSVG /* eslint-disable-line vue/no-v-html */"></span>
       </div>
       <div class="text col-md-7 order-md-first col-12">
         <p class="highlight">

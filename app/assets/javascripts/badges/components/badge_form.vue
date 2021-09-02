@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import { escape, debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
@@ -184,7 +183,7 @@ export default {
 
     <div class="form-group">
       <label for="badge-link-url" class="label-bold">{{ s__('Badges|Link') }}</label>
-      <p v-html="helpText"></p>
+      <p v-html="helpText /* eslint-disable-line vue/no-v-html */"></p>
       <input
         id="badge-link-url"
         v-model="linkUrl"
@@ -199,7 +198,7 @@ export default {
 
     <div class="form-group">
       <label for="badge-image-url" class="label-bold">{{ s__('Badges|Badge image URL') }}</label>
-      <p v-html="helpText"></p>
+      <p v-html="helpText /* eslint-disable-line vue/no-v-html */"></p>
       <input
         id="badge-image-url"
         v-model="imageUrl"

@@ -265,8 +265,7 @@ export default {
 <template>
   <div class="incident-management-list">
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="$emit('error-alert-dismissed')">
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <p v-html="serverErrorMessage || i18n.errorMsg"></p>
+      <p v-html="serverErrorMessage || i18n.errorMsg /* eslint-disable-line vue/no-v-html */"></p>
     </gl-alert>
 
     <div

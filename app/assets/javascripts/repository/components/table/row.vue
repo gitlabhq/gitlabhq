@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import {
   GlBadge,
   GlLink,
@@ -230,7 +229,7 @@ export default {
         :href="commit.commitPath"
         :title="commit.message"
         class="str-truncated-100 tree-commit-link"
-        v-html="commit.titleHtml"
+        v-html="commit.titleHtml /* eslint-disable-line vue/no-v-html */"
       />
       <gl-skeleton-loading v-else :lines="1" class="h-auto" />
     </td>

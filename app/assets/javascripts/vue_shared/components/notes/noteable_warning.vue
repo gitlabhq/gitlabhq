@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
@@ -92,7 +91,9 @@ export default {
     <gl-icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
 
     <span v-if="isLockedAndConfidential" ref="lockedAndConfidential">
-      <span v-html="confidentialAndLockedDiscussionText"></span>
+      <span
+        v-html="confidentialAndLockedDiscussionText /* eslint-disable-line vue/no-v-html */"
+      ></span>
       {{
         __("People without permission will never get a notification and won't be able to comment.")
       }}

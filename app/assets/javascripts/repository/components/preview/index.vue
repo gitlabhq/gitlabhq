@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
@@ -60,7 +59,11 @@ export default {
     </div>
     <div class="blob-viewer" data-qa-selector="blob_viewer_content" itemprop="about">
       <gl-loading-icon v-if="loading > 0" size="md" color="dark" class="my-4 mx-auto" />
-      <div v-else-if="readme" ref="readme" v-html="readme.html"></div>
+      <div
+        v-else-if="readme"
+        ref="readme"
+        v-html="readme.html /* eslint-disable-line vue/no-v-html */"
+      ></div>
     </div>
   </article>
 </template>

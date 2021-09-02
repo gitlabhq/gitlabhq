@@ -1,6 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
-
 /**
  * Common component to render a system note, icon and user information.
  *
@@ -106,7 +104,7 @@ export default {
     :class="{ target: isTargetNote, 'pr-0': shouldShowDescriptionVersion }"
     class="note system-note note-wrapper"
   >
-    <div class="timeline-icon" v-html="iconHtml"></div>
+    <div class="timeline-icon" v-html="iconHtml /* eslint-disable-line vue/no-v-html */"></div>
     <div class="timeline-content">
       <div class="note-header">
         <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">

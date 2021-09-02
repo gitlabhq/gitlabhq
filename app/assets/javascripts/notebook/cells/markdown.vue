@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import katex from 'katex';
 import marked from 'marked';
 import { sanitize } from '~/lib/dompurify';
@@ -149,7 +148,7 @@ export default {
 <template>
   <div class="cell text-cell">
     <prompt />
-    <div class="markdown" v-html="markdown"></div>
+    <div class="markdown" v-html="markdown /* eslint-disable-line vue/no-v-html */"></div>
   </div>
 </template>
 

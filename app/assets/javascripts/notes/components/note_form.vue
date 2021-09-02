@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButton } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
@@ -322,7 +321,7 @@ export default {
     <div
       v-if="conflictWhileEditing"
       class="js-conflict-edit-warning alert alert-danger"
-      v-html="changedCommentText"
+      v-html="changedCommentText /* eslint-disable-line vue/no-v-html */"
     ></div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">

@@ -11,6 +11,7 @@ RSpec.describe GroupPolicy do
 
     it do
       expect_allowed(:read_group)
+      expect_allowed(:read_organization)
       expect_allowed(:read_counts)
       expect_allowed(*read_group_permissions)
       expect_disallowed(:upload_file)
@@ -31,6 +32,7 @@ RSpec.describe GroupPolicy do
     end
 
     it { expect_disallowed(:read_group) }
+    it { expect_disallowed(:read_organization) }
     it { expect_disallowed(:read_counts) }
     it { expect_disallowed(*read_group_permissions) }
   end
@@ -44,6 +46,7 @@ RSpec.describe GroupPolicy do
     end
 
     it { expect_disallowed(:read_group) }
+    it { expect_disallowed(:read_organization) }
     it { expect_disallowed(:read_counts) }
     it { expect_disallowed(*read_group_permissions) }
   end
@@ -899,6 +902,7 @@ RSpec.describe GroupPolicy do
 
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_group) }
+      it { is_expected.to be_allowed(:read_organization) }
       it { is_expected.to be_disallowed(:create_package) }
     end
 
@@ -908,6 +912,7 @@ RSpec.describe GroupPolicy do
       it { is_expected.to be_allowed(:create_package) }
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_group) }
+      it { is_expected.to be_allowed(:read_organization) }
       it { is_expected.to be_disallowed(:destroy_package) }
     end
   end

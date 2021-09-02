@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/require-default-prop, vue/no-v-html */
+/* eslint-disable vue/require-default-prop */
 import { GlButton } from '@gitlab/ui';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -75,7 +75,7 @@ export default {
           ref="frequentItemsItemTitle"
           :title="itemName"
           class="frequent-items-item-title"
-          v-html="highlightedItemName"
+          v-html="highlightedItemName /* eslint-disable-line vue/no-v-html */"
         ></div>
         <div
           v-if="namespace"

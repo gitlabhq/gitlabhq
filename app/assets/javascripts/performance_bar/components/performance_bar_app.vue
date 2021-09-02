@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { glEmojiTag } from '~/emoji';
 
 import { s__ } from '~/locale';
@@ -144,7 +143,7 @@ export default {
           class="current-host"
           :class="{ canary: currentRequest.details.host.canary }"
         >
-          <span v-html="birdEmoji"></span>
+          <span v-html="birdEmoji /* eslint-disable-line vue/no-v-html */"></span>
           {{ currentRequest.details.host.hostname }}
         </span>
       </div>

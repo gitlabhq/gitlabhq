@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { __, sprintf } from '~/locale';
 
 export default {
@@ -24,5 +23,8 @@ export default {
 </script>
 
 <template>
-  <div class="alert alert-danger" v-html="alertMessage"></div>
+  <div
+    class="alert alert-danger"
+    v-html="alertMessage /* eslint-disable-line vue/no-v-html */"
+  ></div>
 </template>

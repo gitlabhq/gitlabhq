@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlPopover } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
 import { n__ } from '~/locale';
@@ -59,7 +58,10 @@ export default {
       </option>
     </select>
     <span v-if="requestsWithWarnings.length" class="gl-cursor-default">
-      <span id="performance-bar-request-selector-warning" v-html="glEmojiTag('warning')"></span>
+      <span
+        id="performance-bar-request-selector-warning"
+        v-html="glEmojiTag('warning') /* eslint-disable-line vue/no-v-html */"
+      ></span>
       <gl-popover
         placement="bottom"
         target="performance-bar-request-selector-warning"

@@ -24,7 +24,7 @@ module Search
 
     # rubocop: disable CodeReuse/ActiveRecord
     def projects
-      @projects ||= ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute.includes(:topics, :taggings)
+      @projects ||= ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute.preload(:topics, :taggings)
     end
 
     def allowed_scopes

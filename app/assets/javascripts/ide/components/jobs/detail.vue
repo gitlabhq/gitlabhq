@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlButton, GlIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';
 import { mapActions, mapState } from 'vuex';
@@ -102,7 +101,7 @@ export default {
       <code
         v-show="!detailJob.isLoading"
         class="bash"
-        v-html="jobOutput"
+        v-html="jobOutput /* eslint-disable-line vue/no-v-html */"
       >
       </code>
       <div

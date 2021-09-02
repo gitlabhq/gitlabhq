@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html, @gitlab/require-string-literal-i18n-helpers */
+/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { GlButton } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, n__, sprintf, s__ } from '~/locale';
@@ -89,7 +89,10 @@ export default {
       />
       <span v-if="expanded">{{ __('Collapse') }}</span>
       <span v-else>
-        <span class="vertical-align-middle" v-html="message"></span>
+        <span
+          class="vertical-align-middle"
+          v-html="message /* eslint-disable-line vue/no-v-html */"
+        ></span>
         <gl-button variant="link" class="modify-message-button">
           {{ modifyLinkMessage }}
         </gl-button>

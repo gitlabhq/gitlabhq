@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlButton, GlTooltip } from '@gitlab/ui';
 import { glEmojiTag } from '../../emoji';
 import { __, sprintf } from '../../locale';
@@ -131,7 +130,7 @@ export default {
           v-if="statusTooltipHTML"
           :ref="$options.EMOJI_REF"
           :data-testid="message"
-          v-html="statusTooltipHTML"
+          v-html="statusTooltipHTML /* eslint-disable-line vue/no-v-html */"
         ></span>
       </template>
     </section>

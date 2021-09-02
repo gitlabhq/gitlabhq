@@ -190,6 +190,10 @@ module Types
           resolver: Resolvers::Ci::GroupRunnersResolver,
           description: "Find runners visible to the current user."
 
+    field :organizations, Types::CustomerRelations::OrganizationType.connection_type,
+          null: true,
+          description: "Find organizations of this group."
+
     def avatar_url
       object.avatar_url(only_path: false)
     end

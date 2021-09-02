@@ -79,7 +79,7 @@ maintenance does not affect your integration.
      generated `Redirect URL` from
      [Linking GitLab accounts with Jira](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
    - *For GitLab versions 13.0 and later* **and** *Jira Cloud,* use `https://<gitlab.example.com>/login/oauth/callback`.  
-   - *For GitLab versions 11.3 and later,* use `https://<gitlab.example.com>/login/oauth/callback`.
+   - *For GitLab versions 11.3 and later* **and** *Jira versions 8.13 and earlier,* use `https://<gitlab.example.com>/login/oauth/callback`.
      If you use GitLab.com, the URL is `https://gitlab.com/login/oauth/callback`.
    - *For GitLab versions 11.2 and earlier,* use
      `https://<gitlab.example.com>/-/jira/login/oauth/callback`.

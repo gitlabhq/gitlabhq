@@ -9,14 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
-WARNING:
-Versions of GitLab prior to 14.0 used Clair as the default container scanning engine. GitLab 14.0
-removes Clair from the product and replaces it with two new scanners. If you
-run container scanning with the default settings, GitLab switches you seamlessly and automatically
-to Trivy in GitLab 14.0. However, if you customized the variables in your container scanning job,
-you should review the [migration guide](#change-scanners)
-and make any necessary updates.
-
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra job in your pipeline that scans for those vulnerabilities and
 displays them in a merge request, you can use GitLab to audit your Docker-based apps.

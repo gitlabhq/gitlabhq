@@ -2628,6 +2628,16 @@ RSpec.describe Group do
     end
   end
 
+  describe '.organizations' do
+    it 'returns organizations belonging to the group' do
+      organization1 = create(:organization, group: group)
+      create(:organization)
+      organization3 = create(:organization, group: group)
+
+      expect(group.organizations).to contain_exactly(organization1, organization3)
+    end
+  end
+
   describe '#to_ability_name' do
     it 'returns group' do
       group = build(:group)
