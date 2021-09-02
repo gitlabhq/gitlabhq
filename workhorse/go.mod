@@ -1,6 +1,6 @@
 module gitlab.com/gitlab-org/gitlab/workhorse
 
-go 1.15
+go 1.16
 
 require (
 	github.com/Azure/azure-storage-blob-go v0.11.1-0.20201209121048-6df5d9af221d
@@ -31,7 +31,6 @@ require (
 	gitlab.com/gitlab-org/gitaly/v14 v14.0.0-rc1
 	gitlab.com/gitlab-org/labkit v1.6.0
 	gocloud.dev v0.21.1-0.20201223184910-5094f54ed8bb
-	golang.org/x/exp v0.0.0-20200331195152-e8c3332aa8e5 // indirect
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5
 	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4

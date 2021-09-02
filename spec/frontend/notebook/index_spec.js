@@ -1,3 +1,4 @@
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Notebook from '~/notebook/index.vue';
 
@@ -13,14 +14,16 @@ describe('Notebook component', () => {
     jsonWithWorksheet = getJSONFixture('blob/notebook/worksheets.json');
   });
 
+  function buildComponent(notebook) {
+    return mount(Component, {
+      propsData: { notebook, codeCssClass: 'js-code-class' },
+      provide: { relativeRawPath: '' },
+    }).vm;
+  }
+
   describe('without JSON', () => {
     beforeEach((done) => {
-      vm = new Component({
-        propsData: {
-          notebook: {},
-        },
-      });
-      vm.$mount();
+      vm = buildComponent({});
 
       setImmediate(() => {
         done();
@@ -34,13 +37,7 @@ describe('Notebook component', () => {
 
   describe('with JSON', () => {
     beforeEach((done) => {
-      vm = new Component({
-        propsData: {
-          notebook: json,
-          codeCssClass: 'js-code-class',
-        },
-      });
-      vm.$mount();
+      vm = buildComponent(json);
 
       setImmediate(() => {
         done();
@@ -66,13 +63,7 @@ describe('Notebook component', () => {
 
   describe('with worksheets', () => {
     beforeEach((done) => {
-      vm = new Component({
-        propsData: {
-          notebook: jsonWithWorksheet,
-          codeCssClass: 'js-code-class',
-        },
-      });
-      vm.$mount();
+      vm = buildComponent(jsonWithWorksheet);
 
       setImmediate(() => {
         done();

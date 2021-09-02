@@ -92,6 +92,30 @@ RSpec.describe BlobHelper do
     end
   end
 
+  describe "#relative_raw_path" do
+    include FakeBlobHelpers
+
+    let_it_be(:project) { create(:project) }
+
+    before do
+      assign(:project, project)
+    end
+
+    [
+      %w[/file.md /-/raw/main/],
+      %w[/test/file.md /-/raw/main/test/],
+      %w[/another/test/file.md /-/raw/main/another/test/]
+    ].each do |file_path, expected_path|
+      it "pointing from '#{file_path}' to '#{expected_path}'" do
+        blob = fake_blob(path: file_path)
+        assign(:blob, blob)
+        assign(:id, "main#{blob.path}")
+        assign(:path, blob.path)
+
+        expect(helper.parent_dir_raw_path).to eq "/#{project.full_path}#{expected_path}"
+      end
+    end
+  end
   context 'viewer related' do
     include FakeBlobHelpers
 

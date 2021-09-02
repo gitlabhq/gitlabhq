@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import filesQuery from 'shared_queries/repository/files.query.graphql';
+import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
 import TreeContent from '~/repository/components/tree_content.vue';
@@ -22,6 +22,7 @@ function factory(path, data = () => ({})) {
     provide: {
       glFeatures: {
         increasePageSizeExponentially: true,
+        paginatedTreeGraphqlQuery: true,
       },
     },
   });
@@ -58,7 +59,7 @@ describe('Repository table component', () => {
     it('normalizes edge nodes', () => {
       factory('/');
 
-      const output = vm.vm.normalizeData('blobs', [{ node: '1' }, { node: '2' }]);
+      const output = vm.vm.normalizeData('blobs', { nodes: ['1', '2'] });
 
       expect(output).toEqual(['1', '2']);
     });
@@ -168,7 +169,7 @@ describe('Repository table component', () => {
       vm.vm.fetchFiles();
 
       expect($apollo.query).toHaveBeenCalledWith({
-        query: filesQuery,
+        query: paginatedTreeQuery,
         variables: {
           pageSize,
           nextPageCursor: '',

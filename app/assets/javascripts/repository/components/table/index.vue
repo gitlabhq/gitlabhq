@@ -100,9 +100,9 @@ export default {
           />
           <template v-for="val in entries">
             <table-row
-              v-for="entry in val"
+              v-for="(entry, index) in val"
               :id="entry.id"
-              :key="`${entry.flatPath}-${entry.id}`"
+              :key="`${entry.flatPath}-${entry.id}-${index}`"
               :sha="entry.sha"
               :project-path="projectPath"
               :current-path="path"

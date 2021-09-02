@@ -33,6 +33,7 @@ module Gitlab
         .having(action: :commented)
 
       events = Event
+        .select(:project_id, :target_type, :action, :date, :total_amount)
         .from_union([repo_events, issue_events, mr_events, note_events])
         .map(&:attributes)
 

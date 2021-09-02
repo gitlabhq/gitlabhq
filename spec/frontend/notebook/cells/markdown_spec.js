@@ -1,3 +1,4 @@
+import { mount } from '@vue/test-utils';
 import katex from 'katex';
 import Vue from 'vue';
 import MarkdownComponent from '~/notebook/cells/markdown.vue';
@@ -5,6 +6,28 @@ import MarkdownComponent from '~/notebook/cells/markdown.vue';
 const Component = Vue.extend(MarkdownComponent);
 
 window.katex = katex;
+
+function buildCellComponent(cell, relativePath = '') {
+  return mount(Component, {
+    propsData: {
+      cell,
+    },
+    provide: {
+      relativeRawPath: relativePath,
+    },
+  }).vm;
+}
+
+function buildMarkdownComponent(markdownContent, relativePath = '') {
+  return buildCellComponent(
+    {
+      cell_type: 'markdown',
+      metadata: {},
+      source: markdownContent,
+    },
+    relativePath,
+  );
+}
 
 describe('Markdown component', () => {
   let vm;
@@ -17,12 +40,7 @@ describe('Markdown component', () => {
     // eslint-disable-next-line prefer-destructuring
     cell = json.cells[1];
 
-    vm = new Component({
-      propsData: {
-        cell,
-      },
-    });
-    vm.$mount();
+    vm = buildCellComponent(cell);
 
     return vm.$nextTick();
   });
@@ -61,17 +79,36 @@ describe('Markdown component', () => {
     expect(findLink().getAttribute('data-type')).toBe(null);
   });
 
+  describe('When parsing images', () => {
+    it.each([
+      [
+        'for relative images in root folder, it does',
+        '![](local_image.png)\n',
+        'src="/raw/local_image',
+      ],
+      [
+        'for relative images in child folders, it does',
+        '![](data/local_image.png)\n',
+        'src="/raw/data',
+      ],
+      ["for embedded images, it doesn't", '![](data:image/jpeg;base64)\n', 'src="data:'],
+      ["for images urls, it doesn't", '![](http://image.png)\n', 'src="http:'],
+    ])('%s', async ([testMd, mustContain]) => {
+      vm = buildMarkdownComponent([testMd], '/raw/');
+
+      await vm.$nextTick();
+
+      expect(vm.$el.innerHTML).toContain(mustContain);
+    });
+  });
+
   describe('tables', () => {
     beforeEach(() => {
       json = getJSONFixture('blob/notebook/markdown-table.json');
     });
 
     it('renders images and text', () => {
-      vm = new Component({
-        propsData: {
-          cell: json.cells[0],
-        },
-      }).$mount();
+      vm = buildCellComponent(json.cells[0]);
 
       return vm.$nextTick().then(() => {
         const images = vm.$el.querySelectorAll('img');
@@ -102,48 +139,28 @@ describe('Markdown component', () => {
     });
 
     it('renders multi-line katex', async () => {
-      vm = new Component({
-        propsData: {
-          cell: json.cells[0],
-        },
-      }).$mount();
+      vm = buildCellComponent(json.cells[0]);
 
       await vm.$nextTick();
       expect(vm.$el.querySelector('.katex')).not.toBeNull();
     });
 
     it('renders inline katex', async () => {
-      vm = new Component({
-        propsData: {
-          cell: json.cells[1],
-        },
-      }).$mount();
+      vm = buildCellComponent(json.cells[1]);
 
       await vm.$nextTick();
       expect(vm.$el.querySelector('p:first-child .katex')).not.toBeNull();
     });
 
     it('renders multiple inline katex', async () => {
-      vm = new Component({
-        propsData: {
-          cell: json.cells[1],
-        },
-      }).$mount();
+      vm = buildCellComponent(json.cells[1]);
 
       await vm.$nextTick();
       expect(vm.$el.querySelectorAll('p:nth-child(2) .katex')).toHaveLength(4);
     });
 
     it('output cell in case of katex error', async () => {
-      vm = new Component({
-        propsData: {
-          cell: {
-            cell_type: 'markdown',
-            metadata: {},
-            source: ['Some invalid $a & b$ inline formula $b & c$\n', '\n'],
-          },
-        },
-      }).$mount();
+      vm = buildMarkdownComponent(['Some invalid $a & b$ inline formula $b & c$\n', '\n']);
 
       await vm.$nextTick();
       // expect one paragraph with no katex formula in it
@@ -152,15 +169,10 @@ describe('Markdown component', () => {
     });
 
     it('output cell and render remaining formula in case of katex error', async () => {
-      vm = new Component({
-        propsData: {
-          cell: {
-            cell_type: 'markdown',
-            metadata: {},
-            source: ['An invalid $a & b$ inline formula and a vaild one $b = c$\n', '\n'],
-          },
-        },
-      }).$mount();
+      vm = buildMarkdownComponent([
+        'An invalid $a & b$ inline formula and a vaild one $b = c$\n',
+        '\n',
+      ]);
 
       await vm.$nextTick();
       // expect one paragraph with no katex formula in it
@@ -169,15 +181,7 @@ describe('Markdown component', () => {
     });
 
     it('renders math formula in list object', async () => {
-      vm = new Component({
-        propsData: {
-          cell: {
-            cell_type: 'markdown',
-            metadata: {},
-            source: ["- list with inline $a=2$ inline formula $a' + b = c$\n", '\n'],
-          },
-        },
-      }).$mount();
+      vm = buildMarkdownComponent(["- list with inline $a=2$ inline formula $a' + b = c$\n", '\n']);
 
       await vm.$nextTick();
       // expect one list with a katex formula in it
@@ -186,15 +190,7 @@ describe('Markdown component', () => {
     });
 
     it("renders math formula with tick ' in it", async () => {
-      vm = new Component({
-        propsData: {
-          cell: {
-            cell_type: 'markdown',
-            metadata: {},
-            source: ["- list with inline $a=2$ inline formula $a' + b = c$\n", '\n'],
-          },
-        },
-      }).$mount();
+      vm = buildMarkdownComponent(["- list with inline $a=2$ inline formula $a' + b = c$\n", '\n']);
 
       await vm.$nextTick();
       // expect one list with a katex formula in it
@@ -203,15 +199,7 @@ describe('Markdown component', () => {
     });
 
     it('renders math formula with less-than-operator < in it', async () => {
-      vm = new Component({
-        propsData: {
-          cell: {
-            cell_type: 'markdown',
-            metadata: {},
-            source: ['- list with inline $a=2$ inline formula $a + b < c$\n', '\n'],
-          },
-        },
-      }).$mount();
+      vm = buildMarkdownComponent(['- list with inline $a=2$ inline formula $a + b < c$\n', '\n']);
 
       await vm.$nextTick();
       // expect one list with a katex formula in it
@@ -220,15 +208,7 @@ describe('Markdown component', () => {
     });
 
     it('renders math formula with greater-than-operator > in it', async () => {
-      vm = new Component({
-        propsData: {
-          cell: {
-            cell_type: 'markdown',
-            metadata: {},
-            source: ['- list with inline $a=2$ inline formula $a + b > c$\n', '\n'],
-          },
-        },
-      }).$mount();
+      vm = buildMarkdownComponent(['- list with inline $a=2$ inline formula $a + b > c$\n', '\n']);
 
       await vm.$nextTick();
       // expect one list with a katex formula in it

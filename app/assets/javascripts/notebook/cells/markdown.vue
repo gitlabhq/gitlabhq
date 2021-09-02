@@ -94,7 +94,16 @@ renderer.image = function image(href, title, text) {
   const attachmentHeader = `attachment:`; // eslint-disable-line @gitlab/require-i18n-strings
 
   if (!this.attachments || !href.startsWith(attachmentHeader)) {
-    return this.originalImage(href, title, text);
+    let relativeHref = href;
+
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    if (!(href.startsWith('http') || href.startsWith('data:'))) {
+      // These are images within the repo. This will only work if the image
+      // is relative to the path where the file is located
+      relativeHref = this.relativeRawPath + href;
+    }
+
+    return this.originalImage(relativeHref, title, text);
   }
 
   let img = ``;
@@ -129,6 +138,7 @@ export default {
   components: {
     prompt: Prompt,
   },
+  inject: ['relativeRawPath'],
   props: {
     cell: {
       type: Object,
@@ -138,6 +148,7 @@ export default {
   computed: {
     markdown() {
       renderer.attachments = this.cell.attachments;
+      renderer.relativeRawPath = this.relativeRawPath;
 
       return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), markdownConfig);
     },

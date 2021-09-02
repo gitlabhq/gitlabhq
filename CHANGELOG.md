@@ -1217,6 +1217,10 @@ entry.
 - [Remove diffs gradual load feature flag](gitlab-org/gitlab@027d7c4327b5b6205a84281239027273517bf81b) ([merge request](gitlab-org/gitlab!55478))
 - [Remove partial index for Hashed Storage migration](gitlab-org/gitlab@3ed017a1023d7b0941a7606b69e6caee8d22f15c) ([merge request](gitlab-org/gitlab!62920))
 
+## 14.0.10 (2021-09-02)
+
+No changes.
+
 ## 14.0.9 (2021-08-31)
 
 ### Security (9 changes)

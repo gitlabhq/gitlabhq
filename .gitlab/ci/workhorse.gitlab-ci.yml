@@ -23,10 +23,6 @@ workhorse:verify:
     - apt-get update && apt-get -y install libimage-exiftool-perl
     - make -C workhorse test
 
-workhorse:test using go 1.15:
-  extends: .workhorse:test
-  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.15
-
 workhorse:test using go 1.16:
   extends: .workhorse:test
   image: ${GITLAB_DEPENDENCY_PROXY}golang:1.16

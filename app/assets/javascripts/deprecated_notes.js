@@ -670,6 +670,10 @@ export default class Notes {
   updateNote(noteEntity, $targetNote) {
     // Convert returned HTML to a jQuery object so we can modify it further
     const $noteEntityEl = $(noteEntity.html);
+    const $noteAvatar = $noteEntityEl.find('.image-diff-avatar-link');
+    const $targetNoteBadge = $targetNote.find('.badge');
+
+    $noteAvatar.append($targetNoteBadge);
     this.revertNoteEditForm($targetNote);
     $noteEntityEl.renderGFM();
     // Find the note's `li` element by ID and replace it with the updated HTML

@@ -17,6 +17,10 @@ class SnippetBlobPresenter < BlobPresenter
     snippet_blob_raw_route
   end
 
+  def raw_directory
+    raw_path.rpartition("/").first + "/"
+  end
+
   def raw_plain_data
     blob.data unless blob.binary?
   end
@@ -33,7 +37,7 @@ class SnippetBlobPresenter < BlobPresenter
 
   def render_rich_partial
     renderer.render("projects/blob/viewers/_#{blob.rich_viewer.partial_name}",
-                    locals: { viewer: blob.rich_viewer, blob: blob, blob_raw_path: raw_path, blob_raw_url: raw_url },
+                    locals: { viewer: blob.rich_viewer, blob: blob, blob_raw_path: raw_path, blob_raw_url: raw_url, parent_dir_raw_path: raw_directory },
                     layout: false)
   end
 

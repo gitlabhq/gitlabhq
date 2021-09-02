@@ -1,0 +1,10 @@
+query GroupBoardIterations($fullPath: ID!, $title: String) {
+  group(fullPath: $fullPath) {
+    iterations(includeAncestors: true, title: $title) {
+      nodes {
+        id
+        title
+      }
+    }
+  }
+}

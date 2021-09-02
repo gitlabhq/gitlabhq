@@ -31,6 +31,8 @@ export default () => ({
   },
   selectedProject: {},
   error: undefined,
+  iterations: [],
+  iterationsLoading: false,
   addColumnForm: {
     visible: false,
     columnType: ListType.label,

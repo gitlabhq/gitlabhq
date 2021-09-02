@@ -29128,7 +29128,7 @@ msgstr ""
 msgid "SastEntryPoints|How do I set up SAST?"
 msgstr ""
 
-msgid "SastEntryPoints|Learn more."
+msgid "SastEntryPoints|Learn more"
 msgstr ""
 
 msgid "Satisfied"

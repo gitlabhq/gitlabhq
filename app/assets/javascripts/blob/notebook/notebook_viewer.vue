@@ -77,3 +77,9 @@ export default {
     </p>
   </div>
 </template>
+
+<style>
+.output img {
+  min-width: 0; /* https://www.w3.org/TR/css-flexbox-1/#min-size-auto */
+}
+</style>

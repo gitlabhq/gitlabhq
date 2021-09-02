@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import filesQuery from 'shared_queries/repository/files.query.graphql';
+import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -153,7 +154,8 @@ export default {
       return this.isFolder ? this.loadFolder() : this.loadBlob();
     },
     loadFolder() {
-      this.apolloQuery(filesQuery, {
+      const query = this.glFeatures.paginatedTreeGraphqlQuery ? paginatedTreeQuery : filesQuery;
+      this.apolloQuery(query, {
         projectPath: this.projectPath,
         ref: this.ref,
         path: this.path,
