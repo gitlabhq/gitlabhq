@@ -586,6 +586,12 @@ entry.
 - [Add helpful text to URL group validation and limit text](gitlab-org/gitlab@59a5a6266cb0d5434596170ffa36e4e74b8d2c2c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65369)) **GitLab Enterprise Edition**
 - [Refactor external storage admin area configuration UI and docs](gitlab-org/gitlab@497ba4fc8f4ec1d234c9f5f1ec5c69712b8c7cb3) ([merge request](gitlab-org/gitlab!66219))
 
+## 14.1.5 (2021-09-02)
+
+### Fixed (1 change)
+
+- [Geo: Replicate multi-arch containers](gitlab-org/gitlab@4f74fe9fb6f53cd877d8f793e2ef74c4177006d1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624)) **GitLab Enterprise Edition**
+
 ## 14.1.4 (2021-08-31)
 
 ### Security (8 changes)

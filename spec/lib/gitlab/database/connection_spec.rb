@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Database::Connection do
 
   describe '#disable_prepared_statements' do
     around do |example|
-      original_config = ::Gitlab::Database.main.config
+      original_config = connection.scope.connection.pool.db_config
 
       example.run
 

@@ -16,10 +16,6 @@ We offer extensive integrations to help you connect and manage your Kubernetes c
 
 Read through this document to get started.
 
-## Clusters infrastructure
-
-Use [Infrastructure as Code](../../infrastructure) to create and manage your clusters with the GitLab integration with Terraform.
-
 ## Benefit from the GitLab-Kubernetes integration
 
 Using the GitLab-Kubernetes integration, you can benefit of GitLab
@@ -58,34 +54,33 @@ Some GitLab features may support versions outside the range provided here.
 
 ## Add and remove clusters
 
-You can create new or add existing clusters to GitLab:
+You can create new or add existing clusters to GitLab through different levels,
+using different methods.
 
-- On the project-level, to have a cluster dedicated to a project.
+### Cluster levels
+
+You can connect clusters to GitLab in different levels, according to their purpose:
+
+- On the project level, to have a cluster dedicated to a project.
 - On the [group level](../../group/clusters/index.md), to use the same cluster across multiple projects within your group.
 - On the [instance level](../../instance/clusters/index.md), to use the same cluster across multiple groups and projects. **(FREE SELF)**
 
-To create new clusters, use one of the following methods:
+### Methods to create new clusters
 
-- [Infrastructure as Code](../../infrastructure/index.md) (**recommended**).
-- [Cluster certificates](add_remove_clusters.md) (**deprecated**).
+To create new clusters, we **recommend** using [Infrastructure as Code](../../infrastructure/index.md).
 
-You can also [add existing clusters](add_existing_cluster.md) to GitLab.
+### Methods to connect existing clusters
 
-## View your clusters
+To safely connect and configure an existing cluster on the **project level**, we
+**recommend** using the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
+We are working to support [the Agent for connecting a
+cluster at the group level](https://gitlab.com/groups/gitlab-org/-/epics/5784).
 
-To view your project-level Kubernetes clusters, to go **Infrastructure > Kubernetes clusters**
-from your project. On this page, you can add a new cluster
-and view information about your existing clusters, such as:
+You can use [cluster certificates](add_existing_cluster.md) to connect
+clusters in all levels (projects, group, instance). However, for
+[security implications](#security-implications), this method is no longer recommended.
 
-- Nodes count.
-- Rough estimates of memory and CPU usage.
-
-## Configuring your Kubernetes cluster
-
-Use the [GitLab Kubernetes Agent](../../clusters/agent/index.md) to safely
-configure your clusters. Otherwise, there are [security implications](#security-implications).
-
-### Security implications
+## Security implications
 
 WARNING:
 The whole cluster security is based on a model where [developers](../../permissions.md)
@@ -95,6 +90,15 @@ The default cluster configuration grants access to a wide set of
 functionalities needed to successfully build and deploy a containerized
 application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
+
+## View your clusters
+
+To view your project-level Kubernetes clusters, to go **Infrastructure > Kubernetes clusters**
+from your project. On this page, you can add a new cluster
+and view information about your existing clusters, such as:
+
+- Nodes count.
+- Rough estimates of memory and CPU usage.
 
 ## Multiple Kubernetes clusters
 

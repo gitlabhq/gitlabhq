@@ -33,3 +33,13 @@ you can't store credentials in the URL like `user:password@URL`. Instead, you ca
 for Unix-like operating systems or `_netrc` for Windows. In that case, the credentials
 will be stored as a plain text. If you're looking for a more secure way to store credentials,
 you can use [Git Credential Storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
+
+## Fetch Go modules from Geo secondary sites
+
+Go modules can be pulled from secondary sites, with a number of limitations:
+
+- Git configuration (using `insteadOf`) is needed to fetch data from the Geo secondary site.
+- For private projects, authentication details need to be specified in `~/.netrc`.
+
+Read more in the
+[working with projects `go get` documentation](../../../user/project/working_with_projects.md#fetch-go-modules-from-geo-secondary-sites).

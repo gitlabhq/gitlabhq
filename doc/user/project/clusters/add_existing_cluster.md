@@ -4,10 +4,16 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Add an existing Kubernetes cluster
+# Connect existing clusters through cluster certificates
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,
 or instance and benefit from the integration with GitLab.
+
+WARNING:
+The process described on this page uses cluster certificates to connect your cluster
+to GitLab. Although this method still works, it is **no longer recommended**.
+To connect your cluster to GitLab, we **recommend** using the [GitLab Kubernetes Agent](../../clusters/agent/index.md)
+instead. **(PREMIUM)**
 
 ## Prerequisites
 
