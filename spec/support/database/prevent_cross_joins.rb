@@ -81,7 +81,7 @@ end
 Gitlab::Database.singleton_class.prepend(
   Database::PreventCrossJoins::GitlabDatabaseMixin)
 
-ALLOW_LIST = Set.new(YAML.load_file(Rails.root.join('.cross-join-allowlist.yml'))).freeze
+ALLOW_LIST = Set.new(YAML.load_file(File.join(__dir__, 'cross-join-allowlist.yml'))).freeze
 
 RSpec.configure do |config|
   config.include(::Database::PreventCrossJoins::SpecHelpers)

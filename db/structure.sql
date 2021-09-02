@@ -14873,7 +14873,8 @@ CREATE TABLE members (
     requested_at timestamp without time zone,
     expires_at date,
     ldap boolean DEFAULT false NOT NULL,
-    override boolean DEFAULT false NOT NULL
+    override boolean DEFAULT false NOT NULL,
+    state smallint DEFAULT 0
 );
 
 CREATE SEQUENCE members_id_seq

@@ -372,7 +372,7 @@ GEM
       faraday_middleware
       multi_json
     fast_blank (1.0.0)
-    fast_gettext (1.6.0)
+    fast_gettext (2.1.0)
     ffaker (2.10.0)
     ffi (1.15.3)
     ffi-compiler (1.0.1)

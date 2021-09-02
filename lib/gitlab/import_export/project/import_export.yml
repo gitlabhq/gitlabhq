@@ -333,6 +333,9 @@ excluded_attributes:
   project_members:
     - :source_id
     - :invite_email_success
+    - :state
+  group_members:
+    - :state
   metrics:
     - :merge_request_id
     - :pipeline_id

@@ -48,6 +48,18 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do
         cli.run(%w(*))
       end
 
+      it 'raises an error when the arguments contain newlines' do
+        invalid_arguments = [
+          ["foo\n"],
+          ["foo\r"],
+          %W[foo b\nar]
+        ]
+
+        invalid_arguments.each do |arguments|
+          expect { cli.run(arguments) }.to raise_error(described_class::CommandError)
+        end
+      end
+
       context 'with --negate flag' do
         it 'starts Sidekiq workers for all queues in all_queues.yml except the ones in argv' do
           expect(Gitlab::SidekiqConfig::CliMethods).to receive(:worker_queues).and_return(['baz'])
