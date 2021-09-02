@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.1.5 (2021-09-02)
+
+### Fixed (1 change)
+
+- [Geo: Replicate multi-arch containers](gitlab-org/gitlab@4f74fe9fb6f53cd877d8f793e2ef74c4177006d1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624)) **GitLab Enterprise Edition**
+
 ## 14.1.4 (2021-08-31)
 
 ### Security (8 changes)
