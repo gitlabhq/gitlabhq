@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.10 (2021-09-02)
+
+No changes.
+
 ## 14.0.9 (2021-08-31)
 
 ### Security (9 changes)
