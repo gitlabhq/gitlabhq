@@ -1,10 +1,7 @@
 {
   "type": "object",
-  "required" : [
-    "id",
-    "name"
-  ],
-  "properties" : {
+  "required": ["id", "name"],
+  "properties": {
     "id": { "type": "integer" },
     "iid": { "type": ["integer", "null"] },
     "version": { "type": "string" },

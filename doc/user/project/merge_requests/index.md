@@ -53,7 +53,7 @@ GitLab displays open merge requests, with tabs to filter the list by open and cl
 
 ![Project merge requests list view](img/project_merge_requests_list_view_v13_5.png)
 
-You can [search and filter](../../search/index.md#filtering-issue-and-merge-request-lists),
+You can [search and filter](../../search/index.md#filter-issue-and-merge-request-lists),
 the results, or select a merge request to begin a review.
 
 ## Merge request sidebar

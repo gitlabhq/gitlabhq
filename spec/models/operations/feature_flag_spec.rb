@@ -49,28 +49,7 @@ RSpec.describe Operations::FeatureFlag do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
-    it { is_expected.to define_enum_for(:version).with_values(legacy_flag: 1, new_version_flag: 2) }
-
-    context 'a version 1 feature flag' do
-      it 'is valid if associated with Operations::FeatureFlagScope models' do
-        project = create(:project)
-        feature_flag = described_class.create!({ name: 'test', project: project, version: 1,
-                                 scopes_attributes: [{ environment_scope: '*', active: false }] })
-
-        expect(feature_flag).to be_valid
-      end
-
-      it 'is invalid if associated with Operations::FeatureFlags::Strategy models' do
-        project = create(:project)
-        feature_flag = described_class.new({ name: 'test', project: project, version: 1,
-                                 strategies_attributes: [{ name: 'default', parameters: {} }] })
-
-        expect(feature_flag.valid?).to eq(false)
-        expect(feature_flag.errors.messages).to eq({
-          version_associations: ["version 1 feature flags may not have strategies"]
-        })
-      end
-    end
+    it { is_expected.to define_enum_for(:version).with_values(new_version_flag: 2) }
 
     context 'a version 2 feature flag' do
       it 'is invalid if associated with Operations::FeatureFlagScope models' do
@@ -102,63 +81,8 @@ RSpec.describe Operations::FeatureFlag do
     end
   end
 
-  describe 'feature flag version' do
-    it 'defaults to 1 if unspecified' do
-      project = create(:project)
-
-      feature_flag = described_class.create!(name: 'my_flag', project: project, active: true)
-
-      expect(feature_flag).to be_valid
-      expect(feature_flag.version_before_type_cast).to eq(1)
-    end
-  end
-
-  describe 'Scope creation' do
-    subject { described_class.new(**params) }
-
-    let(:project) { create(:project) }
-
-    let(:params) do
-      { name: 'test', project: project, scopes_attributes: scopes_attributes }
-    end
-
-    let(:scopes_attributes) do
-      [{ environment_scope: '*', active: false },
-       { environment_scope: 'review/*', active: true }]
-    end
-
-    it { is_expected.to be_valid }
-
-    context 'when the first scope is not wildcard' do
-      let(:scopes_attributes) do
-        [{ environment_scope: 'review/*', active: true },
-         { environment_scope: '*', active: false }]
-      end
-
-      it { is_expected.not_to be_valid }
-    end
-  end
-
   describe 'the default scope' do
     let_it_be(:project) { create(:project) }
-
-    context 'with a version 1 feature flag' do
-      it 'creates a default scope' do
-        feature_flag = described_class.create!({ name: 'test', project: project, scopes_attributes: [], version: 1 })
-
-        expect(feature_flag.scopes.count).to eq(1)
-        expect(feature_flag.scopes.first.environment_scope).to eq('*')
-      end
-
-      it 'allows specifying the default scope in the parameters' do
-        feature_flag = described_class.create!({ name: 'test', project: project,
-                                                scopes_attributes: [{ environment_scope: '*', active: false },
-                                                                    { environment_scope: 'review/*', active: true }], version: 1 })
-
-        expect(feature_flag.scopes.count).to eq(2)
-        expect(feature_flag.scopes.first.environment_scope).to eq('*')
-      end
-    end
 
     context 'with a version 2 feature flag' do
       it 'does not create a default scope' do
@@ -180,30 +104,10 @@ RSpec.describe Operations::FeatureFlag do
       end
     end
 
-    context 'when the feature flag is active and all scopes are inactive' do
-      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: true) }
-
-      it 'returns the flag' do
-        feature_flag.default_scope.update!(active: false)
-
-        is_expected.to eq([feature_flag])
-      end
-    end
-
     context 'when the feature flag is inactive' do
       let!(:feature_flag) { create(:operations_feature_flag, active: false) }
 
       it 'does not return the flag' do
-        is_expected.to be_empty
-      end
-    end
-
-    context 'when the feature flag is inactive and all scopes are active' do
-      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: false) }
-
-      it 'does not return the flag' do
-        feature_flag.default_scope.update!(active: true)
-
         is_expected.to be_empty
       end
     end
@@ -220,30 +124,10 @@ RSpec.describe Operations::FeatureFlag do
       end
     end
 
-    context 'when the feature flag is active and all scopes are inactive' do
-      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: true) }
-
-      it 'does not return the flag' do
-        feature_flag.default_scope.update!(active: false)
-
-        is_expected.to be_empty
-      end
-    end
-
     context 'when the feature flag is inactive' do
       let!(:feature_flag) { create(:operations_feature_flag, active: false) }
 
       it 'returns the flag' do
-        is_expected.to eq([feature_flag])
-      end
-    end
-
-    context 'when the feature flag is inactive and all scopes are active' do
-      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: false) }
-
-      it 'returns the flag' do
-        feature_flag.default_scope.update!(active: true)
-
         is_expected.to eq([feature_flag])
       end
     end

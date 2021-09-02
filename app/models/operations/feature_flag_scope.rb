@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# All of the legacy flags have been removed in 14.1, including all of the
+# `operations_feature_flag_scopes` rows.  Therefore, this model and the database
+# table are unused and should be removed.
+
 module Operations
   class FeatureFlagScope < ApplicationRecord
     prepend HasEnvironmentScope

@@ -176,25 +176,6 @@ RSpec.describe API::Unleash do
 
       it_behaves_like 'authenticated request'
 
-      context 'with version 1 (legacy) feature flags' do
-        let(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project, name: 'feature1', active: true, version: 1) }
-
-        it 'does not return a legacy feature flag' do
-          create(:operations_feature_flag_scope,
-                 feature_flag: feature_flag,
-                 environment_scope: 'sandbox',
-                 active: true,
-                 strategies: [{ name: "gradualRolloutUserId",
-                                parameters: { groupId: "default", percentage: "50" } }])
-          headers = { "UNLEASH-INSTANCEID" => client.token, "UNLEASH-APPNAME" => "sandbox" }
-
-          get api(features_url), headers: headers
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features']).to be_empty
-        end
-      end
-
       context 'with version 2 feature flags' do
         it 'does not return a flag without any strategies' do
           create(:operations_feature_flag, project: project,

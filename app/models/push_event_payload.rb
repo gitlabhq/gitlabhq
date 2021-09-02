@@ -2,6 +2,9 @@
 
 class PushEventPayload < ApplicationRecord
   extend SuppressCompositePrimaryKeyWarning
+  include IgnorableColumns
+
+  ignore_columns :event_id_convert_to_bigint, remove_with: '14.4', remove_after: '2021-10-22'
 
   include ShaAttribute
 

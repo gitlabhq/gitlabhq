@@ -116,21 +116,6 @@ RSpec.describe API::FeatureFlags do
         }])
       end
     end
-
-    context 'with version 1 and 2 feature flags' do
-      it 'returns both versions of flags ordered by name' do
-        create(:operations_feature_flag, project: project, name: 'legacy_flag')
-        feature_flag = create(:operations_feature_flag, :new_version_flag, project: project, name: 'new_version_flag')
-        strategy = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
-        create(:operations_scope, strategy: strategy, environment_scope: 'production')
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/feature_flags')
-        expect(json_response.map { |f| f['name'] }).to eq(%w[legacy_flag new_version_flag])
-      end
-    end
   end
 
   describe 'GET /projects/:id/feature_flags/:name' do
@@ -185,22 +170,13 @@ RSpec.describe API::FeatureFlags do
   end
 
   describe 'POST /projects/:id/feature_flags' do
-    def scope_default
-      {
-        environment_scope: '*',
-        active: false,
-        strategies: [{ name: 'default', parameters: {} }].to_json
-      }
-    end
-
     subject do
       post api("/projects/#{project.id}/feature_flags", user), params: params
     end
 
     let(:params) do
       {
-        name: 'awesome-feature',
-        scopes: [scope_default]
+        name: 'awesome-feature'
       }
     end
 
@@ -215,14 +191,14 @@ RSpec.describe API::FeatureFlags do
       expect(feature_flag.description).to eq(params[:description])
     end
 
-    it 'defaults to a version 1 (legacy) feature flag' do
+    it 'defaults to a version 2 (new) feature flag' do
       subject
 
       expect(response).to have_gitlab_http_status(:created)
       expect(response).to match_response_schema('public_api/v4/feature_flag')
 
       feature_flag = project.operations_feature_flags.last
-      expect(feature_flag.version).to eq('legacy_flag')
+      expect(feature_flag.version).to eq('new_version_flag')
     end
 
     it_behaves_like 'check user permission'
@@ -232,38 +208,7 @@ RSpec.describe API::FeatureFlags do
 
       expect(response).to have_gitlab_http_status(:created)
       expect(response).to match_response_schema('public_api/v4/feature_flag')
-      expect(json_response['version']).to eq('legacy_flag')
-    end
-
-    context 'with active set to false in the params for a legacy flag' do
-      let(:params) do
-        {
-          name: 'awesome-feature',
-          version: 'legacy_flag',
-          active: 'false',
-          scopes: [scope_default]
-        }
-      end
-
-      it 'creates an inactive feature flag' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:created)
-        expect(response).to match_response_schema('public_api/v4/feature_flag')
-        expect(json_response['active']).to eq(false)
-      end
-    end
-
-    context 'when no scopes passed in parameters' do
-      let(:params) { { name: 'awesome-feature' } }
-
-      it 'creates a new feature flag with active default scope' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:created)
-        feature_flag = project.operations_feature_flags.last
-        expect(feature_flag.default_scope).to be_active
-      end
+      expect(json_response['version']).to eq('new_version_flag')
     end
 
     context 'when there is a feature flag with the same name already' do
@@ -275,43 +220,6 @@ RSpec.describe API::FeatureFlags do
         subject
 
         expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
-    context 'when create a feature flag with two scopes' do
-      let(:params) do
-        {
-          name: 'awesome-feature',
-          description: 'this is awesome',
-          scopes: [
-            scope_default,
-            scope_with_user_with_id
-          ]
-        }
-      end
-
-      let(:scope_with_user_with_id) do
-        {
-          environment_scope: 'production',
-          active: true,
-          strategies: [{
-            name: 'userWithId',
-            parameters: { userIds: 'user:1' }
-          }].to_json
-        }
-      end
-
-      it 'creates a new feature flag with two scopes' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:created)
-
-        feature_flag = project.operations_feature_flags.last
-        feature_flag.scopes.ordered.each_with_index do |scope, index|
-          expect(scope.environment_scope).to eq(params[:scopes][index][:environment_scope])
-          expect(scope.active).to eq(params[:scopes][index][:active])
-          expect(scope.strategies).to eq(Gitlab::Json.parse(params[:scopes][index][:strategies]))
-        end
       end
     end
 
@@ -455,23 +363,6 @@ RSpec.describe API::FeatureFlags do
   end
 
   describe 'PUT /projects/:id/feature_flags/:name' do
-    context 'with a legacy feature flag' do
-      let!(:feature_flag) do
-        create(:operations_feature_flag, :legacy_flag, project: project,
-               name: 'feature1', description: 'old description')
-      end
-
-      it 'returns a 404' do
-        params = { description: 'new description' }
-
-        put api("/projects/#{project.id}/feature_flags/feature1", user), params: params
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response).to eq({ 'message' => '404 Not Found' })
-        expect(feature_flag.reload.description).to eq('old description')
-      end
-    end
-
     context 'with a version 2 feature flag' do
       let!(:feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project, active: true,
@@ -781,7 +672,7 @@ RSpec.describe API::FeatureFlags do
              params: params
     end
 
-    let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project) }
+    let!(:feature_flag) { create(:operations_feature_flag, project: project) }
     let(:params) { {} }
 
     it 'destroys the feature flag' do
@@ -794,7 +685,7 @@ RSpec.describe API::FeatureFlags do
       subject
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['version']).to eq('legacy_flag')
+      expect(json_response['version']).to eq('new_version_flag')
     end
 
     context 'with a version 2 feature flag' do

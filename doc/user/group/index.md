@@ -267,7 +267,7 @@ These Group Activity Analytics can be enabled with the `group_activity_analytics
 
 ### View group activity
 
-You can view the most recent actions taken in a group.
+You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
 1. On the top bar, select **Menu > Groups**.
 1. Select **Your Groups**.

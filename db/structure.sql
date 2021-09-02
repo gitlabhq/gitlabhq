@@ -52,15 +52,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION trigger_07c94931164e() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."event_id_convert_to_bigint" := NEW."event_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_21e7a2602957() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -26219,8 +26210,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
 
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
-
-CREATE TRIGGER trigger_07c94931164e BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE FUNCTION trigger_07c94931164e();
 
 CREATE TRIGGER trigger_21e7a2602957 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_21e7a2602957();
 

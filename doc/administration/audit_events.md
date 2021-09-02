@@ -126,6 +126,7 @@ From there, you can see the following actions:
 - User password required for approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
 - Permission to modify merge requests approval rules in merge requests was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
 - New approvals requirement when new commits are added to an MR was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
+- When [strategies for feature flags](../operations/feature_flags.md#feature-flag-strategies) are changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68408) in GitLab 14.3)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

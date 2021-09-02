@@ -1349,7 +1349,9 @@ class MergeRequest < ApplicationRecord
   def has_ci?
     return false if has_no_commits?
 
-    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+      !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
+    end
   end
 
   def branch_missing?
@@ -1836,7 +1838,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def find_actual_head_pipeline
-    all_pipelines.for_sha_or_source_sha(diff_head_sha).first
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+      all_pipelines.for_sha_or_source_sha(diff_head_sha).first
+    end
   end
 
   def etag_caching_enabled?
