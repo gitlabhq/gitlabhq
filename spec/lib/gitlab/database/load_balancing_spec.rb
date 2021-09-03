@@ -306,10 +306,10 @@ RSpec.describe Gitlab::Database::LoadBalancing do
         .and_return(true)
 
       instance = double(:instance)
-      lb = instance_spy(Gitlab::Database::LoadBalancing::LoadBalancer)
-      proxy = double(:proxy, load_balancer: lb)
+      lb = Gitlab::Database::LoadBalancing::LoadBalancer.new([])
+      proxy = Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
 
-      allow(Gitlab::Database::LoadBalancing)
+      allow(described_class)
         .to receive(:proxy)
         .and_return(proxy)
 
@@ -345,7 +345,8 @@ RSpec.describe Gitlab::Database::LoadBalancing do
 
     context 'when the load balancing is configured' do
       let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
-      let(:proxy) { described_class::ConnectionProxy.new([db_host]) }
+      let(:load_balancer) { described_class::LoadBalancer.new([db_host]) }
+      let(:proxy) { described_class::ConnectionProxy.new(load_balancer) }
 
       context 'when a proxy connection is used' do
         it 'returns :unknown' do
@@ -784,6 +785,16 @@ RSpec.describe Gitlab::Database::LoadBalancing do
       with_them do
         it 'redirects queries to the right roles' do
           roles = []
+
+          # If we don't run any queries, the pool may be a NullPool. This can
+          # result in some tests reporting a role as `:unknown`, even though the
+          # tests themselves are correct.
+          #
+          # To prevent this from happening we simply run a simple query to
+          # ensure the proper pool type is put in place. The exact query doesn't
+          # matter, provided it actually runs a query and thus creates a proper
+          # connection pool.
+          model.count
 
           subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |event|
             role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(event.payload[:connection])

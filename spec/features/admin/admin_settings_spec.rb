@@ -557,6 +557,20 @@ RSpec.describe 'Admin updates settings' do
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.issues_create_limit).to eq(0)
       end
+
+      it 'changes Files API rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('[data-testid="files-limits-settings"]') do
+          check 'Enable unauthenticated API request rate limit'
+          fill_in 'Max unauthenticated API requests per period per IP', with: 10
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.throttle_unauthenticated_files_api_enabled).to be true
+        expect(current_settings.throttle_unauthenticated_files_api_requests_per_period).to eq(10)
+      end
     end
 
     context 'Preferences page' do

@@ -12,16 +12,29 @@ module RuboCop
 
         MSG = "Adding new index to #{FORBIDDEN_TABLES.join(", ")} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886"
 
+        def on_new_investigation
+          super
+          @forbidden_tables_used = false
+        end
+
         def_node_matcher :add_index?, <<~PATTERN
-          (send nil? :add_index (sym #forbidden_tables?) ...)
+          (send nil? :add_index ({sym|str} #forbidden_tables?) ...)
         PATTERN
 
         def_node_matcher :add_concurrent_index?, <<~PATTERN
-          (send nil? :add_concurrent_index (sym #forbidden_tables?) ...)
+          (send nil? :add_concurrent_index ({sym|str} #forbidden_tables?) ...)
         PATTERN
 
-        def forbidden_tables?(node)
-          FORBIDDEN_TABLES.include?(node)
+        def_node_matcher :forbidden_constant_defined?, <<~PATTERN
+          (casgn nil? _ ({sym|str} #forbidden_tables?))
+        PATTERN
+
+        def_node_matcher :add_concurrent_index_with_constant?, <<~PATTERN
+          (send nil? :add_concurrent_index (const nil? _) ...)
+        PATTERN
+
+        def on_casgn(node)
+          @forbidden_tables_used = !!forbidden_constant_defined?(node)
         end
 
         def on_def(node)
@@ -32,8 +45,18 @@ module RuboCop
           end
         end
 
+        private
+
+        def forbidden_tables?(node)
+          FORBIDDEN_TABLES.include?(node.to_sym)
+        end
+
         def offense?(node)
-          add_index?(node) || add_concurrent_index?(node)
+          add_index?(node) || add_concurrent_index?(node) || any_constant_used_with_forbidden_tables?(node)
+        end
+
+        def any_constant_used_with_forbidden_tables?(node)
+          add_concurrent_index_with_constant?(node) && @forbidden_tables_used
         end
       end
     end

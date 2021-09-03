@@ -4,7 +4,9 @@ RSpec.configure do |config|
   config.before(:each, :db_load_balancing) do
     allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
 
-    proxy = ::Gitlab::Database::LoadBalancing::ConnectionProxy.new([Gitlab::Database.main.config['host']])
+    lb = ::Gitlab::Database::LoadBalancing::LoadBalancer
+      .new([Gitlab::Database.main.config['host']])
+    proxy = ::Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
 
     allow(ActiveRecord::Base).to receive(:load_balancing_proxy).and_return(proxy)
 

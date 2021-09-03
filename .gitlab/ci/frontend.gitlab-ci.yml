@@ -184,41 +184,6 @@ eslint-as-if-foss:
     - *yarn-install
     - run_timed_command "yarn run lint:eslint:all"
 
-.karma-base:
-  extends: .frontend-test-base
-  script:
-    - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
-    - *yarn-install
-    - run_timed_command "yarn karma"
-
-karma:
-  extends:
-    - .karma-base
-    - .frontend:rules:default-frontend-jobs
-  needs:
-    - job: "rspec frontend_fixture"
-    - job: "rspec-ee frontend_fixture"
-      optional: true
-  coverage: '/^Statements *: (\d+\.\d+%)/'
-  artifacts:
-    name: coverage-javascript
-    expire_in: 31d
-    when: always
-    paths:
-      - chrome_debug.log
-      - coverage-javascript/
-      - tmp/tests/frontend/
-    reports:
-      junit: junit_karma.xml
-      cobertura: coverage-javascript/cobertura-coverage.xml
-
-karma-as-if-foss:
-  extends:
-    - .karma-base
-    - .frontend:rules:default-frontend-jobs-as-if-foss
-    - .as-if-foss
-  needs: ["rspec frontend_fixture as-if-foss"]
-
 .jest-base:
   extends: .frontend-test-base
   script:

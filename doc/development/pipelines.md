@@ -155,10 +155,8 @@ graph RL;
   3_1-1["jest (16 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  3_1-2["karma (2 minutes)"];
-  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
   subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
-    3_1-1 & 3_1-2 --> 2_2-2;
+    3_1-1 --> 2_2-2;
   end
 
   3_2-1["rspec:coverage (5.3 minutes)"];
@@ -268,10 +266,8 @@ graph RL;
   3_1-1["jest (16 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  3_1-2["karma (2 minutes)"];
-  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
   subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
-    3_1-1 & 3_1-2 --> 2_2-2;
+    3_1-1 --> 2_2-2;
   end
 
   3_2-1["rspec:coverage (5.3 minutes)"];
@@ -627,7 +623,6 @@ that is deployed in stage `review`.
   the `qa` stage's jobs (for example, Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as
   GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
-  [`coverage-javascript`](https://gitlab-org.gitlab.io/gitlab/coverage-javascript/),
   and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
   [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
 - `notify`: This stage includes jobs that notify various failures to Slack.

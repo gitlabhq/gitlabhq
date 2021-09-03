@@ -2,7 +2,6 @@
 /builds/
 /coverage/
 /coverage-frontend/
-/coverage-javascript/
 /node_modules/
 /public/
 /tmp/

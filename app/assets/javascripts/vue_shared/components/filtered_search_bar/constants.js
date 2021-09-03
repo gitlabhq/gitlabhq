@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { __ } from '~/locale';
 
 export const DEBOUNCE_DELAY = 200;
@@ -21,28 +20,24 @@ export const OPERATOR_IS_ONLY = [{ value: OPERATOR_IS, description: OPERATOR_IS_
 export const OPERATOR_IS_NOT_ONLY = [{ value: OPERATOR_IS_NOT, description: OPERATOR_IS_NOT_TEXT }];
 export const OPERATOR_IS_AND_IS_NOT = [...OPERATOR_IS_ONLY, ...OPERATOR_IS_NOT_ONLY];
 
-export const DEFAULT_LABEL_NONE = {
-  value: FILTER_NONE,
-  text: __(FILTER_NONE),
-  title: __(FILTER_NONE),
-};
-export const DEFAULT_LABEL_ANY = { value: FILTER_ANY, text: __(FILTER_ANY), title: __(FILTER_ANY) };
+export const DEFAULT_LABEL_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
+export const DEFAULT_LABEL_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
 export const DEFAULT_NONE_ANY = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
 
 export const DEFAULT_ITERATIONS = DEFAULT_NONE_ANY.concat([
-  { value: FILTER_CURRENT, text: __(FILTER_CURRENT) },
+  { value: FILTER_CURRENT, text: __('Current') },
 ]);
 
 export const DEFAULT_MILESTONES = DEFAULT_NONE_ANY.concat([
-  { value: FILTER_UPCOMING, text: __(FILTER_UPCOMING), title: __(FILTER_UPCOMING) },
-  { value: FILTER_STARTED, text: __(FILTER_STARTED), title: __(FILTER_STARTED) },
+  { value: FILTER_UPCOMING, text: __('Upcoming'), title: __('Upcoming') },
+  { value: FILTER_STARTED, text: __('Started'), title: __('Started') },
 ]);
 
 export const DEFAULT_MILESTONES_GRAPHQL = [
-  { value: 'any', text: __(FILTER_ANY), title: __(FILTER_ANY) },
-  { value: 'none', text: __(FILTER_NONE), title: __(FILTER_NONE) },
-  { value: '#upcoming', text: __(FILTER_UPCOMING), title: __(FILTER_UPCOMING) },
-  { value: '#started', text: __(FILTER_STARTED), title: __(FILTER_STARTED) },
+  { value: 'any', text: __('Any'), title: __('Any') },
+  { value: 'none', text: __('None'), title: __('None') },
+  { value: '#upcoming', text: __('Upcoming'), title: __('Upcoming') },
+  { value: '#started', text: __('Started'), title: __('Started') },
 ];
 
 export const SortDirection = {

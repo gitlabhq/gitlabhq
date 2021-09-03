@@ -41,7 +41,10 @@ module Gitlab
           instrumentation_class.add_call_details(duration, args)
         end
 
-        if duration > DURATION_ERROR_THRESHOLD && Feature.enabled?(:report_on_long_redis_durations, default_enabled: :yaml)
+        if duration > DURATION_ERROR_THRESHOLD &&
+           instrumentation_class == ::Gitlab::Instrumentation::Redis::SharedState &&
+           Feature.enabled?(:report_on_long_redis_durations, default_enabled: :yaml)
+
           Gitlab::ErrorTracking.track_exception(MysteryRedisDurationError.new(caller),
                                                 command: command_from_args(args),
                                                 duration: duration,

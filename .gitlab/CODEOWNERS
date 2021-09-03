@@ -152,8 +152,6 @@
 *.js @gitlab-org/maintainers/frontend
 /app/assets/ @gitlab-org/maintainers/frontend
 /ee/app/assets/ @gitlab-org/maintainers/frontend
-/spec/javascripts/ @gitlab-org/maintainers/frontend
-/ee/spec/javascripts/ @gitlab-org/maintainers/frontend
 /spec/frontend/ @gitlab-org/maintainers/frontend
 /ee/spec/frontend/ @gitlab-org/maintainers/frontend
 /spec/frontend_integration/ @gitlab-org/maintainers/frontend

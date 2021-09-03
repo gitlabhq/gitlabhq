@@ -34,6 +34,17 @@
       = _('Configure specific limits for Packages API requests that supersede the general user and IP rate limits.')
   .settings-content
     = render 'package_registry_limits'
+- if Feature.enabled?(:files_api_throttling, default_enabled: :yaml)
+  %section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'files-limits-settings' } }
+    .settings-header
+      %h4
+        = _('Files API Rate Limits')
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded_by_default? ? _('Collapse') : _('Expand')
+      %p
+        = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
+    .settings-content
+      = render 'files_limits'
 
 %section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'git_lfs_limits_content' } }
   .settings-header

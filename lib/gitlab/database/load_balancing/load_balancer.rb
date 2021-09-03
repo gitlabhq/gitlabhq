@@ -15,9 +15,18 @@ module Gitlab
         attr_reader :host_list
 
         # hosts - The hostnames/addresses of the additional databases.
-        def initialize(hosts = [], model = ActiveRecord::Base)
+        # model - The ActiveRecord base model the load balancer is enabled for.
+        # primary_only - If set, the replicas are ignored and the primary is
+        #                always used.
+        def initialize(hosts = [], model = ActiveRecord::Base, primary_only: false)
+          @primary_only = primary_only
           @model = model
-          @host_list = HostList.new(hosts.map { |addr| Host.new(addr, self) })
+          @host_list =
+            if primary_only
+              HostList.new([PrimaryHost.new(self)])
+            else
+              HostList.new(hosts.map { |addr| Host.new(addr, self) })
+            end
         end
 
         def disconnect!(timeout: 120)
@@ -217,8 +226,6 @@ module Gitlab
             .establish_connection(replica_db_config)
         end
 
-        private
-
         # ActiveRecord::ConnectionAdapters::ConnectionHandler handles fetching,
         # and caching for connections pools for each "connection", so we
         # leverage that.
@@ -230,13 +237,15 @@ module Gitlab
           )
         end
 
+        private
+
         def ensure_caching!
           host.enable_query_cache! unless host.query_cache_enabled
         end
 
         def request_cache
           base = RequestStore[:gitlab_load_balancer] ||= {}
-          base[pool] ||= {}
+          base[self] ||= {}
         end
       end
     end

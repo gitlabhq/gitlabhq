@@ -50,7 +50,6 @@ eslint-report.html
 /config/sidekiq.yml
 /config/registry.key
 /coverage/*
-/coverage-javascript/
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /db/data.yml

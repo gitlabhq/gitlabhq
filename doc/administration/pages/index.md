@@ -298,7 +298,8 @@ control over how the Pages daemon runs and serves content in your environment.
 | `pages_path`                            | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`. |
 | **`pages_nginx[]`**                     |  |
 | `enable`                                | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains). |
-| `FF_ENABLE_REDIRECTS`                   | Feature flag to disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#disable-redirects) for more information. |
+| `FF_ENABLE_REDIRECTS`                   | Feature flag to enable/disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-redirects) for more information. |
+| `FF_ENABLE_PLACEHOLDERS`                | Feature flag to enable/disable rewrites (disabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-rewrites) for more information.  |
 | `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Will be removed in GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
 
 ---

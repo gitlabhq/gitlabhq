@@ -31,7 +31,7 @@ if (BABEL_ENV === 'coverage') {
   plugins.push([
     'babel-plugin-istanbul',
     {
-      exclude: ['spec/javascripts/**/*', 'app/assets/javascripts/locale/**/app.js'],
+      exclude: ['app/assets/javascripts/locale/**/app.js'],
     },
   ]);
 }

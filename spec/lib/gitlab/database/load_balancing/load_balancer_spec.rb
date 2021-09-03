@@ -41,6 +41,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     top_error
   end
 
+  describe '#initialize' do
+    it 'ignores the hosts when the primary_only option is enabled' do
+      lb = described_class.new([db_host], primary_only: true)
+      hosts = lb.host_list.hosts
+
+      expect(hosts.length).to eq(1)
+      expect(hosts.first)
+        .to be_instance_of(Gitlab::Database::LoadBalancing::PrimaryHost)
+    end
+  end
+
   describe '#read' do
     it 'yields a connection for a read' do
       connection = double(:connection)
@@ -117,6 +128,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       expect(lb.host_list.hosts).to all(receive(:online?).and_return(false))
 
       expect(lb).to receive(:read_write).and_call_original
+
+      expect { |b| lb.read(&b) }
+        .to yield_with_args(ActiveRecord::Base.retrieve_connection)
+    end
+
+    it 'uses the primary when the primary_only option is enabled' do
+      lb = described_class.new(primary_only: true)
+
+      # When no hosts are configured, we don't want to produce any warnings, as
+      # they aren't useful/too noisy.
+      expect(Gitlab::Database::LoadBalancing::Logger).not_to receive(:warn)
 
       expect { |b| lb.read(&b) }
         .to yield_with_args(ActiveRecord::Base.retrieve_connection)

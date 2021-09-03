@@ -128,7 +128,6 @@ In order to run the test you can use the following commands:
 - `bin/rake spec:unit` to run only the unit tests
 - `bin/rake spec:integration` to run only the integration tests
 - `bin/rake spec:system` to run only the system tests
-- `bin/rake karma` to run the Karma test suite
 
 `bin/rake spec` takes significant time to pass.
 Instead of running the full test suite locally, you can save a lot of time by running

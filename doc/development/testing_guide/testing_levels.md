@@ -31,7 +31,7 @@ records should use stubs/doubles as much as possible.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
-| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | More details in the [Frontend Testing guide](frontend_testing.md) section. |
+| `app/assets/javascripts/` | `spec/frontend/` | Jest | More details in the [Frontend Testing guide](frontend_testing.md) section. |
 | `app/finders/` | `spec/finders/` | RSpec | |
 | `app/graphql/` | `spec/graphql/` | RSpec | |
 | `app/helpers/` | `spec/helpers/` | RSpec | |
@@ -233,7 +233,7 @@ They're useful to test permissions, redirections, what view is rendered etc.
 | `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. |
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | [More details below](#frontend-integration-tests) |
+| `app/assets/javascripts/` | `spec/frontend/` | Jest | [More details below](#frontend-integration-tests) |
 
 ### Frontend integration tests
 
@@ -321,13 +321,6 @@ controller.instance_variable_set(:@user, user)
 ```
 
 and use methods [deprecated in Rails 5](https://gitlab.com/gitlab-org/gitlab/-/issues/16260).
-
-### About Karma
-
-Karma is both in the Unit tests and the Integration tests category. Karma provides an environment to
-run JavaScript tests, so you can either run unit tests (e.g. test a single
-JavaScript method), or integration tests (e.g. test a component that is composed
-of multiple components).
 
 ## White-box tests at the system level (formerly known as System / Feature tests)
 

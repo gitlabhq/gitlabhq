@@ -8505,6 +8505,9 @@ msgstr ""
 msgid "Configure settings for Advanced Search with Elasticsearch."
 msgstr ""
 
+msgid "Configure specific limits for Files API requests that supersede the general user and IP rate limits."
+msgstr ""
+
 msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -14303,6 +14306,9 @@ msgid "Filename"
 msgstr ""
 
 msgid "Files"
+msgstr ""
+
+msgid "Files API Rate Limits"
 msgstr ""
 
 msgid "Files breadcrumb"

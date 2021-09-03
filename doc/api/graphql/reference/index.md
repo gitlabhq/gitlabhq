@@ -1221,7 +1221,7 @@ Input type: `CreateEpicInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateepicepic"></a>`epic` | [`Epic`](#epic) | The created epic. |
+| <a id="mutationcreateepicepic"></a>`epic` | [`Epic`](#epic) | Created epic. |
 | <a id="mutationcreateepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createImageDiffNote`
@@ -1262,7 +1262,7 @@ Input type: `CreateIssueInput`
 | <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`. |
 | <a id="mutationcreateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
 | <a id="mutationcreateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of an epic to associate the issue with. |
-| <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
+| <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Desired health status. |
 | <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | IID (internal ID) of a project issue. Only admins and project owners can modify. |
 | <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the issue. |
 | <a id="mutationcreateissuelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
@@ -1272,7 +1272,7 @@ Input type: `CreateIssueInput`
 | <a id="mutationcreateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the issue is associated with. |
 | <a id="mutationcreateissuetitle"></a>`title` | [`String!`](#string) | Title of the issue. |
 | <a id="mutationcreateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
-| <a id="mutationcreateissueweight"></a>`weight` | [`Int`](#int) | The weight of the issue. |
+| <a id="mutationcreateissueweight"></a>`weight` | [`Int`](#int) | Weight of the issue. |
 
 #### Fields
 
@@ -1295,13 +1295,13 @@ Input type: `CreateIterationInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreateiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateiterationdescription"></a>`description` | [`String`](#string) | The description of the iteration. |
-| <a id="mutationcreateiterationduedate"></a>`dueDate` | [`String`](#string) | The end date of the iteration. |
+| <a id="mutationcreateiterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
+| <a id="mutationcreateiterationduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationcreateiterationgrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
 | <a id="mutationcreateiterationiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iterations cadence to be assigned to newly created iteration. |
 | <a id="mutationcreateiterationprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
-| <a id="mutationcreateiterationstartdate"></a>`startDate` | [`String`](#string) | The start date of the iteration. |
-| <a id="mutationcreateiterationtitle"></a>`title` | [`String`](#string) | The title of the iteration. |
+| <a id="mutationcreateiterationstartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
+| <a id="mutationcreateiterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. |
 
 #### Fields
 
@@ -1309,7 +1309,7 @@ Input type: `CreateIterationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateiterationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreateiterationiteration"></a>`iteration` | [`Iteration`](#iteration) | The created iteration. |
+| <a id="mutationcreateiterationiteration"></a>`iteration` | [`Iteration`](#iteration) | Created iteration. |
 
 ### `Mutation.createNote`
 
@@ -1393,10 +1393,10 @@ Input type: `CreateTestCaseInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatetestcaseclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatetestcasedescription"></a>`description` | [`String`](#string) | The test case description. |
-| <a id="mutationcreatetestcaselabelids"></a>`labelIds` | [`[ID!]`](#id) | The IDs of labels to be added to the test case. |
-| <a id="mutationcreatetestcaseprojectpath"></a>`projectPath` | [`ID!`](#id) | The project full path to create the test case. |
-| <a id="mutationcreatetestcasetitle"></a>`title` | [`String!`](#string) | The test case title. |
+| <a id="mutationcreatetestcasedescription"></a>`description` | [`String`](#string) | Test case description. |
+| <a id="mutationcreatetestcaselabelids"></a>`labelIds` | [`[ID!]`](#id) | IDs of labels to be added to the test case. |
+| <a id="mutationcreatetestcaseprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path to create the test case in. |
+| <a id="mutationcreatetestcasetitle"></a>`title` | [`String!`](#string) | Test case title. |
 
 #### Fields
 
@@ -1404,7 +1404,7 @@ Input type: `CreateTestCaseInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatetestcaseclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatetestcaseerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatetestcasetestcase"></a>`testCase` | [`Issue`](#issue) | The test case created. |
+| <a id="mutationcreatetestcasetestcase"></a>`testCase` | [`Issue`](#issue) | Test case created. |
 
 ### `Mutation.dastOnDemandScanCreate`
 
@@ -2109,18 +2109,18 @@ Input type: `EpicAddIssueInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicaddissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicaddissuegrouppath"></a>`groupPath` | [`ID!`](#id) | The group the epic to mutate belongs to. |
-| <a id="mutationepicaddissueiid"></a>`iid` | [`ID!`](#id) | The IID of the epic to mutate. |
-| <a id="mutationepicaddissueissueiid"></a>`issueIid` | [`String!`](#string) | The IID of the issue to be added. |
-| <a id="mutationepicaddissueprojectpath"></a>`projectPath` | [`ID!`](#id) | The full path of the project the issue belongs to. |
+| <a id="mutationepicaddissuegrouppath"></a>`groupPath` | [`ID!`](#id) | Group the epic to mutate belongs to. |
+| <a id="mutationepicaddissueiid"></a>`iid` | [`ID!`](#id) | IID of the epic to mutate. |
+| <a id="mutationepicaddissueissueiid"></a>`issueIid` | [`String!`](#string) | IID of the issue to be added. |
+| <a id="mutationepicaddissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the issue belongs to. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicaddissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicaddissueepic"></a>`epic` | [`Epic`](#epic) | The epic after mutation. |
-| <a id="mutationepicaddissueepicissue"></a>`epicIssue` | [`EpicIssue`](#epicissue) | The epic-issue relation. |
+| <a id="mutationepicaddissueepic"></a>`epic` | [`Epic`](#epic) | Epic after mutation. |
+| <a id="mutationepicaddissueepicissue"></a>`epicIssue` | [`EpicIssue`](#epicissue) | Epic-issue relationship. |
 | <a id="mutationepicaddissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.epicBoardCreate`
@@ -2246,16 +2246,16 @@ Input type: `EpicSetSubscriptionInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicsetsubscriptiongrouppath"></a>`groupPath` | [`ID!`](#id) | The group the epic to mutate belongs to. |
-| <a id="mutationepicsetsubscriptioniid"></a>`iid` | [`ID!`](#id) | The IID of the epic to mutate. |
-| <a id="mutationepicsetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | The desired state of the subscription. |
+| <a id="mutationepicsetsubscriptiongrouppath"></a>`groupPath` | [`ID!`](#id) | Group the epic to mutate belongs to. |
+| <a id="mutationepicsetsubscriptioniid"></a>`iid` | [`ID!`](#id) | IID of the epic to mutate. |
+| <a id="mutationepicsetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | Desired state of the subscription. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationepicsetsubscriptionepic"></a>`epic` | [`Epic`](#epic) | The epic after mutation. |
+| <a id="mutationepicsetsubscriptionepic"></a>`epic` | [`Epic`](#epic) | Epic after mutation. |
 | <a id="mutationepicsetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.epicTreeReorder`
@@ -2266,7 +2266,7 @@ Input type: `EpicTreeReorderInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationepictreereorderbaseepicid"></a>`baseEpicId` | [`EpicID!`](#epicid) | The ID of the base epic of the tree. |
+| <a id="mutationepictreereorderbaseepicid"></a>`baseEpicId` | [`EpicID!`](#epicid) | ID of the base epic of the tree. |
 | <a id="mutationepictreereorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationepictreereordermoved"></a>`moved` | [`EpicTreeNodeFieldsInputType!`](#epictreenodefieldsinputtype) | Parameters for updating the tree positions. |
 
@@ -2286,10 +2286,10 @@ Input type: `EscalationPolicyCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationescalationpolicycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationescalationpolicycreatedescription"></a>`description` | [`String`](#string) | The description of the escalation policy. |
-| <a id="mutationescalationpolicycreatename"></a>`name` | [`String!`](#string) | The name of the escalation policy. |
-| <a id="mutationescalationpolicycreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to create the escalation policy for. |
-| <a id="mutationescalationpolicycreaterules"></a>`rules` | [`[EscalationRuleInput!]!`](#escalationruleinput) | The steps of the escalation policy. |
+| <a id="mutationescalationpolicycreatedescription"></a>`description` | [`String`](#string) | Description of the escalation policy. |
+| <a id="mutationescalationpolicycreatename"></a>`name` | [`String!`](#string) | Name of the escalation policy. |
+| <a id="mutationescalationpolicycreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the escalation policy for. |
+| <a id="mutationescalationpolicycreaterules"></a>`rules` | [`[EscalationRuleInput!]!`](#escalationruleinput) | Steps of the escalation policy. |
 
 #### Fields
 
@@ -2297,7 +2297,7 @@ Input type: `EscalationPolicyCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationescalationpolicycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationescalationpolicycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationescalationpolicycreateescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | The escalation policy. |
+| <a id="mutationescalationpolicycreateescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy. |
 
 ### `Mutation.escalationPolicyDestroy`
 
@@ -2308,7 +2308,7 @@ Input type: `EscalationPolicyDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationescalationpolicydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationescalationpolicydestroyid"></a>`id` | [`IncidentManagementEscalationPolicyID!`](#incidentmanagementescalationpolicyid) | The escalation policy internal ID to remove. |
+| <a id="mutationescalationpolicydestroyid"></a>`id` | [`IncidentManagementEscalationPolicyID!`](#incidentmanagementescalationpolicyid) | Escalation policy internal ID to remove. |
 
 #### Fields
 
@@ -2316,7 +2316,7 @@ Input type: `EscalationPolicyDestroyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationescalationpolicydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationescalationpolicydestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationescalationpolicydestroyescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | The escalation policy. |
+| <a id="mutationescalationpolicydestroyescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy. |
 
 ### `Mutation.escalationPolicyUpdate`
 
@@ -2327,10 +2327,10 @@ Input type: `EscalationPolicyUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationescalationpolicyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationescalationpolicyupdatedescription"></a>`description` | [`String`](#string) | The description of the escalation policy. |
-| <a id="mutationescalationpolicyupdateid"></a>`id` | [`IncidentManagementEscalationPolicyID!`](#incidentmanagementescalationpolicyid) | The ID of the on-call schedule to create the on-call rotation in. |
-| <a id="mutationescalationpolicyupdatename"></a>`name` | [`String`](#string) | The name of the escalation policy. |
-| <a id="mutationescalationpolicyupdaterules"></a>`rules` | [`[EscalationRuleInput!]`](#escalationruleinput) | The steps of the escalation policy. |
+| <a id="mutationescalationpolicyupdatedescription"></a>`description` | [`String`](#string) | Description of the escalation policy. |
+| <a id="mutationescalationpolicyupdateid"></a>`id` | [`IncidentManagementEscalationPolicyID!`](#incidentmanagementescalationpolicyid) | ID of the on-call schedule to create the on-call rotation in. |
+| <a id="mutationescalationpolicyupdatename"></a>`name` | [`String`](#string) | Name of the escalation policy. |
+| <a id="mutationescalationpolicyupdaterules"></a>`rules` | [`[EscalationRuleInput!]`](#escalationruleinput) | Steps of the escalation policy. |
 
 #### Fields
 
@@ -2338,7 +2338,7 @@ Input type: `EscalationPolicyUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationescalationpolicyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationescalationpolicyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationescalationpolicyupdateescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | The escalation policy. |
+| <a id="mutationescalationpolicyupdateescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy. |
 
 ### `Mutation.exportRequirements`
 
@@ -2380,7 +2380,7 @@ Input type: `GitlabSubscriptionActivateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationgitlabsubscriptionactivateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgitlabsubscriptionactivateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationgitlabsubscriptionactivatelicense"></a>`license` | [`CurrentLicense`](#currentlicense) | The current license. |
+| <a id="mutationgitlabsubscriptionactivatelicense"></a>`license` | [`CurrentLicense`](#currentlicense) | Current license. |
 
 ### `Mutation.groupUpdate`
 
@@ -2628,7 +2628,7 @@ Input type: `IssueSetIterationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetiterationiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
-| <a id="mutationissuesetiterationiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | The iteration to assign to the issue. |
+| <a id="mutationissuesetiterationiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Iteration to assign to the issue. |
 | <a id="mutationissuesetiterationprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
@@ -2736,7 +2736,7 @@ Input type: `IterationCadenceCreateInput`
 | <a id="mutationiterationcadencecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationiterationcadencecreatedescription"></a>`description` | [`String`](#string) | Description of the iteration cadence. Maximum length is 5000 characters. |
 | <a id="mutationiterationcadencecreatedurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within this cadence. |
-| <a id="mutationiterationcadencecreategrouppath"></a>`groupPath` | [`ID!`](#id) | The group where the iteration cadence is created. |
+| <a id="mutationiterationcadencecreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group where the iteration cadence is created. |
 | <a id="mutationiterationcadencecreateiterationsinadvance"></a>`iterationsInAdvance` | [`Int`](#int) | Future iterations to be created when iteration cadence is set to automatic. |
 | <a id="mutationiterationcadencecreaterollover"></a>`rollOver` | [`Boolean`](#boolean) | Whether the iteration cadence should roll over issues to the next iteration or not. |
 | <a id="mutationiterationcadencecreatestartdate"></a>`startDate` | [`Time`](#time) | Timestamp of the iteration cadence start date. |
@@ -2748,7 +2748,7 @@ Input type: `IterationCadenceCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationiterationcadencecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationiterationcadencecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationiterationcadencecreateiterationcadence"></a>`iterationCadence` | [`IterationCadence`](#iterationcadence) | The created iteration cadence. |
+| <a id="mutationiterationcadencecreateiterationcadence"></a>`iterationCadence` | [`IterationCadence`](#iterationcadence) | Created iteration cadence. |
 
 ### `Mutation.iterationCadenceDestroy`
 
@@ -2794,7 +2794,7 @@ Input type: `IterationCadenceUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationiterationcadenceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationiterationcadenceupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationiterationcadenceupdateiterationcadence"></a>`iterationCadence` | [`IterationCadence`](#iterationcadence) | The updated iteration cadence. |
+| <a id="mutationiterationcadenceupdateiterationcadence"></a>`iterationCadence` | [`IterationCadence`](#iterationcadence) | Updated iteration cadence. |
 
 ### `Mutation.iterationCreate`
 
@@ -2805,13 +2805,13 @@ Input type: `iterationCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationiterationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationiterationcreatedescription"></a>`description` | [`String`](#string) | The description of the iteration. |
-| <a id="mutationiterationcreateduedate"></a>`dueDate` | [`String`](#string) | The end date of the iteration. |
+| <a id="mutationiterationcreatedescription"></a>`description` | [`String`](#string) | Description of the iteration. |
+| <a id="mutationiterationcreateduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationiterationcreategrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
 | <a id="mutationiterationcreateiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iterations cadence to be assigned to newly created iteration. |
 | <a id="mutationiterationcreateprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
-| <a id="mutationiterationcreatestartdate"></a>`startDate` | [`String`](#string) | The start date of the iteration. |
-| <a id="mutationiterationcreatetitle"></a>`title` | [`String`](#string) | The title of the iteration. |
+| <a id="mutationiterationcreatestartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
+| <a id="mutationiterationcreatetitle"></a>`title` | [`String`](#string) | Title of the iteration. |
 
 #### Fields
 
@@ -2819,7 +2819,7 @@ Input type: `iterationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationiterationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationiterationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationiterationcreateiteration"></a>`iteration` | [`Iteration`](#iteration) | The created iteration. |
+| <a id="mutationiterationcreateiteration"></a>`iteration` | [`Iteration`](#iteration) | Created iteration. |
 
 ### `Mutation.iterationDelete`
 
@@ -3263,7 +3263,7 @@ Input type: `NamespaceIncreaseStorageTemporarilyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationnamespaceincreasestoragetemporarilyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationnamespaceincreasestoragetemporarilyid"></a>`id` | [`NamespaceID!`](#namespaceid) | The global ID of the namespace to mutate. |
+| <a id="mutationnamespaceincreasestoragetemporarilyid"></a>`id` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace to mutate. |
 
 #### Fields
 
@@ -3271,7 +3271,7 @@ Input type: `NamespaceIncreaseStorageTemporarilyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationnamespaceincreasestoragetemporarilyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespaceincreasestoragetemporarilyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationnamespaceincreasestoragetemporarilynamespace"></a>`namespace` | [`Namespace`](#namespace) | The namespace after mutation. |
+| <a id="mutationnamespaceincreasestoragetemporarilynamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace after mutation. |
 
 ### `Mutation.oncallRotationCreate`
 
@@ -3281,15 +3281,15 @@ Input type: `OncallRotationCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationoncallrotationcreateactiveperiod"></a>`activePeriod` | [`OncallRotationActivePeriodInputType`](#oncallrotationactiveperiodinputtype) | The active period of time that the on-call rotation should take place. |
+| <a id="mutationoncallrotationcreateactiveperiod"></a>`activePeriod` | [`OncallRotationActivePeriodInputType`](#oncallrotationactiveperiodinputtype) | Active period of time that the on-call rotation should take place. |
 | <a id="mutationoncallrotationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationoncallrotationcreateendsat"></a>`endsAt` | [`OncallRotationDateInputType`](#oncallrotationdateinputtype) | The end date and time of the on-call rotation, in the timezone of the on-call schedule. |
-| <a id="mutationoncallrotationcreatename"></a>`name` | [`String!`](#string) | The name of the on-call rotation. |
-| <a id="mutationoncallrotationcreateparticipants"></a>`participants` | [`[OncallUserInputType!]!`](#oncalluserinputtype) | The usernames of users participating in the on-call rotation. A maximum limit of 100 participants applies. |
-| <a id="mutationoncallrotationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to create the on-call schedule in. |
-| <a id="mutationoncallrotationcreaterotationlength"></a>`rotationLength` | [`OncallRotationLengthInputType!`](#oncallrotationlengthinputtype) | The rotation length of the on-call rotation. |
-| <a id="mutationoncallrotationcreatescheduleiid"></a>`scheduleIid` | [`String!`](#string) | The IID of the on-call schedule to create the on-call rotation in. |
-| <a id="mutationoncallrotationcreatestartsat"></a>`startsAt` | [`OncallRotationDateInputType!`](#oncallrotationdateinputtype) | The start date and time of the on-call rotation, in the timezone of the on-call schedule. |
+| <a id="mutationoncallrotationcreateendsat"></a>`endsAt` | [`OncallRotationDateInputType`](#oncallrotationdateinputtype) | End date and time of the on-call rotation, in the timezone of the on-call schedule. |
+| <a id="mutationoncallrotationcreatename"></a>`name` | [`String!`](#string) | Name of the on-call rotation. |
+| <a id="mutationoncallrotationcreateparticipants"></a>`participants` | [`[OncallUserInputType!]!`](#oncalluserinputtype) | Usernames of users participating in the on-call rotation. A maximum limit of 100 participants applies. |
+| <a id="mutationoncallrotationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the on-call schedule in. |
+| <a id="mutationoncallrotationcreaterotationlength"></a>`rotationLength` | [`OncallRotationLengthInputType!`](#oncallrotationlengthinputtype) | Rotation length of the on-call rotation. |
+| <a id="mutationoncallrotationcreatescheduleiid"></a>`scheduleIid` | [`String!`](#string) | IID of the on-call schedule to create the on-call rotation in. |
+| <a id="mutationoncallrotationcreatestartsat"></a>`startsAt` | [`OncallRotationDateInputType!`](#oncallrotationdateinputtype) | Start date and time of the on-call rotation, in the timezone of the on-call schedule. |
 
 #### Fields
 
@@ -3297,7 +3297,7 @@ Input type: `OncallRotationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationoncallrotationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationoncallrotationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationoncallrotationcreateoncallrotation"></a>`oncallRotation` | [`IncidentManagementOncallRotation`](#incidentmanagementoncallrotation) | The on-call rotation. |
+| <a id="mutationoncallrotationcreateoncallrotation"></a>`oncallRotation` | [`IncidentManagementOncallRotation`](#incidentmanagementoncallrotation) | On-call rotation. |
 
 ### `Mutation.oncallRotationDestroy`
 
@@ -3308,9 +3308,9 @@ Input type: `OncallRotationDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationoncallrotationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationoncallrotationdestroyid"></a>`id` | [`IncidentManagementOncallRotationID!`](#incidentmanagementoncallrotationid) | The ID of the on-call rotation to remove. |
-| <a id="mutationoncallrotationdestroyprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to remove the on-call schedule from. |
-| <a id="mutationoncallrotationdestroyscheduleiid"></a>`scheduleIid` | [`String!`](#string) | The IID of the on-call schedule to the on-call rotation belongs to. |
+| <a id="mutationoncallrotationdestroyid"></a>`id` | [`IncidentManagementOncallRotationID!`](#incidentmanagementoncallrotationid) | ID of the on-call rotation to remove. |
+| <a id="mutationoncallrotationdestroyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to remove the on-call schedule from. |
+| <a id="mutationoncallrotationdestroyscheduleiid"></a>`scheduleIid` | [`String!`](#string) | IID of the on-call schedule to the on-call rotation belongs to. |
 
 #### Fields
 
@@ -3318,7 +3318,7 @@ Input type: `OncallRotationDestroyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationoncallrotationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationoncallrotationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationoncallrotationdestroyoncallrotation"></a>`oncallRotation` | [`IncidentManagementOncallRotation`](#incidentmanagementoncallrotation) | The on-call rotation. |
+| <a id="mutationoncallrotationdestroyoncallrotation"></a>`oncallRotation` | [`IncidentManagementOncallRotation`](#incidentmanagementoncallrotation) | On-call rotation. |
 
 ### `Mutation.oncallRotationUpdate`
 
@@ -3328,14 +3328,14 @@ Input type: `OncallRotationUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationoncallrotationupdateactiveperiod"></a>`activePeriod` | [`OncallRotationActivePeriodInputType`](#oncallrotationactiveperiodinputtype) | The active period of time that the on-call rotation should take place. |
+| <a id="mutationoncallrotationupdateactiveperiod"></a>`activePeriod` | [`OncallRotationActivePeriodInputType`](#oncallrotationactiveperiodinputtype) | Active period of time that the on-call rotation should take place. |
 | <a id="mutationoncallrotationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationoncallrotationupdateendsat"></a>`endsAt` | [`OncallRotationDateInputType`](#oncallrotationdateinputtype) | The end date and time of the on-call rotation, in the timezone of the on-call schedule. |
-| <a id="mutationoncallrotationupdateid"></a>`id` | [`IncidentManagementOncallRotationID!`](#incidentmanagementoncallrotationid) | The ID of the on-call schedule to create the on-call rotation in. |
-| <a id="mutationoncallrotationupdatename"></a>`name` | [`String`](#string) | The name of the on-call rotation. |
-| <a id="mutationoncallrotationupdateparticipants"></a>`participants` | [`[OncallUserInputType!]`](#oncalluserinputtype) | The usernames of users participating in the on-call rotation. A maximum limit of 100 participants applies. |
-| <a id="mutationoncallrotationupdaterotationlength"></a>`rotationLength` | [`OncallRotationLengthInputType`](#oncallrotationlengthinputtype) | The rotation length of the on-call rotation. |
-| <a id="mutationoncallrotationupdatestartsat"></a>`startsAt` | [`OncallRotationDateInputType`](#oncallrotationdateinputtype) | The start date and time of the on-call rotation, in the timezone of the on-call schedule. |
+| <a id="mutationoncallrotationupdateendsat"></a>`endsAt` | [`OncallRotationDateInputType`](#oncallrotationdateinputtype) | End date and time of the on-call rotation, in the timezone of the on-call schedule. |
+| <a id="mutationoncallrotationupdateid"></a>`id` | [`IncidentManagementOncallRotationID!`](#incidentmanagementoncallrotationid) | ID of the on-call schedule to create the on-call rotation in. |
+| <a id="mutationoncallrotationupdatename"></a>`name` | [`String`](#string) | Name of the on-call rotation. |
+| <a id="mutationoncallrotationupdateparticipants"></a>`participants` | [`[OncallUserInputType!]`](#oncalluserinputtype) | Usernames of users participating in the on-call rotation. A maximum limit of 100 participants applies. |
+| <a id="mutationoncallrotationupdaterotationlength"></a>`rotationLength` | [`OncallRotationLengthInputType`](#oncallrotationlengthinputtype) | Rotation length of the on-call rotation. |
+| <a id="mutationoncallrotationupdatestartsat"></a>`startsAt` | [`OncallRotationDateInputType`](#oncallrotationdateinputtype) | Start date and time of the on-call rotation, in the timezone of the on-call schedule. |
 
 #### Fields
 
@@ -3343,7 +3343,7 @@ Input type: `OncallRotationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationoncallrotationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationoncallrotationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationoncallrotationupdateoncallrotation"></a>`oncallRotation` | [`IncidentManagementOncallRotation`](#incidentmanagementoncallrotation) | The on-call rotation. |
+| <a id="mutationoncallrotationupdateoncallrotation"></a>`oncallRotation` | [`IncidentManagementOncallRotation`](#incidentmanagementoncallrotation) | On-call rotation. |
 
 ### `Mutation.oncallScheduleCreate`
 
@@ -3354,10 +3354,10 @@ Input type: `OncallScheduleCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationoncallschedulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationoncallschedulecreatedescription"></a>`description` | [`String`](#string) | The description of the on-call schedule. |
-| <a id="mutationoncallschedulecreatename"></a>`name` | [`String!`](#string) | The name of the on-call schedule. |
-| <a id="mutationoncallschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to create the on-call schedule in. |
-| <a id="mutationoncallschedulecreatetimezone"></a>`timezone` | [`String!`](#string) | The timezone of the on-call schedule. |
+| <a id="mutationoncallschedulecreatedescription"></a>`description` | [`String`](#string) | Description of the on-call schedule. |
+| <a id="mutationoncallschedulecreatename"></a>`name` | [`String!`](#string) | Name of the on-call schedule. |
+| <a id="mutationoncallschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the on-call schedule in. |
+| <a id="mutationoncallschedulecreatetimezone"></a>`timezone` | [`String!`](#string) | Timezone of the on-call schedule. |
 
 #### Fields
 
@@ -3365,7 +3365,7 @@ Input type: `OncallScheduleCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationoncallschedulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationoncallschedulecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationoncallschedulecreateoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | The on-call schedule. |
+| <a id="mutationoncallschedulecreateoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule. |
 
 ### `Mutation.oncallScheduleDestroy`
 
@@ -3376,8 +3376,8 @@ Input type: `OncallScheduleDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationoncallscheduledestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationoncallscheduledestroyiid"></a>`iid` | [`String!`](#string) | The on-call schedule internal ID to remove. |
-| <a id="mutationoncallscheduledestroyprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to remove the on-call schedule from. |
+| <a id="mutationoncallscheduledestroyiid"></a>`iid` | [`String!`](#string) | On-call schedule internal ID to remove. |
+| <a id="mutationoncallscheduledestroyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to remove the on-call schedule from. |
 
 #### Fields
 
@@ -3385,7 +3385,7 @@ Input type: `OncallScheduleDestroyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationoncallscheduledestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationoncallscheduledestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationoncallscheduledestroyoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | The on-call schedule. |
+| <a id="mutationoncallscheduledestroyoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule. |
 
 ### `Mutation.oncallScheduleUpdate`
 
@@ -3396,11 +3396,11 @@ Input type: `OncallScheduleUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationoncallscheduleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationoncallscheduleupdatedescription"></a>`description` | [`String`](#string) | The description of the on-call schedule. |
-| <a id="mutationoncallscheduleupdateiid"></a>`iid` | [`String!`](#string) | The on-call schedule internal ID to update. |
-| <a id="mutationoncallscheduleupdatename"></a>`name` | [`String`](#string) | The name of the on-call schedule. |
-| <a id="mutationoncallscheduleupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to update the on-call schedule in. |
-| <a id="mutationoncallscheduleupdatetimezone"></a>`timezone` | [`String`](#string) | The timezone of the on-call schedule. |
+| <a id="mutationoncallscheduleupdatedescription"></a>`description` | [`String`](#string) | Description of the on-call schedule. |
+| <a id="mutationoncallscheduleupdateiid"></a>`iid` | [`String!`](#string) | On-call schedule internal ID to update. |
+| <a id="mutationoncallscheduleupdatename"></a>`name` | [`String`](#string) | Name of the on-call schedule. |
+| <a id="mutationoncallscheduleupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to update the on-call schedule in. |
+| <a id="mutationoncallscheduleupdatetimezone"></a>`timezone` | [`String`](#string) | Timezone of the on-call schedule. |
 
 #### Fields
 
@@ -3408,7 +3408,7 @@ Input type: `OncallScheduleUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationoncallscheduleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationoncallscheduleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationoncallscheduleupdateoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | The on-call schedule. |
+| <a id="mutationoncallscheduleupdateoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule. |
 
 ### `Mutation.pipelineCancel`
 
@@ -3578,7 +3578,7 @@ Input type: `PromoteToEpicInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpromotetoepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpromotetoepicgrouppath"></a>`groupPath` | [`ID`](#id) | The group the promoted epic will belong to. |
+| <a id="mutationpromotetoepicgrouppath"></a>`groupPath` | [`ID`](#id) | Group the promoted epic will belong to. |
 | <a id="mutationpromotetoepiciid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationpromotetoepicprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
@@ -3587,7 +3587,7 @@ Input type: `PromoteToEpicInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpromotetoepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpromotetoepicepic"></a>`epic` | [`Epic`](#epic) | The epic after issue promotion. |
+| <a id="mutationpromotetoepicepic"></a>`epic` | [`Epic`](#epic) | Epic after issue promotion. |
 | <a id="mutationpromotetoepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
@@ -4193,7 +4193,7 @@ Input type: `UpdateEpicInput`
 | <a id="mutationupdateepicduedatefixed"></a>`dueDateFixed` | [`String`](#string) | End date of the epic. |
 | <a id="mutationupdateepicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates end date should be sourced from due_date_fixed field not the issue milestones. |
 | <a id="mutationupdateepicgrouppath"></a>`groupPath` | [`ID!`](#id) | Group the epic to mutate is in. |
-| <a id="mutationupdateepiciid"></a>`iid` | [`ID!`](#id) | The IID of the epic to mutate. |
+| <a id="mutationupdateepiciid"></a>`iid` | [`ID!`](#id) | IID of the epic to mutate. |
 | <a id="mutationupdateepicremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | IDs of labels to be removed from the epic. |
 | <a id="mutationupdateepicstartdatefixed"></a>`startDateFixed` | [`String`](#string) | Start date of the epic. |
 | <a id="mutationupdateepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates start date should be sourced from start_date_fixed field not the issue milestones. |
@@ -4205,7 +4205,7 @@ Input type: `UpdateEpicInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateepicepic"></a>`epic` | [`Epic`](#epic) | The epic after mutation. |
+| <a id="mutationupdateepicepic"></a>`epic` | [`Epic`](#epic) | Epic after mutation. |
 | <a id="mutationupdateepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.updateEpicBoardList`
@@ -4269,7 +4269,7 @@ Input type: `UpdateIssueInput`
 | <a id="mutationupdateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="mutationupdateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
 | <a id="mutationupdateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of the parent epic. NULL when removing the association. |
-| <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
+| <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Desired health status. |
 | <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | IDs of labels to be set. Replaces existing issue labels. |
 | <a id="mutationupdateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
@@ -4279,7 +4279,7 @@ Input type: `UpdateIssueInput`
 | <a id="mutationupdateissuestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
 | <a id="mutationupdateissuetitle"></a>`title` | [`String`](#string) | Title of the issue. |
 | <a id="mutationupdateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
-| <a id="mutationupdateissueweight"></a>`weight` | [`Int`](#int) | The weight of the issue. |
+| <a id="mutationupdateissueweight"></a>`weight` | [`Int`](#int) | Weight of the issue. |
 
 #### Fields
 
@@ -4372,7 +4372,7 @@ Input type: `UpdateRequirementInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdaterequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdaterequirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
-| <a id="mutationupdaterequirementiid"></a>`iid` | [`String!`](#string) | The IID of the requirement to update. |
+| <a id="mutationupdaterequirementiid"></a>`iid` | [`String!`](#string) | IID of the requirement to update. |
 | <a id="mutationupdaterequirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Creates a test report for the requirement with the given state. |
 | <a id="mutationupdaterequirementprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path the requirement is associated with. |
 | <a id="mutationupdaterequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | State of the requirement. |
@@ -4451,7 +4451,7 @@ Input type: `VulnerabilityConfirmInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityconfirmclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilityconfirmerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilityconfirmvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | The vulnerability after state change. |
+| <a id="mutationvulnerabilityconfirmvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
 ### `Mutation.vulnerabilityCreate`
 
@@ -4504,7 +4504,7 @@ Input type: `VulnerabilityDismissInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitydismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitydismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilitydismissvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | The vulnerability after dismissal. |
+| <a id="mutationvulnerabilitydismissvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after dismissal. |
 
 ### `Mutation.vulnerabilityExternalIssueLinkCreate`
 
@@ -4525,7 +4525,7 @@ Input type: `VulnerabilityExternalIssueLinkCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityexternalissuelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilityexternalissuelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilityexternalissuelinkcreateexternalissuelink"></a>`externalIssueLink` | [`VulnerabilityExternalIssueLink`](#vulnerabilityexternalissuelink) | The created external issue link. |
+| <a id="mutationvulnerabilityexternalissuelinkcreateexternalissuelink"></a>`externalIssueLink` | [`VulnerabilityExternalIssueLink`](#vulnerabilityexternalissuelink) | Created external issue link. |
 
 ### `Mutation.vulnerabilityExternalIssueLinkDestroy`
 
@@ -4536,7 +4536,7 @@ Input type: `VulnerabilityExternalIssueLinkDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityexternalissuelinkdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilityexternalissuelinkdestroyid"></a>`id` | [`VulnerabilitiesExternalIssueLinkID!`](#vulnerabilitiesexternalissuelinkid) | The global ID of the vulnerability external issue link. |
+| <a id="mutationvulnerabilityexternalissuelinkdestroyid"></a>`id` | [`VulnerabilitiesExternalIssueLinkID!`](#vulnerabilitiesexternalissuelinkid) | Global ID of the vulnerability external issue link. |
 
 #### Fields
 
@@ -4562,7 +4562,7 @@ Input type: `VulnerabilityResolveInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilityresolveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilityresolvevulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | The vulnerability after state change. |
+| <a id="mutationvulnerabilityresolvevulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
 ### `Mutation.vulnerabilityRevertToDetected`
 
@@ -4581,7 +4581,7 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityreverttodetectedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilityreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | The vulnerability after revert. |
+| <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after revert. |
 
 ## Connections
 

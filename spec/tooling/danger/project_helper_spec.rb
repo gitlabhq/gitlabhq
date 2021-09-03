@@ -60,7 +60,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'app/views/foo'                    | [:frontend]
       'public/foo'                       | [:frontend]
       'scripts/frontend/foo'             | [:frontend]
-      'spec/javascripts/foo'             | [:frontend]
       'spec/frontend/bar'                | [:frontend]
       'spec/frontend_integration/bar'    | [:frontend]
       'vendor/assets/foo'                | [:frontend]
@@ -73,7 +72,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
       'ee/app/assets/foo'                | [:frontend]
       'ee/app/views/foo'                 | [:frontend]
-      'ee/spec/javascripts/foo'          | [:frontend]
       'ee/spec/frontend/bar'             | [:frontend]
       'ee/spec/frontend_integration/bar' | [:frontend]
 
@@ -220,7 +218,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, karma, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation')
     end
   end
 

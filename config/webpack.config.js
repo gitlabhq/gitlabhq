@@ -154,7 +154,6 @@ const alias = {
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   vue$: 'vue/dist/vue.esm.js',
   jquery$: 'jquery/dist/jquery.slim.js',
-  spec: path.join(ROOT_PATH, 'spec/javascripts'),
   jest: path.join(ROOT_PATH, 'spec/frontend'),
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
 
@@ -178,7 +177,6 @@ if (IS_EE) {
     ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
     ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
     ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
-    ee_spec: path.join(ROOT_PATH, 'ee/spec/javascripts'),
     ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
   });
@@ -191,7 +189,6 @@ if (IS_JH) {
     jh_empty_states: path.join(ROOT_PATH, 'jh/app/views/shared/empty_states'),
     jh_icons: path.join(ROOT_PATH, 'jh/app/views/shared/icons'),
     jh_images: path.join(ROOT_PATH, 'jh/app/assets/images'),
-    jh_spec: path.join(ROOT_PATH, 'jh/spec/javascripts'),
     jh_jest: path.join(ROOT_PATH, 'jh/spec/frontend'),
     jh_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
   });
