@@ -589,6 +589,7 @@ project:
 - timelogs
 - error_tracking_errors
 - error_tracking_client_keys
+- pending_builds
 award_emoji:
 - awardable
 - user

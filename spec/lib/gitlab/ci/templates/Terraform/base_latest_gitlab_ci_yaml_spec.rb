@@ -19,7 +19,7 @@ RSpec.describe 'Terraform/Base.latest.gitlab-ci.yml' do
       allow(project).to receive(:default_branch).and_return(default_branch)
     end
 
-    it 'does not create any jobs' do
+    it 'does not create any jobs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339979' do
       expect(build_names).to be_empty
     end
   end

@@ -8,6 +8,7 @@ module Groups
       validate_params
 
       update_shared_runners
+      update_pending_builds!
 
       success
 
@@ -25,6 +26,14 @@ module Groups
 
     def update_shared_runners
       group.update_shared_runners_setting!(params[:shared_runners_setting])
+    end
+
+    def update_pending_builds!
+      return unless group.previous_changes.include?('shared_runners_enabled')
+
+      update_params = { instance_runners_enabled: group.shared_runners_enabled }
+
+      ::Ci::UpdatePendingBuildService.new(group, update_params).execute
     end
   end
 end

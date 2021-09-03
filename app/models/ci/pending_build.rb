@@ -2,6 +2,8 @@
 
 module Ci
   class PendingBuild < Ci::ApplicationRecord
+    include EachBatch
+
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :namespace, inverse_of: :pending_builds, class_name: 'Namespace'

@@ -441,6 +441,30 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
+    context 'when updating #shared_runners', :https_pages_enabled do
+      let!(:pending_build) { create(:ci_pending_build, project: project, instance_runners_enabled: true) }
+
+      subject(:call_service) do
+        update_project(project, admin, shared_runners_enabled: shared_runners_enabled)
+      end
+
+      context 'when shared runners is toggled' do
+        let(:shared_runners_enabled) { false }
+
+        it 'updates ci pending builds' do
+          expect { call_service }.to change { pending_build.reload.instance_runners_enabled }.to(false)
+        end
+      end
+
+      context 'when shared runners is not toggled' do
+        let(:shared_runners_enabled) { true }
+
+        it 'updates ci pending builds' do
+          expect { call_service }.to not_change { pending_build.reload.instance_runners_enabled }
+        end
+      end
+    end
+
     context 'with external authorization enabled' do
       before do
         enable_external_authorization_service_check
