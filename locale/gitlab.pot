@@ -1723,6 +1723,9 @@ msgstr ""
 msgid "Access granted"
 msgstr ""
 
+msgid "Access key ID"
+msgstr ""
+
 msgid "Access requests"
 msgstr ""
 
@@ -12356,6 +12359,9 @@ msgid "Empty file"
 msgstr ""
 
 msgid "Enable"
+msgstr ""
+
+msgid "Enable Amazon EKS integration"
 msgstr ""
 
 msgid "Enable Auto DevOps"
@@ -29486,6 +29492,9 @@ msgstr ""
 msgid "Secret Detection"
 msgstr ""
 
+msgid "Secret access key"
+msgstr ""
+
 msgid "Secret token"
 msgstr ""
 
@@ -35716,6 +35725,15 @@ msgid "Unable to update this epic at this time."
 msgstr ""
 
 msgid "Unable to update this issue at this time."
+msgstr ""
+
+msgid "Unapprove a merge request"
+msgstr ""
+
+msgid "Unapprove the current merge request."
+msgstr ""
+
+msgid "Unapproved the current merge request."
 msgstr ""
 
 msgid "Unarchive project"

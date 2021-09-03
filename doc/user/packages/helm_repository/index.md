@@ -27,7 +27,7 @@ To authenticate to the Helm repository, you need either:
 
 - A [personal access token](../../../api/index.md#personalproject-access-tokens).
 - A [deploy token](../../project/deploy_tokens/index.md).
-- A [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token).
+- A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
 ## Publish a package
 

@@ -4,8 +4,11 @@ import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
 import { selectedRect as getSelectedRect } from 'prosemirror-tables';
 import { __ } from '~/locale';
 
+const TABLE_CELL_HEADER = 'th';
+const TABLE_CELL_BODY = 'td';
+
 export default {
-  name: 'TableCellWrapper',
+  name: 'TableCellBaseWrapper',
   components: {
     NodeViewWrapper,
     NodeViewContent,
@@ -14,6 +17,11 @@ export default {
     GlDropdownDivider,
   },
   props: {
+    cellType: {
+      type: String,
+      validator: (type) => [TABLE_CELL_HEADER, TABLE_CELL_BODY].includes(type),
+      required: true,
+    },
     editor: {
       type: Object,
       required: true,
@@ -36,6 +44,9 @@ export default {
     },
     totalCols() {
       return this.selectedRect?.map.width;
+    },
+    isTableBodyCell() {
+      return this.cellType === TABLE_CELL_BODY;
     },
   },
   mounted() {
@@ -83,7 +94,11 @@ export default {
 };
 </script>
 <template>
-  <node-view-wrapper class="gl-relative gl-padding-5 gl-min-w-10" as="td" @click="hideDropdown">
+  <node-view-wrapper
+    class="gl-relative gl-padding-5 gl-min-w-10"
+    :as="cellType"
+    @click="hideDropdown"
+  >
     <span v-if="displayActionsDropdown" class="gl-absolute gl-right-0 gl-top-0">
       <gl-dropdown
         ref="dropdown"
@@ -104,14 +119,14 @@ export default {
         <gl-dropdown-item @click="runCommand('addColumnAfter')">
           {{ $options.i18n.insertColumnAfter }}
         </gl-dropdown-item>
-        <gl-dropdown-item @click="runCommand('addRowBefore')">
+        <gl-dropdown-item v-if="isTableBodyCell" @click="runCommand('addRowBefore')">
           {{ $options.i18n.insertRowBefore }}
         </gl-dropdown-item>
         <gl-dropdown-item @click="runCommand('addRowAfter')">
           {{ $options.i18n.insertRowAfter }}
         </gl-dropdown-item>
         <gl-dropdown-divider />
-        <gl-dropdown-item v-if="totalRows > 2" @click="runCommand('deleteRow')">
+        <gl-dropdown-item v-if="totalRows > 2 && isTableBodyCell" @click="runCommand('deleteRow')">
           {{ $options.i18n.deleteRow }}
         </gl-dropdown-item>
         <gl-dropdown-item v-if="totalCols > 1" @click="runCommand('deleteColumn')">

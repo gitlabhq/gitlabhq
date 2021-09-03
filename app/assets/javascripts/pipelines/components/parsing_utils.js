@@ -52,6 +52,19 @@ export const createNodeDict = (nodes) => {
   }, {});
 };
 
+/*
+  A peformant alternative to lodash's isEqual. Because findIndex always finds
+  the first instance of a match, if the found index is not the first, we know
+  it is in fact a duplicate.
+*/
+const deduplicate = (item, itemIndex, arr) => {
+  const foundIdx = arr.findIndex((test) => {
+    return test.source === item.source && test.target === item.target;
+  });
+
+  return foundIdx === itemIndex;
+};
+
 export const makeLinksFromNodes = (nodes, nodeDict) => {
   const constantLinkValue = 10; // all links are the same weight
   return nodes
@@ -83,7 +96,8 @@ export const getAllAncestors = (nodes, nodeDict) => {
       return nodeDict[node]?.needs || '';
     })
     .flat()
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter(deduplicate);
 
   if (needs.length) {
     return [...needs, ...getAllAncestors(needs, nodeDict)];
@@ -108,29 +122,15 @@ export const filterByAncestors = (links, nodeDict) =>
     const targetNode = target;
     const targetNodeNeeds = nodeDict[targetNode].needs;
     const targetNodeNeedsMinusSource = targetNodeNeeds.filter((need) => need !== source);
-
     const allAncestors = getAllAncestors(targetNodeNeedsMinusSource, nodeDict);
     return !allAncestors.includes(source);
   });
 
-/*
-  A peformant alternative to lodash's isEqual. Because findIndex always finds
-  the first instance of a match, if the found index is not the first, we know
-  it is in fact a duplicate.
-*/
-const deduplicate = (item, itemIndex, arr) => {
-  const foundIdx = arr.findIndex((test) => {
-    return test.source === item.source && test.target === item.target;
-  });
-
-  return foundIdx === itemIndex;
-};
-
 export const parseData = (nodes) => {
   const nodeDict = createNodeDict(nodes);
   const allLinks = makeLinksFromNodes(nodes, nodeDict);
-  const filteredLinks = filterByAncestors(allLinks, nodeDict);
-  const links = filteredLinks.filter(deduplicate);
+  const filteredLinks = allLinks.filter(deduplicate);
+  const links = filterByAncestors(filteredLinks, nodeDict);
 
   return { nodes, links };
 };

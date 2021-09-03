@@ -63,7 +63,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_JOB_NAME`                            | 9.0    | 0.5    | The name of the job. |
 | `CI_JOB_STAGE`                           | 9.0    | 0.5    | The name of the job's stage. |
 | `CI_JOB_STATUS`                          | all    | 13.5   | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/index.md#after_script). Can be `success`, `failed`, or `canceled`. |
-| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../../api/index.md#gitlab-cicd-job-token). The token is valid as long as the job is running. |
+| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../jobs/ci_job_token.md). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                             | 11.1   | 0.5    | The job details URL. |
 | `CI_JOB_STARTED_AT`                      | 13.10  | all    | The UTC datetime when a job started, in [ISO 8601](https://tools.ietf.org/html/rfc3339#appendix-A) format. |
 | `CI_KUBERNETES_ACTIVE`                   | 13.0   | all    | Only available if the pipeline has a Kubernetes cluster available for deployments. `true` when available. |

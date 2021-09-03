@@ -17,18 +17,18 @@
           .form-check
             = f.check_box :eks_integration_enabled, class: 'form-check-input'
             = f.label :eks_integration_enabled, class: 'form-check-label' do
-              Enable Amazon EKS integration
+              = _('Enable Amazon EKS integration')
         .form-group
-          = f.label :eks_account_id, 'Account ID', class: 'label-bold'
+          = f.label :eks_account_id, _('Account ID'), class: 'label-bold'
           = f.text_field :eks_account_id, class: 'form-control gl-form-input'
         .form-group
-          = f.label :eks_access_key_id, 'Access key ID', class: 'label-bold'
+          = f.label :eks_access_key_id, _('Access key ID'), class: 'label-bold'
           = f.text_field :eks_access_key_id, class: 'form-control gl-form-input'
           .form-text.text-muted
             = _('AWS Access Key. Only required if not using role instance credentials')
 
         .form-group
-          = f.label :eks_secret_access_key, 'Secret access key', class: 'label-bold'
+          = f.label :eks_secret_access_key, _('Secret access key'), class: 'label-bold'
           = f.password_field :eks_secret_access_key, autocomplete: 'off', class: 'form-control gl-form-input'
           .form-text.text-muted
             = _('AWS Secret Access Key. Only required if not using role instance credentials')

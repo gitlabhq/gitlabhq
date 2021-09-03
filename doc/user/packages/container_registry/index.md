@@ -865,6 +865,18 @@ these steps:
    echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
 
+   If you have Rails console access, you can enter the following commands to retrieve a list of tags limited by date:
+
+   ```shell  
+   output = File.open( "/tmp/list_o_tags.out","w" )
+   Project.find(<Project_id>).container_repositories.find(<container_repo_id>).tags.each do |tag|
+     output << tag.name + "\n" if tag.created_at < 1.month.ago
+   end;nil
+   output.close
+   ```
+  
+   This set of commands creates a `/tmp/list_o_tags.out` file listing all tags with a `created_at` date of older than one month.
+
 1. Remove from the `list_o_tags.out` file any tags that you want to keep. Here are some example
    `sed` commands for this. Note that these commands are simply examples. You may change them to
    best suit your needs:

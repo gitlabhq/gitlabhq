@@ -375,6 +375,30 @@ describe('Blob content viewer component', () => {
           expect(findBlobHeader().props('isBinary')).toBe(true);
         },
       );
+
+      it('passes the correct header props when viewing a non-text file', async () => {
+        fullFactory({
+          mockData: {
+            blobInfo: {
+              ...simpleMockData,
+              simpleViewer: {
+                ...simpleMockData.simpleViewer,
+                fileType: 'image',
+              },
+            },
+          },
+          stubs: {
+            BlobContent: true,
+            BlobReplace: true,
+          },
+        });
+
+        await nextTick();
+
+        expect(findBlobHeader().props('hideViewerSwitcher')).toBe(true);
+        expect(findBlobHeader().props('isBinary')).toBe(true);
+        expect(findBlobEdit().props('showEditButton')).toBe(false);
+      });
     });
 
     describe('BlobButtonGroup', () => {

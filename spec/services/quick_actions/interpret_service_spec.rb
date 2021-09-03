@@ -624,6 +624,18 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'approve command unavailable' do
+      it 'is not part of the available commands' do
+        expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :approve))
+      end
+    end
+
+    shared_examples 'unapprove command unavailable' do
+      it 'is not part of the available commands' do
+        expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :unapprove))
+      end
+    end
+
     shared_examples 'shrug command' do
       it 'appends ¯\_(ツ)_/¯ to the comment' do
         new_content, _, _ = service.execute(content, issuable)
@@ -2132,6 +2144,66 @@ RSpec.describe QuickActions::InterpretService do
 
         it_behaves_like 'failed command', 'Could not apply severity command.' do
           let(:content) { '/severity s3' }
+        end
+      end
+    end
+
+    context 'approve command' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:content) { '/approve' }
+
+      it 'approves the current merge request' do
+        service.execute(content, merge_request)
+
+        expect(merge_request.approved_by_users).to eq([developer])
+      end
+
+      context "when the user can't approve" do
+        before do
+          project.team.truncate
+          project.add_guest(developer)
+        end
+
+        it 'does not approve the MR' do
+          service.execute(content, merge_request)
+
+          expect(merge_request.approved_by_users).to be_empty
+        end
+      end
+
+      it_behaves_like 'approve command unavailable' do
+        let(:issuable) { issue }
+      end
+    end
+
+    context 'unapprove command' do
+      let!(:merge_request) { create(:merge_request, source_project: project) }
+      let(:content) { '/unapprove' }
+
+      before do
+        service.execute('/approve', merge_request)
+      end
+
+      it 'unapproves the current merge request' do
+        service.execute(content, merge_request)
+
+        expect(merge_request.approved_by_users).to be_empty
+      end
+
+      context "when the user can't unapprove" do
+        before do
+          project.team.truncate
+          project.add_guest(developer)
+        end
+
+        it 'does not unapprove the MR' do
+          service.execute(content, merge_request)
+
+          expect(merge_request.approved_by_users).to eq([developer])
+        end
+
+        it_behaves_like 'unapprove command unavailable' do
+          let(:issuable) { issue }
         end
       end
     end

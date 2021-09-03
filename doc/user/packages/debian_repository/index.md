@@ -67,7 +67,7 @@ To create a distribution, publish a package, or install a private package, you n
 following:
 
 - [Personal access token](../../../api/index.md#personalproject-access-tokens)
-- [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token)
+- [CI/CD job token](../../../ci/jobs/ci_job_token.md)
 - [Deploy token](../../project/deploy_tokens/index.md)
 
 ## Create a Distribution

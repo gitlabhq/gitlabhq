@@ -1,22 +1,24 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { NodeViewWrapper } from '@tiptap/vue-2';
 import { selectedRect as getSelectedRect } from 'prosemirror-tables';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import TableCellWrapper from '~/content_editor/components/wrappers/table_cell.vue';
+import TableCellBaseWrapper from '~/content_editor/components/wrappers/table_cell_base.vue';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../../test_utils';
 
 jest.mock('prosemirror-tables');
 
-describe('content/components/wrappers/table_cell', () => {
+describe('content/components/wrappers/table_cell_base', () => {
   let wrapper;
   let editor;
   let getPos;
 
-  const createWrapper = async () => {
-    wrapper = shallowMountExtended(TableCellWrapper, {
+  const createWrapper = async (propsData = { cellType: 'td' }) => {
+    wrapper = shallowMountExtended(TableCellBaseWrapper, {
       propsData: {
         editor,
         getPos,
+        ...propsData,
       },
     });
   };
@@ -64,7 +66,7 @@ describe('content/components/wrappers/table_cell', () => {
     setCurrentPositionInCell();
     createWrapper();
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findDropdown().props()).toMatchObject({
       category: 'tertiary',
@@ -81,7 +83,7 @@ describe('content/components/wrappers/table_cell', () => {
   it('does not display dropdown when selection cursor is not on the cell', async () => {
     createWrapper();
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findDropdown().exists()).toBe(false);
   });
@@ -97,7 +99,7 @@ describe('content/components/wrappers/table_cell', () => {
       });
 
       createWrapper();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       mockDropdownHide();
     });
@@ -136,7 +138,7 @@ describe('content/components/wrappers/table_cell', () => {
 
       emitEditorEvent({ tiptapEditor: editor, event: 'selectionUpdate' });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findDropdownItemWithLabel('Delete row').vm.$emit('click');
 
@@ -154,11 +156,38 @@ describe('content/components/wrappers/table_cell', () => {
 
       emitEditorEvent({ tiptapEditor: editor, event: 'selectionUpdate' });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findDropdownItemWithLabel('Delete column').vm.$emit('click');
 
       expect(mocks.deleteColumn).toHaveBeenCalled();
+    });
+
+    describe('when current row is the table’s header', () => {
+      beforeEach(async () => {
+        // Remove 2 rows condition
+        getSelectedRect.mockReturnValue({
+          map: {
+            height: 3,
+          },
+        });
+
+        createWrapper({ cellType: 'th' });
+
+        await nextTick();
+      });
+
+      it('does not allow adding a row before the header', async () => {
+        expect(findDropdownItemWithLabelExists('Insert row before')).toBe(false);
+      });
+
+      it('does not allow removing the header row', async () => {
+        createWrapper({ cellType: 'th' });
+
+        await nextTick();
+
+        expect(findDropdownItemWithLabelExists('Delete row')).toBe(false);
+      });
     });
   });
 });
