@@ -45,6 +45,7 @@ describe('Pipeline New Form', () => {
   const findWarningAlertSummary = () => findWarningAlert().find(GlSprintf);
   const findWarnings = () => wrapper.findAll('[data-testid="run-pipeline-warning"]');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findCCAlert = () => wrapper.findComponent(CreditCardValidationRequiredAlert);
   const getFormPostParams = () => JSON.parse(mock.history.post[0].data);
 
   const selectBranch = (branch) => {
@@ -387,7 +388,7 @@ describe('Pipeline New Form', () => {
       });
 
       it('does not show the credit card validation required alert', () => {
-        expect(wrapper.findComponent(CreditCardValidationRequiredAlert).exists()).toBe(false);
+        expect(findCCAlert().exists()).toBe(false);
       });
 
       describe('when the error response is credit card validation required', () => {
@@ -408,7 +409,19 @@ describe('Pipeline New Form', () => {
 
         it('shows credit card validation required alert', () => {
           expect(findErrorAlert().exists()).toBe(false);
-          expect(wrapper.findComponent(CreditCardValidationRequiredAlert).exists()).toBe(true);
+          expect(findCCAlert().exists()).toBe(true);
+        });
+
+        it('clears error and hides the alert on dismiss', async () => {
+          expect(findCCAlert().exists()).toBe(true);
+          expect(wrapper.vm.$data.error).toBe(mockCreditCardValidationRequiredError.errors[0]);
+
+          findCCAlert().vm.$emit('dismiss');
+
+          await wrapper.vm.$nextTick();
+
+          expect(findCCAlert().exists()).toBe(false);
+          expect(wrapper.vm.$data.error).toBe(null);
         });
       });
     });

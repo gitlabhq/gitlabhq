@@ -1570,7 +1570,7 @@ msgstr ""
 msgid "APIFuzzing|Configure HTTP basic authentication values. Other authentication methods are supported. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "APIFuzzing|Customize common API fuzzing settings to suit your requirements. For details of more advanced configuration options, see the %{docsLinkStart}GitLab API Fuzzing documentation%{docsLinkEnd}."
+msgid "APIFuzzing|Customize your project's API fuzzing configuration options and copy the code snippet to your .gitlab-ci.yml file to apply any changes. Note that this tool does not reflect or update your .gitlab-ci.yml file automatically. For details of more advanced configuration options, see the %{docsLinkStart}GitLab API Fuzzing documentation%{docsLinkEnd}."
 msgstr ""
 
 msgid "APIFuzzing|Enable authentication"
@@ -1631,9 +1631,6 @@ msgid "APIFuzzing|To prevent a security leak, authentication info must be added 
 msgstr ""
 
 msgid "APIFuzzing|To prevent a security leak, authentication info must be added as a %{ciVariablesLinkStart}CI variable%{ciVariablesLinkEnd}. As a user with maintainer access rights, you can manage CI variables in the %{ciSettingsLinkStart}Settings%{ciSettingsLinkEnd} area."
-msgstr ""
-
-msgid "APIFuzzing|Use this tool to generate API fuzzing configuration YAML to copy into your .gitlab-ci.yml file. This tool does not reflect or update your .gitlab-ci.yml file automatically."
 msgstr ""
 
 msgid "APIFuzzing|Username for basic authentication"
@@ -3517,12 +3514,6 @@ msgstr ""
 msgid "An error occurred when removing the label."
 msgstr ""
 
-msgid "An error occurred when toggling the notification subscription"
-msgstr ""
-
-msgid "An error occurred when updating the issue weight"
-msgstr ""
-
 msgid "An error occurred when updating the title"
 msgstr ""
 
@@ -3617,9 +3608,6 @@ msgid "An error occurred while fetching projects autocomplete."
 msgstr ""
 
 msgid "An error occurred while fetching reference"
-msgstr ""
-
-msgid "An error occurred while fetching sidebar data"
 msgstr ""
 
 msgid "An error occurred while fetching tags. Retry the search."
@@ -8490,6 +8478,9 @@ msgstr ""
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
+msgid "Configure approvals by authors and committers on all projects."
+msgstr ""
+
 msgid "Configure existing installation"
 msgstr ""
 
@@ -10725,10 +10716,10 @@ msgstr ""
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
-msgid "Define approval settings."
+msgid "Define approval rules."
 msgstr ""
 
-msgid "Define approval settings. %{linkStart}Learn more.%{linkEnd}"
+msgid "Define approval rules. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Define custom rules for what constitutes spam, independent of Akismet"
@@ -10737,7 +10728,7 @@ msgstr ""
 msgid "Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here."
 msgstr ""
 
-msgid "Define how approval rules are applied as a merge request moves toward completion."
+msgid "Define how approval rules are applied to merge requests."
 msgstr ""
 
 msgid "Definition"
@@ -21041,9 +21032,6 @@ msgstr ""
 msgid "Merge request %{mr_link} was reviewed by %{mr_author}"
 msgstr ""
 
-msgid "Merge request (MR) approvals"
-msgstr ""
-
 msgid "Merge request analytics"
 msgstr ""
 
@@ -27682,9 +27670,6 @@ msgstr ""
 msgid "Registry setup"
 msgstr ""
 
-msgid "Regulate approvals by authors/committers. Affects all projects."
-msgstr ""
-
 msgid "Reindexing Status: %{status} (Slice multiplier: %{multiplier}, Maximum running slices: %{max_slices})"
 msgstr ""
 
@@ -29558,7 +29543,7 @@ msgstr ""
 msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}More information%{linkEnd}"
+msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "SecurityApprovals|Requires approval for vulnerabilities. %{linkStart}Learn more.%{linkEnd}"
@@ -31254,9 +31239,6 @@ msgstr ""
 msgid "Something went wrong while exporting requirements"
 msgstr ""
 
-msgid "Something went wrong while fetching %{listType} list"
-msgstr ""
-
 msgid "Something went wrong while fetching branches"
 msgstr ""
 
@@ -31309,9 +31291,6 @@ msgid "Something went wrong while inserting your image. Please try again."
 msgstr ""
 
 msgid "Something went wrong while merging this merge request. Please try again."
-msgstr ""
-
-msgid "Something went wrong while moving issues."
 msgstr ""
 
 msgid "Something went wrong while obtaining the Let's Encrypt certificate."

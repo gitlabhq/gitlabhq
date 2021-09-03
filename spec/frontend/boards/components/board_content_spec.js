@@ -8,7 +8,7 @@ import getters from 'ee_else_ce/boards/stores/getters';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
-import { mockLists, mockListsWithModel } from '../mock_data';
+import { mockLists } from '../mock_data';
 
 Vue.use(Vuex);
 
@@ -42,7 +42,7 @@ describe('BoardContent', () => {
     });
     wrapper = shallowMount(BoardContent, {
       propsData: {
-        lists: mockListsWithModel,
+        lists: mockLists,
         disabled: false,
         ...props,
       },
@@ -63,7 +63,7 @@ describe('BoardContent', () => {
     });
 
     it('renders a BoardColumn component per list', () => {
-      expect(wrapper.findAllComponents(BoardColumn)).toHaveLength(mockListsWithModel.length);
+      expect(wrapper.findAllComponents(BoardColumn)).toHaveLength(mockLists.length);
     });
 
     it('renders BoardContentSidebar', () => {

@@ -12,11 +12,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Introduced in GitLab 13.3: [Additional notifications for expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/214721).
 > - Introduced in GitLab 14.1: [Prefill token name and scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/334664).
 
-If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/index.md#personalproject-access-tokens). You can also use a personal access token with Git to authenticate over HTTP.
+Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
+
+- Authenticate with the [GitLab API](../../api/index.md#personalproject-access-tokens).
+- Authenticate with Git using HTTP Basic Authentication.
 
 In both cases, you authenticate with a personal access token in place of your password.
 
-Personal access tokens are required when [Two-Factor Authentication (2FA)](account/two_factor_authentication.md) is enabled.
+Personal access tokens are:
+
+- Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
+- Similar to [project access tokens](../project/settings/project_access_tokens.md), but are attached to a user rather than a project.
 
 For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/index.md#personalproject-access-tokens).
 

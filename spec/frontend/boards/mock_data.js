@@ -1,11 +1,6 @@
-/* global List */
-
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
-import Vue from 'vue';
-import '~/boards/models/list';
 import { ListType } from '~/boards/constants';
-import boardsStore from '~/boards/stores/boards_store';
 import { __ } from '~/locale';
 import { DEFAULT_MILESTONES_GRAPHQL } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
@@ -290,20 +285,6 @@ export const boardsMockInterceptor = (config) => {
   return [200, body];
 };
 
-export const setMockEndpoints = (opts = {}) => {
-  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/-/boards.json';
-  const listsEndpoint = opts.listsEndpoint || '/test/-/boards/1/lists';
-  const bulkUpdatePath = opts.bulkUpdatePath || '';
-  const boardId = opts.boardId || '1';
-
-  boardsStore.setEndpoints({
-    boardsEndpoint,
-    listsEndpoint,
-    bulkUpdatePath,
-    boardId,
-  });
-};
-
 export const mockList = {
   id: 'gid://gitlab/List/1',
   title: 'Open',
@@ -355,10 +336,6 @@ export const mockMilestoneList = {
 export const mockLists = [mockList, mockLabelList];
 
 export const mockListsById = keyBy(mockLists, 'id');
-
-export const mockListsWithModel = mockLists.map((listMock) =>
-  Vue.observable(new List({ ...listMock, doNotFetchIssues: true })),
-);
 
 export const mockIssuesByListId = {
   'gid://gitlab/List/1': [mockIssue.id, mockIssue3.id, mockIssue4.id],

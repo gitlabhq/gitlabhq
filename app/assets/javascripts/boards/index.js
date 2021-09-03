@@ -4,33 +4,19 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions } from 'vuex';
 
-import 'ee_else_ce/boards/models/issue';
-import 'ee_else_ce/boards/models/list';
-import { setWeightFetchingState, setEpicFetchingState } from 'ee_else_ce/boards/ee_functions';
 import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardContent from '~/boards/components/board_content.vue';
-import './models/label';
-import './models/assignee';
-import '~/boards/models/milestone';
-import '~/boards/models/project';
 import '~/boards/filters/due_date_filters';
 import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import initBoardsFilteredSearch from '~/boards/mount_filtered_search_issue_boards';
 import store from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
 import toggleFocusMode from '~/boards/toggle_focus';
 import createDefaultClient from '~/lib/graphql';
-import {
-  NavigationType,
-  convertObjectPropsToCamelCase,
-  parseBoolean,
-} from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
-import sidebarEventHub from '~/sidebar/event_hub';
+import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
 import introspectionQueryResultData from '~/sidebar/fragmentTypes.json';
 import { fullBoardId } from './boards_util';
 import boardConfigToggle from './config_toggle';
@@ -77,8 +63,6 @@ export default () => {
     initBoardsFilteredSearch(apolloProvider);
   }
 
-  boardsStore.create();
-
   // eslint-disable-next-line @gitlab/no-runtime-template-compiler
   issueBoardsApp = new Vue({
     el: $boardApp,
@@ -116,21 +100,12 @@ export default () => {
     apolloProvider,
     data() {
       return {
-        state: boardsStore.state,
         loading: 0,
-        boardsEndpoint: $boardApp.dataset.boardsEndpoint,
         recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
-        listsEndpoint: $boardApp.dataset.listsEndpoint,
         disabled: parseBoolean($boardApp.dataset.disabled),
-        bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-        detailIssue: boardsStore.detail,
         parent: $boardApp.dataset.parent,
+        detailIssueVisible: false,
       };
-    },
-    computed: {
-      detailIssueVisible() {
-        return Object.keys(this.detailIssue.issue).length;
-      },
     },
     created() {
       this.setInitialBoardData({
@@ -154,129 +129,29 @@ export default () => {
             : null,
         },
       });
-      boardsStore.setEndpoints({
-        boardsEndpoint: this.boardsEndpoint,
-        recentBoardsEndpoint: this.recentBoardsEndpoint,
-        listsEndpoint: this.listsEndpoint,
-        bulkUpdatePath: this.bulkUpdatePath,
-        boardId: $boardApp.dataset.boardId,
-        fullPath: $boardApp.dataset.fullPath,
-      });
-      boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);
-      eventHub.$on('newDetailIssue', this.updateDetailIssue);
-      eventHub.$on('clearDetailIssue', this.clearDetailIssue);
-      sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
+      eventHub.$on('toggleDetailIssue', this.toggleDetailIssue);
     },
     beforeDestroy() {
       eventHub.$off('updateTokens', this.updateTokens);
-      eventHub.$off('newDetailIssue', this.updateDetailIssue);
-      eventHub.$off('clearDetailIssue', this.clearDetailIssue);
-      sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
+      eventHub.$off('toggleDetailIssue', this.toggleDetailIssue);
     },
     mounted() {
       if (!gon?.features?.issueBoardsFilteredSearch) {
-        this.filterManager = new FilteredSearchBoards(
-          boardsStore.filter,
-          true,
-          boardsStore.cantEdit,
-        );
+        this.filterManager = new FilteredSearchBoards({ path: '' }, true, []);
         this.filterManager.setup();
       }
 
       this.performSearch();
-
-      boardsStore.disabled = this.disabled;
     },
     methods: {
       ...mapActions(['setInitialBoardData', 'performSearch', 'setError']),
       updateTokens() {
         this.filterManager.updateTokens();
       },
-      updateDetailIssue(newIssue, multiSelect = false) {
-        const { sidebarInfoEndpoint } = newIssue;
-        if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
-          newIssue.setFetchingState('subscriptions', true);
-          setWeightFetchingState(newIssue, true);
-          setEpicFetchingState(newIssue, true);
-          boardsStore
-            .getIssueInfo(sidebarInfoEndpoint)
-            .then((res) => res.data)
-            .then((data) => {
-              const {
-                subscribed,
-                totalTimeSpent,
-                timeEstimate,
-                humanTimeEstimate,
-                humanTotalTimeSpent,
-                weight,
-                epic,
-                assignees,
-              } = convertObjectPropsToCamelCase(data);
-
-              newIssue.setFetchingState('subscriptions', false);
-              setWeightFetchingState(newIssue, false);
-              setEpicFetchingState(newIssue, false);
-              newIssue.updateData({
-                humanTimeSpent: humanTotalTimeSpent,
-                timeSpent: totalTimeSpent,
-                humanTimeEstimate,
-                timeEstimate,
-                subscribed,
-                weight,
-                epic,
-                assignees,
-              });
-            })
-            .catch(() => {
-              newIssue.setFetchingState('subscriptions', false);
-              setWeightFetchingState(newIssue, false);
-              this.setError({ message: __('An error occurred while fetching sidebar data') });
-            });
-        }
-
-        if (multiSelect) {
-          boardsStore.toggleMultiSelect(newIssue);
-
-          if (boardsStore.detail.issue) {
-            boardsStore.clearDetailIssue();
-            return;
-          }
-
-          return;
-        }
-
-        boardsStore.setIssueDetail(newIssue);
-      },
-      clearDetailIssue(multiSelect = false) {
-        if (multiSelect) {
-          boardsStore.clearMultiSelect();
-        }
-        boardsStore.clearDetailIssue();
-      },
-      toggleSubscription(id) {
-        const { issue } = boardsStore.detail;
-        if (issue.id === id && issue.toggleSubscriptionEndpoint) {
-          issue.setFetchingState('subscriptions', true);
-          boardsStore
-            .toggleIssueSubscription(issue.toggleSubscriptionEndpoint)
-            .then(() => {
-              issue.setFetchingState('subscriptions', false);
-              issue.updateData({
-                subscribed: !issue.subscribed,
-              });
-            })
-            .catch(() => {
-              issue.setFetchingState('subscriptions', false);
-              this.setError({
-                message: __('An error occurred when toggling the notification subscription'),
-              });
-            });
-        }
-      },
-      getNodes(data) {
-        return data[this.parent]?.board?.lists.nodes;
+      toggleDetailIssue(hasSidebar) {
+        this.detailIssueVisible = hasSidebar;
       },
     },
   });

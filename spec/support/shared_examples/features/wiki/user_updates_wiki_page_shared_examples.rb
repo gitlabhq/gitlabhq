@@ -136,6 +136,14 @@ RSpec.shared_examples 'User updates wiki page' do
         expect(find('textarea#wiki_content').value).to eq('Updated Wiki Content')
       end
     end
+
+    context 'when using the content editor' do
+      before do
+        click_button 'Use the new editor'
+      end
+
+      it_behaves_like 'edits content using the content editor'
+    end
   end
 
   context 'when the page is in a subdir', :js do

@@ -6,6 +6,7 @@ import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorError from '~/content_editor/components/content_editor_error.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
+import FormattingBubbleMenu from '~/content_editor/components/formatting_bubble_menu.vue';
 import TopToolbar from '~/content_editor/components/top_toolbar.vue';
 import {
   LOADING_CONTENT_EVENT,
@@ -25,6 +26,7 @@ describe('ContentEditor', () => {
   const findEditorElement = () => wrapper.findByTestId('content-editor');
   const findEditorContent = () => wrapper.findComponent(EditorContent);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findBubbleMenu = () => wrapper.findComponent(FormattingBubbleMenu);
 
   const createWrapper = (propsData = {}) => {
     renderMarkdown = jest.fn();
@@ -131,6 +133,10 @@ describe('ContentEditor', () => {
     it('hides EditorContent component', () => {
       expect(findEditorContent().exists()).toBe(false);
     });
+
+    it('hides formatting bubble menu', () => {
+      expect(findBubbleMenu().exists()).toBe(false);
+    });
   });
 
   describe('when loading content succeeds', () => {
@@ -170,6 +176,10 @@ describe('ContentEditor', () => {
 
     it('displays EditorContent component', () => {
       expect(findEditorContent().exists()).toBe(true);
+    });
+
+    it('displays formatting bubble menu', () => {
+      expect(findBubbleMenu().exists()).toBe(true);
     });
   });
 });

@@ -21,11 +21,6 @@ export default {
   },
   inject: ['canAdminList'],
   props: {
-    lists: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     disabled: {
       type: Boolean,
       required: true,

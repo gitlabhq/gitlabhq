@@ -20,7 +20,11 @@ export default {
 };
 </script>
 <template>
-  <bubble-menu class="gl-shadow gl-rounded-base" :editor="tiptapEditor">
+  <bubble-menu
+    data-testid="formatting-bubble-menu"
+    class="gl-shadow gl-rounded-base"
+    :editor="tiptapEditor"
+  >
     <gl-button-group>
       <toolbar-button
         data-testid="bold"

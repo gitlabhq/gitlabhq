@@ -123,6 +123,7 @@ export default {
       isWarningDismissed: false,
       isLoading: false,
       submitted: false,
+      ccAlertDismissed: false,
     };
   },
   computed: {
@@ -151,7 +152,7 @@ export default {
       return this.form[this.refFullName]?.descriptions ?? {};
     },
     ccRequiredError() {
-      return this.error === CC_VALIDATION_REQUIRED_ERROR;
+      return this.error === CC_VALIDATION_REQUIRED_ERROR && !this.ccAlertDismissed;
     },
   },
   watch: {
@@ -292,6 +293,7 @@ export default {
     },
     createPipeline() {
       this.submitted = true;
+      this.ccAlertDismissed = false;
 
       return axios
         .post(this.pipelinesPath, {
@@ -333,13 +335,17 @@ export default {
       this.warnings = warnings;
       this.totalWarnings = totalWarnings;
     },
+    dismissError() {
+      this.ccAlertDismissed = true;
+      this.error = null;
+    },
   },
 };
 </script>
 
 <template>
   <gl-form @submit.prevent="createPipeline">
-    <cc-validation-required-alert v-if="ccRequiredError" class="gl-pb-5" />
+    <cc-validation-required-alert v-if="ccRequiredError" class="gl-pb-5" @dismiss="dismissError" />
     <gl-alert
       v-else-if="error"
       :title="errorTitle"

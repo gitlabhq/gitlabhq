@@ -4,9 +4,15 @@ require 'spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Pipeline::Metrics do
   describe '.pipeline_creation_step_duration_histogram' do
-    it 'adds the step to the step duration histogram' do
+    around do |example|
       described_class.clear_memoization(:pipeline_creation_step_histogram)
 
+      example.run
+
+      described_class.clear_memoization(:pipeline_creation_step_histogram)
+    end
+
+    it 'adds the step to the step duration histogram' do
       expect(::Gitlab::Metrics).to receive(:histogram)
         .with(
           :gitlab_ci_pipeline_creation_step_duration_seconds,

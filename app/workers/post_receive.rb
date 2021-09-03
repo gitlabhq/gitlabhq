@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-class PostReceive # rubocop:disable Scalability/IdempotentWorker
+class PostReceive
   include ApplicationWorker
 
+  idempotent!
+  deduplicate :none
   data_consistency :always
 
   sidekiq_options retry: 3

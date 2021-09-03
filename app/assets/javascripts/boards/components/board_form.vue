@@ -1,7 +1,6 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
-import ListLabel from '~/boards/models/label';
 import { TYPE_ITERATION, TYPE_MILESTONE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
@@ -289,14 +288,10 @@ export default {
     setBoardLabels(labels) {
       labels.forEach((label) => {
         if (label.set && !this.board.labels.find((l) => l.id === label.id)) {
-          this.board.labels.push(
-            new ListLabel({
-              id: label.id,
-              title: label.title,
-              color: label.color,
-              textColor: label.text_color,
-            }),
-          );
+          this.board.labels.push({
+            ...label,
+            textColor: label.text_color,
+          });
         } else if (!label.set) {
           this.board.labels = this.board.labels.filter((selected) => selected.id !== label.id);
         }
