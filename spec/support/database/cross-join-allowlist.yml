@@ -75,7 +75,6 @@
 - "./ee/spec/requests/api/vulnerability_findings_spec.rb"
 - "./ee/spec/serializers/dashboard_environment_entity_spec.rb"
 - "./ee/spec/serializers/dashboard_environments_serializer_spec.rb"
-- "./ee/spec/serializers/dashboard_operations_project_entity_spec.rb"
 - "./ee/spec/serializers/ee/build_details_entity_spec.rb"
 - "./ee/spec/serializers/merge_request_poll_widget_entity_spec.rb"
 - "./ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb"

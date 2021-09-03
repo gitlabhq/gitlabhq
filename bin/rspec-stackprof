@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'bundler/setup'
+require_relative '../config/bundler_setup'
 require 'stackprof'
 $:.unshift 'spec'
 require 'spec_helper'

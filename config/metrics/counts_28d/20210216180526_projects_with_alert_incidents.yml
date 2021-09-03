@@ -1,8 +1,8 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage_monthly.monitor.projects_with_alert_incidents
-description: 'Count of unique projects with an incident from an alert created in the
-  last month'
+description: Count of unique projects with an incident from an alert created in the
+  last month
 product_section: ops
 product_stage: monitor
 product_group: group::monitor
@@ -19,3 +19,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

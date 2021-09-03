@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: counts.auto_devops_enabled
-description: Projects with Auto DevOps template enabled (excluding implicit Auto DevOps enabled and Auto DevOps template includes)
+description: Projects with Auto DevOps template enabled (excluding implicit Auto DevOps
+  enabled and Auto DevOps template includes)
 product_section: ops
 product_stage: configure
 product_group: group::configure
@@ -18,3 +19,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

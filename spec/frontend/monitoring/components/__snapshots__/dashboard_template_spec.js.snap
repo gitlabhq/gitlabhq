@@ -36,6 +36,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       <gl-dropdown-stub
         category="primary"
         class="flex-grow-1"
+        clearalltext="Clear all"
         data-qa-selector="environments_dropdown"
         headertext=""
         hideheaderborder="true"

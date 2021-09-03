@@ -6,7 +6,7 @@ RSpec.describe ErrorTracking::ErrorsFinder do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.creator }
   let_it_be(:error) { create(:error_tracking_error, project: project) }
-  let_it_be(:error_resolved) { create(:error_tracking_error, :resolved, project: project) }
+  let_it_be(:error_resolved) { create(:error_tracking_error, :resolved, project: project, first_seen_at: 2.hours.ago) }
   let_it_be(:error_yesterday) { create(:error_tracking_error, project: project, first_seen_at: Time.zone.now.yesterday) }
 
   before do
@@ -35,6 +35,7 @@ RSpec.describe ErrorTracking::ErrorsFinder do
     context 'with limit parameter' do
       let(:params) { { limit: '1', sort: 'first_seen' } }
 
+      # Sort by first_seen is DESC by default, so the most recent error is `error`
       it { is_expected.to contain_exactly(error) }
     end
   end

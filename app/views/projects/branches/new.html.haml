@@ -9,7 +9,7 @@
     .gl-alert-body
       = @error
 %h3.page-title
-  New Branch
+  = _('New Branch')
 %hr
 
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form js-requires-input" do

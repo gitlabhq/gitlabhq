@@ -1,11 +1,9 @@
 <script>
 import Vue from 'vue';
-import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
-import { isInViewport } from '~/lib/utils/common_utils';
+import Vuex, { mapActions, mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { DropdownVariant } from './constants';
-import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
@@ -18,7 +16,6 @@ export default {
   store: new Vuex.Store(labelsSelectModule()),
   components: {
     DropdownValue,
-    DropdownButton,
     DropdownContents,
     DropdownValueCollapsed,
     SidebarEditableItem,
@@ -137,7 +134,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['showDropdownContents']),
     ...mapGetters([
       'isDropdownVariantSidebar',
       'isDropdownVariantStandalone',
@@ -149,9 +145,6 @@ export default {
       this.setInitialState({
         selectedLabels,
       });
-    },
-    showDropdownContents(showDropdownContents) {
-      this.setContentIsOnViewport(showDropdownContents);
     },
     isEditing(newVal) {
       if (newVal) {
@@ -190,11 +183,9 @@ export default {
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');
     },
-    setContentIsOnViewport() {
+    showDropdown() {
       this.$nextTick(() => {
-        if (this.$refs.dropdownContents) {
-          this.contentIsOnViewport = isInViewport(this.$refs.dropdownContents.$el);
-        }
+        this.$refs.dropdownContents.showDropdown();
       });
     },
   },
@@ -219,8 +210,7 @@ export default {
         ref="editable"
         :title="__('Labels')"
         :loading="labelsSelectInProgress"
-        @open="setContentIsOnViewport"
-        @close="contentIsOnViewport = true"
+        @open="showDropdown"
       >
         <template #collapsed>
           <dropdown-value
@@ -248,7 +238,6 @@ export default {
           >
             <slot></slot>
           </dropdown-value>
-          <dropdown-button />
           <dropdown-contents
             v-if="edit"
             ref="dropdownContents"
@@ -256,7 +245,6 @@ export default {
             :labels-list-title="labelsListTitle"
             :footer-create-label-title="footerCreateLabelTitle"
             :footer-manage-label-title="footerManageLabelTitle"
-            :render-on-top="!contentIsOnViewport"
             :labels-create-title="labelsCreateTitle"
             :selected-labels="selectedLabels"
             @closeDropdown="collapseDropdown"

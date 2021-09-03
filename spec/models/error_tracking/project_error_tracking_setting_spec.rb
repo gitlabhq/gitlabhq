@@ -478,18 +478,17 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
   describe '#sentry_enabled' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:enabled, :integrated, :feature_flag, :sentry_enabled) do
-      true  | false | false | true
-      true  | true  | false | true
-      true  | true  | true  | false
-      false | false | false | false
+    where(:enabled, :integrated, :sentry_enabled) do
+      true  | false | true
+      true  | true  | false
+      true  | true  | false
+      false | false | false
     end
 
     with_them do
       before do
         subject.enabled = enabled
         subject.integrated = integrated
-        stub_feature_flags(integrated_error_tracking: feature_flag)
       end
 
       it { expect(subject.sentry_enabled).to eq(sentry_enabled) }

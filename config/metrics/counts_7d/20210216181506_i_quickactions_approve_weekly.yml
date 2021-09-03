@@ -13,11 +13,7 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_quickactions_approve
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-    - i_quickactions_approve
+  - i_quickactions_approve
 distribution:
 - ce
 - ee
@@ -25,3 +21,4 @@ tier:
 - free
 - premium
 - ultimate
+milestone: "<13.9"

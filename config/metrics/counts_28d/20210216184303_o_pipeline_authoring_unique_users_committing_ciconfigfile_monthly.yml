@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly
-description: Monthly unique user count doing commits which contains the CI config file
+description: Monthly unique user count doing commits which contains the CI config
+  file
 product_section: ops
 product_stage: verify
 product_group: group::pipeline authoring
@@ -13,7 +14,7 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - o_pipeline_authoring_unique_users_committing_ciconfigfile
+  - o_pipeline_authoring_unique_users_committing_ciconfigfile
 distribution:
 - ee
 - ce
@@ -22,3 +23,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

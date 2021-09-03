@@ -34,7 +34,7 @@
     },
     "milestone": {
       "type": ["string", "null"],
-      "pattern": "^[0-9]+\\.[0-9]+$"
+      "pattern": "^<?[0-9]+\\.[0-9]+$"
     },
     "milestone_removed": {
       "type": ["string", "null"],

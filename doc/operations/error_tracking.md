@@ -123,22 +123,6 @@ settings. By using a GitLab-provided DSN, your application connects to GitLab to
 Those errors are stored in the GitLab database and rendered by the GitLab UI, in the same way as
 Sentry integration.
 
-### Feature flag
-
-The integrated error tracking feature is behind a feature flag that is disabled by default.
-
-To enable it:
-
-```ruby
-Feature.enable(:integrated_error_tracking)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:integrated_error_tracking)
-```
-
 ### Project settings
 
 The feature should be enabled on the project level. However, there is no UI to enable this feature yet.

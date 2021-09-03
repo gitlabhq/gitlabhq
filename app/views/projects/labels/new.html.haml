@@ -3,6 +3,6 @@
 - page_title _("New Label")
 
 %h3.page-title
-  New Label
+  = _('New Label')
 %hr
 = render 'shared/labels/form', url: project_labels_path(@project), back_path: project_labels_path(@project)

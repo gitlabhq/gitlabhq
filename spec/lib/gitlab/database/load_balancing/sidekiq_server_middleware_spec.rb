@@ -62,9 +62,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
       include_examples 'load balancing strategy', expected_strategy
     end
 
-    shared_examples_for 'replica is up to date' do |location, expected_strategy|
+    shared_examples_for 'replica is up to date' do |expected_strategy|
+      let(:wal_locations) { { main: '0/D525E3A8' } }
+
       it 'does not stick to the primary', :aggregate_failures do
-        expect(middleware).to receive(:replica_caught_up?).with(location).and_return(true)
+        expect(load_balancer).to receive(:select_up_to_date_host).with(wal_locations[:main]).and_return(true)
 
         run_middleware do
           expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).not_to be_truthy
@@ -85,30 +87,30 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         include_examples 'stick to the primary', 'primary'
       end
 
-      context 'when database replica location is set' do
-        let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'database_replica_location' => '0/D525E3A8' } }
+      context 'when database wal location is set' do
+        let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'wal_locations' => wal_locations } }
 
         before do
-          allow(middleware).to receive(:replica_caught_up?).and_return(true)
+          allow(load_balancer).to receive(:select_up_to_date_host).with(wal_locations[:main]).and_return(true)
         end
 
-        it_behaves_like 'replica is up to date', '0/D525E3A8', 'replica'
+        it_behaves_like 'replica is up to date', 'replica'
       end
 
-      context 'when database primary location is set' do
+      context 'when legacy wal location is set' do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'database_write_location' => '0/D525E3A8' } }
 
         before do
-          allow(middleware).to receive(:replica_caught_up?).and_return(true)
+          allow(load_balancer).to receive(:select_up_to_date_host).with('0/D525E3A8').and_return(true)
         end
 
-        it_behaves_like 'replica is up to date', '0/D525E3A8', 'replica'
+        it_behaves_like 'replica is up to date', 'replica'
       end
 
       context 'when database location is not set' do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e' } }
 
-        it_behaves_like 'stick to the primary', 'primary_no_wal'
+        include_examples 'stick to the primary', 'primary_no_wal'
       end
     end
 
@@ -167,7 +169,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
               replication_lag!(false)
             end
 
-            it_behaves_like 'replica is up to date', '0/D525E3A8', 'replica_retried'
+            include_examples 'replica is up to date', 'replica_retried'
           end
         end
       end
@@ -178,7 +180,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
 
       context 'when replica is not up to date' do
         before do
-          allow(middleware).to receive(:replica_caught_up?).and_return(false)
+          allow(load_balancer).to receive(:select_up_to_date_host).and_return(false)
         end
 
         include_examples 'stick to the primary', 'primary'

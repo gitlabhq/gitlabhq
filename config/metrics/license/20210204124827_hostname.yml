@@ -7,6 +7,7 @@ product_group: group::product intelligence
 product_category: collection
 value_type: string
 status: data_available
+milestone: "<13.9"
 time_frame: none
 data_source: system
 data_category: standard

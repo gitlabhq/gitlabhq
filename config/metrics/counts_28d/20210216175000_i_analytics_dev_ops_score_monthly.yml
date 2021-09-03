@@ -5,7 +5,7 @@ description: Unique visitors to /admin/dev_ops_report by month
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category: 
+product_category:
 value_type: number
 status: data_available
 time_frame: 28d
@@ -13,10 +13,11 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_analytics_dev_ops_score
+  - i_analytics_dev_ops_score
 distribution:
 - ce
 tier:
 - free
 skip_validation: true
 performance_indicator_type: []
+milestone: "<13.9"

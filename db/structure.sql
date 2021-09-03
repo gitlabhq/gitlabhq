@@ -18269,7 +18269,8 @@ CREATE TABLE projects (
     marked_for_deletion_at date,
     marked_for_deletion_by_user_id integer,
     autoclose_referenced_issues boolean,
-    suggestion_commit_message character varying(255)
+    suggestion_commit_message character varying(255),
+    project_namespace_id bigint
 );
 
 CREATE SEQUENCE projects_id_seq
@@ -26148,6 +26149,8 @@ CREATE INDEX index_projects_on_pending_delete ON projects USING btree (pending_d
 
 CREATE INDEX index_projects_on_pool_repository_id ON projects USING btree (pool_repository_id) WHERE (pool_repository_id IS NOT NULL);
 
+CREATE UNIQUE INDEX index_projects_on_project_namespace_id ON projects USING btree (project_namespace_id);
+
 CREATE INDEX index_projects_on_repository_storage ON projects USING btree (repository_storage);
 
 CREATE INDEX index_projects_on_runners_token ON projects USING btree (runners_token);
@@ -27661,6 +27664,9 @@ ALTER TABLE ONLY terraform_state_versions
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY projects
+    ADD CONSTRAINT fk_71625606ac FOREIGN KEY (project_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

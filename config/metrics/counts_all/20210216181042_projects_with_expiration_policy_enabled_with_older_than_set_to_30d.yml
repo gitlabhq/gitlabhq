@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: counts.projects_with_expiration_policy_enabled_with_older_than_set_to_30d
-description: A count of projects with the cleanup policy set delete tags older than 30 days
+description: A count of projects with the cleanup policy set delete tags older than
+  30 days
 product_section: ops
 product_stage: package
 product_group: group::package
@@ -18,3 +19,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

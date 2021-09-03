@@ -19,3 +19,4 @@ tier:
 skip_validation: true
 performance_indicator_type:
 - smau
+milestone: "<13.9"

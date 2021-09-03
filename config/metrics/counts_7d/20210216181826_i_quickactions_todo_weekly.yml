@@ -1,11 +1,11 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_todo_weekly
-description: Count of WAU using the `/todo` quick action 
+description: Count of WAU using the `/todo` quick action
 product_section: dev
 product_stage: plan
 product_group: group::project management
-product_category: issue_tracking 
+product_category: issue_tracking
 value_type: number
 status: data_available
 time_frame: 7d
@@ -13,11 +13,12 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_quickactions_todo
+  - i_quickactions_todo
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
+milestone: "<13.9"

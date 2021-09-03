@@ -11,8 +11,9 @@ status: data_available
 time_frame: all
 data_source: database
 distribution:
-  - ce
-  - ee
+- ce
+- ee
 tier:
-  - free
-  - premium
+- free
+- premium
+milestone: "<13.9"

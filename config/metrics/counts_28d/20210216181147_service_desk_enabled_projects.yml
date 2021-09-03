@@ -15,6 +15,7 @@ distribution:
 - ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

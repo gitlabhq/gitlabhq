@@ -162,6 +162,7 @@ class Project < ApplicationRecord
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
+  belongs_to :project_namespace, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -1790,7 +1791,9 @@ class Project < ApplicationRecord
   end
 
   def any_online_runners?(&block)
-    online_runners_with_tags.any?(&block)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
+      online_runners_with_tags.any?(&block)
+    end
   end
 
   def valid_runners_token?(token)
@@ -2896,12 +2899,8 @@ class Project < ApplicationRecord
     update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?) if Gitlab::Database.read_write?
   end
 
-  def active_runners_with_tags
-    @active_runners_with_tags ||= active_runners.with_tags
-  end
-
   def online_runners_with_tags
-    @online_runners_with_tags ||= active_runners_with_tags.online
+    @online_runners_with_tags ||= active_runners.with_tags.online
   end
 end
 

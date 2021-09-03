@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_assign_single_weekly
-description: Count of WAU using the `/assign @user1` quick action to assign a single individual to an issuable 
+description: Count of WAU using the `/assign @user1` quick action to assign a single
+  individual to an issuable
 product_section: dev
 product_stage: plan
 product_group: group::project management
@@ -13,12 +14,12 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_quickactions_assign_single
+  - i_quickactions_assign_single
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
-
+milestone: "<13.9"

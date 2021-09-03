@@ -33,11 +33,6 @@ Gitlab::Seeder.quiet do
   Project.not_mass_generated.visible_to_user(admin_user).sample(1).each do |project|
     puts "\nActivating integrated error tracking for the '#{project.full_path}' project"
 
-    unless Feature.enabled?(:integrated_error_tracking, project)
-      puts '- enabling feature flag'
-      Feature.enable(:integrated_error_tracking, project)
-    end
-
     puts '- enabling in settings'
     project.error_tracking_setting || project.create_error_tracking_setting
     project.error_tracking_setting.update!(enabled: true, integrated: true)

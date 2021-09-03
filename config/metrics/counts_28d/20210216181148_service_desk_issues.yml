@@ -5,7 +5,7 @@ description: Count of service desk issues
 product_section: dev
 product_stage: plan
 product_group: group::plan
-product_category: 
+product_category:
 value_type: number
 status: data_available
 time_frame: 28d
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

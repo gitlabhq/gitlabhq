@@ -14,3 +14,4 @@ distribution:
 - ee
 tier:
 - premium
+milestone: "<13.9"

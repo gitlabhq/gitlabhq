@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage_monthly.verify.ci_pipelines
-description: "Distinct users triggering pipelines in a month"
+description: Distinct users triggering pipelines in a month
 product_section: ops
 product_stage: verify
 product_group: group::pipeline execution
@@ -22,3 +22,4 @@ performance_indicator_type:
 - smau
 - gmau
 - paid_gmau
+milestone: "<13.9"

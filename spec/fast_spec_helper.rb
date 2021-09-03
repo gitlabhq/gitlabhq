@@ -7,7 +7,7 @@ if $".include?(File.expand_path('spec_helper.rb', __dir__))
   return
 end
 
-require 'bundler/setup'
+require_relative '../config/bundler_setup'
 
 ENV['GITLAB_ENV'] = 'test'
 ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'

@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: counts.projects_with_expiration_policy_enabled_with_older_than_unset
-description: A count of projects with the cleanup policy with the number of tags to delete unset
+description: A count of projects with the cleanup policy with the number of tags to
+  delete unset
 product_section: ops
 product_stage: package
 product_group: group::package
@@ -18,3 +19,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

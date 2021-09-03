@@ -9,10 +9,10 @@ product_category:
 value_type: number
 status: removed
 time_frame: 7d
-data_source: redis_hll
 data_source:
 distribution:
 - ce
 tier:
 - free
 skip_validation: true
+milestone: "<13.9"

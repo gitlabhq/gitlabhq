@@ -32,6 +32,7 @@ itself: # project
     - pages_https_only
     - pending_delete
     - pool_repository_id
+    - project_namespace_id
     - pull_mirror_available_overridden
     - pull_mirror_branch_prefix
     - remote_mirror_available_overridden

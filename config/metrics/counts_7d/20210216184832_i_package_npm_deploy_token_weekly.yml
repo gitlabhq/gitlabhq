@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_npm_deploy_token_weekly
-description: A weekly count of npm packages published to the registry using a deploy token
+description: A weekly count of npm packages published to the registry using a deploy
+  token
 product_section: ops
 product_stage: package
 product_group: group::package
@@ -13,7 +14,7 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_package_npm_deploy_token
+  - i_package_npm_deploy_token
 distribution:
 - ee
 - ce
@@ -22,3 +23,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

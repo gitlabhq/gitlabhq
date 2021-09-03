@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: counts.package_events_i_package_pull_package_by_guest
-description: A count of packages that have been downloaded from the package registry by a guest
+description: A count of packages that have been downloaded from the package registry
+  by a guest
 product_section: ops
 product_stage: package
 product_group: group::package
@@ -18,3 +19,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

@@ -18,7 +18,7 @@ export default {
       default: false,
     },
   },
-  render(h, { props, listeners }) {
+  render(h, { props }) {
     const { label, highlight, isLabelSet } = props;
 
     const labelColorBox = h('span', {
@@ -53,18 +53,7 @@ export default {
 
     const labelTitle = h('span', label.title);
 
-    const labelLink = h(
-      GlLink,
-      {
-        class: 'gl-display-flex gl-align-items-center label-item gl-text-black-normal',
-        on: {
-          click: () => {
-            listeners.clickLabel(label);
-          },
-        },
-      },
-      [noIcon, checkedIcon, labelColorBox, labelTitle],
-    );
+    const labelLink = h(GlLink, [noIcon, checkedIcon, labelColorBox, labelTitle]);
 
     return h(
       'li',

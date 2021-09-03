@@ -128,6 +128,7 @@ excluded_attributes:
     - :name
     - :path
     - :namespace_id
+    - :project_namespace_id
     - :creator_id
     - :pool_repository_id
     - :import_url

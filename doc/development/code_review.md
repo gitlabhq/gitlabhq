@@ -10,7 +10,7 @@ This guide contains advice and best practices for performing code review, and
 having your code reviewed.
 
 All merge requests for GitLab CE and EE, whether written by a GitLab team member
-or a volunteer contributor, must go through a code review process to ensure the
+or a wider community member, must go through a code review process to ensure the
 code is effective, understandable, maintainable, and secure.
 
 ## Getting your merge request reviewed, approved, and merged
@@ -35,7 +35,7 @@ If you need assistance with security scans or comments, feel free to include the
 Application Security Team (`@gitlab-com/gl-security/appsec`) in the review.
 
 Depending on the areas your merge request touches, it must be **approved** by one
-or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
+or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
 
 For approvals, we use the approval functionality found in the merge request
 widget. For reviewers, we use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.
@@ -46,9 +46,11 @@ more than one approval, the last maintainer to review and approve merges it.
 
 ### Domain experts
 
-Domain experts are team members who have substantial experience with a specific technology, product feature or area of the codebase. Team members are encouraged to self-identify as domain experts and add it to their [team profile](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team.yml).
+Domain experts are team members who have substantial experience with a specific technology,
+product feature, or area of the codebase. Team members are encouraged to self-identify as
+domain experts and add it to their [team profiles](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team_members/person/README.md).
 
-When self-identifying as a domain expert, it is recommended to assign the MR changing the `team.yml` to be merged by an already established Domain Expert or a corresponding Engineering Manager.
+When self-identifying as a domain expert, it is recommended to assign the MR changing the `.yml` file to be merged by an already established Domain Expert or a corresponding Engineering Manager.
 
 We make the following assumption with regards to automatically being considered a domain expert:
 
@@ -117,11 +119,12 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes documentation changes, it must be **approved
    by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)**,
    based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+1. If your merge request includes changes to development guidelines, follow the [review process](index.md#development-guidelines-review) and get the approvals accordingly.
 1. If your merge request includes end-to-end **and** non-end-to-end changes (*4*), it must be **approved
    by a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors)**.
 1. If your merge request only includes end-to-end changes (*4*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa)**
 1. If your merge request includes a new or updated [application limit](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**.
-1. If your merge request includes Product Intelligence (telemetry or analytics) changes, it should be reviewed and approved by a [Product Intelligence engineer](https://gitlab.com/gitlab-org/growth/product_intelligence/engineers).
+1. If your merge request includes Product Intelligence (telemetry or analytics) changes, it should be reviewed and approved by a [Product Intelligence engineer](https://gitlab.com/gitlab-org/growth/product-intelligence/engineers).
 1. If your merge request includes an addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa)**.
 1. If your merge request introduces a new service to GitLab (Puma, Sidekiq, Gitaly are examples), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**. See the [process for adding a service component to GitLab](adding_service_component.md) for details.
 
@@ -142,7 +145,7 @@ View the updated documentation regarding [internal application security reviews]
 
 The responsibility to find the best solution and implement it lies with the
 merge request author. The author or [directly responsible individual](https://about.gitlab.com/handbook/people-group/directly-responsible-individuals/)
-will stay assigned to the merge request as the assignee throughout
+(DRI) stays assigned to the merge request as the assignee throughout
 the code review lifecycle. If you are unable to set yourself as an assignee, ask a [reviewer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer) to do this for you.
 
 Before requesting a review from a maintainer to approve and merge, they
@@ -169,7 +172,7 @@ database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
 
 If an author is unsure if a merge request needs a [domain expert's](#domain-experts) opinion,
-that indicates it does. Without it it's unlikely they have the required level of confidence in their
+then that indicates it does. Without it, it's unlikely they have the required level of confidence in their
 solution.
 
 Before the review, the author is requested to submit comments on the merge
@@ -249,7 +252,7 @@ without duly verifying them.
 
 Note that certain Merge Requests may target a stable branch. These are rare
 events. These types of Merge Requests cannot be merged by the Maintainer.
-Instead these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
+Instead, these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
 
 After merging, a maintainer should stay as the reviewer listed on the merge request.
 
@@ -305,8 +308,8 @@ first time.
   codebase. Thorough descriptions help all reviewers understand your request
   and test effectively.
 - If you know your change depends on another being merged first, note it in the
-  description and set an [merge request dependency](../user/project/merge_requests/merge_request_dependencies.md).
-- Be grateful for the reviewer's suggestions. (`Good call. I'll make that change.`)
+  description and set a [merge request dependency](../user/project/merge_requests/merge_request_dependencies.md).
+- Be grateful for the reviewer's suggestions. ("Good call. I'll make that change.")
 - Don't take it personally. The review is of the code, not of you.
 - Explain why the code exists. ("It's like that because of these reasons. Would
   it be more clear if I rename this class/file/method/variable?")
@@ -425,13 +428,13 @@ WARNING:
 - Start a new merge request pipeline with the `Run pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).
   Note that:
-  - If **[main is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
+  - If **[the default branch is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
     do not merge the merge request** except for
     [very specific cases](https://about.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
   - If the latest pipeline was created before the merge request was approved, start a new pipeline to ensure that full RSpec suite has been run. You may skip this step only if the merge request does not contain any backend change.
   - If the **latest [Pipeline for Merged Results](../ci/pipelines/pipelines_for_merged_results.md)** finished less than 2 hours ago, you
-    might merge without starting a new pipeline as the merge request is close
+    may merge without starting a new pipeline as the merge request is close
     enough to `main`.
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over
   subsequent revisions for anything that would be spotted after that.
@@ -650,7 +653,3 @@ A good example of collaboration on an MR touching multiple parts of the codebase
 ### Credits
 
 Largely based on the [`thoughtbot` code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
-
----
-
-[Return to Development documentation](index.md)

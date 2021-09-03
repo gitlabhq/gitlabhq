@@ -370,6 +370,7 @@ project:
 - value_streams
 - group
 - namespace
+- project_namespace
 - management_clusters
 - boards
 - last_event

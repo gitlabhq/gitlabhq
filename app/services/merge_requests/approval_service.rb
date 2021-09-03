@@ -35,7 +35,7 @@ module MergeRequests
     end
 
     def save_approval(approval)
-      Approval.safe_ensure_unique do # rubocop:disable Performance/ActiveRecordSubtransactionMethods
+      Approval.safe_ensure_unique do
         approval.save
       end
     end

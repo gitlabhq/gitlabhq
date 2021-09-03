@@ -259,6 +259,7 @@ export function mountSidebarLabels() {
       initiallySelectedLabels: JSON.parse(el.dataset.selectedLabels),
       variant: DropdownVariant.Sidebar,
       canUpdate: parseBoolean(el.dataset.canEdit),
+      isClassicSidebar: true,
     },
     render: (createElement) => createElement(SidebarLabels),
   });

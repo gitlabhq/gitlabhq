@@ -127,6 +127,8 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             >
               <!---->
                
+              <!---->
+               
               <div
                 class="gl-new-dropdown-contents"
               >
@@ -252,6 +254,8 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             <div
               class="gl-new-dropdown-inner"
             >
+              <!---->
+               
               <!---->
                
               <div

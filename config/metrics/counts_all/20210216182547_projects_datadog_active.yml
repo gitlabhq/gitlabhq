@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: counts.projects_datadog_active
-description: 'Count of projects with active integrations for Datadog'
+description: Count of projects with active integrations for Datadog
 product_section: dev
 product_stage: ecosystem
 product_group: group::integrations
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

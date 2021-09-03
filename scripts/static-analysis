@@ -36,7 +36,7 @@ class StaticAnalysis
     Task.new(%w[bin/rake lint:haml], 562),
     # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
     # the cache would prevent these files from being created.
-    Task.new(%w[bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false], 800),
+    Task.new(%w[bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false], 400),
     (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 360) : nil),
     Task.new(%w[yarn run lint:eslint:all], 312),
     Task.new(%w[bundle exec rubocop --parallel], 60),

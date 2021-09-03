@@ -5,7 +5,7 @@ description: Count of unique users performing events related to the incident man
 product_section: ops
 product_stage: monitor
 product_group: group::monitor
-product_category: 
+product_category:
 value_type: number
 status: data_available
 time_frame: 7d
@@ -35,3 +35,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

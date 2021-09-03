@@ -8,7 +8,7 @@ require_relative '../config/initializers/0_inject_enterprise_edition_module'
 
 require_relative 'lib/gitlab'
 
-require 'bundler/setup'
+require_relative '../config/bundler_setup'
 Bundler.require(:default)
 
 module QA

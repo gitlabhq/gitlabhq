@@ -46,6 +46,8 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
       >
         <!---->
          
+        <!---->
+         
         <div
           class="gl-new-dropdown-contents"
         >

@@ -48,14 +48,6 @@ RSpec.describe API::ErrorTrackingCollector do
       it_behaves_like 'not found'
     end
 
-    context 'feature flag is disabled' do
-      before do
-        stub_feature_flags(integrated_error_tracking: false)
-      end
-
-      it_behaves_like 'not found'
-    end
-
     context 'auth headers are missing' do
       let(:headers) { {} }
 

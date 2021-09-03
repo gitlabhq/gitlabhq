@@ -1,7 +1,10 @@
 ---
 data_category: optional
 key_path: search_unique_visits.search_unique_visits_for_any_target_monthly
-description: Total unique users for i_search_total, i_search_advanced, i_search_paid for recent 28 days. This metric is redundant because advanced will be a subset of paid and paid will be a subset of total. i_search_total is more appropriate if you just want the total
+description: Total unique users for i_search_total, i_search_advanced, i_search_paid
+  for recent 28 days. This metric is redundant because advanced will be a subset of
+  paid and paid will be a subset of total. i_search_total is more appropriate if you
+  just want the total
 product_section: enablement
 product_stage: enablement
 product_group: group::global search
@@ -13,9 +16,9 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_search_total
-    - i_search_advanced
-    - i_search_paid
+  - i_search_total
+  - i_search_advanced
+  - i_search_paid
 distribution:
 - ce
 - ee
@@ -23,3 +26,4 @@ tier:
 - free
 - premium
 - ultimate
+milestone: "<13.9"

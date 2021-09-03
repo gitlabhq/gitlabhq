@@ -11,6 +11,7 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
      
     <gl-dropdown-stub
       category="primary"
+      clearalltext="Clear all"
       headertext=""
       hideheaderborder="true"
       size="medium"

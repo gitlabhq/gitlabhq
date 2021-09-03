@@ -1,7 +1,8 @@
 ---
 data_category: optional
 key_path: counts.package_events_i_package_push_package_by_guest
-description: A count of packages that have been published to the package registry by a Guest
+description: A count of packages that have been published to the package registry
+  by a Guest
 product_section: ops
 product_stage: package
 product_group: group::package
@@ -17,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+milestone: "<13.9"

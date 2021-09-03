@@ -974,10 +974,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.4.0":
-  version "32.4.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.4.0.tgz#6186c4b2c6a23599036208d48d59718b922eadb4"
-  integrity sha512-+f0jAx1aH02z1cVn6jB9PjcAIIy5qVHBzLlxe1Xd3mnhH4G/z4aYTkThhgI2UCvBckSNuVEPktDvN1N9vD+63g==
+"@gitlab/ui@32.5.0":
+  version "32.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.5.0.tgz#c8d5e4bff1bc69c03831a3d5f086f8aaead703a4"
+  integrity sha512-uCctMjhRg5AD5eTXI1mdoZTgZ2jUaNlDXknm1drSaYjxwyHDPtRZ24wcBK/mT3Sj03naXifhTkVdjUz8RZmDCw==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.18.1"
