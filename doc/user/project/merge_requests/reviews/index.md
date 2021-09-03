@@ -12,9 +12,10 @@ type: index, reference
 
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
-to propose changes. Your team leaves [comments](../../../discussions/index.md), and
-makes [code suggestions](suggestions.md) you can accept from the user interface.
-When your work is reviewed, your team members can choose to accept or reject it.
+to propose changes. Your team leaves [comments](../../../discussions/index.md) on
+your merge request, and makes [code suggestions](suggestions.md) you can accept
+from the user interface. When your work is reviewed, your team members can choose
+to accept or reject it.
 
 ## Review a merge request
 
@@ -28,7 +29,9 @@ To start your review:
 1. Go to the merge request you want to review, and select the **Changes** tab.
    To learn more about navigating the diffs displayed in this tab, read
    [Changes tab in merge requests](../changes.md).
-1. Select a line of code. In GitLab version 13.2 and later, you can [highlight a set of lines](#comment-on-multiple-lines).
+1. Select the **{comment}** **comment** icon in the gutter to expand the diff lines
+   and display a comment box. In GitLab version 13.2 and later, you can
+   [select multiple lines](#comment-on-multiple-lines).
 1. Write your first comment, and select **Start a review** below your comment:
    ![Starting a review](img/mr_review_start.png)
 1. Continue adding comments to lines of code, and select the appropriate button after
@@ -40,7 +43,13 @@ To start your review:
    The comment shows the actions to perform after publication, but does not perform them
    until you submit your review.
 1. When your review is complete, you can [submit the review](#submit-a-review). Your comments
-   are now visible, and any quick actions included your comments are performed.
+   are now visible, and any [quick actions](../../quick_actions.md) included in
+   your comments are performed.
+
+[In GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/292936),
+if you [approve a merge request](../approvals/index.md#approve-a-merge-request) and
+are shown in the reviewer list, a green check mark **{check-circle-filled}**
+displays next to your name.
 
 ### Submit a review
 
@@ -57,7 +66,7 @@ When you submit your review, GitLab:
   review comments attached. Replying to this email creates a new comment on the merge request.
 - Perform any quick actions you added to your review comments.
 
-### Resolving/Unresolving threads
+### Resolve or unresolve thread with a comment
 
 Review comments can also resolve or unresolve [resolvable threads](../../../discussions/index.md#resolve-a-thread)).
 When replying to a comment, a checkbox is displayed to resolve or unresolve
@@ -72,7 +81,7 @@ comment itself.
 
 ![Unresolve status](img/mr_review_unresolve.png)
 
-### Adding a new comment
+### Add a new comment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
 
@@ -97,7 +106,7 @@ This example shows reviewers and approval rules in a merge request sidebar:
 
 ![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
 
-### Requesting a new review
+### Request a new review
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
 
@@ -112,13 +121,6 @@ the author of the merge request can request a new review from the reviewer:
 GitLab creates a new [to-do item](../../../todos.md) for the reviewer, and sends
 them a notification email.
 
-#### Approval status
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292936) in GitLab 13.10.
-
-If a user in the reviewer list has approved the merge request, a green tick symbol is
-shown to the right of their name.
-
 ## Semi-linear history merge requests
 
 A merge commit is created for every merge, but the branch is only merged if
@@ -130,18 +132,7 @@ succeeded, the target branch build also succeeds after the merge.
 1. In the **Merge method** section, select **Merge commit with semi-linear history**.
 1. Select **Save changes**.
 
-## Perform inline code reviews
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13950) in GitLab 11.5.
-
-In a merge request, you can leave comments in any part of the file being changed.
-In the merge request Diff UI, you can:
-
-- **Comment on a single line**: Select the **{comment}** **comment** icon in the
-  gutter to expand the diff lines and display a comment box.
-- [**Comment on multiple lines**](#comment-on-multiple-lines).
-
-### Comment on multiple lines
+## Comment on multiple lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49875) click-and-drag features in GitLab 13.8.

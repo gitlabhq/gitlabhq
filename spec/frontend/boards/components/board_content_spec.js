@@ -7,6 +7,7 @@ import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
+import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
 import { mockLists, mockListsWithModel } from '../mock_data';
 
 Vue.use(Vuex);
@@ -23,6 +24,7 @@ describe('BoardContent', () => {
     isShowingEpicsSwimlanes: false,
     boardLists: mockLists,
     error: undefined,
+    issuableType: 'issue',
   };
 
   const createStore = (state = defaultState) => {
@@ -51,21 +53,37 @@ describe('BoardContent', () => {
     });
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('renders a BoardColumn component per list', () => {
-    expect(wrapper.findAllComponents(BoardColumn)).toHaveLength(mockListsWithModel.length);
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders a BoardColumn component per list', () => {
+      expect(wrapper.findAllComponents(BoardColumn)).toHaveLength(mockListsWithModel.length);
+    });
+
+    it('renders BoardContentSidebar', () => {
+      expect(wrapper.find(BoardContentSidebar).exists()).toBe(true);
+    });
+
+    it('does not display EpicsSwimlanes component', () => {
+      expect(wrapper.find(EpicsSwimlanes).exists()).toBe(false);
+      expect(wrapper.find(GlAlert).exists()).toBe(false);
+    });
   });
 
-  it('does not display EpicsSwimlanes component', () => {
-    expect(wrapper.find(EpicsSwimlanes).exists()).toBe(false);
-    expect(wrapper.find(GlAlert).exists()).toBe(false);
+  describe('when issuableType is not issue', () => {
+    beforeEach(() => {
+      createComponent({ state: { issuableType: 'foo' } });
+    });
+
+    it('does not render BoardContentSidebar', () => {
+      expect(wrapper.find(BoardContentSidebar).exists()).toBe(false);
+    });
   });
 
   describe('can admin list', () => {

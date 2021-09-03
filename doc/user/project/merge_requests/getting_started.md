@@ -65,7 +65,7 @@ request's page at the top-right side:
 After you have created the merge request, you can also:
 
 - [Discuss](../../discussions/index.md) your implementation with your team in the merge request thread.
-- [Perform inline code reviews](reviews/index.md#perform-inline-code-reviews).
+- [Perform inline code reviews](reviews/index.md).
 - Add [merge request dependencies](merge_request_dependencies.md) to restrict it to be merged only when other merge requests have been merged. **(PREMIUM)**
 - Preview continuous integration [pipelines on the merge request widget](widgets.md).
 - Preview how your changes look directly on your deployed application with [Review Apps](widgets.md#live-preview-with-review-apps).

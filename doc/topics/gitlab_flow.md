@@ -303,13 +303,19 @@ Sharing your work before it's complete also allows for discussion and feedback a
 
 ## How to write a good commit message
 
-![Good and bad commit message](img/gitlab_flow_good_commit.png)
-
 A commit message should reflect your intention, not just the contents of the commit.
-You can see the changes in a commit, so the commit message should explain why you made those changes.
+You can see the changes in a commit, so the commit message should explain why you made those changes:
+
+```shell
+# This commit message doesn't give enough information
+git commit -m 'Improve XML generation'
+
+# These commit messages clearly state the intent of the commit
+git commit -m 'Properly escape special characters in XML generation'
+```
+
 An example of a good commit message is: "Combine templates to reduce duplicate code in the user views."
 The words "change," "improve," "fix," and "refactor" don't add much information to a commit message.
-For example, "Improve XML generation" could be better written as "Properly escape special characters in XML generation."
 For more information about formatting commit messages, please see this excellent [blog post by Tim Pope](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 To add more context to a commit message, consider adding information regarding the

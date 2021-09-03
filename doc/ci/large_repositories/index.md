@@ -5,11 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Optimizing GitLab for large repositories
+# Optimize GitLab for large repositories **(FREE)**
 
 Large repositories consisting of more than 50k files in a worktree
-often require special consideration because of
-the time required to clone and check out.
+may require more optimizations beyond
+[pipeline efficiency](../pipelines/pipeline_efficiency.md)
+because of the time required to clone and check out.
 
 GitLab and GitLab Runner handle this scenario well
 but require optimized configuration to efficiently perform its
