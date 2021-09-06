@@ -15,13 +15,10 @@ module Gitlab
       end
 
       def schedule_next_job
-        # We process jobs in reverse order, so that (hopefully) we are less
-        # likely to process jobs that the regular background migration job is
-        # also processing.
         next_job = Database::BackgroundMigrationJob
           .for_migration_class('MigrateMergeRequestDiffCommitUsers')
           .pending
-          .last
+          .first
 
         return unless next_job
 

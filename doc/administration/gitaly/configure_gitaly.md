@@ -340,6 +340,12 @@ disable enforcement. For more information, see the documentation on configuring
 1. Run `sudo -u git /home/git/gitaly/gitaly-hooks check /home/git/gitaly/config.toml`
    to confirm that Gitaly can perform callbacks to the GitLab internal API.
 
+WARNING:
+If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
+default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
+Copying this file causes GitLab to use the [Rugged patches](index.md#direct-access-to-git-in-gitlab) for repositories hosted on the Gitaly server,
+leading to `Error creating pipeline` and `Commit not found` errors, or stale data.
+
 ### Configure Gitaly clients
 
 As the final step, you must update Gitaly clients to switch from using local Gitaly service to use

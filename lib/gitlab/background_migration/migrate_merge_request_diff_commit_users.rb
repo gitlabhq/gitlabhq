@@ -14,7 +14,7 @@ module Gitlab
 
       # The number of rows in merge_request_diff_commits to get in a single
       # query.
-      COMMIT_ROWS_PER_QUERY = 10_000
+      COMMIT_ROWS_PER_QUERY = 1_000
 
       # The number of rows in merge_request_diff_commits to update in a single
       # query.

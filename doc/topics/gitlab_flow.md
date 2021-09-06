@@ -16,9 +16,16 @@ It combines [feature-driven development](https://en.wikipedia.org/wiki/Feature-d
 
 Organizations coming to Git from other version control systems frequently find it hard to develop a productive workflow.
 This article describes GitLab flow, which integrates the Git workflow with an issue tracking system.
-It offers a transparent and effective way to work with Git.
+It offers a transparent and effective way to work with Git:
 
-![Four stages (working copy, index, local repository, remote repository) and three steps between them](img/gitlab_flow_four_stages.png)
+```mermaid
+graph LR
+    subgraph Git workflow
+    A[Working copy] --> |git add| B[Index]
+    B --> |git commit| C[Local repository]
+    C --> |git push| D[Remote repository]
+    end
+```
 
 When converting to Git, you have to get used to the fact that it takes three steps to share a commit with colleagues.
 Most version control systems have only one step: committing from the working copy to a shared server.

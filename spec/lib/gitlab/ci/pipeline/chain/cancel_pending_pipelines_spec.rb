@@ -44,6 +44,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
         expect(build_statuses(pipeline)).to contain_exactly('pending')
       end
 
+      it 'cancels the builds with 2 queries to avoid query timeout' do
+        second_query_regex = /WHERE "ci_pipelines"\."id" = \d+ AND \(NOT EXISTS/
+        recorder = ActiveRecord::QueryRecorder.new { perform }
+        second_query = recorder.occurrences.keys.filter { |occ| occ =~ second_query_regex }
+
+        expect(second_query).to be_one
+      end
+
       context 'when the previous pipeline has a child pipeline' do
         let(:child_pipeline) { create(:ci_pipeline, child_of: prev_pipeline) }
 

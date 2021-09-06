@@ -443,6 +443,15 @@ When possible, try to avoid acronyms in headings.
   - List item 2
   ```
 
+### Comments
+
+To embed comments within Markdown, use standard HTML comments that are not rendered
+when published. Example:
+
+```html
+<!-- This is a comment that is not rendered -->
+```
+
 ### Emphasis
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).

@@ -35,8 +35,10 @@ module QA
           end
 
           def has_number_of_files?(snippet_title, number)
-            within_element(:snippet_link, snippet_title: snippet_title) do
-              has_element?(:snippet_file_count_content, snippet_files: number)
+            retry_until(max_attempts: 5, reload: true, sleep_interval: 1) do # snippet statistics computation can take a few moments
+              within_element(:snippet_link, snippet_title: snippet_title) do
+                has_element?(:snippet_file_count_content, snippet_files: number, wait: 5)
+              end
             end
           end
         end

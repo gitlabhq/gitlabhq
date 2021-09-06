@@ -107,15 +107,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_8485e97c00e3() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."source_job_id_convert_to_bigint" := NEW."source_job_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_8487d4de3e7b() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -24813,6 +24804,8 @@ CREATE UNIQUE INDEX index_dast_site_profiles_pipelines_on_ci_pipeline_id ON dast
 
 CREATE UNIQUE INDEX index_dast_site_token_on_project_id_and_url ON dast_site_tokens USING btree (project_id, url);
 
+CREATE UNIQUE INDEX index_dast_site_token_on_token ON dast_site_tokens USING btree (token);
+
 CREATE INDEX index_dast_site_tokens_on_project_id ON dast_site_tokens USING btree (project_id);
 
 CREATE INDEX index_dast_site_validations_on_dast_site_token_id ON dast_site_validations USING btree (dast_site_token_id);
@@ -27326,8 +27319,6 @@ CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_
 CREATE TRIGGER trigger_542d6c2ad72e BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_542d6c2ad72e();
 
 CREATE TRIGGER trigger_77f5e1d20482 BEFORE INSERT OR UPDATE ON deployments FOR EACH ROW EXECUTE FUNCTION trigger_77f5e1d20482();
-
-CREATE TRIGGER trigger_8485e97c00e3 BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_8485e97c00e3();
 
 CREATE TRIGGER trigger_8487d4de3e7b BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_8487d4de3e7b();
 

@@ -183,6 +183,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.where_not_sha' do
+    let_it_be(:pipeline) { create(:ci_pipeline, sha: 'abcx') }
+    let_it_be(:pipeline_2) { create(:ci_pipeline, sha: 'abc') }
+
+    let(:sha) { 'abc' }
+
+    subject { described_class.where_not_sha(sha) }
+
+    it 'returns the pipeline without the specified sha' do
+      is_expected.to contain_exactly(pipeline)
+    end
+
+    context 'when argument is array' do
+      let(:sha) { %w[abc abcx] }
+
+      it 'returns the pipelines without the specified shas' do
+        pipeline_3 = create(:ci_pipeline, sha: 'abcy')
+        is_expected.to contain_exactly(pipeline_3)
+      end
+    end
+  end
+
   describe '.for_source_sha' do
     subject { described_class.for_source_sha(source_sha) }
 

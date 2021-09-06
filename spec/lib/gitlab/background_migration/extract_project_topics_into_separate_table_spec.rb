@@ -21,14 +21,16 @@ RSpec.describe Gitlab::BackgroundMigration::ExtractProjectTopicsIntoSeparateTabl
     tagging_2 = taggings.create!(taggable_type: 'Project', taggable_id: project.id, context: 'topics', tag_id: tag_2.id)
     other_tagging = taggings.create!(taggable_type: 'Other', taggable_id: project.id, context: 'topics', tag_id: tag_1.id)
     tagging_3 = taggings.create!(taggable_type: 'Project', taggable_id: project.id, context: 'topics', tag_id: tag_3.id)
+    tagging_4 = taggings.create!(taggable_type: 'Project', taggable_id: -1, context: 'topics', tag_id: tag_1.id)
 
-    subject.perform(tagging_1.id, tagging_3.id)
+    subject.perform(tagging_1.id, tagging_4.id)
 
     # Tagging records
     expect { tagging_1.reload }.to raise_error(ActiveRecord::RecordNotFound)
     expect { tagging_2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     expect { other_tagging.reload }.not_to raise_error(ActiveRecord::RecordNotFound)
     expect { tagging_3.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    expect { tagging_4.reload }.to raise_error(ActiveRecord::RecordNotFound)
 
     # Topic records
     topic_1 = topics.find_by(name: 'Topic1')

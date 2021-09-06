@@ -287,6 +287,17 @@ module QA
           raise "Rebase did not appear to be successful" unless success
         end
 
+        def merge_immediately!
+          merge_moment_dropdown_found = has_element?(:merge_moment_dropdown, wait: 0)
+
+          if merge_moment_dropdown_found
+            click_element(:merge_moment_dropdown)
+            click_element(:merge_immediately_menu_item)
+          else
+            click_element(:merge_button)
+          end
+        end
+
         def try_to_merge!
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible

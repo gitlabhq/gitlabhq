@@ -26,12 +26,21 @@ module Gitlab
         belongs_to :topic
       end
 
+      # Temporary AR table for projects
+      class Project < ActiveRecord::Base
+        self.table_name = 'projects'
+      end
+
       def perform(start_id, stop_id)
         Tagging.includes(:tag).where(taggable_type: 'Project', id: start_id..stop_id).each do |tagging|
-          topic = Topic.find_or_create_by(name: tagging.tag.name)
-          project_topic = ProjectTopic.find_or_create_by(project_id: tagging.taggable_id, topic: topic)
+          if Project.exists?(id: tagging.taggable_id)
+            topic = Topic.find_or_create_by(name: tagging.tag.name)
+            project_topic = ProjectTopic.find_or_create_by(project_id: tagging.taggable_id, topic: topic)
 
-          tagging.delete if project_topic.persisted?
+            tagging.delete if project_topic.persisted?
+          else
+            tagging.delete
+          end
         end
 
         mark_job_as_succeeded(start_id, stop_id)

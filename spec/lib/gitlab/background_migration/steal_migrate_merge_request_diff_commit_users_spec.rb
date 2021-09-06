@@ -23,7 +23,7 @@ RSpec.describe Gitlab::BackgroundMigration::StealMigrateMergeRequestDiffCommitUs
   end
 
   describe '#schedule_next_job' do
-    it 'schedules the next job in reverse order' do
+    it 'schedules the next job in ascending order' do
       Gitlab::Database::BackgroundMigrationJob.create!(
         class_name: 'MigrateMergeRequestDiffCommitUsers',
         arguments: [10, 20]
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::BackgroundMigration::StealMigrateMergeRequestDiffCommitUs
 
       expect(BackgroundMigrationWorker)
         .to receive(:perform_in)
-        .with(5.minutes, 'StealMigrateMergeRequestDiffCommitUsers', [40, 50])
+        .with(5.minutes, 'StealMigrateMergeRequestDiffCommitUsers', [10, 20])
 
       migration.schedule_next_job
     end

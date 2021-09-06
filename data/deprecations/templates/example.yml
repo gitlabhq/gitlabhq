@@ -10,8 +10,8 @@
 #
 # Please delete this line and above before submitting your merge request.
 
-- name: # The name of the feature to be deprecated
-  removal_milestone: # XX.YY format - the milestone when this feature is planned to be removed
+- name: "Feature name" # The name of the feature to be deprecated
+  removal_milestone: "XX.YY" # the milestone when this feature is planned to be removed
   body: | # Do not modify this line, instead modify the lines below.
     <!-- START OF BODY COMMENT
 
