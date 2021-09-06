@@ -11567,6 +11567,7 @@ CREATE TABLE ci_job_artifacts (
     file_location smallint,
     id bigint NOT NULL,
     job_id bigint NOT NULL,
+    locked smallint DEFAULT 2,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
 );
 
