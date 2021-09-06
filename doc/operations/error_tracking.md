@@ -157,3 +157,8 @@ feature, but with a `false` value instead:
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
     "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/settings?active=false&integrated=false"
 ```
+
+#### Limitations
+
+The Integrated Error Tracking feature was built and tested with Sentry SDK for Ruby. Other languages and frameworks
+are not tested and might not work. Check [the compatibility issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340178) for more information.

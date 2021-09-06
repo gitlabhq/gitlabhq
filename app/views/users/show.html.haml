@@ -2,7 +2,7 @@
 - @hide_breadcrumbs = true
 - @no_container = true
 - page_title       user_display_name(@user)
-- page_description @user.bio_html
+- page_description @user.bio
 - header_title     @user.name, user_path(@user)
 - page_itemtype    'http://schema.org/Person'
 - link_classes = "flex-grow-1 mx-1 "
@@ -127,7 +127,7 @@
         - if @user.bio.present?
           .gl-text-gray-900
             .profile-user-bio
-              = markdown(@user.bio_html)
+              = @user.bio
 
 
     - unless profile_tabs.empty?

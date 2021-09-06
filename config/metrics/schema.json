@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["key_path", "description", "value_type", "status", "product_group", "time_frame", "data_source", "distribution", "tier", "data_category"],
+  "required": ["key_path", "description", "value_type", "status", "product_group", "time_frame", "data_source", "distribution", "tier", "data_category", "milestone"],
   "properties": {
     "key_path": {
       "type": "string"
@@ -33,7 +33,7 @@
       "enum": ["active", "data_available", "implemented", "deprecated", "removed", "broken"]
     },
     "milestone": {
-      "type": ["string", "null"],
+      "type": ["string"],
       "pattern": "^<?[0-9]+\\.[0-9]+$"
     },
     "milestone_removed": {

@@ -45,7 +45,6 @@ RSpec.describe 'User edit profile' do
       twitter: 'testtwitter',
       website_url: 'testurl',
       bio: 'I <3 GitLab :tada:',
-      bio_html: '<p data-sourcepos="1:1-1:18" dir="auto">I &lt;3 GitLab <gl-emoji title="party popper" data-name="tada" data-unicode-version="6.0">🎉</gl-emoji></p>',
       job_title: 'Frontend Engineer',
       organization: 'GitLab'
     )

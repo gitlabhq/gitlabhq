@@ -1886,6 +1886,61 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#restore_conversion_of_integer_to_bigint' do
+    let(:table) { :test_table }
+    let(:column) { :id }
+    let(:tmp_column) { model.convert_to_bigint_column(column) }
+
+    before do
+      model.create_table table, id: false do |t|
+        t.bigint :id, primary_key: true
+        t.bigint :build_id, null: false
+        t.timestamps
+      end
+    end
+
+    context 'when the target table does not exist' do
+      it 'raises an error' do
+        expect { model.restore_conversion_of_integer_to_bigint(:this_table_is_not_real, column) }
+          .to raise_error('Table this_table_is_not_real does not exist')
+      end
+    end
+
+    context 'when the column to migrate does not exist' do
+      it 'raises an error' do
+        expect { model.restore_conversion_of_integer_to_bigint(table, :this_column_is_not_real) }
+          .to raise_error(ArgumentError, "Column this_column_is_not_real does not exist on #{table}")
+      end
+    end
+
+    context 'when a single column is given' do
+      let(:column_to_convert) { 'id' }
+      let(:temporary_column) { model.convert_to_bigint_column(column_to_convert) }
+
+      it 'creates the correct columns and installs the trigger' do
+        expect(model).to receive(:add_column).with(table, temporary_column, :int, default: 0, null: false)
+
+        expect(model).to receive(:install_rename_triggers).with(table, [column_to_convert], [temporary_column])
+
+        model.restore_conversion_of_integer_to_bigint(table, column_to_convert)
+      end
+    end
+
+    context 'when multiple columns are given' do
+      let(:columns_to_convert) { %i[id build_id] }
+      let(:temporary_columns) { columns_to_convert.map { |column| model.convert_to_bigint_column(column) } }
+
+      it 'creates the correct columns and installs the trigger' do
+        expect(model).to receive(:add_column).with(table, temporary_columns[0], :int, default: 0, null: false)
+        expect(model).to receive(:add_column).with(table, temporary_columns[1], :int, default: 0, null: false)
+
+        expect(model).to receive(:install_rename_triggers).with(table, columns_to_convert, temporary_columns)
+
+        model.restore_conversion_of_integer_to_bigint(table, columns_to_convert)
+      end
+    end
+  end
+
   describe '#revert_initialize_conversion_of_integer_to_bigint' do
     let(:table) { :test_table }
 

@@ -157,11 +157,9 @@ For more information, see [Deployment safety](deployment_safety.md).
 
 ## Group-level protected environments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in [GitLab Premium](https://about.gitlab.com/pricing/) 14.0.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-group-level-protected-environments). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in [GitLab Premium](https://about.gitlab.com/pricing/) 14.0. [Deployed behind the `group_level_protected_environments` flag](../../administration/feature_flags.md), disabled by default.
+> - [Feature flag `group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) removed in GitLab 14.3.
+> - [Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) on [GitLab Premium](https://about.gitlab.com/pricing/) and on GitLab.com in 14.3.
 
 This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
@@ -258,25 +256,6 @@ To protect a group-level environment:
 NOTE:
 Configuration [via the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/325249)
 is scheduled for a later release.
-
-### Enable or disable Group-level protected environments **(FREE SELF)**
-
-Group-level protected environments is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:group_level_protected_environments)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:group_level_protected_environments)
-```
 
 <!-- ## Troubleshooting
 

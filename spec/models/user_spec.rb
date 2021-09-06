@@ -82,7 +82,6 @@ RSpec.describe User do
 
     it { is_expected.to delegate_method(:bio).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bio=).to(:user_detail).with_arguments(:args).allow_nil }
-    it { is_expected.to delegate_method(:bio_html).to(:user_detail).allow_nil }
   end
 
   describe 'associations' do

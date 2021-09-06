@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User page' do
   include ExternalAuthorizationServiceHelpers
 
-  let_it_be(:user) { create(:user, bio: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
+  let_it_be(:user) { create(:user, bio: '<b>Lorem</b> <i>ipsum</i> dolor sit <a href="https://example.com">amet</a>') }
 
   subject(:visit_profile) { visit(user_path(user)) }
 

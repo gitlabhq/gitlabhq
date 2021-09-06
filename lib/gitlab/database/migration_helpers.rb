@@ -968,42 +968,7 @@ module Gitlab
       # columns - The name, or array of names, of the column(s) that we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
       def initialize_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        unless table_exists?(table)
-          raise "Table #{table} does not exist"
-        end
-
-        unless column_exists?(table, primary_key)
-          raise "Column #{primary_key} does not exist on #{table}"
-        end
-
-        columns = Array.wrap(columns)
-        columns.each do |column|
-          next if column_exists?(table, column)
-
-          raise ArgumentError, "Column #{column} does not exist on #{table}"
-        end
-
-        check_trigger_permissions!(table)
-
-        conversions = columns.to_h { |column| [column, convert_to_bigint_column(column)] }
-
-        with_lock_retries do
-          conversions.each do |(source_column, temporary_name)|
-            column = column_for(table, source_column)
-
-            if (column.name.to_s == primary_key.to_s) || !column.null
-              # If the column to be converted is either a PK or is defined as NOT NULL,
-              # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
-              # That way, we skip the expensive validation step required to add
-              #  a NOT NULL constraint at the end of the process
-              add_column(table, temporary_name, :bigint, default: column.default || 0, null: false)
-            else
-              add_column(table, temporary_name, :bigint, default: column.default)
-            end
-          end
-
-          install_rename_triggers(table, conversions.keys, conversions.values)
-        end
+        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :bigint)
       end
 
       # Reverts `initialize_conversion_of_integer_to_bigint`
@@ -1018,6 +983,16 @@ module Gitlab
         remove_rename_triggers(table, trigger_name)
 
         temporary_columns.each { |column| remove_column(table, column) }
+      end
+
+      # Reverts `cleanup_conversion_of_integer_to_bigint`
+      #
+      # table - The name of the database table containing the columns
+      # columns - The name, or array of names, of the column(s) that we have converted to bigint.
+      # primary_key - The name of the primary key column (most often :id)
+
+      def restore_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
+        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :int)
       end
 
       # Backfills the new columns used in an integer-to-bigint conversion using background migrations.
@@ -1648,6 +1623,45 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       private
+
+      def create_temporary_columns_and_triggers(table, columns, primary_key: :id, data_type: :bigint)
+        unless table_exists?(table)
+          raise "Table #{table} does not exist"
+        end
+
+        unless column_exists?(table, primary_key)
+          raise "Column #{primary_key} does not exist on #{table}"
+        end
+
+        columns = Array.wrap(columns)
+        columns.each do |column|
+          next if column_exists?(table, column)
+
+          raise ArgumentError, "Column #{column} does not exist on #{table}"
+        end
+
+        check_trigger_permissions!(table)
+
+        conversions = columns.to_h { |column| [column, convert_to_bigint_column(column)] }
+
+        with_lock_retries do
+          conversions.each do |(source_column, temporary_name)|
+            column = column_for(table, source_column)
+
+            if (column.name.to_s == primary_key.to_s) || !column.null
+              # If the column to be converted is either a PK or is defined as NOT NULL,
+              # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
+              # That way, we skip the expensive validation step required to add
+              #  a NOT NULL constraint at the end of the process
+              add_column(table, temporary_name, data_type, default: column.default || 0, null: false)
+            else
+              add_column(table, temporary_name, data_type, default: column.default)
+            end
+          end
+
+          install_rename_triggers(table, conversions.keys, conversions.values)
+        end
+      end
 
       def validate_check_constraint_name!(constraint_name)
         if constraint_name.to_s.length > MAX_IDENTIFIER_NAME_LENGTH

@@ -82,11 +82,7 @@ export default {
           <div class="gl-text-gray-500">
             <div v-if="user.bio" class="gl-display-flex gl-mb-2">
               <gl-icon name="profile" class="gl-text-gray-400 gl-flex-shrink-0" />
-              <span
-                ref="bio"
-                class="gl-ml-2 gl-overflow-hidden"
-                v-html="user.bioHtml /* eslint-disable-line vue/no-v-html */"
-              ></span>
+              <span ref="bio" class="gl-ml-2 gl-overflow-hidden">{{ user.bio }}</span>
             </div>
             <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
               <gl-icon name="work" class="gl-text-gray-400 gl-flex-shrink-0" />
