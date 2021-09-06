@@ -132,7 +132,7 @@ reset it. An attacker could use the token to [clone a runner](https://docs.gitla
 To reset the authentication token, [unregister the runner](https://docs.gitlab.com/runner/commands/#gitlab-runner-unregister)
 and then [register](https://docs.gitlab.com/runner/commands/#gitlab-runner-register) it again.
 
-To verify that the previous authentication token is no longer valid, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
+To verify that the previous authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
 ## Determine the IP address of a runner
 

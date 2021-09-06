@@ -3,6 +3,13 @@
 module Ci
   class ArchiveTraceService
     def execute(job, worker_name:)
+      unless job.trace.can_attempt_archival_now?
+        Sidekiq.logger.warn(class: worker_name,
+                            message: job.trace.archival_attempts_message,
+                            job_id: job.id)
+        return
+      end
+
       # TODO: Remove this logging once we confirmed new live trace architecture is functional.
       # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/4667.
       unless job.has_live_trace?
@@ -25,6 +32,8 @@ module Ci
     rescue ::Gitlab::Ci::Trace::AlreadyArchivedError
       # It's already archived, thus we can safely ignore this exception.
     rescue StandardError => e
+      job.trace.increment_archival_attempts!
+
       # Tracks this error with application logs, Sentry, and Prometheus.
       # If `archive!` keeps failing for over a week, that could incur data loss.
       # (See more https://docs.gitlab.com/ee/administration/job_logs.html#new-incremental-logging-architecture)

@@ -5259,4 +5259,14 @@ RSpec.describe Ci::Build do
       expect(described_class.with_coverage_regex).to eq([build_with_coverage_regex])
     end
   end
+
+  describe '#ensure_trace_metadata!' do
+    it 'delegates to Ci::BuildTraceMetadata' do
+      expect(Ci::BuildTraceMetadata)
+        .to receive(:find_or_upsert_for!)
+        .with(build.id)
+
+      build.ensure_trace_metadata!
+    end
+  end
 end

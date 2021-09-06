@@ -360,18 +360,17 @@ module Gitlab
         end
       end
 
-      def new_blobs(newrev, dynamic_timeout: nil)
-        return [] if newrev.blank? || newrev == ::Gitlab::Git::BLANK_SHA
+      def new_blobs(newrevs, dynamic_timeout: nil)
+        newrevs = Array.wrap(newrevs).reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
+        return [] if newrevs.empty?
 
-        strong_memoize("new_blobs_#{newrev}") do
-          if Feature.enabled?(:new_blobs_via_list_blobs)
-            blobs(['--not', '--all', '--not', newrev], with_paths: true, dynamic_timeout: dynamic_timeout)
-          else
-            wrapped_gitaly_errors do
-              gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
-            end
-          end
+        newrevs = newrevs.uniq.sort
+
+        @new_blobs ||= Hash.new do |h, revs|
+          h[revs] = blobs(['--not', '--all', '--not'] + newrevs, with_paths: true, dynamic_timeout: dynamic_timeout)
         end
+
+        @new_blobs[newrevs]
       end
 
       # List blobs reachable via a set of revisions. Supports the

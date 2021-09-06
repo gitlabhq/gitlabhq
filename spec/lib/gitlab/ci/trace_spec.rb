@@ -130,4 +130,18 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
       end
     end
   end
+
+  describe '#can_attempt_archival_now?' do
+    it 'creates the record and returns true' do
+      expect(trace.can_attempt_archival_now?).to be_truthy
+    end
+  end
+
+  describe '#increment_archival_attempts!' do
+    it 'creates the record and increments its value' do
+      expect { trace.increment_archival_attempts! }
+        .to change { build.reload.trace_metadata&.archival_attempts }.from(nil).to(1)
+        .and change { build.reload.trace_metadata&.last_archival_attempt_at }
+    end
+  end
 end

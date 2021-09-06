@@ -14,7 +14,7 @@ typically much more performant, reliable, and scalable.
 
 ## Options
 
-GitLab has been tested on a number of object storage providers:
+GitLab has been tested by vendors and customers on a number of object storage providers:
 
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [Google Cloud Storage](https://cloud.google.com/storage)
@@ -22,7 +22,7 @@ GitLab has been tested on a number of object storage providers:
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
-- On-premises hardware and appliances from various storage vendors.
+- On-premises hardware and appliances from various storage vendors, whose list is not officially established.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
 ### Known compatibility issues

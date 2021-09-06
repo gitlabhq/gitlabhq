@@ -939,15 +939,20 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   describe '#new_blobs' do
     let(:repository) { mutable_repository }
     let(:repository_rugged) { mutable_repository_rugged }
-    let(:new_blob) do
-      repository_rugged.write('This is a new blob', :blob)
+    let(:blob) { create_blob('This is a new blob') }
+    let(:commit) { create_commit('nested/new-blob.txt' => blob) }
+
+    def create_blob(content)
+      repository_rugged.write(content, :blob)
     end
 
-    let(:new_commit) do
+    def create_commit(blobs)
       author = { name: 'Test User', email: 'mail@example.com', time: Time.now }
 
       index = repository_rugged.index
-      index.add(path: 'nested/new-blob.txt', oid: new_blob, mode: 0100644)
+      blobs.each do |path, oid|
+        index.add(path: path, oid: oid, mode: 0100644)
+      end
 
       Rugged::Commit.create(repository_rugged,
                             author: author,
@@ -957,51 +962,130 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
                             tree: index.write_tree(repository_rugged))
     end
 
-    subject { repository.new_blobs(new_commit).to_a }
+    subject { repository.new_blobs(newrevs).to_a }
 
-    context 'with :new_blobs_via_list_blobs enabled' do
+    shared_examples '#new_blobs with revisions' do
       before do
-        stub_feature_flags(new_blobs_via_list_blobs: true)
-
         expect_next_instance_of(Gitlab::GitalyClient::BlobService) do |service|
           expect(service)
             .to receive(:list_blobs)
-            .with(['--not', '--all', '--not', new_commit],
+            .with(expected_newrevs,
                   limit: Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT,
                   with_paths: true,
                   dynamic_timeout: nil)
+            .once
             .and_call_original
         end
       end
 
       it 'enumerates new blobs' do
-        expect(subject).to match_array(
-          [have_attributes(class: Gitlab::Git::Blob, id: new_blob, path: 'nested/new-blob.txt', size: 18)]
-        )
+        expect(subject).to match_array(expected_blobs)
+      end
+
+      it 'memoizes results' do
+        expect(subject).to match_array(expected_blobs)
+        expect(subject).to match_array(expected_blobs)
       end
     end
 
-    context 'with :new_blobs_via_list_blobs disabled' do
+    context 'with a single revision' do
+      let(:newrevs) { commit }
+      let(:expected_newrevs) { ['--not', '--all', '--not', newrevs] }
+      let(:expected_blobs) do
+        [have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with a single-entry array' do
+      let(:newrevs) { [commit] }
+      let(:expected_newrevs) { ['--not', '--all', '--not'] + newrevs }
+      let(:expected_blobs) do
+        [have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with multiple revisions' do
+      let(:another_blob) { create_blob('Another blob') }
+      let(:newrevs) { [commit, create_commit('another_path.txt' => another_blob)] }
+      let(:expected_newrevs) { ['--not', '--all', '--not'] + newrevs.sort }
+      let(:expected_blobs) do
+        [
+          have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18),
+          have_attributes(class: Gitlab::Git::Blob, id: another_blob, path: 'another_path.txt', size: 12)
+        ]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with partially blank revisions' do
+      let(:newrevs) { [nil, commit, Gitlab::Git::BLANK_SHA] }
+      let(:expected_newrevs) { ['--not', '--all', '--not', commit] }
+      let(:expected_blobs) do
+        [
+          have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)
+        ]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with repeated revisions' do
+      let(:newrevs) { [commit, commit, commit] }
+      let(:expected_newrevs) { ['--not', '--all', '--not', commit] }
+      let(:expected_blobs) do
+        [
+          have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)
+        ]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with preexisting commits' do
+      let(:newrevs) { ['refs/heads/master'] }
+      let(:expected_newrevs) { ['--not', '--all', '--not'] + newrevs }
+      let(:expected_blobs) { [] }
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    shared_examples '#new_blobs without revisions' do
       before do
-        stub_feature_flags(new_blobs_via_list_blobs: false)
-
-        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
-          expect(service)
-            .to receive(:list_new_blobs)
-            .with(new_commit,
-                  Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT,
-                  dynamic_timeout: nil)
-            .and_call_original
-        end
+        expect(Gitlab::GitalyClient::BlobService).not_to receive(:new)
       end
 
-      it 'enumerates new blobs' do
-        expect(subject).to match_array([Gitaly::NewBlobObject.new(
-          size: 18,
-          oid: new_blob,
-          path: "nested/new-blob.txt"
-        )])
+      it 'returns an empty array' do
+        expect(subject).to eq([])
       end
+    end
+
+    context 'with a single nil newrev' do
+      let(:newrevs) { nil }
+
+      it_behaves_like '#new_blobs without revisions'
+    end
+
+    context 'with a single zero newrev' do
+      let(:newrevs) { Gitlab::Git::BLANK_SHA }
+
+      it_behaves_like '#new_blobs without revisions'
+    end
+
+    context 'with an empty array' do
+      let(:newrevs) { [] }
+
+      it_behaves_like '#new_blobs without revisions'
+    end
+
+    context 'with array containing only empty refs' do
+      let(:newrevs) { [nil, Gitlab::Git::BLANK_SHA] }
+
+      it_behaves_like '#new_blobs without revisions'
     end
   end
 

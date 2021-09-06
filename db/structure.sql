@@ -11329,7 +11329,9 @@ CREATE TABLE ci_build_trace_metadata (
     trace_artifact_id bigint,
     archival_attempts smallint DEFAULT 0 NOT NULL,
     checksum bytea,
-    remote_checksum bytea
+    remote_checksum bytea,
+    last_archival_attempt_at timestamp with time zone,
+    archived_at timestamp with time zone
 );
 
 CREATE TABLE ci_builds (

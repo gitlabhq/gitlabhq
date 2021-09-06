@@ -4,6 +4,7 @@ module Gitlab
   module Ci
     class Trace
       include ::Gitlab::ExclusiveLeaseHelpers
+      include ::Gitlab::Utils::StrongMemoize
       include Checksummable
 
       LOCK_TTL = 10.minutes
@@ -23,6 +24,8 @@ module Gitlab
       attr_reader :job
 
       delegate :old_trace, to: :job
+      delegate :can_attempt_archival_now?, :increment_archival_attempts!,
+        :archival_attempts_message, to: :trace_metadata
 
       def initialize(job)
         @job = job
@@ -251,11 +254,19 @@ module Gitlab
         File.open(path) do |stream|
           # TODO: Set `file_format: :raw` after we've cleaned up legacy traces migration
           # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20307
-          job.create_job_artifacts_trace!(
+          trace_artifact = job.create_job_artifacts_trace!(
             project: job.project,
             file_type: :trace,
             file: stream,
             file_sha256: self.class.hexdigest(path))
+
+          trace_metadata.track_archival!(trace_artifact.id)
+        end
+      end
+
+      def trace_metadata
+        strong_memoize(:trace_metadata) do
+          job.ensure_trace_metadata!
         end
       end
 

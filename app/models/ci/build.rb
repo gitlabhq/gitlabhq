@@ -724,6 +724,10 @@ module Ci
       update_column(:trace, nil)
     end
 
+    def ensure_trace_metadata!
+      Ci::BuildTraceMetadata.find_or_upsert_for!(id)
+    end
+
     def artifacts_expose_as
       options.dig(:artifacts, :expose_as)
     end
