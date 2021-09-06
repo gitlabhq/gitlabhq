@@ -41,7 +41,7 @@ For more information, see [projects members documentation](project/members/index
 
 The following table lists project permissions available for each role:
 
-<!-- Keep this table sorted: first, by minimum role, then alphabetically. -->
+<!-- Keep this table sorted: By topic first, then by minimum role, then alphabetically. -->
 
 | Action                                                                                                                  | Guest    | Reporter | Developer | Maintainer | Owner |
 |-------------------------------------------------------------------------------------------------------------------------|----------|----------|-----------|------------|-------|
@@ -98,6 +98,10 @@ The following table lists project permissions available for each role:
 | [Issues](project/issues/index.md):<br>Set issue [time tracking](project/time_tracking.md) estimate and time spent       |          | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Upload [Design Management](project/issues/design_management.md) files             |          |          | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Delete                                                                            |          |          |           |            | ✓     |
+| [License Compliance](compliance/license_compliance/index.md):<br>View allowed and denied licenses **(ULTIMATE)**        | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
+| [License Compliance](compliance/license_compliance/index.md):<br>View License Compliance reports **(ULTIMATE)**         | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
+| [License Compliance](compliance/license_compliance/index.md):<br>View License list **(ULTIMATE)**                       |          | ✓        | ✓         | ✓          | ✓     |
+| [License Compliance](compliance/license_compliance/index.md):<br>Manage license policy **(ULTIMATE)**                   |          |          |           | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Assign reviewer                                                   |          | ✓        | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>See list                                                          |          | ✓        | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                     |          |          | ✓         | ✓          | ✓     |
@@ -109,6 +113,9 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                  |          |          | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Manage merge approval rules (project settings)                    |          |          |           | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Delete                                                            |          |          |           |            | ✓     |
+| [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Manage user-starred metrics dashboards (*7*)        | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>View metrics dashboard annotations                  |          | ✓        | ✓         | ✓          | ✓     |
+| [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Create/edit/delete metrics dashboard annotations    |          |          | ✓         | ✓          | ✓     |
 | [Package registry](packages/index.md):<br>Pull package                                                                  | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
 | [Package registry](packages/index.md):<br>Publish package                                                               |          |          | ✓         | ✓          | ✓     |
 | [Package registry](packages/index.md):<br>Delete package                                                                |          |          |           | ✓          | ✓     |
@@ -134,6 +141,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Add deploy keys                                                                        |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Add new team members                                                                   |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Change [project features visibility](../public_access/public_access.md) level          |          |          |           | ✓ (14)     | ✓     |
+| [Projects](project/index.md):<br>Configure [webhooks](project/integrations/webhooks.md)                                                             |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                             |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Edit comments (posted by any user)                                                     |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Edit project badges                                                                    |          |          |           | ✓          | ✓     |
@@ -168,6 +176,9 @@ The following table lists project permissions available for each role:
 | [Repository](project/repository/index.md):<br>Remove fork relationship                                                  |          |          |           |            | ✓     |
 | [Repository](project/repository/index.md):<br>Force push to protected branches (*4*)                                    |          |          |           |            |       |
 | [Repository](project/repository/index.md):<br>Remove protected branches (*4*)                                           |          |          |           |            |       |
+| [Requirements Management](project/requirements/index.md):<br>Archive / reopen **(ULTIMATE)**                            |          | ✓        | ✓         | ✓          | ✓     |
+| [Requirements Management](project/requirements/index.md):<br>Create / edit **(ULTIMATE)**                               |          | ✓        | ✓         | ✓          | ✓     |
+| [Requirements Management](project/requirements/index.md):<br>Import / export **(ULTIMATE)**                             |          | ✓        | ✓         | ✓          | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                           | ✓ (*3*) | ✓ | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**         |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create vulnerability from vulnerability finding **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
@@ -184,17 +195,6 @@ The following table lists project permissions available for each role:
 | [Test cases](../ci/test_cases/index.md):<br>Create                                                                      |          | ✓        | ✓         | ✓          | ✓     |
 | [Test cases](../ci/test_cases/index.md):<br>Move                                                                        |          | ✓        | ✓         | ✓          | ✓     |
 | [Test cases](../ci/test_cases/index.md):<br>Reopen                                                                      |          | ✓        | ✓         | ✓          | ✓     |
-| Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
-| Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
-| Import/export requirements **(ULTIMATE)**         |         | ✓          | ✓           | ✓        | ✓      |
-| View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
-| View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
-| Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
-| Configure project hooks                           |         |            |             | ✓        | ✓      |
-| Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 
 1. Guest users are able to perform this action on public and internal projects, but not private projects. This doesn't apply to [external users](#external-users) where explicit access must be given even if the project is internal.
 1. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves.
