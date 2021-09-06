@@ -223,33 +223,19 @@ class InternalId < ApplicationRecord
     # If another process was faster in doing this, we'll end up with that record
     # when we do the lookup after the insert.
     def create_record
-      if Feature.enabled?(:use_insert_all_in_internal_id, default_enabled: :yaml)
-        scope[:project].save! if scope[:project] && !scope[:project].persisted?
-        scope[:namespace].save! if scope[:namespace] && !scope[:namespace].persisted?
+      scope[:project].save! if scope[:project] && !scope[:project].persisted?
+      scope[:namespace].save! if scope[:namespace] && !scope[:namespace].persisted?
 
-        attributes = {
-          project_id: scope[:project]&.id || scope[:project_id],
-          namespace_id: scope[:namespace]&.id || scope[:namespace_id],
-          usage: usage_value,
-          last_value: initial_value(subject, scope)
-        }
+      attributes = {
+        project_id: scope[:project]&.id || scope[:project_id],
+        namespace_id: scope[:namespace]&.id || scope[:namespace_id],
+        usage: usage_value,
+        last_value: initial_value(subject, scope)
+      }
 
-        InternalId.insert_all([attributes])
+      InternalId.insert(attributes)
 
-        lookup
-      else
-        begin
-          subject.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
-            InternalId.create!(
-              **scope,
-              usage: usage_value,
-              last_value: initial_value(subject, scope)
-            )
-          end
-        rescue ActiveRecord::RecordNotUnique
-          lookup
-        end
-      end
+      lookup
     end
   end
 
@@ -344,32 +330,21 @@ class InternalId < ApplicationRecord
     end
 
     def create_record!(subject, scope, usage, value)
-      if Feature.enabled?(:use_insert_all_in_internal_id, default_enabled: :yaml)
-        scope[:project].save! if scope[:project] && !scope[:project].persisted?
-        scope[:namespace].save! if scope[:namespace] && !scope[:namespace].persisted?
+      scope[:project].save! if scope[:project] && !scope[:project].persisted?
+      scope[:namespace].save! if scope[:namespace] && !scope[:namespace].persisted?
 
-        attributes = {
-          project_id: scope[:project]&.id || scope[:project_id],
-          namespace_id: scope[:namespace]&.id || scope[:namespace_id],
-          usage: usage_value,
-          last_value: value
-        }
+      attributes = {
+        project_id: scope[:project]&.id || scope[:project_id],
+        namespace_id: scope[:namespace]&.id || scope[:namespace_id],
+        usage: usage_value,
+        last_value: value
+      }
 
-        result = InternalId.insert_all([attributes])
+      result = InternalId.insert(attributes)
 
-        raise RecordAlreadyExists if result.empty?
+      raise RecordAlreadyExists if result.empty?
 
-        value
-      else
-        begin
-          subject.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
-            internal_id = InternalId.create!(**scope, usage: usage, last_value: value)
-            internal_id.last_value
-          end
-        rescue ActiveRecord::RecordNotUnique
-          raise RecordAlreadyExists
-        end
-      end
+      value
     end
 
     def arel_table

@@ -6,6 +6,7 @@ RSpec.describe Resolvers::IssuesResolver do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
 
   let_it_be(:group)         { create(:group) }
   let_it_be(:project)       { create(:project, group: group) }
@@ -27,6 +28,7 @@ RSpec.describe Resolvers::IssuesResolver do
   context "with a project" do
     before_all do
       project.add_developer(current_user)
+      project.add_reporter(reporter)
       create(:label_link, label: label1, target: issue1)
       create(:label_link, label: label1, target: issue2)
       create(:label_link, label: label2, target: issue2)
@@ -234,6 +236,14 @@ RSpec.describe Resolvers::IssuesResolver do
 
         it 'returns issues without the specified assignee_id' do
           expect(resolve_issues(not: { assignee_id: [assignee.id] })).to contain_exactly(issue1)
+        end
+
+        context 'when filtering by negated author' do
+          let_it_be(:issue_by_reporter) { create(:issue, author: reporter, project: project, state: :opened) }
+
+          it 'returns issues without the specified author_username' do
+            expect(resolve_issues(not: { author_username: issue1.author.username })).to contain_exactly(issue_by_reporter)
+          end
         end
       end
 

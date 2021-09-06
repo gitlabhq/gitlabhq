@@ -1,20 +1,19 @@
 ---
 data_category: optional
-key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_monthly
-description: Count of pipelines with implicit SAST runs
+key_path: redis_hll_counters.ci_templates.p_ci_templates_security_sast_weekly
+description: Count of pipelines with SAST runs
 product_section: ops
 product_stage: verify
 product_group: "group::static analysis"
 product_category: SAST
 value_type: number
 status: data_available
-milestone: "<13.9"
-time_frame: 28d
+time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-  - p_ci_templates_implicit_security_sast
+  - p_ci_templates_security_sast
 distribution:
 - ce
 - ee
@@ -22,3 +21,5 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []
+milestone: "<13.9"

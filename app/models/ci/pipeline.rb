@@ -319,7 +319,6 @@ module Ci
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
     scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
-    scope :eager_load_project, -> { eager_load(project: [:route, { namespace: :route }]) }
     scope :with_pipeline_source, -> (source) { where(source: source)}
 
     scope :outside_pipeline_family, ->(pipeline) do

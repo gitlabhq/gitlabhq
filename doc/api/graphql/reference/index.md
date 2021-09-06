@@ -17548,6 +17548,7 @@ Represents an escalation rule.
 | ---- | ---- | ----------- |
 | <a id="negatedissuefilterinputassigneeid"></a>`assigneeId` | [`String`](#string) | ID of a user not assigned to the issues. |
 | <a id="negatedissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users not assigned to the issue. |
+| <a id="negatedissuefilterinputauthorusername"></a>`authorUsername` | [`String`](#string) | Username of a user who didn't author the issue. |
 | <a id="negatedissuefilterinputepicid"></a>`epicId` | [`String`](#string) | ID of an epic not associated with the issues. |
 | <a id="negatedissuefilterinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues to exclude. For example, `[1, 2]`. |
 | <a id="negatedissuefilterinputiterationid"></a>`iterationId` | [`[ID!]`](#id) | List of iteration Global IDs not applied to the issue. |

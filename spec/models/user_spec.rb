@@ -3635,6 +3635,11 @@ RSpec.describe User do
         it 'loads all the runners in the tree of groups' do
           expect(user.ci_owned_runners).to contain_exactly(runner, group_runner)
         end
+
+        it 'returns true for owns_runner?' do
+          expect(user.owns_runner?(runner)).to eq(true)
+          expect(user.owns_runner?(group_runner)).to eq(true)
+        end
       end
     end
 
@@ -3647,6 +3652,10 @@ RSpec.describe User do
         it 'loads the runners in the group' do
           expect(user.ci_owned_runners).to contain_exactly(group_runner)
         end
+
+        it 'returns true for owns_runner?' do
+          expect(user.owns_runner?(group_runner)).to eq(true)
+        end
       end
     end
 
@@ -3654,6 +3663,10 @@ RSpec.describe User do
       context 'when the user is the owner of a project' do
         it 'loads the runner belonging to the project' do
           expect(user.ci_owned_runners).to contain_exactly(runner)
+        end
+
+        it 'returns true for owns_runner?' do
+          expect(user.owns_runner?(runner)).to eq(true)
         end
       end
     end
@@ -3667,6 +3680,10 @@ RSpec.describe User do
         it 'loads the runners of the project' do
           expect(user.ci_owned_runners).to contain_exactly(project_runner)
         end
+
+        it 'returns true for owns_runner?' do
+          expect(user.owns_runner?(project_runner)).to eq(true)
+        end
       end
 
       context 'when the user is a developer' do
@@ -3676,6 +3693,10 @@ RSpec.describe User do
 
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
+        end
+
+        it 'returns false for owns_runner?' do
+          expect(user.owns_runner?(project_runner)).to eq(false)
         end
       end
 
@@ -3687,6 +3708,10 @@ RSpec.describe User do
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
         end
+
+        it 'returns false for owns_runner?' do
+          expect(user.owns_runner?(project_runner)).to eq(false)
+        end
       end
 
       context 'when the user is a guest' do
@@ -3696,6 +3721,10 @@ RSpec.describe User do
 
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
+        end
+
+        it 'returns false for owns_runner?' do
+          expect(user.owns_runner?(project_runner)).to eq(false)
         end
       end
     end
@@ -3709,6 +3738,10 @@ RSpec.describe User do
         it 'does not load the runners of the group' do
           expect(user.ci_owned_runners).to be_empty
         end
+
+        it 'returns false for owns_runner?' do
+          expect(user.owns_runner?(runner)).to eq(false)
+        end
       end
 
       context 'when the user is a developer' do
@@ -3718,6 +3751,10 @@ RSpec.describe User do
 
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
+        end
+
+        it 'returns false for owns_runner?' do
+          expect(user.owns_runner?(runner)).to eq(false)
         end
       end
 
@@ -3729,6 +3766,10 @@ RSpec.describe User do
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
         end
+
+        it 'returns false for owns_runner?' do
+          expect(user.owns_runner?(runner)).to eq(false)
+        end
       end
 
       context 'when the user is a guest' do
@@ -3739,12 +3780,20 @@ RSpec.describe User do
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
         end
+
+        it 'returns false for owns_runner?' do
+          expect(user.owns_runner?(runner)).to eq(false)
+        end
       end
     end
 
     context 'without any projects nor groups' do
       it 'does not load any runner' do
         expect(user.ci_owned_runners).to be_empty
+      end
+
+      it 'returns false for owns_runner?' do
+        expect(user.owns_runner?(create(:ci_runner))).to eq(false)
       end
     end
 
