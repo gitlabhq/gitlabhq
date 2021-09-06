@@ -68,6 +68,9 @@ Rails.application.routes.draw do
     Gitlab.ee do
       resources :groups, only: [:new, :create]
       resources :projects, only: [:new, :create]
+      resources :groups_projects, only: [:new, :create] do
+        post :import, on: :collection
+      end
     end
   end
 

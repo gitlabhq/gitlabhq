@@ -222,6 +222,45 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['asset_proxy_allowlist']).to eq(['example.com', '*.example.com', 'localhost'])
     end
 
+    it 'supports the deprecated `throttle_unauthenticated_*` attributes' do
+      put api('/application/settings', admin), params: {
+        throttle_unauthenticated_enabled: true,
+        throttle_unauthenticated_period_in_seconds: 123,
+        throttle_unauthenticated_requests_per_period: 456
+      }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include(
+        'throttle_unauthenticated_enabled' => true,
+        'throttle_unauthenticated_period_in_seconds' => 123,
+        'throttle_unauthenticated_requests_per_period' => 456,
+        'throttle_unauthenticated_web_enabled' => true,
+        'throttle_unauthenticated_web_period_in_seconds' => 123,
+        'throttle_unauthenticated_web_requests_per_period' => 456
+      )
+    end
+
+    it 'prefers the new `throttle_unauthenticated_web_*` attributes' do
+      put api('/application/settings', admin), params: {
+        throttle_unauthenticated_enabled: false,
+        throttle_unauthenticated_period_in_seconds: 0,
+        throttle_unauthenticated_requests_per_period: 0,
+        throttle_unauthenticated_web_enabled: true,
+        throttle_unauthenticated_web_period_in_seconds: 123,
+        throttle_unauthenticated_web_requests_per_period: 456
+      }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include(
+        'throttle_unauthenticated_enabled' => true,
+        'throttle_unauthenticated_period_in_seconds' => 123,
+        'throttle_unauthenticated_requests_per_period' => 456,
+        'throttle_unauthenticated_web_enabled' => true,
+        'throttle_unauthenticated_web_period_in_seconds' => 123,
+        'throttle_unauthenticated_web_requests_per_period' => 456
+      )
+    end
+
     it 'disables ability to switch to legacy storage' do
       put api("/application/settings", admin),
           params: { hashed_storage_enabled: false }

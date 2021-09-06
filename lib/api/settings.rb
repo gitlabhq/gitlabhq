@@ -225,6 +225,16 @@ module API
         attrs[:asset_proxy_allowlist] = attrs.delete(:asset_proxy_whitelist)
       end
 
+      # Also accept these attributes under their new names.
+      #
+      # TODO: Once we rename the columns, we have to swap this around and keep supporting the old names until v5.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/340031
+      %w[enabled period_in_seconds requests_per_period].each do |suffix|
+        old_name = :"throttle_unauthenticated_#{suffix}"
+        new_name = :"throttle_unauthenticated_web_#{suffix}"
+        attrs[old_name] = attrs.delete(new_name) if attrs.has_key?(new_name)
+      end
+
       # since 13.0 it's not possible to disable hashed storage - support can be removed in 14.0
       attrs.delete(:hashed_storage_enabled) if attrs.has_key?(:hashed_storage_enabled)
 

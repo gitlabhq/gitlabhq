@@ -630,6 +630,16 @@ describe('Design management index page', () => {
       expect(mockMutate).not.toHaveBeenCalled();
     });
 
+    it('does not upload designs if designs wrapper is destroyed', () => {
+      findDesignsWrapper().trigger('mouseenter');
+
+      wrapper.destroy();
+
+      document.dispatchEvent(event);
+
+      expect(mockMutate).not.toHaveBeenCalled();
+    });
+
     describe('when designs wrapper is hovered', () => {
       let realDateNow;
       const today = () => new Date('2020-12-25');

@@ -1784,6 +1784,9 @@ class Project < ApplicationRecord
     Ci::Runner.from_union([runners, group_runners, available_shared_runners])
   end
 
+  # Once issue 339937 is fixed, please search for all mentioned of
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/339937,
+  # and remove the allow_cross_joins_across_databases.
   def active_runners
     strong_memoize(:active_runners) do
       all_available_runners.active

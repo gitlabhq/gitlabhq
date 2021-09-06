@@ -295,18 +295,6 @@ RSpec.describe Projects::UpdatePagesService do
 
       expect(older_deploy_job.reload).to be_retried
     end
-
-    context 'when FF ci_fix_commit_status_retried is disabled' do
-      before do
-        stub_feature_flags(ci_fix_commit_status_retried: false)
-      end
-
-      it 'does not mark older pages:deploy jobs retried' do
-        expect(execute).to eq(:success)
-
-        expect(older_deploy_job.reload).not_to be_retried
-      end
-    end
   end
 
   private

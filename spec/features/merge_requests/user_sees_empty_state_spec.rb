@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees empty state' do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :public, :repository) }
   let(:user)    { project.creator }
 
@@ -35,6 +37,25 @@ RSpec.describe 'Merge request > User sees empty state' do
       expect(page).to have_selector('.empty-state')
       expect(page).to have_content('Sorry, your filter produced no results')
       expect(page).to have_content('To widen your search, change or remove filters above')
+    end
+  end
+
+  context 'as member of a fork' do
+    let(:fork_user) { create(:user) }
+    let(:forked_project) { fork_project(project, fork_user, namespace: fork_user.namespace, repository: true) }
+
+    before do
+      forked_project.add_maintainer(fork_user)
+      sign_in(fork_user)
+    end
+
+    it 'shows an empty state and a "New merge request" button' do
+      visit project_merge_requests_path(project, search: 'foo')
+
+      expect(page).to have_selector('.empty-state')
+      within('.empty-state') do
+        expect(page).to have_link 'New merge request', href: project_new_merge_request_path(forked_project)
+      end
     end
   end
 end

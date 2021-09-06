@@ -336,6 +336,28 @@ RSpec.describe ApplicationSettings::UpdateService do
     end
   end
 
+  context 'when general rate limits are passed' do
+    let(:params) do
+      {
+        throttle_authenticated_api_enabled: true,
+        throttle_authenticated_api_period_in_seconds: 10,
+        throttle_authenticated_api_requests_per_period: 20,
+        throttle_authenticated_web_enabled: true,
+        throttle_authenticated_web_period_in_seconds: 30,
+        throttle_authenticated_web_requests_per_period: 40,
+        throttle_unauthenticated_enabled: true,
+        throttle_unauthenticated_period_in_seconds: 50,
+        throttle_unauthenticated_requests_per_period: 60
+      }
+    end
+
+    it 'updates general throttle settings' do
+      subject.execute
+
+      expect(application_settings.reload).to have_attributes(params)
+    end
+  end
+
   context 'when package registry rate limits are passed' do
     let(:params) do
       {

@@ -27,6 +27,14 @@ module API
 
       expose(*::ApplicationSettingsHelper.external_authorization_service_attributes)
 
+      # Also expose these columns under their new attribute names.
+      #
+      # TODO: Once we rename the columns, we have to swap this around and keep supporting the old names until v5.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/340031
+      expose :throttle_unauthenticated_enabled, as: :throttle_unauthenticated_web_enabled
+      expose :throttle_unauthenticated_period_in_seconds, as: :throttle_unauthenticated_web_period_in_seconds
+      expose :throttle_unauthenticated_requests_per_period, as: :throttle_unauthenticated_web_requests_per_period
+
       # support legacy names, can be removed in v5
       expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
       expose :password_authentication_enabled_for_web, as: :signin_enabled

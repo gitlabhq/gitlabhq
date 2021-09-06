@@ -346,6 +346,12 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(imported_project.import_data.data).to eq(import_data[:data])
       expect(imported_project.import_url).to eq('http://import-url')
     end
+
+    it 'tracks for the combined_registration experiment', :experiment do
+      expect(experiment(:combined_registration)).to track(:import_project).on_next_instance
+
+      imported_project
+    end
   end
 
   context 'builds_enabled global setting' do

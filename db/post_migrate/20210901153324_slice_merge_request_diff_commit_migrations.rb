@@ -3,6 +3,8 @@
 class SliceMergeRequestDiffCommitMigrations < ActiveRecord::Migration[6.1]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   BATCH_SIZE = 5_000
   MIGRATION_CLASS = 'MigrateMergeRequestDiffCommitUsers'
   STEAL_MIGRATION_CLASS = 'StealMigrateMergeRequestDiffCommitUsers'
@@ -15,31 +17,33 @@ class SliceMergeRequestDiffCommitMigrations < ActiveRecord::Migration[6.1]
 
     return if old_jobs.empty?
 
-    # This ensures we stop processing the old ranges, as the background
-    # migrations skip already processed jobs.
-    Gitlab::Database::BackgroundMigrationJob
-      .for_migration_class(MIGRATION_CLASS)
-      .pending
-      .update_all(status: :succeeded)
+    transaction do
+      # This ensures we stop processing the old ranges, as the background
+      # migrations skip already processed jobs.
+      Gitlab::Database::BackgroundMigrationJob
+        .for_migration_class(MIGRATION_CLASS)
+        .pending
+        .update_all(status: :succeeded)
 
-    rows = []
+      rows = []
 
-    old_jobs.each do |job|
-      min, max = job.arguments
+      old_jobs.each do |job|
+        min, max = job.arguments
 
-      while min < max
-        rows << {
-          class_name: MIGRATION_CLASS,
-          arguments: [min, min + BATCH_SIZE],
-          created_at: Time.now.utc,
-          updated_at: Time.now.utc
-        }
+        while min < max
+          rows << {
+            class_name: MIGRATION_CLASS,
+            arguments: [min, min + BATCH_SIZE],
+            created_at: Time.now.utc,
+            updated_at: Time.now.utc
+          }
 
-        min += BATCH_SIZE
+          min += BATCH_SIZE
+        end
       end
-    end
 
-    Gitlab::Database::BackgroundMigrationJob.insert_all!(rows)
+      Gitlab::Database::BackgroundMigrationJob.insert_all!(rows)
+    end
 
     job = Gitlab::Database::BackgroundMigrationJob
       .for_migration_class(MIGRATION_CLASS)

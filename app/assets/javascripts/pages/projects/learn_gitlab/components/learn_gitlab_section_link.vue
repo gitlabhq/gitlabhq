@@ -39,7 +39,7 @@ export default {
         :href="value.url"
         data-track-action="click_link"
         :data-track-label="$options.i18n.ACTION_LABELS[action].title"
-        data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
+        data-track-property="Growth::Conversion::Experiment::LearnGitLab"
       >
         {{ $options.i18n.ACTION_LABELS[action].title }}
       </gl-link>

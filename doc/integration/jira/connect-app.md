@@ -60,6 +60,14 @@ After a namespace is added:
 
 Support for syncing past branch and commit data is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
+## Update the GitLab.com for Jira Cloud app
+
+Most updates to the app are fully automated and don't require any user interaction. See the
+[Atlassian Marketplace documentation](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/)
+for details.
+
+If the app requires additional permissions, [the update must first be manually approved in Jira](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval).
+
 ## Install the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 
 If your GitLab instance is self-managed, you must follow some
@@ -103,7 +111,7 @@ The **GitLab.com for Jira Cloud** app now displays under **Manage apps**. You ca
 click **Get started** to open the configuration page rendered from your GitLab instance.
 
 NOTE:
-If you make changes to the application descriptor, you must uninstall, then reinstall, the
+If a GitLab update makes changes to the application descriptor, you must uninstall, then reinstall, the
 application.
 
 ### Create a Marketplace listing **(FREE SELF)**
@@ -127,7 +135,8 @@ Review the
 for details.
 
 NOTE:
-DVCS means distributed version control system.
+Using this method, [updates are automated](#update-the-gitlabcom-for-jira-cloud-app)
+the same way as when using our GitLab.com Marketplace listing.
 
 ## Troubleshoot GitLab.com for Jira Cloud app
 

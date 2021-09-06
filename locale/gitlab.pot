@@ -897,6 +897,9 @@ msgstr ""
 msgid "%{state} epics"
 msgstr ""
 
+msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
+msgstr ""
+
 msgid "%{strongStart}Tip:%{strongEnd} You can also checkout merge requests locally by %{linkStart}following these guidelines%{linkEnd}"
 msgstr ""
 
@@ -1198,6 +1201,9 @@ msgid "- show less"
 msgstr ""
 
 msgid "."
+msgstr ""
+
+msgid "/"
 msgstr ""
 
 msgid "0 bytes"
@@ -9525,6 +9531,9 @@ msgstr ""
 msgid "Create new..."
 msgstr ""
 
+msgid "Create or import your first project"
+msgstr ""
+
 msgid "Create project"
 msgstr ""
 
@@ -16112,6 +16121,9 @@ msgid "GroupSAML|To be able to enable group-managed accounts, you first need to 
 msgstr ""
 
 msgid "GroupSAML|To be able to prohibit outer forks, you first need to enforce dedicate group managed accounts."
+msgstr ""
+
+msgid "GroupSAML|Use SAML group links to manage group membership using SAML."
 msgstr ""
 
 msgid "GroupSAML|Valid SAML Response"
@@ -26615,7 +26627,13 @@ msgstr ""
 msgid "Projects are graded based on the highest severity vulnerability present"
 msgstr ""
 
+msgid "Projects are organized into groups"
+msgstr ""
+
 msgid "Projects contributed to"
+msgstr ""
+
+msgid "Projects help you organize your work. They contain your file repository, issues, merge requests, and so much more."
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
@@ -38183,6 +38201,9 @@ msgstr ""
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "You can always change your URL later"
+msgstr ""
+
 msgid "You can always edit this later"
 msgstr ""
 
@@ -38880,6 +38901,9 @@ msgid "Your profile"
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"
+msgstr ""
+
+msgid "Your project will be created at:"
 msgstr ""
 
 msgid "Your projects"
@@ -40659,4 +40683,10 @@ msgid "yaml invalid"
 msgstr ""
 
 msgid "your settings"
+msgstr ""
+
+msgid "{group}"
+msgstr ""
+
+msgid "{project}"
 msgstr ""

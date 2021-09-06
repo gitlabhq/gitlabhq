@@ -173,6 +173,8 @@ export default {
       footerManageLabelTitle: this.footerManageLabelTitle,
     });
 
+    setTimeout(() => this.updateLabelsSetState(), 100);
+
     this.$store.subscribeAction({
       after: this.handleVuexActionDispatch,
     });

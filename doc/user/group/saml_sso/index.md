@@ -356,10 +356,88 @@ the user gets the highest access level from the groups. For example, if one grou
 is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer`
 access.
 
-Users who are not members of any mapped SAML groups are removed from the GitLab group.
+### Automatic member removal
 
-You can prevent accidental member removal. For example, if you have a SAML group link for `Owner` level access
-in a top-level group, you should also set up a group link for all other members.
+After a group sync, users who are not members of a mapped SAML group are removed from
+the GitLab group.
+
+For example, in the following diagram:
+
+- Alex Garcia signs into GitLab and is removed from GitLab Group C because they don't belong
+  to SAML Group C.
+- Sidney Jones belongs to SAML Group C, but is not added to GitLab Group C because they have
+  not yet signed in.
+
+```mermaid
+graph TB
+   subgraph SAML users
+      SAMLUserA[Sidney Jones]
+      SAMLUserB[Zhang Wei]
+      SAMLUserC[Alex Garcia]
+      SAMLUserD[Charlie Smith]
+   end
+
+   subgraph SAML groups
+      SAMLGroupA["Group A"] --> SAMLGroupB["Group B"]
+      SAMLGroupA --> SAMLGroupC["Group C"]
+      SAMLGroupA --> SAMLGroupD["Group D"]
+   end
+
+   SAMLGroupB --> |Member|SAMLUserA
+   SAMLGroupB --> |Member|SAMLUserB
+
+   SAMLGroupC --> |Member|SAMLUserA
+   SAMLGroupC --> |Member|SAMLUserB
+
+   SAMLGroupD --> |Member|SAMLUserD
+   SAMLGroupD --> |Member|SAMLUserC
+```
+
+```mermaid
+graph TB
+    subgraph GitLab users
+      GitLabUserA[Sidney Jones]
+      GitLabUserB[Zhang Wei]
+      GitLabUserC[Alex Garcia]
+      GitLabUserD[Charlie Smith]
+    end
+
+   subgraph GitLab groups
+      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
+   end
+
+   GitLabGroupB --> |Member|GitLabUserA
+
+   GitLabGroupC --> |Member|GitLabUserB
+   GitLabGroupC --> |Member|GitLabUserC
+
+   GitLabGroupD --> |Member|GitLabUserC
+   GitLabGroupD --> |Member|GitLabUserD
+```
+
+```mermaid
+graph TB
+   subgraph GitLab users
+      GitLabUserA[Sidney Jones]
+      GitLabUserB[Zhang Wei]
+      GitLabUserC[Alex Garcia]
+      GitLabUserD[Charlie Smith]
+   end
+
+   subgraph GitLab groups after Alex Garcia signs in
+      GitLabGroupA[Group A]
+      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
+   end
+
+   GitLabGroupB --> |Member|GitLabUserA
+   GitLabGroupC --> |Member|GitLabUserB
+   GitLabGroupD --> |Member|GitLabUserC
+   GitLabGroupD --> |Member|GitLabUserD
+```
 
 ## Passwords for users created via SAML SSO for Groups
 

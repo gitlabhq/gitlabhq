@@ -66,9 +66,8 @@ You can use [cluster certificates](add_existing_cluster.md) to connect
 clusters in all levels (projects, group, instance). However, for
 [security implications](#security-implications), this method is no longer recommended.
 
-### Methods to create new clusters
-
-To create new clusters, we **recommend** using [Infrastructure as Code](../../infrastructure/index.md).
+To create new clusters, we **recommend** using
+[Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
 
 ### Cluster levels
 

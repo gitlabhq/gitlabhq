@@ -55,10 +55,13 @@ module Gitlab
           schema_creation = ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaCreation.new(ApplicationRecord.connection)
           definition = schema_creation.accept(create_index)
 
-          async_index = PostgresAsyncIndex.safe_find_or_create_by!(name: index_name) do |rec|
+          async_index = PostgresAsyncIndex.find_or_create_by!(name: index_name) do |rec|
             rec.table_name = table_name
             rec.definition = definition
           end
+
+          async_index.definition = definition
+          async_index.save! # No-op if definition is not changed
 
           Gitlab::AppLogger.info(
             message: 'Prepared index for async creation',

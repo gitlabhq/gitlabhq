@@ -90,10 +90,14 @@ module Projects
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
 
-      # Skip writing the config for project imports/forks because it
-      # will always fail since the Git directory doesn't exist until
-      # a background job creates it (see Project#add_import_job).
-      @project.set_full_path unless @project.import?
+      if @project.import?
+        experiment(:combined_registration, user: current_user).track(:import_project)
+      else
+        # Skip writing the config for project imports/forks because it
+        # will always fail since the Git directory doesn't exist until
+        # a background job creates it (see Project#add_import_job).
+        @project.set_full_path
+      end
 
       unless @project.gitlab_project_import?
         @project.create_wiki unless skip_wiki?

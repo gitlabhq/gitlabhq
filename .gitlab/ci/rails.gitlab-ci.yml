@@ -21,7 +21,7 @@
 
 .minimal-rspec-tests:
   variables:
-    RSPEC_TESTS_MAPPING_ENABLED: "true"
+    MINIMAL_RSPEC_ENABLED: "true"
 
 .decomposed-database-rspec:
   variables:

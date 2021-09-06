@@ -59,18 +59,6 @@ RSpec.describe Ci::Pipelines::AddJobService do
       end
     end
 
-    context 'when the FF ci_fix_commit_status_retried is disabled' do
-      before do
-        stub_feature_flags(ci_fix_commit_status_retried: false)
-      end
-
-      it 'does not call update_older_statuses_retried!' do
-        expect(job).not_to receive(:update_older_statuses_retried!)
-
-        execute
-      end
-    end
-
     context 'exclusive lock' do
       let(:lock_uuid) { 'test' }
       let(:lock_key) { "ci:pipelines:#{pipeline.id}:add-job" }

@@ -140,6 +140,9 @@ export default {
       this.$el.scrollIntoView();
     }
   },
+  beforeDestroy() {
+    document.removeEventListener('paste', this.onDesignPaste);
+  },
   methods: {
     resetFilesToBeSaved() {
       this.filesToBeSaved = [];

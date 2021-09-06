@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import LearnGitlabA from '../components/learn_gitlab_a.vue';
+import LearnGitlab from '../components/learn_gitlab.vue';
 
 function initLearnGitlab() {
   const el = document.getElementById('js-learn-gitlab-app');
@@ -15,7 +15,7 @@ function initLearnGitlab() {
   return new Vue({
     el,
     render(createElement) {
-      return createElement(LearnGitlabA, {
+      return createElement(LearnGitlab, {
         props: { actions, sections },
       });
     },

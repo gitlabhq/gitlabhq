@@ -21,14 +21,14 @@ module Ci
             Ci::Pipeline.transaction do
               yield(job)
 
-              job.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, pipeline.project, default_enabled: :yaml)
+              job.update_older_statuses_retried!
             end
           end
         else
           Ci::Pipeline.transaction do
             yield(job)
 
-            job.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, pipeline.project, default_enabled: :yaml)
+            job.update_older_statuses_retried!
           end
         end
 
