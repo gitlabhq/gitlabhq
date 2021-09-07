@@ -208,7 +208,8 @@ module ApplicationSettingImplementation
         kroki_url: nil,
         kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
         rate_limiting_response_text: nil,
-        whats_new_variant: 0
+        whats_new_variant: 0,
+        user_deactivation_emails_enabled: true
       }
     end
 

@@ -421,6 +421,7 @@ listed in the descriptions of the relevant settings.
 | `unique_ips_limit_per_user`              | integer          | required by: `unique_ips_limit_enabled` | Maximum number of IPs per user. |
 | `unique_ips_limit_time_window`           | integer          | required by: `unique_ips_limit_enabled` | How many seconds an IP is counted towards the limit. |
 | `usage_ping_enabled`                     | boolean          | no                                   | Every week GitLab reports license usage back to GitLab, Inc. |
+| `user_deactivation_emails_enabled`       | boolean          | no                                   | Send an email to users upon account deactivation. |
 | `user_default_external`                  | boolean          | no                                   | Newly registered users are external by default. |
 | `user_default_internal_regex`            | string           | no                                   | Specify an email address regex pattern to identify default internal users. |
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. |

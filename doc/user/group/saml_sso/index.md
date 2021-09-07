@@ -120,12 +120,13 @@ SSO has the following effects when enabled:
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 <!-- Add bullet for API activity when https://gitlab.com/gitlab-org/gitlab/-/issues/9152 is complete -->
 
-Notes:
+When SSO is enforced, users are not immediately revoked. If the user:
 
-- When SSO is enforced users are not immediately revoked
-- If they are signed out then they cannot access the group after being removed from the identity provider
-- However, if the user has an active session they can continue accessing the group for up to 24 hours, until the identity provider session times out
-- Upon SCIM update, the user's access would be immediately revoked
+- Is signed out, they cannot access the group after being removed from the identity provider.
+- Has an active session, they can continue accessing the group for up to 24 hours until the identity
+  provider session times out.
+
+When SCIM updates, the user's access is immediately revoked.
 
 ## Providers
 
@@ -288,7 +289,7 @@ If a user is already a member of the group, linking the SAML identity does not c
 
 ### Blocking access
 
-Please refer to [Blocking access via SCiM](scim_setup.md#blocking-access).
+Please refer to [Blocking access via SCIM](scim_setup.md#blocking-access).
 
 ### Unlinking accounts
 

@@ -98,22 +98,45 @@ and their tables must be placed in two directories for now:
 
 We aim to keep the schema for both tables the same across both databases.
 
+<!--
+NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
+      the following heading in the code, so if you make a change to this heading, make sure to update
+      the corresponding documentation URL used in `spec/support/database/prevent_cross_joins.rb`.
+-->
+
 ### Removing joins between `ci_*` and non `ci_*` tables
 
-We are planning on moving all the `ci_*` tables to a separate database so
+Queries that join across databases raise an error. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68620)
+in GitLab 14.3, for new queries only. Pre-existing queries do not raise an error.
+
+We are planning on moving all the `ci_*` tables to a separate database, so
 referencing `ci_*` tables with other tables will not be possible. This means,
 that using any kind of `JOIN` in SQL queries will not work. We have identified
 already many such examples that need to be fixed in
 <https://gitlab.com/groups/gitlab-org/-/epics/6289> .
 
-The following are some real examples that have resulted from this and these
-patterns may apply to future cases.
+#### Path to removing cross-database joins
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68620) in GitLab 14.3, any
-queries detected that join across databases raises an error (except
-for pre-existing queries).
+The following steps are the process to remove cross-database joins between
+`ci_*` and non `ci_*` tables:
 
-#### Remove the code
+1. **{check-circle}** Add all failing specs to the [`cross-join-allowlist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/f5de89daeb468fc45e1e95a76d1b5297aa53da11/spec/support/database/cross-join-allowlist.yml)
+   file.
+1. **{dotted-circle}** Find the code that caused the spec failure and wrap the isolated code
+   in [`allow_cross_joins_across_databases`](#allowlist-for-existing-cross-joins).
+   Link to a new issue assigned to the correct team to remove the specs from the
+   `cross-join-allowlist.yml` file.
+1. **{dotted-circle}** Remove the `cross-join-allowlist.yml` file and stop allowing
+   whole test files.
+1. **{dotted-circle}** Fix the problem and remove the `allow_cross_joins_across_databases` call.
+1. **{dotted-circle}** Fix all the cross-joins and remove the `allow_cross_joins_across_databases` method.
+
+#### Suggestions for removing cross-database joins
+
+The following sections are some real examples that were identified as joining across databases,
+along with possible suggestions on how to fix them.
+
+##### Remove the code
 
 The simplest solution we've seen several times now has been an existing scope
 that is unused. This is the easiest example to fix. So the first step is to
@@ -135,7 +158,7 @@ to evaluate, because `UsageData` is not critical to users and it may be possible
 to get a similarly useful metric with a simpler approach. Alternatively we may
 find that nobody is using these metrics, so we can remove them.
 
-#### Use `preload` instead of `includes`
+##### Use `preload` instead of `includes`
 
 The `includes` and `preload` methods in Rails are both ways to avoid an N+1
 query. The `includes` method in Rails uses a heuristic approach to determine
@@ -149,7 +172,7 @@ allows you to avoid the join, while still avoiding the N+1 query.
 You can see a real example of this solution being used in
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67655>.
 
-#### De-normalize some foreign key to the table
+##### De-normalize some foreign key to the table
 
 De-normalization refers to adding redundant precomputed (duplicated) data to
 a table to simplify certain queries or to improve performance. In this
@@ -202,7 +225,7 @@ You can see this approach implemented in
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66963> . This MR also
 de-normalizes `pipeline_id` to fix a similar query.
 
-#### De-normalize into an extra table
+##### De-normalize into an extra table
 
 Sometimes the previous de-normalization (adding an extra column) doesn't work for
 your specific case. This may be due to the fact that your data is not 1:1, or
@@ -249,7 +272,7 @@ logic to delete these rows if or whenever necessary in your domain.
 Finally, this de-normalization and new query also improves performance because
 it does less joins and needs less filtering.
 
-#### Use `disable_joins` for `has_one` or `has_many` `through:` relations
+##### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
 Sometimes a join query is caused by using `has_one ... through:` or `has_many
 ... through:` across tables that span the different databases. These joins
@@ -365,3 +388,27 @@ end
 
 You can see a real example of using this method for fixing a cross-join in
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67655>.
+
+#### Allowlist for existing cross-joins
+
+A cross-join across databases can be explicitly allowed by wrapping the code in the
+`::Gitlab::Database.allow_cross_joins_across_databases` helper method.
+
+This method should only be used:
+
+- For existing code.
+- If the code is required to help migrate away from a cross-join. For example,
+  in a migration that backfills data for future use to remove a cross-join.
+
+The `allow_cross_joins_across_databases` helper method can be used as follows:
+
+```ruby
+::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336590') do
+  subject.perform(1, 4)
+end
+```
+
+The `url` parameter should point to an issue with a milestone for when we intend
+to fix the cross-join. If the cross-join is being used in a migration, we do not
+need to fix the code. See <https://gitlab.com/gitlab-org/gitlab/-/issues/340017>
+for more details.

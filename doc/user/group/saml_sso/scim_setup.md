@@ -58,8 +58,10 @@ During this configuration, note the following:
 - The `Tenant URL` and `secret token` are the ones retrieved in the
   [previous step](#gitlab-configuration).
 - It is recommended to set a notification email and check the **Send an email notification when a failure occurs** checkbox.
-- For mappings, we will only leave `Synchronize Azure Active Directory Users to AppName` enabled.
-  - `Synchronize Azure Active Directory Groups to AppName` should be disabled. However, this does not mean Azure AD users cannot be provisioned in groups. Leaving it enabled does not break the SCIM user provisioning, but causes errors in Azure AD that may be confusing and misleading.
+- For mappings, we only leave `Synchronize Azure Active Directory Users to AppName` enabled.
+  `Synchronize Azure Active Directory Groups to AppName` is usually disabled. However, this
+  does not mean Azure AD users cannot be provisioned in groups. Leaving it enabled does not break
+  the SCIM user provisioning, but causes errors in Azure AD that may be confusing and misleading.
 
 You can then test the connection by clicking on **Test Connection**. If the connection is successful, be sure to save your configuration before moving on. See below for [troubleshooting](#troubleshooting).
 
@@ -163,10 +165,11 @@ graph TD
   B -->|Yes| D[GitLab sends message back 'Email exists']
 ```
 
-During provisioning, note the following:
+During provisioning:
 
 - Both primary and secondary emails are considered when checking whether a GitLab user account exists.
-- Duplicate usernames are also handled, by adding suffix `1` upon user creation. E.g. due to already existing `test_user` username, `test_user1` is used).
+- Duplicate usernames are also handled, by adding suffix `1` upon user creation. For example,
+  due to already existing `test_user` username, `test_user1` is used.
 
 As long as [Group SAML](index.md) has been configured, existing GitLab.com users can link to their accounts in one of the following ways:
 
@@ -189,9 +192,9 @@ For role information, please see the [Group SAML page](index.md#user-access-and-
 
 ### Blocking access
 
-To rescind access to the top-level group and all sub-groups and projects remove or deactivate the user on the identity provider.
-SCIM providers will generally update GitLab with the changes on-demand, which is minutes at most.
-The user's membership is revoked and they immediately lose access.
+To rescind access to the top-level group, all sub-groups, and projects, remove or deactivate the user
+on the identity provider. SCIM providers generally update GitLab with the changes on demand, which
+is minutes at most. The user's membership is revoked and they immediately lose access.
 
 NOTE:
 Deprovisioning does not delete the GitLab user account.

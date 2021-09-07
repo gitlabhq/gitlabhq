@@ -16,7 +16,7 @@ RSpec.shared_context 'merge request show action' do
     assign(:merge_request, merge_request)
     assign(:note, note)
     assign(:noteable, merge_request)
-    assign(:pipelines, [])
+    assign(:number_of_pipelines, 0)
     assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, merge_request))
 
     preload_view_requirements(merge_request, note)

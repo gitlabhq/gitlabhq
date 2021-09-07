@@ -176,6 +176,7 @@ module API
       optional :require_admin_approval_after_user_signup, type: Boolean, desc: 'Require explicit admin approval for new signups'
       optional :whats_new_variant, type: String, values: ApplicationSetting.whats_new_variants.keys, desc: "What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`."
       optional :floc_enabled, type: Grape::API::Boolean, desc: 'Enable FloC (Federated Learning of Cohorts)'
+      optional :user_deactivation_emails_enabled, type: Boolean, desc: 'Send emails to users upon account deactivation'
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

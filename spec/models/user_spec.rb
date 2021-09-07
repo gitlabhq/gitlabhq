@@ -1858,12 +1858,24 @@ RSpec.describe User do
         expect(user.deactivated?).to be_truthy
       end
 
-      it 'sends deactivated user an email' do
-        expect_next_instance_of(NotificationService) do |notification|
-          allow(notification).to receive(:user_deactivated).with(user.name, user.notification_email)
+      context "when user deactivation emails are disabled" do
+        before do
+          stub_application_setting(user_deactivation_emails_enabled: false)
         end
+        it 'does not send deactivated user an email' do
+          expect(NotificationService).not_to receive(:new)
+          user.deactivate
+        end
+      end
 
-        user.deactivate
+      context "when user deactivation emails are enabled" do
+        it 'sends deactivated user an email' do
+          expect_next_instance_of(NotificationService) do |notification|
+            allow(notification).to receive(:user_deactivated).with(user.name, user.notification_email)
+          end
+
+          user.deactivate
+        end
       end
     end
 

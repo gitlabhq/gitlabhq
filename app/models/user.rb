@@ -383,6 +383,8 @@ class User < ApplicationRecord
     end
 
     after_transition any => :deactivated do |user|
+      next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
+
       NotificationService.new.user_deactivated(user.name, user.notification_email)
     end
     # rubocop: enable CodeReuse/ServiceClass

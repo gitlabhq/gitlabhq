@@ -12544,6 +12544,9 @@ msgstr ""
 msgid "Enable unauthenticated request rate limit"
 msgstr ""
 
+msgid "Enable user deactivation emails"
+msgstr ""
+
 msgid "Enable version check"
 msgstr ""
 
@@ -30345,6 +30348,9 @@ msgid "Send email notification"
 msgstr ""
 
 msgid "Send emails to help guide new users through the onboarding process."
+msgstr ""
+
+msgid "Send emails to users upon account deactivation."
 msgstr ""
 
 msgid "Send message"

@@ -126,13 +126,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         set_pipeline_variables
 
+        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+          @number_of_pipelines = @pipelines.size
+        end
+
         render
       end
 
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        if params[:serializer] == 'sidebar_extras' && Feature.enabled?(:merge_request_show_render_cached, @project, default_enabled: :yaml)
+        if params[:serializer] == 'sidebar_extras'
           cache_context = [
             params[:serializer],
             current_user&.cache_key,

@@ -182,7 +182,6 @@
 - "./spec/features/merge_request/user_sees_merge_request_pipelines_spec.rb"
 - "./spec/features/merge_request/user_sees_merge_widget_spec.rb"
 - "./spec/features/merge_request/user_sees_mini_pipeline_graph_spec.rb"
-- "./spec/features/merge_request/user_sees_mr_with_deleted_source_branch_spec.rb"
 - "./spec/features/merge_request/user_sees_notes_from_forked_project_spec.rb"
 - "./spec/features/merge_request/user_sees_pipelines_from_forked_project_spec.rb"
 - "./spec/features/merge_request/user_sees_pipelines_spec.rb"
