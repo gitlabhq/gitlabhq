@@ -26,6 +26,9 @@ module Types
       argument :milestone_wildcard_id, ::Types::NegatedMilestoneWildcardIdEnum,
                 required: false,
                 description: 'Filter by negated milestone wildcard values.'
+      argument :my_reaction_emoji, GraphQL::Types::String,
+                required: false,
+                description: 'Filter by reaction emoji applied by the current user.'
     end
   end
 end

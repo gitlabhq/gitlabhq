@@ -4,11 +4,12 @@ module Gitlab
   module Pagination
     module Keyset
       class CursorBasedRequestContext
-        attr_reader :request
-        delegate :params, :header, to: :request
+        DEFAULT_SORT_DIRECTION = :desc
+        attr_reader :request_context
+        delegate :params, to: :request_context
 
-        def initialize(request)
-          @request = request
+        def initialize(request_context)
+          @request_context = request_context
         end
 
         def per_page
@@ -21,8 +22,12 @@ module Gitlab
 
         def apply_headers(cursor_for_next_page)
           Gitlab::Pagination::Keyset::HeaderBuilder
-            .new(self)
+            .new(request_context)
             .add_next_page_header({ cursor: cursor_for_next_page })
+        end
+
+        def order_by
+          { params[:order_by].to_sym => params[:sort]&.to_sym || DEFAULT_SORT_DIRECTION }
         end
       end
     end

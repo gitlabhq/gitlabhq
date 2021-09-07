@@ -119,6 +119,11 @@ export const DraggableItemTypes = {
   list: 'list',
 };
 
+export const MilestoneIDs = {
+  NONE: 0,
+  ANY: -1,
+};
+
 export default {
   BoardType,
   ListType,

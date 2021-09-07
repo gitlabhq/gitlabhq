@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.example/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# npm API
+# npm API **(FREE)**
 
 This is the API documentation for [npm Packages](../../user/packages/npm_registry/index.md).
 

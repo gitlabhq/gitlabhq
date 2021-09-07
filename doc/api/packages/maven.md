@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Maven API
+# Maven API **(FREE)**
 
 This is the API documentation for [Maven Packages](../../user/packages/maven_repository/index.md).
 

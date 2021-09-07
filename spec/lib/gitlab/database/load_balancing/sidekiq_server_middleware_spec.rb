@@ -63,10 +63,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
     end
 
     shared_examples_for 'replica is up to date' do |expected_strategy|
-      let(:wal_locations) { { main: '0/D525E3A8' } }
+      let(:location) {'0/D525E3A8' }
+      let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location } }
 
       it 'does not stick to the primary', :aggregate_failures do
-        expect(load_balancer).to receive(:select_up_to_date_host).with(wal_locations[:main]).and_return(true)
+        expect(load_balancer).to receive(:select_up_to_date_host).with(location).and_return(true)
 
         run_middleware do
           expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).not_to be_truthy
@@ -91,7 +92,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'wal_locations' => wal_locations } }
 
         before do
-          allow(load_balancer).to receive(:select_up_to_date_host).with(wal_locations[:main]).and_return(true)
+          allow(load_balancer).to receive(:select_up_to_date_host).with(location).and_return(true)
         end
 
         it_behaves_like 'replica is up to date', 'replica'

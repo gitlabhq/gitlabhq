@@ -159,7 +159,7 @@ function rspec_paralellized_job() {
 
   local rspec_args="-Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
 
-  if [[ -n $MINIMAL_RSPEC_ENABLED ]]; then
+  if [[ -n $RSPEC_TESTS_MAPPING_ENABLED ]]; then
     tooling/bin/parallel_rspec --rspec_args "${rspec_args}" --filter "tmp/matching_tests.txt"
   else
     tooling/bin/parallel_rspec --rspec_args "${rspec_args}"

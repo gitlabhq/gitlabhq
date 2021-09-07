@@ -22,7 +22,10 @@ changed_files = mr_changes.changes.map { |change| change['new_path'] }
 
 tff = TestFileFinder::FileFinder.new(paths: changed_files).tap do |file_finder|
   file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
-  file_finder.use TestFileFinder::MappingStrategies::DirectMatching.load_json(ENV['RSPEC_TESTS_MAPPING_PATH'])
+
+  if ENV['RSPEC_TESTS_MAPPING_ENABLED']
+    file_finder.use TestFileFinder::MappingStrategies::DirectMatching.load_json(ENV['RSPEC_TESTS_MAPPING_PATH'])
+  end
 end
 
 File.write(output_file, tff.test_files.uniq.join(' '))

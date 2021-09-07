@@ -1,5 +1,6 @@
 import Api from '~/api';
 import createFlash from '~/flash';
+import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
 
@@ -63,8 +64,7 @@ export const deleteFreezePeriod = ({ state, commit }, { id }) => {
       });
       commit(types.RECEIVE_DELETE_FREEZE_PERIOD_ERROR, id);
 
-      // eslint-disable-next-line no-console
-      console.error('[gitlab] Unable to delete deploy freeze:', e);
+      logError(`Unable to delete deploy freeze`, e);
     });
 };
 

@@ -336,7 +336,7 @@ Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 
 ### Group memberships **(PREMIUM SELF)**
 
-#### Membership(s) not granted **(PREMIUM SELF)**
+#### Membership(s) not granted
 
 Sometimes you may think a particular user should be added to a GitLab group via
 LDAP group sync, but for some reason it's not happening. There are several
@@ -395,7 +395,7 @@ group sync](#sync-all-groups) in the rails console and [look through the
 output](#example-console-output-after-a-group-sync) to see what happens when
 GitLab syncs the `admin_group`.
 
-#### Sync all groups **(PREMIUM SELF)**
+#### Sync all groups
 
 NOTE:
 To sync all groups manually when debugging is unnecessary, [use the Rake
@@ -413,7 +413,7 @@ LdapAllGroupsSyncWorker.new.perform
 Next, [learn how to read the
 output](#example-console-output-after-a-group-sync).
 
-##### Example console output after a group sync **(PREMIUM SELF)**
+##### Example console output after a group sync
 
 Like the output from the user sync, the output from the [manual group
 sync](#sync-all-groups) is also very verbose. However, it contains lots
@@ -503,7 +503,7 @@ stating as such:
 No `admin_group` configured for 'ldapmain' provider. Skipping
 ```
 
-#### Sync one group **(PREMIUM SELF)**
+#### Sync one group
 
 [Syncing all groups](#sync-all-groups) can produce a lot of noise in the output, which can be
 distracting when you're only interested in troubleshooting the memberships of
@@ -525,7 +525,7 @@ EE::Gitlab::Auth::Ldap::Sync::Group.execute_all_providers(group)
 The output is similar to
 [that you get from syncing all groups](#example-console-output-after-a-group-sync).
 
-#### Query a group in LDAP **(PREMIUM SELF)**
+#### Query a group in LDAP
 
 When you'd like to confirm that GitLab can read a LDAP group and see all its members,
 you can run the following:

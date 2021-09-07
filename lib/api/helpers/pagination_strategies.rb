@@ -3,10 +3,16 @@
 module API
   module Helpers
     module PaginationStrategies
-      def paginate_with_strategies(relation, request_scope)
+      def paginate_with_strategies(relation, request_scope = nil)
         paginator = paginator(relation, request_scope)
 
-        yield(paginator.paginate(relation)).tap do |records, _|
+        result = if block_given?
+                   yield(paginator.paginate(relation))
+                 else
+                   paginator.paginate(relation)
+                 end
+
+        result.tap do |records, _|
           paginator.finalize(records)
         end
       end
@@ -20,23 +26,41 @@ module API
       private
 
       def keyset_paginator(relation)
-        request_context = Gitlab::Pagination::Keyset::RequestContext.new(self)
-        unless Gitlab::Pagination::Keyset.available?(request_context, relation)
+        if cursor_based_keyset_pagination_supported?(relation)
+          request_context_class = Gitlab::Pagination::Keyset::CursorBasedRequestContext
+          paginator_class = Gitlab::Pagination::Keyset::CursorPager
+          availability_checker = Gitlab::Pagination::CursorBasedKeyset
+        else
+          request_context_class = Gitlab::Pagination::Keyset::RequestContext
+          paginator_class = Gitlab::Pagination::Keyset::Pager
+          availability_checker = Gitlab::Pagination::Keyset
+        end
+
+        request_context = request_context_class.new(self)
+
+        unless availability_checker.available?(request_context, relation)
           return error!('Keyset pagination is not yet available for this type of request', 405)
         end
 
-        Gitlab::Pagination::Keyset::Pager.new(request_context)
+        paginator_class.new(request_context)
       end
 
       def offset_paginator(relation, request_scope)
         offset_limit = limit_for_scope(request_scope)
-        if Gitlab::Pagination::Keyset.available_for_type?(relation) && offset_limit_exceeded?(offset_limit)
+        if (Gitlab::Pagination::Keyset.available_for_type?(relation) ||
+            cursor_based_keyset_pagination_supported?(relation)) &&
+            offset_limit_exceeded?(offset_limit)
+
           return error!("Offset pagination has a maximum allowed offset of #{offset_limit} " \
             "for requests that return objects of type #{relation.klass}. " \
             "Remaining records can be retrieved using keyset pagination.", 405)
         end
 
         Gitlab::Pagination::OffsetPagination.new(self)
+      end
+
+      def cursor_based_keyset_pagination_supported?(relation)
+        Gitlab::Pagination::CursorBasedKeyset.available_for_type?(relation)
       end
 
       def keyset_pagination_enabled?

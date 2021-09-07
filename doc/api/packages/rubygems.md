@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Ruby gems API
+# Ruby gems API **(FREE SELF)**
 
 This is the API documentation for [Ruby gems](../../user/packages/rubygems_registry/index.md).
 

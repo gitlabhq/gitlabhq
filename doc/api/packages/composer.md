@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Composer API
+# Composer API **(FREE)**
 
 This is the API documentation for [Composer Packages](../../user/packages/composer_repository/index.md).
 

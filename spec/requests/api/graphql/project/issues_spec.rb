@@ -61,6 +61,34 @@ RSpec.describe 'getting an issue list for a project' do
     end
   end
 
+  context 'filtering by my_reaction_emoji' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:upvote_award) { create(:award_emoji, :upvote, user: current_user, awardable: issue_a) }
+
+    let(:issue_a_gid) { issue_a.to_global_id.to_s }
+    let(:issue_b_gid) { issue_b.to_global_id.to_s }
+
+    where(:value, :gids) do
+      'thumbsup'   | lazy { [issue_a_gid] }
+      'ANY'        | lazy { [issue_a_gid] }
+      'any'        | lazy { [issue_a_gid] }
+      'AnY'        | lazy { [issue_a_gid] }
+      'NONE'       | lazy { [issue_b_gid] }
+      'thumbsdown' | lazy { [] }
+    end
+
+    with_them do
+      let(:issue_filter_params) { { my_reaction_emoji: value } }
+
+      it 'returns correctly filtered issues' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_dig_at(issues_data, :node, :id)).to eq(gids)
+      end
+    end
+  end
+
   context 'when limiting the number of results' do
     let(:query) do
       <<~GQL

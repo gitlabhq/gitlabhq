@@ -66,7 +66,7 @@ module Gitlab
         def legacy_wal_location(job)
           wal_location = job['database_write_location'] || job['database_replica_location']
 
-          { main: wal_location } if wal_location
+          { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
         end
 
         def load_balancing_available?(worker_class)

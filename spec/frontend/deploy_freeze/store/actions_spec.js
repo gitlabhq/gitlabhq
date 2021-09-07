@@ -5,6 +5,7 @@ import * as actions from '~/deploy_freeze/store/actions';
 import * as types from '~/deploy_freeze/store/mutation_types';
 import getInitialState from '~/deploy_freeze/store/state';
 import createFlash from '~/flash';
+import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
@@ -218,7 +219,7 @@ describe('deploy freeze store actions', () => {
     });
 
     it('should show flash error and set error in state on delete failure', () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+      jest.spyOn(logger, 'logError').mockImplementation();
       const error = new Error();
       Api.deleteFreezePeriod.mockRejectedValue(error);
 
@@ -234,7 +235,7 @@ describe('deploy freeze store actions', () => {
         () => {
           expect(createFlash).toHaveBeenCalled();
 
-          expect(errorSpy).toHaveBeenCalledWith('[gitlab] Unable to delete deploy freeze:', error);
+          expect(logger.logError).toHaveBeenCalledWith('Unable to delete deploy freeze', error);
         },
       );
     });

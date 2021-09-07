@@ -462,21 +462,42 @@ The response header includes a link to the next page. For example:
 ```http
 HTTP/1.1 200 OK
 ...
-Links: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
 Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
 Status: 200 OK
 ...
 ```
 
+The link to the next page contains an additional filter `id_after=42` that
+excludes already-retrieved records.
+
+As another example, the following request lists 50 [groups](groups.md) per page ordered
+by `name` ascending using keyset pagination:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups?pagination=keyset&per_page=50&order_by=name&sort=asc"
+```
+
+The response header includes a link to the next page:
+
+```http
+HTTP/1.1 200 OK
+...
+Link: <https://gitlab.example.com/api/v4/groups?pagination=keyset&per_page=50&order_by=name&sort=asc&cursor=eyJuYW1lIjoiRmxpZ2h0anMiLCJpZCI6IjI2IiwiX2tkIjoibiJ9>; rel="next"
+Status: 200 OK
+...
+```
+
+The link to the next page contains an additional filter `cursor=eyJuYW1lIjoiRmxpZ2h0anMiLCJpZCI6IjI2IiwiX2tkIjoibiJ9` that
+excludes already-retrieved records.
+
+The type of filter depends on the
+`order_by` option used, and we can have more than one additional filter.
+
 WARNING:
-The `Links` header is scheduled to be removed in GitLab 14.0 to be aligned with the
+The `Links` header was removed in GitLab 14.0 to be aligned with the
 [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
 header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)
 and should be used instead.
-
-The link to the next page contains an additional filter `id_after=42` that
-excludes already-retrieved records. The type of filter depends on the
-`order_by` option used, and we may have more than one additional filter.
 
 When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is
@@ -489,9 +510,10 @@ pagination headers.
 Keyset-based pagination is supported only for selected resources and ordering
 options:
 
-| Resource                | Order |
-|-------------------------|-------|
-| [Projects](projects.md) | `order_by=id` only. |
+| Resource                 | Options                          | Availability                            |
+|:-------------------------|:---------------------------------|:----------------------------------------|
+| [Projects](projects.md)  | `order_by=id` only               | Authenticated and unauthenticated users |
+| [Groups](groups.md)      | `order_by=name`, `sort=asc` only | Unauthenticated users only              |
 
 ## Path parameters
 

@@ -7,7 +7,7 @@ RSpec.describe Ci::PipelineVariable do
 
   it_behaves_like "CI variable"
 
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to(:pipeline_id) }
+  it { is_expected.to validate_presence_of(:key) }
 
   describe '#hook_attrs' do
     let(:variable) { create(:ci_pipeline_variable, key: 'foo', value: 'bar') }

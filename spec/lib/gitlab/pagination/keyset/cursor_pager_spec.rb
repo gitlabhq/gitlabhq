@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Pagination::Keyset::CursorPager do
   let(:relation) { Group.all.order(:name, :id) }
   let(:per_page) { 3 }
   let(:params) { { cursor: nil, per_page: per_page } }
-  let(:request) { double('request', params: params) }
-  let(:cursor_based_request_context) { Gitlab::Pagination::Keyset::CursorBasedRequestContext.new(request) }
+  let(:request_context) { double('request_context', params: params) }
+  let(:cursor_based_request_context) { Gitlab::Pagination::Keyset::CursorBasedRequestContext.new(request_context) }
 
   before_all do
     create_list(:group, 7)
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Pagination::Keyset::CursorPager do
     it 'passes information about next page to request' do
       cursor_for_next_page = relation.keyset_paginate(**params).cursor_for_next_page
 
-      expect_next_instance_of(Gitlab::Pagination::Keyset::HeaderBuilder, cursor_based_request_context) do |builder|
+      expect_next_instance_of(Gitlab::Pagination::Keyset::HeaderBuilder, request_context) do |builder|
         expect(builder).to receive(:add_next_page_header).with({ cursor: cursor_for_next_page })
       end
 

@@ -1,0 +1,8 @@
+---
+name: keyset_pagination_for_groups_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68346
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339831
+milestone: '14.3'
+type: development
+group: group::access
+default_enabled: false

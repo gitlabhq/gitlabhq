@@ -20,6 +20,7 @@ RSpec.describe Resolvers::IssuesResolver do
   let_it_be(:issue4)    { create(:issue) }
   let_it_be(:label1)    { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
+  let_it_be(:upvote_award) { create(:award_emoji, :upvote, user: current_user, awardable: issue1) }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::IssueType.connection_type)
@@ -197,6 +198,27 @@ RSpec.describe Resolvers::IssuesResolver do
 
         it 'ignores the filter if none given' do
           expect(resolve_issues(types: [])).to contain_exactly(issue1, issue2)
+        end
+      end
+
+      context 'filtering by reaction emoji' do
+        let_it_be(:downvoted_issue) { create(:issue, project: project) }
+        let_it_be(:downvote_award) { create(:award_emoji, :downvote, user: current_user, awardable: downvoted_issue) }
+
+        it 'filters by reaction emoji' do
+          expect(resolve_issues(my_reaction_emoji: upvote_award.name)).to contain_exactly(issue1)
+        end
+
+        it 'filters by reaction emoji wildcard "none"' do
+          expect(resolve_issues(my_reaction_emoji: 'none')).to contain_exactly(issue2)
+        end
+
+        it 'filters by reaction emoji wildcard "any"' do
+          expect(resolve_issues(my_reaction_emoji: 'any')).to contain_exactly(issue1, downvoted_issue)
+        end
+
+        it 'filters by negated reaction emoji' do
+          expect(resolve_issues(not: { my_reaction_emoji: downvote_award.name })).to contain_exactly(issue1, issue2)
         end
       end
 

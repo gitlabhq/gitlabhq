@@ -158,6 +158,127 @@ RSpec.describe API::Groups do
       end
     end
 
+    context 'pagination strategies' do
+      let_it_be(:group_1) { create(:group, name: '1_group') }
+      let_it_be(:group_2) { create(:group, name: '2_group') }
+
+      context 'when the user is anonymous' do
+        context 'offset pagination' do
+          context 'on making requests beyond the allowed offset pagination threshold' do
+            it 'returns error and suggests to use keyset pagination' do
+              get api('/groups'), params: { page: 3000, per_page: 25 }
+
+              expect(response).to have_gitlab_http_status(:method_not_allowed)
+              expect(json_response['error']).to eq(
+                'Offset pagination has a maximum allowed offset of 50000 for requests that return objects of type Group. '\
+                'Remaining records can be retrieved using keyset pagination.'
+              )
+            end
+
+            context 'when the feature flag `keyset_pagination_for_groups_api` is disabled' do
+              before do
+                stub_feature_flags(keyset_pagination_for_groups_api: false)
+              end
+
+              it 'returns successful response' do
+                get api('/groups'), params: { page: 3000, per_page: 25 }
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
+
+          context 'on making requests below the allowed offset pagination threshold' do
+            it 'paginates the records' do
+              get api('/groups'), params: { page: 1, per_page: 1 }
+
+              expect(response).to have_gitlab_http_status(:ok)
+              records = json_response
+              expect(records.size).to eq(1)
+              expect(records.first['id']).to eq(group_1.id)
+
+              # next page
+
+              get api('/groups'), params: { page: 2, per_page: 1 }
+
+              expect(response).to have_gitlab_http_status(:ok)
+              records = Gitlab::Json.parse(response.body)
+              expect(records.size).to eq(1)
+              expect(records.first['id']).to eq(group_2.id)
+            end
+          end
+        end
+
+        context 'keyset pagination' do
+          def pagination_links(response)
+            link = response.headers['LINK']
+            return unless link
+
+            link.split(',').map do |link|
+              match = link.match(/<(?<url>.*)>; rel="(?<rel>\w+)"/)
+              break nil unless match
+
+              { url: match[:url], rel: match[:rel] }
+            end.compact
+          end
+
+          def params_for_next_page(response)
+            next_url = pagination_links(response).find { |link| link[:rel] == 'next' }[:url]
+            Rack::Utils.parse_query(URI.parse(next_url).query)
+          end
+
+          context 'on making requests with supported ordering structure' do
+            it 'paginates the records correctly' do
+              # first page
+              get api('/groups'), params: { pagination: 'keyset', per_page: 1 }
+
+              expect(response).to have_gitlab_http_status(:ok)
+              records = json_response
+              expect(records.size).to eq(1)
+              expect(records.first['id']).to eq(group_1.id)
+
+              params_for_next_page = params_for_next_page(response)
+              expect(params_for_next_page).to include('cursor')
+
+              get api('/groups'), params: params_for_next_page
+
+              expect(response).to have_gitlab_http_status(:ok)
+              records = Gitlab::Json.parse(response.body)
+              expect(records.size).to eq(1)
+              expect(records.first['id']).to eq(group_2.id)
+            end
+
+            context 'when the feature flag `keyset_pagination_for_groups_api` is disabled' do
+              before do
+                stub_feature_flags(keyset_pagination_for_groups_api: false)
+              end
+
+              it 'ignores the keyset pagination params and performs offset pagination' do
+                get api('/groups'), params: { pagination: 'keyset', per_page: 1 }
+
+                expect(response).to have_gitlab_http_status(:ok)
+                records = json_response
+                expect(records.size).to eq(1)
+                expect(records.first['id']).to eq(group_1.id)
+
+                params_for_next_page = params_for_next_page(response)
+                expect(params_for_next_page).not_to include('cursor')
+              end
+            end
+          end
+
+          context 'on making requests with unsupported ordering structure' do
+            it 'returns error' do
+              get api('/groups'), params: { pagination: 'keyset', per_page: 1, order_by: 'path', sort: 'desc' }
+
+              expect(response).to have_gitlab_http_status(:method_not_allowed)
+              expect(json_response['error']).to eq('Keyset pagination is not yet available for this type of request')
+            end
+          end
+        end
+      end
+    end
+
     context "when authenticated as admin" do
       it "admin: returns an array of all groups" do
         get api("/groups", admin)

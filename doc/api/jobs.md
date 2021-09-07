@@ -466,7 +466,7 @@ Example of response
 
 ## Get Kubernetes Agents by `CI_JOB_TOKEN` **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324269) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324269) in GitLab 13.11.
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed GitLab
 Kubernetes Agents.

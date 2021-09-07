@@ -9,14 +9,18 @@ class WorkItem::Type < ApplicationRecord
 
   include CacheMarkdownField
 
+  # Base types need to exist on the DB on app startup
+  # This constant is used by the DB seeder
+  BASE_TYPES = {
+    issue:       { name: 'Issue', icon_name: 'issue-type-issue', enum_value: 0 },
+    incident:    { name: 'Incident', icon_name: 'issue-type-incident', enum_value: 1 },
+    test_case:   { name: 'Test Case', icon_name: 'issue-type-test-case', enum_value: 2 }, ## EE-only
+    requirement: { name: 'Requirement', icon_name: 'issue-type-requirements', enum_value: 3 } ## EE-only
+  }.freeze
+
   cache_markdown_field :description, pipeline: :single_line
 
-  enum base_type: {
-    issue:       0,
-    incident:    1,
-    test_case:   2, ## EE-only
-    requirement: 3 ## EE-only
-  }
+  enum base_type: BASE_TYPES.transform_values { |value| value[:enum_value] }
 
   belongs_to :namespace, optional: true
   has_many :work_items, class_name: 'Issue', foreign_key: :work_item_type_id, inverse_of: :work_item_type
