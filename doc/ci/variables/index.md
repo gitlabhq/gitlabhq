@@ -304,6 +304,26 @@ echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
 ```
 
+#### Store multiple values in one variable
+
+It is not possible to create a CI/CD variable that is an array of values, but you
+can use shell scripting techniques for similar behavior.
+
+For example, you can store multiple variables separated by a space in a variable,
+then loop through the values with a script:
+
+```yaml
+job1:
+  variables:
+    FOLDERS: src test docs
+  script:
+    - |
+      for FOLDER in $FOLDERS
+        do
+          echo "The path is root/${FOLDER}"
+        done
+```
+
 ### Mask a CI/CD variable
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784) in GitLab 11.10

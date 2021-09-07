@@ -35,6 +35,7 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
+import { initHeaderSearchApp } from '~/header_search';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
@@ -95,20 +96,24 @@ function deferredInitialisation() {
   initDefaultTrackers();
   initFeatureHighlight();
 
-  const search = document.querySelector('#search');
-  if (search) {
-    search.addEventListener(
-      'focus',
-      () => {
-        import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
-          .then(({ default: initSearchAutocomplete }) => {
-            const searchDropdown = initSearchAutocomplete();
-            searchDropdown.onSearchInputFocus();
-          })
-          .catch(() => {});
-      },
-      { once: true },
-    );
+  if (gon.features?.newHeaderSearch) {
+    initHeaderSearchApp();
+  } else {
+    const search = document.querySelector('#search');
+    if (search) {
+      search.addEventListener(
+        'focus',
+        () => {
+          import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
+            .then(({ default: initSearchAutocomplete }) => {
+              const searchDropdown = initSearchAutocomplete();
+              searchDropdown.onSearchInputFocus();
+            })
+            .catch(() => {});
+        },
+        { once: true },
+      );
+    }
   }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');

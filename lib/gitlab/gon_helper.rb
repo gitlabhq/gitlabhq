@@ -54,6 +54,7 @@ module Gitlab
       push_frontend_feature_flag(:usage_data_api, type: :ops, default_enabled: :yaml)
       push_frontend_feature_flag(:security_auto_fix, default_enabled: false)
       push_frontend_feature_flag(:improved_emoji_picker, default_enabled: :yaml)
+      push_frontend_feature_flag(:new_header_search, default_enabled: :yaml)
     end
 
     # Exposes the state of a feature flag to the frontend code.

@@ -140,6 +140,34 @@
     }
   }
 
+  .header-search {
+    background-color: rgba($search-and-nav-links, 0.2) !important;
+
+    &:hover {
+      background-color: rgba($search-and-nav-links, 0.3) !important;
+    }
+
+    svg {
+      color: rgba($search-and-nav-links, 0.8) !important;
+    }
+
+    input {
+      background-color: transparent;
+      color: rgba($search-and-nav-links, 0.8);
+
+      &::placeholder {
+        color: rgba($search-and-nav-links, 0.8);
+      }
+
+      &:focus,
+      &:active {
+        &::placeholder {
+          color: $search-and-nav-links;
+        }
+      }
+    }
+  }
+
   .search {
     form {
       background-color: rgba($search-and-nav-links, 0.2);

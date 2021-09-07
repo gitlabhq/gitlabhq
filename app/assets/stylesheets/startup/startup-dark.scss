@@ -375,6 +375,38 @@ h1 {
 .m-auto {
   margin: auto !important;
 }
+.gl-form-input,
+.gl-form-input.form-control {
+  background-color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 0.875rem;
+  line-height: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  height: auto;
+  color: #fafafa;
+  box-shadow: inset 0 0 0 1px #868686;
+  border-style: none;
+  appearance: none;
+  -moz-appearance: none;
+}
+.gl-form-input:disabled,
+.gl-form-input:not(.form-control-plaintext):not([type="color"]):read-only,
+.gl-form-input.form-control:disabled,
+.gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
+  background-color: #1f1f1f;
+  color: #868686;
+  box-shadow: inset 0 0 0 1px #404040;
+  cursor: not-allowed;
+}
+.gl-form-input::placeholder,
+.gl-form-input.form-control::placeholder {
+  color: #868686;
+}
 .gl-button {
   display: inline-flex;
 }
@@ -1410,6 +1442,9 @@ svg.s12 {
 svg.s16 {
   vertical-align: -3px;
 }
+.header-search {
+  width: 320px;
+}
 .search {
   margin: 0 8px;
 }
@@ -1636,6 +1671,22 @@ body.gl-dark
   .notification-dot {
   background-color: #fafafa;
 }
+body.gl-dark .header-search {
+  background-color: rgba(250, 250, 250, 0.2) !important;
+}
+body.gl-dark .header-search svg {
+  color: rgba(250, 250, 250, 0.8) !important;
+}
+body.gl-dark .header-search input {
+  background-color: transparent;
+  color: rgba(250, 250, 250, 0.8);
+}
+body.gl-dark .header-search input::placeholder {
+  color: rgba(250, 250, 250, 0.8);
+}
+body.gl-dark .header-search input:active::placeholder {
+  color: #fafafa;
+}
 body.gl-dark .search form {
   background-color: rgba(250, 250, 250, 0.2);
 }
@@ -1668,6 +1719,14 @@ body.gl-dark .navbar-gitlab .navbar-nav li.active > a,
 body.gl-dark .navbar-gitlab .navbar-nav li.active > button {
   color: var(--gl-text-color);
   background-color: var(--gray-200);
+}
+body.gl-dark .navbar-gitlab .header-search {
+  background-color: var(--gray-100) !important;
+  box-shadow: inset 0 0 0 1px var(--border-color) !important;
+}
+body.gl-dark .navbar-gitlab .header-search:active {
+  background-color: var(--gray-100) !important;
+  box-shadow: inset 0 0 0 1px var(--blue-200) !important;
 }
 body.gl-dark .navbar-gitlab .search form {
   background-color: var(--gray-100);

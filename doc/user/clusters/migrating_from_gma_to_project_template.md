@@ -6,11 +6,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Migrating from GitLab Managed Apps to a management project template
 
-The [GitLab Managed Apps](applications.md) are deprecated in GitLab 14.0. To migrate to the new way of managing them:
+The [GitLab Managed Apps](applications.md) deprecated in GitLab 14.0.
+To manage your apps through a cluster management project, you need a [GitLab Runner](../../ci/runners/index.md) available.
+Then, follow the steps below. You can also watch
+some recorded videos with [live examples](#live-examples).
 
-1. Read how the [management project template](management_project_template.md) works, and
-   create a new project based on the "GitLab Cluster Management" template.
-1. Create a new project as explained in the [management project template](management_project_template.md).
+1. Familiarize yourself with the [management project template](management_project_template.md).
+1. Create a [new project](../project/working_with_projects.md#create-a-project), either:
+   - From a template, selecting the **GitLab Cluster Management** project template.
+   - Importing the project from the URL `https://gitlab.com/gitlab-org/project-templates/cluster-management.git`. This 
+     is useful if you are using GitLab Self-Managed and you want to use the latest version of the template.
+
+   This is your cluster management project.
+   If you are using a self-managed GitLab instance older than the latest one, import the cluster management project via URL from `https://gitlab.com/gitlab-org/project-templates/cluster-management.git`.
+1. Go to the project associated with your cluster.
+1. In your cluster's configuration page [set the cluster management project](management_project.md#selecting-a-cluster-management-project) that you just created.
 1. Detect apps deployed through Helm v2 releases by using the pre-configured [`.gitlab-ci.yml`](management_project_template.md#the-gitlab-ciyml-file) file:
     - In case you had overwritten the default GitLab Managed Apps namespace, edit `.gitlab-ci.yml`,
       and make sure the script is receiving the correct namespace as an argument:
@@ -93,3 +103,8 @@ The [GitLab Managed Apps](applications.md) are deprecated in GitLab 14.0. To mig
 
 After getting a successful pipeline, repeat these steps for any other deployed apps
 you want to manage with the Cluster Management Project.
+
+## Live examples
+
+- [Migrating from scratch using a brand new cluster management project](https://youtu.be/jCUFGWT0jS0). Also covers Helm v2 apps migration.
+- [Migrating from an existing GitLab managed apps CI/CD project](https://youtu.be/U2lbBGZjZmc)
