@@ -117,9 +117,9 @@ For Sidekiq, we can define
 [data consistency](../development/sidekiq_style_guide.md#job-data-consistency-strategies)
 requirements for a specific job.
 
-## Service Discovery
+## Service Discovery **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883) in GitLab 11.0.
 
 Service discovery allows GitLab to automatically retrieve a list of secondary
 databases to use, instead of having to manually specify these in the
@@ -237,9 +237,9 @@ For example:
 {"severity":"INFO","time":"2019-09-02T12:12:01.728Z","correlation_id":"abcdefg","event":"host_online","message":"Host came back online","db_host":"111.222.333.444","db_port":null,"tag":"rails.database_load_balancing","environment":"production","hostname":"web-example-1","fqdn":"gitlab.example.com","path":null,"params":null}
 ```
 
-## Handling Stale Reads
+## Handling Stale Reads **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3526) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3526) in GitLab 10.3.
 
 To prevent reading from an outdated secondary the load balancer checks if it
 is in sync with the primary. If the data is determined to be recent enough the

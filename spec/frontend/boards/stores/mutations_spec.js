@@ -545,7 +545,7 @@ describe('Board Store Mutations', () => {
       expect(state.groupProjectsFlags.isLoading).toBe(true);
     });
 
-    it('Should set isLoading in groupProjectsFlags to true in state when fetchNext is true', () => {
+    it('Should set isLoadingMore in groupProjectsFlags to true in state when fetchNext is true', () => {
       mutations[types.REQUEST_GROUP_PROJECTS](state, true);
 
       expect(state.groupProjectsFlags.isLoadingMore).toBe(true);

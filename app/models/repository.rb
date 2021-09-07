@@ -721,18 +721,9 @@ class Repository
   end
 
   def tags_sorted_by(value)
-    case value
-    when 'name_asc'
-      VersionSorter.sort(tags) { |tag| tag.name }
-    when 'name_desc'
-      VersionSorter.rsort(tags) { |tag| tag.name }
-    when 'updated_desc'
-      tags_sorted_by_committed_date.reverse
-    when 'updated_asc'
-      tags_sorted_by_committed_date
-    else
-      tags
-    end
+    return raw_repository.tags(sort_by: value) if Feature.enabled?(:gitaly_tags_finder, project, default_enabled: :yaml)
+
+    tags_ruby_sort(value)
   end
 
   # Params:
@@ -1164,6 +1155,23 @@ class Repository
     @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
   end
 
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/339741
+  def tags_ruby_sort(value)
+    case value
+    when 'name_asc'
+      VersionSorter.sort(tags) { |tag| tag.name }
+    when 'name_desc'
+      VersionSorter.rsort(tags) { |tag| tag.name }
+    when 'updated_desc'
+      tags_sorted_by_committed_date.reverse
+    when 'updated_asc'
+      tags_sorted_by_committed_date
+    else
+      tags
+    end
+  end
+
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/339741
   def tags_sorted_by_committed_date
     # Annotated tags can point to any object (e.g. a blob), but generally
     # tags point to a commit. If we don't have a commit, then just default

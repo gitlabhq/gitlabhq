@@ -15,7 +15,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
 
   it 'has specific fields' do
     fields = %i[id iid title description state reference author assignees updated_by participants labels milestone due_date
-                confidential discussion_locked upvotes downvotes merge_requests_count user_notes_count user_discussions_count web_path web_url relative_position
+                confidential hidden discussion_locked upvotes downvotes merge_requests_count user_notes_count user_discussions_count web_path web_url relative_position
                 emails_disabled subscribed time_estimate total_time_spent human_time_estimate human_total_time_spent closed_at created_at updated_at task_completion_status
                 design_collection alert_management_alert severity current_user_todos moved moved_to
                 create_note_email timelogs project_id]
@@ -198,6 +198,56 @@ RSpec.describe GitlabSchema.types['Issue'] do
         let(:current_user) { nil }
 
         it_behaves_like 'does not include private notes'
+      end
+    end
+  end
+
+  describe 'hidden', :enable_admin_mode do
+    let_it_be(:admin) { create(:user, :admin)}
+    let_it_be(:banned_user) { create(:user, :banned) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:hidden_issue) { create(:issue, project: project, author: banned_user) }
+    let_it_be(:visible_issue) { create(:issue, project: project, author: user) }
+
+    let(:issue) { hidden_issue }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            issue(iid: "#{issue.iid}") {
+              hidden
+            }
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: admin }).as_json }
+
+    context 'when `ban_user_feature_flag` is enabled' do
+      context 'when issue is hidden' do
+        it 'returns `true`' do
+          expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(true)
+        end
+      end
+
+      context 'when issue is visible' do
+        let(:issue) { visible_issue }
+
+        it 'returns `false`' do
+          expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(false)
+        end
+      end
+    end
+
+    context 'when `ban_user_feature_flag` is disabled' do
+      before do
+        stub_feature_flags(ban_user_feature_flag: false)
+      end
+
+      it 'returns `nil`' do
+        expect(subject.dig('data', 'project', 'issue', 'hidden')).to be_nil
       end
     end
   end

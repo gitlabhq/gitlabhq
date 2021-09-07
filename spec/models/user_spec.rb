@@ -109,7 +109,6 @@ RSpec.describe User do
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
-    it { is_expected.to have_many(:triggers).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }

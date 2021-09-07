@@ -2,6 +2,7 @@ import addExtraTokensForMergeRequests from 'ee_else_ce/filtered_search/add_extra
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
+import projectSelect from '~/project_select';
 
 addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys, true);
 
@@ -10,3 +11,5 @@ initFilteredSearch({
   filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
   useDefaultState: true,
 });
+
+projectSelect();

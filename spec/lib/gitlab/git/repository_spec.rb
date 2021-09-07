@@ -109,6 +109,32 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
+  describe '#tags' do
+    subject { repository.tags }
+
+    it 'gets tags from GitalyClient' do
+      expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+        expect(service).to receive(:tags)
+      end
+
+      subject
+    end
+
+    context 'with sorting option' do
+      subject { repository.tags(sort_by: 'name_asc') }
+
+      it 'gets tags from GitalyClient' do
+        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+          expect(service).to receive(:tags).with(sort_by: 'name_asc')
+        end
+
+        subject
+      end
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tags
+  end
+
   describe '#archive_metadata' do
     let(:storage_path) { '/tmp' }
     let(:cache_key) { File.join(repository.gl_repository, SeedRepo::LastCommit::ID) }

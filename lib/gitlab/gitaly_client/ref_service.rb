@@ -5,6 +5,16 @@ module Gitlab
     class RefService
       include Gitlab::EncodingHelper
 
+      TAGS_SORT_KEY = {
+        'name' => Gitaly::FindAllTagsRequest::SortBy::Key::REFNAME,
+        'updated' => Gitaly::FindAllTagsRequest::SortBy::Key::CREATORDATE
+      }.freeze
+
+      TAGS_SORT_DIRECTION = {
+        'asc' => Gitaly::SortDirection::ASCENDING,
+        'desc' => Gitaly::SortDirection::DESCENDING
+      }.freeze
+
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @repository = repository
@@ -84,13 +94,15 @@ module Gitlab
 
       def local_branches(sort_by: nil, pagination_params: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
-        request.sort_by = sort_by_param(sort_by) if sort_by
+        request.sort_by = sort_local_branches_by_param(sort_by) if sort_by
         response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request, timeout: GitalyClient.fast_timeout)
         consume_find_local_branches_response(response)
       end
 
-      def tags
+      def tags(sort_by: nil)
         request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
+        request.sort_by = sort_tags_by_param(sort_by) if sort_by
+
         response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request, timeout: GitalyClient.medium_timeout)
         consume_tags_response(response)
       end
@@ -201,13 +213,24 @@ module Gitlab
         response.flat_map { |message| message.names.map { |name| yield(name) } }
       end
 
-      def sort_by_param(sort_by)
+      def sort_local_branches_by_param(sort_by)
         sort_by = 'name' if sort_by == 'name_asc'
 
         enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
         raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
 
         enum_value
+      end
+
+      def sort_tags_by_param(sort_by)
+        match = sort_by.match(/^(?<key>name|updated)_(?<direction>asc|desc)$/)
+
+        return unless match
+
+        Gitaly::FindAllTagsRequest::SortBy.new(
+          key: TAGS_SORT_KEY[match[:key]],
+          direction: TAGS_SORT_DIRECTION[match[:direction]]
+        )
       end
 
       def consume_find_local_branches_response(response)

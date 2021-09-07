@@ -369,6 +369,7 @@ export default {
         :text="dropdownText"
         :loading="loading"
         class="gl-w-full"
+        toggle-class="gl-max-w-100"
         @shown="setFocus"
       >
         <gl-search-box-by-type ref="search" v-model="searchTerm" />

@@ -1,5 +1,4 @@
 import { useFakeDate } from 'helpers/fake_date';
-import { DEFAULT_DAYS_TO_DISPLAY } from '~/cycle_analytics/constants';
 import * as types from '~/cycle_analytics/store/mutation_types';
 import mutations from '~/cycle_analytics/store/mutations';
 import {
@@ -65,15 +64,16 @@ describe('Project Value Stream Analytics mutations', () => {
     expect(state).toMatchObject({ [stateKey]: value });
   });
 
+  const mockSetDatePayload = { createdAfter: mockCreatedAfter, createdBefore: mockCreatedBefore };
   const mockInitialPayload = {
     endpoints: { requestPath: mockRequestPath },
     currentGroup: { title: 'cool-group' },
     id: 1337,
+    ...mockSetDatePayload,
   };
   const mockInitializedObj = {
     endpoints: { requestPath: mockRequestPath },
-    createdAfter: mockCreatedAfter,
-    createdBefore: mockCreatedBefore,
+    ...mockSetDatePayload,
   };
 
   it.each`
@@ -89,9 +89,8 @@ describe('Project Value Stream Analytics mutations', () => {
 
   it.each`
     mutation                                     | payload                             | stateKey                 | value
-    ${types.SET_DATE_RANGE}                      | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'daysInPast'}          | ${DEFAULT_DAYS_TO_DISPLAY}
-    ${types.SET_DATE_RANGE}                      | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'createdAfter'}        | ${mockCreatedAfter}
-    ${types.SET_DATE_RANGE}                      | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'createdBefore'}       | ${mockCreatedBefore}
+    ${types.SET_DATE_RANGE}                      | ${mockSetDatePayload}               | ${'createdAfter'}        | ${mockCreatedAfter}
+    ${types.SET_DATE_RANGE}                      | ${mockSetDatePayload}               | ${'createdBefore'}       | ${mockCreatedBefore}
     ${types.SET_LOADING}                         | ${true}                             | ${'isLoading'}           | ${true}
     ${types.SET_LOADING}                         | ${false}                            | ${'isLoading'}           | ${false}
     ${types.SET_SELECTED_VALUE_STREAM}           | ${selectedValueStream}              | ${'selectedValueStream'} | ${selectedValueStream}

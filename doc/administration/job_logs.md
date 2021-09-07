@@ -138,7 +138,7 @@ For more information, see [delete references to missing artifacts](raketasks/che
 > - Enabled on GitLab.com.
 > - [Recommended for production use](https://gitlab.com/groups/gitlab-org/-/epics/4275) in GitLab 13.6.
 > - [Recommended for production use with AWS S3](https://gitlab.com/gitlab-org/gitlab/-/issues/273498) in GitLab 13.7.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging). **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging).
 
 By default job logs are sent from the GitLab Runner in chunks and cached temporarily on disk
 in `/var/opt/gitlab/gitlab-ci/builds` by Omnibus GitLab. After the job completes,
@@ -183,7 +183,7 @@ Here is the detailed data flow:
   to disk, and there is no protection against misconfiguration.
 - There is [an epic tracking other potential limitations and improvements](https://gitlab.com/groups/gitlab-org/-/epics/3791).
 
-### Enable or disable incremental logging **(FREE SELF)**
+### Enable or disable incremental logging
 
 Incremental logging is under development, but [ready for production use as of GitLab 13.6](https://gitlab.com/groups/gitlab-org/-/epics/4275). It is
 deployed behind a feature flag that is **disabled by default**.

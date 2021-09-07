@@ -191,9 +191,9 @@ module Gitlab
 
       # Returns an Array of Tags
       #
-      def tags
+      def tags(sort_by: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.tags
+          gitaly_ref_client.tags(sort_by: sort_by)
         end
       end
 

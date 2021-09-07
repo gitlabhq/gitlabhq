@@ -683,8 +683,8 @@ configuration.
 
 #### Encrypted S3 buckets
 
-> - Introduced in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) for instance profiles only and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html).
-> - Introduced in [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34460) for static credentials when [consolidated object storage configuration](#consolidated-object-storage-configuration) and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html) are used.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) in GitLab 13.1 for instance profiles only and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34460) in GitLab 13.2 for static credentials when [consolidated object storage configuration](#consolidated-object-storage-configuration) and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html) are used.
 
 When configured either with an instance profile or with the consolidated
 object configuration, GitLab Workhorse properly uploads files to S3
@@ -695,7 +695,7 @@ supported since this requires sending the encryption keys in every request](http
 
 ##### Server-side encryption headers
 
-> Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
 
 Setting a default encryption on an S3 bucket is the easiest way to
 enable encryption, but you may want to [set a bucket policy to ensure

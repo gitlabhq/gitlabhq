@@ -10,8 +10,33 @@ RSpec.describe Profiles::TwoFactorAuthsController do
     allow(subject).to receive(:current_user).and_return(user)
   end
 
+  shared_examples 'user must first verify their primary email address' do
+    before do
+      allow(user).to receive(:primary_email_verified?).and_return(false)
+    end
+
+    it 'redirects to profile_emails_path' do
+      go
+
+      expect(response).to redirect_to(profile_emails_path)
+    end
+
+    it 'displays a notice' do
+      go
+
+      expect(flash[:notice])
+        .to eq _('You need to verify your primary email first before enabling Two-Factor Authentication.')
+    end
+
+    it 'does not redirect when the `ensure_verified_primary_email_for_2fa` feature flag is disabled' do
+      stub_feature_flags(ensure_verified_primary_email_for_2fa: false)
+
+      expect(response).not_to redirect_to(profile_emails_path)
+    end
+  end
+
   describe 'GET show' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     it 'generates otp_secret for user' do
       expect(User).to receive(:generate_otp_secret).with(32).and_call_original.once
@@ -34,11 +59,16 @@ RSpec.describe Profiles::TwoFactorAuthsController do
         get :show
       end
     end
+
+    it_behaves_like 'user must first verify their primary email address' do
+      let(:go) { get :show }
+    end
   end
 
   describe 'POST create' do
-    let(:user) { create(:user) }
-    let(:pin)  { 'pin-code' }
+    let_it_be_with_reload(:user) { create(:user) }
+
+    let(:pin) { 'pin-code' }
 
     def go
       post :create, params: { pin_code: pin }
@@ -105,10 +135,12 @@ RSpec.describe Profiles::TwoFactorAuthsController do
         expect(response).to render_template(:show)
       end
     end
+
+    it_behaves_like 'user must first verify their primary email address'
   end
 
   describe 'POST codes' do
-    let(:user) { create(:user, :two_factor) }
+    let_it_be_with_reload(:user) { create(:user, :two_factor) }
 
     it 'presents plaintext codes for the user to save' do
       expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
@@ -135,7 +167,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
     subject { delete :destroy }
 
     context 'for a user that has 2FA enabled' do
-      let(:user) { create(:user, :two_factor) }
+      let_it_be_with_reload(:user) { create(:user, :two_factor) }
 
       it 'disables two factor' do
         subject
@@ -158,7 +190,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
     end
 
     context 'for a user that does not have 2FA enabled' do
-      let(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
 
       it 'redirects to profile_account_path' do
         subject

@@ -68,26 +68,30 @@ export default {
       v-if="hasDateRangeFilter || hasProjectFilter"
       class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-justify-content-space-between"
     >
-      <projects-dropdown-filter
-        v-if="hasProjectFilter"
-        :key="groupId"
-        class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
-        :group-id="groupId"
-        :group-namespace="groupPath"
-        :query-params="projectsQueryParams"
-        :multi-select="$options.multiProjectSelect"
-        :default-projects="selectedProjects"
-        @selected="$emit('selectProject', $event)"
-      />
-      <date-range
-        v-if="hasDateRangeFilter"
-        :start-date="startDate"
-        :end-date="endDate"
-        :max-date-range="$options.maxDateRange"
-        :include-selected-date="true"
-        class="js-daterange-picker"
-        @change="$emit('setDateRange', $event)"
-      />
+      <div>
+        <projects-dropdown-filter
+          v-if="hasProjectFilter"
+          :key="groupId"
+          class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
+          :group-id="groupId"
+          :group-namespace="groupPath"
+          :query-params="projectsQueryParams"
+          :multi-select="$options.multiProjectSelect"
+          :default-projects="selectedProjects"
+          @selected="$emit('selectProject', $event)"
+        />
+      </div>
+      <div>
+        <date-range
+          v-if="hasDateRangeFilter"
+          :start-date="startDate"
+          :end-date="endDate"
+          :max-date-range="$options.maxDateRange"
+          :include-selected-date="true"
+          class="js-daterange-picker"
+          @change="$emit('setDateRange', $event)"
+        />
+      </div>
     </div>
   </div>
 </template>

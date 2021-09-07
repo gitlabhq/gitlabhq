@@ -68,51 +68,69 @@ RSpec.describe Repository do
 
   describe 'tags_sorted_by' do
     let(:tags_to_compare) { %w[v1.0.0 v1.1.0] }
+    let(:feature_flag) { true }
+
+    before do
+      stub_feature_flags(gitaly_tags_finder: feature_flag)
+    end
 
     context 'name_desc' do
       subject { repository.tags_sorted_by('name_desc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+
+      context 'when feature flag is disabled' do
+        let(:feature_flag) { false }
+
+        it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+      end
     end
 
     context 'name_asc' do
       subject { repository.tags_sorted_by('name_asc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
-    end
 
-    context 'updated' do
-      let(:tag_a) { repository.find_tag('v1.0.0') }
-      let(:tag_b) { repository.find_tag('v1.1.0') }
-
-      context 'desc' do
-        subject { repository.tags_sorted_by('updated_desc').map(&:name) }
-
-        before do
-          double_first = double(committed_date: Time.current)
-          double_last = double(committed_date: Time.current - 1.second)
-
-          allow(tag_a).to receive(:dereferenced_target).and_return(double_first)
-          allow(tag_b).to receive(:dereferenced_target).and_return(double_last)
-          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
-        end
+      context 'when feature flag is disabled' do
+        let(:feature_flag) { false }
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
       end
+    end
+
+    context 'updated' do
+      let(:latest_tag) { 'v0.0.0' }
+
+      before do
+        rugged_repo(repository).tags.create(latest_tag, repository.commit.id)
+      end
+
+      after do
+        rugged_repo(repository).tags.delete(latest_tag)
+      end
+
+      context 'desc' do
+        subject { repository.tags_sorted_by('updated_desc').map(&:name) & (tags_to_compare + [latest_tag]) }
+
+        it { is_expected.to eq([latest_tag, 'v1.1.0', 'v1.0.0']) }
+
+        context 'when feature flag is disabled' do
+          let(:feature_flag) { false }
+
+          it { is_expected.to eq([latest_tag, 'v1.1.0', 'v1.0.0']) }
+        end
+      end
 
       context 'asc' do
-        subject { repository.tags_sorted_by('updated_asc').map(&:name) }
+        subject { repository.tags_sorted_by('updated_asc').map(&:name) & (tags_to_compare + [latest_tag]) }
 
-        before do
-          double_first = double(committed_date: Time.current - 1.second)
-          double_last = double(committed_date: Time.current)
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', latest_tag]) }
 
-          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
-          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
-          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
+        context 'when feature flag is disabled' do
+          let(:feature_flag) { false }
+
+          it { is_expected.to eq(['v1.0.0', 'v1.1.0', latest_tag]) }
         end
-
-        it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
       end
 
       context 'annotated tag pointing to a blob' do
@@ -125,19 +143,31 @@ RSpec.describe Repository do
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
 
           rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', **options)
-
-          double_first = double(committed_date: Time.current - 1.second)
-          double_last = double(committed_date: Time.current)
-
-          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
-          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
         end
 
-        it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
+
+        context 'when feature flag is disabled' do
+          let(:feature_flag) { false }
+
+          it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
+        end
 
         after do
           rugged_repo(repository).tags.delete(annotated_tag_name)
         end
+      end
+    end
+
+    context 'unknown option' do
+      subject { repository.tags_sorted_by('unknown_desc').map(&:name) & tags_to_compare }
+
+      it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
+
+      context 'when feature flag is disabled' do
+        let(:feature_flag) { false }
+
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
       end
     end
   end

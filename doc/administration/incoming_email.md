@@ -638,7 +638,7 @@ incoming_email:
 
 #### Microsoft Graph
 
-> Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/214900).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 
 GitLab can read incoming email using the Microsoft Graph API instead of
 IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API will soon be required for new Microsoft Exchange Online

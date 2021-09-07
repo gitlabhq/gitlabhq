@@ -1,0 +1,8 @@
+---
+name: ensure_verified_primary_email_for_2fa
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69593
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340151
+milestone: '14.3'
+type: development
+group: group::access
+default_enabled: false

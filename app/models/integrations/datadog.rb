@@ -7,7 +7,7 @@ module Integrations
     extend Gitlab::Utils::Override
 
     DEFAULT_DOMAIN = 'datadoghq.com'
-    URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_domain}/api/v2/webhook'
+    URL_TEMPLATE = 'https://webhook-intake.%{datadog_domain}/api/v2/webhook'
     URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_DOMAIN}/account_management/api-app-keys/"
 
     SUPPORTED_EVENTS = %w[

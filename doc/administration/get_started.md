@@ -177,7 +177,7 @@ The EC2 instance meets the requirements for an application data backup by taking
 In general, if you're running GitLab on a virtualized server, you can create VM snapshots of the entire GitLab server.
 It is common for a VM snapshot to require you to power down the server.
 
-#### Option 2: GitLab Geo
+#### Option 2: GitLab Geo **(PREMIUM SELF)**
 
 Geo provides local, read-only instances of your GitLab instances.
 
@@ -191,7 +191,7 @@ Learn more about [replication limitations](../administration/geo/replication/dat
 
 GitLab provides support for self-managed GitLab through different channels.
 
-- Priority support: Premium and Ultimate self-managed customers receive priority support with tiered response times.
+- Priority support: [Premium and Ultimate](https://about.gitlab.com/pricing/) self-managed customers receive priority support with tiered response times.
   Learn more about [upgrading to priority support](https://about.gitlab.com/support/#upgrading-to-priority-support).
 - Live upgrade assistance: Get one-on-one expert guidance during a production upgrade. With your **priority support plan**,
   you're eligible for a live, scheduled screen-sharing session with a member of our support team.

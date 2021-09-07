@@ -154,6 +154,22 @@ RSpec.describe Gitlab::GitalyClient::RefService do
 
       client.tags
     end
+
+    context 'with sorting option' do
+      it 'sends a correct find_all_tags message' do
+        expected_sort_by = Gitaly::FindAllTagsRequest::SortBy.new(
+          key: :REFNAME,
+          direction: :ASCENDING
+        )
+
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_all_tags)
+          .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
+          .and_return([])
+
+        client.tags(sort_by: 'name_asc')
+      end
+    end
   end
 
   describe '#branch_names_contains_sha' do

@@ -53,6 +53,9 @@ module Types
           description: 'Due date of the issue.'
     field :confidential, GraphQL::Types::Boolean, null: false,
           description: 'Indicates the issue is confidential.'
+    field :hidden, GraphQL::Types::Boolean, null: true, resolver_method: :hidden?,
+          description: 'Indicates the issue is hidden because the author has been banned. ' \
+          'Will always return `null` if `ban_user_feature_flag` feature flag is disabled.'
     field :discussion_locked, GraphQL::Types::Boolean, null: false,
           description: 'Indicates discussion is locked on the issue.'
 
@@ -155,6 +158,10 @@ module Types
 
     def create_note_email
       object.creatable_note_email_address(context[:current_user])
+    end
+
+    def hidden?
+      object.hidden? if Feature.enabled?(:ban_user_feature_flag)
     end
   end
 end

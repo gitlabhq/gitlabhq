@@ -36,6 +36,7 @@ module QA
     "rspec" => "RSpec",
     "web_ide" => "WebIDE",
     "ci_cd" => "CiCd",
+    "project_imported_from_url" => "ProjectImportedFromURL",
     "repo_by_url" => "RepoByURL",
     "oauth" => "OAuth",
     "saml_sso_sign_in" => "SamlSSOSignIn",

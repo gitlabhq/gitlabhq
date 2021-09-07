@@ -187,7 +187,7 @@ class User < ApplicationRecord
   has_many :todos
   has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :triggers,                 class_name: 'Ci::Trigger', foreign_key: :owner_id
 
   has_many :issue_assignees, inverse_of: :assignee
   has_many :merge_request_assignees, inverse_of: :assignee

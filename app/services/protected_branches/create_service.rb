@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ProtectedBranches
-  class CreateService < BaseService
+  class CreateService < ProtectedBranches::BaseService
     def execute(skip_authorization: false)
       raise Gitlab::Access::AccessDeniedError unless skip_authorization || authorized?
 
