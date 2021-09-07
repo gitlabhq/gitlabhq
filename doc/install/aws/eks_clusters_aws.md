@@ -29,7 +29,7 @@ Using the EKS Quick Start or `eksctl` enables the following when building an EKS
 - It can deploy high value-add items to the cluster, including:
   - A bastion host to keep the cluster endpoint private and possible perform performance testing.
   - Prometheus and Grafana for monitoring.
-- EKS Autoscaler for automatic K8s Node scaling. 
+- EKS Autoscaler for automatic K8s Node scaling.
 - 2 or 3 Availability Zones (AZ) spread for balance between High Availability (HA) and cost control.
 - Ability to specify spot compute.
 

@@ -115,7 +115,7 @@ Some services, such as log aggregation, outbound email are not specified by GitL
 
 - [3K AutoScale GPT Test Results](https://gitlab.com/gitlab-com/alliances/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/3K/3k-QuickStart-AutoScale-ARM-RDS-Cache_v13-12-3-ee_2021-07-23_194200/3k-QuickStart-AutoScale-ARM-RDS-Cache_v13-12-3-ee_2021-07-23_194200_results.txt)
 
- **Deploy Now** 
+ **Deploy Now**
  Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Meterials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
 
 - **Deploy Now: AWS Quick Start for 2 AZs**
@@ -215,7 +215,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 - [5K Full Scale GPT Test Results](https://gitlab.com/gitlab-com/alliances/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/5K/5k-QuickStart-ARM-RDS-Redis_v13-12-3-ee_2021-07-23_140128/5k-QuickStart-ARM-RDS-Redis_v13-12-3-ee_2021-07-23_140128_results.txt)
 - [5K AutoScale from 25% GPT Test Results](https://gitlab.com/gitlab-com/alliances/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/5K/5k-QuickStart-AutoScale-From-25Percent-ARM-RDS-Redis_v13-12-3-ee_2021-07-24_102717/5k-QuickStart-AutoScale-From-25Percent-ARM-RDS-Redis_v13-12-3-ee_2021-07-24_102717_results.txt)
 
-**Deploy Now** 
+**Deploy Now**
 
 Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Meterials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
 
@@ -266,7 +266,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 - [10K Full Scale GPT Test Results](https://gitlab.com/gitlab-com/alliances/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/10K/GL-CloudNative-10k-RDS-Graviton_v13-12-3-ee_2021-07-08_194647/GL-CloudNative-10k-RDS-Graviton_v13-12-3-ee_2021-07-08_194647_results.txt)
 - [10K AutoScale GPT Test Results](https://gitlab.com/gitlab-com/alliances/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/10K/GL-CloudNative-10k-AutoScaling-Test_v13-12-3-ee_2021-07-09_115139/GL-CloudNative-10k-AutoScaling-Test_v13-12-3-ee_2021-07-09_115139_results.txt)
 
-**Deploy Now** 
+**Deploy Now**
 
 Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Meterials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
 
@@ -316,7 +316,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 - [50K Full Scale GPT Test Results](https://gitlab.com/gitlab-com/alliances/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/50K/50k-Fixed-Scale-Test_v13-12-3-ee_2021-08-13_172819/50k-Fixed-Scale-Test_v13-12-3-ee_2021-08-13_172819_results.txt)
 - [50K AutoScale GPT Test Results](https://gitlab.com/gitlab-com/alliances/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/50K/50k-AutoScale-Test_v13-12-3-ee_2021-08-13_192633/50k-AutoScale-Test_v13-12-3-ee_2021-08-13_192633.txt)
 
-**Deploy Now** 
+**Deploy Now**
 
 Deploy Now links leverage the AWS Quick Start automation and only prepopulate the number of instances and instance types for the Quick Start based on the Bill of Meterials below. You must provide appropriate input for all other parameters by following the guidance in the [Quick Start documentation's Deployment steps](https://aws-quickstart.github.io/quickstart-eks-gitlab/#_deployment_steps) section.
 

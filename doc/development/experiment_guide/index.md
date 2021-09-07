@@ -12,8 +12,8 @@ Experiments are run as an A/B/n test, and are behind an [experiment feature flag
 
 ## Experiment rollout issue
 
-Each experiment should have an [experiment rollout](https://gitlab.com/groups/gitlab-org/-/boards/1352542) issue to track the experiment from rollout through to cleanup and removal. 
-The rollout issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment. 
+Each experiment should have an [experiment rollout](https://gitlab.com/groups/gitlab-org/-/boards/1352542) issue to track the experiment from rollout through to cleanup and removal.
+The rollout issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment.
 When an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
 After the deadline, the issue needs to be resolved and either:
 
@@ -46,7 +46,7 @@ For more information, see [Implementing an A/B/n experiment using GLEX](gitlab_e
 
 There are still some longer running experiments using the [`Exerimentation Module`](experimentation.md).
 
-Both approaches use [experiment](../feature_flags/index.md#experiment-type) feature flags. 
+Both approaches use [experiment](../feature_flags/index.md#experiment-type) feature flags.
 `GLEX` is the preferred option for new experiments.
 
 ### Add new icons and illustrations for experiments

@@ -430,7 +430,7 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 - [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
 - [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
 - [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
-- Project [predefined variables](../variables/predefined_variables.md).   
+- Project [predefined variables](../variables/predefined_variables.md).
 
 ```yaml
 include:

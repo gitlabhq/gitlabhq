@@ -696,7 +696,7 @@ To use Auto Monitoring:
 
 1. [Install and configure the Auto DevOps requirements](requirements.md).
 1. [Enable Auto DevOps](index.md#enable-or-disable-auto-devops), if you haven't done already.
-1. On the left sidebar, select **CI/CD > Pipelines**. 
+1. On the left sidebar, select **CI/CD > Pipelines**.
 1. Select **Run pipeline**.
 1. After the pipeline finishes successfully, open the
    [monitoring dashboard for a deployed environment](../../ci/environments/index.md#monitor-environments)

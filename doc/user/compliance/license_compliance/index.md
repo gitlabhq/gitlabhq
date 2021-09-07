@@ -249,7 +249,7 @@ generate a key store file, see the
 
 License Compliance uses Java 8 by default. You can specify a different Java version using `LM_JAVA_VERSION`.
 
-`LM_JAVA_VERSION` only accepts versions: 8, 11, 14, 15. 
+`LM_JAVA_VERSION` only accepts versions: 8, 11, 14, 15.
 
 ### Selecting the version of Python
 

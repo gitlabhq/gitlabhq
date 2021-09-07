@@ -48,7 +48,7 @@ Background:
 - When not using provisioned EBS IO, EBS volume size determines the IO level, so provisioning volumes that are much larger than needed can be the least expensive way to improve EBS IO.
 - Only use nitro instance types due to higher IO and EBS optimization.
 - Use Amazon Linux 2 to ensure the best disk and memory optimizations (for example, ENA network adapters and drivers).
-- If GitLab backup scripts are used, they need a temporary space location large enough to hold 2 times the current size of the Git File system. If that will be done on Gitaly servers, separate volumes should be used. 
+- If GitLab backup scripts are used, they need a temporary space location large enough to hold 2 times the current size of the Git File system. If that will be done on Gitaly servers, separate volumes should be used.
 
 ### Gitaly HA in EKS quick start
 

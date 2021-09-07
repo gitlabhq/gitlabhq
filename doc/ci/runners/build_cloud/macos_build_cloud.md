@@ -12,7 +12,7 @@ of all the capabilities of the GitLab single DevOps platform and not have to man
 build environment.
 
 Build Cloud runners for macOS are in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
-and shouldn't be relied upon for mission-critical production jobs. 
+and shouldn't be relied upon for mission-critical production jobs.
 
 ## Quickstart
 

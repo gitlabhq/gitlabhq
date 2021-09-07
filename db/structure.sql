@@ -19004,7 +19004,8 @@ CREATE TABLE security_scans (
     scan_type smallint NOT NULL,
     info jsonb DEFAULT '{}'::jsonb NOT NULL,
     project_id bigint,
-    pipeline_id bigint
+    pipeline_id bigint,
+    latest boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE security_scans_id_seq

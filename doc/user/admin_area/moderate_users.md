@@ -199,7 +199,7 @@ Users can also be activated using the [GitLab API](../../api/users.md#activate-u
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.2.
 
-GitLab administrators can ban and unban users. Banned users are blocked, and their issues are hidden. 
+GitLab administrators can ban and unban users. Banned users are blocked, and their issues are hidden.
 The banned user's comments are still displayed. Hiding a banned user's comments is [tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327356).
 
 ### Ban a user

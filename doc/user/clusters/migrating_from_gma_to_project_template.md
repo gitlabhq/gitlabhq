@@ -14,7 +14,7 @@ some recorded videos with [live examples](#live-examples).
 1. Familiarize yourself with the [management project template](management_project_template.md).
 1. Create a [new project](../project/working_with_projects.md#create-a-project), either:
    - From a template, selecting the **GitLab Cluster Management** project template.
-   - Importing the project from the URL `https://gitlab.com/gitlab-org/project-templates/cluster-management.git`. This 
+   - Importing the project from the URL `https://gitlab.com/gitlab-org/project-templates/cluster-management.git`. This
      is useful if you are using GitLab Self-Managed and you want to use the latest version of the template.
 
    This is your cluster management project.

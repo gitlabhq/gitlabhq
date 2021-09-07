@@ -167,7 +167,7 @@ your license. However, if you have 111, you must purchase more users before you 
 
 ### There is a connectivity issue
 
-In GitLab 14.1 and later, to activate your subscription, your GitLab instance must be connected to the internet. 
+In GitLab 14.1 and later, to activate your subscription, your GitLab instance must be connected to the internet.
 
 If you have an offline or airgapped environment, you can [upload a license file](license.md#activate-gitlab-ee-with-a-license-file) instead.
 

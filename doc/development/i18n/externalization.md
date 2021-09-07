@@ -137,7 +137,7 @@ The `~/locale` module exports the following key functions for externalization:
 - `s__()` (namespaced double underscore parenthesis)
 - `__()` Mark content for translation (note the double underscore).
 - `s__()` Mark namespaced content for translation
-- `n__()` Mark pluralized content for translation 
+- `n__()` Mark pluralized content for translation
 
 ```javascript
 import { __, s__, n__ } from '~/locale';

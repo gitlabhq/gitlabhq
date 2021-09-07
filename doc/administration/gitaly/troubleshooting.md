@@ -226,8 +226,8 @@ update the secrets file on the Gitaly server to match the Gitaly client, then
 ### Repository pushes fail with a `deny updating a hidden ref` error
 
 Due to [a change](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3426)
-introduced in GitLab 13.12, Gitaly has read-only, internal GitLab references that users are not 
-permitted to update. If you attempt to update internal references with `git push --mirror`, Git 
+introduced in GitLab 13.12, Gitaly has read-only, internal GitLab references that users are not
+permitted to update. If you attempt to update internal references with `git push --mirror`, Git
 returns the rejection error, `deny updating a hidden ref`.
 
 The following references are read-only:
@@ -243,7 +243,7 @@ To mirror-push branches and tags only, and avoid attempting to mirror-push prote
 git push origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
 ```
 
-Any other namespaces that the admin wants to push can be included there as well via additional patterns. 
+Any other namespaces that the admin wants to push can be included there as well via additional patterns.
 
 ### Command line tools cannot connect to Gitaly
 

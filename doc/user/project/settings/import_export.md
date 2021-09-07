@@ -219,7 +219,7 @@ GitLab.com may have [different settings](../../gitlab_com/index.md#importexport)
 
 ## Troubleshooting
 
-### Import workaround for large repositories 
+### Import workaround for large repositories
 
 [Maximum import size limitations](#import-the-project)
 can prevent an import from being successful.
@@ -227,7 +227,7 @@ If changing the import limits is not possible,
 the following local workflow can be used to temporarily
 reduce the repository size for another import attempt.
 
-1. Create a temporary working directory from the export: 
+1. Create a temporary working directory from the export:
 
     ```shell
     EXPORT=<filename-without-extension>

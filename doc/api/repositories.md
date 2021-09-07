@@ -215,7 +215,7 @@ GET /projects/:id/repository/contributors
 ```
 
 WARNING:
-The `additions` and `deletions` attributes are deprecated [as of GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39653), because they [always return `0`](https://gitlab.com/gitlab-org/gitlab/-/issues/233119).
+The `additions` and `deletions` attributes are [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39653) as of GitLab 13.4, because they [always return `0`](https://gitlab.com/gitlab-org/gitlab/-/issues/233119).
 
 Supported attributes:
 

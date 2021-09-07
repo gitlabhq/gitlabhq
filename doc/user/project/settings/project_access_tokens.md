@@ -25,7 +25,7 @@ Project access tokens:
   should:
   - Review their security and compliance policies with regards to
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
-  - Consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to 
+  - Consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to
     lower potential abuse.
 - Are also supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/).)
 

@@ -12853,9 +12853,6 @@ msgstr ""
 msgid "Environments|Deployment %{status}"
 msgstr ""
 
-msgid "Environments|Dismiss"
-msgstr ""
-
 msgid "Environments|Enable review app"
 msgstr ""
 
@@ -12866,9 +12863,6 @@ msgid "Environments|Environments"
 msgstr ""
 
 msgid "Environments|Environments are places where code gets deployed, such as staging or production."
-msgstr ""
-
-msgid "Environments|Help us improve environments"
 msgstr ""
 
 msgid "Environments|Install Elastic Stack on your cluster to enable advanced querying capabilities such as full text search."
@@ -12946,9 +12940,6 @@ msgstr ""
 msgid "Environments|Stopping %{environmentName}"
 msgstr ""
 
-msgid "Environments|Take the survey"
-msgstr ""
-
 msgid "Environments|There was an error fetching the logs. Please try again."
 msgstr ""
 
@@ -12968,9 +12959,6 @@ msgid "Environments|Updated"
 msgstr ""
 
 msgid "Environments|You don't have any environments right now"
-msgstr ""
-
-msgid "Environments|Your feedback helps GitLab make environments better for you and other users. Participate and enter a sweepstake to win a USD 30 gift card."
 msgstr ""
 
 msgid "Environments|by %{avatar}"

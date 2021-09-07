@@ -1266,7 +1266,7 @@ Alternatively, run the CI pipelines of those projects that contain a `pages` job
 
 ## 404 or 500 error when accessing GitLab Pages in a Geo setup
 
-Pages sites are only available on the primary Geo site, while the codebase of the project is available on all sites. 
+Pages sites are only available on the primary Geo site, while the codebase of the project is available on all sites.
 
 If you try to access a Pages page on a secondary site, you will get a 404 or 500 HTTP code depending on the access control.
 

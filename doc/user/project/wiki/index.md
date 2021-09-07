@@ -46,13 +46,17 @@ for previously created wikis.
 
 ## Create the wiki home page
 
-When a wiki is created, it is empty. On your first visit, create the landing page
-users see when viewing the wiki:
+When a wiki is created, it is empty. On your first visit, you can create the
+home page users see when viewing the wiki. This page requires a specific title
+to be used as your wiki's home page. To create it:
 
 1. Go to your project or group and select **Wiki**.
 1. Select **Create your first page**.
+1. GitLab requires this first page be titled `home`. The page with this
+   title serves as the front page for your wiki.
 1. Select a **Format** for styling your text.
-1. Add a welcome message in the **Content** section. You can always edit it later.
+1. Add a welcome message for your home page in the **Content** section. You can
+   always edit it later.
 1. Add a **Commit message**. Git requires a commit message, so GitLab creates one
    if you don't enter one yourself.
 1. Select **Create page**.

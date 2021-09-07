@@ -137,7 +137,7 @@ Network Policies can be managed through GitLab in one of two ways:
 - Management through a YAML file in each application's project (for projects using Auto DevOps). For
   more information, see the [Network Policy documentation](../../../../../topics/autodevops/stages.md#network-policy).
 - Management through the GitLab Policy management UI (for projects not using Auto DevOps). For more
-  information, see the [Container Network Policy documentation](../../../../application_security/threat_monitoring/index.md#container-network-policy-management) (Ultimate only).
+  information, see the [Container Network Policy documentation](../../../../application_security/policies/index.md#container-network-policy) (Ultimate only).
 
 Each method has benefits and drawbacks:
 
@@ -167,7 +167,7 @@ hubble:
 ```
 
 Additional information about the statistics page is available in the
-[documentation that describes the Threat Management UI](../../../../application_security/threat_monitoring/index.md#container-network-policy).
+[documentation that describes the Threat Management UI](../../../../application_security/policies/index.md#container-network-policy).
 
 ## Forwarding logs to a SIEM
 

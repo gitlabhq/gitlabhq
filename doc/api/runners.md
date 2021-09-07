@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Runners API
+# Runners API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640) in GitLab 8.5.
 
@@ -83,7 +83,7 @@ Example response:
 ]
 ```
 
-## List all runners
+## List all runners **(FREE SELF)**
 
 Get a list of all runners in the GitLab instance (specific and shared). Access
 is restricted to users with `admin` privileges.
@@ -244,8 +244,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ```
 
 NOTE:
-The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320).
-and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
+The `token` attribute in the response was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/214320) in GitLab 12.10.
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/214322) in GitLab 13.0.
 
 Example response:
 
