@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Query users with GraphQL
+# Query users with GraphQL **(FREE)**
 
 This page describes how you can use the GraphiQL explorer to query users.
 

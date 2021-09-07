@@ -12,10 +12,6 @@ module ProfilesHelper
     ]
   end
 
-  def selected_commit_email(user)
-    user.read_attribute(:commit_email) || user.commit_email
-  end
-
   def attribute_provider_label(attribute)
     user_synced_attributes_metadata = current_user.user_synced_attributes_metadata
     if user_synced_attributes_metadata&.synced?(attribute)

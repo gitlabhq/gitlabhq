@@ -73,7 +73,7 @@ module QA
         def configure_rspec
           RSpec.configure do |config|
             config.add_formatter(AllureRspecFormatter)
-            config.add_formatter(QA::Support::AllureMetadataFormatter)
+            config.add_formatter(QA::Support::Formatters::AllureMetadataFormatter)
           end
         end
 

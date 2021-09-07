@@ -403,6 +403,10 @@ module QA
         ENV['GITLAB_TLS_CERTIFICATE']
       end
 
+      def export_metrics?
+        running_in_ci? && enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: true)
+      end
+
       private
 
       def remote_grid_credentials

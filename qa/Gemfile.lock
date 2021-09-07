@@ -88,6 +88,7 @@ GEM
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    influxdb-client (1.17.0)
     knapsack (1.17.1)
       rake
     launchy (2.4.3)
@@ -220,6 +221,7 @@ DEPENDENCIES
   deprecation_toolkit (~> 1.5.1)
   faker (~> 2.19, >= 2.19.0)
   gitlab-qa
+  influxdb-client (~> 1.17)
   knapsack (~> 1.17)
   octokit (~> 4.21)
   parallel (~> 1.19)

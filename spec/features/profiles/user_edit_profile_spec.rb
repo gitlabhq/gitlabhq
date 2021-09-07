@@ -53,6 +53,19 @@ RSpec.describe 'User edit profile' do
     expect(page).to have_content('Profile was successfully updated')
   end
 
+  it 'does not set secondary emails without user input' do
+    fill_in 'user_organization', with: 'GitLab'
+    submit_settings
+
+    user.reload
+    expect(page).to have_field('user_commit_email', with: '')
+    expect(page).to have_field('user_public_email', with: '')
+
+    User::SECONDARY_EMAIL_ATTRIBUTES.each do |attribute|
+      expect(user.read_attribute(attribute)).to be_blank
+    end
+  end
+
   it 'shows an error if the full name contains an emoji', :js do
     simulate_input('#user_name', 'Martin 😀')
     submit_settings

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Support::AllureMetadataFormatter do
+describe QA::Support::Formatters::AllureMetadataFormatter do
   include QA::Support::Helpers::StubEnv
 
   let(:formatter) { described_class.new(StringIO.new) }

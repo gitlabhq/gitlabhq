@@ -24,20 +24,6 @@ RSpec.describe ProfilesHelper do
     end
   end
 
-  describe '#selected_commit_email' do
-    let(:user) { create(:user) }
-
-    it 'returns main email when commit email attribute is nil' do
-      expect(helper.selected_commit_email(user)).to eq(user.email)
-    end
-
-    it 'returns DB stored commit_email' do
-      user.update!(commit_email: Gitlab::PrivateCommitEmail::TOKEN)
-
-      expect(helper.selected_commit_email(user)).to eq(Gitlab::PrivateCommitEmail::TOKEN)
-    end
-  end
-
   describe '#email_provider_label' do
     it "returns nil for users without external email" do
       user = create(:user)

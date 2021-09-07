@@ -3,11 +3,14 @@
 module QA
   module Resource
     class GroupMilestone < Base
-      attr_writer :start_date, :due_date
-
-      attribute :id
-      attribute :title
-      attribute :description
+      attributes :id,
+                 :iid,
+                 :title,
+                 :description,
+                 :start_date,
+                 :due_date,
+                 :updated_at,
+                 :created_at
 
       attribute :group do
         Group.fabricate_via_api! do |resource|
@@ -18,6 +21,21 @@ module QA
       def initialize
         @title = "group-milestone-#{SecureRandom.hex(4)}"
         @description = "My awesome group milestone."
+      end
+
+      def fabricate!
+        group.visit!
+
+        Page::Group::Menu.perform(&:go_to_milestones)
+        Page::Group::Milestone::Index.perform(&:click_new_milestone_link)
+
+        Page::Group::Milestone::New.perform do |new_milestone|
+          new_milestone.set_title(@title)
+          new_milestone.set_description(@description)
+          new_milestone.set_start_date(@start_date) if @start_date
+          new_milestone.set_due_date(@due_date) if @due_date
+          new_milestone.click_create_milestone_button
+        end
       end
 
       def api_get_path
@@ -38,19 +56,36 @@ module QA
         end
       end
 
-      def fabricate!
-        group.visit!
+      # Object comparison
+      #
+      # @param [QA::Resource::GroupMilestone] other
+      # @return [Boolean]
+      def ==(other)
+        other.is_a?(GroupMilestone) && comparable_milestone == other.comparable_milestone
+      end
 
-        Page::Group::Menu.perform(&:go_to_milestones)
-        Page::Group::Milestone::Index.perform(&:click_new_milestone_link)
+      # Override inspect for a better rspec failure diff output
+      #
+      # @return [String]
+      def inspect
+        JSON.pretty_generate(comparable_milestone)
+      end
 
-        Page::Group::Milestone::New.perform do |new_milestone|
-          new_milestone.set_title(@title)
-          new_milestone.set_description(@description)
-          new_milestone.set_start_date(@start_date) if @start_date
-          new_milestone.set_due_date(@due_date) if @due_date
-          new_milestone.click_create_milestone_button
-        end
+      protected
+
+      # Return subset of fields for comparing milestones
+      #
+      # @return [Hash]
+      def comparable_milestone
+        reload! unless api_response
+
+        api_response.slice(
+          :title,
+          :description,
+          :state,
+          :due_date,
+          :start_date
+        )
       end
     end
   end

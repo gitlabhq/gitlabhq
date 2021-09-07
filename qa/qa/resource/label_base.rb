@@ -64,9 +64,9 @@ module QA
         JSON.pretty_generate(comparable_label)
       end
 
-      # protected
+      protected
 
-      # Return subset of fields for comparing groups
+      # Return subset of fields for comparing labels
       #
       # @return [Hash]
       def comparable_label

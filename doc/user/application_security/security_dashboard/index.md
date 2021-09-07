@@ -166,22 +166,17 @@ To add projects to the Security Center:
 After you add projects, the security dashboard and vulnerability report display the vulnerabilities
 found in those projects' default branches.
 
-## Keeping the dashboards up to date
+## Keep dashboards up to date
 
-The Security Dashboard displays information from the results of the most recent
-security scan on the [default branch](../../project/repository/branches/default.md),
-which means that security scans are performed every time the branch is updated.
-
-If the default branch is updated infrequently, scans are run infrequently and the
-information on the Security Dashboard can become outdated as new vulnerabilities
-are discovered.
+The Security Dashboard displays results of the most recent security scan on the
+[default branch](../../project/repository/branches/default.md). By default, security scans are run
+only when the default branch is updated. Information on the Security Dashboard may not reflect
+newly-discovered vulnerabilities.
 
 To ensure the information on the Security Dashboard is regularly updated,
-[configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a
-daily security scan. This updates the information displayed on the Security
-Dashboard regardless of how often the default branch is updated.
-
-That way, reports are created even if no code change happens.
+[configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a daily security scan.
+This updates the information displayed on the Security Dashboard regardless of how often the default
+branch is updated.
 
 WARNING:
 Running Dependency Scanning from a scheduled pipeline might result in false negatives if your
@@ -190,12 +185,6 @@ that lists all transient dependencies and keeps track of their exact versions. T
 can occur because the dependency version resolved during the scan might differ from the ones
 resolved when your project was built and released, in a previous pipeline. Java projects can't have
 lock files. Python projects can have lock files, but GitLab Secure tools don't support them.
-
-## Security scans using Auto DevOps
-
-When using [Auto DevOps](../../../topics/autodevops/index.md), use
-[special environment variables](../../../topics/autodevops/customize.md#cicd-variables)
-to configure daily security scans.
 
 <!-- ## Troubleshooting
 

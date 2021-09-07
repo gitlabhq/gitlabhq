@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Use custom emojis with GraphQL **(FREE SELF)**
+# Use custom emojis with GraphQL **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 13.6
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
@@ -93,7 +93,7 @@ For more information on:
 
 ## Enable or disable custom emoji API **(FREE SELF)**
 
-Custom emoji is under development and but ready for production use. It is
+Custom emoji is under development but ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can enable it.

@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'rspec/core'
-require "rspec/core/formatters/base_formatter"
-
 module QA
-  module Specs
-    module Helpers
+  module Support
+    module Formatters
       class QuarantineFormatter < ::RSpec::Core::Formatters::BaseFormatter
-        include Quarantine
+        include Specs::Helpers::Quarantine
 
         ::RSpec::Core::Formatters.register(
           self,

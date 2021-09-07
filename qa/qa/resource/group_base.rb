@@ -30,6 +30,22 @@ module QA
         end
       end
 
+      # Get group milestones
+      #
+      # @return [Array<QA::Resource::GroupMilestone>]
+      def milestones
+        parse_body(api_get_from("#{api_get_path}/milestones")).map do |milestone|
+          GroupMilestone.init do |resource|
+            resource.api_client = api_client
+            resource.group = self
+            resource.id = milestone[:id]
+            resource.iid = milestone[:iid]
+            resource.title = milestone[:title]
+            resource.description = milestone[:description]
+          end
+        end
+      end
+
       # API get path
       #
       # @return [String]

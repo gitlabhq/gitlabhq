@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'rspec/core'
-require "rspec/core/formatters/base_formatter"
-
 module QA
-  module Specs
-    module Helpers
+  module Support
+    module Formatters
       class ContextFormatter < ::RSpec::Core::Formatters::BaseFormatter
-        include ContextSelector
+        include Specs::Helpers::ContextSelector
 
         ::RSpec::Core::Formatters.register(
           self,

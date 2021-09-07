@@ -32,7 +32,6 @@ export default {
     return {
       searchKey: '',
       labels: [],
-      currentHighlightItem: -1,
       localSelectedLabels: [...this.selectedLabels],
     };
   },
@@ -77,16 +76,6 @@ export default {
     },
     showNoMatchingResultsMessage() {
       return Boolean(this.searchKey) && this.visibleLabels.length === 0;
-    },
-  },
-  watch: {
-    searchKey(value) {
-      // When there is search string present
-      // and there are matching results,
-      // highlight first item by default.
-      if (value && this.visibleLabels.length) {
-        this.currentHighlightItem = 0;
-      }
     },
   },
   created() {
@@ -162,16 +151,15 @@ export default {
       />
       <template v-else>
         <gl-dropdown-item
-          v-for="(label, index) in visibleLabels"
+          v-for="label in visibleLabels"
           :key="label.id"
+          :is-checked="isLabelSelected(label)"
+          :is-check-centered="true"
+          :is-check-item="true"
           data-testid="labels-list"
           @click.native.capture.stop="handleLabelClick(label)"
         >
-          <label-item
-            :label="label"
-            :is-label-set="isLabelSelected(label)"
-            :highlight="index === currentHighlightItem"
-          />
+          <label-item :label="label" />
         </gl-dropdown-item>
         <gl-dropdown-item
           v-show="showNoMatchingResultsMessage"

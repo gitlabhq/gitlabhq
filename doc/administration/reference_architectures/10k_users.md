@@ -1550,7 +1550,7 @@ To configure the Praefect nodes, on each one:
    # Configure the Consul agent
    consul['enable'] = true
    ## Enable service discovery for Prometheus
-   consul['monitoring_service_discovery'] =  true
+   consul['monitoring_service_discovery'] = true
 
    # START user configuration
    # Please set the real values as explained in Required Information section

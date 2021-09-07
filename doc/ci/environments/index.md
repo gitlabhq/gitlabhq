@@ -816,3 +816,41 @@ To ensure the `action: stop` can always run when needed, you can:
       action: stop
     when: manual
   ```
+
+### A deployment job failed with "This job could not be executed because it would create an environment with an invalid parameter" error
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.3.
+
+FLAG:
+On self-managed GitLab, by default this bug fix is not available. To make it available per project or for your entire instance, ask an administrator to [enable the `surface_environment_creation_failure` flag](../../administration/feature_flags.md). On GitLab.com, this bug fix is not available, but will be rolled out shortly.
+
+If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
+such as a [Review App](../review_apps/index.md), you might encounter this error
+because the dynamically generated parameter is invalid for the system.
+
+For example, if you have the following in your `.gitlab-ci.yml`:
+
+```yaml
+review:
+  script: deploy review app
+  environment: review/$CI_COMMIT_REF_NAME
+```
+
+When you create a new merge request with a branch name `bug-fix!`,
+the `review` job tries to create an environment with `review/bug-fix!`.
+However, the `!` is an invalid character for environments, so the
+deployment job fails since it was about to run without an environment.
+
+To fix this, you can:
+
+- Re-create your feature branch without the invalid characters,
+  such as `bug-fix`.
+- Replace the `CI_COMMIT_REF_NAME`
+  [predefined variable](../variables/predefined_variables.md) with
+  `CI_COMMIT_REF_SLUG` which strips any invalid characters:
+
+  ```yaml
+  review:
+    script: deploy review app
+    environment: review/$CI_COMMIT_REF_SLUG
+  ```

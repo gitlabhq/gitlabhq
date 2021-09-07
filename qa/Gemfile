@@ -24,6 +24,7 @@ gem 'rspec-parameterized', '~> 0.4.2'
 gem 'octokit', '~> 4.21'
 gem 'webdrivers', '~> 4.6'
 gem 'zeitwerk', '~> 2.4'
+gem 'influxdb-client', '~> 1.17'
 
 gem 'chemlab', '~> 0.7'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'

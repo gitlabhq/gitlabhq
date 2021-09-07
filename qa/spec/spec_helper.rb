@@ -16,17 +16,15 @@ QA::Runtime::Browser.configure!
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 
-Dir[::File.join(__dir__, "support/helpers/*.rb")].sort.each { |f| require f }
-Dir[::File.join(__dir__, "support/matchers/*.rb")].sort.each { |f| require f }
-Dir[::File.join(__dir__, "support/shared_contexts/*.rb")].sort.each { |f| require f }
 Dir[::File.join(__dir__, "support/shared_examples/*.rb")].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.include QA::Support::Matchers::EventuallyMatcher
   config.include QA::Support::Matchers::HaveMatcher
 
-  config.add_formatter QA::Specs::Helpers::ContextFormatter
-  config.add_formatter QA::Specs::Helpers::QuarantineFormatter
+  config.add_formatter QA::Support::Formatters::ContextFormatter
+  config.add_formatter QA::Support::Formatters::QuarantineFormatter
+  config.add_formatter QA::Support::Formatters::TestStatsFormatter if QA::Runtime::Env.export_metrics?
 
   config.before do |example|
     QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
