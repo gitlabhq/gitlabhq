@@ -60,5 +60,6 @@ export const parseGetProjectStorageResults = (data) => {
       totalUsage: numberToHumanSize(storageSize),
       storageTypes,
     },
+    statistics: projectStatistics,
   };
 };

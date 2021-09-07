@@ -4,18 +4,18 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import StorageCounterApp from '~/projects/storage_counter/components/app.vue';
 import getProjectStorageCount from '~/projects/storage_counter/queries/project_storage.query.graphql';
+import UsageGraph from '~/vue_shared/components/storage_counter/usage_graph.vue';
+import { projectStorageCountResponse } from './mock_data';
 
 const localVue = createLocalVue();
 
 describe('Storage counter app', () => {
   let wrapper;
 
-  const createMockApolloProvider = () => {
+  const createMockApolloProvider = ({ mutationMock }) => {
     localVue.use(VueApollo);
 
-    const requestHandlers = [
-      [getProjectStorageCount, jest.fn().mockRejectedValue(new Error('GraphQL error'))],
-    ];
+    const requestHandlers = [[getProjectStorageCount, mutationMock]];
 
     return createMockApollo(requestHandlers);
   };
@@ -36,6 +36,7 @@ describe('Storage counter app', () => {
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findUsageGraph = () => wrapper.findComponent(UsageGraph);
 
   beforeEach(() => {
     createComponent();
@@ -50,15 +51,33 @@ describe('Storage counter app', () => {
   });
 
   describe('handling apollo fetching error', () => {
-    let mockApollo;
+    const mutationMock = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
     beforeEach(() => {
-      mockApollo = createMockApolloProvider();
+      const mockApollo = createMockApolloProvider({ mutationMock });
       createComponent({ mockApollo });
     });
 
     it('renders gl-alert if there is an error', () => {
       expect(findAlert().exists()).toBe(true);
+    });
+  });
+
+  describe('rendering <usage-graph />', () => {
+    const mutationMock = jest.fn().mockResolvedValue(projectStorageCountResponse);
+
+    beforeEach(() => {
+      const mockApollo = createMockApolloProvider({ mutationMock });
+      createComponent({ mockApollo });
+    });
+
+    it('renders usage-graph component if project.statistics exists', () => {
+      expect(findUsageGraph().exists()).toBe(true);
+    });
+
+    it('passes project.statistics to usage-graph component', () => {
+      const { __typename, ...statistics } = projectStorageCountResponse.data.project.statistics;
+      expect(findUsageGraph().props('rootStorageStatistics')).toMatchObject(statistics);
     });
   });
 });

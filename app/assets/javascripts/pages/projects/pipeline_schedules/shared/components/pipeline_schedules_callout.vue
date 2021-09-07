@@ -53,7 +53,7 @@ Those scheduled pipelines will inherit limited project access based on their ass
         <p>
           {{ __('Learn more in the') }}
           <a :href="docsUrl" target="_blank" rel="nofollow">
-            {{ s__('Learn more in the|pipeline schedules documentation') }}</a
+            {{ __('pipeline schedules documentation') }}</a
           >.
           <!-- oneline to prevent extra space before period -->
         </p>

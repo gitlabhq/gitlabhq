@@ -1377,6 +1377,13 @@ RSpec.describe Namespace do
         expect { root_group.root_ancestor }.not_to exceed_query_limit(0)
       end
 
+      it 'returns root_ancestor for nested group with a single query' do
+        nested_group = create(:group, parent: root_group)
+        nested_group.reload
+
+        expect { nested_group.root_ancestor }.not_to exceed_query_limit(1)
+      end
+
       it 'returns the top most ancestor' do
         nested_group = create(:group, parent: root_group)
         deep_nested_group = create(:group, parent: nested_group)

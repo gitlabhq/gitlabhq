@@ -299,8 +299,12 @@ export const dateToYearMonthDate = (date) => {
     // eslint-disable-next-line @gitlab/require-i18n-strings
     throw new Error('Argument should be a Date instance');
   }
-  const [year, month, day] = date.toISOString().replace(/T.*$/, '').split('-');
-  return { year, month, day };
+  const [month, day] = padWithZeros(date.getMonth() + 1, date.getDate());
+  return {
+    year: `${date.getFullYear()}`,
+    month,
+    day,
+  };
 };
 
 /**
@@ -328,13 +332,15 @@ export const timeToHoursMinutes = (time = '') => {
  * @param {String} offset An optional Date-compatible offset.
  * @returns {String} The combined Date's ISO string representation.
  */
-export const dateAndTimeToUTCString = (date, time, offset = '') => {
+export const dateAndTimeToISOString = (date, time, offset = '') => {
   const { year, month, day } = dateToYearMonthDate(date);
   const { hours, minutes } = timeToHoursMinutes(time);
-
-  return new Date(
-    `${year}-${month}-${day}T${hours}:${minutes}:00.000${offset || 'Z'}`,
-  ).toISOString();
+  const dateString = `${year}-${month}-${day}T${hours}:${minutes}:00.000${offset || 'Z'}`;
+  if (Number.isNaN(Date.parse(dateString))) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Could not initialize date');
+  }
+  return dateString;
 };
 
 /**

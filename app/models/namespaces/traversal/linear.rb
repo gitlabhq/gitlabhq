@@ -74,7 +74,7 @@ module Namespaces
         return super unless use_traversal_ids_for_root_ancestor?
 
         strong_memoize(:root_ancestor) do
-          if parent.nil?
+          if parent_id.nil?
             self
           else
             Namespace.find_by(id: traversal_ids.first)

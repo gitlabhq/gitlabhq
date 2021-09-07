@@ -88,7 +88,16 @@ module Gitlab
 
       # Disables prepared statements for the current database connection.
       def disable_prepared_statements
-        scope.establish_connection(config.merge(prepared_statements: false))
+        db_config_object = scope.connection_db_config
+        config = db_config_object.configuration_hash.merge(prepared_statements: false)
+
+        hash_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          db_config_object.env_name,
+          db_config_object.name,
+          config
+        )
+
+        scope.establish_connection(hash_config)
       end
 
       # Check whether the underlying database is in read-only mode

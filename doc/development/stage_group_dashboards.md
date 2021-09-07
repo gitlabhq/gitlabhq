@@ -56,7 +56,7 @@ component can have 2 indicators:
    [Git](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/git.jsonnet#L216),
    and
    [Web](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/web.jsonnet#L154)
-   services, that threshold is **1 second**.
+   services, that threshold is **5 seconds**.
 
    For Sidekiq job execution, the threshold depends on the [job
    urgency](sidekiq_style_guide.md#job-urgency). It is

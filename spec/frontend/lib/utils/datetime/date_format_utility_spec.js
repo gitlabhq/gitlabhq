@@ -69,35 +69,35 @@ describe('date_format_utility.js', () => {
     });
   });
 
-  describe('dateAndTimeToUTCString', () => {
+  describe('dateAndTimeToISOString', () => {
     it('computes the date properly', () => {
-      expect(utils.dateAndTimeToUTCString(new Date('2021-08-16'), '10:00')).toBe(
+      expect(utils.dateAndTimeToISOString(new Date('2021-08-16'), '10:00')).toBe(
         '2021-08-16T10:00:00.000Z',
       );
     });
 
     it('computes the date properly with an offset', () => {
-      expect(utils.dateAndTimeToUTCString(new Date('2021-08-16'), '10:00', '-04:00')).toBe(
-        '2021-08-16T14:00:00.000Z',
+      expect(utils.dateAndTimeToISOString(new Date('2021-08-16'), '10:00', '-04:00')).toBe(
+        '2021-08-16T10:00:00.000-04:00',
       );
     });
 
     it('throws if date in invalid', () => {
-      expect(() => utils.dateAndTimeToUTCString('Invalid date', '10:00')).toThrow(
+      expect(() => utils.dateAndTimeToISOString('Invalid date', '10:00')).toThrow(
         'Argument should be a Date instance',
       );
     });
 
     it('throws if time in invalid', () => {
-      expect(() => utils.dateAndTimeToUTCString(new Date('2021-08-16'), '')).toThrow(
+      expect(() => utils.dateAndTimeToISOString(new Date('2021-08-16'), '')).toThrow(
         'Invalid time provided',
       );
     });
 
     it('throws if offset is invalid', () => {
       expect(() =>
-        utils.dateAndTimeToUTCString(new Date('2021-08-16'), '10:00', 'not an offset'),
-      ).toThrow('Invalid time value');
+        utils.dateAndTimeToISOString(new Date('2021-08-16'), '10:00', 'not an offset'),
+      ).toThrow('Could not initialize date');
     });
   });
 

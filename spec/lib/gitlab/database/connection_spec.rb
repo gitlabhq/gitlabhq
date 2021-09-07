@@ -162,6 +162,12 @@ RSpec.describe Gitlab::Database::Connection do
       expect(connection.scope.connection.prepared_statements).to eq(false)
     end
 
+    it 'retains the connection name' do
+      connection.disable_prepared_statements
+
+      expect(connection.scope.connection_db_config.name).to eq('main')
+    end
+
     context 'with dynamic connection pool size' do
       before do
         connection.scope.establish_connection(connection.config.merge(pool: 7))
