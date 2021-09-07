@@ -29,6 +29,9 @@ For examples of how you can use a personal access token to authenticate with the
 Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
 
+NOTE:
+Use your GitLab username and personal access tokens to authenticate with [GitLab managed Terraform state backend](../infrastructure/iac/terraform_state.md#using-a-gitlab-managed-terraform-state-backend-as-a-remote-data-source), [Docker container registry](../packages/container_registry/index.md#authenticate-with-the-container-registry), or when authenticating to a Git remote repository. Currently, GitLab usernames are ignored when authenticating with a personal access token, however, usernames may become a requirement in the future as per [issue #212953](https://gitlab.com/gitlab-org/gitlab/-/issues/212953).
+
 ## Create a personal access token
 
 You can create as many personal access tokens as you like.

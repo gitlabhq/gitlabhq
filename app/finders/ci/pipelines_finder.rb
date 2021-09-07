@@ -25,7 +25,6 @@ module Ci
       items = by_status(items)
       items = by_ref(items)
       items = by_sha(items)
-      items = by_name(items)
       items = by_username(items)
       items = by_yaml_errors(items)
       items = by_updated_at(items)
@@ -109,17 +108,6 @@ module Ci
     def by_sha(items)
       if params[:sha].present?
         items.where(sha: params[:sha])
-      else
-        items
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    # This method is deprecated and will be removed in 14.3
-    # rubocop: disable CodeReuse/ActiveRecord
-    def by_name(items)
-      if params[:name].present?
-        items.joins(:user).where(users: { name: params[:name] })
       else
         items
       end

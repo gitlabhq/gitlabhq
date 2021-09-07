@@ -113,27 +113,6 @@ RSpec.describe Ci::PipelinesFinder do
       end
     end
 
-    context 'when name is specified' do
-      let(:user) { create(:user) }
-      let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
-
-      context 'when name exists' do
-        let(:params) { { name: user.name } }
-
-        it 'returns matched pipelines' do
-          is_expected.to eq([pipeline])
-        end
-      end
-
-      context 'when name does not exist' do
-        let(:params) { { name: 'invalid-name' } }
-
-        it 'returns empty' do
-          is_expected.to be_empty
-        end
-      end
-    end
-
     context 'when username is specified' do
       let(:user) { create(:user) }
       let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }

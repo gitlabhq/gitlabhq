@@ -15340,7 +15340,7 @@ msgstr ""
 msgid "GitLab is open source software to collaborate on code."
 msgstr ""
 
-msgid "GitLab is undergoing maintenance and is operating in a read-only mode."
+msgid "GitLab is undergoing maintenance and is operating in read-only mode."
 msgstr ""
 
 msgid "GitLab member or Email address"
@@ -22858,7 +22858,7 @@ msgstr ""
 msgid "Nodes"
 msgstr ""
 
-msgid "Non-admin users can sign in with read-only access and make read-only API requests."
+msgid "Non-admin users are restricted to read-only access, in both GitLab UI and API."
 msgstr ""
 
 msgid "None"
@@ -25370,7 +25370,7 @@ msgstr ""
 msgid "Prevent users from changing their profile name"
 msgstr ""
 
-msgid "Prevent users from performing write operations on GitLab while performing maintenance."
+msgid "Prevent users from performing write operations while GitLab maintenance is in progress."
 msgstr ""
 
 msgid "Preview"

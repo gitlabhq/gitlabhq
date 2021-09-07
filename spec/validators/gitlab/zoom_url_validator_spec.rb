@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Utils::ZoomUrlValidator do
+RSpec.describe Gitlab::ZoomUrlValidator do
   let(:zoom_meeting) { build(:zoom_meeting) }
 
   describe 'validations' do

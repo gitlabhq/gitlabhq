@@ -168,30 +168,6 @@ RSpec.describe API::Ci::Pipelines do
           end
         end
 
-        context 'when name is specified' do
-          let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
-
-          context 'when name exists' do
-            it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines", user), params: { name: user.name }
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response.first['id']).to eq(pipeline.id)
-            end
-          end
-
-          context 'when name does not exist' do
-            it 'returns empty' do
-              get api("/projects/#{project.id}/pipelines", user), params: { name: 'invalid-name' }
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response).to be_empty
-            end
-          end
-        end
-
         context 'when username is specified' do
           let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 
