@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
-  include ActionView::Helpers::UrlHelper
-
   CALLOUT_FAILURE_MESSAGES = {
     unknown_failure: 'There is an unknown failure, please try again',
     script_failure: nil,
@@ -29,12 +27,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     user_blocked: 'The user who created this job is blocked',
     ci_quota_exceeded: 'No more CI minutes available',
     no_matching_runner: 'No matching runner available',
-    trace_size_exceeded: 'The job log size limit was reached',
-    environment_creation_failure: 'This job could not be executed because it would create an environment with an invalid parameter.'
-  }.freeze
-
-  TROUBLESHOOTING_DOC = {
-    environment_creation_failure: { path: 'ci/environments/index', anchor: 'a-deployment-job-failed-with-this-job-could-not-be-executed-because-it-would-create-an-environment-with-an-invalid-parameter-error' }
+    trace_size_exceeded: 'The job log size limit was reached'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES
@@ -46,13 +39,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def callout_failure_message
-    message = self.class.callout_failure_messages.fetch(failure_reason.to_sym)
-
-    if doc = TROUBLESHOOTING_DOC[failure_reason.to_sym]
-      message += " #{link_to('How do I fix it?', help_page_path(doc[:path], anchor: doc[:anchor]))}"
-    end
-
-    message
+    self.class.callout_failure_messages.fetch(failure_reason.to_sym)
   end
 end
 

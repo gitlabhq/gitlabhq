@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
 import { escape, debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
@@ -17,6 +17,9 @@ export default {
     GlLoadingIcon,
     GlFormInput,
     GlFormGroup,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     isEditing: {
@@ -167,6 +170,7 @@ export default {
         });
     },
   },
+  safeHtmlConfig: { ALLOW_TAGS: ['a', 'code'] },
 };
 </script>
 
@@ -183,7 +187,7 @@ export default {
 
     <div class="form-group">
       <label for="badge-link-url" class="label-bold">{{ s__('Badges|Link') }}</label>
-      <p v-html="helpText /* eslint-disable-line vue/no-v-html */"></p>
+      <p v-safe-html:[$options.safeHtmlConfig]="helpText"></p>
       <input
         id="badge-link-url"
         v-model="linkUrl"
@@ -198,7 +202,7 @@ export default {
 
     <div class="form-group">
       <label for="badge-image-url" class="label-bold">{{ s__('Badges|Badge image URL') }}</label>
-      <p v-html="helpText /* eslint-disable-line vue/no-v-html */"></p>
+      <p v-safe-html:[$options.safeHtmlConfig]="helpText"></p>
       <input
         id="badge-image-url"
         v-model="imageUrl"

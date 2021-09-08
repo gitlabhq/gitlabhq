@@ -7,7 +7,7 @@ type: index, howto
 
 # GitLab CI/CD for external repositories **(PREMIUM)**
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
+>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
 
 GitLab CI/CD can be used with:
 
@@ -38,7 +38,7 @@ To connect to an external repository:
 
 ## Pipelines for external pull requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab Premium 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab 12.3.
 
 When using GitLab CI/CD with an [external repository on GitHub](github_integration.md),
 it's possible to run a pipeline in the context of a Pull Request.

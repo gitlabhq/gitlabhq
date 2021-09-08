@@ -132,7 +132,7 @@ Returns [`GeoNode`](#geonode).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querygeonodename"></a>`name` | [`String`](#string) | The name of the Geo node. Defaults to the current Geo node name. |
+| <a id="querygeonodename"></a>`name` | [`String`](#string) | Name of the Geo node. Defaults to the current Geo node name. |
 
 ### `Query.group`
 
@@ -7636,7 +7636,7 @@ Parsed field (with its name) from an alert used for custom mappings.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="alertmanagementpayloadalertmappingfieldfieldname"></a>`fieldName` | [`AlertManagementPayloadAlertFieldName`](#alertmanagementpayloadalertfieldname) | A GitLab alert field name. |
+| <a id="alertmanagementpayloadalertmappingfieldfieldname"></a>`fieldName` | [`AlertManagementPayloadAlertFieldName`](#alertmanagementpayloadalertfieldname) | GitLab alert field name. |
 | <a id="alertmanagementpayloadalertmappingfieldlabel"></a>`label` | [`String`](#string) | Human-readable label of the payload path. |
 | <a id="alertmanagementpayloadalertmappingfieldpath"></a>`path` | [`[PayloadAlertFieldPathSegment!]`](#payloadalertfieldpathsegment) | Path to value inside payload JSON. |
 | <a id="alertmanagementpayloadalertmappingfieldtype"></a>`type` | [`AlertManagementPayloadAlertFieldType`](#alertmanagementpayloadalertfieldtype) | Type of the parsed value. |
@@ -7676,9 +7676,9 @@ An API Fuzzing scan profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="apifuzzingscanprofiledescription"></a>`description` | [`String`](#string) | A short description of the profile. |
-| <a id="apifuzzingscanprofilename"></a>`name` | [`String`](#string) | The unique name of the profile. |
-| <a id="apifuzzingscanprofileyaml"></a>`yaml` | [`String`](#string) | A syntax highlit HTML representation of the YAML. |
+| <a id="apifuzzingscanprofiledescription"></a>`description` | [`String`](#string) | Short description of the profile. |
+| <a id="apifuzzingscanprofilename"></a>`name` | [`String`](#string) | Unique name of the profile. |
+| <a id="apifuzzingscanprofileyaml"></a>`yaml` | [`String`](#string) | Syntax highlighted HTML representation of the YAML. |
 
 ### `ApprovalRule`
 
@@ -7825,7 +7825,7 @@ Represents an epic on an issue board.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="boardepicauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the epic. |
-| <a id="boardepicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | A list of award emojis associated with the epic. (see [Connections](#connections)) |
+| <a id="boardepicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of award emojis associated with the epic. (see [Connections](#connections)) |
 | <a id="boardepicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="boardepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="boardepiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
@@ -7853,7 +7853,7 @@ Represents an epic on an issue board.
 | <a id="boardepicparent"></a>`parent` | [`Epic`](#epic) | Parent epic of the epic. |
 | <a id="boardepicparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants for the epic. (see [Connections](#connections)) |
 | <a id="boardepicrelationpath"></a>`relationPath` | [`String`](#string) | URI path of the epic-issue relationship. |
-| <a id="boardepicrelativeposition"></a>`relativePosition` | [`Int`](#int) | The relative position of the epic in the epic tree. |
+| <a id="boardepicrelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the epic in the epic tree. |
 | <a id="boardepicstartdate"></a>`startDate` | [`Time`](#time) | Start date of the epic. |
 | <a id="boardepicstartdatefixed"></a>`startDateFixed` | [`Time`](#time) | Fixed start date of the epic. |
 | <a id="boardepicstartdatefrommilestones"></a>`startDateFromMilestones` | [`Time`](#time) | Inherited start date of the epic from milestones. |
@@ -8198,8 +8198,8 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="ciminutesnamespacemonthlyusageminutes"></a>`minutes` | [`Int`](#int) | The total number of minutes used by all projects in the namespace. |
-| <a id="ciminutesnamespacemonthlyusagemonth"></a>`month` | [`String`](#string) | The month related to the usage data. |
+| <a id="ciminutesnamespacemonthlyusageminutes"></a>`minutes` | [`Int`](#int) | Total number of minutes used by all projects in the namespace. |
+| <a id="ciminutesnamespacemonthlyusagemonth"></a>`month` | [`String`](#string) | Month related to the usage data. |
 | <a id="ciminutesnamespacemonthlyusageprojects"></a>`projects` | [`CiMinutesProjectMonthlyUsageConnection`](#ciminutesprojectmonthlyusageconnection) | CI minutes usage data for projects in the namespace. (see [Connections](#connections)) |
 
 ### `CiMinutesProjectMonthlyUsage`
@@ -8208,8 +8208,8 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="ciminutesprojectmonthlyusageminutes"></a>`minutes` | [`Int`](#int) | The number of CI minutes used by the project in the month. |
-| <a id="ciminutesprojectmonthlyusagename"></a>`name` | [`String`](#string) | The name of the project. |
+| <a id="ciminutesprojectmonthlyusageminutes"></a>`minutes` | [`Int`](#int) | Number of CI minutes used by the project in the month. |
+| <a id="ciminutesprojectmonthlyusagename"></a>`name` | [`String`](#string) | Name of the project. |
 
 ### `CiRunner`
 
@@ -8271,7 +8271,7 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentcreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User object, containing information about the person who created the agent. |
 | <a id="clusteragentid"></a>`id` | [`ID!`](#id) | ID of the cluster agent. |
 | <a id="clusteragentname"></a>`name` | [`String`](#string) | Name of the cluster agent. |
-| <a id="clusteragentproject"></a>`project` | [`Project`](#project) | The project this cluster agent is associated with. |
+| <a id="clusteragentproject"></a>`project` | [`Project`](#project) | Project this cluster agent is associated with. |
 | <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
 | <a id="clusteragentwebpath"></a>`webPath` | [`String`](#string) | Web path of the cluster agent. |
@@ -8284,7 +8284,7 @@ GitLab CI/CD configuration template.
 | ---- | ---- | ----------- |
 | <a id="clusteragenttokenclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent this token is associated with. |
 | <a id="clusteragenttokencreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the token was created. |
-| <a id="clusteragenttokencreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | The user who created the token. |
+| <a id="clusteragenttokencreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User who created the token. |
 | <a id="clusteragenttokendescription"></a>`description` | [`String`](#string) | Description of the token. |
 | <a id="clusteragenttokenid"></a>`id` | [`ClustersAgentTokenID!`](#clustersagenttokenid) | Global ID of the token. |
 | <a id="clusteragenttokenlastusedat"></a>`lastUsedAt` | [`Time`](#time) | Timestamp the token was last used. |
@@ -8323,10 +8323,10 @@ Represents a code quality degradation on the pipeline.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="codequalitydegradationdescription"></a>`description` | [`String!`](#string) | A description of the code quality degradation. |
-| <a id="codequalitydegradationfingerprint"></a>`fingerprint` | [`String!`](#string) | A unique fingerprint to identify the code quality degradation. For example, an MD5 hash. |
-| <a id="codequalitydegradationline"></a>`line` | [`Int!`](#int) | The line on which the code quality degradation occurred. |
-| <a id="codequalitydegradationpath"></a>`path` | [`String!`](#string) | The relative path to the file containing the code quality degradation. |
+| <a id="codequalitydegradationdescription"></a>`description` | [`String!`](#string) | Description of the code quality degradation. |
+| <a id="codequalitydegradationfingerprint"></a>`fingerprint` | [`String!`](#string) | Unique fingerprint to identify the code quality degradation. For example, an MD5 hash. |
+| <a id="codequalitydegradationline"></a>`line` | [`Int!`](#int) | Line on which the code quality degradation occurred. |
+| <a id="codequalitydegradationpath"></a>`path` | [`String!`](#string) | Relative path to the file containing the code quality degradation. |
 | <a id="codequalitydegradationseverity"></a>`severity` | [`CodeQualityDegradationSeverity!`](#codequalitydegradationseverity) | Status of the degradation (BLOCKER, CRITICAL, MAJOR, MINOR, INFO). |
 
 ### `Commit`
@@ -8565,14 +8565,14 @@ Represents a DAST Profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="dastprofilebranch"></a>`branch` | [`DastProfileBranch`](#dastprofilebranch) | The associated branch. |
+| <a id="dastprofilebranch"></a>`branch` | [`DastProfileBranch`](#dastprofilebranch) | Associated branch. |
 | <a id="dastprofiledastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileSchedule`](#dastprofileschedule) | Associated profile schedule. Will always return `null` if `dast_on_demand_scans_scheduler` feature flag is disabled. |
-| <a id="dastprofiledastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | The associated scanner profile. |
-| <a id="dastprofiledastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | The associated site profile. |
-| <a id="dastprofiledescription"></a>`description` | [`String`](#string) | The description of the scan. |
+| <a id="dastprofiledastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Associated scanner profile. |
+| <a id="dastprofiledastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Associated site profile. |
+| <a id="dastprofiledescription"></a>`description` | [`String`](#string) | Description of the scan. |
 | <a id="dastprofileeditpath"></a>`editPath` | [`String`](#string) | Relative web path to the edit page of a profile. |
 | <a id="dastprofileid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile. |
-| <a id="dastprofilename"></a>`name` | [`String`](#string) | The name of the profile. |
+| <a id="dastprofilename"></a>`name` | [`String`](#string) | Name of the profile. |
 
 ### `DastProfileBranch`
 
@@ -8583,7 +8583,7 @@ Represents a DAST Profile Branch.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dastprofilebranchexists"></a>`exists` | [`Boolean`](#boolean) | Indicates whether or not the branch exists. |
-| <a id="dastprofilebranchname"></a>`name` | [`String`](#string) | The name of the branch. |
+| <a id="dastprofilebranchname"></a>`name` | [`String`](#string) | Name of the branch. |
 
 ### `DastProfileCadence`
 
@@ -8625,8 +8625,8 @@ Represents a DAST scanner profile.
 | <a id="dastscannerprofilereferencedinsecuritypolicies"></a>`referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | <a id="dastscannerprofilescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="dastscannerprofileshowdebugmessages"></a>`showDebugMessages` | [`Boolean!`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
-| <a id="dastscannerprofilespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | The maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="dastscannerprofiletargettimeout"></a>`targetTimeout` | [`Int`](#int) | The maximum number of seconds allowed for the site under test to respond to a request. |
+| <a id="dastscannerprofilespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
+| <a id="dastscannerprofiletargettimeout"></a>`targetTimeout` | [`Int`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="dastscannerprofileuseajaxspider"></a>`useAjaxSpider` | [`Boolean!`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
 ### `DastSiteProfile`
@@ -8639,16 +8639,16 @@ Represents a DAST Site Profile.
 | ---- | ---- | ----------- |
 | <a id="dastsiteprofileauth"></a>`auth` | [`DastSiteProfileAuth`](#dastsiteprofileauth) | Target authentication details. |
 | <a id="dastsiteprofileeditpath"></a>`editPath` | [`String`](#string) | Relative web path to the edit page of a site profile. |
-| <a id="dastsiteprofileexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | The URLs to skip during an authenticated scan. |
+| <a id="dastsiteprofileexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
 | <a id="dastsiteprofileid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile. |
 | <a id="dastsiteprofilenormalizedtargeturl"></a>`normalizedTargetUrl` | [`String`](#string) | Normalized URL of the target to be scanned. |
-| <a id="dastsiteprofileprofilename"></a>`profileName` | [`String`](#string) | The name of the site profile. |
+| <a id="dastsiteprofileprofilename"></a>`profileName` | [`String`](#string) | Name of the site profile. |
 | <a id="dastsiteprofilereferencedinsecuritypolicies"></a>`referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | <a id="dastsiteprofilerequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
-| <a id="dastsiteprofiletargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | The type of target to be scanned. |
-| <a id="dastsiteprofiletargeturl"></a>`targetUrl` | [`String`](#string) | The URL of the target to be scanned. |
+| <a id="dastsiteprofiletargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
+| <a id="dastsiteprofiletargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 | <a id="dastsiteprofileuserpermissions"></a>`userPermissions` | [`DastSiteProfilePermissions!`](#dastsiteprofilepermissions) | Permissions for the current user on the resource. |
-| <a id="dastsiteprofilevalidationstatus"></a>`validationStatus` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | The current validation status of the site profile. |
+| <a id="dastsiteprofilevalidationstatus"></a>`validationStatus` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | Current validation status of the site profile. |
 
 ### `DastSiteProfileAuth`
 
@@ -8660,10 +8660,10 @@ Input type for DastSiteProfile authentication.
 | ---- | ---- | ----------- |
 | <a id="dastsiteprofileauthenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether authentication is enabled. |
 | <a id="dastsiteprofileauthpassword"></a>`password` | [`String`](#string) | Redacted password to authenticate with on the target website. |
-| <a id="dastsiteprofileauthpasswordfield"></a>`passwordField` | [`String`](#string) | The name of password field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthpasswordfield"></a>`passwordField` | [`String`](#string) | Name of password field at the sign-in HTML form. |
 | <a id="dastsiteprofileauthurl"></a>`url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
-| <a id="dastsiteprofileauthusername"></a>`username` | [`String`](#string) | The username to authenticate with on the target website. |
-| <a id="dastsiteprofileauthusernamefield"></a>`usernameField` | [`String`](#string) | The name of username field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthusername"></a>`username` | [`String`](#string) | Username to authenticate with on the target website. |
+| <a id="dastsiteprofileauthusernamefield"></a>`usernameField` | [`String`](#string) | Name of username field at the sign-in HTML form. |
 
 ### `DastSiteProfilePermissions`
 
@@ -9038,16 +9038,16 @@ Snapshot.
 | <a id="devopsadoptionsnapshotdastenabledcount"></a>`dastEnabledCount` | [`Int`](#int) | Total number of projects with enabled DAST. |
 | <a id="devopsadoptionsnapshotdependencyscanningenabledcount"></a>`dependencyScanningEnabledCount` | [`Int`](#int) | Total number of projects with enabled dependency scanning. |
 | <a id="devopsadoptionsnapshotdeploysucceeded"></a>`deploySucceeded` | [`Boolean!`](#boolean) | At least one deployment succeeded. |
-| <a id="devopsadoptionsnapshotendtime"></a>`endTime` | [`Time!`](#time) | The end time for the snapshot where the data points were collected. |
+| <a id="devopsadoptionsnapshotendtime"></a>`endTime` | [`Time!`](#time) | End time for the snapshot where the data points were collected. |
 | <a id="devopsadoptionsnapshotissueopened"></a>`issueOpened` | [`Boolean!`](#boolean) | At least one issue was opened. |
 | <a id="devopsadoptionsnapshotmergerequestapproved"></a>`mergeRequestApproved` | [`Boolean!`](#boolean) | At least one merge request was approved. |
 | <a id="devopsadoptionsnapshotmergerequestopened"></a>`mergeRequestOpened` | [`Boolean!`](#boolean) | At least one merge request was opened. |
 | <a id="devopsadoptionsnapshotpipelinesucceeded"></a>`pipelineSucceeded` | [`Boolean!`](#boolean) | At least one pipeline succeeded. |
-| <a id="devopsadoptionsnapshotrecordedat"></a>`recordedAt` | [`Time!`](#time) | The time the snapshot was recorded. |
+| <a id="devopsadoptionsnapshotrecordedat"></a>`recordedAt` | [`Time!`](#time) | Time the snapshot was recorded. |
 | <a id="devopsadoptionsnapshotrunnerconfigured"></a>`runnerConfigured` | [`Boolean!`](#boolean) | At least one runner was used. |
 | <a id="devopsadoptionsnapshotsastenabledcount"></a>`sastEnabledCount` | [`Int`](#int) | Total number of projects with enabled SAST. |
 | <a id="devopsadoptionsnapshotsecurityscansucceeded"></a>`securityScanSucceeded` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 14.1. Substituted with specific security metrics. Always false. |
-| <a id="devopsadoptionsnapshotstarttime"></a>`startTime` | [`Time!`](#time) | The start time for the snapshot where the data points were collected. |
+| <a id="devopsadoptionsnapshotstarttime"></a>`startTime` | [`Time!`](#time) | Start time for the snapshot where the data points were collected. |
 | <a id="devopsadoptionsnapshottotalprojectscount"></a>`totalProjectsCount` | [`Int`](#int) | Total number of projects. |
 | <a id="devopsadoptionsnapshotvulnerabilitymanagementusedcount"></a>`vulnerabilityManagementUsedCount` | [`Int`](#int) | Total number of projects with vulnerability management used at least once. |
 
@@ -9137,9 +9137,9 @@ Returns [`[DoraMetric!]`](#dorametric).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dorametricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the current date. |
-| <a id="dorametricsenvironmenttier"></a>`environmentTier` | [`DeploymentTier`](#deploymenttier) | The deployment tier of the environments to return. Defaults to `PRODUCTION`. |
+| <a id="dorametricsenvironmenttier"></a>`environmentTier` | [`DeploymentTier`](#deploymenttier) | Deployment tier of the environments to return. Defaults to `PRODUCTION`. |
 | <a id="dorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregrated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
-| <a id="dorametricsmetric"></a>`metric` | [`DoraMetricType!`](#dorametrictype) | The type of metric to return. |
+| <a id="dorametricsmetric"></a>`metric` | [`DoraMetricType!`](#dorametrictype) | Type of metric to return. |
 | <a id="dorametricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 3 months ago. |
 
 ### `DoraMetric`
@@ -9188,7 +9188,7 @@ Represents an epic.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epicauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the epic. |
-| <a id="epicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | A list of award emojis associated with the epic. (see [Connections](#connections)) |
+| <a id="epicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of award emojis associated with the epic. (see [Connections](#connections)) |
 | <a id="epicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="epicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="epiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
@@ -9216,7 +9216,7 @@ Represents an epic.
 | <a id="epicparent"></a>`parent` | [`Epic`](#epic) | Parent epic of the epic. |
 | <a id="epicparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants for the epic. (see [Connections](#connections)) |
 | <a id="epicrelationpath"></a>`relationPath` | [`String`](#string) | URI path of the epic-issue relationship. |
-| <a id="epicrelativeposition"></a>`relativePosition` | [`Int`](#int) | The relative position of the epic in the epic tree. |
+| <a id="epicrelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the epic in the epic tree. |
 | <a id="epicstartdate"></a>`startDate` | [`Time`](#time) | Start date of the epic. |
 | <a id="epicstartdatefixed"></a>`startDateFixed` | [`Time`](#time) | Fixed start date of the epic. |
 | <a id="epicstartdatefrommilestones"></a>`startDateFromMilestones` | [`Time`](#time) | Inherited start date of the epic from milestones. |
@@ -9558,9 +9558,9 @@ Represents an escalation policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="escalationpolicytypedescription"></a>`description` | [`String`](#string) | The description of the escalation policy. |
+| <a id="escalationpolicytypedescription"></a>`description` | [`String`](#string) | Description of the escalation policy. |
 | <a id="escalationpolicytypeid"></a>`id` | [`IncidentManagementEscalationPolicyID`](#incidentmanagementescalationpolicyid) | ID of the escalation policy. |
-| <a id="escalationpolicytypename"></a>`name` | [`String`](#string) | The name of the escalation policy. |
+| <a id="escalationpolicytypename"></a>`name` | [`String`](#string) | Name of the escalation policy. |
 | <a id="escalationpolicytyperules"></a>`rules` | [`[EscalationRuleType!]`](#escalationruletype) | Steps of the escalation policy. |
 
 ### `EscalationRuleType`
@@ -9571,11 +9571,11 @@ Represents an escalation rule for an escalation policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="escalationruletypeelapsedtimeseconds"></a>`elapsedTimeSeconds` | [`Int`](#int) | The time in seconds before the rule is activated. |
+| <a id="escalationruletypeelapsedtimeseconds"></a>`elapsedTimeSeconds` | [`Int`](#int) | Time in seconds before the rule is activated. |
 | <a id="escalationruletypeid"></a>`id` | [`IncidentManagementEscalationRuleID`](#incidentmanagementescalationruleid) | ID of the escalation policy. |
-| <a id="escalationruletypeoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | The on-call schedule to notify. |
-| <a id="escalationruletypestatus"></a>`status` | [`EscalationRuleStatus`](#escalationrulestatus) | The status required to prevent the rule from activating. |
-| <a id="escalationruletypeuser"></a>`user` | [`UserCore`](#usercore) | The user to notify. |
+| <a id="escalationruletypeoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule to notify. |
+| <a id="escalationruletypestatus"></a>`status` | [`EscalationRuleStatus`](#escalationrulestatus) | Status required to prevent the rule from activating. |
+| <a id="escalationruletypeuser"></a>`user` | [`UserCore`](#usercore) | User to notify. |
 
 ### `Event`
 
@@ -9613,21 +9613,21 @@ Represents an external issue.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodecontainerrepositoriesmaxcapacity"></a>`containerRepositoriesMaxCapacity` | [`Int`](#int) | The maximum concurrency of container repository sync for this secondary node. |
+| <a id="geonodecontainerrepositoriesmaxcapacity"></a>`containerRepositoriesMaxCapacity` | [`Int`](#int) | Maximum concurrency of container repository sync for this secondary node. |
 | <a id="geonodeenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether this Geo node is enabled. |
-| <a id="geonodefilesmaxcapacity"></a>`filesMaxCapacity` | [`Int`](#int) | The maximum concurrency of LFS/attachment backfill for this secondary node. |
+| <a id="geonodefilesmaxcapacity"></a>`filesMaxCapacity` | [`Int`](#int) | Maximum concurrency of LFS/attachment backfill for this secondary node. |
 | <a id="geonodeid"></a>`id` | [`ID!`](#id) | ID of this GeoNode. |
-| <a id="geonodeinternalurl"></a>`internalUrl` | [`String`](#string) | The URL defined on the primary node that secondary nodes should use to contact it. |
-| <a id="geonodeminimumreverificationinterval"></a>`minimumReverificationInterval` | [`Int`](#int) | The interval (in days) in which the repository verification is valid. Once expired, it will be reverified. |
-| <a id="geonodename"></a>`name` | [`String`](#string) | The unique identifier for this Geo node. |
+| <a id="geonodeinternalurl"></a>`internalUrl` | [`String`](#string) | URL defined on the primary node secondary nodes should use to contact it. |
+| <a id="geonodeminimumreverificationinterval"></a>`minimumReverificationInterval` | [`Int`](#int) | Interval (in days) in which the repository verification is valid. After expiry, it is reverted. |
+| <a id="geonodename"></a>`name` | [`String`](#string) | Unique identifier for this Geo node. |
 | <a id="geonodeprimary"></a>`primary` | [`Boolean`](#boolean) | Indicates whether this Geo node is the primary. |
-| <a id="geonodereposmaxcapacity"></a>`reposMaxCapacity` | [`Int`](#int) | The maximum concurrency of repository backfill for this secondary node. |
-| <a id="geonodeselectivesyncnamespaces"></a>`selectiveSyncNamespaces` | [`NamespaceConnection`](#namespaceconnection) | The namespaces that should be synced, if `selective_sync_type` == `namespaces`. (see [Connections](#connections)) |
-| <a id="geonodeselectivesyncshards"></a>`selectiveSyncShards` | [`[String!]`](#string) | The repository storages whose projects should be synced, if `selective_sync_type` == `shards`. |
+| <a id="geonodereposmaxcapacity"></a>`reposMaxCapacity` | [`Int`](#int) | Maximum concurrency of repository backfill for this secondary node. |
+| <a id="geonodeselectivesyncnamespaces"></a>`selectiveSyncNamespaces` | [`NamespaceConnection`](#namespaceconnection) | Namespaces that should be synced, if `selective_sync_type` == `namespaces`. (see [Connections](#connections)) |
+| <a id="geonodeselectivesyncshards"></a>`selectiveSyncShards` | [`[String!]`](#string) | Repository storages whose projects should be synced, if `selective_sync_type` == `shards`. |
 | <a id="geonodeselectivesynctype"></a>`selectiveSyncType` | [`String`](#string) | Indicates if syncing is limited to only specific groups, or shards. |
 | <a id="geonodesyncobjectstorage"></a>`syncObjectStorage` | [`Boolean`](#boolean) | Indicates if this secondary node will replicate blobs in Object Storage. |
-| <a id="geonodeurl"></a>`url` | [`String`](#string) | The user-facing URL for this Geo node. |
-| <a id="geonodeverificationmaxcapacity"></a>`verificationMaxCapacity` | [`Int`](#int) | The maximum concurrency of repository verification for this secondary node. |
+| <a id="geonodeurl"></a>`url` | [`String`](#string) | User-facing URL for this Geo node. |
+| <a id="geonodeverificationmaxcapacity"></a>`verificationMaxCapacity` | [`Int`](#int) | Maximum concurrency of repository verification for this secondary node. |
 
 #### Fields with arguments
 
@@ -11726,10 +11726,10 @@ The rotation participant and color palette.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="oncallparticipanttypecolorpalette"></a>`colorPalette` | [`String`](#string) | The color palette to assign to the on-call user. For example "blue". |
-| <a id="oncallparticipanttypecolorweight"></a>`colorWeight` | [`String`](#string) | The color weight to assign to for the on-call user, for example "500". Max 4 chars. For easy identification of the user. |
+| <a id="oncallparticipanttypecolorpalette"></a>`colorPalette` | [`String`](#string) | Color palette to assign to the on-call user. For example "blue". |
+| <a id="oncallparticipanttypecolorweight"></a>`colorWeight` | [`String`](#string) | Color weight to assign to for the on-call user, for example "500". Max 4 chars. For easy identification of the user. |
 | <a id="oncallparticipanttypeid"></a>`id` | [`IncidentManagementOncallParticipantID!`](#incidentmanagementoncallparticipantid) | ID of the on-call participant. |
-| <a id="oncallparticipanttypeuser"></a>`user` | [`UserCore!`](#usercore) | The user who is participating. |
+| <a id="oncallparticipanttypeuser"></a>`user` | [`UserCore!`](#usercore) | User who is participating. |
 
 ### `OncallRotationActivePeriodType`
 
@@ -11739,8 +11739,8 @@ Active period time range for on-call rotation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="oncallrotationactiveperiodtypeendtime"></a>`endTime` | [`String`](#string) | The end of the rotation active period. |
-| <a id="oncallrotationactiveperiodtypestarttime"></a>`startTime` | [`String`](#string) | The start of the rotation active period. |
+| <a id="oncallrotationactiveperiodtypeendtime"></a>`endTime` | [`String`](#string) | End of the rotation active period. |
+| <a id="oncallrotationactiveperiodtypestarttime"></a>`startTime` | [`String`](#string) | Start of the rotation active period. |
 
 ### `Package`
 
@@ -11925,8 +11925,8 @@ Represents a file or directory in the project repository that has been locked.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pathlockid"></a>`id` | [`PathLockID!`](#pathlockid) | ID of the path lock. |
-| <a id="pathlockpath"></a>`path` | [`String`](#string) | The locked path. |
-| <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | The user that has locked this path. |
+| <a id="pathlockpath"></a>`path` | [`String`](#string) | Locked path. |
+| <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | User that has locked this path. |
 
 ### `Pipeline`
 
@@ -12091,13 +12091,13 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerabilit finding. |
 | <a id="pipelinesecurityreportfindinglocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingname"></a>`name` | [`String`](#string) | Name of the vulnerability finding. |
-| <a id="pipelinesecurityreportfindingproject"></a>`project` | [`Project`](#project) | The project on which the vulnerability finding was found. |
+| <a id="pipelinesecurityreportfindingproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability finding was found. |
 | <a id="pipelinesecurityreportfindingprojectfingerprint"></a>`projectFingerprint` | [`String`](#string) | Name of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="pipelinesecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingsolution"></a>`solution` | [`String`](#string) | URL to the vulnerability's details page. |
-| <a id="pipelinesecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | The finding status. |
+| <a id="pipelinesecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
 | <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | Name of the vulnerability finding. |
 
 ### `Project`
@@ -12725,7 +12725,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectnetworkpoliciesenvironmentid"></a>`environmentId` | [`EnvironmentID`](#environmentid) | The global ID of the environment to filter policies. |
+| <a id="projectnetworkpoliciesenvironmentid"></a>`environmentId` | [`EnvironmentID`](#environmentid) | Global ID of the environment to filter policies. |
 
 ##### `Project.packages`
 
@@ -12836,7 +12836,7 @@ Returns [`Requirement`](#requirement).
 | <a id="projectrequirementauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
 | <a id="projectrequirementiid"></a>`iid` | [`ID`](#id) | IID of the requirement, e.g., "1". |
 | <a id="projectrequirementiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, e.g., `[1, 2]`. |
-| <a id="projectrequirementlasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | The state of latest requirement test report. |
+| <a id="projectrequirementlasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementsearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementsort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
 | <a id="projectrequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | Filter requirements by state. |
@@ -12858,7 +12858,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectrequirementsauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
 | <a id="projectrequirementsiid"></a>`iid` | [`ID`](#id) | IID of the requirement, e.g., "1". |
 | <a id="projectrequirementsiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, e.g., `[1, 2]`. |
-| <a id="projectrequirementslasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | The state of latest requirement test report. |
+| <a id="projectrequirementslasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementssearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementssort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
 | <a id="projectrequirementsstate"></a>`state` | [`RequirementState`](#requirementstate) | Filter requirements by state. |
@@ -13545,8 +13545,8 @@ Represents a resource scanned by a security scan.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="scannedresourcerequestmethod"></a>`requestMethod` | [`String`](#string) | The HTTP request method used to access the URL. |
-| <a id="scannedresourceurl"></a>`url` | [`String`](#string) | The URL scanned by the scanner. |
+| <a id="scannedresourcerequestmethod"></a>`requestMethod` | [`String`](#string) | HTTP request method used to access the URL. |
+| <a id="scannedresourceurl"></a>`url` | [`String`](#string) | URL scanned by the scanner. |
 
 ### `SecurityReportSummary`
 
@@ -13574,7 +13574,7 @@ Represents a section of a summary of a security report.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="securityreportsummarysectionscannedresources"></a>`scannedResources` | [`ScannedResourceConnection`](#scannedresourceconnection) | A list of the first 20 scanned resources. (see [Connections](#connections)) |
+| <a id="securityreportsummarysectionscannedresources"></a>`scannedResources` | [`ScannedResourceConnection`](#scannedresourceconnection) | List of the first 20 scanned resources. (see [Connections](#connections)) |
 | <a id="securityreportsummarysectionscannedresourcescount"></a>`scannedResourcesCount` | [`Int`](#int) | Total number of scanned resources. |
 | <a id="securityreportsummarysectionscannedresourcescsvpath"></a>`scannedResourcesCsvPath` | [`String`](#string) | Path to download all the scanned resources in CSV format. |
 | <a id="securityreportsummarysectionscans"></a>`scans` | [`ScanConnection!`](#scanconnection) | List of security scans ran for the type. (see [Connections](#connections)) |
@@ -14075,8 +14075,8 @@ Represents measured stats metrics for timeboxes.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="timeboxmetricscount"></a>`count` | [`Int!`](#int) | The count metric. |
-| <a id="timeboxmetricsweight"></a>`weight` | [`Int!`](#int) | The weight metric. |
+| <a id="timeboxmetricscount"></a>`count` | [`Int!`](#int) | Count metric. |
+| <a id="timeboxmetricsweight"></a>`weight` | [`Int!`](#int) | Weight metric. |
 
 ### `TimeboxReport`
 
@@ -14443,13 +14443,13 @@ Represents a vulnerability.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
-| <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | The user that confirmed the vulnerability. |
+| <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
 | <a id="vulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
 | <a id="vulnerabilitydetails"></a>`details` | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | Details of the vulnerability. |
 | <a id="vulnerabilitydetectedat"></a>`detectedAt` | [`Time!`](#time) | Timestamp of when the vulnerability was first detected. |
 | <a id="vulnerabilitydiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilitydismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to dismissed. |
-| <a id="vulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | The user that dismissed the vulnerability. |
+| <a id="vulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. Available only when feature flag `vulnerability_flags` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="vulnerabilityhassolutions"></a>`hasSolutions` | [`Boolean`](#boolean) | Indicates whether there is a solution available for this vulnerability. |
@@ -14459,10 +14459,10 @@ Represents a vulnerability.
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
 | <a id="vulnerabilitynotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
-| <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | The project on which the vulnerability was found. |
+| <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
 | <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, GENERIC). `Scan Type` in the UI. |
 | <a id="vulnerabilityresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to resolved. |
-| <a id="vulnerabilityresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | The user that resolved the vulnerability. |
+| <a id="vulnerabilityresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User that resolved the vulnerability. |
 | <a id="vulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
 | <a id="vulnerabilityscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="vulnerabilityseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
@@ -14540,7 +14540,7 @@ Represents the vulnerability details commit field.
 | <a id="vulnerabilitydetailcommitdescription"></a>`description` | [`String`](#string) | Description of the field. |
 | <a id="vulnerabilitydetailcommitfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailcommitname"></a>`name` | [`String`](#string) | Name of the field. |
-| <a id="vulnerabilitydetailcommitvalue"></a>`value` | [`String!`](#string) | The commit SHA value. |
+| <a id="vulnerabilitydetailcommitvalue"></a>`value` | [`String!`](#string) | Commit SHA value. |
 
 ### `VulnerabilityDetailDiff`
 
@@ -14699,7 +14699,7 @@ Represents an issue link of a vulnerability.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityissuelinkid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
-| <a id="vulnerabilityissuelinkissue"></a>`issue` | [`Issue!`](#issue) | The issue attached to issue link. |
+| <a id="vulnerabilityissuelinkissue"></a>`issue` | [`Issue!`](#issue) | Issue attached to issue link. |
 | <a id="vulnerabilityissuelinklinktype"></a>`linkType` | [`VulnerabilityIssueLinkType!`](#vulnerabilityissuelinktype) | Type of the issue link. |
 
 ### `VulnerabilityLocationContainerScanning`
@@ -14849,8 +14849,8 @@ Represents a vulnerable dependency. Used in vulnerability location data.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabledependencypackage"></a>`package` | [`VulnerablePackage`](#vulnerablepackage) | The package associated with the vulnerable dependency. |
-| <a id="vulnerabledependencyversion"></a>`version` | [`String`](#string) | The version of the vulnerable dependency. |
+| <a id="vulnerabledependencypackage"></a>`package` | [`VulnerablePackage`](#vulnerablepackage) | Package associated with the vulnerable dependency. |
+| <a id="vulnerabledependencyversion"></a>`version` | [`String`](#string) | Version of the vulnerable dependency. |
 
 ### `VulnerablePackage`
 
@@ -14860,7 +14860,7 @@ Represents a vulnerable package. Used in vulnerability dependency data.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerablepackagename"></a>`name` | [`String`](#string) | The name of the vulnerable package. |
+| <a id="vulnerablepackagename"></a>`name` | [`String`](#string) | Name of the vulnerable package. |
 
 ### `VulnerableProjectsByGrade`
 
@@ -15756,8 +15756,8 @@ The position to which the adjacent object should be moved.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="movetypeafter"></a>`after` | The adjacent object will be moved after the object that is being moved. |
-| <a id="movetypebefore"></a>`before` | The adjacent object will be moved before the object that is being moved. |
+| <a id="movetypeafter"></a>`after` | Adjacent object is moved after the object that is being moved. |
+| <a id="movetypebefore"></a>`before` | Adjacent object is moved before the object that is being moved. |
 
 ### `MutationOperationMode`
 
@@ -15801,8 +15801,8 @@ Kind of the network policy.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="networkpolicykindciliumnetworkpolicy"></a>`CiliumNetworkPolicy` | The policy kind of Cilium Network Policy. |
-| <a id="networkpolicykindnetworkpolicy"></a>`NetworkPolicy` | The policy kind of Network Policy. |
+| <a id="networkpolicykindciliumnetworkpolicy"></a>`CiliumNetworkPolicy` | Policy kind of Cilium Network Policy. |
+| <a id="networkpolicykindnetworkpolicy"></a>`NetworkPolicy` | Policy kind of Network Policy. |
 
 ### `OncallRotationUnitEnum`
 
@@ -17389,7 +17389,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="alertmanagementpayloadalertfieldinputfieldname"></a>`fieldName` | [`AlertManagementPayloadAlertFieldName!`](#alertmanagementpayloadalertfieldname) | A GitLab alert field name. |
+| <a id="alertmanagementpayloadalertfieldinputfieldname"></a>`fieldName` | [`AlertManagementPayloadAlertFieldName!`](#alertmanagementpayloadalertfieldname) | GitLab alert field name. |
 | <a id="alertmanagementpayloadalertfieldinputlabel"></a>`label` | [`String`](#string) | Human-readable label of the payload path. |
 | <a id="alertmanagementpayloadalertfieldinputpath"></a>`path` | [`[PayloadAlertFieldPathSegment!]!`](#payloadalertfieldpathsegment) | Path to value inside payload JSON. |
 | <a id="alertmanagementpayloadalertfieldinputtype"></a>`type` | [`AlertManagementPayloadAlertFieldType!`](#alertmanagementpayloadalertfieldtype) | Type of the parsed value. |
@@ -17477,11 +17477,11 @@ Input type for DastSiteProfile authentication.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dastsiteprofileauthinputenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether authentication is enabled. |
-| <a id="dastsiteprofileauthinputpassword"></a>`password` | [`String`](#string) | The password to authenticate with on the target website. |
-| <a id="dastsiteprofileauthinputpasswordfield"></a>`passwordField` | [`String`](#string) | The name of password field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthinputpassword"></a>`password` | [`String`](#string) | Password to authenticate with on the target website. |
+| <a id="dastsiteprofileauthinputpasswordfield"></a>`passwordField` | [`String`](#string) | Name of password field at the sign-in HTML form. |
 | <a id="dastsiteprofileauthinputurl"></a>`url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
-| <a id="dastsiteprofileauthinputusername"></a>`username` | [`String`](#string) | The username to authenticate with on the target website. |
-| <a id="dastsiteprofileauthinputusernamefield"></a>`usernameField` | [`String`](#string) | The name of username field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthinputusername"></a>`username` | [`String`](#string) | Username to authenticate with on the target website. |
+| <a id="dastsiteprofileauthinputusernamefield"></a>`usernameField` | [`String`](#string) | Name of username field at the sign-in HTML form. |
 
 ### `DiffImagePositionInput`
 
@@ -17540,10 +17540,10 @@ A node of an epic tree.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epictreenodefieldsinputtypeadjacentreferenceid"></a>`adjacentReferenceId` | [`EpicTreeSortingID`](#epictreesortingid) | The ID of the epic_issue or issue that the actual epic or issue is switched with. |
-| <a id="epictreenodefieldsinputtypeid"></a>`id` | [`EpicTreeSortingID!`](#epictreesortingid) | The ID of the epic_issue or epic that is being moved. |
+| <a id="epictreenodefieldsinputtypeadjacentreferenceid"></a>`adjacentReferenceId` | [`EpicTreeSortingID`](#epictreesortingid) | ID of the epic issue or issue the epic or issue is switched with. |
+| <a id="epictreenodefieldsinputtypeid"></a>`id` | [`EpicTreeSortingID!`](#epictreesortingid) | ID of the epic issue or epic that is being moved. |
 | <a id="epictreenodefieldsinputtypenewparentid"></a>`newParentId` | [`EpicID`](#epicid) | ID of the new parent epic. |
-| <a id="epictreenodefieldsinputtyperelativeposition"></a>`relativePosition` | [`MoveType`](#movetype) | The type of the switch, after or before allowed. |
+| <a id="epictreenodefieldsinputtyperelativeposition"></a>`relativePosition` | [`MoveType`](#movetype) | Type of switch. Valid values are `after` or `before`. |
 
 ### `EscalationRuleInput`
 
@@ -17553,10 +17553,10 @@ Represents an escalation rule.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="escalationruleinputelapsedtimeseconds"></a>`elapsedTimeSeconds` | [`Int!`](#int) | The time in seconds before the rule is activated. |
-| <a id="escalationruleinputoncallscheduleiid"></a>`oncallScheduleIid` | [`ID`](#id) | The on-call schedule to notify. |
-| <a id="escalationruleinputstatus"></a>`status` | [`EscalationRuleStatus!`](#escalationrulestatus) | The status required to prevent the rule from activating. |
-| <a id="escalationruleinputusername"></a>`username` | [`String`](#string) | The username of the user to notify. |
+| <a id="escalationruleinputelapsedtimeseconds"></a>`elapsedTimeSeconds` | [`Int!`](#int) | Time in seconds before the rule is activated. |
+| <a id="escalationruleinputoncallscheduleiid"></a>`oncallScheduleIid` | [`ID`](#id) | On-call schedule to notify. |
+| <a id="escalationruleinputstatus"></a>`status` | [`EscalationRuleStatus!`](#escalationrulestatus) | Status required to prevent the rule from activating. |
+| <a id="escalationruleinputusername"></a>`username` | [`String`](#string) | Username of the user to notify. |
 
 ### `JiraUsersMappingInputType`
 
@@ -17643,8 +17643,8 @@ Active period time range for on-call rotation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="oncallrotationactiveperiodinputtypeendtime"></a>`endTime` | [`String!`](#string) | The end of the rotation active period in 24 hour format, for example "18:30". |
-| <a id="oncallrotationactiveperiodinputtypestarttime"></a>`startTime` | [`String!`](#string) | The start of the rotation active period in 24 hour format, for example "18:30". |
+| <a id="oncallrotationactiveperiodinputtypeendtime"></a>`endTime` | [`String!`](#string) | End of the rotation active period in 24 hour format. For example, "18:30". |
+| <a id="oncallrotationactiveperiodinputtypestarttime"></a>`startTime` | [`String!`](#string) | Start of the rotation active period in 24 hour format. For example, "18:30". |
 
 ### `OncallRotationDateInputType`
 
@@ -17654,8 +17654,8 @@ Date input type for on-call rotation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="oncallrotationdateinputtypedate"></a>`date` | [`String!`](#string) | The date component of the date in YYYY-MM-DD format. |
-| <a id="oncallrotationdateinputtypetime"></a>`time` | [`String!`](#string) | The time component of the date in 24hr HH:MM format. |
+| <a id="oncallrotationdateinputtypedate"></a>`date` | [`String!`](#string) | Date component of the date in YYYY-MM-DD format. |
+| <a id="oncallrotationdateinputtypetime"></a>`time` | [`String!`](#string) | Time component of the date in 24hr HH:MM format. |
 
 ### `OncallRotationLengthInputType`
 
@@ -17665,8 +17665,8 @@ The rotation length of the on-call rotation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="oncallrotationlengthinputtypelength"></a>`length` | [`Int!`](#int) | The rotation length of the on-call rotation. |
-| <a id="oncallrotationlengthinputtypeunit"></a>`unit` | [`OncallRotationUnitEnum!`](#oncallrotationunitenum) | The unit of the rotation length of the on-call rotation. |
+| <a id="oncallrotationlengthinputtypelength"></a>`length` | [`Int!`](#int) | Rotation length of the on-call rotation. |
+| <a id="oncallrotationlengthinputtypeunit"></a>`unit` | [`OncallRotationUnitEnum!`](#oncallrotationunitenum) | Unit of the rotation length of the on-call rotation. |
 
 ### `OncallUserInputType`
 
@@ -17676,9 +17676,9 @@ The rotation user and color palette.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="oncalluserinputtypecolorpalette"></a>`colorPalette` | [`DataVisualizationColorEnum`](#datavisualizationcolorenum) | A value of DataVisualizationColorEnum. The color from the palette to assign to the on-call user. |
-| <a id="oncalluserinputtypecolorweight"></a>`colorWeight` | [`DataVisualizationWeightEnum`](#datavisualizationweightenum) | A value of DataVisualizationWeightEnum. The color weight to assign to for the on-call user. Note: To view on-call schedules in GitLab, do not provide a value below 500. A value between 500 and 950 ensures sufficient contrast. |
-| <a id="oncalluserinputtypeusername"></a>`username` | [`String!`](#string) | The username of the user to participate in the on-call rotation, such as `user_one`. |
+| <a id="oncalluserinputtypecolorpalette"></a>`colorPalette` | [`DataVisualizationColorEnum`](#datavisualizationcolorenum) | Value of DataVisualizationColorEnum. The color from the palette to assign to the on-call user. |
+| <a id="oncalluserinputtypecolorweight"></a>`colorWeight` | [`DataVisualizationWeightEnum`](#datavisualizationweightenum) | Color weight to assign to for the on-call user. To view on-call schedules in GitLab, do not provide a value below 500. A value between 500 and 950 ensures sufficient contrast. |
+| <a id="oncalluserinputtypeusername"></a>`username` | [`String!`](#string) | Username of the user to participate in the on-call rotation. For example, `"user_one"`. |
 
 ### `ReleaseAssetLinkInput`
 

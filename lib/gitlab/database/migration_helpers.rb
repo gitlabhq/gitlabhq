@@ -984,6 +984,7 @@ module Gitlab
 
         temporary_columns.each { |column| remove_column(table, column) }
       end
+      alias_method :cleanup_conversion_of_integer_to_bigint, :revert_initialize_conversion_of_integer_to_bigint
 
       # Reverts `cleanup_conversion_of_integer_to_bigint`
       #

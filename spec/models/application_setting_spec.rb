@@ -7,6 +7,8 @@ RSpec.describe ApplicationSetting do
 
   subject(:setting) { described_class.create_from_defaults }
 
+  it_behaves_like 'sanitizable', :application_setting, %i[default_branch_name]
+
   it { include(CacheableAttributes) }
   it { include(ApplicationSettingImplementation) }
   it { expect(described_class.current_without_cache).to eq(described_class.last) }

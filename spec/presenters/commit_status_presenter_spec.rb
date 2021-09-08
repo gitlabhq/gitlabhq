@@ -15,25 +15,6 @@ RSpec.describe CommitStatusPresenter do
     expect(described_class.superclass).to eq(Gitlab::View::Presenter::Delegated)
   end
 
-  describe '#callout_failure_message' do
-    subject { presenter.callout_failure_message }
-
-    context 'when troubleshooting doc is available' do
-      let(:failure_reason) { :environment_creation_failure }
-
-      before do
-        build.failure_reason = failure_reason
-      end
-
-      it 'appends the troubleshooting link' do
-        doc = described_class::TROUBLESHOOTING_DOC[failure_reason]
-
-        expect(subject).to eq("#{described_class.callout_failure_messages[failure_reason]} " \
-                              "<a href=\"#{presenter.help_page_path(doc[:path], anchor: doc[:anchor])}\">How do I fix it?</a>")
-      end
-    end
-  end
-
   describe 'covers all failure reasons' do
     let(:message) { presenter.callout_failure_message }
 

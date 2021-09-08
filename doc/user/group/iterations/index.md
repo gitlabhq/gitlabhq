@@ -110,7 +110,17 @@ Prerequisites:
 
 - You must have at least the [Developer role](../../permissions.md) for a group.
 
-To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit iteration**.
+To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
+
+## Delete an iteration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292268) in GitLab 14.3.
+
+Prerequisites:
+
+- You must have at least the [Developer role](../../permissions.md) for a group.
+
+To delete an iteration, select the three-dot menu (**{ellipsis_v}**) > **Delete**.
 
 ## Add an issue to an iteration
 

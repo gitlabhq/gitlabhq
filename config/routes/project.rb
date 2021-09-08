@@ -354,6 +354,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'details', on: :member
         end
 
+        resources :work_items, only: [:index]
+
         resource :tracing, only: [:show]
 
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
@@ -601,7 +603,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :vulnerability_feedback, :security, :dependencies, :issues,
                                             :pipelines, :pipeline_schedules, :runners, :snippets)
     end
-
     # rubocop: disable Cop/PutProjectRoutesUnderScope
     resources(:projects,
               path: '/',

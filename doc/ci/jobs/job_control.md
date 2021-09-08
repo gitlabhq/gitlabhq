@@ -292,7 +292,7 @@ You can use the `$` character for both variables and paths. For example, if the
 
 ## Reuse rules in different jobs
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) GitLab 14.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
 
 Use [`!reference` tags](../yaml/index.md#reference-tags) to reuse rules in different
 jobs. You can combine `!reference` rules with regular job-defined rules:

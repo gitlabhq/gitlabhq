@@ -47,11 +47,11 @@ module Gitlab
         end
 
         def validate!
-          return unless @size_limit > 0
-          return if allow_big_payload?
-
           job_args = compress_if_necessary(::Sidekiq.dump_json(@job['args']))
+
+          return if @size_limit == 0
           return if job_args.bytesize <= @size_limit
+          return if allow_big_payload?
 
           exception = exceed_limit_error(job_args)
           if compress_mode?
@@ -83,6 +83,7 @@ module Gitlab
           @size_limit = (size_limit || DEFAULT_SIZE_LIMIT).to_i
           if @size_limit < 0
             ::Sidekiq.logger.warn "Invalid Sidekiq size limiter limit: #{@size_limit}"
+            @size_limit = 0
           end
         end
 

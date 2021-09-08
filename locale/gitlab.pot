@@ -18871,6 +18871,9 @@ msgstr ""
 msgid "Iterations|Delete iteration cadence?"
 msgstr ""
 
+msgid "Iterations|Delete iteration?"
+msgstr ""
+
 msgid "Iterations|Duration"
 msgstr ""
 
@@ -18938,6 +18941,9 @@ msgid "Iterations|The start date of your first iteration"
 msgstr ""
 
 msgid "Iterations|This will delete the cadence as well as all of the iterations within it."
+msgstr ""
+
+msgid "Iterations|This will remove the iteration from any issues that are assigned to it."
 msgstr ""
 
 msgid "Iterations|Title"
@@ -38052,6 +38058,9 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress Limit"
+msgstr ""
+
+msgid "WorkItem|Work Items"
 msgstr ""
 
 msgid "Would you like to create a new branch?"

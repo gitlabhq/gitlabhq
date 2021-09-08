@@ -6,6 +6,7 @@ class ApplicationSetting < ApplicationRecord
   include TokenAuthenticatable
   include ChronicDurationAttribute
   include IgnorableColumns
+  include Sanitizable
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_column :seat_link_enabled, remove_with: '14.4', remove_after: '2021-09-22'
@@ -31,6 +32,8 @@ class ApplicationSetting < ApplicationRecord
   belongs_to :instance_group, class_name: "Group", foreign_key: 'instance_administrators_group_id'
   alias_attribute :instance_group_id, :instance_administrators_group_id
   alias_attribute :instance_administrators_group, :instance_group
+
+  sanitizes! :default_branch_name
 
   def self.kroki_formats_attributes
     {
@@ -599,7 +602,7 @@ class ApplicationSetting < ApplicationRecord
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
-  before_validation :sanitize_default_branch_name
+  before_validation :normalize_default_branch_name
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -629,12 +632,8 @@ class ApplicationSetting < ApplicationRecord
     !!(sourcegraph_url =~ %r{\Ahttps://(www\.)?sourcegraph\.com})
   end
 
-  def sanitize_default_branch_name
-    self.default_branch_name = if default_branch_name.blank?
-                                 nil
-                               else
-                                 Sanitize.fragment(self.default_branch_name)
-                               end
+  def normalize_default_branch_name
+    self.default_branch_name = default_branch_name.presence
   end
 
   def instance_review_permitted?

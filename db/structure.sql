@@ -71,15 +71,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_490d204c00b3() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."id_convert_to_bigint" := NEW."id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_51ab7cef8934() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -11371,7 +11362,7 @@ CREATE TABLE ci_builds (
     coverage_regex character varying,
     auto_canceled_by_id integer,
     retried boolean,
-    stage_id integer,
+    stage_id_convert_to_bigint integer,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
@@ -11382,7 +11373,7 @@ CREATE TABLE ci_builds (
     processed boolean,
     scheduling_type smallint,
     id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
-    stage_id_convert_to_bigint bigint,
+    stage_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -12061,7 +12052,6 @@ CREATE SEQUENCE ci_sources_projects_id_seq
 ALTER SEQUENCE ci_sources_projects_id_seq OWNED BY ci_sources_projects.id;
 
 CREATE TABLE ci_stages (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer,
     pipeline_id integer,
     created_at timestamp without time zone,
@@ -27317,8 +27307,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 CREATE TRIGGER trigger_21e7a2602957 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_21e7a2602957();
 
 CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_3f6129be01d2();
-
-CREATE TRIGGER trigger_490d204c00b3 BEFORE INSERT OR UPDATE ON ci_stages FOR EACH ROW EXECUTE FUNCTION trigger_490d204c00b3();
 
 CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_51ab7cef8934();
 

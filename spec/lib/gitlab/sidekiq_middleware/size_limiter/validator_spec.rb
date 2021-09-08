@@ -77,7 +77,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator do
       it 'defaults to 0 and logs a warning message' do
         expect(::Sidekiq.logger).to receive(:warn).with('Invalid Sidekiq size limiter limit: -1')
 
-        described_class.new(TestSizeLimiterWorker, job_payload, size_limit: -1)
+        validator = described_class.new(TestSizeLimiterWorker, job_payload, size_limit: -1)
+
+        expect(validator.size_limit).to be(0)
       end
     end
 
@@ -258,6 +260,22 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator do
         end
       end
 
+      context 'when job size is bigger than compression threshold and size limit is 0' do
+        let(:size_limit) { 0 }
+        let(:args) { { a: 'a' * 300 } }
+        let(:job) { job_payload(args) }
+
+        it 'does not raise an exception and compresses the arguments' do
+          expect(::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor).to receive(:compress).with(
+            job, Sidekiq.dump_json(args)
+          ).and_return('a' * 40)
+
+          expect do
+            validate.call(TestSizeLimiterWorker, job)
+          end.not_to raise_error
+        end
+      end
+
       context 'when the job was already compressed' do
         let(:job) do
           job_payload({ a: 'a' * 10 })
@@ -275,7 +293,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator do
         let(:args) { { a: 'a' * 3000 } }
         let(:job) { job_payload(args) }
 
-        it 'does not raise an exception' do
+        it 'raises an exception' do
           expect(::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor).to receive(:compress).with(
             job, Sidekiq.dump_json(args)
           ).and_return('a' * 60)
@@ -283,6 +301,18 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator do
           expect do
             validate.call(TestSizeLimiterWorker, job)
           end.to raise_error(Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError)
+        end
+
+        it 'does not raise an exception when the worker allows big payloads' do
+          worker_class.big_payload!
+
+          expect(::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor).to receive(:compress).with(
+            job, Sidekiq.dump_json(args)
+          ).and_return('a' * 60)
+
+          expect do
+            validate.call(TestSizeLimiterWorker, job)
+          end.not_to raise_error
         end
       end
     end
