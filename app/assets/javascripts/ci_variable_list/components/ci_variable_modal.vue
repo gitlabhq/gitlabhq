@@ -337,7 +337,7 @@ export default {
     </gl-collapse>
     <gl-alert
       v-if="containsVariableReference"
-      :title="__('Value may contain a variable reference')"
+      :title="__('Value might contain a variable reference')"
       :dismissible="false"
       variant="warning"
       data-testid="contains-variable-reference"

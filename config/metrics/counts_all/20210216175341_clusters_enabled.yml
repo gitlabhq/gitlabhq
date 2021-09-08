@@ -3,13 +3,13 @@ data_category: optional
 key_path: usage_activity_by_stage.configure.clusters_enabled
 description: Total GitLab Managed clusters currently enabled
 product_section: ops
-product_stage:
+product_stage: configure
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: database
 distribution:
 - ce
 - ee
@@ -17,5 +17,4 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true
 milestone: "<13.9"

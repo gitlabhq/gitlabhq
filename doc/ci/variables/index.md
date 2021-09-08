@@ -125,7 +125,7 @@ Use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual
 keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
 
-### Use variables or `$` in other variables
+### Use variables in other variables
 
 You can use variables inside other variables:
 
@@ -138,7 +138,9 @@ job:
     - 'eval "$LS_CMD"'  # Executes 'ls -al'
 ```
 
-If you do not want the `$` interpreted as the start of a variable, use `$$` instead:
+#### Use the `$` character in variables
+
+If you do not want the `$` character interpreted as the start of a variable, use `$$` instead:
 
 ```yaml
 job:

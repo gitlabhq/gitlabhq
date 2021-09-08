@@ -146,8 +146,11 @@ RSpec.describe Issues::UpdateService, :mailer do
       it 'refreshes the number of open issues when the issue is made confidential', :use_clean_rails_memory_store_caching do
         issue # make sure the issue is created first so our counts are correct.
 
-        expect { update_issue(confidential: true) }
-          .to change { project.open_issues_count }.from(1).to(0)
+        expect do
+          update_issue(confidential: true)
+
+          BatchLoader::Executor.clear_current
+        end.to change { project.open_issues_count }.from(1).to(0)
       end
 
       it 'enqueues ConfidentialIssueWorker when an issue is made confidential' do

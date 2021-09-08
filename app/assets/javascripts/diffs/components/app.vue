@@ -46,7 +46,6 @@ import {
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
-import { fileByFile } from '../utils/preferences';
 import { queueRedisHllEvents } from '../utils/queue_events';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
@@ -331,7 +330,7 @@ export default {
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
-      viewDiffsFileByFile: fileByFile(this.fileByFileUserPreference),
+      viewDiffsFileByFile: this.fileByFileUserPreference || false,
       defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
       mrReviews: this.rehydratedMrReviews,
     });

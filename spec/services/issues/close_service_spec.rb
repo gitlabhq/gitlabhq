@@ -58,8 +58,11 @@ RSpec.describe Issues::CloseService do
     end
 
     it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
-      expect { service.execute(issue) }
-        .to change { project.open_issues_count }.from(1).to(0)
+      expect do
+        service.execute(issue)
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_issues_count }.from(1).to(0)
     end
 
     it 'invalidates counter cache for assignees' do

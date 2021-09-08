@@ -144,8 +144,13 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def self.forks_counting_projects(projects_relation)
-        projects_relation + projects_relation.map(&:forked_from_project).compact
+      def self.execute_batch_counting(projects_relation)
+        # Call the count methods on every project, so the BatchLoader would load them all at
+        # once when the entities are rendered
+        projects_relation.each(&:open_issues_count)
+        projects_relation.map(&:forked_from_project).compact.each(&:forks_count)
+
+        super
       end
     end
   end

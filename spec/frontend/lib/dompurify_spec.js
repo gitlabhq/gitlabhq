@@ -57,6 +57,14 @@ describe('~/lib/dompurify', () => {
     });
   });
 
+  it("doesn't sanitize local references", () => {
+    const htmlHref = `<svg><use href="#some-element"></use></svg>`;
+    const htmlXlink = `<svg><use xlink:href="#some-element"></use></svg>`;
+
+    expect(sanitize(htmlHref)).toBe(htmlHref);
+    expect(sanitize(htmlXlink)).toBe(htmlXlink);
+  });
+
   describe.each`
     type          | gon
     ${'root'}     | ${rootGon}

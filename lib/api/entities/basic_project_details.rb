@@ -49,6 +49,14 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def self.execute_batch_counting(projects_relation)
+        # Call the count methods on every project, so the BatchLoader would load them all at
+        # once when the entities are rendered
+        projects_relation.each(&:forks_count)
+
+        super
+      end
+
       private
 
       alias_method :project, :object

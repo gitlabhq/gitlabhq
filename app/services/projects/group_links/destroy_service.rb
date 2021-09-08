@@ -13,19 +13,15 @@ module Projects
         end
 
         group_link.destroy.tap do |link|
-          if Feature.enabled?(:use_specialized_worker_for_project_auth_recalculation)
-            refresh_project_authorizations_asynchronously(link.project)
+          refresh_project_authorizations_asynchronously(link.project)
 
-            # Until we compare the inconsistency rates of the new specialized worker and
-            # the old approach, we still run AuthorizedProjectsWorker
-            # but with some delay and lower urgency as a safety net.
-            link.group.refresh_members_authorized_projects(
-              blocking: false,
-              priority: UserProjectAccessChangedService::LOW_PRIORITY
-            )
-          else
-            link.group.refresh_members_authorized_projects
-          end
+          # Until we compare the inconsistency rates of the new specialized worker and
+          # the old approach, we still run AuthorizedProjectsWorker
+          # but with some delay and lower urgency as a safety net.
+          link.group.refresh_members_authorized_projects(
+            blocking: false,
+            priority: UserProjectAccessChangedService::LOW_PRIORITY
+          )
         end
       end
 

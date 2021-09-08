@@ -1805,7 +1805,15 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)
-    Projects::OpenIssuesCountService.new(self, current_user).count
+    return Projects::OpenIssuesCountService.new(self, current_user).count unless current_user.nil?
+
+    BatchLoader.for(self).batch(replace_methods: false) do |projects, loader|
+      issues_count_per_project = ::Projects::BatchOpenIssuesCountService.new(projects).refresh_cache_and_retrieve_data
+
+      issues_count_per_project.each do |project, count|
+        loader.call(project, count)
+      end
+    end
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -2285,7 +2293,7 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def forks_count
-    BatchLoader.for(self).batch do |projects, loader|
+    BatchLoader.for(self).batch(replace_methods: false) do |projects, loader|
       fork_count_per_project = ::Projects::BatchForksCountService.new(projects).refresh_cache_and_retrieve_data
 
       fork_count_per_project.each do |project, count|

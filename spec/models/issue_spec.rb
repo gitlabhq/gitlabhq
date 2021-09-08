@@ -1176,8 +1176,11 @@ RSpec.describe Issue do
     it 'refreshes the number of open issues of the project' do
       project = subject.project
 
-      expect { subject.destroy! }
-        .to change { project.open_issues_count }.from(1).to(0)
+      expect do
+        subject.destroy!
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_issues_count }.from(1).to(0)
     end
   end
 

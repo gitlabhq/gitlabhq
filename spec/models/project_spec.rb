@@ -1053,12 +1053,12 @@ RSpec.describe Project, factory_default: :keep do
       project.open_issues_count(user)
     end
 
-    it 'invokes the count service with no current_user' do
-      count_service = instance_double(Projects::OpenIssuesCountService)
-      expect(Projects::OpenIssuesCountService).to receive(:new).with(project, nil).and_return(count_service)
-      expect(count_service).to receive(:count)
+    it 'invokes the batch count service with no current_user' do
+      count_service = instance_double(Projects::BatchOpenIssuesCountService)
+      expect(Projects::BatchOpenIssuesCountService).to receive(:new).with([project]).and_return(count_service)
+      expect(count_service).to receive(:refresh_cache_and_retrieve_data).and_return({})
 
-      project.open_issues_count
+      project.open_issues_count.to_s
     end
   end
 

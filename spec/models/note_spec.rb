@@ -1573,7 +1573,7 @@ RSpec.describe Note do
     let(:note) { build(:note) }
 
     it 'returns cache key and author cache key by default' do
-      expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}")
+      expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}:#{note.project.team.human_max_access(note.author_id)}")
     end
 
     context 'when note has no author' do
@@ -1592,7 +1592,7 @@ RSpec.describe Note do
       end
 
       it 'returns cache key with redacted_note_html sha' do
-        expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}:#{Digest::SHA1.hexdigest(redacted_note_html)}")
+        expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}:#{note.project.team.human_max_access(note.author_id)}:#{Digest::SHA1.hexdigest(redacted_note_html)}")
       end
     end
   end

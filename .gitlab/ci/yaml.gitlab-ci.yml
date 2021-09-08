@@ -1,4 +1,4 @@
-# Yamllint of CI-related yaml and changelogs.
+# Yamllint of CI-related yaml.
 # This uses rules from project root `.yamllint`.
 lint-yaml:
   extends:
@@ -8,6 +8,6 @@ lint-yaml:
   stage: test
   needs: []
   variables:
-    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates changelogs
+    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates
   script:
     - yamllint -f colored $LINT_PATHS

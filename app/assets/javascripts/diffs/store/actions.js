@@ -29,9 +29,6 @@ import {
   EVT_PERF_MARK_FILE_TREE_START,
   EVT_PERF_MARK_FILE_TREE_END,
   EVT_PERF_MARK_DIFF_FILES_START,
-  DIFF_VIEW_FILE_BY_FILE,
-  DIFF_VIEW_ALL_FILES,
-  DIFF_FILE_BY_FILE_COOKIE_NAME,
   TRACKING_CLICK_DIFF_VIEW_SETTING,
   TRACKING_DIFF_VIEW_INLINE,
   TRACKING_DIFF_VIEW_PARALLEL,
@@ -816,9 +813,7 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
 };
 
 export const setFileByFile = ({ state, commit }, { fileByFile }) => {
-  const fileViewMode = fileByFile ? DIFF_VIEW_FILE_BY_FILE : DIFF_VIEW_ALL_FILES;
   commit(types.SET_FILE_BY_FILE, fileByFile);
-  Cookies.set(DIFF_FILE_BY_FILE_COOKIE_NAME, fileViewMode);
 
   if (window.gon?.features?.diffSettingsUsageData) {
     const events = [TRACKING_CLICK_SINGLE_FILE_SETTING];

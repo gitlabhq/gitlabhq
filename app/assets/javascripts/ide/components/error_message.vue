@@ -1,11 +1,14 @@
 <script>
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 
 export default {
   components: {
     GlAlert,
     GlLoadingIcon,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     message: {
@@ -55,7 +58,7 @@ export default {
     @dismiss="dismiss"
     @primaryAction="doAction"
   >
-    <span v-html="message.text /* eslint-disable-line vue/no-v-html */"></span>
+    <span v-safe-html="message.text"></span>
     <gl-loading-icon v-show="isLoading" size="sm" inline class="vertical-align-middle ml-1" />
   </gl-alert>
 </template>

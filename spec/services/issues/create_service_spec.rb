@@ -91,7 +91,11 @@ RSpec.describe Issues::CreateService do
       end
 
       it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
-        expect { issue }.to change { project.open_issues_count }.from(0).to(1)
+        expect do
+          issue
+
+          BatchLoader::Executor.clear_current
+        end.to change { project.open_issues_count }.from(0).to(1)
       end
 
       context 'when current user cannot set issue metadata in the project' do

@@ -16,7 +16,7 @@ const getAllowedIconUrls = (gon = window.gon) =>
 const isUrlAllowed = (url) => getAllowedIconUrls().some((allowedUrl) => url.startsWith(allowedUrl));
 
 const isHrefSafe = (url) =>
-  isUrlAllowed(url) || isUrlAllowed(relativePathToAbsolute(url, getBaseURL()));
+  isUrlAllowed(url) || isUrlAllowed(relativePathToAbsolute(url, getBaseURL())) || url.match(/^#/);
 
 const removeUnsafeHref = (node, attr) => {
   if (!node.hasAttribute(attr)) {

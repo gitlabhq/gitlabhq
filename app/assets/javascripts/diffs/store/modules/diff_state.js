@@ -2,8 +2,6 @@ import Cookies from 'js-cookie';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME } from '../../constants';
 
-import { fileByFile } from '../../utils/preferences';
-
 const getViewTypeFromQueryString = () => getParameterValues('view')[0];
 
 const viewTypeFromCookie = Cookies.get(DIFF_VIEW_COOKIE_NAME);
@@ -36,7 +34,7 @@ export default () => ({
   highlightedRow: null,
   renderTreeList: true,
   showWhitespace: true,
-  viewDiffsFileByFile: fileByFile(),
+  viewDiffsFileByFile: false,
   fileFinderVisible: false,
   dismissEndpoint: '',
   showSuggestPopover: true,

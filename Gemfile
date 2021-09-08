@@ -233,7 +233,7 @@ gem 'redis', '~> 4.1.4'
 gem 'connection_pool', '~> 2.0'
 
 # Redis session store
-gem 'redis-rails', '~> 5.0.2'
+gem 'redis-actionpack', '~> 5.2.0'
 
 # Discord integration
 gem 'discordrb-webhooks', '~> 3.4', require: false

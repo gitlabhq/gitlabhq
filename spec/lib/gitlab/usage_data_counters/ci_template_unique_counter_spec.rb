@@ -77,13 +77,42 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
       let(:project_id) { 1 }
       let(:config_source) { :repository_source }
 
-      Dir.glob(File.join('lib', 'gitlab', 'ci', 'templates', '**'), base: Rails.root) do |template|
+      described_class.ci_templates.each do |template|
         next if described_class::TEMPLATE_TO_EVENT.key?(template)
 
-        it "does not track #{template}" do
-          expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to(receive(:track_event))
+        it "has an event defined for #{template}" do
+          expect do
+            described_class.track_unique_project_event(
+              project_id: project_id,
+              template: template,
+              config_source: config_source
+            )
+          end.not_to raise_error
+        end
 
-          described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(track_all_ci_template_inclusions: false)
+          end
+
+          it "does not track #{template}" do
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to(receive(:track_event))
+
+            described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
+          end
+        end
+
+        context 'when feature flag is enabled' do
+          before do
+            stub_feature_flags(track_all_ci_template_inclusions: true)
+          end
+
+          it "tracks #{template}" do
+            expected_template_event_name = described_class.ci_template_event_name(template, :repository_source)
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(expected_template_event_name, values: project_id)
+
+            described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
+          end
         end
       end
     end

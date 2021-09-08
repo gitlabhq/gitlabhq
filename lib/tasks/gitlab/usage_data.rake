@@ -28,5 +28,33 @@ namespace :gitlab do
     task generate_from_yaml: :environment do
       puts Gitlab::Json.pretty_generate(Gitlab::UsageDataMetrics.uncached_data)
     end
+
+    desc 'GitLab | UsageDataMetrics | Generate known_events/ci_templates.yml based on template definitions'
+    task generate_ci_template_events: :environment do
+      banner = <<~BANNER
+          # This file is generated automatically by
+          #   bin/rake gitlab:usage_data:generate_ci_template_events
+          #
+          # Do not edit it manually!
+      BANNER
+
+      repository_includes = ci_template_includes_hash(:repository_source)
+      auto_devops_jobs_includes = ci_template_includes_hash(:auto_devops_source, 'Jobs')
+      auto_devops_security_includes = ci_template_includes_hash(:auto_devops_source, 'Security')
+      all_includes = [*repository_includes, *auto_devops_jobs_includes, *auto_devops_security_includes]
+
+      File.write(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH, banner + YAML.dump(all_includes).gsub(/ *$/m, ''))
+    end
+
+    def ci_template_includes_hash(source, template_directory = nil)
+      Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/#{template_directory}").map do |template|
+        {
+          'name' => Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name("#{template_directory}/#{template}", source),
+          'category' => 'ci_templates',
+          'redis_slot' => Gitlab::UsageDataCounters::CiTemplateUniqueCounter::REDIS_SLOT,
+          'aggregation' => 'weekly'
+        }
+      end
+    end
   end
 end

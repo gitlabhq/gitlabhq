@@ -8,7 +8,7 @@ RSpec.describe Projects::BatchOpenIssuesCountService do
 
   let(:subject) { described_class.new([project_1, project_2]) }
 
-  describe '#refresh_cache', :use_clean_rails_memory_store_caching do
+  describe '#refresh_cache_and_retrieve_data', :use_clean_rails_memory_store_caching do
     before do
       create(:issue, project: project_1)
       create(:issue, project: project_1, confidential: true)
@@ -19,7 +19,7 @@ RSpec.describe Projects::BatchOpenIssuesCountService do
 
     context 'when cache is clean' do
       it 'refreshes cache keys correctly' do
-        subject.refresh_cache
+        subject.refresh_cache_and_retrieve_data
 
         # It does not update total issues cache
         expect(Rails.cache.read(get_cache_key(subject, project_1))).to eq(nil)
@@ -27,19 +27,6 @@ RSpec.describe Projects::BatchOpenIssuesCountService do
 
         expect(Rails.cache.read(get_cache_key(subject, project_1, true))).to eq(1)
         expect(Rails.cache.read(get_cache_key(subject, project_1, true))).to eq(1)
-      end
-    end
-
-    context 'when issues count is already cached' do
-      before do
-        create(:issue, project: project_2)
-        subject.refresh_cache
-      end
-
-      it 'does update cache again' do
-        expect(Rails.cache).not_to receive(:write)
-
-        subject.refresh_cache
       end
     end
   end

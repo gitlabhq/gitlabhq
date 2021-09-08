@@ -28,12 +28,15 @@ export default {
       return this.index === 0;
     },
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use'], // to support icon SVGs
+  },
 };
 </script>
 
 <template>
   <div class="output">
     <prompt type="Out" :count="count" :show-output="showOutput" />
-    <div v-safe-html="rawCode" class="gl-overflow-auto"></div>
+    <div v-safe-html:[$options.safeHtmlConfig]="rawCode" class="gl-overflow-auto"></div>
   </div>
 </template>

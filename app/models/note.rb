@@ -583,6 +583,7 @@ class Note < ApplicationRecord
 
   def post_processed_cache_key
     cache_key_items = [cache_key, author&.cache_key]
+    cache_key_items << project.team.human_max_access(author&.id) if author.present?
     cache_key_items << Digest::SHA1.hexdigest(redacted_note_html) if redacted_note_html.present?
 
     cache_key_items.join(':')
