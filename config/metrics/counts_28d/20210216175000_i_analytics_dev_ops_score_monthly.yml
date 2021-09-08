@@ -16,8 +16,10 @@ options:
   - i_analytics_dev_ops_score
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"

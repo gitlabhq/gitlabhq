@@ -89,15 +89,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_77f5e1d20482() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."deployable_id_convert_to_bigint" := NEW."deployable_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_8487d4de3e7b() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -131,15 +122,6 @@ CREATE FUNCTION trigger_cf2f9e35f002() RETURNS trigger
     AS $$
 BEGIN
   NEW."build_id_convert_to_bigint" := NEW."build_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_f1ca8ec18d78() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."job_artifact_id_convert_to_bigint" := NEW."job_artifact_id";
   RETURN NEW;
 END;
 $$;
@@ -13225,7 +13207,6 @@ CREATE TABLE deployments (
     tag boolean NOT NULL,
     sha character varying NOT NULL,
     user_id integer,
-    deployable_id_convert_to_bigint integer,
     deployable_type character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -14104,7 +14085,6 @@ ALTER SEQUENCE geo_hashed_storage_migrated_events_id_seq OWNED BY geo_hashed_sto
 
 CREATE TABLE geo_job_artifact_deleted_events (
     id bigint NOT NULL,
-    job_artifact_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     file_path character varying NOT NULL,
     job_artifact_id bigint NOT NULL
 );
@@ -27312,8 +27292,6 @@ CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_
 
 CREATE TRIGGER trigger_542d6c2ad72e BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_542d6c2ad72e();
 
-CREATE TRIGGER trigger_77f5e1d20482 BEFORE INSERT OR UPDATE ON deployments FOR EACH ROW EXECUTE FUNCTION trigger_77f5e1d20482();
-
 CREATE TRIGGER trigger_8487d4de3e7b BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_8487d4de3e7b();
 
 CREATE TRIGGER trigger_91dc388a5fe6 BEFORE INSERT OR UPDATE ON dep_ci_build_trace_sections FOR EACH ROW EXECUTE FUNCTION trigger_91dc388a5fe6();
@@ -27321,8 +27299,6 @@ CREATE TRIGGER trigger_91dc388a5fe6 BEFORE INSERT OR UPDATE ON dep_ci_build_trac
 CREATE TRIGGER trigger_aebe8b822ad3 BEFORE INSERT OR UPDATE ON taggings FOR EACH ROW EXECUTE FUNCTION trigger_aebe8b822ad3();
 
 CREATE TRIGGER trigger_cf2f9e35f002 BEFORE INSERT OR UPDATE ON ci_build_trace_chunks FOR EACH ROW EXECUTE FUNCTION trigger_cf2f9e35f002();
-
-CREATE TRIGGER trigger_f1ca8ec18d78 BEFORE INSERT OR UPDATE ON geo_job_artifact_deleted_events FOR EACH ROW EXECUTE FUNCTION trigger_f1ca8ec18d78();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 

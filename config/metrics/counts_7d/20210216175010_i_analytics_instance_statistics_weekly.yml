@@ -16,7 +16,10 @@ options:
   - i_analytics_instance_statistics
 distribution:
 - ee
-tier: []
-skip_validation: true
+- ee
+tier:
+- free
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"

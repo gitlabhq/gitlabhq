@@ -10776,6 +10776,12 @@ msgstr ""
 msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes."
 msgstr ""
 
+msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after its timer finishes."
+msgstr ""
+
+msgid "DelayedJobs|Run the delayed job now?"
+msgstr ""
+
 msgid "DelayedJobs|Start now"
 msgstr ""
 
@@ -16009,6 +16015,9 @@ msgstr ""
 msgid "GroupRoadmap|Within 3 years"
 msgstr ""
 
+msgid "GroupSAML|\"persistent\" recommended"
+msgstr ""
+
 msgid "GroupSAML|%{strongOpen}Warning%{strongClose} - Enabling %{linkStart}SSO enforcement%{linkEnd} can reduce security risks."
 msgstr ""
 
@@ -16156,13 +16165,10 @@ msgstr ""
 msgid "GroupSAML|as %{access_level}"
 msgstr ""
 
-msgid "GroupSAML|must match stored NameID of \"%{extern_uid}\" as we use this to identify users. If the NameID changes users will be unable to sign in."
+msgid "GroupSAML|must match stored NameID of \"%{extern_uid}\" to identify user and allow sign in"
 msgstr ""
 
-msgid "GroupSAML|should be \"persistent\""
-msgstr ""
-
-msgid "GroupSAML|should be a random persistent ID, emails are discouraged"
+msgid "GroupSAML|recommend persistent ID instead of email"
 msgstr ""
 
 msgid "GroupSelect|No matching results"

@@ -430,6 +430,23 @@ In the `detect-tests` job, we use this mapping to identify the minimal tests nee
 After a merge request has been approved, the pipeline would contain the full RSpec tests. This will ensure that all tests
 have been run before a merge request is merged.
 
+### Jest minimal jobs
+
+Before a merge request is approved, the pipeline will run a minimal set of Jest tests that are related to the merge request changes.
+This is to reduce the pipeline cost and shorten the job duration.
+
+To identify the minimal set of tests needed, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
+In this mode, `jest` would resolve all the dependencies of related to the changed files, which include test files that have these files in the dependency chain.
+
+After a merge request has been approved, the pipeline would contain the full Jest tests. This will ensure that all tests
+have been run before a merge request is merged.
+
+In addition, there are a few circumstances where we would always run the full Jest tests:
+
+- when `package.json`, `yarn.lock`, `jest` config changes
+- when vendored JavaScript is changed
+- when `.graphql` files are changed
+
 ### PostgreSQL versions testing
 
 Our test suite runs against PG12 as GitLab.com runs on PG12 and

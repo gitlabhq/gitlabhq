@@ -275,7 +275,7 @@ might look like this example:
 job1:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run job1 in merge request pipelines
-    - if: '$CI_COMMIT_BRANCH == "master"'                # Run job1 in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "main"'                  # Run job1 in pipelines on the main branch (but not in other branch pipelines)
     - if: '$CI_COMMIT_TAG'                               # Run job1 in pipelines for tags
 ```
 
@@ -291,7 +291,7 @@ code_quality:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code quality job in merge request pipelines
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the default branch (but not in other branch pipelines)
     - if: '$CI_COMMIT_TAG'                               # Run code quality job in pipelines for tags
 ```
 

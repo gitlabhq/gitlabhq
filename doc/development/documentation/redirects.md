@@ -24,8 +24,10 @@ There are two types of redirects:
   for users who view the docs on [`docs.gitlab.com`](https://docs.gitlab.com).
 
 The Technical Writing team manages the [process](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md)
-to regularly update the [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml)
-file.
+to regularly update and [clean up the redirects](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects).
+If you're a contributor, you may add a new redirect, but you don't need to delete
+the old ones. This process is automatic and handled by the Technical
+Writing team.
 
 To add a redirect:
 

@@ -31,8 +31,11 @@ options:
   - p_analytics_repo
   - i_analytics_cohorts
 distribution:
+- ce
 - ee
-tier: []
-skip_validation: true
+tier:
+- free
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"

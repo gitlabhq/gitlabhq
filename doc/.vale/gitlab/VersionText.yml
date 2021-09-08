@@ -9,9 +9,9 @@
 # - `> Introduced` (version text without a link)
 # - `> [Introduced` (version text with a link)
 #
-# Because it excludes `-`, it doesn't look for multi-line version text, for which content
-# immediately on the next line is ok. However, this will often highlight where multi-line version
-# text is attempted without `-` characters.
+# Because it excludes the prefix `> - `, it doesn't look for multi-line version text, for which
+# content immediately on the next line is ok. However, this will often highlight where multi-line
+# version text is attempted without `-` characters.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
@@ -20,4 +20,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: error
 scope: raw
 raw:
-  - '> (- ){0}\[?Introduced.+\n[^\n`]'
+  - '> \[?Introduced.+\n[^\n]'

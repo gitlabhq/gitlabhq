@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'gitlab'
+
+gitlab_token = ENV.fetch('DANGER_GITLAB_API_TOKEN', '')
+gitlab_endpoint = ENV.fetch('CI_API_V4_URL')
+mr_project_path = ENV.fetch('CI_MERGE_REQUEST_PROJECT_PATH')
+mr_iid = ENV.fetch('CI_MERGE_REQUEST_IID')
+
+output_file = ARGV.shift
+
+Gitlab.configure do |config|
+  config.endpoint       = gitlab_endpoint
+  config.private_token  = gitlab_token
+end
+
+mr_changes = Gitlab.merge_request_changes(mr_project_path, mr_iid)
+file_changes = mr_changes.changes.map { |change| change['new_path'] }
+
+File.write(output_file, file_changes.join(' '))

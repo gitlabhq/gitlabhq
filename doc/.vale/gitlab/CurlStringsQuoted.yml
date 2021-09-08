@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/restful_api_styleguid
 level: error
 scope: code
 raw:
-  - 'curl.*[^"=]https?://.*'
+  - 'curl [^"]+://.*'

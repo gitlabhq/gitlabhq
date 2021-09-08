@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Events API
+# Events API **(FREE)**
 
 ## Filter parameters
 
@@ -15,7 +15,7 @@ Available types for the `action` parameter, and the resources that might be affe
 - `approved`
   - Merge request
 - `closed`
-  - Epic
+  - Epic **(PREMIUM)**
   - Issue
   - Merge request
   - Milestone
@@ -28,7 +28,7 @@ Available types for the `action` parameter, and the resources that might be affe
   - Snippet
 - `created`
   - Design
-  - Epic
+  - Epic **(PREMIUM)**
   - Issue
   - Merge request
   - Milestone
@@ -49,7 +49,7 @@ Available types for the `action` parameter, and the resources that might be affe
 - `pushed` commits to (or deleted commits from) a repository, individually or in bulk.
   - Project
 - `reopened`
-  - Epic
+  - Epic **(PREMIUM)**
   - Issue
   - Merge request
   - Milestone

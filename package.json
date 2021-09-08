@@ -13,6 +13,8 @@
     "prejest": "yarn check-dependencies",
     "jest": "jest --config jest.config.js",
     "jest-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "jest:ci": "jest --config jest.config.js --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js",
+    "jest:ci:minimal": "jest --config jest.config.js --ci --coverage --findRelatedTests $(cat tmp/changed_files.txt) --passWithNoTests --testSequencer ./scripts/frontend/parallel_ci_sequencer.js",
     "jest:integration": "jest --config jest.config.integration.js",
     "jsdoc": "jsdoc -c config/jsdocs.config.js",
     "lint:eslint": "yarn run internal:eslint",

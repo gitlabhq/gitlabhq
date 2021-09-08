@@ -172,6 +172,8 @@ graphql-schema-dump:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
+  before_script:
+    - *yarn-install
   stage: test
 
 eslint-as-if-foss:
@@ -181,20 +183,19 @@ eslint-as-if-foss:
     - .as-if-foss
   needs: []
   script:
-    - *yarn-install
     - run_timed_command "yarn run lint:eslint:all"
 
 .jest-base:
   extends: .frontend-test-base
   script:
-    - *yarn-install
-    - run_timed_command "yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js"
+    - run_timed_command "yarn jest:ci"
 
 jest:
   extends:
     - .jest-base
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:jest
   needs:
+    - job: "detect-tests"
     - job: "rspec frontend_fixture"
     - job: "rspec-ee frontend_fixture"
       optional: true
@@ -210,12 +211,18 @@ jest:
       junit: junit_jest.xml
   parallel: 5
 
+jest minimal:
+  extends:
+    - jest
+    - .frontend:rules:jest:minimal
+  script:
+    - run_timed_command "yarn jest:ci:minimal"
+
 jest-integration:
   extends:
     - .frontend-test-base
     - .frontend:rules:default-frontend-jobs
   script:
-    - *yarn-install
     - run_timed_command "yarn jest:integration --ci"
   needs:
     - job: "rspec frontend_fixture"
@@ -236,7 +243,11 @@ coverage-frontend:
     - .default-retry
     - .yarn-cache
     - .frontend:rules:ee-mr-and-default-branch-only
-  needs: ["jest"]
+  needs:
+    - job: "jest"
+      optional: true
+    - job: "jest minimal"
+      optional: true
   stage: post-test
   before_script:
     - *yarn-install
@@ -321,7 +332,6 @@ bundle-size-review:
   extends:
     - .frontend-test-base
   script:
-    - *yarn-install
     - run_timed_command "yarn generate:startup_css"
     - yarn check:startup_css
 
@@ -349,7 +359,6 @@ startup-css-check as-if-foss:
     - .frontend-test-base
     - .storybook-yarn-cache
   script:
-    - *yarn-install  # storybook depends on the global webpack config, so we must install global deps.
     - *storybook-yarn-install
     - yarn run storybook:build
 

@@ -32,8 +32,10 @@ options:
   - i_analytics_cohorts
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"

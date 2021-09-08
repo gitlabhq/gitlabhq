@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Environments API
+# Environments API **(FREE)**
 
 ## List environments
 

@@ -725,7 +725,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --url http://localhost:3000/api/v4/namespaces/123/minutes \
+  --url "http://localhost:3000/api/v4/namespaces/123/minutes" \
   --header 'Content-Type: application/json' \
   --header 'PRIVATE-TOKEN: <admin access token>' \
   --data '{
@@ -769,7 +769,7 @@ Example request:
 
 ```shell
 curl --request PATCH \
-  --url http://localhost:3000/api/v4/namespaces/123/minutes/move/321 \
+  --url "http://localhost:3000/api/v4/namespaces/123/minutes/move/321" \
   --header 'PRIVATE-TOKEN: <admin access token>'
 ```
 

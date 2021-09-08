@@ -2,6 +2,7 @@
 
 class NamespaceSetting < ApplicationRecord
   include CascadingNamespaceSettingAttribute
+  include Sanitizable
 
   cascading_attr :delayed_project_removal
 
@@ -25,6 +26,8 @@ class NamespaceSetting < ApplicationRecord
 
   self.primary_key = :namespace_id
 
+  sanitizes! :default_branch_name
+
   def prevent_sharing_groups_outside_hierarchy
     return super if namespace.root?
 
@@ -34,11 +37,7 @@ class NamespaceSetting < ApplicationRecord
   private
 
   def normalize_default_branch_name
-    self.default_branch_name = if default_branch_name.blank?
-                                 nil
-                               else
-                                 Sanitize.fragment(self.default_branch_name)
-                               end
+    self.default_branch_name = default_branch_name.presence
   end
 
   def default_branch_name_content

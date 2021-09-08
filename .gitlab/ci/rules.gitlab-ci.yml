@@ -46,6 +46,9 @@
 .if-merge-request-title-run-all-rspec: &if-merge-request-title-run-all-rspec
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
 
+.if-merge-request-title-run-all-jest: &if-merge-request-title-run-all-jest
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
+
 .if-merge-request-run-decomposed: &if-merge-request-run-decomposed
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-decomposed/'
 
@@ -365,6 +368,14 @@
   - "danger/**/*"
   - "tooling/danger/**/*"
 
+.core-frontend-patterns: &core-frontend-patterns
+  - "{package.json,yarn.lock}"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
+  - "config/helpers/**/*.js"
+  - "vendor/assets/javascripts/**/*"
+  - "{,ee}/app/assets/**/*.graphql"
+
 ################
 # Shared rules #
 ################
@@ -524,6 +535,37 @@
       changes: *startup-css-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
+
+.frontend:rules:jest:
+  rules:
+    - <<: *if-merge-request-title-run-all-jest
+    - <<: *if-default-refs
+      changes: *core-frontend-patterns
+    - <<: *if-merge-request
+      changes: *ci-patterns
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
+.frontend:rules:jest:minimal:
+  rules:
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-automated-merge-request
+      when: never
+    - <<: *if-merge-request-title-run-all-jest
+      when: never
+    - <<: *if-default-refs
+      changes: *core-frontend-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
 
 .frontend:rules:eslint-as-if-foss:
   rules:

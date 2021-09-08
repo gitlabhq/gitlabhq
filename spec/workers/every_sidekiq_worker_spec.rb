@@ -452,6 +452,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'WaitForClusterCreationWorker' => 3,
         'WebHookWorker' => 4,
         'WebHooks::DestroyWorker' => 3,
+        'WebHooks::LogExecutionWorker' => 3,
         'Wikis::GitGarbageCollectWorker' => false,
         'X509CertificateRevokeWorker' => 3
       }
