@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: counts.lfs_objects
-description:
+description: Count of lfs objects
 product_section: ops
 product_stage: create
 product_group: group::create
@@ -12,8 +12,10 @@ time_frame: all
 data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"

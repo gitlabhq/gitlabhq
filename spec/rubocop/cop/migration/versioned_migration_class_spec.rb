@@ -64,6 +64,18 @@ RSpec.describe RuboCop::Cop::Migration::VersionedMigrationClass do
           end
         RUBY
       end
+
+      it 'excludes ActiveRecord classes defined inside the migration' do
+        expect_no_offenses(<<~RUBY)
+          class TestMigration < Gitlab::Database::Migration[1.0]
+            class TestModel < ApplicationRecord
+            end
+
+            class AnotherTestModel < ActiveRecord::Base
+            end
+          end
+        RUBY
+      end
     end
   end
 end

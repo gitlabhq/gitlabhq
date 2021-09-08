@@ -18,13 +18,13 @@ describe('Settings Block', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
   const findTitleSlot = () => wrapper.find('[data-testid="title-slot"]');
   const findDescriptionSlot = () => wrapper.find('[data-testid="description-slot"]');
-  const findExpandButton = () => wrapper.find(GlButton);
+  const findExpandButton = () => wrapper.findComponent(GlButton);
+  const findSectionTitle = () => wrapper.find('[data-testid="section-title"]');
 
   it('renders the correct markup', () => {
     mountComponent();
@@ -85,6 +85,18 @@ describe('Settings Block', () => {
       expect(findExpandButton().text()).toBe('Expand');
 
       await findExpandButton().vm.$emit('click');
+
+      expect(wrapper.classes('expanded')).toBe(true);
+      expect(findExpandButton().text()).toBe('Collapse');
+    });
+
+    it('adds expanded class when the section title is clicked', async () => {
+      mountComponent();
+
+      expect(wrapper.classes('expanded')).toBe(false);
+      expect(findExpandButton().text()).toBe('Expand');
+
+      await findSectionTitle().trigger('click');
 
       expect(wrapper.classes('expanded')).toBe(true);
       expect(findExpandButton().text()).toBe('Collapse');

@@ -2715,4 +2715,16 @@ RSpec.describe Group do
       group.open_merge_requests_count
     end
   end
+
+  describe '#dependency_proxy_image_prefix' do
+    let_it_be(:group) { build_stubbed(:group, path: 'GroupWithUPPERcaseLetters') }
+
+    it 'converts uppercase letters to lowercase' do
+      expect(group.dependency_proxy_image_prefix).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
+    end
+
+    it 'removes the protocol' do
+      expect(group.dependency_proxy_image_prefix).not_to include('http')
+    end
+  end
 end

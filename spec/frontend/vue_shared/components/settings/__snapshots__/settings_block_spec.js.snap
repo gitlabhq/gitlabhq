@@ -8,9 +8,16 @@ exports[`Settings Block renders the correct markup 1`] = `
     class="settings-header"
   >
     <h4>
-      <div
-        data-testid="title-slot"
-      />
+      <span
+        class="gl-cursor-pointer"
+        data-testid="section-title"
+        role="button"
+        tabindex="0"
+      >
+        <div
+          data-testid="title-slot"
+        />
+      </span>
     </h4>
      
     <gl-button-stub

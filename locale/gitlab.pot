@@ -16736,9 +16736,6 @@ msgstr ""
 msgid "I accept the %{terms_link}"
 msgstr ""
 
-msgid "I accept the|Terms of Service and Privacy Policy"
-msgstr ""
-
 msgid "I forgot my password"
 msgstr ""
 
@@ -26903,10 +26900,10 @@ msgstr ""
 msgid "PrometheusService|Prometheus cluster integration"
 msgstr ""
 
-msgid "PrometheusService|PrometheusService|The ID of the IAP-secured resource."
+msgid "PrometheusService|Select this checkbox to override the auto configuration settings with your own settings."
 msgstr ""
 
-msgid "PrometheusService|Select this checkbox to override the auto configuration settings with your own settings."
+msgid "PrometheusService|The ID of the IAP-secured resource."
 msgstr ""
 
 msgid "PrometheusService|The Prometheus API base URL."

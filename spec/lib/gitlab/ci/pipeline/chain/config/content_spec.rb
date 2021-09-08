@@ -92,6 +92,27 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         expect(pipeline.pipeline_config.content).to eq(config_content_result)
         expect(command.config_content).to eq(config_content_result)
       end
+
+      context 'when path specifies a refname' do
+        let(:ci_config_path) { 'path/to/.gitlab-ci.yml@another-group/another-repo:refname' }
+        let(:config_content_result) do
+          <<~EOY
+            ---
+            include:
+            - project: another-group/another-repo
+              file: path/to/.gitlab-ci.yml
+              ref: refname
+          EOY
+        end
+
+        it 'builds root config including the path and refname to another repository' do
+          subject.perform!
+
+          expect(pipeline.config_source).to eq 'external_project_source'
+          expect(pipeline.pipeline_config.content).to eq(config_content_result)
+          expect(command.config_content).to eq(config_content_result)
+        end
+      end
     end
 
     context 'when config is defined in the default .gitlab-ci.yml' do

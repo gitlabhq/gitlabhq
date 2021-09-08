@@ -3,7 +3,7 @@ data_category: optional
 key_path: counts.clusters_applications_knative
 description: Total GitLab Managed clusters with GitLab Managed App:Knative installed
 product_section: ops
-product_stage:
+product_stage: configure
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
@@ -17,6 +17,5 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true
 performance_indicator_type: []
 milestone: "<13.9"

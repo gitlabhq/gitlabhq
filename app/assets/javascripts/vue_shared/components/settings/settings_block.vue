@@ -29,14 +29,29 @@ export default {
       return this.expanded ? __('Collapse') : __('Expand');
     },
   },
+  methods: {
+    toggleSectionExpanded() {
+      this.sectionExpanded = !this.sectionExpanded;
+    },
+  },
 };
 </script>
 
 <template>
   <section class="settings" :class="{ 'no-animate': !slideAnimated, expanded }">
     <div class="settings-header">
-      <h4><slot name="title"></slot></h4>
-      <gl-button @click="sectionExpanded = !sectionExpanded">
+      <h4>
+        <span
+          role="button"
+          tabindex="0"
+          class="gl-cursor-pointer"
+          data-testid="section-title"
+          @click="toggleSectionExpanded"
+        >
+          <slot name="title"></slot>
+        </span>
+      </h4>
+      <gl-button @click="toggleSectionExpanded">
         {{ toggleText }}
       </gl-button>
       <p>

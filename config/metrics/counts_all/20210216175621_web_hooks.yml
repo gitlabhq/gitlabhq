@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: counts.web_hooks
-description:
+description: Count of web hooks
 product_section: dev
 product_stage: ecosystem
 product_group: group::integrations
@@ -12,8 +12,10 @@ time_frame: all
 data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"

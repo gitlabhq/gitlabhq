@@ -1,12 +1,11 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_weekly
-name: "0"
-description:
-product_section:
-product_stage:
-product_group:
-product_category:
+description: Unique users doing commits or push MRs which contains CI cifig file
+product_section: ops
+product_stage: verify
+product_group: group::pipeline authoring
+product_category: pipeline_authoring
 value_type: number
 status: data_available
 milestone: "13.12"
@@ -25,4 +24,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

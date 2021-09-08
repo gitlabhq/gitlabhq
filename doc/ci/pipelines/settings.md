@@ -124,7 +124,7 @@ If the CI/CD configuration file is on an external site, the URL must end with `.
 
 If the CI/CD configuration file is in a different project:
 
-- The file must exist on its default branch.
+- The file must exist on its default branch, or specify the branch as refname.
 - The path must be relative to the root directory in the other project.
 - The path must include the group and project name at the end.
 
@@ -132,6 +132,7 @@ For example:
 
 - `.gitlab-ci.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project`
+- `my/path/.my-custom-file.yml@mygroup/another-project:refname`
 
 If the configuration file is in a separate project, you can more set more granular permissions. For example:
 

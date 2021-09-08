@@ -3,6 +3,22 @@
 module Gitlab
   module Database
     class Migration
+      module LockRetriesConcern
+        extend ActiveSupport::Concern
+
+        class_methods do
+          def enable_lock_retries!
+            @enable_lock_retries = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          end
+
+          def enable_lock_retries?
+            @enable_lock_retries
+          end
+        end
+
+        delegate :enable_lock_retries?, to: :class
+      end
+
       # This implements a simple versioning scheme for migration helpers.
       #
       # We need to be able to version helpers, so we can change their behavior without
@@ -19,6 +35,7 @@ module Gitlab
       # However, this hasn't been strictly formalized yet.
       MIGRATION_CLASSES = {
         1.0 => Class.new(ActiveRecord::Migration[6.1]) do
+          include LockRetriesConcern
           include Gitlab::Database::MigrationHelpers::V2
         end
       }.freeze

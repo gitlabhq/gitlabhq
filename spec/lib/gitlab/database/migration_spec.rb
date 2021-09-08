@@ -14,6 +14,10 @@ RSpec.describe Gitlab::Database::Migration do
       it 'includes migration helpers version 2' do
         expect(subject.included_modules).to include(Gitlab::Database::MigrationHelpers::V2)
       end
+
+      it 'includes LockRetriesConcern' do
+        expect(subject.included_modules).to include(Gitlab::Database::Migration::LockRetriesConcern)
+      end
     end
 
     context 'unknown version' do
@@ -29,6 +33,36 @@ RSpec.describe Gitlab::Database::Migration do
       # bump .current_version and leave existing migrations and already defined versions of Gitlab::Database::Migration
       # untouched.
       expect(described_class[described_class.current_version].superclass).to eq(ActiveRecord::Migration::Current)
+    end
+  end
+
+  describe Gitlab::Database::Migration::LockRetriesConcern do
+    subject { class_def.new }
+
+    context 'when not explicitly called' do
+      let(:class_def) do
+        Class.new do
+          include Gitlab::Database::Migration::LockRetriesConcern
+        end
+      end
+
+      it 'does not disable lock retries by default' do
+        expect(subject.enable_lock_retries?).not_to be_truthy
+      end
+    end
+
+    context 'when explicitly disabled' do
+      let(:class_def) do
+        Class.new do
+          include Gitlab::Database::Migration::LockRetriesConcern
+
+          enable_lock_retries!
+        end
+      end
+
+      it 'does not disable lock retries by default' do
+        expect(subject.enable_lock_retries?).to be_truthy
+      end
     end
   end
 end

@@ -13,7 +13,7 @@ module RuboCop
         MSG_INHERIT = 'Don\'t inherit from ActiveRecord::Migration but use Gitlab::Database::Migration[1.0] instead. See https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning.'
         MSG_INCLUDE = 'Don\'t include migration helper modules directly. Inherit from Gitlab::Database::Migration[1.0] instead. See https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning.'
 
-        MIGRATION_CLASS = 'Gitlab::Database::Migration'
+        ACTIVERECORD_MIGRATION_CLASS = 'ActiveRecord::Migration'
 
         def_node_search :includes_helpers?, <<~PATTERN
         (send nil? :include
@@ -24,8 +24,9 @@ module RuboCop
 
         def on_class(node)
           return unless relevant_migration?(node)
+          return unless activerecord_migration_class?(node)
 
-          add_offense(node, location: :expression, message: MSG_INHERIT) unless gitlab_migration_class?(node)
+          add_offense(node, location: :expression, message: MSG_INHERIT)
         end
 
         def on_send(node)
@@ -40,8 +41,8 @@ module RuboCop
           in_migration?(node) && version(node) >= ENFORCED_SINCE
         end
 
-        def gitlab_migration_class?(node)
-          superclass(node) == MIGRATION_CLASS
+        def activerecord_migration_class?(node)
+          superclass(node) == ACTIVERECORD_MIGRATION_CLASS
         end
 
         def superclass(class_node)

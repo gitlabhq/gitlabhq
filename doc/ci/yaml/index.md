@@ -1827,6 +1827,11 @@ rspec:
 
 ### `tags`
 
+> - A limit of 50 tags per job [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/338929) in GitLab 14.3.
+> - A limit of 50 tags per job [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/339855) in GitLab 14.3.
+
+In [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/338479) and later, the number of tags must be less than `50`.
+
 Use `tags` to select a specific runner from the list of all runners that are
 available for the project.
 
@@ -1879,9 +1884,6 @@ variables:
     script:
       - echo "Hello runner selector feature"
 ```
-
-NOTE:
-In [GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/338479), the number of tags must be less than `50`.
 
 ### `allow_failure`
 

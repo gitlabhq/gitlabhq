@@ -12,8 +12,10 @@ time_frame: all
 data_source: system
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"

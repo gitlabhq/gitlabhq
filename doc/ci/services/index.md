@@ -6,7 +6,7 @@ comments: false
 type: index
 ---
 
-# Services
+# Services **(FREE)**
 
 The `services` keyword defines a Docker image that runs during a `job`
 linked to the Docker image that the image keyword defines. This allows

@@ -9788,6 +9788,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupdependencyproxyblobcount"></a>`dependencyProxyBlobCount` | [`Int!`](#int) | Number of dependency proxy blobs cached in the group. |
 | <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
 | <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |
+| <a id="groupdependencyproxyimageprefix"></a>`dependencyProxyImagePrefix` | [`String!`](#string) | Prefix for pulling images when using the dependency proxy. |
 | <a id="groupdependencyproxymanifests"></a>`dependencyProxyManifests` | [`DependencyProxyManifestConnection`](#dependencyproxymanifestconnection) | Dependency Proxy manifests. (see [Connections](#connections)) |
 | <a id="groupdependencyproxysetting"></a>`dependencyProxySetting` | [`DependencyProxySetting`](#dependencyproxysetting) | Dependency Proxy settings for the group. |
 | <a id="groupdependencyproxytotalsize"></a>`dependencyProxyTotalSize` | [`String!`](#string) | Total size of the dependency proxy cached images. |

@@ -158,6 +158,11 @@ module Types
           null: false,
           description: 'Total size of the dependency proxy cached images.'
 
+    field :dependency_proxy_image_prefix,
+          GraphQL::Types::String,
+          null: false,
+          description: 'Prefix for pulling images when using the dependency proxy.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

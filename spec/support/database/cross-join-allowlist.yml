@@ -381,7 +381,6 @@
 - "./spec/views/projects/jobs/_build.html.haml_spec.rb"
 - "./spec/workers/ci/drop_pipeline_worker_spec.rb"
 - "./spec/workers/ci/initial_pipeline_process_worker_spec.rb"
-- "./spec/workers/expire_job_cache_worker_spec.rb"
 - "./spec/workers/new_merge_request_worker_spec.rb"
 - "./spec/workers/pipeline_process_worker_spec.rb"
 - "./spec/workers/pipeline_schedule_worker_spec.rb"
