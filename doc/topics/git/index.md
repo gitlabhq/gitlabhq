@@ -58,7 +58,7 @@ The following are resources on version control concepts:
 You can do many Git tasks from the command line:
 
 - [Bisect](bisect.md).
-- [Cherry pick](cherry_picking.md).
+- [Cherry-pick](cherry_picking.md).
 - [Feature branching](feature_branching.md).
 - [Getting started with Git](getting_started.md).
 - [Git add](git_add.md).

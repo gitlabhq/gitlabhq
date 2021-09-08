@@ -289,11 +289,11 @@ Example response:
 
 ```
 
-## Cherry pick a commit
+## Cherry-pick a commit
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047) in GitLab 8.15.
 
-Cherry picks a commit to a given branch.
+Cherry-picks a commit to a given branch.
 
 ```plaintext
 POST /projects/:id/repository/commits/:sha/cherry_pick

@@ -35,6 +35,15 @@ To enable 2FA for all users:
 If you want 2FA enforcement to take effect during the next sign-in attempt,
 change the grace period to `0`.
 
+## Disabling 2FA enforcement through rails console
+
+Using the [rails console](../administration/operations/rails_console.md), enforcing 2FA for
+all user can be disabled. Connect to the rails console and run:
+
+```ruby
+Gitlab::CurrentSettings.update!('require_two_factor_authentication': false)
+```
+
 ## Enforcing 2FA for all users in a group
 
 > [Introduced in](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) GitLab 12.0, 2FA settings for a group are also applied to subgroups.

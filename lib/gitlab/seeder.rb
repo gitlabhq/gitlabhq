@@ -1,17 +1,5 @@
 # frozen_string_literal: true
 
-# :nocov:
-module DeliverNever
-  def deliver_later
-    self
-  end
-end
-
-module MuteNotifications
-  def new_note(note)
-  end
-end
-
 module Gitlab
   class Seeder
     extend ActionView::Helpers::NumberHelper
@@ -82,18 +70,22 @@ module Gitlab
       Project.include(ProjectSeed)
       User.include(UserSeed)
 
-      mute_notifications
-      mute_mailer
+      old_perform_deliveries = ActionMailer::Base.perform_deliveries
+      ActionMailer::Base.perform_deliveries = false
 
       SeedFu.quiet = true
 
       without_statement_timeout do
-        yield
+        without_new_note_notifications do
+          yield
+        end
       end
 
-      SeedFu.quiet = false
-      ActiveRecord::Base.logger = old_logger
       puts "\nOK".color(:green)
+    ensure
+      SeedFu.quiet = false
+      ActionMailer::Base.perform_deliveries = old_perform_deliveries
+      ActiveRecord::Base.logger = old_logger
     end
 
     def self.without_gitaly_timeout
@@ -109,12 +101,14 @@ module Gitlab
       ApplicationSetting.expire
     end
 
-    def self.mute_notifications
-      NotificationService.prepend(MuteNotifications)
-    end
+    def self.without_new_note_notifications
+      NotificationService.alias_method :original_new_note, :new_note
+      NotificationService.define_method(:new_note) { |note| }
 
-    def self.mute_mailer
-      ActionMailer::MessageDelivery.prepend(DeliverNever)
+      yield
+    ensure
+      NotificationService.alias_method :new_note, :original_new_note
+      NotificationService.remove_method :original_new_note
     end
 
     def self.without_statement_timeout

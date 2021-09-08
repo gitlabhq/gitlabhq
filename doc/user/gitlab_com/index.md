@@ -9,6 +9,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
 
+## Password requirements
+
+GitLab.com has the following requirements for passwords on new accounts and password changes:
+
+- Minimum character length 8 characters.
+- Maximum character lenght 128 characters.
+- All characters are accepted. For example, `~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `()`,
+  `[]`, `_`, `+`,  `=`, and `-`.
+
 ## SSH key restrictions
 
 GitLab.com uses the default [SSH key restrictions](../../security/ssh_keys_restrictions.md).
