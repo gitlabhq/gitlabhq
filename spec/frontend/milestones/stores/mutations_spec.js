@@ -174,6 +174,35 @@ describe('Milestones combobox Vuex store mutations', () => {
       });
     });
 
+    it('falls back to the length of list if pagination headers are missing', () => {
+      const response = {
+        data: [
+          {
+            title: 'v0.1',
+          },
+          {
+            title: 'v0.2',
+          },
+        ],
+        headers: {},
+      };
+
+      mutations[types.RECEIVE_PROJECT_MILESTONES_SUCCESS](state, response);
+
+      expect(state.matches.projectMilestones).toEqual({
+        list: [
+          {
+            title: 'v0.1',
+          },
+          {
+            title: 'v0.2',
+          },
+        ],
+        error: null,
+        totalCount: 2,
+      });
+    });
+
     describe(`${types.RECEIVE_PROJECT_MILESTONES_ERROR}`, () => {
       it('updates state.matches.projectMilestones to an empty state with the error object', () => {
         const error = new Error('Something went wrong!');
@@ -209,6 +238,35 @@ describe('Milestones combobox Vuex store mutations', () => {
         headers: {
           'x-total': 2,
         },
+      };
+
+      mutations[types.RECEIVE_GROUP_MILESTONES_SUCCESS](state, response);
+
+      expect(state.matches.groupMilestones).toEqual({
+        list: [
+          {
+            title: 'group-0.1',
+          },
+          {
+            title: 'group-0.2',
+          },
+        ],
+        error: null,
+        totalCount: 2,
+      });
+    });
+
+    it('falls back to the length of data received if pagination headers are missing', () => {
+      const response = {
+        data: [
+          {
+            title: 'group-0.1',
+          },
+          {
+            title: 'group-0.2',
+          },
+        ],
+        headers: {},
       };
 
       mutations[types.RECEIVE_GROUP_MILESTONES_SUCCESS](state, response);

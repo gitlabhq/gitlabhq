@@ -20,7 +20,7 @@ The following limits are disabled by default:
 To enforce any or all of them:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**:
+1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**:
    ![user-and-ip-rate-limits](img/user_and_ip_rate_limits.png)
 
    NOTE:

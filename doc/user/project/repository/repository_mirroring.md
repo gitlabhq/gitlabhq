@@ -613,7 +613,7 @@ If you receive this error after creating a new project using
 Check if the repository owner is specified in the URL of your mirrored repository:
 
 1. Go to your project.
-1. In the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, select **Settings > Repository**.
 1. Select **Mirroring repositories**.
 1. If no repository owner is specified, delete and add the URL again in this format:
 

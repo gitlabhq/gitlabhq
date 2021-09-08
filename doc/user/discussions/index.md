@@ -13,7 +13,7 @@ GitLab encourages communication through comments, threads, and
 There are two types of comments:
 
 - A standard comment.
-- A comment in a thread, which has to be resolved.
+- A comment in a thread, which can be [resolved](#resolve-a-thread).
 
 In a comment, you can enter [Markdown](../markdown.md) and use [quick actions](../project/quick_actions.md).
 
@@ -218,16 +218,16 @@ A threaded comment is created.
 ## Resolve a thread
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5022) in GitLab 8.11.
-> - Resolvable threads can be added only to merge request diffs.
 > - Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
 
-You can resolve a thread when you want to finish a conversation.
+In a merge request, you can resolve a thread when you want to finish a conversation.
 
 Prerequisites:
 
 - You must have at least the [Developer role](../permissions.md#project-members-permissions)
   or be the author of the change being reviewed.
-- You must be in an issue, merge request, commit, or snippet.
+- Resolvable threads can be added only to merge requests. It doesn't work
+  for comments in issues, commits, or snippets.
 
 To resolve a thread:
 

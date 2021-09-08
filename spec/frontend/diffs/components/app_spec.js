@@ -183,7 +183,7 @@ describe('diffs/components/app', () => {
 
   it('displays loading icon on batch loading', () => {
     createComponent({}, ({ state }) => {
-      state.diffs.isBatchLoading = true;
+      state.diffs.batchLoadingState = 'loading';
     });
 
     expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);

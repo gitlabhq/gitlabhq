@@ -11729,6 +11729,16 @@ msgstr ""
 msgid "DiffsCompareBaseBranch|(base)"
 msgstr ""
 
+msgid "Diffs|%d addition"
+msgid_plural "Diffs|%d additions"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Diffs|%d deletion"
+msgid_plural "Diffs|%d deletions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Diffs|No file name available"
 msgstr ""
 
@@ -11738,7 +11748,15 @@ msgstr ""
 msgid "Diffs|Show all unchanged lines"
 msgstr ""
 
+msgid "Diffs|Showing %{dropdownStart}%{count} changed file%{dropdownEnd}"
+msgid_plural "Diffs|Showing %{dropdownStart}%{count} changed files%{dropdownEnd}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Diffs|Something went wrong while fetching diff lines."
+msgstr ""
+
+msgid "Diffs|with %{additions} and %{deletions}"
 msgstr ""
 
 msgid "Direct member"
@@ -13297,6 +13315,9 @@ msgstr ""
 msgid "Error: %{error_message}"
 msgstr ""
 
+msgid "Error: Couldn't load some or all of the changes."
+msgstr ""
+
 msgid "Error: No AWS credentials were supplied"
 msgstr ""
 
@@ -13633,9 +13654,6 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expected documents: %{expected_documents}"
-msgstr ""
-
-msgid "Experienced"
 msgstr ""
 
 msgid "ExperimentSubject|Must have exactly one of User, Namespace, or Project."
@@ -16555,9 +16573,6 @@ msgstr ""
 msgid "Hello %{name},"
 msgstr ""
 
-msgid "Hello there"
-msgstr ""
-
 msgid "Hello, %{name}!"
 msgstr ""
 
@@ -18964,13 +18979,7 @@ msgstr ""
 msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 
-msgid "I’m familiar with the basics of DevOps."
-msgstr ""
-
 msgid "I’m joining my team who’s already on GitLab"
-msgstr ""
-
-msgid "I’m not familiar with the basics of DevOps."
 msgstr ""
 
 msgid "Jaeger URL"
@@ -23130,9 +23139,6 @@ msgstr ""
 msgid "November"
 msgstr ""
 
-msgid "Novice"
-msgstr ""
-
 msgid "Now, personalize your GitLab experience"
 msgstr ""
 
@@ -23825,6 +23831,9 @@ msgstr ""
 msgid "PackageRegistry|Composer"
 msgstr ""
 
+msgid "PackageRegistry|Composer.json with license: %{license} and version: %{version}"
+msgstr ""
+
 msgid "PackageRegistry|Conan"
 msgstr ""
 
@@ -23886,6 +23895,9 @@ msgid "PackageRegistry|Copy registry include"
 msgstr ""
 
 msgid "PackageRegistry|Copy require package include"
+msgstr ""
+
+msgid "PackageRegistry|Copy target SHA"
 msgstr ""
 
 msgid "PackageRegistry|Copy yarn command"
@@ -24060,6 +24072,9 @@ msgid "PackageRegistry|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "PackageRegistry|Source project located at %{link}"
+msgstr ""
+
+msgid "PackageRegistry|Target SHA: %{sha}"
 msgstr ""
 
 msgid "PackageRegistry|There are no other versions of this package."
@@ -27825,6 +27840,9 @@ msgstr ""
 msgid "Release|Something went wrong while saving the release details."
 msgstr ""
 
+msgid "Reload page"
+msgstr ""
+
 msgid "Remediations"
 msgstr ""
 
@@ -30905,13 +30923,7 @@ msgstr ""
 msgid "Show list"
 msgstr ""
 
-msgid "Show me advanced features"
-msgstr ""
-
 msgid "Show me how to add a pipeline"
-msgstr ""
-
-msgid "Show me the basics"
 msgstr ""
 
 msgid "Show one file at a time"
@@ -37698,9 +37710,6 @@ msgstr ""
 msgid "Welcome to GitLab,%{br_tag}%{name}!"
 msgstr ""
 
-msgid "Welcome to the guided GitLab tour"
-msgstr ""
-
 msgid "Welcome, %{name}!"
 msgstr ""
 
@@ -37717,9 +37726,6 @@ msgid "What are shared runner pipeline minutes?"
 msgstr ""
 
 msgid "What are you searching for?"
-msgstr ""
-
-msgid "What describes you best?"
 msgstr ""
 
 msgid "What does this command do?"
@@ -37747,9 +37753,6 @@ msgid "What will you use this group for?"
 msgstr ""
 
 msgid "What's new"
-msgstr ""
-
-msgid "What’s your experience level?"
 msgstr ""
 
 msgid "When a deployment job is successful, skip older deployment jobs that are still pending."

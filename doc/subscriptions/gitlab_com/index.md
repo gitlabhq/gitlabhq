@@ -339,7 +339,7 @@ Quotas apply to:
 
   1. In the top-right corner, select your avatar.
   1. Select **Edit profile**.
-  1. In the left sidebar, select **[Usage Quotas](https://gitlab.com/-/profile/usage_quotas#pipelines-quota-tab)**.
+  1. On the left sidebar, select **[Usage Quotas](https://gitlab.com/-/profile/usage_quotas#pipelines-quota-tab)**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a
 specific runner set up for your projects, there is no limit to your build time on GitLab SaaS.
@@ -375,7 +375,7 @@ To purchase additional minutes for your personal namespace:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Usage Quotas**.
+1. On the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional minutes** and GitLab redirects you to the Customers Portal.
 1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, click **Buy more CI minutes**, and complete the details about the transaction. Once we have processed your payment, the extra CI minutes are synced to your personal namespace.
 1. To confirm the available CI minutes for your personal projects, go to the **Usage Quotas** settings again.

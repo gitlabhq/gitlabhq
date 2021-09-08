@@ -85,7 +85,7 @@ You can redirect these `/help` links to either:
 - A destination that meets [necessary requirements](#destination-requirements).
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > Preferences**.
+1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Sign-in and Help page**.
 1. In the **Documentation pages URL** field, enter the URL.
 1. Select **Save changes**.

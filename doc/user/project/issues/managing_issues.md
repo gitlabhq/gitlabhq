@@ -72,7 +72,7 @@ When you're creating a new issue, these are the fields you can fill in:
 To visit the issue tracker for all projects in your group:
 
 1. Go to the group dashboard.
-1. In the left sidebar, select **Issues**.
+1. On the left sidebar, select **Issues**.
 1. In the top-right, select the **Select project to create issue** button.
 1. Select the project you'd like to create an issue for. The button now reflects the selected
    project.

@@ -155,7 +155,7 @@ You can add a GPG key in your user settings:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **GPG Keys**.
+1. On the left sidebar, select **GPG Keys**.
 1. Paste your _public_ key in the **Key** text box.
 
    ![Paste GPG public key](img/profile_settings_gpg_keys_paste_pub.png)
@@ -253,7 +253,7 @@ To revoke a GPG key:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **GPG Keys**.
+1. On the left sidebar, select **GPG Keys**.
 1. Select **Revoke** next to the GPG key you want to delete.
 
 ## Removing a GPG key
@@ -267,7 +267,7 @@ To remove a GPG key from your account:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **GPG Keys**.
+1. On the left sidebar, select **GPG Keys**.
 1. Select the trash icon (**{remove}**) next to the GPG key you want to delete.
 
 ## Rejecting commits that are not signed **(PREMIUM)**

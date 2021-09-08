@@ -188,7 +188,7 @@ GitHub account` when signing in, in GitLab:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. On the left sidebar, select **Account**.
 1. In the **Social sign-in** section, select **Connect to GitHub**.
 
 After that, you should be able to sign in via GitHub successfully.

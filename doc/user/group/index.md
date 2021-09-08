@@ -316,7 +316,7 @@ In GitLab 13.11, you can optionally replace the sharing form with a modal window
 To share a group after enabling this feature:
 
 1. Go to your group's page.
-1. In the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
+1. On the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
 1. Select a group, and select a **Max role**.
 1. (Optional) Select an **Access expiration date**.
 1. Select **Invite**.

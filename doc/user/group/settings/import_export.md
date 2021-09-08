@@ -69,7 +69,7 @@ Users with the [Owner role](../../permissions.md) for a group can export the
 contents of that group:
 
 1. On the top bar, select **Menu >** **Groups** and find your group.
-1. In the left sidebar, select **Settings**.
+1. On the left sidebar, select **Settings**.
 1. Scroll to the **Advanced** section, and select **Export Group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in NDJSON format.

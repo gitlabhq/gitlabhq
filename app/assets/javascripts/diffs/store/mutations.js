@@ -60,8 +60,8 @@ export default {
     Object.assign(state, { isLoading });
   },
 
-  [types.SET_BATCH_LOADING](state, isBatchLoading) {
-    Object.assign(state, { isBatchLoading });
+  [types.SET_BATCH_LOADING_STATE](state, batchLoadingState) {
+    Object.assign(state, { batchLoadingState });
   },
 
   [types.SET_RETRIEVING_BATCHES](state, retrievingBatches) {

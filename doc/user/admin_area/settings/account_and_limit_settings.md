@@ -12,7 +12,7 @@ type: reference
 You can change the default maximum number of projects that users can create in their personal namespace:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease that **Default projects limit** value.
 
 If you set **Default projects limit** to 0, users are not allowed to create projects
@@ -23,7 +23,7 @@ in their users personal namespace. However, projects can still be created in a g
 You can change the maximum file size for attachments in comments and replies in GitLab:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum attachment size (MB)**.
 
 NOTE:
@@ -36,7 +36,7 @@ details.
 You can change the maximum push size for your repository:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum push size (MB)**.
 
 NOTE:
@@ -51,7 +51,7 @@ Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a reposito
 You can change the maximum file size for imports in GitLab:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum import size (MB)**.
 
 NOTE:
@@ -71,7 +71,7 @@ Only a GitLab administrator can set the prefix, which is a global setting applie
 to any PAT generated in the system by any user:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Personal Access Token prefix** field.
 1. Click **Save changes**.
@@ -114,7 +114,7 @@ These settings can be found in:
   1. Click **Save changes**.
 - GitLab global settings:
   1. On the top bar, select **Menu > Admin**.
-  1. In the left sidebar, select **Settings > General**.
+  1. On the left sidebar, select **Settings > General**.
   1. Expand the **Account and limit** section.
   1. Fill in the **Size limit per repository (MB)** field.
   1. Click **Save changes**.
@@ -166,7 +166,7 @@ GitLab administrators can choose to customize the session duration (in minutes) 
 To set a limit on how long these sessions are valid:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
 1. Click **Save changes**.
@@ -191,7 +191,7 @@ there are no restrictions.
 To set a lifetime on how long personal access tokens are valid:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
 1. Click **Save changes**.
@@ -214,7 +214,7 @@ By default, expired SSH keys **are not usable**.
 To allow the use of expired SSH keys:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Uncheck the **Enforce SSH key expiration** checkbox.
 
@@ -230,7 +230,7 @@ By default, expired personal access tokens (PATs) **are not usable**.
 To allow the use of expired PATs:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Uncheck the **Enforce personal access token expiration** checkbox.
 
@@ -243,7 +243,7 @@ To maintain integrity of user details in [Audit Events](../../../administration/
 To do this:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Select the **Prevent users from changing their profile name** checkbox.
 
 NOTE:

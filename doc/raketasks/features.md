@@ -19,7 +19,7 @@ To change your username:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. On the left sidebar, select **Account**.
 1. In the **Change username** section, type the new username.
 1. Select **Update username**.
 

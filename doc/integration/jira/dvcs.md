@@ -71,14 +71,14 @@ maintenance does not affect your integration.
    this user must have an [Administrator](../../user/permissions.md) role.
 1. Sign in as the `jira` user.
 1. In the top right corner, click the account's avatar, and select **Edit profile**.
-1. In the left sidebar, select **Applications**.
+1. On the left sidebar, select **Applications**.
 1. In the **Name** field, enter a descriptive name for the integration, such as `Jira`.
 1. In the **Redirect URI** field, enter the URI appropriate for your version of GitLab,
    replacing `<gitlab.example.com>` with your GitLab instance domain:
    - *For GitLab versions 13.0 and later* **and** *Jira versions 8.14 and later,* use the
      generated `Redirect URL` from
      [Linking GitLab accounts with Jira](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
-   - *For GitLab versions 13.0 and later* **and** *Jira Cloud,* use `https://<gitlab.example.com>/login/oauth/callback`.  
+   - *For GitLab versions 13.0 and later* **and** *Jira Cloud,* use `https://<gitlab.example.com>/login/oauth/callback`.
    - *For GitLab versions 11.3 and later* **and** *Jira versions 8.13 and earlier,* use `https://<gitlab.example.com>/login/oauth/callback`.
      If you use GitLab.com, the URL is `https://gitlab.com/login/oauth/callback`.
    - *For GitLab versions 11.2 and earlier,* use

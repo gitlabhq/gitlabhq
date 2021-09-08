@@ -682,26 +682,6 @@ table.code {
   max-height: 50vh;
 }
 
-.diff-stats-summary-toggler {
-  padding: 0;
-  background-color: transparent;
-  border: 0;
-  color: $blue-600;
-  font-weight: $gl-font-weight-bold;
-
-  &:hover,
-  &:focus {
-    outline: none;
-    color: $blue-800;
-  }
-
-  .caret-icon {
-    position: relative;
-    top: 2px;
-    left: -1px;
-  }
-}
-
 // Mobile
 @media (max-width: 480px) {
   .diff-title {
@@ -853,21 +833,14 @@ table.code {
 
 .diff-files-changed {
   .inline-parallel-buttons {
-    position: relative;
+    @include gl-relative;
     z-index: 1;
   }
 
-  .commit-stat-summary {
-    @include media-breakpoint-up(sm) {
-      background-color: $white;
-    }
-  }
-
   @include media-breakpoint-up(sm) {
-    position: -webkit-sticky;
-    position: sticky;
+    @include gl-sticky;
     top: $header-height + $mr-tabs-height;
-    background-color: $white;
+    @include gl-bg-white;
     z-index: 200;
 
     .with-performance-bar & {
@@ -875,14 +848,13 @@ table.code {
     }
 
     &.is-stuck {
-      padding-top: 0;
-      padding-bottom: 0;
+      @include gl-py-0;
       border-top: 1px solid $white-dark;
       border-bottom: 1px solid $white-dark;
 
       .diff-stats-additions-deletions-expanded,
       .inline-parallel-buttons {
-        display: none !important;
+        @include gl-display-none;
       }
     }
   }
@@ -890,11 +862,12 @@ table.code {
   @include media-breakpoint-up(lg) {
     &.is-stuck {
       .diff-stats-additions-deletions-collapsed {
-        display: block !important;
+        @include gl-display-block;
       }
     }
   }
 }
+
 
 .diff-file-changes {
   max-width: 560px;

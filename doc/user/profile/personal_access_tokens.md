@@ -38,7 +38,7 @@ You can create as many personal access tokens as you like.
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access Tokens**.
 1. Enter a name and optional expiry date for the token.
 1. Select the [desired scopes](#personal-access-token-scopes).
 1. Select **Create personal access token**.
@@ -62,7 +62,7 @@ At any time, you can revoke a personal access token.
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, select **Revoke**.
 
 ## View the last time a token was used
@@ -74,7 +74,7 @@ To view the last time a token was used:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, view the **Last Used** date.
 
 ## Personal access token scopes

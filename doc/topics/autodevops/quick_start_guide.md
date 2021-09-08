@@ -6,7 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Use Auto DevOps to deploy an application to Google Kubernetes Engine **(FREE)**
 
-This step-by-step guide helps you use [Auto DevOps](index.md) to
 In this tutorial, we'll help you to get started with [Auto DevOps](index.md)
 through an example of how to deploy an application to Google Kubernetes Engine (GKE).
 

@@ -48,7 +48,7 @@ To add a new application for your user:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Applications**.
+1. On the left sidebar, select **Applications**.
 1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
    The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
 1. Select **Save application**. GitLab provides:

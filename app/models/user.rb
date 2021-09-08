@@ -307,7 +307,6 @@ class User < ApplicationRecord
             :gitpod_enabled, :gitpod_enabled=,
             :setup_for_company, :setup_for_company=,
             :render_whitespace_in_code, :render_whitespace_in_code=,
-            :experience_level, :experience_level=,
             :markdown_surround_selection, :markdown_surround_selection=,
             to: :user_preference
 

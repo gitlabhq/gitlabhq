@@ -33,7 +33,7 @@ you're ready to enable the Mailgun integration:
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, go to **Settings > General** and expand the **Mailgun** section.
+1. On the left sidebar, go to **Settings > General** and expand the **Mailgun** section.
 1. Select the **Enable Mailgun** check box.
 1. Enter the Mailgun HTTP webhook signing key as described in
    [the Mailgun documentation](https://documentation.mailgun.com/en/latest/user_manual.html#webhooks) and

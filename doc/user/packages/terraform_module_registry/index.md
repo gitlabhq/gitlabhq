@@ -41,6 +41,10 @@ PUT /projects/:id/packages/terraform/modules/:module_name/:module_system/:module
 
 Provide the file content in the request body.
 
+Note that, in the following example, the request must end with `/file`.
+If you send a request ending with something else, it results in a 404
+error `{"error":"404 Not Found"}`.
+
 Example request using a personal access token:
 
 ```shell

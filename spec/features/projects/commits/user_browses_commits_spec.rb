@@ -12,7 +12,7 @@ RSpec.describe 'User browses commits' do
     sign_in(user)
   end
 
-  it 'renders commit' do
+  it 'renders commit', :js do
     visit project_commit_path(project, sample_commit.id)
 
     expect(page).to have_content(sample_commit.message.gsub(/\s+/, ' '))
@@ -103,7 +103,7 @@ RSpec.describe 'User browses commits' do
   context 'when the blob does not exist' do
     let(:commit) { create(:commit, project: project) }
 
-    it 'renders successfully' do
+    it 'renders successfully', :js do
       allow_next_instance_of(Gitlab::Diff::File) do |instance|
         allow(instance).to receive(:blob).and_return(nil)
       end
@@ -113,7 +113,9 @@ RSpec.describe 'User browses commits' do
 
       visit(project_commit_path(project, commit))
 
-      expect(find('.diff-file-changes', visible: false)).to have_content('files/ruby/popen.rb')
+      click_button '2 changed files'
+
+      expect(find('[data-testid="diff-stats-dropdown"]')).to have_content('files/ruby/popen.rb')
     end
   end
 

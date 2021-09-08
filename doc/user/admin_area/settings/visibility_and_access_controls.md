@@ -14,7 +14,7 @@ To access the visibility and access control options:
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 
 ## Protect default branches
@@ -34,7 +34,7 @@ To change the default branch protection for the entire instance:
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select a **Default branch protection**:
    - **Not protected** - Both developers and maintainers can push new commits,
@@ -60,7 +60,7 @@ disable this privilege for group owners, enforcing the instance-level protection
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Deselect the **Allow owners to manage default branch protection per group** checkbox.
 1. Select **Save changes**.
@@ -76,7 +76,7 @@ on the instance. To alter which roles have permission to create projects:
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. For **Default project creation protection**, select the desired roles:
    - No one.
@@ -91,7 +91,7 @@ delete a project. To allow only users with the Administrator role to delete proj
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Scroll to **Default project deletion protection**, and select **Only admins can delete project**.
 1. Select **Save changes**.
@@ -143,7 +143,7 @@ To set the default [visibility levels for new projects](../../../public_access/p
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default project visibility:
    - **Private** - Project access must be granted explicitly to each user. If this
@@ -158,7 +158,7 @@ To set the default visibility levels for new [snippets](../../snippets.md):
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default snippet visibility.
 1. Select **Save changes**.
@@ -172,7 +172,7 @@ To set the default visibility levels for new groups:
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default group visibility:
    - **Private** - The group and its projects can only be viewed by members.
@@ -189,7 +189,7 @@ To restrict visibility levels for projects, snippets, and selected pages:
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
 1. Select **Save changes**.
@@ -203,7 +203,7 @@ You can specify from which hosting sites users can [import their projects](../..
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select each of **Import sources** to allow.
 1. Select **Save changes**.
@@ -215,7 +215,7 @@ To enable the export of
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select **Project export enabled**.
 1. Select **Save changes**.
@@ -231,7 +231,7 @@ To specify the enabled Git access protocols:
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired Git access protocols:
    - Both SSH and HTTP(S)

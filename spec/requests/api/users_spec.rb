@@ -14,6 +14,7 @@ RSpec.describe API::Users do
   let(:private_user) { create(:user, private_profile: true) }
   let(:deactivated_user) { create(:user, state: 'deactivated') }
   let(:banned_user) { create(:user, :banned) }
+  let(:internal_user) { create(:user, :bot) }
 
   context 'admin notes' do
     let_it_be(:admin) { create(:admin, note: '2019-10-06 | 2FA added | user requested | www.gitlab.com') }
@@ -2869,53 +2870,73 @@ RSpec.describe API::Users do
     end
   end
 
-  describe 'POST /users/:id/block' do
-    let(:blocked_user) { create(:user, state: 'blocked') }
+  describe 'POST /users/:id/block', :aggregate_failures do
+    context 'when admin' do
+      subject(:block_user) { post api("/users/#{user_id}/block", admin) }
 
-    it 'blocks existing user' do
-      post api("/users/#{user.id}/block", admin)
+      context 'with an existing user' do
+        let(:user_id) { user.id }
 
-      aggregate_failures do
-        expect(response).to have_gitlab_http_status(:created)
-        expect(response.body).to eq('true')
-        expect(user.reload.state).to eq('blocked')
+        it 'blocks existing user' do
+          block_user
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response.body).to eq('true')
+          expect(user.reload.state).to eq('blocked')
+        end
+      end
+
+      context 'with an ldap blocked user' do
+        let(:user_id) { ldap_blocked_user.id }
+
+        it 'does not re-block ldap blocked users' do
+          block_user
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
+        end
+      end
+
+      context 'with a non existent user' do
+        let(:user_id) { non_existing_record_id }
+
+        it 'does not block non existent user, returns 404' do
+          block_user
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 User Not Found')
+        end
+      end
+
+      context 'with an internal user' do
+        let(:user_id) { internal_user.id }
+
+        it 'does not block internal user, returns 403' do
+          block_user
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('An internal user cannot be blocked')
+        end
+      end
+
+      context 'with a blocked user' do
+        let(:blocked_user) { create(:user, state: 'blocked') }
+        let(:user_id) { blocked_user.id }
+
+        it 'returns a 201 if user is already blocked' do
+          block_user
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response.body).to eq('null')
+        end
       end
     end
 
-    it 'does not re-block ldap blocked users' do
-      post api("/users/#{ldap_blocked_user.id}/block", admin)
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
-    end
-
-    it 'does not be available for non admin users' do
+    it 'is not available for non admin users' do
       post api("/users/#{user.id}/block", user)
+
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(user.reload.state).to eq('active')
-    end
-
-    it 'returns a 404 error if user id not found' do
-      post api('/users/0/block', admin)
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 User Not Found')
-    end
-
-    it 'returns a 403 error if user is internal' do
-      internal_user = create(:user, :bot)
-
-      post api("/users/#{internal_user.id}/block", admin)
-
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(json_response['message']).to eq('An internal user cannot be blocked')
-    end
-
-    it 'returns a 201 if user is already blocked' do
-      post api("/users/#{blocked_user.id}/block", admin)
-
-      aggregate_failures do
-        expect(response).to have_gitlab_http_status(:created)
-        expect(response.body).to eq('null')
-      end
     end
   end
 

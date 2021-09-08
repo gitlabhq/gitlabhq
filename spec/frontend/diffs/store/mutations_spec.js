@@ -31,13 +31,13 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_BATCH_LOADING', () => {
+  describe('SET_BATCH_LOADING_STATE', () => {
     it('should set loading state', () => {
       const state = {};
 
-      mutations[types.SET_BATCH_LOADING](state, false);
+      mutations[types.SET_BATCH_LOADING_STATE](state, false);
 
-      expect(state.isBatchLoading).toEqual(false);
+      expect(state.batchLoadingState).toEqual(false);
     });
   });
 

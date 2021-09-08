@@ -14,7 +14,7 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 To access sign-in restriction settings:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 
 ## Password authentication enabled
@@ -118,7 +118,7 @@ For example, if you include the following information in the noted text box:
 To access this text box:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**, and expand the **Sign-in restrictions** section.
+1. On the left sidebar, select **Settings > General**, and expand the **Sign-in restrictions** section.
 ```
 
 Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your

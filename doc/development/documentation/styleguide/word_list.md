@@ -77,9 +77,9 @@ Use lowercase for **boards**, **issue boards**, and **epic boards**.
 
 ## box
 
-Use instead of **field** or **text box**. For example:
+Use **text box** to refer to the UI field. Do not use **field** or **box**. For example:
 
-- In the **Variable name** box, enter `my text`.
+- In the **Variable name** text box, enter `my text`.
 
 ## button
 
@@ -93,6 +93,15 @@ Don't use a descriptor.
 One word, **checkbox**. Do not use **check box**.
 
 You **select** (not **check** or **enable**) and **clear** (not **deselect** or **disable**) checkboxes.
+For example:
+
+- Select the **Protect environment** checkbox.
+- Clear the **Protect environment** checkbox.
+
+If you must refer to the checkbox, you can say it is selected or cleared. For example:
+
+- Ensure the **Protect environment** checkbox is cleared.
+- Ensure the **Protect environment** checkbox is selected.
 
 ## CI/CD
 
@@ -518,6 +527,10 @@ Lowercase. For example:
 
 - Open a terminal.
 - From a terminal, run the `docker login` command.
+
+## text box
+
+Use instead of **field** or **box** when referring to the UI element.
 
 ## there is, there are
 

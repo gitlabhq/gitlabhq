@@ -48,7 +48,7 @@ To edit your notification settings:
 
 1. In the top-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the left sidebar, select **Notifications**.
+1. On the left sidebar, select **Notifications**.
 1. Edit the desired notification settings. Edited settings are automatically saved and enabled.
 
 ## Notification scope
@@ -90,7 +90,7 @@ To select a notification level for a group, use either of these methods:
 
 1. In the top-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the left sidebar, select **Notifications**.
+1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
 1. Select the desired [notification level](#notification-levels).
 
@@ -108,7 +108,7 @@ You can select an email address to receive notifications for each group you belo
 
 1. In the top-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the left sidebar, select **Notifications**.
+1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
 1. Select the desired email address.
 
@@ -120,7 +120,7 @@ To select a notification level for a project, use either of these methods:
 
 1. In the top-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the left sidebar, select **Notifications**.
+1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Projects** section.
 1. Select the desired [notification level](#notification-levels).
 

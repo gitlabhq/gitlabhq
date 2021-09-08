@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlPagination, GlSprintf } from '@gitlab/ui';
+import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Mousetrap from 'mousetrap';
 import { mapState, mapGetters, mapActions } from 'vuex';
@@ -77,6 +77,7 @@ export default {
     GlPagination,
     GlSprintf,
     MrWidgetHowToMergeModal,
+    GlAlert,
   },
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
@@ -199,7 +200,6 @@ export default {
     ...mapState('diffs', [
       'showTreeList',
       'isLoading',
-      'isBatchLoading',
       'diffFiles',
       'diffViewType',
       'commit',
@@ -226,6 +226,8 @@ export default {
       'isParallelView',
       'currentDiffIndex',
       'isVirtualScrollingEnabled',
+      'isBatchLoading',
+      'isBatchLoadingError',
     ]),
     ...mapGetters('batchComments', ['draftsCount']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
@@ -620,6 +622,9 @@ export default {
         this.subscribedToVirtualScrollingEvents = true;
       }
     },
+    reloadPage() {
+      window.location.reload();
+    },
   },
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: MAX_TREE_WIDTH,
@@ -638,17 +643,19 @@ export default {
         :diff-files-count-text="numTotalFiles"
       />
 
-      <hidden-files-warning
-        v-if="visibleWarning == $options.alerts.ALERT_OVERFLOW_HIDDEN"
-        :visible="numVisibleFiles"
-        :total="numTotalFiles"
-        :plain-diff-path="plainDiffPath"
-        :email-patch-path="emailPatchPath"
-      />
-      <collapsed-files-warning
-        v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES"
-        :limited="isLimitedContainer"
-      />
+      <template v-if="!isBatchLoadingError">
+        <hidden-files-warning
+          v-if="visibleWarning == $options.alerts.ALERT_OVERFLOW_HIDDEN"
+          :visible="numVisibleFiles"
+          :total="numTotalFiles"
+          :plain-diff-path="plainDiffPath"
+          :email-patch-path="emailPatchPath"
+        />
+        <collapsed-files-warning
+          v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES"
+          :limited="isLimitedContainer"
+        />
+      </template>
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
@@ -677,7 +684,18 @@ export default {
           }"
         >
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
-          <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
+          <gl-alert
+            v-if="isBatchLoadingError"
+            variant="danger"
+            :dismissible="false"
+            :primary-button-text="__('Reload page')"
+            @primaryAction="reloadPage"
+          >
+            {{ __("Error: Couldn't load some or all of the changes.") }}
+          </gl-alert>
+          <div v-if="isBatchLoading && !isBatchLoadingError" class="loading">
+            <gl-loading-icon size="lg" />
+          </div>
           <template v-else-if="renderDiffFiles">
             <dynamic-scroller
               v-if="isVirtualScrollingEnabled"
@@ -753,7 +771,10 @@ export default {
             </div>
             <gl-loading-icon v-else-if="retrievingBatches" size="lg" />
           </template>
-          <no-changes v-else :changes-empty-state-illustration="changesEmptyStateIllustration" />
+          <no-changes
+            v-else-if="!isBatchLoadingError"
+            :changes-empty-state-illustration="changesEmptyStateIllustration"
+          />
         </div>
       </div>
       <mr-widget-how-to-merge-modal

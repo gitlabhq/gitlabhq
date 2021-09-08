@@ -147,7 +147,7 @@ An access token needs to be provided while accessing the probe endpoints. You ca
 find the current accepted token in the user interface:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Monitoring > Health Check**. (`admin/health_check`)
+1. On the left sidebar, select **Monitoring > Health Check**. (`admin/health_check`)
 
 ![access token](img/health_check_token.png)
 

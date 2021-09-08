@@ -153,7 +153,7 @@ OmniAuth provider for an existing user.
 1. Sign in normally - whether standard sign in, LDAP, or another OmniAuth provider.
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. On the left sidebar, select **Account**.
 1. In the **Connected Accounts** section, select the desired OmniAuth provider, such as Twitter.
 1. The user is redirected to the provider. After the user authorizes GitLab,
    they are redirected back to GitLab.
@@ -270,7 +270,7 @@ By default, **Sign In** is enabled by using all the OAuth Providers that have be
 To enable/disable an OmniAuth provider:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, go to **Settings**.
+1. On the left sidebar, go to **Settings**.
 1. Scroll to the **Sign-in Restrictions** section, and click **Expand**.
 1. Below **Enabled OAuth Sign-In sources**, select the checkbox for each provider you want to enable or disable.
 

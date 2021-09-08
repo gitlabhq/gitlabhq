@@ -7,7 +7,7 @@ import createEventHub from '~/helpers/event_hub_factory';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
 import createFlash from './flash';
-import initChangesDropdown from './init_changes_dropdown';
+import { initDiffStatsDropdown } from './init_diff_stats_dropdown';
 import axios from './lib/utils/axios_utils';
 import {
   parseUrlPathname,
@@ -433,8 +433,7 @@ export default class MergeRequestTabs {
       .then(({ data }) => {
         const $container = $('#diffs');
         $container.html(data.html);
-
-        initChangesDropdown(this.stickyTop);
+        initDiffStatsDropdown(this.stickyTop);
 
         localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
         syntaxHighlight($('#diffs .js-syntax-highlight'));
