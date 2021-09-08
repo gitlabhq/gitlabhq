@@ -12,8 +12,10 @@ functionality to GitLab.
 
 ## Accessing integrations
 
-You can find the available integrations under your project's
-**Settings > Integrations** page.
+To find the available integrations for your project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
 
 There are more than 20 integrations to integrate with. Select the one that you
 want to configure.

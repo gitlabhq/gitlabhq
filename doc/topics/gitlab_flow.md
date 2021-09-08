@@ -120,10 +120,27 @@ If this is not possible because more manual testing is required, you can send me
 
 ## Release branches with GitLab flow
 
-![Multiple release branches that vary in length with cherry-picks](img/gitlab_flow_release_branches.png)
+You should work with release branches only if you need to release software to
+the outside world. In this case, each branch contains a minor version, such as
+`2.3-stable` or `2.4-stable`:
 
-You only need to work with release branches if you need to release software to the outside world.
-In this case, each branch contains a minor version, such as `2-3-stable` or `2-4-stable`.
+```mermaid
+graph LR
+    A:::main ===> B((main))
+    B:::main ==> C((main))
+    C:::main ==> D((main))
+    D:::main ==> E((main))
+
+    A((main)) ----> F((2.3-stable)):::first
+    F --> G((2.3-stable)):::first
+    C -.-> |cherry-pick| G
+    D --> H((2.4-stable)):::second
+
+    classDef main fill:#f4f0ff,stroke:#7b58cf
+    classDef first fill:#e9f3fc,stroke:#1f75cb
+    classDef second fill:#ecf4ee,stroke:#108548
+```
+
 Create stable branches using `main` as a starting point, and branch as late as possible.
 By doing this, you minimize the length of time during which you have to apply bug fixes to multiple branches.
 After announcing a release branch, only add serious bug fixes to the branch.
@@ -225,10 +242,35 @@ If you have an issue that spans across multiple repositories, create an issue fo
 
 ## Squashing commits with rebase
 
-![Vim screen showing the rebase view](img/gitlab_flow_rebase.png)
-
 With Git, you can use an interactive rebase (`rebase -i`) to squash multiple commits into one or reorder them.
-This feature helps you replace a couple of small commits with a single commit, or if you want to make the order more logical.
+This feature helps you replace a couple of small commits with a single commit, or if you want to make the order more logical:
+
+```shell
+pick c6ee4d3 add a new file to the repo
+pick c3c130b change readme
+
+# Rebase 168afa0..c3c130b onto 168afa0
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out
+~
+~
+~
+"~/demo/gitlab-ce/.git/rebase-merge/git-rebase-todo" 20L, 673C
+```
 
 However, you should avoid rebasing commits you have pushed to a remote server if you have other active contributors in the same branch.
 Because rebasing creates new commits for all your changes, it can cause confusion because the same change would have multiple identifiers.
