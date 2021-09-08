@@ -34,7 +34,7 @@ You can [commit your changes](https://git-scm.com/book/en/v2/Git-Basics-Recordin
 to a branch in the repository. When you use the command line, you can commit multiple times before you push.
 
 - **Commit message:**
-  A commit message identities what is being changed and why.
+  A commit message identifies what is being changed and why.
   In GitLab, you can add keywords to the commit
   message to perform one of the following actions:
   - **Trigger a GitLab CI/CD pipeline:**

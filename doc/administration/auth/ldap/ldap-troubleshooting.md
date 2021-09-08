@@ -345,7 +345,7 @@ things to check to debug the situation.
 - Ensure LDAP configuration has a `group_base` specified.
   [This configuration](index.md#group-sync) is required for group sync to work properly.
 - Ensure the correct [LDAP group link is added to the GitLab
-  group](index.md#adding-group-links).
+  group](index.md#add-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
   1. On the top bar, select **Menu > Admin**.
@@ -356,7 +356,7 @@ things to check to debug the situation.
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured
-  interval](index.md#adjusting-ldap-group-sync-schedule) for the group to
+  interval](index.md#adjust-ldap-group-sync-schedule) for the group to
   sync. To speed up the process, either go to the GitLab group **Group information > Members**
   and press **Sync now** (sync one group) or [run the group sync Rake
   task](../../raketasks/ldap.md#run-a-group-sync) (sync all groups).

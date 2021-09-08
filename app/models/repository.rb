@@ -627,7 +627,12 @@ class Repository
   def license
     return unless license_key
 
-    Licensee::License.new(license_key)
+    licensee_object = Licensee::License.new(license_key)
+
+    return if licensee_object.name.blank?
+
+    licensee_object
+  rescue Licensee::InvalidLicense
   end
   memoize_method :license
 

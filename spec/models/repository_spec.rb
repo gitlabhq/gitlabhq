@@ -1338,6 +1338,12 @@ RSpec.describe Repository do
       expect(repository.license).to be_nil
     end
 
+    it 'returns nil when license_key is not recognized' do
+      expect(repository).to receive(:license_key).twice.and_return('not-recognized')
+
+      expect(repository.license).to be_nil
+    end
+
     it 'returns other when the content is not recognizable' do
       license = Licensee::License.new('other')
       repository.create_file(user, 'LICENSE', 'Gitlab B.V.',

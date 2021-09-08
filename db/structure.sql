@@ -19412,16 +19412,16 @@ CREATE SEQUENCE system_note_metadata_id_seq
 ALTER SEQUENCE system_note_metadata_id_seq OWNED BY system_note_metadata.id;
 
 CREATE TABLE taggings (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     tag_id integer,
-    taggable_id integer,
+    taggable_id_convert_to_bigint integer,
     taggable_type character varying,
     tagger_id integer,
     tagger_type character varying,
     context character varying,
     created_at timestamp without time zone,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
-    taggable_id_convert_to_bigint bigint
+    id bigint NOT NULL,
+    taggable_id bigint
 );
 
 CREATE SEQUENCE taggings_id_seq
