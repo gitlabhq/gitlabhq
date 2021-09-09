@@ -32,7 +32,7 @@ RSpec.describe 'User edit profile' do
     fill_in 'user_skype', with: 'testskype'
     fill_in 'user_linkedin', with: 'testlinkedin'
     fill_in 'user_twitter', with: 'testtwitter'
-    fill_in 'user_website_url', with: 'testurl'
+    fill_in 'user_website_url', with: 'http://testurl.com'
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab :tada:'
     fill_in 'user_job_title', with: 'Frontend Engineer'
@@ -43,7 +43,7 @@ RSpec.describe 'User edit profile' do
       skype: 'testskype',
       linkedin: 'testlinkedin',
       twitter: 'testtwitter',
-      website_url: 'testurl',
+      website_url: 'http://testurl.com',
       bio: 'I <3 GitLab :tada:',
       job_title: 'Frontend Engineer',
       organization: 'GitLab'
@@ -75,6 +75,17 @@ RSpec.describe 'User edit profile' do
       expect(find('.gl-field-error')).not_to have_selector('.hidden')
       expect(find('.gl-field-error')).to have_content('Using emojis in names seems fun, but please try to set a status message instead')
     end
+  end
+
+  it 'shows an error if the website url is not valid' do
+    fill_in 'user_website_url', with: 'admin@gitlab.com'
+    submit_settings
+
+    expect(user.reload).to have_attributes(
+      website_url: ''
+    )
+
+    expect(page).to have_content('Website url is not a valid URL')
   end
 
   describe 'when I change my email' do

@@ -253,6 +253,8 @@ class User < ApplicationRecord
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
     message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
 
+  validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
+
   before_validation :sanitize_attrs
   before_validation :reset_secondary_emails, if: :email_changed?
   before_save :default_private_profile_to_false

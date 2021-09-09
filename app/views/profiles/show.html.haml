@@ -103,7 +103,7 @@
       = f.text_field :skype, class: 'input-md gl-form-input', placeholder: s_("Profiles|username")
       = f.text_field :linkedin, class: 'input-md gl-form-input', help: s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
       = f.text_field :twitter, class: 'input-md gl-form-input', placeholder: s_("Profiles|@username")
-      = f.text_field :website_url, class: 'input-lg gl-form-input', placeholder: s_("Profiles|website.com")
+      = f.text_field :website_url, class: 'input-lg gl-form-input', placeholder: s_("Profiles|https://website.com")
       - if @user.read_only_attribute?(:location)
         = f.text_field :location, class: 'gl-form-input', readonly: true, help: s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
       - else

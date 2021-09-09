@@ -556,10 +556,9 @@ access to Git repositories.
 
 ### For GitLab versions 12.10 and up
 
-For GitLab version 12.10 and later, there are two `gitlab-shell.log` files.
 Information containing `git-{upload-pack,receive-pack}` requests is at
 `/var/log/gitlab/gitlab-shell/gitlab-shell.log`. Information about hooks to
-GitLab Shell from Gitaly is at `/var/log/gitlab/gitaly/gitlab-shell.log`.
+GitLab Shell from Gitaly is at `/var/log/gitlab/gitaly/current`.
 
 Example log entries for `/var/log/gitlab/gitlab-shell/gitlab-shell.log`:
 
@@ -585,7 +584,7 @@ Example log entries for `/var/log/gitlab/gitlab-shell/gitlab-shell.log`:
 }
 ```
 
-Example log entries for `/var/log/gitlab/gitaly/gitlab-shell.log`:
+Example log entries for `/var/log/gitlab/gitaly/current`:
 
 ```json
 {
@@ -667,6 +666,12 @@ packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 This file is at `/var/log/gitlab/gitaly/gitaly_ruby_json.log` and is
 produced by [`gitaly-ruby`](gitaly/reference.md#gitaly-ruby). It contains an
 access log of gRPC calls made by Gitaly to `gitaly-ruby`.
+
+### `gitaly_hooks.log`
+
+This file is at `/var/log/gitlab/gitaly/gitaly_hooks.log` and is
+produced by `gitaly-hooks` command. It also contains records about 
+failures received during processing of the responses from GitLab API. 
 
 ## Puma Logs
 

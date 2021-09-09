@@ -472,6 +472,7 @@ queryable
 Quicktime
 Rackspace
 Raspbian
+rbenv
 rbtrace
 Rdoc
 reachability

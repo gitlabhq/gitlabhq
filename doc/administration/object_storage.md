@@ -33,6 +33,10 @@ GitLab has been tested by vendors and customers on a number of object storage pr
 
 - Ceph S3 prior to [Kraken 11.0.2](https://ceph.com/releases/kraken-11-0-2-released/) does not support the [Upload Copy Part API](https://gitlab.com/gitlab-org/gitlab/-/issues/300604). You may need to [disable multi-threaded copying](#multi-threaded-copying).
 
+- Amazon S3 [Object Lock](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html)
+  is not supported. Follow [issue #335775](https://gitlab.com/gitlab-org/gitlab/-/issues/335775)
+  for progress on enabling this option.
+
 ## Configuration guides
 
 There are two ways of specifying object storage configuration in GitLab:

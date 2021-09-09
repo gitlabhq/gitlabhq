@@ -25922,10 +25922,10 @@ msgstr ""
 msgid "Profiles|e.g. My MacBook key"
 msgstr ""
 
-msgid "Profiles|username"
+msgid "Profiles|https://website.com"
 msgstr ""
 
-msgid "Profiles|website.com"
+msgid "Profiles|username"
 msgstr ""
 
 msgid "Profiles|your account"

@@ -71,15 +71,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_51ab7cef8934() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."build_id_convert_to_bigint" := NEW."build_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_542d6c2ad72e() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -11396,7 +11387,6 @@ ALTER SEQUENCE ci_builds_metadata_id_seq OWNED BY ci_builds_metadata.id;
 
 CREATE TABLE ci_builds_runner_session (
     id bigint NOT NULL,
-    build_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     url character varying NOT NULL,
     certificate character varying,
     "authorization" character varying,
@@ -27288,8 +27278,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 CREATE TRIGGER trigger_21e7a2602957 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_21e7a2602957();
 
 CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_3f6129be01d2();
-
-CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_51ab7cef8934();
 
 CREATE TRIGGER trigger_542d6c2ad72e BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_542d6c2ad72e();
 
