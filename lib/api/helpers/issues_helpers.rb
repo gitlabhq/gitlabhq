@@ -34,7 +34,17 @@ module API
       end
 
       def self.sort_options
-        %w[created_at updated_at priority due_date relative_position label_priority milestone_due popularity]
+        %w[
+          created_at
+          due_date
+          label_priority
+          milestone_due
+          popularity
+          priority
+          relative_position
+          title
+          updated_at
+        ]
       end
 
       def issue_finder(args = {})

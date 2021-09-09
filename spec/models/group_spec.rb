@@ -2486,6 +2486,12 @@ RSpec.describe Group do
     end
   end
 
+  describe '#membership_locked?' do
+    it 'returns false' do
+      expect(build(:group)).not_to be_membership_locked
+    end
+  end
+
   describe '#default_owner' do
     let(:group) { build(:group) }
 

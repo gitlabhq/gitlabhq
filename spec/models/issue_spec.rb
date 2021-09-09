@@ -165,8 +165,8 @@ RSpec.describe Issue do
       expect(described_class.simple_sorts.keys).to include(
         *%w(created_asc created_at_asc created_date created_desc created_at_desc
             closest_future_date closest_future_date_asc due_date due_date_asc due_date_desc
-            id_asc id_desc relative_position relative_position_asc
-            updated_desc updated_asc updated_at_asc updated_at_desc))
+            id_asc id_desc relative_position relative_position_asc updated_desc updated_asc
+            updated_at_asc updated_at_desc title_asc title_desc))
     end
   end
 
@@ -200,6 +200,25 @@ RSpec.describe Issue do
       subject { described_class.order_severity_desc }
 
       it { is_expected.to eq([issue_high_severity, issue_low_severity, issue_no_severity]) }
+    end
+  end
+
+  describe '.order_title' do
+    let_it_be(:issue1) { create(:issue, title: 'foo') }
+    let_it_be(:issue2) { create(:issue, title: 'bar') }
+    let_it_be(:issue3) { create(:issue, title: 'baz') }
+    let_it_be(:issue4) { create(:issue, title: 'Baz 2') }
+
+    context 'sorting ascending' do
+      subject { described_class.order_title_asc }
+
+      it { is_expected.to eq([issue2, issue3, issue4, issue1]) }
+    end
+
+    context 'sorting descending' do
+      subject { described_class.order_title_desc }
+
+      it { is_expected.to eq([issue1, issue4, issue3, issue2]) }
     end
   end
 

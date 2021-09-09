@@ -4,8 +4,11 @@ module Members
   class CreateService < Members::BaseService
     BlankInvitesError = Class.new(StandardError)
     TooManyInvitesError = Class.new(StandardError)
+    MembershipLockedError = Class.new(StandardError)
 
     DEFAULT_INVITE_LIMIT = 100
+
+    attr_reader :membership_locked
 
     def initialize(*args)
       super
@@ -17,18 +20,22 @@ module Members
 
     def execute
       validate_invite_source!
-      validate_invites!
+      validate_invitable!
 
       add_members
       enqueue_onboarding_progress_action
       result
-    rescue BlankInvitesError, TooManyInvitesError => e
+    rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError => e
       error(e.message)
+    end
+
+    def single_member
+      members.last
     end
 
     private
 
-    attr_reader :source, :errors, :invites, :member_created_namespace_id
+    attr_reader :source, :errors, :invites, :member_created_namespace_id, :members
 
     def invites_from_params
       params[:user_ids]
@@ -38,7 +45,7 @@ module Members
       raise ArgumentError, s_('AddMember|No invite source provided.') unless invite_source.present?
     end
 
-    def validate_invites!
+    def validate_invitable!
       raise BlankInvitesError, blank_invites_message if invites.blank?
 
       return unless user_limit && invites.size > user_limit
@@ -52,7 +59,7 @@ module Members
     end
 
     def add_members
-      members = source.add_users(
+      @members = source.add_users(
         invites,
         params[:access_level],
         expires_at: params[:expires_at],

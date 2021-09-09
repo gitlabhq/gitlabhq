@@ -27,6 +27,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
 
   before do
     allow(migration).to receive(:puts)
+    allow(migration).to receive(:transaction_open?).and_return(false)
 
     connection.execute(<<~SQL)
       CREATE TABLE #{target_table_name} (
@@ -139,6 +140,16 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
         expect(migration).to receive(:add_concurrent_foreign_key)
           .ordered
           .with(source_table_name, target_table_name, options)
+      end
+    end
+
+    context 'when run inside a transaction block' do
+      it 'raises an error' do
+        expect(migration).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
+        end.to raise_error(/can not be run inside a transaction/)
       end
     end
   end

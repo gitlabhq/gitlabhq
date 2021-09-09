@@ -1677,6 +1677,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def membership_locked?
+    false
+  end
+
   def bots
     users.project_bot
   end
@@ -2545,6 +2549,10 @@ class Project < ApplicationRecord
     ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
   end
 
+  def uses_external_project_ci_config?
+    !!(ci_config_path =~ %r{@.+/.+})
+  end
+
   def limited_protected_branches(limit)
     protected_branches.limit(limit)
   end
@@ -2651,6 +2659,10 @@ class Project < ApplicationRecord
 
   def ci_config_for(sha)
     repository.gitlab_ci_yml_for(sha, ci_config_path_or_default)
+  end
+
+  def ci_config_external_project
+    Project.find_by_full_path(ci_config_path.split('@', 2).last)
   end
 
   def enabled_group_deploy_keys

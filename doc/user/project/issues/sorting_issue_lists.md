@@ -16,6 +16,7 @@ You can sort a list of issues several ways, including by:
 - Milestone due date
 - Popularity
 - Priority
+- Title ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67234) in GitLab 14.3)
 - Weight
 
 The available sorting options can change based on the context of the list.

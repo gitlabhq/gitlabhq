@@ -615,6 +615,22 @@ module API
         end
       end
 
+      desc 'Reject a pending user. Available only for admins.'
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      post ':id/reject', feature_category: :authentication_and_authorization do
+        user = find_user_by_id(params)
+
+        result = ::Users::RejectService.new(current_user).execute(user)
+
+        if result[:success]
+          present user
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
+      end
+
       # rubocop: enable CodeReuse/ActiveRecord
       desc 'Deactivate an active user. Available only for admins.'
       params do

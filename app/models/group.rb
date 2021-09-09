@@ -656,6 +656,10 @@ class Group < Namespace
     members.owners.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
+  def membership_locked?
+    false # to support project and group calling this as 'source'
+  end
+
   def supports_events?
     false
   end

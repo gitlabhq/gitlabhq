@@ -18,7 +18,6 @@ import {
 } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
-import eventHub from '~/boards/eventhub';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -62,12 +61,10 @@ export default {
 
   setActiveId({ commit }, { id, sidebarType }) {
     commit(types.SET_ACTIVE_ID, { id, sidebarType });
-    eventHub.$emit('toggleDetailIssue', true);
   },
 
   unsetActiveId({ dispatch }) {
     dispatch('setActiveId', { id: inactiveId, sidebarType: '' });
-    eventHub.$emit('toggleDetailIssue', false);
   },
 
   setFilters: ({ commit, state: { issuableType } }, filters) => {

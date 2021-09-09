@@ -15515,6 +15515,8 @@ Values for sorting issues.
 | <a id="issuesortseverity_desc"></a>`SEVERITY_DESC` | Severity from more critical to less critical. |
 | <a id="issuesortsla_due_at_asc"></a>`SLA_DUE_AT_ASC` | Issues with earliest SLA due time shown first. |
 | <a id="issuesortsla_due_at_desc"></a>`SLA_DUE_AT_DESC` | Issues with latest SLA due time shown first. |
+| <a id="issuesorttitle_asc"></a>`TITLE_ASC` | Title by ascending order. |
+| <a id="issuesorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
 | <a id="issuesortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="issuesortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 | <a id="issuesortweight_asc"></a>`WEIGHT_ASC` | Weight by ascending order. |

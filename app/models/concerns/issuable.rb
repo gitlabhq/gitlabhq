@@ -26,6 +26,7 @@ module Issuable
   include UpdatedAtFilterable
   include ClosedAtFilterable
   include VersionedDescription
+  include SortableTitle
 
   TITLE_LENGTH_MAX = 255
   TITLE_HTML_LENGTH_MAX = 800
@@ -293,6 +294,8 @@ module Issuable
         when 'popularity', 'popularity_desc', 'upvotes_desc'  then order_upvotes_desc
         when 'priority', 'priority_asc'                       then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
         when 'priority_desc'                                  then order_due_date_and_labels_priority('DESC', excluded_labels: excluded_labels)
+        when 'title_asc'                                      then order_title_asc.with_order_id_desc
+        when 'title_desc'                                     then order_title_desc.with_order_id_desc
         else order_by(method)
         end
 

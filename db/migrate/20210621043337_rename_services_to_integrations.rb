@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-class RenameServicesToIntegrations < ActiveRecord::Migration[6.1]
-  include Gitlab::Database::MigrationHelpers
+class RenameServicesToIntegrations < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::SchemaHelpers
+
+  enable_lock_retries!
 
   # Function and trigger names match those migrated in:
   # - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49916

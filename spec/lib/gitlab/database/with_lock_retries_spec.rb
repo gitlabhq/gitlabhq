@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::WithLockRetries do
   let(:env) { {} }
   let(:logger) { Gitlab::Database::WithLockRetries::NULL_LOGGER }
-  let(:subject) { described_class.new(env: env, logger: logger, timing_configuration: timing_configuration) }
+  let(:subject) { described_class.new(env: env, logger: logger, allow_savepoints: allow_savepoints, timing_configuration: timing_configuration) }
+  let(:allow_savepoints) { true }
 
   let(:timing_configuration) do
     [
@@ -254,6 +255,22 @@ RSpec.describe Gitlab::Database::WithLockRetries do
       expect(subject).to receive(:sleep).with(0.025)
 
       subject.run { }
+    end
+  end
+
+  context 'Stop using subtransactions - allow_savepoints: false' do
+    let(:allow_savepoints) { false }
+
+    it 'prevents running inside already open transaction' do
+      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(true)
+
+      expect { subject.run { } }.to raise_error(/should not run inside already open transaction/)
+    end
+
+    it 'does not raise the error if not inside open transaction' do
+      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+
+      expect { subject.run { } }.not_to raise_error
     end
   end
 end

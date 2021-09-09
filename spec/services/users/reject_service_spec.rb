@@ -27,7 +27,7 @@ RSpec.describe Users::RejectService do
           it 'returns error result' do
             expect(subject[:status]).to eq(:error)
             expect(subject[:message])
-              .to match(/This user does not have a pending request/)
+              .to match(/User does not have a pending request/)
           end
         end
       end

@@ -165,7 +165,7 @@ RSpec.describe Admin::UsersController do
       it 'displays the error' do
         subject
 
-        expect(flash[:alert]).to eq('This user does not have a pending request')
+        expect(flash[:alert]).to eq('User does not have a pending request')
       end
 
       it 'does not email the user' do

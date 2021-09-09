@@ -7462,9 +7462,6 @@ msgstr ""
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Create a provision role on %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the account and external ID above. %{startMoreInfoLink}More information%{endLink}"
-msgstr ""
-
 msgid "ClusterIntegration|Create cluster on"
 msgstr ""
 
@@ -7897,7 +7894,7 @@ msgstr ""
 msgid "ClusterIntegration|Subnets"
 msgstr ""
 
-msgid "ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provisioned role, first create one on %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}"
+msgid "ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provisioned role, first create one on %{awsLinkStart}Amazon Web Services %{awsLinkEnd} using the above account and external IDs. %{moreInfoStart}More information%{moreInfoEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster."
@@ -20873,9 +20870,6 @@ msgstr ""
 msgid "Medium vulnerabilities present"
 msgstr ""
 
-msgid "Member lock"
-msgstr ""
-
 msgid "Member since"
 msgstr ""
 
@@ -20910,6 +20904,9 @@ msgid "Members of %{group} can also push to this branch: %{branch}"
 msgstr ""
 
 msgid "Members of a group may only view projects they have permission to access"
+msgstr ""
+
+msgid "Membership"
 msgstr ""
 
 msgid "Members|%{time} by %{user}"
@@ -31161,19 +31158,22 @@ msgstr ""
 msgid "SlackIntegration|Sends notifications about project events to Slack channels."
 msgstr ""
 
-msgid "SlackService|2. Paste the %{strong_open}Token%{strong_close} into the field below"
+msgid "SlackService|1. %{slash_command_link_start}Add a slash command%{slash_command_link_end} in your Slack team using this information:"
 msgstr ""
 
-msgid "SlackService|3. Select the %{strong_open}Active%{strong_close} checkbox, press %{strong_open}Save changes%{strong_close} and start using GitLab inside Slack!"
+msgid "SlackService|2. Paste the token from Slack in the %{strong_open}Token%{strong_close} field below."
+msgstr ""
+
+msgid "SlackService|3. Select the %{strong_open}Active%{strong_close} checkbox, select %{strong_open}Save changes%{strong_close}, and start using slash commands in Slack!"
+msgstr ""
+
+msgid "SlackService|After setup, get a list of available Slack slash commands by entering"
 msgstr ""
 
 msgid "SlackService|Fill in the word that works best for your team."
 msgstr ""
 
-msgid "SlackService|See list of available commands in Slack after setting up this service, by entering"
-msgstr ""
-
-msgid "SlackService|This service allows users to perform common operations on this project by entering slash commands in Slack."
+msgid "SlackService|Perform common operations in this project by entering slash commands in Slack."
 msgstr ""
 
 msgid "Slice multiplier"
@@ -34572,9 +34572,6 @@ msgstr ""
 msgid "This user cannot be unlocked manually from GitLab"
 msgstr ""
 
-msgid "This user does not have a pending request"
-msgstr ""
-
 msgid "This user has an unconfirmed email address (%{email}). You may force a confirmation."
 msgstr ""
 
@@ -35146,7 +35143,7 @@ msgstr ""
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
 msgstr ""
 
-msgid "To set up this service:"
+msgid "To set up this integration:"
 msgstr ""
 
 msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
@@ -36505,6 +36502,9 @@ msgid "User Settings"
 msgstr ""
 
 msgid "User and IP Rate Limits"
+msgstr ""
+
+msgid "User does not have a pending request"
 msgstr ""
 
 msgid "User identity was successfully created."

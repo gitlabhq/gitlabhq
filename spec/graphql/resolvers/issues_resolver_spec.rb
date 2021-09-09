@@ -414,6 +414,22 @@ RSpec.describe Resolvers::IssuesResolver do
             end
           end
         end
+
+        context 'when sorting by title' do
+          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:issue1) { create(:issue, project: project, title: 'foo') }
+          let_it_be(:issue2) { create(:issue, project: project, title: 'bar') }
+          let_it_be(:issue3) { create(:issue, project: project, title: 'baz') }
+          let_it_be(:issue4) { create(:issue, project: project, title: 'Baz 2') }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :title_asc).to_a).to eq [issue2, issue3, issue4, issue1]
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :title_desc).to_a).to eq [issue1, issue4, issue3, issue2]
+          end
+        end
       end
 
       it 'returns issues user can see' do

@@ -2310,8 +2310,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(buffer.read).to include("\"class\":\"#{model.class}\"")
     end
 
-    using RSpec::Parameterized::TableSyntax
-
     where(raise_on_exhaustion: [true, false])
 
     with_them do
@@ -2327,6 +2325,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     it 'does not raise on exhaustion by default' do
       with_lock_retries = double
       expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
+      expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
+
+      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+    end
+
+    it 'defaults to allowing subtransactions' do
+      with_lock_retries = double
+
+      expect(Gitlab::Database::WithLockRetries).to receive(:new).with(hash_including(allow_savepoints: true)).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
 
       model.with_lock_retries(env: env, logger: in_memory_logger) { }
@@ -2683,6 +2690,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#remove_check_constraint' do
+    before do
+      allow(model).to receive(:transaction_open?).and_return(false)
+    end
+
     it 'removes the constraint' do
       drop_sql = /ALTER TABLE test_table\s+DROP CONSTRAINT IF EXISTS check_name/
 

@@ -815,6 +815,18 @@ RSpec.describe API::Issues do
         expect_paginated_array_response([closed_issue.id, issue.id])
       end
 
+      it 'sorts by title asc when requested' do
+        get api('/issues', user), params: { order_by: :title, sort: :asc }
+
+        expect_paginated_array_response([issue.id, closed_issue.id])
+      end
+
+      it 'sorts by title desc when requested' do
+        get api('/issues', user), params: { order_by: :title, sort: :desc }
+
+        expect_paginated_array_response([closed_issue.id, issue.id])
+      end
+
       context 'with issues list sort options' do
         it 'accepts only predefined order by params' do
           API::Helpers::IssuesHelpers.sort_options.each do |sort_opt|
@@ -824,7 +836,7 @@ RSpec.describe API::Issues do
         end
 
         it 'fails to sort with non predefined options' do
-          %w(milestone title abracadabra).each do |sort_opt|
+          %w(milestone abracadabra).each do |sort_opt|
             get api('/issues', user), params: { order_by: sort_opt, sort: 'asc' }
             expect(response).to have_gitlab_http_status(:bad_request)
           end

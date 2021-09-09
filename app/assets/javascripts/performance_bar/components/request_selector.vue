@@ -1,11 +1,14 @@
 <script>
-import { GlPopover } from '@gitlab/ui';
+import { GlPopover, GlSafeHtmlDirective } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
 import { n__ } from '~/locale';
 
 export default {
   components: {
     GlPopover,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     currentRequest: {
@@ -42,6 +45,7 @@ export default {
   methods: {
     glEmojiTag,
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 <template>
@@ -60,7 +64,7 @@ export default {
     <span v-if="requestsWithWarnings.length" class="gl-cursor-default">
       <span
         id="performance-bar-request-selector-warning"
-        v-html="glEmojiTag('warning') /* eslint-disable-line vue/no-v-html */"
+        v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('warning')"
       ></span>
       <gl-popover
         placement="bottom"

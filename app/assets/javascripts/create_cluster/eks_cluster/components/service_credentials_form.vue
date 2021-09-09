@@ -1,8 +1,7 @@
 <script>
 import { GlButton, GlFormGroup, GlFormInput, GlIcon, GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
-import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';
-import { sprintf, s__, __ } from '~/locale';
+import { s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { DEFAULT_REGION } from '../constants';
 
@@ -37,6 +36,9 @@ export default {
     regionHelpText: s__(
       'ClusterIntegration|Select the region you want to create the new cluster in. Make sure you have access to this region for your role to be able to authenticate. If no region is selected, we will use %{codeStart}DEFAULT_REGION%{codeEnd}. Learn more about %{linkStart}Regions%{linkEnd}.',
     ),
+    accountAndExternalIdsHelpText: s__(
+      'ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provisioned role, first create one on %{awsLinkStart}Amazon Web Services %{awsLinkEnd} using the above account and external IDs. %{moreInfoStart}More information%{moreInfoEnd}',
+    ),
     regionHelpTextDefaultRegion: DEFAULT_REGION,
   },
   data() {
@@ -55,39 +57,8 @@ export default {
         ? __('Authenticating')
         : s__('ClusterIntegration|Authenticate with AWS');
     },
-    accountAndExternalIdsHelpText() {
-      const escapedUrl = escape(this.accountAndExternalIdsHelpPath);
-
-      return sprintf(
-        s__(
-          'ClusterIntegration|Create a provision role on %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the account and external ID above. %{startMoreInfoLink}More information%{endLink}',
-        ),
-        {
-          startAwsLink:
-            '<a href="https://console.aws.amazon.com/iam/home?#roles" target="_blank" rel="noopener noreferrer">',
-          startMoreInfoLink: `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer">`,
-          externalLinkIcon: this.externalLinkIcon,
-          endLink: '</a>',
-        },
-        false,
-      );
-    },
-    provisionRoleArnHelpText() {
-      const escapedUrl = escape(this.createRoleArnHelpPath);
-
-      return sprintf(
-        s__(
-          'ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provisioned role, first create one on %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}',
-        ),
-        {
-          startAwsLink:
-            '<a href="https://console.aws.amazon.com/iam/home?#roles" target="_blank" rel="noopener noreferrer">',
-          startMoreInfoLink: `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer">`,
-          externalLinkIcon: this.externalLinkIcon,
-          endLink: '</a>',
-        },
-        false,
-      );
+    awsHelpLink() {
+      return 'https://console.aws.amazon.com/iam/home?#roles';
     },
   },
   methods: {
@@ -141,19 +112,41 @@ export default {
         </div>
       </div>
       <div class="col-12 mb-3 mt-n3">
-        <p
-          class="form-text text-muted"
-          v-html="accountAndExternalIdsHelpText /* eslint-disable-line vue/no-v-html */"
-        ></p>
+        <p class="form-text text-muted">
+          <gl-sprintf :message="$options.i18n.accountAndExternalIdsHelpText">
+            <template #awsLink="{ content }">
+              <gl-link :href="awsHelpLink" target="_blank">
+                {{ content }}
+                <gl-icon name="external-link" class="gl-vertical-align-middle" />
+              </gl-link>
+            </template>
+            <template #moreInfo="{ content }">
+              <gl-link :href="accountAndExternalIdsHelpPath" target="_blank">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </p>
       </div>
     </div>
     <div class="form-group">
       <label for="eks-provision-role-arn">{{ s__('ClusterIntegration|Provision Role ARN') }}</label>
       <gl-form-input id="eks-provision-role-arn" v-model="roleArn" />
-      <p
-        class="form-text text-muted"
-        v-html="provisionRoleArnHelpText /* eslint-disable-line vue/no-v-html */"
-      ></p>
+      <p class="form-text text-muted">
+        <gl-sprintf :message="$options.i18n.accountAndExternalIdsHelpText">
+          <template #awsLink="{ content }">
+            <gl-link :href="awsHelpLink" target="_blank">
+              {{ content }}
+              <gl-icon name="external-link" class="gl-vertical-align-middle" />
+            </gl-link>
+          </template>
+          <template #moreInfo="{ content }">
+            <gl-link :href="accountAndExternalIdsHelpPath" target="_blank">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
     </div>
 
     <gl-form-group :label="$options.i18n.regionInputLabel">

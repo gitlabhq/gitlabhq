@@ -60,6 +60,8 @@ Consider the next release as "Release N.M".
 Execute a standard migration (not a post-migration):
 
 ```ruby
+  enable_lock_retries!
+
   def up
     rename_table_safely(:issues, :tickets)
   end

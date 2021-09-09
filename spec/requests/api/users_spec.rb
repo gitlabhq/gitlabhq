@@ -2778,7 +2778,9 @@ RSpec.describe API::Users do
     end
   end
 
-  context 'approve pending user' do
+  context 'approve and reject pending user' do
+    let(:pending_user) { create(:user, :blocked_pending_approval) }
+
     shared_examples '404' do
       it 'returns 404' do
         expect(response).to have_gitlab_http_status(:not_found)
@@ -2789,7 +2791,6 @@ RSpec.describe API::Users do
     describe 'POST /users/:id/approve' do
       subject(:approve) { post api("/users/#{user_id}/approve", api_user) }
 
-      let_it_be(:pending_user) { create(:user, :blocked_pending_approval) }
       let_it_be(:deactivated_user) { create(:user, :deactivated) }
       let_it_be(:blocked_user) { create(:user, :blocked) }
 
@@ -2862,6 +2863,96 @@ RSpec.describe API::Users do
 
           before do
             approve
+          end
+
+          it_behaves_like '404'
+        end
+      end
+    end
+
+    describe 'POST /users/:id/reject', :aggregate_failures do
+      subject(:reject) { post api("/users/#{user_id}/reject", api_user) }
+
+      shared_examples 'returns 409' do
+        it 'returns 409' do
+          reject
+
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(json_response['message']).to eq('User does not have a pending request')
+        end
+      end
+
+      context 'performed by a non-admin user' do
+        let(:api_user) { user }
+        let(:user_id) { pending_user.id }
+
+        it 'returns 403' do
+          expect { reject }.not_to change { pending_user.reload.state }
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('You are not allowed to reject a user')
+        end
+      end
+
+      context 'performed by an admin user' do
+        let(:api_user) { admin }
+
+        context 'for an pending approval user' do
+          let(:user_id) { pending_user.id }
+
+          it 'returns 200' do
+            reject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['message']).to eq('Success')
+          end
+        end
+
+        context 'for a deactivated user' do
+          let(:user_id) { deactivated_user.id }
+
+          it 'does not reject a deactivated user' do
+            expect { reject }.not_to change { deactivated_user.reload.state }
+          end
+
+          it_behaves_like 'returns 409'
+        end
+
+        context 'for an active user' do
+          let(:user_id) { user.id }
+
+          it 'does not reject an active user' do
+            expect { reject }.not_to change { user.reload.state }
+          end
+
+          it_behaves_like 'returns 409'
+        end
+
+        context 'for a blocked user' do
+          let(:blocked_user) { create(:user, :blocked) }
+          let(:user_id) { blocked_user.id }
+
+          it 'does not reject a blocked user' do
+            expect { reject }.not_to change { blocked_user.reload.state }
+          end
+
+          it_behaves_like 'returns 409'
+        end
+
+        context 'for a ldap blocked user' do
+          let(:user_id) { ldap_blocked_user.id }
+
+          it 'does not reject a ldap blocked user' do
+            expect { reject }.not_to change { ldap_blocked_user.reload.state }
+          end
+
+          it_behaves_like 'returns 409'
+        end
+
+        context 'for a user that does not exist' do
+          let(:user_id) { non_existing_record_id }
+
+          before do
+            reject
           end
 
           it_behaves_like '404'

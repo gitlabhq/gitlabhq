@@ -37,7 +37,8 @@ module SortingHelper
       sort_value_contacted_date    => sort_title_contacted_date,
       sort_value_relative_position => sort_title_relative_position,
       sort_value_size              => sort_title_size,
-      sort_value_expire_date       => sort_title_expire_date
+      sort_value_expire_date       => sort_title_expire_date,
+      sort_value_title             => sort_title_title
     }
   end
   # rubocop: enable Metrics/AbcSize
@@ -188,7 +189,8 @@ module SortingHelper
       sort_value_due_date_later => sort_value_due_date,
       sort_value_merged_recently => sort_value_merged_date,
       sort_value_closed_recently => sort_value_closed_date,
-      sort_value_least_popular => sort_value_popularity
+      sort_value_least_popular => sort_value_popularity,
+      sort_value_title_desc => sort_value_title
     }
   end
 
@@ -205,7 +207,8 @@ module SortingHelper
       sort_value_closed_date => sort_value_closed_recently,
       sort_value_closed_earlier => sort_value_closed_recently,
       sort_value_popularity => sort_value_least_popular,
-      sort_value_most_popular => sort_value_least_popular
+      sort_value_most_popular => sort_value_least_popular,
+      sort_value_title => sort_value_title_desc
     }.merge(issuable_sort_option_overrides)
   end
 

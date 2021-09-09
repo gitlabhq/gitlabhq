@@ -6,6 +6,44 @@ module Gitlab
       module V2
         include Gitlab::Database::MigrationHelpers
 
+        # Executes the block with a retry mechanism that alters the +lock_timeout+ and +sleep_time+ between attempts.
+        # The timings can be controlled via the +timing_configuration+ parameter.
+        # If the lock was not acquired within the retry period, a last attempt is made without using +lock_timeout+.
+        #
+        # In order to retry the block, the method wraps the block into a transaction.
+        # Note it cannot be used inside an already open transaction and will raise an error in that case.
+        #
+        # ==== Examples
+        #   # Invoking without parameters
+        #   with_lock_retries do
+        #     drop_table :my_table
+        #   end
+        #
+        #   # Invoking with custom +timing_configuration+
+        #   t = [
+        #     [1.second, 1.second],
+        #     [2.seconds, 2.seconds]
+        #   ]
+        #
+        #   with_lock_retries(timing_configuration: t) do
+        #     drop_table :my_table # this will be retried twice
+        #   end
+        #
+        #   # Disabling the retries using an environment variable
+        #   > export DISABLE_LOCK_RETRIES=true
+        #
+        #   with_lock_retries do
+        #     drop_table :my_table # one invocation, it will not retry at all
+        #   end
+        #
+        # ==== Parameters
+        # * +timing_configuration+ - [[ActiveSupport::Duration, ActiveSupport::Duration], ...] lock timeout for the block, sleep time before the next iteration, defaults to `Gitlab::Database::WithLockRetries::DEFAULT_TIMING_CONFIGURATION`
+        # * +logger+ - [Gitlab::JsonLogger]
+        # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
+        def with_lock_retries(*args, **kwargs, &block)
+          super(*args, **kwargs.merge(allow_savepoints: false), &block)
+        end
+
         # Renames a column without requiring downtime.
         #
         # Concurrent renames work by using database triggers to ensure both the

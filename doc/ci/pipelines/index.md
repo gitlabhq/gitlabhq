@@ -171,9 +171,6 @@ variables:
 
 You cannot set job-level variables to be pre-filled when you run a pipeline manually.
 
-Pre-filled variables do not show up when the CI/CD configuration is [external to the project](settings.md#specify-a-custom-cicd-configuration-file).
-See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336184) for more details.
-
 ### Run a pipeline by using a URL query string
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.

@@ -78,7 +78,7 @@ module API
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                  desc: 'Return opened, closed, or all issues'
         optional :order_by, type: String, values: Helpers::IssuesHelpers.sort_options, default: 'created_at',
-                 desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
+                 desc: 'Return issues ordered by `created_at`, `due_date`, `label_priority`, `milestone_due`, `popularity`, `priority`, `relative_position`, `title`, or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                  desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :due_date, type: String, values: %w[0 overdue week month next_month_and_previous_two_weeks] << '',

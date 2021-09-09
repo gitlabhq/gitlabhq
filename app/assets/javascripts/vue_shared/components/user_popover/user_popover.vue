@@ -1,5 +1,5 @@
 <script>
-import { GlPopover, GlLink, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import { GlPopover, GlLink, GlSkeletonLoader, GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import { glEmojiTag } from '../../../emoji';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
@@ -16,6 +16,9 @@ export default {
     GlSkeletonLoader,
     UserAvatarImage,
     UserNameWithStatus,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     target: {
@@ -49,6 +52,7 @@ export default {
       return this.user?.status?.availability || '';
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
@@ -94,7 +98,7 @@ export default {
             <span class="gl-ml-2">{{ user.location }}</span>
           </div>
           <div v-if="statusHtml" class="js-user-status gl-mt-3">
-            <span v-html="statusHtml /* eslint-disable-line vue/no-v-html */"></span>
+            <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
           </div>
           <div v-if="user.bot" class="gl-text-blue-500">
             <gl-icon name="question" />

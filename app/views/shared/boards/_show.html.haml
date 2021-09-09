@@ -17,6 +17,5 @@
 - add_page_specific_style 'page_bundles/boards'
 
 = render 'shared/issuable/search_bar', type: :boards, board: board
-#board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
-  %board-content{ ":disabled" => "disabled" }
-  %board-settings-sidebar
+
+#js-issuable-board-app{ data: board_data }

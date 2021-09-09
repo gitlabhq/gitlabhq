@@ -9,7 +9,7 @@ module Integrations
     end
 
     def description
-      "Perform common operations in Slack"
+      "Perform common operations in Slack."
     end
 
     def self.to_param
