@@ -507,3 +507,16 @@ end
 ```
 
 See [`db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb) for a full example.
+
+### Viewing failure error logs
+
+After running a background migration, if any jobs have failed, you can view the logs in [Kibana](https://log.gprd.gitlab.net/goto/3afc1393447c401d7602c1874793e2f6).
+View the production Sidekiq log and filter for:
+
+- `json.class: BackgroundMigrationWorker`
+- `json.job_status: fail`
+- `json.args: <MyBackgroundMigrationClassName>`
+
+Looking at the `json.error_class`, `json.error_message` and `json.error_backtrace` values may be helpful in understanding why the jobs failed.
+
+Depending on when and how the failure occurred, you may find other helpful information by filtering with `json.class: <MyBackgroundMigrationClassName>`.

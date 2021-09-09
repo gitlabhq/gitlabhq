@@ -1,15 +1,3 @@
-@mixin flat-connector-before($length: 44px) {
-  &::before {
-    content: '';
-    position: absolute;
-    top: 48%;
-    left: -$length;
-    border-top: 2px solid var(--border-color, $border-color);
-    width: $length;
-    height: 1px;
-  }
-}
-
 @mixin build-content($border-radius: 30px) {
   display: inline-block;
   padding: 8px 10px 9px;

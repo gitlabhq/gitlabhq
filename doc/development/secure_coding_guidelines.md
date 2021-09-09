@@ -295,6 +295,8 @@ The injected client-side code is executed on the victim's browser in the context
 
 Much of the impact is contingent upon the function of the application and the capabilities of the victim's session. For further impact possibilities, please check out [the beef project](https://beefproject.com/).
 
+For a demonstration of the impact on GitLab with a realistic attack scenario, see [this video on the GitLab Unfiltered channel](https://www.youtube.com/watch?v=t4PzHNycoKo) (internal, it requires being logged in with the GitLab Unfiltered account).
+
 ### When to consider?
 
 When user submitted data is included in responses to end users, which is just about anywhere.

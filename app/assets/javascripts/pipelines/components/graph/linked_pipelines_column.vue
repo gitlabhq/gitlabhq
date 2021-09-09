@@ -195,7 +195,7 @@ export default {
 <template>
   <div class="gl-display-flex">
     <div :class="columnClass" class="linked-pipelines-column">
-      <div data-testid="linked-column-title" class="stage-name" :class="computedTitleClasses">
+      <div data-testid="linked-column-title" :class="computedTitleClasses">
         {{ columnTitle }}
       </div>
       <ul class="gl-pl-0">
@@ -224,7 +224,7 @@ export default {
             <pipeline-graph
               v-if="isExpanded(pipeline.id)"
               :type="type"
-              class="d-inline-block gl-mt-n2"
+              class="gl-inline-block gl-mt-n2"
               :config-paths="configPaths"
               :pipeline="currentPipeline"
               :computed-pipeline-info="getPipelineLayers(pipeline.id)"

@@ -23,6 +23,11 @@ export default {
       required: false,
       default: -1,
     },
+    cssClassJobName: {
+      type: [String, Array],
+      required: false,
+      default: '',
+    },
     stageName: {
       type: String,
       required: false,
@@ -59,7 +64,8 @@ export default {
       type="button"
       data-toggle="dropdown"
       data-display="static"
-      class="dropdown-menu-toggle build-content gl-build-content gl-pipeline-job-width! gl-pr-4!"
+      :class="cssClassJobName"
+      class="dropdown-menu-toggle gl-pipeline-job-width! gl-pr-4!"
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         <job-item

@@ -115,13 +115,13 @@ There is support for:
 - [Redis HLL metrics](#redis-hyperloglog-metrics).
 - [Generic metrics](#generic-metrics), which are metrics based on settings or configurations.
 
-Currently, there is no support for:
+There is no support for:
 
 - `add`, `sum`, `histogram` for database metrics.
 
 You can [track the progress to support these](https://gitlab.com/groups/gitlab-org/-/epics/6118).
 
-## Creating a new metric instrumentation class
+## Create a new metric instrumentation class
 
 To create a stub instrumentation for a Service Ping metric, you can use a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_generator.rb):
 

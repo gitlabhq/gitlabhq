@@ -21,7 +21,8 @@ module Gitlab
           :throttle_authenticated_protected_paths_api,
           :throttle_authenticated_protected_paths_web,
           :throttle_authenticated_packages_api,
-          :throttle_authenticated_git_lfs
+          :throttle_authenticated_git_lfs,
+          :throttle_authenticated_files_api
         ].freeze
 
         PAYLOAD_KEYS = [

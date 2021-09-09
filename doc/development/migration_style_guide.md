@@ -219,6 +219,8 @@ In case you need to insert, update, or delete a significant amount of data, you:
 
 ## Migration helpers and versioning
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
+
 Various helper methods are available for many common patterns in database migrations. Those
 helpers can be found in `Gitlab::Database::MigrationHelpers` and related modules.
 
@@ -240,15 +242,14 @@ class TestMigration < Gitlab::Database::Migration[1.0]
 end
 ```
 
-NOTE:
-It is discouraged to include `Gitlab::Database::MigrationHelpers` directly into a
-migration. Instead, the latest version of `Gitlab::Database::Migration` will expose the latest
+Do not include `Gitlab::Database::MigrationHelpers` directly into a
+migration. Instead, use the latest version of `Gitlab::Database::Migration`, which exposes the latest
 version of migration helpers automatically.
 
-NOTE:
-Migration helpers and versioning are available starting from [14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986).
-For merge requests targeting previous stable branches, the old format needs to be used and we continue
-to inherit from `ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[1.0]` for those.
+Migration helpers and versioning were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986)
+in GitLab 14.3.
+For merge requests targeting previous stable branches, use the old format and still inherit from
+`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[1.0]`.
 
 ## Retry mechanism when acquiring database locks
 

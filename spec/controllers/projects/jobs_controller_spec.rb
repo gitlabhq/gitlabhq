@@ -755,16 +755,43 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     before do
       project.add_developer(user)
       sign_in(user)
-
-      post_retry
     end
 
     context 'when job is retryable' do
       let(:job) { create(:ci_build, :retryable, pipeline: pipeline) }
 
       it 'redirects to the retried job page' do
+        post_retry
+
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
+      end
+
+      shared_examples_for 'retried job has the same attributes' do
+        it 'creates a new build has the same attributes from the previous build' do
+          expect { post_retry }.to change { Ci::Build.count }.by(1)
+
+          retried_build = Ci::Build.last
+
+          Ci::RetryBuildService.clone_accessors.each do |accessor|
+            expect(job.read_attribute(accessor))
+              .to eq(retried_build.read_attribute(accessor)),
+              "Mismatched attribute on \"#{accessor}\". " \
+              "It was \"#{job.read_attribute(accessor)}\" but changed to \"#{retried_build.read_attribute(accessor)}\""
+          end
+        end
+      end
+
+      context 'with branch pipeline' do
+        let!(:job) { create(:ci_build, :retryable, tag: true, when: 'on_success', pipeline: pipeline) }
+
+        it_behaves_like 'retried job has the same attributes'
+      end
+
+      context 'with tag pipeline' do
+        let!(:job) { create(:ci_build, :retryable, tag: false, when: 'on_success', pipeline: pipeline) }
+
+        it_behaves_like 'retried job has the same attributes'
       end
     end
 
@@ -772,6 +799,8 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'renders unprocessable_entity' do
+        post_retry
+
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end

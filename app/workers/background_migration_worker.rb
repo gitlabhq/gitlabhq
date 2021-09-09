@@ -3,6 +3,8 @@
 class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  MAX_LEASE_ATTEMPTS = 5
+
   data_consistency :always
 
   sidekiq_options retry: 3
@@ -30,10 +32,11 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   # lease_attempts - The number of times we will try to obtain an exclusive
   #   lease on the class before giving up. See MR for more discussion.
   #   https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45298#note_434304956
-  def perform(class_name, arguments = [], lease_attempts = 5)
+  def perform(class_name, arguments = [], lease_attempts = MAX_LEASE_ATTEMPTS)
     with_context(caller_id: class_name.to_s) do
+      retried = lease_attempts != MAX_LEASE_ATTEMPTS
       attempts_left = lease_attempts - 1
-      should_perform, ttl = perform_and_ttl(class_name, attempts_left)
+      should_perform, ttl = perform_and_ttl(class_name, attempts_left, retried)
 
       break if should_perform.nil?
 
@@ -50,13 +53,13 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
     end
   end
 
-  def perform_and_ttl(class_name, attempts_left)
+  def perform_and_ttl(class_name, attempts_left, retried)
     # In test environments `perform_in` will run right away. This can then
     # lead to stack level errors in the above `#perform`. To work around this
     # we'll just perform the migration right away in the test environment.
     return [true, nil] if always_perform?
 
-    lease = lease_for(class_name)
+    lease = lease_for(class_name, retried)
     lease_obtained = !!lease.try_obtain
     healthy_db = healthy_database?
     perform = lease_obtained && healthy_db
@@ -82,13 +85,17 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
     [perform, lease.ttl]
   end
 
-  def lease_for(class_name)
+  def lease_for(class_name, retried)
     Gitlab::ExclusiveLease
-      .new(lease_key_for(class_name), timeout: self.class.minimum_interval)
+      .new(lease_key_for(class_name, retried), timeout: self.class.minimum_interval)
   end
 
-  def lease_key_for(class_name)
-    "#{self.class.name}:#{class_name}"
+  def lease_key_for(class_name, retried)
+    key = "#{self.class.name}:#{class_name}"
+    # We use a different exclusive lock key for retried jobs to allow them running concurrently with the scheduled jobs.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68763 for more information.
+    key += ":retried" if retried
+    key
   end
 
   def always_perform?

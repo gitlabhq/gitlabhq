@@ -96,7 +96,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 the `file_template_project_id`, `delayed_project_deletion`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
 
 ```json
@@ -197,7 +197,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 these parameters:
 
 - `file_template_project_id`

@@ -70,7 +70,7 @@ module Tooling
           'data-track-action'
         )
         all_changed_files.select do |file|
-          matching_files?(file, extension: '.rb', pattern: %r{Gitlab::Tracking\.(event|enabled\?|snowplow_options)$}) ||
+          matching_files?(file, extension: '.rb', pattern: %r{Gitlab::Tracking\.(event|enabled\?|options)$}) ||
             matching_files?(file, extension: '.js', pattern: js_patterns) ||
             matching_files?(file, extension: '.vue', pattern: js_patterns) ||
             matching_files?(file, extension: '.haml', pattern: %r{data: \{ track})

@@ -659,7 +659,7 @@ PUT /projects/:id/services/hangouts-chat
 ```
 
 NOTE:
-Specific event parameters (for example, `push_events` flag) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+Specific event parameters (for example, `push_events` flag) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 
@@ -1119,7 +1119,7 @@ PUT /projects/:id/services/slack
 ```
 
 NOTE:
-Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 
@@ -1231,7 +1231,7 @@ PUT /projects/:id/services/mattermost
 ```
 
 NOTE:
-Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 
@@ -1365,7 +1365,7 @@ GET /projects/:id/services/jenkins
 A continuous integration and build server
 
 NOTE:
-This service was [removed in v13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/1600)
+This service was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1600) in GitLab 13.0.
 
 ### Create/Edit Jenkins CI (Deprecated) service
 

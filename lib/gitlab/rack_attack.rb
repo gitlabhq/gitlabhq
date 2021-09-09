@@ -145,6 +145,18 @@ module Gitlab
         end
       end
 
+      throttle_or_track(rack_attack, 'throttle_unauthenticated_files_api', Gitlab::Throttle.unauthenticated_files_api_options) do |req|
+        if req.throttle_unauthenticated_files_api?
+          req.ip
+        end
+      end
+
+      throttle_or_track(rack_attack, 'throttle_authenticated_files_api', Gitlab::Throttle.authenticated_files_api_options) do |req|
+        if req.throttle_authenticated_files_api?
+          req.throttled_user_id([:api])
+        end
+      end
+
       rack_attack.safelist('throttle_bypass_header') do |req|
         Gitlab::Throttle.bypass_header.present? &&
           req.get_header(Gitlab::Throttle.bypass_header) == '1'

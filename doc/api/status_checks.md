@@ -62,7 +62,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 NOTE:
 `sha` must be the SHA at the `HEAD` of the merge request's source branch.
 
-## Get project external status checks **(ULTIMATE)**
+## Get project external status checks
 
 You can request information about a project's external status checks using the following endpoint:
 
@@ -97,7 +97,7 @@ GET /projects/:id/external_status_checks
 ]
 ```
 
-## Create external status check **(ULTIMATE)**
+## Create external status check
 
 You can create a new external status check for a project using the following endpoint:
 
@@ -116,7 +116,7 @@ defined external service. This includes confidential merge requests.
 | `external_url`         | string           | yes      | URL of status check resource                   |
 | `protected_branch_ids` | `array<Integer>` | no       | IDs of protected branches to scope the rule by |
 
-## Delete external status check **(ULTIMATE)**
+## Delete external status check
 
 You can delete an external status check for a project using the following endpoint:
 
@@ -129,7 +129,7 @@ DELETE /projects/:id/external_status_checks/:check_id
 | `rule_id`              | integer        | yes      | ID of an status check |
 | `id`                   | integer        | yes      | ID of a project       |
 
-## Update external status check **(ULTIMATE)**
+## Update external status check
 
 You can update an existing external status check for a project using the following endpoint:
 

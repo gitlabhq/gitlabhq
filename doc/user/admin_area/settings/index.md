@@ -37,7 +37,7 @@ To access the default page for Admin Area settings:
 
 | Option | Description |
 | ------ | ----------- |
-| [Elasticsearch](../../../integration/elasticsearch.md#enabling-advanced-search) | Elasticsearch integration. Elasticsearch AWS IAM. |
+| [Elasticsearch](../../../integration/elasticsearch.md#enable-advanced-search) | Elasticsearch integration. Elasticsearch AWS IAM. |
 | [Kroki](../../../administration/integration/kroki.md#enable-kroki-in-gitlab) | Allow rendering of diagrams in AsciiDoc and Markdown documents using [kroki.io](https://kroki.io). |
 | [Mailgun](../../../administration/integration/mailgun.md) | Enable your GitLab instance to receive invite email bounce events from Mailgun, if it is your email provider. |
 | [PlantUML](../../../administration/integration/plantuml.md) | Allow rendering of PlantUML diagrams in documents. |

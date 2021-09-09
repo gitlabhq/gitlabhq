@@ -661,6 +661,12 @@ let_it_be_with_refind(:project) { create(:project) }
 let_it_be(:project, refind: true) { create(:project) }
 ```
 
+Note that `let_it_be` cannot be used with factories that has stubs, such as `allow`.
+The reason is that `let_it_be` happens in a `before(:all)` block, and RSpec does not
+allow stubs in `before(:all)`.
+See this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340487) for more details.
+To resolve, use `let`, or change the factory to not use stubs.
+
 ### Time-sensitive tests
 
 [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)

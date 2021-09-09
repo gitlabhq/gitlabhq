@@ -124,9 +124,8 @@ export default {
   <div
     ref="linkedPipeline"
     v-gl-tooltip
-    class="linked-pipeline build gl-pipeline-job-width"
+    class="gl-pipeline-job-width"
     :title="tooltipText"
-    :class="{ 'downstream-pipeline': isDownstream }"
     data-qa-selector="child_pipeline"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"

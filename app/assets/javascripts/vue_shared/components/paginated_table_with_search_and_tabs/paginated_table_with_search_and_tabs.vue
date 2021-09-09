@@ -1,5 +1,12 @@
 <script>
-import { GlAlert, GlBadge, GlPagination, GlTab, GlTabs } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlPagination,
+  GlTab,
+  GlTabs,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import Api from '~/api';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -19,6 +26,9 @@ export default {
     GlTabs,
     GlTab,
     FilteredSearchBar,
+  },
+  directives: {
+    SafeHtml,
   },
   inject: {
     projectPath: {
@@ -265,7 +275,7 @@ export default {
 <template>
   <div class="incident-management-list">
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="$emit('error-alert-dismissed')">
-      <p v-html="serverErrorMessage || i18n.errorMsg /* eslint-disable-line vue/no-v-html */"></p>
+      <p v-safe-html="serverErrorMessage || i18n.errorMsg"></p>
     </gl-alert>
 
     <div

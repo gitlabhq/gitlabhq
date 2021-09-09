@@ -218,7 +218,7 @@ The [Redis HLL metrics](implement.md#known-events-are-added-automatically-in-ser
 
 A YAML metric definition is required for each metric. A dedicated generator is provided to create metric definitions for Redis HLL events.
 
-The generator takes `category` and `event` arguments, as the root key will be `redis_hll_counters`, and creates two metric definitions for weekly and monthly timeframes:
+The generator takes `category` and `event` arguments, as the root key is `redis_hll_counters`, and creates two metric definitions for weekly and monthly time frames:
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues i_closed

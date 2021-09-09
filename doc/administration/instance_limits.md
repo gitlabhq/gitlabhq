@@ -684,7 +684,7 @@ indexed, which have a separate limit. For more information, read
 - For self-managed installations, the field length is unlimited by default.
 
 You can configure this limit for self-managed installations when you
-[enable Elasticsearch](../integration/elasticsearch.md#enabling-advanced-search).
+[enable Elasticsearch](../integration/elasticsearch.md#enable-advanced-search).
 Set the limit to `0` to disable it.
 
 ## Wiki limits
