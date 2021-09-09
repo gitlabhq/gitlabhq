@@ -3031,50 +3031,81 @@ RSpec.describe API::Users do
     end
   end
 
-  describe 'POST /users/:id/unblock' do
-    let(:blocked_user) { create(:user, state: 'blocked') }
-    let(:deactivated_user) { create(:user, state: 'deactivated') }
+  describe 'POST /users/:id/unblock', :aggregate_failures do
+    context 'when admin' do
+      subject(:unblock_user) { post api("/users/#{user_id}/unblock", admin) }
 
-    it 'unblocks existing user' do
-      post api("/users/#{user.id}/unblock", admin)
-      expect(response).to have_gitlab_http_status(:created)
-      expect(user.reload.state).to eq('active')
-    end
+      context 'with an existing user' do
+        let(:user_id) { user.id }
 
-    it 'unblocks a blocked user' do
-      post api("/users/#{blocked_user.id}/unblock", admin)
-      expect(response).to have_gitlab_http_status(:created)
-      expect(blocked_user.reload.state).to eq('active')
-    end
+        it 'unblocks existing user' do
+          unblock_user
 
-    it 'does not unblock ldap blocked users' do
-      post api("/users/#{ldap_blocked_user.id}/unblock", admin)
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
-    end
+          expect(response).to have_gitlab_http_status(:created)
+          expect(user.reload.state).to eq('active')
+        end
+      end
 
-    it 'does not unblock deactivated users' do
-      post api("/users/#{deactivated_user.id}/unblock", admin)
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(deactivated_user.reload.state).to eq('deactivated')
+      context 'with a blocked user' do
+        let(:blocked_user) { create(:user, state: 'blocked') }
+        let(:user_id) { blocked_user.id }
+
+        it 'unblocks a blocked user' do
+          unblock_user
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(blocked_user.reload.state).to eq('active')
+        end
+      end
+
+      context 'with a ldap blocked user' do
+        let(:user_id) { ldap_blocked_user.id }
+
+        it 'does not unblock ldap blocked users' do
+          unblock_user
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
+        end
+      end
+
+      context 'with a deactivated user' do
+        let(:user_id) { deactivated_user.id }
+
+        it 'does not unblock deactivated users' do
+          unblock_user
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(deactivated_user.reload.state).to eq('deactivated')
+        end
+      end
+
+      context 'with a non existent user' do
+        let(:user_id) { non_existing_record_id }
+
+        it 'returns a 404 error if user id not found' do
+          unblock_user
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 User Not Found')
+        end
+      end
+
+      context 'with an invalid user id' do
+        let(:user_id) { 'ASDF' }
+
+        it 'returns a 404' do
+          unblock_user
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     it 'is not available for non admin users' do
       post api("/users/#{user.id}/unblock", user)
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(user.reload.state).to eq('active')
-    end
-
-    it 'returns a 404 error if user id not found' do
-      post api('/users/0/block', admin)
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 User Not Found')
-    end
-
-    it "returns a 404 for invalid ID" do
-      post api("/users/ASDF/block", admin)
-
-      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 

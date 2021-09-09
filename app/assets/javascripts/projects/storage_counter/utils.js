@@ -1,36 +1,5 @@
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { s__ } from '~/locale';
-
-const projectStorageTypes = [
-  {
-    id: 'buildArtifactsSize',
-    name: s__('UsageQuota|Artifacts'),
-  },
-  {
-    id: 'lfsObjectsSize',
-    name: s__('UsageQuota|LFS Storage'),
-  },
-  {
-    id: 'packagesSize',
-    name: s__('UsageQuota|Packages'),
-  },
-  {
-    id: 'repositorySize',
-    name: s__('UsageQuota|Repository'),
-  },
-  {
-    id: 'snippetsSize',
-    name: s__('UsageQuota|Snippets'),
-  },
-  {
-    id: 'uploadsSize',
-    name: s__('UsageQuota|Uploads'),
-  },
-  {
-    id: 'wikiSize',
-    name: s__('UsageQuota|Wiki'),
-  },
-];
+import { PROJECT_STORAGE_TYPES } from './constants';
 
 /**
  * This method parses the results from `getProjectStorageCount` call.
@@ -38,26 +7,32 @@ const projectStorageTypes = [
  * @param {Object} data graphql result
  * @returns {Object}
  */
-export const parseGetProjectStorageResults = (data) => {
+export const parseGetProjectStorageResults = (data, helpLinks) => {
   const projectStatistics = data?.project?.statistics;
   if (!projectStatistics) {
     return {};
   }
   const { storageSize, ...storageStatistics } = projectStatistics;
-  const storageTypes = projectStorageTypes.reduce((types, currentType) => {
+  const storageTypes = PROJECT_STORAGE_TYPES.reduce((types, currentType) => {
     if (!storageStatistics[currentType.id]) {
       return types;
     }
 
+    const helpPathKey = currentType.id.replace(`Size`, `HelpPagePath`);
+    const helpPath = helpLinks[helpPathKey];
+
     return types.concat({
-      ...currentType,
-      value: numberToHumanSize(storageStatistics[currentType.id]),
+      storageType: {
+        ...currentType,
+        helpPath,
+      },
+      value: numberToHumanSize(storageStatistics[currentType.id], 1),
     });
   }, []);
 
   return {
     storage: {
-      totalUsage: numberToHumanSize(storageSize),
+      totalUsage: numberToHumanSize(storageSize, 1),
       storageTypes,
     },
     statistics: projectStatistics,

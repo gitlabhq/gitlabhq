@@ -36,92 +36,40 @@ module Gitlab
 
       # Returns a Hash containing the load balancing configuration.
       def self.configuration
-        Gitlab::Database.main.config[:load_balancing] || {}
-      end
-
-      # Returns the maximum replica lag size in bytes.
-      def self.max_replication_difference
-        (configuration['max_replication_difference'] || 8.megabytes).to_i
-      end
-
-      # Returns the maximum lag time for a replica.
-      def self.max_replication_lag_time
-        (configuration['max_replication_lag_time'] || 60.0).to_f
-      end
-
-      # Returns the interval (in seconds) to use for checking the status of a
-      # replica.
-      def self.replica_check_interval
-        (configuration['replica_check_interval'] || 60).to_f
-      end
-
-      # Returns the additional hosts to use for load balancing.
-      def self.hosts
-        configuration['hosts'] || []
-      end
-
-      def self.service_discovery_enabled?
-        configuration.dig('discover', 'record').present?
-      end
-
-      def self.service_discovery_configuration
-        conf = configuration['discover'] || {}
-
-        {
-          nameserver: conf['nameserver'] || 'localhost',
-          port: conf['port'] || 8600,
-          record: conf['record'],
-          record_type: conf['record_type'] || 'A',
-          interval: conf['interval'] || 60,
-          disconnect_timeout: conf['disconnect_timeout'] || 120,
-          use_tcp: conf['use_tcp'] || false
-        }
-      end
-
-      def self.pool_size
-        Gitlab::Database.main.pool_size
+        @configuration ||= Configuration.for_model(ActiveRecord::Base)
       end
 
       # Returns true if load balancing is to be enabled.
       def self.enable?
         return false if Gitlab::Runtime.rake?
-        return false unless self.configured?
 
-        true
+        configured?
       end
 
-      # Returns true if load balancing has been configured. Since
-      # Sidekiq does not currently use load balancing, we
-      # may want Web application servers to detect replication lag by
-      # posting the write location of the database if load balancing is
-      # configured.
       def self.configured?
-        hosts.any? || service_discovery_enabled?
+        configuration.load_balancing_enabled? ||
+          configuration.service_discovery_enabled?
       end
 
       def self.start_service_discovery
-        return unless service_discovery_enabled?
+        return unless configuration.service_discovery_enabled?
 
         ServiceDiscovery
-          .new(proxy.load_balancer, **service_discovery_configuration)
+          .new(proxy.load_balancer, **configuration.service_discovery)
           .start
       end
 
       # Configures proxying of requests.
       def self.configure_proxy
-        lb = LoadBalancer.new(hosts, primary_only: !enable?)
+        lb = LoadBalancer.new(configuration, primary_only: !enable?)
         ActiveRecord::Base.load_balancing_proxy = ConnectionProxy.new(lb)
 
         # Populate service discovery immediately if it is configured
-        if service_discovery_enabled?
+        if configuration.service_discovery_enabled?
           ServiceDiscovery
-            .new(lb, **service_discovery_configuration)
+            .new(lb, **configuration.service_discovery)
             .perform_service_discovery
         end
-      end
-
-      def self.active_record_models
-        ActiveRecord::Base.descendants
       end
 
       DB_ROLES = [

@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Project visibility
+# Project and group visibility
 
-GitLab allows [Owners](../user/permissions.md) to set a project's visibility as:
+GitLab allows [Owners](../user/permissions.md) to set a project's or group's visibility as:
 
 - **Public**
 - **Internal**
@@ -18,7 +18,7 @@ for your GitLab instance). For example, <https://gitlab.com/public>.
 You can control the visibility of individual features with
 [project feature settings](../user/permissions.md#project-features).
 
-## Public projects
+## Public projects and groups
 
 Public projects can be cloned **without any** authentication over HTTPS.
 
@@ -31,7 +31,7 @@ By default, `/public` is visible to unauthenticated users. However, if the
 [**Public** visibility level](../user/admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/public` is visible only to signed-in users.
 
-## Internal projects
+## Internal projects and groups
 
 Internal projects can be cloned by any signed-in user except
 [external users](../user/permissions.md#external-users).
@@ -47,7 +47,7 @@ and snippets on GitLab.com. Existing projects, groups, and snippets using the `I
 visibility setting keep this setting. You can read more about the change in the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
-## Private projects
+## Private projects and groups
 
 Private projects can only be cloned and viewed by project members (except for guests).
 
@@ -62,7 +62,19 @@ Prerequisite:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Change **Project visibility** to either Public, Internal, or Private.
+1. Change **Project visibility** to either **Private**, **Internal**, or **Public**.
+1. Select **Save changes**.
+
+## Change group visibility
+
+Prerequisite:
+
+- You must have the Owner role for a group.
+
+1. On the top bar, select **Menu > Groups** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Naming, visibility**.
+1. Under **Visibility level** select either **Private**, **Internal**, or **Public**.
 1. Select **Save changes**.
 
 ## Restrict use of public or internal projects

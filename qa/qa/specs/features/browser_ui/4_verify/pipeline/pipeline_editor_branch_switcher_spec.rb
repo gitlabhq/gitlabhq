@@ -58,14 +58,12 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:pipeline_editor_branch_switcher)
         Flow::Login.sign_in
         project.visit!
         Page::Project::Menu.perform(&:go_to_pipeline_editor)
       end
 
       after do
-        Runtime::Feature.disable(:pipeline_editor_branch_switcher)
         project.remove_via_api!
         Page::Main::Menu.perform(&:sign_out)
       end

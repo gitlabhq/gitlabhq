@@ -24,8 +24,7 @@ access has been granted and your build environment configured, you must configur
 1. Specify the [image](macos/environment.md#vm-images) you want to use.
 1. Commit a change to your repository.
 
-The runners automatically run your build. For more detailed setup instructions,
-view [how to set up macOS runners](macos/setup.md).
+The runners automatically run your build.
 
 ## Example `.gitlab-ci.yml` file
 

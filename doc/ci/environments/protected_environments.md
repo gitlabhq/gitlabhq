@@ -157,9 +157,9 @@ For more information, see [Deployment safety](deployment_safety.md).
 
 ## Group-level protected environments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in [GitLab Premium](https://about.gitlab.com/pricing/) 14.0. [Deployed behind the `group_level_protected_environments` flag](../../administration/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in GitLab 14.0. [Deployed behind the `group_level_protected_environments` flag](../../administration/feature_flags.md), disabled by default.
 > - [Feature flag `group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) removed in GitLab 14.3.
-> - [Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) on [GitLab Premium](https://about.gitlab.com/pricing/) and on GitLab.com in 14.3.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) in GitLab 14.3.
 
 This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).

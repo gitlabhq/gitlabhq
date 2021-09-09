@@ -4,7 +4,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Releases API
+# Releases API **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
 > - Using this API you can manipulate GitLab [Release](../../user/project/releases/index.md) entries.
@@ -499,7 +499,7 @@ Example response:
 
 ### Group milestones **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in GitLab 13.5.
 
 Group milestones associated with the project may be specified in the `milestones`
 array for [Create a release](#create-a-release) and [Update a release](#update-a-release)
@@ -508,7 +508,7 @@ adding milestones for ancestor groups raises an error.
 
 ## Collect release evidence **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
 
 Create Evidence for an existing Release.
 

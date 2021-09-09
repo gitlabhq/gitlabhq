@@ -1,56 +1,6 @@
 import { memoize } from 'lodash';
+import { createNodeDict } from '../utils';
 import { createSankey } from './dag/drawing_utils';
-
-/*
-    The following functions are the main engine in transforming the data as
-    received from the endpoint into the format the d3 graph expects.
-
-    Input is of the form:
-    [nodes]
-      nodes: [{category, name, jobs, size}]
-        category is the stage name
-        name is a group name; in the case that the group has one job, it is
-          also the job name
-        size is the number of parallel jobs
-        jobs: [{ name, needs}]
-          job name is either the same as the group name or group x/y
-          needs: [job-names]
-          needs is an array of job-name strings
-
-    Output is of the form:
-    { nodes: [node], links: [link] }
-      node: { name, category }, + unused info passed through
-      link: { source, target, value }, with source & target being node names
-        and value being a constant
-
-    We create nodes in the GraphQL update function, and then here we create the node dictionary,
-    then create links, and then dedupe the links, so that in the case where
-    job 4 depends on job 1 and job 2, and job 2 depends on job 1, we show only a single link
-    from job 1 to job 2 then another from job 2 to job 4.
-
-    CREATE LINKS
-    nodes.name -> target
-    nodes.name.needs.each -> source (source is the name of the group, not the parallel job)
-    10 -> value (constant)
-  */
-
-export const createNodeDict = (nodes) => {
-  return nodes.reduce((acc, node) => {
-    const newNode = {
-      ...node,
-      needs: node.jobs.map((job) => job.needs || []).flat(),
-    };
-
-    if (node.size > 1) {
-      node.jobs.forEach((job) => {
-        acc[job.name] = newNode;
-      });
-    }
-
-    acc[node.name] = newNode;
-    return acc;
-  }, {});
-};
 
 /*
   A peformant alternative to lodash's isEqual. Because findIndex always finds

@@ -1,7 +1,6 @@
 import Vue from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import store from '~/mr_notes/stores';
-import ReviewBar from './components/review_bar.vue';
 
 export const initReviewBar = () => {
   const el = document.getElementById('js-review-bar');
@@ -10,6 +9,12 @@ export const initReviewBar = () => {
   new Vue({
     el,
     store,
+    components: {
+      ReviewBar: () => import('./components/review_bar.vue'),
+    },
+    computed: {
+      ...mapGetters('batchComments', ['draftsCount']),
+    },
     mounted() {
       this.fetchDrafts();
     },
@@ -17,7 +22,9 @@ export const initReviewBar = () => {
       ...mapActions('batchComments', ['fetchDrafts']),
     },
     render(createElement) {
-      return createElement(ReviewBar);
+      if (this.draftsCount === 0) return null;
+
+      return createElement('review-bar');
     },
   });
 };

@@ -6,6 +6,7 @@ module Gitlab
 
     MAIN_DATABASE_NAME = 'main'
     CI_DATABASE_NAME = 'ci'
+    DEFAULT_POOL_HEADROOM = 10
 
     # This constant is used when renaming tables concurrently.
     # If you plan to rename a table using the `rename_table_safely` method, add your table here one milestone before the rename.
@@ -60,6 +61,20 @@ module Gitlab
 
     def self.main
       DATABASES[PRIMARY_DATABASE_NAME]
+    end
+
+    # We configure the database connection pool size automatically based on the
+    # configured concurrency. We also add some headroom, to make sure we don't
+    # run out of connections when more threads besides the 'user-facing' ones
+    # are running.
+    #
+    # Read more about this in
+    # doc/development/database/client_side_connection_pool.md
+    def self.default_pool_size
+      headroom =
+        (ENV["DB_POOL_HEADROOM"].presence || DEFAULT_POOL_HEADROOM).to_i
+
+      Gitlab::Runtime.max_threads + headroom
     end
 
     def self.has_config?(database_name)

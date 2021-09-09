@@ -188,6 +188,10 @@ Do not use **e-mail** with a hyphen. When plural, use **emails** or **email mess
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance.
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
+## enter
+
+Use instead of **type** when talking about putting values into text boxes.
+
 ## epic
 
 Lowercase.
@@ -580,6 +584,10 @@ Use title case. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.co
 You **turn on** or **turn off** a toggle. For example:
 
 - Turn on the **blah** toggle.
+
+## type
+
+Do not use if you can avoid it. Use **enter** instead.
 
 ## useful
 

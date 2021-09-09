@@ -12,9 +12,6 @@ import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import { setFaviconOverlay } from '../lib/utils/favicon';
-import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
-import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
-import GroupedTestReportsApp from '../reports/grouped_test_report/grouped_test_reports_app.vue';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import WidgetHeader from './components/mr_widget_header.vue';
@@ -42,7 +39,6 @@ import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
 // import ExtensionsContainer from './components/extensions/container';
-import TerraformPlan from './components/terraform/mr_widget_terraform_container.vue';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
@@ -84,10 +80,13 @@ export default {
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,
-    GroupedCodequalityReportsApp,
-    GroupedTestReportsApp,
-    TerraformPlan,
-    GroupedAccessibilityReportsApp,
+    GroupedCodequalityReportsApp: () =>
+      import('../reports/codequality_report/grouped_codequality_reports_app.vue'),
+    GroupedTestReportsApp: () =>
+      import('../reports/grouped_test_report/grouped_test_reports_app.vue'),
+    TerraformPlan: () => import('./components/terraform/mr_widget_terraform_container.vue'),
+    GroupedAccessibilityReportsApp: () =>
+      import('../reports/accessibility_report/grouped_accessibility_reports_app.vue'),
     MrWidgetApprovals,
     SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
   },

@@ -5,7 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   let(:conflict_error) { Class.new(RuntimeError) }
   let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
-  let(:lb) { described_class.new([db_host, db_host]) }
+  let(:config) do
+    Gitlab::Database::LoadBalancing::Configuration
+      .new(ActiveRecord::Base, [db_host, db_host])
+  end
+
+  let(:lb) { described_class.new(config) }
   let(:request_cache) { lb.send(:request_cache) }
 
   before do
@@ -43,7 +48,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
   describe '#initialize' do
     it 'ignores the hosts when the primary_only option is enabled' do
-      lb = described_class.new([db_host], primary_only: true)
+      config = Gitlab::Database::LoadBalancing::Configuration
+        .new(ActiveRecord::Base, [db_host])
+      lb = described_class.new(config, primary_only: true)
       hosts = lb.host_list.hosts
 
       expect(hosts.length).to eq(1)
@@ -134,7 +141,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     it 'uses the primary when the primary_only option is enabled' do
-      lb = described_class.new(primary_only: true)
+      config = Gitlab::Database::LoadBalancing::Configuration
+        .new(ActiveRecord::Base)
+      lb = described_class.new(config, primary_only: true)
 
       # When no hosts are configured, we don't want to produce any warnings, as
       # they aren't useful/too noisy.
@@ -174,8 +183,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     it 'does not create conflicts with other load balancers when caching hosts' do
-      lb1 = described_class.new([db_host, db_host], ActiveRecord::Base)
-      lb2 = described_class.new([db_host, db_host], Ci::CiDatabaseRecord)
+      ci_config = Gitlab::Database::LoadBalancing::Configuration
+        .new(Ci::CiDatabaseRecord, [db_host, db_host])
+
+      lb1 = described_class.new(config)
+      lb2 = described_class.new(ci_config)
 
       host1 = lb1.host
       host2 = lb2.host

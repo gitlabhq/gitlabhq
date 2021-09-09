@@ -4,7 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::HostList do
   let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
-  let(:load_balancer) { double(:load_balancer) }
+  let(:load_balancer) do
+    Gitlab::Database::LoadBalancing::LoadBalancer.new(
+      Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
+    )
+  end
+
   let(:host_count) { 2 }
   let(:hosts) { Array.new(host_count) { Gitlab::Database::LoadBalancing::Host.new(db_host, load_balancer, port: 5432) } }
   let(:host_list) { described_class.new(hosts) }

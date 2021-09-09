@@ -7,7 +7,7 @@ type: reference, api
 
 # DevOps Research and Assessment (DORA) key metrics API **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
 > - The legacy key/value pair `{ "<date>" => "<value>" }` was removed from the payload in GitLab 14.0.
 
 All methods require [reporter permissions and above](../../user/permissions.md).
@@ -52,7 +52,7 @@ Example response:
 
 ## Get group-level DORA metrics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
 
 Get group-level DORA metrics.
 

@@ -40,106 +40,25 @@ RSpec.describe Gitlab::Database::LoadBalancing do
   end
 
   describe '.configuration' do
-    it 'returns a Hash' do
-      lb_config = { 'hosts' => %w(foo) }
+    it 'returns the configuration for the load balancer' do
+      raw = ActiveRecord::Base.connection_db_config.configuration_hash
+      cfg = described_class.configuration
 
-      original_db_config = Gitlab::Database.main.config
-      modified_db_config = original_db_config.merge(load_balancing: lb_config)
-      expect(Gitlab::Database.main).to receive(:config).and_return(modified_db_config)
-
-      expect(described_class.configuration).to eq(lb_config)
-    end
-  end
-
-  describe '.max_replication_difference' do
-    context 'without an explicitly configured value' do
-      it 'returns the default value' do
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return({})
-
-        expect(described_class.max_replication_difference).to eq(8.megabytes)
-      end
-    end
-
-    context 'with an explicitly configured value' do
-      it 'returns the configured value' do
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return({ 'max_replication_difference' => 4 })
-
-        expect(described_class.max_replication_difference).to eq(4)
-      end
-    end
-  end
-
-  describe '.max_replication_lag_time' do
-    context 'without an explicitly configured value' do
-      it 'returns the default value' do
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return({})
-
-        expect(described_class.max_replication_lag_time).to eq(60)
-      end
-    end
-
-    context 'with an explicitly configured value' do
-      it 'returns the configured value' do
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return({ 'max_replication_lag_time' => 4 })
-
-        expect(described_class.max_replication_lag_time).to eq(4)
-      end
-    end
-  end
-
-  describe '.replica_check_interval' do
-    context 'without an explicitly configured value' do
-      it 'returns the default value' do
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return({})
-
-        expect(described_class.replica_check_interval).to eq(60)
-      end
-    end
-
-    context 'with an explicitly configured value' do
-      it 'returns the configured value' do
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return({ 'replica_check_interval' => 4 })
-
-        expect(described_class.replica_check_interval).to eq(4)
-      end
-    end
-  end
-
-  describe '.hosts' do
-    it 'returns a list of hosts' do
-      allow(described_class)
-        .to receive(:configuration)
-        .and_return({ 'hosts' => %w(foo bar baz) })
-
-      expect(described_class.hosts).to eq(%w(foo bar baz))
-    end
-  end
-
-  describe '.pool_size' do
-    it 'returns a Fixnum' do
-      expect(described_class.pool_size).to be_a_kind_of(Integer)
+      # There isn't much to test here as the load balancing settings might not
+      # (and likely aren't) set when running tests.
+      expect(cfg.pool_size).to eq(raw[:pool])
     end
   end
 
   describe '.enable?' do
     before do
-      allow(described_class).to receive(:hosts).and_return(%w(foo))
+      allow(described_class.configuration)
+        .to receive(:hosts)
+        .and_return(%w(foo))
     end
 
     it 'returns false when no hosts are specified' do
-      allow(described_class).to receive(:hosts).and_return([])
+      allow(described_class.configuration).to receive(:hosts).and_return([])
 
       expect(described_class.enable?).to eq(false)
     end
@@ -163,10 +82,10 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
 
     it 'returns true when service discovery is enabled' do
-      allow(described_class).to receive(:hosts).and_return([])
+      allow(described_class.configuration).to receive(:hosts).and_return([])
       allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
 
-      allow(described_class)
+      allow(described_class.configuration)
         .to receive(:service_discovery_enabled?)
         .and_return(true)
 
@@ -175,17 +94,17 @@ RSpec.describe Gitlab::Database::LoadBalancing do
   end
 
   describe '.configured?' do
-    it 'returns true when Sidekiq is being used' do
-      allow(described_class).to receive(:hosts).and_return(%w(foo))
-      allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+    it 'returns true when hosts are configured' do
+      allow(described_class.configuration)
+        .to receive(:hosts)
+        .and_return(%w[foo])
+
       expect(described_class.configured?).to eq(true)
     end
 
-    it 'returns true when service discovery is enabled in Sidekiq' do
-      allow(described_class).to receive(:hosts).and_return([])
-      allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
-
-      allow(described_class)
+    it 'returns true when service discovery is enabled' do
+      allow(described_class.configuration).to receive(:hosts).and_return([])
+      allow(described_class.configuration)
         .to receive(:service_discovery_enabled?)
         .and_return(true)
 
@@ -193,9 +112,8 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
 
     it 'returns false when neither service discovery nor hosts are configured' do
-      allow(described_class).to receive(:hosts).and_return([])
-
-      allow(described_class)
+      allow(described_class.configuration).to receive(:hosts).and_return([])
+      allow(described_class.configuration)
         .to receive(:service_discovery_enabled?)
         .and_return(false)
 
@@ -219,9 +137,9 @@ RSpec.describe Gitlab::Database::LoadBalancing do
       it 'runs initial service discovery when configuring the connection proxy' do
         discover = instance_spy(Gitlab::Database::LoadBalancing::ServiceDiscovery)
 
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return('discover' => { 'record' => 'foo' })
+        allow(described_class.configuration)
+          .to receive(:service_discovery)
+          .and_return({ record: 'foo' })
 
         expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
           .to receive(:new)
@@ -238,60 +156,6 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
   end
 
-  describe '.active_record_models' do
-    it 'returns an Array' do
-      expect(described_class.active_record_models).to be_an_instance_of(Array)
-    end
-  end
-
-  describe '.service_discovery_enabled?' do
-    it 'returns true if service discovery is enabled' do
-      allow(described_class)
-        .to receive(:configuration)
-        .and_return('discover' => { 'record' => 'foo' })
-
-      expect(described_class.service_discovery_enabled?).to eq(true)
-    end
-
-    it 'returns false if service discovery is disabled' do
-      expect(described_class.service_discovery_enabled?).to eq(false)
-    end
-  end
-
-  describe '.service_discovery_configuration' do
-    context 'when no configuration is provided' do
-      it 'returns a default configuration Hash' do
-        expect(described_class.service_discovery_configuration).to eq(
-          nameserver: 'localhost',
-          port: 8600,
-          record: nil,
-          record_type: 'A',
-          interval: 60,
-          disconnect_timeout: 120,
-          use_tcp: false
-        )
-      end
-    end
-
-    context 'when configuration is provided' do
-      it 'returns a Hash including the custom configuration' do
-        allow(described_class)
-          .to receive(:configuration)
-          .and_return('discover' => { 'record' => 'foo', 'record_type' => 'SRV' })
-
-        expect(described_class.service_discovery_configuration).to eq(
-          nameserver: 'localhost',
-          port: 8600,
-          record: 'foo',
-          record_type: 'SRV',
-          interval: 60,
-          disconnect_timeout: 120,
-          use_tcp: false
-        )
-      end
-    end
-  end
-
   describe '.start_service_discovery' do
     it 'does not start if service discovery is disabled' do
       expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
@@ -301,12 +165,14 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
 
     it 'starts service discovery if enabled' do
-      allow(described_class)
+      allow(described_class.configuration)
         .to receive(:service_discovery_enabled?)
         .and_return(true)
 
       instance = double(:instance)
-      lb = Gitlab::Database::LoadBalancing::LoadBalancer.new([])
+      config = Gitlab::Database::LoadBalancing::Configuration
+        .new(ActiveRecord::Base)
+      lb = Gitlab::Database::LoadBalancing::LoadBalancer.new(config)
       proxy = Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
 
       allow(described_class)
@@ -345,7 +211,12 @@ RSpec.describe Gitlab::Database::LoadBalancing do
 
     context 'when the load balancing is configured' do
       let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
-      let(:load_balancer) { described_class::LoadBalancer.new([db_host]) }
+      let(:config) do
+        Gitlab::Database::LoadBalancing::Configuration
+          .new(ActiveRecord::Base, [db_host])
+      end
+
+      let(:load_balancer) { described_class::LoadBalancer.new(config) }
       let(:proxy) { described_class::ConnectionProxy.new(load_balancer) }
 
       context 'when a proxy connection is used' do

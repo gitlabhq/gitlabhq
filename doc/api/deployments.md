@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Deployments API
+# Deployments API **(FREE)**
 
 ## List project deployments
 

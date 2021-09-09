@@ -3,7 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
-  let(:load_balancer) { Gitlab::Database::LoadBalancing::LoadBalancer.new }
+  let(:load_balancer) do
+    Gitlab::Database::LoadBalancing::LoadBalancer.new(
+      Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
+    )
+  end
+
   let(:host) { Gitlab::Database::LoadBalancing::PrimaryHost.new(load_balancer) }
 
   describe '#connection' do

@@ -4,8 +4,10 @@
   = s_('UsageQuota|Usage Quotas')
 
 .row
-  .col-sm-6
-    = s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project').html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_name: @project.name }
+  .col-sm-12
+    = s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project').html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_name: @project.name } + '.'
+    %a{ href: help_page_path('user/usage_quotas.md') }
+      = s_('UsageQuota|Learn more about usage quotas') + '.'
 
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   %ul.nav.nav-tabs.nav-links.scrolling-tabs.separator.js-usage-quota-tabs{ role: 'tablist' }
@@ -14,4 +16,4 @@
         = s_('UsageQuota|Storage')
 .tab-content
   .tab-pane#storage-quota-tab
-    #js-project-storage-count-app{ data: { project_path: @project.full_path } }
+    #js-project-storage-count-app{ data: @storage_app_data }

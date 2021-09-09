@@ -1479,10 +1479,6 @@ tagged and released set of documentation for your installed version:
 When a feature is added or updated, you can include its version information
 either as a **Version history** item or as an inline text reference.
 
-Version text shouldn't include information about the tier in which the feature
-is available. This information is provided by the [product badge](#product-tier-badges)
-displayed for the page or feature.
-
 #### Version text in the **Version History**
 
 If all content in a section is related, add version text after the header for
@@ -1498,6 +1494,8 @@ the section. The version information must:
 - Whenever possible, include a link to the completed issue, merge request, or epic
   that introduced the feature. An issue is preferred over a merge request, and
   a merge request is preferred over an epic.
+- Do not include information about the tier, or a link to the pricing page.
+  The tier is provided by the [product badge](#product-tier-badges) on the heading.
 
 ```markdown
 ## Feature name

@@ -89,7 +89,7 @@ in sync.
 
 ## Repository re-verification
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8550) in GitLab Enterprise Edition 11.6. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8550) in GitLab 11.6.
 
 Due to bugs or transient infrastructure failures, it is possible for Git
 repositories to change unexpectedly without being marked for verification.

@@ -280,6 +280,7 @@ The following table lists group permissions available for each role:
 |--------------------------------------------------------|-------|----------|-----------|------------|-------|
 | Browse group                                           | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Edit SAML SSO Billing **(PREMIUM SAAS)**               | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
+| Pull a container image using the dependency proxy      | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group epic **(PREMIUM)**                          | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
@@ -301,7 +302,6 @@ The following table lists group permissions available for each role:
 | Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations       |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy                      |       |          | ✓         | ✓          | ✓     |
-| Pull a container image using the dependency proxy      | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Purge the dependency proxy for a group                 |       |          |           |            | ✓     |
 | Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
 | Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
@@ -314,6 +314,7 @@ The following table lists group permissions available for each role:
 | View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
 | Administer project compliance frameworks               |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                      |       |          |           |            | ✓     |
+| Change group visibility level                          |       |          |           |            | ✓     |
 | Delete group                                           |       |          |           |            | ✓     |
 | Delete group epic **(PREMIUM)**                        |       |          |           |            | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |

@@ -69,19 +69,20 @@ export function bytesToGiB(number) {
  * representation (e.g., giving it 1500 yields 1.5 KB).
  *
  * @param {Number} size
+ * @param {Number} digits - The number of digits to appear after the decimal point
  * @returns {String}
  */
-export function numberToHumanSize(size) {
+export function numberToHumanSize(size, digits = 2) {
   const abs = Math.abs(size);
 
   if (abs < BYTES_IN_KIB) {
     return sprintf(__('%{size} bytes'), { size });
   } else if (abs < BYTES_IN_KIB ** 2) {
-    return sprintf(__('%{size} KiB'), { size: bytesToKiB(size).toFixed(2) });
+    return sprintf(__('%{size} KiB'), { size: bytesToKiB(size).toFixed(digits) });
   } else if (abs < BYTES_IN_KIB ** 3) {
-    return sprintf(__('%{size} MiB'), { size: bytesToMiB(size).toFixed(2) });
+    return sprintf(__('%{size} MiB'), { size: bytesToMiB(size).toFixed(digits) });
   }
-  return sprintf(__('%{size} GiB'), { size: bytesToGiB(size).toFixed(2) });
+  return sprintf(__('%{size} GiB'), { size: bytesToGiB(size).toFixed(digits) });
 }
 
 /**

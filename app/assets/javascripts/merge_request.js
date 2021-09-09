@@ -19,11 +19,9 @@ function MergeRequest(opts) {
   this.opts = opts != null ? opts : {};
   this.submitNoteForm = this.submitNoteForm.bind(this);
   this.$el = $('.merge-request');
-  this.$('.show-all-commits').on('click', () => this.showAllCommits());
 
   this.initTabs();
   this.initMRBtnListeners();
-  this.initCommitMessageListeners();
 
   if ($('.description.js-task-list-container').length) {
     this.taskList = new TaskList({
@@ -57,11 +55,6 @@ MergeRequest.prototype.initTabs = function () {
   }
 
   window.mrTabs = new MergeRequestTabs(this.opts);
-};
-
-MergeRequest.prototype.showAllCommits = function () {
-  this.$('.first-commits').remove();
-  return this.$('.all-commits').removeClass('hide');
 };
 
 MergeRequest.prototype.initMRBtnListeners = function () {
@@ -126,26 +119,6 @@ MergeRequest.prototype.submitNoteForm = function (form, $button) {
     $button.data('submitted', true);
     return $button.trigger('click');
   }
-};
-
-MergeRequest.prototype.initCommitMessageListeners = function () {
-  $(document).on('click', 'a.js-with-description-link', (e) => {
-    const textarea = $('textarea.js-commit-message');
-    e.preventDefault();
-
-    textarea.val(textarea.data('messageWithDescription'));
-    $('.js-with-description-hint').hide();
-    $('.js-without-description-hint').show();
-  });
-
-  $(document).on('click', 'a.js-without-description-link', (e) => {
-    const textarea = $('textarea.js-commit-message');
-    e.preventDefault();
-
-    textarea.val(textarea.data('messageWithoutDescription'));
-    $('.js-with-description-hint').show();
-    $('.js-without-description-hint').hide();
-  });
 };
 
 MergeRequest.decreaseCounter = function (by = 1) {

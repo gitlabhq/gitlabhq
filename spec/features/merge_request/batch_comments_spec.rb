@@ -25,10 +25,6 @@ RSpec.describe 'Merge request > Batch comments', :js do
       visit_diffs
     end
 
-    it 'has review bar' do
-      expect(page).to have_selector('[data-testid="review_bar_component"]', visible: false)
-    end
-
     it 'adds draft note' do
       write_diff_comment
 

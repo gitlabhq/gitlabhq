@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   let(:proxy) do
-    described_class.new(Gitlab::Database::LoadBalancing::LoadBalancer.new([]))
+    config = Gitlab::Database::LoadBalancing::Configuration
+      .new(ActiveRecord::Base)
+
+    described_class.new(Gitlab::Database::LoadBalancing::LoadBalancer.new(config))
   end
 
   describe '#select' do

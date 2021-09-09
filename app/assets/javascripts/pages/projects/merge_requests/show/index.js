@@ -5,8 +5,11 @@ import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_issuable_header_warning';
 import initShow from '../init_merge_request_show';
 
-initShow();
-initSidebarBundle();
 initMrNotes();
-initReviewBar();
-initIssuableHeaderWarning(store);
+initShow();
+
+requestIdleCallback(() => {
+  initSidebarBundle(store);
+  initReviewBar();
+  initIssuableHeaderWarning(store);
+});

@@ -5,8 +5,6 @@ module Gitlab
     # Configuration settings and methods for interacting with a PostgreSQL
     # database, with support for multiple databases.
     class Connection
-      DEFAULT_POOL_HEADROOM = 10
-
       attr_reader :scope
 
       # Initializes a new `Database`.
@@ -18,20 +16,6 @@ module Gitlab
         @scope = scope
         @version = nil
         @open_transactions_baseline = 0
-      end
-
-      # We configure the database connection pool size automatically based on
-      # the configured concurrency. We also add some headroom, to make sure we
-      # don't run out of connections when more threads besides the 'user-facing'
-      # ones are running.
-      #
-      # Read more about this in
-      # doc/development/database/client_side_connection_pool.md
-      def default_pool_size
-        headroom =
-          (ENV["DB_POOL_HEADROOM"].presence || DEFAULT_POOL_HEADROOM).to_i
-
-        Gitlab::Runtime.max_threads + headroom
       end
 
       def config
@@ -48,7 +32,7 @@ module Gitlab
       end
 
       def pool_size
-        config[:pool] || default_pool_size
+        config[:pool] || Database.default_pool_size
       end
 
       def username
@@ -77,7 +61,9 @@ module Gitlab
 
       def db_config_with_default_pool_size
         db_config_object = scope.connection_db_config
-        config = db_config_object.configuration_hash.merge(pool: default_pool_size)
+        config = db_config_object
+          .configuration_hash
+          .merge(pool: Database.default_pool_size)
 
         ActiveRecord::DatabaseConfigurations::HashConfig.new(
           db_config_object.env_name,

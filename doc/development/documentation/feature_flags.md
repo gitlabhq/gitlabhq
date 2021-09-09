@@ -67,10 +67,12 @@ When the state of a flag changes (for example, disabled by default to enabled by
 Possible version history entries are:
 
 ```markdown
+> - [Introduced](issue-link) in GitLab X.X. [Deployed behind the <flag name> flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled on GitLab.com](issue-link) in GitLab X.X.
 > - [Enabled on GitLab.com](issue-link) in GitLab X.X. Available to GitLab.com administrators only.
 > - [Enabled on self-managed](issue-link) in GitLab X.X.
-> - [Feature flag <flag name> removed](issue-line) in GitLab X.X.
+> - [Feature flag <flag name> removed](issue-link) in GitLab X.X.
+> - [Generally available](issue-link) in GitLab X.X.
 ```
 
 ## Feature flag documentation examples
@@ -78,7 +80,7 @@ Possible version history entries are:
 The following examples show the progression of a feature flag.
 
 ```markdown
-> Introduced in GitLab 13.7.
+> Introduced in GitLab 13.7. [Deployed behind the `forti_token_cloud` flag](../../administration/feature_flags.md), disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -89,7 +91,7 @@ The feature is not ready for production use.
 When the feature is enabled in production, you can update the version history:
 
 ```markdown
-> - Introduced in GitLab 13.7.
+> - Introduced in GitLab 13.7. [Deployed behind the `forti_token_cloud` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/issue/etc) GitLab 13.8.
 
 FLAG:
@@ -100,8 +102,9 @@ ask an administrator to [disable the `forti_token_cloud` flag](../administration
 And, when the feature is done and fully available to all users:
 
 ```markdown
-> - Introduced in GitLab 13.7.
+> - Introduced in GitLab 13.7. [Deployed behind the `forti_token_cloud` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/issue/etc) GitLab 13.8.
 > - [Enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab 13.9.
 > - [Feature flag `forti_token_cloud`](https://gitlab.com/issue/etc) removed in GitLab 14.0.
+> - [Generally available](issue-link) in GitLab 14.0.
 ```

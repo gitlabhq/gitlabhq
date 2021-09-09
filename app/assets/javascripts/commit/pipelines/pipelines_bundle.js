@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initPipelineCountListener } from './utils';
 
 /**
  * Used in:
@@ -12,13 +13,7 @@ export default () => {
 
   if (pipelineTableViewEl) {
     // Update MR and Commits tabs
-    pipelineTableViewEl.addEventListener('update-pipelines-count', (event) => {
-      if (event.detail.pipelineCount) {
-        const badge = document.querySelector('.js-pipelines-mr-count');
-
-        badge.textContent = event.detail.pipelineCount;
-      }
-    });
+    initPipelineCountListener(pipelineTableViewEl);
 
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
       const table = new Vue({

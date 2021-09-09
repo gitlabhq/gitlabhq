@@ -5,29 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Connection do
   let(:connection) { described_class.new }
 
-  describe '#default_pool_size' do
-    before do
-      allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)
-    end
-
-    it 'returns the max thread size plus a fixed headroom of 10' do
-      expect(connection.default_pool_size).to eq(17)
-    end
-
-    it 'returns the max thread size plus a DB_POOL_HEADROOM if this env var is present' do
-      stub_env('DB_POOL_HEADROOM', '7')
-
-      expect(connection.default_pool_size).to eq(14)
-    end
-  end
-
   describe '#config' do
     it 'returns a HashWithIndifferentAccess' do
       expect(connection.config).to be_an_instance_of(HashWithIndifferentAccess)
     end
 
     it 'returns a default pool size' do
-      expect(connection.config).to include(pool: connection.default_pool_size)
+      expect(connection.config)
+        .to include(pool: Gitlab::Database.default_pool_size)
     end
 
     it 'does not cache its results' do
@@ -43,7 +28,7 @@ RSpec.describe Gitlab::Database::Connection do
       it 'returns the default pool size' do
         expect(connection).to receive(:config).and_return({ pool: nil })
 
-        expect(connection.pool_size).to eq(connection.default_pool_size)
+        expect(connection.pool_size).to eq(Gitlab::Database.default_pool_size)
       end
     end
 
@@ -129,7 +114,7 @@ RSpec.describe Gitlab::Database::Connection do
 
   describe '#db_config_with_default_pool_size' do
     it 'returns db_config with our default pool size' do
-      allow(connection).to receive(:default_pool_size).and_return(9)
+      allow(Gitlab::Database).to receive(:default_pool_size).and_return(9)
 
       expect(connection.db_config_with_default_pool_size.pool).to eq(9)
     end

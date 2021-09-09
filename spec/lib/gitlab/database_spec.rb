@@ -15,6 +15,22 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.default_pool_size' do
+    before do
+      allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)
+    end
+
+    it 'returns the max thread size plus a fixed headroom of 10' do
+      expect(described_class.default_pool_size).to eq(17)
+    end
+
+    it 'returns the max thread size plus a DB_POOL_HEADROOM if this env var is present' do
+      stub_env('DB_POOL_HEADROOM', '7')
+
+      expect(described_class.default_pool_size).to eq(14)
+    end
+  end
+
   describe '.has_config?' do
     context 'two tier database config' do
       before do

@@ -7,12 +7,6 @@ type: howto
 
 # Geo **(PREMIUM SELF)**
 
-> - Introduced in GitLab Enterprise Edition 8.9.
-> - Using Geo in combination with
->   [multi-node architectures](../reference_architectures/index.md)
->   is considered **Generally Available** (GA) in
->   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
-
 Geo is the solution for widely distributed development teams and for providing a warm-standby as part of a disaster recovery strategy.
 
 ## Overview
@@ -218,7 +212,7 @@ For information on how to update your Geo site(s) to the latest GitLab version, 
 
 ### Pausing and resuming replication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in GitLab 13.2.
 
 WARNING:
 In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the

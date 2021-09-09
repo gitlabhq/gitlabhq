@@ -3,7 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Host do
-  let(:load_balancer) { Gitlab::Database::LoadBalancing::LoadBalancer.new }
+  let(:load_balancer) do
+    Gitlab::Database::LoadBalancing::LoadBalancer
+      .new(Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base))
+  end
 
   let(:host) do
     Gitlab::Database::LoadBalancing::Host.new('localhost', load_balancer)
@@ -274,7 +277,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host do
     end
 
     it 'returns false when the data is not recent enough' do
-      diff = Gitlab::Database::LoadBalancing.max_replication_difference * 2
+      diff = load_balancer.configuration.max_replication_difference * 2
 
       expect(host)
         .to receive(:query_and_release)

@@ -5,7 +5,9 @@
     "start": "start-storybook -p 9002 -c config",
     "build": "build-storybook -c config -o public"
   },
-  "dependencies": {},
+  "blockedDependencies": {
+    "vue": "https://gitlab.com/gitlab-org/gitlab/-/issues/340511"
+  },
   "devDependencies": {
     "@storybook/addon-a11y": "^6.2.9",
     "@storybook/addon-actions": "^6.2.9",

@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import createFlash from '~/flash';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
@@ -13,7 +12,6 @@ import {
   isInIncidentPage,
   parseBoolean,
 } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
 import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
@@ -363,10 +361,10 @@ function mountReferenceComponent() {
   });
 }
 
-function mountLockComponent() {
+function mountLockComponent(store) {
   const el = document.getElementById('js-lock-entry-point');
 
-  if (!el) {
+  if (!el || !store) {
     return;
   }
 
@@ -375,37 +373,20 @@ function mountLockComponent() {
   const dataNode = document.getElementById('js-lock-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  let importStore;
-  if (isInIssuePage() || isInIncidentPage()) {
-    importStore = import(/* webpackChunkName: 'notesStore' */ '~/notes/stores').then(
-      ({ store }) => store,
-    );
-  } else {
-    importStore = import(/* webpackChunkName: 'mrNotesStore' */ '~/mr_notes/stores').then(
-      (store) => store.default,
-    );
-  }
-
-  importStore
-    .then(
-      (store) =>
-        new Vue({
-          el,
-          store,
-          provide: {
-            fullPath,
-          },
-          render: (createElement) =>
-            createElement(IssuableLockForm, {
-              props: {
-                isEditable: initialData.is_editable,
-              },
-            }),
-        }),
-    )
-    .catch(() => {
-      createFlash({ message: __('Failed to load sidebar lock status') });
-    });
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    store,
+    provide: {
+      fullPath,
+    },
+    render: (createElement) =>
+      createElement(IssuableLockForm, {
+        props: {
+          isEditable: initialData.is_editable,
+        },
+      }),
+  });
 }
 
 function mountParticipantsComponent() {
@@ -537,7 +518,7 @@ function mountCopyEmailComponent() {
 const isAssigneesWidgetShown =
   (isInIssuePage() || isInDesignPage()) && gon.features.issueAssigneesWidget;
 
-export function mountSidebar(mediator) {
+export function mountSidebar(mediator, store) {
   initInviteMembersModal();
   initInviteMembersTrigger();
 
@@ -548,11 +529,12 @@ export function mountSidebar(mediator) {
     mountAssigneesComponentDeprecated(mediator);
   }
   mountReviewersComponent(mediator);
+  mountSidebarLabels();
   mountMilestoneSelect();
   mountConfidentialComponent(mediator);
   mountDueDateComponent(mediator);
   mountReferenceComponent(mediator);
-  mountLockComponent();
+  mountLockComponent(store);
   mountParticipantsComponent();
   mountSubscriptionsComponent();
   mountCopyEmailComponent();

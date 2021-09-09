@@ -12,7 +12,17 @@ export default (containerId = 'js-project-storage-count-app') => {
     return false;
   }
 
-  const { projectPath } = el.dataset;
+  const {
+    projectPath,
+    usageQuotasHelpPagePath,
+    buildArtifactsHelpPagePath,
+    lfsObjectsHelpPagePath,
+    packagesHelpPagePath,
+    repositoryHelpPagePath,
+    snippetsHelpPagePath,
+    uploadsHelpPagePath,
+    wikiHelpPagePath,
+  } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
@@ -23,6 +33,16 @@ export default (containerId = 'js-project-storage-count-app') => {
     apolloProvider,
     provide: {
       projectPath,
+      helpLinks: {
+        usageQuotasHelpPagePath,
+        buildArtifactsHelpPagePath,
+        lfsObjectsHelpPagePath,
+        packagesHelpPagePath,
+        repositoryHelpPagePath,
+        snippetsHelpPagePath,
+        uploadsHelpPagePath,
+        wikiHelpPagePath,
+      },
     },
     render(createElement) {
       return createElement(StorageCounterApp);

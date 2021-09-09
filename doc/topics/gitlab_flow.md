@@ -7,8 +7,6 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/gitlab_flow.html'
 
 # Introduction to GitLab Flow **(FREE)**
 
-![GitLab Flow](img/gitlab_flow.png)
-
 Git allows a wide variety of branching strategies and workflows.
 Because of this, many organizations end up with workflows that are too complicated, not clearly defined, or not integrated with issue tracking systems.
 Therefore, we propose GitLab flow as a clearly defined set of best practices.
@@ -32,8 +30,6 @@ Most version control systems have only one step: committing from the working cop
 In Git, you add files from the working copy to the staging area. After that, you commit them to your local repository.
 The third step is pushing to a shared remote repository.
 After getting used to these three steps, the next challenge is the branching model.
-
-![Multiple long-running branches and merging in all directions](img/gitlab_flow_messy_flow.png)
 
 Because many organizations new to Git have no conventions for how to work with it, their repositories can quickly become messy.
 The biggest problem is that many long-running branches emerge that all contain part of the changes.
@@ -237,8 +233,6 @@ When you reopen an issue you need to create a new merge request.
 
 ## Issue tracking with GitLab flow
 
-![Merge request with the branch name "15-require-a-password-to-change-it" and assignee field shown](img/gitlab_flow_merge_request.png)
-
 GitLab flow is a way to make the relation between the code and the issue tracker more transparent.
 
 Any significant change to the code should start with an issue that describes the goal.
@@ -276,8 +270,6 @@ At any time, there is at most one branch for every issue.
 It is possible that one feature branch solves more than one issue.
 
 ## Linking and closing issues from merge requests
-
-![Merge request showing the linked issues to close](img/gitlab_flow_close_issue_mr.png)
 
 Link to issues by mentioning them in commit messages or the description of a merge request, for example, "Fixes #16" or "Duck typing is preferred. See #12."
 GitLab then creates links to the mentioned issues and creates comments in the issues linking back to the merge request.
@@ -338,8 +330,6 @@ If you revert a merge commit and then change your mind, revert the revert commit
 Git does not allow you to merge the code again otherwise.
 
 ## Reducing merge commits in feature branches
-
-![List of sequential merge commits](img/gitlab_flow_merge_commits.png)
 
 Having lots of merge commits can make your repository history messy.
 Therefore, you should try to avoid merge commits in feature branches.
@@ -427,8 +417,6 @@ Issue: gitlab.com/gitlab-org/gitlab/-/issues/1
 
 ## Testing before merging
 
-![Merge requests showing the test states: red, yellow, and green](img/gitlab_flow_ci_mr.png)
-
 In old workflows, the continuous integration (CI) server commonly ran tests on the `main` branch only.
 Developers had to ensure their code did not break the `main` branch.
 When using GitLab flow, developers create their branches from this `main` branch, so it is essential that it never breaks.
@@ -443,8 +431,6 @@ If new commits in `main` cause merge conflicts with the feature branch, merge `m
 As said before, if you often have feature branches that last for more than a few days, you should make your issues smaller.
 
 ## Working with feature branches
-
-![Shell output showing git pull output](img/gitlab_flow_git_pull.png)
 
 When creating a feature branch, always branch from an up-to-date `main`.
 If you know before you start that your work depends on another branch, you can also branch from there.

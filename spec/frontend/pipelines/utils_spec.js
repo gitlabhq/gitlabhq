@@ -1,6 +1,5 @@
 import { createSankey } from '~/pipelines/components/dag/drawing_utils';
 import {
-  createNodeDict,
   makeLinksFromNodes,
   filterByAncestors,
   generateColumnsFromLayersListBare,
@@ -9,6 +8,7 @@ import {
   removeOrphanNodes,
   getMaxNodes,
 } from '~/pipelines/components/parsing_utils';
+import { createNodeDict } from '~/pipelines/utils';
 
 import { mockParsedGraphQLNodes, missingJob } from './components/dag/mock_data';
 import { generateResponse, mockPipelineResponse } from './graph/mock_data';

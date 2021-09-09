@@ -4,9 +4,9 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deploy keys API
+# Deploy keys API **(FREE)**
 
-## List all deploy keys
+## List all deploy keys **(FREE SELF)**
 
 Get a list of all deploy keys across all projects of the GitLab instance. This
 endpoint requires an administrator role and is not available on GitLab.com.

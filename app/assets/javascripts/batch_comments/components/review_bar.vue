@@ -10,7 +10,6 @@ export default {
   },
   computed: {
     ...mapGetters(['isNotesFetched']),
-    ...mapGetters('batchComments', ['draftsCount']),
   },
   watch: {
     isNotesFetched() {
@@ -25,7 +24,7 @@ export default {
 };
 </script>
 <template>
-  <div v-show="draftsCount > 0">
+  <div>
     <nav class="review-bar-component" data-testid="review_bar_component">
       <div
         class="review-bar-content d-flex gl-justify-content-end"

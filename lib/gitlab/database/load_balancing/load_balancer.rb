@@ -12,20 +12,21 @@ module Gitlab
 
         REPLICA_SUFFIX = '_replica'
 
-        attr_reader :host_list
+        attr_reader :host_list, :configuration
 
-        # hosts - The hostnames/addresses of the additional databases.
-        # model - The ActiveRecord base model the load balancer is enabled for.
+        # configuration - An instance of `LoadBalancing::Configuration` that
+        #                 contains the configuration details (such as the hosts)
+        #                 for this load balancer.
         # primary_only - If set, the replicas are ignored and the primary is
         #                always used.
-        def initialize(hosts = [], model = ActiveRecord::Base, primary_only: false)
+        def initialize(configuration, primary_only: false)
+          @configuration = configuration
           @primary_only = primary_only
-          @model = model
           @host_list =
             if primary_only
               HostList.new([PrimaryHost.new(self)])
             else
-              HostList.new(hosts.map { |addr| Host.new(addr, self) })
+              HostList.new(configuration.hosts.map { |addr| Host.new(addr, self) })
             end
         end
 
@@ -231,7 +232,7 @@ module Gitlab
         # leverage that.
         def pool
           ActiveRecord::Base.connection_handler.retrieve_connection_pool(
-            @model.connection_specification_name,
+            @configuration.model.connection_specification_name,
             role: ActiveRecord::Base.writing_role,
             shard: ActiveRecord::Base.default_shard
           )
