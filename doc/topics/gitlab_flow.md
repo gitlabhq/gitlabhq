@@ -72,10 +72,20 @@ For example, many projects do releases but don't need to do hotfixes.
 
 ## GitHub flow as a simpler alternative
 
-![Branch with feature branches merged in](img/gitlab_flow_github_flow.png)
-
 In reaction to Git flow, GitHub created a simpler alternative.
-[GitHub flow](https://guides.github.com/introduction/flow/index.html) has only feature branches and a `main` branch.
+[GitHub flow](https://guides.github.com/introduction/flow/index.html) has only feature branches and a `main` branch:
+
+```mermaid
+graph TD
+    subgraph Feature branches in GitHub Flow
+    A[main branch] ===>B[main branch]
+    D[nav branch] --> |add navigation| B
+    B ===> C[main branch]
+    E[feature-branch] --> |add feature| C
+    C ==> F[main branch]
+    end
+```
+
 This flow is clean and straightforward, and many organizations have adopted it with great success.
 Atlassian recommends [a similar strategy](https://www.atlassian.com/blog/git/simple-git-workflow-is-simple), although they rebase feature branches.
 Merging everything into the `main` branch and frequently deploying means you minimize the amount of unreleased code. This approach is in line with lean and continuous delivery best practices.
@@ -83,8 +93,6 @@ However, this flow still leaves a lot of questions unanswered regarding deployme
 With GitLab flow, we offer additional guidance for these questions.
 
 ## Production branch with GitLab flow
-
-![Branches with an arrow that indicates a deployment](img/gitlab_flow_production_branch.png)
 
 GitHub flow assumes you can deploy to production every time you merge a feature branch.
 While this is possible in some cases, such as SaaS applications, there are some cases where this is not possible, such as:
@@ -95,7 +103,22 @@ While this is possible in some cases, such as SaaS applications, there are some 
   operations team is at full capacity - but you also merge code at other times.
 
 In these cases, you can make a production branch that reflects the deployed code.
-You can deploy a new version by merging `main` into the production branch.
+You can deploy a new version by merging `development` into the production branch:
+
+```mermaid
+graph TD
+    subgraph Production branch in GitLab Flow
+    A[development] ==>B[development]
+    B ==> C[development]
+    C ==> D[development]
+
+    E[production] ====> F[production]
+    C --> |deployment| F
+    D ==> G[development]
+    F ==> H[production]
+    end
+```
+
 If you need to know what code is in production, you can check out the production branch to see.
 The approximate time of deployment is visible as the merge commit in the version control system.
 This time is pretty accurate if you automatically deploy your production branch.
@@ -104,18 +127,41 @@ This flow prevents the overhead of releasing, tagging, and merging that happens 
 
 ## Environment branches with GitLab flow
 
-![Multiple branches with the code cascading from one to another](img/gitlab_flow_environment_branches.png)
-
-It might be a good idea to have an environment that is automatically updated to the `main` branch.
+It might be a good idea to have an environment that is automatically updated to the `staging` branch.
 Only, in this case, the name of this environment might differ from the branch name.
-Suppose you have a staging environment, a pre-production environment, and a production environment.
-In this case, deploy the `main` branch to staging.
-To deploy to pre-production, create a merge request from the `main` branch to the pre-production branch.
-Go live by merging the pre-production branch into the production branch.
+Suppose you have a staging environment, a pre-production environment, and a production environment:
+
+```mermaid
+graph LR
+    subgraph Environment branches in GitLab Flow
+
+    A[staging] ==> B[staging]
+    B ==> C[staging]
+    C ==> D[staging]
+
+    A --> |deploy to<br>pre-prod| G
+
+    F[pre-prod] ==> G[pre-prod]
+    G ==> H[pre-prod]
+    H ==> I[pre-prod]
+
+    C --> |deploy to<br>pre-prod| I
+
+    J[production] ==> K[production]
+    K ==> L[production]
+
+    G --> |production <br>deployment| K
+
+    end
+```
+
+In this case, deploy the `staging` branch to your staging environment.
+To deploy to pre-production, create a merge request from the `staging` branch to the `pre-prod` branch.
+Go live by merging the `pre-prod` branch into the `production` branch.
 This workflow, where commits only flow downstream, ensures that everything is tested in all environments.
-If you need to cherry-pick a commit with a hotfix, it is common to develop it on a feature branch and merge it into `main` with a merge request.
+If you need to cherry-pick a commit with a hotfix, it is common to develop it on a feature branch and merge it into `production` with a merge request.
 In this case, do not delete the feature branch yet.
-If `main` passes automatic testing, you then merge the feature branch into the other branches.
+If `production` passes automatic testing, you then merge the feature branch into the other branches.
 If this is not possible because more manual testing is required, you can send merge requests from the feature branch to the downstream branches.
 
 ## Release branches with GitLab flow

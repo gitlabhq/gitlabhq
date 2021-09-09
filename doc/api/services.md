@@ -1153,6 +1153,8 @@ Parameters:
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `vulnerability_channel` | string | false | **(ULTIMATE)** The name of the channel to receive vulnerability event notifications. |
+| `vulnerability_events` | boolean | false | **(ULTIMATE)** Enable notifications for vulnerability events |
 
 ### Delete Slack service
 
@@ -1250,6 +1252,7 @@ Parameters:
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `vulnerability_events` | boolean | false | **(ULTIMATE)** Enable notifications for vulnerability events |
 | `push_channel` | string | false | The name of the channel to receive push events notifications |
 | `issue_channel` | string | false | The name of the channel to receive issues events notifications |
 | `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
@@ -1259,6 +1262,7 @@ Parameters:
 | `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
 | `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
+| `vulnerability_channel` | string | false | **(ULTIMATE)** The name of the channel to receive vulnerability events notifications |
 
 ### Delete Mattermost notifications service
 

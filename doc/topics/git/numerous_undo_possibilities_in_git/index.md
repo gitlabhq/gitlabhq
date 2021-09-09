@@ -388,7 +388,6 @@ git filter-branch --tree-filter 'rm filename' HEAD
 
 The `git filter-branch` command might be slow on large repositories.
 Tools are available to execute Git commands more quickly.
-An alternative is the open source community-maintained tool [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 These tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 

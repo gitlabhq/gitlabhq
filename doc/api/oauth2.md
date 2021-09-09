@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab as an OAuth 2.0 provider
+# GitLab as an OAuth 2.0 provider **(FREE)**
 
 This document covers using the [OAuth2](https://oauth.net/2/) protocol to allow
 other services to access GitLab resources on user's behalf.

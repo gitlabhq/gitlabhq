@@ -10345,6 +10345,9 @@ msgstr ""
 msgid "DastProfiles|Manage profiles"
 msgstr ""
 
+msgid "DastProfiles|Manage site profiles"
+msgstr ""
+
 msgid "DastProfiles|Minimum = 0 (no timeout enabled), Maximum = 2880 minutes"
 msgstr ""
 
@@ -10489,7 +10492,7 @@ msgstr ""
 msgid "DastProfiles|Website"
 msgstr ""
 
-msgid "DastProfiles|You can either choose a passive scan or validate the target site in your chosen site profile. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
+msgid "DastProfiles|You can either choose a passive scan or validate the target site from the site profile management page. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
 msgstr ""
 
 msgid "DastProfiles|You cannot run an active scan against an unvalidated site."
@@ -23472,12 +23475,6 @@ msgstr ""
 msgid "OnDemandScans|Use existing site profile"
 msgstr ""
 
-msgid "OnDemandScans|You can either choose a passive scan or validate the target site in your chosen site profile. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
-msgstr ""
-
-msgid "OnDemandScans|You cannot run an active scan against an unvalidated site."
-msgstr ""
-
 msgid "OnDemandScans|You must create a repository within your project to run an on-demand scan."
 msgstr ""
 
@@ -26256,6 +26253,9 @@ msgid "ProjectService|Trigger event when a merge request is created, updated, or
 msgstr ""
 
 msgid "ProjectService|Trigger event when a new, unique alert is recorded."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a new, unique vulnerability is recorded. (Note: This feature requires an Ultimate plan.)"
 msgstr ""
 
 msgid "ProjectService|Trigger event when a pipeline status changes."

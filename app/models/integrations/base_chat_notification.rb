@@ -253,3 +253,5 @@ module Integrations
     end
   end
 end
+
+Integrations::BaseChatNotification.prepend_mod_with('Integrations::BaseChatNotification')

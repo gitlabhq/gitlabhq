@@ -632,7 +632,9 @@ class Repository
     return if licensee_object.name.blank?
 
     licensee_object
-  rescue Licensee::InvalidLicense
+  rescue Licensee::InvalidLicense => ex
+    Gitlab::ErrorTracking.track_exception(ex)
+    nil
   end
   memoize_method :license
 

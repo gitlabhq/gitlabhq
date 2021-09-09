@@ -218,6 +218,7 @@ export default {
           :href="item.path || item.webUrl || ''"
           :title="item.title"
           :class="{ 'gl-text-gray-400!': item.isLoading }"
+          class="js-no-trigger"
           @mousemove.stop
           >{{ item.title }}</a
         >

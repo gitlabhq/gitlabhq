@@ -14968,6 +14968,7 @@ CREATE TABLE integrations (
     alert_events boolean,
     group_id bigint,
     type_new text,
+    vulnerability_events boolean DEFAULT false NOT NULL,
     CONSTRAINT check_a948a0aa7e CHECK ((char_length(type_new) <= 255))
 );
 

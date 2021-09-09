@@ -1340,6 +1340,9 @@ RSpec.describe Repository do
 
     it 'returns nil when license_key is not recognized' do
       expect(repository).to receive(:license_key).twice.and_return('not-recognized')
+      expect(Gitlab::ErrorTracking).to receive(:track_exception) do |ex|
+        expect(ex).to be_a(Licensee::InvalidLicense)
+      end
 
       expect(repository.license).to be_nil
     end

@@ -7,6 +7,11 @@ description: "How to migrate an existing Git repository to Git LFS with BFG."
 
 # Migrate a Git repository into Git LFS with BFG
 
+WARNING:
+The following documentation is deprecated. We recommend using
+[`git lfs migrate`](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.1.ronn)
+instead of the method documented below.
+
 Using Git LFS can help you to reduce the size of your Git
 repository and improve its performance.
 
