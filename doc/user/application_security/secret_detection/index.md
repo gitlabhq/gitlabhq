@@ -330,7 +330,7 @@ Import the following default Secret Detection analyzer images from `registry.git
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3
+registry.gitlab.com/security-products/secret-detection:3
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

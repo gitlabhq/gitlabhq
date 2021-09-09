@@ -88,6 +88,12 @@ Don't use a descriptor.
 - Avoid: Select the **Run pipelines** button.
 - Use instead: Select **Run pipelines**.
 
+## cannot, can not
+
+Use **cannot** instead of **can not**. You can also use **can't**.
+
+See also [contractions](index.md#contractions).
+
 ## checkbox
 
 One word, **checkbox**. Do not use **check box**.

@@ -591,6 +591,7 @@ project:
 - error_tracking_errors
 - error_tracking_client_keys
 - pending_builds
+- security_scans
 award_emoji:
 - awardable
 - user
