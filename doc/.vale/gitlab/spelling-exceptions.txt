@@ -161,6 +161,10 @@ deprovisions
 dequarantine
 dequarantined
 dequarantining
+deserialization
+deserialize
+deserializers
+deserializes
 DevOps
 Dhall
 disambiguates

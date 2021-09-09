@@ -23,11 +23,20 @@ There are two types of redirects:
 - [GitLab Pages redirects](../../user/project/pages/redirects.md),
   for users who view the docs on [`docs.gitlab.com`](https://docs.gitlab.com).
 
-The Technical Writing team manages the [process](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md)
-to regularly update and [clean up the redirects](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects).
-If you're a contributor, you may add a new redirect, but you don't need to delete
-the old ones. This process is automatic and handled by the Technical
-Writing team.
+  The Technical Writing team manages the [process](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md)
+  to regularly update and [clean up the redirects](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects).
+  If you're a contributor, you may add a new redirect, but you don't need to delete
+  the old ones. This process is automatic and handled by the Technical
+  Writing team.
+
+NOTE:
+If the old page you're renaming doesn't exist in a stable branch, skip the
+following steps and ask a Technical Writer to add the redirect in
+[`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
+For example, if you add a new page on the 3rd of the month and then rename it before it gets
+added in the stable branch on the 18th, the old page will never be part of the internal `/help`.
+In that case, you can jump straight to the
+[Pages redirect](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md#pages-redirects).
 
 To add a redirect:
 

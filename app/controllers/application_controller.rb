@@ -62,7 +62,8 @@ class ApplicationController < ActionController::Base
     :bitbucket_import_enabled?, :bitbucket_import_configured?,
     :bitbucket_server_import_enabled?, :fogbugz_import_enabled?,
     :git_import_enabled?, :gitlab_project_import_enabled?,
-    :manifest_import_enabled?, :phabricator_import_enabled?
+    :manifest_import_enabled?, :phabricator_import_enabled?,
+    :masked_page_url
 
   # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
   # concerns due to caching private data.

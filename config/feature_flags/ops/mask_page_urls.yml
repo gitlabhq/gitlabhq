@@ -1,0 +1,8 @@
+---
+name: mask_page_urls
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69448
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340181
+milestone: '14.3'
+type: ops
+group: group::product intelligence
+default_enabled: false

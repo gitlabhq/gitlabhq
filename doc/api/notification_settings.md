@@ -199,7 +199,7 @@ Example responses:
 }
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) also see the `new_epic`
+Users on [GitLab Ultimate](https://about.gitlab.com/pricing/) also see the `new_epic`
 parameter:
 
 ```json

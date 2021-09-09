@@ -4,10 +4,10 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Content Editor **(FREE)**
+# Content Editor development guidelines **(FREE)**
 
 The Content Editor is a UI component that provides a WYSIWYG editing
-experience for [GitLab Flavored Markdown](../../user/markdown.md) (GFM) in the GitLab application.
+experience for [GitLab Flavored Markdown](../../user/markdown.md) in the GitLab application.
 It also serves as the foundation for implementing Markdown-focused editors
 that target other engines, like static site generators.
 
@@ -16,103 +16,339 @@ to build the Content Editor. These frameworks provide a level of abstraction on 
 the native
 [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) web technology.
 
-## Architecture remarks
+## Usage guide
 
-At a high level, the Content Editor:
+Follow these instructions to include the Content Editor in a feature.
 
-- Imports arbitrary Markdown.
-- Renders it in a HTML editing area.
-- Exports it back to Markdown with changes introduced by the user.
+1. [Include the Content Editor component](#include-the-content-editor-component).
+1. [Set and get Markdown](#set-and-get-markdown).
+1. [Listen for changes](#listen-for-changes).
 
-The Content Editor relies on the
-[Markdown API endpoint](../../api/markdown.md) to transform Markdown
-into HTML. It sends the Markdown input to the REST API and displays the API's
-HTML output in the editing area. The editor exports the content back to Markdown
-using a client-side library that serializes editable documents into Markdown.
+### Include the Content Editor component
 
-![Content Editor high level diagram](img/content_editor_highlevel_diagram.png)
-
-Check the [Content Editor technical design document](https://docs.google.com/document/d/1fKOiWpdHned4KOLVOOFYVvX1euEjMP5rTntUhpapdBg)
-for more information about the design decisions that drive the development of the editor.
-
-**NOTE**: We also designed the Content Editor to be extensible. We intend to provide
-more information about extension development for supporting new types of content in upcoming
-milestones.
-
-## GitLab Flavored Markdown support
-
-The [GitLab Flavored Markdown](../../user/markdown.md) extends
-the [CommonMark specification](https://spec.commonmark.org/0.29/) with support for a
-variety of content types like diagrams, math expressions, and tables. Supporting
-all GitLab Flavored Markdown content types in the Content Editor is a work in progress. For
-the status of the ongoing development for CommonMark and GitLab Flavored Markdown support, read:
-
-- [Basic Markdown formatting extensions](https://gitlab.com/groups/gitlab-org/-/epics/5404) epic.
-- [GitLab Flavored Markdown extensions](https://gitlab.com/groups/gitlab-org/-/epics/5438) epic.
-
-## Usage
-
-To include the Content Editor in your feature, import the `createContentEditor` factory
-function and the `ContentEditor` Vue component. `createContentEditor` sets up an instance
-of [tiptap's Editor class](https://www.tiptap.dev/api/editor/) with all the necessary
-extensions to support editing GitLab Flavored Markdown content. It also creates
-a Markdown serializer that allows exporting tiptap's document format to Markdown.
-
-`createContentEditor` requires a `renderMarkdown` parameter invoked
-by the editor every time it needs to convert Markdown to HTML. The Content Editor
-does not provide a default value for this function yet.
-
-**NOTE**: The Content Editor is in an early development stage. Usage and development
-guidelines are subject to breaking changes in the upcoming months.
+Import the `ContentEditor` Vue component. We recommend using asynchronous named imports to
+take advantage of caching, as the ContentEditor is a big dependency.
 
 ```html
 <script>
-import { GlButton } from '@gitlab/ui';
-import { createContentEditor, ContentEditor } from '~/content_editor';
-import { __ } from '~/locale';
-import createFlash from '~/flash';
-
 export default {
   components: {
-    ContentEditor,
-    GlButton,
+    ContentEditor: () =>
+      import(
+        /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
+      ),
   },
-  data() {
-    return {
-      contentEditor: null,
-    }
-  },
-  created() {
-    this.contentEditor = createContentEditor({
-      renderMarkdown: (markdown) => Api.markdown({ text: markdown }),
-    });
+  // rest of the component definition
+}
+</script>
+```
 
-    try {
-      await this.contentEditor.setSerializedContent(this.content);
-    } catch (e) {
-      createFlash({
-        message: __('There was an error loading content in the editor'), error: e
-      });
-    }
-  },
+The Content Editor requires two properties:
+
+- `renderMarkdown` is an asynchronous function that returns the response (String) of invoking the
+[Markdown API](../../api/markdown.md).
+- `uploadsPath` is a URL that points to a [GitLab upload service](../uploads.md#upload-encodings)
+  with `multipart/form-data` support.
+
+See the [`WikiForm.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue#L207)
+component for a production example of these two properties.
+
+### Set and get Markdown
+
+The `ContentEditor` Vue component doesn't implement Vue data binding flow (`v-model`)
+because setting and getting Markdown are expensive operations. Data binding would
+trigger these operations every time the user interacts with the component.
+
+Instead, you should obtain an instance of the `ContentEditor` class by listening to the
+`initialized` event:
+
+```html
+<script>
+import createFlash from '~/flash';
+import { __ } from '~/locale';
+
+export default {
   methods: {
-    async save() {
-      await Api.updateContent({
-        content: this.contentEditor.getSerializedContent(),
-      });
+    async loadInitialContent(contentEditor) {
+      this.contentEditor = contentEditor;
+
+      try {
+        await this.contentEditor.setSerializedContent(this.content);
+      } catch (e) {
+        createFlash(__('Could not load initial document'));
+      }
+    },
+    submitChanges() {
+      const markdown = this.contentEditor.getSerializedContent();
     },
   },
 };
 </script>
 <template>
+  <content-editor
+    :render-markdown="renderMarkdown"
+    :uploads-path="pageInfo.uploadsPath"
+    @initialized="loadInitialContent"
+  />
+</template>
+```
+
+### Listen for changes
+
+You can still react to changes in the Content Editor. Reacting to changes helps
+you know if the document is empty or dirty. Use the `@change` event handler for
+this purpose.
+
+```html
+<script>
+export default {
+  data() {
+    return {
+      empty: false,
+    };
+  },
+  methods: {
+    handleContentEditorChange({ empty }) {
+      this.empty = empty;
+    }
+  },
+};
+</script>
+<template>
   <div>
-    <content-editor :content-editor="contentEditor" />
-    <gl-button @click="save()">Save</gl-button>
+    <content-editor
+      :render-markdown="renderMarkdown"
+      :uploads-path="pageInfo.uploadsPath"
+      @initialized="loadInitialContent"
+      @change="handleContentEditorChange"
+    />
+    <gl-button :disabled="empty" @click="submitChanges">
+      {{ __('Submit changes') }}
+    </gl-button>
   </div>
 </template>
 ```
 
-Call `setSerializedContent` to set initial Markdown in the Editor. This method is
-asynchronous because it makes an API request to render the Markdown input.
-`getSerializedContent` returns a Markdown string that represents the serialized
-version of the editable document.
+## Implementation guide
+
+The Content Editor is composed of three main layers:
+
+- **The editing tools UI**, like the toolbar and the table structure editor. They
+  display the editor's state and mutate it by dispatching commands.
+- **The Tiptap Editor object** manages the editor's state,
+  and exposes business logic as commands executed by the editing tools UI.
+- **The Markdown serializer** transforms a Markdown source string into a ProseMirror
+  document and vice versa.
+
+### Editing tools UI
+
+The editing tools UI are Vue components that display the editor's state and
+dispatch [commands](https://www.tiptap.dev/api/commands/#commands) to mutate it.
+They are located in the `~/content_editor/components` directory. For example,
+the **Bold** toolbar button displays the editor's state by becoming active when
+the user selects bold text. This button also dispatches the `toggleBold` command
+to format text as bold:
+
+```mermaid
+sequenceDiagram
+    participant A as Editing tools UI
+    participant B as Tiptap object
+    A->>B: queries state/dispatches commands
+    B--)A: notifies state changes
+```
+
+#### Node views
+
+We implement [node views](https://www.tiptap.dev/guide/node-views/vue/#node-views-with-vue)
+to provide inline editing tools for some content types, like tables and images. Node views
+allow separating the presentation of a content type from its
+[model](https://prosemirror.net/docs/guide/#doc.data_structures). Using a Vue component in
+the presentation layer enables sophisticated editing experiences in the Content Editor.
+Node views are located in `~/content_editor/components/wrappers`.
+
+#### Dispatch commands
+
+You can inject the Tiptap Editor object to Vue components to dispatch
+commands.
+
+NOTE:
+Do not implement logic that changes the editor's
+state in Vue components. Encapsulate this logic in commands, and dispatch
+the command from the component's methods.
+
+```html
+<script>
+export default {
+  inject: ['tiptapEditor'],
+  methods: {
+    execute() {
+      //Incorrect
+      const { state, view } = this.tiptapEditor.state;
+      const { tr, schema } = state;
+      tr.addMark(state.selection.from, state.selection.to, null, null, schema.mark('bold'));
+
+      // Correct
+      this.tiptapEditor.chain().toggleBold().focus().run();
+    },
+  }
+};
+</script>
+<template>
+```
+
+#### Query editor's state
+
+Use the `EditorStateObserver` renderless component to react to changes in the
+editor's state, such as when the document or the selection changes. You can listen to
+the following events:
+
+- `docUpdate`
+- `selectionUpdate`
+- `transaction`
+- `focus`
+- `blur`
+- `error`.
+
+Learn more about these events in [Tiptap's event guide](https://www.tiptap.dev/api/events/).
+
+```html
+<script>
+// Parts of the code has been hidden for efficiency
+import EditorStateObserver from './editor_state_observer.vue';
+
+export default {
+  components: {
+    EditorStateObserver,
+  },
+  data() {
+    return {
+      error: null,
+    };
+  },
+  methods: {
+    displayError({ message }) {
+      this.error = message;
+    },
+    dismissError() {
+      this.error = null;
+    },
+  },
+};
+</script>
+<template>
+  <editor-state-observer @error="displayError">
+    <gl-alert v-if="error" class="gl-mb-6" variant="danger" @dismiss="dismissError">
+      {{ error }}
+    </gl-alert>
+  </editor-state-observer>
+</template>
+```
+
+### The Tiptap editor object
+
+The Tiptap [Editor](https://www.tiptap.dev/api/editor) class manages
+the editor's state and encapsulates all the business logic that powers
+the Content Editor. The Content Editor constructs a new instance of this class and
+provides all the necessary extensions to support
+[GitLab Flavored Markdown](../../user/markdown.md).
+
+#### Implement new extensions
+
+Extensions are the building blocks of the Content Editor. You can learn how to implement
+new ones by reading [Tiptap's guide](https://www.tiptap.dev/guide/custom-extensions).
+We recommend checking the list of built-in [nodes](https://www.tiptap.dev/api/nodes) and
+[marks](https://www.tiptap.dev/api/marks) before implementing a new extension
+from scratch.
+
+Store the Content Editor extensions in the `~/content_editor/extensions` directory.
+When using a Tiptap's built-in extension, wrap it in a ES6 module inside this directory:
+
+```javascript
+export { Bold as default } from '@tiptap/extension-bold';
+```
+
+Use the `extend` method to customize the Extension's behavior:
+
+```javascript
+import { HardBreak } from '@tiptap/extension-hard-break';
+
+export default HardBreak.extend({
+  addKeyboardShortcuts() {
+    return {
+      'Shift-Enter': () => this.editor.commands.setHardBreak(),
+    };
+  },
+});
+```
+
+#### Register extensions
+
+Register the new extension in `~/content_editor/services/create_content_editor.js`. Import
+the extension module and add it to the `builtInContentEditorExtensions` array:
+
+```javascript
+import Emoji from '../extensions/emoji';
+
+const builtInContentEditorExtensions = [
+  Code,
+  CodeBlockHighlight,
+  Document,
+  Dropcursor,
+  Emoji,
+  // Other extensions
+```
+
+### The Markdown serializer
+
+The Markdown Serializer transforms a Markdown String to a
+[ProseMirror document](https://prosemirror.net/docs/guide/#doc) and vice versa.
+
+#### Deserialization
+
+Deserialization is the process of converting Markdown to a ProseMirror document.
+We take advantage of ProseMirror's
+[HTML parsing and serialization capabilities](https://prosemirror.net/docs/guide/#schema.serialization_and_parsing)
+by first rendering the Markdown as HTML using the [Markdown API endpoint](../../api/markdown.md):
+
+```mermaid
+sequenceDiagram
+    participant A as Content Editor
+    participant E as Tiptap Object
+    participant B as Markdown Serializer
+    participant C as Markdown API
+    participant D as ProseMirror Parser
+    A->>B: deserialize(markdown)
+    B->>C: render(markdown)
+    C-->>B: html
+    B->>D: to document(html)
+    D-->>A: document
+    A->>E: setContent(document)
+```
+
+Deserializers live in the extension modules. Read Tiptap's
+[parseHTML](https://www.tiptap.dev/guide/custom-extensions#parse-html) and
+[addAttributes](https://www.tiptap.dev/guide/custom-extensions#attributes) documentation to
+learn how to implement them. Titap's API is a wrapper around ProseMirror's
+[schema spec API](https://prosemirror.net/docs/ref/#model.SchemaSpec).
+
+#### Serialization
+
+Serialization is the process of converting a ProseMirror document to Markdown. The Content
+Editor uses [`prosemirror-markdown`](https://github.com/ProseMirror/prosemirror-markdown)
+to serialize documents. We recommend reading the
+[MarkdownSerializer](https://github.com/ProseMirror/prosemirror-markdown#class-markdownserializer)
+and [MarkdownSerializerState](https://github.com/ProseMirror/prosemirror-markdown#class-markdownserializerstate)
+classes documentation before implementing a serializer:
+
+```mermaid
+sequenceDiagram
+    participant A as Content Editor
+    participant B as Markdown Serializer
+    participant C as ProseMirror Markdown
+    A->>B: serialize(document)
+    B->>C: serialize(document, serializers)
+    C-->>A: markdown string
+```
+
+`prosemirror-markdown` requires implementing a serializer function for each content type supported
+by the Content Editor. We implement serializers in `~/content_editor/services/markdown_serializer.js`.
