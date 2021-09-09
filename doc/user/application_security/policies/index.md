@@ -287,6 +287,16 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
+| `clusters` | `object` | | The cluster where the given policy will enforce running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that will be scanned. |
+
+#### `cluster` schema
+
+| Field        | Type                | Possible values          | Description |
+|--------------|---------------------|--------------------------|-------------|
+| `containers` | `array` of `string` | | The container name that will be scanned (only the first value is currently supported). |
+| `resources`  | `array` of `string` | | The resource name that will be scanned (only the first value is currently supported). |
+| `namespaces` | `array` of `string` | | The namespace that will be scanned (only the first value is currently supported). |
+| `kinds`      | `array` of `string` | `deployment`/`daemonset` | The resource kind that should be scanned (only the first value is currently supported). |
 
 ### `scan` action type
 
@@ -315,6 +325,9 @@ Note the following:
 - A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
   [`historic`](../secret_detection/index.md#full-history-secret-scan)
   mode when executed as part of a scheduled scan.
+- A container scanning and cluster image scanning scans configured for the `pipeline` rule type will ignore the cluster defined in the `clusters` object.
+  They will use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
+  Cluster with name provided in `clusters` object must be created and configured for the project. To be able to successfully perform the `container_scanning`/`cluster_image_scanning` scans for the cluster you must follow instructions for the [Cluster Image Scanning feature](../cluster_image_scanning/index.md#prerequisites).
 
 Here's an example:
 
@@ -345,8 +358,8 @@ scan_execution_policy:
     scanner_profile: Scanner Profile C
     site_profile: Site Profile D
   - scan: secret_detection
-- name: Enforce Secret Detection in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection scan for the default branch
+- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
   enabled: true
   rules:
   - type: pipeline
@@ -354,7 +367,25 @@ scan_execution_policy:
     - main
   actions:
   - scan: secret_detection
-```
+  - scan: container_scanning
+- name: Enforce Cluster Image Scanning on production-cluster every 24h
+  description: This policy enforces Cluster Image Scanning scan to run every 24 hours
+  enabled: true
+  rules:
+  - type: schedule
+    cadence: '15 3 * * *'
+    clusters:
+      production-cluster:
+        containers:
+        - database
+        resources:
+        - production-application
+        namespaces:
+        - production-namespace
+        kinds:
+        - deployment
+  actions:
+  - scan: cluster_image_scanning
 
 In this example:
 
@@ -362,7 +393,9 @@ In this example:
   `release/v1.2.1`), DAST scans run with `Scanner Profile A` and `Site Profile B`.
 - DAST and secret detection scans run every 10 minutes. The DAST scan runs with `Scanner Profile C`
   and `Site Profile D`.
-- Secret detection scans run for every pipeline executed on the `main` branch.
+- Secret detection and container scanning scans run for every pipeline executed on the `main` branch.
+- Cluster Image Scanning scan runs every 24h. The scan runs on the `production-cluster` cluster and fetches vulnerabilities
+  from the container with the name `database` configured for deployment with the name `production-application` in the `production-namepsace` namespace.
 
 ## Roadmap
 

@@ -69,6 +69,42 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
         expect(config.pool_size).to eq(4)
       end
     end
+
+    context 'when the load balancing configuration uses strings as the keys' do
+      let(:configuration_hash) do
+        {
+          pool: 4,
+          load_balancing: {
+            'max_replication_difference' => 1,
+            'max_replication_lag_time' => 2,
+            'replica_check_interval' => 3,
+            'hosts' => %w[foo bar],
+            'discover' => {
+              'record' => 'foo.example.com'
+            }
+          }
+        }
+      end
+
+      it 'uses the custom configuration settings' do
+        config = described_class.for_model(model)
+
+        expect(config.hosts).to eq(%w[foo bar])
+        expect(config.max_replication_difference).to eq(1)
+        expect(config.max_replication_lag_time).to eq(2.0)
+        expect(config.replica_check_interval).to eq(3.0)
+        expect(config.service_discovery).to eq(
+          nameserver: 'localhost',
+          port: 8600,
+          record: 'foo.example.com',
+          record_type: 'A',
+          interval: 60,
+          disconnect_timeout: 120,
+          use_tcp: false
+        )
+        expect(config.pool_size).to eq(4)
+      end
+    end
   end
 
   describe '#load_balancing_enabled?' do

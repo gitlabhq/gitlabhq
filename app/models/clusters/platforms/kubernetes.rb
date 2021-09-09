@@ -137,6 +137,14 @@ module Clusters
         kubeclient.patch_ingress(ingress.name, data, namespace)
       end
 
+      def kubeconfig(namespace)
+        to_kubeconfig(
+          url: api_url,
+          namespace: namespace,
+          token: token,
+          ca_pem: ca_pem)
+      end
+
       private
 
       def default_namespace(project, environment_name:)
@@ -152,14 +160,6 @@ module Clusters
           project: project,
           environment_name: environment_name
         ).execute
-      end
-
-      def kubeconfig(namespace)
-        to_kubeconfig(
-          url: api_url,
-          namespace: namespace,
-          token: token,
-          ca_pem: ca_pem)
       end
 
       def read_pods(namespace)

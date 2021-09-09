@@ -1,7 +1,7 @@
 import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
+import { mockTracking } from 'helpers/tracking_helper';
 import TerraformNotification from '~/projects/terraform_notification/components/terraform_notification.vue';
 import {
   EVENT_LABEL,
@@ -9,64 +9,77 @@ import {
   CLICK_EVENT,
 } from '~/projects/terraform_notification/constants';
 
-jest.mock('~/lib/utils/common_utils');
-
 const terraformImagePath = '/path/to/image';
-const bannerDismissedKey = 'terraform_notification_dismissed';
 
 describe('TerraformNotificationBanner', () => {
   let wrapper;
   let trackingSpy;
+  let userCalloutDismissSpy;
 
   const provideData = {
     terraformImagePath,
-    bannerDismissedKey,
   };
   const findBanner = () => wrapper.findComponent(GlBanner);
 
-  beforeEach(() => {
+  const createComponent = ({ shouldShowCallout = true } = {}) => {
+    userCalloutDismissSpy = jest.fn();
+
     wrapper = shallowMount(TerraformNotification, {
       provide: provideData,
-      stubs: { GlBanner },
+      stubs: {
+        GlBanner,
+        UserCalloutDismisser: makeMockUserCalloutDismisser({
+          dismiss: userCalloutDismissSpy,
+          shouldShowCallout,
+        }),
+      },
     });
+  };
+
+  beforeEach(() => {
+    createComponent();
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   });
 
   afterEach(() => {
     wrapper.destroy();
-    parseBoolean.mockReturnValue(false);
-    unmockTracking();
   });
 
-  describe('when the dismiss cookie is not set', () => {
+  describe('when user has already dismissed the banner', () => {
+    beforeEach(() => {
+      createComponent({
+        shouldShowCallout: false,
+      });
+    });
+    it('should not render the banner', () => {
+      expect(findBanner().exists()).toBe(false);
+    });
+  });
+
+  describe("when user hasn't yet dismissed the banner", () => {
     it('should render the banner', () => {
       expect(findBanner().exists()).toBe(true);
     });
   });
 
   describe('when close button is clicked', () => {
-    beforeEach(async () => {
-      await findBanner().vm.$emit('close');
+    beforeEach(() => {
+      wrapper.vm.$refs.calloutDismisser.dismiss = userCalloutDismissSpy;
+      findBanner().vm.$emit('close');
     });
-
-    it('should set the cookie with the bannerDismissedKey', () => {
-      expect(setCookie).toHaveBeenCalledWith(bannerDismissedKey, true);
-    });
-
     it('should send the dismiss event', () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, DISMISS_EVENT, {
         label: EVENT_LABEL,
       });
     });
-
-    it('should remove the banner', () => {
-      expect(findBanner().exists()).toBe(false);
+    it('should call the dismiss callback', () => {
+      expect(userCalloutDismissSpy).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('when docs link is clicked', () => {
-    beforeEach(async () => {
-      await findBanner().vm.$emit('primary');
+    beforeEach(() => {
+      findBanner().vm.$emit('primary');
     });
 
     it('should send button click event', () => {

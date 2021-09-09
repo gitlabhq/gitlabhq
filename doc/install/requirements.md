@@ -256,6 +256,12 @@ of [legacy Rugged code](../administration/gitaly/index.md#direct-access-to-git-i
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
 works.
 
+### Puma per worker maximum memory
+
+By default, each Puma worker will be limited to 1024 MB of memory. 
+This setting [can be adjusted](../administration/operations/puma.md#puma-worker-killer) and should be considered
+if you need to increase the number of Puma workers.
+
 ## Redis and Sidekiq
 
 Redis stores all user sessions and the background task queue.

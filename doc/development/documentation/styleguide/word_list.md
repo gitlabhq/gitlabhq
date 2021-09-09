@@ -209,7 +209,7 @@ Try to avoid. Be as specific as you can. Do not use **and so on** as a replaceme
 
 ## expand
 
-Use instead of **open** when you are talking about expanding or collapsing a section in the UI.
+Use **expand** instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
 ## field
 

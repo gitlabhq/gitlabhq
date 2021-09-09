@@ -1,9 +1,9 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { setCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { EVENT_LABEL, DISMISS_EVENT, CLICK_EVENT } from '../constants';
 
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL });
@@ -19,24 +19,19 @@ export default {
   },
   components: {
     GlBanner,
+    UserCalloutDismisser,
   },
   mixins: [trackingMixin],
-  inject: ['terraformImagePath', 'bannerDismissedKey'],
-  data() {
-    return {
-      isVisible: true,
-    };
-  },
+  inject: ['terraformImagePath'],
   computed: {
     docsUrl() {
-      return helpPagePath('user/infrastructure/terraform_state');
+      return helpPagePath('user/infrastructure/iac/terraform_state.md');
     },
   },
   methods: {
     handleClose() {
-      setCookie(this.bannerDismissedKey, true);
-      this.isVisible = false;
       this.track(DISMISS_EVENT);
+      this.$refs.calloutDismisser.dismiss();
     },
     buttonClick() {
       this.track(CLICK_EVENT);
@@ -45,17 +40,21 @@ export default {
 };
 </script>
 <template>
-  <div v-if="isVisible" class="gl-py-5">
-    <gl-banner
-      :title="$options.i18n.title"
-      :button-text="$options.i18n.buttonText"
-      :button-link="docsUrl"
-      :svg-path="terraformImagePath"
-      variant="promotion"
-      @primary="buttonClick"
-      @close="handleClose"
-    >
-      <p>{{ $options.i18n.description }}</p>
-    </gl-banner>
-  </div>
+  <user-callout-dismisser ref="calloutDismisser" feature-name="terraform_notification_dismissed">
+    <template #default="{ shouldShowCallout }">
+      <div v-if="shouldShowCallout" class="gl-py-5">
+        <gl-banner
+          :title="$options.i18n.title"
+          :button-text="$options.i18n.buttonText"
+          :button-link="docsUrl"
+          :svg-path="terraformImagePath"
+          variant="promotion"
+          @primary="buttonClick"
+          @close="handleClose"
+        >
+          <p>{{ $options.i18n.description }}</p>
+        </gl-banner>
+      </div>
+    </template>
+  </user-callout-dismisser>
 </template>

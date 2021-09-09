@@ -61,7 +61,8 @@ microservice_a:
     include: path/to/microservice_a.yml
 ```
 
-You can include multiple files when composing a child pipeline:
+You can include multiple files when defining a child pipeline. The child pipeline's
+configuration is composed of all configuration files merged together:
 
 ```yaml
 microservice_a:

@@ -37377,6 +37377,9 @@ msgstr ""
 msgid "Vulnerability|Evidence"
 msgstr ""
 
+msgid "Vulnerability|False positive detected"
+msgstr ""
+
 msgid "Vulnerability|File"
 msgstr ""
 
@@ -37417,6 +37420,9 @@ msgid "Vulnerability|Severity"
 msgstr ""
 
 msgid "Vulnerability|Status"
+msgstr ""
+
+msgid "Vulnerability|The scanner determined this vulnerability to be a false positive. Verify the evaluation before changing its status. %{linkStart}Learn more about false positive detection.%{linkEnd}"
 msgstr ""
 
 msgid "Vulnerability|The unmodified response is the original response that had no mutations done to the request"

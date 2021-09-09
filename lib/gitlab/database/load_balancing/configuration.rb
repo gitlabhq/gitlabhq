@@ -11,7 +11,7 @@ module Gitlab
 
         # Creates a configuration object for the given ActiveRecord model.
         def self.for_model(model)
-          cfg = model.connection_db_config.configuration_hash
+          cfg = model.connection_db_config.configuration_hash.deep_symbolize_keys
           lb_cfg = cfg[:load_balancing] || {}
           config = new(model)
 
@@ -35,7 +35,7 @@ module Gitlab
             config.hosts = hosts
           end
 
-          discover = (lb_cfg[:discover] || {}).symbolize_keys
+          discover = lb_cfg[:discover] || {}
 
           # We iterate over the known/default keys so we don't end up with
           # random keys in our configuration hash.

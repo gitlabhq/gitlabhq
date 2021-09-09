@@ -1,12 +1,18 @@
 import Vue from 'vue';
-import { parseBoolean, getCookie } from '~/lib/utils/common_utils';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import TerraformNotification from './components/terraform_notification.vue';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export default () => {
   const el = document.querySelector('.js-terraform-notification');
-  const bannerDismissedKey = 'terraform_notification_dismissed';
 
-  if (!el || parseBoolean(getCookie(bannerDismissedKey))) {
+  if (!el) {
     return false;
   }
 
@@ -14,9 +20,9 @@ export default () => {
 
   return new Vue({
     el,
+    apolloProvider,
     provide: {
       terraformImagePath,
-      bannerDismissedKey,
     },
     render: (createElement) => createElement(TerraformNotification),
   });

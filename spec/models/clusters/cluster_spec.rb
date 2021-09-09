@@ -268,6 +268,16 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '.with_name' do
+    subject { described_class.with_name(name) }
+
+    let(:name) { 'this-cluster' }
+    let!(:cluster) { create(:cluster, :project, name: name) }
+    let!(:another_cluster) { create(:cluster, :project) }
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe 'validations' do
     subject { cluster.valid? }
 
