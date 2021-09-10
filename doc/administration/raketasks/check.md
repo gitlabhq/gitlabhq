@@ -204,17 +204,32 @@ See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
 The following are solutions to problems you might discover using the Rake tasks documented
 above.
 
-### Dangling commits
+### Dangling objects
 
-`gitlab:git:fsck` can find dangling commits. To fix them, try
-[enabling housekeeping](../housekeeping.md).
+The `gitlab:git:fsck` task can find dangling objects such as:
 
-If the issue persists, try triggering `gc` via the
+```plaintext
+dangling blob a12...
+dangling commit b34...
+dangling tag c56...
+dangling tree d78...
+```
+
+To delete them, try [running housekeeping](../housekeeping.md).
+
+If the issue persists, try triggering garbage collection via the
 [Rails Console](../operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
 p = Project.find_by_path("project-name")
 Repositories::HousekeepingService.new(p, :gc).execute
+```
+
+If the dangling objects are younger than the 2 weeks default grace period,
+and you don't want to wait until they expire automatically, run:
+
+```ruby
+Repositories::HousekeepingService.new(p, :prune).execute
 ```
 
 ### Delete references to missing remote uploads

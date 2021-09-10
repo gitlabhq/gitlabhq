@@ -8,5 +8,6 @@ class Projects::WorkItemsController < Projects::ApplicationController
   feature_category :not_owned
 
   def index
+    render_404 unless Feature.enabled?(:work_items, project, default_enabled: :yaml)
   end
 end

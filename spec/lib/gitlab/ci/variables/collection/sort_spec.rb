@@ -5,20 +5,10 @@ require 'rspec-parameterized'
 
 RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
   describe '#initialize with non-Collection value' do
-    context 'when FF :variable_inside_variable is disabled' do
-      subject { Gitlab::Ci::Variables::Collection::Sort.new([]) }
+    subject { Gitlab::Ci::Variables::Collection::Sort.new([]) }
 
-      it 'raises ArgumentError' do
-        expect { subject }.to raise_error(ArgumentError, /Collection object was expected/)
-      end
-    end
-
-    context 'when FF :variable_inside_variable is enabled' do
-      subject { Gitlab::Ci::Variables::Collection::Sort.new([]) }
-
-      it 'raises ArgumentError' do
-        expect { subject }.to raise_error(ArgumentError, /Collection object was expected/)
-      end
+    it 'raises ArgumentError' do
+      expect { subject }.to raise_error(ArgumentError, /Collection object was expected/)
     end
   end
 
@@ -180,6 +170,34 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
 
       it 'raises TSort::Cyclic' do
         expect { subject }.to raise_error(TSort::Cyclic)
+      end
+    end
+
+    context 'with overridden variables' do
+      let(:variables) do
+        [
+          { key: 'PROJECT_VAR',          value: '$SUBGROUP_VAR' },
+          { key: 'SUBGROUP_VAR',         value: '$TOP_LEVEL_GROUP_NAME' },
+          { key: 'SUBGROUP_VAR',         value: '$SUB_GROUP_NAME' },
+          { key: 'TOP_LEVEL_GROUP_NAME', value: 'top-level-group' },
+          { key: 'SUB_GROUP_NAME',       value: 'vars-in-vars-subgroup' }
+        ]
+      end
+
+      let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
+
+      subject do
+        Gitlab::Ci::Variables::Collection::Sort.new(collection).tsort.map { |v| { v[:key] => v.value } }
+      end
+
+      it 'preserves relative order of overridden variables' do
+        is_expected.to eq([
+          { 'TOP_LEVEL_GROUP_NAME' => 'top-level-group' },
+          { 'SUBGROUP_VAR'         => '$TOP_LEVEL_GROUP_NAME' },
+          { 'SUB_GROUP_NAME'       => 'vars-in-vars-subgroup' },
+          { 'SUBGROUP_VAR'         => '$SUB_GROUP_NAME' },
+          { 'PROJECT_VAR'          => '$SUBGROUP_VAR' }
+        ])
       end
     end
   end

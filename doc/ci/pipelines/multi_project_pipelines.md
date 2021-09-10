@@ -273,7 +273,7 @@ upstream_bridge:
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) to GitLab Free in 12.4.
 
-When you use the [`CI_JOB_TOKEN` to trigger pipelines](../triggers/index.md#ci-job-token),
+When you use the [`CI_JOB_TOKEN` to trigger pipelines](../jobs/ci_job_token.md),
 GitLab recognizes the source of the job token. The pipelines become related,
 so you can visualize their relationships on pipeline graphs.
 

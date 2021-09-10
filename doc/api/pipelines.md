@@ -214,7 +214,7 @@ Sample response:
 
 ### Get a pipeline's test report summary
 
-> Introduced in [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471) in GitLab 14.2.
 
 NOTE:
 This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.

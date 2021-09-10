@@ -42,7 +42,7 @@ module Gitlab
             depends_on = var_item.depends_on
             return unless depends_on
 
-            depends_on.filter_map { |var_ref_name| @collection[var_ref_name] }.each(&block)
+            depends_on.filter_map { |var_ref_name| @collection.all(var_ref_name) }.flatten.each(&block)
           end
         end
       end

@@ -5269,4 +5269,23 @@ RSpec.describe Ci::Build do
       build.ensure_trace_metadata!
     end
   end
+
+  describe '#doom!' do
+    subject { build.doom! }
+
+    let_it_be(:build) { create(:ci_build, :queued) }
+
+    it 'updates status and failure_reason', :aggregate_failures do
+      subject
+
+      expect(build.status).to eq("failed")
+      expect(build.failure_reason).to eq("data_integrity_failure")
+    end
+
+    it 'drops associated pending build' do
+      subject
+
+      expect(build.reload.queuing_entry).not_to be_present
+    end
+  end
 end

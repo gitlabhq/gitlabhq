@@ -524,7 +524,7 @@ To avoid the time sync issue, enable time synchronization in the device that gen
   1. Go to Settings.
   1. Select General.
   1. Select Date & Time.
-  1. Enable Set Automatically. If it’s already enabled, disable it, wait a few seconds, and re-enable.
+  1. Enable Set Automatically. If it's already enabled, disable it, wait a few seconds, and re-enable.
 
 <!-- ## Troubleshooting
 

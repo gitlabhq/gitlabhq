@@ -55,7 +55,7 @@ GET /projects
 | `min_access_level`                         | integer  | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
 | `order_by`                                 | string   | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for admins. `similarity` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332890) in GitLab 14.1) is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                                    | boolean  | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
-| `repository_checksum_failed` **(PREMIUM)** | boolean  | **{dotted-circle}** No | Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2). |
+| `repository_checksum_failed` **(PREMIUM)** | boolean  | **{dotted-circle}** No | Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in GitLab 11.2). |
 | `repository_storage`                       | string   | **{dotted-circle}** No | Limit results to projects stored on `repository_storage`. _(admins only)_ |
 | `search_namespaces`                        | boolean  | **{dotted-circle}** No | Include ancestor namespaces when matching search criteria. Default is `false`. |
 | `search`                                   | string   | **{dotted-circle}** No | Return list of projects matching the search criteria. |
@@ -65,7 +65,7 @@ GET /projects
 | `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
 | `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
-| `wiki_checksum_failed` **(PREMIUM)**       | boolean  | **{dotted-circle}** No | Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2). |
+| `wiki_checksum_failed` **(PREMIUM)**       | boolean  | **{dotted-circle}** No | Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in GitLab 11.2). |
 | `with_custom_attributes`                   | boolean  | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
 | `with_issues_enabled`                      | boolean  | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled`              | boolean  | **{dotted-circle}** No | Limit by enabled merge requests feature. |
@@ -2428,7 +2428,7 @@ POST /projects/:id/housekeeping
 
 ## Push Rules **(PREMIUM)**
 
-### Get project push rules **(PREMIUM)**
+### Get project push rules
 
 Get the [push rules](../push_rules/push_rules.md#enabling-push-rules) of a
 project.
@@ -2474,7 +2474,7 @@ parameters:
 }
 ```
 
-### Add project push rule **(PREMIUM)**
+### Add project push rule
 
 Adds a push rule to a specified project.
 
@@ -2486,7 +2486,7 @@ POST /projects/:id/push_rule
 |-----------------------------------------|----------------|------------------------|-------------|
 | `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check` **(PREMIUM)**  | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
 | `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
@@ -2495,9 +2495,9 @@ POST /projects/:id/push_rule
 | `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
 | `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
-| `reject_unsigned_commits` **(PREMIUM)** | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
+| `reject_unsigned_commits`               | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
 
-### Edit project push rule **(PREMIUM)**
+### Edit project push rule
 
 Edits a push rule for a specified project.
 
@@ -2509,7 +2509,7 @@ PUT /projects/:id/push_rule
 |-----------------------------------------|----------------|------------------------|-------------|
 | `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check` **(PREMIUM)**  | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
 | `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
@@ -2518,7 +2518,7 @@ PUT /projects/:id/push_rule
 | `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
 | `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
-| `reject_unsigned_commits` **(PREMIUM)** | boolean        | **{dotted-circle}** No | Reject commits when they are not GPG signed. |
+| `reject_unsigned_commits`               | boolean        | **{dotted-circle}** No | Reject commits when they are not GPG signed. |
 
 ### Delete project push rule
 

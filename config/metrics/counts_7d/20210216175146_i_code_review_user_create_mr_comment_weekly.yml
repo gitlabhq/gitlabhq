@@ -13,7 +13,7 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-  - i_code_review_user_create_mr
+  - i_code_review_user_create_mr_comment
 distribution:
 - ce
 - ee

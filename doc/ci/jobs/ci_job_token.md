@@ -25,7 +25,7 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Terraform plan](../../user/infrastructure/index.md).
 
 The token has the same permissions to access the API as the user that triggers the
-pipeline. Therefore, this user must be assigned to [a role that has the required privileges](../../user/permissions.md).
+pipeline. Therefore, this user must be assigned to [a role that has the required privileges](../../user/permissions.md#gitlab-cicd-permissions).
 
 The token is valid only while the pipeline job runs. After the job finishes, you can't
 use the token anymore.
@@ -123,3 +123,43 @@ To disable it:
 ```ruby
 Feature.disable(:ci_scoped_job_token)
 ```
+
+## Trigger a multi-project pipeline by using a CI job token
+
+> `CI_JOB_TOKEN` for multi-project pipelines was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) from GitLab Premium to GitLab Free in 12.4.
+
+You can use the `CI_JOB_TOKEN` to trigger [multi-project pipelines](../pipelines/multi_project_pipelines.md)
+from a CI/CD job. A pipeline triggered this way creates a dependent pipeline relation
+that is visible on the [pipeline graph](../pipelines/multi_project_pipelines.md#multi-project-pipeline-visualization).
+
+For example:
+
+```yaml
+trigger_pipeline:
+  stage: deploy
+  script:
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+  rules:
+    - if: $CI_COMMIT_TAG
+```
+
+If you use the `CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)
+in a pipeline triggered this way, [the value is `pipeline` (not `triggered`)](../triggers/index.md#authentication-tokens).
+
+## Download an artifact from a different pipeline **(PREMIUM)**
+
+> `CI_JOB_TOKEN` for artifacts download with the API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in GitLab 9.5.
+
+You can use the `CI_JOB_TOKEN` to access artifacts from a job created by a previous
+pipeline. You must specify which job you want to retrieve the artifacts from:
+
+```yaml
+build_submodule:
+  stage: test
+  script:
+    - apt update && apt install -y unzip
+    - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"
+    - unzip artifacts.zip
+```
+
+Read more about the [jobs artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).

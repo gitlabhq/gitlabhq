@@ -521,7 +521,7 @@ For instructions about how to set up Patroni on the primary site, see the
 
 #### Configuring Patroni cluster for a Geo secondary site
 
-In a Geo secondary site, the main PostgreSQL database is a read-only replica of the primary site’s PostgreSQL database.
+In a Geo secondary site, the main PostgreSQL database is a read-only replica of the primary site's PostgreSQL database.
 
 If you are currently using `repmgr` on your Geo primary site, see [these instructions](#migrating-from-repmgr-to-patroni)
 for migrating from `repmgr` to Patroni.
@@ -651,7 +651,7 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 ##### Step 3. Configure a PgBouncer node on the secondary site
 
 A production-ready and highly available configuration requires at least
-three Consul nodes, a minimum of one PgBouncer node, but it’s recommended to have
+three Consul nodes, a minimum of one PgBouncer node, but it's recommended to have
 one per database node. An internal load balancer (TCP) is required when there is
 more than one PgBouncer service nodes. The internal load balancer provides a single
 endpoint for connecting to the PgBouncer cluster. For more information,

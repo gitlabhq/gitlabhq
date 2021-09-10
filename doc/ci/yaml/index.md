@@ -1367,7 +1367,7 @@ pipeline based on branch names or pipeline types.
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
-  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#trigger-token). |
+  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#authentication-tokens). |
   | `web`                    | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:

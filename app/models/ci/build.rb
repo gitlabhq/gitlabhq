@@ -1031,9 +1031,10 @@ module Ci
 
     # Consider this object to have a structural integrity problems
     def doom!
-      update_columns(
-        status: :failed,
-        failure_reason: :data_integrity_failure)
+      transaction do
+        update_columns(status: :failed, failure_reason: :data_integrity_failure)
+        all_queuing_entries.delete_all
+      end
     end
 
     def degradation_threshold

@@ -126,6 +126,10 @@ module API
       expose :keep_latest_artifacts_available?, as: :keep_latest_artifact
 
       # rubocop: disable CodeReuse/ActiveRecord
+      def self.preload_resource(project)
+        ActiveRecord::Associations::Preloader.new.preload(project, project_group_links: { group: :route })
+      end
+
       def self.preload_relation(projects_relation, options = {})
         # Preloading topics, should be done with using only `:topics`,
         # as `:topics` are defined as: `has_many :topics, through: :taggings`

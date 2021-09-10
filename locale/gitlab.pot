@@ -22888,8 +22888,10 @@ msgstr ""
 msgid "No webhooks found, add one in the form above."
 msgstr ""
 
-msgid "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} to renew your subscription."
-msgstr ""
+msgid "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} day to renew your subscription."
+msgid_plural "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} days to renew your subscription."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "No. of commits"
 msgstr ""
@@ -33230,7 +33232,7 @@ msgstr ""
 msgid "Thanks for your purchase!"
 msgstr ""
 
-msgid "That is ok, I do not want to renew"
+msgid "That's OK, I don't want to renew"
 msgstr ""
 
 msgid "That's it, well done!"
@@ -38771,10 +38773,10 @@ msgstr ""
 msgid "Your %{host} account was signed in to from a new location"
 msgstr ""
 
-msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
+msgid "Your %{strong}%{plan_name}%{strong_close} subscription expires on %{strong}%{expires_on}%{strong_close}. After that date, you cannot create issues or merge requests, or use many other features."
 msgstr ""
 
-msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not be able to create issues or merge requests as well as many other features."
+msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
 msgstr ""
 
 msgid "Your CI/CD configuration syntax is invalid. View Lint tab for more details."
@@ -39053,8 +39055,10 @@ msgstr ""
 msgid "Your subscription has been downgraded."
 msgstr ""
 
-msgid "Your subscription will expire in %{remaining_days}."
-msgstr ""
+msgid "Your subscription will expire in %{remaining_days} day."
+msgid_plural "Your subscription will expire in %{remaining_days} days."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Your username is %{username}."
 msgstr ""

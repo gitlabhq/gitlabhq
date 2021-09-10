@@ -474,6 +474,7 @@ Follow these guidelines for punctuation:
 | Use serial commas (Oxford commas) before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | You can create new issues, merge requests, and milestones. |
 | Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | You should try this - or not. |
 | When a colon is part of a sentence, always use lowercase after the colon. | Linked issues: a way to create a relationship between issues. |
+| Do not use typographer's quotes. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).) | "It's the questions we can't answer that teach us the most"---Patrick Rothfuss |
 
 <!-- vale gitlab.Repetition = YES -->
 
@@ -765,6 +766,7 @@ Valid for Markdown content only, not for front matter entries:
 
 For other punctuation rules, refer to the
 [Pajamas Design System Punctuation section](https://design.gitlab.com/content/punctuation/).
+This is overridden by the [documentation-specific punctuation rules](#punctuation).
 
 ## Headings
 

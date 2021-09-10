@@ -123,6 +123,7 @@
   - "scripts/review_apps/base-config.yaml"
   - "scripts/review_apps/review-apps.sh"
   - "scripts/trigger-build"
+  - "{,ee/,jh/}{bin,config}/**/*.rb"
 
 .ci-qa-patterns: &ci-qa-patterns
   - ".gitlab-ci.yml"

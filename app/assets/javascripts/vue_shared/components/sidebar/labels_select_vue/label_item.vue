@@ -56,7 +56,7 @@ export default {
     const labelLink = h(
       GlLink,
       {
-        class: 'gl-display-flex gl-align-items-center label-item gl-text-black-normal',
+        class: 'gl-display-flex gl-align-items-center label-item gl-text-body',
         on: {
           click: () => {
             listeners.clickLabel(label);
