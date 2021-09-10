@@ -4,7 +4,7 @@
 # generated for a given scope and usage.
 #
 # The monotone sequence may be broken if an ID is explicitly provided
-# to `.track_greatest_and_save!` or `#track_greatest`.
+# to `#track_greatest`.
 #
 # For example, issues use their project to scope internal ids:
 # In that sense, scope is "project" and usage is "issues".
@@ -27,32 +27,6 @@ class InternalId < ApplicationRecord
 
   scope :filter_by, -> (scope, usage) do
     where(**scope, usage: usage)
-  end
-
-  # Increments #last_value and saves the record
-  #
-  # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
-  # As such, the increment is atomic and safe to be called concurrently.
-  def increment_and_save!
-    update_and_save { self.last_value = (last_value || 0) + 1 }
-  end
-
-  # Increments #last_value with new_value if it is greater than the current,
-  # and saves the record
-  #
-  # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
-  # As such, the increment is atomic and safe to be called concurrently.
-  def track_greatest_and_save!(new_value)
-    update_and_save { self.last_value = [last_value || 0, new_value].max }
-  end
-
-  private
-
-  def update_and_save(&block)
-    lock!
-    yield
-    save!
-    last_value
   end
 
   class << self
@@ -99,143 +73,7 @@ class InternalId < ApplicationRecord
     private
 
     def build_generator(subject, scope, usage, init = nil)
-      if Feature.enabled?(:generate_iids_without_explicit_locking)
-        ImplicitlyLockingInternalIdGenerator.new(subject, scope, usage, init)
-      else
-        InternalIdGenerator.new(subject, scope, usage, init)
-      end
-    end
-  end
-
-  class InternalIdGenerator
-    # Generate next internal id for a given scope and usage.
-    #
-    # For currently supported usages, see #usage enum.
-    #
-    # The method implements a locking scheme that has the following properties:
-    # 1) Generated sequence of internal ids is unique per (scope and usage)
-    # 2) The method is thread-safe and may be used in concurrent threads/processes.
-    # 3) The generated sequence is gapless.
-    # 4) In the absence of a record in the internal_ids table, one will be created
-    #    and last_value will be calculated on the fly.
-    #
-    # subject: The instance or class we're generating an internal id for.
-    # scope: Attributes that define the scope for id generation.
-    #        Valid keys are `project/project_id` and `namespace/namespace_id`.
-    # usage: Symbol to define the usage of the internal id, see InternalId.usages
-    # init: Proc that accepts the subject and the scope and returns Integer|NilClass
-    attr_reader :subject, :scope, :scope_attrs, :usage, :init
-
-    def initialize(subject, scope, usage, init = nil)
-      @subject = subject
-      @scope = scope
-      @usage = usage
-      @init = init
-
-      raise ArgumentError, 'Scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
-
-      unless InternalId.usages.has_key?(usage.to_s)
-        raise ArgumentError, "Usage '#{usage}' is unknown. Supported values are #{InternalId.usages.keys} from InternalId.usages"
-      end
-    end
-
-    # Generates next internal id and returns it
-    # init: Block that gets called to initialize InternalId record if not present
-    #       Make sure to not throw exceptions in the absence of records (if this is expected).
-    def generate
-      InternalId.internal_id_transactions_increment(operation: :generate, usage: usage)
-
-      subject.transaction do
-        # Create a record in internal_ids if one does not yet exist
-        # and increment its last value
-        #
-        # Note this will acquire a ROW SHARE lock on the InternalId record
-        record.increment_and_save!
-      end
-    end
-
-    # Reset tries to rewind to `value-1`. This will only succeed,
-    # if `value` stored in database is equal to `last_value`.
-    # value: The expected last_value to decrement
-    def reset(value)
-      return false unless value
-
-      InternalId.internal_id_transactions_increment(operation: :reset, usage: usage)
-
-      updated =
-        InternalId
-          .where(**scope, usage: usage_value)
-          .where(last_value: value)
-          .update_all('last_value = last_value - 1')
-
-      updated > 0
-    end
-
-    # Create a record in internal_ids if one does not yet exist
-    # and set its new_value if it is higher than the current last_value
-    #
-    # Note this will acquire a ROW SHARE lock on the InternalId record
-
-    def track_greatest(new_value)
-      InternalId.internal_id_transactions_increment(operation: :track_greatest, usage: usage)
-
-      subject.transaction do
-        record.track_greatest_and_save!(new_value)
-      end
-    end
-
-    def record
-      @record ||= (lookup || create_record)
-    end
-
-    def with_lock(&block)
-      InternalId.internal_id_transactions_increment(operation: :with_lock, usage: usage)
-
-      record.with_lock(&block)
-    end
-
-    private
-
-    # Retrieve InternalId record for (project, usage) combination, if it exists
-    def lookup
-      InternalId.find_by(**scope, usage: usage_value)
-    end
-
-    def initial_value(subject, scope)
-      raise ArgumentError, 'Cannot initialize without init!' unless init
-
-      # `init` computes the maximum based on actual records. We use the
-      # primary to make sure we have up to date results
-      Gitlab::Database::LoadBalancing::Session.current.use_primary do
-        instance = subject.is_a?(::Class) ? nil : subject
-
-        init.call(instance, scope) || 0
-      end
-    end
-
-    def usage_value
-      @usage_value ||= InternalId.usages[usage.to_s]
-    end
-
-    # Create InternalId record for (scope, usage) combination, if it doesn't exist
-    #
-    # We blindly insert ignoring conflicts on the unique key constraint.
-    # If another process was faster in doing this, we'll end up with that record
-    # when we do the lookup after the insert.
-    def create_record
-      scope[:project].save! if scope[:project] && !scope[:project].persisted?
-      scope[:namespace].save! if scope[:namespace] && !scope[:namespace].persisted?
-
-      attributes = {
-        project_id: scope[:project]&.id || scope[:project_id],
-        namespace_id: scope[:namespace]&.id || scope[:namespace_id],
-        usage: usage_value,
-        last_value: initial_value(subject, scope)
-      }
-
-      InternalId.insert(attributes)
-
-      lookup
+      ImplicitlyLockingInternalIdGenerator.new(subject, scope, usage, init)
     end
   end
 

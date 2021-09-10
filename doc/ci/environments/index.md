@@ -99,7 +99,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -109,9 +109,9 @@ deploy_review:
 
 In this example:
 
-- The `name` is `review/$CI_COMMIT_REF_NAME`. Because the [environment name](../yaml/index.md#environmentname)
+- The `name` is `review/$CI_COMMIT_REF_SLUG`. Because the [environment name](../yaml/index.md#environmentname)
   can contain slashes (`/`), you can use this pattern to distinguish between dynamic and static environments.
-- For the `url`, you could use `$CI_COMMIT_REF_NAME`, but because this value
+- For the `url`, you could use `$CI_COMMIT_REF_SLUG`, but because this value
   may contain a `/` or other characters that would not be valid in a domain name or URL,
   use `$CI_ENVIRONMENT_SLUG` instead. The `$CI_ENVIRONMENT_SLUG` variable is guaranteed to be unique.
 
@@ -385,7 +385,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
   rules:
@@ -396,7 +396,7 @@ stop_review:
   script:
     - echo "Remove review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     action: stop
   rules:
     - if: $CI_MERGE_REQUEST_ID
@@ -440,7 +440,7 @@ is created or updated. The environment runs until `stop_review_app` is executed:
 review_app:
   script: deploy-review-app
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     on_stop: stop_review_app
     auto_stop_in: 1 week
   rules:
@@ -449,7 +449,7 @@ review_app:
 stop_review_app:
   script: stop-review-app
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     action: stop
   rules:
     - if: $CI_MERGE_REQUEST_ID
@@ -538,7 +538,7 @@ then in the UI, the environments are grouped under that heading:
 ![Environment groups](img/environments_dynamic_groups_v13_10.png)
 
 The following example shows how to start your environment names with `review`.
-The `$CI_COMMIT_REF_NAME` variable is populated with the branch name at runtime:
+The `$CI_COMMIT_REF_SLUG` variable is populated with the branch name at runtime:
 
 ```yaml
 deploy_review:
@@ -546,7 +546,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
 ```
 
 ### Environment incident management
@@ -776,14 +776,14 @@ To ensure the `action: stop` can always run when needed, you can:
   deploy_review:
     stage: deploy
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       url: https://$CI_ENVIRONMENT_SLUG.example.com
       on_stop: stop_review
 
   stop_review:
     stage: deploy
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       action: stop
     when: manual
   ```
@@ -803,7 +803,7 @@ To ensure the `action: stop` can always run when needed, you can:
   deploy_review:
     stage: deploy
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       url: https://$CI_ENVIRONMENT_SLUG.example.com
       on_stop: stop_review
 
@@ -812,7 +812,7 @@ To ensure the `action: stop` can always run when needed, you can:
     needs:
       - deploy_review
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       action: stop
     when: manual
   ```

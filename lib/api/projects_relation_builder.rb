@@ -10,6 +10,8 @@ module API
 
         execute_batch_counting(projects_relation)
 
+        preload_repository_cache(projects_relation)
+
         projects_relation
       end
 
@@ -22,6 +24,20 @@ module API
       # This is overridden by the specific Entity class to
       # batch load certain counts
       def execute_batch_counting(projects_relation)
+      end
+
+      def preload_repository_cache(projects_relation)
+        return unless Feature.enabled?(:preload_repo_cache, default_enabled: :yaml)
+
+        repositories = repositories_for_preload(projects_relation)
+
+        Gitlab::RepositoryCache::Preloader.new(repositories).preload( # rubocop:disable CodeReuse/ActiveRecord
+          %i[exists? root_ref has_visible_content? avatar readme_path]
+        )
+      end
+
+      def repositories_for_preload(projects_relation)
+        projects_relation.map(&:repository)
       end
     end
   end

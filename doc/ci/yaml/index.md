@@ -2136,7 +2136,7 @@ review_app:
   stage: deploy
   script: make deploy-app
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review_app
 
@@ -2147,7 +2147,7 @@ stop_review_app:
   script: make delete-app
   when: manual
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     action: stop
 ```
 
@@ -2197,7 +2197,7 @@ For example,
 review_app:
   script: deploy-review-app
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     auto_stop_in: 1 day
 ```
 
@@ -2267,12 +2267,12 @@ deploy as review app:
   stage: deploy
   script: make deploy
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com/
 ```
 
 The `deploy as review app` job is marked as a deployment to dynamically
-create the `review/$CI_COMMIT_REF_NAME` environment. `$CI_COMMIT_REF_NAME`
+create the `review/$CI_COMMIT_REF_SLUG` environment. `$CI_COMMIT_REF_SLUG`
 is a [CI/CD variable](../variables/index.md) set by the runner. The
 `$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
 for inclusion in URLs. If the `deploy as review app` job runs in a branch named

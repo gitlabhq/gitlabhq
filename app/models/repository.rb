@@ -1132,6 +1132,10 @@ class Repository
     end
   end
 
+  def cache
+    @cache ||= Gitlab::RepositoryCache.new(self)
+  end
+
   private
 
   # TODO Genericize finder, later split this on finders by Ref or Oid
@@ -1144,10 +1148,6 @@ class Repository
              end
 
     ::Commit.new(commit, container) if commit
-  end
-
-  def cache
-    @cache ||= Gitlab::RepositoryCache.new(self)
   end
 
   def redis_set_cache

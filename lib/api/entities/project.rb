@@ -152,6 +152,10 @@ module API
 
         super
       end
+
+      def self.repositories_for_preload(projects_relation)
+        super + projects_relation.map(&:forked_from_project).compact.map(&:repository)
+      end
     end
   end
 end

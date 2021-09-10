@@ -3271,6 +3271,9 @@ msgstr ""
 msgid "All (default)"
 msgstr ""
 
+msgid "All GitLab"
+msgstr ""
+
 msgid "All Members"
 msgstr ""
 
@@ -18760,10 +18763,16 @@ msgstr ""
 msgid "Issues"
 msgstr ""
 
+msgid "Issues I've created"
+msgstr ""
+
 msgid "Issues Rate Limits"
 msgstr ""
 
 msgid "Issues and merge requests"
+msgstr ""
+
+msgid "Issues assigned to me"
 msgstr ""
 
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
@@ -21107,10 +21116,19 @@ msgstr ""
 msgid "Merge requests"
 msgstr ""
 
+msgid "Merge requests I've created"
+msgstr ""
+
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
 msgid "Merge requests are read-only in a secondary Geo node"
+msgstr ""
+
+msgid "Merge requests assigned to me"
+msgstr ""
+
+msgid "Merge requests that I'm a reviewer"
 msgstr ""
 
 msgid "Merge the branch and fix any conflicts that come up"

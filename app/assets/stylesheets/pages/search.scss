@@ -47,6 +47,15 @@ input[type='checkbox']:hover {
   }
 }
 
+.header-search-dropdown-menu {
+  max-height: $dropdown-max-height;
+  top: $header-height;
+}
+
+.header-search-dropdown-content {
+  max-height: $dropdown-max-height;
+}
+
 .search {
   margin: 0 8px;
 
