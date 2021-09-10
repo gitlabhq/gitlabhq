@@ -475,6 +475,9 @@ This can then be compared to the [NameID](#nameid) being sent by the identity pr
 
 ### Users receive a 404
 
+If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
+[SHA-1 generated fingerprint](../../../integration/saml.md#notes-on-configuring-your-identity-provider).
+
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](#configuring-your-identity-provider), they may see a 404.
 As outlined in the [user access section](#linking-saml-to-your-existing-gitlabcom-account), a group Owner will need to provide the URL to users.
 

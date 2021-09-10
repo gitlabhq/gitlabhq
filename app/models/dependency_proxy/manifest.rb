@@ -9,6 +9,9 @@ class DependencyProxy::Manifest < ApplicationRecord
   validates :file, presence: true
   validates :file_name, presence: true
   validates :digest, presence: true
+  validates :status, presence: true
+
+  enum status: { default: 0, expired: 1 }
 
   mount_file_store_uploader DependencyProxy::FileUploader
 
