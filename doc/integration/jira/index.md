@@ -40,7 +40,7 @@ displays in the [development panel](https://support.atlassian.com/jira-software-
 To set up the Jira development panel integration:
 
 - *If your installation uses Jira Cloud,* use the
-  [GitLab for Jira app](connect-app.md).
+  [GitLab.com for Jira Cloud app](connect-app.md).
 - *If either your Jira or GitLab installation is self-managed,* use the
   [Jira DVCS (distributed version control system) connector](dvcs.md).
 

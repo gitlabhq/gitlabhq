@@ -110,11 +110,12 @@
 %section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
-      = _('Import/Export Rate Limits')
+      = _('Import and export rate limits')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure limits for Project/Group Import/Export.')
+      = _('Set per-user rate limits for imports and exports of projects and groups.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/import_export_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'import_export_limits'
 

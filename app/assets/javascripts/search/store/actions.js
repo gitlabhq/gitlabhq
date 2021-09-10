@@ -40,7 +40,7 @@ export const fetchProjects = ({ commit, state }, search) => {
     );
   } else {
     // The .catch() is due to the API method not handling a rejection properly
-    Api.projects(search, { order_by: 'id' }, callback).catch(() => {
+    Api.projects(search, { order_by: 'similarity' }, callback).catch(() => {
       callback();
     });
   }

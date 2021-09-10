@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 NOTE:
 Only Jira users with administrator level access are able to install or configure
-the GitLab app for Jira Cloud.
+the GitLab.com for Jira Cloud app.
 
 ## GitLab.com for Jira Cloud app **(FREE SAAS)**
 

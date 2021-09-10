@@ -23,10 +23,37 @@ module CycleAnalyticsHelpers
     end
   end
 
+  def select_event_label(sel)
+    page.within(sel) do
+      find('.dropdown-toggle').click
+      page.find(".dropdown-menu").all(".dropdown-item")[1].click
+    end
+  end
+
+  def fill_in_custom_label_stage_fields
+    index = page.all('[data-testid="value-stream-stage-fields"]').length
+    last_stage = page.all('[data-testid="value-stream-stage-fields"]').last
+
+    within last_stage do
+      find('[name*="custom-stage-name-"]').fill_in with: "Cool custom label stage - name #{index}"
+      select_dropdown_option_by_value "custom-stage-start-event-", :issue_label_added
+      select_dropdown_option_by_value "custom-stage-end-event-", :issue_label_removed
+
+      select_event_label("[data-testid*='custom-stage-start-event-label-']")
+      select_event_label("[data-testid*='custom-stage-end-event-label-']")
+    end
+  end
+
   def add_custom_stage_to_form
     page.find_button(s_('CreateValueStreamForm|Add another stage')).click
 
     fill_in_custom_stage_fields
+  end
+
+  def add_custom_label_stage_to_form
+    page.find_button(s_('CreateValueStreamForm|Add another stage')).click
+
+    fill_in_custom_label_stage_fields
   end
 
   def save_value_stream(custom_value_stream_name)

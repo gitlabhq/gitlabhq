@@ -559,6 +559,9 @@ msgstr ""
 msgid "%{doc_link_start}Advanced search%{doc_link_end} is enabled."
 msgstr ""
 
+msgid "%{docs_link_start}Learn about visibility levels.%{docs_link_end}"
+msgstr ""
+
 msgid "%{due_date} (Past due)"
 msgstr ""
 
@@ -8512,9 +8515,6 @@ msgid "Configure existing installation"
 msgstr ""
 
 msgid "Configure limit for notes created per minute by web and API requests."
-msgstr ""
-
-msgid "Configure limits for Project/Group Import/Export."
 msgstr ""
 
 msgid "Configure limits for web and API requests."
@@ -17001,6 +17001,9 @@ msgstr ""
 msgid "Import an exported GitLab project"
 msgstr ""
 
+msgid "Import and export rate limits"
+msgstr ""
+
 msgid "Import failed due to a GitHub error: %{original}"
 msgstr ""
 
@@ -17077,9 +17080,6 @@ msgid "Import tasks from Phabricator into issues"
 msgstr ""
 
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
-msgstr ""
-
-msgid "Import/Export Rate Limits"
 msgstr ""
 
 msgid "ImportButtons|Connect repositories from"
@@ -20654,24 +20654,6 @@ msgstr ""
 msgid "Max 20 characters"
 msgstr ""
 
-msgid "Max Group Export Download requests per minute per user"
-msgstr ""
-
-msgid "Max Group Export requests per minute per user"
-msgstr ""
-
-msgid "Max Group Import requests per minute per user"
-msgstr ""
-
-msgid "Max Project Export Download requests per minute per user"
-msgstr ""
-
-msgid "Max Project Export requests per minute per user"
-msgstr ""
-
-msgid "Max Project Import requests per minute per user"
-msgstr ""
-
 msgid "Max authenticated API requests per period per user"
 msgstr ""
 
@@ -20777,6 +20759,15 @@ msgstr ""
 msgid "Maximum files in a diff"
 msgstr ""
 
+msgid "Maximum group export download requests per minute"
+msgstr ""
+
+msgid "Maximum group export requests per minute"
+msgstr ""
+
+msgid "Maximum group import requests per minute"
+msgstr ""
+
 msgid "Maximum import size"
 msgstr ""
 
@@ -20820,6 +20811,15 @@ msgid "Maximum page reached"
 msgstr ""
 
 msgid "Maximum page size"
+msgstr ""
+
+msgid "Maximum project export download requests per minute"
+msgstr ""
+
+msgid "Maximum project export requests per minute"
+msgstr ""
+
+msgid "Maximum project import requests per minute"
 msgstr ""
 
 msgid "Maximum push size"
@@ -30628,6 +30628,9 @@ msgstr ""
 msgid "Set an instance-wide domain that will be available to all clusters when installing Knative."
 msgstr ""
 
+msgid "Set any rate limit to %{code_open}0%{code_close} to disable the limit."
+msgstr ""
+
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
 msgstr ""
 
@@ -30653,6 +30656,9 @@ msgid "Set notification email for abuse reports."
 msgstr ""
 
 msgid "Set parent epic to an epic"
+msgstr ""
+
+msgid "Set per-user rate limits for imports and exports of projects and groups."
 msgstr ""
 
 msgid "Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan."
