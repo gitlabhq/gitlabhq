@@ -85,6 +85,9 @@ For source installations, make sure the `kerberos` gem group
    gitlab_rails['kerberos_keytab'] = "/etc/http.keytab"
    ```
 
+   To avoid GitLab creating users automatically on their first sign in through Kerberos,
+   don't set `kerberos` for `gitlab_rails['omniauth_allow_single_sign_on']`.
+
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 GitLab now offers the `negotiate` authentication method for signing in and

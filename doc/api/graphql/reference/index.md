@@ -11105,7 +11105,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `MergeRequestAssignee.groups`
 
-Groups where the user has access.
+Groups where the user has access. Will always return `null` if `paginatable_namespace_drop_down_for_project_creation` feature flag is disabled.
 
 Returns [`GroupConnection`](#groupconnection).
 
@@ -11351,7 +11351,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `MergeRequestReviewer.groups`
 
-Groups where the user has access.
+Groups where the user has access. Will always return `null` if `paginatable_namespace_drop_down_for_project_creation` feature flag is disabled.
 
 Returns [`GroupConnection`](#groupconnection).
 
@@ -14260,7 +14260,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `UserCore.groups`
 
-Groups where the user has access.
+Groups where the user has access. Will always return `null` if `paginatable_namespace_drop_down_for_project_creation` feature flag is disabled.
 
 Returns [`GroupConnection`](#groupconnection).
 
@@ -17255,7 +17255,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ###### `User.groups`
 
-Groups where the user has access.
+Groups where the user has access. Will always return `null` if `paginatable_namespace_drop_down_for_project_creation` feature flag is disabled.
 
 Returns [`GroupConnection`](#groupconnection).
 

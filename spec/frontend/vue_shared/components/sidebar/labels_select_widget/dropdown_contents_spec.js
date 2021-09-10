@@ -1,46 +1,34 @@
 import { GlDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-import Vuex from 'vuex';
 
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue';
-import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_widget/store';
 
-import { mockConfig, mockLabels } from './mock_data';
-
-Vue.use(Vuex);
+import { mockLabels } from './mock_data';
 
 describe('DropdownContent', () => {
   let wrapper;
 
-  const createComponent = ({
-    initialState = mockConfig,
-    defaultProps = {},
-    injected = {},
-  } = {}) => {
-    const store = new Vuex.Store(labelsSelectModule());
-
-    store.dispatch('setInitialState', initialState);
-
+  const createComponent = ({ props = {}, injected = {} } = {}) => {
     wrapper = shallowMount(DropdownContents, {
       propsData: {
-        ...defaultProps,
         labelsCreateTitle: 'test',
         selectedLabels: mockLabels,
         allowMultiselect: true,
         labelsListTitle: 'Assign labels',
         footerCreateLabelTitle: 'create',
         footerManageLabelTitle: 'manage',
+        dropdownButtonText: 'Labels',
+        variant: 'sidebar',
+        ...props,
       },
       provide: {
         allowLabelCreate: true,
         labelsManagePath: 'foo/bar',
         ...injected,
       },
-      store,
       stubs: {
         GlDropdown,
       },
@@ -61,7 +49,7 @@ describe('DropdownContent', () => {
 
   describe('Create view', () => {
     beforeEach(() => {
-      wrapper.vm.$store.dispatch('toggleDropdownContentsCreateView');
+      wrapper.vm.toggleDropdownContentsCreateView();
     });
 
     it('renders create view when `showDropdownContentsCreateView` prop is `true`', () => {
@@ -91,13 +79,13 @@ describe('DropdownContent', () => {
     });
 
     it('does not render footer on standalone dropdown', () => {
-      createComponent({ initialState: { ...mockConfig, variant: DropdownVariant.Standalone } });
+      createComponent({ props: { variant: DropdownVariant.Standalone } });
 
       expect(findDropdownFooter().exists()).toBe(false);
     });
 
     it('renders footer on embedded dropdown', () => {
-      createComponent({ initialState: { ...mockConfig, variant: DropdownVariant.Embedded } });
+      createComponent({ props: { variant: DropdownVariant.Embedded } });
 
       expect(findDropdownFooter().exists()).toBe(true);
     });

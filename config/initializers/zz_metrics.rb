@@ -162,25 +162,25 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 
-  # This instruments all methods residing in app/models that (appear to) use any
-  # of the ActiveRecord methods. This has to take place _after_ initializing as
-  # for some unknown reason calling eager_load! earlier breaks Devise.
-  Gitlab::Application.config.after_initialize do
-    # We should move all the logic of this file to somewhere else
-    # and require it after `Rails.application.initialize!` in `environment.rb` file.
-    models_path = Rails.root.join('app', 'models').to_s
+  # We are removing the Instrumentation module entirely in steps.
+  # More in https://gitlab.com/gitlab-org/gitlab/-/issues/217978.
+  unless ::Feature.enabled?(:method_instrumentation_disable_initialization)
+    # This instruments all methods residing in app/models that (appear to) use any
+    # of the ActiveRecord methods. This has to take place _after_ initializing as
+    # for some unknown reason calling eager_load! earlier breaks Devise.
+    Gitlab::Application.config.after_initialize do
+      # We should move all the logic of this file to somewhere else
+      # and require it after `Rails.application.initialize!` in `environment.rb` file.
+      models_path = Rails.root.join('app', 'models').to_s
 
-    Dir.glob("**/*.rb", base: models_path).sort.each do |file|
-      require_dependency file
-    end
+      Dir.glob("**/*.rb", base: models_path).sort.each do |file|
+        require_dependency file
+      end
 
-    regex = Regexp.union(
-      ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
-    )
+      regex = Regexp.union(
+        ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
+      )
 
-    # We are removing the Instrumentation module entirely in steps.
-    # More in https://gitlab.com/gitlab-org/gitlab/-/issues/217978.
-    unless ::Feature.enabled?(:method_instrumentation_disable_initialization)
       Gitlab::Metrics::Instrumentation
         .instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
           # Instrumenting the ApplicationSetting class can lead to an infinite
@@ -199,9 +199,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
       # be instrumented.
       Gitlab::Metrics::Instrumentation.instrument_methods(Ability)
     end
-  end
 
-  unless ::Feature.enabled?(:method_instrumentation_disable_initialization)
     Gitlab::Metrics::Instrumentation.configure do |config|
       instrument_classes(config)
     end

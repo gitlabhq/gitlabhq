@@ -20,10 +20,12 @@ describe('DropdownValue', () => {
       propsData: {
         selectedLabels: [mockRegularLabel, mockScopedLabel],
         allowLabelRemove: true,
-        allowScopedLabels: true,
         labelsFilterBasePath: '/gitlab-org/my-project/issues',
         labelsFilterParam: 'label_name',
         ...props,
+      },
+      provide: {
+        allowScopedLabels: true,
       },
     });
   };

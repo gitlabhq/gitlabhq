@@ -1,9 +1,9 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
-import { mapActions, mapGetters, mapState } from 'vuex';
 
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
+import { isDropdownVariantSidebar, isDropdownVariantEmbedded } from './utils';
 
 export default {
   components: {
@@ -32,6 +32,10 @@ export default {
       type: String,
       required: true,
     },
+    dropdownButtonText: {
+      type: String,
+      required: true,
+    },
     footerCreateLabelTitle: {
       type: String,
       required: true,
@@ -40,10 +44,17 @@ export default {
       type: String,
       required: true,
     },
+    variant: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      showDropdownContentsCreateView: false,
+    };
   },
   computed: {
-    ...mapState(['showDropdownContentsCreateView']),
-    ...mapGetters(['dropdownButtonText', 'isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     dropdownContentsView() {
       if (this.showDropdownContentsCreateView) {
         return 'dropdown-contents-create-view';
@@ -56,20 +67,25 @@ export default {
     showDropdownFooter() {
       return (
         !this.showDropdownContentsCreateView &&
-        (this.isDropdownVariantSidebar || this.isDropdownVariantEmbedded)
+        (this.isDropdownVariantSidebar(this.variant) ||
+          this.isDropdownVariantEmbedded(this.variant))
       );
     },
   },
   methods: {
-    ...mapActions(['toggleDropdownContentsCreateView']),
     showDropdown() {
       this.$refs.dropdown.show();
+    },
+    toggleDropdownContentsCreateView() {
+      this.showDropdownContentsCreateView = !this.showDropdownContentsCreateView;
     },
     toggleDropdownContent() {
       this.toggleDropdownContentsCreateView();
       // Required to recalculate dropdown position as its size changes
       this.$refs.dropdown.$refs.dropdown.$_popper.scheduleUpdate();
     },
+    isDropdownVariantSidebar,
+    isDropdownVariantEmbedded,
   },
 };
 </script>
@@ -83,7 +99,7 @@ export default {
   >
     <template #header>
       <div
-        v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
+        v-if="isDropdownVariantSidebar(variant) || isDropdownVariantEmbedded(variant)"
         class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
       >
         <gl-button
@@ -123,7 +139,7 @@ export default {
         >
           {{ footerCreateLabelTitle }}
         </gl-dropdown-item>
-        <gl-dropdown-item :href="labelsManagePath">
+        <gl-dropdown-item :href="labelsManagePath" @click.native.capture.stop>
           {{ footerManageLabelTitle }}
         </gl-dropdown-item>
       </div>

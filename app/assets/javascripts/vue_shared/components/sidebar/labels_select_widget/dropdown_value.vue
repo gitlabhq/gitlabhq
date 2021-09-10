@@ -7,6 +7,7 @@ export default {
   components: {
     GlLabel,
   },
+  inject: ['allowScopedLabels'],
   props: {
     disableLabels: {
       type: Boolean,
@@ -18,10 +19,6 @@ export default {
       required: true,
     },
     allowLabelRemove: {
-      type: Boolean,
-      required: true,
-    },
-    allowScopedLabels: {
       type: Boolean,
       required: true,
     },

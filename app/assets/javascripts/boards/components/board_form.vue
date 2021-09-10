@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { TYPE_ITERATION, TYPE_MILESTONE } from '~/graphql_shared/constants';
+import { TYPE_USER, TYPE_ITERATION, TYPE_MILESTONE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -188,7 +188,9 @@ export default {
     issueBoardScopeMutationVariables() {
       return {
         weight: this.board.weight,
-        assigneeId: this.board.assignee?.id || null,
+        assigneeId: this.board.assignee?.id
+          ? convertToGraphQLId(TYPE_USER, this.board.assignee.id)
+          : null,
         milestoneId: this.board.milestone?.id
           ? convertToGraphQLId(TYPE_MILESTONE, this.board.milestone.id)
           : null,

@@ -135,15 +135,16 @@ describe('title area', () => {
         },
       });
     };
+
     it('shows dynamic slots', async () => {
       mountComponent();
       // we manually add a new slot to simulate dynamic slots being evaluated after the initial mount
       wrapper.vm.$slots[DYNAMIC_SLOT] = createDynamicSlot();
 
+      // updating the slots like we do on line 141 does not cause the updated lifecycle-hook to be triggered
+      wrapper.vm.$forceUpdate();
       await wrapper.vm.$nextTick();
-      expect(findDynamicSlot().exists()).toBe(false);
 
-      await wrapper.vm.$nextTick();
       expect(findDynamicSlot().exists()).toBe(true);
     });
 
@@ -160,10 +161,8 @@ describe('title area', () => {
         'metadata-foo': wrapper.vm.$slots['metadata-foo'],
       };
 
-      await wrapper.vm.$nextTick();
-      expect(findDynamicSlot().exists()).toBe(false);
-      expect(findMetadataSlot('metadata-foo').exists()).toBe(true);
-
+      // updating the slots like we do on line 159 does not cause the updated lifecycle-hook to be triggered
+      wrapper.vm.$forceUpdate();
       await wrapper.vm.$nextTick();
 
       expect(findSlotOrderElements().at(0).attributes('data-testid')).toBe(DYNAMIC_SLOT);

@@ -1,31 +1,18 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
+import { shallowMount } from '@vue/test-utils';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue';
 import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value_collapsed.vue';
 import LabelsSelectRoot from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
 
-import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_widget/store';
-
 import { mockConfig } from './mock_data';
-
-jest.mock('~/lib/utils/common_utils', () => ({
-  isInViewport: jest.fn().mockReturnValue(true),
-}));
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 describe('LabelsSelectRoot', () => {
   let wrapper;
-  let store;
 
   const createComponent = (config = mockConfig, slots = {}) => {
     wrapper = shallowMount(LabelsSelectRoot, {
-      localVue,
       slots,
-      store,
       propsData: config,
       stubs: {
         DropdownContents,
@@ -35,13 +22,10 @@ describe('LabelsSelectRoot', () => {
         iid: '1',
         projectPath: 'test',
         canUpdate: true,
+        allowLabelEdit: true,
       },
     });
   };
-
-  beforeEach(() => {
-    store = new Vuex.Store(labelsSelectModule());
-  });
 
   afterEach(() => {
     wrapper.destroy();

@@ -177,15 +177,6 @@ exports[`PackageTitle renders without tags 1`] = `
             texttooltip=""
           />
         </div>
-        <div
-          class="gl-display-flex gl-align-items-center gl-mr-5"
-        >
-          <package-tags-stub
-            hidelabel="true"
-            tagdisplaylimit="2"
-            tags="[object Object],[object Object],[object Object]"
-          />
-        </div>
       </div>
     </div>
      

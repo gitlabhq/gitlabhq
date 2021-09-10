@@ -22,15 +22,21 @@ In both cases, you authenticate with a personal access token in place of your pa
 Personal access tokens are:
 
 - Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
-- Similar to [project access tokens](../project/settings/project_access_tokens.md), but are attached to a user rather than a project.
+- Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
+  [GitLab managed Terraform state backend](../infrastructure/iac/terraform_state.md#using-a-gitlab-managed-terraform-state-backend-as-a-remote-data-source)
+  and [Docker container registry](../packages/container_registry/index.md#authenticate-with-the-container-registry),
+- Similar to [project access tokens](../project/settings/project_access_tokens.md), but are attached
+  to a user rather than a project.
+
+NOTE:
+Though required, GitLab usernames are ignored when authenticating with a personal access token.
+There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
+use the username.
 
 For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/index.md#personalproject-access-tokens).
 
 Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
-
-NOTE:
-Use your GitLab username and personal access tokens to authenticate with [GitLab managed Terraform state backend](../infrastructure/iac/terraform_state.md#using-a-gitlab-managed-terraform-state-backend-as-a-remote-data-source), [Docker container registry](../packages/container_registry/index.md#authenticate-with-the-container-registry), or when authenticating to a Git remote repository. Currently, GitLab usernames are ignored when authenticating with a personal access token, however, usernames may become a requirement in the future as per [issue #212953](https://gitlab.com/gitlab-org/gitlab/-/issues/212953).
 
 ## Create a personal access token
 
