@@ -71,7 +71,7 @@ RSpec.describe Gitlab::IssuablesCountForState do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
 
-    let(:cache_options) { { expires_in: 10.minutes } }
+    let(:cache_options) { { expires_in: 1.hour } }
     let(:cache_key) { ['group', group.id, 'issues'] }
     let(:threshold) { described_class::THRESHOLD }
     let(:states_count) { { opened: 1, closed: 1, all: 2 } }

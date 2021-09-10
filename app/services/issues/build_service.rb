@@ -6,6 +6,7 @@ module Issues
 
     def execute
       filter_resolve_discussion_params
+
       @issue = project.issues.new(issue_params).tap do |issue|
         ensure_milestone_available(issue)
       end
@@ -60,6 +61,13 @@ module Issues
 
     def issue_params
       @issue_params ||= build_issue_params
+
+      # If :issue_type is nil then params[:issue_type] was either nil
+      # or not permitted.  Either way, the :issue_type will default
+      # to the column default of `issue`. And that means we need to
+      # ensure the work_item_type_id is set
+      @issue_params[:work_item_type_id] = get_work_item_type_id(@issue_params[:issue_type])
+      @issue_params
     end
 
     private
@@ -81,6 +89,11 @@ module Issues
       { author: current_user }
         .merge(issue_params_with_info_from_discussions)
         .merge(allowed_issue_params)
+        .with_indifferent_access
+    end
+
+    def get_work_item_type_id(issue_type = :issue)
+      find_work_item_type_id(issue_type)
     end
   end
 end

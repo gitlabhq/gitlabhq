@@ -34,6 +34,14 @@ class WorkItem::Type < ApplicationRecord
   validates :name, length: { maximum: 255 }
   validates :icon_name, length: { maximum: 255 }
 
+  def self.default_by_type(type)
+    find_by(namespace_id: nil, base_type: type)
+  end
+
+  def self.default_issue_type
+    default_by_type(:issue)
+  end
+
   private
 
   def strip_whitespace

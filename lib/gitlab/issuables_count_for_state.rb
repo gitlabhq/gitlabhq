@@ -6,7 +6,7 @@ module Gitlab
     # The name of the Gitlab::SafeRequestStore cache key.
     CACHE_KEY = :issuables_count_for_state
     # The expiration time for the Rails cache.
-    CACHE_EXPIRES_IN = 10.minutes
+    CACHE_EXPIRES_IN = 1.hour
     THRESHOLD = 1000
 
     # The state values that can be safely casted to a Symbol.

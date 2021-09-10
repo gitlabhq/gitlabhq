@@ -19,8 +19,10 @@ RSpec.describe WorkItem::Type do
       it 'deletes type but not unrelated issues' do
         type = create(:work_item_type)
 
+        expect(WorkItem::Type.count).to eq(5)
+
         expect { type.destroy! }.not_to change(Issue, :count)
-        expect(WorkItem::Type.count).to eq 0
+        expect(WorkItem::Type.count).to eq(4)
       end
     end
 
@@ -28,7 +30,7 @@ RSpec.describe WorkItem::Type do
       type = create(:work_item_type, work_items: [work_item])
 
       expect { type.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
-      expect(Issue.count).to eq 1
+      expect(Issue.count).to eq(1)
     end
   end
 

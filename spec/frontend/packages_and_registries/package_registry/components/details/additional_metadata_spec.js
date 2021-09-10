@@ -6,6 +6,7 @@ import {
   nugetMetadata,
   packageData,
   composerMetadata,
+  pypiMetadata,
 } from 'jest/packages_and_registries/package_registry/mock_data';
 import component from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import {
@@ -14,6 +15,7 @@ import {
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_NPM,
   PACKAGE_TYPE_COMPOSER,
+  PACKAGE_TYPE_PYPI,
 } from '~/packages_and_registries/package_registry/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
@@ -22,6 +24,7 @@ const mavenPackage = { packageType: PACKAGE_TYPE_MAVEN, metadata: mavenMetadata(
 const conanPackage = { packageType: PACKAGE_TYPE_CONAN, metadata: conanMetadata() };
 const nugetPackage = { packageType: PACKAGE_TYPE_NUGET, metadata: nugetMetadata() };
 const composerPackage = { packageType: PACKAGE_TYPE_COMPOSER, metadata: composerMetadata() };
+const pypiPackage = { packageType: PACKAGE_TYPE_PYPI, metadata: pypiMetadata() };
 const npmPackage = { packageType: PACKAGE_TYPE_NPM, metadata: {} };
 
 describe('Package Additional Metadata', () => {
@@ -58,6 +61,7 @@ describe('Package Additional Metadata', () => {
   const findComposerTargetSha = () => wrapper.findByTestId('composer-target-sha');
   const findComposerTargetShaCopyButton = () => wrapper.findComponent(ClipboardButton);
   const findComposerJson = () => wrapper.findByTestId('composer-json');
+  const findPypiRequiredPython = () => wrapper.findByTestId('pypi-required-python');
 
   it('has the correct title', () => {
     mountComponent();
@@ -74,6 +78,7 @@ describe('Package Additional Metadata', () => {
     ${conanPackage}    | ${true}  | ${PACKAGE_TYPE_CONAN}
     ${nugetPackage}    | ${true}  | ${PACKAGE_TYPE_NUGET}
     ${composerPackage} | ${true}  | ${PACKAGE_TYPE_COMPOSER}
+    ${pypiPackage}     | ${true}  | ${PACKAGE_TYPE_PYPI}
     ${npmPackage}      | ${false} | ${PACKAGE_TYPE_NPM}
   `(
     `It is $visible that the component is visible when the package is $packageType`,
@@ -158,6 +163,22 @@ describe('Package Additional Metadata', () => {
         text: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
         title: 'Copy target SHA',
       });
+    });
+  });
+
+  describe('pypi metadata', () => {
+    beforeEach(() => {
+      mountComponent({ packageEntity: pypiPackage });
+    });
+
+    it.each`
+      name                      | finderFunction            | text                        | icon
+      ${'pypi-required-python'} | ${findPypiRequiredPython} | ${'Required Python: 1.0.0'} | ${'information-o'}
+    `('$name element', ({ finderFunction, text, icon }) => {
+      const element = finderFunction();
+      expect(element.exists()).toBe(true);
+      expect(element.text()).toBe(text);
+      expect(element.props('icon')).toBe(icon);
     });
   });
 });

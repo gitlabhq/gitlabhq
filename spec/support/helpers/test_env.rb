@@ -452,6 +452,10 @@ module TestEnv
     example_group
   end
 
+  def seed_db
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.import
+  end
+
   private
 
   # These are directories that should be preserved at cleanup time

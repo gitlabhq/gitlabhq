@@ -6,8 +6,18 @@ require_migration!('upsert_base_work_item_types')
 RSpec.describe UpsertBaseWorkItemTypes, :migration do
   let!(:work_item_types) { table(:work_item_types) }
 
+  after(:all) do
+    # Make sure base types are recreated after running the migration
+    # because migration specs are not run in a transaction
+    WorkItem::Type.delete_all
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.import
+  end
+
   context 'when no default types exist' do
     it 'creates default data' do
+      # Need to delete all as base types are seeded before entire test suite
+      WorkItem::Type.delete_all
+
       expect(work_item_types.count).to eq(0)
 
       reversible_migration do |migration|
@@ -26,10 +36,6 @@ RSpec.describe UpsertBaseWorkItemTypes, :migration do
   end
 
   context 'when default types already exist' do
-    before do
-      Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.import
-    end
-
     it 'does not create default types again' do
       expect(work_item_types.all.pluck(:base_type)).to match_array(WorkItem::Type.base_types.values)
 

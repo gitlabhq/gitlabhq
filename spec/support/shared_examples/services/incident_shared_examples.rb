@@ -13,6 +13,7 @@
 RSpec.shared_examples 'incident issue' do
   it 'has incident as issue type' do
     expect(issue.issue_type).to eq('incident')
+    expect(issue.work_item_type.base_type).to eq('incident')
   end
 end
 
@@ -41,6 +42,7 @@ RSpec.shared_examples 'not an incident issue' do
 
   it 'has not incident as issue type' do
     expect(issue.issue_type).not_to eq('incident')
+    expect(issue.work_item_type.base_type).not_to eq('incident')
   end
 
   it 'has not an incident label' do

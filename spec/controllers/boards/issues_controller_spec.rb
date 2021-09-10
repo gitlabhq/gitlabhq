@@ -428,16 +428,20 @@ RSpec.describe Boards::IssuesController do
 
   describe 'POST create' do
     context 'with valid params' do
-      it 'returns a successful 200 response' do
+      before do
         create_issue user: user, board: board, list: list1, title: 'New issue'
+      end
 
+      it 'returns a successful 200 response' do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns the created issue' do
-        create_issue user: user, board: board, list: list1, title: 'New issue'
-
         expect(response).to match_response_schema('entities/issue_board')
+      end
+
+      it 'sets the default work_item_type' do
+        expect(Issue.last.work_item_type.base_type).to eq('issue')
       end
     end
 

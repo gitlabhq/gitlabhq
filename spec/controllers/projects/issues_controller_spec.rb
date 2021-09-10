@@ -1176,12 +1176,22 @@ RSpec.describe Projects::IssuesController do
       project.issues.first
     end
 
+    context 'when creating an incident' do
+      it 'sets the correct issue_type' do
+        issue = post_new_issue(issue_type: 'incident')
+
+        expect(issue.issue_type).to eq('incident')
+        expect(issue.work_item_type.base_type).to eq('incident')
+      end
+    end
+
     it 'creates the issue successfully', :aggregate_failures do
       issue = post_new_issue
 
       expect(issue).to be_a(Issue)
       expect(issue.persisted?).to eq(true)
       expect(issue.issue_type).to eq('issue')
+      expect(issue.work_item_type.base_type).to eq('issue')
     end
 
     context 'resolving discussions in MergeRequest' do

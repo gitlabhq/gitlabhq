@@ -133,7 +133,7 @@ export const composerMetadata = () => ({
   },
 });
 
-export const pypyMetadata = () => ({
+export const pypiMetadata = () => ({
   requiredPython: '1.0.0',
 });
 
@@ -157,7 +157,7 @@ export const packageDetailsQuery = (extendPackage) => ({
       metadata: {
         ...conanMetadata(),
         ...composerMetadata(),
-        ...pypyMetadata(),
+        ...pypiMetadata(),
         ...mavenMetadata(),
         ...nugetMetadata(),
       },

@@ -43,10 +43,11 @@ RSpec.describe Issues::CreateService do
 
         expect(issue).to be_persisted
         expect(issue.title).to eq('Awesome issue')
-        expect(issue.assignees).to eq [assignee]
-        expect(issue.labels).to match_array labels
-        expect(issue.milestone).to eq milestone
-        expect(issue.due_date).to eq Date.tomorrow
+        expect(issue.assignees).to eq([assignee])
+        expect(issue.labels).to match_array(labels)
+        expect(issue.milestone).to eq(milestone)
+        expect(issue.due_date).to eq(Date.tomorrow)
+        expect(issue.work_item_type.base_type).to eq('issue')
       end
 
       context 'when skip_system_notes is true' do

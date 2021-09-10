@@ -24043,6 +24043,9 @@ msgstr ""
 msgid "PackageRegistry|Remove package"
 msgstr ""
 
+msgid "PackageRegistry|Required Python: %{pythonVersion}"
+msgstr ""
+
 msgid "PackageRegistry|RubyGems"
 msgstr ""
 

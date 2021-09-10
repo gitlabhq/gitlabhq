@@ -228,15 +228,19 @@ RSpec.describe Issues::UpdateService, :mailer do
         context 'from incident to issue' do
           let(:issue) { create(:incident, project: project) }
 
+          it 'changed from an incident to an issue type' do
+            expect { update_issue(issue_type: 'issue') }
+              .to change(issue, :issue_type).from('incident').to('issue')
+              .and(change { issue.work_item_type.base_type }.from('incident').to('issue'))
+          end
+
           context 'for an incident with multiple labels' do
             let(:issue) { create(:incident, project: project, labels: [label_1, label_2]) }
 
-            before do
-              update_issue(issue_type: 'issue')
-            end
-
             it 'removes an `incident` label if one exists on the incident' do
-              expect(issue.labels).to eq([label_2])
+              expect { update_issue(issue_type: 'issue') }.to change(issue, :label_ids)
+                .from(containing_exactly(label_1.id, label_2.id))
+                .to([label_2.id])
             end
           end
 
@@ -244,12 +248,10 @@ RSpec.describe Issues::UpdateService, :mailer do
             let(:issue) { create(:incident, project: project, labels: [label_1, label_2]) }
             let(:params) { { label_ids: [label_1.id, label_2.id], remove_label_ids: [] } }
 
-            before do
-              update_issue(issue_type: 'issue')
-            end
-
             it 'adds an incident label id to remove_label_ids for it to be removed' do
-              expect(issue.label_ids).to contain_exactly(label_2.id)
+              expect { update_issue(issue_type: 'issue') }.to change(issue, :label_ids)
+                .from(containing_exactly(label_1.id, label_2.id))
+                .to([label_2.id])
             end
           end
         end

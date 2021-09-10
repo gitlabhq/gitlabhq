@@ -12,6 +12,6 @@ RSpec.configure do |config|
   end
 
   config.after(:all) do
-    delete_from_all_tables!
+    delete_from_all_tables!(except: deletion_except_tables)
   end
 end

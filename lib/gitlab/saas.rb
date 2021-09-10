@@ -20,6 +20,10 @@ module Gitlab
     def self.dev_url
       'https://dev.gitlab.org'
     end
+
+    def self.registry_prefix
+      'registry.gitlab.com'
+    end
   end
 end
 

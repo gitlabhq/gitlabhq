@@ -6,6 +6,7 @@ import {
   PACKAGE_TYPE_CONAN,
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_COMPOSER,
+  PACKAGE_TYPE_PYPI,
 } from '~/packages_and_registries/package_registry/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
@@ -22,6 +23,7 @@ export default {
     composerJson: s__(
       'PackageRegistry|Composer.json with license: %{license} and version: %{version}',
     ),
+    requiredPython: s__('PackageRegistry|Required Python: %{pythonVersion}'),
   },
   components: {
     DetailsRow,
@@ -43,6 +45,7 @@ export default {
           PACKAGE_TYPE_CONAN,
           PACKAGE_TYPE_MAVEN,
           PACKAGE_TYPE_COMPOSER,
+          PACKAGE_TYPE_PYPI,
         ].includes(this.packageEntity.packageType) && this.packageEntity.metadata
       );
     },
@@ -57,6 +60,9 @@ export default {
     },
     showComposerMetadata() {
       return this.packageEntity.packageType === PACKAGE_TYPE_COMPOSER;
+    },
+    showPypiMetadata() {
+      return this.packageEntity.packageType === PACKAGE_TYPE_PYPI;
     },
   },
 };
@@ -141,6 +147,19 @@ export default {
           </gl-sprintf>
         </details-row>
       </template>
+
+      <details-row
+        v-else-if="showPypiMetadata"
+        icon="information-o"
+        padding="gl-p-4"
+        data-testid="pypi-required-python"
+      >
+        <gl-sprintf :message="$options.i18n.requiredPython">
+          <template #pythonVersion>
+            <strong>{{ packageEntity.metadata.requiredPython }}</strong>
+          </template>
+        </gl-sprintf>
+      </details-row>
     </div>
   </div>
 </template>

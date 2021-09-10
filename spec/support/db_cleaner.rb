@@ -12,7 +12,7 @@ module DbCleaner
   end
 
   def deletion_except_tables
-    []
+    ['work_item_types']
   end
 
   def setup_database_cleaner

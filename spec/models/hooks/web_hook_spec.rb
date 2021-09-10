@@ -10,7 +10,11 @@ RSpec.describe WebHook do
   let(:hook) { build(:project_hook, project: project) }
 
   around do |example|
-    freeze_time { example.run }
+    if example.metadata[:skip_freeze_time]
+      example.run
+    else
+      freeze_time { example.run }
+    end
   end
 
   describe 'associations' do
@@ -326,10 +330,28 @@ RSpec.describe WebHook do
       expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
     end
 
-    it 'does not let the backoff count exceed the maximum failure count' do
-      hook.backoff_count = described_class::MAX_FAILURES
+    context 'when we have backed off MAX_FAILURES times' do
+      before do
+        stub_const("#{described_class}::MAX_FAILURES", 5)
+        5.times { hook.backoff! }
+      end
 
-      expect { hook.backoff! }.not_to change(hook, :backoff_count)
+      it 'does not let the backoff count exceed the maximum failure count' do
+        expect { hook.backoff! }.not_to change(hook, :backoff_count)
+      end
+
+      it 'does not change disabled_until', :skip_freeze_time do
+        travel_to(hook.disabled_until - 1.minute) do
+          expect { hook.backoff! }.not_to change(hook, :disabled_until)
+        end
+      end
+
+      it 'changes disabled_until when it has elapsed', :skip_freeze_time do
+        travel_to(hook.disabled_until + 1.minute) do
+          expect { hook.backoff! }.to change { hook.disabled_until }
+          expect(hook.backoff_count).to eq(described_class::MAX_FAILURES)
+        end
+      end
     end
 
     include_examples 'is tolerant of invalid records' do

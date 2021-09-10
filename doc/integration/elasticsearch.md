@@ -902,25 +902,20 @@ Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
 This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
 see details in the [update guide](../update/upgrading_from_source.md).
 
-- Exception `Elasticsearch::Transport::Transport::Errors::BadRequest`
+### `Elasticsearch::Transport::Transport::Errors::BadRequest`
 
-  If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#system-requirements).
-  There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
+If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#system-requirements).
+There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
 
-- Exception `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
+### `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
 
-  ```plaintext
-  [413] {"Message":"Request size exceeded 10485760 bytes"}
-  ```
+```plaintext
+[413] {"Message":"Request size exceeded 10485760 bytes"}
+```
 
-  This exception is seen when your Elasticsearch cluster is configured to reject
-  requests above a certain size (10MiB in this case). This corresponds to the
-  `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a
-  larger size and restart your Elasticsearch cluster.
+This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
 
-  AWS has [fixed limits](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
-  for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
-  the underlying instance.
+AWS has [fixed limits](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html) for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of the underlying instance.
 
 ### My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
 

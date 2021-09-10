@@ -80,6 +80,8 @@ class WebHook < ApplicationRecord
   end
 
   def backoff!
+    return if backoff_count >= MAX_FAILURES && disabled_until && disabled_until > Time.current
+
     assign_attributes(disabled_until: next_backoff.from_now, backoff_count: backoff_count.succ.clamp(0, MAX_FAILURES))
     save(validate: false)
   end

@@ -790,6 +790,28 @@ translate correctly if you extract individual words from the sentence.
 
 When in doubt, try to follow the best practices described in this [Mozilla Developer documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting).
 
+### Always pass string literals to the translation helpers
+
+The `bin/rake gettext:regenerate` script parses the codebase and extracts all the strings from the
+[translation helpers](#preparing-a-page-for-translation) ready to be translated.
+
+The script cannot resolve the strings if they are passed as variables or function calls. Therefore,
+make sure to always pass string literals to the helpers.
+
+```javascript
+// Good
+__('Some label');
+s__('Namespace', 'Label');
+s__('Namespace|Label');
+n__('%d apple', '%d apples', appleCount);
+
+// Bad
+__(LABEL);
+s__(getLabel());
+s__(NAMESPACE, LABEL);
+n__(LABEL_SINGULAR, LABEL_PLURAL, appleCount);
+```
+
 ## Updating the PO files with the new content
 
 Now that the new content is marked for translation, run this command to update the

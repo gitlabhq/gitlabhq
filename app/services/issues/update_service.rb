@@ -26,6 +26,8 @@ module Issues
     end
 
     def before_update(issue, skip_spam_check: false)
+      change_work_item_type(issue)
+
       return if skip_spam_check
 
       Spam::SpamActionService.new(
@@ -34,6 +36,14 @@ module Issues
         user: current_user,
         action: :update
       ).execute
+    end
+
+    def change_work_item_type(issue)
+      return unless issue.changed_attributes['issue_type']
+
+      type_id = find_work_item_type_id(issue.issue_type)
+
+      issue.work_item_type_id = type_id
     end
 
     def handle_changes(issue, options)
