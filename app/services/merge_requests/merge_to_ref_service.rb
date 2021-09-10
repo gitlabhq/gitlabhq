@@ -66,8 +66,7 @@ module MergeRequests
     end
 
     def commit(cache_merge_to_ref_calls = false)
-      if cache_merge_to_ref_calls &&
-        Feature.enabled?(:cache_merge_to_ref_calls, project, default_enabled: false)
+      if cache_merge_to_ref_calls
         Rails.cache.fetch(cache_key, expires_in: 1.day) do
           extracted_merge_to_ref
         end

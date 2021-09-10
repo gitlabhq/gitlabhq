@@ -670,8 +670,8 @@ access log of gRPC calls made by Gitaly to `gitaly-ruby`.
 ### `gitaly_hooks.log`
 
 This file is at `/var/log/gitlab/gitaly/gitaly_hooks.log` and is
-produced by `gitaly-hooks` command. It also contains records about 
-failures received during processing of the responses from GitLab API. 
+produced by `gitaly-hooks` command. It also contains records about
+failures received during processing of the responses from GitLab API.
 
 ## Puma Logs
 

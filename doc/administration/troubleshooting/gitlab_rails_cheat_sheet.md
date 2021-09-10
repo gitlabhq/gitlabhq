@@ -596,6 +596,17 @@ curl --silent --header "Private-Token: ********************" \
      "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
 ```
 
+### Update Daily Billable & Historical users
+
+```ruby
+# Forces recount of historical (max) users
+::HistoricalDataWorker.new.perform
+
+# Forces recount of daily billable users
+identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+```
+
 ### Block or Delete Users that have no projects or groups
 
 ```ruby

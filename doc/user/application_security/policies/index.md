@@ -76,7 +76,7 @@ The policy editor has two modes:
   ![Policy Editor YAML Mode](img/container_policy_yaml_mode_v14_3.png)
 
 You can use both modes interchangeably and switch between them at any
-time. If a YAML resource is incorrect or contains data not supported 
+time. If a YAML resource is incorrect or contains data not supported
 by the Rule mode, Rule mode is automatically
 disabled. If the YAML is incorrect, you must use YAML
 mode to fix your policy before Rule mode is available again.

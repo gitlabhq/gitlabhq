@@ -523,6 +523,19 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
 
+### Maximum number of active DAST profile schedules per project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68551) in GitLab 14.3.
+
+Limit the number of active DAST profile schedules per project. A DAST profile schedule can be active or inactive.
+
+You can change the limit in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+Update `dast_profile_schedules` with the new value:
+
+```ruby
+Plan.default.actual_limits.update!(dast_profile_schedules: 50)
+```
+
 ### Maximum size and depth of CI/CD configuration YAML files
 
 The default maximum size of a CI/CD configuration YAML file is 1 megabyte and the default depth is 100.

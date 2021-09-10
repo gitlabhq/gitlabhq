@@ -4,6 +4,8 @@ FactoryBot.define do
   factory :plan_limits do
     plan
 
+    dast_profile_schedules { 50 }
+
     trait :default_plan do
       plan factory: :default_plan
     end

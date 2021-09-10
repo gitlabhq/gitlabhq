@@ -152,7 +152,6 @@ const alias = {
   icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-  vue$: 'vue/dist/vue.esm.js',
   jquery$: 'jquery/dist/jquery.slim.js',
   jest: path.join(ROOT_PATH, 'spec/frontend'),
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),

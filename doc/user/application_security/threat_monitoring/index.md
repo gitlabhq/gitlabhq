@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
-The **Threat Monitoring** page provides alerts and metrics 
+The **Threat Monitoring** page provides alerts and metrics
 for the GitLab application runtime security features. You can access
 these by navigating to your project's **Security & Compliance > Threat
 Monitoring** page.

@@ -17367,7 +17367,8 @@ CREATE TABLE plan_limits (
     ci_max_artifact_size_running_container_scanning integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_cluster_image_scanning integer DEFAULT 0 NOT NULL,
     ci_jobs_trace_size_limit integer DEFAULT 100 NOT NULL,
-    pages_file_entries integer DEFAULT 200000 NOT NULL
+    pages_file_entries integer DEFAULT 200000 NOT NULL,
+    dast_profile_schedules integer DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

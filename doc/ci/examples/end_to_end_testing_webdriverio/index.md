@@ -11,7 +11,7 @@ description: 'Confidence checking your entire app every time a new feature is ad
 
 <!-- vale off -->
 
-# End-to-end testing with GitLab CI/CD and WebdriverIO
+# End-to-end testing with GitLab CI/CD and WebdriverIO **(FREE)**
 
 [Review Apps](../../review_apps/index.md) are great: for every merge request
 (or branch, for that matter), the new code can be copied and deployed to a fresh production-like live
@@ -20,7 +20,7 @@ environment, reducing the effort to assess the impact of changes. Thus, when we 
 and it will immediately be clear that the application can still be properly built and deployed. After all, you can _see_ it
 running!
 
-<img src="img/deployed_dependency_update.png" alt="dependencies.io">
+![dependencies.io](img/deployed_dependency_update.png)
 
 However, looking at the freshly deployed code to check whether it still looks and behaves as
 expected is repetitive manual work, which means it is a prime candidate for automation. This is

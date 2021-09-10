@@ -1622,37 +1622,24 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges are displayed as orange text next to a heading. For example:
+Tier badges are displayed as orange text next to a heading. These badges link to the GitLab
+pricing page. For example:
 
 ![Tier badge](img/tier_badge.png)
 
 You must assign a tier badge:
 
-- To [all H1 topic headings](#product-tier-badges-on-headings).
+- To all H1 topic headings.
 - To topic headings that don't apply to the same tier as the H1.
-- To [sections of a topic](#product-tier-badges-on-other-content),
-  if they apply to a tier other than what applies to the H1.
 
-#### Product tier badges on headings
-
-To add a tier badge to a heading, add the relevant [tier badge](#available-product-tier-badges)
+To add a tier badge to a heading, add the relevant tier badge
 after the heading text. For example:
 
 ```markdown
 # Heading title **(FREE)**
 ```
 
-#### Product tier badges on other content
-
-In paragraphs, list names, and table cells, an information icon displays when you
-add a tier badge. More verbose information displays when a user points to the icon:
-
-- `**(FREE)**` displays as **(FREE)**
-- `**(FREE SELF)**` displays as **(FREE SELF)**
-- `**(FREE SAAS)**` displays as **(FREE SAAS)**
-
-The `**(FREE)**` generates a `span` element to trigger the
-badges and tooltips (`<span class="badge-trigger free">`).
+Do not add tier badges inline with other text. The single source of truth for a feature should be the heading where the functionality is described.
 
 #### Available product tier badges
 
