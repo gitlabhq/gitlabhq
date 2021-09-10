@@ -169,13 +169,13 @@ project.
 
 ![specific runner IP address](img/specific_runner_ip_address.png)
 
-## Use tags to limit the number of jobs using the runner
+## Use tags to control which jobs a runner can run
 
 You must set up a runner to be able to run all the different types of jobs
 that it may encounter on the projects it's shared over. This would be
 problematic for large amounts of projects, if it weren't for tags.
 
-GitLab CI tags are not the same as Git tags. GitLab CI tags are associated with runners.
+GitLab CI/CD tags are not the same as Git tags. GitLab CI/CD tags are associated with runners.
 Git tags are associated with commits.
 
 By tagging a runner for the types of jobs it can handle, you can make sure
@@ -183,6 +183,8 @@ shared runners will [only run the jobs they are equipped to run](../yaml/index.m
 
 For instance, at GitLab we have runners tagged with `rails` if they contain
 the appropriate dependencies to run Rails test suites.
+
+### Set a runner to run untagged jobs
 
 When you [register a runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
 [tagged jobs](../yaml/index.md#tags).
@@ -237,6 +239,48 @@ Example 2:
 1. The runner is configured to run untagged jobs and has no tags defined.
 1. A job that has no tags defined is executed and run.
 1. A second job that has a `docker` tag defined is stuck.
+
+### Use tags to run jobs on different platforms
+
+You can use tags to run different jobs on different platforms. For
+example, if you have an OS X runner with tag `osx` and a Windows runner with tag
+`windows`, you can run a job on each platform:
+
+```yaml
+windows job:
+  stage:
+    - build
+  tags:
+    - windows
+  script:
+    - echo Hello, %USERNAME%!
+
+osx job:
+  stage:
+    - build
+  tags:
+    - osx
+  script:
+    - echo "Hello, $USER!"
+```
+
+### Use CI/CD variables in tags
+
+> Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
+
+You can use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+
+```yaml
+variables:
+  KUBERNETES_RUNNER: kubernetes
+
+  job:
+    tags:
+      - docker
+      - $KUBERNETES_RUNNER
+    script:
+      - echo "Hello runner selector feature"
+```
 
 ## Configure runner behavior with variables
 

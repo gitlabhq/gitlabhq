@@ -321,7 +321,7 @@ The different supported drivers are:
 | Driver       | Description                          |
 |--------------|--------------------------------------|
 | `filesystem` | Uses a path on the local file system |
-| `Azure`      | Microsoft Azure Blob Storage         |
+| `azure`      | Microsoft Azure Blob Storage         |
 | `gcs`        | Google Cloud Storage                 |
 | `s3`         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes). |
 | `swift`      | OpenStack Swift Object Storage       |

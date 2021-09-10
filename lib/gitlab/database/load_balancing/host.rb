@@ -163,8 +163,6 @@ module Gitlab
 
         def primary_write_location
           load_balancer.primary_write_location
-        ensure
-          load_balancer.release_primary_connection
         end
 
         def database_replica_location

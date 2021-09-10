@@ -65,6 +65,10 @@ describe('~/lib/dompurify', () => {
     expect(sanitize(htmlXlink)).toBe(htmlXlink);
   });
 
+  it("doesn't sanitize gl-emoji", () => {
+    expect(sanitize('<p><gl-emoji>💯</gl-emoji></p>')).toBe('<p><gl-emoji>💯</gl-emoji></p>');
+  });
+
   describe.each`
     type          | gon
     ${'root'}     | ${rootGon}

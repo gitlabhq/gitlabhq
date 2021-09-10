@@ -123,6 +123,7 @@ export default {
       }
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
@@ -136,7 +137,7 @@ export default {
   >
     <div
       ref="gfm-content"
-      v-safe-html="descriptionHtml"
+      v-safe-html:[$options.safeHtmlConfig]="descriptionHtml"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,

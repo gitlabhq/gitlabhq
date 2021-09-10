@@ -1830,16 +1830,22 @@ rspec:
 > - A limit of 50 tags per job [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/338929) in GitLab 14.3.
 > - A limit of 50 tags per job [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/339855) in GitLab 14.3.
 
-In [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/338479) and later, the number of tags must be less than `50`.
-
 Use `tags` to select a specific runner from the list of all runners that are
 available for the project.
 
 When you register a runner, you can specify the runner's tags, for
-example `ruby`, `postgres`, `development`.
+example `ruby`, `postgres`, or `development`. To pick up and run a job, a runner must
+be assigned every tag listed in the job.
 
-In the following example, the job is run by a runner that
-has both `ruby` and `postgres` tags defined.
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**:
+
+- An array of tag names.
+- [CI/CD variables](../runners/configure_runners.md#use-cicd-variables-in-tags) in GitLab 14.1 and later.
+
+**Example of `tags`**:
 
 ```yaml
 job:
@@ -1848,42 +1854,16 @@ job:
     - postgres
 ```
 
-You can use tags to run different jobs on different platforms. For
-example, if you have an OS X runner with tag `osx` and a Windows runner with tag
-`windows`, you can run a job on each platform:
+In this example, only runners with *both* the `ruby` and `postgres` tags can run the job.
 
-```yaml
-windows job:
-  stage:
-    - build
-  tags:
-    - windows
-  script:
-    - echo Hello, %USERNAME%!
+**Additional details**:
 
-osx job:
-  stage:
-    - build
-  tags:
-    - osx
-  script:
-    - echo "Hello, $USER!"
-```
+- In [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/338479) and later,
+  the number of tags must be less than `50`.
 
-In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/35742), you can
-use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+**Related topics**:
 
-```yaml
-variables:
-  KUBERNETES_RUNNER: kubernetes
-
-  job:
-    tags:
-      - docker
-      - $KUBERNETES_RUNNER
-    script:
-      - echo "Hello runner selector feature"
-```
+- [Use tags to control which jobs a runner can run](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run).
 
 ### `allow_failure`
 
@@ -3403,7 +3383,22 @@ You can specify the number of [retry attempts for certain stages of job executio
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14887) in GitLab 12.3.
 
-Use `timeout` to configure a timeout for a specific job. For example:
+Use `timeout` to configure a timeout for a specific job. If the job runs for longer
+than the timeout, the job fails.
+
+The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run).
+but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**: A period of time written in natural language. For example, these are all equivalent:
+
+- `3600 seconds`
+- `60 minutes`
+- `one hour`
+
+**Example of `timeout`**:
 
 ```yaml
 build:
@@ -3414,10 +3409,6 @@ test:
   script: rspec
   timeout: 3h 30m
 ```
-
-The job-level timeout can exceed the
-[project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) but can't
-exceed the runner-specific timeout.
 
 ### `parallel`
 

@@ -16,7 +16,8 @@ module Gitlab
         end
 
         def release_connection
-          @load_balancer.release_primary_connection
+          # no-op as releasing primary connections isn't needed.
+          nil
         end
 
         def enable_query_cache!
@@ -51,8 +52,6 @@ module Gitlab
 
         def primary_write_location
           @load_balancer.primary_write_location
-        ensure
-          @load_balancer.release_primary_connection
         end
 
         def database_replica_location

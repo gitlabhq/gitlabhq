@@ -20,10 +20,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
   end
 
   describe '#release_connection' do
-    it 'releases a connection from the pool' do
-      expect(load_balancer).to receive(:release_primary_connection)
-
-      host.release_connection
+    it 'does nothing' do
+      expect(host.release_connection).to be_nil
     end
   end
 

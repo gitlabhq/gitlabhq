@@ -486,7 +486,7 @@ Authority (CA) in the system certificate store.
 
 For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
-### Zip serving and cache configuration
+### ZIP serving and cache configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
 
@@ -494,19 +494,19 @@ WARNING:
 These are advanced settings. The recommended default values are set inside GitLab Pages. You should
 change these settings only if absolutely necessary. Use extreme caution.
 
-GitLab Pages can serve content from zip archives through object storage (an
+GitLab Pages can serve content from ZIP archives through object storage (an
 [issue](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/485) exists for supporting disk storage
-as well). It uses an in-memory cache to increase the performance when serving content from a zip
+as well). It uses an in-memory cache to increase the performance when serving content from a ZIP
 archive. You can modify the cache behavior by changing the following configuration flags.
 
 | Setting | Description |
 | ------- | ----------- |
-| `zip_cache_expiration` | The cache expiration interval of zip archives. Must be greater than zero to avoid serving stale content. Default is 60s. |
+| `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is 60s. |
 | `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is 30s. |
 | `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is 30s. |
-| `zip_open_timeout` | The maximum time allowed to open a zip archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30s. |
+| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30s. |
 
-#### Zip cache refresh example
+#### ZIP cache refresh example
 
 Archives are refreshed in the cache (extending the time they are held in memory) if they're accessed
 before `zip_cache_expiration`, and the time left before expiring is less than or equal to
@@ -520,7 +520,7 @@ opened) it's refreshed. This extends the time the archive remains in memory from
 After an archive reaches `zip_cache_expiration`, it's marked as expired and removed on the next
 `zip_cache_cleanup` interval.
 
-![Zip cache configuration](img/zip_cache_configuration.png)
+![ZIP cache configuration](img/zip_cache_configuration.png)
 
 ## Activate verbose logging for daemon
 
@@ -1014,7 +1014,7 @@ If you use [object storage](#using-object-storage), you can disable local storag
 
 Starting from GitLab 13.12, this setting also disables the [legacy storage](#migrate-legacy-storage-to-zip-storage), so if you were using NFS to serve Pages, you can completely disconnect from it.
 
-## Migrate GitLab Pages to 14.0
+## Prepare GitLab Pages for 14.0
 
 In GitLab 14.0 a number of breaking changes were introduced which may require some user intervention.
 The steps below describe the best way to migrate without causing any downtime for your GitLab instance.
@@ -1372,7 +1372,7 @@ both servers.
 
 GitLab 14.0 introduces a number of changes to GitLab Pages which may require manual intervention.
 
-1. Firstly [follow the migration guide](#migrate-gitlab-pages-to-140).
+1. Firstly [follow the migration guide](#prepare-gitlab-pages-for-140).
 1. Try to upgrade to GitLab 14.3 or above. Some of the issues were fixed in GitLab 14.1, 14.2 and 14.3.
 1. If it doesn't work, see [GitLab Pages logs](#how-to-see-gitlab-pages-logs), and if you see any errors there then search them on this page.
 
