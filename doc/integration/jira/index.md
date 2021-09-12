@@ -26,9 +26,7 @@ The supported Jira versions are `v6.x`, `v7.x`, and `v8.x`.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://www.youtube.com/watch?v=fWvwkx5_00E&feature=youtu.be).
 
-To set up the integration, [configure the project settings](configure.md) in GitLab.
-You can also configure these settings at a [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration),
-and for self-managed GitLab, at an [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration).
+To set up the integration, [configure the settings](configure.md) in GitLab.
 
 ### Jira development panel integration
 
@@ -37,12 +35,9 @@ connects all GitLab projects under a group or personal namespace. When configure
 relevant GitLab information, including related branches, commits, and merge requests,
 displays in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
 
-To set up the Jira development panel integration:
-
-- *If your installation uses Jira Cloud,* use the
-  [GitLab.com for Jira Cloud app](connect-app.md).
-- *If either your Jira or GitLab installation is self-managed,* use the
-  [Jira DVCS (distributed version control system) connector](dvcs.md).
+To set up the Jira development panel integration, use the GitLab.com for Jira Cloud app
+or the Jira DVCS (distributed version control system) connector,
+[depending on your installation](development_panel.md#configure-the-integration).
 
 ### Direct feature comparison
 

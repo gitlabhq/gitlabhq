@@ -65,7 +65,7 @@ For an overview of how to configure Jira Development panel integration, see
 [Agile Management - GitLab Jira Development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
 
 To simplify administration, we recommend that a GitLab group maintainer or group owner
-(or instance administrator in the case of self-managed GitLab) set up the integration.
+(or, if possible, instance administrator in the case of self-managed GitLab) set up the integration.
 
 | Jira usage | GitLab.com customers need | GitLab self-managed customers need |
 |------------|---------------------------|------------------------------------|
@@ -88,10 +88,6 @@ documentation for [central administration of project integrations](../../user/ad
 This integration is not supported on GitLab instances under a
 [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab).
 For example, `http://example.com/gitlab`.
-
-## Related topics
-
-- [Using Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html) in Jira
 
 ## Troubleshooting
 
