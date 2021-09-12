@@ -137,7 +137,7 @@ Keep your configuration files and backup archives in a separate location to ensu
 You can restore a backup only to **the exact same version and type** (Community Edition/Enterprise Edition) of GitLab on which it was created.
 
 - Review the [Omnibus backup and restore documentation](https://docs.gitlab.com/omnibus/settings/backups).
-- Review the [Helm Chart backup and restore documentation](https://docs.gitlab.com/charts/backup-restore).
+- Review the [Helm Chart backup and restore documentation](https://docs.gitlab.com/charts/backup-restore/).
 
 ### Back up GitLab SaaS
 

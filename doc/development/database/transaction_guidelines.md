@@ -12,7 +12,7 @@ For further reference please check PostgreSQL documentation about [transactions]
 
 ## Database decomposition and sharding
 
-The [sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding) plans to split the main GitLab database and move some of the database tables to other database servers.
+The [sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding/) plans to split the main GitLab database and move some of the database tables to other database servers.
 
 The group will start decomposing the `ci_*` related database tables first. To maintain the current application development experience, tooling and static analyzers will be added to the codebase to ensure correct data access and data modification methods. By using the correct form for defining database transactions, we can save significant refactoring work in the future.
 

@@ -196,7 +196,7 @@ library or framework:
 
 ### Subtests
 
-Use [subtests](https://blog.golang.org/subtests) whenever possible to improve
+Use [subtests](https://go.dev/blog/subtests) whenever possible to improve
 code readability and test output.
 
 ### Better output in tests
@@ -319,7 +319,7 @@ A few things to keep in mind when adding context:
 
 ### References for working with errors
 
-- [Go 1.13 errors](https://blog.golang.org/go1.13-errors).
+- [Go 1.13 errors](https://go.dev/blog/go1.13-errors).
 - [Programing with
   errors](https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html).
 - [Don't just check errors, handle them

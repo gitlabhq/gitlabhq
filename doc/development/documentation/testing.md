@@ -228,7 +228,7 @@ guidelines:
 
 In [`ReadingLevel.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ReadingLevel.yml),
 we have implemented
-[the Flesch-Kincaid grade level test](https://readable.com/blog/the-flesch-reading-ease-and-flesch-kincaid-grade-level/)
+[the Flesch-Kincaid grade level test](https://readable.com/readability/flesch-reading-ease-flesch-kincaid-grade-level/)
 to determine the readability of our documentation.
 
 As a general guideline, the lower the score, the more readable the documentation.
