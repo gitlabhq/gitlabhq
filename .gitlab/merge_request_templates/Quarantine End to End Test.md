@@ -22,6 +22,7 @@ the noise (due to constantly failing tests, flaky tests, and so on) so that new 
   - [ ] Follow the [Quarantining Tests guide](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantining-tests).
   - [ ] Confirm the test has a [`quarantine:` tag with the specified quarantine type](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantined-test-types).
   - [ ] Note if the test should be [quarantined for a specific environment](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/execution_context_selection.html#quarantine-a-test-for-a-specific-environment).
+  - [ ] (Optionally) In case of an emergency (e.g. blocked deployments), consider adding labels to pick into auto-deploy (~"Pick into auto-deploy" ~"priority::1" ~"severity::1").
 - [ ] Dequarantine test check-list
   - [ ] Follow the [Dequarantining Tests guide](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#dequarantining-tests).
   - [ ] Confirm the test consistently passes on the target GitLab environment(s).
@@ -30,9 +31,6 @@ the noise (due to constantly failing tests, flaky tests, and so on) so that new 
 
 <!-- Base labels. -->
 /label ~"Quality" ~"QA" ~"feature" ~"feature::maintenance"
-
-<!-- Labels to pick into auto-deploy. -->
-/label ~"Pick into auto-deploy" ~"priority::1" ~"severity::1"
 
 <!--
 Choose the stage that appears in the test path, e.g. ~"devops::create" for

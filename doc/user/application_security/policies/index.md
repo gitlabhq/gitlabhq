@@ -386,6 +386,7 @@ scan_execution_policy:
         - deployment
   actions:
   - scan: cluster_image_scanning
+```
 
 In this example:
 
