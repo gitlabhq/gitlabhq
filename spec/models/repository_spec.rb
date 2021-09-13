@@ -3283,26 +3283,54 @@ RSpec.describe Repository do
   describe '#change_head' do
     let(:branch) { repository.container.default_branch }
 
-    it 'adds an error to container if branch does not exist' do
-      expect(repository.change_head('unexisted-branch')).to be false
-      expect(repository.container.errors.size).to eq(1)
+    context 'when the branch exists' do
+      it 'returns truthy' do
+        expect(repository.change_head(branch)).to be_truthy
+      end
+
+      it 'does not call container.after_change_head_branch_does_not_exist' do
+        expect(repository.container).not_to receive(:after_change_head_branch_does_not_exist)
+
+        repository.change_head(branch)
+      end
+
+      it 'calls repository hooks' do
+        expect(repository).to receive(:before_change_head)
+        expect(repository).to receive(:after_change_head)
+
+        repository.change_head(branch)
+      end
+
+      it 'copies the gitattributes' do
+        expect(repository).to receive(:copy_gitattributes).with(branch)
+        repository.change_head(branch)
+      end
+
+      it 'reloads the default branch' do
+        expect(repository.container).to receive(:reload_default_branch)
+        repository.change_head(branch)
+      end
     end
 
-    it 'calls the before_change_head and after_change_head methods' do
-      expect(repository).to receive(:before_change_head)
-      expect(repository).to receive(:after_change_head)
+    context 'when the branch does not exist' do
+      let(:branch) { 'non-existent-branch' }
 
-      repository.change_head(branch)
-    end
+      it 'returns falsey' do
+        expect(repository.change_head(branch)).to be_falsey
+      end
 
-    it 'copies the gitattributes' do
-      expect(repository).to receive(:copy_gitattributes).with(branch)
-      repository.change_head(branch)
-    end
+      it 'calls container.after_change_head_branch_does_not_exist' do
+        expect(repository.container).to receive(:after_change_head_branch_does_not_exist).with(branch)
 
-    it 'reloads the default branch' do
-      expect(repository.container).to receive(:reload_default_branch)
-      repository.change_head(branch)
+        repository.change_head(branch)
+      end
+
+      it 'does not call repository hooks' do
+        expect(repository).not_to receive(:before_change_head)
+        expect(repository).not_to receive(:after_change_head)
+
+        repository.change_head(branch)
+      end
     end
   end
 end

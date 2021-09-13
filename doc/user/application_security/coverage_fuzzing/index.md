@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Coverage Guided Fuzz Testing **(ULTIMATE)**
+# Coverage-guided fuzz testing **(ULTIMATE)**
 
 GitLab allows you to add coverage-guided fuzz testing to your pipelines. This helps you discover
 bugs and potential security issues that other QA processes may miss. Coverage-guided fuzzing sends
@@ -97,7 +97,7 @@ Each fuzzing step outputs these artifacts:
   - `crashes`: Holds all crash events the current job encountered as well as those not fixed in
     previous jobs.
 
-### Types of Fuzzing Jobs
+### Types of fuzzing jobs
 
 There are two types of jobs:
 
@@ -172,13 +172,13 @@ Here's an example coverage fuzzing report:
 }
 ```
 
-### Additional Configuration
+### Additional configuration
 
 The `gitlab-cov-fuzz` command passes all arguments it receives to the underlying fuzzing engine. You
 can therefore use all the options available in that fuzzing engine. For more information on these
 options, see the underlying fuzzing engine's documentation.
 
-### Offline Environment
+### Offline environment
 
 To use coverage fuzzing in an offline environment, follow these steps:
 

@@ -3310,6 +3310,16 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#after_change_head_branch_does_not_exist' do
+    let_it_be(:project) { create(:project) }
+
+    it 'adds an error to container if branch does not exist' do
+      expect do
+        project.after_change_head_branch_does_not_exist('unexisted-branch')
+      end.to change { project.errors.size }.from(0).to(1)
+    end
+  end
+
   describe '#lfs_objects_for_repository_types' do
     let(:project) { create(:project) }
 

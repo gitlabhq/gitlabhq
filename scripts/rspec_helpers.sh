@@ -63,7 +63,9 @@ function retrieve_tests_mapping() {
     local artifact_branch="master"
     local test_metadata_with_mapping_job_id
 
-    test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" -q "status=success" -q "ref=${artifact_branch}" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz")
+    # FIXME: retrieving job id is failing https://gitlab.com/gitlab-org/gitlab/-/issues/340706
+    # test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" -q "status=success" -q "ref=${artifact_branch}" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz")
+    test_metadata_with_mapping_job_id="1583877936"
 
     if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
      (scripts/api/download_job_artifact.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --job-id "${test_metadata_with_mapping_job_id}" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"

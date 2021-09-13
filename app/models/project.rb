@@ -2739,6 +2739,11 @@ class Project < ApplicationRecord
     self.topics.map(&:name)
   end
 
+  override :after_change_head_branch_does_not_exist
+  def after_change_head_branch_does_not_exist(branch)
+    self.errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
+  end
+
   private
 
   def save_topics

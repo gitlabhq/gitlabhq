@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
 ask an administrator to [disable the `security_orchestration_policies_configuration` flag](../../../administration/feature_flags.md).
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 Policies in GitLab provide security teams a way to require scans of their choice to be run
 whenever a project pipeline runs according to the configuration specified. Security teams can
