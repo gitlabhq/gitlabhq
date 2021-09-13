@@ -185,7 +185,7 @@ Rails.application.routes.draw do
     end
 
     Gitlab.jh do
-      draw :province
+      draw :global_jh
     end
 
     if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development? || Rails.env.test?

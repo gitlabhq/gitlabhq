@@ -147,8 +147,12 @@ class RegistrationsController < Devise::RegistrationsController
     resource.persisted? && resource.blocked_pending_approval?
   end
 
+  def sign_up_params_attributes
+    [:username, :email, :name, :first_name, :last_name, :password]
+  end
+
   def sign_up_params
-    params.require(:user).permit(:username, :email, :name, :first_name, :last_name, :password)
+    params.require(:user).permit(sign_up_params_attributes)
   end
 
   def resource_name

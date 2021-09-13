@@ -63,9 +63,6 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production_json.log`
 - Installations from source: `/home/git/gitlab/log/production_json.log`
 
-When GitLab is running in an environment other than production,
-the corresponding log file is shown here.
-
 It contains a structured log for Rails controller requests received from
 GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/).
 Requests from the API are logged to a separate file in `api_json.log`.
@@ -215,9 +212,6 @@ Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production.log`
 - Installations from source: `/home/git/gitlab/log/production.log`
-
-When GitLab is running in an environment other than production,
-the corresponding log file is shown here.
 
 It contains information about all performed requests. You can see the
 URL and type of request, IP address, and what parts of code were

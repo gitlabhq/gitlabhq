@@ -9,9 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Moved to GitLab Premium in 13.9.
 
-This document describes how to enable Advanced Search. After
-Advanced Search is enabled, you'll have the benefit of fast search response times
-and the advantage of the [special searches](../user/search/advanced_search.md).
+This page describes how to enable Advanced Search. When enabled,
+Advanced Search provides faster search response times and [improved search features](../user/search/advanced_search.md).
 
 ## Version requirements
 
@@ -26,90 +25,61 @@ and the advantage of the [special searches](../user/search/advanced_search.md).
 | GitLab Enterprise Edition 9.0 through 11.4  | Elasticsearch 5.1 through 5.5 |
 | GitLab Enterprise Edition 8.4 through 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
 
-The Elasticsearch Integration is designed to work with supported versions of
-Elasticsearch and follows Elasticsearch's [End of Life Policy](https://www.elastic.co/support/eol).  
+The Elasticsearch Integration works with supported versions of
+Elasticsearch and follows Elasticsearch's [End of Life Policy](https://www.elastic.co/support/eol).
 When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) in monthly release posts
-before the actual removal.
+before we remove them.
 
 ## System requirements
 
-Elasticsearch requires additional resources in excess of those documented in the
+Elasticsearch requires additional resources to those documented in the
 [GitLab system requirements](../install/requirements.md).
 
-The amount of resources (memory, CPU, storage) varies greatly, based on the
-amount of data being indexed into the Elasticsearch cluster. According to
+Memory, CPU, and storage resource amounts vary depending on the amount of data you index into the Elasticsearch cluster. Heavily used Elasticsearch clusters may require more resources. According to
 [Elasticsearch official guidelines](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory),
 each node should have:
 
 - [Memory](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory): 8 GiB (minimum).
-- [CPU](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_cpus): Modern processor with multiple cores.
-- [Storage](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_disks): Use SSD storage. The total storage size of all Elasticsearch nodes is about 50% of the total size of your Git repositories. It includes one primary and one replica.
-
-A few notes on CPU and storage:
-
-- CPU requirements for Elasticsearch tend to be minimal. There are specific
-  scenarios where this isn't true, but GitLab.com isn't using Elasticsearch in
-  an exceptionally CPU-heavy way. More cores are more performant than faster
-  CPUs. Extra concurrency from multiple cores far outweighs a slightly
-  faster clock speed in Elasticsearch.
-
-- Storage requirements for Elasticsearch are important, especially for
-  indexing-heavy clusters. When possible use SSDs, whose speed is far superior
-  to any spinning media for Elasticsearch. In testing, nodes that use SSD storage
-  see boosts in both query and indexing performance.
-
-- We've introduced the [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks)
-  Rake task to estimate the Advanced Search storage requirements in advance, which
-- The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task estimates the
-  Advanced Search storage requirements in advance. The Rake task uses total repository size
-  for the calculation. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10.
-
-Keep in mind, these are **minimum requirements** for Elasticsearch.
-Heavily-used Elasticsearch clusters likely require considerably more
-resources.
+- [CPU](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_cpus): Modern processor with multiple cores. GitLab.com has minimal CPU requirements for Elasticsearch. Multiple cores provide extra concurrency, which is more beneficial than faster CPUs.
+- [Storage](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_disks): Use SSD storage. The total storage size of all Elasticsearch nodes is about 50% of the total size of your Git repositories. It includes one primary and one replica. The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10) uses total repository size to estimate the Advanced Search storage requirements.
 
 ## Install Elasticsearch
 
 Elasticsearch is *not* included in the Omnibus packages or when you install from
-source. You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/install-elasticsearch.html "Elasticsearch 7.x installation documentation").
-Be sure to select your version. Providing detailed information on installing
-Elasticsearch is out of the scope of this document.
+source. You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
 
-Elasticsearch should be installed on a separate server, whether you install
-it yourself or use a cloud hosted offering like Elastic's [Elasticsearch Service](https://www.elastic.co/elasticsearch/service)
-(available on AWS, GCP, or Azure) or the [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html)
-service. Running Elasticsearch on the same server as GitLab is not recommended
-and can cause a degradation in GitLab instance performance.
+You can install Elasticsearch yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service)(available on AWS, GCP, or Azure) or the [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html)
+service.
+You should install Elasticsearch on a separate server. Running Elasticsearch on the same server as GitLab is not recommended and can cause a degradation in GitLab instance performance.
 
-**For a single node Elasticsearch cluster, the functional cluster health status
-is always yellow and never green**. This is due to allocation of the primary shard. Replicas cannot be allocated as there is no other node to which Elasticsearch can assign a replica.
+For a single node Elasticsearch cluster, the functional cluster health status is always yellow due to the allocation of the primary shard. Elasticsearch cannot assign replica shards to the same node as primary shards.
 
-After the data is added to the database or repository and [Elasticsearch is
-enabled in the Admin Area](#enable-advanced-search), the search index is
-updated automatically.
+The search index updates after you:
+
+- Add data to the database or repository.
+- [Enable Elasticsearch](#enable-advanced-search) in the Admin Area.
 
 ## Upgrade to a new Elasticsearch major version
 
-Elasticsearch can read and use indices created in the previous major version, so you don't need to change anything in the GitLab configuration when upgrading Elasticsearch.
+Elasticsearch reads and uses indices created in the previous major version. You are not required to change the GitLab configuration when you upgrade Elasticsearch.
 
-If you created your current index before GitLab 13.0, you might want to reindex from scratch (which implicitly creates an alias) to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). After you reindex, you can perform zero-downtime reindexing and benefit from future features that make use of the alias.
+If your current index was created before GitLab 13.0, you must reindex from scratch to create an alias to use features such as [zero downtime reindexing](#zero-downtime-reindexing). After you reindex, you can perform zero downtime reindexing and also benefit from future features that use the alias.
 
-To check if your current index was created after GitLab 13.0, use the [Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html).
+To check if your current index was created before GitLab 13.0, use the [Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html).
+If the returned list of aliases does not contain a `gitlab-production` alias, you must reindex to use features such as zero downtime reindexing.
 If the returned list of aliases contains an entry for `gitlab-production` that points to an index
 named `gitlab-production-<numerical timestamp>`, your index was created after GitLab 13.0.
-If the `gitlab-production` alias is missing, you must reindex from scratch to use
-features such as Zero-downtime reindexing.
 
 ## Elasticsearch repository indexer
 
-For indexing Git repository data, GitLab uses an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
+To index Git repository data, GitLab uses an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 
-The way you install the Go indexer depends on your version of GitLab:
+Depending on your GitLab version, there are different installation procedures for the Go indexer:
 
 - For Omnibus GitLab 11.8 or greater, see [Omnibus GitLab](#omnibus-gitlab).
 - For installations from source or older versions of Omnibus GitLab,
   [install the indexer from source](#from-source).
-- If you are using GitLab Development Kit, see [GDK Elasticsearch how-to](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md)
+- If you are using GitLab Development Kit, see [GDK Elasticsearch how-to](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md).
 
 ### Omnibus GitLab
 

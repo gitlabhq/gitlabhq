@@ -5,3 +5,5 @@ module RecaptchaHelper
     !!Gitlab::Recaptcha.enabled?
   end
 end
+
+RecaptchaHelper.prepend_mod
