@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Pipelines::EntityFinisher do
+RSpec.describe BulkImports::Common::Pipelines::EntityFinisher do
   it 'updates the entity status to finished' do
     entity = create(:bulk_import_entity, :started)
     pipeline_tracker = create(:bulk_import_tracker, entity: entity)

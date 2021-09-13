@@ -7,7 +7,7 @@ description: Doing SRE for GitLab instances and runners on AWS.
 type: index
 ---
 
-# GitLab Site Reliability Engineering for AWS
+# GitLab Site Reliability Engineering for AWS **(FREE SELF)**
 
 ## Known issues list
 

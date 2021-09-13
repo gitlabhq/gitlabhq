@@ -11,8 +11,7 @@ module HashedStorage
     queue_namespace :hashed_storage
     loggable_arguments 1
 
-    # Gitlab::HashedStorage::Migrator#migration_pending? depends on the
-    # queue size of this worker.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/340629
     tags :needs_own_queue
 
     attr_reader :project_id

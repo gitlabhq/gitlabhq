@@ -3,15 +3,23 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :reliable, :object_storage do
     describe 'npm registry' do
+      using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
 
       let!(:registry_scope) { Runtime::Namespace.sandbox_name }
-      let(:auth_token) do
+      let!(:personal_access_token) do
         unless Page::Main::Menu.perform(&:signed_in?)
           Flow::Login.sign_in
         end
 
         Resource::PersonalAccessToken.fabricate!.token
+      end
+
+      let(:project_deploy_token) do
+        Resource::DeployToken.fabricate_via_browser_ui! do |deploy_token|
+          deploy_token.name = 'npm-deploy-token'
+          deploy_token.project = project
+        end
       end
 
       let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
@@ -109,16 +117,6 @@ module QA
       }
       end
 
-      let(:npmrc) do
-        {
-          file_path: '.npmrc',
-          content: <<~NPMRC
-            //#{gitlab_host_with_port}/api/v4/projects/#{project.id}/packages/npm/:_authToken=#{auth_token}
-            @#{registry_scope}:registry=#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/npm/
-          NPMRC
-        }
-      end
-
       let(:package) do
         Resource::Package.init do |package|
           package.name = "@#{registry_scope}/#{project.name}"
@@ -133,72 +131,101 @@ module QA
         another_project.remove_via_api!
       end
 
-      it 'push and pull a npm package via CI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1811' do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files([
-                            gitlab_ci_deploy_yaml,
-                            npmrc,
-                            package_json
-                          ])
+      where(:authentication_token_type, :token_name) do
+        :personal_access_token | 'Personal Access Token'
+        :ci_job_token          | 'CI Job Token'
+        :project_deploy_token  | 'Deploy Token'
+      end
+
+      with_them do
+        let(:auth_token) do
+          case authentication_token_type
+          when :personal_access_token
+            "\"#{personal_access_token}\""
+          when :ci_job_token
+            '${CI_JOB_TOKEN}'
+          when :project_deploy_token
+            "\"#{project_deploy_token.password}\""
+          end
         end
 
-        project.visit!
-        Flow::Pipeline.visit_latest_pipeline
-
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job('deploy')
+        let(:npmrc) do
+          {
+            file_path: '.npmrc',
+            content: <<~NPMRC
+              //#{gitlab_host_with_port}/api/v4/projects/#{project.id}/packages/npm/:_authToken=#{auth_token}
+              @#{registry_scope}:registry=#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/npm/
+            NPMRC
+          }
         end
 
-        Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 800)
-        end
+        it "push and pull a npm package via CI using a #{params[:token_name]}", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1772' do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = project
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.add_files([
+                              gitlab_ci_deploy_yaml,
+                              npmrc,
+                              package_json
+                            ])
+          end
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = another_project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files([
-                             gitlab_ci_install_yaml
-          ])
-        end
+          project.visit!
+          Flow::Pipeline.visit_latest_pipeline
 
-        another_project.visit!
-        Flow::Pipeline.visit_latest_pipeline
+          Page::Project::Pipeline::Show.perform do |pipeline|
+            pipeline.click_job('deploy')
+          end
 
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job('install')
-        end
+          Page::Project::Job::Show.perform do |job|
+            expect(job).to be_successful(timeout: 800)
+          end
 
-        Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 800)
-          job.click_browse_button
-        end
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = another_project
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.add_files([
+                              gitlab_ci_install_yaml
+            ])
+          end
 
-        Page::Project::Artifact::Show.perform do |artifacts|
-          artifacts.go_to_directory('node_modules')
-          artifacts.go_to_directory("@#{registry_scope}")
-          expect(artifacts).to have_content( "#{project.name}")
-        end
+          another_project.visit!
+          Flow::Pipeline.visit_latest_pipeline
 
-        project.visit!
-        Page::Project::Menu.perform(&:click_packages_link)
+          Page::Project::Pipeline::Show.perform do |pipeline|
+            pipeline.click_job('install')
+          end
 
-        Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_package(package.name)
+          Page::Project::Job::Show.perform do |job|
+            expect(job).to be_successful(timeout: 800)
+            job.click_browse_button
+          end
 
-          index.click_package(package.name)
-        end
+          Page::Project::Artifact::Show.perform do |artifacts|
+            artifacts.go_to_directory('node_modules')
+            artifacts.go_to_directory("@#{registry_scope}")
+            expect(artifacts).to have_content( "#{project.name}")
+          end
 
-        Page::Project::Packages::Show.perform do |show|
-          expect(show).to have_package_info(package.name, "1.0.0")
+          project.visit!
+          Page::Project::Menu.perform(&:click_packages_link)
 
-          show.click_delete
-        end
+          Page::Project::Packages::Index.perform do |index|
+            expect(index).to have_package(package.name)
 
-        Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_content("Package deleted successfully")
-          expect(index).not_to have_package(package.name)
+            index.click_package(package.name)
+          end
+
+          Page::Project::Packages::Show.perform do |show|
+            expect(show).to have_package_info(package.name, "1.0.0")
+
+            show.click_delete
+          end
+
+          Page::Project::Packages::Index.perform do |index|
+            expect(index).to have_content("Package deleted successfully")
+            expect(index).not_to have_package(package.name)
+          end
         end
       end
     end

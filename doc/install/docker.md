@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Docker images
+# GitLab Docker images **(FREE SELF)**
 
 The GitLab Docker images are monolithic images of GitLab running all the
 necessary services in a single container. If you instead want to install GitLab

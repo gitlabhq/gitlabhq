@@ -49,6 +49,15 @@ When GitLab detects a **Denied** license, you can view it in the [license list](
 You can view and modify existing policies from the [policies](#policies) tab.
 ![Edit Policy](img/policies_maintainer_edit_v14_2.png)
 
+## License expressions
+
+GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/).
+License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
+if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](#policies),
+GitLab evaluates the composite license as _denied_, as this is the safer option.
+The ability to support other license expression operators (like `OR`, `WITH`) is tracked
+in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6571).
+
 ## Supported languages and package managers
 
 The following languages and package managers are supported.

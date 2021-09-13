@@ -2703,7 +2703,7 @@
   :worker_name: ServiceDeskEmailReceiverWorker
   :feature_category: :service_desk
   :has_external_dependencies:
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:

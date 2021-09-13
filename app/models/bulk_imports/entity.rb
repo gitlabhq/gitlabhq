@@ -78,6 +78,30 @@ class BulkImports::Entity < ApplicationRecord
     ERB::Util.url_encode(source_full_path)
   end
 
+  def pipelines
+    @pipelines ||= case source_type
+                   when 'group_entity'
+                     BulkImports::Groups::Stage.pipelines
+                   when 'project_entity'
+                     BulkImports::Projects::Stage.pipelines
+                   end
+  end
+
+  def pipeline_exists?(name)
+    pipelines.any? { |_, pipeline| pipeline.to_s == name.to_s }
+  end
+
+  def create_pipeline_trackers!
+    self.class.transaction do
+      pipelines.each do |stage, pipeline|
+        trackers.create!(
+          stage: stage,
+          pipeline_name: pipeline
+        )
+      end
+    end
+  end
+
   private
 
   def validate_parent_is_a_group

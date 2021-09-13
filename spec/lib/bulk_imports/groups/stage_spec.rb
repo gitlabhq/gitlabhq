@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe BulkImports::Stage do
+RSpec.describe BulkImports::Groups::Stage do
   let(:pipelines) do
     [
       [0, BulkImports::Groups::Pipelines::GroupPipeline],
@@ -19,18 +19,21 @@ RSpec.describe BulkImports::Stage do
   describe '.pipelines' do
     it 'list all the pipelines with their stage number, ordered by stage' do
       expect(described_class.pipelines & pipelines).to eq(pipelines)
-      expect(described_class.pipelines.last.last).to eq(BulkImports::Groups::Pipelines::EntityFinisher)
-    end
-  end
-
-  describe '.pipeline_exists?' do
-    it 'returns true when the given pipeline name exists in the pipelines list' do
-      expect(described_class.pipeline_exists?(BulkImports::Groups::Pipelines::GroupPipeline)).to eq(true)
-      expect(described_class.pipeline_exists?('BulkImports::Groups::Pipelines::GroupPipeline')).to eq(true)
+      expect(described_class.pipelines.last.last).to eq(BulkImports::Common::Pipelines::EntityFinisher)
     end
 
-    it 'returns false when the given pipeline name exists in the pipelines list' do
-      expect(described_class.pipeline_exists?('BulkImports::Groups::Pipelines::InexistentPipeline')).to eq(false)
+    it 'includes project entities pipeline' do
+      stub_feature_flags(bulk_import_projects: true)
+
+      expect(described_class.pipelines).to include([1, BulkImports::Groups::Pipelines::ProjectEntitiesPipeline])
+    end
+
+    context 'when bulk_import_projects feature flag is disabled' do
+      it 'does not include project entities pipeline' do
+        stub_feature_flags(bulk_import_projects: false)
+
+        expect(described_class.pipelines.flatten).not_to include(BulkImports::Groups::Pipelines::ProjectEntitiesPipeline)
+      end
     end
   end
 end

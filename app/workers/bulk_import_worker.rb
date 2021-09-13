@@ -24,9 +24,9 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
     @bulk_import.start! if @bulk_import.created?
 
     created_entities.first(next_batch_size).each do |entity|
-      create_pipeline_tracker_for(entity)
+      entity.create_pipeline_trackers!
 
-      BulkImports::ExportRequestWorker.perform_async(entity.id)
+      BulkImports::ExportRequestWorker.perform_async(entity.id) if entity.group_entity?
       BulkImports::EntityWorker.perform_async(entity.id)
 
       entity.start!
@@ -74,14 +74,5 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
   #   - Or to mark the `bulk_import` as finished
   def re_enqueue
     BulkImportWorker.perform_in(PERFORM_DELAY, @bulk_import.id)
-  end
-
-  def create_pipeline_tracker_for(entity)
-    BulkImports::Stage.pipelines.each do |stage, pipeline|
-      entity.trackers.create!(
-        stage: stage,
-        pipeline_name: pipeline
-      )
-    end
   end
 end

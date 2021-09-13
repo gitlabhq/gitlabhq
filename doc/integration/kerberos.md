@@ -9,6 +9,11 @@ type: reference, how-to
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 
+WARNING:
+GitLab CI/CD does not work with a Kerberos-enabled GitLab instance due to an unresolved
+[bug in Git CLI](https://lore.kernel.org/git/YKNVop80H8xSTCjz@coredump.intra.peff.net/T/#mab47fd7dcb61fee651f7cc8710b8edc6f62983d5)
+that fails to use job token authentication from the GitLab Runners.
+
 ## Overview
 
 [Kerberos](https://web.mit.edu/kerberos/) is a secure method for authenticating a request for a service in a

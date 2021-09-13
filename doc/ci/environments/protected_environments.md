@@ -161,10 +161,6 @@ For more information, see [Deployment safety](deployment_safety.md).
 > - [Feature flag `group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) removed in GitLab 14.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) in GitLab 14.3.
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
-
 Typically, large enterprise organizations have an explicit permission boundary
 between [developers and operators](https://about.gitlab.com/topics/devops/).
 Developers build and test their code, and operators deploy and monitor the

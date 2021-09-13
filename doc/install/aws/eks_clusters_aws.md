@@ -5,7 +5,7 @@ group: Alliances
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# EKS cluster provisioning best practices
+# EKS cluster provisioning best practices **(FREE SELF)**
 
 GitLab can be used to provision an EKS cluster into AWS, however, it necessarily focuses on a basic EKS configuration. Using the AWS tools can help with advanced cluster configuration, automation, and maintenance.
 

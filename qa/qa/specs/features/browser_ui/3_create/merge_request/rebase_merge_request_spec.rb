@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', quarantine: { only: { subdomain: :staging }, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/323990', type: :flaky } do
+  RSpec.describe 'Create' do
     describe 'Merge request rebasing' do
-      it 'user rebases source branch of merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1596' do
-        Flow::Login.sign_in
+      let(:merge_request) { Resource::MergeRequest.fabricate_via_api! }
 
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.name = "only-fast-forward"
-        end
-        project.visit!
+      before do
+        Flow::Login.sign_in
+      end
+
+      it 'user rebases source branch of merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1596' do
+        merge_request.project.visit!
 
         Page::Project::Menu.perform(&:go_to_general_settings)
         Page::Project::Settings::Main.perform do |main|
@@ -18,13 +19,8 @@ module QA
           end
         end
 
-        merge_request = Resource::MergeRequest.fabricate! do |merge_request|
-          merge_request.project = project
-          merge_request.title = 'Needs rebasing'
-        end
-
         Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = project
+          push.project = merge_request.project
           push.file_name = "other.txt"
           push.file_content = "New file added!"
           push.new_branch = false
@@ -33,7 +29,7 @@ module QA
         merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|
-          expect(merge_request).to have_content('Needs rebasing')
+          expect(merge_request).to have_content('Merge blocked: the source branch must be rebased onto the target branch.')
           expect(merge_request).to be_fast_forward_not_possible
           expect(merge_request).not_to have_merge_button
 
