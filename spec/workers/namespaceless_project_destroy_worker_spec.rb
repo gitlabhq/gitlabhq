@@ -48,12 +48,6 @@ RSpec.describe NamespacelessProjectDestroyWorker do
 
           subject.perform(project.id)
         end
-
-        it 'does not do anything in Project#legacy_remove_pages method' do
-          expect(Gitlab::PagesTransfer).not_to receive(:new)
-
-          subject.perform(project.id)
-        end
       end
 
       context 'project forked from another' do

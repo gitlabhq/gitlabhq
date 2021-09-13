@@ -2,6 +2,7 @@ import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
@@ -44,6 +45,7 @@ describe('Board card component', () => {
   const findEpicBadgeProgress = () => wrapper.findByTestId('epic-progress');
   const findEpicCountablesTotalWeight = () => wrapper.findByTestId('epic-countables-total-weight');
   const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
+  const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
 
   const createStore = ({ isEpicBoard = false, isProjectBoard = false } = {}) => {
     store = new Vuex.Store({
@@ -71,6 +73,9 @@ describe('Board card component', () => {
       stubs: {
         GlLabel: true,
         GlLoadingIcon: true,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
       mocks: {
         $apollo: {
@@ -120,6 +125,10 @@ describe('Board card component', () => {
 
   it('does not render confidential icon', () => {
     expect(wrapper.find('.confidential-icon').exists()).toBe(false);
+  });
+
+  it('does not render hidden issue icon', () => {
+    expect(findHiddenIssueIcon().exists()).toBe(false);
   });
 
   it('renders issue ID with #', () => {
@@ -181,6 +190,30 @@ describe('Board card component', () => {
 
     it('renders confidential icon', () => {
       expect(wrapper.find('.confidential-icon').exists()).toBe(true);
+    });
+  });
+
+  describe('hidden issue', () => {
+    beforeEach(() => {
+      wrapper.setProps({
+        item: {
+          ...wrapper.props('item'),
+          hidden: true,
+        },
+      });
+    });
+
+    it('renders hidden issue icon', () => {
+      expect(findHiddenIssueIcon().exists()).toBe(true);
+    });
+
+    it('displays a tooltip which explains the meaning of the icon', () => {
+      const tooltip = getBinding(findHiddenIssueIcon().element, 'gl-tooltip');
+
+      expect(tooltip).toBeDefined();
+      expect(findHiddenIssueIcon().attributes('title')).toBe(
+        'This issue is hidden because its author has been banned',
+      );
     });
   });
 

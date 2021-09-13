@@ -12,9 +12,6 @@ module Pages
       PagesDomain.for_project(project).delete_all
 
       DestroyPagesDeploymentsWorker.perform_async(project.id)
-
-      # TODO: remove this call https://gitlab.com/gitlab-org/gitlab/-/issues/320775
-      PagesRemoveWorker.perform_async(project.id) if ::Settings.pages.local_store.enabled
     end
   end
 end

@@ -13,6 +13,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:ci_job_url) { "url" }
   let(:ci_pipeline_id) { "123" }
   let(:run_type) { 'staging-full' }
+  let(:reliable) { 'false' }
+  let(:quarantined) { 'false' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
   let(:influx_write_api) { instance_double('InfluxDB2::WriteApi', write: nil) }
 
@@ -30,7 +32,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       name: 'test-stats',
       time: DateTime.strptime(ci_timestamp).to_time,
       tags: {
-        name: "stats export #{spec_name}",
+        name: 'stats export spec',
         file_path: './spec/support/formatters/test_stats_formatter_spec.rb',
         status: :passed,
         reliable: reliable,
@@ -51,6 +53,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
   end
 
   def run_spec(&spec)
+    spec ||= -> { it('spec') {} }
+
     describe_successfully('stats export', &spec)
     send_stop_notification
   end
@@ -74,9 +78,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       stub_env('QA_INFLUXDB_URL', nil)
       stub_env('QA_INFLUXDB_TOKEN', nil)
 
-      run_spec do
-        it('skips export') {}
-      end
+      run_spec
 
       expect(influx_client).not_to have_received(:create_write_api)
     end
@@ -85,9 +87,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       stub_env('QA_INFLUXDB_URL', url)
       stub_env('QA_INFLUXDB_TOKEN', nil)
 
-      run_spec do
-        it('skips export') {}
-      end
+      run_spec
 
       expect(influx_client).not_to have_received(:create_write_api)
     end
@@ -111,11 +111,10 @@ describe QA::Support::Formatters::TestStatsFormatter do
 
     context 'with reliable spec' do
       let(:reliable) { 'true' }
-      let(:quarantined) { 'false' }
 
-      it 'exports data to influxdb' do
+      it 'exports data to influxdb with correct reliable tag' do
         run_spec do
-          it('exports data', :reliable) {}
+          it('spec', :reliable) {}
         end
 
         expect(influx_write_api).to have_received(:write).with(data: [data])
@@ -123,13 +122,44 @@ describe QA::Support::Formatters::TestStatsFormatter do
     end
 
     context 'with quarantined spec' do
-      let(:reliable) { 'false' }
       let(:quarantined) { 'true' }
 
-      it 'exports data to influxdb' do
+      it 'exports data to influxdb with correct quarantine tag' do
         run_spec do
-          it('exports data', :quarantine) {}
+          it('spec', :quarantine) {}
         end
+
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with staging full run' do
+      let(:run_type) { 'staging-full' }
+
+      before do
+        stub_env('CI_PROJECT_NAME', 'staging')
+        stub_env('QA_RUN_TYPE', nil)
+      end
+
+      it 'exports data to influxdb with correct run type' do
+        run_spec
+
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with staging sanity no admin' do
+      let(:run_type) { 'staging-sanity-no-admin' }
+
+      before do
+        stub_env('CI_PROJECT_NAME', 'staging')
+        stub_env('NO_ADMIN', 'true')
+        stub_env('SMOKE_ONLY', 'true')
+        stub_env('QA_RUN_TYPE', nil)
+      end
+
+      it 'exports data to influxdb with correct run type' do
+        run_spec
 
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end

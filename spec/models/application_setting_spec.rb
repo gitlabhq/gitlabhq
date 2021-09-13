@@ -927,6 +927,8 @@ RSpec.describe ApplicationSetting do
     context 'throttle_* settings' do
       where(:throttle_setting) do
         %i[
+          throttle_unauthenticated_api_requests_per_period
+          throttle_unauthenticated_api_period_in_seconds
           throttle_unauthenticated_requests_per_period
           throttle_unauthenticated_period_in_seconds
           throttle_authenticated_api_requests_per_period

@@ -18,10 +18,6 @@ RSpec.describe Projects::UpdatePagesService do
 
   subject { described_class.new(project, build) }
 
-  before do
-    project.legacy_remove_pages
-  end
-
   context 'for new artifacts' do
     context "for a valid job" do
       let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }

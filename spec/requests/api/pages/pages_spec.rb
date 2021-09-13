@@ -36,12 +36,7 @@ RSpec.describe API::Pages do
         end
 
         it 'removes the pages' do
-          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return true
-          expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, project.namespace.full_path, anything)
-
-          Sidekiq::Testing.inline! do
-            delete api("/projects/#{project.id}/pages", admin )
-          end
+          delete api("/projects/#{project.id}/pages", admin )
 
           expect(project.reload.pages_metadatum.deployed?).to be(false)
         end

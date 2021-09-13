@@ -64,9 +64,8 @@ module PackagesHelper
     project.container_repositories.exists?
   end
 
-  def package_details_data(project, package, use_presenter = false)
+  def package_details_data(project, package)
     {
-      package: use_presenter ? package_from_presenter(package) : nil,
       package_id: package.id,
       can_delete: can?(current_user, :destroy_package, project).to_s,
       svg_path: image_path('illustrations/no-packages.svg'),

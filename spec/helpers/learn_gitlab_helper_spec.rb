@@ -53,7 +53,7 @@ RSpec.describe LearnGitlabHelper do
     end
   end
 
-  describe '.learn_gitlab_experiment_enabled?' do
+  describe '.learn_gitlab_enabled?' do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:user) { create(:user) }
@@ -61,7 +61,7 @@ RSpec.describe LearnGitlabHelper do
 
     let(:params) { { namespace_id: project.namespace.to_param, project_id: project } }
 
-    subject { helper.learn_gitlab_experiment_enabled?(project) }
+    subject { helper.learn_gitlab_enabled?(project) }
 
     where(:onboarding, :learn_gitlab_available, :result) do
       true        | true                  | true

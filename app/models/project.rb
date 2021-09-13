@@ -120,7 +120,6 @@ class Project < ApplicationRecord
 
   use_fast_destroy :build_trace_chunks
 
-  after_destroy -> { run_after_commit { legacy_remove_pages } }
   after_destroy :remove_exports
 
   after_validation :check_pending_delete
@@ -1902,27 +1901,6 @@ class Project < ApplicationRecord
                .where(exclude_keys_linked_to_other_projects)
                .delete_all
   end
-
-  # TODO: remove this method https://gitlab.com/gitlab-org/gitlab/-/issues/320775
-  # rubocop: disable CodeReuse/ServiceClass
-  def legacy_remove_pages
-    return unless ::Settings.pages.local_store.enabled
-
-    # Projects with a missing namespace cannot have their pages removed
-    return unless namespace
-
-    mark_pages_as_not_deployed unless destroyed?
-
-    # 1. We rename pages to temporary directory
-    # 2. We wait 5 minutes, due to NFS caching
-    # 3. We asynchronously remove pages with force
-    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
-
-    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
-      PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
-    end
-  end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def mark_pages_as_deployed(artifacts_archive: nil)
     ensure_pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)

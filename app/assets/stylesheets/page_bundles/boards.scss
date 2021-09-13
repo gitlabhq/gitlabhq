@@ -248,7 +248,8 @@
     margin-right: 4px;
   }
 
-  .confidential-icon {
+  .confidential-icon,
+  .hidden-icon {
     color: var(--orange-500, $orange-500);
     cursor: help;
   }

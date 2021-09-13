@@ -4556,44 +4556,6 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#legacy_remove_pages' do
-    let(:project) { create(:project).tap { |project| project.mark_pages_as_deployed } }
-    let(:pages_metadatum) { project.pages_metadatum }
-    let(:namespace) { project.namespace }
-    let(:pages_path) { project.pages_path }
-
-    around do |example|
-      FileUtils.mkdir_p(pages_path)
-      begin
-        example.run
-      ensure
-        FileUtils.rm_rf(pages_path)
-      end
-    end
-
-    it 'removes the pages directory and marks the project as not having pages deployed' do
-      expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
-      expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
-
-      expect { project.legacy_remove_pages }.to change { pages_metadatum.reload.deployed }.from(true).to(false)
-    end
-
-    it 'does nothing if updates on legacy storage are disabled' do
-      allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
-
-      expect(Gitlab::PagesTransfer).not_to receive(:new)
-      expect(PagesWorker).not_to receive(:perform_in)
-
-      project.legacy_remove_pages
-    end
-
-    it 'is run when the project is destroyed' do
-      expect(project).to receive(:legacy_remove_pages).and_call_original
-
-      expect { project.destroy! }.not_to raise_error
-    end
-  end
-
   describe '#remove_export' do
     let(:project) { create(:project, :with_export) }
 

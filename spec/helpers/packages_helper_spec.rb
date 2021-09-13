@@ -223,21 +223,41 @@ RSpec.describe PackagesHelper do
   describe '#package_details_data' do
     let_it_be(:package) { create(:package) }
 
+    let(:expected_result) do
+      {
+        package_id: package.id,
+        can_delete: 'true',
+        project_name: project.name,
+        group_list_url: ''
+      }
+    end
+
     before do
       allow(helper).to receive(:current_user) { project.owner }
       allow(helper).to receive(:can?) { true }
     end
 
-    it 'when use_presenter is true populate the package key' do
-      result = helper.package_details_data(project, package, true)
+    context 'in a project without a group' do
+      it 'populates presenter data' do
+        result = helper.package_details_data(project, package)
 
-      expect(result[:package]).not_to be_nil
+        expect(result).to match(hash_including(expected_result))
+      end
     end
 
-    it 'when use_presenter is false the package key is nil' do
-      result = helper.package_details_data(project, package, false)
+    context 'in a project with a group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project_with_group) { create(:project, group: group) }
 
-      expect(result[:package]).to be_nil
+      it 'populates presenter data' do
+        result = helper.package_details_data(project_with_group, package)
+        expected = expected_result.merge({
+          group_list_url: group_packages_path(project_with_group.group),
+          project_name: project_with_group.name
+        })
+
+        expect(result).to match(hash_including(expected))
+      end
     end
   end
 end

@@ -41,14 +41,14 @@ module QA
         #
         # @return [String]
         def influxdb_url
-          @influxdb_url ||= ENV['QA_INFLUXDB_URL']
+          @influxdb_url ||= env('QA_INFLUXDB_URL')
         end
 
         # Influxdb token
         #
         # @return [String]
         def influxdb_token
-          @influxdb_token ||= ENV['QA_INFLUXDB_TOKEN']
+          @influxdb_token ||= env('QA_INFLUXDB_TOKEN')
         end
 
         # Transform example to influxdb compatible metrics data
@@ -69,14 +69,14 @@ module QA
               retried: ((example.metadata[:retry_attempts] || 0) > 0).to_s,
               job_name: job_name,
               merge_request: merge_request,
-              run_type: ENV['QA_RUN_TYPE']
+              run_type: env('QA_RUN_TYPE') || run_type
             },
             fields: {
               id: example.id,
               run_time: (example.execution_result.run_time * 1000).round,
               retry_attempts: example.metadata[:retry_attempts] || 0,
               job_url: QA::Runtime::Env.ci_job_url,
-              pipeline_id: ENV['CI_PIPELINE_ID']
+              pipeline_id: env('CI_PIPELINE_ID')
             }
           }
         rescue StandardError => e
@@ -84,18 +84,11 @@ module QA
           nil
         end
 
-        # Single common timestamp for all exported example metrics to keep data points consistently grouped
-        #
-        # @return [Time]
-        def time
-          @time ||= DateTime.strptime(ENV['CI_PIPELINE_CREATED_AT']).to_time
-        end
-
-        # Is a merge request execution
+        # Project name
         #
         # @return [String]
-        def merge_request
-          @merge_request ||= (!!ENV['CI_MERGE_REQUEST_IID'] || !!ENV['TOP_UPSTREAM_MERGE_REQUEST_IID']).to_s
+        def project_name
+          @project_name ||= QA::Runtime::Env.ci_project_name
         end
 
         # Base ci job name
@@ -105,6 +98,39 @@ module QA
           @job_name ||= QA::Runtime::Env.ci_job_name.gsub(%r{ \d{1,2}/\d{1,2}}, '')
         end
 
+        # Single common timestamp for all exported example metrics to keep data points consistently grouped
+        #
+        # @return [Time]
+        def time
+          @time ||= DateTime.strptime(env('CI_PIPELINE_CREATED_AT')).to_time
+        end
+
+        # Is a merge request execution
+        #
+        # @return [String]
+        def merge_request
+          @merge_request ||= (!!env('CI_MERGE_REQUEST_IID') || !!env('TOP_UPSTREAM_MERGE_REQUEST_IID')).to_s
+        end
+
+        # Test run type from staging, canary or production env
+        #
+        # @return [String>, nil]
+        def run_type
+          return unless %w[staging canary production].include?(project_name)
+
+          @run_type ||= begin
+            test_subset = if env('NO_ADMIN') == 'true'
+                            'sanity-no-admin'
+                          elsif env('SMOKE_ONLY') == 'true'
+                            'sanity'
+                          else
+                            'full'
+                          end
+
+            "#{project_name}-#{test_subset}"
+          end
+        end
+
         # Print log message
         #
         # @param [Symbol] level
@@ -112,6 +138,16 @@ module QA
         # @return [void]
         def log(level, message)
           QA::Runtime::Logger.public_send(level, "influxdb exporter: #{message}")
+        end
+
+        # Return non empty environment variable value
+        #
+        # @param [String] name
+        # @return [String, nil]
+        def env(name)
+          return unless ENV[name] && !ENV[name].empty?
+
+          ENV[name]
         end
       end
     end

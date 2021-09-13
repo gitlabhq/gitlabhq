@@ -68,8 +68,8 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'Learn GitLab' do
-    it 'has a link to the learn GitLab experiment' do
-      allow(view).to receive(:learn_gitlab_experiment_enabled?).and_return(true)
+    it 'has a link to the learn GitLab' do
+      allow(view).to receive(:learn_gitlab_enabled?).and_return(true)
       allow_next_instance_of(LearnGitlab::Onboarding) do |onboarding|
         expect(onboarding).to receive(:completed_percentage).and_return(20)
       end

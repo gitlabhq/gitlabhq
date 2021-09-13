@@ -3,6 +3,7 @@ query getProjectStorageCount($fullPath: ID!) {
     id
     statistics {
       buildArtifactsSize
+      pipelineArtifactsSize
       lfsObjectsSize
       packagesSize
       repositorySize

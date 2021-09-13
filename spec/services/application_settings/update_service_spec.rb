@@ -345,6 +345,9 @@ RSpec.describe ApplicationSettings::UpdateService do
         throttle_authenticated_web_enabled: true,
         throttle_authenticated_web_period_in_seconds: 30,
         throttle_authenticated_web_requests_per_period: 40,
+        throttle_unauthenticated_api_enabled: true,
+        throttle_unauthenticated_api_period_in_seconds: 50,
+        throttle_unauthenticated_api_requests_per_period: 60,
         throttle_unauthenticated_enabled: true,
         throttle_unauthenticated_period_in_seconds: 50,
         throttle_unauthenticated_requests_per_period: 60

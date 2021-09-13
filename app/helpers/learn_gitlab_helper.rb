@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module LearnGitlabHelper
-  def learn_gitlab_experiment_enabled?(project)
+  def learn_gitlab_enabled?(project)
     return false unless current_user
 
     learn_gitlab_onboarding_available?(project)

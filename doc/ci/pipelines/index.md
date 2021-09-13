@@ -210,11 +210,11 @@ allow you to require manual interaction before moving forward in the pipeline.
 You can do this straight from the pipeline graph. Just click the play button
 to execute that particular job.
 
-For example, your pipeline might start automatically, but it requires manual action to
-[deploy to production](../environments/index.md#configure-manual-deployments). In the example below, the `production`
-stage has a job with a manual action.
+For example, your pipeline can start automatically, but require a manual action to
+[deploy to production](../environments/index.md#configure-manual-deployments).
+In the example below, the `production` stage has a job with a manual action:
 
-![Pipelines example](img/pipelines.png)
+![Pipelines example](img/manual_pipeline_v14_2.png)
 
 #### Start multiple manual actions in a stage
 
@@ -346,9 +346,9 @@ all the jobs in the pipeline.
 
 You can group the jobs by:
 
-- Stage, which arranges jobs in the same stage together in the same column.
+- Stage, which arranges jobs in the same stage together in the same column:
 
-  ![jobs grouped by stage](img/pipelines_graph_stage_view_v13_12.png)
+  ![jobs grouped by stage](img/pipelines_graph_stage_view_v14_2.png)
 
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
   jobs based on their [`needs`](../yaml/index.md#needs) dependencies.

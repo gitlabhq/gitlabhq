@@ -4,6 +4,7 @@ export const mockGetProjectStorageCountGraphQLResponse = {
       id: 'gid://gitlab/Project/20',
       statistics: {
         buildArtifactsSize: 400000.0,
+        pipelineArtifactsSize: 25000.0,
         lfsObjectsSize: 4800000.0,
         packagesSize: 3800000.0,
         repositorySize: 3900000.0,

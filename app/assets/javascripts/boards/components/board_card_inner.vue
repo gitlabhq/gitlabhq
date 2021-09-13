@@ -214,6 +214,14 @@ export default {
           class="confidential-icon gl-mr-2"
           :aria-label="__('Confidential')"
         />
+        <gl-icon
+          v-if="item.hidden"
+          v-gl-tooltip
+          name="spam"
+          :title="__('This issue is hidden because its author has been banned')"
+          class="gl-mr-2 hidden-icon"
+          data-testid="hidden-icon"
+        />
         <a
           :href="item.path || item.webUrl || ''"
           :title="item.title"

@@ -23,7 +23,7 @@ module Sidebars
 
         override :has_pill?
         def has_pill?
-          context.learn_gitlab_experiment_enabled
+          context.learn_gitlab_enabled
         end
 
         override :pill_count
@@ -52,7 +52,7 @@ module Sidebars
 
         override :render?
         def render?
-          context.learn_gitlab_experiment_enabled
+          context.learn_gitlab_enabled
         end
       end
     end
