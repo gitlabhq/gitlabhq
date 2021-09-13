@@ -33112,7 +33112,7 @@ msgstr ""
 msgid "TestCases|Search test cases"
 msgstr ""
 
-msgid "TestCases|Something went wrong while adding test case to Todo."
+msgid "TestCases|Something went wrong while adding test case to a to-do item."
 msgstr ""
 
 msgid "TestCases|Something went wrong while creating a test case."
@@ -33124,7 +33124,7 @@ msgstr ""
 msgid "TestCases|Something went wrong while fetching test cases list."
 msgstr ""
 
-msgid "TestCases|Something went wrong while marking test case todo as done."
+msgid "TestCases|Something went wrong while marking test case to-do item as done."
 msgstr ""
 
 msgid "TestCases|Something went wrong while moving test case."
