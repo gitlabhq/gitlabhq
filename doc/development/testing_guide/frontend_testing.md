@@ -1034,6 +1034,16 @@ If you introduce new helpers, place them in that directory.
 We have a helper available to make testing actions easier, as per [official documentation](https://vuex.vuejs.org/guide/testing.html):
 
 ```javascript
+// prefer using like this, a single object argument so parameters are obvious from reading the test
+await testAction({
+  action: actions.actionName,
+  payload: { deleteListId: 1 },
+  state: { lists: [1, 2, 3] },
+  expectedMutations: [ { type: types.MUTATION} ],
+  expectedActions: [],
+});
+
+// old way, don't do this for new tests
 testAction(
   actions.actionName, // action
   { }, // params to be passed to action
@@ -1049,8 +1059,6 @@ testAction(
   done,
 );
 ```
-
-Check an example in [`spec/frontend/ide/stores/actions_spec.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/fdc7197609dfa7caeb1d962042a26248e49f27da/spec/frontend/ide/stores/actions_spec.js#L392).
 
 ### Wait until Axios requests finish
 

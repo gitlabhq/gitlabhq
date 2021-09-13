@@ -798,13 +798,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     # This spec runs without an enclosing transaction (:delete truncation method for db_cleaner)
     context 'when the statement_timeout is already disabled', :delete do
       before do
-        ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
+        ActiveRecord::Migration.connection.execute('SET statement_timeout TO 0')
       end
 
       after do
-        # Use ActiveRecord::Base.connection instead of model.execute
+        # Use ActiveRecord::Migration.connection instead of model.execute
         # so that this call is not counted below
-        ActiveRecord::Base.connection.execute('RESET statement_timeout')
+        ActiveRecord::Migration.connection.execute('RESET statement_timeout')
       end
 
       it 'yields control without disabling the timeout or resetting' do
@@ -954,10 +954,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           let(:trigger_name) { model.rename_trigger_name(:users, :id, :new) }
           let(:user) { create(:user) }
           let(:copy_trigger) { double('copy trigger') }
+          let(:connection) { ActiveRecord::Migration.connection }
 
           before do
             expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
-              .with(:users).and_return(copy_trigger)
+              .with(:users, connection: connection).and_return(copy_trigger)
           end
 
           it 'copies the value to the new column using the type_cast_function', :aggregate_failures do
@@ -1300,11 +1301,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#install_rename_triggers' do
+    let(:connection) { ActiveRecord::Migration.connection }
+
     it 'installs the triggers' do
       copy_trigger = double('copy trigger')
 
       expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
-        .with(:users).and_return(copy_trigger)
+        .with(:users, connection: connection).and_return(copy_trigger)
 
       expect(copy_trigger).to receive(:create).with(:old, :new, trigger_name: 'foo')
 
@@ -1313,11 +1316,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#remove_rename_triggers' do
+    let(:connection) { ActiveRecord::Migration.connection }
+
     it 'removes the function and trigger' do
       copy_trigger = double('copy trigger')
 
       expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
-        .with('bar').and_return(copy_trigger)
+        .with('bar', connection: connection).and_return(copy_trigger)
 
       expect(copy_trigger).to receive(:drop).with('foo')
 
@@ -2194,7 +2199,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
   describe '#index_exists_by_name?' do
     it 'returns true if an index exists' do
-      ActiveRecord::Base.connection.execute(
+      ActiveRecord::Migration.connection.execute(
         'CREATE INDEX test_index_for_index_exists ON projects (path);'
       )
 
@@ -2209,7 +2214,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context 'when an index with a function exists' do
       before do
-        ActiveRecord::Base.connection.execute(
+        ActiveRecord::Migration.connection.execute(
           'CREATE INDEX test_index ON projects (LOWER(path));'
         )
       end
@@ -2222,15 +2227,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context 'when an index exists for a table with the same name in another schema' do
       before do
-        ActiveRecord::Base.connection.execute(
+        ActiveRecord::Migration.connection.execute(
           'CREATE SCHEMA new_test_schema'
         )
 
-        ActiveRecord::Base.connection.execute(
+        ActiveRecord::Migration.connection.execute(
           'CREATE TABLE new_test_schema.projects (id integer, name character varying)'
         )
 
-        ActiveRecord::Base.connection.execute(
+        ActiveRecord::Migration.connection.execute(
           'CREATE INDEX test_index_on_name ON new_test_schema.projects (LOWER(name));'
         )
       end
@@ -2463,19 +2468,19 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
   describe '#check_constraint_exists?' do
     before do
-      ActiveRecord::Base.connection.execute(
+      ActiveRecord::Migration.connection.execute(
         'ALTER TABLE projects ADD CONSTRAINT check_1 CHECK (char_length(path) <= 5) NOT VALID'
       )
 
-      ActiveRecord::Base.connection.execute(
+      ActiveRecord::Migration.connection.execute(
         'CREATE SCHEMA new_test_schema'
       )
 
-      ActiveRecord::Base.connection.execute(
+      ActiveRecord::Migration.connection.execute(
         'CREATE TABLE new_test_schema.projects (id integer, name character varying)'
       )
 
-      ActiveRecord::Base.connection.execute(
+      ActiveRecord::Migration.connection.execute(
         'ALTER TABLE new_test_schema.projects ADD CONSTRAINT check_2 CHECK (char_length(name) <= 5)'
       )
     end

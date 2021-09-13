@@ -1,3 +1,4 @@
+import { STATUSES } from '../constants';
 import { NEW_NAME_FIELD } from './constants';
 
 export function isNameValid(group, validationRegex) {
@@ -10,4 +11,12 @@ export function getInvalidNameValidationMessage(group) {
 
 export function isInvalid(group, validationRegex) {
   return Boolean(!isNameValid(group, validationRegex) || getInvalidNameValidationMessage(group));
+}
+
+export function isFinished(group) {
+  return group.progress.status === STATUSES.FINISHED;
+}
+
+export function isAvailableForImport(group) {
+  return [STATUSES.NONE, STATUSES.FINISHED].some((status) => group.progress.status === status);
 }

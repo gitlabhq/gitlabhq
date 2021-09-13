@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
+
 RSpec.describe Gitlab::ActionCable::RequestStoreCallbacks do
   describe '.wrapper' do
     it 'enables RequestStore in the inner block' do

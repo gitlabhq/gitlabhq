@@ -1,13 +1,9 @@
-import { GlButton, GlDropdownItem, GlLink, GlFormInput } from '@gitlab/ui';
+import { GlDropdownItem, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
 import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import { availableNamespacesFixture } from '../graphql/fixtures';
-
-Vue.use(VueApollo);
 
 const getFakeGroup = (status) => ({
   web_url: 'https://fake.host/',
@@ -26,9 +22,6 @@ describe('import target cell', () => {
   let wrapper;
   let group;
 
-  const findByText = (cmp, text) => {
-    return wrapper.findAll(cmp).wrappers.find((node) => node.text().indexOf(text) === 0);
-  };
   const findNameInput = () => wrapper.find(GlFormInput);
   const findNamespaceDropdown = () => wrapper.find(ImportGroupDropdown);
 
@@ -117,10 +110,6 @@ describe('import target cell', () => {
       createComponent({ group });
     });
 
-    it('does not render Import button', () => {
-      expect(findByText(GlButton, 'Import')).toBe(undefined);
-    });
-
     it('renders namespace dropdown as disabled', () => {
       expect(findNamespaceDropdown().attributes('disabled')).toBe('true');
     });
@@ -132,17 +121,8 @@ describe('import target cell', () => {
       createComponent({ group });
     });
 
-    it('does not render Import button', () => {
-      expect(findByText(GlButton, 'Import')).toBe(undefined);
-    });
-
-    it('does not render namespace dropdown', () => {
-      expect(findNamespaceDropdown().exists()).toBe(false);
-    });
-
-    it('renders target as link', () => {
-      const TARGET_LINK = `${group.import_target.target_namespace}/${group.import_target.new_name}`;
-      expect(findByText(GlLink, TARGET_LINK).exists()).toBe(true);
+    it('renders namespace dropdown as enabled', () => {
+      expect(findNamespaceDropdown().attributes('disabled')).toBe(undefined);
     });
   });
 
@@ -178,9 +158,6 @@ describe('import target cell', () => {
           ],
         },
       });
-
-      jest.runOnlyPendingTimers();
-      await nextTick();
 
       expect(wrapper.text()).toContain(FAKE_ERROR_MESSAGE);
     });

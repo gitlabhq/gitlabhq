@@ -372,9 +372,8 @@ for how to proceed.
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
   [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
   for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.Z, you need
-  to update to at least 14.1.0 that contains the same fix before you update to
-  to 14.2.
+  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
+  to update to at least 14.1.0 that contains the same fix before you update to 14.2.
 - GitLab 14.2.0 contains background migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
 
   - [`ci_build_needs`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65216)
@@ -402,7 +401,7 @@ for how to proceed.
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
   [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
   for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.Z, you need
+  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
   to update to at least 14.1.0 that contains the same fix before you update to
   a later version.
 

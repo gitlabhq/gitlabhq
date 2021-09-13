@@ -9,19 +9,19 @@ import {
   GlLoadingIcon,
   GlSearchBoxByClick,
   GlSprintf,
-  GlSafeHtmlDirective as SafeHtml,
   GlTable,
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { s__, __, n__ } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
-import ImportStatus from '../../components/import_status.vue';
-import { STATUSES } from '../../constants';
+import ImportStatusCell from '../../components/import_status.vue';
 import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
 import setImportTargetMutation from '../graphql/mutations/set_import_target.mutation.graphql';
 import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
-import { isInvalid } from '../utils';
+import { isInvalid, isFinished, isAvailableForImport } from '../utils';
+import ImportActionsCell from './import_actions_cell.vue';
+import ImportSourceCell from './import_source_cell.vue';
 import ImportTargetCell from './import_target_cell.vue';
 
 const PAGE_SIZES = [20, 50, 100];
@@ -43,12 +43,11 @@ export default {
     GlFormCheckbox,
     GlSprintf,
     GlTable,
-    ImportStatus,
+    ImportSourceCell,
     ImportTargetCell,
+    ImportStatusCell,
+    ImportActionsCell,
     PaginationLinks,
-  },
-  directives: {
-    SafeHtml,
   },
 
   props: {
@@ -136,7 +135,7 @@ export default {
     },
 
     availableGroupsForImport() {
-      return this.groups.filter((g) => g.progress.status === STATUSES.NONE && !this.isInvalid(g));
+      return this.groups.filter((g) => isAvailableForImport(g) && !this.isInvalid(g));
     },
 
     humanizedTotal() {
@@ -190,6 +189,24 @@ export default {
   },
 
   methods: {
+    isUnselectable(group) {
+      return !this.isAvailableForImport(group) || this.isInvalid(group);
+    },
+
+    rowClasses(group) {
+      const DEFAULT_CLASSES = [
+        'gl-border-gray-200',
+        'gl-border-0',
+        'gl-border-b-1',
+        'gl-border-solid',
+      ];
+      const result = [...DEFAULT_CLASSES];
+      if (this.isUnselectable(group)) {
+        result.push('gl-cursor-default!');
+      }
+      return result;
+    },
+
     qaRowAttributes(group, type) {
       if (type === 'row') {
         return {
@@ -201,10 +218,8 @@ export default {
       return {};
     },
 
-    isAlreadyImported(group) {
-      return group.progress.status !== STATUSES.NONE;
-    },
-
+    isAvailableForImport,
+    isFinished,
     isInvalid(group) {
       return isInvalid(group, this.groupPathRegex);
     },
@@ -253,7 +268,7 @@ export default {
 
       const table = this.getTableRef();
       this.groups.forEach((group, idx) => {
-        if (table.isRowSelected(idx) && (this.isAlreadyImported(group) || this.isInvalid(group))) {
+        if (table.isRowSelected(idx) && this.isUnselectable(group)) {
           table.unselectRow(idx);
         }
       });
@@ -291,7 +306,7 @@ export default {
             <strong>{{ filter }}</strong>
           </template>
           <template #link>
-            <gl-link class="gl-display-inline-block" :href="sourceUrl" target="_blank">
+            <gl-link :href="sourceUrl" target="_blank">
               {{ sourceUrl }} <gl-icon name="external-link" class="vertical-align-middle" />
             </gl-link>
           </template>
@@ -338,7 +353,7 @@ export default {
           ref="table"
           class="gl-w-full"
           data-qa-selector="import_table"
-          tbody-tr-class="gl-border-gray-200 gl-border-0 gl-border-b-1 gl-border-solid"
+          :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"
           :items="groups"
           :fields="$options.fields"
@@ -360,18 +375,12 @@ export default {
             <gl-form-checkbox
               class="gl-h-7 gl-pt-3"
               :checked="rowSelected"
-              :disabled="isAlreadyImported(group) || isInvalid(group)"
+              :disabled="!isAvailableForImport(group) || isInvalid(group)"
               @change="rowSelected ? unselectRow() : selectRow()"
             />
           </template>
-          <template #cell(web_url)="{ value: web_url, item: { full_path } }">
-            <gl-link
-              :href="web_url"
-              target="_blank"
-              class="gl-display-inline-flex gl-align-items-center gl-h-7"
-            >
-              {{ full_path }} <gl-icon name="external-link" />
-            </gl-link>
+          <template #cell(web_url)="{ item: group }">
+            <import-source-cell :group="group" />
           </template>
           <template #cell(import_target)="{ item: group }">
             <import-target-cell
@@ -388,19 +397,14 @@ export default {
             />
           </template>
           <template #cell(progress)="{ value: { status } }">
-            <import-status :status="status" class="gl-line-height-32" />
+            <import-status-cell :status="status" class="gl-line-height-32" />
           </template>
           <template #cell(actions)="{ item: group }">
-            <gl-button
-              v-if="!isAlreadyImported(group)"
-              :disabled="isInvalid(group)"
-              variant="confirm"
-              category="secondary"
-              data-qa-selector="import_group_button"
-              @click="importGroups([group.id])"
-            >
-              {{ __('Import') }}
-            </gl-button>
+            <import-actions-cell
+              :group="group"
+              :group-path-regex="groupPathRegex"
+              @import-group="importGroups([group.id])"
+            />
           </template>
         </gl-table>
         <div v-if="hasGroups" class="gl-display-flex gl-mt-3 gl-align-items-center">

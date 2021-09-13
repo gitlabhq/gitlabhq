@@ -3,14 +3,16 @@ import {
   GlDropdownDivider,
   GlDropdownItem,
   GlDropdownSectionHeader,
-  GlLink,
   GlFormInput,
 } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import ImportGroupDropdown from '../../components/group_dropdown.vue';
-import { STATUSES } from '../../constants';
-import { isInvalid, getInvalidNameValidationMessage, isNameValid } from '../utils';
+import {
+  isInvalid,
+  getInvalidNameValidationMessage,
+  isNameValid,
+  isAvailableForImport,
+} from '../utils';
 
 export default {
   components: {
@@ -18,7 +20,6 @@ export default {
     GlDropdownDivider,
     GlDropdownItem,
     GlDropdownSectionHeader,
-    GlLink,
     GlFormInput,
   },
   props: {
@@ -61,20 +62,8 @@ export default {
       return isNameValid(this.group, this.groupPathRegex);
     },
 
-    isAlreadyImported() {
-      return this.group.progress.status !== STATUSES.NONE;
-    },
-
-    isFinished() {
-      return this.group.progress.status === STATUSES.FINISHED;
-    },
-
-    fullPath() {
-      return `${this.importTarget.target_namespace}/${this.importTarget.new_name}`;
-    },
-
-    absolutePath() {
-      return joinPaths(gon.relative_url_root || '/', this.fullPath);
+    isAvailableForImport() {
+      return isAvailableForImport(this.group);
     },
   },
 
@@ -85,25 +74,11 @@ export default {
 </script>
 
 <template>
-  <gl-link
-    v-if="isFinished"
-    class="gl-display-inline-flex gl-align-items-center gl-h-7"
-    :href="absolutePath"
-  >
-    {{ fullPath }}
-  </gl-link>
-
-  <div
-    v-else
-    class="gl-display-flex gl-align-items-stretch"
-    :class="{
-      disabled: isAlreadyImported,
-    }"
-  >
+  <div class="gl-display-flex gl-align-items-stretch">
     <import-group-dropdown
       #default="{ namespaces }"
       :text="importTarget.target_namespace"
-      :disabled="isAlreadyImported"
+      :disabled="!isAvailableForImport"
       :namespaces="availableNamespaceNames"
       toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
       class="gl-h-7 gl-flex-grow-1"
@@ -131,8 +106,8 @@ export default {
     <div
       class="gl-h-7 gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1 gl-bg-gray-10"
       :class="{
-        'gl-text-gray-400 gl-border-gray-100': isAlreadyImported,
-        'gl-border-gray-200': !isAlreadyImported,
+        'gl-text-gray-400 gl-border-gray-100': !isAvailableForImport,
+        'gl-border-gray-200': isAvailableForImport,
       }"
     >
       /
@@ -141,11 +116,11 @@ export default {
       <gl-form-input
         class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
         :class="{
-          'gl-inset-border-1-gray-200!': !isAlreadyImported,
-          'gl-inset-border-1-gray-100!': isAlreadyImported,
-          'is-invalid': isInvalid && !isAlreadyImported,
+          'gl-inset-border-1-gray-200!': isAvailableForImport,
+          'gl-inset-border-1-gray-100!': !isAvailableForImport,
+          'is-invalid': isInvalid && isAvailableForImport,
         }"
-        :disabled="isAlreadyImported"
+        :disabled="!isAvailableForImport"
         :value="importTarget.new_name"
         @input="$emit('update-new-name', $event)"
       />

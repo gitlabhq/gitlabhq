@@ -30,6 +30,7 @@ type ClientBulkImportSourceGroup {
   full_name: String!
   progress: ClientBulkImportProgress!
   import_target: ClientBulkImportTarget!
+  last_import_target: ClientBulkImportTarget
   validation_errors: [ClientBulkImportValidationError!]!
 }
 
@@ -50,11 +51,21 @@ extend type Query {
   availableNamespaces: [ClientBulkImportAvailableNamespace!]!
 }
 
+input InputTargetInput {
+  target_namespace: String!
+  new_name: String!
+}
+
 extend type Mutation {
   setNewName(newName: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
   setTargetNamespace(targetNamespace: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
   importGroups(sourceGroupIds: [ID!]!): [ClientBulkImportSourceGroup!]!
-  setImportProgress(id: ID, status: String!): ClientBulkImportSourceGroup!
+  setImportProgress(
+    id: ID
+    status: String!
+    jobId: String
+    importTarget: ImportTargetInput!
+  ): ClientBulkImportSourceGroup!
   updateImportProgress(id: ID, status: String!): ClientBulkImportProgress
   addValidationError(
     sourceGroupId: ID!

@@ -102,7 +102,7 @@ Sidebar.prototype.toggleTodo = function (e) {
     })
     .catch(() =>
       createFlash({
-        message: sprintf(__('There was an error %{message} todo.'), {
+        message: sprintf(__('There was an error %{message} to-do item.'), {
           message:
             ajaxType === 'post' ? s__('RightSidebar|adding a') : s__('RightSidebar|deleting the'),
         }),

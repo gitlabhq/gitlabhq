@@ -5830,6 +5830,9 @@ msgstr ""
 msgid "Bulk update"
 msgstr ""
 
+msgid "BulkImports|Re-import creates a new group. It does not sync with the existing group."
+msgstr ""
+
 msgid "BulkImport|Existing groups"
 msgstr ""
 
@@ -5849,6 +5852,9 @@ msgid "BulkImport|Import selected"
 msgstr ""
 
 msgid "BulkImport|Importing the group failed"
+msgstr ""
+
+msgid "BulkImport|Last imported to %{link}"
 msgstr ""
 
 msgid "BulkImport|Name already exists."
@@ -27568,6 +27574,9 @@ msgstr ""
 msgid "Re-authentication required"
 msgstr ""
 
+msgid "Re-import"
+msgstr ""
+
 msgid "Re-request review"
 msgstr ""
 
@@ -33935,7 +33944,7 @@ msgstr ""
 msgid "There was a problem updating the keep latest artifacts setting."
 msgstr ""
 
-msgid "There was an error %{message} todo."
+msgid "There was an error %{message} to-do item."
 msgstr ""
 
 msgid "There was an error adding a To Do."

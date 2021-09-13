@@ -603,17 +603,17 @@ module Gitlab
       # new_column - The name of the new column.
       # trigger_name - The name of the trigger to use (optional).
       def install_rename_triggers(table, old, new, trigger_name: nil)
-        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).create(old, new, trigger_name: trigger_name)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table, connection: connection).create(old, new, trigger_name: trigger_name)
       end
 
       # Removes the triggers used for renaming a column concurrently.
       def remove_rename_triggers(table, trigger)
-        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).drop(trigger)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table, connection: connection).drop(trigger)
       end
 
       # Returns the (base) name to use for triggers when renaming columns.
       def rename_trigger_name(table, old, new)
-        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).name(old, new)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table, connection: connection).name(old, new)
       end
 
       # Changes the type of a column concurrently.

@@ -199,6 +199,10 @@ module Types
           null: true,
           description: "Find organizations of this group."
 
+    field :contacts, Types::CustomerRelations::ContactType.connection_type,
+          null: true,
+          description: "Find contacts of this group."
+
     def avatar_url
       object.avatar_url(only_path: false)
     end

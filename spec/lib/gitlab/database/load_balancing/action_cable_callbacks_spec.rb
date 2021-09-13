@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
+
 RSpec.describe Gitlab::Database::LoadBalancing::ActionCableCallbacks, :request_store do
   describe '.wrapper' do
     it 'uses primary and then releases the connection and clears the session' do

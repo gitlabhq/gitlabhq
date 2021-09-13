@@ -760,6 +760,10 @@ class Group < Namespace
     ::CustomerRelations::Organization.where(group_id: self.id)
   end
 
+  def contacts
+    ::CustomerRelations::Contact.where(group_id: self.id)
+  end
+
   private
 
   def max_member_access(user_ids)

@@ -2644,6 +2644,16 @@ RSpec.describe Group do
     end
   end
 
+  describe '.contacts' do
+    it 'returns contacts belonging to the group' do
+      contact1 = create(:contact, group: group)
+      create(:contact)
+      contact3 = create(:contact, group: group)
+
+      expect(group.contacts).to contain_exactly(contact1, contact3)
+    end
+  end
+
   describe '#to_ability_name' do
     it 'returns group' do
       group = build(:group)

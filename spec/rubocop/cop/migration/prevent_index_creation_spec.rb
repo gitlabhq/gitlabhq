@@ -6,7 +6,7 @@ require_relative '../../../../rubocop/cop/migration/prevent_index_creation'
 RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
   subject(:cop) { described_class.new }
 
-  let(:forbidden_tables) { %w(ci_builds taggings ci_builds_metadata events) }
+  let(:forbidden_tables) { %w(ci_builds) }
   let(:forbidden_tables_list) { forbidden_tables.join(', ') }
 
   context 'when in migration' do

@@ -20,7 +20,7 @@ describe('SourceGroupsManager', () => {
 
   describe('storage management', () => {
     const IMPORT_ID = 1;
-    const IMPORT_TARGET = { destination_name: 'demo', destination_namespace: 'foo' };
+    const IMPORT_TARGET = { new_name: 'demo', target_namespace: 'foo' };
     const STATUS = 'FAKE_STATUS';
     const FAKE_GROUP = { id: 1, import_target: IMPORT_TARGET, status: STATUS };
 

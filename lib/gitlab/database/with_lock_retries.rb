@@ -61,7 +61,7 @@ module Gitlab
         [10.seconds, 10.minutes]
       ].freeze
 
-      def initialize(logger: NULL_LOGGER, allow_savepoints: true, timing_configuration: DEFAULT_TIMING_CONFIGURATION, klass: nil, env: ENV)
+      def initialize(logger: NULL_LOGGER, allow_savepoints: true, timing_configuration: DEFAULT_TIMING_CONFIGURATION, klass: nil, env: ENV, connection: ActiveRecord::Base.connection)
         @logger = logger
         @klass = klass
         @allow_savepoints = allow_savepoints
@@ -69,6 +69,7 @@ module Gitlab
         @env = env
         @current_iteration = 1
         @log_params = { method: 'with_lock_retries', class: klass.to_s }
+        @connection = connection
       end
 
       # Executes a block of code, retrying it whenever a database lock can't be acquired in time
@@ -96,7 +97,7 @@ module Gitlab
           run_block_with_lock_timeout
         rescue ActiveRecord::LockWaitTimeout
           if retry_with_lock_timeout?
-            disable_idle_in_transaction_timeout if ActiveRecord::Base.connection.transaction_open?
+            disable_idle_in_transaction_timeout if connection.transaction_open?
             wait_until_next_retry
             reset_db_settings
 
@@ -116,16 +117,16 @@ module Gitlab
 
       private
 
-      attr_reader :logger, :env, :block, :current_iteration, :log_params, :timing_configuration
+      attr_reader :logger, :env, :block, :current_iteration, :log_params, :timing_configuration, :connection
 
       def run_block
         block.call
       end
 
       def run_block_with_lock_timeout
-        raise "WithLockRetries should not run inside already open transaction" if ActiveRecord::Base.connection.transaction_open? && @allow_savepoints.blank?
+        raise "WithLockRetries should not run inside already open transaction" if connection.transaction_open? && @allow_savepoints.blank?
 
-        ActiveRecord::Base.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
+        connection.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
           execute("SET LOCAL lock_timeout TO '#{current_lock_timeout_in_ms}ms'")
 
           log(message: 'Lock timeout is set', current_iteration: current_iteration, lock_timeout_in_ms: current_lock_timeout_in_ms)
@@ -152,7 +153,7 @@ module Gitlab
         log(message: "Couldn't acquire lock to perform the migration", current_iteration: current_iteration)
         log(message: "Executing the migration without lock timeout", current_iteration: current_iteration)
 
-        disable_lock_timeout if ActiveRecord::Base.connection.transaction_open?
+        disable_lock_timeout if connection.transaction_open?
 
         run_block
 
@@ -168,7 +169,7 @@ module Gitlab
       end
 
       def execute(statement)
-        ActiveRecord::Base.connection.execute(statement)
+        connection.execute(statement)
       end
 
       def retry_count

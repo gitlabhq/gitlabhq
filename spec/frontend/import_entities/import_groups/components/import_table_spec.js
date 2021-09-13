@@ -15,6 +15,7 @@ import stubChildren from 'helpers/stub_children';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { STATUSES } from '~/import_entities/constants';
+import ImportActionsCell from '~/import_entities/import_groups/components/import_actions_cell.vue';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
@@ -163,11 +164,8 @@ describe('import table', () => {
 
     it('invokes importGroups mutation when row button is clicked', async () => {
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
-      const triggerImportButton = wrapper
-        .findAllComponents(GlButton)
-        .wrappers.find((w) => w.text() === 'Import');
 
-      triggerImportButton.vm.$emit('click');
+      wrapper.findComponent(ImportActionsCell).vm.$emit('import-group');
       await waitForPromises();
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: importGroupsMutation,
@@ -329,7 +327,7 @@ describe('import table', () => {
     });
 
     it('does not allow selecting already started groups', async () => {
-      const NEW_GROUPS = [generateFakeEntry({ id: 1, status: STATUSES.FINISHED })];
+      const NEW_GROUPS = [generateFakeEntry({ id: 1, status: STATUSES.STARTED })];
 
       createComponent({
         bulkImportSourceGroups: () => ({

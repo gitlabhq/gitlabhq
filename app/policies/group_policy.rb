@@ -113,6 +113,7 @@ class GroupPolicy < BasePolicy
     enable :read_custom_emoji
     enable :read_counts
     enable :read_organization
+    enable :read_contact
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts

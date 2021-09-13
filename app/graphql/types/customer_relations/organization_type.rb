@@ -29,12 +29,12 @@ module Types
 
       field :created_at,
             Types::TimeType,
-            null: true,
+            null: false,
             description: 'Timestamp the organization was created.'
 
       field :updated_at,
             Types::TimeType,
-            null: true,
+            null: false,
             description: 'Timestamp the organization was last updated.'
     end
   end

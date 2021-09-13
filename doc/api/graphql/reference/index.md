@@ -5318,6 +5318,29 @@ The edge type for [`CustomEmoji`](#customemoji).
 | <a id="customemojiedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="customemojiedgenode"></a>`node` | [`CustomEmoji`](#customemoji) | The item at the end of the edge. |
 
+#### `CustomerRelationsContactConnection`
+
+The connection type for [`CustomerRelationsContact`](#customerrelationscontact).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customerrelationscontactconnectionedges"></a>`edges` | [`[CustomerRelationsContactEdge]`](#customerrelationscontactedge) | A list of edges. |
+| <a id="customerrelationscontactconnectionnodes"></a>`nodes` | [`[CustomerRelationsContact]`](#customerrelationscontact) | A list of nodes. |
+| <a id="customerrelationscontactconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomerRelationsContactEdge`
+
+The edge type for [`CustomerRelationsContact`](#customerrelationscontact).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customerrelationscontactedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customerrelationscontactedgenode"></a>`node` | [`CustomerRelationsContact`](#customerrelationscontact) | The item at the end of the edge. |
+
 #### `CustomerRelationsOrganizationConnection`
 
 The connection type for [`CustomerRelationsOrganization`](#customerrelationsorganization).
@@ -8369,6 +8392,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="commitpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="commitpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
+| <a id="commitpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. Will be ignored if `dast_view_scans` feature flag is disabled. |
 | <a id="commitpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
 
 ### `ComplianceFramework`
@@ -8544,18 +8568,34 @@ A custom emoji uploaded by user.
 | <a id="customemojiname"></a>`name` | [`String!`](#string) | Name of the emoji. |
 | <a id="customemojiurl"></a>`url` | [`String!`](#string) | Link to file of the emoji. |
 
+### `CustomerRelationsContact`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customerrelationscontactcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the contact was created. |
+| <a id="customerrelationscontactdescription"></a>`description` | [`String`](#string) | Description or notes for the contact. |
+| <a id="customerrelationscontactemail"></a>`email` | [`String`](#string) | Email address of the contact. |
+| <a id="customerrelationscontactfirstname"></a>`firstName` | [`String!`](#string) | First name of the contact. |
+| <a id="customerrelationscontactid"></a>`id` | [`ID!`](#id) | Internal ID of the contact. |
+| <a id="customerrelationscontactlastname"></a>`lastName` | [`String!`](#string) | Last name of the contact. |
+| <a id="customerrelationscontactorganization"></a>`organization` | [`CustomerRelationsOrganization`](#customerrelationsorganization) | Organization of the contact. |
+| <a id="customerrelationscontactphone"></a>`phone` | [`String`](#string) | Phone number of the contact. |
+| <a id="customerrelationscontactupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the contact was last updated. |
+
 ### `CustomerRelationsOrganization`
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="customerrelationsorganizationcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the organization was created. |
+| <a id="customerrelationsorganizationcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the organization was created. |
 | <a id="customerrelationsorganizationdefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
 | <a id="customerrelationsorganizationdescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
 | <a id="customerrelationsorganizationid"></a>`id` | [`ID!`](#id) | Internal ID of the organization. |
 | <a id="customerrelationsorganizationname"></a>`name` | [`String`](#string) | Name of the organization. |
-| <a id="customerrelationsorganizationupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the organization was last updated. |
+| <a id="customerrelationsorganizationupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the organization was last updated. |
 
 ### `DastProfile`
 
@@ -9782,6 +9822,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupbillablememberscount"></a>`billableMembersCount` | [`Int`](#int) | Number of billable users in the group. |
+| <a id="groupcontacts"></a>`contacts` | [`CustomerRelationsContactConnection`](#customerrelationscontactconnection) | Find contacts of this group. (see [Connections](#connections)) |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcustomemoji"></a>`customEmoji` | [`CustomEmojiConnection`](#customemojiconnection) | Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
@@ -10990,6 +11031,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="mergerequestpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
+| <a id="mergerequestpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. Will be ignored if `dast_view_scans` feature flag is disabled. |
 | <a id="mergerequestpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
 
 ##### `MergeRequest.reference`
@@ -12777,6 +12819,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="projectpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
+| <a id="projectpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. Will be ignored if `dast_view_scans` feature flag is disabled. |
 | <a id="projectpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
 
 ##### `Project.projectMembers`
