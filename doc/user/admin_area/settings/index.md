@@ -120,6 +120,7 @@ To access the default page for Admin Area settings:
 | [Polling interval multiplier](../../../administration/polling.md) | Configure how frequently the GitLab UI polls for updates. |
 | [Gitaly timeouts](gitaly_timeouts.md) | Configure Gitaly timeouts. |
 | Localization | [Default first day of the week](../../profile/preferences.md) and [Time tracking](../../project/time_tracking.md#limit-displayed-units-to-hours). |
+| [Sidekiq Job Limits](sidekiq_job_limits.md) | Limit the size of Sidekiq jobs stored in Redis. |
 
 ### Default first day of the week
 

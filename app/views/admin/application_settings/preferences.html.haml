@@ -82,3 +82,17 @@
       = _('Configure the default first day of the week and time tracking units.')
   .settings-content
     = render 'localization'
+
+%section.settings.as-sidekiq-job-limits.no-animate#js-sidekiq-job-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Sidekiq job size limits')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Limit the size of Sidekiq jobs stored in Redis.')
+      %span
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/sidekiq_job_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+
+  .settings-content
+    = render 'sidekiq_job_limits'

@@ -122,14 +122,10 @@ email addresses to disallowed domains after sign up.
 
 ### Allowlist email domains
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/598) in GitLab 7.11.0
-
 You can restrict users only to sign up using email addresses matching the given
 domains list.
 
 ### Denylist email domains
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5259) in GitLab 8.10.
 
 You can block users from signing up when using an email addresses of specific domains. This can
 reduce the risk of malicious users creating spam accounts with disposable email addresses.

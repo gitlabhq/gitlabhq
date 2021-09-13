@@ -8158,6 +8158,9 @@ msgstr ""
 msgid "Comma-separated list of email addresses."
 msgstr ""
 
+msgid "Comma-separated list of users allowed to exceed the rate limit."
+msgstr ""
+
 msgid "Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr ""
 
@@ -8518,9 +8521,6 @@ msgid "Configure approvals by authors and committers on all projects."
 msgstr ""
 
 msgid "Configure existing installation"
-msgstr ""
-
-msgid "Configure limit for notes created per minute by web and API requests."
 msgstr ""
 
 msgid "Configure limits for web and API requests."
@@ -9501,6 +9501,9 @@ msgstr ""
 msgid "Create issue"
 msgstr ""
 
+msgid "Create issue to resolve all threads"
+msgstr ""
+
 msgid "Create iteration"
 msgstr ""
 
@@ -10427,6 +10430,9 @@ msgid "DastProfiles|Scanner Profiles"
 msgstr ""
 
 msgid "DastProfiles|Scanner name"
+msgstr ""
+
+msgid "DastProfiles|Schedule"
 msgstr ""
 
 msgid "DastProfiles|Select branch"
@@ -13522,7 +13528,13 @@ msgstr ""
 msgid "Every 3 months"
 msgstr ""
 
+msgid "Every 3 months on the %{day} at %{time} %{timezone}"
+msgstr ""
+
 msgid "Every 6 months"
+msgstr ""
+
+msgid "Every 6 months on the %{day} at %{time} %{timezone}"
 msgstr ""
 
 msgid "Every day"
@@ -13531,10 +13543,16 @@ msgstr ""
 msgid "Every day (at %{time})"
 msgstr ""
 
+msgid "Every day at %{time} %{timezone}"
+msgstr ""
+
 msgid "Every month"
 msgstr ""
 
 msgid "Every month (Day %{day} at %{time})"
+msgstr ""
+
+msgid "Every month on the %{day} at %{time} %{timezone}"
 msgstr ""
 
 msgid "Every three months"
@@ -13551,7 +13569,13 @@ msgstr[1] ""
 msgid "Every week (%{weekday} at %{time})"
 msgstr ""
 
+msgid "Every week on %{day} at %{time} %{timezone}"
+msgstr ""
+
 msgid "Every year"
+msgstr ""
+
+msgid "Every year on %{day} at %{time} %{timezone}"
 msgstr ""
 
 msgid "Everyone"
@@ -16752,6 +16776,9 @@ msgid "How many days need to pass between marking entity for deletion and actual
 msgstr ""
 
 msgid "How many seconds an IP will be counted towards the limit"
+msgstr ""
+
+msgid "How the job limiter handles jobs exceeding the thresholds specified below. The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and raises an exception if the compressed size exceeds the limit."
 msgstr ""
 
 msgid "I accept the %{terms_link}"
@@ -20181,10 +20208,16 @@ msgstr ""
 msgid "Limit the number of issues and epics per minute a user can create through web and API requests."
 msgstr ""
 
+msgid "Limit the size of Sidekiq jobs stored in Redis."
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Limiting mode"
+msgstr ""
 
 msgid "Line changes"
 msgstr ""
@@ -20253,9 +20286,6 @@ msgid "List available repositories"
 msgstr ""
 
 msgid "List of all merge commits"
-msgstr ""
-
-msgid "List of users to be excluded from the limit"
 msgstr ""
 
 msgid "List options"
@@ -20675,9 +20705,6 @@ msgstr ""
 msgid "Max file size is 200 KB."
 msgstr ""
 
-msgid "Max requests per minute per user"
-msgstr ""
-
 msgid "Max role"
 msgstr ""
 
@@ -20835,6 +20862,9 @@ msgid "Maximum push size"
 msgstr ""
 
 msgid "Maximum push size (MB)"
+msgstr ""
+
+msgid "Maximum requests per minute"
 msgstr ""
 
 msgid "Maximum running slices"
@@ -21200,10 +21230,10 @@ msgstr ""
 msgid "MergeRequests|An error occurred while saving the draft comment."
 msgstr ""
 
-msgid "MergeRequests|Failed to squash. Should be done manually."
+msgid "MergeRequests|Create issue to resolve thread"
 msgstr ""
 
-msgid "MergeRequests|Resolve this thread in a new issue"
+msgid "MergeRequests|Failed to squash. Should be done manually."
 msgstr ""
 
 msgid "MergeRequests|Saving the comment failed"
@@ -22998,7 +23028,7 @@ msgstr ""
 msgid "NoteForm|Note"
 msgstr ""
 
-msgid "Notes Rate Limits"
+msgid "Notes rate limit"
 msgstr ""
 
 msgid "Notes|Are you sure you want to cancel creating this comment?"
@@ -28628,9 +28658,6 @@ msgstr ""
 msgid "Resolve"
 msgstr ""
 
-msgid "Resolve all threads in new issue"
-msgstr ""
-
 msgid "Resolve conflicts"
 msgstr ""
 
@@ -30709,6 +30736,9 @@ msgstr ""
 msgid "Set the milestone to %{milestone_reference}."
 msgstr ""
 
+msgid "Set the per-user rate limit for notes created by web or API requests."
+msgstr ""
+
 msgid "Set the timeout in seconds to send a secondary site status to the primary and IPs allowed for the secondary sites."
 msgstr ""
 
@@ -31047,6 +31077,15 @@ msgid "Sidebar|Only numeral characters allowed"
 msgstr ""
 
 msgid "Sidebar|Weight"
+msgstr ""
+
+msgid "Sidekiq job compression threshold (bytes)"
+msgstr ""
+
+msgid "Sidekiq job size limit (bytes)"
+msgstr ""
+
+msgid "Sidekiq job size limits"
 msgstr ""
 
 msgid "Sign in"
@@ -34772,6 +34811,12 @@ msgstr ""
 msgid "ThreatMonitoring|View documentation"
 msgstr ""
 
+msgid "Threshold in bytes at which to compress Sidekiq job arguments."
+msgstr ""
+
+msgid "Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs."
+msgstr ""
+
 msgid "Throughput"
 msgstr ""
 
@@ -36888,6 +36933,9 @@ msgid "Users over License"
 msgstr ""
 
 msgid "Users requesting access to"
+msgstr ""
+
+msgid "Users to exclude from the rate limit"
 msgstr ""
 
 msgid "Users were successfully added."
@@ -40102,6 +40150,9 @@ msgid_plural "mrWidget|Closes issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "mrWidget|Create issue to resolve all threads"
+msgstr ""
+
 msgid "mrWidget|Delete source branch"
 msgstr ""
 
@@ -40210,9 +40261,6 @@ msgid "mrWidget|Remove from merge train"
 msgstr ""
 
 msgid "mrWidget|Request to merge"
-msgstr ""
-
-msgid "mrWidget|Resolve all threads in new issue"
 msgstr ""
 
 msgid "mrWidget|Resolve conflicts"

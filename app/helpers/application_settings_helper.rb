@@ -176,6 +176,16 @@ module ApplicationSettingsHelper
         "and the value is encrypted at rest.")
   end
 
+  def sidekiq_job_limiter_mode_help_text
+    _("How the job limiter handles jobs exceeding the thresholds specified below. "\
+      "The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and "\
+      "raises an exception if the compressed size exceeds the limit.")
+  end
+
+  def sidekiq_job_limiter_modes_for_select
+    ApplicationSetting.sidekiq_job_limiter_modes.keys.map { |mode| [mode.humanize, mode] }
+  end
+
   def visible_attributes
     [
       :abuse_notification_email,
@@ -387,7 +397,10 @@ module ApplicationSettingsHelper
       :container_registry_cleanup_tags_service_max_list_size,
       :keep_latest_artifact,
       :whats_new_variant,
-      :user_deactivation_emails_enabled
+      :user_deactivation_emails_enabled,
+      :sidekiq_job_limiter_mode,
+      :sidekiq_job_limiter_compression_threshold_bytes,
+      :sidekiq_job_limiter_limit_bytes
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end

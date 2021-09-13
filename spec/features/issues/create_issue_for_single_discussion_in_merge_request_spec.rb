@@ -9,7 +9,7 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
   def resolve_discussion_selector
-    title = 'Resolve this thread in a new issue'
+    title = 'Create issue to resolve thread'
     url = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid)
     "a[title=\"#{title}\"][href=\"#{url}\"]"
   end

@@ -284,4 +284,10 @@ RSpec.describe ApplicationSettingsHelper do
       end
     end
   end
+
+  describe '#sidekiq_job_limiter_modes_for_select' do
+    subject { helper.sidekiq_job_limiter_modes_for_select }
+
+    it { is_expected.to eq([%w(Track track), %w(Compress compress)]) }
+  end
 end

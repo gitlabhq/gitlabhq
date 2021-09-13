@@ -10340,6 +10340,9 @@ CREATE TABLE application_settings (
     throttle_unauthenticated_api_enabled boolean DEFAULT false NOT NULL,
     throttle_unauthenticated_api_requests_per_period integer DEFAULT 3600 NOT NULL,
     throttle_unauthenticated_api_period_in_seconds integer DEFAULT 3600 NOT NULL,
+    sidekiq_job_limiter_mode smallint DEFAULT 1 NOT NULL,
+    sidekiq_job_limiter_compression_threshold_bytes integer DEFAULT 100000 NOT NULL,
+    sidekiq_job_limiter_limit_bytes integer DEFAULT 0 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
@@ -11303,7 +11306,7 @@ CREATE TABLE ci_build_trace_metadata (
 );
 
 CREATE TABLE ci_builds (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     status character varying,
     finished_at timestamp without time zone,
     trace text,
@@ -11348,7 +11351,7 @@ CREATE TABLE ci_builds (
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
     scheduling_type smallint,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     stage_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
@@ -27530,9 +27533,6 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY dep_ci_build_trace_sections
-    ADD CONSTRAINT fk_4ebe41f502 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;

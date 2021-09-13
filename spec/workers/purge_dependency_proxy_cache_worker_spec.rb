@@ -11,14 +11,9 @@ RSpec.describe PurgeDependencyProxyCacheWorker do
 
   subject { described_class.new.perform(user.id, group_id) }
 
-  before do
-    stub_config(dependency_proxy: { enabled: true })
-    group.create_dependency_proxy_setting!(enabled: true)
-  end
-
   describe '#perform' do
-    shared_examples 'returns nil' do
-      it 'returns nil', :aggregate_failures do
+    shared_examples 'not removing blobs and manifests' do
+      it 'does not remove blobs and manifests', :aggregate_failures do
         expect { subject }.not_to change { group.dependency_proxy_blobs.size }
         expect { subject }.not_to change { group.dependency_proxy_manifests.size }
         expect(subject).to be_nil
@@ -43,26 +38,26 @@ RSpec.describe PurgeDependencyProxyCacheWorker do
       end
 
       context 'when admin mode is disabled' do
-        it_behaves_like 'returns nil'
+        it_behaves_like 'not removing blobs and manifests'
       end
     end
 
     context 'a non-admin user' do
       let(:user) { create(:user) }
 
-      it_behaves_like 'returns nil'
+      it_behaves_like 'not removing blobs and manifests'
     end
 
     context 'an invalid user id' do
       let(:user) { double('User', id: 99999 ) }
 
-      it_behaves_like 'returns nil'
+      it_behaves_like 'not removing blobs and manifests'
     end
 
     context 'an invalid group' do
       let(:group_id) { 99999 }
 
-      it_behaves_like 'returns nil'
+      it_behaves_like 'not removing blobs and manifests'
     end
   end
 end

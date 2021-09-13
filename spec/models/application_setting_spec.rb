@@ -956,6 +956,20 @@ RSpec.describe ApplicationSetting do
         it { is_expected.not_to allow_value(nil).for(throttle_setting) }
       end
     end
+
+    context 'sidekiq job limiter settings' do
+      it 'has the right defaults', :aggregate_failures do
+        expect(setting.sidekiq_job_limiter_mode).to eq('compress')
+        expect(setting.sidekiq_job_limiter_compression_threshold_bytes)
+          .to eq(Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_COMPRESSION_THRESHOLD_BYTES)
+        expect(setting.sidekiq_job_limiter_limit_bytes)
+          .to eq(Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_SIZE_LIMIT)
+      end
+
+      it { is_expected.to allow_value('track').for(:sidekiq_job_limiter_mode) }
+      it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_compression_threshold_bytes).only_integer.is_greater_than_or_equal_to(0) }
+      it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_limit_bytes).only_integer.is_greater_than_or_equal_to(0) }
+    end
   end
 
   context 'restrict creating duplicates' do

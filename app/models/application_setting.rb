@@ -571,6 +571,18 @@ class ApplicationSetting < ApplicationRecord
   validates :floc_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
+  enum sidekiq_job_limiter_mode: {
+         Gitlab::SidekiqMiddleware::SizeLimiter::Validator::TRACK_MODE => 0,
+         Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE => 1 # The default
+       }
+
+  validates :sidekiq_job_limiter_mode,
+            inclusion: { in: self.sidekiq_job_limiter_modes }
+  validates :sidekiq_job_limiter_compression_threshold_bytes,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :sidekiq_job_limiter_limit_bytes,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

@@ -28,7 +28,7 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
 
       context 'when live trace chunks still exist' do
         before do
-          create(:ci_build_trace_chunk, build: job)
+          create(:ci_build_trace_chunk, build: job, chunk_index: 0)
         end
 
         it 'removes the trace chunks' do
@@ -40,8 +40,14 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
             job.job_artifacts_trace.file.remove!
           end
 
-          it 'removes the trace artifact' do
-            expect { subject }.to change { job.reload.job_artifacts_trace }.to(nil)
+          it 'removes the trace artifact and builds a new one' do
+            existing_trace = job.job_artifacts_trace
+            expect(existing_trace).to receive(:destroy!).and_call_original
+
+            subject
+
+            expect(job.reload.job_artifacts_trace).to be_present
+            expect(job.reload.job_artifacts_trace.file.file).to be_present
           end
         end
       end

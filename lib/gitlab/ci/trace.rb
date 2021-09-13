@@ -191,11 +191,7 @@ module Gitlab
       def unsafe_archive!
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        if trace_artifact
-          unsafe_trace_cleanup!
-
-          raise AlreadyArchivedError, 'Could not archive again'
-        end
+        unsafe_trace_conditionally_cleanup_before_retry!
 
         if job.trace_chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
@@ -215,12 +211,19 @@ module Gitlab
         end
       end
 
-      def unsafe_trace_cleanup!
+      def already_archived?
+        # TODO check checksum to ensure archive completed successfully
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/259619
+        trace_artifact.archived_trace_exists?
+      end
+
+      def unsafe_trace_conditionally_cleanup_before_retry!
         return unless trace_artifact
 
-        if trace_artifact.archived_trace_exists?
+        if already_archived?
           # An archive already exists, so make sure to remove the trace chunks
           erase_trace_chunks!
+          raise AlreadyArchivedError, 'Could not archive again'
         else
           # An archive already exists, but its associated file does not, so remove it
           trace_artifact.destroy!

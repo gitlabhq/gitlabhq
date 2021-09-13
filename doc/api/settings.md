@@ -386,6 +386,9 @@ listed in the descriptions of the relevant settings.
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
 | `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | **(PREMIUM)** Set the maximum number of pipeline minutes that a group can use on shared runners per month. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
+| `sidekiq_job_limiter_mode` | string | no | `track` or `compress`. Sets the behavior for [Sidekiq job size limits](../user/admin_area/settings/sidekiq_job_limits.md). Default: 'compress'. |
+| `sidekiq_job_limiter_compression_threshold_bytes` | integer | no | The threshold in bytes at which Sidekiq jobs are compressed before being stored in Redis. Default: 100 000 bytes (100KB). |
+| `sidekiq_job_limiter_limit_bytes` | integer | no | The threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job). |
 | `sign_in_text`                           | string           | no                                   | Text on the login page. |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |

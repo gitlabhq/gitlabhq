@@ -9,15 +9,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53637) in GitLab 13.9.
 
-This setting allows you to rate limit the requests to the note creation endpoint.
+You can configure the per-user rate limit for requests to the note creation endpoint.
 
 To change the note creation rate limit:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
-1. Expand **Notes Rate Limits**.
-1. Under **Max requests per minute per user**, enter the new value.
-1. Optional. Under **List of users to be excluded from the limit**, list users to be excluded from the limit.
+1. Expand **Notes rate limit**.
+1. In the **Maximum requests per minute** box, enter the new value.
+1. Optional. In the **Users to exclude from the rate limit** box, list users allowed to exceed the limit.
 1. Select **Save changes**.
 
 This limit is:

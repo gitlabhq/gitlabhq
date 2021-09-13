@@ -14,9 +14,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Deletes the cached manifests and blobs for a group. This endpoint requires the [Owner role](../user/permissions.md)
 for the group.
 
-WARNING:
-[A bug exists](https://gitlab.com/gitlab-org/gitlab/-/issues/277161) for this API.
-
 ```plaintext
 DELETE /groups/:id/dependency_proxy/cache
 ```

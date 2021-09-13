@@ -594,5 +594,20 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['error']).to eq('whats_new_variant does not have a valid value')
       end
     end
+
+    context 'sidekiq job limit settings' do
+      it 'updates the settings' do
+        settings = {
+          sidekiq_job_limiter_mode: 'track',
+          sidekiq_job_limiter_compression_threshold_bytes: 1,
+          sidekiq_job_limiter_limit_bytes: 2
+        }.stringify_keys
+
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.slice(*settings.keys)).to eq(settings)
+      end
+    end
   end
 end
