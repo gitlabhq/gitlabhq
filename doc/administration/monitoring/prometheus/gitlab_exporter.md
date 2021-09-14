@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab exporter **(FREE SELF)**
 
->- Available since [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1132).
->- Renamed from `GitLab monitor exporter` to `GitLab exporter` in [GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16511).
+> Renamed from `GitLab monitor exporter` to `GitLab exporter` in [GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16511).
 
 The [GitLab exporter](https://gitlab.com/gitlab-org/gitlab-exporter) enables you to
 measure various GitLab metrics pulled from Redis and the database in Omnibus GitLab
@@ -33,8 +32,8 @@ the GitLab exporter exposed at `localhost:9168`.
 
 ## Use a different Rack server
 
->- Introduced in [Omnibus GitLab 13.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4896).
->- WEBrick is now the default Rack server instead of Puma.
+> - Introduced in [Omnibus GitLab 13.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4896).
+> - WEBrick is now the default Rack server instead of Puma.
 
 By default, the GitLab exporter runs on [WEBrick](https://github.com/ruby/webrick), a single-threaded Ruby web server.
 You can choose a different Rack server that better matches your performance needs.

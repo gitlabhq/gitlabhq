@@ -11306,7 +11306,7 @@ CREATE TABLE ci_build_trace_metadata (
 );
 
 CREATE TABLE ci_builds (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
+    id integer NOT NULL,
     status character varying,
     finished_at timestamp without time zone,
     trace text,
@@ -11351,7 +11351,7 @@ CREATE TABLE ci_builds (
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
     scheduling_type smallint,
-    id bigint NOT NULL,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
     stage_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
@@ -27533,6 +27533,9 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dep_ci_build_trace_sections
+    ADD CONSTRAINT fk_4ebe41f502 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;

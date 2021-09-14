@@ -283,19 +283,6 @@ describe('Pipeline editor app component', () => {
           expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
         });
 
-        it('polls for commit sha while pipeline data is not yet available for newly committed branch', async () => {
-          jest
-            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
-            .mockImplementation(jest.fn());
-
-          // simulate updating current branch (which triggers commitSha refetch)
-          // while pipeline data is not yet available
-          mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
-          await wrapper.vm.$apollo.queries.commitSha.refetch();
-
-          expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(1);
-        });
-
         it('polls for commit sha while pipeline data is not yet available for current branch', async () => {
           jest
             .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')

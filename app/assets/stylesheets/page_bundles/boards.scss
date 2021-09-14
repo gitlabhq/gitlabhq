@@ -430,6 +430,10 @@
   height: $input-height;
 }
 
+.issue-boards-content {
+  isolation: isolate;
+}
+
 .issue-boards-content.is-focused {
   position: fixed;
   width: 100%;

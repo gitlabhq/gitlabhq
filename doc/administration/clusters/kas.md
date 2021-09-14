@@ -130,7 +130,7 @@ or the path to `config.yaml` inside the project is not valid.
 To fix this, ensure that the paths to the configuration repository and to the `config.yaml` file
 are correct.
 
-### KAS logs - dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused
+### KAS logs - `dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused`
 
 If you are running a self-managed GitLab instance and:
 

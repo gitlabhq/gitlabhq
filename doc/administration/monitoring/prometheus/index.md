@@ -55,8 +55,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 ### Changing the port and address Prometheus listens on
 
 WARNING:
-The following change was added in [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
-it's not recommended to change the port Prometheus listens
+Although possible, it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
 
@@ -330,8 +329,6 @@ To add a Prometheus dashboard for a single server GitLab setup:
 
 ## GitLab metrics
 
-> Introduced in GitLab 9.3.
-
 GitLab monitors its own internal service metrics, and makes them available at the `/-/metrics` endpoint. Unlike other exporters, this endpoint requires authentication as it's available on the same URL and port as user traffic.
 
 Read more about the [GitLab Metrics](gitlab_metrics.md).
@@ -379,9 +376,6 @@ The GitLab exporter allows you to measure various GitLab metrics, pulled from Re
 [Read more about the GitLab exporter](gitlab_exporter.md).
 
 ## Configuring Prometheus to monitor Kubernetes
-
-> - Introduced in GitLab 9.0.
-> - Pod monitoring introduced in GitLab 9.4.
 
 If your GitLab server is running within Kubernetes, Prometheus collects metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration](../../../user/project/integrations/prometheus.md) to monitor them.
 

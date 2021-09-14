@@ -27,8 +27,6 @@ module API
       end
 
       def preload_repository_cache(projects_relation)
-        return unless Feature.enabled?(:preload_repo_cache, default_enabled: :yaml)
-
         repositories = repositories_for_preload(projects_relation)
 
         Gitlab::RepositoryCache::Preloader.new(repositories).preload( # rubocop:disable CodeReuse/ActiveRecord

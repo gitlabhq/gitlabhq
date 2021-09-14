@@ -159,15 +159,12 @@ export const mergeUnwrappedCiConfig = (mergedConfig) => {
 export const mockCommitShaResults = {
   data: {
     project: {
-      pipelines: {
-        nodes: [
-          {
-            id: 'gid://gitlab/Ci::Pipeline/1',
+      repository: {
+        tree: {
+          lastCommit: {
             sha: mockCommitSha,
-            path: `/${mockProjectFullPath}/-/pipelines/488`,
-            commitPath: `/${mockProjectFullPath}/-/commit/d0d56d363d8a3f67a8ab9fc00207d468f30032ca`,
           },
-        ],
+        },
       },
     },
   },
@@ -176,21 +173,12 @@ export const mockCommitShaResults = {
 export const mockNewCommitShaResults = {
   data: {
     project: {
-      pipelines: {
-        nodes: [
-          {
-            id: 'gid://gitlab/Ci::Pipeline/2',
+      repository: {
+        tree: {
+          lastCommit: {
             sha: 'eeff1122',
-            path: `/${mockProjectFullPath}/-/pipelines/489`,
-            commitPath: `/${mockProjectFullPath}/-/commit/bb1abcfe3d8a3f67a8ab9fc00207d468f3022bee`,
           },
-          {
-            id: 'gid://gitlab/Ci::Pipeline/1',
-            sha: mockCommitSha,
-            path: `/${mockProjectFullPath}/-/pipelines/488`,
-            commitPath: `/${mockProjectFullPath}/-/commit/d0d56d363d8a3f67a8ab9fc00207d468f30032ca`,
-          },
-        ],
+        },
       },
     },
   },
@@ -199,8 +187,12 @@ export const mockNewCommitShaResults = {
 export const mockEmptyCommitShaResults = {
   data: {
     project: {
-      pipelines: {
-        nodes: [],
+      repository: {
+        tree: {
+          lastCommit: {
+            sha: '',
+          },
+        },
       },
     },
   },

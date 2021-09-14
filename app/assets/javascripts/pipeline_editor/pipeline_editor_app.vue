@@ -164,22 +164,8 @@ export default {
         };
       },
       update(data) {
-        const pipelineNodes = data.project?.pipelines?.nodes ?? [];
+        const latestCommitSha = data.project?.repository?.tree?.lastCommit?.sha;
 
-        // it's possible to query for the commit sha too early after an update
-        // (e.g. after committing a new branch, we might query for the commit sha
-        // but the pipeline nodes are still empty).
-        // in this case, we start polling until we get a commit sha.
-        if (pipelineNodes.length === 0) {
-          if (![EDITOR_APP_STATUS_LOADING, EDITOR_APP_STATUS_EMPTY].includes(this.appStatus)) {
-            this.$apollo.queries.commitSha.startPolling(COMMIT_SHA_POLL_INTERVAL);
-            return this.commitSha;
-          }
-
-          return '';
-        }
-
-        const latestCommitSha = pipelineNodes[0].sha;
         if (this.isFetchingCommitSha && latestCommitSha === this.commitSha) {
           this.$apollo.queries.commitSha.startPolling(COMMIT_SHA_POLL_INTERVAL);
           return this.commitSha;

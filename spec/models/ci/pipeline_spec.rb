@@ -2037,16 +2037,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it 'returns external pull request modified paths' do
         expect(pipeline.modified_paths).to match(external_pull_request.modified_paths)
       end
-
-      context 'when the FF ci_modified_paths_of_external_prs is disabled' do
-        before do
-          stub_feature_flags(ci_modified_paths_of_external_prs: false)
-        end
-
-        it 'returns nil' do
-          expect(pipeline.modified_paths).to be_nil
-        end
-      end
     end
   end
 

@@ -180,7 +180,7 @@ migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
 Upgrading across multiple GitLab versions in one go is *only possible with downtime*.
 The following examples assume a downtime upgrade.
-See the section below for [zero downtime upgrades](#upgrading-without-downtime).
+If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
@@ -233,76 +233,7 @@ upgraded to. This is to ensure [compatibility with GitLab versions](https://docs
 
 ## Upgrading without downtime
 
-Starting with GitLab 9.1.0 it's possible to upgrade to a newer major, minor, or
-patch version of GitLab without having to take your GitLab instance offline.
-However, for this to work there are the following requirements:
-
-- You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to
-   9.3. If you skip releases, database modifications may be run in the wrong
-   sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
-- You have to use [post-deployment
-   migrations](../development/post_deployment_migrations.md) (included in
-   [zero downtime update steps below](#steps)).
-- You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
-- Multi-node GitLab instance. Single-node instances may experience brief interruptions
-  [as services restart (Puma in particular)](https://docs.gitlab.com/omnibus/update/README.html#single-node-deployment).
-
-Most of the time you can safely upgrade from a patch release to the next minor
-release if the patch release is not the latest. For example, upgrading from
-9.1.1 to 9.2.0 should be safe even if 9.1.2 has been released. We do recommend
-you check the release posts of any releases between your current and target
-version just in case they include any migrations that may require you to upgrade
-1 release at a time.
-
-Some releases may also include so called "background migrations". These
-migrations are performed in the background by Sidekiq and are often used for
-migrating data. Background migrations are only added in the monthly releases.
-
-Certain major/minor releases may require a set of background migrations to be
-finished. To guarantee this, such a release processes any remaining jobs
-before continuing the upgrading procedure. While this doesn't require downtime
-(if the above conditions are met) we require that you [wait for background
-migrations to complete](#checking-for-background-migrations-before-upgrading)
-between each major/minor release upgrade.
-The time necessary to complete these migrations can be reduced by
-increasing the number of Sidekiq workers that can process jobs in the
-`background_migration` queue. To see the size of this queue,
-[Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
-
-As a rule of thumb, any database smaller than 10 GB doesn't take too much time to
-upgrade; perhaps an hour at most per minor release. Larger databases however may
-require more time, but this is highly dependent on the size of the database and
-the migrations that are being performed.
-
-### Examples
-
-To help explain this, let's look at some examples.
-
-**Example 1:** You are running a large GitLab installation using version 9.4.2,
-which is the latest patch release of 9.4. When GitLab 9.5.0 is released this
-installation can be safely upgraded to 9.5.0 without requiring downtime if the
-requirements mentioned above are met. You can also skip 9.5.0 and upgrade to
-9.5.1 after it's released, but you **can not** upgrade straight to 9.6.0; you
-_have_ to first upgrade to a 9.5.Z release.
-
-**Example 2:** You are running a large GitLab installation using version 9.4.2,
-which is the latest patch release of 9.4. GitLab 9.5 includes some background
-migrations, and 10.0 requires these to be completed (processing any
-remaining jobs for you). Skipping 9.5 is not possible without downtime, and due
-to the background migrations would require potentially hours of downtime
-depending on how long it takes for the background migrations to complete. To
-work around this you have to upgrade to 9.5.Z first, then wait at least a
-week before upgrading to 10.0.
-
-**Example 3:** You use MySQL as the database for GitLab. Any upgrade to a new
-major/minor release requires downtime. If a release includes any background
-migrations this could potentially lead to hours of downtime, depending on the
-size of your database. To work around this you must use PostgreSQL and
-meet the other online upgrade requirements mentioned above.
-
-### Steps
-
-Steps to [upgrade without downtime](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
+Read how to [upgrade without downtime](zero_downtime.md).
 
 ## Upgrading between editions
 

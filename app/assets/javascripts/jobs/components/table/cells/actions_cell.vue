@@ -135,15 +135,6 @@ export default {
 
 <template>
   <gl-button-group>
-    <gl-button
-      v-if="shouldDisplayArtifacts"
-      icon="download"
-      :title="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
-      :href="artifactDownloadPath"
-      rel="nofollow"
-      download
-      data-testid="download-artifacts"
-    />
     <template v-if="canReadJob">
       <gl-button v-if="isActive" icon="cancel" :title="$options.CANCEL" @click="cancelJob()" />
       <template v-else-if="isScheduled">
@@ -191,5 +182,14 @@ export default {
         />
       </template>
     </template>
+    <gl-button
+      v-if="shouldDisplayArtifacts"
+      icon="download"
+      :title="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
+      :href="artifactDownloadPath"
+      rel="nofollow"
+      download
+      data-testid="download-artifacts"
+    />
   </gl-button-group>
 </template>
