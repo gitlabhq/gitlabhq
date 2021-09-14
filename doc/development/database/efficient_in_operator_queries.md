@@ -463,7 +463,7 @@ Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
 
 <details>
 <summary>Expand this sentence to see the SQL query.</summary>
-<pre><code lang='sql'>
+<pre><code>
 SELECT "issues".*
 FROM
   (WITH RECURSIVE "array_cte" AS MATERIALIZED
@@ -582,6 +582,7 @@ FROM
    WHERE (COUNT <> 0)) issues
 LIMIT 20
 </code>
+</pre>
 </details>
 
 NOTE:
@@ -613,7 +614,7 @@ end
 #### Keyset pagination
 
 The optimization works out of the box with GraphQL and the `keyset_paginate` helper method.
-Read more about [keyset pagination](database/keyset_pagination.md).
+Read more about [keyset pagination](keyset_pagination.md).
 
 ```ruby
 array_scope = Group.find(9970).all_projects.select(:id)
@@ -637,7 +638,7 @@ issues = Issue
 #### Offset pagination with Kaminari
 
 The `ActiveRecord` scope produced by the `InOperatorOptimization` class can be used in
-[offset-paginated](database/pagination_guidelines.md#offset-pagination)
+[offset-paginated](pagination_guidelines.md#offset-pagination)
 queries.
 
 ```ruby

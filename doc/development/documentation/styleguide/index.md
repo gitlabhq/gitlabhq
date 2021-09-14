@@ -1081,10 +1081,15 @@ To select your avatar:
 ## Images
 
 Images, including screenshots, can help a reader better understand a concept.
-However, they can be hard to maintain, and should be used sparingly.
+However, they should be used sparingly because:
 
-Before including an image in the documentation, ensure it provides value to the
-reader.
+- They tend to become out-of-date.
+- They are difficult and expensive to localize.
+- They cannot be read by screen readers.
+
+If you do include an image in the documentation, ensure it provides value.
+Don't use `lorem ipsum` text. Try to replicate how the feature would be
+used in a real-world scenario, and [use realistic text](#fake-user-information).
 
 ### Capture the image
 

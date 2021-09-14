@@ -15,6 +15,10 @@ class BranchesFinder < GitRefsFinder
     end
   end
 
+  def total
+    repository.branch_count
+  end
+
   private
 
   def names

@@ -245,7 +245,7 @@ module Gitlab
         end
 
         def request_cache
-          base = RequestStore[:gitlab_load_balancer] ||= {}
+          base = SafeRequestStore[:gitlab_load_balancer] ||= {}
           base[self] ||= {}
         end
       end

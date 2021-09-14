@@ -13,6 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
 > - Dependency Scanning metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328034) in GitLab 14.2.
 > - Multiselect [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
+> - Overview table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/335638) in GitLab 14.3.
 
 Prerequisites:
 

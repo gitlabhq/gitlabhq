@@ -160,14 +160,14 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
-## dropdown, dropdown list
+## dropdown list
 
-Do not use. Use **list** instead.
+Use **dropdown list** to refer to the UI element. Do not use **dropdown** without **list** after it.
+Do not use **drop-down** (hyphenated), **dropdown menu**, or other variants.
 
-Include the descriptor when writing about lists. Start with the list name,
-then follow with the item the user should select. For example:
+For example:
 
-- From the **Visibility** list, select **Public**.
+- From the **Visibility** dropdown list, select **Public**.
 
 ## earlier
 
@@ -331,11 +331,8 @@ Use **later** when talking about version numbers.
 
 ## list
 
-Use instead of **dropdown**, **drop-down** or **dropdown list**. You select an item from a list. For example:
-
-- From the **Availability** list, select **public**.
-
-The list name, and the items you select, should be bold.
+Do not use **list** when referring to a [**dropdown list**](#dropdown-list).
+Use the full phrase **dropdown list** instead.
 
 ## log in, log on
 

@@ -60,7 +60,7 @@ module API
               finder = ::Packages::Npm::PackageFinder.new(
                 package_name,
                 namespace: namespace,
-                last_of_each_version: Feature.disabled?(:npm_finder_query_avoid_duplicated_conditions)
+                last_of_each_version: false
               )
 
               finder.last&.project_id

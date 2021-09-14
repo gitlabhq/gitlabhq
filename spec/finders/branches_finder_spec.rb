@@ -259,4 +259,11 @@ RSpec.describe BranchesFinder do
       end
     end
   end
+
+  describe '#total' do
+    subject { branch_finder.total }
+
+    it { is_expected.to be_an(Integer) }
+    it { is_expected.to eq(repository.branch_count) }
+  end
 end

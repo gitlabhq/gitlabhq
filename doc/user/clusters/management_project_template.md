@@ -62,7 +62,7 @@ the pipeline runs, Helmfile tries to either install or update your apps accordin
 cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile tries try to uninstall this app
 from your cluster. [Read more](https://github.com/roboll/helmfile) about how Helmfile works.
 
-Furthermore, each app has an `applications/{app}/values.yaml` file. This is the
+Furthermore, each app has an `applications/{app}/values.yaml` file (`applicaton/{app}/values.yaml.gotmpl` in case of GitLab Runner). This is the
 place where you can define some default values for your app's Helm chart. Some apps already have defaults
 pre-defined by GitLab.
 

@@ -534,6 +534,14 @@ FactoryBot.define do
       end
     end
 
+    trait :coverage_fuzzing do
+      options do
+        {
+          artifacts: { reports: { coverage_fuzzing: 'gl-coverage-fuzzing-report.json' } }
+        }
+      end
+    end
+
     trait :license_scanning do
       options do
         {

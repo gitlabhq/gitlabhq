@@ -19,6 +19,7 @@ import initAlertHandler from './alert_handler';
 import { removeFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
+import { logHelloDeferred } from './lib/logger/hello_deferred';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
@@ -39,6 +40,8 @@ import { initHeaderSearchApp } from '~/header_search';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
+
+logHelloDeferred();
 
 applyGitLabUIConfig();
 

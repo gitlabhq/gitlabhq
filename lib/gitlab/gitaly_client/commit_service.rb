@@ -127,6 +127,7 @@ module Gitlab
 
         entries = response.flat_map do |message|
           cursor = message.pagination_cursor if message.pagination_cursor
+
           message.entries.map do |gitaly_tree_entry|
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,

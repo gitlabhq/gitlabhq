@@ -22,7 +22,7 @@ RSpec.describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
+        expect(json_response).to be_an(Array)
 
         first_commit = json_response.first
         expect(first_commit['name']).to eq('bar')
@@ -71,6 +71,25 @@ RSpec.describe API::Repositories do
             let(:request) { get api("#{route}?recursive=1&ref=foo", current_user) }
             let(:message) { '404 Tree Not Found' }
           end
+        end
+      end
+
+      context 'keyset pagination mode' do
+        let(:first_response) do
+          get api(route, current_user), params: { pagination: "keyset" }
+
+          Gitlab::Json.parse(response.body)
+        end
+
+        it 'paginates using keysets' do
+          page_token = first_response.last["id"]
+
+          get api(route, current_user), params: { pagination: "keyset", page_token: page_token }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response).not_to eq(first_response)
+          expect(json_response.map { |t| t["id"] }).not_to include(page_token)
         end
       end
     end

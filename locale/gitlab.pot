@@ -9240,6 +9240,9 @@ msgstr ""
 msgid "Copy value"
 msgstr ""
 
+msgid "Corpus Management"
+msgstr ""
+
 msgid "Corpus Management|Are you sure you want to delete the corpus?"
 msgstr ""
 
@@ -29780,6 +29783,12 @@ msgid "SecurityConfiguration|High-level vulnerability statistics across projects
 msgstr ""
 
 msgid "SecurityConfiguration|Immediately begin risk analysis and remediation with application security features. Start with SAST and Secret Detection, available to all plans. Upgrade to Ultimate to get all features, including:"
+msgstr ""
+
+msgid "SecurityConfiguration|Manage corpus"
+msgstr ""
+
+msgid "SecurityConfiguration|Manage corpus files used as mutation sources in coverage fuzzing."
 msgstr ""
 
 msgid "SecurityConfiguration|Manage profiles for use by DAST scans."

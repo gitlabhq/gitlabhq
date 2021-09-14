@@ -24,6 +24,7 @@ export const REPORT_TYPE_DEPENDENCY_SCANNING = 'dependency_scanning';
 export const REPORT_TYPE_CONTAINER_SCANNING = 'container_scanning';
 export const REPORT_TYPE_CLUSTER_IMAGE_SCANNING = 'cluster_image_scanning';
 export const REPORT_TYPE_COVERAGE_FUZZING = 'coverage_fuzzing';
+export const REPORT_TYPE_CORPUS_MANAGEMENT = 'corpus_management';
 export const REPORT_TYPE_LICENSE_COMPLIANCE = 'license_scanning';
 export const REPORT_TYPE_API_FUZZING = 'api_fuzzing';
 

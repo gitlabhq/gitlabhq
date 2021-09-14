@@ -13,7 +13,6 @@
 /doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
 /doc/administration/geo/ @axil
 /doc/administration/gitaly/ @eread
-/doc/administration/integration/ @aqualls
 /doc/administration/lfs/ @aqualls
 /doc/administration/monitoring/ @ngaskill
 /doc/administration/operations/ @axil @eread @marcia
@@ -36,7 +35,6 @@
 /doc/development/value_stream_analytics.md @msedlakjakubowski
 /doc/gitlab-basics/ @aqualls
 /doc/install/ @axil
-/doc/integration/ @aqualls @eread
 /doc/operations/ @ngaskill @axil
 /doc/push_rules/ @aqualls
 /doc/ssh/ @eread
@@ -65,8 +63,6 @@
 /doc/user/project/ @aqualls @axil @eread @msedlakjakubowski @ngaskill
 /doc/user/project/clusters/ @marcia
 /doc/user/project/import/ @ngaskill @msedlakjakubowski
-/doc/user/project/integrations/ @aqualls
-/doc/user/project/integrations/prometheus_library/ @ngaskill
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/merge_requests/ @aqualls @eread
 /doc/user/project/milestones/ @msedlakjakubowski
@@ -141,6 +137,12 @@
 /doc/user/project/push_options.md @aqualls
 /doc/user/project/settings/import_export.md @aqualls
 /doc/user/snippets.md @aqualls
+
+[Docs Ecosystem]
+/doc/administration/integration/ @kpaizee
+/doc/integration/ @kpaizee
+/doc/user/project/integrations/ @kpaizee
+/doc/user/project/integrations/prometheus_library/ @ngaskill
 
 [Docs Growth]
 /doc/administration/instance_review.md @kpaizee

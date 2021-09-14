@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '../constants';
 import PreviewDropdown from './preview_dropdown.vue';
 import PublishButton from './publish_button.vue';
 
@@ -17,6 +18,12 @@ export default {
         this.expandAllDiscussions();
       }
     },
+  },
+  mounted() {
+    document.body.classList.add(REVIEW_BAR_VISIBLE_CLASS_NAME);
+  },
+  beforeDestroy() {
+    document.body.classList.remove(REVIEW_BAR_VISIBLE_CLASS_NAME);
   },
   methods: {
     ...mapActions('batchComments', ['expandAllDiscussions']),

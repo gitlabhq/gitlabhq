@@ -229,7 +229,6 @@ export default {
       'isBatchLoading',
       'isBatchLoadingError',
     ]),
-    ...mapGetters('batchComments', ['draftsCount']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
@@ -664,7 +663,6 @@ export default {
         <div
           v-if="renderFileTree"
           :style="{ width: `${treeWidth}px` }"
-          :class="{ 'review-bar-visible': draftsCount > 0 }"
           class="diff-tree-list js-diff-tree-list px-3 pr-md-0"
         >
           <panel-resizer
