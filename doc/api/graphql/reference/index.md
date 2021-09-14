@@ -4180,6 +4180,27 @@ Input type: `UpdateContainerExpirationPolicyInput`
 | <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy after mutation. |
 | <a id="mutationupdatecontainerexpirationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
+
+Input type: `UpdateDependencyProxyImageTtlGroupPolicyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatedependencyproxyimagettlgrouppolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatedependencyproxyimagettlgrouppolicyenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the policy is enabled or disabled. |
+| <a id="mutationupdatedependencyproxyimagettlgrouppolicygrouppath"></a>`groupPath` | [`ID!`](#id) | Group path for the group dependency proxy image TTL policy. |
+| <a id="mutationupdatedependencyproxyimagettlgrouppolicyttl"></a>`ttl` | [`Int`](#int) | Number of days to retain a cached image file. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatedependencyproxyimagettlgrouppolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatedependencyproxyimagettlgrouppolicydependencyproxyimagettlpolicy"></a>`dependencyProxyImageTtlPolicy` | [`DependencyProxyImageTtlGroupPolicy`](#dependencyproxyimagettlgrouppolicy) | Group image TTL policy after mutation. |
+| <a id="mutationupdatedependencyproxyimagettlgrouppolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.updateEpic`
 
 Input type: `UpdateEpicInput`
@@ -5248,6 +5269,29 @@ The edge type for [`ComplianceFramework`](#complianceframework).
 | ---- | ---- | ----------- |
 | <a id="complianceframeworkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="complianceframeworkedgenode"></a>`node` | [`ComplianceFramework`](#complianceframework) | The item at the end of the edge. |
+
+#### `ConnectedAgentConnection`
+
+The connection type for [`ConnectedAgent`](#connectedagent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="connectedagentconnectionedges"></a>`edges` | [`[ConnectedAgentEdge]`](#connectedagentedge) | A list of edges. |
+| <a id="connectedagentconnectionnodes"></a>`nodes` | [`[ConnectedAgent]`](#connectedagent) | A list of nodes. |
+| <a id="connectedagentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ConnectedAgentEdge`
+
+The edge type for [`ConnectedAgent`](#connectedagent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="connectedagentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="connectedagentedgenode"></a>`node` | [`ConnectedAgent`](#connectedagent) | The item at the end of the edge. |
 
 #### `ContainerRepositoryConnection`
 
@@ -8290,6 +8334,7 @@ GitLab CI/CD configuration template.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="clusteragentconnections"></a>`connections` | [`ConnectedAgentConnection`](#connectedagentconnection) | Active connections for the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the cluster agent was created. |
 | <a id="clusteragentcreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User object, containing information about the person who created the agent. |
 | <a id="clusteragentid"></a>`id` | [`ID!`](#id) | ID of the cluster agent. |
@@ -8451,6 +8496,18 @@ Conan metadata.
 | <a id="conanmetadatarecipe"></a>`recipe` | [`String!`](#string) | Recipe of the Conan package. |
 | <a id="conanmetadatarecipepath"></a>`recipePath` | [`String!`](#string) | Recipe path of the Conan package. |
 | <a id="conanmetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
+### `ConnectedAgent`
+
+Connection details for an Agent.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="connectedagentconnectedat"></a>`connectedAt` | [`Time`](#time) | When the connection was established. |
+| <a id="connectedagentconnectionid"></a>`connectionId` | [`BigInt`](#bigint) | ID of the connection. |
+| <a id="connectedagentmetadata"></a>`metadata` | [`JSON`](#json) | Information about the Agent. |
 
 ### `ContainerExpirationPolicy`
 
@@ -8751,6 +8808,19 @@ Dependency proxy blob.
 | <a id="dependencyproxyblobfilename"></a>`fileName` | [`String!`](#string) | Name of the blob. |
 | <a id="dependencyproxyblobsize"></a>`size` | [`String!`](#string) | Size of the blob file. |
 | <a id="dependencyproxyblobupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
+### `DependencyProxyImageTtlGroupPolicy`
+
+Group-level Dependency Proxy TTL policy settings.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyimagettlgrouppolicycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation. |
+| <a id="dependencyproxyimagettlgrouppolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled or disabled. |
+| <a id="dependencyproxyimagettlgrouppolicyttl"></a>`ttl` | [`Int`](#int) | Number of days to retain a cached image file. |
+| <a id="dependencyproxyimagettlgrouppolicyupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of the most recent update. |
 
 ### `DependencyProxyManifest`
 
@@ -9830,6 +9900,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
 | <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |
 | <a id="groupdependencyproxyimageprefix"></a>`dependencyProxyImagePrefix` | [`String!`](#string) | Prefix for pulling images when using the dependency proxy. |
+| <a id="groupdependencyproxyimagettlpolicy"></a>`dependencyProxyImageTtlPolicy` | [`DependencyProxyImageTtlGroupPolicy`](#dependencyproxyimagettlgrouppolicy) | Dependency proxy TTL policy for the group. |
 | <a id="groupdependencyproxymanifests"></a>`dependencyProxyManifests` | [`DependencyProxyManifestConnection`](#dependencyproxymanifestconnection) | Dependency Proxy manifests. (see [Connections](#connections)) |
 | <a id="groupdependencyproxysetting"></a>`dependencyProxySetting` | [`DependencyProxySetting`](#dependencyproxysetting) | Dependency Proxy settings for the group. |
 | <a id="groupdependencyproxytotalsize"></a>`dependencyProxyTotalSize` | [`String!`](#string) | Total size of the dependency proxy cached images. |

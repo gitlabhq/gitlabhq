@@ -31,11 +31,12 @@ are scoped to a project.
    Select **Add Slash Command Integration**.
 1. Complete the rest of the fields in the Slack configuration page using information from the GitLab browser tab.
    In particular, make sure you copy and paste the **URL**.
+
+   ![Slack setup instructions](img/slack_setup.png)
+
 1. On the Slack configuration page, select **Save Integration** and copy the **Token**.
 1. Go back to the GitLab configuration page and paste in the **Token**.
 1. Ensure the **Active** checkbox is selected and select **Save changes**.
-
-![Slack setup instructions](img/slack_setup.png)
 
 ## Slash commands
 

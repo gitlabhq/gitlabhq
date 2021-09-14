@@ -893,6 +893,34 @@ RSpec.describe GroupPolicy do
     end
   end
 
+  describe 'dependency proxy' do
+    context 'feature disabled' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_disallowed(:read_dependency_proxy) }
+      it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+    end
+
+    context 'feature enabled' do
+      before do
+        stub_config(dependency_proxy: { enabled: true })
+        group.create_dependency_proxy_setting!(enabled: true)
+      end
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_allowed(:admin_dependency_proxy) }
+      end
+    end
+  end
+
   context 'deploy token access' do
     let!(:group_deploy_token) do
       create(:group_deploy_token, group: group, deploy_token: deploy_token)
@@ -919,6 +947,18 @@ RSpec.describe GroupPolicy do
       it { is_expected.to be_allowed(:read_organization) }
       it { is_expected.to be_allowed(:read_contact) }
       it { is_expected.to be_disallowed(:destroy_package) }
+    end
+
+    context 'a deploy token with dependency proxy scopes' do
+      let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+
+      before do
+        stub_config(dependency_proxy: { enabled: true })
+        group.create_dependency_proxy_setting!(enabled: true)
+      end
+
+      it { is_expected.to be_allowed(:read_dependency_proxy) }
+      it { is_expected.to be_disallowed(:admin_dependency_proxy) }
     end
   end
 

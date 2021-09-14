@@ -681,6 +681,22 @@ RSpec.describe User do
           end
         end
       end
+
+      context 'when secondary email is same as primary' do
+        let(:user) { create(:user, email: 'user@example.com') }
+
+        it 'lets user change primary email without failing validations' do
+          user.commit_email = user.email
+          user.notification_email = user.email
+          user.public_email = user.email
+          user.save!
+
+          user.email = 'newemail@example.com'
+          user.confirm
+
+          expect(user).to be_valid
+        end
+      end
     end
   end
 

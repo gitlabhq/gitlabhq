@@ -1867,36 +1867,43 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 
 ### `allow_failure`
 
-Use `allow_failure` when you want to let a job fail without impacting the rest of the CI
-suite. The default value is `false`, except for [manual](../jobs/job_control.md#create-a-job-that-must-be-run-manually) jobs that use
-the [`when: manual`](#when) syntax.
+Use `allow_failure` to determine whether a pipeline should continue running when a job fails.
 
-In jobs that use [`rules:`](#rules), all jobs default to `allow_failure: false`,
-*including* `when: manual` jobs.
+- To let the pipeline continue running subsequent jobs, use `allow_failure: true`.
+- To stop the pipeline from running subsequent jobs, use `allow_failure: false`.
 
-When `allow_failure` is set to `true` and the job fails, the job shows an orange warning in the UI.
-However, the logical flow of the pipeline considers the job a
-success/passed, and is not blocked.
+When jobs are allowed to fail (`allow_failure: true`) an orange warning (**{status_warning}**)
+indicates that a job failed. However, the pipeline is successful and the associated commit
+is marked as passed with no warnings.
 
-Assuming all other jobs are successful, the job's stage and its pipeline
-show the same orange warning. However, the associated commit is marked as
-"passed", without warnings.
+This same warning is displayed when:
 
-In the following example, `job1` and `job2` run in parallel. If `job1`
-fails, it doesn't stop the next stage from running, because it's marked with
-`allow_failure: true`:
+- All other jobs in the stage are successful.
+- All other jobs in the pipeline are successful.
+
+The default value for `allow_failure` is:
+
+- `true` for [manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
+- `false` for manual jobs that also use [`rules`](#rules).
+- `false` in all other cases.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: `true` or `false`.
+
+**Example of `allow_failure`**:
 
 ```yaml
 job1:
   stage: test
   script:
-    - execute_script_that_will_fail
-  allow_failure: true
+    - execute_script_1
 
 job2:
   stage: test
   script:
-    - execute_script_that_will_succeed
+    - execute_script_2
+  allow_failure: true
 
 job3:
   stage: deploy
@@ -1904,14 +1911,35 @@ job3:
     - deploy_to_staging
 ```
 
+In this example, `job1` and `job2` run in parallel:
+
+- If `job1` fails, jobs in the `deploy` stage do not start.
+- If `job2` fails, jobs in the `deploy` stage can still start.
+
+**Additional details**:
+
+- You can use `allow_failure` as a subkey of [`rules:`](#rulesallow_failure).
+- You can use `allow_failure: false` with a manual job to create a [blocking manual job](../jobs/job_control.md#types-of-manual-jobs).
+  A blocked pipeline does not run any jobs in later stages until the manual job
+  is started and completes successfully.
+
 #### `allow_failure:exit_codes`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273157) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292024) in GitLab 13.9.
 
-Use `allow_failure:exit_codes` to dynamically control if a job should be allowed
-to fail. You can list which exit codes are not considered failures. The job fails
-for any other exit code:
+Use `allow_failure:exit_codes` to control when a job should be
+allowed to fail. The job is `allow_failure: true` for any of the listed exit codes,
+and `allow_failure` false for any other exit code.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A single exit code.
+- An array of exit codes.
+
+**Example of `allow_failure`**:
 
 ```yaml
 test_job_1:

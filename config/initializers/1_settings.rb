@@ -95,6 +95,7 @@ Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
 Settings.omniauth['auto_link_user'] = false if Settings.omniauth['auto_link_user'].nil?
+Settings.omniauth['saml_message_max_byte_size'] = 250000 if Settings.omniauth['saml_message_max_byte_size'].nil?
 
 Settings.omniauth['sync_profile_from_provider'] = false if Settings.omniauth['sync_profile_from_provider'].nil?
 Settings.omniauth['sync_profile_attributes'] = ['email'] if Settings.omniauth['sync_profile_attributes'].nil?

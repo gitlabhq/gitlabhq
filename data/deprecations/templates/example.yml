@@ -16,13 +16,11 @@
   body: | # Do not modify this line, instead modify the lines below.
     <!-- START OF BODY COMMENT
 
-    This area supports markdown.
+    This area supports markdown.  Delete this entire comment and replace it with your markdown content.
 
-    It is recommended to copy and paste the release post entry content here.
+    Make sure to run `bin/rake gitlab:docs:compile_deprecations` locally before committing and pushing your changes.
 
-    You can shorten it if needed, but remember that the entry itself has already been reviewed by Tech Writing so don't feel like you need to reword anything.
-
-    Delete this entire comment and replace it with your markdown content.
+    When ready, assign to your tech writer to review and merge.
 
     END OF BODY COMMENT -->
   stage: # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth

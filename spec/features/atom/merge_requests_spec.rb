@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Merge Requests Feed' do
   describe 'GET /merge_requests' do
-    let_it_be_with_reload(:user) { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
-    let_it_be(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
+    let_it_be_with_reload(:user) { create(:user, email: 'private1@example.com') }
+    let_it_be(:assignee) { create(:user, email: 'private2@example.com') }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:merge_request) { create(:merge_request, source_project: project, assignees: [assignee]) }

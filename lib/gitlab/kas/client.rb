@@ -7,6 +7,7 @@ module Gitlab
       JWT_AUDIENCE = 'gitlab-kas'
 
       STUB_CLASSES = {
+        agent_tracker: Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub,
         configuration_project: Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub
       }.freeze
 
@@ -15,6 +16,15 @@ module Gitlab
       def initialize
         raise ConfigurationError, 'GitLab KAS is not enabled' unless Gitlab::Kas.enabled?
         raise ConfigurationError, 'KAS internal URL is not configured' unless Gitlab::Kas.internal_url.present?
+      end
+
+      def get_connected_agents(project:)
+        request = Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsRequest.new(project_id: project.id)
+
+        stub_for(:agent_tracker)
+          .get_connected_agents(request, metadata: metadata)
+          .agents
+          .to_a
       end
 
       def list_agent_config_files(project:)
@@ -49,7 +59,7 @@ module Gitlab
       end
 
       def kas_endpoint_url
-        Gitlab::Kas.internal_url.sub(%r{^grpc://|^grpcs://}, '')
+        Gitlab::Kas.internal_url.sub(%r{^grpcs?://}, '')
       end
 
       def credentials

@@ -163,6 +163,11 @@ module Types
           null: false,
           description: 'Prefix for pulling images when using the dependency proxy.'
 
+    field :dependency_proxy_image_ttl_policy,
+          Types::DependencyProxy::ImageTtlGroupPolicyType,
+          null: true,
+          description: 'Dependency proxy TTL policy for the group.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

@@ -256,10 +256,7 @@ class User < ApplicationRecord
   validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
 
   before_validation :sanitize_attrs
-  before_validation :reset_secondary_emails, if: :email_changed?
   before_save :default_private_profile_to_false
-  before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
-  before_save :set_commit_email, if: :commit_email_changed? # in case validation is skipped
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
@@ -2027,30 +2024,6 @@ class User < ApplicationRecord
     return if read_attribute(:commit_email).blank?
 
     errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email)
-  end
-
-  def set_notification_email
-    if verified_emails.exclude?(notification_email)
-      self.notification_email = nil
-    end
-  end
-
-  def set_public_email
-    if verified_emails.exclude?(public_email)
-      self.public_email = ''
-    end
-  end
-
-  def set_commit_email
-    if verified_emails.exclude?(commit_email)
-      self.commit_email = nil
-    end
-  end
-
-  def reset_secondary_emails
-    set_public_email
-    set_commit_email
-    set_notification_email
   end
 
   def callouts_by_feature_name

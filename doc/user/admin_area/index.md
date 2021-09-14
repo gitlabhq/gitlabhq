@@ -199,6 +199,18 @@ The following totals are also included:
 
 GitLab billing is based on the number of [**Billable users**](../../subscriptions/self_managed/index.md#billable-users).
 
+#### Add email to user
+
+You must be an administrator to manually add emails to users:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users** (`/admin/users`).
+1. Locate the user and select them.
+1. Select **Edit**.
+1. In **Email**, enter the new email address. This adds the new email address to the
+   user and sets the previous email address to be a secondary.
+1. Select **Save changes**.
+
 ### User cohorts
 
 The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.

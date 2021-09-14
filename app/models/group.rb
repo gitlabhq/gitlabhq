@@ -764,6 +764,10 @@ class Group < Namespace
     ::CustomerRelations::Contact.where(group_id: self.id)
   end
 
+  def dependency_proxy_image_ttl_policy
+    super || build_dependency_proxy_image_ttl_policy
+  end
+
   private
 
   def max_member_access(user_ids)

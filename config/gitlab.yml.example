@@ -959,6 +959,11 @@ production: &base
     # (default: false)
     auto_link_saml_user: false
 
+    # CAUTION!
+    # Allows larger SAML messages to be received. Numeric value in bytes (default: 250000)
+    # Too high limits exposes instance to decompression DDoS attack type.
+    saml_message_max_byte_size: 250000
+
     # Allow users with existing accounts to sign in and auto link their account via OmniAuth
     # login, without having to do a manual login first and manually add OmniAuth. Links on email.
     # Define the allowed providers using an array, e.g. ["saml", "twitter"], or as true/false to

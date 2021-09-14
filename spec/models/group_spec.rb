@@ -2743,4 +2743,28 @@ RSpec.describe Group do
       expect(group.dependency_proxy_image_prefix).not_to include('http')
     end
   end
+
+  describe '#dependency_proxy_image_ttl_policy' do
+    subject(:ttl_policy) { group.dependency_proxy_image_ttl_policy }
+
+    it 'builds a new policy if one does not exist', :aggregate_failures do
+      expect(ttl_policy.ttl).to eq(90)
+      expect(ttl_policy.enabled).to eq(false)
+      expect(ttl_policy.created_at).to be_nil
+      expect(ttl_policy.updated_at).to be_nil
+    end
+
+    context 'with existing policy' do
+      before do
+        group.dependency_proxy_image_ttl_policy.update!(ttl: 30, enabled: true)
+      end
+
+      it 'returns the policy if it already exists', :aggregate_failures do
+        expect(ttl_policy.ttl).to eq(30)
+        expect(ttl_policy.enabled).to eq(true)
+        expect(ttl_policy.created_at).not_to be_nil
+        expect(ttl_policy.updated_at).not_to be_nil
+      end
+    end
+  end
 end
