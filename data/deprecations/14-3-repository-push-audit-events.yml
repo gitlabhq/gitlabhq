@@ -1,0 +1,14 @@
+- name: "Audit events for repository push events"
+  announcement_milestone: "14.3" # The milestone when this feature was first announced as deprecated.
+  removal_milestone: "15.0" # the milestone when this feature is planned to be removed
+  body: | # Do not modify this line, instead modify the lines below.
+    Audit events for [repository events](../administration/audit_events.md#repository-push) are now deprecated and will be removed in GitLab 15.0.
+
+    These events have always been disabled by default and had to be manually enabled with a
+    feature flag. Enabling them can cause too many events to be generated which can
+    dramatically slow down GitLab instances. For this reason, they are being removed.
+  stage: Manage
+  tiers: Premium
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337993
+  documentation_url: ../administration/audit_events.md
+  announcement_date: 2021-09-02 # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69024

@@ -100,7 +100,7 @@ export default {
 
     <gl-loading-icon v-if="isLoading" size="sm" />
 
-    <gl-dropdown-item v-if="!artifacts.length" data-testid="artifacts-empty-message">
+    <gl-dropdown-item v-if="!artifacts.length && !isLoading" data-testid="artifacts-empty-message">
       {{ $options.i18n.emptyArtifactsMessage }}
     </gl-dropdown-item>
 

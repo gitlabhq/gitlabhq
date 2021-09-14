@@ -3,6 +3,10 @@
 class CombinedRegistrationExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
   include Rails.application.routes.url_helpers
 
+  def key_for(source, _ = nil)
+    super(source, 'force_company_trial')
+  end
+
   def redirect_path(trial_params)
     @trial_params = trial_params
 

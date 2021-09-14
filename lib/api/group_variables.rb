@@ -6,7 +6,7 @@ module API
 
     before { authenticate! }
     before { authorize! :admin_group, user_group }
-    feature_category :continuous_integration
+    feature_category :pipeline_authoring
 
     helpers ::API::Helpers::VariablesHelpers
 

@@ -16,4 +16,12 @@ To add a deprecation, use the example.yml file in `/data/deprecations/templates`
 then run `bin/rake gitlab:docs:compile_deprecations`.
 -->
 
-Deprecated features scheduled for removal will be listed here, sorted by GitLab milestone.
+## 15.0
+
+### Audit events for repository push events
+
+Audit events for [repository events](../administration/audit_events.md#repository-push) are now deprecated and will be removed in GitLab 15.0.
+
+These events have always been disabled by default and had to be manually enabled with a
+feature flag. Enabling them can cause too many events to be generated which can
+dramatically slow down GitLab instances. For this reason, they are being removed.
