@@ -36,15 +36,23 @@ RSpec.shared_examples 'process helm service index request' do |user_type, status
 
       expect(yaml_response.keys).to contain_exactly('apiVersion', 'entries', 'generated', 'serverInfo')
       expect(yaml_response['entries']).to be_a(Hash)
-      expect(yaml_response['entries'].keys).to contain_exactly(package.name)
-      expect(yaml_response['serverInfo']).to eq({ 'contextPath' => "/api/v4/projects/#{project.id}/packages/helm" })
+      expect(yaml_response['entries'].keys).to contain_exactly(package.name, package2.name)
+      expect(yaml_response['serverInfo']).to eq({ 'contextPath' => "/api/v4/projects/#{project_id}/packages/helm" })
 
       package_entry = yaml_response['entries'][package.name]
 
-      expect(package_entry.length).to eq(2)
+      expect(package_entry.length).to eq(1)
       expect(package_entry.first.keys).to contain_exactly('name', 'version', 'apiVersion', 'created', 'digest', 'urls')
       expect(package_entry.first['digest']).to eq('fd2b2fa0329e80a2a602c2bb3b40608bcd6ee5cf96cf46fd0d2800a4c129c9db')
       expect(package_entry.first['urls']).to eq(["charts/#{package.name}-#{package.version}.tgz"])
+
+      package_entry = yaml_response['entries'][package2.name]
+
+      expect(package_entry.length).to eq(1)
+      expect(package_entry.first.keys).to contain_exactly('name', 'version', 'apiVersion', 'created', 'digest', 'urls', 'description')
+      expect(package_entry.first['digest']).to eq('file2')
+      expect(package_entry.first['description']).to eq('hello from stable channel')
+      expect(package_entry.first['urls']).to eq(['charts/filename2.tgz'])
     end
   end
 end
@@ -196,7 +204,7 @@ end
 
 RSpec.shared_examples 'rejects helm access with unknown project id' do
   context 'with an unknown project' do
-    let(:project) { OpenStruct.new(id: 1234567890) }
+    let(:project_id) { 1234567890 }
 
     context 'as anonymous' do
       it_behaves_like 'rejects helm packages access', :anonymous, :unauthorized

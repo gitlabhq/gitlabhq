@@ -58,7 +58,7 @@ module QA
         it_behaves_like 'successful tag creation', :maintainer_user
       end
 
-      context 'when protected', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339727', type: :bug } do
+      context 'when protected' do
         before do
           add_members_to_project(project)
 

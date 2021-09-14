@@ -62,6 +62,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Query performance guidelines](../query_performance.md)
 - [Pagination guidelines](pagination_guidelines.md)
   - [Pagination performance guidelines](pagination_performance_guidelines.md)
+- [Efficient `IN` operator queries](efficient_in_operator_queries.md)
 
 ## Case studies
 

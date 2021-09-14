@@ -4,11 +4,17 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Adding foreign key constraint to an existing column
+# Add a foreign key constraint to an existing column
 
-Foreign keys help ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](../foreign_keys.md) when creating tables that reference records from other tables.
+Foreign keys ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](../foreign_keys.md) when creating tables that reference records from other tables.
 
-Starting with Rails version 4, Rails includes migration helpers to add foreign key constraints to database tables. Before Rails 4, the only way for ensuring some level of consistency was the [`dependent`](https://guides.rubyonrails.org/association_basics.html#options-for-belongs-to-dependent) option within the association definition. Ensuring data consistency on the application level could fail in some unfortunate cases, so we might end up with inconsistent data in the table. This is mostly affecting older tables, where we simply didn't have the framework support to ensure consistency on the database level. These data inconsistencies can easily cause unexpected application behavior or bugs.
+Starting with Rails version 4, Rails includes migration helpers to add foreign key constraints
+to database tables. Before Rails 4, the only way for ensuring some level of consistency was the
+[`dependent`](https://guides.rubyonrails.org/association_basics.html#options-for-belongs-to-dependent)
+option in the association definition. Ensuring data consistency on the application level could fail
+in some unfortunate cases, so we might end up with inconsistent data in the table. This mostly affects
+older tables, where we didn't have the framework support to ensure consistency on the database level.
+These data inconsistencies can cause unexpected application behavior or bugs.
 
 Adding a foreign key to an existing database column requires database structure changes and potential data changes. In case the table is in use, we should always assume that there is inconsistent data.
 
@@ -45,7 +51,7 @@ class Email < ActiveRecord::Base
 end
 ```
 
-Problem: when the user is removed, the email records related to the removed user will stay in the `emails` table:
+Problem: when the user is removed, the email records related to the removed user stays in the `emails` table:
 
 ```ruby
 user = User.find(1)
@@ -83,11 +89,13 @@ Avoid using the `add_foreign_key` constraint more than once per migration file, 
 
 #### Data migration to fix existing records
 
-The approach here depends on the data volume and the cleanup strategy. If we can easily find "invalid" records by doing a simple database query and the record count is not that high, then the data migration can be executed within a Rails migration.
+The approach here depends on the data volume and the cleanup strategy. If we can find "invalid"
+records by doing a database query and the record count is not high, then the data migration can
+be executed in a Rails migration.
 
 In case the data volume is higher (>1000 records), it's better to create a background migration. If unsure, please contact the database team for advice.
 
-Example for cleaning up records in the `emails` table within a database migration:
+Example for cleaning up records in the `emails` table in a database migration:
 
 ```ruby
 class RemoveRecordsWithoutUserFromEmailsTable < Gitlab::Database::Migration[1.0]
@@ -112,7 +120,7 @@ end
 
 ### Validate the foreign key
 
-Validating the foreign key will scan the whole table and make sure that each relation is correct.
+Validating the foreign key scans the whole table and makes sure that each relation is correct.
 
 NOTE:
 When using [background migrations](../background_migrations.md), foreign key validation should happen in the next GitLab release.

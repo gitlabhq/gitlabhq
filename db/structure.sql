@@ -11306,7 +11306,7 @@ CREATE TABLE ci_build_trace_metadata (
 );
 
 CREATE TABLE ci_builds (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     status character varying,
     finished_at timestamp without time zone,
     trace text,
@@ -11351,7 +11351,7 @@ CREATE TABLE ci_builds (
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
     scheduling_type smallint,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     stage_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
@@ -11587,7 +11587,7 @@ CREATE TABLE ci_minutes_additional_packs (
     expires_at date,
     number_of_minutes integer NOT NULL,
     purchase_xid text,
-    CONSTRAINT check_d7ef254af0 CHECK ((char_length(purchase_xid) <= 32))
+    CONSTRAINT check_d7ef254af0 CHECK ((char_length(purchase_xid) <= 50))
 );
 
 CREATE SEQUENCE ci_minutes_additional_packs_id_seq
@@ -24007,6 +24007,8 @@ CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_me
 
 CREATE INDEX idx_geo_con_rep_updated_events_on_container_repository_id ON geo_container_repository_updated_events USING btree (container_repository_id);
 
+CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
+
 CREATE INDEX idx_installable_npm_pkgs_on_project_id_name_version_id ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 2) AND (status = 0));
 
 CREATE INDEX idx_issues_on_health_status_not_null ON issues USING btree (health_status) WHERE (health_status IS NOT NULL);
@@ -25817,6 +25819,8 @@ CREATE INDEX index_packages_events_on_package_id ON packages_events USING btree 
 
 CREATE INDEX index_packages_helm_file_metadata_on_channel ON packages_helm_file_metadata USING btree (channel);
 
+CREATE INDEX index_packages_helm_file_metadata_on_pf_id_and_channel ON packages_helm_file_metadata USING btree (package_file_id, channel);
+
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_maven_metadata USING btree (package_id, path);
 
 CREATE INDEX index_packages_maven_metadata_on_path ON packages_maven_metadata USING btree (path);
@@ -25836,6 +25840,8 @@ CREATE INDEX index_packages_package_file_build_infos_on_pipeline_id ON packages_
 CREATE INDEX index_packages_package_files_on_file_store ON packages_package_files USING btree (file_store);
 
 CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON packages_package_files USING btree (package_id, file_name);
+
+CREATE INDEX index_packages_package_files_on_package_id_id ON packages_package_files USING btree (package_id, id);
 
 CREATE INDEX index_packages_package_files_on_verification_state ON packages_package_files USING btree (verification_state);
 
@@ -27533,9 +27539,6 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY dep_ci_build_trace_sections
-    ADD CONSTRAINT fk_4ebe41f502 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;

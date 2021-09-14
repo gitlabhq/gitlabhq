@@ -246,7 +246,7 @@ A job is queued. When the job finishes, the subscription details are updated.
 #### Troubleshooting cloud licensing sync
 
 If the sync job is not working, ensure you allow network traffic from your GitLab instance
-to IP address `104.46.106.135:443` (`customers.gitlab.com`).
+to IP address `104.18.26.123:443` (`customers.gitlab.com`).
 
 ## Obtain a subscription
 

@@ -29908,9 +29908,6 @@ msgstr ""
 msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."
 msgstr ""
 
-msgid "SecurityOrchestration|Unable to parse policy"
-msgstr ""
-
 msgid "SecurityOrchestration|Update scan execution policies"
 msgstr ""
 

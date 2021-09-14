@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::PackageFile, type: :model do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project) }
   let_it_be(:package_file1) { create(:package_file, :xml, file_name: 'FooBar') }
   let_it_be(:package_file2) { create(:package_file, :xml, file_name: 'ThisIsATest') }
@@ -141,6 +143,67 @@ RSpec.describe Packages::PackageFile, type: :model do
 
   describe '.most_recent!' do
     it { expect(described_class.most_recent!).to eq(debian_package.package_files.last) }
+  end
+
+  describe '.most_recent_for' do
+    let_it_be(:package1) { create(:npm_package) }
+    let_it_be(:package2) { create(:npm_package) }
+    let_it_be(:package3) { create(:npm_package) }
+    let_it_be(:package4) { create(:npm_package) }
+
+    let_it_be(:package_file2_2) { create(:package_file, :npm, package: package2) }
+
+    let_it_be(:package_file3_2) { create(:package_file, :npm, package: package3) }
+    let_it_be(:package_file3_3) { create(:package_file, :npm, package: package3) }
+
+    let_it_be(:package_file4_2) { create(:package_file, :npm, package: package2) }
+    let_it_be(:package_file4_3) { create(:package_file, :npm, package: package2) }
+    let_it_be(:package_file4_4) { create(:package_file, :npm, package: package2) }
+
+    let(:most_recent_package_file1) { package1.package_files.recent.first }
+    let(:most_recent_package_file2) { package2.package_files.recent.first }
+    let(:most_recent_package_file3) { package3.package_files.recent.first }
+    let(:most_recent_package_file4) { package4.package_files.recent.first }
+
+    subject { described_class.most_recent_for(packages) }
+
+    where(
+      package_input1: [1, nil],
+      package_input2: [2, nil],
+      package_input3: [3, nil],
+      package_input4: [4, nil]
+    )
+
+    with_them do
+      let(:compact_inputs) { [package_input1, package_input2, package_input3, package_input4].compact }
+      let(:packages) do
+        ::Packages::Package.id_in(
+          compact_inputs.map { |pkg_number| public_send("package#{pkg_number}") }
+            .map(&:id)
+        )
+      end
+
+      let(:expected_package_files) { compact_inputs.map { |pkg_number| public_send("most_recent_package_file#{pkg_number}") } }
+
+      it { is_expected.to contain_exactly(*expected_package_files) }
+    end
+
+    context 'extra join and extra where' do
+      let_it_be(:helm_package) { create(:helm_package, without_package_files: true) }
+      let_it_be(:helm_package_file1) { create(:helm_package_file, channel: 'alpha') }
+      let_it_be(:helm_package_file2) { create(:helm_package_file, channel: 'alpha', package: helm_package) }
+      let_it_be(:helm_package_file3) { create(:helm_package_file, channel: 'beta', package: helm_package) }
+      let_it_be(:helm_package_file4) { create(:helm_package_file, channel: 'beta', package: helm_package) }
+
+      let(:extra_join) { :helm_file_metadatum }
+      let(:extra_where) { { packages_helm_file_metadata: { channel: 'alpha' } } }
+
+      subject { described_class.most_recent_for(Packages::Package.id_in(helm_package.id), extra_join: extra_join, extra_where: extra_where) }
+
+      it 'returns the most recent package for the selected channel' do
+        expect(subject).to contain_exactly(helm_package_file2)
+      end
+    end
   end
 
   describe '#update_file_store callback' do

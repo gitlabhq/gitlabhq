@@ -90,6 +90,16 @@ some recorded videos with [live examples](#live-examples).
       used in Helm v3. So, the only way to integrate it with this Cluster Management Project is to actually uninstall this app and accept the
       chart version proposed in `applications/vault/values.yaml`.
 
+    - Cert-manager:
+      - For users on Kubernetes version 1.20 or above, the deprecated cert-manager v0.10 is no longer valid and
+        and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010)
+        , and install cert-manager v1.4 instead. To install this version, uncomment the `applications/cert-manager-1-4/helmfile.yaml`
+        from the [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file).
+        This triggers a pipeline to install the new version.
+      - For users on Kubernetes versions lower than 1.20, you can stick to v0.10 by uncommenting
+        `applications/cert-manager/helmfile.yaml`
+        in your project's main Helmfile ([`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file)).
+
 1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually)
    and watch the `apply` job logs to see if any of your applications were successfully detected, installed, and whether they got any
    unexpected updates.
@@ -103,6 +113,17 @@ some recorded videos with [live examples](#live-examples).
 
 After getting a successful pipeline, repeat these steps for any other deployed apps
 you want to manage with the Cluster Management Project.
+
+## Backup and uninstall cert-manager v0.10
+
+1. Follow the [official docs](https://docs.cert-manager.io/en/release-0.10/tasks/backup-restore-crds.html) on how to
+  backup your cert-manager v0.10 data.
+1. Uninstall cert-manager by editing the setting all the occurrences of `installed: true` to `installed: false` in the
+   `applications/cert-manager/helmfile.yaml` file.
+1. Search for any left-over resources by executing the following command `kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges,Secrets,ConfigMaps -n gitlab-managed-apps | grep certmanager`.
+1. For each of the resources found in the previous step, delete them with `kubectl delete -n gitlab-managed-apps {ResourceType} {ResourceName}`.
+   For example, if you found a resource of type `ConfigMap` named `cert-manager-controller`, delete it by executing:
+   `kubectl delete configmap -n gitlab-managed-apps cert-manager-controller`.
 
 ## Live examples
 

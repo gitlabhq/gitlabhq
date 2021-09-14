@@ -12,10 +12,24 @@ RSpec.describe API::HelmPackages do
   let_it_be(:package) { create(:helm_package, project: project, without_package_files: true) }
   let_it_be(:package_file1) { create(:helm_package_file, package: package) }
   let_it_be(:package_file2) { create(:helm_package_file, package: package) }
+  let_it_be(:package2) { create(:helm_package, project: project, without_package_files: true) }
+  let_it_be(:package_file2_1) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', description: 'hello from stable channel') }
+  let_it_be(:package_file2_2) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', channel: 'test', description: 'hello from test channel') }
+  let_it_be(:other_package) { create(:npm_package, project: project) }
 
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/index.yaml' do
-    it_behaves_like 'handling helm chart index requests' do
-      let(:url) { "/projects/#{project.id}/packages/helm/stable/index.yaml" }
+    let(:url) { "/projects/#{project_id}/packages/helm/stable/index.yaml" }
+
+    context 'with a project id' do
+      let(:project_id) { project.id }
+
+      it_behaves_like 'handling helm chart index requests'
+    end
+
+    context 'with an url encoded project id' do
+      let(:project_id) { ERB::Util.url_encode(project.full_path) }
+
+      it_behaves_like 'handling helm chart index requests'
     end
   end
 

@@ -71,12 +71,12 @@ module CycleAnalyticsHelpers
     save_value_stream(custom_value_stream_name)
   end
 
-  def wait_for_stages_to_load(selector = '.js-path-navigation')
+  def wait_for_stages_to_load(selector = '[data-testid="vsa-path-navigation"]')
     expect(page).to have_selector selector
     wait_for_requests
   end
 
-  def select_group(target_group, ready_selector = '.js-path-navigation')
+  def select_group(target_group, ready_selector = '[data-testid="vsa-path-navigation"]')
     visit group_analytics_cycle_analytics_path(target_group)
 
     wait_for_stages_to_load(ready_selector)

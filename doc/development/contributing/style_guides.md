@@ -177,11 +177,10 @@ This ensures that our list isn't mistakenly removed by another auto generation o
 the `.rubocop_todo.yml`. This also allows us greater visibility into the exceptions
 which are currently being resolved.
 
-One way to generate the initial list is to run the `todo` auto generation,
-with `exclude limit` set to a high number.
+One way to generate the initial list is to run the Rake task `rubocop:todo:generate`:
 
 ```shell
-bundle exec rubocop --auto-gen-config --auto-gen-only-exclude --exclude-limit=100000
+bundle exec rake rubocop:todo:generate
 ```
 
 You can then move the list from the freshly generated `.rubocop_todo.yml` for the Cop being actively

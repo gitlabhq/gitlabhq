@@ -6,15 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Install cert-manager with a cluster management project
 
-> [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
+> - Support for cert-manager v1.4 was [introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/69405) in GitLab 14.3.
 
 Assuming you already have a [Cluster management project](../../../../../user/clusters/management_project.md) created from a
 [management project template](../../../../../user/clusters/management_project_template.md), to install cert-manager you should
 uncomment this line from your `helmfile.yaml`:
 
 ```yaml
-  - path: applications/cert-manager/helmfile.yaml
+  - path: applications/cert-manager-1-4/helmfile.yaml
 ```
+
+NOTE:
+We kept the `- path: applications/cert-manager/helmfile.yaml` with cert-manager v0.10 to facilitate
+the [migration from GitLab Managed Apps to a cluster management project](../../../../clusters/migrating_from_gma_to_project_template.md).
 
 cert-manager:
 
@@ -24,7 +29,7 @@ cert-manager:
   email address to be specified. The email address is used by Let's Encrypt to
   contact you about expiring certificates and issues related to your account.
 
-The following configuration in your `applications/cert-manager/helmfile.yaml` is required to install cert-manager:
+To install cert-manager in your cluster, configure your `applications/cert-manager-1-4/helmfile.yaml` to:
 
 ```yaml
 certManager:

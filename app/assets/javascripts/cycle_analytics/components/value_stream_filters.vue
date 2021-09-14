@@ -61,7 +61,8 @@ export default {
 <template>
   <div class="gl-mt-3 gl-py-2 gl-px-3 bg-gray-light border-top border-bottom">
     <filter-bar
-      class="js-filter-bar filtered-search-box gl-display-flex gl-mb-2 gl-mr-3 gl-border-none"
+      data-testid="vsa-filter-bar"
+      class="filtered-search-box gl-display-flex gl-mb-2 gl-mr-3 gl-border-none"
       :group-path="groupPath"
     />
     <div

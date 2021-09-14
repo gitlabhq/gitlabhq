@@ -88,3 +88,7 @@ stages:
 include:
   - template: DAST.latest.gitlab-ci.yml
 ```
+
+## Lack of IPv6 support
+
+Due to the underlying [ZAProxy engine not supporting IPv6](https://github.com/zaproxy/zaproxy/issues/3705), DAST is unable to scan or crawl IPv6-based applications.

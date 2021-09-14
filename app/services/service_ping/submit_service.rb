@@ -2,8 +2,9 @@
 
 module ServicePing
   class SubmitService
-    PRODUCTION_URL = 'https://version.gitlab.com/usage_data'
-    STAGING_URL = 'https://gitlab-services-version-gitlab-com-staging.gs-staging.gitlab.org/usage_data'
+    PRODUCTION_BASE_URL = 'https://version.gitlab.com'
+    STAGING_BASE_URL = 'https://gitlab-services-version-gitlab-com-staging.gs-staging.gitlab.org'
+    USAGE_DATA_PATH = 'usage_data'
 
     METRICS = %w[leader_issues instance_issues percentage_issues leader_notes instance_notes
                  percentage_notes leader_milestones instance_milestones percentage_milestones
@@ -39,6 +40,10 @@ module ServicePing
       raw_usage_data.update_version_metadata!(usage_data_id: version_usage_data_id)
 
       store_metrics(response)
+    end
+
+    def url
+      URI.join(base_url, USAGE_DATA_PATH)
     end
 
     private
@@ -81,12 +86,8 @@ module ServicePing
     end
 
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/233615 for details
-    def url
-      if Rails.env.production?
-        PRODUCTION_URL
-      else
-        STAGING_URL
-      end
+    def base_url
+      Rails.env.production? ? PRODUCTION_BASE_URL : STAGING_BASE_URL
     end
   end
 end

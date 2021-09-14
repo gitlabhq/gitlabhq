@@ -300,8 +300,32 @@ RSpec.describe ServicePing::SubmitService do
     end
   end
 
-  def stub_response(body:, status: 201)
-    stub_full_request(subject.send(:url), method: :post)
+  describe '#url' do
+    let(:url) { subject.url.to_s }
+
+    context 'when Rails.env is production' do
+      before do
+        stub_rails_env('production')
+      end
+
+      it 'points to the production Version app' do
+        expect(url).to eq("#{described_class::PRODUCTION_BASE_URL}/#{described_class::USAGE_DATA_PATH}")
+      end
+    end
+
+    context 'when Rails.env is not production' do
+      before do
+        stub_rails_env('development')
+      end
+
+      it 'points to the staging Version app' do
+        expect(url).to eq("#{described_class::STAGING_BASE_URL}/#{described_class::USAGE_DATA_PATH}")
+      end
+    end
+  end
+
+  def stub_response(url: subject.url, body:, status: 201)
+    stub_full_request(url, method: :post)
       .to_return(
         headers: { 'Content-Type' => 'application/json' },
         body: body.to_json,

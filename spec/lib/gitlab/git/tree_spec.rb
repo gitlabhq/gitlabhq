@@ -189,12 +189,109 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
     end
 
     it_behaves_like :repo do
-      context 'with pagination parameters' do
-        let(:pagination_params) { { limit: 3, page_token: nil } }
+      describe 'Pagination' do
+        context 'with restrictive limit' do
+          let(:pagination_params) { { limit: 3, page_token: nil } }
 
-        it 'does not support pagination' do
-          expect(entries.count).to be >= 10
-          expect(cursor).to be_nil
+          it 'returns limited paginated list of tree objects' do
+            expect(entries.count).to eq(3)
+            expect(cursor.next_cursor).to be_present
+          end
+        end
+
+        context 'when limit is equal to number of entries' do
+          let(:entries_count) { entries.count }
+
+          it 'returns all entries without a cursor' do
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: entries_count, page_token: nil })
+
+            expect(cursor).to be_nil
+            expect(result.entries.count).to eq(entries_count)
+          end
+        end
+
+        context 'when limit is 0' do
+          let(:pagination_params) { { limit: 0, page_token: nil } }
+
+          it 'returns empty result' do
+            expect(entries).to eq([])
+            expect(cursor).to be_nil
+          end
+        end
+
+        context 'when limit is missing' do
+          let(:pagination_params) { { limit: nil, page_token: nil } }
+
+          it 'returns empty result' do
+            expect(entries).to eq([])
+            expect(cursor).to be_nil
+          end
+        end
+
+        context 'when limit is negative' do
+          let(:entries_count) { entries.count }
+
+          it 'returns all entries' do
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: -1, page_token: nil })
+
+            expect(result.count).to eq(entries_count)
+            expect(cursor).to be_nil
+          end
+
+          context 'when token is provided' do
+            let(:pagination_params) { { limit: 1000, page_token: nil } }
+            let(:token) { entries.second.id }
+
+            it 'returns all entries after token' do
+              result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: -1, page_token: token })
+
+              expect(result.count).to eq(entries.count - 2)
+              expect(cursor).to be_nil
+            end
+          end
+        end
+
+        context 'when token does not exist' do
+          let(:pagination_params) { { limit: 5, page_token: 'aabbccdd' } }
+
+          it 'raises a command error' do
+            expect { entries }.to raise_error(Gitlab::Git::CommandError, 'could not find starting OID: aabbccdd')
+          end
+        end
+
+        context 'when limit is bigger than number of entries' do
+          let(:pagination_params) { { limit: 1000, page_token: nil } }
+
+          it 'returns only available entries' do
+            expect(entries.count).to be < 20
+            expect(cursor).to be_nil
+          end
+        end
+
+        it 'returns all tree entries in specific order during cursor pagination' do
+          collected_entries = []
+          token = nil
+
+          expected_entries = entries
+
+          loop do
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, { limit: 5, page_token: token })
+
+            collected_entries += result.entries
+            token = cursor&.next_cursor
+
+            break if token.blank?
+          end
+
+          expect(collected_entries.map(&:path)).to match_array(expected_entries.map(&:path))
+
+          expected_order = [
+            collected_entries.select(&:dir?).map(&:path),
+            collected_entries.select(&:file?).map(&:path),
+            collected_entries.select(&:submodule?).map(&:path)
+          ].flatten
+
+          expect(collected_entries.map(&:path)).to eq(expected_order)
         end
       end
     end

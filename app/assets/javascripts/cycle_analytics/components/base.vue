@@ -132,7 +132,8 @@ export default {
     <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
       <path-navigation
         v-if="displayPathNavigation"
-        class="js-path-navigation gl-w-full gl-pb-2"
+        data-testid="vsa-path-navigation"
+        class="gl-w-full gl-pb-2"
         :loading="isLoading || isLoadingStage"
         :stages="pathNavigationData"
         :selected-stage="selectedStage"

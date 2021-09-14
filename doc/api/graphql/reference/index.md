@@ -17529,6 +17529,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="boardissueinputlabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="boardissueinputmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter by milestone title. |
+| <a id="boardissueinputmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. |
 | <a id="boardissueinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="boardissueinputnot"></a>`not` | [`NegatedBoardIssueInput`](#negatedboardissueinput) | List of negated arguments. |
 | <a id="boardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
@@ -17709,6 +17710,7 @@ Represents an escalation rule.
 | <a id="negatedboardissueinputiterationwildcardid"></a>`iterationWildcardId` | [`NegatedIterationWildcardId`](#negatediterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="negatedboardissueinputlabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="negatedboardissueinputmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter by milestone title. |
+| <a id="negatedboardissueinputmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. |
 | <a id="negatedboardissueinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="negatedboardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
 | <a id="negatedboardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |

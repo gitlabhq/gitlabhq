@@ -17,10 +17,19 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
 
     # auth is handled by the parent object
     context 'when authorized' do
-      let!(:issue1) { create(:issue, project: project, labels: [label], relative_position: 10) }
-      let!(:issue2) { create(:issue, project: project, labels: [label, label2], relative_position: 12) }
-      let!(:issue3) { create(:issue, project: project, labels: [label, label3], relative_position: 10) }
+      let!(:issue1) { create(:issue, project: project, labels: [label], relative_position: 10, milestone: started_milestone) }
+      let!(:issue2) { create(:issue, project: project, labels: [label, label2], relative_position: 12, milestone: started_milestone) }
+      let!(:issue3) { create(:issue, project: project, labels: [label, label3], relative_position: 10, milestone: future_milestone) }
       let!(:issue4) { create(:issue, project: project, labels: [label], relative_position: nil) }
+
+      let(:wildcard_started) { 'STARTED' }
+      let(:filters) { { milestone_title: ["started"], milestone_wildcard_id: wildcard_started } }
+
+      it 'raises a mutually exclusive filter error when milstone wildcard and title are provided' do
+        expect do
+          resolve_board_list_issues(args: { filters: filters })
+        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      end
 
       it 'returns issues in the correct order with non-nil relative positions', :aggregate_failures do
         # by relative_position and then ID
@@ -34,6 +43,12 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
         result = resolve_board_list_issues(args: { filters: { label_name: [label.title], not: { label_name: [label2.title] } } })
 
         expect(result).to match_array([issue1, issue3, issue4])
+      end
+
+      it 'finds only issues filtered by milestone wildcard' do
+        result = resolve_board_list_issues(args: { filters: { milestone_wildcard_id: wildcard_started } })
+
+        expect(result).to match_array([issue1, issue2])
       end
 
       it 'finds only issues matching search param' do
@@ -73,6 +88,9 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
       let(:board_parent) { user_project }
       let(:project) { user_project }
 
+      let_it_be(:started_milestone) { create(:milestone, project: user_project, title: 'started milestone', start_date: 1.day.ago, due_date: 1.day.from_now) }
+      let_it_be(:future_milestone) { create(:milestone, project: user_project, title: 'future milestone', start_date: 1.day.from_now) }
+
       it_behaves_like 'group and project board list issues resolver'
     end
 
@@ -85,6 +103,9 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
 
       let(:board_parent) { group }
       let!(:project) { create(:project, :private, group: group) }
+
+      let_it_be(:started_milestone) { create(:milestone, group: group, title: 'started milestone', start_date: 1.day.ago, due_date: 1.day.from_now) }
+      let_it_be(:future_milestone) { create(:milestone, group: group, title: 'future milestone', start_date: 1.day.from_now) }
 
       it_behaves_like 'group and project board list issues resolver'
     end
