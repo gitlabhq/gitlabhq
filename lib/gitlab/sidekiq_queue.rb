@@ -7,6 +7,9 @@ module Gitlab
     NoMetadataError = Class.new(StandardError)
     InvalidQueueError = Class.new(StandardError)
 
+    WORKER_KEY = 'worker_class'
+    ALLOWED_KEYS = Gitlab::ApplicationContext::KNOWN_KEYS + [WORKER_KEY]
+
     attr_reader :queue_name
 
     def initialize(queue_name)
@@ -21,8 +24,8 @@ module Gitlab
       job_search_metadata =
         search_metadata
           .stringify_keys
-          .slice(*Gitlab::ApplicationContext::KNOWN_KEYS)
-          .transform_keys { |key| "meta.#{key}" }
+          .slice(*ALLOWED_KEYS)
+          .transform_keys(&method(:transform_key))
           .compact
 
       raise NoMetadataError if job_search_metadata.empty?
@@ -48,6 +51,14 @@ module Gitlab
     end
 
     private
+
+    def transform_key(key)
+      if Gitlab::ApplicationContext::KNOWN_KEYS.include?(key)
+        "meta.#{key}"
+      elsif key == WORKER_KEY
+        'class'
+      end
+    end
 
     def queue
       strong_memoize(:queue) do

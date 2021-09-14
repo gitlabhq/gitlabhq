@@ -124,7 +124,7 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       it('returns false when provided `label` param is not one of the selected labels', () => {
-        expect(wrapper.vm.isLabelSelected(mockLabels[2])).toBe(false);
+        expect(wrapper.vm.isLabelSelected(mockLabels[1])).toBe(false);
       });
     });
 
@@ -203,7 +203,7 @@ describe('DropdownContentsLabelsView', () => {
       it('calls action `updateSelectedLabels` with currently highlighted label when Enter key is pressed', () => {
         jest.spyOn(wrapper.vm, 'updateSelectedLabels').mockImplementation();
         wrapper.setData({
-          currentHighlightItem: 1,
+          currentHighlightItem: 2,
         });
 
         wrapper.vm.handleKeyDown({
@@ -213,7 +213,7 @@ describe('DropdownContentsLabelsView', () => {
 
         expect(wrapper.vm.updateSelectedLabels).toHaveBeenCalledWith([
           {
-            ...mockLabels[1],
+            ...mockLabels[2],
             set: true,
           },
         ]);

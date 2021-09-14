@@ -9,8 +9,8 @@ describe('DropdownValue', () => {
   let wrapper;
 
   const findAllLabels = () => wrapper.findAllComponents(GlLabel);
-  const findRegularLabel = () => findAllLabels().at(0);
-  const findScopedLabel = () => findAllLabels().at(1);
+  const findRegularLabel = () => findAllLabels().at(1);
+  const findScopedLabel = () => findAllLabels().at(0);
   const findWrapper = () => wrapper.find('[data-testid="value-wrapper"]');
   const findEmptyPlaceholder = () => wrapper.find('[data-testid="empty-placeholder"]');
 

@@ -38695,6 +38695,9 @@ msgstr ""
 msgid "You must provide your current password in order to change it."
 msgstr ""
 
+msgid "You must sign in to search for specific terms."
+msgstr ""
+
 msgid "You must solve the CAPTCHA in order to submit"
 msgstr ""
 

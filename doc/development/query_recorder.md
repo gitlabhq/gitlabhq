@@ -18,9 +18,9 @@ This style of test works by counting the number of SQL queries executed by Activ
 
 ```ruby
 it "avoids N+1 database queries" do
-  control_count = ActiveRecord::QueryRecorder.new { visit_some_page }.count
+  control = ActiveRecord::QueryRecorder.new { visit_some_page }
   create_list(:issue, 5)
-  expect { visit_some_page }.not_to exceed_query_limit(control_count)
+  expect { visit_some_page }.not_to exceed_query_limit(control)
 end
 ```
 
@@ -37,9 +37,9 @@ You should pass the `skip_cached` variable to `QueryRecorder` and use the `excee
 
 ```ruby
 it "avoids N+1 database queries", :use_sql_query_cache do
-  control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }.count
+  control = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }
   create_list(:issue, 5)
-  expect { visit_some_page }.not_to exceed_all_query_limit(control_count)
+  expect { visit_some_page }.not_to exceed_all_query_limit(control)
 end
 ```
 

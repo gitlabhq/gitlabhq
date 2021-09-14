@@ -1,5 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
+import { sortBy } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
@@ -31,6 +32,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    sortedSelectedLabels() {
+      return sortBy(this.selectedLabels, (label) => (isScopedLabel(label) ? 0 : 1));
+    },
+  },
   methods: {
     labelFilterUrl(label) {
       return `${this.labelsFilterBasePath}?${this.labelsFilterParam}[]=${encodeURIComponent(
@@ -60,7 +66,7 @@ export default {
     </span>
     <template v-else>
       <gl-label
-        v-for="label in selectedLabels"
+        v-for="label in sortedSelectedLabels"
         :key="label.id"
         data-qa-selector="selected_label_content"
         :data-qa-label-name="label.title"

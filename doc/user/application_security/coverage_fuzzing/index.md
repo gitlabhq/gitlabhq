@@ -82,7 +82,7 @@ The `my_fuzz_target` job (the separate job for your fuzz target) does the follow
 - Runs on a fuzz stage that usually comes after a test stage.
 
 The `gitlab-cov-fuzz` is a command-line tool that runs the instrumented application. It parses and
-analyzes the exception information that the fuzzer outputs. It also downloads the [corpus](#glossary)
+analyzes the exception information that the fuzzer outputs. It also downloads the [corpus](../terminology/index.md#corpus)
 and crash events from previous pipelines automatically. This helps your fuzz targets build on the
 progress of previous fuzzing jobs. The parsed crash events and data are written to
 `gl-coverage-fuzzing-report.json`.
@@ -127,7 +127,7 @@ any option available in the underlying fuzzing engine.
 | `COVFUZZ_SEED_CORPUS` | Path to a seed corpus directory. The default is empty.                         |
 | `COVFUZZ_URL_PREFIX`  | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this when using an offline environment. The default value is `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
 
-The files in the seed corpus (`COVFUZZ_SEED_CORPUS`), if provided, aren't updated unless you commit new
+The files in the [seed corpus](../terminology/index.md#seed-corpus) (`COVFUZZ_SEED_CORPUS`), if provided, aren't updated unless you commit new
 files to your Git repository. There's usually no need to frequently update the seed corpus. As part
 of the GitLab artifacts system, GitLab saves in a corpus directory the new test cases that every run
 generates. In any subsequent runs, GitLab also reuses the generated corpus together with the seed
@@ -262,12 +262,3 @@ vulnerability:
 - Scanner: The scanner that detected the vulnerability (for example, Coverage Fuzzing).
 - Scanner Provider: The engine that did the scan. For Coverage Fuzzing, this can be any of the
   engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
-
-### Glossary
-
-- Seed corpus: The set of test cases given as initial input to the fuzz target. This usually speeds
-  up the fuzz target substantially. This can be either manually created test cases or auto-generated
-  with the fuzz target itself from previous runs.
-- Corpus: The set of meaningful test cases that are generated while the fuzzer is running. Each
-  meaningful test case produces new coverage in the tested program. It's advised to re-use the
-  corpus and pass it to subsequent runs.

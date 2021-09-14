@@ -137,9 +137,54 @@ with [domain expertise](#domain-experts).
   the content.
 - (*4*): End-to-end changes include all files within the `qa` directory.
 
-#### Security requirements
+#### Acceptance checklist
 
-View the updated documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/#internal-application-security-reviews) for **when** and **how** to request a security review.
+This checklist encourages the authors, reviewers, and maintainers of merge requests (MRs) to confirm changes were analyzed for high-impact risks to quality, performance, reliability, security, and maintainability.
+
+Using checklists improves quality in software engineering. This checklist is a straightforward tool to support and bolster the skills of contributors to the GitLab codebase.
+
+##### Quality
+
+See the [test engineering process](https://about.gitlab.com/handbook/engineering/quality/test-engineering/) for further quality guidelines.
+
+1. I have self-reviewed this MR per [code review guidelines](code_review.md).
+1. For the code that this change impacts, I believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).
+1. If the existing automated tests do not cover the above functionality, I have added the necessary additional tests or added an issue to describe the automation testing gap and linked it to this MR.
+1. I have considered the technical aspects of this change's impact on GitLab.com hosted customers and self-managed customers.
+1. I have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~frontend`, `~backend`, and `~database` labels accordingly.
+1. I have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
+1. I have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or I have decided that this does not apply.
+1. I have properly separated EE content from FOSS, or this MR is FOSS only.
+    - [Where should EE code go?](ee_features.md#separation-of-ee-code)
+1. If I am introducing a new expectation for existing data, I have confirmed that existing data meets this expectation or I have made this expectation optional rather than required.
+
+##### Performance, reliability, and availability
+
+1. I am confident that this MR does not harm performance, or I have asked a reviewer to help assess the performance impact. ([Merge request performance guidelines](merge_request_performance_guidelines.md))
+1. I have added [information for database reviewers in the MR description](database_review.md#required), or I have decided that it is unnecessary.
+    - [Does this MR have database-related changes?](database_review.md)
+1. I have considered the availability and reliability risks of this change.
+1. I have considered the scalability risk based on future predicted growth.
+1. I have considered the performance, reliability, and availability impacts of this change on large customers who may have significantly more data than the average customer.
+
+##### Documentation
+
+1. I have included changelog trailers, or I have decided that they are not needed.
+    - [Does this MR need a changelog?](changelog.md#what-warrants-a-changelog-entry)
+1. I have added/updated documentation or decided that documentation changes are unnecessary for this MR.
+    - [Is documentation required?](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#when-documentation-is-required)
+
+##### Security
+
+1. I have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/engineering/security/#when-to-request-a-security-review), I have added the `~security` label and I have `@`-mentioned `@gitlab-com/gl-security/appsec`.
+1. I have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
+
+##### Deployment
+
+1. I have considered using a feature flag for this change because the change may be high risk.
+1. If I am using a feature flag, I plan to test the change in staging before I test it in production, and I have considered rolling it out to a subset of production customers before rolling it out to all customers.
+    - [When to use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)
+1. I have informed the Infrastructure department of a default setting or new setting change per [definition of done](contributing/merge_request_workflow.md#definition-of-done), or decided that this is unnecessary.
 
 ### The responsibility of the merge request author
 
@@ -529,7 +574,7 @@ author.
 
 GitLab is used in a lot of places. Many users use
 our [Omnibus packages](https://about.gitlab.com/install/), but some use
-the [Docker images](https://docs.gitlab.com/omnibus/docker/), some are
+the [Docker images](../install/docker.md), some are
 [installed from source](../install/installation.md),
 and there are other installation methods available. GitLab.com itself is a large
 Enterprise Edition instance. This has some implications:
@@ -569,7 +614,7 @@ Enterprise Edition instance. This has some implications:
    If you're adding a new setting in `gitlab.yml`:
    1. Try to avoid that, and add to `ApplicationSetting` instead.
    1. Ensure that it is also
-      [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml.html#adding-a-new-setting-to-gitlab-yml).
+      [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
 1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
    Ensure that we support object storage for any file storage we need to perform. For more
    information, see the [uploads documentation](uploads.md).

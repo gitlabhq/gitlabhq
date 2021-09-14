@@ -109,6 +109,14 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
+    it_behaves_like 'issuable list with anonymous search disabled' do
+      let(:params) { { namespace_id: project.namespace, project_id: project } }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+    end
+
     it_behaves_like 'paginated collection' do
       let!(:issue_list) { create_list(:issue, 2, project: project) }
       let(:collection) { project.issues }

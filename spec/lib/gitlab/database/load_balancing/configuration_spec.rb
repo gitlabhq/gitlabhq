@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
+  let(:model) do
+    config = ActiveRecord::DatabaseConfigurations::HashConfig
+      .new('main', 'test', configuration_hash)
+
+    double(:model, connection_db_config: config)
+  end
+
   describe '.for_model' do
-    let(:model) do
-      config = ActiveRecord::DatabaseConfigurations::HashConfig
-        .new('main', 'test', configuration_hash)
-
-      double(:model, connection_db_config: config)
-    end
-
     context 'when load balancing is not configured' do
       let(:configuration_hash) { {} }
 
@@ -140,6 +140,36 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
       config = described_class.new(ActiveRecord::Base)
 
       expect(config.service_discovery_enabled?).to eq(false)
+    end
+  end
+
+  describe '#pool_size' do
+    context 'when a custom pool size is used' do
+      let(:configuration_hash) { { pool: 4 } }
+
+      it 'always reads the value from the model configuration' do
+        config = described_class.new(model)
+
+        expect(config.pool_size).to eq(4)
+
+        # We can't modify `configuration_hash` as it's only used to populate the
+        # internal hash used by ActiveRecord; instead of it being used as-is.
+        allow(model.connection_db_config)
+          .to receive(:configuration_hash)
+          .and_return({ pool: 42 })
+
+        expect(config.pool_size).to eq(42)
+      end
+    end
+
+    context 'when the pool size is nil' do
+      let(:configuration_hash) { {} }
+
+      it 'returns the default pool size' do
+        config = described_class.new(model)
+
+        expect(config.pool_size).to eq(Gitlab::Database.default_pool_size)
+      end
     end
   end
 end

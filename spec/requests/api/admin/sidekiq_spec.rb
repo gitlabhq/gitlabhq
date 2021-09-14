@@ -36,7 +36,7 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues do
           add_job(admin, [2])
           add_job(create(:user), [3])
 
-          delete api("/admin/sidekiq/queues/authorized_projects?user=#{admin.username}", admin)
+          delete api("/admin/sidekiq/queues/authorized_projects?user=#{admin.username}&worker_class=AuthorizedProjectsWorker", admin)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq('completed' => true,

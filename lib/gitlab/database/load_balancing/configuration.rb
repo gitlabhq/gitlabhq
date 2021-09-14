@@ -7,17 +7,13 @@ module Gitlab
       class Configuration
         attr_accessor :hosts, :max_replication_difference,
                       :max_replication_lag_time, :replica_check_interval,
-                      :service_discovery, :pool_size, :model
+                      :service_discovery, :model
 
         # Creates a configuration object for the given ActiveRecord model.
         def self.for_model(model)
           cfg = model.connection_db_config.configuration_hash.deep_symbolize_keys
           lb_cfg = cfg[:load_balancing] || {}
           config = new(model)
-
-          if (size = cfg[:pool])
-            config.pool_size = size
-          end
 
           if (diff = lb_cfg[:max_replication_difference])
             config.max_replication_difference = diff
@@ -54,7 +50,6 @@ module Gitlab
           @replica_check_interval = 60.0
           @model = model
           @hosts = hosts
-          @pool_size = Database.default_pool_size
           @service_discovery = {
             nameserver: 'localhost',
             port: 8600,
@@ -64,6 +59,17 @@ module Gitlab
             disconnect_timeout: 120,
             use_tcp: false
           }
+        end
+
+        def pool_size
+          # The pool size may change when booting up GitLab, as GitLab enforces
+          # a certain number of threads. If a Configuration is memoized, this
+          # can lead to incorrect pool sizes.
+          #
+          # To support this scenario, we always attempt to read the pool size
+          # from the model's configuration.
+          @model.connection_db_config.configuration_hash[:pool] ||
+            Database.default_pool_size
         end
 
         def load_balancing_enabled?

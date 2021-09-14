@@ -65,7 +65,7 @@ Remember to run
 [SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
 **(ULTIMATE)** on your project (or at least the
 [`gosec` analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
-and to follow our [Security requirements](../code_review.md#security-requirements).
+and to follow our [Security requirements](../code_review.md#security).
 
 Web servers can take advantages of middlewares like [Secure](https://github.com/unrolled/secure).
 
