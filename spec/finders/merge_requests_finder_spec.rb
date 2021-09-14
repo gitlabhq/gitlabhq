@@ -729,6 +729,36 @@ RSpec.describe MergeRequestsFinder do
         merge_requests = described_class.new(user, params).execute
         expect { merge_requests.load }.not_to raise_error
       end
+
+      context 'filtering by search text' do
+        let!(:merge_request6) { create(:merge_request, source_project: project1, target_project: project1, source_branch: 'tanuki-branch', title: 'tanuki') }
+
+        let(:params) { { project_id: project1.id, search: 'tanuki' } }
+
+        context 'with anonymous user' do
+          let(:merge_requests) { described_class.new(nil, params).execute }
+
+          context 'with disable_anonymous_search feature flag enabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: true)
+            end
+
+            it 'does not perform search' do
+              expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request6)
+            end
+          end
+
+          context 'with disable_anonymous_search feature flag disabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: false)
+            end
+
+            it 'returns matching merge requests' do
+              expect(merge_requests).to contain_exactly(merge_request6)
+            end
+          end
+        end
+      end
     end
 
     describe '#row_count', :request_store do

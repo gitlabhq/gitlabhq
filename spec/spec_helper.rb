@@ -305,6 +305,9 @@ RSpec.configure do |config|
       # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
       stub_feature_flags(block_issue_repositioning: false)
 
+      # This is an ops feature flag that's disabled by default
+      stub_feature_flags(disable_anonymous_search: false)
+
       # Disable the refactored top nav search until there is functionality
       # Can be removed once all existing functionality has been replicated
       # For more information check https://gitlab.com/gitlab-org/gitlab/-/issues/339348

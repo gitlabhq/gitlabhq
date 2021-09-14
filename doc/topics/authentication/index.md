@@ -11,7 +11,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 ## GitLab users
 
 - [SSH](../../ssh/index.md)
-- [Two-Factor Authentication (2FA)](../../user/profile/account/two_factor_authentication.md#two-factor-authentication)
+- [Two-factor authentication (2FA)](../../user/profile/account/two_factor_authentication.md#two-factor-authentication)
 - [Why do I keep getting signed out?](../../user/profile/index.md#why-do-i-keep-getting-signed-out)
 - **Articles:**
   - [Support for Universal 2nd Factor Authentication - YubiKeys](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/)
@@ -23,7 +23,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 ## GitLab administrators
 
 - [LDAP](../../administration/auth/ldap/index.md)
-- [Enforce Two-factor Authentication (2FA)](../../security/two_factor_authentication.md#enforce-two-factor-authentication-2fa)
+- [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md)
 - **Articles:**
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/blog/2014/07/10/feature-highlight-ldap-sync/)
   - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/debugging_ldap.html)

@@ -567,6 +567,35 @@ RSpec.describe IssuesFinder do
         it 'returns issues with title and description match for search term' do
           expect(issues).to contain_exactly(issue1, issue2)
         end
+
+        context 'with anonymous user' do
+          let_it_be(:public_project) { create(:project, :public, group: subgroup) }
+          let_it_be(:issue6) { create(:issue, project: public_project, title: 'tanuki') }
+          let_it_be(:issue7) { create(:issue, project: public_project, title: 'ikunat') }
+
+          let(:search_user) { nil }
+          let(:params) { { search: 'tanuki' } }
+
+          context 'with disable_anonymous_search feature flag enabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: true)
+            end
+
+            it 'does not perform search' do
+              expect(issues).to contain_exactly(issue6, issue7)
+            end
+          end
+
+          context 'with disable_anonymous_search feature flag disabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: false)
+            end
+
+            it 'finds one public issue' do
+              expect(issues).to contain_exactly(issue6)
+            end
+          end
+        end
       end
 
       context 'filtering by issue term in title' do

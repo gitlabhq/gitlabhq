@@ -72,16 +72,16 @@ To add additional text to emails:
 1. Enter your text in the **Additional text** field.
 1. Select **Save changes**.
 
-## Enable user deactivation emails **(FREE SELF)**
+## User deactivation emails **(FREE SELF)**
 
-GitLab can send email notifications to users when their account has been deactivated.
+GitLab sends email notifications to users when their account has been deactivated.
 
-To enable these notifications:
+To disable these notifications:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences** (`/admin/application_settings/preferences`).
 1. Expand **Email**.
-1. Select **Enable user deactivation emails**.
+1. Clear the **Enable user deactivation emails** checkbox.
 1. Select **Save changes**.
 
 <!-- ## Troubleshooting

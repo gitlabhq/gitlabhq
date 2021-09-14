@@ -361,6 +361,9 @@ To create a custom ruleset:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292686) in GitLab 14.2.
 
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the `vulnerability_flags` flag](../../../administration/feature_flags.md). On GitLab.com, this feature is available.
+
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
 ### Using CI/CD variables to pass credentials for private repositories

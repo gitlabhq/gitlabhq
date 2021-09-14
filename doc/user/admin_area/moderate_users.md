@@ -137,6 +137,10 @@ A deactivated user:
 
 Personal projects, and group and user history of the deactivated user are left intact.
 
+NOTE:
+Users are notified about account deactivation if
+[user deactivation emails](settings/email.md#user-deactivation-emails) are enabled.
+
 A user can be deactivated from the Admin Area. To do this:
 
 1. On the top bar, select **Menu > Admin**.
@@ -145,16 +149,13 @@ A user can be deactivated from the Admin Area. To do this:
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Deactivate**.
 
-For the deactivation option to be visible to an admin, the user:
+For the deactivation option to be visible to an administrator, the user:
 
 - Must be currently active.
 - Must not have signed in, or have any activity, in the last 90 days.
 
 NOTE:
 Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).
-
-NOTE:
-Users can be notified about account deactivation if [user deactivation emails](settings/email.md#enable-user-deactivation-emails) are enabled.
 
 ### Automatically deactivate dormant users
 

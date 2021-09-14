@@ -318,7 +318,7 @@ on the files make them readable to you but not accessible to others.
 ## Configure two-factor authentication (2FA)
 
 You can set up two-factor authentication (2FA) for
-[Git over SSH](../security/two_factor_authentication.md#two-factor-authentication-2fa-for-git-over-ssh-operations).
+[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
 
 ## Use EGit on Eclipse
 

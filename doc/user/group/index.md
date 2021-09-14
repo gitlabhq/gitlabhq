@@ -754,7 +754,7 @@ The group's new subgroups have push rules set for them based on either:
 - [Transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
 - [Share a project with a group](../project/members/share_project_with_groups.md): Give all group members access to the project at once.
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
-- [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group): Enforce 2FA
+- [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
 - Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md)..
 

@@ -30,8 +30,8 @@
       = f.check_box :require_two_factor_authentication, class: 'form-check-input'
       = f.label :require_two_factor_authentication, class: 'form-check-label' do
         %strong
-          = _("Require all users in this group to setup Two-factor authentication")
-          = link_to sprite_icon('question-o'), help_page_path('security/two_factor_authentication', anchor: 'enforcing-2fa-for-all-users-in-a-group')
+          = _("Require all users in this group to set up two-factor authentication")
+          = link_to sprite_icon('question-o'), help_page_path('security/two_factor_authentication', anchor: 'enforce-2fa-for-all-users-in-a-group')
 .form-group.row
   .offset-sm-2.col-sm-10
     .form-check

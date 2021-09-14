@@ -332,6 +332,7 @@ class IssuableFinder
   def by_search(items)
     return items unless search
     return items if items.is_a?(ActiveRecord::NullRelation)
+    return items if Feature.enabled?(:disable_anonymous_search, type: :ops) && current_user.nil?
 
     if use_cte_for_search?
       cte = Gitlab::SQL::CTE.new(klass.table_name, items)

@@ -127,8 +127,9 @@ From there, you can see the following actions:
 - Permission to modify merge requests approval rules in merge requests was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
 - New approvals requirement when new commits are added to an MR was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
 - When [strategies for feature flags](../operations/feature_flags.md#feature-flag-strategies) are changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68408) in GitLab 14.3)
-- Changed allow push force and code owner approval requirement ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
-- Added or removed users and groups from protected branch allow to merge and allow to push ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
+- Allowing force push to protected branch changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
+- Code owner approval requirement on merge requests targeting protected branch changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
+- Users and groups allowed to merge and push to protected branch added or removed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 
