@@ -18,10 +18,7 @@
         .col-md-12.col-lg-6
           .gl-display-flex.gl-flex-wrap.gl-justify-content-end
             - if can_admin_project_member?(@project)
-              = link_to _("Import a project"),
-                import_project_project_members_path(@project),
-                class: "btn btn-default btn-md gl-button gl-mt-3 gl-sm-w-auto gl-w-full",
-                title: _("Import members from another project")
+              .js-import-a-project-modal{ data: { project_id: @project.id, project_name: @project.name } }
             - if @project.allowed_to_share_with_group?
               .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite a group') } }
             - if can_admin_project_member?(@project)

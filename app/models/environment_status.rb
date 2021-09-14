@@ -100,11 +100,13 @@ class EnvironmentStatus
   def self.build_environments_status(mr, user, pipeline)
     return [] unless pipeline
 
-    pipeline.environments_in_self_and_descendants.includes(:project).available.map do |environment|
-      next unless Ability.allowed?(user, :read_environment, environment)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/340781') do
+      pipeline.environments_in_self_and_descendants.includes(:project).available.map do |environment|
+        next unless Ability.allowed?(user, :read_environment, environment)
 
-      EnvironmentStatus.new(pipeline.project, environment, mr, pipeline.sha)
-    end.compact
+        EnvironmentStatus.new(pipeline.project, environment, mr, pipeline.sha)
+      end.compact
+    end
   end
   private_class_method :build_environments_status
 end

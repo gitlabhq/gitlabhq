@@ -17028,9 +17028,6 @@ msgstr ""
 msgid "Import Projects from Gitea"
 msgstr ""
 
-msgid "Import a project"
-msgstr ""
-
 msgid "Import an exported GitLab project"
 msgstr ""
 
@@ -17113,6 +17110,27 @@ msgid "Import tasks from Phabricator into issues"
 msgstr ""
 
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
+msgstr ""
+
+msgid "ImportAProjectModal|Import from a project"
+msgstr ""
+
+msgid "ImportAProjectModal|Import members from another project"
+msgstr ""
+
+msgid "ImportAProjectModal|Import project members"
+msgstr ""
+
+msgid "ImportAProjectModal|Only project members (not group members) are imported, and they get the same permissions as the project you import from."
+msgstr ""
+
+msgid "ImportAProjectModal|Successfully imported"
+msgstr ""
+
+msgid "ImportAProjectModal|Unable to import project members"
+msgstr ""
+
+msgid "ImportAProjectModal|You're importing members to the %{strongStart}%{name}%{strongEnd} project."
 msgstr ""
 
 msgid "ImportButtons|Connect repositories from"
@@ -26215,7 +26233,19 @@ msgstr ""
 msgid "ProjectSelect| or group"
 msgstr ""
 
+msgid "ProjectSelect|No matching results"
+msgstr ""
+
 msgid "ProjectSelect|Search for project"
+msgstr ""
+
+msgid "ProjectSelect|Search projects"
+msgstr ""
+
+msgid "ProjectSelect|Select a project"
+msgstr ""
+
+msgid "ProjectSelect|There was an error fetching the projects. Please try again."
 msgstr ""
 
 msgid "ProjectService|Drone server URL"

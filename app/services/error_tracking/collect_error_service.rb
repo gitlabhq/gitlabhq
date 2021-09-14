@@ -9,9 +9,9 @@ module ErrorTracking
       error = project.error_tracking_errors.report_error(
         name: exception['type'], # Example: ActionView::MissingTemplate
         description: exception['value'], # Example: Missing template posts/show in...
-        actor: event['transaction'], # Example: PostsController#show
+        actor: actor, # Example: PostsController#show
         platform: event['platform'], # Example: ruby
-        timestamp: event['timestamp']
+        timestamp: timestamp
       )
 
       # The payload field contains all the data on error including stacktrace in jsonb.
@@ -20,7 +20,7 @@ module ErrorTracking
         environment: event['environment'],
         description: exception['value'],
         level: event['level'],
-        occurred_at: event['timestamp'],
+        occurred_at: timestamp,
         payload: event
       )
     end
@@ -33,6 +33,30 @@ module ErrorTracking
 
     def exception
       event['exception']['values'].first
+    end
+
+    def actor
+      return event['transaction'] if event['transaction']
+
+      # Some SDK do not have transaction attribute.
+      # So we build it by combining function name and module name from
+      # the last item in stacktrace.
+      last_line = exception.dig('stacktrace', 'frames').last
+
+      "#{last_line['function']}(#{last_line['module']})"
+    end
+
+    def timestamp
+      return @timestamp if @timestamp
+
+      @timestamp = (event['timestamp'] || Time.zone.now)
+
+      # Some SDK send timestamp in numeric format like '1630945472.13'.
+      if @timestamp.to_s =~ /\A\d+(\.\d+)?\z/
+        @timestamp = Time.zone.at(@timestamp.to_f)
+      end
+
+      @timestamp
     end
   end
 end

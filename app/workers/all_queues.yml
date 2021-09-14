@@ -1681,6 +1681,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: todos_destroyer:todos_destroyer_destroyed_designs
+  :worker_name: TodosDestroyer::DestroyedDesignsWorker
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: todos_destroyer:todos_destroyer_destroyed_issuable
   :worker_name: TodosDestroyer::DestroyedIssuableWorker
   :feature_category: :issue_tracking

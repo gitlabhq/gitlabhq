@@ -2602,15 +2602,13 @@ RSpec.describe API::Users do
         let(:api_user) { admin }
 
         context 'for a deactivated user' do
-          before do
-            user.deactivate
-          end
+          let(:user_id) { deactivated_user.id }
 
           it 'activates a deactivated user' do
             activate
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(user.reload.state).to eq('active')
+            expect(deactivated_user.reload.state).to eq('active')
           end
         end
 
@@ -2714,15 +2712,13 @@ RSpec.describe API::Users do
         end
 
         context 'for a deactivated user' do
-          before do
-            user.deactivate
-          end
+          let(:user_id) { deactivated_user.id }
 
           it 'returns 201' do
             deactivate
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(user.reload.state).to eq('deactivated')
+            expect(deactivated_user.reload.state).to eq('deactivated')
           end
         end
 
@@ -2791,7 +2787,6 @@ RSpec.describe API::Users do
     describe 'POST /users/:id/approve' do
       subject(:approve) { post api("/users/#{user_id}/approve", api_user) }
 
-      let_it_be(:deactivated_user) { create(:user, :deactivated) }
       let_it_be(:blocked_user) { create(:user, :blocked) }
 
       context 'performed by a non-admin user' do

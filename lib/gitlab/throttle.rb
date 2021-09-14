@@ -24,7 +24,14 @@ module Gitlab
       "HTTP_#{env_value.upcase.tr('-', '_')}"
     end
 
-    def self.unauthenticated_options
+    def self.unauthenticated_api_options
+      limit_proc = proc { |req| settings.throttle_unauthenticated_api_requests_per_period }
+      period_proc = proc { |req| settings.throttle_unauthenticated_api_period_in_seconds.seconds }
+      { limit: limit_proc, period: period_proc }
+    end
+
+    def self.unauthenticated_web_options
+      # TODO: Columns will be renamed in https://gitlab.com/gitlab-org/gitlab/-/issues/340031
       limit_proc = proc { |req| settings.throttle_unauthenticated_requests_per_period }
       period_proc = proc { |req| settings.throttle_unauthenticated_period_in_seconds.seconds }
       { limit: limit_proc, period: period_proc }

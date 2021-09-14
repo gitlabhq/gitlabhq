@@ -1407,6 +1407,28 @@ Input type: `CreateTestCaseInput`
 | <a id="mutationcreatetestcaseerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatetestcasetestcase"></a>`testCase` | [`Issue`](#issue) | Test case created. |
 
+### `Mutation.customerRelationsOrganizationCreate`
+
+Input type: `CustomerRelationsOrganizationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationsorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationsorganizationcreatedefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
+| <a id="mutationcustomerrelationsorganizationcreatedescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
+| <a id="mutationcustomerrelationsorganizationcreategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Group for the organization. |
+| <a id="mutationcustomerrelationsorganizationcreatename"></a>`name` | [`String!`](#string) | Name of the organization. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationsorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationsorganizationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationcustomerrelationsorganizationcreateorganization"></a>`organization` | [`CustomerRelationsOrganization`](#customerrelationsorganization) | Organization after the mutation. |
+
 ### `Mutation.dastOnDemandScanCreate`
 
 Input type: `DastOnDemandScanCreateInput`
@@ -8652,7 +8674,7 @@ A custom emoji uploaded by user.
 | <a id="customerrelationsorganizationdefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
 | <a id="customerrelationsorganizationdescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
 | <a id="customerrelationsorganizationid"></a>`id` | [`ID!`](#id) | Internal ID of the organization. |
-| <a id="customerrelationsorganizationname"></a>`name` | [`String`](#string) | Name of the organization. |
+| <a id="customerrelationsorganizationname"></a>`name` | [`String!`](#string) | Name of the organization. |
 | <a id="customerrelationsorganizationupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the organization was last updated. |
 
 ### `DastProfile`

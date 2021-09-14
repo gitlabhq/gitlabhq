@@ -82,8 +82,14 @@ module Gitlab
     end
 
     def self.configure_throttles(rack_attack)
-      throttle_or_track(rack_attack, 'throttle_unauthenticated', Gitlab::Throttle.unauthenticated_options) do |req|
-        if req.throttle_unauthenticated?
+      throttle_or_track(rack_attack, 'throttle_unauthenticated_api', Gitlab::Throttle.unauthenticated_api_options) do |req|
+        if req.throttle_unauthenticated_api?
+          req.ip
+        end
+      end
+
+      throttle_or_track(rack_attack, 'throttle_unauthenticated_web', Gitlab::Throttle.unauthenticated_web_options) do |req|
+        if req.throttle_unauthenticated_web?
           req.ip
         end
       end
@@ -177,7 +183,15 @@ module Gitlab
       return false if dry_run_config.empty?
       return true if dry_run_config == '*'
 
-      dry_run_config.split(',').map(&:strip).include?(name)
+      dry_run_throttles = dry_run_config.split(',').map(&:strip)
+
+      # `throttle_unauthenticated` was split into API and web, so to maintain backwards-compatibility
+      # this throttle name now controls both rate limits.
+      if dry_run_throttles.include?('throttle_unauthenticated')
+        dry_run_throttles += %w[throttle_unauthenticated_api throttle_unauthenticated_web]
+      end
+
+      dry_run_throttles.include?(name)
     end
 
     def self.user_allowlist

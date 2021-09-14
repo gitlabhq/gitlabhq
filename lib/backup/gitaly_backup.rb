@@ -57,6 +57,10 @@ module Backup
       }.merge(Gitlab::GitalyClient.connection_data(repository.storage)).to_json)
     end
 
+    def parallel_enqueue?
+      false
+    end
+
     private
 
     def started?

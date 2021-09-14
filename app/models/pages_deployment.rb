@@ -16,6 +16,7 @@ class PagesDeployment < ApplicationRecord
   scope :migrated_from_legacy_storage, -> { where(file: MIGRATED_FILE_NAME) }
   scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
+  scope :project_id_in, ->(ids) { where(project_id: ids) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }

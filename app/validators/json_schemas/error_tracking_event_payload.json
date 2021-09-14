@@ -2,48 +2,15 @@
   "description": "Error tracking event payload",
   "type": "object",
   "required": [],
-  "modules": {
-    "type": "object"
-  },
   "properties": {
-    "event_id": {
-      "type": "string"
-    },
-    "level": {
-      "type": "string"
-    },
-    "timestamp": {
-      "type": "string"
-    },
-    "release": {
-      "type": "string"
-    },
     "environment": {
       "type": "string"
-    },
-    "server_name": {
-      "type": "string"
-    },
-    "message": {
-      "type": "string"
-    },
-    "contexts": {
-      "type": "object"
     },
     "platform": {
       "type": "string"
     },
     "sdk": {
-      "type": "object",
-      "required": [],
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        }
-      }
+      "type": "object"
     },
     "exception": {
       "type": "object",

@@ -158,6 +158,8 @@ Example response:
 ]
 ```
 
+To view more than the first 20 runners, use [pagination](index.md#pagination).
+
 ## Get runner's details
 
 Get details of a runner.

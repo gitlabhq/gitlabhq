@@ -60,10 +60,19 @@ module Gitlab
         path =~ protected_paths_regex
       end
 
-      def throttle_unauthenticated?
+      def throttle_unauthenticated_api?
+        api_request? &&
         !should_be_skipped? &&
         !throttle_unauthenticated_packages_api? &&
         !throttle_unauthenticated_files_api? &&
+        Gitlab::Throttle.settings.throttle_unauthenticated_api_enabled &&
+        unauthenticated?
+      end
+
+      def throttle_unauthenticated_web?
+        web_request? &&
+        !should_be_skipped? &&
+        # TODO: Column will be renamed in https://gitlab.com/gitlab-org/gitlab/-/issues/340031
         Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
         unauthenticated?
       end

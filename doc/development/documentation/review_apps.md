@@ -7,7 +7,7 @@ description: Learn how documentation review apps work.
 
 # Documentation review apps
 
-If your merge request contains documentation changes, you can use a review app to preview
+If you're a GitLab team member and your merge request contains documentation changes, you can use a review app to preview
 how they would look if they were deployed to the [GitLab Docs site](https://docs.gitlab.com).
 
 Review apps are enabled for the following projects:

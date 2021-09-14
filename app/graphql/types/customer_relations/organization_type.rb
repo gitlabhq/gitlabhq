@@ -14,7 +14,7 @@ module Types
 
       field :name,
             GraphQL::Types::String,
-            null: true,
+            null: false,
             description: 'Name of the organization.'
 
       field :default_rate,

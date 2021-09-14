@@ -10,12 +10,19 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
 
     let(:throttles) do
       {
-        throttle_unauthenticated: Gitlab::Throttle.unauthenticated_options,
+        throttle_unauthenticated_api: Gitlab::Throttle.unauthenticated_api_options,
+        throttle_unauthenticated_web: Gitlab::Throttle.unauthenticated_web_options,
         throttle_authenticated_api: Gitlab::Throttle.authenticated_api_options,
         throttle_product_analytics_collector: { limit: 100, period: 60 },
-        throttle_unauthenticated_protected_paths: Gitlab::Throttle.unauthenticated_options,
-        throttle_authenticated_protected_paths_api: Gitlab::Throttle.authenticated_api_options,
-        throttle_authenticated_protected_paths_web: Gitlab::Throttle.authenticated_web_options
+        throttle_authenticated_web: Gitlab::Throttle.authenticated_web_options,
+        throttle_unauthenticated_protected_paths: Gitlab::Throttle.protected_paths_options,
+        throttle_authenticated_protected_paths_api: Gitlab::Throttle.protected_paths_options,
+        throttle_authenticated_protected_paths_web: Gitlab::Throttle.protected_paths_options,
+        throttle_unauthenticated_packages_api: Gitlab::Throttle.unauthenticated_packages_api_options,
+        throttle_authenticated_packages_api: Gitlab::Throttle.authenticated_packages_api_options,
+        throttle_authenticated_git_lfs: Gitlab::Throttle.throttle_authenticated_git_lfs_options,
+        throttle_unauthenticated_files_api: Gitlab::Throttle.unauthenticated_files_api_options,
+        throttle_authenticated_files_api: Gitlab::Throttle.authenticated_files_api_options
       }
     end
 
@@ -82,6 +89,15 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
       regular_throttles.each do |throttle|
         expect(fake_rack_attack).to have_received(:throttle).with(throttle.to_s, throttles[throttle])
       end
+    end
+
+    it 'enables dry-runs for `throttle_unauthenticated_api` and `throttle_unauthenticated_web` when selecting `throttle_unauthenticated`' do
+      stub_env('GITLAB_THROTTLE_DRY_RUN', 'throttle_unauthenticated')
+
+      described_class.configure(fake_rack_attack)
+
+      expect(fake_rack_attack).to have_received(:track).with('throttle_unauthenticated_api', throttles[:throttle_unauthenticated_api])
+      expect(fake_rack_attack).to have_received(:track).with('throttle_unauthenticated_web', throttles[:throttle_unauthenticated_web])
     end
 
     context 'user allowlist' do

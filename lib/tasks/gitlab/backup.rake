@@ -102,10 +102,19 @@ namespace :gitlab do
       task create: :gitlab_environment do
         puts_time "Dumping repositories ...".color(:blue)
 
+        max_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_CONCURRENCY', 1).to_i
+        max_storage_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 1).to_i
+
         if ENV["SKIP"] && ENV["SKIP"].include?("repositories")
           puts_time "[SKIPPED]".color(:cyan)
+        elsif max_concurrency < 1 || max_storage_concurrency < 1
+          puts "GITLAB_BACKUP_MAX_CONCURRENCY and GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY must have a value of at least 1".color(:red)
+          exit 1
         else
-          Backup::Repositories.new(progress, strategy: repository_backup_strategy).dump
+          Backup::Repositories.new(progress, strategy: repository_backup_strategy).dump(
+            max_concurrency: max_concurrency,
+            max_storage_concurrency: max_storage_concurrency
+          )
           puts_time "done".color(:green)
         end
       end
@@ -290,9 +299,13 @@ namespace :gitlab do
     end
 
     def repository_backup_strategy
-      max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
-      max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
-      Backup::GitalyBackup.new(progress, parallel: max_concurrency, parallel_storage: max_storage_concurrency)
+      if Feature.enabled?(:gitaly_backup, default_enabled: :yaml)
+        max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
+        max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
+        Backup::GitalyBackup.new(progress, parallel: max_concurrency, parallel_storage: max_storage_concurrency)
+      else
+        Backup::GitalyRpcBackup.new(progress)
+      end
     end
   end
   # namespace end: backup

@@ -145,6 +145,7 @@ class GroupPolicy < BasePolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
+    enable :admin_organization
   end
 
   rule { maintainer }.policy do

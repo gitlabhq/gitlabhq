@@ -429,3 +429,18 @@ query ProjectTerraformStates {
 
 For those new to the GitLab GraphQL API, read
 [Getting started with GitLab GraphQL API](../../../api/graphql/getting_started.md).
+
+## Troubleshooting
+
+### Unable to lock Terraform state files in CI jobs for `terraform apply` using a plan created in a previous job
+
+When passing `-backend-config=` to `terraform init`, Terraform persists these values inside the plan
+cache file. This includes the `password` value.
+
+As a result, to create a plan and later use the same plan in another CI job, you might get the error
+`Error: Error acquiring the state lock` errors when using `-backend-config=password=$CI_JOB_TOKEN`.
+This happens because the value of `$CI_JOB_TOKEN` is only valid for the duration of the current job.
+
+As a workaround, use [http backend configuration variables](https://www.terraform.io/docs/language/settings/backends/http.html#configuration-variables) in your CI job,
+which is what happens behind the scenes when following the
+[Get started using GitLab CI](#get-started-using-gitlab-ci) instructions.
