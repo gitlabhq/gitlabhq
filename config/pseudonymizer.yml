@@ -385,7 +385,6 @@ tables:
     - public_builds
     - last_repository_check_failed
     - last_repository_check_at
-    - container_registry_enabled
     - only_allow_merge_if_pipeline_succeeds
     - has_external_issue_tracker
     - repository_storage

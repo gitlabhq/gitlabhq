@@ -153,6 +153,7 @@ RSpec.describe Projects::Operations::UpdateService do
           {
             error_tracking_setting_attributes: {
               enabled: false,
+              integrated: true,
               api_host: 'http://gitlab.com/',
               token: 'token',
               project: {
@@ -174,6 +175,7 @@ RSpec.describe Projects::Operations::UpdateService do
 
           project.reload
           expect(project.error_tracking_setting).not_to be_enabled
+          expect(project.error_tracking_setting.integrated).to be_truthy
           expect(project.error_tracking_setting.api_url).to eq(
             'http://gitlab.com/api/0/projects/org/project/'
           )
@@ -206,6 +208,7 @@ RSpec.describe Projects::Operations::UpdateService do
           {
             error_tracking_setting_attributes: {
               enabled: true,
+              integrated: true,
               api_host: 'http://gitlab.com/',
               token: 'token',
               project: {
@@ -222,6 +225,7 @@ RSpec.describe Projects::Operations::UpdateService do
           expect(result[:status]).to eq(:success)
 
           expect(project.error_tracking_setting).to be_enabled
+          expect(project.error_tracking_setting.integrated).to be_truthy
           expect(project.error_tracking_setting.api_url).to eq(
             'http://gitlab.com/api/0/projects/org/project/'
           )

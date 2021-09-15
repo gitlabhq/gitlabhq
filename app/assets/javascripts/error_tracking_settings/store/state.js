@@ -1,6 +1,7 @@
 export default () => ({
   apiHost: '',
   enabled: false,
+  integrated: false,
   token: '',
   projects: [],
   isLoadingProjects: false,

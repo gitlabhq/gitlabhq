@@ -18,6 +18,24 @@ module Gitlab
       KNOWN_EVENTS_PATH = File.expand_path('known_events/*.yml', __dir__)
       ALLOWED_AGGREGATIONS = %i(daily weekly).freeze
 
+      CATEGORIES_FOR_TOTALS = %w[
+        analytics
+        code_review
+        compliance
+        deploy_token_packages
+        ecosystem
+        epic_boards_usage
+        epics_usage
+        ide_edit
+        incident_management
+        issues_edit
+        pipeline_authoring
+        quickactions
+        search
+        testing
+        user_packages
+      ].freeze
+
       # Track event on entity_id
       # Increment a Redis HLL counter for unique event_name and entity_id
       #
@@ -90,7 +108,7 @@ module Gitlab
               hash["#{event}_monthly"] = unique_events(**monthly_time_range.merge(event_names: [event]))
             end
 
-            if eligible_for_totals?(events_names)
+            if eligible_for_totals?(events_names) && CATEGORIES_FOR_TOTALS.include?(category)
               event_results["#{category}_total_unique_counts_weekly"] = unique_events(**weekly_time_range.merge(event_names: events_names))
               event_results["#{category}_total_unique_counts_monthly"] = unique_events(**monthly_time_range.merge(event_names: events_names))
             end

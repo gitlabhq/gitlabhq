@@ -17,25 +17,6 @@ class BareRepoOperations
     commit_id[0]
   end
 
-  def commit_file(file, dst_path, branch = 'master')
-    head_id = execute(['show', '--format=format:%H', '--no-patch', branch], allow_failure: true)[0] || Gitlab::Git::EMPTY_TREE_ID
-
-    execute(['read-tree', '--empty'])
-    execute(['read-tree', head_id])
-
-    blob_id = execute(['hash-object', '--stdin', '-w']) do |stdin|
-      stdin.write(file.read)
-    end
-
-    execute(['update-index', '--add', '--cacheinfo', '100644', blob_id[0], dst_path])
-
-    tree_id = execute(['write-tree'])
-
-    commit_id = commit_tree(tree_id[0], "Add #{dst_path}", parent: head_id)
-
-    execute(['update-ref', "refs/heads/#{branch}", commit_id])
-  end
-
   private
 
   def execute(args, allow_failure: false)

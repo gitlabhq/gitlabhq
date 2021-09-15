@@ -79,6 +79,10 @@ export const updateEnabled = ({ commit }, enabled) => {
   commit(types.UPDATE_ENABLED, enabled);
 };
 
+export const updateIntegrated = ({ commit }, integrated) => {
+  commit(types.UPDATE_INTEGRATED, integrated);
+};
+
 export const updateToken = ({ commit }, token) => {
   commit(types.UPDATE_TOKEN, token);
   commit(types.RESET_CONNECT);

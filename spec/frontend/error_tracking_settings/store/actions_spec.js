@@ -202,5 +202,11 @@ describe('error tracking settings actions', () => {
         done,
       );
     });
+
+    it.each([true, false])('should set the `integrated` flag to `%s`', async (payload) => {
+      await testAction(actions.updateIntegrated, payload, state, [
+        { type: types.UPDATE_INTEGRATED, payload },
+      ]);
+    });
   });
 });

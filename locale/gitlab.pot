@@ -13366,6 +13366,9 @@ msgstr ""
 msgid "ErrorTracking|Enable error tracking"
 msgstr ""
 
+msgid "ErrorTracking|Error tracking backend"
+msgstr ""
+
 msgid "ErrorTracking|If you self-host Sentry, enter your Sentry instance's full URL. If you use Sentry's hosted solution, enter https://sentry.io"
 msgstr ""
 
@@ -28637,6 +28640,9 @@ msgstr[1] ""
 msgid "Requires values to meet regular expression requirements."
 msgstr ""
 
+msgid "Requires you to deploy or set up cloud-hosted Sentry."
+msgstr ""
+
 msgid "Requires your primary GitLab email address."
 msgstr ""
 
@@ -30515,6 +30521,9 @@ msgid "Send report"
 msgstr ""
 
 msgid "Send service data"
+msgstr ""
+
+msgid "Sentry"
 msgstr ""
 
 msgid "Sentry API URL"
@@ -37011,6 +37020,9 @@ msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
 msgstr ""
 
 msgid "UsersSelect|Unassigned"
+msgstr ""
+
+msgid "Uses GitLab as a lightweight alternative to Sentry."
 msgstr ""
 
 msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%{link_end}"

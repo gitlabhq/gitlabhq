@@ -150,6 +150,33 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
           assert_text('Connection failed. Check Auth Token and try again.')
         end
       end
+
+      context 'integrated error tracking backend' do
+        it 'successfully fills and submits the form' do
+          visit project_settings_operations_path(project)
+
+          wait_for_requests
+
+          within '.js-error-tracking-settings' do
+            click_button('Expand')
+          end
+
+          expect(page).to have_content('Error tracking backend')
+
+          within '.js-error-tracking-settings' do
+            check('Active')
+            choose('GitLab')
+          end
+
+          expect(page).not_to have_content('Sentry API URL')
+
+          click_button('Save changes')
+
+          wait_for_requests
+
+          assert_text('Your changes have been saved')
+        end
+      end
     end
 
     context 'grafana integration settings form' do

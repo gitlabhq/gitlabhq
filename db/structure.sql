@@ -64,15 +64,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION trigger_21e7a2602957() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."build_id_convert_to_bigint" := NEW."build_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_3f6129be01d2() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -11227,7 +11218,6 @@ ALTER SEQUENCE chat_teams_id_seq OWNED BY chat_teams.id;
 
 CREATE TABLE ci_build_needs (
     id integer NOT NULL,
-    build_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     name text NOT NULL,
     artifacts boolean DEFAULT true NOT NULL,
     optional boolean DEFAULT false NOT NULL,
@@ -18184,7 +18174,6 @@ CREATE TABLE projects (
     public_builds boolean DEFAULT true NOT NULL,
     last_repository_check_failed boolean,
     last_repository_check_at timestamp without time zone,
-    container_registry_enabled boolean,
     only_allow_merge_if_pipeline_succeeds boolean DEFAULT false NOT NULL,
     has_external_issue_tracker boolean,
     repository_storage character varying DEFAULT 'default'::character varying NOT NULL,
@@ -27321,8 +27310,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
 
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
-
-CREATE TRIGGER trigger_21e7a2602957 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_21e7a2602957();
 
 CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_3f6129be01d2();
 

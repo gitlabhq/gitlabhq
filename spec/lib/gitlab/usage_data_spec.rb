@@ -1279,9 +1279,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.redis_hll_counters }
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
-    let(:ineligible_total_categories) do
-      %w[source_code ci_secrets_management incident_management_alerts snippets terraform incident_management_oncall secure network_policies]
-    end
 
     context 'with redis_hll_tracking feature enabled' do
       it 'has all known_events' do
@@ -1296,7 +1293,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
           metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
 
-          if ineligible_total_categories.exclude?(category)
+          if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
             metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
           end
 

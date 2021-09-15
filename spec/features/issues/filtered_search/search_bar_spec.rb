@@ -89,7 +89,7 @@ RSpec.describe 'Search bar', :js do
       expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: original_size)
     end
 
-    it 'resets the dropdown filters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/9985' do
+    it 'resets the dropdown filters' do
       filtered_search.click
 
       hint_offset = get_left_style(find('#js-dropdown-hint')['style'])
@@ -103,7 +103,7 @@ RSpec.describe 'Search bar', :js do
       find('.filtered-search-box .clear-search').click
       filtered_search.click
 
-      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 6)
+      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', minimum: 6)
       expect(get_left_style(find('#js-dropdown-hint')['style'])).to eq(hint_offset)
     end
   end

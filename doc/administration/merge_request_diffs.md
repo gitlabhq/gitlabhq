@@ -265,3 +265,9 @@ by assigning different processes to different parts of the table. The `BATCH`
 and `UPDATE_DELAY` parameters allow the speed of the migration to be traded off
 against concurrent access to the table. The `ANSI` parameter should be set to
 false if your terminal does not support ANSI escape codes.
+
+By default, `sudo` does not preserve existing environment variables. You should append them, rather than prefix them.
+
+```shell
+sudo gitlab-rake gitlab:external_diffs:force_object_storage START_ID=59946109 END_ID=59946109 UPDATE_DELAY=5
+```

@@ -78,7 +78,7 @@ packages on the group level, create a distribution with the same `codename`.
 To create a project-level distribution:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=unstable
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=unstable"
 ```
 
 Example response:
