@@ -29,6 +29,7 @@ export const getIssuesQueryResponse = {
             updatedAt: '2021-05-22T04:08:01Z',
             upvotes: 3,
             userDiscussionsCount: 4,
+            webPath: 'project/-/issues/789',
             webUrl: 'project/-/issues/789',
             assignees: {
               nodes: [

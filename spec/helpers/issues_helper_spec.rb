@@ -318,8 +318,8 @@ RSpec.describe IssuesHelper do
         has_any_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
+        is_project: 'true',
         is_signed_in: current_user.present?.to_s,
-        issues_path: project_issues_path(project),
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         markdown_help_path: help_page_path('user/markdown'),
         max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
@@ -332,11 +332,11 @@ RSpec.describe IssuesHelper do
         sign_in_path: new_user_session_path
       }
 
-      expect(helper.issues_list_data(project, current_user, finder)).to include(expected)
+      expect(helper.project_issues_list_data(project, current_user, finder)).to include(expected)
     end
   end
 
-  describe '#issues_list_data' do
+  describe '#project_issues_list_data' do
     context 'when user is signed in' do
       it_behaves_like 'issues list data' do
         let(:current_user) { double.as_null_object }
@@ -347,6 +347,33 @@ RSpec.describe IssuesHelper do
       it_behaves_like 'issues list data' do
         let(:current_user) { nil }
       end
+    end
+  end
+
+  describe '#group_issues_list_data' do
+    let(:group) { create(:group) }
+    let(:current_user) { double.as_null_object }
+    let(:issues) { [] }
+
+    it 'returns expected result' do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:image_path).and_return('#')
+      allow(helper).to receive(:url_for).and_return('#')
+
+      expected = {
+        autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+        calendar_path: '#',
+        empty_state_svg_path: '#',
+        full_path: group.full_path,
+        has_any_issues: issues.to_a.any?.to_s,
+        is_signed_in: current_user.present?.to_s,
+        jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
+        rss_path: '#',
+        sign_in_path: new_user_session_path
+      }
+
+      expect(helper.group_issues_list_data(group, current_user, issues)).to include(expected)
     end
   end
 

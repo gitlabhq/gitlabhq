@@ -89,6 +89,7 @@ class GroupPolicy < BasePolicy
   rule { guest }.policy do
     enable :read_group
     enable :upload_file
+    enable :guest_access
   end
 
   rule { admin }.policy do
@@ -132,6 +133,7 @@ class GroupPolicy < BasePolicy
     enable :create_custom_emoji
     enable :create_package
     enable :create_package_settings
+    enable :developer_access
   end
 
   rule { reporter }.policy do
@@ -161,6 +163,7 @@ class GroupPolicy < BasePolicy
     enable :read_deploy_token
     enable :create_jira_connect_subscription
     enable :update_runners_registration_token
+    enable :maintainer_access
   end
 
   rule { owner }.policy do
@@ -176,6 +179,7 @@ class GroupPolicy < BasePolicy
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token
+    enable :owner_access
   end
 
   rule { can?(:read_nested_project_resources) }.policy do

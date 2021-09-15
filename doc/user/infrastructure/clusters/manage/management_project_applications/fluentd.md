@@ -28,9 +28,3 @@ for the current development release of Fluentd for all available configuration o
 The configuration chart link points to the current development release, which
 may differ from the version you have installed. To ensure compatibility, switch
 to the specific branch or tag you are using.
-
-Support for installing the Fluentd managed application is provided by the
-GitLab Container Security group. If you run into unknown issues,
-[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the
-[Container Security group](https://about.gitlab.com/handbook/product/categories/#container-security-group).

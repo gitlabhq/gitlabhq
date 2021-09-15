@@ -68,8 +68,8 @@ describe('IssuesListApp component', () => {
     hasBlockedIssuesFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
+    isProject: true,
     isSignedIn: true,
-    issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
     rssPath: 'rss/path',
@@ -191,7 +191,7 @@ describe('IssuesListApp component', () => {
           setWindowLocation(search);
 
           wrapper = mountComponent({
-            provide: { ...defaultProvide, isSignedIn: true },
+            provide: { isSignedIn: true },
             mountFn: mount,
           });
 
@@ -208,7 +208,15 @@ describe('IssuesListApp component', () => {
 
       describe('when user is not signed in', () => {
         it('does not render', () => {
-          wrapper = mountComponent({ provide: { ...defaultProvide, isSignedIn: false } });
+          wrapper = mountComponent({ provide: { isSignedIn: false } });
+
+          expect(findCsvImportExportButtons().exists()).toBe(false);
+        });
+      });
+
+      describe('when in a group context', () => {
+        it('does not render', () => {
+          wrapper = mountComponent({ provide: { isProject: false } });
 
           expect(findCsvImportExportButtons().exists()).toBe(false);
         });
@@ -625,72 +633,89 @@ describe('IssuesListApp component', () => {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/1',
         iid: '101',
-        title: 'Issue one',
+        reference: 'group/project#1',
+        webPath: '/group/project/-/issues/1',
       };
       const issueTwo = {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/2',
         iid: '102',
-        title: 'Issue two',
+        reference: 'group/project#2',
+        webPath: '/group/project/-/issues/2',
       };
       const issueThree = {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/3',
         iid: '103',
-        title: 'Issue three',
+        reference: 'group/project#3',
+        webPath: '/group/project/-/issues/3',
       };
       const issueFour = {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/4',
         iid: '104',
-        title: 'Issue four',
+        reference: 'group/project#4',
+        webPath: '/group/project/-/issues/4',
       };
-      const response = {
+      const response = (isProject = true) => ({
         data: {
-          project: {
+          [isProject ? 'project' : 'group']: {
             issues: {
               ...defaultQueryResponse.data.project.issues,
               nodes: [issueOne, issueTwo, issueThree, issueFour],
             },
           },
         },
-      };
-
-      beforeEach(() => {
-        wrapper = mountComponent({ issuesQueryResponse: jest.fn().mockResolvedValue(response) });
-        jest.runOnlyPendingTimers();
       });
 
       describe('when successful', () => {
-        describe.each`
-          description                       | issueToMove   | oldIndex | newIndex | moveBeforeId    | moveAfterId
-          ${'to the beginning of the list'} | ${issueThree} | ${2}     | ${0}     | ${null}         | ${issueOne.id}
-          ${'down the list'}                | ${issueOne}   | ${0}     | ${1}     | ${issueTwo.id}  | ${issueThree.id}
-          ${'up the list'}                  | ${issueThree} | ${2}     | ${1}     | ${issueOne.id}  | ${issueTwo.id}
-          ${'to the end of the list'}       | ${issueTwo}   | ${1}     | ${3}     | ${issueFour.id} | ${null}
-        `(
-          'when moving issue $description',
-          ({ issueToMove, oldIndex, newIndex, moveBeforeId, moveAfterId }) => {
-            it('makes API call to reorder the issue', async () => {
-              findIssuableList().vm.$emit('reorder', { oldIndex, newIndex });
-
-              await waitForPromises();
-
-              expect(axiosMock.history.put[0]).toMatchObject({
-                url: joinPaths(defaultProvide.issuesPath, issueToMove.iid, 'reorder'),
-                data: JSON.stringify({
-                  move_before_id: getIdFromGraphQLId(moveBeforeId),
-                  move_after_id: getIdFromGraphQLId(moveAfterId),
-                }),
+        describe.each([true, false])('when isProject=%s', (isProject) => {
+          describe.each`
+            description                       | issueToMove   | oldIndex | newIndex | moveBeforeId    | moveAfterId
+            ${'to the beginning of the list'} | ${issueThree} | ${2}     | ${0}     | ${null}         | ${issueOne.id}
+            ${'down the list'}                | ${issueOne}   | ${0}     | ${1}     | ${issueTwo.id}  | ${issueThree.id}
+            ${'up the list'}                  | ${issueThree} | ${2}     | ${1}     | ${issueOne.id}  | ${issueTwo.id}
+            ${'to the end of the list'}       | ${issueTwo}   | ${1}     | ${3}     | ${issueFour.id} | ${null}
+          `(
+            'when moving issue $description',
+            ({ issueToMove, oldIndex, newIndex, moveBeforeId, moveAfterId }) => {
+              beforeEach(() => {
+                wrapper = mountComponent({
+                  provide: { isProject },
+                  issuesQueryResponse: jest.fn().mockResolvedValue(response(isProject)),
+                });
+                jest.runOnlyPendingTimers();
               });
-            });
-          },
-        );
+
+              it('makes API call to reorder the issue', async () => {
+                findIssuableList().vm.$emit('reorder', { oldIndex, newIndex });
+
+                await waitForPromises();
+
+                expect(axiosMock.history.put[0]).toMatchObject({
+                  url: joinPaths(issueToMove.webPath, 'reorder'),
+                  data: JSON.stringify({
+                    move_before_id: getIdFromGraphQLId(moveBeforeId),
+                    move_after_id: getIdFromGraphQLId(moveAfterId),
+                    group_full_path: isProject ? undefined : defaultProvide.fullPath,
+                  }),
+                });
+              });
+            },
+          );
+        });
       });
 
       describe('when unsuccessful', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            issuesQueryResponse: jest.fn().mockResolvedValue(response()),
+          });
+          jest.runOnlyPendingTimers();
+        });
+
         it('displays an error message', async () => {
-          axiosMock.onPut(joinPaths(defaultProvide.issuesPath, issueOne.iid, 'reorder')).reply(500);
+          axiosMock.onPut(joinPaths(issueOne.webPath, 'reorder')).reply(500);
 
           findIssuableList().vm.$emit('reorder', { oldIndex: 0, newIndex: 1 });
 

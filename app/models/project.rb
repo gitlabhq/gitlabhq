@@ -526,6 +526,7 @@ class Project < ApplicationRecord
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
+  scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
   scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value Stream Analytics **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9 at the group level.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9 for groups.
 
 Value Stream Analytics measures the time spent to go from an
 [idea to production](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab)

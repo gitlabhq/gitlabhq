@@ -198,14 +198,30 @@ module Gitlab
       ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name)
     end
 
-    def self.db_config_name(ar_connection)
-      if ar_connection.respond_to?(:pool) &&
-          ar_connection.pool.respond_to?(:db_config) &&
-          ar_connection.pool.db_config.respond_to?(:name)
-        return ar_connection.pool.db_config.name
-      end
+    def self.db_config_for_connection(connection)
+      return unless connection
 
-      'unknown'
+      # The LB connection proxy does not have a direct db_config
+      # that can be referenced
+      return if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
+
+      # During application init we might receive `NullPool`
+      return unless connection.respond_to?(:pool) &&
+        connection.pool.respond_to?(:db_config)
+
+      connection.pool.db_config
+    end
+
+    # At the moment, the connection can only be retrieved by
+    # Gitlab::Database::LoadBalancer#read or #read_write or from the
+    # ActiveRecord directly. Therefore, if the load balancer doesn't
+    # recognize the connection, this method returns the primary role
+    # directly. In future, we may need to check for other sources.
+    # Expected returned names:
+    # main, main_replica, ci, ci_replica, unknown
+    def self.db_config_name(connection)
+      db_config = db_config_for_connection(connection)
+      db_config&.name || 'unknown'
     end
 
     def self.read_only?

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
   include Database::TriggerHelpers
+  include Database::TableSchemaHelpers
 
   let(:migration) do
     ActiveRecord::Migration.new.extend(described_class)
@@ -218,6 +219,34 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
     it_behaves_like 'Cleaning up from renaming a column' do
       let(:operation) { :cleanup_concurrent_column_rename }
       let(:added_column) { :original }
+    end
+  end
+
+  describe '#create_table' do
+    let(:table_name) { :test_table }
+    let(:column_attributes) do
+      [
+        { name: 'id',         sql_type: 'bigint',                   null: false, default: nil    },
+        { name: 'created_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
+        { name: 'updated_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
+        { name: 'some_id',    sql_type: 'integer',                  null: false, default: nil    },
+        { name: 'active',     sql_type: 'boolean',                  null: false, default: 'true' },
+        { name: 'name',       sql_type: 'text',                     null: true,  default: nil    }
+      ]
+    end
+
+    context 'using a limit: attribute on .text' do
+      it 'creates the table as expected' do
+        migration.create_table table_name do |t|
+          t.timestamps_with_timezone
+          t.integer :some_id, null: false
+          t.boolean :active, null: false, default: true
+          t.text :name, limit: 100
+        end
+
+        expect_table_columns_to_match(column_attributes, table_name)
+        expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 100')
+      end
     end
   end
 

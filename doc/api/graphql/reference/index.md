@@ -1924,6 +1924,27 @@ Input type: `DestroyContainerRepositoryTagsInput`
 | <a id="mutationdestroycontainerrepositorytagsdeletedtagnames"></a>`deletedTagNames` | [`[String!]!`](#string) | Deleted container repository tags. |
 | <a id="mutationdestroycontainerrepositorytagserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.destroyCustomEmoji`
+
+Available only when feature flag `custom_emoji` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Input type: `DestroyCustomEmojiInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroycustomemojiclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroycustomemojiid"></a>`id` | [`CustomEmojiID!`](#customemojiid) | Global ID of the custom emoji to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroycustomemojiclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroycustomemojicustomemoji"></a>`customEmoji` | [`CustomEmoji`](#customemoji) | Deleted custom emoji. |
+| <a id="mutationdestroycustomemojierrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.destroyEpicBoard`
 
 Input type: `DestroyEpicBoardInput`
@@ -12526,6 +12547,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectdastsitevalidationsnormalizedtargeturls"></a>`normalizedTargetUrls` | [`[String!]`](#string) | Normalized URL of the target to be scanned. |
+| <a id="projectdastsitevalidationsstatus"></a>`status` | [`DastSiteValidationStatusEnum`](#dastsitevalidationstatusenum) | Status of the site validation. Ignored if `dast_failed_site_validations` feature flag is disabled. |
 
 ##### `Project.environment`
 
@@ -15375,6 +15397,15 @@ Unit for the duration of Dast Profile Cadence.
 | <a id="dastsiteprofilevalidationstatusenumnone"></a>`NONE` | No site validation exists. |
 | <a id="dastsiteprofilevalidationstatusenumpassed_validation"></a>`PASSED_VALIDATION` | Site validation process finished successfully. |
 | <a id="dastsiteprofilevalidationstatusenumpending_validation"></a>`PENDING_VALIDATION` | Site validation process has not started. |
+
+### `DastSiteValidationStatusEnum`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dastsitevalidationstatusenumfailed_validation"></a>`FAILED_VALIDATION` | Site validation process finished but failed. |
+| <a id="dastsitevalidationstatusenuminprogress_validation"></a>`INPROGRESS_VALIDATION` | Site validation process is in progress. |
+| <a id="dastsitevalidationstatusenumpassed_validation"></a>`PASSED_VALIDATION` | Site validation process finished successfully. |
+| <a id="dastsitevalidationstatusenumpending_validation"></a>`PENDING_VALIDATION` | Site validation process has not started. |
 
 ### `DastSiteValidationStrategyEnum`
 

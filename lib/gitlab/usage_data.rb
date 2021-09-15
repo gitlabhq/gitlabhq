@@ -918,7 +918,7 @@ module Gitlab
           jira: count(::JiraImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
           fogbugz: projects_imported_count('fogbugz', time_period),
           phabricator: projects_imported_count('phabricator', time_period),
-          csv: count(Issues::CsvImport.where(time_period)) # rubocop: disable CodeReuse/ActiveRecord
+          csv: count(::Issues::CsvImport.where(time_period)) # rubocop: disable CodeReuse/ActiveRecord
         }
       end
 
@@ -934,7 +934,7 @@ module Gitlab
         project_imports = distinct_count(::Project.where(time_period).where.not(import_type: nil), :creator_id)
         bulk_imports = distinct_count(::BulkImport.where(time_period), :user_id)
         jira_issue_imports = distinct_count(::JiraImportState.where(time_period), :user_id)
-        csv_issue_imports = distinct_count(Issues::CsvImport.where(time_period), :user_id)
+        csv_issue_imports = distinct_count(::Issues::CsvImport.where(time_period), :user_id)
         group_imports = distinct_count(::GroupImportState.where(time_period), :user_id)
 
         add(project_imports, bulk_imports, jira_issue_imports, csv_issue_imports, group_imports)

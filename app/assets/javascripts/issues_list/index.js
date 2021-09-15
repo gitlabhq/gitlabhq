@@ -85,17 +85,17 @@ export function mountIssuesListApp() {
 
   const resolvers = {
     Mutation: {
-      reorderIssues: (_, { oldIndex, newIndex, serializedVariables }, { cache }) => {
+      reorderIssues: (_, { oldIndex, newIndex, namespace, serializedVariables }, { cache }) => {
         const variables = JSON.parse(serializedVariables);
         const sourceData = cache.readQuery({ query: getIssuesQuery, variables });
 
         const data = produce(sourceData, (draftData) => {
-          const issues = draftData.project.issues.nodes.slice();
+          const issues = draftData[namespace].issues.nodes.slice();
           const issueToMove = issues[oldIndex];
           issues.splice(oldIndex, 1);
           issues.splice(newIndex, 0, issueToMove);
 
-          draftData.project.issues.nodes = issues;
+          draftData[namespace].issues.nodes = issues;
         });
 
         cache.writeQuery({ query: getIssuesQuery, variables, data });
@@ -128,8 +128,8 @@ export function mountIssuesListApp() {
     hasMultipleIssueAssigneesFeature,
     importCsvIssuesPath,
     initialEmail,
+    isProject,
     isSignedIn,
-    issuesPath,
     jiraIntegrationPath,
     markdownHelpPath,
     maxAttachmentSize,
@@ -158,8 +158,8 @@ export function mountIssuesListApp() {
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasMultipleIssueAssigneesFeature: parseBoolean(hasMultipleIssueAssigneesFeature),
+      isProject: parseBoolean(isProject),
       isSignedIn: parseBoolean(isSignedIn),
-      issuesPath,
       jiraIntegrationPath,
       newIssuePath,
       rssPath,

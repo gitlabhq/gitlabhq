@@ -323,6 +323,13 @@ class Issue < ApplicationRecord
     )
   end
 
+  def self.column_order_id_asc
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'id',
+      order_expression: arel_table[:id].asc
+    )
+  end
+
   def self.to_branch_name(*args)
     branch_name = args.map(&:to_s).each_with_index.map do |arg, i|
       arg.parameterize(preserve_case: i == 0).presence

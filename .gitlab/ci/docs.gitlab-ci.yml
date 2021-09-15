@@ -88,3 +88,4 @@ deprecations-doc check:
   needs: []
   script:
     - bundle exec rake gitlab:docs:check_deprecations
+  allow_failure: true

@@ -1,4 +1,5 @@
 query getIssuesCount(
+  $isProject: Boolean = false
   $fullPath: ID!
   $search: String
   $assigneeId: String
@@ -10,7 +11,54 @@ query getIssuesCount(
   $types: [IssueType!]
   $not: NegatedIssueFilterInput
 ) {
-  project(fullPath: $fullPath) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    openedIssues: issues(
+      includeSubgroups: true
+      state: opened
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    closedIssues: issues(
+      includeSubgroups: true
+      state: closed
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    allIssues: issues(
+      includeSubgroups: true
+      state: all
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
     openedIssues: issues(
       state: opened
       search: $search

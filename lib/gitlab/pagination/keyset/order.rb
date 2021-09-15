@@ -219,7 +219,7 @@ module Gitlab
             column_definition.column_expression.dup.as(column_definition.attribute_name).to_sql
           end
 
-          scope = scope.select(*scope.arel.projections, *additional_projections) if additional_projections
+          scope = scope.reselect(*scope.arel.projections, *additional_projections) unless additional_projections.blank?
           scope
         end
 

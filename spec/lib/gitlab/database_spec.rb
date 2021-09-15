@@ -155,20 +155,40 @@ RSpec.describe Gitlab::Database do
     it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column DESC NULLS FIRST'}
   end
 
+  describe '.db_config_for_connection' do
+    context 'when the regular connection is used' do
+      it 'returns db_config' do
+        connection = ActiveRecord::Base.retrieve_connection
+
+        expect(described_class.db_config_for_connection(connection)).to eq(connection.pool.db_config)
+      end
+    end
+
+    context 'when the connection is LoadBalancing::ConnectionProxy' do
+      it 'returns nil' do
+        lb_config = ::Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
+        lb = ::Gitlab::Database::LoadBalancing::LoadBalancer.new(lb_config)
+        proxy = ::Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
+
+        expect(described_class.db_config_for_connection(proxy)).to be_nil
+      end
+    end
+
+    context 'when the pool is a NullPool' do
+      it 'returns nil' do
+        connection = double(:active_record_connection, pool: ActiveRecord::ConnectionAdapters::NullPool.new)
+
+        expect(described_class.db_config_for_connection(connection)).to be_nil
+      end
+    end
+  end
+
   describe '.db_config_name' do
     it 'returns the db_config name for the connection' do
       connection = ActiveRecord::Base.connection
 
       expect(described_class.db_config_name(connection)).to be_a(String)
       expect(described_class.db_config_name(connection)).to eq(connection.pool.db_config.name)
-    end
-
-    context 'when the pool is a NullPool' do
-      it 'returns unknown' do
-        connection = double(:active_record_connection, pool: ActiveRecord::ConnectionAdapters::NullPool.new)
-
-        expect(described_class.db_config_name(connection)).to eq('unknown')
-      end
     end
   end
 

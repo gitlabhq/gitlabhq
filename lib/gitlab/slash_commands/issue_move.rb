@@ -29,11 +29,11 @@ module Gitlab
           return Gitlab::SlashCommands::Presenters::Access.new.not_found
         end
 
-        new_issue = Issues::MoveService.new(project: project, current_user: current_user)
+        new_issue = ::Issues::MoveService.new(project: project, current_user: current_user)
                       .execute(old_issue, target_project)
 
         presenter(new_issue).present(old_issue)
-      rescue Issues::MoveService::MoveError => e
+      rescue ::Issues::MoveService::MoveError => e
         presenter(old_issue).display_move_error(e.message)
       end
 

@@ -17,7 +17,6 @@ class BareRepoOperations
     commit_id[0]
   end
 
-  # Based on https://stackoverflow.com/a/25556917/1856239
   def commit_file(file, dst_path, branch = 'master')
     head_id = execute(['show', '--format=format:%H', '--no-patch', branch], allow_failure: true)[0] || Gitlab::Git::EMPTY_TREE_ID
 

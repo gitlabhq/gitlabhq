@@ -68,9 +68,3 @@ ingress:
 postgresql:
   postgresqlPassword: example-postgresql-password
 ```
-
-Support for installing the Sentry managed application is provided by the
-GitLab Monitor group. If you run into unknown issues,
-[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the
-[Monitor group](https://about.gitlab.com/handbook/product/categories/#monitor-group).

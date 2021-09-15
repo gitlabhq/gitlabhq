@@ -73,6 +73,7 @@ module Gitlab
         end
       end
 
+      # @deprecated Use `create_table` in V2 instead
       #
       # Creates a new table, optionally allowing the caller to add check constraints to the table.
       # Aside from that addition, this method should behave identically to Rails' `create_table` method.

@@ -79,24 +79,12 @@ module Gitlab
       ].freeze
 
       # Returns the role (primary/replica) of the database the connection is
-      # connecting to. At the moment, the connection can only be retrieved by
-      # Gitlab::Database::LoadBalancer#read or #read_write or from the
-      # ActiveRecord directly. Therefore, if the load balancer doesn't
-      # recognize the connection, this method returns the primary role
-      # directly. In future, we may need to check for other sources.
+      # connecting to.
       def self.db_role_for_connection(connection)
-        return ROLE_UNKNOWN unless connection
+        db_config = Database.db_config_for_connection(connection)
+        return ROLE_UNKNOWN unless db_config
 
-        # The connection proxy does not have a role assigned
-        # as this is dependent on a execution context
-        return ROLE_UNKNOWN if connection.is_a?(ConnectionProxy)
-
-        # During application init we might receive `NullPool`
-        return ROLE_UNKNOWN unless connection.respond_to?(:pool) &&
-          connection.pool.respond_to?(:db_config) &&
-          connection.pool.db_config.respond_to?(:name)
-
-        if connection.pool.db_config.name.ends_with?(LoadBalancer::REPLICA_SUFFIX)
+        if db_config.name.ends_with?(LoadBalancer::REPLICA_SUFFIX)
           ROLE_REPLICA
         else
           ROLE_PRIMARY

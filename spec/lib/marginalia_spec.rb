@@ -42,13 +42,37 @@ RSpec.describe 'Marginalia spec' do
       {
         "application"    => "test",
         "endpoint_id"    => "MarginaliaTestController#first_user",
-        "correlation_id" => correlation_id
+        "correlation_id" => correlation_id,
+        "db_config_name" => "main"
       }
     end
 
     it 'generates a query that includes the component and value' do
       component_map.each do |component, value|
         expect(recorded.log.last).to include("#{component}:#{value}")
+      end
+    end
+
+    context 'when using CI database' do
+      let(:component_map) do
+        {
+          "application"    => "test",
+          "endpoint_id"    => "MarginaliaTestController#first_user",
+          "correlation_id" => correlation_id,
+          "db_config_name" => "ci"
+        }
+      end
+
+      before do |example|
+        skip_if_multiple_databases_not_setup
+
+        allow(User).to receive(:connection) { Ci::CiDatabaseRecord.connection }
+      end
+
+      it 'generates a query that includes the component and value' do
+        component_map.each do |component, value|
+          expect(recorded.log.last).to include("#{component}:#{value}")
+        end
       end
     end
   end
@@ -79,7 +103,8 @@ RSpec.describe 'Marginalia spec' do
         "application"    => "sidekiq",
         "endpoint_id"    => "MarginaliaTestJob",
         "correlation_id" => sidekiq_job['correlation_id'],
-        "jid"            => sidekiq_job['jid']
+        "jid"            => sidekiq_job['jid'],
+        "db_config_name" => "main"
       }
     end
 
@@ -100,9 +125,10 @@ RSpec.describe 'Marginalia spec' do
 
       let(:component_map) do
         {
-          "application" => "sidekiq",
-          "endpoint_id" => "ActionMailer::MailDeliveryJob",
-          "jid"         => delivery_job.job_id
+          "application"    => "sidekiq",
+          "endpoint_id"    => "ActionMailer::MailDeliveryJob",
+          "jid"            => delivery_job.job_id,
+          "db_config_name" => "main"
         }
       end
 

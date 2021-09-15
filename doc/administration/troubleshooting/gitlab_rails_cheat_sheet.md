@@ -418,7 +418,7 @@ p.create_wiki  ### creates the wiki project on the filesystem
 ```ruby
 p = Project.find_by_full_path('PROJECT PATH')
 
-IssueRebalancingService.new(p.issues.take).execute
+Issues::RelativePositionRebalancingService.new(p.root_namespace.all_projects).execute
 ```
 
 ## Imports / Exports

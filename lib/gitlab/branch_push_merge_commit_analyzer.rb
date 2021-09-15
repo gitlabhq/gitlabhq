@@ -114,7 +114,7 @@ module Gitlab
     # If child commit is a direct ancestor, its first parent is also a direct ancestor.
     # We assume direct ancestors matches the trail of the target branch over time,
     # This assumption is correct most of the time, especially for gitlab managed merges,
-    # but there are exception cases which can't be solved (https://stackoverflow.com/a/49754723/474597)
+    # but there are exception cases which can't be solved.
     def mark_all_direct_ancestors(commit)
       loop do
         commit = get_commit(commit.parent_ids.first)

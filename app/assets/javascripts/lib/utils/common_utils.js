@@ -117,7 +117,6 @@ export const handleLocationHash = () => {
 };
 
 // Check if element scrolled into viewport from above or below
-// Courtesy http://stackoverflow.com/a/7557433/414749
 export const isInViewport = (el, offset = {}) => {
   const rect = el.getBoundingClientRect();
   const { top, left } = offset;
@@ -559,8 +558,6 @@ export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
 /**
  * Method to round of values with decimal places
  * with provided precision.
- *
- * Taken from https://stackoverflow.com/a/7343013/414749
  *
  * Eg; roundOffFloat(3.141592, 3) = 3.142
  *

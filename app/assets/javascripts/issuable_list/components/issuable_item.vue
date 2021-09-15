@@ -69,6 +69,9 @@ export default {
     isIssuableUrlExternal() {
       return isExternal(this.webUrl);
     },
+    reference() {
+      return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
+    },
     labels() {
       return this.issuable.labels?.nodes || this.issuable.labels || [];
     },
@@ -201,9 +204,9 @@ export default {
         </div>
         <div class="issuable-info">
           <slot v-if="hasSlotContents('reference')" name="reference"></slot>
-          <span v-else data-testid="issuable-reference" class="issuable-reference"
-            >{{ issuableSymbol }}{{ issuable.iid }}</span
-          >
+          <span v-else data-testid="issuable-reference" class="issuable-reference">
+            {{ reference }}
+          </span>
           <span class="issuable-authored gl-display-none gl-sm-display-inline-block! gl-mr-3">
             <span aria-hidden="true">&middot;</span>
             <span

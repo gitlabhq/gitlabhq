@@ -1,9 +1,17 @@
-query searchIterations($fullPath: ID!, $search: String, $id: ID) {
-  project(fullPath: $fullPath) {
-    iterations(title: $search, id: $id) {
+#import "./iteration.fragment.graphql"
+
+query searchIterations($fullPath: ID!, $search: String, $id: ID, $isProject: Boolean = false) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    iterations(title: $search, id: $id, includeAncestors: true) {
       nodes {
-        id
-        title
+        ...Iteration
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    iterations(title: $search, id: $id, includeAncestors: true) {
+      nodes {
+        ...Iteration
       }
     }
   }

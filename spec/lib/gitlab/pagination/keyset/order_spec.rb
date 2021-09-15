@@ -538,6 +538,47 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
         end
 
         it_behaves_like 'cursor attribute examples'
+
+        context 'with projections' do
+          context 'when additional_projections is empty' do
+            let(:scope) { Project.select(:id, :namespace_id) }
+
+            subject(:sql) { order.apply_cursor_conditions(scope, { id: '100' }).to_sql }
+
+            it 'has correct projections' do
+              is_expected.to include('SELECT "projects"."id", "projects"."namespace_id" FROM "projects"')
+            end
+          end
+
+          context 'when there are additional_projections' do
+            let(:order) do
+              order = Gitlab::Pagination::Keyset::Order.build([
+                Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                  attribute_name: 'created_at_field',
+                  column_expression: Project.arel_table[:created_at],
+                  order_expression: Project.arel_table[:created_at].desc,
+                  order_direction: :desc,
+                  distinct: false,
+                  add_to_projections: true
+                ),
+                Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                  attribute_name: 'id',
+                  order_expression: Project.arel_table[:id].desc
+                )
+              ])
+
+              order
+            end
+
+            let(:scope) { Project.select(:id, :namespace_id).reorder(order) }
+
+            subject(:sql) { order.apply_cursor_conditions(scope).to_sql }
+
+            it 'has correct projections' do
+              is_expected.to include('SELECT "projects"."id", "projects"."namespace_id", "projects"."created_at" AS created_at_field FROM "projects"')
+            end
+          end
+        end
       end
     end
   end

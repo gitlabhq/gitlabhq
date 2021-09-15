@@ -53,9 +53,3 @@ You can customize the installation of cert-manager by defining a
 management project. Refer to the
 [chart](https://github.com/jetstack/cert-manager) for the
 available configuration options.
-
-Support for installing the Cert Manager managed application is provided by the
-GitLab Configure group. If you run into unknown issues,
-[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the
-[Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).

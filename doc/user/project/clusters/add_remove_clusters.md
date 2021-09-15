@@ -9,11 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
 WARNING:
-Creating a new cluster through the certificate-based method
-is deprecated and no longer recommended. Kubernetes cluster, similar to any other
-infrastructure, should be created, updated, maintained using [Infrastructure as Code](../../infrastructure/index.md).
-GitLab is developing a built-in capability to create clusters with Terraform.
-You can follow along in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/6049).
+Creating a new cluster through cluster certificates
+is deprecated and no longer recommended. To create a new cluster use
+[Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
 
 NOTE:
 Every new Google Cloud Platform (GCP) account receives
@@ -30,29 +28,38 @@ in a few clicks.
 
 ## Create new cluster
 
-> The certificate-based method for creating clusters from GitLab was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
-As of GitLab 14.0, use [Infrastructure as Code](../../infrastructure/index.md)
-to **safely create your new cluster from GitLab**.
+As of GitLab 14.0, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac)
+to **safely create new clusters from GitLab**.
 
-The certificate-based method is **deprecated** and scheduled for removal in
-GitLab 15.0. However, you can still use it until then. Through
-this method, you can host your cluster in EKS, GKE, on premises, and with other
-providers. To host them on premises and with other providers,
-use either the EKS or GKE method to guide you through and enter your cluster's
-settings manually:
+Creating clusters from GitLab using cluster certificates is still available on the
+GitLab UI but was **deprecated** in GitLab 14.0 and is scheduled for removal in
+GitLab 15.0. We don't recommend using this method.
+
+You can create a new cluster hosted in EKS, GKE, on premises, and with other
+providers using cluster certificates:
 
 - [New cluster hosted on Google Kubernetes Engine (GKE)](add_gke_clusters.md).
 - [New cluster hosted on Amazon Elastic Kubernetes Service (EKS)](add_eks_clusters.md).
 
+To host them on premises and with other providers, you can use Terraform
+or your preferred tool of choice to create and connect a cluster with GitLab.
+The [GitLab Terraform provider](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs/resources/project_cluster)
+supports connecting existing clusters using the certificate-based connection method.
+
 ## Add existing cluster
 
-If you already have a cluster and want to integrate it with GitLab, see how to
-[add an existing cluster](add_existing_cluster.md).
+As of GitLab 14.0, use the [GitLab Kubernetes Agent](../../clusters/agent/index.md)
+to connect your cluster to GitLab.
+
+Alternativelly, you can [add an existing cluster](add_existing_cluster.md)
+through the certificate-based method, but we don't recommend using this method for [security implications](index.md#security-implications).
 
 ## Configure your cluster
 
-As of GitLab 14.0, use the [GitLab Kubernetes Agent](../../clusters/agent/index.md) to configure your cluster.
+As of GitLab 14.0, use the [GitLab Kubernetes Agent](../../clusters/agent/index.md)
+to configure your cluster.
 
 ## Disable a cluster
 

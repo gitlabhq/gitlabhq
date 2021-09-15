@@ -6,6 +6,65 @@ module Gitlab
       module V2
         include Gitlab::Database::MigrationHelpers
 
+        # Superseded by `create_table` override below
+        def create_table_with_constraints(*_)
+          raise <<~EOM
+            #create_table_with_constraints is not supported anymore - use #create_table instead, for example:
+
+              create_table :db_guides do |t|
+                t.bigint :stars, default: 0, null: false
+                t.text :title, limit: 128
+                t.text :notes, limit: 1024
+
+                t.check_constraint 'stars > 1000', name: 'so_many_stars'
+              end
+
+            See https://docs.gitlab.com/ee/development/database/strings_and_the_text_data_type.html
+          EOM
+        end
+
+        # Creates a new table, optionally allowing the caller to add text limit constraints to the table.
+        # This method only extends Rails' `create_table` method
+        #
+        # Example:
+        #
+        #    create_table :db_guides do |t|
+        #      t.bigint :stars, default: 0, null: false
+        #      t.text :title, limit: 128
+        #      t.text :notes, limit: 1024
+        #
+        #      t.check_constraint 'stars > 1000', name: 'so_many_stars'
+        #    end
+        #
+        # See Rails' `create_table` for more info on the available arguments.
+        #
+        # When adding foreign keys to other tables, consider wrapping the call into a with_lock_retries block
+        # to avoid traffic stalls.
+        def create_table(table_name, *args, **kwargs, &block)
+          helper_context = self
+
+          super do |t|
+            t.define_singleton_method(:text) do |column_name, **kwargs|
+              limit = kwargs.delete(:limit)
+
+              super(column_name, **kwargs)
+
+              if limit
+                # rubocop:disable GitlabSecurity/PublicSend
+                name = helper_context.send(:text_limit_name, table_name, column_name)
+                # rubocop:enable GitlabSecurity/PublicSend
+
+                column_name = helper_context.quote_column_name(column_name)
+                definition = "char_length(#{column_name}) <= #{limit}"
+
+                t.check_constraint(definition, name: name)
+              end
+            end
+
+            t.instance_eval(&block) unless block.nil?
+          end
+        end
+
         # Executes the block with a retry mechanism that alters the +lock_timeout+ and +sleep_time+ between attempts.
         # The timings can be controlled via the +timing_configuration+ parameter.
         # If the lock was not acquired within the retry period, a last attempt is made without using +lock_timeout+.

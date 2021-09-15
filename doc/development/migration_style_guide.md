@@ -281,79 +281,91 @@ This problem could cause failed application upgrade processes and even applicati
 stability issues, since the table may be inaccessible for a short period of time.
 
 To increase the reliability and stability of database migrations, the GitLab codebase
-offers a helper method to retry the operations with different `lock_timeout` settings
-and wait time between the attempts. Multiple smaller attempts to acquire the necessary
+offers a method to retry the operations with different `lock_timeout` settings
+and wait time between the attempts. Multiple shorter attempts to acquire the necessary
 lock allow the database to process other statements.
 
-### Examples
+There are two distinct ways to use lock retries:
+
+1. Inside a transactional migration: use `enable_lock_retries!`.
+1. Inside a non-transactional migration: use `with_lock_retries`.
+
+If possible, enable lock-retries for any migration that touches a [high-traffic table](#high-traffic-tables).
+
+### Usage with transactional migrations
+
+Regular migrations execute the full migration in a transaction. We can enable the
+lock-retry methodology by calling `enable_lock_retries!` at the migration level.
+
+This leads to the lock timeout being controlled for this migration. Also, it can lead to retrying the full
+migration if the lock could not be granted within the timeout.
+
+Note that, while this is currently an opt-in setting, we prefer to use lock-retries for all migrations and
+plan to make this the default going forward.
+
+Occasionally a migration may need to acquire multiple locks on different objects.
+To prevent catalog bloat, ask for all those locks explicitly before performing any DDL.
+A better strategy is to split the migration, so that we only need to acquire one lock at the time.
 
 **Removing a column:**
 
 ```ruby
+enable_lock_retries!
+
 def up
-  with_lock_retries do
-    remove_column :users, :full_name
-  end
+  remove_column :users, :full_name
 end
 
 def down
-  with_lock_retries do
-    add_column :users, :full_name, :string
-  end
+  add_column :users, :full_name, :string
 end
 ```
 
 **Multiple changes on the same table:**
 
-The helper `with_lock_retries` wraps all operations into a single transaction. When you have the lock,
+With the lock-retry methodology enabled, all operations wrap into a single transaction. When you have the lock,
 you should do as much as possible inside the transaction rather than trying to get another lock later.
 Be careful about running long database statements within the block. The acquired locks are kept until the transaction (block) finishes and depending on the lock type, it might block other database operations.
 
 ```ruby
+enable_lock_retries!
+
 def up
-  with_lock_retries do
-    add_column :users, :full_name, :string
-    add_column :users, :bio, :string
-  end
+  add_column :users, :full_name, :string
+  add_column :users, :bio, :string
 end
 
 def down
-  with_lock_retries do
-    remove_column :users, :full_name
-    remove_column :users, :bio
-  end
+  remove_column :users, :full_name
+  remove_column :users, :bio
 end
 ```
 
 **Removing a foreign key:**
 
 ```ruby
+enable_lock_retries!
+
 def up
-  with_lock_retries do
-    remove_foreign_key :issues, :projects
-  end
+  remove_foreign_key :issues, :projects
 end
 
 def down
-  with_lock_retries do
-    add_foreign_key :issues, :projects
-  end
+  add_foreign_key :issues, :projects
 end
 ```
 
 **Changing default value for a column:**
 
 ```ruby
+enable_lock_retries!
+
 def up
-  with_lock_retries do
-    change_column_default :merge_requests, :lock_version, from: nil, to: 0
-  end
+  change_column_default :merge_requests, :lock_version, from: nil, to: 0
 end
 
 def down
-  with_lock_retries do
-    change_column_default :merge_requests, :lock_version, from: 0, to: nil
-  end
+  change_column_default :merge_requests, :lock_version, from: 0, to: nil
 end
 ```
 
@@ -362,19 +374,17 @@ end
 We can wrap the `create_table` method with `with_lock_retries`:
 
 ```ruby
+enable_lock_retries!
+
 def up
-  with_lock_retries do
-    create_table :issues do |t|
-      t.references :project, index: true, null: false, foreign_key: { on_delete: :cascade }
-      t.string :title, limit: 255
-    end
+  create_table :issues do |t|
+    t.references :project, index: true, null: false, foreign_key: { on_delete: :cascade }
+    t.string :title, limit: 255
   end
 end
 
 def down
-  with_lock_retries do
-    drop_table :issues
-  end
+  drop_table :issues
 end
 ```
 
@@ -442,16 +452,20 @@ def down
 end
 ```
 
-**Usage with `disable_ddl_transaction!`**
+### Usage with non-transactional migrations (`disable_ddl_transaction!`)
 
-Generally the `with_lock_retries` helper should work with `disable_ddl_transaction!`. A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
+Only when we disable transactional migrations using `disable_ddl_transaction!`, we can use
+the `with_lock_retries` helper to guard an individual sequence of steps. It opens a transaction
+to execute the given block.
+
+A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
 
 ```ruby
 disable_ddl_transaction!
 
 def up
   with_lock_retries do
-    add_column :users, :name, :text
+    add_column :users, :name, :text unless column_exists?(:users, :name)
   end
 
   add_text_limit :users, :name, 255 # Includes constraint validation (full table scan)
@@ -472,7 +486,8 @@ end
 
 ### When to use the helper method
 
-The `with_lock_retries` helper method can be used when you normally use
+You can **only** use the `with_lock_retries` helper method when the execution is not already inside
+an open transaction (using Postgres subtransactions is discouraged). It can be used with
 standard Rails migration helper methods. Calling more than one migration
 helper is not a problem if they're executed on the same table.
 

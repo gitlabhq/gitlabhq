@@ -70,8 +70,7 @@ describe('Shortcuts', () => {
           const mdShortcuts = $(this).data('md-shortcuts');
 
           // jQuery.map() automatically unwraps arrays, so we
-          // have to double wrap the array to counteract this:
-          // https://stackoverflow.com/a/4875669/1063392
+          // have to double wrap the array to counteract this
           return mdShortcuts ? [mdShortcuts] : undefined;
         })
         .get();

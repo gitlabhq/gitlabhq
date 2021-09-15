@@ -4,39 +4,68 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Cluster Management Project Template **(FREE)**
+# Cluster Management project template **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) in GitLab 12.10 with Helmfile support via Helm v2.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63577) in GitLab 14.0 with Helmfile support via Helm v3 instead, and a much more flexible usage of Helmfile. This introduces breaking changes that are detailed below.
+> - Helm v2 support was [dropped](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63577) in GitLab 14.0. Use Helm v3 instead.
 
-This [GitLab built-in project template](../project/working_with_projects.md#built-in-templates)
-provides a quicker start for users interested in managing cluster
-applications via [Helm v3](https://helm.sh/) charts. More specifically, taking advantage of the
-[Helmfile](https://github.com/roboll/helmfile) utility client. The template consists of some pre-configured apps that
-should help you get started quickly using various GitLab features. Still, you have all the flexibility to remove the ones you do not
-need, or even add new ones that are not built-in.
+With a [cluster management project](management_project.md) you can manage
+your cluster's deployment and applications through a repository in GitLab.
 
-## How to use this template
+The Custer Management project template provides you a baseline to get
+started and flexibility to customize your project to your cluster's needs.
+For instance, you can:
 
-1. [Connect your cluster to GitLab](../project/clusters/index.md#add-and-remove-clusters).
-1. Create a new project for the purpose of managing your cluster from GitLab. To do so,
-[create a new project from a template](../project/working_with_projects.md#built-in-templates)
-and select **GitLab Cluster Management**.
-1. Configure this project as a [cluster management project](management_project.md#selecting-a-cluster-management-project)
-for the cluster you have integrated on the first step.
-1. If you used the [GitLab Managed Apps](applications.md), refer to
-   [Migrating from GitLab Managed Apps](migrating_from_gma_to_project_template.md).
+- Extend the CI/CD configuration.
+- Configure the built-in cluster applications.
+- Remove the built-in cluster applications you don't need.
+- Add other cluster applications using the same structure as the ones already available.
 
-### Components
+The template contains the following [components](#available-components):
 
-In the repository of the newly-created project, you will find:
+- A pre-configured GitLab CI/CD file so that you can configure deployment pipelines.
+- A pre-configured [Helmfile](https://github.com/roboll/helmfile) so that
+you can manage cluster applications with [Helm v3](https://helm.sh/).
+- An `applications` directory with a `helmfile.yaml` configured for each
+application available in the template.
 
-- A predefined [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/blob/master/.gitlab-ci.yml)
-  file, with a CI pipeline already configured.
-- A main [`helmfile.yaml`](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/blob/master/helmfile.yaml) to toggle which applications you would like to manage.
-- An `applications` directory with a `helmfile.yaml` configured for each application GitLab provides.
+WARNING:
+If you used [GitLab Managed Apps](applications.md) to manage your
+cluster from GitLab, see how to [migrate from GitLab Managed Apps](migrating_from_gma_to_project_template.md) to the Cluster Management
+project.
 
-#### The `.gitlab-ci.yml` file
+## Set up the management project from the Cluster Management project template
+
+To set up your cluster's management project off of the Cluster Management project template:
+
+1. [Create a new project based on the Cluster Management template](#create-a-new-project-based-on-the-cluster-management-template).
+1. [Associate the cluster management project with your cluster](management_project.md#associate-the-cluster-management-project-with-the-cluster).
+1. Use the [available components](#available-components) to manage your cluster.
+
+### Create a new project based on the Cluster Management template
+
+To get started, create a new project based on the Cluster Management
+project template to use as a cluster management project.
+
+You can either create the [new project](../project/working_with_projects.md#create-a-project)
+from the template or import the project from the URL. Importing
+the project is useful if you are using a GitLab self-managed
+instance that may not have the latest version of the template.
+
+To create the new project:
+
+- From the template: select the **GitLab Cluster Management** project template.
+- Importing from the URL: use `https://gitlab.com/gitlab-org/project-templates/cluster-management.git`.
+
+## Available components
+
+Use the available components to configure your cluster:
+
+- [A `.gitlab-ci.yml` file](#the-gitlab-ciyml-file).
+- [A main `helmfile.yml` file](#the-main-helmfileyml-file).
+- [A directory with built-in applications](#built-in-applications).
+
+### The `.gitlab-ci.yml` file
 
 The base image used in your pipeline is built by the [cluster-applications](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications)
 project. This image consists of a set of Bash utility scripts to support [Helm v3 releases](https://helm.sh/docs/intro/using_helm/#three-big-concepts):
@@ -52,23 +81,21 @@ project. This image consists of a set of Bash utility scripts to support [Helm v
   facilitate the GitLab Managed Apps adoption.
 - `gl-helmfile {arguments}`: A thin wrapper that triggers the [Helmfile](https://github.com/roboll/helmfile) command.
 
-#### The main `helmfile.yml` file
+### The main `helmfile.yml` file
 
 This file has a list of paths to other Helmfiles for each app. They're all commented out by default, so you must uncomment
-the paths for the apps that you would like to manage.
+the paths for the apps that you would like to use in your cluster.
 
-By default, each `helmfile.yaml` in these sub-paths have the attribute `installed: true`. This signifies that every time
+By default, each `helmfile.yaml` in these sub-paths has the attribute `installed: true`. This means that every time
 the pipeline runs, Helmfile tries to either install or update your apps according to the current state of your
 cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile tries try to uninstall this app
 from your cluster. [Read more](https://github.com/roboll/helmfile) about how Helmfile works.
 
 Furthermore, each app has an `applications/{app}/values.yaml` file (`applicaton/{app}/values.yaml.gotmpl` in case of GitLab Runner). This is the
-place where you can define some default values for your app's Helm chart. Some apps already have defaults
+place where you can define default values for your app's Helm chart. Some apps already have defaults
 pre-defined by GitLab.
 
-#### Built-in applications
-
-The built-in applications are intended to provide an easy way to get started with various Kubernetes oriented GitLab features.
+### Built-in applications
 
 The [built-in supported applications](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/tree/master/applications) are:
 
@@ -83,8 +110,3 @@ The [built-in supported applications](https://gitlab.com/gitlab-org/project-temp
 - [Prometheus](../infrastructure/clusters/manage/management_project_applications/prometheus.md)
 - [Sentry](../infrastructure/clusters/manage/management_project_applications/sentry.md)
 - [Vault](../infrastructure/clusters/manage/management_project_applications/vault.md)
-
-### Migrate from GitLab Managed Apps
-
-If you had GitLab Managed Apps, either One-Click or CI/CD install, read the docs on how to
-[migrate from GitLab Managed Apps to project template](migrating_from_gma_to_project_template.md)

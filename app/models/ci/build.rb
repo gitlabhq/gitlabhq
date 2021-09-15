@@ -170,8 +170,6 @@ module Ci
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
 
-    scope :with_secure_reports_from_options, -> (job_type) { where('options like :job_type', job_type: "%:artifacts:%:reports:%:#{job_type}:%") }
-
     scope :with_secure_reports_from_config_options, -> (job_types) do
       joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end

@@ -71,7 +71,7 @@ module Gitlab
         end
 
         def create_issue!
-          @issue = Issues::CreateService.new(
+          @issue = ::Issues::CreateService.new(
             project: project,
             current_user: User.support_bot,
             params: {

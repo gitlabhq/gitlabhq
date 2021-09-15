@@ -100,9 +100,3 @@ kubectl -n gitlab-managed-apps exec -it vault-0 sh
 
 This should give you your unseal keys and initial root token. Make sure to note these down
 and keep these safe, as they're required to unseal the Vault throughout its lifecycle.
-
-Support for installing the Vault managed application is provided by the
-GitLab Release Management group. If you run into unknown issues,
-[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the
-[Release Management group](https://about.gitlab.com/handbook/product/categories/#release-management-group).

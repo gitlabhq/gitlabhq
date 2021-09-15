@@ -164,6 +164,7 @@ RSpec.configure do |config|
   config.include NextInstanceOf
   config.include TestEnv
   config.include FileReadHelpers
+  config.include Database::MultipleDatabases
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature

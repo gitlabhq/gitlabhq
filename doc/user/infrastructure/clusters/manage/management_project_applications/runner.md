@@ -42,9 +42,3 @@ You can customize the installation of GitLab Runner by defining
 management project. Refer to the
 [chart](https://gitlab.com/gitlab-org/charts/gitlab-runner) for the
 available configuration options.
-
-Support for installing the GitLab Runner managed application is provided by the
-GitLab Runner group. If you run into unknown issues,
-[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the
-[Runner group](https://about.gitlab.com/handbook/product/categories/#runner-group).

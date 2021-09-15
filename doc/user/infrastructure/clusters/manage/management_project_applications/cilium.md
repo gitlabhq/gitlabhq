@@ -120,9 +120,3 @@ global:
       enabled:
       - 'flow:sourceContext=namespace;destinationContext=namespace'
 ```
-
-Support for installing the Cilium managed application is provided by the
-GitLab Container Security group. If you run into unknown issues,
-[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the
-[Container Security group](https://about.gitlab.com/handbook/product/categories/#container-security-group).
