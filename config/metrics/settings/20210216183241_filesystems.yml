@@ -7,7 +7,7 @@ product_stage: ''
 product_group: ''
 product_category: ''
 value_type: number
-status: data_available
+status: active
 time_frame: all
 data_source: system
 distribution:

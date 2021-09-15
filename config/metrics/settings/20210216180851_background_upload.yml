@@ -8,7 +8,7 @@ product_stage: enablement
 product_group: group::memory
 product_category: memory
 value_type: boolean
-status: data_available
+status: active
 time_frame: none
 data_source: system
 distribution:

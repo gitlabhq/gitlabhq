@@ -42,11 +42,6 @@ describe('Interval Pattern Input Component', () => {
 
     wrapper = mount(IntervalPatternInput, {
       propsData: { ...props },
-      provide: {
-        glFeatures: {
-          ciDailyLimitForPipelineSchedules: true,
-        },
-      },
       data() {
         return {
           randomHour: data?.hour || mockHour,

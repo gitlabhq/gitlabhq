@@ -566,7 +566,7 @@ to get alerts when there are critical issues that need immediate attention.
 
 #### View the latest alerts for environments **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
 If you [set up alerts for Prometheus metrics](../../operations/metrics/alerts.md),
 alerts for environments are shown on the environments page. The alert with the highest
@@ -582,7 +582,7 @@ deployment tab from the environment page and select which deployment to roll bac
 
 #### Auto Rollback **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 
 In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
 production. However, problematic code can still make it to production. For example, inefficient code
@@ -682,9 +682,9 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 ### Scope environments with specs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - [Environment scoping for CI/CD variables was moved to all tiers](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) in GitLab 12.2.
-> - [Environment scoping for Group CI/CD variables](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) added to GitLab Premium in 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in GitLab Premium 9.4.
+> - Environment scoping for CI/CD variables was [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) from GitLab Premium to GitLab Free in 12.2.
+> - Environment scoping for Group CI/CD variables [added](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) to GitLab Premium in 13.11.
 
 You can limit the environment scope of a CI/CD variable by
 defining which environments it can be available for.
@@ -730,7 +730,7 @@ the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
 ### Rename an environment
 
-> Renaming environments through the UI [was removed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550). Renaming environments through the API was deprected and [will be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338897).
+> Renaming environments through the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3. Renaming environments through the API was deprected and [will be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.0.
 
 Renaming an environment through the UI is not possible.
 Instead, you need to delete the old environment and create a new one:

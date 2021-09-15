@@ -7,7 +7,7 @@ product_stage: verify
 product_group: group::pipeline authoring
 product_category: pipeline_authoring
 value_type: number
-status: data_available
+status: active
 milestone: "13.12"
 introduced_by_url:
 time_frame: 28d

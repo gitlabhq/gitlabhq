@@ -401,7 +401,7 @@ RSpec.describe User do
           user = build(:user, username: "test.#{type}")
 
           expect(user).not_to be_valid
-          expect(user.errors.full_messages).to include('Username ending with MIME type format is not allowed.')
+          expect(user.errors.full_messages).to include('Username ending with a file extension is not allowed.')
           expect(build(:user, username: "test#{type}")).to be_valid
         end
       end
@@ -435,12 +435,12 @@ RSpec.describe User do
       subject { create(:user).tap { |user| user.emails << build(:email, email: email_value, confirmed_at: Time.current) } }
     end
 
-    describe '#commit_email' do
+    describe '#commit_email_or_default' do
       subject(:user) { create(:user) }
 
       it 'defaults to the primary email' do
         expect(user.email).to be_present
-        expect(user.commit_email).to eq(user.email)
+        expect(user.commit_email_or_default).to eq(user.email)
       end
 
       it 'defaults to the primary email when the column in the database is null' do
@@ -448,14 +448,18 @@ RSpec.describe User do
 
         found_user = described_class.find_by(id: user.id)
 
-        expect(found_user.commit_email).to eq(user.email)
+        expect(found_user.commit_email_or_default).to eq(user.email)
       end
 
       it 'returns the private commit email when commit_email has _private' do
         user.update_column(:commit_email, Gitlab::PrivateCommitEmail::TOKEN)
 
-        expect(user.commit_email).to eq(user.private_commit_email)
+        expect(user.commit_email_or_default).to eq(user.private_commit_email)
       end
+    end
+
+    describe '#commit_email=' do
+      subject(:user) { create(:user) }
 
       it 'can be set to a confirmed email' do
         confirmed = create(:email, :confirmed, user: user)
@@ -1246,53 +1250,57 @@ RSpec.describe User do
       end
     end
 
-    describe '#update_notification_email' do
-      # Regression: https://gitlab.com/gitlab-org/gitlab-foss/issues/22846
-      context 'when changing :email' do
-        let(:user) { create(:user) }
-        let(:new_email) { 'new-email@example.com' }
+    describe 'when changing email' do
+      let(:user) { create(:user) }
+      let(:new_email) { 'new-email@example.com' }
 
+      context 'if notification_email was nil' do
         it 'sets :unconfirmed_email' do
           expect do
             user.tap { |u| u.update!(email: new_email) }.reload
           end.to change(user, :unconfirmed_email).to(new_email)
         end
-        it 'does not change :notification_email' do
+
+        it 'does not change notification_email or notification_email_or_default before email is confirmed' do
+          expect do
+            user.tap { |u| u.update!(email: new_email) }.reload
+          end.not_to change(user, :notification_email_or_default)
+
+          expect(user.notification_email).to be_nil
+        end
+
+        it 'updates notification_email_or_default to the new email once confirmed' do
+          user.update!(email: new_email)
+
+          expect do
+            user.tap(&:confirm).reload
+          end.to change(user, :notification_email_or_default).to eq(new_email)
+
+          expect(user.notification_email).to be_nil
+        end
+      end
+
+      context 'when notification_email is set to a secondary email' do
+        let!(:email_attrs) { attributes_for(:email, :confirmed, user: user) }
+        let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
+
+        before do
+          user.emails.create!(email_attrs)
+          user.tap { |u| u.update!(notification_email: email_attrs[:email]) }.reload
+        end
+
+        it 'does not change notification_email to email before email is confirmed' do
           expect do
             user.tap { |u| u.update!(email: new_email) }.reload
           end.not_to change(user, :notification_email)
         end
 
-        it 'updates :notification_email to the new email once confirmed' do
+        it 'does not change notification_email to email once confirmed' do
           user.update!(email: new_email)
 
           expect do
             user.tap(&:confirm).reload
-          end.to change(user, :notification_email).to eq(new_email)
-        end
-
-        context 'and :notification_email is set to a secondary email' do
-          let!(:email_attrs) { attributes_for(:email, :confirmed, user: user) }
-          let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
-
-          before do
-            user.emails.create!(email_attrs)
-            user.tap { |u| u.update!(notification_email: email_attrs[:email]) }.reload
-          end
-
-          it 'does not change :notification_email to :email' do
-            expect do
-              user.tap { |u| u.update!(email: new_email) }.reload
-            end.not_to change(user, :notification_email)
-          end
-
-          it 'does not change :notification_email to :email once confirmed' do
-            user.update!(email: new_email)
-
-            expect do
-              user.tap(&:confirm).reload
-            end.not_to change(user, :notification_email)
-          end
+          end.not_to change(user, :notification_email)
         end
       end
     end
@@ -1878,6 +1886,7 @@ RSpec.describe User do
         end
         it 'does not send deactivated user an email' do
           expect(NotificationService).not_to receive(:new)
+
           user.deactivate
         end
       end
@@ -1885,7 +1894,7 @@ RSpec.describe User do
       context "when user deactivation emails are enabled" do
         it 'sends deactivated user an email' do
           expect_next_instance_of(NotificationService) do |notification|
-            allow(notification).to receive(:user_deactivated).with(user.name, user.notification_email)
+            allow(notification).to receive(:user_deactivated).with(user.name, user.notification_email_or_default)
           end
 
           user.deactivate
@@ -3084,15 +3093,15 @@ RSpec.describe User do
     end
   end
 
-  describe '#notification_email' do
+  describe '#notification_email_or_default' do
     let(:email) { 'gonzo@muppets.com' }
 
     context 'when the column in the database is null' do
       subject { create(:user, email: email, notification_email: nil) }
 
       it 'defaults to the primary email' do
-        expect(subject.read_attribute(:notification_email)).to be nil
-        expect(subject.notification_email).to eq(email)
+        expect(subject.notification_email).to be nil
+        expect(subject.notification_email_or_default).to eq(email)
       end
     end
   end
@@ -5335,7 +5344,7 @@ RSpec.describe User do
       let(:group) { nil }
 
       it 'returns global notification email' do
-        is_expected.to eq(user.notification_email)
+        is_expected.to eq(user.notification_email_or_default)
       end
     end
 
@@ -5343,7 +5352,7 @@ RSpec.describe User do
       it 'returns global notification email' do
         create(:notification_setting, user: user, source: group, notification_email: '')
 
-        is_expected.to eq(user.notification_email)
+        is_expected.to eq(user.notification_email_or_default)
       end
     end
 
@@ -6132,7 +6141,7 @@ RSpec.describe User do
       it 'does nothing' do
         expect(subject).not_to receive(:save)
         subject.unset_secondary_emails_matching_deleted_email!(deleted_email)
-        expect(subject.read_attribute(:commit_email)).to eq commit_email
+        expect(subject.commit_email).to eq commit_email
       end
     end
 
@@ -6142,7 +6151,7 @@ RSpec.describe User do
       it 'un-sets the secondary email' do
         expect(subject).to receive(:save)
         subject.unset_secondary_emails_matching_deleted_email!(deleted_email)
-        expect(subject.read_attribute(:commit_email)).to be nil
+        expect(subject.commit_email).to be nil
       end
     end
   end

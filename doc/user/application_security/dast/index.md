@@ -1145,6 +1145,21 @@ The site is validated and an active scan can run against it.
 
 If a validated site profile's target URL is edited, the site's validation status is revoked.
 
+#### Retry a failed validation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322609) in GitLab 14.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an
+administrator to [disable the `dast_failed_site_validations` flag](../../../administration/feature_flags.md).
+
+If a site profile's validation fails, you can retry it by selecting the **Retry validation** button
+in the profiles list.
+
+When loading the DAST profiles library, past failed validations are listed above the profiles
+list. You can also retry the validation from there by selecting the **Retry validation** link in
+the alert. You can also dismiss the alert to revoke failed validations.
+
 #### Revoke a site profile's validation status
 
 Note that all site profiles with the same URL have their validation status revoked.

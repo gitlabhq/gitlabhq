@@ -1826,7 +1826,7 @@ RSpec.describe Repository do
 
       expect(merge_commit.message).to eq('Custom message')
       expect(merge_commit.author_name).to eq(user.name)
-      expect(merge_commit.author_email).to eq(user.commit_email)
+      expect(merge_commit.author_email).to eq(user.commit_email_or_default)
       expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
   end

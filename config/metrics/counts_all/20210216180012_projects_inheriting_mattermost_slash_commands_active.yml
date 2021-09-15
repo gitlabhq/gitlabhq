@@ -8,7 +8,7 @@ product_stage: ecosystem
 product_group: group::integrations
 product_category: integrations
 value_type: number
-status: data_available
+status: active
 time_frame: all
 data_source: database
 distribution:

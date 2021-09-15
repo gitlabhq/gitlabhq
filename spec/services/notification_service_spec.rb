@@ -2623,7 +2623,7 @@ RSpec.describe NotificationService, :mailer do
     let_it_be(:user) { create(:user) }
 
     it 'sends the user an email' do
-      notification.user_deactivated(user.name, user.notification_email)
+      notification.user_deactivated(user.name, user.notification_email_or_default)
 
       should_only_email(user)
     end

@@ -531,6 +531,10 @@ RSpec.describe Ci::Runner do
         it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
         end
+
+        it 'knows namespace id it is assigned to' do
+          expect(runner.namespace_ids).to eq [group.id]
+        end
       end
     end
 

@@ -217,7 +217,8 @@ integration to work properly.
 WARNING:
 Disabling RBAC means that any application running in the cluster,
 or user who can authenticate to the cluster, has full API access. This is a
-[security concern](index.md#security-implications), and may not be desirable.
+[security concern](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates),
+and may not be desirable.
 
 To effectively disable RBAC, global permissions can be applied granting full access:
 

@@ -7,7 +7,7 @@ product_stage: manage
 product_group: group::optimize
 product_category:
 value_type: number
-status: data_available
+status: active
 milestone: "13.11"
 time_frame: all
 data_source: redis_hll

@@ -7,7 +7,7 @@ type: concepts, howto
 
 # Protected environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in GitLab 11.3.
 
 [Environments](../environments/index.md) can be used for different reasons:
 
@@ -159,7 +159,7 @@ For more information, see [Deployment safety](deployment_safety.md).
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in GitLab 14.0. [Deployed behind the `group_level_protected_environments` flag](../../administration/feature_flags.md), disabled by default.
 > - [Feature flag `group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) removed in GitLab 14.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) in GitLab 14.3.
+> - [Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) on GitLab and on GitLab.com in 14.3.
 
 Typically, large enterprise organizations have an explicit permission boundary
 between [developers and operators](https://about.gitlab.com/topics/devops/).

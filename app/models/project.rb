@@ -161,6 +161,8 @@ class Project < ApplicationRecord
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
+  # Sync deletion via DB Trigger to ensure we do not have
+  # a project without a project_namespace (or vice-versa)
   belongs_to :project_namespace, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id

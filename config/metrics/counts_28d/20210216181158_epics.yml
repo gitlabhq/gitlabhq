@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::plan
 product_category: epics
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: database
 distribution:

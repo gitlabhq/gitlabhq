@@ -185,6 +185,20 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
+    context 'when deleting project' do
+      # using delete rather than destroy due to `delete` skipping AR hooks/callbacks
+      # so it's ensured to work at the DB level. Uses AFTER DELETE trigger.
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'also deletes the associated ProjectNamespace' do
+        project.delete
+
+        expect { project.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { project_namespace.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     context 'when creating a new project' do
       let_it_be(:project) { create(:project) }
 

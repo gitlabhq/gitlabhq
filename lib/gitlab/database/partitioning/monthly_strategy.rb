@@ -4,17 +4,18 @@ module Gitlab
   module Database
     module Partitioning
       class MonthlyStrategy
-        attr_reader :model, :partitioning_key, :retain_for
+        attr_reader :model, :partitioning_key, :retain_for, :retain_non_empty_partitions
 
         # We create this many partitions in the future
         HEADROOM = 6.months
 
         delegate :table_name, to: :model
 
-        def initialize(model, partitioning_key, retain_for: nil)
+        def initialize(model, partitioning_key, retain_for: nil, retain_non_empty_partitions: false)
           @model = model
           @partitioning_key = partitioning_key
           @retain_for = retain_for
+          @retain_non_empty_partitions = retain_non_empty_partitions
         end
 
         def current_partitions
@@ -29,7 +30,10 @@ module Gitlab
         end
 
         def extra_partitions
-          current_partitions - desired_partitions
+          partitions = current_partitions - desired_partitions
+          partitions.reject!(&:holds_data?) if retain_non_empty_partitions
+
+          partitions
         end
 
         private

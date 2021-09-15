@@ -33,75 +33,11 @@ features such as:
 
 ## Supported cluster versions
 
-GitLab is committed to support at least two production-ready Kubernetes minor
-versions at any given time. We regularly review the versions we support, and
-provide a three-month deprecation period before we remove support of a specific
-version. The range of supported versions is based on the evaluation of:
+See the [Kubernetes clusters versions supported by GitLab](../../infrastructure/clusters/connect/index.md#supported-cluster-versions).
 
-- The versions supported by major managed Kubernetes providers.
-- The versions [supported by the Kubernetes community](https://kubernetes.io/releases/version-skew-policy/#supported-versions).
+## Connect your cluster to GitLab
 
-GitLab supports the following Kubernetes versions, and you can upgrade your
-Kubernetes version to any supported version at any time:
-
-- 1.20 (support ends on April 22, 2022)
-- 1.19 (support ends on February 22, 2022)
-- 1.18 (support ends on November 22, 2021)
-- 1.17 (support ends on September 22, 2021)
-
-Some GitLab features may support versions outside the range provided here.
-
-## Add and remove clusters
-
-You can create new or add existing clusters to GitLab through different [levels](#cluster-levels),
-using different methods.
-
-### Methods to connect existing clusters
-
-To safely connect and configure an existing cluster on the **project level**, we
-**recommend** using the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
-We are working to support [the Agent for connecting a
-cluster at the group level](https://gitlab.com/groups/gitlab-org/-/epics/5784).
-
-You can use [cluster certificates](add_existing_cluster.md) to connect
-clusters in all levels (projects, group, instance). However, for
-[security implications](#security-implications), this method is no longer recommended.
-
-To create new clusters, we **recommend** using
-[Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
-
-### Cluster levels
-
-You can connect clusters to GitLab in different levels, according to their purpose:
-
-- On the project level, to have a cluster dedicated to a project.
-- On the [group level](../../group/clusters/index.md), to use the same cluster across multiple projects within your group.
-- On the [instance level](../../instance/clusters/index.md), to use the same cluster across multiple groups and projects. **(FREE SELF)**
-
-## Security implications
-
-WARNING:
-The whole cluster security is based on a model where [developers](../../permissions.md)
-are trusted, so **only trusted users should be allowed to control your clusters**.
-
-The default cluster configuration grants access to a wide set of
-functionalities needed to successfully build and deploy a containerized
-application. Bear in mind that the same credentials are used for all the
-applications running on the cluster.
-
-## View your clusters
-
-To view your project-level Kubernetes clusters, to go **Infrastructure > Kubernetes clusters**
-from your project. On this page, you can add a new cluster
-and view information about your existing clusters, such as:
-
-- Nodes count.
-- Rough estimates of memory and CPU usage.
-
-## Multiple Kubernetes clusters
-
-See how to associate [multiple Kubernetes clusters](multiple_kubernetes_clusters.md)
-with your GitLab project.
+Learn how to [create new and connect existing clusters to GitLab](../../infrastructure/clusters/connect/index.md).
 
 ## Cluster integrations
 

@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::certify
 product_category: collection
 value_type: boolean
-status: data_available
+status: active
 time_frame: none
 data_source: system
 distribution:

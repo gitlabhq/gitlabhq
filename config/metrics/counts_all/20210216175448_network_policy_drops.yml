@@ -8,7 +8,7 @@ product_stage: protect
 product_group: group::container security
 product_category: container_network_security
 value_type: number
-status: data_available
+status: active
 time_frame: all
 data_source: redis
 distribution:

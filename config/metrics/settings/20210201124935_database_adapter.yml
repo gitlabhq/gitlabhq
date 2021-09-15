@@ -9,7 +9,7 @@ product_stage: enablement
 product_group: group::enablement distribution
 product_category: collection
 value_type: string
-status: data_available
+status: active
 time_frame: none
 data_source: system
 distribution:

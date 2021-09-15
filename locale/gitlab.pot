@@ -8544,9 +8544,6 @@ msgstr ""
 msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
 msgstr ""
 
-msgid "Configure specific limits for Packages API requests that supersede the general user and IP rate limits."
-msgstr ""
-
 msgid "Configure the %{link} integration."
 msgstr ""
 
@@ -20777,6 +20774,9 @@ msgstr ""
 msgid "Maximum attachment size (MB)"
 msgstr ""
 
+msgid "Maximum authenticated API requests per rate limit period per user"
+msgstr ""
+
 msgid "Maximum bulk request size (MiB)"
 msgstr ""
 
@@ -20925,6 +20925,9 @@ msgid "Maximum time for web terminal websocket connection (in seconds). 0 for un
 msgstr ""
 
 msgid "Maximum time that users are allowed to skip the setup of two-factor authentication (in hours). Set to 0 (zero) to enforce at next sign in."
+msgstr ""
+
+msgid "Maximum unauthenticated API requests per rate limit period per IP"
 msgstr ""
 
 msgid "May"
@@ -23821,9 +23824,6 @@ msgstr ""
 msgid "Package Registry"
 msgstr ""
 
-msgid "Package Registry Rate Limits"
-msgstr ""
-
 msgid "Package Registry: authenticated API requests"
 msgstr ""
 
@@ -23840,6 +23840,9 @@ msgid "Package file size limits"
 msgstr ""
 
 msgid "Package recipe already exists"
+msgstr ""
+
+msgid "Package registry rate limits"
 msgstr ""
 
 msgid "Package type"
@@ -30751,6 +30754,9 @@ msgstr ""
 msgid "Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan."
 msgstr ""
 
+msgid "Set rate limits for package registry API requests that supersede the general user and IP rate limits."
+msgstr ""
+
 msgid "Set severity"
 msgstr ""
 
@@ -33672,6 +33678,9 @@ msgid "The number of merge requests merged by month."
 msgstr ""
 
 msgid "The number of times an upload record could not find its file"
+msgstr ""
+
+msgid "The package registry rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr ""
 
 msgid "The page could not be displayed because it timed out."
@@ -39780,7 +39789,7 @@ msgstr ""
 msgid "encrypted: needs to be a :required, :optional or :migrating!"
 msgstr ""
 
-msgid "ending with MIME type format is not allowed."
+msgid "ending with a file extension is not allowed."
 msgstr ""
 
 msgid "entries cannot be larger than 255 characters"

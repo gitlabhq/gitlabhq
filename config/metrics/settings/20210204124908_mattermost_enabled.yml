@@ -7,7 +7,7 @@ product_stage: ecosystem
 product_group: group::integrations
 product_category: integrations
 value_type: boolean
-status: data_available
+status: active
 time_frame: none
 data_source: system
 distribution:

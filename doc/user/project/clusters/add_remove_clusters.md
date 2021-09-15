@@ -54,7 +54,7 @@ As of GitLab 14.0, use the [GitLab Kubernetes Agent](../../clusters/agent/index.
 to connect your cluster to GitLab.
 
 Alternativelly, you can [add an existing cluster](add_existing_cluster.md)
-through the certificate-based method, but we don't recommend using this method for [security implications](index.md#security-implications).
+through the certificate-based method, but we don't recommend using this method for [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
 
 ## Configure your cluster
 

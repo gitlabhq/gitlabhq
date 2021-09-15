@@ -10,6 +10,18 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+CREATE FUNCTION delete_associated_project_namespace() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+DELETE FROM namespaces
+WHERE namespaces.id = OLD.project_namespace_id AND
+namespaces.type = 'Project';
+RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION integrations_set_type_new() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -11617,7 +11629,8 @@ CREATE TABLE ci_pending_builds (
     instance_runners_enabled boolean DEFAULT false NOT NULL,
     namespace_id bigint,
     minutes_exceeded boolean DEFAULT false NOT NULL,
-    tag_ids integer[] DEFAULT '{}'::integer[]
+    tag_ids integer[] DEFAULT '{}'::integer[],
+    namespace_traversal_ids integer[] DEFAULT '{}'::integer[]
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -25139,6 +25152,8 @@ CREATE INDEX index_geo_reset_checksum_events_on_project_id ON geo_reset_checksum
 
 CREATE INDEX index_geo_upload_deleted_events_on_upload_id ON geo_upload_deleted_events USING btree (upload_id);
 
+CREATE INDEX index_gin_ci_pending_builds_on_namespace_traversal_ids ON ci_pending_builds USING gin (namespace_traversal_ids);
+
 CREATE INDEX index_gitlab_subscription_histories_on_gitlab_subscription_id ON gitlab_subscription_histories USING btree (gitlab_subscription_id);
 
 CREATE INDEX index_gitlab_subscriptions_on_end_date_and_namespace_id ON gitlab_subscriptions USING btree (end_date, namespace_id);
@@ -27318,6 +27333,8 @@ CREATE TRIGGER trigger_8487d4de3e7b BEFORE INSERT OR UPDATE ON ci_builds_metadat
 CREATE TRIGGER trigger_91dc388a5fe6 BEFORE INSERT OR UPDATE ON dep_ci_build_trace_sections FOR EACH ROW EXECUTE FUNCTION trigger_91dc388a5fe6();
 
 CREATE TRIGGER trigger_aebe8b822ad3 BEFORE INSERT OR UPDATE ON taggings FOR EACH ROW EXECUTE FUNCTION trigger_aebe8b822ad3();
+
+CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 

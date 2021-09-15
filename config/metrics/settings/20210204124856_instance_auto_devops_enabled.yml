@@ -7,7 +7,7 @@ product_stage: configure
 product_group: group::configure
 product_category: auto_devops
 value_type: boolean
-status: data_available
+status: active
 time_frame: none
 data_source: system
 distribution:

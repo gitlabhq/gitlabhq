@@ -7,7 +7,7 @@ product_stage: release
 product_group: group::release
 product_category: continuous_delivery
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: database
 distribution:

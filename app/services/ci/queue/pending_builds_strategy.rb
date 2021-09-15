@@ -16,6 +16,12 @@ module Ci
         builds_ordered_for_shared_runners(shared_builds)
       end
 
+      def builds_for_group_runner
+        return new_builds.none if runner.namespace_ids.empty?
+
+        new_builds.where('ci_pending_builds.namespace_traversal_ids && ARRAY[?]::int[]', runner.namespace_ids)
+      end
+
       def builds_matching_tag_ids(relation, ids)
         if ::Feature.enabled?(:ci_queueing_denormalize_tags_information, runner, default_enabled: :yaml)
           relation.where('tag_ids <@ ARRAY[?]::int[]', runner.tags_ids)
@@ -50,6 +56,10 @@ module Ci
 
       def use_denormalized_minutes_data?
         ::Feature.enabled?(:ci_queueing_denormalize_ci_minutes_information, runner, type: :development, default_enabled: :yaml)
+      end
+
+      def use_denormalized_namespace_traversal_ids?
+        ::Feature.enabled?(:ci_queueing_denormalize_namespace_traversal_ids, runner, type: :development, default_enabled: :yaml)
       end
 
       private

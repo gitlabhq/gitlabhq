@@ -378,7 +378,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     IssuableExportCsvWorker.perform_async(:merge_request, current_user.id, project.id, finder_options.to_h) # rubocop:disable CodeReuse/Worker
 
     index_path = project_merge_requests_path(project)
-    message = _('Your CSV export has started. It will be emailed to %{email} when complete.') % { email: current_user.notification_email }
+    message = _('Your CSV export has started. It will be emailed to %{email} when complete.') % { email: current_user.notification_email_or_default }
     redirect_to(index_path, notice: message)
   end
 

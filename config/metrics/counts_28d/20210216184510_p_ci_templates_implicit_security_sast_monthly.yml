@@ -7,7 +7,7 @@ product_stage: verify
 product_group: "group::static analysis"
 product_category: SAST
 value_type: number
-status: data_available
+status: active
 milestone: "<13.9"
 time_frame: 28d
 data_source: redis_hll

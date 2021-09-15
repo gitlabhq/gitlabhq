@@ -8,7 +8,7 @@ product_stage: verify
 product_group: group::pipeline authoring
 product_category: pipeline_authoring
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric

@@ -6,7 +6,7 @@ product_section: ops
 product_stage: release
 product_group: group::release
 value_type: number
-status: data_available
+status: active
 milestone: "8.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735
 time_frame: all

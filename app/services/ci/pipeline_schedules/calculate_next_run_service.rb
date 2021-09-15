@@ -8,7 +8,6 @@ module Ci
       def execute(schedule, fallback_method:)
         @schedule = schedule
 
-        return fallback_method.call unless ::Feature.enabled?(:ci_daily_limit_for_pipeline_schedules, project, default_enabled: :yaml)
         return fallback_method.call unless plan_cron&.cron_valid?
 
         now = Time.zone.now

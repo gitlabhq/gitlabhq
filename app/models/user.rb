@@ -229,10 +229,9 @@ class User < ApplicationRecord
   validates :first_name, length: { maximum: 127 }
   validates :last_name, length: { maximum: 127 }
   validates :email, confirmation: true
-  validates :notification_email, presence: true
-  validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
+  validates :notification_email, devise_email: true, allow_blank: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, uniqueness: true, devise_email: true, allow_blank: true
-  validates :commit_email, devise_email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
+  validates :commit_email, devise_email: true, allow_blank: true, if: ->(user) { user.commit_email != user.email }
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
@@ -384,7 +383,7 @@ class User < ApplicationRecord
     after_transition any => :deactivated do |user|
       next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
 
-      NotificationService.new.user_deactivated(user.name, user.notification_email)
+      NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
     end
     # rubocop: enable CodeReuse/ServiceClass
 
@@ -932,33 +931,18 @@ class User < ApplicationRecord
     end
   end
 
-  # Define commit_email-related attribute methods explicitly instead of relying
-  # on ActiveRecord to provide them. Some of the specs use the current state of
-  # the model code but an older database schema, so we need to guard against the
-  # possibility of the commit_email column not existing.
-
-  def commit_email
-    return self.email unless has_attribute?(:commit_email)
-
-    if super == Gitlab::PrivateCommitEmail::TOKEN
+  def commit_email_or_default
+    if self.commit_email == Gitlab::PrivateCommitEmail::TOKEN
       return private_commit_email
     end
 
     # The commit email is the same as the primary email if undefined
-    super.presence || self.email
+    self.commit_email.presence || self.email
   end
 
-  def commit_email=(email)
-    super if has_attribute?(:commit_email)
-  end
-
-  def commit_email_changed?
-    has_attribute?(:commit_email) && super
-  end
-
-  def notification_email
+  def notification_email_or_default
     # The notification email is the same as the primary email if undefined
-    super.presence || self.email
+    self.notification_email.presence || self.email
   end
 
   def private_commit_email
@@ -1640,7 +1624,7 @@ class User < ApplicationRecord
 
   def notification_email_for(notification_group)
     # Return group-specific email address if present, otherwise return global notification email address
-    notification_group&.notification_email_for(self) || notification_email
+    notification_group&.notification_email_for(self) || notification_email_or_default
   end
 
   def notification_settings_for(source, inherit: false)
@@ -2019,7 +2003,7 @@ class User < ApplicationRecord
   private
 
   def notification_email_verified
-    return if read_attribute(:notification_email).blank? || temp_oauth_email?
+    return if notification_email.blank? || temp_oauth_email?
 
     errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email)
   end
@@ -2031,7 +2015,7 @@ class User < ApplicationRecord
   end
 
   def commit_email_verified
-    return if read_attribute(:commit_email).blank?
+    return if commit_email.blank?
 
     errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email)
   end
@@ -2112,7 +2096,7 @@ class User < ApplicationRecord
   def check_username_format
     return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(".#{type}") }
 
-    errors.add(:username, _('ending with MIME type format is not allowed.'))
+    errors.add(:username, _('ending with a file extension is not allowed.'))
   end
 
   def groups_with_developer_maintainer_project_access

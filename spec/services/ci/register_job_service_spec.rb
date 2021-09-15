@@ -219,6 +219,8 @@ module Ci
           before do
             project.update!(shared_runners_enabled: true, group_runners_enabled: true)
             project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+
+            pending_job.reload.create_queuing_entry!
           end
 
           context 'and uses shared runner' do
@@ -304,6 +306,8 @@ module Ci
         context 'disallow group runners' do
           before do
             project.update!(group_runners_enabled: false)
+
+            pending_job.reload.create_queuing_entry!
           end
 
           context 'group runner' do
@@ -751,6 +755,14 @@ module Ci
         context 'with ci_queueing_denormalize_tags_information disabled' do
           before do
             stub_feature_flags(ci_queueing_denormalize_tags_information: false)
+          end
+
+          include_examples 'handles runner assignment'
+        end
+
+        context 'with ci_queueing_denormalize_namespace_traversal_ids disabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_namespace_traversal_ids: false)
           end
 
           include_examples 'handles runner assignment'

@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Group-level Variables API
+# Group-level Variables API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34519) in GitLab 9.5
 

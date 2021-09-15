@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::project management
 product_category: ''
 value_type: number
-status: implemented
+status: active
 milestone: "14.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61775
 time_frame: 28d

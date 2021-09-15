@@ -7,7 +7,7 @@ product_stage: create
 product_group: group::editor
 product_category: wiki
 value_type: number
-status: data_available
+status: active
 milestone: "13.3"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38784"
 time_frame: all

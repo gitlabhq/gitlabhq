@@ -26,11 +26,13 @@ module Ci
       private
 
       def args_from_build(build)
+        project = build.project
+
         args = {
           build: build,
-          project: build.project,
+          project: project,
           protected: build.protected?,
-          namespace: build.project.namespace
+          namespace: project.namespace
         }
 
         if Feature.enabled?(:ci_pending_builds_maintain_tags_data, type: :development, default_enabled: :yaml)
@@ -38,29 +40,26 @@ module Ci
         end
 
         if Feature.enabled?(:ci_pending_builds_maintain_shared_runners_data, type: :development, default_enabled: :yaml)
-          args.store(:instance_runners_enabled, shareable?(build))
+          args.store(:instance_runners_enabled, shared_runners_enabled?(project))
+        end
+
+        if Feature.enabled?(:ci_pending_builds_maintain_namespace_traversal_ids, type: :development, default_enabled: :yaml)
+          args.store(:namespace_traversal_ids, project.namespace.traversal_ids) if group_runners_enabled?(project)
         end
 
         args
       end
 
-      def shareable?(build)
-        shared_runner_enabled?(build) &&
-          builds_access_level?(build) &&
-          project_not_removed?(build)
+      def shared_runners_enabled?(project)
+        builds_enabled?(project) && project.shared_runners_enabled?
       end
 
-      def shared_runner_enabled?(build)
-        build.project.shared_runners.exists?
+      def group_runners_enabled?(project)
+        builds_enabled?(project) && project.group_runners_enabled?
       end
 
-      def project_not_removed?(build)
-        !build.project.pending_delete?
-      end
-
-      def builds_access_level?(build)
-        build.project.project_feature.builds_access_level.nil? ||
-          build.project.project_feature.builds_access_level > 0
+      def builds_enabled?(project)
+        project.builds_enabled? && !project.pending_delete?
       end
     end
   end

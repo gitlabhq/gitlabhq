@@ -58,7 +58,11 @@ RSpec.describe Ci::PendingBuild do
       end
     end
 
-    context 'when project does not have shared runner' do
+    context 'when project does not have shared runners enabled' do
+      before do
+        project.shared_runners_enabled = false
+      end
+
       it 'sets instance_runners_enabled to false' do
         described_class.upsert_from_build!(build)
 
@@ -68,6 +72,10 @@ RSpec.describe Ci::PendingBuild do
 
     context 'when project has shared runner' do
       let_it_be(:runner) { create(:ci_runner, :instance) }
+
+      before do
+        project.shared_runners_enabled = true
+      end
 
       context 'when ci_pending_builds_maintain_shared_runners_data is enabled' do
         it 'sets instance_runners_enabled to true' do
@@ -136,6 +144,40 @@ RSpec.describe Ci::PendingBuild do
           described_class.upsert_from_build!(build)
 
           expect(ci_pending_build.tag_ids).to be_empty
+        end
+      end
+    end
+
+    context 'when a build project is nested in a subgroup' do
+      let(:group) { create(:group, :with_hierarchy, depth: 2, children: 1) }
+      let(:project) { create(:project, namespace: group.descendants.first) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:build) { create(:ci_build, :created, pipeline: pipeline) }
+
+      subject { described_class.last }
+
+      context 'when build can be picked by a group runner' do
+        before do
+          project.group_runners_enabled = true
+        end
+
+        it 'denormalizes namespace traversal ids' do
+          described_class.upsert_from_build!(build)
+
+          expect(subject.namespace_traversal_ids).not_to be_empty
+          expect(subject.namespace_traversal_ids).to eq [group.id, project.namespace.id]
+        end
+      end
+
+      context 'when build can not be picked by a group runner' do
+        before do
+          project.group_runners_enabled = false
+        end
+
+        it 'creates an empty namespace traversal ids array' do
+          described_class.upsert_from_build!(build)
+
+          expect(subject.namespace_traversal_ids).to be_empty
         end
       end
     end

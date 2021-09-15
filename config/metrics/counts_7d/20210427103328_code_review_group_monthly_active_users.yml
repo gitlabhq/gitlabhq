@@ -7,7 +7,7 @@ product_stage: devops::create
 product_group: group::code review
 product_category:
 value_type: number
-status: data_available
+status: active
 milestone: "13.12"
 time_frame: 7d
 data_source: redis_hll

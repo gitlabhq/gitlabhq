@@ -387,6 +387,12 @@ module Ci
       read_attribute(:contacted_at)
     end
 
+    def namespace_ids
+      strong_memoize(:namespace_ids) do
+        runner_namespaces.pluck(:namespace_id).compact
+      end
+    end
+
     private
 
     def cleanup_runner_queue

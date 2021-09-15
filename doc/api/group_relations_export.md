@@ -4,7 +4,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Group Relations Export API
+# Group Relations Export API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59978) in GitLab 13.12.
 

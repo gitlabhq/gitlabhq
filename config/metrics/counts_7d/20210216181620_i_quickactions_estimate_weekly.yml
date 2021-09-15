@@ -8,7 +8,7 @@ product_stage: plan
 product_group: group::project management
 product_category: time_tracking
 value_type: number
-status: data_available
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric

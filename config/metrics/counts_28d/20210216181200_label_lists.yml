@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::project management
 product_category: boards
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: database
 distribution:

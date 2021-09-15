@@ -8,7 +8,7 @@ product_stage: verify
 product_group: group::testing
 product_category: code_testing
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
