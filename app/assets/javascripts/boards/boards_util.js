@@ -1,5 +1,4 @@
 import { sortBy, cloneDeep } from 'lodash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ListType, MilestoneIDs } from './constants';
 
 export function getMilestone() {
@@ -49,12 +48,10 @@ export function formatListIssues(listIssues) {
     return {
       ...map,
       [list.id]: sortedIssues.map((i) => {
-        const id = getIdFromGraphQLId(i.id);
+        const { id } = i;
 
         const listIssue = {
           ...i,
-          id,
-          fullId: i.id,
           labels: i.labels?.nodes || [],
           assignees: i.assignees?.nodes || [],
         };

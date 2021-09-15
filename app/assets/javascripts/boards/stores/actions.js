@@ -574,8 +574,8 @@ export default {
           boardId: fullBoardId,
           fromListId: getIdFromGraphQLId(fromListId),
           toListId: getIdFromGraphQLId(toListId),
-          moveBeforeId,
-          moveAfterId,
+          moveBeforeId: moveBeforeId ? getIdFromGraphQLId(moveBeforeId) : undefined,
+          moveAfterId: moveAfterId ? getIdFromGraphQLId(moveAfterId) : undefined,
           // 'mutationVariables' allows EE code to pass in extra parameters.
           ...mutationVariables,
         },
@@ -642,7 +642,7 @@ export default {
         }
 
         const rawIssue = data.createIssue?.issue;
-        const formattedIssue = formatIssue({ ...rawIssue, id: getIdFromGraphQLId(rawIssue.id) });
+        const formattedIssue = formatIssue(rawIssue);
         dispatch('removeListItem', { listId: list.id, itemId: placeholderId });
         dispatch('addListItem', { list, item: formattedIssue, position: 0 });
       })
@@ -678,7 +678,7 @@ export default {
     }
 
     commit(types.UPDATE_BOARD_ITEM_BY_ID, {
-      itemId: getIdFromGraphQLId(data.updateIssue?.issue?.id) || activeBoardItem.id,
+      itemId: data.updateIssue?.issue?.id || activeBoardItem.id,
       prop: 'labels',
       value: data.updateIssue.issue.labels.nodes,
     });

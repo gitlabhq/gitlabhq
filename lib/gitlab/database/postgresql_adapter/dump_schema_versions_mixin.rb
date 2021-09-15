@@ -7,7 +7,7 @@ module Gitlab
         extend ActiveSupport::Concern
 
         def dump_schema_information # :nodoc:
-          Gitlab::Database::SchemaMigrations.touch_all(self)
+          Gitlab::Database::SchemaMigrations.touch_all(self) if Gitlab.dev_or_test_env?
 
           nil
         end

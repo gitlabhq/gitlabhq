@@ -26,7 +26,6 @@ import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql'
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import {
   mockLists,
@@ -1213,8 +1212,8 @@ describe('updateMovedIssueCard', () => {
 
 describe('updateIssueOrder', () => {
   const issues = {
-    436: mockIssue,
-    437: mockIssue2,
+    [mockIssue.id]: mockIssue,
+    [mockIssue2.id]: mockIssue2,
   };
 
   const state = {
@@ -1223,7 +1222,7 @@ describe('updateIssueOrder', () => {
   };
 
   const moveData = {
-    itemId: 436,
+    itemId: mockIssue.id,
     fromListId: 'gid://gitlab/List/1',
     toListId: 'gid://gitlab/List/2',
   };
@@ -1482,7 +1481,7 @@ describe('addListNewIssue', () => {
             type: 'addListItem',
             payload: {
               list: fakeList,
-              item: formatIssue({ ...mockIssue, id: getIdFromGraphQLId(mockIssue.id) }),
+              item: formatIssue(mockIssue),
               position: 0,
             },
           },

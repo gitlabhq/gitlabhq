@@ -3,7 +3,6 @@ import { GlDropdownItem } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import createFlash from '~/flash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issue_show/constants';
 import { __, n__ } from '~/locale';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
@@ -173,7 +172,7 @@ export default {
         })
         .then(({ data }) => {
           this.$emit('assignees-updated', {
-            id: getIdFromGraphQLId(data.issuableSetAssignees.issuable.id),
+            id: data.issuableSetAssignees.issuable.id,
             assignees: data.issuableSetAssignees.issuable.assignees.nodes,
           });
           return data;

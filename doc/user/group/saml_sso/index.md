@@ -57,6 +57,7 @@ Once users have signed into GitLab using the SSO SAML setup, changing the `NameI
 #### NameID Format
 
 We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
+Most NameID formats can be used, except `Transient` due to the temporary nature of this format.
 
 ### Assertions
 
@@ -489,12 +490,13 @@ If you do not wish to use that GitLab user with the SAML login, you can [unlink 
 
 ### Message: "SAML authentication failed: User has already been taken"
 
-The user that you're signed in with already has SAML linked to a different identity.
+The user that you're signed in with already has SAML linked to a different identity, or the NameID value has changed.
 Here are possible causes and solutions:
 
 | Cause                                                                                          | Solution                                                                                                                                                                   |
 | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](#unlinking-accounts) from this GitLab account before attempting to sign in again. |
+| The NameID changes everytime the user requests SSO identification | Check the NameID is not set with `Transient` format, or the NameID is not changing on subsequent requests.|
 
 ### Message: "SAML authentication failed: Email has already been taken"
 

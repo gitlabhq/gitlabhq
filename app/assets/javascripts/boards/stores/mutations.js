@@ -1,6 +1,5 @@
 import { cloneDeep, pull, union } from 'lodash';
 import Vue from 'vue';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';
 import { formatIssue } from '../boards_util';
 import { issuableTypes } from '../constants';
@@ -201,8 +200,7 @@ export default {
   },
 
   [mutationTypes.MUTATE_ISSUE_SUCCESS]: (state, { issue }) => {
-    const issueId = getIdFromGraphQLId(issue.id);
-    Vue.set(state.boardItems, issueId, formatIssue({ ...issue, id: issueId }));
+    Vue.set(state.boardItems, issue.id, formatIssue(issue));
   },
 
   [mutationTypes.ADD_BOARD_ITEM_TO_LIST]: (

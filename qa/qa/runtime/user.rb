@@ -34,7 +34,7 @@ module QA
       end
 
       def ldap_user?
-        Runtime::Env.ldap_username && Runtime::Env.ldap_password
+        Runtime::Env.ldap_username.present? && Runtime::Env.ldap_password.present?
       end
 
       def ldap_username

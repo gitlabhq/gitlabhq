@@ -18,6 +18,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     it 'remembers registered models' do
       expect { described_class.register(model) }.to change { described_class.models }.to include(model)
     end
+
+    after do
+      # Do not leak the double to other specs
+      described_class.models.delete(model)
+    end
   end
 
   context 'creating partitions (mocked)' do

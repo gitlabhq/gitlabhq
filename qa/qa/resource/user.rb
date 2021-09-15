@@ -187,7 +187,8 @@ module QA
       end
 
       def fetching_own_data?
-        api_user&.username == username || Runtime::User.username == username
+        runtime_username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
+        api_user&.username == username || runtime_username == username
       end
     end
   end

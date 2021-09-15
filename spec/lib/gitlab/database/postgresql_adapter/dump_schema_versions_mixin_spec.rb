@@ -26,4 +26,12 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::DumpSchemaVersionsMixin do
 
     instance.dump_schema_information
   end
+
+  it 'does not call touch_all in production' do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+
+    expect(Gitlab::Database::SchemaMigrations).not_to receive(:touch_all)
+
+    instance.dump_schema_information
+  end
 end

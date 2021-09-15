@@ -15700,12 +15700,12 @@ State of a GitLab iteration.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="iterationstateall"></a>`all` |  |
-| <a id="iterationstateclosed"></a>`closed` |  |
-| <a id="iterationstatecurrent"></a>`current` |  |
-| <a id="iterationstateopened"></a>`opened` |  |
+| <a id="iterationstateall"></a>`all` | Any iteration. |
+| <a id="iterationstateclosed"></a>`closed` | Closed iteration. |
+| <a id="iterationstatecurrent"></a>`current` | Current iteration. |
+| <a id="iterationstateopened"></a>`opened` | Open iteration. |
 | <a id="iterationstatestarted"></a>`started` **{warning-solid}** | **Deprecated** in 14.1. Use current instead. |
-| <a id="iterationstateupcoming"></a>`upcoming` |  |
+| <a id="iterationstateupcoming"></a>`upcoming` | Upcoming iteration. |
 
 ### `IterationWildcardId`
 
@@ -16101,8 +16101,8 @@ State of a requirement.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="requirementstatearchived"></a>`ARCHIVED` |  |
-| <a id="requirementstateopened"></a>`OPENED` |  |
+| <a id="requirementstatearchived"></a>`ARCHIVED` | Archived requirement. |
+| <a id="requirementstateopened"></a>`OPENED` | Open requirement. |
 
 ### `RequirementStatusFilter`
 
@@ -16110,9 +16110,9 @@ Status of a requirement based on last test report.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="requirementstatusfilterfailed"></a>`FAILED` |  |
+| <a id="requirementstatusfilterfailed"></a>`FAILED` | Failed test report. |
 | <a id="requirementstatusfiltermissing"></a>`MISSING` | Requirements without any test report. |
-| <a id="requirementstatusfilterpassed"></a>`PASSED` |  |
+| <a id="requirementstatusfilterpassed"></a>`PASSED` | Passed test report. |
 
 ### `RunnerMembershipFilter`
 
@@ -16152,14 +16152,14 @@ The type of the security scanner.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="securityscannertypeapi_fuzzing"></a>`API_FUZZING` |  |
-| <a id="securityscannertypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` |  |
-| <a id="securityscannertypecontainer_scanning"></a>`CONTAINER_SCANNING` |  |
-| <a id="securityscannertypecoverage_fuzzing"></a>`COVERAGE_FUZZING` |  |
-| <a id="securityscannertypedast"></a>`DAST` |  |
-| <a id="securityscannertypedependency_scanning"></a>`DEPENDENCY_SCANNING` |  |
-| <a id="securityscannertypesast"></a>`SAST` |  |
-| <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` |  |
+| <a id="securityscannertypeapi_fuzzing"></a>`API_FUZZING` | API Fuzzing scanner. |
+| <a id="securityscannertypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster Image Scanning scanner. |
+| <a id="securityscannertypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container Scanning scanner. |
+| <a id="securityscannertypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing scanner. |
+| <a id="securityscannertypedast"></a>`DAST` | DAST scanner. |
+| <a id="securityscannertypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning scanner. |
+| <a id="securityscannertypesast"></a>`SAST` | SAST scanner. |
+| <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection scanner. |
 
 ### `SentryErrorStatus`
 
@@ -16261,8 +16261,8 @@ State of a test report.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="testreportstatefailed"></a>`FAILED` |  |
-| <a id="testreportstatepassed"></a>`PASSED` |  |
+| <a id="testreportstatefailed"></a>`FAILED` | Failed test report. |
+| <a id="testreportstatepassed"></a>`PASSED` | Passed test report. |
 
 ### `TodoActionEnum`
 
@@ -16375,13 +16375,13 @@ Confidence that a given vulnerability is present in the codebase.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilityconfidenceconfirmed"></a>`CONFIRMED` |  |
-| <a id="vulnerabilityconfidenceexperimental"></a>`EXPERIMENTAL` |  |
-| <a id="vulnerabilityconfidencehigh"></a>`HIGH` |  |
-| <a id="vulnerabilityconfidenceignore"></a>`IGNORE` |  |
-| <a id="vulnerabilityconfidencelow"></a>`LOW` |  |
-| <a id="vulnerabilityconfidencemedium"></a>`MEDIUM` |  |
-| <a id="vulnerabilityconfidenceunknown"></a>`UNKNOWN` |  |
+| <a id="vulnerabilityconfidenceconfirmed"></a>`CONFIRMED` | Confirmed confidence. |
+| <a id="vulnerabilityconfidenceexperimental"></a>`EXPERIMENTAL` | Experimental confidence. |
+| <a id="vulnerabilityconfidencehigh"></a>`HIGH` | High confidence. |
+| <a id="vulnerabilityconfidenceignore"></a>`IGNORE` | Ignore confidence. |
+| <a id="vulnerabilityconfidencelow"></a>`LOW` | Low confidence. |
+| <a id="vulnerabilityconfidencemedium"></a>`MEDIUM` | Medium confidence. |
+| <a id="vulnerabilityconfidenceunknown"></a>`UNKNOWN` | Unknown confidence. |
 
 ### `VulnerabilityDismissalReason`
 
@@ -16417,11 +16417,11 @@ The grade of the vulnerable project.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilitygradea"></a>`A` |  |
-| <a id="vulnerabilitygradeb"></a>`B` |  |
-| <a id="vulnerabilitygradec"></a>`C` |  |
-| <a id="vulnerabilitygraded"></a>`D` |  |
-| <a id="vulnerabilitygradef"></a>`F` |  |
+| <a id="vulnerabilitygradea"></a>`A` | A grade. |
+| <a id="vulnerabilitygradeb"></a>`B` | B grade. |
+| <a id="vulnerabilitygradec"></a>`C` | C grade. |
+| <a id="vulnerabilitygraded"></a>`D` | D grade. |
+| <a id="vulnerabilitygradef"></a>`F` | F grade. |
 
 ### `VulnerabilityIssueLinkType`
 
@@ -16429,8 +16429,8 @@ The type of the issue link related to a vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilityissuelinktypecreated"></a>`CREATED` |  |
-| <a id="vulnerabilityissuelinktyperelated"></a>`RELATED` |  |
+| <a id="vulnerabilityissuelinktypecreated"></a>`CREATED` | Issue is created for the vulnerability. |
+| <a id="vulnerabilityissuelinktyperelated"></a>`RELATED` | Has a related issue. |
 
 ### `VulnerabilityReportType`
 
@@ -16438,15 +16438,15 @@ The type of the security scan that found the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilityreporttypeapi_fuzzing"></a>`API_FUZZING` |  |
-| <a id="vulnerabilityreporttypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` |  |
-| <a id="vulnerabilityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` |  |
-| <a id="vulnerabilityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` |  |
-| <a id="vulnerabilityreporttypedast"></a>`DAST` |  |
-| <a id="vulnerabilityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` |  |
-| <a id="vulnerabilityreporttypegeneric"></a>`GENERIC` |  |
-| <a id="vulnerabilityreporttypesast"></a>`SAST` |  |
-| <a id="vulnerabilityreporttypesecret_detection"></a>`SECRET_DETECTION` |  |
+| <a id="vulnerabilityreporttypeapi_fuzzing"></a>`API_FUZZING` | API Fuzzing report. |
+| <a id="vulnerabilityreporttypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster Image Scanning report. |
+| <a id="vulnerabilityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container Scanning report. |
+| <a id="vulnerabilityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing report. |
+| <a id="vulnerabilityreporttypedast"></a>`DAST` | DAST report. |
+| <a id="vulnerabilityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning report. |
+| <a id="vulnerabilityreporttypegeneric"></a>`GENERIC` | Generic report. |
+| <a id="vulnerabilityreporttypesast"></a>`SAST` | SAST report. |
+| <a id="vulnerabilityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection report. |
 
 ### `VulnerabilitySeverity`
 
@@ -16454,12 +16454,12 @@ The severity of the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilityseveritycritical"></a>`CRITICAL` |  |
-| <a id="vulnerabilityseverityhigh"></a>`HIGH` |  |
-| <a id="vulnerabilityseverityinfo"></a>`INFO` |  |
-| <a id="vulnerabilityseveritylow"></a>`LOW` |  |
-| <a id="vulnerabilityseveritymedium"></a>`MEDIUM` |  |
-| <a id="vulnerabilityseverityunknown"></a>`UNKNOWN` |  |
+| <a id="vulnerabilityseveritycritical"></a>`CRITICAL` | Critical severity. |
+| <a id="vulnerabilityseverityhigh"></a>`HIGH` | High severity. |
+| <a id="vulnerabilityseverityinfo"></a>`INFO` | Info severity. |
+| <a id="vulnerabilityseveritylow"></a>`LOW` | Low severity. |
+| <a id="vulnerabilityseveritymedium"></a>`MEDIUM` | Medium severity. |
+| <a id="vulnerabilityseverityunknown"></a>`UNKNOWN` | Unknown severity. |
 
 ### `VulnerabilitySort`
 
@@ -16484,10 +16484,10 @@ The state of the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` |  |
-| <a id="vulnerabilitystatedetected"></a>`DETECTED` |  |
-| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` |  |
-| <a id="vulnerabilitystateresolved"></a>`RESOLVED` |  |
+| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` | Confirmed vulnerability. |
+| <a id="vulnerabilitystatedetected"></a>`DETECTED` | Detected vulnerability. |
+| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | Dismissed vulnerability. |
+| <a id="vulnerabilitystateresolved"></a>`RESOLVED` | Resolved vulnerability. |
 
 ### `WeightWildcardId`
 

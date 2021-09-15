@@ -1094,7 +1094,7 @@ To edit an existing site profile:
 1. Edit the fields then select **Save profile**.
 
 If a site profile is linked to a security policy, a user cannot edit the profile from this page. See
-[Scan Policies](../policies/index.md)
+[Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 #### Delete a site profile
@@ -1108,7 +1108,7 @@ To delete an existing site profile:
 1. Select **Delete** to confirm the deletion.
 
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
-See [Scan Policies](../policies/index.md)
+See [Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 #### Validate a site profile
@@ -1238,7 +1238,7 @@ To edit a scanner profile:
 1. Select **Save profile**.
 
 If a scanner profile is linked to a security policy, a user cannot edit the profile from this page.
-See [Scan Policies](../policies/index.md)
+See [Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 #### Delete a scanner profile
@@ -1252,7 +1252,7 @@ To delete a scanner profile:
 1. Select **Delete**.
 
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this
-page. See [Scan Policies](../policies/index.md)
+page. See [Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 ### Auditing

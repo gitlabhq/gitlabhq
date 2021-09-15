@@ -10,20 +10,6 @@
 # - guidelines for use found in
 #   https://docs.gitlab.com/ee/development/contributing/style_guides.html#resolving-rubocop-exceptions.
 
-# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/337596
-Graphql/Descriptions:
-  Exclude:
-    - 'ee/app/graphql/types/iteration_state_enum.rb'
-    - 'ee/app/graphql/types/requirements_management/requirement_state_enum.rb'
-    - 'ee/app/graphql/types/requirements_management/test_report_state_enum.rb'
-    - 'ee/app/graphql/types/security_scanner_type_enum.rb'
-    - 'ee/app/graphql/types/vulnerability/issue_link_type_enum.rb'
-    - 'ee/app/graphql/types/vulnerability_grade_enum.rb'
-    - 'ee/app/graphql/types/vulnerability_report_type_enum.rb'
-    - 'ee/app/graphql/types/vulnerability_severity_enum.rb'
-    - 'ee/app/graphql/types/vulnerability_state_enum.rb'
-    - 'ee/app/graphql/types/vulnerability_confidence_enum.rb'
-
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Exclude:

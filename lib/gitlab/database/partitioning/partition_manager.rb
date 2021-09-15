@@ -74,8 +74,9 @@ module Gitlab
         end
 
         def create(partitions)
-          connection.transaction do
-            with_lock_retries do
+          # with_lock_retries starts a requires_new transaction most of the time, but not on the last iteration
+          with_lock_retries do
+            connection.transaction(requires_new: false) do # so we open a transaction here if not already in progress
               partitions.each do |partition|
                 connection.execute partition.to_sql
 
@@ -88,8 +89,9 @@ module Gitlab
         end
 
         def detach(partitions)
-          connection.transaction do
-            with_lock_retries do
+          # with_lock_retries starts a requires_new transaction most of the time, but not on the last iteration
+          with_lock_retries do
+            connection.transaction(requires_new: false) do # so we open a transaction here if not already in progress
               partitions.each { |p| detach_one_partition(p) }
             end
           end

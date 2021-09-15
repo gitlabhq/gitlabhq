@@ -50,6 +50,7 @@ except those captured by `runit`.
 | [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes | **{check-circle}** Yes  |
 | [NGINX](#nginx-logs)                            | **{check-circle}** Yes | **{check-circle}** Yes  |
 | [PostgreSQL Logs](#postgresql-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Praefect Logs](#praefect-logs)                 | **{dotted-circle}** Yes| **{check-circle}** Yes  |
 | [Prometheus Logs](#prometheus-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
 | [Puma](#puma-logs)                              | **{check-circle}** Yes | **{check-circle}** Yes  |
 | [Redis Logs](#redis-logs)                       | **{dotted-circle}** No | **{check-circle}** Yes  |
@@ -1061,6 +1062,12 @@ For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/g
 
 For Omnibus GitLab installations, GitLab Kubernetes Agent Server logs are
 in `/var/log/gitlab/gitlab-kas/`.
+
+## Praefect Logs
+
+For Omnibus GitLab installations, Praefect logs are in `/var/log/gitlab/praefect/`.
+
+GitLab also tracks [Prometheus metrics for Praefect](gitaly/#monitor-gitaly-cluster).
 
 ## Performance bar stats
 

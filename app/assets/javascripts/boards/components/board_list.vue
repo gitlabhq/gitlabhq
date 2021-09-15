@@ -208,7 +208,7 @@ export default {
         newIndex = children.length;
       }
 
-      const getItemId = (el) => Number(el.dataset.itemId);
+      const getItemId = (el) => el.dataset.itemId;
 
       // If item is being moved within the same list
       if (from === to) {
@@ -234,7 +234,7 @@ export default {
       }
 
       this.moveItem({
-        itemId: Number(itemId),
+        itemId,
         itemIid,
         itemPath,
         fromListId: from.dataset.listId,

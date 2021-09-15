@@ -53,7 +53,7 @@ module QA
             set_initial_password_if_present
 
             if Runtime::User.ldap_user? && user && user.username != Runtime::User.ldap_username
-              raise 'If an LDAP user is provided, it must be used for sign-in', QA::Resource::User::InvalidUserError
+              raise QA::Resource::User::InvalidUserError, 'If an LDAP user is provided, it must be used for sign-in'
             end
 
             if Runtime::User.ldap_user?

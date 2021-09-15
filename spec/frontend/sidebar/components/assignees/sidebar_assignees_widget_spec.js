@@ -206,7 +206,7 @@ describe('Sidebar assignees widget', () => {
                 status: null,
               },
             ],
-            id: 1,
+            id: 'gid://gitlab/Issue/1',
           },
         ],
       ]);

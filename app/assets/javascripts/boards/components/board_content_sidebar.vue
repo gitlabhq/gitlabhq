@@ -96,7 +96,7 @@ export default {
       <template #header>
         <sidebar-todo-widget
           class="gl-mt-3"
-          :issuable-id="activeBoardItem.fullId"
+          :issuable-id="activeBoardItem.id"
           :issuable-iid="activeBoardItem.iid"
           :full-path="fullPath"
           :issuable-type="issuableType"

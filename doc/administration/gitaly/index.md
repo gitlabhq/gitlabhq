@@ -449,6 +449,8 @@ To monitor [strong consistency](#strong-consistency), you can use the following 
 - `gitaly_hook_transaction_voting_delay_seconds`, the client-side delay introduced by waiting for
   the transaction to be committed.
 
+You can also monitor the [Praefect logs](../logs.md#praefect-logs).
+
 ## Do not bypass Gitaly
 
 GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client,
