@@ -11,6 +11,7 @@ module QA
 
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar, required: true
+          element :canary_badge_link
           element :user_avatar, required: true
           element :user_menu, required: true
           element :stop_impersonation_link
@@ -166,6 +167,16 @@ module QA
 
         def click_stop_impersonation_link
           click_element(:stop_impersonation_link)
+        end
+
+        # To verify whether the user has been directed to a canary web node
+        # @return [Boolean] result of checking existence of :canary_badge_link element
+        # @example:
+        #   Menu.perform do |menu|
+        #     expect(menu.canary?).to be(true)
+        #   end
+        def canary?
+          has_element?(:canary_badge_link)
         end
 
         private

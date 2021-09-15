@@ -233,6 +233,11 @@ Any data or index cleanup needed to support migration retries should be handled 
 will re-enqueue itself with a delay which is set using the `throttle_delay` option described below. The batching
 must be handled within the `migrate` method, this setting controls the re-enqueuing only.
 
+- `batch_size` - Sets the number of documents modified during a `batched!` migration run. This size should be set to a value which allows the updates 
+  enough time to finish. This can be tuned in combination with the `throttle_delay` option described below. The batching
+  must be handled within a custom `migrate` method or by using the [`Elastic::MigrationBackfillHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/concerns/elastic/migration_backfill_helper.rb) 
+  `migrate` method which uses this setting. Default value is 1000 documents.
+  
 - `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
 enough time to finish. Additionally, the time should be less than 30 minutes since that is how often the
 [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic/migration_worker.rb)

@@ -219,6 +219,26 @@ module QA
           yield.tap { clear! } if block_given?
         end
 
+        # To redirect the browser to a canary or non-canary web node
+        #   after loading a subject test page
+        # @param [Boolean] Send to canary true or false
+        # @example:
+        #   Runtime::Browser::Session.target_canary(true)
+        def self.target_canary(enable_canary)
+          if QA::Runtime::Env.qa_cookies.to_s.include?("gitlab_canary=true")
+            QA::Runtime::Logger.warn("WARNING: Setting cookie through QA_COOKIES var is incompatible with this method.")
+            return
+          end
+
+          browser = Capybara.current_session.driver.browser
+
+          if enable_canary
+            browser.manage.add_cookie name: "gitlab_canary", value: "true"
+          else
+            browser.manage.delete_cookie("gitlab_canary")
+          end
+        end
+
         ##
         # Selenium allows to reset session cookies for current domain only.
         #
