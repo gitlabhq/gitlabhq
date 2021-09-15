@@ -89,7 +89,7 @@ export default {
         :title="__('Jump to next unresolved thread')"
         :aria-label="__('Jump to next unresolved thread')"
         class="discussion-next-btn"
-        data-track-event="click_button"
+        data-track-action="click_button"
         data-track-label="mr_next_unresolved_thread"
         data-track-property="click_next_unresolved_thread_top"
         icon="comment-next"

@@ -347,4 +347,13 @@ export default class MergeRequestStore {
     this.approvals = data;
     this.isApproved = data.approved || false;
   }
+
+  get hasMergeChecksFailed() {
+    if (!window.gon?.features?.restructuredMrWidget) return false;
+
+    return (
+      this.hasMergeableDiscussionsState ||
+      (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed)
+    );
+  }
 }

@@ -124,7 +124,7 @@ export default {
         :href="goToMergeRequestPath"
         :data-track-property="humanAccess"
         :data-track-value="$options.goToTrackValueMergeRequest"
-        :data-track-event="$options.trackEvent"
+        :data-track-action="$options.trackEvent"
         :data-track-label="trackLabel"
       >
         {{ $options.i18n.mergeRequestButton }}
@@ -135,7 +135,7 @@ export default {
         variant="success"
         :data-track-property="humanAccess"
         :data-track-value="$options.goToTrackValuePipelines"
-        :data-track-event="$options.trackEvent"
+        :data-track-action="$options.trackEvent"
         :data-track-label="trackLabel"
       >
         {{ $options.i18n.pipelinesButton }}

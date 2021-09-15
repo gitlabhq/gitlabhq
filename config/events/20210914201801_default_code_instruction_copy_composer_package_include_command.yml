@@ -1,0 +1,21 @@
+description: "Copy Composer package include command"
+category: default
+action: copy_composer_package_include_command
+label_description: "`code_instruction`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category:
+milestone: "13.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38779
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

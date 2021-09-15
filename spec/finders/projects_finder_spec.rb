@@ -190,6 +190,32 @@ RSpec.describe ProjectsFinder do
         it { is_expected.to eq([public_project]) }
       end
 
+      context 'with anonymous user' do
+        let(:public_project_2) { create(:project, :public, group: group, name: 'E', path: 'E') }
+        let(:current_user) { nil }
+        let(:params) { { search: 'C' } }
+
+        context 'with disable_anonymous_search feature flag enabled' do
+          before do
+            stub_feature_flags(disable_anonymous_search: true)
+          end
+
+          it 'does not perform search' do
+            is_expected.to eq([public_project_2, public_project])
+          end
+        end
+
+        context 'with disable_anonymous_search feature flag disabled' do
+          before do
+            stub_feature_flags(disable_anonymous_search: false)
+          end
+
+          it 'finds one public project' do
+            is_expected.to eq([public_project])
+          end
+        end
+      end
+
       describe 'filter by name for backward compatibility' do
         let(:params) { { name: 'C' } }
 

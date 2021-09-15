@@ -26,6 +26,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   feature_category :projects
 
   def index
+    show_alert_if_search_is_disabled
     @projects = load_projects
 
     respond_to do |format|
@@ -119,6 +120,12 @@ class Explore::ProjectsController < Explore::ApplicationController
         }, status: :bad_request
       end
     end
+  end
+
+  def show_alert_if_search_is_disabled
+    return if current_user || params[:name].blank? && params[:search].blank? || !html_request? || Feature.disabled?(:disable_anonymous_search, type: :ops)
+
+    flash[:notice] = _('You must sign in to search for specific projects.')
   end
 end
 

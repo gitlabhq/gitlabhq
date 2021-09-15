@@ -810,7 +810,7 @@ You can restore a backup only to _the exact same version and type (CE/EE)_ of
 GitLab that you created it on (for example CE 9.1.0).
 
 If your backup is a different version than the current installation, you must
-[downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrade)
+[downgrade your GitLab installation](../update/package/downgrade.md)
 before restoring the backup.
 
 ### Restore prerequisites

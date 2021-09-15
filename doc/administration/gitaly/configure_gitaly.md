@@ -41,9 +41,8 @@ However, Gitaly can be deployed to its own server, which can benefit GitLab inst
 multiple machines.
 
 NOTE:
-When configured to run on their own servers, Gitaly servers
-[must be upgraded](https://docs.gitlab.com/omnibus/update/#upgrading-gitaly-servers) before Gitaly
-clients in your cluster.
+When configured to run on their own servers, Gitaly servers must be
+[upgraded](../../update/package/index.md) before Gitaly clients in your cluster.
 
 The process for setting up Gitaly on its own server is:
 

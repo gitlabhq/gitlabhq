@@ -44,7 +44,7 @@ module Gitlab
         # still scheduling duplicates while. Since all work has already been
         # completed those jobs will just cycle through any remaining pages while
         # not scheduling anything.
-        Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, 15.minutes.to_i)
+        Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
         info(project.id, message: "importer finished")
 
         retval

@@ -106,7 +106,7 @@ module Gitlab
 
         unless email
           user = client.user(username)
-          email = Gitlab::Cache::Import::Caching.write(cache_key, user.email) if user
+          email = Gitlab::Cache::Import::Caching.write(cache_key, user.email, timeout: timeout(user.email)) if user
         end
 
         email
@@ -170,6 +170,16 @@ module Gitlab
         # The cache key may be empty to indicate a previously looked up user for
         # which we couldn't find an ID.
         [exists, number > 0 ? number : nil]
+      end
+
+      private
+
+      def timeout(email)
+        if email
+          Gitlab::Cache::Import::Caching::TIMEOUT
+        else
+          Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT
+        end
       end
     end
   end

@@ -23,7 +23,7 @@ module Gitlab
 
           def title
             [
-              s_('InProductMarketing|Team work makes the dream work'),
+              s_('InProductMarketing|Team work makes the dream work'),
               s_('InProductMarketing|*GitLab*, noun: a synonym for efficient teams'),
               s_('InProductMarketing|Find out how your teams are really doing')
             ][series]

@@ -2,9 +2,12 @@
 #          It is not meant to be used with `include:`.
 #          This template is scheduled for removal when testing is complete: https://gitlab.com/gitlab-org/gitlab/-/issues/337987
 
+variables:
+  AUTO_BUILD_IMAGE_VERSION: 'v1.3.1'
+
 build:
   stage: build
-  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.3.1'
+  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:${AUTO_BUILD_IMAGE_VERSION}'
   variables:
     DOCKER_TLS_CERTDIR: ''
   services:

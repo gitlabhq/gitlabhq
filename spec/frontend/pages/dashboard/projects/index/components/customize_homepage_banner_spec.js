@@ -65,7 +65,7 @@ describe('CustomizeHomepageBanner', () => {
       await wrapper.vm.$nextTick();
       const button = wrapper.find(`[href='${wrapper.vm.preferencesBehaviorPath}']`);
 
-      expect(button.attributes('data-track-event')).toEqual(preferencesTrackingEvent);
+      expect(button.attributes('data-track-action')).toEqual(preferencesTrackingEvent);
       expect(button.attributes('data-track-label')).toEqual(provide.trackLabel);
     });
 

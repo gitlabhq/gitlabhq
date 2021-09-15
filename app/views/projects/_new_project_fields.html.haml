@@ -8,7 +8,7 @@
   .form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= _('Project URL')
@@ -26,7 +26,7 @@
                                                                         display_path: true,
                                                                         extra_group: namespace_id),
                      {},
-                     { class: 'select2 js-select-namespace qa-project-namespace-select block-truncated', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "", qa_selector: "select_namespace_dropdown" }})
+                     { class: 'select2 js-select-namespace qa-project-namespace-select block-truncated', data: { track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_path", track_value: "", qa_selector: "select_namespace_dropdown" }})
       - else
         .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
           .input-group-text.border-0
@@ -45,7 +45,7 @@
 .form-group
   = f.label :description, class: 'label-bold' do
     = s_('ProjectsNew|Project description %{tag_start}(optional)%{tag_end}').html_safe % { tag_start: '<span>'.html_safe, tag_end: '</span>'.html_safe }
-  = f.text_area :description, placeholder: s_('ProjectsNew|Description format'), class: "form-control gl-form-input", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
+  = f.text_area :description, placeholder: s_('ProjectsNew|Description format'), class: "form-control gl-form-input", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_description", track_value: "" }
 
 = f.label :visibility_level, class: 'label-bold' do
   = s_('ProjectsNew|Visibility Level')
@@ -56,12 +56,12 @@
   .form-group.row.initialize-with-readme-setting
     %div{ :class => "col-sm-12" }
       .form-check
-        = check_box_tag 'project[initialize_with_readme]', '1', true, class: 'form-check-input', data: { qa_selector: "initialize_with_readme_checkbox", track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme", track_value: "" }
+        = check_box_tag 'project[initialize_with_readme]', '1', true, class: 'form-check-input', data: { qa_selector: "initialize_with_readme_checkbox", track_label: "#{track_label}", track_action: "activate_form_input", track_property: "init_with_readme", track_value: "" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
             %strong= s_('ProjectsNew|Initialize repository with a README')
           .option-description
             = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 
-= f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
-= link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel", track_value: "" }
+= f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
+= link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

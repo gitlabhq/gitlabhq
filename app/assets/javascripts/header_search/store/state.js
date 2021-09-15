@@ -1,6 +1,8 @@
-const createState = ({ issuesPath, mrPath, searchContext }) => ({
+const createState = ({ searchPath, issuesPath, mrPath, searchContext }) => ({
+  searchPath,
   issuesPath,
   mrPath,
   searchContext,
+  search: '',
 });
 export default createState;

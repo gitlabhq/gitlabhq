@@ -89,6 +89,7 @@ export default {
       import('../reports/accessibility_report/grouped_accessibility_reports_app.vue'),
     MrWidgetApprovals,
     SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
+    MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
   },
   apollo: {
     state: {

@@ -51,7 +51,7 @@
                     = _('Expired')
                 - else
                   %span{ class: ('text-warning' if token.expires_soon?) }
-                    = _('In %{time_to_now}') % { time_to_now: distance_of_time_in_words_to_now(token.expires_at) }
+                    = time_ago_with_tooltip(token.expires_at)
               - else
                 %span.token-never-expires-label= _('Never')
             - if project

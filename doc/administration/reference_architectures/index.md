@@ -139,8 +139,8 @@ to any of the [available reference architectures](#available-reference-architect
 > - Level of complexity: **Medium**
 > - Required domain knowledge: PostgreSQL, HAProxy, shared storage, distributed systems
 
-GitLab supports [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates).
-Single GitLab nodes can be updated with only a [few minutes of downtime](https://docs.gitlab.com/omnibus/update/README.html#single-node-deployment).
+GitLab supports [zero-downtime upgrades](../../update/zero_downtime.md).
+Single GitLab nodes can be updated with only a [few minutes of downtime](../../update/zero_downtime.md#single-node-deployment).
 To avoid this, we recommend to separate GitLab into several application nodes.
 As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity will not be interrupted during the update.
 

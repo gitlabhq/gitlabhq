@@ -1,0 +1,21 @@
+description: "Copy quickstart dropdown login"
+category: default
+action: click_copy_login
+label_description: "`quickstart_dropdown`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category:
+milestone: "12.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27990
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -104,7 +104,7 @@ export default {
           :href="plan.job_path"
           target="_blank"
           data-testid="terraform-report-link"
-          data-track-event="click_terraform_mr_plan_button"
+          data-track-action="click_terraform_mr_plan_button"
           data-track-label="mr_widget_terraform_mr_plan_button"
           data-track-property="terraform_mr_plan_button"
           class="btn btn-sm"

@@ -42,7 +42,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
       click_on "Create impersonation token"
 
       expect(active_impersonation_tokens).to have_text(name)
-      expect(active_impersonation_tokens).to have_text('In')
+      expect(active_impersonation_tokens).to have_text('in')
       expect(active_impersonation_tokens).to have_text('api')
       expect(active_impersonation_tokens).to have_text('read_user')
       expect(PersonalAccessTokensFinder.new(impersonation: true).execute.count).to equal(1)
@@ -59,6 +59,14 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
 
       expect(active_impersonation_tokens).to have_text(impersonation_token.name)
       expect(active_impersonation_tokens).not_to have_text(personal_access_token.name)
+      expect(active_impersonation_tokens).to have_text('in')
+    end
+
+    it 'shows absolute times' do
+      admin.update!(time_display_relative: false)
+      visit admin_user_impersonation_tokens_path(user_id: user.username)
+
+      expect(active_impersonation_tokens).to have_text(personal_access_token.expires_at.strftime('%b %d'))
     end
   end
 

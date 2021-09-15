@@ -26,7 +26,7 @@ RSpec.describe 'Merge request > User edits reviewers sidebar', :js do
 
         page.within '.dropdown-menu-user' do
           expect(page).to have_link('Invite Members')
-          expect(page).to have_selector('[data-track-event="click_invite_members"]')
+          expect(page).to have_selector('[data-track-action="click_invite_members"]')
           expect(page).to have_selector('[data-track-label="edit_reviewer"]')
         end
 

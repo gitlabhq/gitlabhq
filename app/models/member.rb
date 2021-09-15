@@ -147,7 +147,6 @@ class Member < ApplicationRecord
   scope :owners, -> { active.where(access_level: OWNER) }
   scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
   scope :with_user, -> (user) { where(user: user) }
-  scope :with_user_by_email, -> (email) { left_join_users.where(users: { email: email } ) }
 
   scope :preload_user_and_notification_settings, -> { preload(user: :notification_settings) }
 

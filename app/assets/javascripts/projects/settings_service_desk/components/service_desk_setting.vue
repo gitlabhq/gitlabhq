@@ -175,7 +175,7 @@ export default {
           <gl-sprintf
             :message="
               __(
-                'Please set up a Service Desk email address in order to add a custom suffix. %{linkStart}Learn more%{linkEnd}.',
+                'To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}',
               )
             "
           >

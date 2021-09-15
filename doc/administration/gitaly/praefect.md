@@ -20,10 +20,6 @@ Configure Gitaly Cluster using either:
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
 
-NOTE:
-Upgrade instructions for Omnibus GitLab installations
-[are available](https://docs.gitlab.com/omnibus/update/#gitaly-cluster).
-
 ## Requirements
 
 The minimum recommended configuration for a Gitaly Cluster requires:

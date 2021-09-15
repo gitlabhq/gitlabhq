@@ -18,11 +18,11 @@ RSpec.describe 'Group Repository settings' do
 
     before do
       stub_container_registry_config(enabled: true)
-      visit group_settings_repository_path(group)
     end
 
     it_behaves_like 'a deploy token in settings' do
       let(:entity_type) { 'group' }
+      let(:page_path) { group_settings_repository_path(group) }
     end
   end
 

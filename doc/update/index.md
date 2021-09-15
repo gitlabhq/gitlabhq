@@ -32,12 +32,12 @@ official ways to update GitLab:
 
 ### Linux packages (Omnibus GitLab)
 
-The [Omnibus update guide](https://docs.gitlab.com/omnibus/update/)
+The [package upgrade guide](package/index.md)
 contains the steps needed to update a package installed by official GitLab
 repositories.
 
 There are also instructions when you want to
-[update to a specific version](https://docs.gitlab.com/omnibus/update/#multi-step-upgrade-using-the-official-repositories).
+[update to a specific version](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 ### Installation from source
 
@@ -186,7 +186,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> [`8.12.0`](#upgrades-from-versions-earlier-than-812) -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -255,7 +255,7 @@ Edition, follow the guides below based on the installation method:
   to a version upgrade: stop the server, get the code, update configuration files for
   the new functionality, install libraries and do migrations, update the init
   script, start the application and check its status.
-- [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#update-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
+- [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to update your Omnibus
   GitLab Community Edition to the Enterprise Edition.
 
 ### Enterprise to Community Edition
@@ -286,7 +286,7 @@ These include:
 Apart from the instructions in this section, you should also check the
 installation-specific upgrade instructions, based on how you installed GitLab:
 
-- [Linux packages (Omnibus GitLab)](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes)
+- [Linux packages (Omnibus GitLab)](../update/package/index.md#version-specific-changes)
 - [Helm charts](https://docs.gitlab.com/charts/installation/upgrade.html)
 
 NOTE:
@@ -297,6 +297,24 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../install/installation.md#2-ruby)
 for how to proceed.
+
+- GitLab 14.3.0 contains background migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
+
+  - [`ci_builds.id`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70245)
+  - [`ci_builds.stage_id`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66688)
+  - [`ci_builds_metadata`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65692)
+  - [`taggings`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66625)
+  - [`events`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64779)
+
+  If the migrations are executed as part of a no-downtime deployment, there's a risk of failure due to lock conflicts with the application logic, resulting in lock timeout or deadlocks. In each case, these migrations are safe to re-run until successful:
+
+  ```shell
+  # For Omnibus GitLab
+  sudo gitlab-rake db:migrate
+
+  # For source installations
+  sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
+  ```
 
 ### 14.2.0
 
@@ -478,7 +496,7 @@ The Rails upgrade included a change to CSRF token generation which is
 not backwards-compatible - GitLab servers with the new Rails version
 generate CSRF tokens that are not recognizable by GitLab servers
 with the older Rails version - which could cause non-GET requests to
-fail for [multi-node GitLab installations](https://docs.gitlab.com/omnibus/update/#multi-node--ha-deployment).
+fail for [multi-node GitLab installations](zero_downtime.md#multi-node--ha-deployment).
 
 So, if you are using multiple Rails servers and specifically upgrading from 13.0,
 all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later:
@@ -526,12 +544,6 @@ After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
-
-### Upgrades from versions earlier than 8.12
-
-- `8.11.Z` and earlier: you might have to upgrade to `8.12.0` specifically before you can upgrade to `8.17.7`. This was [reported in an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/207259).
-- [CI changes prior to version 8.0](https://docs.gitlab.com/omnibus/update/README.html#updating-gitlab-ci-from-prior-540-to-version-714-via-omnibus-gitlab)
-  when it was merged into GitLab.
 
 ## Miscellaneous
 

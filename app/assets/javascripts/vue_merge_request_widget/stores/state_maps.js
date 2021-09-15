@@ -18,6 +18,7 @@ const stateToComponentMap = {
   autoMergeFailed: 'mr-widget-auto-merge-failed',
   shaMismatch: 'sha-mismatch',
   rebase: 'mr-widget-rebase',
+  mergeChecksFailed: 'mergeChecksFailed',
 };
 
 const statesToShowHelpWidget = [
@@ -50,6 +51,7 @@ export const stateKey = {
   readyToMerge: 'readyToMerge',
   rebase: 'rebase',
   merged: 'merged',
+  mergeChecksFailed: 'mergeChecksFailed',
 };
 
 export default {

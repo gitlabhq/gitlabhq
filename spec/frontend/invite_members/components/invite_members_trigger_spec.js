@@ -79,14 +79,14 @@ describe.each(['button', 'anchor'])('with triggerElement as %s', (triggerElement
     it('does not add tracking attributes', () => {
       createComponent();
 
-      expect(findButton().attributes('data-track-event')).toBeUndefined();
+      expect(findButton().attributes('data-track-action')).toBeUndefined();
       expect(findButton().attributes('data-track-label')).toBeUndefined();
     });
 
     it('adds tracking attributes', () => {
       createComponent({ label: '_label_', event: '_event_' });
 
-      expect(findButton().attributes('data-track-event')).toBe('_event_');
+      expect(findButton().attributes('data-track-action')).toBe('_event_');
       expect(findButton().attributes('data-track-label')).toBe('_label_');
     });
   });

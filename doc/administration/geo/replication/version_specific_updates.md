@@ -312,7 +312,7 @@ GitLab 12.2 includes the following minor PostgreSQL updates:
 
 This update occurs even if major PostgreSQL updates are disabled.
 
-Before [refreshing Foreign Data Wrapper during a Geo upgrade](https://docs.gitlab.com/omnibus/update/README.html#run-post-deployment-migrations-and-checks),
+Before [refreshing Foreign Data Wrapper during a Geo upgrade](../../../update/zero_downtime.md#step-4-run-post-deployment-migrations-and-checks),
 restart the Geo tracking database:
 
 ```shell

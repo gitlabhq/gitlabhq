@@ -18,6 +18,14 @@ then run `bin/rake gitlab:docs:compile_deprecations`.
 
 ## 15.0
 
+### Legacy database configuration
+
+The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)
+configuration located in `database.yml` is changing and the legacy format is deprecated. The legacy format
+supported using a single PostgreSQL adapter, whereas the new format is changing to support multiple databases. The `main:` database needs to be defined as a first configuration item.
+
+This deprecation mainly impacts users compiling GitLab from source because Omnibus will handle this configuration automatically.
+
 ### Audit events for repository push events
 
 Audit events for [repository events](../administration/audit_events.md#repository-push) are now deprecated and will be removed in GitLab 15.0.

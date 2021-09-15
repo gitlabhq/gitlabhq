@@ -74,7 +74,7 @@ RSpec.describe 'search/_results' do
           it 'renders the click text event tracking attributes' do
             render
 
-            expect(rendered).to have_selector('[data-track-event=click_text]')
+            expect(rendered).to have_selector('[data-track-action=click_text]')
             expect(rendered).to have_selector('[data-track-property=search_result]')
           end
         end
@@ -83,7 +83,7 @@ RSpec.describe 'search/_results' do
           it 'does not render the click text event tracking attributes' do
             render
 
-            expect(rendered).not_to have_selector('[data-track-event=click_text]')
+            expect(rendered).not_to have_selector('[data-track-action=click_text]')
             expect(rendered).not_to have_selector('[data-track-property=search_result]')
           end
         end
@@ -105,7 +105,7 @@ RSpec.describe 'search/_results' do
           it 'renders the click text event tracking attributes' do
             render
 
-            expect(rendered).to have_selector('[data-track-event=click_text]')
+            expect(rendered).to have_selector('[data-track-action=click_text]')
             expect(rendered).to have_selector('[data-track-property=search_result]')
           end
         end
@@ -114,7 +114,7 @@ RSpec.describe 'search/_results' do
           it 'does not render the click text event tracking attributes' do
             render
 
-            expect(rendered).not_to have_selector('[data-track-event=click_text]')
+            expect(rendered).not_to have_selector('[data-track-action=click_text]')
             expect(rendered).not_to have_selector('[data-track-property=search_result]')
           end
         end

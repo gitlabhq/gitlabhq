@@ -165,7 +165,7 @@ export default {
           :title="$options.i18n.proceedButton"
           variant="confirm"
           data-qa-selector="proceed_button"
-          data-track-event="click_button"
+          data-track-action="click_button"
           :data-track-label="`${$options.trackingLabelPrefix}proceed_button`"
           >{{ $options.i18n.proceedButton }}</gl-button
         >

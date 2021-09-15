@@ -56,7 +56,7 @@ module Gitlab
 
         log_info(stage: "complete")
 
-        Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, 15.minutes.to_i)
+        Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
         true
       end
 

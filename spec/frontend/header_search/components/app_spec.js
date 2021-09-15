@@ -1,14 +1,41 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HeaderSearchApp from '~/header_search/components/app.vue';
-import { ESC_KEY } from '~/lib/utils/keys';
-import { MOCK_USERNAME } from '../mock_data';
+import HeaderSearchDefaultItems from '~/header_search/components/header_search_default_items.vue';
+import HeaderSearchScopedItems from '~/header_search/components/header_search_scoped_items.vue';
+import { ENTER_KEY, ESC_KEY } from '~/lib/utils/keys';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { MOCK_SEARCH, MOCK_SEARCH_QUERY, MOCK_USERNAME } from '../mock_data';
+
+Vue.use(Vuex);
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn(),
+}));
 
 describe('HeaderSearchApp', () => {
   let wrapper;
 
-  const createComponent = () => {
-    wrapper = shallowMountExtended(HeaderSearchApp);
+  const actionSpies = {
+    setSearch: jest.fn(),
+  };
+
+  const createComponent = (initialState) => {
+    const store = new Vuex.Store({
+      state: {
+        ...initialState,
+      },
+      actions: actionSpies,
+      getters: {
+        searchQuery: () => MOCK_SEARCH_QUERY,
+      },
+    });
+
+    wrapper = shallowMountExtended(HeaderSearchApp, {
+      store,
+    });
   };
 
   afterEach(() => {
@@ -17,6 +44,8 @@ describe('HeaderSearchApp', () => {
 
   const findHeaderSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findHeaderSearchDropdown = () => wrapper.findByTestId('header-search-dropdown-menu');
+  const findHeaderSearchDefaultItems = () => wrapper.findComponent(HeaderSearchDefaultItems);
+  const findHeaderSearchScopedItems = () => wrapper.findComponent(HeaderSearchScopedItems);
 
   describe('template', () => {
     it('always renders Header Search Input', () => {
@@ -40,6 +69,29 @@ describe('HeaderSearchApp', () => {
 
         it(`should${showSearchDropdown ? '' : ' not'} render`, () => {
           expect(findHeaderSearchDropdown().exists()).toBe(showSearchDropdown);
+        });
+      });
+    });
+
+    describe.each`
+      search         | showDefault | showScoped
+      ${null}        | ${true}     | ${false}
+      ${''}          | ${true}     | ${false}
+      ${MOCK_SEARCH} | ${false}    | ${true}
+    `('Header Search Dropdown Items', ({ search, showDefault, showScoped }) => {
+      describe(`when search is ${search}`, () => {
+        beforeEach(() => {
+          createComponent({ search });
+          window.gon.current_username = MOCK_USERNAME;
+          wrapper.setData({ showDropdown: true });
+        });
+
+        it(`should${showDefault ? '' : ' not'} render the Default Dropdown Items`, () => {
+          expect(findHeaderSearchDefaultItems().exists()).toBe(showDefault);
+        });
+
+        it(`should${showScoped ? '' : ' not'} render the Scoped Dropdown Items`, () => {
+          expect(findHeaderSearchScopedItems().exists()).toBe(showScoped);
         });
       });
     });
@@ -85,6 +137,22 @@ describe('HeaderSearchApp', () => {
 
           expect(findHeaderSearchDropdown().exists()).toBe(false);
         });
+      });
+
+      it('calls setSearch when search input event is fired', async () => {
+        findHeaderSearchInput().vm.$emit('input', MOCK_SEARCH);
+
+        await wrapper.vm.$nextTick();
+
+        expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), MOCK_SEARCH);
+      });
+
+      it('submits a search onKey-Enter', async () => {
+        findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+
+        await wrapper.vm.$nextTick();
+
+        expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
       });
     });
   });

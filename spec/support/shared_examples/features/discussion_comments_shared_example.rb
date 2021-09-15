@@ -197,6 +197,8 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
 
     find(submit_button_selector).click
 
+    wait_for_all_requests
+
     expect(page).to have_content(comment)
 
     new_comment = all(comments_selector).last

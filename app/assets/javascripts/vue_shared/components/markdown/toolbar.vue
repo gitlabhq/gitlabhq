@@ -75,7 +75,7 @@ export default {
         variant="link"
         :track-experiment="$options.inviteMembersInComment"
         :trigger-source="$options.inviteMembersInComment"
-        data-track-event="comment_invite_click"
+        data-track-action="comment_invite_click"
       />
       <span class="uploading-progress-container hide">
         <gl-icon name="media" />

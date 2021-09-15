@@ -3774,25 +3774,19 @@ The trigger token is different than the [`trigger`](#trigger) keyword.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
 
-Use `interruptible` to indicate that a running job should be canceled if made redundant by a newer pipeline run.
-Defaults to `false` (uninterruptible). Jobs that have not started yet (pending) are considered interruptible
-and safe to be cancelled.
-This value is used only if the [automatic cancellation of redundant pipelines feature](../pipelines/settings.md#auto-cancel-redundant-pipelines)
-is enabled.
+Use `interruptible` if a job should be canceled when a newer pipeline starts before the job completes.
 
-When enabled, a pipeline is immediately canceled when a new pipeline starts on the same branch if either of the following is true:
+This keyword is used with the [automatic cancellation of redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
+feature. When enabled, a running job with `interruptible: true` can be cancelled when
+a new pipeline starts on the same branch.
 
-- All jobs in the pipeline are set as interruptible.
-- Any uninterruptible jobs have not started yet.
+You can't cancel subsequent jobs after a job with `interruptible: false` starts.
 
-Set jobs as interruptible that can be safely canceled once started (for instance, a build job).
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-In the following example, a new pipeline run causes an existing running pipeline to be:
+**Possible inputs**: `true` or `false` (default).
 
-- Canceled, if only `step-1` is running or pending.
-- Not canceled, once `step-2` starts running.
-
-After an uninterruptible job starts running, the pipeline cannot be canceled.
+**Example of `interruptible`**:
 
 ```yaml
 stages:
@@ -3817,6 +3811,18 @@ step-3:
     - echo "Because step-2 can not be canceled, this step can never be canceled, even though it's set as interruptible."
   interruptible: true
 ```
+
+In this example, a new pipeline causes a running pipeline to be:
+
+- Canceled, if only `step-1` is running or pending.
+- Not canceled, after `step-2` starts.
+
+**Additional details**:
+
+- Only set `interruptible: true` if the job can be safely canceled after it has started,
+  like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
+- To completely cancel a running pipeline, all jobs must have `interruptible: true`,
+  or `interruptible: false` jobs must not have started.
 
 ### `resource_group`
 
@@ -4351,15 +4357,12 @@ name level and not in the `vault` section.
 
 ### `pages`
 
-Use `pages` to upload static content to GitLab. The content
-is then published as a website. You must:
+Use `pages` to define a [GitLab Pages](../../user/project/pages/index.md) job that
+uploads static content to GitLab. The content is then published as a website.
 
-- Place any static content in a `public/` directory.
-- Define [`artifacts`](#artifacts) with a path to the `public/` directory.
+**Keyword type**: Job name.
 
-The following example moves all files from the root of the project to the
-`public/` directory. The `.public` workaround is so `cp` does not also copy
-`public/` to itself in an infinite loop:
+**Example of `pages`**:
 
 ```yaml
 pages:
@@ -4375,7 +4378,15 @@ pages:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-View the [GitLab Pages user documentation](../../user/project/pages/index.md).
+This example moves all files from the root of the project to the `public/` directory.
+The `.public` workaround is so `cp` does not also copy `public/` to itself in an infinite loop.
+
+**Additional details**:
+
+You must:
+
+- Place any static content in a `public/` directory.
+- Define [`artifacts`](#artifacts) with a path to the `public/` directory.
 
 ### `inherit`
 

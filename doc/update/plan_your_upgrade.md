@@ -106,15 +106,15 @@ to your instance and then upgrade it for any relevant features you're using.
     - [Compiled from source](index.md#installation-from-source)
     - [Docker](index.md#installation-using-docker)
     - [Helm Charts](index.md#installation-using-helm)
-  - [Zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates) ([if possible](index.md#upgrading-without-downtime) and desired)
-  - [Upgrade from GitLab Community Edition to Enterprise Edition, or vice-versa](https://docs.gitlab.com/omnibus/update/#upgrade-community-edition-to-enterprise-edition)
+  - [Zero-downtime upgrades](zero_downtime.md) (if possible and desired)
+  - [Convert from GitLab Community Edition to Enterprise Edition](package/convert_to_ee.md)
 - What version should you upgrade to:
   - [Determine what upgrade path](index.md#upgrade-paths) to follow.
   - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions).
-  - Account for any [version-specific changes](https://docs.gitlab.com/omnibus/update/#version-specific-changes).
+  - Account for any [version-specific changes](package/index.md#version-specific-changes).
   - Check the [OS compatibility with the target GitLab version](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html).
-- Due to [background migrations](https://docs.gitlab.com/omnibus/update/#background-migrations),
-  plan to pause any further upgrades after updating to a new major version.
+- Due to background migrations, plan to pause any further upgrades after upgrading
+  to a new major version.
   [All migrations must finish running](index.md#checking-for-background-migrations-before-upgrading)
   before the next upgrade.
 - If available in your starting version, consider
@@ -138,9 +138,8 @@ such as Geo, external Gitaly, or Elasticsearch.
 
 #### External Gitaly
 
-If you're using an external Gitaly server, read the
-[upgrade Gitaly](https://docs.gitlab.com/omnibus/update/#upgrade-gitaly-servers)
-documentation.
+If you're using an external Gitaly server, it must be upgraded to the newer
+version prior to upgrading the application server.
 
 #### Geo
 

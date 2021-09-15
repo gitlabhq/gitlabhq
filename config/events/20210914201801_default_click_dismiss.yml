@@ -1,0 +1,21 @@
+description: "Dismiss home page banner"
+category: default
+action: click_dismiss
+label_description: ""
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: growth
+product_stage: growth
+product_group: group::expansion
+product_category:
+milestone: "13.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39752
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

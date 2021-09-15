@@ -78,7 +78,7 @@ describe('RecoveryCodes', () => {
 
     it('fires Snowplow event', () => {
       expect(findProceedButton().attributes()).toMatchObject({
-        'data-track-event': 'click_button',
+        'data-track-action': 'click_button',
         'data-track-label': '2fa_recovery_codes_proceed_button',
       });
     });

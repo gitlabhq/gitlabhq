@@ -6,7 +6,7 @@
   - options[:footer_content] = true
   - options[:wrapper_class] = local_assigns.fetch(:wrapper_class)
   - options[:toggle_class] += ' js-invite-members-track'
-  - data['track-event'] = 'show_invite_members'
+  - data['track-action'] = 'show_invite_members'
   - data['track-label'] = local_assigns.fetch(:track_label)
 
   = dropdown_tag(data['dropdown-title'], options: options) do

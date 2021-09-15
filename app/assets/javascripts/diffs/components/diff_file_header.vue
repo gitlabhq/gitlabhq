@@ -341,7 +341,7 @@ export default {
         :gfm="gfmCopyText"
         data-testid="diff-file-copy-clipboard"
         category="tertiary"
-        data-track-event="click_copy_file_button"
+        data-track-action="click_copy_file_button"
         data-track-label="diff_copy_file_path_button"
         data-track-property="diff_copy_file"
       />
@@ -382,7 +382,7 @@ export default {
           :title="externalUrlLabel"
           :aria-label="externalUrlLabel"
           target="_blank"
-          data-track-event="click_toggle_external_button"
+          data-track-action="click_toggle_external_button"
           data-track-label="diff_toggle_external_button"
           data-track-property="diff_toggle_external"
           icon="external-link"

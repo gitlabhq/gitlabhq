@@ -56,7 +56,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       click_on "Create personal access token"
 
       expect(active_personal_access_tokens).to have_text(name)
-      expect(active_personal_access_tokens).to have_text('In')
+      expect(active_personal_access_tokens).to have_text('in')
       expect(active_personal_access_tokens).to have_text('api')
       expect(active_personal_access_tokens).to have_text('read_user')
       expect(created_personal_access_token).not_to be_empty
@@ -84,6 +84,18 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
 
       expect(active_personal_access_tokens).to have_text(personal_access_token.name)
       expect(active_personal_access_tokens).not_to have_text(impersonation_token.name)
+    end
+
+    context 'when User#time_display_relative is false' do
+      before do
+        user.update!(time_display_relative: false)
+      end
+
+      it 'shows absolute times for expires_at' do
+        visit profile_personal_access_tokens_path
+
+        expect(active_personal_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %d'))
+      end
     end
   end
 

@@ -21,16 +21,18 @@ Updating Geo sites involves performing:
 ## General update steps
 
 NOTE:
-These general update steps are not intended for [high-availability deployments](https://docs.gitlab.com/omnibus/update/README.html#multi-node--ha-deployment), and will cause downtime. If you want to avoid downtime, consider using [zero downtime updates](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
+These general update steps are not intended for multi-site deployments,
+and will cause downtime. If you want to avoid downtime, consider using
+[zero downtime upgrades](../../../update/zero_downtime.md#multi-node--ha-deployment-with-geo).
 
 To update the Geo sites when a new GitLab version is released, update **primary**
 and all **secondary** sites:
 
 1. **Optional:** [Pause replication on each **secondary** sites.](../index.md#pausing-and-resuming-replication)
 1. SSH into each node of the **primary** site.
-1. [Update GitLab on the **primary** site using Omnibus](https://docs.gitlab.com/omnibus/update/#update-using-the-official-repositories).
+1. [Upgrade GitLab on the **primary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
 1. SSH into each node of **secondary** sites.
-1. [Update GitLab on each **secondary** site using Omnibus](https://docs.gitlab.com/omnibus/update/#update-using-the-official-repositories).
+1. [Upgrade GitLab on each **secondary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
 1. If you paused replication in step 1, [resume replication on each **secondary**](../index.md#pausing-and-resuming-replication)
 1. [Test](#check-status-after-updating) **primary** and **secondary** sites, and check version in each.
 

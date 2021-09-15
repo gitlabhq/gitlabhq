@@ -17195,9 +17195,6 @@ msgstr ""
 msgid "Improves Git cloning performance."
 msgstr ""
 
-msgid "In %{time_to_now}"
-msgstr ""
-
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
@@ -17522,7 +17519,7 @@ msgstr ""
 msgid "InProductMarketing|Team up in GitLab for greater efficiency"
 msgstr ""
 
-msgid "InProductMarketing|Team work makes the dream work"
+msgid "InProductMarketing|Team work makes the dream work"
 msgstr ""
 
 msgid "InProductMarketing|Test, create, deploy"
@@ -25304,9 +25301,6 @@ msgid "Please select..."
 msgstr ""
 
 msgid "Please set a new password before proceeding."
-msgstr ""
-
-msgid "Please set up a Service Desk email address in order to add a custom suffix. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "Please share your feedback about %{featureName} %{linkStart}in this issue%{linkEnd} to help us improve the experience."
@@ -35160,6 +35154,9 @@ msgstr ""
 msgid "To access this domain create a new DNS record"
 msgstr ""
 
+msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
 msgstr ""
 
@@ -38758,6 +38755,9 @@ msgstr ""
 msgid "You must provide your current password in order to change it."
 msgstr ""
 
+msgid "You must sign in to search for specific projects."
+msgstr ""
+
 msgid "You must sign in to search for specific terms."
 msgstr ""
 
@@ -39934,7 +39934,16 @@ msgstr ""
 msgid "in"
 msgstr ""
 
+msgid "in all GitLab"
+msgstr ""
+
+msgid "in group"
+msgstr ""
+
 msgid "in group %{link_to_group}"
+msgstr ""
+
+msgid "in project"
 msgstr ""
 
 msgid "in project %{link_to_project}"
@@ -40356,6 +40365,9 @@ msgstr ""
 msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
 msgstr ""
 
+msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure."
+msgstr ""
+
 msgid "mrWidget|The source branch has been deleted"
 msgstr ""
 
@@ -40396,6 +40408,9 @@ msgid "mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd} by simp
 msgstr ""
 
 msgid "mrWidget|You can merge after removing denied licenses"
+msgstr ""
+
+msgid "mrWidget|You can only merge once this merge request is approved."
 msgstr ""
 
 msgid "mrWidget|Your password"

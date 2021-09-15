@@ -10,7 +10,7 @@ describe('Track user dropdown open', () => {
     document.body.innerHTML = `
       <div id="dummy-wrapper-element">
         <div class="js-sidebar-assignee-dropdown">
-          <div class="js-invite-members-track" data-track-event="_track_event_" data-track-label="_track_label_">
+          <div class="js-invite-members-track" data-track-action="_track_event_" data-track-label="_track_label_">
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
 import { stateKey } from './state_maps';
 
 export default function deviseState() {
-  if (this.projectArchived) {
+  if (this.hasMergeChecksFailed) {
+    return stateKey.mergeChecksFailed;
+  } else if (this.projectArchived) {
     return stateKey.archived;
   } else if (this.branchMissing) {
     return stateKey.missingBranch;

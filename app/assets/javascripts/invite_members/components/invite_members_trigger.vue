@@ -65,7 +65,7 @@ export default {
       if (this.event && this.label) {
         return {
           ...baseAttributes,
-          'data-track-event': this.event,
+          'data-track-action': this.event,
           'data-track-label': this.label,
         };
       }

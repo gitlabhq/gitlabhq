@@ -89,7 +89,7 @@ export default {
         :href="exportCsvPath"
         data-method="post"
         :data-qa-selector="`export_${issuableType}_button`"
-        data-track-event="click_button"
+        data-track-action="click_button"
         :data-track-label="`export_${issuableType}_csv`"
       >
         <gl-sprintf :message="__('Export %{name}')">

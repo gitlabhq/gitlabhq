@@ -1,13 +1,17 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import * as actions from './actions';
 import * as getters from './getters';
+import mutations from './mutations';
 import createState from './state';
 
 Vue.use(Vuex);
 
-export const getStoreConfig = ({ issuesPath, mrPath, searchContext }) => ({
+export const getStoreConfig = ({ searchPath, issuesPath, mrPath, searchContext }) => ({
+  actions,
   getters,
-  state: createState({ issuesPath, mrPath, searchContext }),
+  mutations,
+  state: createState({ searchPath, issuesPath, mrPath, searchContext }),
 });
 
 const createStore = (config) => new Vuex.Store(getStoreConfig(config));

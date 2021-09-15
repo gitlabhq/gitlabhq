@@ -64,10 +64,10 @@ one major version. For example, it is safe to:
   - `12.10.1` -> `12.10.8`
 
 NOTE:
-Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes).
+Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](../update/package/index.md#version-specific-changes).
 
 NOTE:
-Instructions are available for downloading an Omnibus GitLab Linux package locally and [manually installing](https://docs.gitlab.com/omnibus/manual_install.html) it.
+Instructions are available for downloading an Omnibus GitLab Linux package locally and [manually installing](../update/package/index.md#upgrade-using-a-manually-downloaded-package) it.
 
 NOTE:
 A step-by-step guide to [upgrading the Omnibus-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).

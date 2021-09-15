@@ -31,11 +31,11 @@ RSpec.describe 'Projects > Settings > Repository settings' do
       before do
         stub_container_registry_config(enabled: true)
         stub_feature_flags(ajax_new_deploy_token: project)
-        visit project_settings_repository_path(project)
       end
 
       it_behaves_like 'a deploy token in settings' do
         let(:entity_type) { 'project' }
+        let(:page_path) { project_settings_repository_path(project) }
       end
     end
 
