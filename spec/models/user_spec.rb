@@ -120,6 +120,8 @@ RSpec.describe User do
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
     it { is_expected.to have_many(:in_product_marketing_emails) }
     it { is_expected.to have_many(:timelogs) }
+    it { is_expected.to have_many(:callouts).class_name('UserCallout') }
+    it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
 
     describe "#user_detail" do
       it 'does not persist `user_detail` by default' do
@@ -5542,22 +5544,17 @@ RSpec.describe User do
   end
 
   describe '#dismissed_callout?' do
-    subject(:user) { create(:user) }
-
-    let(:feature_name) { UserCallout.feature_names.each_key.first }
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:feature_name) { UserCallout.feature_names.each_key.first }
 
     context 'when no callout dismissal record exists' do
       it 'returns false when no ignore_dismissal_earlier_than provided' do
         expect(user.dismissed_callout?(feature_name: feature_name)).to eq false
       end
-
-      it 'returns false when ignore_dismissal_earlier_than provided' do
-        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
-      end
     end
 
     context 'when dismissed callout exists' do
-      before do
+      before_all do
         create(:user_callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
       end
 
@@ -5571,6 +5568,123 @@ RSpec.describe User do
 
       it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
         expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+  end
+
+  describe '#find_or_initialize_callout' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:feature_name) { UserCallout.feature_names.each_key.first }
+
+    subject(:find_or_initialize_callout) { user.find_or_initialize_callout(feature_name) }
+
+    context 'when callout exists' do
+      let!(:callout) { create(:user_callout, user: user, feature_name: feature_name) }
+
+      it 'returns existing callout' do
+        expect(find_or_initialize_callout).to eq(callout)
+      end
+    end
+
+    context 'when callout does not exist' do
+      context 'when feature name is valid' do
+        it 'initializes a new callout' do
+          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+        end
+
+        it 'is valid' do
+          expect(find_or_initialize_callout).to be_valid
+        end
+      end
+
+      context 'when feature name is not valid' do
+        let(:feature_name) { 'notvalid' }
+
+        it 'initializes a new callout' do
+          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+        end
+
+        it 'is not valid' do
+          expect(find_or_initialize_callout).not_to be_valid
+        end
+      end
+    end
+  end
+
+  describe '#dismissed_callout_for_group?' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:feature_name) { Users::GroupCallout.feature_names.each_key.first }
+
+    context 'when no callout dismissal record exists' do
+      it 'returns false when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group)).to eq false
+      end
+    end
+
+    context 'when dismissed callout exists' do
+      before_all do
+        create(:group_callout,
+               user: user,
+               group_id: group.id,
+               feature_name: feature_name,
+               dismissed_at: 4.months.ago)
+      end
+
+      it 'returns true when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group)).to eq true
+      end
+
+      it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+      end
+
+      it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+  end
+
+  describe '#find_or_initialize_group_callout' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:feature_name) { Users::GroupCallout.feature_names.each_key.first }
+
+    subject(:callout_with_source) do
+      user.find_or_initialize_group_callout(feature_name, group.id)
+    end
+
+    context 'when callout exists' do
+      let!(:callout) do
+        create(:group_callout, user: user, feature_name: feature_name, group_id: group.id)
+      end
+
+      it 'returns existing callout' do
+        expect(callout_with_source).to eq(callout)
+      end
+    end
+
+    context 'when callout does not exist' do
+      context 'when feature name is valid' do
+        it 'initializes a new callout' do
+          expect(callout_with_source).to be_a_new(Users::GroupCallout)
+        end
+
+        it 'is valid' do
+          expect(callout_with_source).to be_valid
+        end
+      end
+
+      context 'when feature name is not valid' do
+        let(:feature_name) { 'notvalid' }
+
+        it 'initializes a new callout' do
+          expect(callout_with_source).to be_a_new(Users::GroupCallout)
+        end
+
+        it 'is not valid' do
+          expect(callout_with_source).not_to be_valid
+        end
       end
     end
   end
@@ -5932,45 +6046,6 @@ RSpec.describe User do
           it 'is truthy' do
             expect(subject).to be_truthy
           end
-        end
-      end
-    end
-  end
-
-  describe '#find_or_initialize_callout' do
-    subject(:find_or_initialize_callout) { user.find_or_initialize_callout(feature_name) }
-
-    let(:user) { create(:user) }
-    let(:feature_name) { UserCallout.feature_names.each_key.first }
-
-    context 'when callout exists' do
-      let!(:callout) { create(:user_callout, user: user, feature_name: feature_name) }
-
-      it 'returns existing callout' do
-        expect(find_or_initialize_callout).to eq(callout)
-      end
-    end
-
-    context 'when callout does not exist' do
-      context 'when feature name is valid' do
-        it 'initializes a new callout' do
-          expect(find_or_initialize_callout).to be_a_new(UserCallout)
-        end
-
-        it 'is valid' do
-          expect(find_or_initialize_callout).to be_valid
-        end
-      end
-
-      context 'when feature name is not valid' do
-        let(:feature_name) { 'notvalid' }
-
-        it 'initializes a new callout' do
-          expect(find_or_initialize_callout).to be_a_new(UserCallout)
-        end
-
-        it 'is not valid' do
-          expect(find_or_initialize_callout).not_to be_valid
         end
       end
     end

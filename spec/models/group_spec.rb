@@ -35,6 +35,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:dependency_proxy_manifests) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
+    it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }

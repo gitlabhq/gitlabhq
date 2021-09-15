@@ -200,6 +200,7 @@ class User < ApplicationRecord
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
+  has_many :group_callouts, class_name: 'Users::GroupCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
@@ -1928,10 +1929,14 @@ class User < ApplicationRecord
   def dismissed_callout?(feature_name:, ignore_dismissal_earlier_than: nil)
     callout = callouts_by_feature_name[feature_name]
 
-    return false unless callout
-    return callout.dismissed_after?(ignore_dismissal_earlier_than) if ignore_dismissal_earlier_than
+    callout_dismissed?(callout, ignore_dismissal_earlier_than)
+  end
 
-    true
+  def dismissed_callout_for_group?(feature_name:, group:, ignore_dismissal_earlier_than: nil)
+    source_feature_name = "#{feature_name}_#{group.id}"
+    callout = group_callouts_by_feature_name[source_feature_name]
+
+    callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
   # Load the current highest access by looking directly at the user's memberships
@@ -1953,6 +1958,11 @@ class User < ApplicationRecord
 
   def find_or_initialize_callout(feature_name)
     callouts.find_or_initialize_by(feature_name: ::UserCallout.feature_names[feature_name])
+  end
+
+  def find_or_initialize_group_callout(feature_name, group_id)
+    group_callouts
+      .find_or_initialize_by(feature_name: ::Users::GroupCallout.feature_names[feature_name], group_id: group_id)
   end
 
   def can_trigger_notifications?
@@ -2026,8 +2036,19 @@ class User < ApplicationRecord
     errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email)
   end
 
+  def callout_dismissed?(callout, ignore_dismissal_earlier_than)
+    return false unless callout
+    return callout.dismissed_after?(ignore_dismissal_earlier_than) if ignore_dismissal_earlier_than
+
+    true
+  end
+
   def callouts_by_feature_name
     @callouts_by_feature_name ||= callouts.index_by(&:feature_name)
+  end
+
+  def group_callouts_by_feature_name
+    @group_callouts_by_feature_name ||= group_callouts.index_by(&:source_feature_name)
   end
 
   def authorized_groups_without_shared_membership

@@ -4,10 +4,6 @@ class UserCalloutsController < ApplicationController
   feature_category :navigation
 
   def create
-    callout = Users::DismissUserCalloutService.new(
-      container: nil, current_user: current_user, params: { feature_name: feature_name }
-    ).execute
-
     if callout.persisted?
       respond_to do |format|
         format.json { head :ok }
@@ -20,6 +16,12 @@ class UserCalloutsController < ApplicationController
   end
 
   private
+
+  def callout
+    Users::DismissUserCalloutService.new(
+      container: nil, current_user: current_user, params: { feature_name: feature_name }
+    ).execute
+  end
 
   def feature_name
     params.require(:feature_name)

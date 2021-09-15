@@ -34,17 +34,17 @@ module Gitlab
         '(?:-(?P<pre>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))' \
         '?(?:\+(?P<meta>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
 
-      attr_accessor :date_format, :categories, :template, :tag_regex
+      attr_accessor :date_format, :categories, :template, :tag_regex, :always_credit_user_ids
 
-      def self.from_git(project)
+      def self.from_git(project, user = nil)
         if (yaml = project.repository.changelog_config)
-          from_hash(project, YAML.safe_load(yaml))
+          from_hash(project, YAML.safe_load(yaml), user)
         else
           new(project)
         end
       end
 
-      def self.from_hash(project, hash)
+      def self.from_hash(project, hash, user = nil)
         config = new(project)
 
         if (date = hash['date_format'])
@@ -72,6 +72,14 @@ module Gitlab
           config.tag_regex = regex
         end
 
+        config.always_credit_user_ids = Set.new
+        if (group_paths = Array(hash['include_groups']))
+          group_paths.each do |group_path|
+            group = Group.find_by_full_path(group_path)
+            config.always_credit_user_ids.merge(group&.users_ids_of_direct_members&.compact) if user&.can?(:read_group, group)
+          end
+        end
+
         config
       end
 
@@ -90,6 +98,10 @@ module Gitlab
 
       def contributor?(user)
         @project.team.contributor?(user&.id)
+      end
+
+      def always_credit_author?(user)
+        always_credit_user_ids&.include?(user&.id) || false
       end
 
       def category(name)

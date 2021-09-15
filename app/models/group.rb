@@ -85,6 +85,8 @@ class Group < Namespace
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::GroupDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
+
   delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
 
   accepts_nested_attributes_for :variables, allow_destroy: true

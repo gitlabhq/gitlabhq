@@ -24,7 +24,8 @@ Collecting the coverage information is done via GitLab CI/CD's
 [artifacts reports feature](../../../ci/yaml/index.md#artifactsreports).
 You can specify one or more coverage reports to collect, including wildcard paths.
 GitLab then takes the coverage information in all the files and combines it
-together.
+together. Coverage files are parsed in a background job so there can be a delay
+between pipeline completion and the visualization loading on the page.
 
 For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to

@@ -1,29 +1,29 @@
-import { GlBanner, GlButton } from '@gitlab/ui';
+import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
 import eventHub from '~/invite_members/event_hub';
-import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/common_utils');
 
-const isDismissedKey = 'invite_99_1';
 const title = 'Collaborate with your team';
 const body =
   "We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge";
-const svgPath = '/illustrations/background';
-const inviteMembersPath = 'groups/members';
 const buttonText = 'Invite your colleagues';
-const trackLabel = 'invite_members_banner';
+const provide = {
+  svgPath: '/illustrations/background',
+  inviteMembersPath: 'groups/members',
+  trackLabel: 'invite_members_banner',
+  calloutsPath: 'call/out/path',
+  calloutsFeatureId: 'some-feature-id',
+  groupId: '1',
+};
 
 const createComponent = (stubs = {}) => {
   return shallowMount(InviteMembersBanner, {
-    provide: {
-      svgPath,
-      inviteMembersPath,
-      isDismissedKey,
-      trackLabel,
-    },
+    provide,
     stubs,
   });
 };
@@ -31,8 +31,10 @@ const createComponent = (stubs = {}) => {
 describe('InviteMembersBanner', () => {
   let wrapper;
   let trackingSpy;
+  let mockAxios;
 
   beforeEach(() => {
+    mockAxios = new MockAdapter(axios);
     document.body.dataset.page = 'any:page';
     trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
   });
@@ -40,22 +42,28 @@ describe('InviteMembersBanner', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+    mockAxios.restore();
     unmockTracking();
   });
 
   describe('tracking', () => {
+    const mockTrackingOnWrapper = () => {
+      unmockTracking();
+      trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
+    };
+
     beforeEach(() => {
       wrapper = createComponent({ GlBanner });
     });
 
     const trackCategory = undefined;
-    const displayEvent = 'invite_members_banner_displayed';
     const buttonClickEvent = 'invite_members_banner_button_clicked';
-    const dismissEvent = 'invite_members_banner_dismissed';
 
     it('sends the displayEvent when the banner is displayed', () => {
+      const displayEvent = 'invite_members_banner_displayed';
+
       expect(trackingSpy).toHaveBeenCalledWith(trackCategory, displayEvent, {
-        label: trackLabel,
+        label: provide.trackLabel,
       });
     });
 
@@ -74,16 +82,20 @@ describe('InviteMembersBanner', () => {
 
       it('sends the buttonClickEvent with correct trackCategory and trackLabel', () => {
         expect(trackingSpy).toHaveBeenCalledWith(trackCategory, buttonClickEvent, {
-          label: trackLabel,
+          label: provide.trackLabel,
         });
       });
     });
 
     it('sends the dismissEvent when the banner is dismissed', () => {
+      mockTrackingOnWrapper();
+      mockAxios.onPost(provide.calloutsPath).replyOnce(200);
+      const dismissEvent = 'invite_members_banner_dismissed';
+
       wrapper.find(GlBanner).vm.$emit('close');
 
       expect(trackingSpy).toHaveBeenCalledWith(trackCategory, dismissEvent, {
-        label: trackLabel,
+        label: provide.trackLabel,
       });
     });
   });
@@ -98,7 +110,7 @@ describe('InviteMembersBanner', () => {
     });
 
     it('uses the svgPath for the banner svgpath', () => {
-      expect(findBanner().attributes('svgpath')).toBe(svgPath);
+      expect(findBanner().attributes('svgpath')).toBe(provide.svgPath);
     });
 
     it('uses the title from options for title', () => {
@@ -115,35 +127,20 @@ describe('InviteMembersBanner', () => {
   });
 
   describe('dismissing', () => {
-    const findButton = () => wrapper.findAll(GlButton).at(1);
-
     beforeEach(() => {
       wrapper = createComponent({ GlBanner });
-
-      findButton().vm.$emit('click');
     });
 
-    it('sets iDismissed to true', () => {
-      expect(wrapper.vm.isDismissed).toBe(true);
+    it('should render the banner when not dismissed', () => {
+      expect(wrapper.find(GlBanner).exists()).toBe(true);
     });
 
-    it('sets the cookie with the isDismissedKey', () => {
-      expect(setCookie).toHaveBeenCalledWith(isDismissedKey, true);
-    });
-  });
+    it('should close the banner when dismiss is clicked', async () => {
+      mockAxios.onPost(provide.calloutsPath).replyOnce(200);
+      expect(wrapper.find(GlBanner).exists()).toBe(true);
+      wrapper.find(GlBanner).vm.$emit('close');
 
-  describe('when a dismiss cookie exists', () => {
-    beforeEach(() => {
-      parseBoolean.mockReturnValue(true);
-
-      wrapper = createComponent({ GlBanner });
-    });
-
-    it('sets isDismissed to true', () => {
-      expect(wrapper.vm.isDismissed).toBe(true);
-    });
-
-    it('does not render the banner', () => {
+      await wrapper.vm.$nextTick();
       expect(wrapper.find(GlBanner).exists()).toBe(false);
     });
   });

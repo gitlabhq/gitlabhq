@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserCallout < ApplicationRecord
-  belongs_to :user
+  include Calloutable
 
   enum feature_name: {
     gke_cluster_integration: 1,
@@ -39,13 +39,8 @@ class UserCallout < ApplicationRecord
     terraform_notification_dismissed: 38
   }
 
-  validates :user, presence: true
   validates :feature_name,
     presence: true,
     uniqueness: { scope: :user_id },
     inclusion: { in: UserCallout.feature_names.keys }
-
-  def dismissed_after?(dismissed_after)
-    dismissed_at > dismissed_after
-  end
 end

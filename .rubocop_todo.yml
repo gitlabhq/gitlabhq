@@ -315,7 +315,6 @@ Performance/MethodObjectAsBlock:
 # Configuration parameters: AutoCorrect.
 Performance/StringInclude:
   Exclude:
-    - 'app/helpers/groups_helper.rb'
     - 'app/models/snippet_repository.rb'
     - 'config/initializers/macos.rb'
     - 'config/spring.rb'

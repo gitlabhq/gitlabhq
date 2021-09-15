@@ -19787,6 +19787,23 @@ CREATE TABLE user_follow_users (
     followee_id integer NOT NULL
 );
 
+CREATE TABLE user_group_callouts (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    feature_name smallint NOT NULL,
+    dismissed_at timestamp with time zone
+);
+
+CREATE SEQUENCE user_group_callouts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE user_group_callouts_id_seq OWNED BY user_group_callouts.id;
+
 CREATE TABLE user_highest_roles (
     user_id bigint NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -21696,6 +21713,8 @@ ALTER TABLE ONLY user_canonical_emails ALTER COLUMN id SET DEFAULT nextval('user
 ALTER TABLE ONLY user_custom_attributes ALTER COLUMN id SET DEFAULT nextval('user_custom_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY user_details ALTER COLUMN user_id SET DEFAULT nextval('user_details_user_id_seq'::regclass);
+
+ALTER TABLE ONLY user_group_callouts ALTER COLUMN id SET DEFAULT nextval('user_group_callouts_id_seq'::regclass);
 
 ALTER TABLE ONLY user_permission_export_uploads ALTER COLUMN id SET DEFAULT nextval('user_permission_export_uploads_id_seq'::regclass);
 
@@ -23642,6 +23661,9 @@ ALTER TABLE ONLY user_details
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_pkey PRIMARY KEY (follower_id, followee_id);
 
+ALTER TABLE ONLY user_group_callouts
+    ADD CONSTRAINT user_group_callouts_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT user_highest_roles_pkey PRIMARY KEY (user_id);
 
@@ -25197,6 +25219,8 @@ CREATE UNIQUE INDEX index_group_stages_on_group_id_group_value_stream_id_and_nam
 
 CREATE INDEX index_group_stages_on_stage_event_hash_id ON analytics_cycle_analytics_group_stages USING btree (stage_event_hash_id);
 
+CREATE UNIQUE INDEX index_group_user_callouts_feature ON user_group_callouts USING btree (user_id, feature_name, group_id);
+
 CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_repositories USING btree (disk_path);
 
 CREATE INDEX index_group_wiki_repositories_on_shard_id ON group_wiki_repositories USING btree (shard_id);
@@ -26591,6 +26615,8 @@ CREATE INDEX index_user_details_on_provisioned_by_group_id ON user_details USING
 
 CREATE UNIQUE INDEX index_user_details_on_user_id ON user_details USING btree (user_id);
 
+CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING btree (group_id);
+
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
 CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
@@ -27783,6 +27809,9 @@ ALTER TABLE ONLY issues
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_9d480c64b2 FOREIGN KEY (start_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY user_group_callouts
+    ADD CONSTRAINT fk_9dc8b9d4b2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_environments
     ADD CONSTRAINT fk_9e112565b7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -27926,6 +27955,9 @@ ALTER TABLE ONLY geo_event_log
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_c3339bdfc9 FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_group_callouts
+    ADD CONSTRAINT fk_c366e12ec3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_c3d3cb5d0f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

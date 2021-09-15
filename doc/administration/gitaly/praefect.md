@@ -1575,3 +1575,28 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 - Replace the placeholder `<virtual-storage>` with the virtual storage containing the Gitaly node storage to be checked.
 - Replace the placeholder `<up-to-date-storage>` with the Gitaly storage name containing up to date repositories.
 - Replace the placeholder `<outdated-storage>` with the Gitaly storage name containing outdated repositories.
+
+### Manually remove repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3767) in GitLab 14.3.
+
+The `remove-repository` Praefect sub-command removes repositories from a Gitaly Cluster. It removes
+all state associated with a given repository including:
+
+- On-disk repositories on all relevant Gitaly nodes.
+- Any database state tracked by Praefect.
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -repository <repository>
+```
+
+- `-virtual-storage` is the virtual storage the repository is located in.
+- `-repository` is the repository's relative path in the storage.
+
+Sometimes parts of the repository continue to exist after running `remove-repository`. This can be caused
+because of:
+
+- A deletion error.
+- An in-flight RPC call targeting the repository.
+
+If this occurs, run `remove-repository` again.

@@ -448,6 +448,10 @@ You can set the following variables in this file:
 - `template`: a custom template to use for generating the changelog data.
 - `categories`: a hash that maps raw category names to the names to use in the
   changelog.
+- `include_groups`: a list of group full paths containing users whose
+  contributions should be credited regardless of project membership. The user
+  generating the changelog must have access to each group or the members will
+  not be credited.
 
 Using the default settings, generating a changelog results in a section along
 the lines of the following:
@@ -508,7 +512,7 @@ follows:
 
 {% each entries %}
 - [{{ title }}]({{ commit.reference }})\
-{% if author.contributor %} by {{ author.reference }}{% end %}\
+{% if author.credit %} by {{ author.reference }}{% end %}\
 {% if merge_request %} ([merge request]({{ merge_request.reference }})){% end %}
 
 {% end %}
@@ -598,7 +602,7 @@ template: |
 
   {% each entries %}
   - [{{ title }}]({{ commit.reference }})\
-  {% if author.contributor %} by {{ author.reference }}{% end %}
+  {% if author.credit %} by {{ author.reference }}{% end %}
 
   {% end %}
 
@@ -634,8 +638,11 @@ In an entry, the following variables are available (here `foo.bar` means that
 - `commit.trailers`: an object containing all the Git trailers that were present
   in the commit body.
 - `author.reference`: a reference to the commit author (for example, `@alice`).
-- `author.contributor`: a boolean set to `true` when the author is an external
-  contributor, otherwise this is set to `false`.
+- `author.contributor`: a boolean set to `true` when the author is not a project
+  member, otherwise `false`.
+- `author.credit`: a boolean set to `true` when `author.contributor` is `true` or 
+  when `include_groups` is configured, and the author is a member of one of the
+  groups.
 - `merge_request.reference`: a reference to the merge request that first
   introduced the change (for example, `gitlab-org/gitlab!50063`).
 

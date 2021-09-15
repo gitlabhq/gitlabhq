@@ -11,6 +11,8 @@ categories:
   security: Security
   performance: Performance
   other: Other
+include_groups:
+  - gitlab-org/gitlab-core-team/community-members
 template: |
   {% if categories %}
   {% each categories %}
@@ -18,7 +20,7 @@ template: |
 
   {% each entries %}
   - [{{ title }}]({{ commit.reference }})\
-  {% if author.contributor %} by {{ author.reference }}{% end %}\
+  {% if author.credit %} by {{ author.reference }}{% end %}\
   {% if commit.trailers.MR %}\
    ([merge request]({{ commit.trailers.MR }}))\
   {% else %}\

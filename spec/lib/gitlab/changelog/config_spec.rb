@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Changelog::Config do
 
       expect(described_class)
         .to receive(:from_hash)
-        .with(project, 'date_format' => '%Y')
+        .with(project, { 'date_format' => '%Y' }, nil)
 
       described_class.from_git(project)
     end
@@ -35,12 +35,25 @@ RSpec.describe Gitlab::Changelog::Config do
 
   describe '.from_hash' do
     it 'sets the configuration according to a Hash' do
+      user1 = create(:user)
+      user2 = create(:user)
+      user3 = create(:user)
+      group = create(:group, path: 'group')
+      group2 = create(:group, path: 'group-path')
+      group.add_developer(user1)
+      group.add_developer(user2)
+      group2.add_developer(user3)
+
       config = described_class.from_hash(
         project,
-        'date_format' => 'foo',
-        'template' => 'bar',
-        'categories' => { 'foo' => 'bar' },
-        'tag_regex' => 'foo'
+        {
+          'date_format' => 'foo',
+          'template' => 'bar',
+          'categories' => { 'foo' => 'bar' },
+          'tag_regex' => 'foo',
+          'include_groups' => %w[group group-path non-existent-group]
+        },
+        user1
       )
 
       expect(config.date_format).to eq('foo')
@@ -49,6 +62,7 @@ RSpec.describe Gitlab::Changelog::Config do
 
       expect(config.categories).to eq({ 'foo' => 'bar' })
       expect(config.tag_regex).to eq('foo')
+      expect(config.always_credit_user_ids).to match_array([user1.id, user2.id, user3.id])
     end
 
     it 'raises Error when the categories are not a Hash' do
@@ -120,6 +134,57 @@ RSpec.describe Gitlab::Changelog::Config do
       time = Time.utc(2021, 1, 5)
 
       expect(config.format_date(time)).to eq('2021-01-05')
+    end
+  end
+
+  describe '#always_credit_author?' do
+    let_it_be(:group_member) { create(:user) }
+    let_it_be(:non_group_member) { create(:user) }
+    let_it_be(:group) { create(:group, :private, path: 'group') }
+
+    before do
+      group.add_developer(group_member)
+    end
+
+    context 'when include_groups is defined' do
+      context 'when user generating changelog has access to group' do
+        it 'returns whether author should always be credited' do
+          config = described_class.from_hash(
+            project,
+            { 'include_groups' => ['group'] },
+            group_member
+          )
+
+          expect(config.always_credit_author?(group_member)).to eq(true)
+          expect(config.always_credit_author?(non_group_member)).to eq(false)
+        end
+      end
+
+      context 'when user generating changelog has no access to group' do
+        it 'always returns false' do
+          config = described_class.from_hash(
+            project,
+            { 'include_groups' => ['group'] },
+            non_group_member
+          )
+
+          expect(config.always_credit_author?(group_member)).to eq(false)
+          expect(config.always_credit_author?(non_group_member)).to eq(false)
+        end
+      end
+    end
+
+    context 'when include_groups is not defined' do
+      it 'always returns false' do
+        config = described_class.from_hash(
+          project,
+          {},
+          group_member
+        )
+
+        expect(config.always_credit_author?(group_member)).to eq(false)
+        expect(config.always_credit_author?(non_group_member)).to eq(false)
+      end
     end
   end
 end

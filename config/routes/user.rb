@@ -21,11 +21,35 @@ if Gitlab::Auth::Ldap::Config.sign_in_enabled?
   end
 end
 
-devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
-                                  registrations: :registrations,
-                                  passwords: :passwords,
-                                  sessions: :sessions,
-                                  confirmations: :confirmations }
+devise_controllers = { omniauth_callbacks: :omniauth_callbacks,
+                       registrations: :registrations,
+                       passwords: :passwords,
+                       sessions: :sessions,
+                       confirmations: :confirmations }
+
+if ::Gitlab.ee? && ::Gitlab::Geo.connected? && ::Gitlab::Geo.secondary?
+  devise_for :users, controllers: devise_controllers, path_names: { sign_in: 'auth/geo/sign_in',
+                                                                    sign_out: 'auth/geo/sign_out' }
+  # When using Geo, the other type of routes should be present as well, as browsers
+  # cache 302 redirects locally, and events like primary going offline or a failover
+  # can result in browsers requesting the other paths because of it.
+  as :user do
+    get '/users/sign_in', to: 'sessions#new'
+    post '/users/sign_in', to: 'sessions#create'
+    post '/users/sign_out', to: 'sessions#destroy'
+  end
+else
+  devise_for :users, controllers: devise_controllers
+
+  # We avoid drawing Geo routes for FOSS, but keep them in for EE
+  Gitlab.ee do
+    as :user do
+      get '/users/auth/geo/sign_in', to: 'sessions#new'
+      post '/users/auth/geo/sign_in', to: 'sessions#create'
+      post '/users/auth/geo/sign_out', to: 'sessions#destroy'
+    end
+  end
+end
 
 devise_scope :user do
   get '/users/almost_there' => 'confirmations#almost_there'
@@ -36,6 +60,8 @@ scope '-/users', module: :users do
     post :accept, on: :member
     post :decline, on: :member
   end
+
+  resources :group_callouts, only: [:create]
 end
 
 scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) do

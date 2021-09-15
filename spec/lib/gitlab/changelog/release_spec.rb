@@ -94,6 +94,30 @@ RSpec.describe Gitlab::Changelog::Release do
       end
     end
 
+    context 'when the author should always be credited' do
+      it 'includes the author' do
+        allow(config).to receive(:contributor?).with(author).and_return(false)
+        allow(config).to receive(:always_credit_author?).with(author).and_return(true)
+
+        release.add_entry(
+          title: 'Entry title',
+          commit: commit,
+          category: 'fixed',
+          author: author
+        )
+
+        expect(release.to_markdown).to eq(<<~OUT)
+          ## 1.0.0 (2021-01-05)
+
+          ### fixed (1 change)
+
+          - [Entry title](#{commit.to_reference(full: true)}) \
+          by #{author.to_reference(full: true)}
+
+        OUT
+      end
+    end
+
     context 'when a category has no entries' do
       it "isn't included in the output" do
         config.categories['kittens'] = 'Kittens'

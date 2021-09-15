@@ -375,67 +375,6 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#show_invite_banner?' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be_with_refind(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:users) { [current_user, create(:user)] }
-
-    before do
-      allow(helper).to receive(:current_user) { current_user }
-      allow(helper).to receive(:can?).with(current_user, :admin_group, group).and_return(can_admin_group)
-      allow(helper).to receive(:can?).with(current_user, :admin_group, subgroup).and_return(can_admin_group)
-      users.take(group_members_count).each { |user| group.add_guest(user) }
-    end
-
-    using RSpec::Parameterized::TableSyntax
-
-    where(:can_admin_group, :group_members_count, :expected_result) do
-      true  | 1 | true
-      false | 1 | false
-      true  | 2 | false
-      false | 2 | false
-    end
-
-    with_them do
-      context 'for a parent group' do
-        subject { helper.show_invite_banner?(group) }
-
-        context 'when the group was just created' do
-          before do
-            flash[:notice] = "Group #{group.name} was successfully created"
-          end
-
-          it { is_expected.to be_falsey }
-        end
-
-        context 'when no flash message' do
-          it 'returns the expected result' do
-            expect(subject).to eq(expected_result)
-          end
-        end
-      end
-
-      context 'for a subgroup' do
-        subject { helper.show_invite_banner?(subgroup) }
-
-        context 'when the subgroup was just created' do
-          before do
-            flash[:notice] = "Group #{subgroup.name} was successfully created"
-          end
-
-          it { is_expected.to be_falsey }
-        end
-
-        context 'when no flash message' do
-          it 'returns the expected result' do
-            expect(subject).to eq(expected_result)
-          end
-        end
-      end
-    end
-  end
-
   describe '#render_setting_to_allow_project_access_token_creation?' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:parent) { create(:group) }

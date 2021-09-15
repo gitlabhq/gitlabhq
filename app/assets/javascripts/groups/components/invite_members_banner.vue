@@ -1,7 +1,7 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
 import eventHub from '~/invite_members/event_hub';
-import { parseBoolean, setCookie, getCookie } from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
@@ -12,10 +12,10 @@ export default {
     GlBanner,
   },
   mixins: [trackingMixin],
-  inject: ['svgPath', 'isDismissedKey', 'trackLabel'],
+  inject: ['svgPath', 'trackLabel', 'calloutsPath', 'calloutsFeatureId', 'groupId'],
   data() {
     return {
-      isDismissed: parseBoolean(getCookie(this.isDismissedKey)),
+      isDismissed: false,
       tracking: {
         label: this.trackLabel,
       },
@@ -26,7 +26,16 @@ export default {
   },
   methods: {
     handleClose() {
-      setCookie(this.isDismissedKey, true);
+      axios
+        .post(this.calloutsPath, {
+          feature_name: this.calloutsFeatureId,
+          group_id: this.groupId,
+        })
+        .catch((e) => {
+          // eslint-disable-next-line @gitlab/require-i18n-strings, no-console
+          console.error('Failed to dismiss banner.', e);
+        });
+
       this.isDismissed = true;
       this.track(this.$options.dismissEvent);
     },
@@ -61,6 +70,7 @@ export default {
   <gl-banner
     v-if="!isDismissed"
     ref="banner"
+    data-testid="invite-members-banner"
     :title="$options.i18n.title"
     :button-text="$options.i18n.button_text"
     :svg-path="svgPath"

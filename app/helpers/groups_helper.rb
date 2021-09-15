@@ -122,12 +122,6 @@ module GroupsHelper
     groups.to_json
   end
 
-  def show_invite_banner?(group)
-    can?(current_user, :admin_group, group) &&
-    !just_created? &&
-    !multiple_members?(group)
-  end
-
   def render_setting_to_allow_project_access_token_creation?(group)
     group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
   end
@@ -141,14 +135,6 @@ module GroupsHelper
   end
 
   private
-
-  def just_created?
-    flash[:notice] =~ /successfully created/
-  end
-
-  def multiple_members?(group)
-    group.member_count > 1 || group.members_with_parents.count > 1
-  end
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
