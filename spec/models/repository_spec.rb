@@ -2366,6 +2366,42 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#find_tag' do
+    before do
+      allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+    end
+
+    it 'finds a tag with specified name by performing FindTag request' do
+      expect(Gitlab::GitalyClient)
+        .to receive(:call).with(anything, :ref_service, :find_tag, anything, anything).and_call_original
+
+      expect(repository.find_tag('v1.1.0').name).to eq('v1.1.0')
+    end
+
+    it 'does not perform Gitaly call when tags are preloaded' do
+      repository.tags
+
+      expect(Gitlab::GitalyClient).not_to receive(:call)
+
+      expect(repository.find_tag('v1.1.0').name).to eq('v1.1.0')
+    end
+
+    it 'returns nil when tag does not exists' do
+      expect(repository.find_tag('does-not-exist')).to be_nil
+    end
+
+    context 'when find_tag_via_gitaly is disabled' do
+      it 'fetches all tags' do
+        stub_feature_flags(find_tag_via_gitaly: false)
+
+        expect(Gitlab::GitalyClient)
+          .to receive(:call).with(anything, :ref_service, :find_all_tags, anything, anything).and_call_original
+
+        expect(repository.find_tag('v1.1.0').name).to eq('v1.1.0')
+      end
+    end
+  end
+
   describe '#avatar' do
     it 'returns nil if repo does not exist' do
       allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)

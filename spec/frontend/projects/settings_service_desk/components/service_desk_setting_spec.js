@@ -107,6 +107,29 @@ describe('ServiceDeskSetting', () => {
         });
       });
 
+      describe('project suffix', () => {
+        it('input is hidden', () => {
+          wrapper = createComponent({
+            props: { customEmailEnabled: false },
+          });
+
+          const input = wrapper.findByTestId('project-suffix');
+
+          expect(input.exists()).toBe(false);
+        });
+
+        it('input is enabled', () => {
+          wrapper = createComponent({
+            props: { customEmailEnabled: true },
+          });
+
+          const input = wrapper.findByTestId('project-suffix');
+
+          expect(input.exists()).toBe(true);
+          expect(input.attributes('disabled')).toBeUndefined();
+        });
+      });
+
       describe('customEmail is the same as incomingEmail', () => {
         const email = 'foo@bar.com';
 

@@ -202,7 +202,7 @@ export default {
           data-testid="resolved-discussion"
           @error="$emit('onDesignDiscussionError', $event)"
           @updateNoteError="$emit('updateNoteError', $event)"
-          @openForm="updateDiscussionWithOpenForm"
+          @open-form="updateDiscussionWithOpenForm"
           @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
         />
       </gl-collapse>

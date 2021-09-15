@@ -912,8 +912,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     subject { cluster.kubernetes_namespace_for(environment, deployable: build) }
 
     let(:environment_name) { 'the-environment-name' }
-    let(:environment) { create(:environment, name: environment_name, project: cluster.project, last_deployable: build) }
-    let(:build) { create(:ci_build, environment: environment_name, project: cluster.project) }
+    let(:environment) { create(:environment, name: environment_name, project: cluster.project) }
+    let(:build) { create(:ci_build, environment: environment, project: cluster.project) }
     let(:cluster) { create(:cluster, :project, managed: managed_cluster) }
     let(:managed_cluster) { true }
     let(:default_namespace) { Gitlab::Kubernetes::DefaultNamespace.new(cluster, project: cluster.project).from_environment_slug(environment.slug) }

@@ -13,7 +13,8 @@ of a web application. For more details, see
 
 The following limits are disabled by default:
 
-- Unauthenticated requests
+- Unauthenticated API requests
+- Unauthenticated web requests
 - Authenticated API requests
 - Authenticated web requests
 
@@ -21,7 +22,7 @@ To enforce any or all of them:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**:
-   ![user-and-ip-rate-limits](img/user_and_ip_rate_limits.png)
+   ![user-and-ip-rate-limits](img/user_and_ip_rate_limits_v14_3.png)
 
    NOTE:
    By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
@@ -129,6 +130,10 @@ a comma-separated list of throttle names.
 The possible names are:
 
 - `throttle_unauthenticated`
+  - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/335300) in GitLab 14.3. Use `throttle_unauthenticated_api` or `throttle_unauthenticated_web` instead.
+    `throttle_unauthenticated` is still supported and selects both of them.
+- `throttle_unauthenticated_api`
+- `throttle_unauthenticated_web`
 - `throttle_authenticated_api`
 - `throttle_authenticated_web`
 - `throttle_unauthenticated_protected_paths`

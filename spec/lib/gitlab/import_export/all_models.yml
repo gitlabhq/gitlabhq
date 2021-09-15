@@ -771,3 +771,5 @@ push_rule:
   - group
 bulk_import_export:
   - group
+service_desk_setting:
+  - file_template_project

@@ -353,13 +353,4 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       expect { receiver.execute rescue nil }.not_to change { Issue.count }
     end
   end
-
-  def email_fixture(path)
-    fixture_file(path).gsub('project_id', project.project_id.to_s)
-  end
-
-  def service_desk_fixture(path, slug: nil, key: 'mykey')
-    slug ||= project.full_path_slug.to_s
-    fixture_file(path).gsub('project_slug', slug).gsub('project_key', key)
-  end
 end

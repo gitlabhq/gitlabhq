@@ -129,6 +129,21 @@ module Gitlab
         Gitlab::Git::Branch.new(@repository, encode!(branch.name.dup), branch.target_commit.id, target_commit)
       end
 
+      def find_tag(tag_name)
+        return if tag_name.blank?
+
+        request = Gitaly::FindTagRequest.new(
+          repository: @gitaly_repo,
+          tag_name: encode_binary(tag_name)
+        )
+
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_tag, request, timeout: GitalyClient.medium_timeout)
+        tag = response.tag
+        return unless tag
+
+        Gitlab::Git::Tag.new(@repository, tag)
+      end
+
       def delete_refs(refs: [], except_with_prefixes: [])
         request = Gitaly::DeleteRefsRequest.new(
           repository: @gitaly_repo,

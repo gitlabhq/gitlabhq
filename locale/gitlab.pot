@@ -12493,6 +12493,9 @@ msgstr ""
 msgid "Enable authenticated Git LFS request rate limit"
 msgstr ""
 
+msgid "Enable authenticated web request rate limit"
+msgstr ""
+
 msgid "Enable authentication"
 msgstr ""
 
@@ -12598,7 +12601,7 @@ msgstr ""
 msgid "Enable unauthenticated API request rate limit"
 msgstr ""
 
-msgid "Enable unauthenticated request rate limit"
+msgid "Enable unauthenticated web request rate limit"
 msgstr ""
 
 msgid "Enable user deactivation emails"
@@ -18937,7 +18940,7 @@ msgstr ""
 msgid "Iterations|Create cadence"
 msgstr ""
 
-msgid "Iterations|Create your first iteration"
+msgid "Iterations|Create iteration"
 msgstr ""
 
 msgid "Iterations|Delete cadence"
@@ -18982,10 +18985,16 @@ msgstr ""
 msgid "Iterations|New iteration cadence"
 msgstr ""
 
+msgid "Iterations|No closed iterations."
+msgstr ""
+
 msgid "Iterations|No iteration cadences to show."
 msgstr ""
 
 msgid "Iterations|No iterations in cadence."
+msgstr ""
+
+msgid "Iterations|No open iterations."
 msgstr ""
 
 msgid "Iterations|Number of future iterations you would like to have scheduled"
@@ -20726,7 +20735,10 @@ msgstr ""
 msgid "Max session time"
 msgstr ""
 
-msgid "Max unauthenticated requests per period per IP"
+msgid "Max unauthenticated API requests per period per IP"
+msgstr ""
+
+msgid "Max unauthenticated web requests per period per IP"
 msgstr ""
 
 msgid "MaxBuilds"
@@ -25289,6 +25301,9 @@ msgid "Please select..."
 msgstr ""
 
 msgid "Please set a new password before proceeding."
+msgstr ""
+
+msgid "Please set up a Service Desk email address in order to add a custom suffix. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "Please share your feedback about %{featureName} %{linkStart}in this issue%{linkEnd} to help us improve the experience."
@@ -35927,16 +35942,19 @@ msgstr ""
 msgid "Unassigned"
 msgstr ""
 
+msgid "Unauthenticated API rate limit period in seconds"
+msgstr ""
+
 msgid "Unauthenticated API request rate limit"
 msgstr ""
 
-msgid "Unauthenticated rate limit period in seconds"
-msgstr ""
-
-msgid "Unauthenticated request rate limit"
-msgstr ""
-
 msgid "Unauthenticated requests"
+msgstr ""
+
+msgid "Unauthenticated web rate limit period in seconds"
+msgstr ""
+
+msgid "Unauthenticated web request rate limit"
 msgstr ""
 
 msgid "Undo"

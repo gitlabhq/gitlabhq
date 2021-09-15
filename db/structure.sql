@@ -108,15 +108,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_cf2f9e35f002() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."build_id_convert_to_bigint" := NEW."build_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE TABLE audit_events (
     id bigint NOT NULL,
     author_id integer NOT NULL,
@@ -11277,7 +11268,6 @@ ALTER SEQUENCE ci_build_report_results_build_id_seq OWNED BY ci_build_report_res
 
 CREATE TABLE ci_build_trace_chunks (
     id bigint NOT NULL,
-    build_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     chunk_index integer NOT NULL,
     data_store integer NOT NULL,
     raw_data bytea,
@@ -17729,7 +17719,7 @@ CREATE TABLE project_ci_cd_settings (
     auto_rollback_enabled boolean DEFAULT false NOT NULL,
     keep_latest_artifact boolean DEFAULT true NOT NULL,
     restrict_user_defined_variables boolean DEFAULT false NOT NULL,
-    job_token_scope_enabled boolean DEFAULT true NOT NULL
+    job_token_scope_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq
@@ -27328,8 +27318,6 @@ CREATE TRIGGER trigger_8487d4de3e7b BEFORE INSERT OR UPDATE ON ci_builds_metadat
 CREATE TRIGGER trigger_91dc388a5fe6 BEFORE INSERT OR UPDATE ON dep_ci_build_trace_sections FOR EACH ROW EXECUTE FUNCTION trigger_91dc388a5fe6();
 
 CREATE TRIGGER trigger_aebe8b822ad3 BEFORE INSERT OR UPDATE ON taggings FOR EACH ROW EXECUTE FUNCTION trigger_aebe8b822ad3();
-
-CREATE TRIGGER trigger_cf2f9e35f002 BEFORE INSERT OR UPDATE ON ci_build_trace_chunks FOR EACH ROW EXECUTE FUNCTION trigger_cf2f9e35f002();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 

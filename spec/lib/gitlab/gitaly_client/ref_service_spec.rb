@@ -92,6 +92,36 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
+  describe '#find_branch' do
+    it 'sends a find_branch message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_branch)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(branch: Gitaly::Branch.new(name: 'name', target_commit: build(:gitaly_commit))))
+
+      client.find_branch('name')
+    end
+  end
+
+  describe '#find_tag' do
+    it 'sends a find_tag message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_tag)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(tag: Gitaly::Tag.new))
+
+      client.find_tag('name')
+    end
+
+    context 'when tag is empty' do
+      it 'does not send a fing_tag message' do
+        expect_any_instance_of(Gitaly::RefService::Stub).not_to receive(:find_tag)
+
+        expect(client.find_tag('')).to be_nil
+      end
+    end
+  end
+
   describe '#default_branch_name' do
     it 'sends a find_default_branch_name message' do
       expect_any_instance_of(Gitaly::RefService::Stub)

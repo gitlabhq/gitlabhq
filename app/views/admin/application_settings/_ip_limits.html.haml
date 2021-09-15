@@ -1,56 +1,68 @@
-= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-ip-limits-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-ip-limits-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    %h5
-      = _('Unauthenticated request rate limit')
+    %legend.h5.gl-border-none
+      = _('Unauthenticated API request rate limit')
     .form-group
-      .form-check
-        = f.check_box :throttle_unauthenticated_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_unauthenticated_checkbox' }
-        = f.label :throttle_unauthenticated_enabled, class: 'form-check-label label-bold' do
-          = _("Enable unauthenticated request rate limit")
-        %span.form-text.text-muted
-          = _("Helps reduce request volume (e.g. from crawlers or abusive bots)")
+      = f.gitlab_ui_checkbox_component :throttle_unauthenticated_api_enabled,
+        _("Enable unauthenticated API request rate limit"),
+        help_text: _("Helps reduce request volume (e.g. from crawlers or abusive bots)"),
+        checkbox_options: { data: { qa_selector: 'throttle_unauthenticated_api_checkbox' } }
     .form-group
-      = f.label :throttle_unauthenticated_requests_per_period, _('Max unauthenticated requests per period per IP'), class: 'label-bold'
+      = f.label :throttle_unauthenticated_api_requests_per_period, _('Max unauthenticated API requests per period per IP'), class: 'label-bold'
+      = f.number_field :throttle_unauthenticated_api_requests_per_period, class: 'form-control gl-form-input'
+    .form-group
+      = f.label :throttle_unauthenticated_api_period_in_seconds, _('Unauthenticated API rate limit period in seconds'), class: 'label-bold'
+      = f.number_field :throttle_unauthenticated_api_period_in_seconds, class: 'form-control gl-form-input'
+
+  %fieldset
+    %legend.h5.gl-border-none
+      = _('Unauthenticated web request rate limit')
+    .form-group
+      = f.gitlab_ui_checkbox_component :throttle_unauthenticated_enabled,
+        _("Enable unauthenticated web request rate limit"),
+        help_text: _("Helps reduce request volume (e.g. from crawlers or abusive bots)"),
+        checkbox_options: { data: { qa_selector: 'throttle_unauthenticated_web_checkbox' } }
+    .form-group
+      = f.label :throttle_unauthenticated_requests_per_period, _('Max unauthenticated web requests per period per IP'), class: 'label-bold'
       = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_unauthenticated_period_in_seconds, _('Unauthenticated rate limit period in seconds'), class: 'label-bold'
+      = f.label :throttle_unauthenticated_period_in_seconds, _('Unauthenticated web rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control gl-form-input'
-    %hr
-    %h5
+
+  %fieldset
+    %legend.h5.gl-border-none
       = _('Authenticated API request rate limit')
     .form-group
-      .form-check
-        = f.check_box :throttle_authenticated_api_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_authenticated_api_checkbox' }
-        = f.label :throttle_authenticated_api_enabled, class: 'form-check-label label-bold' do
-          = _("Enable authenticated API request rate limit")
-        %span.form-text.text-muted
-          = _("Helps reduce request volume (e.g. from crawlers or abusive bots)")
+      = f.gitlab_ui_checkbox_component :throttle_authenticated_api_enabled,
+        _("Enable authenticated API request rate limit"),
+        help_text: _("Helps reduce request volume (e.g. from crawlers or abusive bots)"),
+        checkbox_options: { data: { qa_selector: 'throttle_authenticated_api_checkbox' }}
     .form-group
       = f.label :throttle_authenticated_api_requests_per_period, _('Max authenticated API requests per period per user'), class: 'label-bold'
       = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control gl-form-input'
     .form-group
       = f.label :throttle_authenticated_api_period_in_seconds, _('Authenticated API rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control gl-form-input'
-    %hr
-    %h5
+
+  %fieldset
+    %legend.h5.gl-border-none
       = _('Authenticated web request rate limit')
     .form-group
-      .form-check
-        = f.check_box :throttle_authenticated_web_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_authenticated_web_checkbox' }
-        = f.label :throttle_authenticated_web_enabled, class: 'form-check-label label-bold' do
-          Enable authenticated web request rate limit
-        %span.form-text.text-muted
-          Helps reduce request volume (e.g. from crawlers or abusive bots)
+      = f.gitlab_ui_checkbox_component :throttle_authenticated_web_enabled,
+        _("Enable authenticated web request rate limit"),
+        help_text: _("Helps reduce request volume (e.g. from crawlers or abusive bots)"),
+        checkbox_options: { data: { qa_selector: 'throttle_authenticated_web_checkbox' } }
     .form-group
       = f.label :throttle_authenticated_web_requests_per_period, _('Max authenticated web requests per period per user'), class: 'label-bold'
       = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control gl-form-input'
     .form-group
       = f.label :throttle_authenticated_web_period_in_seconds, _('Authenticated web rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control gl-form-input'
-    %hr
-    %h5
+
+  %fieldset
+    %legend.h5.gl-border-none
       = _('Response text')
     .form-group
       = f.label :rate_limiting_response_text, class: 'label-bold' do

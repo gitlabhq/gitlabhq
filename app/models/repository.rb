@@ -191,7 +191,11 @@ class Repository
   end
 
   def find_tag(name)
-    tags.find { |tag| tag.name == name }
+    if @tags.blank? && Feature.enabled?(:find_tag_via_gitaly, project, default_enabled: :yaml)
+      raw_repository.find_tag(name)
+    else
+      tags.find { |tag| tag.name == name }
+    end
   end
 
   def ambiguous_ref?(ref)
