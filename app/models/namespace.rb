@@ -57,7 +57,7 @@ class Namespace < ApplicationRecord
   has_one :admin_note, inverse_of: :namespace
   accepts_nested_attributes_for :admin_note, update_only: true
 
-  validates :owner, presence: true, if: ->(n) { n.type.nil? }
+  validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,
     length: { maximum: 255 }
@@ -264,6 +264,10 @@ class Namespace < ApplicationRecord
   def user?
     # That last bit ensures we're considered a user namespace as a default
     type.nil? || type == Namespaces::UserNamespace.sti_name || !(group? || project?)
+  end
+
+  def owner_required?
+    user?
   end
 
   def find_fork_of(project)

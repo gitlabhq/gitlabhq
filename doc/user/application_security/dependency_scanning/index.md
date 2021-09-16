@@ -295,7 +295,7 @@ variation of this file (for example, `requirements.pip` or `requires.txt`).
 #### Java and Scala
 
 We only execute one build in the directory where a build file has been detected, such as `build.sbt` or `build.gradle`.
-Please note, we support the following types of Java project stuctures:
+Please note, we support the following types of Java project structures:
 
 - [multi-project sbt builds](https://www.scala-sbt.org/1.x/docs/Multi-Project.html)
 - [multi-project gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)

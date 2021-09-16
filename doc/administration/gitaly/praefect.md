@@ -275,7 +275,7 @@ you need to prepare PostgreSQL server with [setup instruction](#manual-database-
 
 ```ruby
 pgbouncer['databases'] = {
-  # Other database configuation including gitlabhq_production
+  # Other database configuration including gitlabhq_production
   ...
 
   praefect_production: {

@@ -522,7 +522,7 @@ gem 'lockbox', '~> 0.6.2'
 gem 'valid_email', '~> 0.1'
 
 # JSON
-gem 'json', '~> 2.3.0'
+gem 'json', '~> 2.5.1'
 gem 'json_schemer', '~> 0.2.18'
 gem 'oj', '~> 3.10.6'
 gem 'multi_json', '~> 1.14.1'

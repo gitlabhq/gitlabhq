@@ -1,0 +1,23 @@
+---
+key_path: settings.service_ping_features_enabled
+name: "service_ping_features_enabled"
+description: Whether Service Ping features are enabled
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: collection
+value_type: boolean
+status: active
+milestone: "14.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70332
+time_frame: none
+data_source: database
+instrumentation_class: ServicePingFeaturesMetric
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

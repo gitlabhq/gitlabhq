@@ -1089,6 +1089,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
         expect(subject[:settings][:collected_data_categories]).to eq(expected_value)
       end
+
+      it 'gathers service_ping_features_enabled' do
+        expect(subject[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
+      end
     end
   end
 

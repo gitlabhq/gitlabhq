@@ -179,7 +179,7 @@ cannot change them:
 - Explicitly set the container image file to run the job in. This ensures that your script
   steps execute in the correct environment.
 - Explicitly set any relevant GitLab pre-defined [job keywords](../../../ci/yaml/index.md#job-keywords).
-  This ensures that your job uses the settings you intend and that they are not overriden by
+  This ensures that your job uses the settings you intend and that they are not overridden by
   project-level pipelines.
 
 ### Sharing and permissions

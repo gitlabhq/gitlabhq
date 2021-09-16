@@ -510,7 +510,7 @@ create a single vulnerability.
 | Attribute       | Type   | Required | Description |
 |:----------------|:-------|:---------|:------------|
 | `vulnerability` | Hash   | yes      | Vulnerability data matching the security report schema [`vulnerability` field](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json). |
-| `scanner`       | Hash   | yes      | Scanner data matching the security report schmea [`scanner` field](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json). |
+| `scanner`       | Hash   | yes      | Scanner data matching the security report schema [`scanner` field](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json). |
 
 ```plaintext
 PUT internal/kubernetes/modules/starboard_vulnerability

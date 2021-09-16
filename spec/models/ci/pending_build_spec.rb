@@ -34,6 +34,47 @@ RSpec.describe Ci::PendingBuild do
         end
       end
     end
+
+    describe '.for_tags' do
+      subject(:pending_builds) { described_class.for_tags(tag_ids) }
+
+      let_it_be(:pending_build_with_tags) { create(:ci_pending_build, tag_ids: [1, 2]) }
+      let_it_be(:pending_build_without_tags) { create(:ci_pending_build) }
+
+      context 'when tag_ids match pending builds' do
+        let(:tag_ids) { [1, 2] }
+
+        it 'returns matching pending builds' do
+          expect(pending_builds).to contain_exactly(pending_build_with_tags, pending_build_without_tags)
+        end
+      end
+
+      context 'when tag_ids does not match pending builds' do
+        let(:tag_ids) { [non_existing_record_id] }
+
+        it 'returns matching pending builds without tags' do
+          expect(pending_builds).to contain_exactly(pending_build_without_tags)
+        end
+      end
+
+      context 'when tag_ids is not provided' do
+        context 'with a nil value' do
+          let(:tag_ids) { nil }
+
+          it 'returns matching pending builds without tags' do
+            expect(pending_builds).to contain_exactly(pending_build_without_tags)
+          end
+        end
+
+        context 'with an empty array' do
+          let(:tag_ids) { [] }
+
+          it 'returns matching pending builds without tags' do
+            expect(pending_builds).to contain_exactly(pending_build_without_tags)
+          end
+        end
+      end
+    end
   end
 
   describe '.upsert_from_build!' do

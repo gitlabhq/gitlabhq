@@ -262,7 +262,7 @@ If the title or description of an issue or merge request is
 changed, notifications are sent to any **new** mentions by `@username` as
 if they had been mentioned in the original text.
 
-BNy default, you don't receive notifications for issues, merge requests, or epics created
+By default, you don't receive notifications for issues, merge requests, or epics created
 by yourself. You only receive notifications when somebody else comments or adds changes to the ones
 that you've created or mentions you, or when an issue is due soon.
 To always receive notifications on your own issues and so on, you must turn on

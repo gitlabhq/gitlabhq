@@ -68,7 +68,24 @@ module QA
           end
         end
 
+        def go_to_repository_settings
+          hover_group_settings do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Repository')
+            end
+          end
+        end
+
         private
+
+        def hover_settings
+          within_sidebar do
+            scroll_to_element(:sidebar_menu_link, menu_item: 'Settings')
+            find_element(:sidebar_menu_link, menu_item: 'Settings').hover
+
+            yield
+          end
+        end
 
         def hover_issues
           within_sidebar do

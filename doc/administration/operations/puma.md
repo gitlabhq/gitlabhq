@@ -70,7 +70,7 @@ restarting the workers. `per_worker_max_memory_mb` should be set to a
 higher value if the worker killer is replacing workers too often.
 
 Worker count is calculated based on CPU cores, so a small GitLab deployment
-wih 4-8 workers may experience performance issues if workers are being restarted
+with 4-8 workers may experience performance issues if workers are being restarted
 frequently, once or more per minute. This is too often.
 
 A higher value of `1200` or more would be beneficial if the server has free memory.

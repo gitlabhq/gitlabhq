@@ -181,7 +181,7 @@ To pull images from the Dependency Proxy, you must:
 
 1. Create a group deploy token with both `read_registry` and `write_registry` scopes.
 1. Take note of your `username` and `token`.
-1. Follow the Depenency Proxy [authentication instructions](../../packages/dependency_proxy/index.md).
+1. Follow the Dependency Proxy [authentication instructions](../../packages/dependency_proxy/index.md).
 
 ### GitLab deploy token
 

@@ -1,0 +1,21 @@
+description: "Click registry repository delete button"
+category: default
+action: click_button
+label_description: "`registry_repository_delete`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category:
+milestone: "12.8"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23154
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

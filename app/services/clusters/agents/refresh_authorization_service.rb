@@ -5,9 +5,10 @@ module Clusters
     class RefreshAuthorizationService
       include Gitlab::Utils::StrongMemoize
 
-      AUTHORIZED_GROUP_LIMIT = 100
+      AUTHORIZED_ENTITY_LIMIT = 100
 
       delegate :project, to: :agent, private: true
+      delegate :root_ancestor, to: :project, private: true
 
       def initialize(agent, config:)
         @agent = agent
@@ -15,6 +16,30 @@ module Clusters
       end
 
       def execute
+        refresh_projects!
+        refresh_groups!
+
+        true
+      end
+
+      private
+
+      attr_reader :agent, :config
+
+      def refresh_projects!
+        if allowed_project_configurations.present?
+          project_ids = allowed_project_configurations.map { |config| config.fetch(:project_id) }
+
+          agent.with_lock do
+            agent.project_authorizations.upsert_all(allowed_project_configurations, unique_by: [:agent_id, :project_id])
+            agent.project_authorizations.where.not(project_id: project_ids).delete_all # rubocop: disable CodeReuse/ActiveRecord
+          end
+        else
+          agent.project_authorizations.delete_all(:delete_all)
+        end
+      end
+
+      def refresh_groups!
         if allowed_group_configurations.present?
           group_ids = allowed_group_configurations.map { |config| config.fetch(:group_id) }
 
@@ -25,34 +50,56 @@ module Clusters
         else
           agent.group_authorizations.delete_all(:delete_all)
         end
-
-        true
       end
 
-      private
+      def allowed_project_configurations
+        strong_memoize(:allowed_project_configurations) do
+          project_entries = extract_config_entries(entity: 'projects')
 
-      attr_reader :agent, :config
-
-      def allowed_group_configurations
-        strong_memoize(:allowed_group_configurations) do
-          group_entries = config.dig('ci_access', 'groups')&.first(AUTHORIZED_GROUP_LIMIT)
-
-          if group_entries
-            groups_by_path = group_entries.index_by { |config| config.delete('id') }
-
-            allowed_groups.where_full_path_in(groups_by_path.keys).map do |group|
-              { group_id: group.id, config: groups_by_path[group.full_path] }
+          if project_entries
+            allowed_projects.where_full_path_in(project_entries.keys).map do |project|
+              { project_id: project.id, config: project_entries[project.full_path] }
             end
           end
         end
       end
 
+      def allowed_group_configurations
+        strong_memoize(:allowed_group_configurations) do
+          group_entries = extract_config_entries(entity: 'groups')
+
+          if group_entries
+            allowed_groups.where_full_path_in(group_entries.keys).map do |group|
+              { group_id: group.id, config: group_entries[group.full_path] }
+            end
+          end
+        end
+      end
+
+      def extract_config_entries(entity:)
+        config.dig('ci_access', entity)
+          &.first(AUTHORIZED_ENTITY_LIMIT)
+          &.index_by { |config| config.delete('id') }
+      end
+
+      def allowed_projects
+        if group_root_ancestor?
+          root_ancestor.all_projects
+        else
+          ::Project.none
+        end
+      end
+
       def allowed_groups
-        if project.root_ancestor.group?
-          project.root_ancestor.self_and_descendants
+        if group_root_ancestor?
+          root_ancestor.self_and_descendants
         else
           ::Group.none
         end
+      end
+
+      def group_root_ancestor?
+        root_ancestor.group?
       end
     end
   end

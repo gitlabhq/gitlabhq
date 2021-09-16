@@ -106,7 +106,7 @@ class SomeWorker
 
     # Since we cannot access cookies in a worker, we need to bucket models
     # based on a unique, unchanging attribute instead.
-    # It is therefore necessery to always provide the same subject.
+    # It is therefore necessary to always provide the same subject.
     if Gitlab::Experimentation.in_experiment_group?(:experiment_key, subject: user)
       # execute experimental code
     else

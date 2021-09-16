@@ -24,7 +24,7 @@ To use reCAPTCHA, first you must create a site and private key.
 1. To enable reCAPTCHA for logins via password, select the **Enable reCAPTCHA for login** checkbox.
 1. Save the configuration.
 1. Change the first line of the `#execute` method in `app/services/spam/spam_verdict_service.rb`
-   to `return CONDITONAL_ALLOW` so that the spam check short-circuits and triggers the response to
+   to `return CONDITIONAL_ALLOW` so that the spam check short-circuits and triggers the response to
    return `recaptcha_html`.
 
 NOTE:

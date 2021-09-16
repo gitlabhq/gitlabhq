@@ -1148,7 +1148,7 @@ known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
 open source. Install it by visiting the official website and following the
 instructions for your OS.
 
-GitLab has a [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/pngquant.rake)
+GitLab has a [Ruby script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/pngquant)
 that you can use to automate the process. In the root directory of your local
 copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
 
@@ -1156,19 +1156,26 @@ copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
   been compressed:
 
   ```shell
-  bundle exec rake pngquant:lint
+  bin/pngquant lint
   ```
 
 - Compress all documentation PNG images using `pngquant`:
 
   ```shell
-  bundle exec rake pngquant:compress
+  bin/pngquant compress
   ```
 
-The only caveat is that the task runs on all images under `doc/`, not only the
-ones you might have included in a merge request. In that case, you can run the
-compress task and only commit the images that are relevant to your merge
-request.
+- Compress specific files:
+
+  ```shell
+  bin/pngquant compress doc/user/img/award_emoji_select.png doc/user/img/markdown_logo.png
+  ```
+
+- Compress all PNG files in a specific directory:
+
+  ```shell
+  bin/pngquant compress doc/user/img
+  ```
 
 ## Videos
 

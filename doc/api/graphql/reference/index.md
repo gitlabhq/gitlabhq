@@ -7637,6 +7637,19 @@ Configuration details for an Agent.
 | ---- | ---- | ----------- |
 | <a id="agentconfigurationagentname"></a>`agentName` | [`String`](#string) | Name of the agent. |
 
+### `AgentMetadata`
+
+Information about a connected Agent.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentmetadatacommit"></a>`commit` | [`String`](#string) | Agent version commit. |
+| <a id="agentmetadatapodname"></a>`podName` | [`String`](#string) | Name of the pod running the Agent. |
+| <a id="agentmetadatapodnamespace"></a>`podNamespace` | [`String`](#string) | Namespace of the pod running the Agent. |
+| <a id="agentmetadataversion"></a>`version` | [`String`](#string) | Agent version tag. |
+
 ### `AlertManagementAlert`
 
 Describes an alert from the project's Alert Management.
@@ -8551,7 +8564,7 @@ Connection details for an Agent.
 | ---- | ---- | ----------- |
 | <a id="connectedagentconnectedat"></a>`connectedAt` | [`Time`](#time) | When the connection was established. |
 | <a id="connectedagentconnectionid"></a>`connectionId` | [`BigInt`](#bigint) | ID of the connection. |
-| <a id="connectedagentmetadata"></a>`metadata` | [`JSON`](#json) | Information about the Agent. |
+| <a id="connectedagentmetadata"></a>`metadata` | [`AgentMetadata`](#agentmetadata) | Information about the Agent. |
 
 ### `ContainerExpirationPolicy`
 

@@ -1,0 +1,21 @@
+description: "Click Epic's board switcher"
+category: default
+action: click_dropdown
+label_description: "`board_switcher`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: plan
+product_group: group::product_planning
+product_category:
+milestone: "14.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63765
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

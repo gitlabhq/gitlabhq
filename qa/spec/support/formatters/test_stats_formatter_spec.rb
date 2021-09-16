@@ -11,6 +11,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:ci_timestamp) { "2021-02-23T20:58:41Z" }
   let(:ci_job_name) { "test-job 1/5" }
   let(:ci_job_url) { "url" }
+  let(:ci_pipeline_url) { "url" }
   let(:ci_pipeline_id) { "123" }
   let(:run_type) { 'staging-full' }
   let(:reliable) { 'false' }
@@ -47,6 +48,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
         run_time: 0,
         retry_attempts: 0,
         job_url: ci_job_url,
+        pipeline_url: ci_pipeline_url,
         pipeline_id: ci_pipeline_id
       }
     }
@@ -103,6 +105,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       stub_env('CI_PIPELINE_CREATED_AT', ci_timestamp)
       stub_env('CI_JOB_URL', ci_job_url)
       stub_env('CI_JOB_NAME', ci_job_name)
+      stub_env('CI_PIPELINE_URL', ci_pipeline_url)
       stub_env('CI_PIPELINE_ID', ci_pipeline_id)
       stub_env('CI_MERGE_REQUEST_IID', nil)
       stub_env('TOP_UPSTREAM_MERGE_REQUEST_IID', nil)

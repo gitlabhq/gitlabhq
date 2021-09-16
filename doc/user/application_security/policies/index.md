@@ -396,7 +396,7 @@ In this example:
   and `Site Profile D`.
 - Secret detection and container scanning scans run for every pipeline executed on the `main` branch.
 - Cluster Image Scanning scan runs every 24h. The scan runs on the `production-cluster` cluster and fetches vulnerabilities
-  from the container with the name `database` configured for deployment with the name `production-application` in the `production-namepsace` namespace.
+  from the container with the name `database` configured for deployment with the name `production-application` in the `production-namespace` namespace.
 
 ## Roadmap
 

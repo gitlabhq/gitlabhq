@@ -79,6 +79,9 @@ Data is shown for workflow items created during the selected date range. To filt
 
 ## How metrics are measured
 
+> DORA API-based deployment metrics [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256)
+> to Premium in GitLab 14.3 for group-level Value Stream Analytics.
+
 The "Time" metrics near the top of the page are measured as follows:
 
 - **Lead time**: median time from issue created to issue closed.

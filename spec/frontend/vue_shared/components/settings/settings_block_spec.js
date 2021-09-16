@@ -1,12 +1,12 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/vue_shared/components/settings/settings_block.vue';
+import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
 describe('Settings Block', () => {
   let wrapper;
 
   const mountComponent = (propsData) => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMount(SettingsBlock, {
       propsData,
       slots: {
         title: '<div data-testid="title-slot"></div>',
@@ -24,7 +24,19 @@ describe('Settings Block', () => {
   const findTitleSlot = () => wrapper.find('[data-testid="title-slot"]');
   const findDescriptionSlot = () => wrapper.find('[data-testid="description-slot"]');
   const findExpandButton = () => wrapper.findComponent(GlButton);
-  const findSectionTitle = () => wrapper.find('[data-testid="section-title"]');
+  const findSectionTitleButton = () => wrapper.find('[data-testid="section-title-button"]');
+
+  const expectExpandedState = ({ expanded = true } = {}) => {
+    const settingsExpandButton = findExpandButton();
+
+    expect(wrapper.classes('expanded')).toBe(expanded);
+    expect(settingsExpandButton.text()).toBe(
+      expanded ? SettingsBlock.i18n.collapseText : SettingsBlock.i18n.expandText,
+    );
+    expect(settingsExpandButton.attributes('aria-label')).toBe(
+      expanded ? SettingsBlock.i18n.collapseAriaLabel : SettingsBlock.i18n.expandAriaLabel,
+    );
+  };
 
   it('renders the correct markup', () => {
     mountComponent();
@@ -75,45 +87,41 @@ describe('Settings Block', () => {
     it('is collapsed by default', () => {
       mountComponent();
 
-      expect(wrapper.classes('expanded')).toBe(false);
+      expectExpandedState({ expanded: false });
     });
 
     it('adds expanded class when the expand button is clicked', async () => {
       mountComponent();
 
-      expect(wrapper.classes('expanded')).toBe(false);
-      expect(findExpandButton().text()).toBe('Expand');
-
       await findExpandButton().vm.$emit('click');
 
-      expect(wrapper.classes('expanded')).toBe(true);
-      expect(findExpandButton().text()).toBe('Collapse');
+      expectExpandedState({ expanded: true });
     });
 
     it('adds expanded class when the section title is clicked', async () => {
       mountComponent();
 
-      expect(wrapper.classes('expanded')).toBe(false);
-      expect(findExpandButton().text()).toBe('Expand');
+      await findSectionTitleButton().trigger('click');
 
-      await findSectionTitle().trigger('click');
-
-      expect(wrapper.classes('expanded')).toBe(true);
-      expect(findExpandButton().text()).toBe('Collapse');
+      expectExpandedState({ expanded: true });
     });
 
-    it('is expanded when `defaultExpanded` is true no matter what', async () => {
-      mountComponent({ defaultExpanded: true });
+    describe('when `collapsible` is `false`', () => {
+      beforeEach(() => {
+        mountComponent({ collapsible: false });
+      });
 
-      expect(wrapper.classes('expanded')).toBe(true);
+      it('does not render clickable section title', () => {
+        expect(findSectionTitleButton().exists()).toBe(false);
+      });
 
-      await findExpandButton().vm.$emit('click');
+      it('contains expanded class', () => {
+        expect(wrapper.classes('expanded')).toBe(true);
+      });
 
-      expect(wrapper.classes('expanded')).toBe(true);
-
-      await findExpandButton().vm.$emit('click');
-
-      expect(wrapper.classes('expanded')).toBe(true);
+      it('does not render expand toggle button', () => {
+        expect(findExpandButton().exists()).toBe(false);
+      });
     });
   });
 });

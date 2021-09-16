@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import { inactiveId, LIST } from '~/boards/constants';
@@ -44,6 +45,11 @@ describe('BoardSettingsSidebar', () => {
         provide: {
           canAdminList,
           scopedLabelsAvailable: false,
+        },
+        stubs: {
+          GlDrawer: stubComponent(GlDrawer, {
+            template: '<div><slot name="header"></slot><slot></slot></div>',
+          }),
         },
       }),
     );

@@ -201,7 +201,7 @@ gantt
   section Database
     Schema A      :done, schemaA, 00:00  , 1h
     Schema B      :crit, schemaB, after migr, 58m
-    Schema C.     : schmeaC, after postmigr, 1h
+    Schema C.     : schemaC, after postmigr, 1h
 
   section Machine A
     Version N      :done, mavn, 00:00 , 75m

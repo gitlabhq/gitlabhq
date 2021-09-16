@@ -50,7 +50,7 @@ You may also want to enable Sentry's GitLab integration by following the steps i
 ### Enable GitLab Runner
 
 To configure GitLab Runner with Sentry, you must add the value for `sentry_dsn` to your GitLab
-Runner's `config.toml` configuration file, as referenced in [GitLab Runner Advanced Configuraton](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+Runner's `config.toml` configuration file, as referenced in [GitLab Runner Advanced Configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 While setting up Sentry, select **Go** if you're asked for the project type.
 
 If you see the following error in your GitLab Runner logs, then you should specify the deprecated

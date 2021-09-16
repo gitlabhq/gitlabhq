@@ -97,7 +97,7 @@ by the server-side endpoint satisfies the API contract.
 #### Related reading
 
 [Debug it!](https://pragprog.com/titles/pbdp/debug-it/) explores techniques to diagnose
-and fix non-determinstic bugs and write software that is easier to debug.
+and fix non-deterministic bugs and write software that is easier to debug.
 
 ## Backend
 

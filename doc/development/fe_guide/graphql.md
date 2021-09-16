@@ -458,7 +458,7 @@ export default {
 };
 ```
 
-Note that, even if the directive evalutes to `false`, the guarded entity is sent to the backend and
+Note that, even if the directive evaluates to `false`, the guarded entity is sent to the backend and
 matched against the GraphQL schema. So this approach requires that the feature-flagged entity
 exists in the schema, even if the feature flag is disabled. When the feature flag is turned off, it
 is recommended that the resolver returns `null` at the very least.
@@ -484,7 +484,7 @@ export default {
 This approach is not recommended as it results in bigger merge requests and requires maintaining
 two similar queries for as long as the feature flag exists. This can be used in cases where the new
 GraphQL entities are not yet part of the schema, or if they are feature-flagged at the schema level
-(`new_entitiy: :feature_flag`).
+(`new_entity: :feature_flag`).
 
 ### Manually triggering queries
 
@@ -1340,7 +1340,7 @@ describe('when query times out', () => {
     expect(getAlert().exists()).toBe(false);
     expect(getGraph().exists()).toBe(true);
 
-    /* fails again, alert retuns but data persists */
+    /* fails again, alert returns but data persists */
     await advanceApolloTimers();
     expect(getAlert().exists()).toBe(true);
     expect(getGraph().exists()).toBe(true);

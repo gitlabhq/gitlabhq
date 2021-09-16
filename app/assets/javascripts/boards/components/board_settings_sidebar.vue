@@ -36,7 +36,7 @@ export default {
       return this.glFeatures.wipLimits && !this.isEpicBoard;
     },
     activeList() {
-      return this.boardLists[this.activeId];
+      return this.boardLists[this.activeId] || {};
     },
     activeListLabel() {
       return this.activeList.label;
@@ -81,9 +81,26 @@ export default {
       v-bind="$attrs"
       class="js-board-settings-sidebar gl-absolute"
       :open="isSidebarOpen"
+      variant="sidebar"
       @close="unsetActiveId"
     >
-      <template #title>{{ $options.listSettingsText }}</template>
+      <template #title>
+        <h2 class="gl-my-0 gl-font-size-h2 gl-line-height-24">
+          {{ $options.listSettingsText }}
+        </h2>
+      </template>
+      <template #header>
+        <div v-if="canAdminList && activeList.id" class="gl-mt-3">
+          <gl-button
+            variant="danger"
+            category="secondary"
+            size="small"
+            data-testid="remove-list"
+            @click.stop="deleteBoard"
+            >{{ __('Remove list') }}
+          </gl-button>
+        </div>
+      </template>
       <template v-if="isSidebarOpen">
         <div v-if="boardListType === ListType.label">
           <label class="js-list-label gl-display-block">{{ listTypeTitle }}</label>
@@ -103,16 +120,6 @@ export default {
           v-if="isWipLimitsOn"
           :max-issue-count="activeList.maxIssueCount"
         />
-        <div v-if="canAdminList && !activeList.preset && activeList.id" class="gl-mt-4">
-          <gl-button
-            variant="danger"
-            category="secondary"
-            icon="remove"
-            data-testid="remove-list"
-            @click.stop="deleteBoard"
-            >{{ __('Remove list') }}
-          </gl-button>
-        </div>
       </template>
     </gl-drawer>
   </mounting-portal>

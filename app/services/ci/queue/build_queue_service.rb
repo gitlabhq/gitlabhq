@@ -47,7 +47,7 @@ module Ci
 
       def builds_for_project_runner
         relation = new_builds
-          .where(project: runner.projects.without_deleted.with_builds_enabled)
+          .where(project: runner_projects_relation)
 
         order(relation)
       end
@@ -85,6 +85,14 @@ module Ci
           else
             Queue::BuildsTableStrategy.new(runner)
           end
+        end
+      end
+
+      def runner_projects_relation
+        if ::Feature.enabled?(:ci_pending_builds_project_runners_decoupling, runner, default_enabled: :yaml)
+          runner.runner_projects.select(:project_id)
+        else
+          runner.projects.without_deleted.with_builds_enabled
         end
       end
     end

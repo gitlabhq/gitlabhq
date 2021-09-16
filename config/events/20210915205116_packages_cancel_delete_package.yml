@@ -1,0 +1,21 @@
+description: "Cancel package deletion"
+category: "`UI:[MavenPackages | NpmPackages | ConanPackages | undefined]`"
+action: cancel_delete_package
+label_description: ""
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category:
+milestone: "14.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62179
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

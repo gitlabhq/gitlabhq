@@ -259,7 +259,8 @@ module Gitlab
             smtp_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Email::SmtpConfig.encrypted_secrets.active? },
             operating_system: alt_usage_data(fallback: nil) { operating_system },
             gitaly_apdex: alt_usage_data { gitaly_apdex },
-            collected_data_categories: add_metric('CollectedDataCategoriesMetric', time_frame: 'none')
+            collected_data_categories: add_metric('CollectedDataCategoriesMetric', time_frame: 'none'),
+            service_ping_features_enabled: add_metric('ServicePingFeaturesMetric', time_frame: 'none')
           }
         }
       end

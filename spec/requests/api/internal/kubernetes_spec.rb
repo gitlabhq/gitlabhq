@@ -106,6 +106,9 @@ RSpec.describe API::Internal::Kubernetes do
         ci_access: {
           groups: [
             { id: group.full_path, default_namespace: 'production' }
+          ],
+          projects: [
+            { id: project.full_path, default_namespace: 'staging' }
           ]
         }
       }
@@ -119,6 +122,7 @@ RSpec.describe API::Internal::Kubernetes do
 
         expect(response).to have_gitlab_http_status(:no_content)
         expect(agent.authorized_groups).to contain_exactly(group)
+        expect(agent.authorized_projects).to contain_exactly(project)
       end
     end
 

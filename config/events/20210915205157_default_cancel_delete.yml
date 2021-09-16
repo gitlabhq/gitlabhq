@@ -1,0 +1,21 @@
+description: "Cancel registry tag deletion"
+category: default
+action: cancel_delete
+label_description: "`[bulk_registry_tag_delete | registry_tag_delete]`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category:
+milestone: "12.8"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23154
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

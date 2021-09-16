@@ -88,7 +88,7 @@ To restore your GitLab backup:
 
 - Before restoring, make sure to read about the
   [prerequisites](../raketasks/backup_restore.md#restore-gitlab), most importantly,
-  the versions of the backed up and the new GitLab istance must be the same.
+  the versions of the backed up and the new GitLab instance must be the same.
 - [Restore GitLab](../raketasks/backup_restore.md#restore-gitlab).
   Make sure to follow the instructions based on your installation method.
   Confirm that the [secrets and configuration files](../raketasks/backup_restore.md#storing-configuration-files) are also restored.

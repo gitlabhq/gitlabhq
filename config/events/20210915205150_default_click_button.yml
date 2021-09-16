@@ -1,0 +1,21 @@
+description: "Click Terraform banner button"
+category: default
+action: click_button
+label_description: "`terraform_banner`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category:
+milestone: "14.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68467
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

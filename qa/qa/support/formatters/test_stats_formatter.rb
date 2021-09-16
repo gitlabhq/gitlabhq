@@ -76,6 +76,7 @@ module QA
               run_time: (example.execution_result.run_time * 1000).round,
               retry_attempts: example.metadata[:retry_attempts] || 0,
               job_url: QA::Runtime::Env.ci_job_url,
+              pipeline_url: env('CI_PIPELINE_URL'),
               pipeline_id: env('CI_PIPELINE_ID')
             }
           }

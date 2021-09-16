@@ -11,6 +11,8 @@ RSpec.describe Clusters::Agent do
   it { is_expected.to have_many(:last_used_agent_tokens).class_name('Clusters::AgentToken') }
   it { is_expected.to have_many(:group_authorizations).class_name('Clusters::Agents::GroupAuthorization') }
   it { is_expected.to have_many(:authorized_groups).through(:group_authorizations) }
+  it { is_expected.to have_many(:project_authorizations).class_name('Clusters::Agents::ProjectAuthorization') }
+  it { is_expected.to have_many(:authorized_projects).through(:project_authorizations).class_name('::Project') }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_length_of(:name).is_at_most(63) }

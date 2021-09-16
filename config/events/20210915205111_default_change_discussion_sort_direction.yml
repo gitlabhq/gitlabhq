@@ -1,0 +1,21 @@
+description: "Change discussion sort direction"
+category: default
+action: change_discussion_sort_direction
+label_description: ""
+property_description: "`[asc | desc]`"
+value_description: ""
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: plan
+product_group: group::product_planning
+product_category:
+milestone: "12.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28717
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

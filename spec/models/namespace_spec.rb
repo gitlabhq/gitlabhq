@@ -344,6 +344,12 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#owner_required?' do
+    specify { expect(build(:project_namespace).owner_required?).to be_falsey }
+    specify { expect(build(:group).owner_required?).to be_falsey }
+    specify { expect(build(:namespace).owner_required?).to be_truthy }
+  end
+
   describe '#visibility_level_field' do
     it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
   end
