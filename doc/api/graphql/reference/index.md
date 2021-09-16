@@ -9851,7 +9851,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.pagesDeploymentRegistries`
 
-Find Pages Deployment registries on this Geo node Available only when feature flag `geo_pages_deployment_replication` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Find Pages Deployment registries on this Geo node.
 
 Returns [`PagesDeploymentRegistryConnection`](#pagesdeploymentregistryconnection).
 

@@ -193,7 +193,7 @@ class ProjectsFinder < UnionFinder
   def by_search(items)
     params[:search] ||= params[:name]
 
-    return items if Feature.enabled?(:disable_anonymous_search, type: :ops) && current_user.nil?
+    return items if Feature.enabled?(:disable_anonymous_project_search, type: :ops) && current_user.nil?
     return items.none if params[:search].present? && params[:minimum_search_length].present? && params[:search].length < params[:minimum_search_length].to_i
 
     items.optionally_search(params[:search], include_namespace: params[:search_namespaces].present?)

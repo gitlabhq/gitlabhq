@@ -205,9 +205,9 @@ RSpec.describe Explore::ProjectsController do
       let(:controller_action) { :index }
       let(:params_with_name) { { name: 'some project' } }
 
-      context 'when disable_anonymous_search is enabled' do
+      context 'when disable_anonymous_project_search is enabled' do
         before do
-          stub_feature_flags(disable_anonymous_search: true)
+          stub_feature_flags(disable_anonymous_project_search: true)
         end
 
         it 'does not show a flash message' do
@@ -252,9 +252,9 @@ RSpec.describe Explore::ProjectsController do
       let(:controller_action) { :index }
       let(:params_with_name) { { name: 'some project' } }
 
-      context 'when disable_anonymous_search is enabled' do
+      context 'when disable_anonymous_project_search is enabled' do
         before do
-          stub_feature_flags(disable_anonymous_search: true)
+          stub_feature_flags(disable_anonymous_project_search: true)
         end
 
         it 'shows a flash message' do
@@ -280,9 +280,9 @@ RSpec.describe Explore::ProjectsController do
         end
       end
 
-      context 'when disable_anonymous_search is disabled' do
+      context 'when disable_anonymous_project_search is disabled' do
         before do
-          stub_feature_flags(disable_anonymous_search: false)
+          stub_feature_flags(disable_anonymous_project_search: false)
         end
 
         it 'does not show a flash message' do

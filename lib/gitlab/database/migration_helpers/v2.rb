@@ -100,6 +100,14 @@ module Gitlab
         # * +logger+ - [Gitlab::JsonLogger]
         # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
         def with_lock_retries(*args, **kwargs, &block)
+          if transaction_open?
+            raise <<~EOF
+              #{__callee__} can not be run inside an already open transaction
+
+              Use migration-level lock retries instead, see https://docs.gitlab.com/ee/development/migration_style_guide.html#retry-mechanism-when-acquiring-database-locks
+            EOF
+          end
+
           super(*args, **kwargs.merge(allow_savepoints: false), &block)
         end
 

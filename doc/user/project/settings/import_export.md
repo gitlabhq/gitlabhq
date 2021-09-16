@@ -240,9 +240,11 @@ reduce the repository size for another import attempt.
     # Prevent interference with recreating an importable file later
     mv project.bundle ../"$EXPORT"-original.bundle
     mv ../"$EXPORT".tar.gz ../"$EXPORT"-original.tar.gz
+
+    git switch --create smaller-tmp-main
     ```
 
-1. To reduce the repository size,
+1. To reduce the repository size, work on this `smaller-tmp-main` branch:
    [identify and remove large files](../repository/reducing_the_repo_size_using_git.md)
    or [interactively rebase and fixup](../../../topics/git/git_rebase.md#interactive-rebase)
    to reduce the number of commits.
@@ -254,7 +256,7 @@ reduce the repository size for another import attempt.
     git gc --prune=now --aggressive
 
     # Prepare recreating an importable file 
-    git bundle create ../project.bundle <default-branch-name>
+    git bundle create ../project.bundle smaller-tmp-main
     cd ..
     mv project/ ../"$EXPORT"-project
     cd ..
@@ -270,5 +272,5 @@ reduce the repository size for another import attempt.
 1. Update the imported repository's
    [branch protection rules](../protected_branches.md) and
    its [default branch](../repository/branches/default.md), and
-   delete the temporary, `smaller-…` branch, and
+   delete the temporary, `smaller-tmp-main` branch, and
    the local, temporary data.

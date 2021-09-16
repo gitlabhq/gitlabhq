@@ -81,7 +81,7 @@ POST /projects/:id/approvals
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
-> - `protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+> - `protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.7.
 
 You can request information about a project's approval rules using the following endpoint:
 
@@ -954,7 +954,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer | yes      | The IID of the merge request |
 | `sha`               | string  | no       | The `HEAD` of the merge request |
-| `approval_password` **(PREMIUM)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-password-to-approve) is enabled in the project settings. |
+| `approval_password` | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-password-to-approve) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
 when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must

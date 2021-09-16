@@ -42,6 +42,10 @@ module Gitlab
     class AttributesPermitter
       attr_reader :permitted_attributes
 
+      # We want to use AttributesCleaner for these relations instead, in the future this should be removed to make sure
+      # we are using AttributesPermitter for every imported relation.
+      DISABLED_RELATION_NAMES = %i[user author ci_cd_settings issuable_sla push_rule].freeze
+
       def initialize(config: ImportExport::Config.new.to_h)
         @config = config
         @attributes_finder = Gitlab::ImportExport::AttributesFinder.new(config: @config)
@@ -50,16 +54,20 @@ module Gitlab
         build_permitted_attributes
       end
 
-      def permit(relation_name, relation_hash)
-        permitted_attributes = permitted_attributes_for(relation_name)
+      def permit(relation_sym, relation_hash)
+        permitted_attributes = permitted_attributes_for(relation_sym)
 
         relation_hash.select do |key, _|
-          permitted_attributes.include?(key)
+          permitted_attributes.include?(key.to_sym)
         end
       end
 
-      def permitted_attributes_for(relation_name)
-        @permitted_attributes[relation_name] || []
+      def permitted_attributes_for(relation_sym)
+        @permitted_attributes[relation_sym] || []
+      end
+
+      def permitted_attributes_defined?(relation_sym)
+        !DISABLED_RELATION_NAMES.include?(relation_sym) && @attributes_finder.included_attributes.key?(relation_sym)
       end
 
       private

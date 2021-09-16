@@ -33,3 +33,11 @@ Audit events for [repository events](../administration/audit_events.md#repositor
 These events have always been disabled by default and had to be manually enabled with a
 feature flag. Enabling them can cause too many events to be generated which can
 dramatically slow down GitLab instances. For this reason, they are being removed.
+
+### OmniAuth Kerberos gem
+
+The `omniauth-kerberos` gem will be removed in our next major release, GitLab 15.0.
+
+This gem has not been maintained and has very little usage. We therefore plan to remove support for this authentication method and recommend using the Kerberos [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) integration instead. You can follow the [upgrade instructions](../integration/kerberos.md#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins) to upgrade from the `omniauth-kerberos` integration to the supported one.
+
+Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.

@@ -921,7 +921,7 @@ The DAST job does not require the project's repository to be present when runnin
 > - Auditing for DAST profile management was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
-the scan. You must start it manually.
+the scan. You must either start it manually, or schedule it to run.
 
 An on-demand DAST scan:
 
@@ -929,8 +929,6 @@ An on-demand DAST scan:
   [scanner profile](#scanner-profile).
 - Is associated with your project's default branch.
 - Is saved on creation so it can be run later.
-
-In GitLab 13.10 and later, you can select to run an on-demand scan against a specific branch.
 
 ### On-demand scan modes
 
@@ -943,23 +941,34 @@ An on-demand scan can be run in active or passive mode:
 
 ### Run an on-demand DAST scan
 
-NOTE:
-You must have permission to run an on-demand DAST scan against a protected branch.
-The default branch is automatically protected. For more information, see
-[Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
-
 Prerequisites:
 
+- You must have permission to run an on-demand DAST scan against a protected branch. The default
+  branch is automatically protected. For more information, read
+  [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 - A [scanner profile](#create-a-scanner-profile).
 - A [site profile](#create-a-site-profile).
-- If you are running an active scan the site profile must be [validated](#validate-a-site-profile).
+- If you are running an active scan the site profile must have been [validated](#validate-a-site-profile).
 
-To run an on-demand scan, either:
+You can run an on-demand scan immediately, once at a scheduled date and time or at a specified
+frequency:
 
-- [Create and run an on-demand scan](#create-and-run-an-on-demand-scan).
+- Every day
+- Every week
+- Every month
+- Every 3 months
+- Every 6 months
+- Every year
+
+To run an on-demand scan immediately, either:
+
+- [Create and run an on-demand scan immediately](#create-and-run-an-on-demand-scan-immediately).
 - [Run a previously saved on-demand scan](#run-a-saved-on-demand-scan).
 
-#### Create and run an on-demand scan
+To run an on-demand scan either at a scheduled date or frequency, read
+[Schedule an on-demand scan](#schedule-an-on-demand-scan).
+
+#### Create and run an on-demand scan immediately
 
 1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left
    sidebar.
@@ -967,19 +976,60 @@ To run an on-demand scan, either:
 1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown.
 1. In **Scanner profile**, select a scanner profile from the dropdown.
 1. In **Site profile**, select a site profile from the dropdown.
-1. To run the on-demand scan now, select **Save and run scan**. Otherwise select **Save scan** to
-   [run](#run-a-saved-on-demand-scan) it later.
+1. To run the on-demand scan immediately, select **Save and run scan**. Otherwise, select
+   **Save scan** to [run](#run-a-saved-on-demand-scan) it later.
 
 The on-demand DAST scan runs and the project's dashboard shows the results.
 
-### List saved on-demand scans
+#### Run a saved on-demand scan
+
+To run a saved on-demand scan:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. Select **Manage DAST scans**.
+1. In the **DAST Profiles** row, select **Manage**.
+1. Select the **Saved Scans** tab.
+1. In the scan's row, select **Run scan**.
+
+   If the branch saved in the scan no longer exists, you must first
+   [edit the scan](#edit-an-on-demand-scan), select a new branch, and save the edited scan.
+
+The on-demand DAST scan runs, and the project's dashboard shows the results.
+
+#### Schedule an on-demand scan
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3. [Deployed behind the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md), disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user,
+ask an administrator to [disable the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md).
+The feature is not ready for production use.
+
+To schedule a scan:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
+1. Complete the **Scan name** and **Description** text boxes.
+1. In GitLab 13.10 and later, from the **Branch** dropdown list, select the desired branch.
+1. In the **Scanner profile** section, from the dropdown list, select a scanner profile.
+1. In the **Site profile** section, from the dropdown list, select a site profile.
+1. Select **Schedule scan**.
+1. In the **Start time** section, select a time zone, date, and time.
+1. From the **Repeats** dropdown list, select your desired frequency:
+    - To run the scan once, select **Never**.
+    - For a recurring scan, select any other option.
+1. To run the on-demand scan immediately, select **Save and run scan**. To [run](#run-a-saved-on-demand-scan) it according to the schedule you set, select
+   **Save scan**.
+
+#### List saved on-demand scans
 
 To list saved on-demand scans:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Select the **Saved Scans** tab.
 
-### View details of an on-demand scan
+#### View details of an on-demand scan
 
 To view details of an on-demand scan:
 
@@ -989,22 +1039,7 @@ To view details of an on-demand scan:
 1. Select the **Saved Scans** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 
-### Run a saved on-demand scan
-
-To run a saved on-demand scan:
-
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
-1. In the scan's row select **Run scan**.
-
-   If the branch saved in the scan no longer exists, you must first
-   [edit the scan](#edit-an-on-demand-scan), select a new branch, and save the edited scan.
-
-The on-demand DAST scan runs and the project's dashboard shows the results.
-
-### Edit an on-demand scan
+#### Edit an on-demand scan
 
 To edit an on-demand scan:
 
@@ -1016,7 +1051,7 @@ To edit an on-demand scan:
 1. Edit the form.
 1. Select **Save scan**.
 
-### Delete an on-demand scan
+#### Delete an on-demand scan
 
 To delete an on-demand scan:
 

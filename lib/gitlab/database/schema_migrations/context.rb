@@ -6,7 +6,7 @@ module Gitlab
       class Context
         attr_reader :connection
 
-        DEFAULT_SCHEMA_MIGRATIONS_PATH = "db/schema_migrations"
+        class_attribute :default_schema_migrations_path, default: 'db/schema_migrations'
 
         def initialize(connection)
           @connection = connection
@@ -30,7 +30,7 @@ module Gitlab
         end
 
         def database_schema_migrations_path
-          @connection.pool.db_config.configuration_hash[:schema_migrations_path] || DEFAULT_SCHEMA_MIGRATIONS_PATH
+          @connection.pool.db_config.configuration_hash[:schema_migrations_path] || self.class.default_schema_migrations_path
         end
       end
     end

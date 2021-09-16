@@ -121,6 +121,41 @@ included_attributes:
     - :name
   ci_cd_settings:
     - :group_runners_enabled
+  metrics_setting:
+    - :dashboard_timezone
+    - :external_dashboard_url
+    - :project_id
+  project_badges:
+    - :created_at
+    - :group_id
+    - :image_url
+    - :link_url
+    - :name
+    - :project_id
+    - :type
+    - :updated_at
+  pipeline_schedules:
+    - :active
+    - :created_at
+    - :cron
+    - :cron_timezone
+    - :description
+    - :next_run_at
+    - :owner_id
+    - :project_id
+    - :ref
+    - :updated_at
+  error_tracking_setting:
+    - :api_url
+    - :organization_name
+    - :project_id
+    - :project_name
+  auto_devops:
+    - :created_at
+    - :deploy_strategy
+    - :enabled
+    - :project_id
+    - :updated_at
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:

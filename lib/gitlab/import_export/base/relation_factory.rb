@@ -29,7 +29,7 @@ module Gitlab
            owner_id
          ].freeze
 
-        TOKEN_RESET_MODELS = %i[Project Namespace Group Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
+        TOKEN_RESET_MODELS = %i[Project Namespace Group Ci::Trigger Ci::Build Ci::Runner ProjectHook ErrorTracking::ProjectErrorTrackingSetting].freeze
 
         def self.create(*args, **kwargs)
           new(*args, **kwargs).create
@@ -45,6 +45,7 @@ module Gitlab
         end
 
         def initialize(relation_sym:, relation_index:, relation_hash:, members_mapper:, object_builder:, user:, importable:, excluded_keys: [])
+          @relation_sym = relation_sym
           @relation_name = self.class.overrides[relation_sym]&.to_sym || relation_sym
           @relation_index = relation_index
           @relation_hash = relation_hash.except('noteable_id')
@@ -181,8 +182,17 @@ module Gitlab
         end
 
         def parsed_relation_hash
-          @parsed_relation_hash ||= Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: @relation_hash,
-                                                                                 relation_class: relation_class)
+          strong_memoize(:parsed_relation_hash) do
+            if Feature.enabled?(:permitted_attributes_for_import_export, default_enabled: :yaml) && attributes_permitter.permitted_attributes_defined?(@relation_sym)
+              attributes_permitter.permit(@relation_sym, @relation_hash)
+            else
+              Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: @relation_hash, relation_class: relation_class)
+            end
+          end
+        end
+
+        def attributes_permitter
+          @attributes_permitter ||= Gitlab::ImportExport::AttributesPermitter.new
         end
 
         def existing_or_new_object

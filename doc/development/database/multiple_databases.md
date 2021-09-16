@@ -24,24 +24,26 @@ configurations. For example, given a `config/database.yml` like below:
 
 ```yaml
 development:
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_development
-  host: /path/to/gdk/postgresql
-  pool: 10
-  prepared_statements: false
-  variables:
-    statement_timeout: 120s
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_development
+    host: /path/to/gdk/postgresql
+    pool: 10
+    prepared_statements: false
+    variables:
+      statement_timeout: 120s
 
 test: &test
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_test
-  host: /path/to/gdk/postgresql
-  pool: 10
-  prepared_statements: false
-  variables:
-    statement_timeout: 120s
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_test
+    host: /path/to/gdk/postgresql
+    pool: 10
+    prepared_statements: false
+    variables:
+      statement_timeout: 120s
 ```
 
 Edit the `config/database.yml` to look like this:
@@ -412,3 +414,50 @@ The `url` parameter should point to an issue with a milestone for when we intend
 to fix the cross-join. If the cross-join is being used in a migration, we do not
 need to fix the code. See <https://gitlab.com/gitlab-org/gitlab/-/issues/340017>
 for more details.
+
+## `config/database.yml`
+
+GitLab will support running multiple databases in the future, for example to [separate tables for the continuous integration features](https://gitlab.com/groups/gitlab-org/-/epics/6167) from the main database. In order to prepare for this change, we [validate the structure of the configuration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67877) in `database.yml` to ensure that only known databases are used.
+
+Previously, the `config/database.yml` would look like this:
+
+```yaml
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: gitlabhq_production
+  ...
+```
+
+With the support for many databases the support for this
+syntax is deprecated and will be removed in [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338182).
+
+The new `config/database.yml` needs to include a database name
+to define a database configuration. Only `main:` and `ci:` database
+names are supported today. The `main:` needs to always be a first
+entry in a hash. This change applies to decomposed and non-decomposed
+change. If an invalidate or deprecated syntax is used the error
+or warning will be printed during application start.
+
+```yaml
+# Non-decomposed database
+production:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    ...
+
+# Decomposed database
+production:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    ...
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production_ci
+    ...
+```

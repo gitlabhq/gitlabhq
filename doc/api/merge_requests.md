@@ -222,7 +222,7 @@ Parameters:
 ]
 ```
 
-Users on GitLab Premium or higher also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -418,7 +418,7 @@ The `merge_status` field may hold one of the following values:
 | `cannot_be_merged`         | There are merge conflicts between the source and target branches      |
 | `cannot_be_merged_recheck` | Currently unchecked. Before the current changes, there were conflicts |
 
-Users on GitLab Premium or higher also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -460,8 +460,8 @@ Parameters:
 | `milestone`                     | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`                          | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request.                                      |
 | `labels`                        | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
-| `with_labels_details`           | boolean        | no       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413).|
-| `with_merge_status_recheck`     | boolean        | no       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890). |
+| `with_labels_details`           | boolean        | no       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) in GitLab 12.7.|
+| `with_merge_status_recheck`     | boolean        | no       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0. |
 | `created_after`                 | datetime       | no       | Return merge requests created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `created_before`                | datetime       | no       | Return merge requests created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -478,7 +478,7 @@ Parameters:
 | `source_branch`                 | string         | no       | Return merge requests with the given source branch.                                                                             |
 | `target_branch`                 | string         | no       | Return merge requests with the given target branch.                                                                             |
 | `search`                        | string         | no       | Search merge requests against their `title` and `description`. |
-| `non_archived`                  | boolean        | no       | Return merge requests from non archived projects only. Default is true. _(Introduced in [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23809))_.  |
+| `non_archived`                  | boolean        | no       | Return merge requests from non archived projects only. Default is true. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23809) in GitLab 12.8)_.  |
 | `not`                           | Hash           | no       | Return merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `reviewer_id`, `reviewer_username`, `my_reaction_emoji`. |
 
 ```json
@@ -592,7 +592,7 @@ Parameters:
 ]
 ```
 
-Users on GitLab Premium or higher also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -625,7 +625,7 @@ Parameters:
 |----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
 | `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
-| `render_html`                    | integer        | no       | If `true` response includes rendered HTML for title and description.                                             |
+| `render_html`                    | boolean        | no       | If `true` response includes rendered HTML for title and description.                                             |
 | `include_diverged_commits_count` | boolean        | no       | If `true` response includes the commits behind the target branch.                                                |
 | `include_rebase_in_progress`     | boolean        | no       | If `true` response includes whether a rebase operation is in progress.                                           |
 
@@ -764,7 +764,7 @@ Parameters:
 }
 ```
 
-Users on GitLab Premium also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -1014,7 +1014,7 @@ The new pipeline can be:
 
 - A detached merge request pipeline.
 - A [pipeline for merged results](../ci/pipelines/pipelines_for_merged_results.md)
-  if the [project setting is enabled](../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results).
+  if the [project setting is enabled](../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results). **(PREMIUM)**
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/pipelines
@@ -1375,7 +1375,7 @@ Must include at least one non-required attribute from above.
 }
 ```
 
-Users on GitLab Premium or higher also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -1561,7 +1561,7 @@ Parameters:
 }
 ```
 
-Users on GitLab Premium also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -1750,7 +1750,7 @@ Parameters:
 }
 ```
 
-Users on GitLab Premium or higher also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -2051,7 +2051,7 @@ Example response:
 }
 ```
 
-Users on GitLab Premium also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -2211,7 +2211,7 @@ Example response:
 }
 ```
 
-Users on GitLab Premium or higher also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json

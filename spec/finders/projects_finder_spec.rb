@@ -195,9 +195,9 @@ RSpec.describe ProjectsFinder do
         let(:current_user) { nil }
         let(:params) { { search: 'C' } }
 
-        context 'with disable_anonymous_search feature flag enabled' do
+        context 'with disable_anonymous_project_search feature flag enabled' do
           before do
-            stub_feature_flags(disable_anonymous_search: true)
+            stub_feature_flags(disable_anonymous_project_search: true)
           end
 
           it 'does not perform search' do
@@ -205,9 +205,9 @@ RSpec.describe ProjectsFinder do
           end
         end
 
-        context 'with disable_anonymous_search feature flag disabled' do
+        context 'with disable_anonymous_project_search feature flag disabled' do
           before do
-            stub_feature_flags(disable_anonymous_search: false)
+            stub_feature_flags(disable_anonymous_project_search: false)
           end
 
           it 'finds one public project' do

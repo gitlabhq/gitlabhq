@@ -26,7 +26,7 @@ export const parseGetProjectStorageResults = (data, helpLinks) => {
         ...currentType,
         helpPath,
       },
-      value: numberToHumanSize(storageStatistics[currentType.id], 1),
+      value: storageStatistics[currentType.id],
     });
   }, []);
 

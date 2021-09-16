@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlIcon, GlTable, GlSprintf } from '@gitlab/ui';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { thWidthClass } from '~/lib/utils/table_utility';
 import { sprintf } from '~/locale';
 import { PROJECT_TABLE_LABELS, HELP_LINK_ARIA_LABEL } from '../constants';
@@ -37,6 +38,9 @@ export default {
       label: PROJECT_TABLE_LABELS.VALUE,
       thClass: thWidthClass(10),
       sortable: true,
+      formatter: (value) => {
+        return numberToHumanSize(value, 1);
+      },
     },
   ],
 };

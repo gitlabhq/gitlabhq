@@ -1,0 +1,8 @@
+---
+name: disable_anonymous_project_search
+introduced_by_url: 
+rollout_issue_url: 
+milestone: '14.3'
+type: ops
+group: group::project management
+default_enabled: false

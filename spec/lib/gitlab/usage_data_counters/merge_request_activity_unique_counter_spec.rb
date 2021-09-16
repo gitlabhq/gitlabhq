@@ -408,4 +408,12 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_RESOLVE_CONFLICT_ACTION }
     end
   end
+
+  describe '.track_resolve_thread_in_issue_action' do
+    subject { described_class.track_resolve_thread_in_issue_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_RESOLVE_THREAD_IN_ISSUE_ACTION }
+    end
+  end
 end

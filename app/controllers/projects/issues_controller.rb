@@ -117,7 +117,11 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue = @noteable = service.execute
 
     @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
-    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
+
+    if params[:discussion_to_resolve]
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_resolve_thread_in_issue_action(user: current_user)
+      @discussion_to_resolve = service.discussions_to_resolve.first
+    end
 
     respond_with(@issue)
   end

@@ -245,3 +245,7 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+- name: i_code_review_user_resolve_thread_in_issue
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

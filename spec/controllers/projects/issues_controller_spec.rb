@@ -309,6 +309,8 @@ RSpec.describe Projects::IssuesController do
       it 'fills in an issue for a discussion' do
         note = create(:note_on_merge_request, project: project)
 
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).to receive(:track_resolve_thread_in_issue_action).with(user: user)
+
         get :new, params: { namespace_id: project.namespace.path, project_id: project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id }
 
         expect(assigns(:issue).title).not_to be_empty

@@ -48,7 +48,7 @@ export const projectData = {
             'There is a known issue with Artifact storage where the total could be incorrect for some projects. More details and progress are available in %{warningLinkStart}the epic%{warningLinkEnd}.',
           helpPath: '/build-artifacts',
         },
-        value: '390.6 KiB',
+        value: 400000,
       },
       {
         storageType: {
@@ -57,7 +57,7 @@ export const projectData = {
           description: 'Audio samples, videos, datasets, and graphics.',
           helpPath: '/lsf-objects',
         },
-        value: '4.6 MiB',
+        value: 4800000,
       },
       {
         storageType: {
@@ -66,7 +66,7 @@ export const projectData = {
           description: 'Code packages and container images.',
           helpPath: '/packages',
         },
-        value: '3.6 MiB',
+        value: 3800000,
       },
       {
         storageType: {
@@ -75,7 +75,7 @@ export const projectData = {
           description: 'Git repository, managed by the Gitaly service.',
           helpPath: '/repository',
         },
-        value: '3.7 MiB',
+        value: 3900000,
       },
       {
         storageType: {
@@ -84,7 +84,7 @@ export const projectData = {
           description: 'Shared bits of code and text.',
           helpPath: '/snippets',
         },
-        value: '1.1 MiB',
+        value: 1200000,
       },
       {
         storageType: {
@@ -93,7 +93,7 @@ export const projectData = {
           description: 'File attachments and smaller design graphics.',
           helpPath: '/uploads',
         },
-        value: '878.9 KiB',
+        value: 900000,
       },
       {
         storageType: {
@@ -102,7 +102,7 @@ export const projectData = {
           description: 'Wiki content.',
           helpPath: '/wiki',
         },
-        value: '293.0 KiB',
+        value: 300000,
       },
     ],
   },
