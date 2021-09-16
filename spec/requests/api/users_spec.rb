@@ -1202,7 +1202,7 @@ RSpec.describe API::Users do
 
     it 'updates user with a new email' do
       old_email = user.email
-      old_notification_email = user.notification_email_or_default
+      old_notification_email = user.notification_email
       put api("/users/#{user.id}", admin), params: { email: 'new@email.com' }
 
       user.reload
@@ -1210,7 +1210,7 @@ RSpec.describe API::Users do
       expect(response).to have_gitlab_http_status(:ok)
       expect(user).to be_confirmed
       expect(user.email).to eq(old_email)
-      expect(user.notification_email_or_default).to eq(old_notification_email)
+      expect(user.notification_email).to eq(old_notification_email)
       expect(user.unconfirmed_email).to eq('new@email.com')
     end
 

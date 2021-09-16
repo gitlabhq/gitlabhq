@@ -694,8 +694,6 @@ TBU
 
 ### Stubbing and Mocking
 
-Jasmine provides stubbing and mocking capabilities. There are some subtle differences in how to use it within Jest.
-
 Stubs or spies are often used synonymously. In Jest it's quite easy thanks to the `.spyOn` method.
 [Official docs](https://jestjs.io/docs/jest-object#jestspyonobject-methodname)
 The more challenging part are mocks, which can be used for functions or even dependencies.

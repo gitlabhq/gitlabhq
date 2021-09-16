@@ -40,7 +40,7 @@ compliance report is shown properly.
 
 ![License Compliance Widget](img/license_compliance_v13_0.png)
 
-You can click on a license to see more information.
+You can select a license to see more information.
 
 When GitLab detects a **Denied** license, you can view it in the [license list](#license-list).
 
@@ -710,15 +710,16 @@ instance's administrator can manually update it with a [Rake task](../../../rake
 The License list allows you to see your project's licenses and key
 details about them.
 
-In order for the licenses to appear under the license list, the following
+For the licenses to appear under the license list, the following
 requirements must be met:
 
 1. The License Compliance CI job must be [configured](#configuration) for your project.
 1. Your project must use at least one of the
    [supported languages and package managers](#supported-languages-and-package-managers).
 
-Once everything is set, navigate to **Security & Compliance > License Compliance**
-in your project's sidebar, and the licenses are displayed, where:
+When everything is configured, on the left sidebar, select **Security & Compliance > License Compliance**.
+
+The licenses are displayed, where:
 
 - **Name:** The name of the license.
 - **Component:** The components which have this license.
@@ -758,8 +759,10 @@ license.
 
 You can enable `License-Check` one of two ways:
 
-1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
-1. Click **Enable** or **Edit**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge request approvals**.
+1. Select **Enable** or **Edit**.
 1. Add or change the **Rule name** to `License-Check` (case sensitive).
 
 ![License Check Approver Rule](img/license-check_v13_4.png)

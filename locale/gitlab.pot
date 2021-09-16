@@ -22337,6 +22337,9 @@ msgstr ""
 msgid "NetworkPolicies|Network Policies can be used to limit which network traffic is allowed between containers inside the cluster."
 msgstr ""
 
+msgid "NetworkPolicies|Network policy can be created after the environment is loaded successfully."
+msgstr ""
+
 msgid "NetworkPolicies|Network traffic"
 msgstr ""
 

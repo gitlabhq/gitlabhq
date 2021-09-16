@@ -6,7 +6,7 @@ module Emails
       @current_user = @user = User.find(user_id)
       @target_url = user_url(@user)
       @token = token
-      mail(to: @user.notification_email_or_default, subject: subject("Account was created for you"))
+      mail(to: @user.notification_email, subject: subject("Account was created for you"))
     end
 
     def instance_access_request_email(user, recipient)
@@ -14,7 +14,7 @@ module Emails
       @recipient = recipient
 
       profile_email_with_layout(
-        to: recipient.notification_email_or_default,
+        to: recipient.notification_email,
         subject: subject(_("GitLab Account Request")))
     end
 
@@ -42,7 +42,7 @@ module Emails
 
       @current_user = @user = @key.user
       @target_url = user_url(@user)
-      mail(to: @user.notification_email_or_default, subject: subject("SSH key was added to your account"))
+      mail(to: @user.notification_email, subject: subject("SSH key was added to your account"))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -54,7 +54,7 @@ module Emails
 
       @current_user = @user = @gpg_key.user
       @target_url = user_url(@user)
-      mail(to: @user.notification_email_or_default, subject: subject("GPG key was added to your account"))
+      mail(to: @user.notification_email, subject: subject("GPG key was added to your account"))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -67,7 +67,7 @@ module Emails
       @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        mail(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
+        mail(to: @user.notification_email, subject: subject(_("Your personal access tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
       end
     end
 
@@ -78,7 +78,7 @@ module Emails
       @target_url = profile_personal_access_tokens_url
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        mail(to: @user.notification_email_or_default, subject: subject(_("Your personal access token has expired")))
+        mail(to: @user.notification_email, subject: subject(_("Your personal access token has expired")))
       end
     end
 
@@ -90,7 +90,7 @@ module Emails
       @target_url = profile_keys_url
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        mail(to: @user.notification_email_or_default, subject: subject(_("Your SSH key has expired")))
+        mail(to: @user.notification_email, subject: subject(_("Your SSH key has expired")))
       end
     end
 
@@ -102,7 +102,7 @@ module Emails
       @target_url = profile_keys_url
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        mail(to: @user.notification_email_or_default, subject: subject(_("Your SSH key is expiring soon.")))
+        mail(to: @user.notification_email, subject: subject(_("Your SSH key is expiring soon.")))
       end
     end
 
@@ -114,7 +114,7 @@ module Emails
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
         profile_email_with_layout(
-          to: @user.notification_email_or_default,
+          to: @user.notification_email,
           subject: subject(_("%{host} sign-in from new location") % { host: Gitlab.config.gitlab.host }))
       end
     end
@@ -125,7 +125,7 @@ module Emails
       @user = user
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        mail(to: @user.notification_email_or_default, subject: subject(_("Two-factor authentication disabled")))
+        mail(to: @user.notification_email, subject: subject(_("Two-factor authentication disabled")))
       end
     end
 

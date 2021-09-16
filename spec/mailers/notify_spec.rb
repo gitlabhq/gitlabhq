@@ -71,7 +71,7 @@ RSpec.describe Notify do
       it 'is sent to the assignee as the author' do
         aggregate_failures do
           expect_sender(current_user)
-          expect(subject).to deliver_to(recipient.notification_email_or_default)
+          expect(subject).to deliver_to(recipient.notification_email)
         end
       end
     end
@@ -710,7 +710,7 @@ RSpec.describe Notify do
 
       it 'contains all the useful information' do
         to_emails = subject.header[:to].addrs.map(&:address)
-        expect(to_emails).to eq([recipient.notification_email_or_default])
+        expect(to_emails).to eq([recipient.notification_email])
 
         is_expected.to have_subject "Request to join the #{project.full_name} project"
         is_expected.to have_body_text project.full_name
@@ -1047,7 +1047,7 @@ RSpec.describe Notify do
         it 'is sent to the given recipient as the author' do
           aggregate_failures do
             expect_sender(note_author)
-            expect(subject).to deliver_to(recipient.notification_email_or_default)
+            expect(subject).to deliver_to(recipient.notification_email)
           end
         end
 
@@ -1204,7 +1204,7 @@ RSpec.describe Notify do
         it 'is sent to the given recipient as the author' do
           aggregate_failures do
             expect_sender(note_author)
-            expect(subject).to deliver_to(recipient.notification_email_or_default)
+            expect(subject).to deliver_to(recipient.notification_email)
           end
         end
 
@@ -1341,7 +1341,7 @@ RSpec.describe Notify do
 
       it 'contains all the useful information' do
         to_emails = subject.header[:to].addrs.map(&:address)
-        expect(to_emails).to eq([recipient.notification_email_or_default])
+        expect(to_emails).to eq([recipient.notification_email])
 
         is_expected.to have_subject "Request to join the #{group.name} group"
         is_expected.to have_body_text group.name

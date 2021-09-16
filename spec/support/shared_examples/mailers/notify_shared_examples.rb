@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'a multiple recipients email' do
   it 'is sent to the given recipient' do
-    is_expected.to deliver_to recipient.notification_email_or_default
+    is_expected.to deliver_to recipient.notification_email
   end
 end
 
@@ -21,7 +21,7 @@ end
 
 RSpec.shared_examples 'an email sent to a user' do
   it 'is sent to user\'s global notification email address' do
-    expect(subject).to deliver_to(recipient.notification_email_or_default)
+    expect(subject).to deliver_to(recipient.notification_email)
   end
 
   context 'with group notification email' do
@@ -227,7 +227,7 @@ RSpec.shared_examples 'a note email' do
     aggregate_failures do
       expect(sender.display_name).to eq("#{note_author.name} (@#{note_author.username})")
       expect(sender.address).to eq(gitlab_sender)
-      expect(subject).to deliver_to(recipient.notification_email_or_default)
+      expect(subject).to deliver_to(recipient.notification_email)
     end
   end
 

@@ -62,28 +62,6 @@ module Gitlab
         consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
       end
 
-      def list_new_blobs(newrev, limit = 0, dynamic_timeout: nil)
-        request = Gitaly::ListNewBlobsRequest.new(
-          repository: @gitaly_repo,
-          commit_id: newrev,
-          limit: limit
-        )
-
-        timeout =
-          if dynamic_timeout
-            [dynamic_timeout, GitalyClient.medium_timeout].min
-          else
-            GitalyClient.medium_timeout
-          end
-
-        response = GitalyClient.call(@storage, :ref_service, :list_new_blobs, request, timeout: timeout)
-        response.flat_map do |msg|
-          # Returns an Array of Gitaly::NewBlobObject objects
-          # Available methods are: #size, #oid and #path
-          msg.new_blob_objects
-        end
-      end
-
       def count_tag_names
         tag_names.count
       end

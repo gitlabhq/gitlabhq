@@ -35,7 +35,7 @@ module Gitlab
             def variables
               processable.simple_variables.tap do |variables|
                 # Adding persisted environment variables
-                if Feature.enabled?(:env_vars_resource_group) && processable.persisted_environment.present?
+                if processable.persisted_environment.present?
                   variables.concat(processable.persisted_environment.predefined_variables)
                 end
               end

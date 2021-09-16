@@ -23,7 +23,7 @@ RSpec.describe 'Projects > Members > User requests access', :js do
   it 'user can request access to a project' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
-    expect(ActionMailer::Base.deliveries.last.to).to eq [maintainer.notification_email_or_default]
+    expect(ActionMailer::Base.deliveries.last.to).to eq [maintainer.notification_email]
     expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy

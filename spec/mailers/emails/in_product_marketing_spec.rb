@@ -23,7 +23,7 @@ RSpec.describe Emails::InProductMarketing do
 
     it 'sends to the right user with a link to unsubscribe' do
       aggregate_failures do
-        expect(subject).to deliver_to(user.notification_email_or_default)
+        expect(subject).to deliver_to(user.notification_email)
         expect(subject).to have_body_text(profile_notifications_url)
       end
     end

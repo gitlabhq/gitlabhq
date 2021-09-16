@@ -146,7 +146,7 @@ RSpec.describe Admin::UsersController do
 
       it 'sends the user a rejection email' do
         expect_next_instance_of(NotificationService) do |notification|
-          allow(notification).to receive(:user_admin_rejection).with(user.name, user.notification_email_or_default)
+          allow(notification).to receive(:user_admin_rejection).with(user.name, user.notification_email)
         end
 
         subject

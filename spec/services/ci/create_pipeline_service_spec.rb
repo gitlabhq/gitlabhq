@@ -1041,22 +1041,6 @@ RSpec.describe Ci::CreatePipelineService do
 
         expect(execute_service.payload).to be_created_successfully
       end
-
-      context 'when the env_vars_resource_group feature flag is disabled' do
-        before do
-          stub_feature_flags(env_vars_resource_group: false)
-        end
-
-        it 'does not create a resource group because its key contains an invalid character' do
-          result = execute_service.payload
-          deploy_job = result.builds.find_by_name!(:review_app)
-          stop_job = result.builds.find_by_name!(:stop_review_app)
-          expect(result).to be_persisted
-          expect(deploy_job.resource_group).to be_nil
-          expect(stop_job.resource_group).to be_nil
-          expect(project.resource_groups.count).to eq(0)
-        end
-      end
     end
 
     context 'with timeout' do

@@ -13,7 +13,7 @@ RSpec.describe API::NotificationSettings do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_a Hash
-      expect(json_response['notification_email']).to eq(user.notification_email_or_default)
+      expect(json_response['notification_email']).to eq(user.notification_email)
       expect(json_response['level']).to eq(user.global_notification_setting.level)
     end
   end

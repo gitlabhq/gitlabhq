@@ -221,7 +221,7 @@ module IssuesHelper
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
       can_import_issues: can?(current_user, :import_issues, @project).to_s,
-      email: current_user&.notification_email_or_default,
+      email: current_user&.notification_email,
       emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'),
       export_csv_path: export_csv_project_issues_path(project),
       has_any_issues: project_issues(project).exists?.to_s,

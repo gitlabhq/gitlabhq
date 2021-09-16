@@ -2,7 +2,7 @@
 
 module EmailHelpers
   def sent_to_user(user, recipients: email_recipients)
-    recipients.count { |to| to == user.notification_email_or_default }
+    recipients.count { |to| to == user.notification_email }
   end
 
   def reset_delivered_emails!
@@ -45,7 +45,7 @@ module EmailHelpers
   end
 
   def find_email_for(user)
-    ActionMailer::Base.deliveries.find { |d| d.to.include?(user.notification_email_or_default) }
+    ActionMailer::Base.deliveries.find { |d| d.to.include?(user.notification_email) }
   end
 
   def have_referable_subject(referable, include_project: true, reply: false)

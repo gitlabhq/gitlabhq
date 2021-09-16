@@ -83,7 +83,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_PROJECT_ID`                          | all    | all    | The ID of the current project. This ID is unique across all projects on the GitLab instance. |
 | `CI_PROJECT_NAME`                        | 8.10   | 0.5    | The name of the directory for the project. For example if the project URL is `gitlab.example.com/group-name/project-1`, `CI_PROJECT_NAME` is `project-1`. |
 | `CI_PROJECT_NAMESPACE`                   | 8.10   | 0.5    | The project namespace (username or group name) of the job. |
-| `CI_PROJECT_PATH_SLUG`                   | 9.3    | all    | `$CI_PROJECT_PATH` in lowercase with characters that are not `a-z` or `0-9` replaced with `-`. Use in URLs and domain names. |
+| `CI_PROJECT_PATH_SLUG`                   | 9.3    | all    | `$CI_PROJECT_PATH` in lowercase with characters that are not `a-z` or `0-9` replaced with `-` and shortened to 63 bytes. Use in URLs and domain names. |
 | `CI_PROJECT_PATH`                        | 8.10   | 0.5    | The project namespace with the project name included. |
 | `CI_PROJECT_REPOSITORY_LANGUAGES`        | 12.3   | all    | A comma-separated, lowercase list of the languages used in the repository. For example `ruby,javascript,html,css`. |
 | `CI_PROJECT_ROOT_NAMESPACE`              | 13.2   | 0.5    | The root project namespace (username or group name) of the job. For example, if `CI_PROJECT_NAMESPACE` is `root-group/child-group/grandchild-group`, `CI_PROJECT_ROOT_NAMESPACE` is `root-group`. |

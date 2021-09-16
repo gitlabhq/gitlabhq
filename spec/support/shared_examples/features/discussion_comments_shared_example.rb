@@ -7,7 +7,7 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
   let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
   let(:submit_selector) { "#{form_selector} .js-comment-submit-button" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
-  let(:comments_selector) { '.timeline > .note.timeline-entry' }
+  let(:comments_selector) { '.timeline > .note.timeline-entry:not(.being-posted)' }
   let(:comment) { 'My comment' }
 
   it 'clicking "Comment" will post a comment' do
@@ -187,7 +187,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
   let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle-split" }
   let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
-  let(:comments_selector) { '.timeline > .note.timeline-entry' }
+  let(:comments_selector) { '.timeline > .note.timeline-entry:not(.being-posted)' }
   let(:comment) { 'My comment' }
 
   it 'clicking "Comment" will post a comment' do
