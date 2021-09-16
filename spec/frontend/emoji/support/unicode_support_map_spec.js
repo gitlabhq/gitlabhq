@@ -8,14 +8,14 @@ describe('Unicode Support Map', () => {
     const stringSupportMap = 'stringSupportMap';
 
     beforeEach(() => {
-      jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockImplementation(() => {});
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockImplementation(() => {});
       jest.spyOn(JSON, 'parse').mockImplementation(() => {});
       jest.spyOn(JSON, 'stringify').mockReturnValue(stringSupportMap);
     });
 
     describe('if isLocalStorageAvailable is `true`', () => {
       beforeEach(() => {
-        jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(true);
+        jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
 
         getUnicodeSupportMap();
       });
@@ -38,7 +38,7 @@ describe('Unicode Support Map', () => {
 
     describe('if isLocalStorageAvailable is `false`', () => {
       beforeEach(() => {
-        jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(false);
+        jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
 
         getUnicodeSupportMap();
       });

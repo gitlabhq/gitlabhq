@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    class PostgresForeignKey < ApplicationRecord
+    class PostgresForeignKey < SharedModel
       self.primary_key = :oid
 
       scope :by_referenced_table_identifier, ->(identifier) do

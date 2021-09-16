@@ -41,7 +41,6 @@ class IssuableFinder
   include FinderMethods
   include CreatedAtFilter
   include Gitlab::Utils::StrongMemoize
-  prepend OptimizedIssuableLabelFilter
 
   requires_cross_project_access unless: -> { params.project? }
 
@@ -149,7 +148,6 @@ class IssuableFinder
 
   # Negates all params found in `negatable_params`
   def filter_negated_items(items)
-    items = by_negated_label(items)
     items = by_negated_milestone(items)
     items = by_negated_release(items)
     items = by_negated_my_reaction_emoji(items)
@@ -172,29 +170,19 @@ class IssuableFinder
     count_params = params.merge(state: nil, sort: nil, force_cte: true)
     finder = self.class.new(current_user, count_params)
 
+    state_counts = finder
+      .execute
+      .reorder(nil)
+      .group(:state_id)
+      .count
+
     counts = Hash.new(0)
 
-    # Searching by label includes a GROUP BY in the query, but ours will be last
-    # because it is added last. Searching by multiple labels also includes a row
-    # per issuable, so we have to count those in Ruby - which is bad, but still
-    # better than performing multiple queries.
-    #
-    # This does not apply when we are using a CTE for the search, as the labels
-    # GROUP BY is inside the subquery in that case, so we set labels_count to 1.
-    #
-    # Groups and projects have separate feature flags to suggest the use
-    # of a CTE. The CTE will not be used if the sort doesn't support it,
-    # but will always be used for the counts here as we ignore sorting
-    # anyway.
-    labels_count = params.label_names.any? ? params.label_names.count : 1
-    labels_count = 1 if use_cte_for_search?
-
-    finder.execute.reorder(nil).group(:state_id).count.each do |key, value|
-      counts[count_key(key)] += value / labels_count
+    state_counts.each do |key, value|
+      counts[count_key(key)] += value
     end
 
     counts[:all] = counts.values.sum
-
     counts.with_indifferent_access
   end
   # rubocop: enable CodeReuse/ActiveRecord
@@ -360,7 +348,7 @@ class IssuableFinder
   def sort(items)
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
-    params[:sort] ? items.sort_by_attribute(params[:sort], excluded_labels: params.label_names) : items.reorder(id: :desc)
+    params[:sort] ? items.sort_by_attribute(params[:sort], excluded_labels: label_filter.label_names_excluded_from_priority_sort) : items.reorder(id: :desc)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -380,6 +368,20 @@ class IssuableFinder
       Issuables::AssigneeFilter.new(
         params: original_params,
         or_filters_enabled: or_filters_enabled?
+      )
+    end
+  end
+
+  def by_label(items)
+    label_filter.filter(items)
+  end
+
+  def label_filter
+    strong_memoize(:label_filter) do
+      Issuables::LabelFilter.new(
+        params: original_params,
+        project: params.project,
+        group: params.group
       )
     end
   end
@@ -434,24 +436,6 @@ class IssuableFinder
     return items unless not_params.releases?
 
     items.without_particular_release(not_params[:release_tag], not_params[:project_id])
-  end
-
-  def by_label(items)
-    return items unless params.labels?
-
-    if params.filter_by_no_label?
-      items.without_label
-    elsif params.filter_by_any_label?
-      items.any_label(params[:sort])
-    else
-      items.with_label(params.label_names, params[:sort])
-    end
-  end
-
-  def by_negated_label(items)
-    return items unless not_params.labels?
-
-    items.without_particular_labels(not_params.label_names)
   end
 
   def by_my_reaction_emoji(items)

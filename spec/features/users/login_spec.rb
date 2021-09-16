@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Login' do
+RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
   include TermsHelper
   include UserLoginHelper
+  include SessionHelpers
 
   before do
     stub_authentication_activity_metrics(debug: true)
@@ -59,6 +60,7 @@ RSpec.describe 'Login' do
       fill_in 'user_password', with: 'password'
       click_button 'Sign in'
 
+      expect_single_session_with_authenticated_ttl
       expect(current_path).to eq root_path
     end
 
@@ -192,6 +194,7 @@ RSpec.describe 'Login' do
         enter_code(user.current_otp)
 
         expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
+        expect_single_session_with_authenticated_ttl
       end
 
       it 'does not allow sign-in if the user password is updated before entering a one-time code' do
@@ -210,6 +213,7 @@ RSpec.describe 'Login' do
 
           enter_code(user.current_otp)
 
+          expect_single_session_with_authenticated_ttl
           expect(current_path).to eq root_path
         end
 
@@ -237,6 +241,8 @@ RSpec.describe 'Login' do
           expect(page).to have_content('Invalid two-factor code')
 
           enter_code(user.current_otp)
+
+          expect_single_session_with_authenticated_ttl
           expect(current_path).to eq root_path
         end
 
@@ -353,6 +359,7 @@ RSpec.describe 'Login' do
 
           sign_in_using_saml!
 
+          expect_single_session_with_authenticated_ttl
           expect(page).not_to have_content('Two-Factor Authentication')
           expect(current_path).to eq root_path
         end
@@ -371,6 +378,7 @@ RSpec.describe 'Login' do
 
           enter_code(user.current_otp)
 
+          expect_single_session_with_authenticated_ttl
           expect(current_path).to eq root_path
         end
       end
@@ -391,6 +399,7 @@ RSpec.describe 'Login' do
 
         gitlab_sign_in(user)
 
+        expect_single_session_with_authenticated_ttl
         expect(current_path).to eq root_path
         expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
       end
@@ -402,6 +411,7 @@ RSpec.describe 'Login' do
         gitlab_sign_in(user)
         visit new_user_session_path
 
+        expect_single_session_with_authenticated_ttl
         expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
       end
 
@@ -443,6 +453,7 @@ RSpec.describe 'Login' do
 
         gitlab_sign_in(user)
 
+        expect_single_session_with_short_ttl
         expect(page).to have_content('Invalid login or password.')
       end
     end

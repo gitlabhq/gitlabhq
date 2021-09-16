@@ -25,7 +25,7 @@ export const receiveFrequentItemsError = ({ commit }) => {
 export const fetchFrequentItems = ({ state, dispatch }) => {
   dispatch('requestFrequentItems');
 
-  if (AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (AccessorUtilities.canUseLocalStorage()) {
     const storedFrequentItems = JSON.parse(localStorage.getItem(state.storageKey));
 
     dispatch(

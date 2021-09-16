@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
-# Make sure we have loaded partitioned models here
-# (even with eager loading disabled).
-
-Gitlab::Database::Partitioning::PartitionManager.register(AuditEvent)
-Gitlab::Database::Partitioning::PartitionManager.register(WebHookLog)
-Gitlab::Database::Partitioning::PartitionManager.register(LooseForeignKeys::DeletedRecord)
+Gitlab::Database::Partitioning.register_models([
+  AuditEvent,
+  WebHookLog,
+  LooseForeignKeys::DeletedRecord
+])
 
 if Gitlab.ee?
-  Gitlab::Database::Partitioning::PartitionManager.register(IncidentManagement::PendingEscalations::Alert)
-  Gitlab::Database::Partitioning::PartitionManager.register(IncidentManagement::PendingEscalations::Issue)
+  Gitlab::Database::Partitioning.register_models([
+    IncidentManagement::PendingEscalations::Alert,
+    IncidentManagement::PendingEscalations::Issue
+  ])
 end
 
 begin
-  Gitlab::Database::Partitioning::PartitionManager.new.sync_partitions unless ENV['DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP']
+  Gitlab::Database::Partitioning.sync_partitions unless ENV['DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP']
 rescue ActiveRecord::ActiveRecordError, PG::Error
   # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
 end

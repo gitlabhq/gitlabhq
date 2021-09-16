@@ -22,7 +22,7 @@ on your configuration:
 
 - **Omnibus GitLab installations**: Mattermost is bundled with
   [Omnibus GitLab](https://docs.gitlab.com/omnibus/). To configure Mattermost for Omnibus GitLab, read the
-  [Omnibus GitLab Mattermost documentation](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
+  [Omnibus GitLab Mattermost documentation](../../../integration/mattermost/index.md).
 - **If Mattermost is installed on the same server as GitLab**, use the
   [automated configuration](#automated-configuration).
 - **For all other installations**, use the [manual configuration](#manual-configuration).

@@ -22,7 +22,7 @@ export default {
     // only keep the last 5
     state.recentSearches = recentSearches.slice(0, 5);
 
-    if (AccessorUtils.isLocalStorageAccessSafe()) {
+    if (AccessorUtils.canUseLocalStorage()) {
       localStorage.setItem(
         `recent-searches${state.indexPath}`,
         JSON.stringify(state.recentSearches),
@@ -31,7 +31,7 @@ export default {
   },
   [types.CLEAR_RECENT_SEARCHES](state) {
     state.recentSearches = [];
-    if (AccessorUtils.isLocalStorageAccessSafe()) {
+    if (AccessorUtils.canUseLocalStorage()) {
       localStorage.removeItem(`recent-searches${state.indexPath}`);
     }
   },

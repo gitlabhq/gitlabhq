@@ -141,7 +141,7 @@ function generateUnicodeSupportMap(testMap) {
 }
 
 export default function getUnicodeSupportMap() {
-  const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+  const isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
 
   let glEmojiVersionFromCache;
   let userAgentFromCache;

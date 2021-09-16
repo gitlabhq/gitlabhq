@@ -227,56 +227,38 @@ RSpec.describe MergeRequestsFinder do
         end
       end
 
-      shared_examples ':label_name parameter' do
-        describe ':label_name parameter' do
-          let(:common_labels) { create_list(:label, 3) }
-          let(:distinct_labels) { create_list(:label, 3) }
-          let(:merge_requests) do
-            common_attrs = {
-              source_project: project1, target_project: project1, author: user
-            }
-            distinct_labels.map do |label|
-              labels = [label, *common_labels]
-              create(:labeled_merge_request, :closed, labels: labels, **common_attrs)
-            end
-          end
-
-          def find(label_name)
-            described_class.new(user, label_name: label_name).execute
-          end
-
-          it 'accepts a single label' do
-            found = find(distinct_labels.first.title)
-            common = find(common_labels.first.title)
-
-            expect(found).to contain_exactly(merge_requests.first)
-            expect(common).to match_array(merge_requests)
-          end
-
-          it 'accepts an array of labels, all of which must match' do
-            all_distinct = find(distinct_labels.pluck(:title))
-            all_common = find(common_labels.pluck(:title))
-
-            expect(all_distinct).to be_empty
-            expect(all_common).to match_array(merge_requests)
+      describe ':label_name parameter' do
+        let(:common_labels) { create_list(:label, 3) }
+        let(:distinct_labels) { create_list(:label, 3) }
+        let(:merge_requests) do
+          common_attrs = {
+            source_project: project1, target_project: project1, author: user
+          }
+          distinct_labels.map do |label|
+            labels = [label, *common_labels]
+            create(:labeled_merge_request, :closed, labels: labels, **common_attrs)
           end
         end
-      end
 
-      context 'when `optimized_issuable_label_filter` feature flag is off' do
-        before do
-          stub_feature_flags(optimized_issuable_label_filter: false)
+        def find(label_name)
+          described_class.new(user, label_name: label_name).execute
         end
 
-        it_behaves_like ':label_name parameter'
-      end
+        it 'accepts a single label' do
+          found = find(distinct_labels.first.title)
+          common = find(common_labels.first.title)
 
-      context 'when `optimized_issuable_label_filter` feature flag is on' do
-        before do
-          stub_feature_flags(optimized_issuable_label_filter: true)
+          expect(found).to contain_exactly(merge_requests.first)
+          expect(common).to match_array(merge_requests)
         end
 
-        it_behaves_like ':label_name parameter'
+        it 'accepts an array of labels, all of which must match' do
+          all_distinct = find(distinct_labels.pluck(:title))
+          all_common = find(common_labels.pluck(:title))
+
+          expect(all_distinct).to be_empty
+          expect(all_common).to match_array(merge_requests)
+        end
       end
 
       it 'filters by source project id' do

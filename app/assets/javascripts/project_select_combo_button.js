@@ -30,7 +30,7 @@ export default class ProjectSelectComboButton {
   }
 
   initLocalStorage() {
-    const localStorageIsSafe = AccessorUtilities.isLocalStorageAccessSafe();
+    const localStorageIsSafe = AccessorUtilities.canUseLocalStorage();
 
     if (localStorageIsSafe) {
       this.localStorageKey = [

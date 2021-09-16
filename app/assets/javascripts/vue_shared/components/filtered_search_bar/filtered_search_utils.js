@@ -219,7 +219,7 @@ export function urlQueryToFilter(query = '', { filteredSearchTermKey, filterName
  */
 export function getRecentlyUsedSuggestions(recentSuggestionsStorageKey) {
   let recentlyUsedSuggestions = [];
-  if (AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (AccessorUtilities.canUseLocalStorage()) {
     recentlyUsedSuggestions = JSON.parse(localStorage.getItem(recentSuggestionsStorageKey)) || [];
   }
   return recentlyUsedSuggestions;
@@ -237,7 +237,7 @@ export function setTokenValueToRecentlyUsed(recentSuggestionsStorageKey, tokenVa
 
   recentlyUsedSuggestions.splice(0, 0, { ...tokenValue });
 
-  if (AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (AccessorUtilities.canUseLocalStorage()) {
     localStorage.setItem(
       recentSuggestionsStorageKey,
       JSON.stringify(uniqWith(recentlyUsedSuggestions, isEqual).slice(0, MAX_RECENT_TOKENS_SIZE)),

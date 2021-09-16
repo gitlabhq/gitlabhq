@@ -12,7 +12,7 @@ export default class ProtectedBranchCreate {
     this.hasLicense = options.hasLicense;
 
     this.$form = $('.js-new-protected-branch');
-    this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+    this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     this.currentProjectUserDefaults = {};
     this.buildDropdowns();
     this.$forcePushToggle = this.$form.find('.js-force-push-toggle');

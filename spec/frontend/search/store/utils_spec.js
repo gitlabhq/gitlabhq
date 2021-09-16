@@ -14,7 +14,7 @@ const CURRENT_TIME = new Date().getTime();
 
 useLocalStorageSpy();
 jest.mock('~/lib/utils/accessor', () => ({
-  isLocalStorageAccessSafe: jest.fn().mockReturnValue(true),
+  canUseLocalStorage: jest.fn().mockReturnValue(true),
 }));
 
 describe('Global Search Store Utils', () => {

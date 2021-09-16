@@ -63,11 +63,12 @@ because the expansion is done in GitLab before any runner gets the job.
 
 #### Nested variable expansion
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48627) in GitLab 13.10.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It can be enabled or disabled for a single project.
-> - It's disabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-nested-variable-expansion-feature). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48627) in GitLab 13.10. [Deployed behind the `variable_inside_variable` feature flag](../../user/feature_flags.md), disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.3.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the `variable_inside_variable` flag](../../administration/feature_flags.md).
 
 GitLab expands job variable values recursively before sending them to the runner. For example:
 
@@ -85,29 +86,6 @@ If nested variable expansion is:
 References to unavailable variables are left intact. In this case, the runner
 [attempts to expand the variable value](#gitlab-runner-internal-variable-expansion-mechanism) at runtime.
 For example, a variable like `CI_BUILDS_DIR` is known by the runner only at runtime.
-
-##### Enabling the nested variable expansion feature **(FREE SELF)**
-
-This feature comes with the `:variable_inside_variable` feature flag disabled by default.
-
-To enable this feature, ask a GitLab administrator with [Rails console access](../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
-following command:
-
-```ruby
-# For the instance
-Feature.enable(:variable_inside_variable)
-# For a single project
-Feature.enable(:variable_inside_variable, Project.find(<project id>))
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:variable_inside_variable)
-# For a single project
-Feature.disable(:variable_inside_variable, Project.find(<project id>))
-```
 
 ### GitLab Runner internal variable expansion mechanism
 

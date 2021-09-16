@@ -15,28 +15,28 @@ describe('Autosave', () => {
 
   describe('class constructor', () => {
     beforeEach(() => {
-      jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(true);
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
       jest.spyOn(Autosave.prototype, 'restore').mockImplementation(() => {});
     });
 
     it('should set .isLocalStorageAvailable', () => {
       autosave = new Autosave(field, key);
 
-      expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
+      expect(AccessorUtilities.canUseLocalStorage).toHaveBeenCalled();
       expect(autosave.isLocalStorageAvailable).toBe(true);
     });
 
     it('should set .isLocalStorageAvailable if fallbackKey is passed', () => {
       autosave = new Autosave(field, key, fallbackKey);
 
-      expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
+      expect(AccessorUtilities.canUseLocalStorage).toHaveBeenCalled();
       expect(autosave.isLocalStorageAvailable).toBe(true);
     });
 
     it('should set .isLocalStorageAvailable if lockVersion is passed', () => {
       autosave = new Autosave(field, key, null, lockVersion);
 
-      expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
+      expect(AccessorUtilities.canUseLocalStorage).toHaveBeenCalled();
       expect(autosave.isLocalStorageAvailable).toBe(true);
     });
   });

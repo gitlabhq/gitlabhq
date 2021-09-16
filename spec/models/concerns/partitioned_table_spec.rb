@@ -35,11 +35,5 @@ RSpec.describe PartitionedTable do
 
       expect(my_class.partitioning_strategy.partitioning_key).to eq(key)
     end
-
-    it 'registers itself with the PartitionCreator' do
-      expect(Gitlab::Database::Partitioning::PartitionManager).to receive(:register).with(my_class)
-
-      subject
-    end
   end
 end

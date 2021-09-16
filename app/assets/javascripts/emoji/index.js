@@ -11,7 +11,7 @@ export const FALLBACK_EMOJI_KEY = 'grey_question';
 
 export const EMOJI_VERSION = '1';
 
-const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+const isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
 
 async function loadEmoji() {
   if (

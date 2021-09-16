@@ -29,20 +29,6 @@ class IssuableFinder
       params.present?
     end
 
-    def filter_by_no_label?
-      downcased = label_names.map(&:downcase)
-
-      downcased.include?(FILTER_NONE)
-    end
-
-    def filter_by_any_label?
-      label_names.map(&:downcase).include?(FILTER_ANY)
-    end
-
-    def labels?
-      params[:label_name].present?
-    end
-
     def milestones?
       params[:milestone_title].present? || params[:milestone_wildcard_id].present?
     end
@@ -157,24 +143,6 @@ class IssuableFinder
           end
 
         projects.with_feature_available_for_user(klass, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
-      end
-    end
-
-    def label_names
-      if labels?
-        params[:label_name].is_a?(String) ? params[:label_name].split(',') : params[:label_name]
-      else
-        []
-      end
-    end
-
-    def labels
-      strong_memoize(:labels) do
-        if labels? && !filter_by_no_label?
-          LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute(skip_authorization: true) # rubocop: disable CodeReuse/Finder
-        else
-          Label.none
-        end
       end
     end
 

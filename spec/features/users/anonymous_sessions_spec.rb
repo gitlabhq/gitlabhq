@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state do
+  include SessionHelpers
+
   it 'creates a session with a short TTL when login fails' do
     visit new_user_session_path
     # The session key only gets created after a post
@@ -12,7 +14,7 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state do
 
     expect(page).to have_content('Invalid login or password')
 
-    expect_single_session_with_expiration(Settings.gitlab['unauthenticated_session_expire_delay'])
+    expect_single_session_with_short_ttl
   end
 
   it 'increases the TTL when the login succeeds' do
@@ -21,21 +23,17 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state do
 
     expect(page).to have_content(user.name)
 
-    expect_single_session_with_expiration(Settings.gitlab['session_expire_delay'] * 60)
+    expect_single_session_with_authenticated_ttl
   end
 
-  def expect_single_session_with_expiration(expiration)
-    session_keys = get_session_keys
+  context 'with an unauthorized project' do
+    let_it_be(:project) { create(:project, :repository) }
 
-    expect(session_keys.size).to eq(1)
-    expect(get_ttl(session_keys.first)).to eq expiration
-  end
+    it 'creates a session with a short TTL' do
+      visit project_raw_path(project, 'master/README.md')
 
-  def get_session_keys
-    Gitlab::Redis::SharedState.with { |redis| redis.scan_each(match: 'session:gitlab:*').to_a }
-  end
-
-  def get_ttl(key)
-    Gitlab::Redis::SharedState.with { |redis| redis.ttl(key) }
+      expect_single_session_with_short_ttl
+      expect(page).to have_current_path(new_user_session_path)
+    end
   end
 end

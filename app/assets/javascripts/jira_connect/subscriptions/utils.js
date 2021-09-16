@@ -7,7 +7,7 @@ const isFunction = (fn) => typeof fn === 'function';
  * Persist alert data to localStorage.
  */
 export const persistAlert = ({ title, message, linkUrl, variant } = {}) => {
-  if (!AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (!AccessorUtilities.canUseLocalStorage()) {
     return;
   }
 
@@ -19,7 +19,7 @@ export const persistAlert = ({ title, message, linkUrl, variant } = {}) => {
  * Return alert data from localStorage.
  */
 export const retrieveAlert = () => {
-  if (!AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (!AccessorUtilities.canUseLocalStorage()) {
     return null;
   }
 

@@ -145,13 +145,13 @@ describe('RecentSearchesService', () => {
     let isAvailable;
 
     beforeEach(() => {
-      jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe');
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage');
 
       isAvailable = RecentSearchesService.isAvailable();
     });
 
-    it('should call .isLocalStorageAccessSafe', () => {
-      expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
+    it('should call .canUseLocalStorage', () => {
+      expect(AccessorUtilities.canUseLocalStorage).toHaveBeenCalled();
     });
 
     it('should return a boolean', () => {

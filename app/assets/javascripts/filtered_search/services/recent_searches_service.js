@@ -33,7 +33,7 @@ class RecentSearchesService {
   }
 
   static isAvailable() {
-    return AccessorUtilities.isLocalStorageAccessSafe();
+    return AccessorUtilities.canUseLocalStorage();
   }
 }
 

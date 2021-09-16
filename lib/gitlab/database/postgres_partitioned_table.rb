@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    class PostgresPartitionedTable < ActiveRecord::Base
+    class PostgresPartitionedTable < SharedModel
       DYNAMIC_PARTITION_STRATEGIES = %w[range list].freeze
 
       self.primary_key = :identifier

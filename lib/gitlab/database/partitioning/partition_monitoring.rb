@@ -6,7 +6,7 @@ module Gitlab
       class PartitionMonitoring
         attr_reader :models
 
-        def initialize(models = PartitionManager.models)
+        def initialize(models = Gitlab::Database::Partitioning.registered_models)
           @models = models
         end
 

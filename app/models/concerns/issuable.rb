@@ -117,20 +117,6 @@ module Issuable
     end
     # rubocop:enable GitlabSecurity/SqlInjection
 
-    scope :without_particular_labels, ->(label_names) do
-      labels_table = Label.arel_table
-      label_links_table = LabelLink.arel_table
-      issuables_table = klass.arel_table
-      inner_query = label_links_table.project('true')
-                        .join(labels_table, Arel::Nodes::InnerJoin).on(labels_table[:id].eq(label_links_table[:label_id]))
-                        .where(label_links_table[:target_type].eq(name)
-                                   .and(label_links_table[:target_id].eq(issuables_table[:id]))
-                                   .and(labels_table[:title].in(label_names)))
-                        .exists.not
-
-      where(inner_query)
-    end
-
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :with_label_ids, ->(label_ids) { joins(:label_links).where(label_links: { label_id: label_ids }) }
     scope :join_project, -> { joins(:project) }

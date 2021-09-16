@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    class PostgresPartition < ActiveRecord::Base
+    class PostgresPartition < SharedModel
       self.primary_key = :identifier
 
       belongs_to :postgres_partitioned_table, foreign_key: 'parent_identifier', primary_key: 'identifier'

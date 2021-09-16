@@ -30,7 +30,7 @@ module MigrationsHelpers
       end
     end
 
-    klass.tap { Gitlab::Database::Partitioning::PartitionManager.new.sync_partitions }
+    klass.tap { Gitlab::Database::Partitioning.sync_partitions([klass]) }
   end
 
   def migrations_paths

@@ -6,60 +6,49 @@ module Gitlab
       class PartitionManager
         UnsafeToDetachPartitionError = Class.new(StandardError)
 
-        def self.register(model)
-          raise ArgumentError, "Only models with a #partitioning_strategy can be registered." unless model.respond_to?(:partitioning_strategy)
-
-          models << model
-        end
-
-        def self.models
-          @models ||= Set.new
-        end
-
         LEASE_TIMEOUT = 1.minute
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
         RETAIN_DETACHED_PARTITIONS_FOR = 1.week
 
-        attr_reader :models
-
-        def initialize(models = self.class.models)
-          @models = models
+        def initialize(model)
+          @model = model
         end
 
         def sync_partitions
-          Gitlab::AppLogger.info("Checking state of dynamic postgres partitions")
+          Gitlab::AppLogger.info(message: "Checking state of dynamic postgres partitions", table_name: model.table_name)
 
-          models.each do |model|
-            # Double-checking before getting the lease:
-            # The prevailing situation is no missing partitions and no extra partitions
-            next if missing_partitions(model).empty? && extra_partitions(model).empty?
+          # Double-checking before getting the lease:
+          # The prevailing situation is no missing partitions and no extra partitions
+          return if missing_partitions.empty? && extra_partitions.empty?
 
-            only_with_exclusive_lease(model, lease_key: MANAGEMENT_LEASE_KEY) do
-              partitions_to_create = missing_partitions(model)
-              create(partitions_to_create) unless partitions_to_create.empty?
+          only_with_exclusive_lease(model, lease_key: MANAGEMENT_LEASE_KEY) do
+            partitions_to_create = missing_partitions
+            create(partitions_to_create) unless partitions_to_create.empty?
 
-              if Feature.enabled?(:partition_pruning, default_enabled: :yaml)
-                partitions_to_detach = extra_partitions(model)
-                detach(partitions_to_detach) unless partitions_to_detach.empty?
-              end
+            if Feature.enabled?(:partition_pruning, default_enabled: :yaml)
+              partitions_to_detach = extra_partitions
+              detach(partitions_to_detach) unless partitions_to_detach.empty?
             end
-          rescue StandardError => e
-            Gitlab::AppLogger.error(message: "Failed to create / detach partition(s)",
-                                    table_name: model.table_name,
-                                    exception_class: e.class,
-                                    exception_message: e.message)
           end
+        rescue StandardError => e
+          Gitlab::AppLogger.error(message: "Failed to create / detach partition(s)",
+                                  table_name: model.table_name,
+                                  exception_class: e.class,
+                                  exception_message: e.message)
         end
 
         private
 
-        def missing_partitions(model)
+        attr_reader :model
+        delegate :connection, to: :model
+
+        def missing_partitions
           return [] unless connection.table_exists?(model.table_name)
 
           model.partitioning_strategy.missing_partitions
         end
 
-        def extra_partitions(model)
+        def extra_partitions
           return [] unless connection.table_exists?(model.table_name)
 
           model.partitioning_strategy.extra_partitions
@@ -121,12 +110,9 @@ module Gitlab
         def with_lock_retries(&block)
           Gitlab::Database::WithLockRetries.new(
             klass: self.class,
-            logger: Gitlab::AppLogger
+            logger: Gitlab::AppLogger,
+            connection: connection
           ).run(&block)
-        end
-
-        def connection
-          ActiveRecord::Base.connection
         end
       end
     end

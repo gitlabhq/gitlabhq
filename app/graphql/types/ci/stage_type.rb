@@ -15,10 +15,8 @@ module Types
             description: 'Group of jobs for the stage.'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
             description: 'Detailed status of the stage.'
-      field :jobs, Ci::JobType.connection_type, null: true,
-            description: 'Jobs for the stage.',
-            method: 'latest_statuses',
-            max_page_size: 200
+      field :jobs, Types::Ci::JobType.connection_type, null: true,
+            description: 'Jobs for the stage.'
       field :status, GraphQL::Types::String,
             null: true,
             description: 'Status of the pipeline stage.'
@@ -47,6 +45,13 @@ module Types
             end
           end
         end
+      end
+
+      def jobs
+        GraphQL::Pagination::ActiveRecordRelationConnection.new(
+          object.latest_statuses,
+          max_page_size: Gitlab::CurrentSettings.current_application_settings.jobs_per_stage_page_size
+        )
       end
 
       private

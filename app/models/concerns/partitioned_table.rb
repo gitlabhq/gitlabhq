@@ -14,8 +14,6 @@ module PartitionedTable
       strategy_class = PARTITIONING_STRATEGIES[strategy.to_sym] || raise(ArgumentError, "Unknown partitioning strategy: #{strategy}")
 
       @partitioning_strategy = strategy_class.new(self, partitioning_key, **kwargs)
-
-      Gitlab::Database::Partitioning::PartitionManager.register(self)
     end
   end
 end

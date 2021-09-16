@@ -84,7 +84,7 @@ export default {
     logItemAccess(storageKey, unsanitizedItem) {
       const item = sanitizeItem(unsanitizedItem);
 
-      if (!AccessorUtilities.isLocalStorageAccessSafe()) {
+      if (!AccessorUtilities.canUseLocalStorage()) {
         return false;
       }
 

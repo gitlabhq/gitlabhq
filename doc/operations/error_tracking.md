@@ -130,12 +130,9 @@ You must use the GitLab API to enable it.
 
 #### How to enable
 
-1. Enable the `integrated` error tracking setting for your project:
+1. Select **GitLab** as the error tracking backend for your project:
 
-   ```shell
-   curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
-       "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/settings?active=true&integrated=true"
-   ```
+    ![Error Tracking Settings](img/error_tracking_setting_v14_3.png)
 
 1. Create a client key (DSN) to use with Sentry SDK in your application. Make sure to save the
    response, as it contains a DSN:

@@ -610,7 +610,7 @@ to make sure we were logging responsibly. This is just a packaged version of the
 
 - [Project page](https://github.com/mattermost/mattermost-server/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/gitlab-mattermost/)
+  - [Omnibus](../integration/mattermost/index.md)
   - [Charts](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html)
 - Layer: Core Service (Processor)
 - GitLab.com: [Mattermost](../user/project/integrations/mattermost.md)

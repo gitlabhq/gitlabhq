@@ -1,0 +1,155 @@
+# frozen_string_literal: true
+
+module Issuables
+  class LabelFilter < BaseFilter
+    include Gitlab::Utils::StrongMemoize
+    extend Gitlab::Cache::RequestCache
+
+    def initialize(project:, group:, **kwargs)
+      @project = project
+      @group = group
+
+      super(**kwargs)
+    end
+
+    def filter(issuables)
+      filtered = by_label(issuables)
+      by_negated_label(filtered)
+    end
+
+    def label_names_excluded_from_priority_sort
+      label_names_from_params
+    end
+
+    private
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def by_label(issuables)
+      return issuables unless label_names_from_params.present?
+
+      target_model = issuables.model
+
+      if filter_by_no_label?
+        issuables.where(label_link_query(target_model).arel.exists.not)
+      elsif filter_by_any_label?
+        issuables.where(label_link_query(target_model).arel.exists)
+      else
+        issuables_with_selected_labels(issuables, label_names_from_params)
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def by_negated_label(issuables)
+      return issuables unless label_names_from_not_params.present?
+
+      issuables_without_selected_labels(issuables, label_names_from_not_params)
+    end
+
+    def filter_by_no_label?
+      label_names_from_params.map(&:downcase).include?(FILTER_NONE)
+    end
+
+    def filter_by_any_label?
+      label_names_from_params.map(&:downcase).include?(FILTER_ANY)
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def issuables_with_selected_labels(issuables, label_names)
+      target_model = issuables.model
+
+      if root_namespace
+        all_label_ids = find_label_ids(label_names)
+        # Found less labels in the DB than we were searching for. Return nothing.
+        return issuables.none if all_label_ids.size != label_names.size
+
+        all_label_ids.each do |label_ids|
+          issuables = issuables.where(label_link_query(target_model, label_ids: label_ids).arel.exists)
+        end
+      else
+        label_names.each do |label_name|
+          issuables = issuables.where(label_link_query(target_model, label_names: label_name).arel.exists)
+        end
+      end
+
+      issuables
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def issuables_without_selected_labels(issuables, label_names)
+      target_model = issuables.model
+
+      if root_namespace
+        label_ids = find_label_ids(label_names).flatten(1)
+
+        issuables.where(label_link_query(target_model, label_ids: label_ids).arel.exists.not)
+      else
+        issuables.where(label_link_query(target_model, label_names: label_names).arel.exists.not)
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def find_label_ids(label_names)
+      group_labels = Label
+        .where(project_id: nil)
+        .where(title: label_names)
+        .where(group_id: root_namespace.self_and_descendant_ids)
+
+      project_labels = Label
+        .where(group_id: nil)
+        .where(title: label_names)
+        .where(project_id: Project.select(:id).where(namespace_id: root_namespace.self_and_descendant_ids))
+
+      Label
+        .from_union([group_labels, project_labels], remove_duplicates: false)
+        .reorder(nil)
+        .pluck(:title, :id)
+        .group_by(&:first)
+        .values
+        .map { |labels| labels.map(&:last) }
+    end
+    # Avoid repeating label queries times when the finder is instantiated multiple times during the request.
+    request_cache(:find_label_ids) { root_namespace.id }
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def label_link_query(target_model, label_ids: nil, label_names: nil)
+      relation = LabelLink
+        .where(target_type: target_model.name)
+        .where(LabelLink.arel_table['target_id'].eq(target_model.arel_table['id']))
+
+      relation = relation.where(label_id: label_ids) if label_ids
+      relation = relation.joins(:label).where(labels: { name: label_names }) if label_names
+
+      relation
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def label_names_from_params
+      return if params[:label_name].blank?
+
+      strong_memoize(:label_names_from_params) do
+        split_label_names(params[:label_name])
+      end
+    end
+
+    def label_names_from_not_params
+      return if not_params.blank? || not_params[:label_name].blank?
+
+      strong_memoize(:label_names_from_not_params) do
+        split_label_names(not_params[:label_name])
+      end
+    end
+
+    def split_label_names(label_name_param)
+      label_name_param.is_a?(String) ? label_name_param.split(',') : label_name_param
+    end
+
+    def root_namespace
+      strong_memoize(:root_namespace) do
+        (@project || @group)&.root_ancestor
+      end
+    end
+  end
+end

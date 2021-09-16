@@ -91,6 +91,9 @@ RSpec.describe ApplicationSetting do
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
     end
 
+    it { is_expected.to validate_presence_of(:jobs_per_stage_page_size) }
+    it { is_expected.to validate_numericality_of(:jobs_per_stage_page_size).only_integer.is_greater_than_or_equal_to(0) }
+
     it { is_expected.not_to allow_value(7).for(:minimum_password_length) }
     it { is_expected.not_to allow_value(129).for(:minimum_password_length) }
     it { is_expected.not_to allow_value(nil).for(:minimum_password_length) }
