@@ -139,6 +139,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:error_tracking_errors).class_name('ErrorTracking::Error') }
     it { is_expected.to have_many(:error_tracking_client_keys).class_name('ErrorTracking::ClientKey') }
     it { is_expected.to have_many(:pending_builds).class_name('Ci::PendingBuild') }
+    it { is_expected.to have_many(:ci_feature_usages).class_name('Projects::CiFeatureUsage') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }

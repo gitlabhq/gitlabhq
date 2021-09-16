@@ -544,10 +544,15 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
    ./snowplow-micro.sh
    ```
 
-1. Update your instance's settings to enable Snowplow events and point to the Snowplow Micro collector:
+1. Use GDK to start the PostgreSQL terminal and connect to the `gitlabhq_development` database:
 
    ```shell
    gdk psql -d gitlabhq_development
+   ```
+
+1. Update your instance's settings to enable Snowplow events and point to the Snowplow Micro collector:
+
+   ```shell
    update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
    ```
 

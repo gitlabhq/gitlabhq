@@ -214,7 +214,7 @@ RSpec.describe Explore::ProjectsController do
           sign_in(create(:user))
           get controller_action, params: params_with_name
 
-          expect(flash[:notice]).to be_nil
+          expect(flash.now[:notice]).to be_nil
         end
       end
     end
@@ -260,14 +260,14 @@ RSpec.describe Explore::ProjectsController do
         it 'shows a flash message' do
           get controller_action, params: params_with_name
 
-          expect(flash[:notice]).to eq('You must sign in to search for specific projects.')
+          expect(flash.now[:notice]).to eq('You must sign in to search for specific projects.')
         end
 
         context 'when search param is not given' do
           it 'does not show a flash message' do
             get controller_action
 
-            expect(flash[:notice]).to be_nil
+            expect(flash.now[:notice]).to be_nil
           end
         end
 
@@ -275,7 +275,7 @@ RSpec.describe Explore::ProjectsController do
           it 'does not show a flash message' do
             get controller_action, params: params_with_name.merge(format: :atom)
 
-            expect(flash[:notice]).to be_nil
+            expect(flash.now[:notice]).to be_nil
           end
         end
       end
@@ -288,7 +288,7 @@ RSpec.describe Explore::ProjectsController do
         it 'does not show a flash message' do
           get controller_action, params: params_with_name
 
-          expect(flash[:notice]).to be_nil
+          expect(flash.now[:notice]).to be_nil
         end
       end
     end

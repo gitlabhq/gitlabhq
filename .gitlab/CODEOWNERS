@@ -24,6 +24,8 @@
 /doc/administration/reference_architectures/ @axil
 /doc/administration/snippets/ @aqualls
 /doc/administration/troubleshooting @axil @marcia @eread
+/doc/api/graphql/ @msedlakjakubowski @kpaizee
+/doc/api/graphql/reference/ @kpaizee
 /doc/api/group_activity_analytics.md @msedlakjakubowski
 /doc/ci/ @marcel.amirault @sselhorn
 /doc/ci/environments/ @axil

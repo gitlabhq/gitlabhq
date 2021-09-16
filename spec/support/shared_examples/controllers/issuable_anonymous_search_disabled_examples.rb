@@ -12,14 +12,14 @@ RSpec.shared_examples 'issuable list with anonymous search disabled' do |action|
     it 'shows a flash message' do
       get controller_action, params: params_with_search
 
-      expect(flash[:notice]).to eq('You must sign in to search for specific terms.')
+      expect(flash.now[:notice]).to eq('You must sign in to search for specific terms.')
     end
 
     context 'when search param is not given' do
       it 'does not show a flash message' do
         get controller_action, params: params
 
-        expect(flash[:notice]).to be_nil
+        expect(flash.now[:notice]).to be_nil
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.shared_examples 'issuable list with anonymous search disabled' do |action|
         sign_in(create(:user))
         get controller_action, params: params_with_search
 
-        expect(flash[:notice]).to be_nil
+        expect(flash.now[:notice]).to be_nil
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.shared_examples 'issuable list with anonymous search disabled' do |action|
       it 'does not show a flash message' do
         get controller_action, params: params_with_search.merge(format: :atom)
 
-        expect(flash[:notice]).to be_nil
+        expect(flash.now[:notice]).to be_nil
       end
     end
   end
@@ -49,7 +49,7 @@ RSpec.shared_examples 'issuable list with anonymous search disabled' do |action|
     it 'does not show a flash message' do
       get controller_action, params: params_with_search
 
-      expect(flash[:notice]).to be_nil
+      expect(flash.now[:notice]).to be_nil
     end
   end
 end

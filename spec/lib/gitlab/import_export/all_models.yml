@@ -592,6 +592,7 @@ project:
 - error_tracking_client_keys
 - pending_builds
 - security_scans
+- ci_feature_usages
 award_emoji:
 - awardable
 - user

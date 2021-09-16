@@ -2,17 +2,19 @@
 data_category: operational
 key_path: gitaly.clusters
 description: Total GitLab Managed clusters both enabled and disabled
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
-product_category: collection
+product_section: dev
+product_stage: create
+product_group: group::gitaly
+product_category: gitaly
 value_type: number
 status: active
 time_frame: all
-data_source:
+data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
 milestone: "<13.9"

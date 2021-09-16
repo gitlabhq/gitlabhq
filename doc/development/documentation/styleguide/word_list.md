@@ -186,7 +186,7 @@ Do not use Latin abbreviations. Use **for example**, **such as**, **for instance
 
 ## email
 
-Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**.
+Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
 ## enable
 
@@ -272,7 +272,7 @@ Do not use **Guest permissions**. A user who is assigned the Guest role has a se
 
 ## handy
 
-Do not use **handy**. If the user doesn't find the feature or process to be handy, we lose their trust.
+Do not use **handy**. If the user doesn't find the feature or process to be handy, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
 ## high availability, HA
 
@@ -512,7 +512,7 @@ You can use **single sign-on**.
 
 ## simply, simple
 
-Do not use **simply** or **simple**. If the user doesn't find the process to be simple, we lose their trust.
+Do not use **simply** or **simple**. If the user doesn't find the process to be simple, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
 ## slashes
 
@@ -524,7 +524,7 @@ Do not use **slave**. Another option is **secondary**. ([Vale](../testing.md#val
 
 ## subgroup
 
-Use **subgroup** (no hyphen) instead of **sub-group**.
+Use **subgroup** (no hyphen) instead of **sub-group**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
 ## that
 
@@ -595,11 +595,12 @@ Do not use **type** if you can avoid it. Use **enter** instead.
 
 ## useful
 
-Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust.
+Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
 ## utilize
 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
+([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
 ## Value Stream Analytics
 
@@ -616,7 +617,7 @@ Try to avoid **we** and focus instead on how the user can accomplish something i
 - Do: Use widgets when you have work you want to organize.
 - Do not: We created a feature for you to add widgets.
 
-One exception: You can use **we recommend** instead of **it is recommended** or **GitLab recommends**.
+One exception: You can use **we recommend** instead of **it is recommended** or **GitLab recommends**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
 ## whitelist
 

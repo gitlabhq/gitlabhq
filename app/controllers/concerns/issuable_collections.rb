@@ -16,7 +16,7 @@ module IssuableCollections
   def show_alert_if_search_is_disabled
     return if current_user || params[:search].blank? || !html_request? || Feature.disabled?(:disable_anonymous_search, type: :ops)
 
-    flash[:notice] = _('You must sign in to search for specific terms.')
+    flash.now[:notice] = _('You must sign in to search for specific terms.')
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables

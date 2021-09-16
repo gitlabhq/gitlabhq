@@ -178,8 +178,8 @@ migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
 ## Upgrade paths
 
-Upgrading across multiple GitLab versions in one go is *only possible with downtime*.
-The following examples assume a downtime upgrade.
+Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
+The following examples assume downtime is acceptable while upgrading.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 Find where your version sits in the upgrade path below, and upgrade GitLab
