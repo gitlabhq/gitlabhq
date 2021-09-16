@@ -32,6 +32,6 @@ It also should be [deprecated in advance](https://about.gitlab.com/handbook/mark
 
 For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/index.md#compatibility-guidelines) guidelines.
 
-For configuration removals, see the [Omnibus deprecation policy](https://docs.gitlab.com/omnibus/package-information/deprecation_policy.html).
+For configuration removals, see the [Omnibus deprecation policy](../../administration/package-information/deprecation_policy.md).
 
 For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).

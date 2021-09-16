@@ -30085,6 +30085,9 @@ msgstr ""
 msgid "SecurityReports|Download results"
 msgstr ""
 
+msgid "SecurityReports|Download scanned URLs"
+msgstr ""
+
 msgid "SecurityReports|Download scanned resources"
 msgstr ""
 

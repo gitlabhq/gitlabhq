@@ -183,7 +183,7 @@ To download and install GitLab:
 
 ### GitLab 13.7 and later unavailable on Amazon Linux 2
 
-Amazon Linux 2 is not an [officially supported operating system](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html#supported-operating-systems).
+Amazon Linux 2 is not an [officially supported operating system](../../administration/package-information/deprecated_os.md#supported-operating-systems).
 However, in past the [official package installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)
 installed the `el/6` package repository if run on Amazon Linux. From GitLab 13.7, we no longer
 provide `el/6` packages so administrators must run the [installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)

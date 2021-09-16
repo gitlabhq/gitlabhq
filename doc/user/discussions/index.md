@@ -46,9 +46,9 @@ To add a commit diff comment:
 
 1. To select a specific commit, on the merge request, select the **Commits** tab, select the commit
    message. To view the latest commit, select the **Changes** tab.
-1. By the line you want to comment on, hover over the line number and select **{comment}**.
-   You can select multiple lines by dragging the **{comment}** icon.
-1. Type your comment and select **Start a review** or **Add comment now**.
+1. By the line you want to comment on, hover over the line number and select **Comment** (**{comment}**).
+   You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
+1. Enter your comment and select **Start a review** or **Add comment now**.
 
 The comment is displayed on the merge request's **Discussions** tab.
 
@@ -164,12 +164,10 @@ from any device you're logged into.
 
 You can assign an issue to a user who made a comment.
 
-1. In the comment, select the **More Actions** menu.
-1. Select **Assign to commenting user**.
-
-![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)
-
-Select the button again to unassign the commenter.
+1. In the comment, select the **More Actions** (**{ellipsis_v}**) menu.
+1. Select **Assign to commenting user**:
+   ![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)
+1. To unassign the commenter, select the button again.
 
 ## Create a thread by replying to a standard comment
 
@@ -184,13 +182,13 @@ Prerequisites:
 
 To create a thread by replying to a comment:
 
-1. On the top right of the comment, select **{comment}** (**Reply to comment**).
+1. On the top right of the comment, select **Reply to comment** (**{comment}**).
 
    ![Reply to comment button](img/reply_to_comment_button.png)
 
    The reply area is displayed.
 
-1. Type your reply.
+1. Enter your reply.
 1. Select **Comment** or **Add comment now** (depending on where in the UI you are replying).
 
 The top comment is converted to a thread.
@@ -206,7 +204,7 @@ Prerequisites:
 
 To create a thread:
 
-1. Type a comment.
+1. Enter a comment.
 1. Below the comment, to the right of the **Comment** button, select the down arrow (**{chevron-down}**).
 1. From the list, select **Start thread**.
 1. Select **Start thread** again.
@@ -237,33 +235,30 @@ To resolve a thread:
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
 
-At the top of the page, the number of unresolved threads is updated.
+At the top of the page, the number of unresolved threads is updated:
 
 ![Count of unresolved threads](img/unresolved_threads_v14_1.png)
 
 ### Move all unresolved threads in a merge request to an issue
 
 If you have multiple unresolved threads in a merge request, you can
-create an issue to resolve them separately.
+create an issue to resolve them separately. In the merge request, at the top of the page,
+select **Create issue to resolve all threads** (**{issue-new}**):
 
-- In the merge request, at the top of the page, select **Resolve all threads in new issue**.
+![Open new issue for all unresolved threads](img/create-new-issue_v14_3.png)
 
-  ![Open new issue for all unresolved threads](img/btn_new_issue_for_all_threads.png)
-
-All threads are marked as resolved and a link is added from the merge request to
+All threads are marked as resolved, and a link is added from the merge request to
 the newly created issue.
 
 ### Move one unresolved thread in a merge request to an issue
 
 If you have one specific unresolved thread in a merge request, you can
-create an issue to resolve it separately.
+create an issue to resolve it separately. In the merge request, under the last reply
+to the thread, next to **Resolve thread**, select **Create issue to resolve thread** (**{issue-new}**):
 
-- In the merge request, under the last reply to the thread, next to the
-  **Resolve thread** button, select **Resolve this thread in a new issue**.
+![Create issue for thread](img/new-issue-one-thread_v14_3.png)
 
-  ![Create issue for thread](img/new_issue_for_thread.png)
-
-The thread is marked as resolved and a link is added from the merge request to
+The thread is marked as resolved, and a link is added from the merge request to
 the newly created issue.
 
 ### Prevent merge unless all threads are resolved

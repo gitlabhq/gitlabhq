@@ -138,7 +138,7 @@ The following table lists basic ports that must be open between the **primary** 
 | 22               | 22                 | TCP          |
 | 5432             |                    | PostgreSQL   |
 
-See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
+See the full list of ports used by GitLab in [Package defaults](../package-information/defaults.md)
 
 NOTE:
 [Web terminal](../../ci/environments/index.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.

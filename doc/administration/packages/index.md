@@ -14,22 +14,17 @@ The Packages feature allows GitLab to act as a repository for the following:
 
 The Package Registry supports the following formats:
 
-<div class="row">
-<div class="col-md-9">
-<table align="left" style="width:50%">
-<tr style="background:#dfdfdf"><th>Package type</th><th>GitLab version</th></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/composer_repository/index.html">Composer</a></td><td>13.2+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/conan_repository/index.html">Conan</a></td><td>12.6+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/go_proxy/index.html">Go</a></td><td>13.1+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/maven_repository/index.html">Maven</a></td><td>11.3+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/npm_registry/index.html">npm</a></td><td>11.7+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/nuget_repository/index.html">NuGet</a></td><td>12.8+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/pypi_repository/index.html">PyPI</a></td><td>12.10+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/generic_packages/index.html">Generic packages</a></td><td>13.5+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/helm_repository/index.html">Helm Charts</a></td><td>14.1+</td></tr>
-</table>
-</div>
-</div>
+| Package type                                                      | GitLab version |
+|-------------------------------------------------------------------|----------------|
+| [Composer](../../user/packages/composer_repository/index.md)      | 13.2+          |
+| [Conan](../../user/packages/conan_repository/index.md)            | 12.6+          |
+| [Go](../../user/packages/go_proxy/index.md)                       | 13.1+          |
+| [Maven](../../user/packages/maven_repository/index.md)            | 11.3+          |
+| [npm](../../user/packages/npm_registry/index.md)                  | 11.7+          |
+| [NuGet](../../user/packages/nuget_repository/index.md)            | 12.8+          |
+| [PyPI](../../user/packages/pypi_repository/index.md)              | 12.10+         |
+| [Generic packages](../../user/packages/generic_packages/index.md) | 13.5+          |
+| [Helm Charts](../../user/packages/helm_repository/index.md)       | 14.1+          |
 
 ## Accepting contributions
 

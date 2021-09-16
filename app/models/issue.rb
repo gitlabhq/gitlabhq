@@ -128,13 +128,15 @@ class Issue < ApplicationRecord
   }
   scope :with_issue_type, ->(types) { where(issue_type: types) }
 
-  scope :public_only, -> { where(confidential: false) }
+  scope :public_only, -> {
+    without_hidden.where(confidential: false)
+  }
+
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :without_hidden, -> {
     if Feature.enabled?(:ban_user_feature_flag)
-      where(id: joins('LEFT JOIN banned_users ON banned_users.user_id = issues.author_id WHERE banned_users.user_id IS NULL')
-      .select('issues.id'))
+      where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
     else
       all
     end

@@ -4,89 +4,102 @@ require 'spec_helper'
 
 RSpec.describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_caching do
   let(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let(:banned_user) { create(:user, :banned) }
 
-  subject { described_class.new(project) }
+  subject { described_class.new(project, user) }
 
   it_behaves_like 'a counter caching service'
 
-  describe '#count' do
-    context 'when user is nil' do
-      it 'does not include confidential issues in the issue count' do
-        create(:issue, :opened, project: project)
-        create(:issue, :opened, confidential: true, project: project)
+  before do
+    create(:issue, :opened, project: project)
+    create(:issue, :opened, confidential: true, project: project)
+    create(:issue, :opened, author: banned_user, project: project)
+    create(:issue, :closed, project: project)
 
-        expect(described_class.new(project).count).to eq(1)
+    described_class.new(project).refresh_cache
+  end
+
+  describe '#count' do
+    shared_examples 'counts public issues, does not count hidden or confidential' do
+      it 'counts only public issues' do
+        expect(subject.count).to eq(1)
+      end
+
+      it 'uses PUBLIC_COUNT_WITHOUT_HIDDEN_KEY cache key' do
+        expect(subject.cache_key).to include('project_open_public_issues_without_hidden_count')
       end
     end
 
-    context 'when user is provided' do
-      let(:user) { create(:user) }
+    context 'when user is nil' do
+      let(:user) { nil }
 
+      it_behaves_like 'counts public issues, does not count hidden or confidential'
+    end
+
+    context 'when user is provided' do
       context 'when user can read confidential issues' do
         before do
           project.add_reporter(user)
         end
 
-        it 'returns the right count with confidential issues' do
-          create(:issue, :opened, project: project)
-          create(:issue, :opened, confidential: true, project: project)
-
-          expect(described_class.new(project, user).count).to eq(2)
+        it 'includes confidential issues and does not include hidden issues in count' do
+          expect(subject.count).to eq(2)
         end
 
-        it 'uses total_open_issues_count cache key' do
-          expect(described_class.new(project, user).cache_key_name).to eq('total_open_issues_count')
+        it 'uses TOTAL_COUNT_WITHOUT_HIDDEN_KEY cache key' do
+          expect(subject.cache_key).to include('project_open_issues_without_hidden_count')
         end
       end
 
-      context 'when user cannot read confidential issues' do
+      context 'when user cannot read confidential or hidden issues' do
         before do
           project.add_guest(user)
         end
 
-        it 'does not include confidential issues' do
-          create(:issue, :opened, project: project)
-          create(:issue, :opened, confidential: true, project: project)
+        it_behaves_like 'counts public issues, does not count hidden or confidential'
+      end
 
-          expect(described_class.new(project, user).count).to eq(1)
+      context 'when user is an admin' do
+        let_it_be(:user) { create(:user, :admin) }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'includes confidential and hidden issues in count' do
+            expect(subject.count).to eq(3)
+          end
+
+          it 'uses TOTAL_COUNT_KEY cache key' do
+            expect(subject.cache_key).to include('project_open_issues_including_hidden_count')
+          end
         end
 
-        it 'uses public_open_issues_count cache key' do
-          expect(described_class.new(project, user).cache_key_name).to eq('public_open_issues_count')
+        context 'when admin mode is disabled' do
+          it_behaves_like 'counts public issues, does not count hidden or confidential'
         end
       end
     end
+  end
 
-    describe '#refresh_cache' do
-      before do
-        create(:issue, :opened, project: project)
+  describe '#refresh_cache', :aggregate_failures do
+    context 'when cache is empty' do
+      it 'refreshes cache keys correctly' do
+        expect(Rails.cache.read(described_class.new(project).cache_key(described_class::PUBLIC_COUNT_WITHOUT_HIDDEN_KEY))).to eq(1)
+        expect(Rails.cache.read(described_class.new(project).cache_key(described_class::TOTAL_COUNT_WITHOUT_HIDDEN_KEY))).to eq(2)
+        expect(Rails.cache.read(described_class.new(project).cache_key(described_class::TOTAL_COUNT_KEY))).to eq(3)
+      end
+    end
+
+    context 'when cache is outdated' do
+      it 'refreshes cache keys correctly' do
         create(:issue, :opened, project: project)
         create(:issue, :opened, confidential: true, project: project)
-      end
+        create(:issue, :opened, author: banned_user, project: project)
 
-      context 'when cache is empty' do
-        it 'refreshes cache keys correctly' do
-          subject.refresh_cache
+        described_class.new(project).refresh_cache
 
-          expect(Rails.cache.read(subject.cache_key(described_class::PUBLIC_COUNT_KEY))).to eq(2)
-          expect(Rails.cache.read(subject.cache_key(described_class::TOTAL_COUNT_KEY))).to eq(3)
-        end
-      end
-
-      context 'when cache is outdated' do
-        before do
-          subject.refresh_cache
-        end
-
-        it 'refreshes cache keys correctly' do
-          create(:issue, :opened, project: project)
-          create(:issue, :opened, confidential: true, project: project)
-
-          subject.refresh_cache
-
-          expect(Rails.cache.read(subject.cache_key(described_class::PUBLIC_COUNT_KEY))).to eq(3)
-          expect(Rails.cache.read(subject.cache_key(described_class::TOTAL_COUNT_KEY))).to eq(5)
-        end
+        expect(Rails.cache.read(described_class.new(project).cache_key(described_class::PUBLIC_COUNT_WITHOUT_HIDDEN_KEY))).to eq(2)
+        expect(Rails.cache.read(described_class.new(project).cache_key(described_class::TOTAL_COUNT_WITHOUT_HIDDEN_KEY))).to eq(4)
+        expect(Rails.cache.read(described_class.new(project).cache_key(described_class::TOTAL_COUNT_KEY))).to eq(6)
       end
     end
   end

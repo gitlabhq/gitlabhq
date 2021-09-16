@@ -13,11 +13,11 @@
             = @group.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
               = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
-        .home-panel-metadata.d-flex.align-items-center.text-secondary
+        .home-panel-metadata.text-secondary
           %span
             = _("Group ID: %{group_id}") % { group_id: @group.id }
           - if current_user
-            %span.access-request-links.gl-ml-3
+            %span.gl-ml-3
               = render 'shared/members/access_request_links', source: @group
 
     .home-panel-buttons.col-md-12.col-lg-6

@@ -1508,7 +1508,9 @@ the section. The version information must:
 - Whenever possible, include a link to the completed issue, merge request, or epic
   that introduced the feature. An issue is preferred over a merge request, and
   a merge request is preferred over an epic.
-- Do not include information about the tier, or a link to the pricing page.
+- Do not include information about the tier, unless documenting a tier change
+  (for example, `Feature X [moved](issue-link) to Premium in GitLab 19.2`).
+- Do not link to the pricing page.
   The tier is provided by the [product badge](#product-tier-badges) on the heading.
 
 ```markdown

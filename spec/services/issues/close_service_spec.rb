@@ -225,7 +225,7 @@ RSpec.describe Issues::CloseService do
 
       it 'verifies the number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { close_issue }
-        expected_queries = 25
+        expected_queries = 27
 
         expect(recorded.count).to be <= expected_queries
         expect(recorded.cached_count).to eq(0)
