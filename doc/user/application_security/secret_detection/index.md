@@ -89,12 +89,13 @@ However not all features are available on every tier. See the breakdown below fo
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                      | In Free             | In Ultimate        |
+| Capability                                                      | In Free & Premium   | In Ultimate        |
 |:----------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure Secret Detection Scanners](#configuration)           | **{check-circle}**  | **{check-circle}** |
 | [Customize Secret Detection Settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](../sast/index.md#reports-json-format)        | **{check-circle}**  | **{check-circle}** |
 | Presentation of JSON Report in Merge Request                    | **{dotted-circle}** | **{check-circle}** |
+| View identified secrets in the pipelines' **Security** tab      | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** | **{check-circle}** |
 

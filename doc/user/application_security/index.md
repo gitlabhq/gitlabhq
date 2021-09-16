@@ -223,7 +223,8 @@ For this approval group, you must set the number of approvals required to greate
 
 Follow these steps to enable `Vulnerability-Check`:
 
-1. Go to your project and select **Settings > General**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
 1. Expand **Merge request approvals**.
 1. Select **Enable** or **Edit**.
 1. Set the **Security scanners** that the rule applies to.
