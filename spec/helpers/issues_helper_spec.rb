@@ -310,7 +310,7 @@ RSpec.describe IssuesHelper do
         can_bulk_update: 'true',
         can_edit: 'true',
         can_import_issues: 'true',
-        email: current_user&.notification_email,
+        email: current_user&.notification_email_or_default,
         emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'),
         empty_state_svg_path: '#',
         export_csv_path: export_csv_project_issues_path(project),

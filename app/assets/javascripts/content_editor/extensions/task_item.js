@@ -13,7 +13,8 @@ export default TaskItem.extend({
         default: false,
         parseHTML: (element) => {
           const checkbox = element.querySelector('input[type=checkbox].task-list-item-checkbox');
-          return { checked: checkbox?.checked };
+
+          return checkbox?.checked;
         },
         renderHTML: (attributes) => ({
           'data-checked': attributes.checked,

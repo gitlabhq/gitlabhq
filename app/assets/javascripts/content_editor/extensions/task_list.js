@@ -8,25 +8,17 @@ export default TaskList.extend({
     return {
       numeric: {
         default: false,
-        parseHTML: (element) => ({
-          numeric: element.tagName.toLowerCase() === 'ol',
-        }),
+        parseHTML: (element) => element.tagName.toLowerCase() === 'ol',
       },
-
       start: {
         default: 1,
-        parseHTML: (element) => ({
-          start: element.hasAttribute('start')
-            ? parseInt(element.getAttribute('start') || '', 10)
-            : 1,
-        }),
+        parseHTML: (element) =>
+          element.hasAttribute('start') ? parseInt(element.getAttribute('start') || '', 10) : 1,
       },
 
       parens: {
         default: false,
-        parseHTML: (element) => ({
-          parens: /^[0-9]+\)/.test(getMarkdownSource(element)),
-        }),
+        parseHTML: (element) => /^[0-9]+\)/.test(getMarkdownSource(element)),
       },
     };
   },

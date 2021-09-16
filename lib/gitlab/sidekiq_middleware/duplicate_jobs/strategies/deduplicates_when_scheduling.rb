@@ -14,6 +14,8 @@ module Gitlab
               job['duplicate-of'] = duplicate_job.existing_jid
 
               if duplicate_job.idempotent?
+                duplicate_job.update_latest_wal_location!
+
                 Gitlab::SidekiqLogging::DeduplicationLogger.instance.log(
                   job, "dropped #{strategy_name}", duplicate_job.options)
                 return false
@@ -23,7 +25,15 @@ module Gitlab
             yield
           end
 
+          def perform(job)
+            update_job_wal_location!(job)
+          end
+
           private
+
+          def update_job_wal_location!(job)
+            job['dedup_wal_locations'] = duplicate_job.latest_wal_locations if duplicate_job.latest_wal_locations.present?
+          end
 
           def deduplicatable_job?
             !duplicate_job.scheduled? || duplicate_job.options[:including_scheduled]

@@ -36,27 +36,15 @@ export default Link.extend({
       ...this.parent?.(),
       href: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            href: element.getAttribute('href'),
-          };
-        },
+        parseHTML: (element) => element.getAttribute('href'),
       },
       title: {
         title: null,
-        parseHTML: (element) => {
-          return {
-            title: element.getAttribute('title'),
-          };
-        },
+        parseHTML: (element) => element.getAttribute('title'),
       },
       canonicalSrc: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            canonicalSrc: element.dataset.canonicalSrc,
-          };
-        },
+        parseHTML: (element) => element.dataset.canonicalSrc,
       },
     };
   },

@@ -18,9 +18,7 @@ export default Blockquote.extend({
             (p) => p.nodeName.toLowerCase() === 'blockquote',
           );
 
-          return {
-            multiline: source && !source.startsWith('>') && !parentsIncludeBlockquote,
-          };
+          return source && !source.startsWith('>') && !parentsIncludeBlockquote;
         },
       },
     };

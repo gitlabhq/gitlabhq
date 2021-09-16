@@ -57,7 +57,7 @@ module Gitlab
         end
 
         def get_wal_locations(job)
-          job['wal_locations'] || legacy_wal_location(job)
+          job['dedup_wal_locations'] || job['wal_locations'] || legacy_wal_location(job)
         end
 
         # Already scheduled jobs could still contain legacy database write location.

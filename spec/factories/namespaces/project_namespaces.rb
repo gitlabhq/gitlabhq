@@ -7,5 +7,6 @@ FactoryBot.define do
     path { project.path }
     type { Namespaces::ProjectNamespace.sti_name }
     owner { nil }
+    parent factory: :group
   end
 end

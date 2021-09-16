@@ -82,7 +82,7 @@ RSpec.describe Group do
           group = build(:group, parent: build(:namespace))
 
           expect(group).not_to be_valid
-          expect(group.errors[:parent_id].first).to eq('a group cannot have a user namespace as its parent')
+          expect(group.errors[:parent_id].first).to eq('user namespace cannot be the parent of another namespace')
         end
 
         it 'allows a group to have another group as its parent' do

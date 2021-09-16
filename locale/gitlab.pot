@@ -13438,6 +13438,12 @@ msgstr ""
 msgid "Escalation policies must have at least one rule"
 msgstr ""
 
+msgid "EscalationPolicies|%{clockIcon} IF alert is not %{alertStatus} in %{minutes}"
+msgstr ""
+
+msgid "EscalationPolicies|%{notificationIcon} THEN %{doAction} %{forScheduleOrUser}"
+msgstr ""
+
 msgid "EscalationPolicies|+ Add an additional rule"
 msgstr ""
 
@@ -13484,9 +13490,6 @@ msgid "EscalationPolicies|Escalation rules"
 msgstr ""
 
 msgid "EscalationPolicies|Failed to load oncall-schedules"
-msgstr ""
-
-msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} %{then} THEN %{doAction} %{scheduleOrUser}"
 msgstr ""
 
 msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} minutes"
@@ -35921,9 +35924,6 @@ msgstr ""
 msgid "Unable to fetch branches list, please close the form and try again"
 msgstr ""
 
-msgid "Unable to fetch unscanned projects"
-msgstr ""
-
 msgid "Unable to fetch vulnerable projects"
 msgstr ""
 
@@ -36111,18 +36111,6 @@ msgid "Unresolve thread"
 msgstr ""
 
 msgid "Unresolved"
-msgstr ""
-
-msgid "UnscannedProjects|15 or more days"
-msgstr ""
-
-msgid "UnscannedProjects|30 or more days"
-msgstr ""
-
-msgid "UnscannedProjects|5 or more days"
-msgstr ""
-
-msgid "UnscannedProjects|60 or more days"
 msgstr ""
 
 msgid "Unschedule job"
@@ -39445,6 +39433,9 @@ msgstr ""
 msgid "cannot merge"
 msgstr ""
 
+msgid "cannot not be used for user namespace"
+msgstr ""
+
 msgid "ciReport|%{degradedNum} degraded"
 msgstr ""
 
@@ -39953,6 +39944,9 @@ msgid "has already been taken as Suite"
 msgstr ""
 
 msgid "has been completed."
+msgstr ""
+
+msgid "has too deep level of nesting"
 msgstr ""
 
 msgid "help"
@@ -40503,6 +40497,9 @@ msgstr ""
 msgid "must be less than the limit of %{tag_limit} tags"
 msgstr ""
 
+msgid "must be set for a project namespace"
+msgstr ""
+
 msgid "must be unique by status and elapsed time within a policy"
 msgstr ""
 
@@ -40662,6 +40659,9 @@ msgid "project members"
 msgstr ""
 
 msgid "project name"
+msgstr ""
+
+msgid "project namespace cannot be the parent of another namespace"
 msgstr ""
 
 msgid "projects"
@@ -40898,6 +40898,9 @@ msgid "uploads"
 msgstr ""
 
 msgid "user avatar"
+msgstr ""
+
+msgid "user namespace cannot be the parent of another namespace"
 msgstr ""
 
 msgid "user preferences"

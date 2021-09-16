@@ -187,6 +187,19 @@ module Gitlab
         row['system_identifier']
       end
 
+      def pg_wal_lsn_diff(location1, location2)
+        lsn1 = connection.quote(location1)
+        lsn2 = connection.quote(location2)
+
+        query = <<-SQL.squish
+            SELECT pg_wal_lsn_diff(#{lsn1}, #{lsn2})
+              AS result
+        SQL
+
+        row = connection.select_all(query).first
+        row['result'] if row
+      end
+
       # @param [ActiveRecord::Connection] ar_connection
       # @return [String]
       def get_write_location(ar_connection)

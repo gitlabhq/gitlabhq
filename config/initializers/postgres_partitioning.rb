@@ -5,6 +5,7 @@
 
 Gitlab::Database::Partitioning::PartitionManager.register(AuditEvent)
 Gitlab::Database::Partitioning::PartitionManager.register(WebHookLog)
+Gitlab::Database::Partitioning::PartitionManager.register(LooseForeignKeys::DeletedRecord)
 
 if Gitlab.ee?
   Gitlab::Database::Partitioning::PartitionManager.register(IncidentManagement::PendingEscalations::Alert)

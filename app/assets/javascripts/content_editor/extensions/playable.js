@@ -16,9 +16,7 @@ export default Node.create({
         parseHTML: (element) => {
           const playable = queryPlayableElement(element, this.options.mediaType);
 
-          return {
-            src: playable.src,
-          };
+          return playable.src;
         },
       },
       canonicalSrc: {
@@ -26,9 +24,7 @@ export default Node.create({
         parseHTML: (element) => {
           const playable = queryPlayableElement(element, this.options.mediaType);
 
-          return {
-            canonicalSrc: playable.dataset.canonicalSrc,
-          };
+          return playable.dataset.canonicalSrc;
         },
       },
       alt: {
@@ -36,9 +32,7 @@ export default Node.create({
         parseHTML: (element) => {
           const playable = queryPlayableElement(element, this.options.mediaType);
 
-          return {
-            alt: playable.dataset.title,
-          };
+          return playable.dataset.title;
         },
       },
     };

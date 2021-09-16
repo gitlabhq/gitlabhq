@@ -22,6 +22,19 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  INSERT INTO loose_foreign_keys_deleted_records
+  (deleted_table_name, deleted_table_primary_key_value)
+  SELECT TG_TABLE_NAME, old_table.id FROM old_table
+  ON CONFLICT DO NOTHING;
+
+  RETURN NULL;
+END
+$$;
+
 CREATE FUNCTION integrations_set_type_new() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -152,6 +165,14 @@ CREATE TABLE incident_management_pending_issue_escalations (
     updated_at timestamp with time zone NOT NULL
 )
 PARTITION BY RANGE (process_at);
+
+CREATE TABLE loose_foreign_keys_deleted_records (
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    deleted_table_name text NOT NULL,
+    deleted_table_primary_key_value bigint NOT NULL,
+    CONSTRAINT check_7229f9527e CHECK ((char_length(deleted_table_name) <= 63))
+)
+PARTITION BY RANGE (created_at);
 
 CREATE TABLE web_hook_logs (
     id bigint NOT NULL,
@@ -23076,6 +23097,9 @@ ALTER TABLE ONLY list_user_preferences
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT lists_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY loose_foreign_keys_deleted_records
+    ADD CONSTRAINT loose_foreign_keys_deleted_records_pkey PRIMARY KEY (created_at, deleted_table_name, deleted_table_primary_key_value);
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT members_pkey PRIMARY KEY (id);

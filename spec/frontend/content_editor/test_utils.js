@@ -98,9 +98,7 @@ export const createTestContentEditorExtension = ({ commands = [] } = {}) => {
         return {
           labelName: {
             default: null,
-            parseHTML: (element) => {
-              return { labelName: element.dataset.labelName };
-            },
+            parseHTML: (element) => element.dataset.labelName,
           },
         };
       },

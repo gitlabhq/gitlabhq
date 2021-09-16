@@ -28,8 +28,7 @@ const SourcemapExtension = Extension.create({
           source: {
             parseHTML: (element) => {
               const source = getMarkdownSource(element);
-              if (source) return { source };
-              return {};
+              return source;
             },
           },
         },

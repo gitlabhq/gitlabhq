@@ -44,7 +44,7 @@ export default marks.map((name) =>
           ...acc,
           [attr]: {
             default: null,
-            parseHTML: (element) => ({ [attr]: element.getAttribute(attr) }),
+            parseHTML: (element) => element.getAttribute(attr),
           },
         }),
         {},

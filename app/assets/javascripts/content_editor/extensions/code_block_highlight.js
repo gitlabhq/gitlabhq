@@ -8,11 +8,7 @@ export default CodeBlockLowlight.extend({
     return {
       language: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            language: extractLanguage(element),
-          };
-        },
+        parseHTML: (element) => extractLanguage(element),
       },
       class: {
         default: 'code highlight js-syntax-highlight',

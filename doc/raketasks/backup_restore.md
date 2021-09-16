@@ -407,6 +407,67 @@ For Omnibus GitLab packages:
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect
 
+##### S3 Encrypted Buckets
+
+AWS supports these [modes for server side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html):
+
+- Amazon S3-Managed Keys (SSE-S3)
+- Customer Master Keys (CMKs) Stored in AWS Key Management Service (SSE-KMS)
+- Customer-Provided Keys (SSE-C)
+
+Use your mode of choice with GitLab. Each mode has similar, but slightly
+different, configuration methods.
+
+###### SSE-S3
+
+To enable SSE-S3, in the backup storage options set the `server_side_encryption`
+field to `AES256`. For example, in Omnibus GitLab:
+
+```ruby
+gitlab_rails['backup_upload_storage_options'] = {
+  'server_side_encryption' => 'AES256'
+}
+```
+
+###### SSE-KMS
+
+To enable SSE-KMS, you'll need the [KMS key via its Amazon Resource Name (ARN)
+in the `arn:aws:kms:region:acct-id:key/key-id` format](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html). Under the `backup_upload_storage_options` config setting, set:
+
+- `server_side_encryption` to `aws:kms`.
+- `server_side_encryption_kms_key_id` to the ARN of the key.
+
+For example, in Omnibus GitLab:
+
+```ruby
+gitlab_rails['backup_upload_storage_options'] = {
+  'server_side_encryption' => 'aws:kms',
+  'server_side_encryption_kms_key_id' => 'arn:aws:<YOUR KMS KEY ID>:'
+}
+```
+
+###### SSE-C
+
+SSE-C requires you to set these encryption options:
+
+- `backup_encryption`: AES256.
+- `backup_encryption_key`: Unencoded, 32-byte (256 bits) key. The upload fails if this isn't exactly 32 bytes.
+
+For example, in Omnibus GitLab:
+
+```ruby
+gitlab_rails['backup_encryption'] = 'AES256'
+gitlab_rails['backup_encryption_key'] = '<YOUR 32-BYTE KEY HERE>'
+```
+
+If the key contains binary characters and cannot be encoded in UTF-8,
+instead, specify the key with the `GITLAB_BACKUP_ENCRYPTION_KEY` environment variable.
+For example:
+
+```ruby
+gitlab_rails['env'] = { 'GITLAB_BACKUP_ENCRYPTION_KEY' => "\xDE\xAD\xBE\xEF" * 8 }
+```
+
 ##### Digital Ocean Spaces
 
 This example can be used for a bucket in Amsterdam (AMS3):
@@ -458,15 +519,25 @@ For installations from source:
            # use_iam_profile: 'true'
          # The remote 'directory' to store your backups. For S3, this would be the bucket name.
          remote_directory: 'my.s3.bucket'
-         # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
-         # encryption: 'AES256'
-         # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
-         #   This should be set to the encryption key for Amazon S3 to use to encrypt or decrypt your data.
-         #   'encryption' must also be set in order for this to have any effect.
-         #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` environment variable.
-         # encryption_key: '<key>'
          # Specifies Amazon S3 storage class to use for backups, this is optional
          # storage_class: 'STANDARD'
+         #
+         # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
+         #   'encryption' must be set in order for this to have any effect.
+         #   'encryption_key' should be set to the 256-bit encryption key for Amazon S3 to use to encrypt or decrypt.
+         #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY`  your data.
+         # encryption: 'AES256'
+         # encryption_key: '<key>'
+         #
+         #
+         # Turns on AWS Server-Side Encryption with Amazon S3-Managed keys (optional)
+         # https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html
+         # For SSE-S3, set 'server_side_encryption' to 'AES256'.
+         # For SS3-KMS, set 'server_side_encryption' to 'aws:kms'. Set
+         # 'server_side_encryption_kms_key_id' to the ARN of customer master key.
+         # storage_options:
+         #   server_side_encryption: 'aws:kms'
+         #   server_side_encryption_kms_key_id: 'arn:aws:kms:YOUR-KEY-ID-HERE'
    ```
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source)

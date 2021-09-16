@@ -14,11 +14,7 @@ export default Mark.create({
     return {
       type: {
         default: 'addition',
-        parseHTML: (element) => {
-          return {
-            type: element.classList.contains('deletion') ? 'deletion' : 'addition',
-          };
-        },
+        parseHTML: (element) => (element.classList.contains('deletion') ? 'deletion' : 'addition'),
       },
     };
   },

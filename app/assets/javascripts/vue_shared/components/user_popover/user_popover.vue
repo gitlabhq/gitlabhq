@@ -1,5 +1,12 @@
 <script>
-import { GlPopover, GlLink, GlSkeletonLoader, GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
+import {
+  GlPopover,
+  GlLink,
+  GlSkeletonLoader,
+  GlIcon,
+  GlSafeHtmlDirective,
+  GlSprintf,
+} from '@gitlab/ui';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import { glEmojiTag } from '../../../emoji';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
@@ -16,6 +23,7 @@ export default {
     GlSkeletonLoader,
     UserAvatarImage,
     UserNameWithStatus,
+    GlSprintf,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -103,7 +111,9 @@ export default {
           <div v-if="user.bot" class="gl-text-blue-500">
             <gl-icon name="question" />
             <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
-              {{ sprintf(__('Learn more about %{username}'), { username: user.name }) }}
+              <gl-sprintf :message="__('Learn more about %{username}')">
+                <template #username>{{ user.name }}</template>
+              </gl-sprintf>
             </gl-link>
           </div>
         </template>

@@ -74,6 +74,7 @@ because it does not require a shared folder.
 
 Consolidated object storage configuration can't be used for backups or
 Mattermost. See the [full table for a complete list](#storage-specific-configuration).
+However, backups can be configured with [server side encryption](../raketasks/backup_restore.md#s3-encrypted-buckets) separately.
 
 Enabling consolidated object storage enables object storage for all object
 types. If you want to use local storage for specific object types, you can

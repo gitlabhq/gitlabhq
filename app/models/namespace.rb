@@ -530,17 +530,27 @@ class Namespace < ApplicationRecord
 
   def nesting_level_allowed
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
-      errors.add(:parent_id, 'has too deep level of nesting')
+      errors.add(:parent_id, _('has too deep level of nesting'))
     end
   end
 
   def validate_parent_type
-    return unless has_parent?
+    unless has_parent?
+      if project?
+        errors.add(:parent_id, _('must be set for a project namespace'))
+      end
+
+      return
+    end
+
+    if parent.project?
+      errors.add(:parent_id, _('project namespace cannot be the parent of another namespace'))
+    end
 
     if user?
-      errors.add(:parent_id, 'a user namespace cannot have a parent')
+      errors.add(:parent_id, _('cannot not be used for user namespace'))
     elsif group?
-      errors.add(:parent_id, 'a group cannot have a user namespace as its parent') if parent.user?
+      errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user?
     end
   end
 

@@ -28,27 +28,19 @@ export default Image.extend({
         parseHTML: (element) => {
           const img = resolveImageEl(element);
 
-          return {
-            src: img.dataset.src || img.getAttribute('src'),
-          };
+          return img.dataset.src || img.getAttribute('src');
         },
       },
       canonicalSrc: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            canonicalSrc: element.dataset.canonicalSrc,
-          };
-        },
+        parseHTML: (element) => element.dataset.canonicalSrc,
       },
       alt: {
         default: null,
         parseHTML: (element) => {
           const img = resolveImageEl(element);
 
-          return {
-            alt: img.getAttribute('alt'),
-          };
+          return img.getAttribute('alt');
         },
       },
       title: {
@@ -56,9 +48,7 @@ export default Image.extend({
         parseHTML: (element) => {
           const img = resolveImageEl(element);
 
-          return {
-            title: img.getAttribute('title'),
-          };
+          return img.getAttribute('title');
         },
       },
     };

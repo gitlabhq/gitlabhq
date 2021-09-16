@@ -28,6 +28,13 @@ RSpec.describe Gitlab::Instrumentation::Redis do
 
   describe '.payload', :request_store do
     before do
+      # If this is the first spec in a spec run that uses Redis, there
+      # will be an extra SELECT command to choose the right database. We
+      # don't want to make the spec less precise, so we force that to
+      # happen (if needed) first, then clear the counts.
+      Gitlab::Redis::Cache.with { |redis| redis.info }
+      RequestStore.clear!
+
       Gitlab::Redis::Cache.with { |redis| redis.set('cache-test', 321) }
       Gitlab::Redis::SharedState.with { |redis| redis.set('shared-state-test', 123) }
     end

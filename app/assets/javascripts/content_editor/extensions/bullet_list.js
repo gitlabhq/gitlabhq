@@ -11,7 +11,7 @@ export default BulletList.extend({
         parseHTML(element) {
           const bullet = getMarkdownSource(element)?.charAt(0);
 
-          return { bullet: '*+-'.includes(bullet) ? bullet : '*' };
+          return '*+-'.includes(bullet) ? bullet : '*';
         },
       },
     };

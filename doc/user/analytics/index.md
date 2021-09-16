@@ -75,12 +75,12 @@ in one place.
 
 [Learn more about instance-level analytics](../admin_area/analytics/index.md).
 
-## Group-level analytics **(PREMIUM)**
+## Group-level analytics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195979) in GitLab 12.8.
 > - Moved to GitLab Premium in 13.9.
 
-The following analytics features are available at the group level:
+GitLab provides several analytics features at the group level. Some of these features require you to use a higher tier than GitLab Free.
 
 - [Application Security](../application_security/security_dashboard/#group-security-dashboard)
 - [Contribution](../group/contribution_analytics/index.md)
@@ -93,7 +93,7 @@ The following analytics features are available at the group level:
 
 ## Project-level analytics
 
-The following analytics features are available at the project level:
+You can use GitLab to review analytics at the project level. Some of these features require you to use a higher tier than GitLab Free.
 
 - [Application Security](../application_security/security_dashboard/#project-security-dashboard)
 - [CI/CD](ci_cd_analytics.md)
@@ -105,8 +105,10 @@ The following analytics features are available at the project level:
 - [Repository](repository_analytics.md)
 - [Value Stream](value_stream_analytics.md)
 
-## User-configurable analytics **(ULTIMATE)**
+## User-configurable analytics
 
 The following analytics features are available for users to create personalized views:
 
 - [Application Security](../application_security/security_dashboard/#security-center)
+
+Be sure to review the documentation page for this feature for GitLab tier requirements.

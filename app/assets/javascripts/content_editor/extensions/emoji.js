@@ -17,30 +17,18 @@ export default Node.create({
     return {
       moji: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            moji: element.textContent,
-          };
-        },
+        parseHTML: (element) => element.textContent,
       },
       name: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            name: element.dataset.name,
-          };
-        },
+        parseHTML: (element) => element.dataset.name,
       },
       title: {
         default: null,
       },
       unicodeVersion: {
         default: '6.0',
-        parseHTML: (element) => {
-          return {
-            unicodeVersion: element.dataset.unicodeVersion,
-          };
-        },
+        parseHTML: (element) => element.dataset.unicodeVersion,
       },
     };
   },

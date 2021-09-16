@@ -9,9 +9,7 @@ export default Node.create({
     return {
       isTerm: {
         default: true,
-        parseHTML: (element) => ({
-          isTerm: element.tagName.toLowerCase() === 'dt',
-        }),
+        parseHTML: (element) => element.tagName.toLowerCase() === 'dt',
       },
     };
   },

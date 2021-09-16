@@ -19,43 +19,23 @@ export default Node.create({
     return {
       className: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            className: getAnchor(element).className,
-          };
-        },
+        parseHTML: (element) => getAnchor(element).className,
       },
       referenceType: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            referenceType: getAnchor(element).dataset.referenceType,
-          };
-        },
+        parseHTML: (element) => getAnchor(element).dataset.referenceType,
       },
       originalText: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            originalText: getAnchor(element).dataset.original,
-          };
-        },
+        parseHTML: (element) => getAnchor(element).dataset.original,
       },
       href: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            href: getAnchor(element).getAttribute('href'),
-          };
-        },
+        parseHTML: (element) => getAnchor(element).getAttribute('href'),
       },
       text: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            text: getAnchor(element).textContent,
-          };
-        },
+        parseHTML: (element) => getAnchor(element).textContent,
       },
     };
   },

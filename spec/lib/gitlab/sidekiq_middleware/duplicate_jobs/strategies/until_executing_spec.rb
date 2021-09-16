@@ -7,6 +7,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
     describe '#perform' do
       let(:proc) { -> {} }
 
+      before do
+        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return( {} )
+      end
+
       it 'deletes the lock before executing' do
         expect(fake_duplicate_job).to receive(:delete!).ordered
         expect(proc).to receive(:call).ordered

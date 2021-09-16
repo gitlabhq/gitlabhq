@@ -48,7 +48,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
     end
 
     it 'sends email' do
-      emails = receivers.map { |r| double(notification_email: r) }
+      emails = receivers.map { |r| double(notification_email_or_default: r) }
 
       should_only_email(*emails, kind: :bcc)
     end

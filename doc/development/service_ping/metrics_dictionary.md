@@ -22,6 +22,9 @@ All metrics are stored in YAML files:
 
 - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
 
+WARNING:
+Only metrics with a metric definition YAML are added to the Service Ping JSON payload.
+
 Each metric is defined in a separate YAML file consisting of a number of fields:
 
 | Field               | Required | Additional information                                         |

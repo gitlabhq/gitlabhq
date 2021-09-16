@@ -24,7 +24,7 @@ RSpec.describe 'Groups > Members > Request access' do
   it 'user can request access to a group' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
-    expect(ActionMailer::Base.deliveries.last.to).to eq [owner.notification_email]
+    expect(ActionMailer::Base.deliveries.last.to).to eq [owner.notification_email_or_default]
     expect(ActionMailer::Base.deliveries.last.subject).to match "Request to join the #{group.name} group"
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy

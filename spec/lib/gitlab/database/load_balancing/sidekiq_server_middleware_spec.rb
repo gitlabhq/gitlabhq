@@ -98,6 +98,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         it_behaves_like 'replica is up to date', 'replica'
       end
 
+      context 'when deduplication wal location is set' do
+        let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'dedup_wal_locations' => wal_locations } }
+
+        before do
+          allow(load_balancer).to receive(:select_up_to_date_host).with(wal_locations[:main]).and_return(true)
+        end
+
+        it_behaves_like 'replica is up to date', 'replica'
+      end
+
       context 'when legacy wal location is set' do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'database_write_location' => '0/D525E3A8' } }
 

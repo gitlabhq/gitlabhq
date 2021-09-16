@@ -33,11 +33,15 @@ module Gitlab
 
       def perform(start_id, stop_id)
         Tagging.includes(:tag).where(taggable_type: 'Project', id: start_id..stop_id).each do |tagging|
-          if Project.exists?(id: tagging.taggable_id)
-            topic = Topic.find_or_create_by(name: tagging.tag.name)
-            project_topic = ProjectTopic.find_or_create_by(project_id: tagging.taggable_id, topic: topic)
+          if Project.exists?(id: tagging.taggable_id) && tagging.tag
+            begin
+              topic = Topic.find_or_create_by(name: tagging.tag.name)
+              project_topic = ProjectTopic.find_or_create_by(project_id: tagging.taggable_id, topic: topic)
 
-            tagging.delete if project_topic.persisted?
+              tagging.delete if project_topic.persisted?
+            rescue StandardError => e
+              Gitlab::ErrorTracking.log_exception(e, tagging_id: tagging.id)
+            end
           else
             tagging.delete
           end

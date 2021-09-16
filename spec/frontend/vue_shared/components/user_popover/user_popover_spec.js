@@ -248,6 +248,13 @@ describe('User Popover Component', () => {
       const securityBotDocsLink = findSecurityBotDocsLink();
       expect(securityBotDocsLink.exists()).toBe(true);
       expect(securityBotDocsLink.attributes('href')).toBe(SECURITY_BOT_USER.websiteUrl);
+      expect(securityBotDocsLink.text()).toBe('Learn more about GitLab Security Bot');
+    });
+
+    it("doesn't escape user's name", () => {
+      createWrapper({ user: { ...SECURITY_BOT_USER, name: '%<>\';"' } });
+      const securityBotDocsLink = findSecurityBotDocsLink();
+      expect(securityBotDocsLink.text()).toBe('Learn more about %<>\';"');
     });
   });
 });
