@@ -16,11 +16,12 @@
 %section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'ip_limits_content' } }
   .settings-header
     %h4
-      = _('User and IP Rate Limits')
+      = _('User and IP rate limits')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure limits for web and API requests.')
+      = _('Set limits for web and API requests.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/user_and_ip_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'ip_limits'
 

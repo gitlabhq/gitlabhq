@@ -1495,9 +1495,6 @@ msgstr ""
 msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
-msgid "A plain-text response to show to clients that hit the rate limit."
-msgstr ""
-
 msgid "A platform value can be web, mob or app."
 msgstr ""
 
@@ -4784,9 +4781,6 @@ msgid "Authenticated Git LFS request rate limit"
 msgstr ""
 
 msgid "Authenticated web rate limit period in seconds"
-msgstr ""
-
-msgid "Authenticated web request rate limit"
 msgstr ""
 
 msgid "Authenticated web requests"
@@ -8560,9 +8554,6 @@ msgid "Configure approvals by authors and committers on all projects."
 msgstr ""
 
 msgid "Configure existing installation"
-msgstr ""
-
-msgid "Configure limits for web and API requests."
 msgstr ""
 
 msgid "Configure paths to be protected by Rack Attack."
@@ -16934,6 +16925,9 @@ msgstr ""
 msgid "If any indexed field exceeds this limit it will be truncated to this number of characters and the rest will not be indexed or searchable. This does not apply to repository and wiki indexing. Setting this to 0 means it is unlimited."
 msgstr ""
 
+msgid "If blank, defaults to %{code_open}Retry later%{code_close}."
+msgstr ""
+
 msgid "If blank, set allowable lifetime to %{instance_level_policy_in_words}, as defined by the instance admin. Once set, existing tokens for users in this group may be revoked."
 msgstr ""
 
@@ -20765,13 +20759,7 @@ msgstr ""
 msgid "Max 20 characters"
 msgstr ""
 
-msgid "Max authenticated API requests per period per user"
-msgstr ""
-
 msgid "Max authenticated Git LFS requests per period per user"
-msgstr ""
-
-msgid "Max authenticated web requests per period per user"
 msgstr ""
 
 msgid "Max file size is 200 KB."
@@ -20781,12 +20769,6 @@ msgid "Max role"
 msgstr ""
 
 msgid "Max session time"
-msgstr ""
-
-msgid "Max unauthenticated API requests per period per IP"
-msgstr ""
-
-msgid "Max unauthenticated web requests per period per IP"
 msgstr ""
 
 msgid "MaxBuilds"
@@ -20826,6 +20808,9 @@ msgid "Maximum attachment size (MB)"
 msgstr ""
 
 msgid "Maximum authenticated API requests per rate limit period per user"
+msgstr ""
+
+msgid "Maximum authenticated web requests per rate limit period per user"
 msgstr ""
 
 msgid "Maximum bulk request size (MiB)"
@@ -20979,6 +20964,9 @@ msgid "Maximum time that users are allowed to skip the setup of two-factor authe
 msgstr ""
 
 msgid "Maximum unauthenticated API requests per rate limit period per IP"
+msgstr ""
+
+msgid "Maximum unauthenticated web requests per rate limit period per IP"
 msgstr ""
 
 msgid "May"
@@ -25171,6 +25159,9 @@ msgstr ""
 msgid "Plain diff"
 msgstr ""
 
+msgid "Plain-text response to send to clients that hit a rate limit"
+msgstr ""
+
 msgid "Plan:"
 msgstr ""
 
@@ -27686,6 +27677,9 @@ msgid "Rate Limits"
 msgstr ""
 
 msgid "Rate limit"
+msgstr ""
+
+msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
@@ -30797,6 +30791,9 @@ msgid "Set iteration"
 msgstr ""
 
 msgid "Set limit to 0 to allow any file size."
+msgstr ""
+
+msgid "Set limits for web and API requests."
 msgstr ""
 
 msgid "Set max session time for web terminal."
@@ -36032,9 +36029,6 @@ msgstr ""
 msgid "Unauthenticated web rate limit period in seconds"
 msgstr ""
 
-msgid "Unauthenticated web request rate limit"
-msgstr ""
-
 msgid "Undo"
 msgstr ""
 
@@ -36734,7 +36728,7 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
-msgid "User and IP Rate Limits"
+msgid "User and IP rate limits"
 msgstr ""
 
 msgid "User does not have a pending request"

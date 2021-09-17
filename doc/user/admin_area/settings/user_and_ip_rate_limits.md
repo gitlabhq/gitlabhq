@@ -13,31 +13,78 @@ of a web application. For more details, see
 
 The following limits are disabled by default:
 
-- Unauthenticated API requests
-- Unauthenticated web requests
-- Authenticated API requests
-- Authenticated web requests
+- [Unauthenticated API requests (per IP)](#enable-unauthenticated-api-request-rate-limit).
+- [Unauthenticated web requests (per IP)](#enable-unauthenticated-web-request-rate-limit).
+- [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
+- [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
 
-To enforce any or all of them:
+NOTE:
+By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
+may trigger the rate limits configured for unauthenticated requests.
+
+## Enable unauthenticated API request rate limit
+
+To enable the unauthenticated request rate limit:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**:
-   ![user-and-ip-rate-limits](img/user_and_ip_rate_limits_v14_3.png)
+1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. Select **Enable unauthenticated API request rate limit**.
 
-   NOTE:
-   By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
-   may trigger the rate limits configured for unauthenticated requests.
+   - Optional. Update the **Maximum unauthenticated API requests per rate limit period per IP** value.
+     Defaults to `3600`.
+   - Optional. Update the **Unauthenticated rate limit period in seconds** value.
+     Defaults to `3600`.
 
-## Response text
+## Enable unauthenticated web request rate limit
+
+To enable the unauthenticated request rate limit:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. Select **Enable unauthenticated web request rate limit**.
+
+   - Optional. Update the **Maximum unauthenticated web requests per rate limit period per IP** value.
+     Defaults to `3600`.
+   - Optional. Update the **Unauthenticated rate limit period in seconds** value.
+     Defaults to `3600`.
+
+## Enable authenticated API request rate limit
+
+To enable the authenticated API request rate limit:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. Select **Enable authenticated API request rate limit**.
+
+   - Optional. Update the **Maximum authenticated API requests per rate limit period per user** value.
+     Defaults to `7200`.
+   - Optional. Update the **Authenticated API rate limit period in seconds** value.
+     Defaults to `3600`.
+
+## Enable authenticated web request rate limit
+
+To enable the unauthenticated request rate limit:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. Select **Enable authenticated web request rate limit**.
+
+   - Optional. Update the **Maximum authenticated web requests per rate limit period per user** value.
+     Defaults to `7200`.
+   - Optional. Update the **Authenticated web rate limit period in seconds** value.
+     Defaults to `3600`.
+
+## Use a custom rate limit response
 
 A request that exceeds a rate limit returns a 429 response code and a
-plain-text body, which by default is:
+plain-text body, which by default is `Retry later`.
 
-```plaintext
-Retry later
-```
+To use a custom response:
 
-It is possible to customize this response text in the Admin Area.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. In the **Plain-text response to send to clients that hit a rate limit** text box,
+   add the plain-text response message.
 
 ## Response headers
 

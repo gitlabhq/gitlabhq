@@ -7443,6 +7443,29 @@ The edge type for [`TreeEntry`](#treeentry).
 | <a id="treeentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="treeentryedgenode"></a>`node` | [`TreeEntry`](#treeentry) | The item at the end of the edge. |
 
+#### `UploadRegistryConnection`
+
+The connection type for [`UploadRegistry`](#uploadregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="uploadregistryconnectionedges"></a>`edges` | [`[UploadRegistryEdge]`](#uploadregistryedge) | A list of edges. |
+| <a id="uploadregistryconnectionnodes"></a>`nodes` | [`[UploadRegistry]`](#uploadregistry) | A list of nodes. |
+| <a id="uploadregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `UploadRegistryEdge`
+
+The edge type for [`UploadRegistry`](#uploadregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="uploadregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="uploadregistryedgenode"></a>`node` | [`UploadRegistry`](#uploadregistry) | The item at the end of the edge. |
+
 #### `UsageTrendsMeasurementConnection`
 
 The connection type for [`UsageTrendsMeasurement`](#usagetrendsmeasurement).
@@ -9950,6 +9973,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodeterraformstateversionregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+
+##### `GeoNode.uploadRegistries`
+
+Find Upload registries on this Geo node Available only when feature flag `geo_upload_replication` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Returns [`UploadRegistryConnection`](#uploadregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodeuploadregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 
 ### `GrafanaIntegration`
 
@@ -14346,6 +14385,23 @@ Represents a directory.
 | <a id="treeentrytype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="treeentrywebpath"></a>`webPath` | [`String`](#string) | Web path for the tree entry (directory). |
 | <a id="treeentryweburl"></a>`webUrl` | [`String`](#string) | Web URL for the tree entry (directory). |
+
+### `UploadRegistry`
+
+Represents the Geo replication and verification state of an upload.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="uploadregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the UploadRegistry was created. |
+| <a id="uploadregistryfileid"></a>`fileId` | [`ID!`](#id) | ID of the Upload. |
+| <a id="uploadregistryid"></a>`id` | [`ID!`](#id) | ID of the UploadRegistry. |
+| <a id="uploadregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the UploadRegistry. |
+| <a id="uploadregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the UploadRegistry. |
+| <a id="uploadregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry should be resynced. |
+| <a id="uploadregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the UploadRegistry. |
+| <a id="uploadregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the UploadRegistry. |
 
 ### `UsageTrendsMeasurement`
 

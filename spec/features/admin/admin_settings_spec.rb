@@ -551,22 +551,22 @@ RSpec.describe 'Admin updates settings' do
 
         page.within('.as-ip-limits') do
           check 'Enable unauthenticated API request rate limit'
-          fill_in 'Max unauthenticated API requests per period per IP', with: 100
+          fill_in 'Maximum unauthenticated API requests per rate limit period per IP', with: 100
           fill_in 'Unauthenticated API rate limit period in seconds', with: 200
 
           check 'Enable unauthenticated web request rate limit'
-          fill_in 'Max unauthenticated web requests per period per IP', with: 300
+          fill_in 'Maximum unauthenticated web requests per rate limit period per IP', with: 300
           fill_in 'Unauthenticated web rate limit period in seconds', with: 400
 
           check 'Enable authenticated API request rate limit'
-          fill_in 'Max authenticated API requests per period per user', with: 500
+          fill_in 'Maximum authenticated API requests per rate limit period per user', with: 500
           fill_in 'Authenticated API rate limit period in seconds', with: 600
 
           check 'Enable authenticated web request rate limit'
-          fill_in 'Max authenticated web requests per period per user', with: 700
+          fill_in 'Maximum authenticated web requests per rate limit period per user', with: 700
           fill_in 'Authenticated web rate limit period in seconds', with: 800
 
-          fill_in 'A plain-text response to show to clients that hit the rate limit.', with: 'Custom message'
+          fill_in 'Plain-text response to send to clients that hit a rate limit', with: 'Custom message'
 
           click_button 'Save changes'
         end
