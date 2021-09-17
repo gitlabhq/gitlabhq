@@ -9,9 +9,9 @@ require (
 	github.com/alecthomas/chroma v0.7.3
 	github.com/aws/aws-sdk-go v1.37.0
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0
+	github.com/golang-jwt/jwt/v4 v4.0.0
 	github.com/golang/gddo v0.0.0-20190419222130-af0f2af80721
 	github.com/golang/protobuf v1.5.2
 	github.com/gomodule/redigo v2.0.0+incompatible

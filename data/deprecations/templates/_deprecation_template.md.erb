@@ -22,6 +22,8 @@ then run `bin/rake gitlab:docs:compile_deprecations`.
 ### <%= deprecation["name"]%>
 
 <%= deprecation["body"] -%>
+
+Announced: <%= deprecation["announcement_date"]%>
     <%- end -%>
   <%- end -%>
 <%- else -%>

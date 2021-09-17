@@ -26,6 +26,8 @@ supported using a single PostgreSQL adapter, whereas the new format is changing 
 
 This deprecation mainly impacts users compiling GitLab from source because Omnibus will handle this configuration automatically.
 
+Announced: 2021-09-22
+
 ### Audit events for repository push events
 
 Audit events for [repository events](../administration/audit_events.md#repository-push) are now deprecated and will be removed in GitLab 15.0.
@@ -33,6 +35,8 @@ Audit events for [repository events](../administration/audit_events.md#repositor
 These events have always been disabled by default and had to be manually enabled with a
 feature flag. Enabling them can cause too many events to be generated which can
 dramatically slow down GitLab instances. For this reason, they are being removed.
+
+Announced: 2021-09-02
 
 ### OmniAuth Kerberos gem
 
@@ -42,11 +46,15 @@ This gem has not been maintained and has very little usage. We therefore plan to
 
 Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.
 
+Announced: 2021-09-22
+
 ### GitLab Serverless
 
 [GitLab Serverless](../user/project/clusters/serverless/index.md) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
 
 We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
+
+Announced: 2021-09-22
 
 ## 14.4
 
@@ -55,3 +63,5 @@ We decided to remove the GitLab Serverless features as they never really resonat
 The Task Runner pod is used to execute periodic housekeeping tasks within the GitLab application and is often confused with the GitLab Runner. Thus, [Task Runner will be renamed to Toolbox](https://gitlab.com/groups/gitlab-org/charts/-/epics/25).
 
 This will result in the rename of the sub-chart: `gitlab/task-runner` to `gitlab/toolbox`. Resulting pods will be named along the lines of `{{ .Release.Name }}-toolbox`, which will often be `gitlab-toolbox`. They will be locatable with the label `app=toolbox`.
+
+Announced: 2021-09-22

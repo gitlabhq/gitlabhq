@@ -11,5 +11,5 @@
   tiers: [Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337384
   documentation_url: https://docs.gitlab.com/ee/integration/kerberos.html#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins
-  announcement_date: 2021-22-09
+  announcement_date: "2021-09-22"
 

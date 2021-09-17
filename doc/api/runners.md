@@ -678,6 +678,8 @@ Response:
 
 ## Reset instance's runner registration token
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+
 Resets the runner registration token for the GitLab instance.
 
 ```plaintext
@@ -691,6 +693,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Reset project's runner registration token
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+
 Resets the runner registration token for a project.
 
 ```plaintext
@@ -703,6 +707,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 ## Reset group's runner registration token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
 Resets the runner registration token for a group.
 
