@@ -39,6 +39,9 @@ export function initDefaultTrackers() {
 
   const opts = { ...DEFAULT_SNOWPLOW_OPTIONS, ...window.snowplowOptions };
 
+  // must be before initializing the trackers
+  Tracking.setAnonymousUrls();
+
   window.snowplow('enableActivityTracking', 30, 30);
   // must be after enableActivityTracking
   const standardContext = getStandardContext();

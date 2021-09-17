@@ -237,6 +237,8 @@ module QA
           else
             browser.manage.delete_cookie("gitlab_canary")
           end
+
+          browser.navigate.refresh
         end
 
         ##

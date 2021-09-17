@@ -1,7 +1,14 @@
 import { LOAD_ACTION_ATTR_SELECTOR, DEPRECATED_LOAD_EVENT_ATTR_SELECTOR } from './constants';
 import { dispatchSnowplowEvent } from './dispatch_snowplow_event';
 import getStandardContext from './get_standard_context';
-import { getEventHandlers, createEventPayload, renameKey, addExperimentContext } from './utils';
+import {
+  getEventHandlers,
+  createEventPayload,
+  renameKey,
+  addExperimentContext,
+  getReferrersCache,
+  addReferrersCacheEntry,
+} from './utils';
 
 export default class Tracking {
   static queuedEvents = [];
@@ -156,6 +163,37 @@ export default class Tracking {
         }
       });
     }
+  }
+
+  /**
+   * Replaces the URL and referrer for the default web context
+   * if the replacements are available.
+   *
+   * @returns {undefined}
+   */
+  static setAnonymousUrls() {
+    const { snowplowPseudonymizedPageUrl: pageUrl } = window.gl;
+
+    if (!pageUrl) {
+      return;
+    }
+
+    const referrers = getReferrersCache();
+    const pageLinks = Object.seal({ url: '', referrer: '', originalUrl: window.location.href });
+
+    pageLinks.url = `${pageUrl}${window.location.hash}`;
+    window.snowplow('setCustomUrl', pageLinks.url);
+
+    if (document.referrer) {
+      const node = referrers.find((links) => links.originalUrl === document.referrer);
+
+      if (node) {
+        pageLinks.referrer = node.url;
+        window.snowplow('setReferrerUrl', pageLinks.referrer);
+      }
+    }
+
+    addReferrersCacheEntry(referrers, pageLinks);
   }
 
   /**

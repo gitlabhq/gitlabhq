@@ -14,8 +14,8 @@ import {
 } from '../mock_data';
 
 const { id: groupId, path: groupPath } = currentGroup;
-const mockMilestonesPath = 'mock-milestones';
-const mockLabelsPath = 'mock-labels';
+const mockMilestonesPath = 'mock-milestones.json';
+const mockLabelsPath = 'mock-labels.json';
 const mockRequestPath = 'some/cool/path';
 const mockFullPath = '/namespace/-/analytics/value_stream_analytics/value_streams';
 const mockEndpoints = {
@@ -83,8 +83,8 @@ describe('Project Value Stream Analytics actions', () => {
     const payload = { endpoints: mockEndpoints };
     const mockFilterEndpoints = {
       groupEndpoint: 'foo',
-      labelsEndpoint: 'mock-labels.json',
-      milestonesEndpoint: 'mock-milestones.json',
+      labelsEndpoint: mockLabelsPath,
+      milestonesEndpoint: mockMilestonesPath,
       projectEndpoint: '/namespace/-/analytics/value_stream_analytics/value_streams',
     };
 

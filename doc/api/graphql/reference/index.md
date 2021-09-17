@@ -1430,6 +1430,28 @@ Input type: `CustomerRelationsOrganizationCreateInput`
 | <a id="mutationcustomerrelationsorganizationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcustomerrelationsorganizationcreateorganization"></a>`organization` | [`CustomerRelationsOrganization`](#customerrelationsorganization) | Organization after the mutation. |
 
+### `Mutation.customerRelationsOrganizationUpdate`
+
+Input type: `CustomerRelationsOrganizationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationsorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationsorganizationupdatedefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
+| <a id="mutationcustomerrelationsorganizationupdatedescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
+| <a id="mutationcustomerrelationsorganizationupdateid"></a>`id` | [`CustomerRelationsOrganizationID!`](#customerrelationsorganizationid) | Global ID of the organization. |
+| <a id="mutationcustomerrelationsorganizationupdatename"></a>`name` | [`String`](#string) | Name of the organization. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationsorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationsorganizationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationcustomerrelationsorganizationupdateorganization"></a>`organization` | [`CustomerRelationsOrganization!`](#customerrelationsorganization) | Organization after the mutation. |
+
 ### `Mutation.dastOnDemandScanCreate`
 
 Input type: `DastOnDemandScanCreateInput`
@@ -16653,6 +16675,12 @@ An example `ContainerRepositoryID` is: `"gid://gitlab/ContainerRepository/1"`.
 A `CustomEmojiID` is a global ID. It is encoded as a string.
 
 An example `CustomEmojiID` is: `"gid://gitlab/CustomEmoji/1"`.
+
+### `CustomerRelationsOrganizationID`
+
+A `CustomerRelationsOrganizationID` is a global ID. It is encoded as a string.
+
+An example `CustomerRelationsOrganizationID` is: `"gid://gitlab/CustomerRelations::Organization/1"`.
 
 ### `DastProfileID`
 

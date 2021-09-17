@@ -106,7 +106,8 @@ To use the KAS:
 
 ### Define a configuration repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the Agent manifest configuration can be added to multiple directories (or subdirectories) of its repository.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the Agent manifest configuration can be added to multiple directories (or subdirectories) of its repository.
+> - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
 To configure an Agent, you need:
 
@@ -125,6 +126,7 @@ In your repository, add the Agent configuration file under:
 Your `config.yaml` file specifies all configurations of the Agent, such as:
 
 - The manifest projects to synchronize.
+- The groups that can access this Agent via the [CI/CD Tunnel](ci_cd_tunnel.md).
 - The address of the `hubble-relay` for the Network Security policy integrations.
 
 As an example, a minimal Agent configuration that sets up only the manifest

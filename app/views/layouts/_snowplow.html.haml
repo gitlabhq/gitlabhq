@@ -11,3 +11,4 @@
 
     gl = window.gl || {};
     gl.snowplowStandardContext = #{Gitlab::Tracking::StandardContext.new.to_context.to_json.to_json}
+    gl.snowplowPseudonymizedPageUrl = #{masked_page_url.to_json};

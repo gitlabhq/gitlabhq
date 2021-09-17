@@ -6,6 +6,8 @@ module Routing
       return unless Feature.enabled?(:mask_page_urls, type: :ops)
 
       mask_params(Rails.application.routes.recognize_path(request.original_fullpath))
+    rescue ActionController::RoutingError, URI::InvalidURIError
+      nil
     end
 
     private
@@ -19,30 +21,36 @@ module Routing
     end
 
     def url_without_namespace_type(request_params)
-      masked_url = "#{request.protocol}#{request.host_with_port}/"
+      masked_url = "#{request.protocol}#{request.host_with_port}"
 
       masked_url += case request_params[:controller]
                     when 'groups'
-                      "namespace:#{group.id}/"
+                      "/namespace:#{group.id}"
                     when 'projects'
-                      "namespace:#{project.namespace.id}/project:#{project.id}/"
+                      "/namespace:#{project.namespace.id}/project:#{project.id}"
                     when 'root'
                       ''
+                    else
+                      "#{request.path}"
                     end
+
+      masked_url += request.query_string.present? ? "?#{request.query_string}" : ''
 
       masked_url
     end
 
     def url_with_namespace_type(request_params, namespace_type)
-      masked_url = "#{request.protocol}#{request.host_with_port}/"
+      masked_url = "#{request.protocol}#{request.host_with_port}"
 
       if request_params.has_key?(:project_id)
-        masked_url += "namespace:#{project.namespace.id}/project:#{project.id}/-/#{namespace_type}/"
+        masked_url += "/namespace:#{project.namespace.id}/project:#{project.id}/-/#{namespace_type}"
       end
 
       if request_params.has_key?(:id)
-        masked_url += namespace_type == 'blob' ? ':repository_path' : request_params[:id]
+        masked_url += namespace_type == 'blob' ? '/:repository_path' : "/#{request_params[:id]}"
       end
+
+      masked_url += request.query_string.present? ? "?#{request.query_string}" : ''
 
       masked_url
     end

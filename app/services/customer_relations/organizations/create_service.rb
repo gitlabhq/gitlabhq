@@ -2,7 +2,7 @@
 
 module CustomerRelations
   module Organizations
-    class CreateService < ::BaseGroupService
+    class CreateService < BaseService
       # returns the created organization
       def execute
         return error_no_permissions unless allowed?
@@ -17,14 +17,6 @@ module CustomerRelations
       end
 
       private
-
-      def allowed?
-        current_user&.can?(:admin_organization, group)
-      end
-
-      def error(message)
-        ServiceResponse.error(message: message)
-      end
 
       def error_no_permissions
         error('You have insufficient permissions to create an organization for this group')

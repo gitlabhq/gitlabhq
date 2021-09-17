@@ -38,15 +38,10 @@ module Mutations
         def resolve(args)
           group = authorized_find!(id: args[:group_id])
 
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, group)
+          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, group, default_enabled: :yaml)
 
           result = ::CustomerRelations::Organizations::CreateService.new(group: group, current_user: current_user, params: args).execute
-
-          if result.success?
-            { organization: result.payload }
-          else
-            { errors: result.errors }
-          end
+          { organization: result.payload, errors: result.errors }
         end
 
         def find_object(id:)

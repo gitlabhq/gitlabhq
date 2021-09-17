@@ -16,9 +16,6 @@ RSpec.describe 'Visual tokens', :js do
 
   let(:filtered_search) { find('.filtered-search') }
   let(:filter_author_dropdown) { find("#js-dropdown-author .filter-dropdown") }
-  let(:filter_assignee_dropdown) { find("#js-dropdown-assignee .filter-dropdown") }
-  let(:filter_milestone_dropdown) { find("#js-dropdown-milestone .filter-dropdown") }
-  let(:filter_label_dropdown) { find("#js-dropdown-label .filter-dropdown") }
 
   def is_input_focused
     page.evaluate_script("document.activeElement.classList.contains('filtered-search')")

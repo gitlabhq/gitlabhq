@@ -33,7 +33,7 @@ RSpec.describe 'Group issues page' do
         # However,`:js` option forces Capybara to use Selenium that doesn't support`:has`
         context "it has an RSS button with current_user's feed token" do
           it "shows the RSS button with current_user's feed token" do
-            expect(find('[data-testid="rss-feed-link"]')['href']).to have_content(user.feed_token)
+            expect(page).to have_link 'Subscribe to RSS feed', href: /feed_token=#{user.feed_token}/
           end
         end
       end
@@ -46,7 +46,7 @@ RSpec.describe 'Group issues page' do
         # Note: please see the above
         context "it has an RSS button without a feed token" do
           it "shows the RSS button without a feed token" do
-            expect(find('[data-testid="rss-feed-link"]')['href']).not_to have_content('feed_token')
+            expect(page).not_to have_link 'Subscribe to RSS feed', href: /feed_token/
           end
         end
       end

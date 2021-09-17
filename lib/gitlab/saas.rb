@@ -24,6 +24,18 @@ module Gitlab
     def self.registry_prefix
       'registry.gitlab.com'
     end
+
+    def self.customer_support_url
+      'https://support.gitlab.com'
+    end
+
+    def self.customer_license_support_url
+      'https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293'
+    end
+
+    def self.gitlab_com_status_url
+      'https://status.gitlab.com'
+    end
   end
 end
 

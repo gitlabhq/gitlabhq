@@ -20,7 +20,7 @@ To see DevOps Report:
 ## DevOps Score
 
 NOTE:
-To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping).
+To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). This is because DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
 
 You can use the DevOps score to compare your DevOps status to other organizations.
 

@@ -56,7 +56,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'with controller for groups with subgroups and project' do
-      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}/project:#{project.id}/"}
+      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}/project:#{project.id}"}
 
       before do
         allow(helper).to receive(:group).and_return(subgroup)
@@ -73,7 +73,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'with controller for groups and subgroups' do
-      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}/"}
+      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}"}
 
       before do
         allow(helper).to receive(:group).and_return(subgroup)
@@ -102,10 +102,25 @@ RSpec.describe ::Routing::PseudonymizationHelper do
 
       it_behaves_like 'masked url'
     end
+
+    context 'with non identifiable controller' do
+      let(:masked_url) { "http://test.host/dashboard/issues?assignee_username=root" }
+
+      before do
+        controller.request.path = '/dashboard/issues'
+        controller.request.query_string = 'assignee_username=root'
+        allow(Rails.application.routes).to receive(:recognize_path).and_return({
+          controller: 'dashboard',
+          action: 'issues'
+        })
+      end
+
+      it_behaves_like 'masked url'
+    end
   end
 
   describe 'when url has no params to mask' do
-    let(:root_url) { 'http://test.host/' }
+    let(:root_url) { 'http://test.host' }
 
     context 'returns root url' do
       it 'masked_page_url' do

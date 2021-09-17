@@ -6,6 +6,8 @@ import {
   LOAD_ACTION_ATTR_SELECTOR,
   DEPRECATED_EVENT_ATTR_SELECTOR,
   DEPRECATED_LOAD_EVENT_ATTR_SELECTOR,
+  URLS_CACHE_STORAGE_KEY,
+  REFERRER_TTL,
 } from './constants';
 
 export const addExperimentContext = (opts) => {
@@ -99,4 +101,26 @@ export const renameKey = (o, oldKey, newKey) => {
   delete Object.assign(ret, o, { [newKey]: o[oldKey] })[oldKey];
 
   return ret;
+};
+
+export const filterOldReferrersCacheEntries = (cache) => {
+  const now = Date.now();
+
+  return cache.filter((entry) => entry.timestamp && entry.timestamp > now - REFERRER_TTL);
+};
+
+export const getReferrersCache = () => {
+  try {
+    const referrers = JSON.parse(window.localStorage.getItem(URLS_CACHE_STORAGE_KEY) || '[]');
+
+    return filterOldReferrersCacheEntries(referrers);
+  } catch {
+    return [];
+  }
+};
+
+export const addReferrersCacheEntry = (cache, entry) => {
+  const referrers = JSON.stringify([{ ...entry, timestamp: Date.now() }, ...cache]);
+
+  window.localStorage.setItem(URLS_CACHE_STORAGE_KEY, referrers);
 };

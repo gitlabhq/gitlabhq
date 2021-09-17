@@ -149,5 +149,3 @@ export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
       description: popoverContent[key]?.description || '',
     };
   });
-
-export const appendExtension = (path) => (path.indexOf('.') > -1 ? path : `${path}.json`);
