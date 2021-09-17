@@ -5,6 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Learn how to contribute to GitLab Documentation.
 ---
 
+<!---
+  The clean_redirects Rake task in the gitlab-docs repository manually
+  excludes this file. If the line containing remove_date is moved to a new
+  document, update the Rake task with the new location.
+
+  https://gitlab.com/gitlab-org/gitlab-docs/-/blob/1979f985708d64558bb487fbe9ed5273729c01b7/Rakefile#L306
+--->
+
 # Redirects in GitLab documentation
 
 Moving or renaming a document is the same as changing its location. Be sure

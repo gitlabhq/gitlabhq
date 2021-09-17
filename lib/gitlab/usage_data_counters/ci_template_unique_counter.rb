@@ -21,8 +21,6 @@ module Gitlab::UsageDataCounters
 
     class << self
       def track_unique_project_event(project_id:, template:, config_source:)
-        return unless TEMPLATE_TO_EVENT[template] || Feature.enabled?(:track_all_ci_template_inclusions, default_enabled: :yaml)
-
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(ci_template_event_name(template, config_source), values: project_id)
       end
 

@@ -90,29 +90,11 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
           end.not_to raise_error
         end
 
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(track_all_ci_template_inclusions: false)
-          end
+        it "tracks #{template}" do
+          expected_template_event_name = described_class.ci_template_event_name(template, :repository_source)
+          expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(expected_template_event_name, values: project_id)
 
-          it "does not track #{template}" do
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to(receive(:track_event))
-
-            described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
-          end
-        end
-
-        context 'when feature flag is enabled' do
-          before do
-            stub_feature_flags(track_all_ci_template_inclusions: true)
-          end
-
-          it "tracks #{template}" do
-            expected_template_event_name = described_class.ci_template_event_name(template, :repository_source)
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(expected_template_event_name, values: project_id)
-
-            described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
-          end
+          described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
         end
       end
     end

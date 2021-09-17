@@ -390,7 +390,7 @@ end
 
 **Creating a new table when we have two foreign keys:**
 
-Only one foreign key should be created per migration. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
+Only one foreign key should be created per transaction. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
 
 For this, we need three migrations:
 
