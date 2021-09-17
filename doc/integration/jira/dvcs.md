@@ -234,6 +234,14 @@ To resolve this issue:
 
 [Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.
 
+### `410 : Gone` error when connecting to Jira
+
+When you connect to Jira and synchronize repositories, you may receive a `410 : Gone` error.
+
+This issue occurs when you use the Jira DVCS connector and your integration is configured to use **GitHub Enterprise**.
+
+For more information and possible fixes, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340160).
+
 ### Fix synchronization issues
 
 If Jira displays incorrect information, such as deleted branches, you may have to

@@ -1,4 +1,3 @@
-import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   conanMetadata,
@@ -17,8 +16,6 @@ import {
   PACKAGE_TYPE_COMPOSER,
   PACKAGE_TYPE_PYPI,
 } from '~/packages_and_registries/package_registry/constants';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 const mavenPackage = { packageType: PACKAGE_TYPE_MAVEN, metadata: mavenMetadata() };
 const conanPackage = { packageType: PACKAGE_TYPE_CONAN, metadata: conanMetadata() };
@@ -39,8 +36,7 @@ describe('Package Additional Metadata', () => {
     wrapper = shallowMountExtended(component, {
       propsData: { ...defaultProps, ...props },
       stubs: {
-        DetailsRow,
-        GlSprintf,
+        component: { template: '<div data-testid="component-is"></div>' },
       },
     });
   };
@@ -52,16 +48,7 @@ describe('Package Additional Metadata', () => {
 
   const findTitle = () => wrapper.findByTestId('title');
   const findMainArea = () => wrapper.findByTestId('main');
-  const findNugetSource = () => wrapper.findByTestId('nuget-source');
-  const findNugetLicense = () => wrapper.findByTestId('nuget-license');
-  const findConanRecipe = () => wrapper.findByTestId('conan-recipe');
-  const findMavenApp = () => wrapper.findByTestId('maven-app');
-  const findMavenGroup = () => wrapper.findByTestId('maven-group');
-  const findElementLink = (container) => container.findComponent(GlLink);
-  const findComposerTargetSha = () => wrapper.findByTestId('composer-target-sha');
-  const findComposerTargetShaCopyButton = () => wrapper.findComponent(ClipboardButton);
-  const findComposerJson = () => wrapper.findByTestId('composer-json');
-  const findPypiRequiredPython = () => wrapper.findByTestId('pypi-required-python');
+  const findComponentIs = () => wrapper.findByTestId('component-is');
 
   it('has the correct title', () => {
     mountComponent();
@@ -87,98 +74,11 @@ describe('Package Additional Metadata', () => {
 
       expect(findTitle().exists()).toBe(visible);
       expect(findMainArea().exists()).toBe(visible);
+      expect(findComponentIs().exists()).toBe(visible);
+
+      if (visible) {
+        expect(findComponentIs().props('packageEntity')).toEqual(packageEntity);
+      }
     },
   );
-
-  describe('nuget metadata', () => {
-    beforeEach(() => {
-      mountComponent({ packageEntity: nugetPackage });
-    });
-
-    it.each`
-      name         | finderFunction      | text                                           | link            | icon
-      ${'source'}  | ${findNugetSource}  | ${'Source project located at projectUrl'}      | ${'projectUrl'} | ${'project'}
-      ${'license'} | ${findNugetLicense} | ${'License information located at licenseUrl'} | ${'licenseUrl'} | ${'license'}
-    `('$name element', ({ finderFunction, text, link, icon }) => {
-      const element = finderFunction();
-      expect(element.exists()).toBe(true);
-      expect(element.text()).toBe(text);
-      expect(element.props('icon')).toBe(icon);
-      expect(findElementLink(element).attributes('href')).toBe(nugetPackage.metadata[link]);
-    });
-  });
-
-  describe('conan metadata', () => {
-    beforeEach(() => {
-      mountComponent({ packageEntity: conanPackage });
-    });
-
-    it.each`
-      name        | finderFunction     | text                                                       | icon
-      ${'recipe'} | ${findConanRecipe} | ${'Recipe: package-8/1.0.0@gitlab-org+gitlab-test/stable'} | ${'information-o'}
-    `('$name element', ({ finderFunction, text, icon }) => {
-      const element = finderFunction();
-      expect(element.exists()).toBe(true);
-      expect(element.text()).toBe(text);
-      expect(element.props('icon')).toBe(icon);
-    });
-  });
-
-  describe('maven metadata', () => {
-    beforeEach(() => {
-      mountComponent();
-    });
-
-    it.each`
-      name       | finderFunction    | text                     | icon
-      ${'app'}   | ${findMavenApp}   | ${'App name: appName'}   | ${'information-o'}
-      ${'group'} | ${findMavenGroup} | ${'App group: appGroup'} | ${'information-o'}
-    `('$name element', ({ finderFunction, text, icon }) => {
-      const element = finderFunction();
-      expect(element.exists()).toBe(true);
-      expect(element.text()).toBe(text);
-      expect(element.props('icon')).toBe(icon);
-    });
-  });
-
-  describe('composer metadata', () => {
-    beforeEach(() => {
-      mountComponent({ packageEntity: composerPackage });
-    });
-
-    it.each`
-      name               | finderFunction           | text                                                      | icon
-      ${'target-sha'}    | ${findComposerTargetSha} | ${'Target SHA: b83d6e391c22777fca1ed3012fce84f633d7fed0'} | ${'information-o'}
-      ${'composer-json'} | ${findComposerJson}      | ${'Composer.json with license: MIT and version: 1.0.0'}   | ${'information-o'}
-    `('$name element', ({ finderFunction, text, icon }) => {
-      const element = finderFunction();
-      expect(element.exists()).toBe(true);
-      expect(element.text()).toBe(text);
-      expect(element.props('icon')).toBe(icon);
-    });
-
-    it('target-sha has a copy button', () => {
-      expect(findComposerTargetShaCopyButton().exists()).toBe(true);
-      expect(findComposerTargetShaCopyButton().props()).toMatchObject({
-        text: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
-        title: 'Copy target SHA',
-      });
-    });
-  });
-
-  describe('pypi metadata', () => {
-    beforeEach(() => {
-      mountComponent({ packageEntity: pypiPackage });
-    });
-
-    it.each`
-      name                      | finderFunction            | text                        | icon
-      ${'pypi-required-python'} | ${findPypiRequiredPython} | ${'Required Python: 1.0.0'} | ${'information-o'}
-    `('$name element', ({ finderFunction, text, icon }) => {
-      const element = finderFunction();
-      expect(element.exists()).toBe(true);
-      expect(element.text()).toBe(text);
-      expect(element.props('icon')).toBe(icon);
-    });
-  });
 });

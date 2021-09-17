@@ -140,7 +140,7 @@ describe('Job App', () => {
 
         it('should render provided job information', () => {
           expect(wrapper.find('.header-main-content').text().replace(/\s+/g, ' ').trim()).toContain(
-            'passed Job #4757 triggered 1 year ago by Root',
+            'passed Job test triggered 1 year ago by Root',
           );
         });
 
@@ -154,7 +154,7 @@ describe('Job App', () => {
           setupAndMount().then(() => {
             expect(
               wrapper.find('.header-main-content').text().replace(/\s+/g, ' ').trim(),
-            ).toContain('passed Job #4757 created 3 weeks ago by Root');
+            ).toContain('passed Job test created 3 weeks ago by Root');
           }));
       });
     });

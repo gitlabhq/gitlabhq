@@ -37,8 +37,9 @@ export default {
       required: true,
     },
     itemId: {
-      type: Number,
-      required: true,
+      type: String,
+      required: false,
+      default: '',
     },
     time: {
       type: String,
@@ -86,6 +87,13 @@ export default {
     message() {
       return this.user?.status?.message;
     },
+    item() {
+      if (this.itemId) {
+        return `${this.itemName} #${this.itemId}`;
+      }
+
+      return this.itemName;
+    },
   },
 
   methods: {
@@ -106,7 +114,7 @@ export default {
     <section class="header-main-content gl-mr-3">
       <ci-icon-badge :status="status" />
 
-      <strong data-testid="ci-header-item-text"> {{ itemName }} #{{ itemId }} </strong>
+      <strong data-testid="ci-header-item-text">{{ item }}</strong>
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('triggered') }}</template>
       <template v-else>{{ __('created') }}</template>

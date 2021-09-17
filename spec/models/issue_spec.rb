@@ -1435,19 +1435,19 @@ RSpec.describe Issue do
   describe 'scheduling rebalancing' do
     before do
       allow_next_instance_of(RelativePositioning::Mover) do |mover|
-        allow(mover).to receive(:move) { raise ActiveRecord::QueryCanceled }
+        allow(mover).to receive(:move) { raise RelativePositioning::NoSpaceLeft }
       end
     end
 
     shared_examples 'schedules issues rebalancing' do
       let(:issue) { build_stubbed(:issue, relative_position: 100, project: project) }
 
-      it 'schedules rebalancing if we time-out when moving' do
+      it 'schedules rebalancing if there is no space left' do
         lhs = build_stubbed(:issue, relative_position: 99, project: project)
         to_move = build(:issue, project: project)
         expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project_id, namespace_id)
 
-        expect { to_move.move_between(lhs, issue) }.to raise_error(ActiveRecord::QueryCanceled)
+        expect { to_move.move_between(lhs, issue) }.to raise_error(RelativePositioning::NoSpaceLeft)
       end
     end
 

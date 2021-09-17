@@ -90,7 +90,7 @@ RSpec.describe 'Project Jobs Permissions' do
 
         it_behaves_like 'recent job page details responds with status', 200 do
           it 'renders job details', :js do
-            expect(page).to have_content "Job ##{job.id}"
+            expect(page).to have_content "Job #{job.name}"
             expect(page).to have_css '.log-line'
           end
         end

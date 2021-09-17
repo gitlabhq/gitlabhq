@@ -276,6 +276,10 @@ $well-inner-border: $gray-200;
   color: $gray-900;
 }
 
+.gl-label-text-dark.gl-label-text-dark {
+  color: $gray-10;
+}
+
 // This applies to "gl-labels" from "gitlab-ui"
 .gl-label.gl-label-scoped.gl-label-text-dark,
 .gl-label.gl-label-scoped.gl-label-text-light {

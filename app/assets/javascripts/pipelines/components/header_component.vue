@@ -218,7 +218,7 @@ export default {
       :status="pipeline.detailedStatus"
       :time="pipeline.createdAt"
       :user="pipeline.user"
-      :item-id="Number(pipelineId)"
+      :item-id="pipelineId"
       item-name="Pipeline"
     >
       <gl-button

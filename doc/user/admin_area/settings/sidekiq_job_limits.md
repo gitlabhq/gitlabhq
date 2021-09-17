@@ -22,7 +22,7 @@ To access Sidekiq job size limits:
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Sidekiq job size limits**.
 1. Adjust the compression threshold or size limit. The compression can
-   be disabled by selecting "Track" mode.
+   be disabled by selecting the **Track** mode.
 
 ## Available settings
 

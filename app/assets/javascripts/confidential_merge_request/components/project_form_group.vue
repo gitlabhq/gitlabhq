@@ -96,12 +96,23 @@ export default {
       }
     },
   },
+  i18n: {
+    project: __('Project'),
+    privateForkSelected: __(
+      "To protect this issue's confidentiality, a private fork of this project was selected.",
+    ),
+    noForks: __('No forks are available to you.'),
+    forkTheProject: __(
+      `To protect this issue's confidentiality, %{linkStart}fork this project%{linkEnd} and set the fork's visibility to private.`,
+    ),
+    readMore: __('Read more'),
+  },
 };
 </script>
 
 <template>
   <div class="confidential-merge-request-fork-group form-group">
-    <label>{{ __('Project') }}</label>
+    <label>{{ $options.i18n.project }}</label>
     <div>
       <dropdown
         v-if="projects.length"
@@ -111,25 +122,13 @@ export default {
       />
       <p class="text-muted mt-1 mb-0">
         <template v-if="projects.length">
-          {{
-            __(
-              "To protect this issue's confidentiality, a private fork of this project was selected.",
-            )
-          }}
+          {{ $options.i18n.privateForkSelected }}
         </template>
         <template v-else>
-          {{ __('No forks are available to you.') }}<br />
-          <gl-sprintf
-            :message="
-              __(
-                `To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private.`,
-              )
-            "
-          >
-            <template #forkLink>
-              <a :href="newForkPath" target="_blank" class="help-link">{{
-                __('fork this project')
-              }}</a>
+          {{ $options.i18n.noForks }}<br />
+          <gl-sprintf :message="$options.i18n.forkTheProject">
+            <template #link="{ content }">
+              <a :href="newForkPath" target="_blank" class="help-link">{{ content }}</a>
             </template>
           </gl-sprintf>
         </template>
@@ -138,7 +137,7 @@ export default {
           class="w-auto p-0 d-inline-block text-primary bg-transparent"
           target="_blank"
         >
-          <span class="sr-only">{{ __('Read more') }}</span>
+          <span class="sr-only">{{ $options.i18n.readMore }}</span>
           <gl-icon name="question-o" />
         </gl-link>
       </p>

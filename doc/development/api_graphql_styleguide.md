@@ -532,7 +532,7 @@ Example:
 ```ruby
 field :foo, GraphQL::Types::String,
       null: true,
-      description: 'Some test field. Will always return `null`' \
+      description: 'Some test field. Returns `null`' \
                    'if `my_feature_flag` feature flag is disabled.'
 
 def foo

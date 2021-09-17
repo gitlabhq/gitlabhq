@@ -41,9 +41,9 @@
         echo "Adopting Helm v2 manifests from $release"
         # some resource kinds must be listed explicitly https://github.com/kubernetes/kubernetes/issues/42885
         for name in $(kubectl -n "$KUBE_NAMESPACE" get all,ingress,daemonset -o name -l chart="$chart"); do
-          kubectl annotate --overwrite "$name" meta.helm.sh/release-name="$release"
-          kubectl annotate --overwrite "$name" meta.helm.sh/release-namespace="$KUBE_NAMESPACE"
-          kubectl label --overwrite "$name" app.kubernetes.io/managed-by=Helm
+          kubectl annotate -n "$KUBE_NAMESPACE" --overwrite "$name" meta.helm.sh/release-name="$release"
+          kubectl annotate -n "$KUBE_NAMESPACE" --overwrite "$name" meta.helm.sh/release-namespace="$KUBE_NAMESPACE"
+          kubectl label -n "$KUBE_NAMESPACE" --overwrite "$name" app.kubernetes.io/managed-by=Helm
         done
       done
     # migrate each release

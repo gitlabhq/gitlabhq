@@ -5,7 +5,7 @@ import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import CodeQualityWalkthrough from '~/code_quality_walkthrough/components/step.vue';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
-import { sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import delayedJobMixin from '../mixins/delayed_job_mixin';
 import EmptyState from './empty_state.vue';
@@ -126,6 +126,9 @@ export default {
     shouldRenderCodeQualityWalkthrough() {
       return this.job.status.group === 'failed-with-warnings';
     },
+    itemName() {
+      return sprintf(__('Job %{jobName}'), { jobName: this.job.name });
+    },
   },
   watch: {
     // Once the job log is loaded,
@@ -205,12 +208,11 @@ export default {
           <div class="build-header top-area">
             <ci-header
               :status="job.status"
-              :item-id="job.id"
               :time="headerTime"
               :user="job.user"
               :has-sidebar-button="true"
               :should-render-triggered-label="shouldRenderTriggeredLabel"
-              :item-name="__('Job')"
+              :item-name="itemName"
               @clickedSidebarButton="toggleSidebar"
             />
           </div>

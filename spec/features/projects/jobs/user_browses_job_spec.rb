@@ -21,7 +21,7 @@ RSpec.describe 'User browses a job', :js do
   it 'erases the job log', :js do
     wait_for_requests
 
-    expect(page).to have_content("Job ##{build.id}")
+    expect(page).to have_content("Job #{build.name}")
     expect(page).to have_css('.job-log')
 
     # scroll to the top of the page first

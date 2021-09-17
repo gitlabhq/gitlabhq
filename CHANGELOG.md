@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.2.4 (2021-09-17)
+
+### Fixed (2 changes)
+
+- [Fix Elastic::MigrationWorker current_migration (2nd attempt)](gitlab-org/gitlab@65bf8636d35edc6f580c7f09e1ffafc46ca5fbdb) ([merge request](gitlab-org/gitlab!70494)) **GitLab Enterprise Edition**
+- [Removes cleanup job from Terraform.latest](gitlab-org/gitlab@6085d73d1a88aa98310f775fe2ff74584948e1a9) ([merge request](gitlab-org/gitlab!70494))
+
 ## 14.2.3 (2021-09-01)
 
 ### Fixed (4 changes)

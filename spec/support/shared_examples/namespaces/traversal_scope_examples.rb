@@ -69,13 +69,19 @@ RSpec.shared_examples 'namespace traversal scopes' do
     context 'when hierarchy_order is ascending' do
       subject { described_class.where(id: [nested_group_1, nested_group_2]).self_and_ancestors(hierarchy_order: :asc) }
 
-      it { is_expected.to eq [nested_group_1, nested_group_2, group_1, group_2] }
+      # Recursive order per level is not defined.
+      it { is_expected.to contain_exactly(nested_group_1, nested_group_2, group_1, group_2) }
+      it { expect(subject[0, 2]).to contain_exactly(nested_group_1, nested_group_2) }
+      it { expect(subject[2, 2]).to contain_exactly(group_1, group_2) }
     end
 
     context 'when hierarchy_order is descending' do
       subject { described_class.where(id: [nested_group_1, nested_group_2]).self_and_ancestors(hierarchy_order: :desc) }
 
-      it { is_expected.to eq [group_1, group_2, nested_group_1, nested_group_2] }
+      # Recursive order per level is not defined.
+      it { is_expected.to contain_exactly(nested_group_1, nested_group_2, group_1, group_2) }
+      it { expect(subject[0, 2]).to contain_exactly(group_1, group_2) }
+      it { expect(subject[2, 2]).to contain_exactly(nested_group_1, nested_group_2) }
     end
   end
 

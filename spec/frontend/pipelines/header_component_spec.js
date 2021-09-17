@@ -24,7 +24,7 @@ describe('Pipeline details header', () => {
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   const defaultProvideOptions = {
-    pipelineId: 14,
+    pipelineId: '14',
     pipelineIid: 1,
     paths: {
       pipelinesPath: '/namespace/my-project/-/pipelines',

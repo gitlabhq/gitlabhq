@@ -19351,6 +19351,9 @@ msgstr ""
 msgid "Job"
 msgstr ""
 
+msgid "Job %{jobName}"
+msgstr ""
+
 msgid "Job Failed #%{build_id}"
 msgstr ""
 
@@ -35307,7 +35310,7 @@ msgstr ""
 msgid "To preserve performance only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are displayed."
 msgstr ""
 
-msgid "To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
+msgid "To protect this issue's confidentiality, %{linkStart}fork this project%{linkEnd} and set the fork's visibility to private."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, a private fork of this project was selected."
@@ -39909,9 +39912,6 @@ msgid "for this project"
 msgstr ""
 
 msgid "fork"
-msgstr ""
-
-msgid "fork this project"
 msgstr ""
 
 msgid "from"
