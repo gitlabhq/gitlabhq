@@ -368,7 +368,7 @@ You can then access your GitLab instance at `http://198.51.100.1/` and `https://
 
 ### Expose GitLab on different ports
 
-GitLab will occupy [some ports](../administration/package-information/defaults.md)
+GitLab will occupy [some ports](../administration/package_information/defaults.md)
 inside the container.
 
 If you want to use a different host port than `80` (HTTP) or `443` (HTTPS),

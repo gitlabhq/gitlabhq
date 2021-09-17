@@ -31,6 +31,10 @@ run) shouldn't impact GitLab availability. To avoid or identify issues,
 experiments are initially deployed to a small number of users. Regardless,
 experiments still need tests.
 
+Experiments must have corresponding [frontend or feature tests](../testing_guide/index.md) to ensure they
+exist in the application. These tests should help prevent the experiment code from
+being removed before the [experiment cleanup process](https://about.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-cleanup-issue) starts.
+
 If, as a reviewer or maintainer, you find code that would usually fail review
 but is acceptable for now, mention your concerns with a note that there's no
 need to change the code. The author can then add a comment to this piece of code

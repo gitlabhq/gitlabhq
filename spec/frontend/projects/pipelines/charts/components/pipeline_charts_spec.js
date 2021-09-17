@@ -60,7 +60,7 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
       expect(chart.props('yAxisTitle')).toBe('Minutes');
       expect(chart.props('xAxisTitle')).toBe('Commit');
       expect(chart.props('bars')).toBe(wrapper.vm.timesChartTransformedData);
-      expect(chart.props('option')).toBe(wrapper.vm.$options.timesChartOptions);
+      expect(chart.props('option')).toBe(wrapper.vm.chartOptions);
     });
   });
 

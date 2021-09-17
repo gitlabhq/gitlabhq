@@ -286,7 +286,7 @@ To delete these references to missing local artifacts (`job.log` files):
 
    ```ruby
    artifacts_deleted = 0
-   ::Ci::JobArtifact.all.each do |artifact|                       ### Iterate artifacts
+   ::Ci::JobArtifact.find_each do |artifact|                       ### Iterate artifacts
    #  next if artifact.file.filename != "job.log"                 ### Uncomment if only `job.log` files' references are to be processed
      next if artifact.file.exists?                                ### Skip if the file reference is valid
      artifacts_deleted += 1

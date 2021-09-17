@@ -21,7 +21,7 @@ Before configuring Consul:
 
 1. Review the [reference architecture](reference_architectures/index.md#available-reference-architectures)
    documentation to determine the number of Consul server nodes you should have.
-1. If necessary, ensure the [appropriate ports are open](package-information/defaults.md#ports) in your firewall.
+1. If necessary, ensure the [appropriate ports are open](package_information/defaults.md#ports) in your firewall.
 
 ## Configure the Consul nodes
 

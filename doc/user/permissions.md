@@ -196,7 +196,10 @@ The following table lists project permissions available for each role:
 | [Test cases](../ci/test_cases/index.md):<br>Move                                                                        |          | ✓        | ✓         | ✓          | ✓     |
 | [Test cases](../ci/test_cases/index.md):<br>Reopen                                                                      |          | ✓        | ✓         | ✓          | ✓     |
 
-1. Guest users are able to perform this action on public and internal projects, but not private projects. This doesn't apply to [external users](#external-users) where explicit access must be given even if the project is internal.
+1. On self-managed GitLab instances, guest users are able to perform this action only on
+   public and internal projects (not on private projects). [External users](#external-users)
+   must be given explicit access even if the project is internal. For GitLab.com, see the
+   [GitLab.com visibility settings](gitlab_com/index.md#visibility-settings).
 1. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves.
 1. If **Public pipelines** is enabled in **Project Settings > CI/CD**.
 1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).

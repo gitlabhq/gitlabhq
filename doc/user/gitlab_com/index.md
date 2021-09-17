@@ -136,6 +136,7 @@ the related documentation.
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited |
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
+| [Max pipelines per schedule](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day) | `24` for Free tier, `288` for all paid tiers | Unlimited |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 | Max test cases per [unit test report](../../ci/unit_test_reports.md) | `500_000` | Unlimited |
 | [Max registered runners](../../administration/instance_limits.md#number-of-registered-runners-per-scope) | `50` per-project and per-group for Free tier,<br/>`1_000` per-group for all paid tiers / `1_000` per-project for all paid tiers | `1_000` per-group / `1_000` per-project |

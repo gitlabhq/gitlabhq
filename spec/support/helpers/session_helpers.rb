@@ -13,7 +13,7 @@ module SessionHelpers
     session_keys = get_session_keys
 
     expect(session_keys.size).to eq(1)
-    expect(get_ttl(session_keys.first)).to eq expiration
+    expect(get_ttl(session_keys.first)).to be_within(5).of(expiration)
   end
 
   def get_session_keys

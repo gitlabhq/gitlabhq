@@ -397,6 +397,31 @@ To set this limit for a self-managed installation, run the following in the
 Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 ```
 
+### Limit the number of pipelines created by a pipeline schedule per day
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323066) in GitLab 14.0.
+
+You can limit the number of pipelines that pipeline schedules can trigger per day.
+
+Schedules that try to run pipelines more frequently than the limit are slowed to a maximum frequency.
+The frequency is calculated by dividing 1440 (the number minutes in a day) by the
+limit value. For example, for a maximum frequency of:
+
+- Once per minute, the limit must be `1440`.
+- Once per 10 minutes, the limit must be `144`.
+- Once per 60 minutes, the limit must be `24`
+
+There is no limit for self-managed instances by default.
+
+To set this limit to `1440` on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_daily_pipeline_schedule_triggers: 1440)
+```
+
+This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+
 ### Number of instance level variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216097) in GitLab 13.1.

@@ -450,7 +450,7 @@ In addition, there are a few circumstances where we would always run the full Je
 ### PostgreSQL versions testing
 
 Our test suite runs against PG12 as GitLab.com runs on PG12 and
-[Omnibus defaults to PG12 for new installs and upgrades](../administration/package-information/postgresql_versions.md),
+[Omnibus defaults to PG12 for new installs and upgrades](../administration/package_information/postgresql_versions.md),
 Our test suite is currently running against PG11, since GitLab.com still runs on PG11.
 
 We do run our test suite against PG11 on nightly scheduled pipelines as well as upon specific
@@ -467,7 +467,7 @@ database library changes in MRs and `main` pipelines (with the `rspec db-library
 
 #### Long-term plan
 
-We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administration/package-information/postgresql_versions.md):
+We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administration/package_information/postgresql_versions.md):
 
 | PostgreSQL version | 13.11 (April 2021)     | 13.12 (May 2021)       | 14.0 (June 2021?)      |
 | -------------------| ---------------------- | ---------------------- | ---------------------- |

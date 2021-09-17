@@ -137,7 +137,7 @@ MergeRequest.hideCloseButton = function () {
 MergeRequest.toggleDraftStatus = function (title, isReady) {
   if (isReady) {
     createFlash({
-      message: __('The merge request can now be merged.'),
+      message: __('Marked as ready. Merging is now allowed.'),
       type: 'notice',
     });
   }

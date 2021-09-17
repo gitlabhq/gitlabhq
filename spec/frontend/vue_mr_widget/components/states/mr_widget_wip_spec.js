@@ -64,7 +64,7 @@ describe('Wip', () => {
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
           expect(createFlash).toHaveBeenCalledWith({
-            message: 'The merge request can now be merged.',
+            message: 'Marked as ready. Merging is now allowed.',
             type: 'notice',
           });
           done();
