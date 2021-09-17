@@ -18,4 +18,14 @@ module OauthApplications
   def load_scopes
     @scopes ||= Doorkeeper.configuration.scopes
   end
+
+  def permitted_params
+    %i{name redirect_uri scopes confidential expire_access_tokens}
+  end
+
+  def application_params
+    params
+      .require(:doorkeeper_application)
+      .permit(*permitted_params)
+  end
 end

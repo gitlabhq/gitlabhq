@@ -21,7 +21,8 @@ module Gitlab
       end
 
       def composer_package_version_regex
-        @composer_package_version_regex ||= %r{^v?(\d+(\.(\d+|x))*(-.+)?)}.freeze
+        # see https://github.com/composer/semver/blob/31f3ea725711245195f62e54ffa402d8ef2fdba9/src/VersionParser.php#L215
+        @composer_package_version_regex ||= %r{\Av?((\d++)(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?)?\z}.freeze
       end
 
       def composer_dev_version_regex

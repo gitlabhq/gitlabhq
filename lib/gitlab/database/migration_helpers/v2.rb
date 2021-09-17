@@ -70,7 +70,9 @@ module Gitlab
         # If the lock was not acquired within the retry period, a last attempt is made without using +lock_timeout+.
         #
         # In order to retry the block, the method wraps the block into a transaction.
-        # Note it cannot be used inside an already open transaction and will raise an error in that case.
+        #
+        # When called inside an open transaction it will execute the block directly if lock retries are enabled
+        # with `enable_lock_retries!` at migration level, otherwise it will raise an error.
         #
         # ==== Examples
         #   # Invoking without parameters
@@ -101,14 +103,19 @@ module Gitlab
         # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
         def with_lock_retries(*args, **kwargs, &block)
           if transaction_open?
-            raise <<~EOF
+            if enable_lock_retries?
+              Gitlab::AppLogger.warn 'Lock retries already enabled, executing the block directly'
+              yield
+            else
+              raise <<~EOF
               #{__callee__} can not be run inside an already open transaction
 
               Use migration-level lock retries instead, see https://docs.gitlab.com/ee/development/migration_style_guide.html#retry-mechanism-when-acquiring-database-locks
-            EOF
+              EOF
+            end
+          else
+            super(*args, **kwargs.merge(allow_savepoints: false), &block)
           end
-
-          super(*args, **kwargs.merge(allow_savepoints: false), &block)
         end
 
         # Renames a column without requiring downtime.

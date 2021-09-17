@@ -924,4 +924,25 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/dists/stable/Release.gpg') }
     it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/pool/compon/a/pkg/file.name') }
   end
+
+  describe '.composer_package_version_regex' do
+    subject { described_class.composer_package_version_regex }
+
+    it { is_expected.to match('v1.2.3') }
+    it { is_expected.to match('v1.2.x') }
+    it { is_expected.to match('v1.2.X') }
+    it { is_expected.to match('1.2.3') }
+    it { is_expected.to match('1') }
+    it { is_expected.to match('v1') }
+    it { is_expected.to match('1.2') }
+    it { is_expected.to match('v1.2') }
+    it { is_expected.not_to match('1.2.3-beta') }
+    it { is_expected.not_to match('1.2.x-beta') }
+    it { is_expected.not_to match('1.2.X-beta') }
+    it { is_expected.not_to match('1.2.3-alpha.3') }
+    it { is_expected.not_to match('1./2.3') }
+    it { is_expected.not_to match('v1./2.3') }
+    it { is_expected.not_to match('../../../../../1.2.3') }
+    it { is_expected.not_to match('%2e%2e%2f1.2.3') }
+  end
 end

@@ -762,6 +762,7 @@ Board:
 - group_id
 - milestone_id
 - iteration_id
+- iteration_cadence_id
 - weight
 - name
 - hide_backlog_list

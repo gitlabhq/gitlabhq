@@ -400,6 +400,7 @@ excluded_attributes:
   boards:
     - :milestone_id
     - :iteration_id
+    - :iteration_cadence_id
   lists:
     - :board_id
     - :label_id

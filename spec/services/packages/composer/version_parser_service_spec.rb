@@ -12,6 +12,7 @@ RSpec.describe Packages::Composer::VersionParserService do
     where(:tagname, :branchname, :expected_version) do
       nil             | 'master'     | 'dev-master'
       nil             | 'my-feature' | 'dev-my-feature'
+      nil             | '12-feature' | 'dev-12-feature'
       nil             | 'v1'         | '1.x-dev'
       nil             | 'v1.x'       | '1.x-dev'
       nil             | 'v1.7.x'     | '1.7.x-dev'

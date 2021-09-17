@@ -683,6 +683,7 @@ boards:
 - destroyable_lists
 - milestone
 - iteration
+- iteration_cadence
 - board_labels
 - board_assignee
 - assignee

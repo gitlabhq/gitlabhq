@@ -38,8 +38,11 @@ Doorkeeper.configure do
   # authorization_code_expires_in 10.minutes
 
   # Access token expiration time (default 2 hours).
-  # If you want to disable expiration, set this to nil.
-  access_token_expires_in nil
+  # Until 15.0, applications can opt-out of expiring tokens.
+  # Removal issue: https://gitlab.com/gitlab-org/gitlab/-/issues/340848
+  custom_access_token_expires_in do |context|
+    context.client&.expire_access_tokens ? 2.hours : Float::INFINITY
+  end
 
   # Reuse access token for the same resource owner within an application (disabled by default)
   # Rationale: https://github.com/doorkeeper-gem/doorkeeper/issues/383

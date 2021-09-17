@@ -1075,6 +1075,7 @@ Input type: `CreateBoardInput`
 | <a id="mutationcreateboardgrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
 | <a id="mutationcreateboardhidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationcreateboardhideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
+| <a id="mutationcreateboarditerationcadenceid"></a>`iterationCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | ID of iteration cadence to be assigned to the board. |
 | <a id="mutationcreateboarditerationid"></a>`iterationId` | [`IterationID`](#iterationid) | ID of iteration to be assigned to the board. |
 | <a id="mutationcreateboardlabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationcreateboardlabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
@@ -4122,6 +4123,7 @@ Input type: `UpdateBoardInput`
 | <a id="mutationupdateboardhidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationupdateboardhideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="mutationupdateboardid"></a>`id` | [`BoardID!`](#boardid) | Board global ID. |
+| <a id="mutationupdateboarditerationcadenceid"></a>`iterationCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | ID of iteration cadence to be assigned to the board. |
 | <a id="mutationupdateboarditerationid"></a>`iterationId` | [`IterationID`](#iterationid) | ID of iteration to be assigned to the board. |
 | <a id="mutationupdateboardlabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationupdateboardlabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
@@ -7897,6 +7899,7 @@ Represents a project or group issue board.
 | <a id="boardhideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="boardid"></a>`id` | [`ID!`](#id) | ID (global ID) of the board. |
 | <a id="boarditeration"></a>`iteration` | [`Iteration`](#iteration) | Board iteration. |
+| <a id="boarditerationcadence"></a>`iterationCadence` | [`IterationCadence`](#iterationcadence) | Board iteration cadence. |
 | <a id="boardlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the board. (see [Connections](#connections)) |
 | <a id="boardmilestone"></a>`milestone` | [`Milestone`](#milestone) | Board milestone. |
 | <a id="boardname"></a>`name` | [`String`](#string) | Name of the board. |

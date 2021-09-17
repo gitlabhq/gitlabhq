@@ -10,19 +10,19 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
 
     let(:throttles) do
       {
-        throttle_unauthenticated_api: Gitlab::Throttle.unauthenticated_api_options,
+        throttle_unauthenticated_api: Gitlab::Throttle.options(:api, authenticated: false),
+        throttle_authenticated_api: Gitlab::Throttle.options(:api, authenticated: true),
         throttle_unauthenticated_web: Gitlab::Throttle.unauthenticated_web_options,
-        throttle_authenticated_api: Gitlab::Throttle.authenticated_api_options,
-        throttle_product_analytics_collector: { limit: 100, period: 60 },
         throttle_authenticated_web: Gitlab::Throttle.authenticated_web_options,
+        throttle_product_analytics_collector: { limit: 100, period: 60 },
         throttle_unauthenticated_protected_paths: Gitlab::Throttle.protected_paths_options,
         throttle_authenticated_protected_paths_api: Gitlab::Throttle.protected_paths_options,
         throttle_authenticated_protected_paths_web: Gitlab::Throttle.protected_paths_options,
-        throttle_unauthenticated_packages_api: Gitlab::Throttle.unauthenticated_packages_api_options,
-        throttle_authenticated_packages_api: Gitlab::Throttle.authenticated_packages_api_options,
+        throttle_unauthenticated_packages_api: Gitlab::Throttle.options(:packages_api, authenticated: false),
+        throttle_authenticated_packages_api: Gitlab::Throttle.options(:packages_api, authenticated: true),
         throttle_authenticated_git_lfs: Gitlab::Throttle.throttle_authenticated_git_lfs_options,
-        throttle_unauthenticated_files_api: Gitlab::Throttle.unauthenticated_files_api_options,
-        throttle_authenticated_files_api: Gitlab::Throttle.authenticated_files_api_options
+        throttle_unauthenticated_files_api: Gitlab::Throttle.options(:files_api, authenticated: false),
+        throttle_authenticated_files_api: Gitlab::Throttle.options(:files_api, authenticated: true)
       }
     end
 

@@ -1741,6 +1741,9 @@ msgstr ""
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
+msgid "Access tokens expire after 2 hours. A refresh token may be used at any time to generate a new access token. Non-expiring access tokens are deprecated. Clear this setting to enable backward compatibility."
+msgstr ""
+
 msgid "AccessDropdown|Deploy Keys"
 msgstr ""
 
@@ -29142,6 +29145,9 @@ msgstr ""
 msgid "Runners|Runner #%{runner_id}"
 msgstr ""
 
+msgid "Runners|Runner assigned to project."
+msgstr ""
+
 msgid "Runners|Runner is offline, last contact was %{runner_contact} ago"
 msgstr ""
 
@@ -29152,6 +29158,9 @@ msgid "Runners|Runner is paused, last contact was %{runner_contact} ago"
 msgstr ""
 
 msgid "Runners|Runner registration"
+msgstr ""
+
+msgid "Runners|Runner unassigned from project."
 msgstr ""
 
 msgid "Runners|Runners"

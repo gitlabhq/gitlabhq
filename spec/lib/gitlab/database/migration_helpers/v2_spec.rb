@@ -293,5 +293,33 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
 
       model.with_lock_retries(env: env, logger: in_memory_logger) { }
     end
+
+    context 'when in transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(true)
+      end
+
+      context 'when lock retries are enabled' do
+        before do
+          allow(model).to receive(:enable_lock_retries?).and_return(true)
+        end
+
+        it 'does not use Gitlab::Database::WithLockRetries and executes the provided block directly' do
+          expect(Gitlab::Database::WithLockRetries).not_to receive(:new)
+
+          expect(model.with_lock_retries(env: env, logger: in_memory_logger) { :block_result }).to eq(:block_result)
+        end
+      end
+
+      context 'when lock retries are not enabled' do
+        before do
+          allow(model).to receive(:enable_lock_retries?).and_return(false)
+        end
+
+        it 'raises an error' do
+          expect { model.with_lock_retries(env: env, logger: in_memory_logger) { } }.to raise_error /can not be run inside an already open transaction/
+        end
+      end
+    end
   end
 end

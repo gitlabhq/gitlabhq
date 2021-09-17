@@ -315,7 +315,7 @@ export default {
             <span
               v-if="isJiraIssue"
               v-safe-html="jiraLogo"
-              class="svg-container jira-logo-container"
+              class="svg-container logo-container"
               data-testid="jira-logo"
             ></span>
             {{ referencePath }}

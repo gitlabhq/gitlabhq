@@ -60,6 +60,12 @@ module Gitlab
         path =~ protected_paths_regex
       end
 
+      def throttle?(throttle, authenticated:)
+        fragment = Gitlab::Throttle.throttle_fragment!(throttle, authenticated: authenticated)
+
+        __send__("#{fragment}?") # rubocop:disable GitlabSecurity/PublicSend
+      end
+
       def throttle_unauthenticated_api?
         api_request? &&
         !should_be_skipped? &&

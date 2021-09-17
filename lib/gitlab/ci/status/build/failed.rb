@@ -32,7 +32,8 @@ module Gitlab
             user_blocked: 'pipeline user was blocked',
             ci_quota_exceeded: 'no more CI minutes available',
             no_matching_runner: 'no matching runner available',
-            trace_size_exceeded: 'log size limit exceeded'
+            trace_size_exceeded: 'log size limit exceeded',
+            builds_disabled: 'project builds are disabled'
           }.freeze
 
           private_constant :REASONS
