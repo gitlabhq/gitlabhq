@@ -454,6 +454,10 @@ when published. Example:
 
 ### Emphasis
 
+Use **bold** rather than italic to provide emphasis. GitLab uses a sans-serif font and italic text does not stand out as much as it would in a serif font. For details, see [Butterick's Practical Typography guide on bold or italic](https://practicaltypography.com/bold-or-italic.html).
+
+You can use italics when you are introducing a term for the first time. Otherwise, use bold.
+
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
 - Use underscore (`_`) for text in italics (`_italic_`).
 - Use greater than (`>`) for blockquotes.
