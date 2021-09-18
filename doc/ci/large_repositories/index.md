@@ -252,6 +252,8 @@ and does not require us to update each `.gitlab-ci.yml`.
 
 ## Pre-clone step
 
+> [An issue exists](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/463) to remove the need for this optimization.
+
 For very active repositories with a large number of references and files, you can also
 optimize your CI jobs by seeding repository data with GitLab Runner's [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section).
 
