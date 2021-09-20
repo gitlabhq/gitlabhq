@@ -87,11 +87,8 @@ Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
 - Omnibus GitLab installations for up to 2000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
 - Source installations or custom Gitaly installations, see [Configure Gitaly](configure_gitaly.md).
 
-GitLab installations for more than 2000 users should use Gitaly Cluster.
-
-NOTE:
-If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
-default value. The default value depends on the GitLab version.
+GitLab installations for more than 2000 active users performing daily Git write operation may be
+best suited by using Gitaly Cluster.
 
 ## Gitaly Cluster
 
@@ -137,7 +134,7 @@ In this example:
 - The [replication factor](#replication-factor) is `3`. There are three copies maintained
   of each repository.
 
-The availability objectives for Gitaly clusters are:
+The availability objectives for Gitaly clusters assuming a single node failure are:
 
 - **Recovery Point Objective (RPO):** Less than 1 minute.
 
@@ -154,6 +151,58 @@ The availability objectives for Gitaly clusters are:
 
   Faster outage detection, to improve this speed to less than 1 second,
   is tracked [in this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2608).
+
+WARNING:
+If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
+RPO and RTO discussed above.
+
+### Architecture and configuration recommendations
+
+The following table provides recommendations based on your
+requirements. Users means concurrent users actively performing
+simultaneous Git Operations.
+
+Gitaly services are present in every GitLab installation and always coordinates Git repository storage and
+retrieval. Gitaly can be as simple as a single background service when operating on a single instance Omnibus
+GitLab (All of GitLab on one machine). Gitaly can be separated into it's own instance and it can be configured in
+a full cluster configuration depending on scaling and availability requirements.
+
+The GitLab Reference Architectures provide guidance for what Gitaly configuration is advisable at each of the scales.
+The Gitaly configuration is noted by the architecture diagrams and the table of required resources.
+
+| User Scaling                                                 | Reference Architecture To Use                                | GitLab Instance Configuration                | Gitaly Configuration            | Git Repository Storage             | Instances Dedicated to Gitaly Services |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------- | ------------------------------- | ---------------------------------- | -------------------------------------- |
+| Up to 1000 Users                                             | [1K](../reference_architectures/1k_users.md)                 | Single Instance for all of GitLab            | Already Integrated as a Service | Local Disk                         | 0                                      |
+| Up to 2999 Users                                             | [2K](../reference_architectures/2k_users.md)                 | Horizontally Scaled GitLab Instance (Non-HA) | Single Gitaly Server            | Local Disk of Gitaly Instance      | 1                                      |
+| 3000 Users and Over                                          | [3K](../reference_architectures/1k_users.md)                 | Horizontally Scaled GitLab Instance with HA  | Gitaly Cluster                  | Local Disk of Each Gitaly Instance | 8                                      |
+| RTO/RPO Requirements for AZ Failure Tolerance Regardless of User Scale | [3K (with downscaling)](../reference_architectures/3k_users.md) | Custom (1)                      | Gitaly Cluster                  | Local Disk of Each Gitaly Instance | 8                                      |
+
+1. If you feel that you need AZ Failure Tolerance for user scaling lower than 3K, please contact Customer Success
+   to discuss your RTO and RPO needs and what options exist to meet those objectives.
+
+WARNING:
+At present, some [known database inconsistency issues](#known-issues-impacting-gitaly-cluster)
+exist in Gitaly Cluster. It is our recommendation that for now, you remain on your current service.
+We will adjust the date for NFS support removal if this applies to you.
+
+### Known issues impacting Gitaly Cluster
+
+The following table outlines current known issues impacting the use of Gitaly Cluster. For
+the most up to date status of these issues, please refer to the referenced issues / epics.
+
+| Issue                                                   | Summary                          |
+| Gitaly Cluster + Geo can cause database inconsistencies | There are some conditions during Geo replication that can cause database inconsistencies with Gitaly Cluster. These have been identified and are being resolved by updating Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485). |
+| Database inconsistencies due to repository access outside of Gitaly Cluster's control | Operations that write to the repository storage which do not go through normal Gitaly Cluster methods can cause database inconsistencies. These can include (but are not limited to) snapshot restoration for cluster node disks, node upgrades which modify files under Git control, or any other disk operation that may touch repository storage external to GitLab. The Gitaly team is actively working to provide manual commands to [reconcile the Praefect database with the repository storage](https://gitlab.com/groups/gitlab-org/-/epics/6723). |
+
+### Snapshot backup and recovery limitations
+
+Gitaly Cluster does not support snapshot backups because these can cause issues where the
+Praefect database becomes out of sync with the disk storage. Because of how Praefect rebuilds
+the replication metadata of Gitaly disk information during a restore, we recommend using the
+[official backup and restore Rake tasks](../../raketasks/backup_restore.md).
+
+To track progress on work on a solution for manually re-synchronizing the Praefect database
+with disk storage, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6575).
 
 ### Virtual storage
 
@@ -306,7 +355,10 @@ For configuration information, see [Configure replication factor](praefect.md#co
 
 For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
 
-### Migrate to Gitaly Cluster
+## Migrate to Gitaly Cluster
+
+We recommend you migrate to Gitaly Cluster if your
+[requirements recommend](#architecture-and-configuration-recommendations) Gitaly Cluster.
 
 Whether migrating to Gitaly Cluster because of [NFS support deprecation](index.md#nfs-deprecation-notice)
 or to move from single Gitaly nodes, the basic process involves:
@@ -317,6 +369,11 @@ or to move from single Gitaly nodes, the basic process involves:
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories). To migrate to
    Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
    automatic migration but the moves can be scheduled with the GitLab API.
+
+WARNING:
+At present, some [known database inconsistency issues](#known-issues-impacting-gitaly-cluster)
+exist in Gitaly Cluster. It is our recommendation that for now, you remain on your current service.
+We will adjust the date for NFS support removal if this applies to you.
 
 ## Monitor Gitaly and Gitaly Cluster
 
