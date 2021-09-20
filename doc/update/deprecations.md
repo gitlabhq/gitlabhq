@@ -64,4 +64,4 @@ The Task Runner pod is used to execute periodic housekeeping tasks within the Gi
 
 This will result in the rename of the sub-chart: `gitlab/task-runner` to `gitlab/toolbox`. Resulting pods will be named along the lines of `{{ .Release.Name }}-toolbox`, which will often be `gitlab-toolbox`. They will be locatable with the label `app=toolbox`.
 
-Announced: 2021-09-22
+Announced: 2021-08-22

@@ -49,7 +49,7 @@ branch name.
 Your developers may not remember that policy, so they might push to
 various branches, and CI pipelines might not work as expected. By restricting the
 branch names globally in Push Rules, such mistakes are prevented.
-Any branch name that doesn't match your push rule is rejected.
+All branch names that don't match your push rule are rejected.
 
 Note that the name of your default branch is always allowed, regardless of the branch naming
 regular expression (regex) specified. GitLab is configured this way
@@ -109,7 +109,7 @@ The following options are available:
 | Prevent pushing secret files | GitLab rejects any files that are likely to contain secrets. See the [forbidden file names](#prevent-pushing-secrets-to-the-repository). |
 | Require expression in commit messages | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Reject expression in commit messages | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
-| Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow any branch name. |
+| Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow all branch names. |
 | Restrict by commit author's email | Only commit author's email that match this regular expression are allowed to be pushed. Leave empty to allow any email. |
 | Prohibited file names | Any committed filenames that match this regular expression and do not already exist in the repository are not allowed to be pushed. Leave empty to allow any filenames. See [common examples](#prohibited-file-names). |
 | Maximum file size | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. Files tracked by Git LFS are exempted. |

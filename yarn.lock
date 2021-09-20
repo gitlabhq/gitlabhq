@@ -4675,10 +4675,10 @@ dompurify@2.3.0:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.0.tgz#07bb39515e491588e5756b1d3e8375b5964814e2"
   integrity sha512-VV5C6Kr53YVHGOBKO/F86OYX6/iLTw2yVSI721gKetxpHCK/V5TaLEf9ODjRgl1KLSWRMY6cUhAbv/c+IUnwQw==
 
-dompurify@^2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.2.tgz#c773efa410abb5c087c7caf44934fefa448f6e60"
-  integrity sha512-jXJnvWloI+scD+N5uBikpUMsYXZb0LCAXxLFAOLS5duCzKfXLqBCpuINvFOiI4eJgTLggrngljT18HNoakHUsA==
+dompurify@^2.3.2, dompurify@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.3.tgz#c1af3eb88be47324432964d8abc75cf4b98d634c"
+  integrity sha512-dqnqRkPMAjOZE0FogZ+ceJNM2dZ3V/yNOuFB7+39qpO93hHhfRpHw3heYQC7DPK9FqbQTfBKUJhiSfz4MvXYwg==
 
 domutils@^1.5.1:
   version "1.7.0"

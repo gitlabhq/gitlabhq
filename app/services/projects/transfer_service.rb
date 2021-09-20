@@ -104,6 +104,8 @@ module Projects
         update_repository_configuration(@new_path)
 
         execute_system_hooks
+
+        update_pending_builds!
       end
 
       post_update_hooks(project)
@@ -252,6 +254,15 @@ module Projects
     def update_integrations
       project.integrations.with_default_settings.delete_all
       Integration.create_from_active_default_integrations(project, :project_id)
+    end
+
+    def update_pending_builds!
+      update_params = {
+        namespace_id: new_namespace.id,
+        namespace_traversal_ids: new_namespace.traversal_ids
+      }
+
+      ::Ci::UpdatePendingBuildService.new(project, update_params).execute
     end
   end
 end

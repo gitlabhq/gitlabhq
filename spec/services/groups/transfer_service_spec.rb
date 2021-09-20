@@ -651,6 +651,30 @@ RSpec.describe Groups::TransferService do
           expect(project1.public?).to be_truthy
         end
       end
+
+      context 'when group has pending builds' do
+        let_it_be(:project) { create(:project, :public, namespace: group.reload) }
+        let_it_be(:other_project) { create(:project) }
+        let_it_be(:pending_build) { create(:ci_pending_build, project: project) }
+        let_it_be(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
+
+        before do
+          group.add_owner(user)
+          new_parent_group.add_owner(user)
+        end
+
+        it 'updates pending builds for the group', :aggregate_failures do
+          transfer_service.execute(new_parent_group)
+
+          pending_build.reload
+          unrelated_pending_build.reload
+
+          expect(pending_build.namespace_id).to eq(group.id)
+          expect(pending_build.namespace_traversal_ids).to eq(group.traversal_ids)
+          expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
+          expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
+        end
+      end
     end
 
     context 'when transferring a subgroup into root group' do

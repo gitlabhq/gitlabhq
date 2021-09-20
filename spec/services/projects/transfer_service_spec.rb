@@ -143,6 +143,28 @@ RSpec.describe Projects::TransferService do
         end
       end
     end
+
+    context 'when project has pending builds' do
+      let!(:other_project) { create(:project) }
+      let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
+      let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
+
+      before do
+        group.reload
+      end
+
+      it 'updates pending builds for the project', :aggregate_failures do
+        execute_transfer
+
+        pending_build.reload
+        unrelated_pending_build.reload
+
+        expect(pending_build.namespace_id).to eq(group.id)
+        expect(pending_build.namespace_traversal_ids).to eq(group.traversal_ids)
+        expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
+        expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
+      end
+    end
   end
 
   context 'when transfer fails' do
@@ -202,6 +224,24 @@ RSpec.describe Projects::TransferService do
         disk_path: project.disk_path,
         shard_name: project.repository_storage
       )
+    end
+
+    context 'when project has pending builds' do
+      let!(:other_project) { create(:project) }
+      let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
+      let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
+
+      it 'does not update pending builds for the project', :aggregate_failures do
+        attempt_project_transfer
+
+        pending_build.reload
+        unrelated_pending_build.reload
+
+        expect(pending_build.namespace_id).to eq(project.namespace_id)
+        expect(pending_build.namespace_traversal_ids).to eq(project.namespace.traversal_ids)
+        expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
+        expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
+      end
     end
   end
 

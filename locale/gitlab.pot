@@ -3934,9 +3934,6 @@ msgstr ""
 msgid "Any Milestone"
 msgstr ""
 
-msgid "Any branch"
-msgstr ""
-
 msgid "Any eligible user"
 msgstr ""
 
@@ -4121,7 +4118,7 @@ msgstr ""
 msgid "Apply template"
 msgstr ""
 
-msgid "Apply this approval rule to any branch or a specific protected branch."
+msgid "Apply this approval rule to all branches or a specific protected branch."
 msgstr ""
 
 msgid "Applying"
@@ -32177,7 +32174,7 @@ msgstr ""
 msgid "StatusCheck|An error occurred fetching the status checks."
 msgstr ""
 
-msgid "StatusCheck|Apply this status check to any branch or a specific protected branch."
+msgid "StatusCheck|Apply this status check to all branches or a specific protected branch."
 msgstr ""
 
 msgid "StatusCheck|Check for a status response in Merge Requests. Failures do not block merges. %{link_start}Learn more%{link_end}."

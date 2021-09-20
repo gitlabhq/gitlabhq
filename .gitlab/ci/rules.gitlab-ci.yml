@@ -374,7 +374,6 @@
   - "jest.config.{base,integration,unit}.js"
   - "config/helpers/**/*.js"
   - "vendor/assets/javascripts/**/*"
-  - "{,ee/,jh/}app/assets/**/*.graphql"
 
 ################
 # Shared rules #

@@ -93,7 +93,7 @@ for doesn't appear immediately. The search box requires
 **three** alphanumeric characters to be entered for the search to begin.
 
 If you want the status check to be applied to **all** merge requests,
-you can select the **Any branch** option.
+you can select the **All branches** option.
 
 ## Delete a status check
 

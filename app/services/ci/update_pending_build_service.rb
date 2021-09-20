@@ -2,7 +2,7 @@
 
 module Ci
   class UpdatePendingBuildService
-    VALID_PARAMS = %i[instance_runners_enabled].freeze
+    VALID_PARAMS = %i[instance_runners_enabled namespace_id namespace_traversal_ids].freeze
 
     InvalidParamsError = Class.new(StandardError)
     InvalidModelError = Class.new(StandardError)

@@ -955,6 +955,10 @@ Do not change to a reference style link.
 
 ![alt text](img/markdown_logo.png "Title Text")
 
+In the rare case where you need to set a specific height or width for an image,
+you can use the `img` HTML tag instead of Markdown and set its `height` and
+`width` parameters.
+
 #### Videos
 
 If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#videos).

@@ -225,7 +225,7 @@ approval rule for certain branches:
 1. Go to your project and select **Settings**.
 1. Expand **Merge request (MR) approvals**.
 1. Select a **Target branch**:
-   - To protect all branches, select **Any branch**.
+   - To protect all branches, select **All branches**.
    - To select a specific branch, select it from the list:
 
      ![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)

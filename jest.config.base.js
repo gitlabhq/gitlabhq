@@ -102,7 +102,7 @@ module.exports = (path, options = {}) => {
   return {
     clearMocks: true,
     testMatch,
-    moduleFileExtensions: ['js', 'json', 'vue'],
+    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql'],
     moduleNameMapper,
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
