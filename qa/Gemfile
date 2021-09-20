@@ -9,7 +9,7 @@ gem 'capybara', '~> 3.35.0'
 gem 'capybara-screenshot', '~> 1.0.23'
 gem 'rake', '~> 12.3.3'
 gem 'rspec', '~> 3.10'
-gem 'selenium-webdriver', '~> 4.0.0.beta4'
+gem 'selenium-webdriver', '~> 4.0.0.rc1'
 gem 'airborne', '~> 0.3.4', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec-retry', '~> 0.6.1', require: 'rspec/retry'
@@ -26,7 +26,7 @@ gem 'webdrivers', '~> 4.6'
 gem 'zeitwerk', '~> 2.4'
 gem 'influxdb-client', '~> 1.17'
 
-gem 'chemlab', '~> 0.7'
+gem 'chemlab', '~> 0.8'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'
 
 gem 'deprecation_toolkit', '~> 1.5.1', require: false

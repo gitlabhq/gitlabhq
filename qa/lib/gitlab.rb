@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require 'chemlab/library'
+
 # Chemlab Page Libraries for GitLab
 module Gitlab
+  include Chemlab::Library
+
   module Page
     module Main
       autoload :Login, 'gitlab/page/main/login'

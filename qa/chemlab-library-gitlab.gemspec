@@ -4,7 +4,7 @@ $:.unshift(File.expand_path('lib', __dir__))
 
 Gem::Specification.new do |spec|
   spec.name = 'chemlab-library-gitlab'
-  spec.version = '0.1.1'
+  spec.version = '0.2.0'
   spec.authors = ['GitLab Quality']
   spec.email = ['quality@gitlab.com']
 
@@ -18,5 +18,5 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'chemlab', '~> 0.7'
+  spec.add_runtime_dependency 'chemlab', '~> 0.8'
 end

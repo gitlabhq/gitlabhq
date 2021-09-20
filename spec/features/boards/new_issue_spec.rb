@@ -56,7 +56,7 @@ RSpec.describe 'Issue Boards new issue', :js do
       end
     end
 
-    it 'creates new issue' do
+    it 'creates new issue and opens sidebar' do
       page.within(first('.board')) do
         click_button 'New issue'
       end
@@ -78,20 +78,6 @@ RSpec.describe 'Issue Boards new issue', :js do
         expect(page).to have_content(issue.to_reference)
         expect(page).to have_link(issue.title, href: /#{issue_path(issue)}/)
       end
-    end
-
-    # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/323446
-    xit 'shows sidebar when creating new issue' do
-      page.within(first('.board')) do
-        click_button 'New issue'
-      end
-
-      page.within(first('.board-new-issue-form')) do
-        find('.form-control').set('bug')
-        click_button 'Create issue'
-      end
-
-      wait_for_requests
 
       expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
     end
@@ -107,10 +93,6 @@ RSpec.describe 'Issue Boards new issue', :js do
       end
 
       wait_for_requests
-
-      page.within(first('.board')) do
-        find('.board-card').click
-      end
 
       page.within('[data-testid="sidebar-labels"]') do
         click_button 'Edit'

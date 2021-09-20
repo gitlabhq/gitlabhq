@@ -603,7 +603,7 @@ export default {
     });
   },
 
-  addListItem: ({ commit }, { list, item, position, inProgress = false }) => {
+  addListItem: ({ commit, dispatch }, { list, item, position, inProgress = false }) => {
     commit(types.ADD_BOARD_ITEM_TO_LIST, {
       listId: list.id,
       itemId: item.id,
@@ -611,6 +611,9 @@ export default {
       inProgress,
     });
     commit(types.UPDATE_BOARD_ITEM, item);
+    if (!inProgress) {
+      dispatch('setActiveId', { id: item.id, sidebarType: ISSUABLE });
+    }
   },
 
   removeListItem: ({ commit }, { listId, itemId }) => {

@@ -48,7 +48,7 @@ GitLab.com generates an application ID and secret key for you to use.
 1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 1. Add the provider configuration:
 
-   For Omnibus installations:
+   For Omnibus installations authenticating against **GitLab.com**:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -61,13 +61,35 @@ GitLab.com generates an application ID and secret key for you to use.
    ]
    ```
 
-   For installations from source:
+   Or, for Omnibus installations authenticating against a different GitLab instance:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       "name" => "gitlab",
+       "app_id" => "YOUR_APP_ID",
+       "app_secret" => "YOUR_APP_SECRET",
+       "args" => { "scope" => "api", "client_options" => { "site" => "https://gitlab.example.com/api/v4" } }
+     }
+   ]
+   ```
+
+   For installations from source authenticating against **GitLab.com**:
 
    ```yaml
    - { name: 'gitlab',
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET',
        args: { scope: 'api' } }
+   ```
+
+   Or, for installations from source to authenticate against a different GitLab instance:
+
+   ```yaml
+   - { name: 'gitlab',
+       app_id: 'YOUR_APP_ID',
+       app_secret: 'YOUR_APP_SECRET',
+       args: { scope: 'api', "client_options": { "site": 'https://gitlab.example.com/api/v4' } }
    ```
 
 1. Change `'YOUR_APP_ID'` to the Application ID from the GitLab.com application page.

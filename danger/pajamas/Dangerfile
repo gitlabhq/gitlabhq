@@ -59,7 +59,7 @@ MARKDOWN
 
 if blocking_components_in_mr.any?
   markdown(<<~MARKDOWN)
-    These deprecated components have already been migrated and can no longer be used. Please use [Pajamas components](https://design.gitlab.com/components/status/) instead.
+    These deprecated components have already been migrated and can no longer be used. Please use [Pajamas components](https://design.gitlab.com/components/overview) instead.
 
     * #{blocking_components_in_mr.join("\n* ")}
 
@@ -70,7 +70,7 @@ end
 
 if deprecated_components_in_mr.any?
   markdown(<<~MARKDOWN)
-    These deprecated components are in the process of being migrated. Please consider using [Pajamas components](https://design.gitlab.com/components/status/) instead.
+    These deprecated components are in the process of being migrated. Please consider using [Pajamas components](https://design.gitlab.com/components/overview) instead.
 
     * #{deprecated_components_in_mr.join("\n* ")}
 

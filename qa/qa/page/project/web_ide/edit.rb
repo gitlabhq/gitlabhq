@@ -6,6 +6,7 @@ module QA
       module WebIDE
         class Edit < Page::Base
           prepend Page::Component::WebIDE::Alert
+          prepend Page::Component::WebIDE::WebTerminalPanel
           include Page::Component::DropdownFilter
 
           view 'app/assets/javascripts/ide/components/activity_bar.vue' do
@@ -330,5 +331,3 @@ module QA
     end
   end
 end
-
-QA::Page::Project::WebIDE::Edit.prepend_mod_with('Page::Component::WebIDE::WebTerminalPanel', namespace: QA)

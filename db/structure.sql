@@ -11410,7 +11410,8 @@ CREATE TABLE ci_builds_metadata (
     expanded_environment_name character varying(255),
     secrets jsonb DEFAULT '{}'::jsonb NOT NULL,
     build_id bigint NOT NULL,
-    id bigint NOT NULL
+    id bigint NOT NULL,
+    runner_features jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE ci_builds_metadata_id_seq

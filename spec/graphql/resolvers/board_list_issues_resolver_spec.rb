@@ -57,6 +57,13 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
         expect(result).to match_array([issue1])
       end
 
+      it 'filters issues by negated issue type' do
+        incident = create(:incident, project: project, labels: [label], relative_position: 15)
+        result = resolve_board_list_issues(args: { filters: { not: { types: ['issue'] } } })
+
+        expect(result).to contain_exactly(incident)
+      end
+
       it 'raises an exception if both assignee_username and assignee_wildcard_id are present' do
         expect do
           resolve_board_list_issues(args: { filters: { assignee_username: ['username'], assignee_wildcard_id: 'NONE' } })
