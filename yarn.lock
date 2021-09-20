@@ -4977,10 +4977,10 @@ eslint-config-prettier@^6.10.0:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-import-resolver-jest@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-import-resolver-jest/-/eslint-import-resolver-jest-3.0.0.tgz#fd61da30fe58f4c1074af1f069b4267c70a91fd6"
-  integrity sha512-dCrepGDfaI5cK1QeUhUSbrkDalFkFGXyvjsfWyDxg1uPWiwsGpGmK6GFVPS4mn/IAYLipquB9AHonGQP/iaOAQ==
+eslint-import-resolver-jest@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/eslint-import-resolver-jest/-/eslint-import-resolver-jest-3.0.2.tgz#b20150f574576b6bd0d432a7ff08b0067141b33e"
+  integrity sha512-1FiDyoiq02r0fkEbq/h6x9rUawWt4ct6o51uNkoSaC7GC8iIAfsPD8eSYSizZtNRbF6NuOsmuLIShOTavKNtsQ==
   dependencies:
     find-root "^1.1.0"
     resolve "^1.12.0"
