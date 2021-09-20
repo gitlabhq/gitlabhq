@@ -312,6 +312,17 @@ RSpec.describe ProjectsController do
 
         expect { get_show }.not_to change { Gitlab::GitalyClient.get_request_count }
       end
+
+      it "renders files even with invalid license" do
+        controller.instance_variable_set(:@project, public_project)
+        expect(public_project.repository).to receive(:license_key).and_return('woozle wuzzle').at_least(:once)
+
+        get_show
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('_files')
+        expect(response.body).to have_content('LICENSE') # would be 'MIT license' if stub not works
+      end
     end
 
     context "when the url contains .atom" do

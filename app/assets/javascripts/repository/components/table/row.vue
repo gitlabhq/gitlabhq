@@ -7,6 +7,7 @@ import {
   GlLoadingIcon,
   GlIcon,
   GlHoverLoadDirective,
+  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import filesQuery from 'shared_queries/repository/files.query.graphql';
@@ -33,6 +34,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
     GlHoverLoad: GlHoverLoadDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   apollo: {
     commit: {
@@ -178,6 +180,7 @@ export default {
       this.$apollo.query({ query, variables });
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
@@ -228,10 +231,10 @@ export default {
     <td class="d-none d-sm-table-cell tree-commit cursor-default">
       <gl-link
         v-if="commit"
+        v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
         :href="commit.commitPath"
         :title="commit.message"
         class="str-truncated-100 tree-commit-link"
-        v-html="commit.titleHtml /* eslint-disable-line vue/no-v-html */"
       />
       <gl-skeleton-loading v-else :lines="1" class="h-auto" />
     </td>
