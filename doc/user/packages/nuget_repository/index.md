@@ -77,6 +77,8 @@ To use the GitLab endpoint for NuGet Packages, choose an option:
 
 Some features such as [publishing](#publish-a-nuget-package) a package are only available on the project-level endpoint.
 
+When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 most recent versions.
+
 WARNING:
 Because of how NuGet handles credentials, the Package Registry rejects anonymous requests on the group-level endpoint.
 To work around this limitation, set up [authentication](#add-the-package-registry-as-a-source-for-nuget-packages).
@@ -352,11 +354,11 @@ the existing package is overwritten.
 
 ## Install packages
 
-To install a NuGet package from the Package Registry, you must first
-[add a project-level or group-level endpoint](#add-the-package-registry-as-a-source-for-nuget-packages).
-
 If multiple packages have the same name and version, when you install
 a package, the most recently-published package is retrieved.
+
+To install a NuGet package from the Package Registry, you must first
+[add a project-level or group-level endpoint](#add-the-package-registry-as-a-source-for-nuget-packages).
 
 ### Install a package with the NuGet CLI
 

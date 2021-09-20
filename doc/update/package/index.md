@@ -57,10 +57,10 @@ For safety reasons, you should maintain an up-to-date backup on your own if you 
 Updating to major versions might need some manual intervention. For more information,
 check the version your are upgrading to:
 
-- [GitLab 14](https://docs.gitlab.com/omnibus/gitlab_14_changes.html)
-- [GitLab 13](https://docs.gitlab.com/omnibus/gitlab_13_changes.html)
-- [GitLab 12](https://docs.gitlab.com/omnibus/gitlab_12_changes.html)
-- [GitLab 11](https://docs.gitlab.com/omnibus/gitlab_11_changes.html)
+- [GitLab 14](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
+- [GitLab 13](https://docs.gitlab.com/omnibus/update/gitlab_13_changes.html)
+- [GitLab 12](https://docs.gitlab.com/omnibus/update/gitlab_12_changes.html)
+- [GitLab 11](https://docs.gitlab.com/omnibus/update/gitlab_11_changes.html)
 
 ## Upgrade using the official repositories
 

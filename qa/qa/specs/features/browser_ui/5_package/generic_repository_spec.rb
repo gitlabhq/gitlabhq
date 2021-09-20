@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, quarantine: {
+    only: { job: 'object_storage' },
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341209#note_681513082',
+    type: :investigating
+  } do
     describe 'Generic Repository' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

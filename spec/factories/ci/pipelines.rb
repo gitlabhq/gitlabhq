@@ -48,6 +48,7 @@ FactoryBot.define do
       transient { ci_ref_presence { true } }
 
       before(:create) do |pipeline, evaluator|
+        pipeline.ensure_project_iid!
         pipeline.ensure_ci_ref! if evaluator.ci_ref_presence && pipeline.ci_ref_id.nil?
       end
 

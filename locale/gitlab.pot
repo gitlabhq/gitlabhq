@@ -6569,16 +6569,19 @@ msgstr ""
 msgid "Checkout|%{name}'s GitLab subscription"
 msgstr ""
 
+msgid "Checkout|%{quantity} GB of storage"
+msgstr ""
+
+msgid "Checkout|%{quantity} storage pack"
+msgid_plural "Checkout|%{quantity} storage packs"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Checkout|%{selectedPlanText} plan"
 msgstr ""
 
 msgid "Checkout|%{startDate} - %{endDate}"
 msgstr ""
-
-msgid "Checkout|%{totalCiMinutes} CI minute"
-msgid_plural "Checkout|%{totalCiMinutes} CI minutes"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Checkout|%{totalCiMinutes} CI minutes"
 msgstr ""
@@ -6655,6 +6658,9 @@ msgstr ""
 msgid "Checkout|Failed to register credit card. Please try again."
 msgstr ""
 
+msgid "Checkout|GB"
+msgstr ""
+
 msgid "Checkout|GitLab group"
 msgstr ""
 
@@ -6691,6 +6697,9 @@ msgstr ""
 msgid "Checkout|State"
 msgstr ""
 
+msgid "Checkout|Storage packs"
+msgstr ""
+
 msgid "Checkout|Street address"
 msgstr ""
 
@@ -6712,6 +6721,9 @@ msgstr ""
 msgid "Checkout|Total minutes: %{quantity}"
 msgstr ""
 
+msgid "Checkout|Total storage: %{quantity} GB"
+msgstr ""
+
 msgid "Checkout|Users"
 msgstr ""
 
@@ -6730,7 +6742,10 @@ msgstr ""
 msgid "Checkout|company or team"
 msgstr ""
 
-msgid "Checkout|x 1,000 minutes per pack = %{strong}"
+msgid "Checkout|minutes"
+msgstr ""
+
+msgid "Checkout|x %{quantity} %{units} per pack ="
 msgstr ""
 
 msgid "Cherry-pick this commit"
@@ -9234,6 +9249,9 @@ msgstr ""
 msgid "Copy link to chart"
 msgstr ""
 
+msgid "Copy prefix"
+msgstr ""
+
 msgid "Copy reference"
 msgstr ""
 
@@ -9454,6 +9472,9 @@ msgid "Create a GitLab account first, and then connect it to your %{label} accou
 msgstr ""
 
 msgid "Create a Mattermost team for this group"
+msgstr ""
+
+msgid "Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies."
 msgstr ""
 
 msgid "Create a local proxy for storing frequently used upstream images. %{link_start}Learn more%{link_end} about dependency proxies."
@@ -25349,9 +25370,6 @@ msgid "Please select..."
 msgstr ""
 
 msgid "Please set a new password before proceeding."
-msgstr ""
-
-msgid "Please share your feedback about %{featureName} %{linkStart}in this issue%{linkEnd} to help us improve the experience."
 msgstr ""
 
 msgid "Please solve the captcha"

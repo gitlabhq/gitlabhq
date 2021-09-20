@@ -133,8 +133,9 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
         expect(doc.at_css('td:contains("Baz")')['align']).to eq 'left'
       end
 
+      # note that 2 are from the hardcoded <sup>, and 2 from footnotes
       aggregate_failures 'permits superscript elements' do
-        expect(doc).to have_selector('sup', count: 2)
+        expect(doc).to have_selector('sup', count: 4)
       end
 
       aggregate_failures 'permits subscript elements' do
@@ -147,6 +148,11 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
 
       aggregate_failures "removes `href` from `a` elements if it's fishy" do
         expect(doc).not_to have_selector('a[href*="javascript"]')
+      end
+
+      aggregate_failures 'permits footnotes' do
+        expect(doc).to have_selector('section.footnotes ol li p:contains("Footnote 1")')
+        expect(doc).to have_selector('section.footnotes ol li p:contains("Footnote with w")')
       end
     end
 

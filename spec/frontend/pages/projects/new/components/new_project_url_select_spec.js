@@ -1,4 +1,10 @@
-import { GlButton, GlDropdown, GlDropdownItem, GlDropdownSectionHeader } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownSectionHeader,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -34,9 +40,6 @@ describe('NewProjectUrlSelect component', () => {
   const localVue = createLocalVue();
   localVue.use(VueApollo);
 
-  const requestHandlers = [[searchQuery, jest.fn().mockResolvedValue({ data })]];
-  const apolloProvider = createMockApollo(requestHandlers);
-
   const provide = {
     namespaceFullPath: 'h5bp',
     namespaceId: '28',
@@ -44,11 +47,25 @@ describe('NewProjectUrlSelect component', () => {
     trackLabel: 'blank_project',
   };
 
-  const mountComponent = ({ mountFn = shallowMount } = {}) =>
-    mountFn(NewProjectUrlSelect, { localVue, apolloProvider, provide });
+  const mountComponent = ({ search = '', queryResponse = data, mountFn = shallowMount } = {}) => {
+    const requestHandlers = [[searchQuery, jest.fn().mockResolvedValue({ data: queryResponse })]];
+    const apolloProvider = createMockApollo(requestHandlers);
+
+    return mountFn(NewProjectUrlSelect, {
+      localVue,
+      apolloProvider,
+      provide,
+      data() {
+        return {
+          search,
+        };
+      },
+    });
+  };
 
   const findButtonLabel = () => wrapper.findComponent(GlButton);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findHiddenInput = () => wrapper.find('input');
 
   afterEach(() => {
@@ -74,6 +91,19 @@ describe('NewProjectUrlSelect component', () => {
     expect(findHiddenInput().attributes('value')).toBe(provide.namespaceId);
   });
 
+  it('focuses on the input when the dropdown is opened', async () => {
+    wrapper = mountComponent({ mountFn: mount });
+
+    jest.runOnlyPendingTimers();
+    await wrapper.vm.$nextTick();
+
+    const spy = jest.spyOn(findInput().vm, 'focusInput');
+
+    findDropdown().vm.$emit('shown');
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
   it('renders expected dropdown items', async () => {
     wrapper = mountComponent({ mountFn: mount });
 
@@ -87,6 +117,27 @@ describe('NewProjectUrlSelect component', () => {
     expect(listItems.at(2).text()).toBe(data.currentUser.groups.nodes[1].fullPath);
     expect(listItems.at(3).findComponent(GlDropdownSectionHeader).text()).toBe('Users');
     expect(listItems.at(4).text()).toBe(data.currentUser.namespace.fullPath);
+  });
+
+  it('renders `No matches found` when there are no matching dropdown items', async () => {
+    const queryResponse = {
+      currentUser: {
+        groups: {
+          nodes: [],
+        },
+        namespace: {
+          id: 'gid://gitlab/Namespace/1',
+          fullPath: 'root',
+        },
+      },
+    };
+
+    wrapper = mountComponent({ search: 'no matches', queryResponse, mountFn: mount });
+
+    jest.runOnlyPendingTimers();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('li').text()).toBe('No matches found');
   });
 
   it('updates hidden input with selected namespace', async () => {

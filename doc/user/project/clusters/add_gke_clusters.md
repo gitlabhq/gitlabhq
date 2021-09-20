@@ -4,48 +4,55 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GKE clusters (DEPRECATED) **(FREE)**
-
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
+# Connect GKE clusters through cluster certificates **(FREE)**
 
 WARNING:
-Use [Infrastructure as Code](../../infrastructure/index.md) to create new clusters. The method described in this document is deprecated as of GitLab 14.0.
+Use [Infrastrucure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md)
+to create a cluster hosted on Google Kubernetes Engine (GKE).
 
-Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
-Kubernetes Service (EKS).
+Through GitLab, you can create new and connect existing clusters
+hosted on Google Kubernetes Engine (GKE).
 
-GitLab supports adding new and existing GKE clusters.
+## Connect an existing GKE cluster
 
-## GKE requirements
+If you already have a GKE cluster and want to connect it to GitLab,
+use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
 
-Before creating your first cluster on Google GKE with GitLab integration, make sure the following
-requirements are met:
+Alternatively, you can [connect them with cluster certificates](add_existing_cluster.md),
+altough this method is not recommended for [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
 
-- A [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
+## Create a new GKE cluster from GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25925) in GitLab 12.4, all the GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
+
+To create a new GKE cluster from GitLab, use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md).
+
+Alternatively, you can [create new GKE clusters using cluster certificates](#create-a-new-cluster-on-gke-through-cluster-certificates-deprecated).
+Although still available in the GitLab UI, this method was deprecated
+in GitLab 14.0 and is scheduled for removal in GitLab 15.0.
+It also has [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
+
+## Create a new cluster on GKE through cluster certificates (DEPRECATED)
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
+
+Prerequisites:
+
+- A [Google Cloud billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
   set up with access.
-- The Kubernetes Engine API and related service are enabled. It should work immediately but may
+- Kubernetes Engine API and related services enabled. It should work immediately but may
   take up to 10 minutes after you create a project. For more information see the
   ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
-
-## Add an existing GKE cluster
-
-If you already have a GKE cluster and want to integrate it with GitLab,
-see how to [add an existing cluster](add_existing_cluster.md).
-
-## Create new GKE cluster
-
-Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/25925), all the GKE clusters
-provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
 Note the following:
 
 - The [Google authentication integration](../../../integration/google.md) must be enabled in GitLab
   at the instance level. If that's not the case, ask your GitLab administrator to enable it. On
   GitLab.com, this is enabled.
-- Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55902), all GKE clusters
+- In [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55902) and later, all GKE clusters
   created by GitLab are RBAC-enabled. Take a look at the [RBAC section](cluster_access.md#rbac-cluster-resources) for
   more information.
-- Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18341), the
+- In [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18341) and later, the
   cluster's pod address IP range is set to `/16` instead of the regular `/14`. `/16` is a CIDR
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
@@ -54,9 +61,8 @@ Note the following:
   explicitly requests GKE to create clusters with basic authentication enabled and a client
   certificate.
 
-### Creating the cluster on GKE
-
-To create and add a new Kubernetes cluster to your project, group, or instance:
+To create new Kubernetes clusters to your project, group, or instance, through
+cluster certificates:
 
 1. Navigate to your:
    - Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level

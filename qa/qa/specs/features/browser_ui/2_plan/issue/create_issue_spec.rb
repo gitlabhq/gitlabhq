@@ -38,7 +38,11 @@ module QA
         end
       end
 
-      context 'when using attachments in comments', :object_storage do
+      context 'when using attachments in comments', :object_storage, quarantine: {
+        only: { job: 'object_storage' },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341209#note_681513082',
+        type: :investigating
+      } do
         let(:png_file_name) { 'testfile.png' }
         let(:file_to_attach) do
           File.absolute_path(File.join('qa', 'fixtures', 'designs', png_file_name))

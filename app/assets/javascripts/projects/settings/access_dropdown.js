@@ -2,8 +2,8 @@
 import { escape, find, countBy } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import createFlash from '~/flash';
-import axios from '~/lib/utils/axios_utils';
 import { n__, s__, __, sprintf } from '~/locale';
+import { getUsers, getGroups, getDeployKeys } from './api/access_dropdown_api';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
 
 export default class AccessDropdown {
@@ -16,9 +16,6 @@ export default class AccessDropdown {
     this.accessLevelsData = accessLevelsData.roles;
     this.$dropdown = $dropdown;
     this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
-    this.usersPath = '/-/autocomplete/users.json';
-    this.groupsPath = '/-/autocomplete/project_groups.json';
-    this.deployKeysPath = '/-/autocomplete/deploy_keys_with_owners.json';
     this.defaultLabel = this.$dropdown.data('defaultLabel');
 
     this.setSelectedItems([]);
@@ -318,9 +315,9 @@ export default class AccessDropdown {
   getData(query, callback) {
     if (this.hasLicense) {
       Promise.all([
-        this.getDeployKeys(query),
-        this.getUsers(query),
-        this.groupsData ? Promise.resolve(this.groupsData) : this.getGroups(),
+        getDeployKeys(query),
+        getUsers(query),
+        this.groupsData ? Promise.resolve(this.groupsData) : getGroups(),
       ])
         .then(([deployKeysResponse, usersResponse, groupsResponse]) => {
           this.groupsData = groupsResponse;
@@ -332,7 +329,7 @@ export default class AccessDropdown {
           createFlash({ message: __('Failed to load groups, users and deploy keys.') });
         });
     } else {
-      this.getDeployKeys(query)
+      getDeployKeys(query)
         .then((deployKeysResponse) => callback(this.consolidateData(deployKeysResponse.data)))
         .catch(() => createFlash({ message: __('Failed to load deploy keys.') }));
     }
@@ -471,46 +468,6 @@ export default class AccessDropdown {
     }
 
     return consolidatedData;
-  }
-
-  getUsers(query) {
-    return axios.get(this.buildUrl(gon.relative_url_root, this.usersPath), {
-      params: {
-        search: query,
-        per_page: 20,
-        active: true,
-        project_id: gon.current_project_id,
-        push_code: true,
-      },
-    });
-  }
-
-  getGroups() {
-    return axios.get(this.buildUrl(gon.relative_url_root, this.groupsPath), {
-      params: {
-        project_id: gon.current_project_id,
-      },
-    });
-  }
-
-  getDeployKeys(query) {
-    return axios.get(this.buildUrl(gon.relative_url_root, this.deployKeysPath), {
-      params: {
-        search: query,
-        per_page: 20,
-        active: true,
-        project_id: gon.current_project_id,
-        push_code: true,
-      },
-    });
-  }
-
-  buildUrl(urlRoot, url) {
-    let newUrl;
-    if (urlRoot != null) {
-      newUrl = urlRoot.replace(/\/$/, '') + url;
-    }
-    return newUrl;
   }
 
   renderRow(item) {

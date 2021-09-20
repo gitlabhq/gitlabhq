@@ -139,6 +139,11 @@ The following items are **not** exported:
 - Any encrypted tokens
 - Merge Request Approvers
 
+These content rules also apply to creating projects from templates on the
+[group](../../group/custom_project_templates.md)
+or [instance](../../admin_area/custom_project_templates.md)
+levels, because the same export and import mechanisms are used.
+
 NOTE:
 For more details on the specific data persisted in a project export, see the
 [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml) file.
@@ -255,13 +260,13 @@ reduce the repository size for another import attempt.
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
 
-    # Prepare recreating an importable file 
+    # Prepare recreating an importable file
     git bundle create ../project.bundle smaller-tmp-main
     cd ..
     mv project/ ../"$EXPORT"-project
     cd ..
 
-    # Recreate an importable file 
+    # Recreate an importable file
     tar -czf "$EXPORT"-smaller.tar.gz --directory="$EXPORT"/ .
     ```
 

@@ -5289,4 +5289,10 @@ RSpec.describe Ci::Build do
       expect(build.reload.queuing_entry).not_to be_present
     end
   end
+
+  it 'does not generate cross DB queries when a record is created via FactoryBot' do
+    with_cross_database_modification_prevented do
+      create(:ci_build)
+    end
+  end
 end

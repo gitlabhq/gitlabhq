@@ -1,21 +1,15 @@
 <script>
-import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { slugifyWithUnderscore } from '~/lib/utils/text_utility';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export default {
   components: {
     GlAlert,
-    GlSprintf,
-    GlLink,
     LocalStorageSync,
   },
   props: {
     featureName: {
-      type: String,
-      required: true,
-    },
-    feedbackLink: {
       type: String,
       required: true,
     },
@@ -44,19 +38,8 @@ export default {
 <template>
   <div v-show="showAlert">
     <local-storage-sync v-model="isDismissed" :storage-key="storageKey" as-json />
-    <gl-alert v-if="showAlert" class="gl-mt-5" @dismiss="dismissFeedbackAlert">
-      <gl-sprintf
-        :message="
-          __(
-            'Please share your feedback about %{featureName} %{linkStart}in this issue%{linkEnd} to help us improve the experience.',
-          )
-        "
-      >
-        <template #featureName>{{ featureName }}</template>
-        <template #link="{ content }">
-          <gl-link :href="feedbackLink" target="_blank">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
+    <gl-alert v-if="showAlert" @dismiss="dismissFeedbackAlert">
+      <slot></slot>
     </gl-alert>
   </div>
 </template>

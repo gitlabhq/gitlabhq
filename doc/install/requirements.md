@@ -114,7 +114,7 @@ MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgres
 The server running PostgreSQL should have _at least_ 5-10 GB of storage
 available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md).
 
-We highly recommend using the minimum PostgreSQL versions (as specified in
+We highly recommend using at least the minimum PostgreSQL versions (as specified in
 the following table) as these were used for development and testing:
 
 | GitLab version | Minimum PostgreSQL version |

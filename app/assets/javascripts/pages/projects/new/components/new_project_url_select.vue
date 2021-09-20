@@ -4,6 +4,7 @@ import {
   GlButtonGroup,
   GlDropdown,
   GlDropdownItem,
+  GlDropdownText,
   GlDropdownSectionHeader,
   GlLoadingIcon,
   GlSearchBoxByType,
@@ -20,6 +21,7 @@ export default {
     GlButtonGroup,
     GlDropdown,
     GlDropdownItem,
+    GlDropdownText,
     GlDropdownSectionHeader,
     GlLoadingIcon,
     GlSearchBoxByType,
@@ -57,8 +59,20 @@ export default {
     userNamespace() {
       return this.currentUser.namespace || {};
     },
+    hasGroupMatches() {
+      return this.userGroups.length;
+    },
+    hasNamespaceMatches() {
+      return this.userNamespace.fullPath?.toLowerCase().includes(this.search.toLowerCase());
+    },
+    hasNoMatches() {
+      return !this.hasGroupMatches && !this.hasNamespaceMatches;
+    },
   },
   methods: {
+    focusInput() {
+      this.$refs.search.focusInput();
+    },
     handleClick({ id, fullPath }) {
       this.selectedNamespace = {
         id: getIdFromGraphQLId(id),
@@ -78,18 +92,24 @@ export default {
       toggle-class="gl-rounded-top-right-base! gl-rounded-bottom-right-base!"
       data-qa-selector="select_namespace_dropdown"
       @show="track('activate_form_input', { label: trackLabel, property: 'project_path' })"
+      @shown="focusInput"
     >
-      <gl-search-box-by-type v-model.trim="search" />
+      <gl-search-box-by-type ref="search" v-model.trim="search" />
       <gl-loading-icon v-if="$apollo.queries.currentUser.loading" />
       <template v-else>
-        <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
-        <gl-dropdown-item v-for="group of userGroups" :key="group.id" @click="handleClick(group)">
-          {{ group.fullPath }}
-        </gl-dropdown-item>
-        <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
-        <gl-dropdown-item @click="handleClick(userNamespace)">
-          {{ userNamespace.fullPath }}
-        </gl-dropdown-item>
+        <template v-if="hasGroupMatches">
+          <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
+          <gl-dropdown-item v-for="group of userGroups" :key="group.id" @click="handleClick(group)">
+            {{ group.fullPath }}
+          </gl-dropdown-item>
+        </template>
+        <template v-if="hasNamespaceMatches">
+          <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
+          <gl-dropdown-item @click="handleClick(userNamespace)">
+            {{ userNamespace.fullPath }}
+          </gl-dropdown-item>
+        </template>
+        <gl-dropdown-text v-if="hasNoMatches">{{ __('No matches found') }}</gl-dropdown-text>
       </template>
     </gl-dropdown>
 

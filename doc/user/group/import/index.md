@@ -102,8 +102,9 @@ This might involve reconfiguring your firewall to prevent blocking connection on
 
 ### Connect to the remote GitLab instance
 
-1. Navigate to the New Group page, either via the `+` button in the top navigation bar, or the **New subgroup** button
-on an existing group's page.
+1. Go to the New Group page:
+   - On the top bar, select `+` and then **New group**.
+   - Or, on an existing group's page, in the top right, select **New subgroup**.
 
    ![Navigation paths to create a new group](img/new_group_navigation_v13_8.png)
 
@@ -111,21 +112,18 @@ on an existing group's page.
 
    ![Fill in import details](img/import_panel_v14_1.png)
 
-1. Fill in source URL of your GitLab.
-1. Fill in [personal access token](../../../user/profile/personal_access_tokens.md) for remote GitLab instance.
-1. Click "Connect instance".
+1. Enter the source URL of your GitLab instance.
+1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your remote GitLab instance.
+1. Select **Connect instance**.
 
 ### Selecting which groups to import
 
 After you have authorized access to the GitLab instance, you are redirected to the GitLab Group
-Migration importer page. Listed are the remote GitLab groups to which you have the Owner role.
+Migration importer page. The remote groups you have the Owner role for are listed.
 
 1. By default, the proposed group namespaces match the names as they exist in remote instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
-
-1. Select the **Import** button next to any number of groups.
-
-1. The **Status** column shows the import status of each group. You can choose to leave the page open and it updates in real-time.
-
-1. Once a group has been imported, click its GitLab path to open its GitLab URL.
+1. Next to the groups you want to import, select **Import**.
+1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
+1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 ![Group Importer page](img/bulk_imports_v14_1.png)

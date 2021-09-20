@@ -19,7 +19,7 @@ module Gitlab
       end
 
       def execute(shas)
-        shas.each do |sha|
+        shas.uniq.each do |sha|
           next unless sha.present? && commit_by(oid: sha)
 
           next if kept_around?(sha)
