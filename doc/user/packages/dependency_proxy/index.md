@@ -94,8 +94,11 @@ Proxy.
 > - The prefix for group names containing uppercase letters was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54559) in GitLab 13.10.
 
 Runners log in to the Dependency Proxy automatically. To pull through
-the Dependency Proxy, use the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
-[predefined CI/CD variable](../../../ci/variables/predefined_variables.md):
+the Dependency Proxy, use one of the [predefined variables](../../../ci/variables/predefined_variables.md):
+
+- `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` pulls through the top-level group.
+- `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX` pulls through the subgroup, or direct group the
+  project exists in.
 
 Example pulling the latest alpine image:
 
@@ -109,7 +112,10 @@ There are other additional predefined CI/CD variables you can also use:
 - `CI_DEPENDENCY_PROXY_USER`: A CI/CD user for logging in to the Dependency Proxy.
 - `CI_DEPENDENCY_PROXY_PASSWORD`: A CI/CD password for logging in to the Dependency Proxy.
 - `CI_DEPENDENCY_PROXY_SERVER`: The server for logging in to the Dependency Proxy.
-- `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`: The image prefix for pulling images through the Dependency Proxy.
+- `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`: the image prefix for pulling images through the
+  dependency proxy from the top-level group.
+- `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX`: the image prefix for pulling images through the
+  dependency proxy from the direct group or subgroup that the project belongs to.
 
 `CI_DEPENDENCY_PROXY_SERVER` and `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
 include the server port. If you explicitly include the Dependency Proxy

@@ -73,7 +73,7 @@ there may be something wrong with your configuration files or it can be related
 to [this issue](https://github.com/redis/redis-rb/issues/531).
 
 You must make sure you are defining the same value in `redis['master_name']`
-and `redis['master_pasword']` as you defined for your sentinel node.
+and `redis['master_password']` as you defined for your sentinel node.
 
 The way the Redis connector `redis-rb` works with sentinel is a bit
 non-intuitive. We try to hide the complexity in omnibus, but it still requires

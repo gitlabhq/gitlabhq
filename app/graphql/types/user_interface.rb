@@ -59,6 +59,10 @@ module Types
           type: Types::GroupMemberType.connection_type,
           null: true,
           description: 'Group memberships of the user.'
+    field :groups,
+          resolver: Resolvers::Users::GroupsResolver,
+          description: 'Groups where the user has access. Will always return `null` if ' \
+                       '`paginatable_namespace_drop_down_for_project_creation` feature flag is disabled.'
     field :group_count,
           resolver: Resolvers::Users::GroupCountResolver,
           description: 'Group count for the user.'
@@ -69,7 +73,7 @@ module Types
     field :location,
           type: ::GraphQL::Types::String,
           null: true,
-          description: 'The location of the user.'
+          description: 'Location of the user.'
     field :project_memberships,
           type: Types::ProjectMemberType.connection_type,
           null: true,
@@ -82,9 +86,7 @@ module Types
           null: true,
           description: 'Personal namespace of the user.'
 
-    field :todos, resolver: Resolvers::TodoResolver, description: 'To-do items of the user.' do
-      extension(::Gitlab::Graphql::TodosProjectPermissionPreloader::FieldExtension)
-    end
+    field :todos, resolver: Resolvers::TodoResolver, description: 'To-do items of the user.'
 
     # Merge request field: MRs can be authored, assigned, or assigned-for-review:
     field :authored_merge_requests,

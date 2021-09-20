@@ -29,9 +29,6 @@ import {
   EVT_PERF_MARK_FILE_TREE_START,
   EVT_PERF_MARK_FILE_TREE_END,
   EVT_PERF_MARK_DIFF_FILES_START,
-  DIFF_VIEW_FILE_BY_FILE,
-  DIFF_VIEW_ALL_FILES,
-  DIFF_FILE_BY_FILE_COOKIE_NAME,
   TRACKING_CLICK_DIFF_VIEW_SETTING,
   TRACKING_DIFF_VIEW_INLINE,
   TRACKING_DIFF_VIEW_PARALLEL,
@@ -104,7 +101,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
   let totalLoaded = 0;
   let scrolledVirtualScroller = false;
 
-  commit(types.SET_BATCH_LOADING, true);
+  commit(types.SET_BATCH_LOADING_STATE, 'loading');
   commit(types.SET_RETRIEVING_BATCHES, true);
   eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
 
@@ -115,7 +112,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         totalLoaded += diff_files.length;
 
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
-        commit(types.SET_BATCH_LOADING, false);
+        commit(types.SET_BATCH_LOADING_STATE, 'loaded');
 
         if (window.gon?.features?.diffsVirtualScrolling && !scrolledVirtualScroller) {
           const index = state.diffFiles.findIndex(
@@ -130,7 +127,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         }
 
         if (!isNoteLink && !state.currentDiffFileId) {
-          commit(types.VIEW_DIFF_FILE, diff_files[0].file_hash);
+          commit(types.VIEW_DIFF_FILE, diff_files[0]?.file_hash);
         }
 
         if (isNoteLink) {
@@ -182,11 +179,14 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
         return null;
       })
-      .catch(() => commit(types.SET_RETRIEVING_BATCHES, false));
+      .catch(() => {
+        commit(types.SET_RETRIEVING_BATCHES, false);
+        commit(types.SET_BATCH_LOADING_STATE, 'error');
+      });
 
-  return getBatch()
-    .then(() => !window.gon?.features?.diffsVirtualScrolling && handleLocationHash())
-    .catch(() => null);
+  return getBatch().then(
+    () => !window.gon?.features?.diffsVirtualScrolling && handleLocationHash(),
+  );
 };
 
 export const fetchDiffFilesMeta = ({ commit, state }) => {
@@ -816,9 +816,7 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
 };
 
 export const setFileByFile = ({ state, commit }, { fileByFile }) => {
-  const fileViewMode = fileByFile ? DIFF_VIEW_FILE_BY_FILE : DIFF_VIEW_ALL_FILES;
   commit(types.SET_FILE_BY_FILE, fileByFile);
-  Cookies.set(DIFF_FILE_BY_FILE_COOKIE_NAME, fileViewMode);
 
   if (window.gon?.features?.diffSettingsUsageData) {
     const events = [TRACKING_CLICK_SINGLE_FILE_SETTING];

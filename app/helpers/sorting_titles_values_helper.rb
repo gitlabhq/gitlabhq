@@ -138,6 +138,10 @@ module SortingTitlesValuesHelper
     s_('SortOptions|Start soon')
   end
 
+  def sort_title_title
+    s_('SortOptions|Title')
+  end
+
   def sort_title_upvotes
     s_('SortOptions|Most popular')
   end
@@ -305,6 +309,14 @@ module SortingTitlesValuesHelper
 
   def sort_value_start_date_soon
     'start_date_asc'
+  end
+
+  def sort_value_title
+    'title_asc'
+  end
+
+  def sort_value_title_desc
+    'title_desc'
   end
 
   def sort_value_upvotes

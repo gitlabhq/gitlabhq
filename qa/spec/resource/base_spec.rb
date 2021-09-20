@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Resource::Base do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
 
   let(:resource) { spy('resource') }
   let(:location) { 'http://location' }

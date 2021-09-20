@@ -22,7 +22,6 @@ export default class SidebarService {
   constructor(endpointMap) {
     if (!SidebarService.singleton) {
       this.endpoint = endpointMap.endpoint;
-      this.toggleSubscriptionEndpoint = endpointMap.toggleSubscriptionEndpoint;
       this.moveIssueEndpoint = endpointMap.moveIssueEndpoint;
       this.projectsAutocompleteEndpoint = endpointMap.projectsAutocompleteEndpoint;
       this.fullPath = endpointMap.fullPath;
@@ -73,10 +72,6 @@ export default class SidebarService {
         search: searchTerm,
       },
     });
-  }
-
-  toggleSubscription() {
-    return axios.post(this.toggleSubscriptionEndpoint);
   }
 
   moveIssue(moveToProjectId) {

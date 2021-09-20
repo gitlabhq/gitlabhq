@@ -19,7 +19,6 @@ const IGNORE_ERRORS = [
   'fb_xd_fragment',
   // ISP "optimizing" proxy - `Cache-Control: no-transform` seems to
   // reduce this. (thanks @acdha)
-  // See http://stackoverflow.com/questions/4113268
   'bmi_SafeAddOnload',
   'EBCallBackMessageReceived',
   // See http://toolbar.conduit.com/Developer/HtmlAndGadget/Methods/JSInjection.aspx

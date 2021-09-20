@@ -10,16 +10,9 @@ module Ci
     private
 
     def process_subsequent_jobs(processable)
-      if Feature.enabled?(:ci_same_stage_job_needs, processable.project, default_enabled: :yaml)
-        (stage_dependent_jobs(processable) | needs_dependent_jobs(processable))
-        .each do |processable|
-          process(processable)
-        end
-      else
-        skipped_jobs(processable).after_stage(processable.stage_idx)
-          .find_each do |job|
-          process(job)
-        end
+      (stage_dependent_jobs(processable) | needs_dependent_jobs(processable))
+      .each do |processable|
+        process(processable)
       end
     end
 

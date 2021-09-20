@@ -217,6 +217,10 @@ module Gitlab
       fallback
     end
 
+    def memoize_method_cache_value(method, value)
+      strong_memoize(memoizable_name(method)) { value }
+    end
+
     # Expires the caches of a specific set of methods
     def expire_method_caches(methods)
       methods.each do |name|

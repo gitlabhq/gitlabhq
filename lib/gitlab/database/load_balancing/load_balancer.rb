@@ -12,12 +12,22 @@ module Gitlab
 
         REPLICA_SUFFIX = '_replica'
 
-        attr_reader :host_list
+        attr_reader :host_list, :configuration
 
-        # hosts - The hostnames/addresses of the additional databases.
-        def initialize(hosts = [], model = ActiveRecord::Base)
-          @model = model
-          @host_list = HostList.new(hosts.map { |addr| Host.new(addr, self) })
+        # configuration - An instance of `LoadBalancing::Configuration` that
+        #                 contains the configuration details (such as the hosts)
+        #                 for this load balancer.
+        # primary_only - If set, the replicas are ignored and the primary is
+        #                always used.
+        def initialize(configuration, primary_only: false)
+          @configuration = configuration
+          @primary_only = primary_only
+          @host_list =
+            if primary_only
+              HostList.new([PrimaryHost.new(self)])
+            else
+              HostList.new(configuration.hosts.map { |addr| Host.new(addr, self) })
+            end
         end
 
         def disconnect!(timeout: 120)
@@ -169,7 +179,11 @@ module Gitlab
           when ActiveRecord::StatementInvalid, ActionView::Template::Error
             # After connecting to the DB Rails will wrap query errors using this
             # class.
-            connection_error?(error.cause)
+            if (cause = error.cause)
+              connection_error?(cause)
+            else
+              false
+            end
           when *CONNECTION_ERRORS
             true
           else
@@ -213,26 +227,26 @@ module Gitlab
             .establish_connection(replica_db_config)
         end
 
-        private
-
         # ActiveRecord::ConnectionAdapters::ConnectionHandler handles fetching,
         # and caching for connections pools for each "connection", so we
         # leverage that.
         def pool
           ActiveRecord::Base.connection_handler.retrieve_connection_pool(
-            @model.connection_specification_name,
+            @configuration.model.connection_specification_name,
             role: ActiveRecord::Base.writing_role,
             shard: ActiveRecord::Base.default_shard
           )
         end
+
+        private
 
         def ensure_caching!
           host.enable_query_cache! unless host.query_cache_enabled
         end
 
         def request_cache
-          base = RequestStore[:gitlab_load_balancer] ||= {}
-          base[pool] ||= {}
+          base = SafeRequestStore[:gitlab_load_balancer] ||= {}
+          base[self] ||= {}
         end
       end
     end

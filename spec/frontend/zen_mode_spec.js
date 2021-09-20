@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
-import initNotes from '~/init_notes';
+import GLForm from '~/gl_form';
 import * as utils from '~/lib/utils/common_utils';
 import ZenMode from '~/zen_mode';
 
@@ -34,7 +34,9 @@ describe('ZenMode', () => {
     mock.onGet().reply(200);
 
     loadFixtures(fixtureName);
-    initNotes();
+
+    const form = $('.js-new-note-form');
+    new GLForm(form); // eslint-disable-line no-new
 
     dropzoneForElementSpy = jest.spyOn(Dropzone, 'forElement').mockImplementation(() => ({
       enable: () => true,

@@ -6,7 +6,7 @@ module Types
       graphql_name 'DiffPositionType'
       description 'Type of file the position refers to'
 
-      value 'text', description: "A text file."
+      value 'text', description: "Text file."
       value 'image', description: "An image."
     end
   end

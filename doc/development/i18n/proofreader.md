@@ -43,6 +43,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Jan Urbanec - [GitLab](https://gitlab.com/TatranskyMedved), [Crowdin](https://crowdin.com/profile/Tatranskymedved)
 - Danish
   - Saederup92 - [GitLab](https://gitlab.com/Saederup92), [Crowdin](https://crowdin.com/profile/Saederup92)
+  - scootergrisen - [GitLab](https://gitlab.com/scootergrisen), [Crowdin](https://crowdin.com/profile/scootergrisen)
 - Dutch
   - Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
 - Esperanto
@@ -98,7 +99,8 @@ are very appreciative of the work done by translators and proofreaders!
   - André Gama - [GitLab](https://gitlab.com/andregamma), [Crowdin](https://crowdin.com/profile/ToeOficial)
   - Eduardo Addad de Oliveira - [GitLab](https://gitlab.com/eduardoaddad), [Crowdin](https://crowdin.com/profile/eduardoaddad)
 - Romanian
-  - Proofreaders needed.
+  - Mircea Pop - [GitLab](https://gitlab.com/eeex), [Crowdin](https://crowdin.com/profile/eex)
+  - Rareș Pița - [GitLab](https://gitlab.com/dlphin), [Crowdin](https://crowdin.com/profile/dlphin)
 - Russian
   - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [Crowdin](https://crowdin.com/profile/nixel2007)
   - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [Crowdin](https://crowdin.com/profile/lustin)
@@ -117,6 +119,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Turkish
   - Ali Demirtaş - [GitLab](https://gitlab.com/alidemirtas), [Crowdin](https://crowdin.com/profile/alidemirtas)
   - Rıfat Ünalmış (Rifat Unalmis) - [GitLab](https://gitlab.com/runalmis), [Crowdin](https://crowdin.com/profile/runalmis)
+  - İsmail Arılık - [GitLab](https://gitlab.com/ismailarilik), [Crowdin](https://crowdin.com/profile/ismailarilik)
 - Ukrainian
   - Volodymyr Sobotovych - [GitLab](https://gitlab.com/wheleph), [Crowdin](https://crowdin.com/profile/wheleph)
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)

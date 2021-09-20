@@ -13,9 +13,10 @@ module ErrorTracking
 
       collection = project.error_tracking_errors
       collection = by_status(collection)
+      collection = sort(collection)
 
-      # Limit collection until pagination implemented
-      collection.limit(20)
+      # Limit collection until pagination implemented.
+      limit(collection)
     end
 
     private
@@ -32,6 +33,15 @@ module ErrorTracking
 
     def authorized?
       Ability.allowed?(current_user, :read_sentry_issue, project)
+    end
+
+    def sort(collection)
+      params[:sort] ? collection.sort_by_attribute(params[:sort]) : collection.order_id_desc
+    end
+
+    def limit(collection)
+      # Restrict the maximum limit at 100 records.
+      collection.limit([(params[:limit] || 20).to_i, 100].min)
     end
   end
 end

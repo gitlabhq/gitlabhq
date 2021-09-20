@@ -1,6 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlButton, GlTooltipDirective, GlSafeHtmlDirective } from '@gitlab/ui';
 import { groupBy } from 'lodash';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { __, sprintf } from '~/locale';
@@ -18,6 +17,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -164,6 +164,7 @@ export default {
       this.isMenuOpen = menuOpen;
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
@@ -180,7 +181,11 @@ export default {
       @click="handleAward(awardList.name)"
     >
       <template #emoji>
-        <span class="award-emoji-block" data-testid="award-html" v-html="awardList.html"></span>
+        <span
+          v-safe-html:[$options.safeHtmlConfig]="awardList.html"
+          class="award-emoji-block"
+          data-testid="award-html"
+        ></span>
       </template>
       <span class="js-counter">{{ awardList.list.length }}</span>
     </gl-button>

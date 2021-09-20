@@ -8,7 +8,7 @@ export default class SigninTabsMemoizer {
   constructor({ currentTabKey = 'current_signin_tab', tabSelector = 'ul.new-session-tabs' } = {}) {
     this.currentTabKey = currentTabKey;
     this.tabSelector = tabSelector;
-    this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+    this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     // sets selected tab if given as hash tag
     if (window.location.hash) {
       this.saveData(window.location.hash);

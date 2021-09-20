@@ -13,8 +13,8 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 
 To access sign-in restriction settings:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > General**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 
 ## Password authentication enabled
@@ -26,7 +26,7 @@ You can restrict the password authentication for web interface and Git over HTTP
 
 ## Admin Mode
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
 
 When this feature is enabled, instance administrators are limited as regular users. During that period,
 they do not have access to all projects, groups, or the **Admin Area** menu.
@@ -118,7 +118,7 @@ For example, if you include the following information in the noted text box:
 To access this text box:
 
 1. On the top bar, select **Menu > Admin**.
-1. In the left sidebar, select **Settings > General**, and expand the **Sign-in restrictions** section.
+1. On the left sidebar, select **Settings > General**, and expand the **Sign-in restrictions** section.
 ```
 
 Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your

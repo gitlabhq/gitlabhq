@@ -14,7 +14,7 @@ GitLab.com generates an application ID and secret key for you to use.
 1. Sign in to GitLab.com.
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Applications**.
+1. On the left sidebar, select **Applications**.
 1. Provide the required details for **Add new application**.
    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
    - Redirect URI:

@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlLink, GlModal } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
@@ -72,7 +71,7 @@ export default {
     :action-cancel="cancelProps"
     @primary="emitSubmit($event)"
   >
-    <p v-html="modalText"></p>
+    <p v-html="modalText /* eslint-disable-line vue/no-v-html */"></p>
 
     <p v-if="pipeline">
       <ci-icon

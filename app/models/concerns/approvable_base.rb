@@ -54,4 +54,8 @@ module ApprovableBase
   def can_be_approved_by?(user)
     user && !approved_by?(user) && user.can?(:approve_merge_request, self)
   end
+
+  def can_be_unapproved_by?(user)
+    user && approved_by?(user) && user.can?(:approve_merge_request, self)
+  end
 end

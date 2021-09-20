@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
+  let(:connection) { ActiveRecord::Base.connection }
+
   describe '#current_partitions' do
     subject { described_class.new(model, partitioning_key).current_partitions }
 
@@ -11,7 +13,7 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
     let(:table_name) { :partitioned_test }
 
     before do
-      ActiveRecord::Base.connection.execute(<<~SQL)
+      connection.execute(<<~SQL)
         CREATE TABLE #{table_name}
           (id serial not null, created_at timestamptz not null, PRIMARY KEY (id, created_at))
           PARTITION BY RANGE (created_at);
@@ -52,7 +54,7 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
 
     context 'with existing partitions' do
       before do
-        ActiveRecord::Base.connection.execute(<<~SQL)
+        connection.execute(<<~SQL)
           CREATE TABLE #{model.table_name}
             (id serial not null, created_at timestamptz not null, PRIMARY KEY (id, created_at))
             PARTITION BY RANGE (created_at);
@@ -113,7 +115,7 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
 
     context 'without existing partitions' do
       before do
-        ActiveRecord::Base.connection.execute(<<~SQL)
+        connection.execute(<<~SQL)
           CREATE TABLE #{model.table_name}
             (id serial not null, created_at timestamptz not null, PRIMARY KEY (id, created_at))
             PARTITION BY RANGE (created_at);
@@ -159,7 +161,7 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
 
     context 'with a regular partition but no catchall (MINVALUE, to) partition' do
       before do
-        ActiveRecord::Base.connection.execute(<<~SQL)
+        connection.execute(<<~SQL)
           CREATE TABLE #{model.table_name}
             (id serial not null, created_at timestamptz not null, PRIMARY KEY (id, created_at))
             PARTITION BY RANGE (created_at);
@@ -247,6 +249,25 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
             Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01', partition_name: 'partitioned_test_000000'),
                                Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01', partition_name: 'partitioned_test_202005')
           )
+        end
+
+        context 'when the retain_non_empty_partitions is true' do
+          subject { described_class.new(model, partitioning_key, retain_for: 2.months, retain_non_empty_partitions: true).extra_partitions }
+
+          it 'prunes empty partitions' do
+            expect(subject).to contain_exactly(
+              Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01', partition_name: 'partitioned_test_000000'),
+                                 Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01', partition_name: 'partitioned_test_202005')
+            )
+          end
+
+          it 'does not prune non-empty partitions' do
+            connection.execute("INSERT INTO #{table_name} (created_at) VALUES (('2020-05-15'))") # inserting one record into partitioned_test_202005
+
+            expect(subject).to contain_exactly(
+              Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01', partition_name: 'partitioned_test_000000')
+            )
+          end
         end
       end
     end

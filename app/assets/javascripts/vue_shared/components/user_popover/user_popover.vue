@@ -1,6 +1,12 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlPopover, GlLink, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import {
+  GlPopover,
+  GlLink,
+  GlSkeletonLoader,
+  GlIcon,
+  GlSafeHtmlDirective,
+  GlSprintf,
+} from '@gitlab/ui';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import { glEmojiTag } from '../../../emoji';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
@@ -17,6 +23,10 @@ export default {
     GlSkeletonLoader,
     UserAvatarImage,
     UserNameWithStatus,
+    GlSprintf,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     target: {
@@ -50,6 +60,7 @@ export default {
       return this.user?.status?.availability || '';
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
@@ -83,7 +94,7 @@ export default {
           <div class="gl-text-gray-500">
             <div v-if="user.bio" class="gl-display-flex gl-mb-2">
               <gl-icon name="profile" class="gl-text-gray-400 gl-flex-shrink-0" />
-              <span ref="bio" class="gl-ml-2 gl-overflow-hidden" v-html="user.bioHtml"></span>
+              <span ref="bio" class="gl-ml-2 gl-overflow-hidden">{{ user.bio }}</span>
             </div>
             <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
               <gl-icon name="work" class="gl-text-gray-400 gl-flex-shrink-0" />
@@ -95,12 +106,14 @@ export default {
             <span class="gl-ml-2">{{ user.location }}</span>
           </div>
           <div v-if="statusHtml" class="js-user-status gl-mt-3">
-            <span v-html="statusHtml"></span>
+            <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
           </div>
           <div v-if="user.bot" class="gl-text-blue-500">
             <gl-icon name="question" />
             <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
-              {{ sprintf(__('Learn more about %{username}'), { username: user.name }) }}
+              <gl-sprintf :message="__('Learn more about %{username}')">
+                <template #username>{{ user.name }}</template>
+              </gl-sprintf>
             </gl-link>
           </div>
         </template>

@@ -43,10 +43,11 @@ RSpec.describe Issues::CreateService do
 
         expect(issue).to be_persisted
         expect(issue.title).to eq('Awesome issue')
-        expect(issue.assignees).to eq [assignee]
-        expect(issue.labels).to match_array labels
-        expect(issue.milestone).to eq milestone
-        expect(issue.due_date).to eq Date.tomorrow
+        expect(issue.assignees).to eq([assignee])
+        expect(issue.labels).to match_array(labels)
+        expect(issue.milestone).to eq(milestone)
+        expect(issue.due_date).to eq(Date.tomorrow)
+        expect(issue.work_item_type.base_type).to eq('issue')
       end
 
       context 'when skip_system_notes is true' do
@@ -91,7 +92,11 @@ RSpec.describe Issues::CreateService do
       end
 
       it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
-        expect { issue }.to change { project.open_issues_count }.from(0).to(1)
+        expect do
+          issue
+
+          BatchLoader::Executor.clear_current
+        end.to change { project.open_issues_count }.from(0).to(1)
       end
 
       context 'when current user cannot set issue metadata in the project' do

@@ -7,7 +7,7 @@ product_stage: create
 product_group: group::editor
 product_category: integrations
 value_type: boolean
-status: data_available
+status: active
 time_frame: none
 data_source: database
 distribution:
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

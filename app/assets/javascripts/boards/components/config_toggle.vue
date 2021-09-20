@@ -15,11 +15,6 @@ export default {
   },
   mixins: [Tracking.mixin()],
   props: {
-    boardsStore: {
-      type: Object,
-      required: false,
-      default: null,
-    },
     canAdminList: {
       type: Boolean,
       required: true,
@@ -41,9 +36,6 @@ export default {
     showPage() {
       this.track('click_button', { label: 'edit_board' });
       eventHub.$emit('showBoardModal', formType.edit);
-      if (this.boardsStore) {
-        this.boardsStore.showPage(formType.edit);
-      }
     },
   },
 };

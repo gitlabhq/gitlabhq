@@ -29,7 +29,7 @@ module Gitlab
         private
 
         def clear
-          load_balancer.release_host
+          release_hosts
           Session.clear_session
         end
 
@@ -40,10 +40,11 @@ module Gitlab
         def select_load_balancing_strategy(worker_class, job)
           return :primary unless load_balancing_available?(worker_class)
 
-          location = job['database_write_location'] || job['database_replica_location']
-          return :primary_no_wal unless location
+          wal_locations = get_wal_locations(job)
 
-          if replica_caught_up?(location)
+          return :primary_no_wal unless wal_locations
+
+          if all_databases_has_replica_caught_up?(wal_locations)
             # Happy case: we can read from a replica.
             retried_before?(worker_class, job) ? :replica_retried : :replica
           elsif can_retry?(worker_class, job)
@@ -53,6 +54,19 @@ module Gitlab
             # Sad case: we need to fall back to the primary.
             :primary
           end
+        end
+
+        def get_wal_locations(job)
+          job['dedup_wal_locations'] || job['wal_locations'] || legacy_wal_location(job)
+        end
+
+        # Already scheduled jobs could still contain legacy database write location.
+        # TODO: remove this in the next iteration
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/338213
+        def legacy_wal_location(job)
+          wal_location = job['database_write_location'] || job['database_replica_location']
+
+          { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
         end
 
         def load_balancing_available?(worker_class)
@@ -75,12 +89,26 @@ module Gitlab
           job['retry_count'].nil?
         end
 
-        def load_balancer
-          LoadBalancing.proxy.load_balancer
+        def all_databases_has_replica_caught_up?(wal_locations)
+          wal_locations.all? do |_config_name, location|
+            # Once we add support for multiple databases to our load balancer, we would use something like this:
+            # Gitlab::Database::DATABASES[config_name].load_balancer.select_up_to_date_host(location)
+            load_balancer.select_up_to_date_host(location)
+          end
         end
 
-        def replica_caught_up?(location)
-          load_balancer.select_up_to_date_host(location)
+        def release_hosts
+          # Once we add support for multiple databases to our load balancer, we would use something like this:
+          # connection.load_balancer.primary_write_location
+          #
+          # Gitlab::Database::DATABASES.values.each do |connection|
+          #   connection.load_balancer.release_host
+          # end
+          load_balancer.release_host
+        end
+
+        def load_balancer
+          LoadBalancing.proxy.load_balancer
         end
       end
     end

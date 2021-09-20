@@ -10,6 +10,13 @@ module API
         expose :api_url
         expose :integrated
       end
+
+      class ClientKey < Grape::Entity
+        expose :id
+        expose :active
+        expose :public_key
+        expose :sentry_dsn
+      end
     end
   end
 end

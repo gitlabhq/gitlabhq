@@ -154,7 +154,7 @@ To use CI/CD to authenticate, you can use:
   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   ```
 
-- A [CI job token](../../../ci/triggers/index.md#ci-job-token).
+- A [CI job token](../../../ci/jobs/ci_job_token.md).
 
   ```shell
   docker login -u $CI_JOB_USER -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -747,6 +747,8 @@ The **Packages & Registries > Container Registry** entry is removed from the pro
 
 ## Change visibility of the Container Registry
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
+
 By default, the Container Registry is visible to everyone with access to the project.
 You can, however, change the visibility of the Container Registry for a project.
 
@@ -862,6 +864,18 @@ these steps:
    # Get a list of all tags in a certain container repository while considering [pagination](../../../api/index.md#pagination)
    echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
+
+   If you have Rails console access, you can enter the following commands to retrieve a list of tags limited by date:
+
+   ```shell  
+   output = File.open( "/tmp/list_o_tags.out","w" )
+   Project.find(<Project_id>).container_repositories.find(<container_repo_id>).tags.each do |tag|
+     output << tag.name + "\n" if tag.created_at < 1.month.ago
+   end;nil
+   output.close
+   ```
+  
+   This set of commands creates a `/tmp/list_o_tags.out` file listing all tags with a `created_at` date of older than one month.
 
 1. Remove from the `list_o_tags.out` file any tags that you want to keep. Here are some example
    `sed` commands for this. Note that these commands are simply examples. You may change them to

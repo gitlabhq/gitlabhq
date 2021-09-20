@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/ci/pipelines.html'
 type: reference
@@ -122,6 +122,7 @@ you can filter the pipeline list by:
 - Branch name
 - Status ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
 - Tag ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
+- Source ([GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/338347))
 
 [Starting in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/26621), you can change the
 pipeline column to display the pipeline ID or the pipeline IID.
@@ -170,9 +171,6 @@ variables:
 
 You cannot set job-level variables to be pre-filled when you run a pipeline manually.
 
-Pre-filled variables do not show up when the CI/CD configuration is [external to the project](settings.md#specify-a-custom-cicd-configuration-file).
-See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336184) for more details.
-
 ### Run a pipeline by using a URL query string
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
@@ -212,11 +210,11 @@ allow you to require manual interaction before moving forward in the pipeline.
 You can do this straight from the pipeline graph. Just click the play button
 to execute that particular job.
 
-For example, your pipeline might start automatically, but it requires manual action to
-[deploy to production](../environments/index.md#configure-manual-deployments). In the example below, the `production`
-stage has a job with a manual action.
+For example, your pipeline can start automatically, but require a manual action to
+[deploy to production](../environments/index.md#configure-manual-deployments).
+In the example below, the `production` stage has a job with a manual action:
 
-![Pipelines example](img/pipelines.png)
+![Pipelines example](img/manual_pipeline_v14_2.png)
 
 #### Start multiple manual actions in a stage
 
@@ -348,9 +346,9 @@ all the jobs in the pipeline.
 
 You can group the jobs by:
 
-- Stage, which arranges jobs in the same stage together in the same column.
+- Stage, which arranges jobs in the same stage together in the same column:
 
-  ![jobs grouped by stage](img/pipelines_graph_stage_view_v13_12.png)
+  ![jobs grouped by stage](img/pipelines_graph_stage_view_v14_2.png)
 
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
   jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
@@ -361,21 +359,16 @@ you visualize the entire pipeline, including all cross-project inter-dependencie
 ### View job dependencies in the pipeline graph
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298973) in GitLab 13.12.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 13.12.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.2.
-
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
 
 You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
 dependencies.
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.
 
-For example, `build-job2` depends only on jobs in the first column, so it displays
-in the second column from the left. `deploy-job2` depends on jobs in both the first
+For example, `test-job1` depends only on jobs in the first column, so it displays
+in the second column from the left. `deploy-job1` depends on jobs in both the first
 and second column and displays in the third column:
 
 ![jobs grouped by needs dependency](img/pipelines_graph_dependency_view_v13_12.png)

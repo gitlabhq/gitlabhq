@@ -61,7 +61,7 @@ module QA
         user_api_client.personal_access_token
       end
 
-      it 'can be followed and their activity seen', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1773' do
+      it 'can be followed and their activity seen', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1842' do
         Flow::Login.sign_in
         page.visit Runtime::Scenario.gitlab_address + "/#{user.username}"
         Page::User::Show.perform(&:click_follow_user_link)

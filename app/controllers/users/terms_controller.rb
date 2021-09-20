@@ -77,3 +77,5 @@ module Users
     end
   end
 end
+
+Users::TermsController.prepend_mod

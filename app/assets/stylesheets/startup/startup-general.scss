@@ -355,6 +355,38 @@ h1 {
 .m-auto {
   margin: auto !important;
 }
+.gl-form-input,
+.gl-form-input.form-control {
+  background-color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 0.875rem;
+  line-height: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  height: auto;
+  color: #303030;
+  box-shadow: inset 0 0 0 1px #868686;
+  border-style: none;
+  appearance: none;
+  -moz-appearance: none;
+}
+.gl-form-input:disabled,
+.gl-form-input:not(.form-control-plaintext):not([type="color"]):read-only,
+.gl-form-input.form-control:disabled,
+.gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
+  background-color: #fafafa;
+  color: #868686;
+  box-shadow: inset 0 0 0 1px #dbdbdb;
+  cursor: not-allowed;
+}
+.gl-form-input::placeholder,
+.gl-form-input.form-control::placeholder {
+  color: #868686;
+}
 .gl-button {
   display: inline-flex;
 }
@@ -1389,6 +1421,9 @@ svg.s12 {
 }
 svg.s16 {
   vertical-align: -3px;
+}
+.header-search {
+  width: 320px;
 }
 .search {
   margin: 0 8px;

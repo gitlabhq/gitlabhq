@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.example/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# npm API
+# npm API **(FREE)**
 
 This is the API documentation for [npm Packages](../../user/packages/npm_registry/index.md).
 
@@ -58,11 +58,11 @@ Upload a package.
 PUT projects/:id/packages/npm/:package_name
 ```
 
-| Attribute         | Type   | Required | Description |
-| ----------------- | ------ | -------- | ----------- |
-| `id`              | string | yes      | The ID or full path of the project. |
-| `package_name`    | string | yes      | The name of the package. |
-| `versions`        | string | yes      | Package version info. |
+| Attribute      | Type   | Required | Description                         |
+|----------------|--------|----------|-------------------------------------|
+| `id`           | string | yes      | The ID or full path of the project. |
+| `package_name` | string | yes      | The name of the package.            |
+| `versions`     | string | yes      | Package version information.        |
 
 ```shell
 curl --request PUT

@@ -60,7 +60,7 @@ Feature.enable('geo_repository_verification')
 
 On the **primary** node:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Expand **Verification information** tab for that node to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
@@ -70,7 +70,7 @@ On the **primary** node:
 
 On the **secondary** node:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Expand **Verification information** tab for that node to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
@@ -89,7 +89,7 @@ in sync.
 
 ## Repository re-verification
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8550) in GitLab Enterprise Edition 11.6. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8550) in GitLab 11.6.
 
 Due to bugs or transient infrastructure failures, it is possible for Git
 repositories to change unexpectedly without being marked for verification.
@@ -100,7 +100,7 @@ increase load and vice versa.
 
 On the **primary** node:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Select **Edit** for the **primary** node to customize the minimum
    re-verification interval:
@@ -151,7 +151,7 @@ sudo gitlab-rake geo:verification:wiki:reset
 If the **primary** and **secondary** nodes have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 
 1. On the **primary** node:
-   1. On the top bar, select **Menu >** **{admin}** **Admin**.
+   1. On the top bar, select **Menu > Admin**.
    1. On the left sidebar, select **Overview > Projects**.
    1. Find the project that you want to check the checksum differences and
       select its name.

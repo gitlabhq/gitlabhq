@@ -103,6 +103,17 @@ RSpec.describe Ci::PipelineTriggerService do
             end
           end
 
+          context 'when params have duplicate variables' do
+            let(:params) { { token: trigger.token, ref: 'master', variables: variables } }
+            let(:variables) { { 'TRIGGER_PAYLOAD' => 'duplicate value' } }
+
+            it 'creates a failed pipeline without variables' do
+              expect { result }.to change { Ci::Pipeline.count }
+              expect(result).to be_error
+              expect(result.message[:base]).to eq(['Duplicate variable name: TRIGGER_PAYLOAD'])
+            end
+          end
+
           it_behaves_like 'detecting an unprocessable pipeline trigger'
         end
 
@@ -198,6 +209,17 @@ RSpec.describe Ci::PipelineTriggerService do
                                .and change { Ci::Sources::Pipeline.count }.by(1)
               expect(result[:pipeline].variables.map { |v| { v.key => v.value } }.first).to eq(variables)
               expect(job.sourced_pipelines.last.pipeline_id).to eq(result[:pipeline].id)
+            end
+          end
+
+          context 'when params have duplicate variables' do
+            let(:params) { { token: job.token, ref: 'master', variables: variables } }
+            let(:variables) { { 'TRIGGER_PAYLOAD' => 'duplicate value' } }
+
+            it 'creates a failed pipeline without variables' do
+              expect { result }.to change { Ci::Pipeline.count }
+              expect(result).to be_error
+              expect(result.message[:base]).to eq(['Duplicate variable name: TRIGGER_PAYLOAD'])
             end
           end
 

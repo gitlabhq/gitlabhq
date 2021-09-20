@@ -4,12 +4,12 @@ module Gitlab
   module SidekiqMiddleware
     module SizeLimiter
       # Handle a Sidekiq job payload limit based on current configuration.
-      # This validator pulls the configuration from the environment variables:
-      # - GITLAB_SIDEKIQ_SIZE_LIMITER_MODE: the current mode of the size
-      # limiter. This must be either `track` or `compress`.
-      # - GITLAB_SIDEKIQ_SIZE_LIMITER_COMPRESSION_THRESHOLD_BYTES: the
-      # threshold before the input job payload is compressed.
-      # - GITLAB_SIDEKIQ_SIZE_LIMITER_LIMIT_BYTES: the size limit in bytes.
+      # This validator pulls the configuration from application settings:
+      # - limiter_mode: the current mode of the size
+      #   limiter. This must be either `track` or `compress`.
+      # - compression_threshold_bytes: the threshold before the input job
+      #   payload is compressed.
+      # - limit_bytes: the size limit in bytes.
       #
       # In track mode, if a job payload limit exceeds the size limit, an
       # event is sent to Sentry and the job is scheduled like normal.
@@ -18,12 +18,29 @@ module Gitlab
       # then compressed. If the compressed payload still exceeds the limit, the
       # job is discarded, and a ExceedLimitError exception is raised.
       class Validator
-        def self.validate!(worker_class, job)
-          new(worker_class, job).validate!
+        # Avoid limiting the size of jobs for `BackgroundMigrationWorker` classes.
+        # We can't read the configuration from `ApplicationSetting` for those jobs
+        # when migrating a path that modifies the `application_settings` table.
+        # Reading the application settings through `ApplicationSetting#current`
+        # causes a `SELECT` with a list of column names, but that list of column
+        # names might not match what the table currently looks like causing
+        # an error when scheduling background migrations.
+        #
+        # The worker classes aren't constants here, because that would force
+        # Application Settings to be loaded earlier causing failures loading
+        # the environmant in rake tasks
+        EXEMPT_WORKER_NAMES = ["BackgroundMigrationWorker", "Database::BatchedBackgroundMigrationWorker"].to_set
+
+        class << self
+          def validate!(worker_class, job)
+            return if EXEMPT_WORKER_NAMES.include?(worker_class.to_s)
+
+            new(worker_class, job).validate!
+          end
         end
 
         DEFAULT_SIZE_LIMIT = 0
-        DEFAULT_COMPRESION_THRESHOLD_BYTES = 100_000 # 100kb
+        DEFAULT_COMPRESSION_THRESHOLD_BYTES = 100_000 # 100kb
 
         MODES = [
           TRACK_MODE = 'track',
@@ -34,9 +51,9 @@ module Gitlab
 
         def initialize(
           worker_class, job,
-          mode: ENV['GITLAB_SIDEKIQ_SIZE_LIMITER_MODE'],
-          compression_threshold: ENV['GITLAB_SIDEKIQ_SIZE_LIMITER_COMPRESSION_THRESHOLD_BYTES'],
-          size_limit: ENV['GITLAB_SIDEKIQ_SIZE_LIMITER_LIMIT_BYTES']
+          mode: Gitlab::CurrentSettings.sidekiq_job_limiter_mode,
+          compression_threshold: Gitlab::CurrentSettings.sidekiq_job_limiter_compression_threshold_bytes,
+          size_limit: Gitlab::CurrentSettings.sidekiq_job_limiter_limit_bytes
         )
           @worker_class = worker_class
           @job = job
@@ -47,11 +64,11 @@ module Gitlab
         end
 
         def validate!
-          return unless @size_limit > 0
-          return if allow_big_payload?
-
           job_args = compress_if_necessary(::Sidekiq.dump_json(@job['args']))
+
+          return if @size_limit == 0
           return if job_args.bytesize <= @size_limit
+          return if allow_big_payload?
 
           exception = exceed_limit_error(job_args)
           if compress_mode?
@@ -72,10 +89,10 @@ module Gitlab
         end
 
         def set_compression_threshold(compression_threshold)
-          @compression_threshold = (compression_threshold || DEFAULT_COMPRESION_THRESHOLD_BYTES).to_i
+          @compression_threshold = (compression_threshold || DEFAULT_COMPRESSION_THRESHOLD_BYTES).to_i
           if @compression_threshold <= 0
             ::Sidekiq.logger.warn "Invalid Sidekiq size limiter compression threshold: #{@compression_threshold}"
-            @compression_threshold = DEFAULT_COMPRESION_THRESHOLD_BYTES
+            @compression_threshold = DEFAULT_COMPRESSION_THRESHOLD_BYTES
           end
         end
 
@@ -83,6 +100,7 @@ module Gitlab
           @size_limit = (size_limit || DEFAULT_SIZE_LIMIT).to_i
           if @size_limit < 0
             ::Sidekiq.logger.warn "Invalid Sidekiq size limiter limit: #{@size_limit}"
+            @size_limit = DEFAULT_SIZE_LIMIT
           end
         end
 

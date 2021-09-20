@@ -156,7 +156,7 @@ describe('sidebar labels', () => {
           variables: {
             input: {
               iid: defaultProps.iid,
-              labelIds: [toLabelGid(27), toLabelGid(28), toLabelGid(29), toLabelGid(40)],
+              labelIds: [toLabelGid(29), toLabelGid(28), toLabelGid(27), toLabelGid(40)],
               operationMode: MutationOperationMode.Replace,
               projectPath: defaultProps.projectPath,
             },

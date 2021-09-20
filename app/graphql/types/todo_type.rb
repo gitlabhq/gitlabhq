@@ -14,7 +14,7 @@ module Types
           null: false
 
     field :project, Types::ProjectType,
-          description: 'The project this to-do item is associated with.',
+          description: 'Project this to-do item is associated with.',
           null: true,
           authorize: :read_project
 
@@ -24,7 +24,7 @@ module Types
           authorize: :read_group
 
     field :author, Types::UserType,
-          description: 'The author of this to-do item.',
+          description: 'Author of this to-do item.',
           null: false
 
     field :action, Types::TodoActionEnum,

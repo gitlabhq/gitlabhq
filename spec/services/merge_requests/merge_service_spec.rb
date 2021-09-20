@@ -402,21 +402,6 @@ RSpec.describe MergeRequests::MergeService do
           expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
         end
 
-        it 'logs and saves error if there is a squash in progress' do
-          error_message = 'another squash is already in progress'
-
-          allow_any_instance_of(MergeRequest).to receive(:squash_in_progress?).and_return(true)
-          merge_request.update!(squash: true)
-
-          service.execute(merge_request)
-
-          expect(merge_request).to be_open
-          expect(merge_request.merge_commit_sha).to be_nil
-          expect(merge_request.squash_commit_sha).to be_nil
-          expect(merge_request.merge_error).to include(error_message)
-          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
-        end
-
         it 'logs and saves error if there is an PreReceiveError exception' do
           error_message = 'error message'
 

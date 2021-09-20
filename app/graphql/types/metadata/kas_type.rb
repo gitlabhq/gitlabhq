@@ -12,7 +12,7 @@ module Types
       field :version, GraphQL::Types::String, null: true,
             description: 'KAS version.'
       field :external_url, GraphQL::Types::String, null: true,
-            description: 'The URL used by the Agents to communicate with KAS.'
+            description: 'URL used by the Agents to communicate with KAS.'
     end
   end
 end

@@ -85,17 +85,17 @@ export function mountIssuesListApp() {
 
   const resolvers = {
     Mutation: {
-      reorderIssues: (_, { oldIndex, newIndex, serializedVariables }, { cache }) => {
+      reorderIssues: (_, { oldIndex, newIndex, namespace, serializedVariables }, { cache }) => {
         const variables = JSON.parse(serializedVariables);
         const sourceData = cache.readQuery({ query: getIssuesQuery, variables });
 
         const data = produce(sourceData, (draftData) => {
-          const issues = draftData.project.issues.nodes.slice();
+          const issues = draftData[namespace].issues.nodes.slice();
           const issueToMove = issues[oldIndex];
           issues.splice(oldIndex, 1);
           issues.splice(newIndex, 0, issueToMove);
 
-          draftData.project.issues.nodes = issues;
+          draftData[namespace].issues.nodes = issues;
         });
 
         cache.writeQuery({ query: getIssuesQuery, variables, data });
@@ -118,23 +118,23 @@ export function mountIssuesListApp() {
     emailsHelpPagePath,
     emptyStateSvgPath,
     exportCsvPath,
+    fullPath,
     groupEpicsPath,
+    hasAnyIssues,
     hasBlockedIssuesFeature,
     hasIssuableHealthStatusFeature,
     hasIssueWeightsFeature,
     hasIterationsFeature,
     hasMultipleIssueAssigneesFeature,
-    hasProjectIssues,
     importCsvIssuesPath,
     initialEmail,
+    isProject,
     isSignedIn,
-    issuesPath,
     jiraIntegrationPath,
     markdownHelpPath,
     maxAttachmentSize,
     newIssuePath,
     projectImportJiraPath,
-    projectPath,
     quickActionsHelpPath,
     resetPath,
     rssPath,
@@ -150,18 +150,18 @@ export function mountIssuesListApp() {
       calendarPath,
       canBulkUpdate: parseBoolean(canBulkUpdate),
       emptyStateSvgPath,
+      fullPath,
       groupEpicsPath,
+      hasAnyIssues: parseBoolean(hasAnyIssues),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasMultipleIssueAssigneesFeature: parseBoolean(hasMultipleIssueAssigneesFeature),
-      hasProjectIssues: parseBoolean(hasProjectIssues),
+      isProject: parseBoolean(isProject),
       isSignedIn: parseBoolean(isSignedIn),
-      issuesPath,
       jiraIntegrationPath,
       newIssuePath,
-      projectPath,
       rssPath,
       showNewIssueLink: parseBoolean(showNewIssueLink),
       signInPath,
@@ -172,9 +172,9 @@ export function mountIssuesListApp() {
       importCsvIssuesPath,
       maxAttachmentSize,
       projectImportJiraPath,
-      showExportButton: parseBoolean(hasProjectIssues),
+      showExportButton: parseBoolean(hasAnyIssues),
       showImportButton: parseBoolean(canImportIssues),
-      showLabel: !parseBoolean(hasProjectIssues),
+      showLabel: !parseBoolean(hasAnyIssues),
       // For IssuableByEmail component
       emailsHelpPagePath,
       initialEmail,

@@ -8,9 +8,14 @@ module Gitlab
         # removes the lock after the job has executed preventing a new job to be queued
         # while a job is still executing.
         class UntilExecuted < Base
+          extend ::Gitlab::Utils::Override
+
           include DeduplicatesWhenScheduling
 
-          def perform(_job)
+          override :perform
+          def perform(job)
+            super
+
             yield
 
             duplicate_job.delete!

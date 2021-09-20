@@ -44,6 +44,19 @@ RSpec.describe 'Update of an existing issue' do
       expect(mutation_response['issue']).to include('discussionLocked' => true)
     end
 
+    context 'when issue_type is updated' do
+      let(:input) { { 'iid' => issue.iid.to_s, 'type' => 'INCIDENT' } }
+
+      it 'updates issue_type and work_item_type' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          issue.reload
+        end.to change { issue.work_item_type.base_type }.from('issue').to('incident').and(
+          change(issue, :issue_type).from('issue').to('incident')
+        )
+      end
+    end
+
     context 'setting labels' do
       let(:mutation) do
         graphql_mutation(:update_issue, input_params) do

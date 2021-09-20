@@ -150,6 +150,23 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers do
             migration.prepare_async_index(table_name, 'id')
           end.not_to change { index_model.where(name: index_name).count }
         end
+
+        it 'updates definition if changed' do
+          index = create(:postgres_async_index, table_name: table_name, name: index_name, definition: '...')
+
+          expect do
+            migration.prepare_async_index(table_name, 'id', name: index_name)
+          end.to change { index.reload.definition }
+        end
+
+        it 'does not update definition if not changed' do
+          definition = "CREATE INDEX CONCURRENTLY \"index_#{table_name}_on_id\" ON \"#{table_name}\" (\"id\")"
+          index = create(:postgres_async_index, table_name: table_name, name: index_name, definition: definition)
+
+          expect do
+            migration.prepare_async_index(table_name, 'id', name: index_name)
+          end.not_to change { index.reload.updated_at }
+        end
       end
 
       context 'when the async index table does not exist' do

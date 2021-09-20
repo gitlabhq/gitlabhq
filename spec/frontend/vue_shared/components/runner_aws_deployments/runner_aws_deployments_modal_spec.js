@@ -21,6 +21,7 @@ describe('RunnerAwsDeploymentsModal', () => {
     wrapper = shallowMount(RunnerAwsDeploymentsModal, {
       propsData: {
         modalId: 'runner-aws-deployments-modal',
+        imgSrc: '/assets/aws-cloud-formation.png',
       },
     });
   };

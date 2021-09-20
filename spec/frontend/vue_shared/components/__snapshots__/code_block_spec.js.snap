@@ -2,7 +2,7 @@
 
 exports[`Code Block with default props renders correctly 1`] = `
 <pre
-  class="code-block rounded"
+  class="code-block rounded code"
 >
   <code
     class="d-block"
@@ -14,7 +14,7 @@ exports[`Code Block with default props renders correctly 1`] = `
 
 exports[`Code Block with maxHeight set to "200px" renders correctly 1`] = `
 <pre
-  class="code-block rounded"
+  class="code-block rounded code"
   style="max-height: 200px; overflow-y: auto;"
 >
   <code

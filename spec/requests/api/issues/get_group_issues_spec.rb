@@ -402,14 +402,7 @@ RSpec.describe API::Issues do
         expect_paginated_array_response([group_closed_issue.id, group_issue.id])
       end
 
-      shared_examples 'labels parameter' do
-        it 'returns an array of labeled group issues' do
-          get api(base_url, user), params: { labels: group_label.title }
-
-          expect_paginated_array_response(group_issue.id)
-          expect(json_response.first['labels']).to eq([group_label.title])
-        end
-
+      context 'labels parameter' do
         it 'returns an array of labeled group issues' do
           get api(base_url, user), params: { labels: group_label.title }
 
@@ -456,22 +449,6 @@ RSpec.describe API::Issues do
 
           it_behaves_like 'labeled issues with labels and label_name params'
         end
-      end
-
-      context 'when `optimized_issuable_label_filter` feature flag is off' do
-        before do
-          stub_feature_flags(optimized_issuable_label_filter: false)
-        end
-
-        it_behaves_like 'labels parameter'
-      end
-
-      context 'when `optimized_issuable_label_filter` feature flag is on' do
-        before do
-          stub_feature_flags(optimized_issuable_label_filter: true)
-        end
-
-        it_behaves_like 'labels parameter'
       end
 
       it 'returns issues matching given search string for title' do

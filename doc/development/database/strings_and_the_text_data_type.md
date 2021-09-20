@@ -11,11 +11,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 When adding new columns that will be used to store strings or other textual information:
 
 1. We always use the `text` data type instead of the `string` data type.
-1. `text` columns should always have a limit set, either by using the `create_table_with_constraints` helper
-when creating a table, or by using the `add_text_limit` when altering an existing table.
+1. `text` columns should always have a limit set, either by using the `create_table` with
+the `#text ... limit: 100` helper (see below) when creating a table, or by using the `add_text_limit`
+when altering an existing table.
 
-The `text` data type can not be defined with a limit, so `create_table_with_constraints` and `add_text_limit` enforce
-that by adding a [check constraint](https://www.postgresql.org/docs/11/ddl-constraints.html) on the column.
+The standard Rails `text` column type can not be defined with a limit, but we extend `create_table` to
+add a `limit: 255` option. Outside of `create_table`, `add_text_limit` can be used to add a [check constraint](https://www.postgresql.org/docs/11/ddl-constraints.html)
+to an already existing column.
 
 ## Background information
 
@@ -41,35 +43,23 @@ Don't use text columns for `attr_encrypted` attributes. Use a
 ## Create a new table with text columns
 
 When adding a new table, the limits for all text columns should be added in the same migration as
-the table creation.
+the table creation. We add a `limit:` attribute to Rails' `#text` method, which allows adding a limit
+for this column.
 
 For example, consider a migration that creates a table with two text columns,
 `db/migrate/20200401000001_create_db_guides.rb`:
 
 ```ruby
-class CreateDbGuides < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
-  def up
-    create_table_with_constraints :db_guides do |t|
+class CreateDbGuides < Gitlab::Database::Migration[1.0]
+  def change
+    create_table :db_guides do |t|
       t.bigint :stars, default: 0, null: false
-      t.text :title
-      t.text :notes
-
-      t.text_limit :title, 128
-      t.text_limit :notes, 1024
+      t.text :title, limit: 128
+      t.text :notes, limit: 1024
     end
-  end
-
-  def down
-    # No need to drop the constraints, drop_table takes care of everything
-    drop_table :db_guides
   end
 end
 ```
-
-Note that the `create_table_with_constraints` helper uses the `with_lock_retries` helper
-internally, so we don't need to manually wrap the method call in the migration.
 
 ## Add a text column to an existing table
 
@@ -84,7 +74,7 @@ For example, consider a migration that adds a new text column `extended_title` t
 `db/migrate/20200501000001_add_extended_title_to_sprints.rb`:
 
 ```ruby
-class AddExtendedTitleToSprints < ActiveRecord::Migration[6.0]
+class AddExtendedTitleToSprints < Gitlab::Database::Migration[1.0]
 
   # rubocop:disable Migration/AddLimitToTextColumns
   # limit is added in 20200501000002_add_text_limit_to_sprints_extended_title
@@ -99,8 +89,7 @@ A second migration should follow the first one with a limit added to `extended_t
 `db/migrate/20200501000002_add_text_limit_to_sprints_extended_title.rb`:
 
 ```ruby
-class AddTextLimitToSprintsExtendedTitle < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
+class AddTextLimitToSprintsExtendedTitle < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -175,9 +164,7 @@ in a post-deployment migration,
 `db/post_migrate/20200501000001_add_text_limit_migration.rb`:
 
 ```ruby
-class AddTextLimitMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class AddTextLimitMigration < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -208,9 +195,7 @@ to add a background migration for the 13.0 milestone (current),
 `db/post_migrate/20200501000002_schedule_cap_title_length_on_issues.rb`:
 
 ```ruby
-class ScheduleCapTitleLengthOnIssues < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class ScheduleCapTitleLengthOnIssues < Gitlab::Database::Migration[1.0]
   # Info on how many records will be affected on GitLab.com
   # time each batch needs to run on average, etc ...
   BATCH_SIZE = 5000
@@ -255,9 +240,7 @@ helper in a final post-deployment migration,
 `db/post_migrate/20200601000001_validate_text_limit_migration.rb`:
 
 ```ruby
-class ValidateTextLimitMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-
+class ValidateTextLimitMigration < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up

@@ -212,9 +212,8 @@ module Banzai
       def gather_references(nodes, ids_only: false)
         nodes = nodes_user_can_reference(current_user, nodes)
         visible = nodes_visible_to_user(current_user, nodes)
-        not_visible = nodes - visible
 
-        { visible: referenced_by(visible, ids_only: ids_only), not_visible: not_visible }
+        { visible: referenced_by(visible, ids_only: ids_only), nodes: nodes, visible_nodes: visible }
       end
 
       # Returns a Hash containing the projects for a given list of HTML nodes.

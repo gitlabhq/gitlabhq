@@ -77,6 +77,10 @@ class Packages::PackageFile < ApplicationRecord
       .where(packages_conan_file_metadata: { conan_package_reference: conan_package_reference })
   end
 
+  def self.most_recent!
+    recent.first!
+  end
+
   mount_file_store_uploader Packages::PackageFileUploader
 
   update_project_statistics project_statistics_name: :packages_size
@@ -88,6 +92,24 @@ class Packages::PackageFile < ApplicationRecord
   # * enable a new after_commit callback that will move the file in object storage
   skip_callback :commit, :after, :remove_previously_stored_file, if: :execute_move_in_object_storage?
   after_commit :move_in_object_storage, if: :execute_move_in_object_storage?
+
+  # Returns the most recent package files for *each* of the given packages.
+  # The order is not guaranteed.
+  def self.most_recent_for(packages, extra_join: nil, extra_where: nil)
+    cte_name = :packages_cte
+    cte = Gitlab::SQL::CTE.new(cte_name, packages.select(:id))
+
+    package_files = ::Packages::PackageFile.limit_recent(1)
+                      .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
+
+    package_files = package_files.joins(extra_join) if extra_join
+    package_files = package_files.where(extra_where) if extra_where
+
+    query = select('finder.*')
+              .from([Arel.sql(cte_name.to_s), package_files.arel.lateral.as('finder')])
+
+    query.with(cte.to_arel)
+  end
 
   def download_path
     Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)

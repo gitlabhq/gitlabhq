@@ -6,6 +6,7 @@ RSpec.describe 'User creates a project', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(paginatable_namespace_drop_down_for_project_creation: false)
     sign_in(user)
     create(:personal_key, user: user)
   end

@@ -157,7 +157,7 @@ RSpec.shared_examples 'User views a wiki page' do
         expect(page).to have_link('updated home', href: wiki_page_path(wiki, wiki_page, version_id: commit2, action: :diff))
       end
 
-      it 'between the current and the previous version of a page' do
+      it 'between the current and the previous version of a page', :js do
         commit = wiki.commit
         visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
 
@@ -169,7 +169,7 @@ RSpec.shared_examples 'User views a wiki page' do
         expect_diff_links(commit)
       end
 
-      it 'between two old versions of a page' do
+      it 'between two old versions of a page', :js do
         wiki_page.update(message: 'latest home change', content: 'updated [another link](other-page)') # rubocop:disable Rails/SaveBang:
         commit = wiki.commit('HEAD^')
         visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
@@ -184,7 +184,7 @@ RSpec.shared_examples 'User views a wiki page' do
         expect_diff_links(commit)
       end
 
-      it 'for the oldest version of a page' do
+      it 'for the oldest version of a page', :js do
         commit = wiki.commit('HEAD^')
         visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
 

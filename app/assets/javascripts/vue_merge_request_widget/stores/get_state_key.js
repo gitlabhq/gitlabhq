@@ -1,7 +1,9 @@
 import { stateKey } from './state_maps';
 
 export default function deviseState() {
-  if (this.projectArchived) {
+  if (this.hasMergeChecksFailed) {
+    return stateKey.mergeChecksFailed;
+  } else if (this.projectArchived) {
     return stateKey.archived;
   } else if (this.branchMissing) {
     return stateKey.missingBranch;
@@ -25,7 +27,7 @@ export default function deviseState() {
     return stateKey.shaMismatch;
   } else if (this.autoMergeEnabled && !this.mergeError) {
     return stateKey.autoMergeEnabled;
-  } else if (!this.canMerge) {
+  } else if (!this.canMerge && !window.gon?.features?.restructuredMrWidget) {
     return stateKey.notAllowedToMerge;
   } else if (this.canBeMerged) {
     return stateKey.readyToMerge;

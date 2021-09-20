@@ -19,7 +19,11 @@ class ServiceDeskSetting < ApplicationRecord
     strong_memoize(:issue_template_content) do
       next unless issue_template_key.present?
 
-      Gitlab::Template::IssueTemplate.find(issue_template_key, project).content
+      TemplateFinder.new(
+        :issues, project,
+        name: issue_template_key,
+        source_template_project: source_template_project
+      ).execute.content
     rescue ::Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
     end
   end
@@ -42,6 +46,10 @@ class ServiceDeskSetting < ApplicationRecord
 
   private
 
+  def source_template_project
+    nil
+  end
+
   def projects_with_same_slug_and_key_exists?
     return false unless project_key
 
@@ -53,3 +61,5 @@ class ServiceDeskSetting < ApplicationRecord
     end
   end
 end
+
+ServiceDeskSetting.prepend_mod

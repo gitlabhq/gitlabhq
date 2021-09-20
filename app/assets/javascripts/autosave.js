@@ -6,7 +6,7 @@ export default class Autosave {
   constructor(field, key, fallbackKey, lockVersion) {
     this.field = field;
 
-    this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+    this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     if (key.join != null) {
       key = key.join('/');
     }

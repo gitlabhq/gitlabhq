@@ -106,7 +106,7 @@ users as long as a large file exists.
 
 To disable any more writes to the `authorized_keys` file:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Performance optimization**.
 1. Clear the **Write to "authorized_keys" file** checkbox.

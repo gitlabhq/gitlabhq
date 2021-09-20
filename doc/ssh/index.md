@@ -101,7 +101,7 @@ If you do not have an existing SSH key pair, generate a new one.
 
    You can also dedicate the SSH key pair to a [specific host](#configure-ssh-to-point-to-a-different-directory).
 
-1. Specify a [passphrase](https://www.ssh.com/ssh/passphrase):
+1. Specify a [passphrase](https://www.ssh.com/academy/ssh/passphrase):
 
    ```plaintext
    Enter passphrase (empty for no passphrase):
@@ -318,7 +318,7 @@ on the files make them readable to you but not accessible to others.
 ## Configure two-factor authentication (2FA)
 
 You can set up two-factor authentication (2FA) for
-[Git over SSH](../security/two_factor_authentication.md#two-factor-authentication-2fa-for-git-over-ssh-operations).
+[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
 
 ## Use EGit on Eclipse
 

@@ -7,7 +7,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
 import createLabelMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/create_label.mutation.graphql';
-import { mockSuggestedColors, createLabelSuccessfulResponse } from './mock_data';
+import projectLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
+import {
+  mockSuggestedColors,
+  createLabelSuccessfulResponse,
+  labelsQueryResponse,
+} from './mock_data';
 
 jest.mock('~/flash');
 
@@ -44,6 +49,14 @@ describe('DropdownContentsCreateView', () => {
 
   const createComponent = ({ mutationHandler = createLabelSuccessHandler } = {}) => {
     const mockApollo = createMockApollo([[createLabelMutation, mutationHandler]]);
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: projectLabelsQuery,
+      data: labelsQueryResponse.data,
+      variables: {
+        fullPath: '',
+        searchTerm: '',
+      },
+    });
 
     wrapper = shallowMount(DropdownContentsCreateView, {
       localVue,

@@ -1,0 +1,25 @@
+---
+data_category: optional
+key_path: redis_hll_counters.terraform.p_terraform_state_api_unique_users_weekly
+description: Monthly active users of GitLab Managed Terraform states
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category: infrastructure_as_code
+value_type: number
+status: active
+time_frame: 7d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - p_terraform_state_api_unique_users
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "<13.9"

@@ -14,12 +14,10 @@ module CronSchedulable
   # The `next_run_at` column is set to the actual execution date of worker that
   # triggers the schedule. This way, a schedule like `*/1 * * * *` won't be triggered
   # in a short interval when the worker runs irregularly by Sidekiq Memory Killer.
-  def calculate_next_run_at
-    now = Time.zone.now
+  def calculate_next_run_at(start_time = Time.zone.now)
+    ideal_next_run = ideal_next_run_from(start_time)
 
-    ideal_next_run = ideal_next_run_from(now)
-
-    if ideal_next_run == cron_worker_next_run_from(now)
+    if ideal_next_run == cron_worker_next_run_from(start_time)
       ideal_next_run
     else
       cron_worker_next_run_from(ideal_next_run)

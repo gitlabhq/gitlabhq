@@ -118,7 +118,7 @@ namespace :gitlab do
 
     desc 'Create missing dynamic database partitions'
     task create_dynamic_partitions: :environment do
-      Gitlab::Database::Partitioning::PartitionManager.new.sync_partitions
+      Gitlab::Database::Partitioning.sync_partitions
     end
 
     # This is targeted towards deploys and upgrades of GitLab.
@@ -151,6 +151,12 @@ namespace :gitlab do
     # initializers here as the application can continue to run while
     # a rake task reloads the database schema.
     Rake::Task['db:test:load'].enhance do
+      # Due to bug in `db:test:load` if many DBs are used
+      # the `ActiveRecord::Base.connection` might be switched to another one
+      # This is due to `if should_reconnect`:
+      # https://github.com/rails/rails/blob/a81aeb63a007ede2fe606c50539417dada9030c7/activerecord/lib/active_record/railties/databases.rake#L622
+      ActiveRecord::Base.establish_connection :main
+
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 

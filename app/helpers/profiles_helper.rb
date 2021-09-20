@@ -6,13 +6,10 @@ module ProfilesHelper
     verified_emails = user.verified_emails - [private_email]
 
     [
+      [s_('Use primary email (%{email})') % { email: user.email }, ''],
       [s_("Profiles|Use a private email - %{email}").html_safe % { email: private_email }, Gitlab::PrivateCommitEmail::TOKEN],
       *verified_emails
     ]
-  end
-
-  def selected_commit_email(user)
-    user.read_attribute(:commit_email) || user.commit_email
   end
 
   def attribute_provider_label(attribute)
@@ -36,6 +33,21 @@ module ProfilesHelper
 
   def user_status_set_to_busy?(status)
     status&.availability == availability_values[:busy]
+  end
+
+  def middle_dot_divider_classes(stacking, breakpoint)
+    ['gl-mb-3'].tap do |classes|
+      if stacking
+        classes.concat(%w(middle-dot-divider-sm gl-display-block gl-sm-display-inline-block))
+      else
+        classes << 'gl-display-inline-block'
+        classes << if breakpoint.nil?
+                     'middle-dot-divider'
+                   else
+                     "middle-dot-divider-#{breakpoint}"
+                   end
+      end
+    end
   end
 
   # Overridden in EE::ProfilesHelper#ssh_key_expiration_tooltip

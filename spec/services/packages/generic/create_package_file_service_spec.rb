@@ -105,6 +105,37 @@ RSpec.describe Packages::Generic::CreatePackageFileService do
           it { expect { execute_service }.to change { project.package_files.count }.by(1) }
         end
       end
+
+      context 'with multiple files for the same package and the same pipeline' do
+        let(:file_2_params) { params.merge(file_name:  'myfile.tar.gz.2', file: file2) }
+        let(:file_3_params) { params.merge(file_name:  'myfile.tar.gz.3', file: file3) }
+
+        let(:temp_file2) { Tempfile.new("test2") }
+        let(:temp_file3) { Tempfile.new("test3") }
+
+        let(:file2) { UploadedFile.new(temp_file2.path, sha256: sha256) }
+        let(:file3) { UploadedFile.new(temp_file3.path, sha256: sha256) }
+
+        before do
+          FileUtils.touch(temp_file2)
+          FileUtils.touch(temp_file3)
+          expect(::Packages::Generic::FindOrCreatePackageService).to receive(:new).with(project, user, package_params).and_return(package_service).twice
+          expect(package_service).to receive(:execute).and_return(package).twice
+        end
+
+        after do
+          FileUtils.rm_f(temp_file2)
+          FileUtils.rm_f(temp_file3)
+        end
+
+        it 'creates the build info only once' do
+          expect do
+            described_class.new(project, user, params).execute
+            described_class.new(project, user, file_2_params).execute
+            described_class.new(project, user, file_3_params).execute
+          end.to change { package.build_infos.count }.by(1)
+        end
+      end
     end
   end
 end

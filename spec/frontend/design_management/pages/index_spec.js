@@ -338,6 +338,13 @@ describe('Design management index page', () => {
                     __typename: 'DesignVersion',
                     id: expect.anything(),
                     sha: expect.anything(),
+                    createdAt: '',
+                    author: {
+                      __typename: 'UserCore',
+                      id: expect.anything(),
+                      name: '',
+                      avatarUrl: '',
+                    },
                   },
                 },
               },
@@ -618,6 +625,16 @@ describe('Design management index page', () => {
     });
 
     it('does not upload designs if designs wrapper is not hovered', () => {
+      document.dispatchEvent(event);
+
+      expect(mockMutate).not.toHaveBeenCalled();
+    });
+
+    it('does not upload designs if designs wrapper is destroyed', () => {
+      findDesignsWrapper().trigger('mouseenter');
+
+      wrapper.destroy();
+
       document.dispatchEvent(event);
 
       expect(mockMutate).not.toHaveBeenCalled();

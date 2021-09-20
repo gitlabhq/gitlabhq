@@ -21,11 +21,7 @@ module Packages
 
         try_obtain_lease do
           @package_file.transaction do
-            if use_new_package_file_updater?
-              new_execute
-            else
-              legacy_execute
-            end
+            process_package_update
           end
         end
       rescue ActiveRecord::RecordInvalid => e
@@ -34,7 +30,7 @@ module Packages
 
       private
 
-      def new_execute
+      def process_package_update
         package_to_destroy = nil
         target_package = @package_file.package
 
@@ -50,34 +46,9 @@ module Packages
         end
 
         update_package(target_package)
-
         ::Packages::UpdatePackageFileService.new(@package_file, package_id: target_package.id, file_name: package_filename)
                                             .execute
-
         package_to_destroy&.destroy!
-      end
-
-      def legacy_execute
-        if existing_package
-          package = link_to_existing_package
-        elsif symbol_package?
-          raise InvalidMetadataError, 'symbol package is invalid, matching package does not exist'
-        else
-          package = update_linked_package
-        end
-
-        update_package(package)
-
-        # Updating file_name updates the path where the file is stored.
-        # We must pass the file again so that CarrierWave can handle the update
-        @package_file.update!(
-          file_name: package_filename,
-          file: @package_file.file
-        )
-      end
-
-      def use_new_package_file_updater?
-        ::Feature.enabled?(:packages_nuget_new_package_file_updater, @package_file.project, default_enabled: :yaml)
       end
 
       def update_package(package)

@@ -368,6 +368,23 @@ RSpec.describe Issuable do
         expect(sorted_issue_ids).to eq(sorted_issue_ids.uniq)
       end
     end
+
+    context 'by title' do
+      let!(:issue1) { create(:issue, project: project, title: 'foo') }
+      let!(:issue2) { create(:issue, project: project, title: 'bar') }
+      let!(:issue3) { create(:issue, project: project, title: 'baz') }
+      let!(:issue4) { create(:issue, project: project, title: 'Baz 2') }
+
+      it 'sorts asc' do
+        issues = project.issues.sort_by_attribute('title_asc')
+        expect(issues).to eq([issue2, issue3, issue4, issue1])
+      end
+
+      it 'sorts desc' do
+        issues = project.issues.sort_by_attribute('title_desc')
+        expect(issues).to eq([issue1, issue4, issue3, issue2])
+      end
+    end
   end
 
   describe '#subscribed?' do

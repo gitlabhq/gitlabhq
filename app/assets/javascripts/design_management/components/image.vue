@@ -57,6 +57,7 @@ export default {
   methods: {
     onImgLoad() {
       requestIdleCallback(this.setBaseImageSize, { timeout: 1000 });
+      requestIdleCallback(this.setImageNaturalScale, { timeout: 1000 });
       performanceMarkAndMeasure({
         measures: [
           {
@@ -78,6 +79,27 @@ export default {
         width: contentImg.offsetWidth,
       };
       this.onResize({ width: this.baseImageSize.width, height: this.baseImageSize.height });
+    },
+    setImageNaturalScale() {
+      const { contentImg } = this.$refs;
+
+      if (!contentImg) {
+        return;
+      }
+
+      const { naturalHeight, naturalWidth } = contentImg;
+
+      // In case image 404s
+      if (naturalHeight === 0 || naturalWidth === 0) {
+        return;
+      }
+
+      const { height, width } = this.baseImageSize;
+
+      this.$parent.$emit(
+        'setMaxScale',
+        Math.round(((height + width) / (naturalHeight + naturalWidth)) * 100) / 100,
+      );
     },
     onResize({ width, height }) {
       this.$emit('resize', { width, height });

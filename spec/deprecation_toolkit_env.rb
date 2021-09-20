@@ -60,13 +60,12 @@ module DeprecationToolkitEnv
   # - ruby/lib/grpc/generic/interceptors.rb: https://gitlab.com/gitlab-org/gitlab/-/issues/339305
   def self.allowed_kwarg_warning_paths
     %w[
-      actionpack-6.1.3.2/lib/action_dispatch/routing/route_set.rb
-      ruby/lib/grpc/generic/interceptors.rb
-    ]
+        ruby/lib/grpc/generic/interceptors.rb
+      ]
   end
 
   def self.configure!
-    # Enable ruby deprecations for keywords, it's suppressed by default in Ruby 2.7.2
+    # Enable ruby deprecations for keywords, it's suppressed by default in Ruby 2.7
     Warning[:deprecated] = true
 
     DeprecationToolkit::Configuration.test_runner = :rspec

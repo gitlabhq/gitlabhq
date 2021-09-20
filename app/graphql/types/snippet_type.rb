@@ -22,7 +22,7 @@ module Types
           null: false
 
     field :project, Types::ProjectType,
-          description: 'The project the snippet is associated with.',
+          description: 'Project the snippet is associated with.',
           null: true,
           authorize: :read_project
 
@@ -30,7 +30,7 @@ module Types
     # when the admin setting restricted visibility
     # level is set to public
     field :author, Types::UserType,
-          description: 'The owner of the snippet.',
+          description: 'Owner of the snippet.',
           null: true
 
     field :file_name, GraphQL::Types::String,

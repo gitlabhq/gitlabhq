@@ -153,6 +153,10 @@ module Gitlab
 
         method_visibility = method_visibility_for(target, name)
 
+        # We silence warnings to avoid such warnings:
+        # `Skipping set of ruby2_keywords flag for <...>
+        # (method accepts keywords or method does not accept argument splat)`
+        # as we apply ruby2_keywords 'blindly' for every instrumented method.
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
             if trans = Gitlab::Metrics::Instrumentation.transaction
@@ -162,6 +166,7 @@ module Gitlab
               super
             end
           end
+          silence_warnings { ruby2_keywords(:#{name}) if respond_to?(:ruby2_keywords, true) }
           #{method_visibility} :#{name}
         EOF
 

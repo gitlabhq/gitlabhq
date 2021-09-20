@@ -137,7 +137,7 @@ The `~/locale` module exports the following key functions for externalization:
 - `s__()` (namespaced double underscore parenthesis)
 - `__()` Mark content for translation (note the double underscore).
 - `s__()` Mark namespaced content for translation
-- `n__()` Mark pluralized content for translation 
+- `n__()` Mark pluralized content for translation
 
 ```javascript
 import { __, s__, n__ } from '~/locale';
@@ -170,6 +170,45 @@ This means you can externalize strings in Vue templates without having to import
 If you need to translate strings in the Vue component's JavaScript, you can import the necessary externalization function from the `~/locale` file as described in the [JavaScript files](#javascript-files) section.
 
 To test Vue translations, learn about [manually testing translations from the UI](#manually-test-translations-from-the-ui).
+
+### Test files
+
+Test expectations against externalized contents should not be hard coded,
+because we may need to run the tests with non-default locale, and tests with
+hard coded contents will fail.
+
+This means any expectations against externalized contents should call the
+same externalizing method to match the translation.
+
+Bad:
+
+```ruby
+click_button 'Submit review'
+
+expect(rendered).to have_content('Thank you for your feedback!')
+```
+
+Good:
+
+```ruby
+click_button _('Submit review')
+
+expect(rendered).to have_content(_('Thank you for your feedback!'))
+```
+
+This includes JavaScript tests:
+
+Bad:
+
+```javascript
+expect(findUpdateIgnoreStatusButton().text()).toBe('Ignore');
+```
+
+Good:
+
+```javascript
+expect(findUpdateIgnoreStatusButton().text()).toBe(__('Ignore'));
+```
 
 #### Recommendations
 
@@ -750,6 +789,28 @@ in Japanese は is added to the subject of a sentence and を to the object. Thi
 translate correctly if you extract individual words from the sentence.
 
 When in doubt, try to follow the best practices described in this [Mozilla Developer documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting).
+
+### Always pass string literals to the translation helpers
+
+The `bin/rake gettext:regenerate` script parses the codebase and extracts all the strings from the
+[translation helpers](#preparing-a-page-for-translation) ready to be translated.
+
+The script cannot resolve the strings if they are passed as variables or function calls. Therefore,
+make sure to always pass string literals to the helpers.
+
+```javascript
+// Good
+__('Some label');
+s__('Namespace', 'Label');
+s__('Namespace|Label');
+n__('%d apple', '%d apples', appleCount);
+
+// Bad
+__(LABEL);
+s__(getLabel());
+s__(NAMESPACE, LABEL);
+n__(LABEL_SINGULAR, LABEL_PLURAL, appleCount);
+```
 
 ## Updating the PO files with the new content
 

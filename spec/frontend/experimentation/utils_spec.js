@@ -37,6 +37,50 @@ describe('experiment Utilities', () => {
     });
   });
 
+  describe('getAllExperimentContexts', () => {
+    const schema = TRACKING_CONTEXT_SCHEMA;
+    let origGon;
+
+    beforeEach(() => {
+      origGon = window.gon;
+    });
+
+    afterEach(() => {
+      window.gon = origGon;
+    });
+
+    it('collects all of the experiment contexts into a single array', () => {
+      const experiments = [
+        { experiment: 'abc', variant: 'candidate' },
+        { experiment: 'def', variant: 'control' },
+        { experiment: 'ghi', variant: 'blue' },
+      ];
+      window.gon = {
+        experiment: experiments.reduce((collector, { experiment, variant }) => {
+          return { ...collector, [experiment]: { experiment, variant } };
+        }, {}),
+      };
+
+      expect(experimentUtils.getAllExperimentContexts()).toEqual(
+        experiments.map((data) => ({ schema, data })),
+      );
+    });
+
+    it('returns an empty array if there are no experiments', () => {
+      window.gon.experiment = {};
+
+      expect(experimentUtils.getAllExperimentContexts()).toEqual([]);
+    });
+
+    it('includes all additional experiment data', () => {
+      const experiment = 'experimentWithCustomData';
+      const data = { experiment, variant: 'control', color: 'blue', style: 'rounded' };
+      window.gon.experiment[experiment] = data;
+
+      expect(experimentUtils.getAllExperimentContexts()).toContainEqual({ schema, data });
+    });
+  });
+
   describe('isExperimentVariant', () => {
     describe.each`
       gon                            | input                            | output

@@ -8,6 +8,8 @@ module API
     feature_category :error_tracking
 
     content_type :envelope, 'application/x-sentry-envelope'
+    content_type :json, 'application/json'
+    content_type :txt, 'text/plain'
     default_format :envelope
 
     before do
@@ -33,17 +35,24 @@ module API
       end
 
       def active_client_key?
-        begin
-          public_key = ::ErrorTracking::Collector::SentryAuthParser.parse(request)[:public_key]
-        rescue StandardError
-          bad_request!('Failed to parse sentry request')
-        end
+        public_key = extract_public_key
 
         find_client_key(public_key)
       end
+
+      def extract_public_key
+        # Some SDK send public_key as a param. In this case we don't need to parse headers.
+        return params[:sentry_key] if params[:sentry_key].present?
+
+        begin
+          ::ErrorTracking::Collector::SentryAuthParser.parse(request)[:public_key]
+        rescue StandardError
+          bad_request!('Failed to parse sentry request')
+        end
+      end
     end
 
-    desc 'Submit error tracking event to the project' do
+    desc 'Submit error tracking event to the project as envelope' do
       detail 'This feature was introduced in GitLab 14.1.'
     end
     params do
@@ -83,6 +92,39 @@ module API
           .new(project, nil, event: parsed_request[:event])
           .execute
       end
+
+      # Collector should never return any information back.
+      # Because DSN and public key are designed for public use,
+      # it is safe only for submission of new events.
+      no_content!
+    end
+
+    desc 'Submit error tracking event to the project' do
+      detail 'This feature was introduced in GitLab 14.1.'
+    end
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    post 'error_tracking/collector/api/:id/store' do
+      # There is a reason why we have such uncommon path.
+      # We depend on a client side error tracking software which
+      # modifies URL for its own reasons.
+      #
+      # When we give user a URL like this
+      #   HOST/api/v4/error_tracking/collector/123
+      #
+      # Then error tracking software will convert it like this:
+      #   HOST/api/v4/error_tracking/collector/api/123/store/
+
+      begin
+        parsed_body = Gitlab::Json.parse(request.body.read)
+      rescue StandardError
+        bad_request!('Failed to parse sentry request')
+      end
+
+      ::ErrorTracking::CollectErrorService
+        .new(project, nil, event: parsed_body)
+        .execute
 
       # Collector should never return any information back.
       # Because DSN and public key are designed for public use,

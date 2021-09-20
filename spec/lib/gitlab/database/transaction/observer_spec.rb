@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Database::Transaction::Observer do
           User.first
 
           expect(transaction_context).to be_a(::Gitlab::Database::Transaction::Context)
-          expect(context.keys).to match_array(%i(start_time depth savepoints queries))
+          expect(context.keys).to match_array(%i(start_time depth savepoints queries backtraces))
           expect(context[:depth]).to eq(2)
           expect(context[:savepoints]).to eq(1)
           expect(context[:queries].length).to eq(1)
@@ -35,6 +35,7 @@ RSpec.describe Gitlab::Database::Transaction::Observer do
       expect(context[:depth]).to eq(2)
       expect(context[:savepoints]).to eq(1)
       expect(context[:releases]).to eq(1)
+      expect(context[:backtraces].length).to eq(1)
     end
 
     describe '.extract_sql_command' do

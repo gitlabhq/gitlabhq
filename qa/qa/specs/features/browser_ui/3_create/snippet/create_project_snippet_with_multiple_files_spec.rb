@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Multiple file snippet' do
-      it 'creates a project snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1024' do
+      it 'creates a project snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1648' do
         Flow::Login.sign_in
 
         Resource::ProjectSnippet.fabricate_via_browser_ui! do |snippet|

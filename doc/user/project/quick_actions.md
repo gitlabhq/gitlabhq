@@ -103,6 +103,7 @@ threads. Some quick actions might not be available to all subscription tiers.
 | `/target_branch <local branch name>`  | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Set target branch. |
 | `/title <new title>`                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Change title. |
 | `/todo`                               | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Add a to-do item. |
+| `/unapprove`                          | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Unapprove the merge request. ([introduced in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/8003)|
 | `/unassign @user1 @user2`             | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Remove specific assignees. |
 | `/unassign`                           | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Remove all assignees. |
 | `/unassign_reviewer @user1 @user2` or `/remove_reviewer @user1 @user2`    | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Remove specific reviewers. |

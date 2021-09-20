@@ -52,7 +52,7 @@ module Banzai
         doc.document.create_element(media_type, media_element_attrs)
       end
 
-      def download_paragraph(doc, element)
+      def download_link(doc, element)
         link_content = element['title'] || element['alt']
 
         link_element_attrs = {
@@ -67,19 +67,15 @@ module Banzai
           link_element_attrs['data-canonical-src'] = element['data-canonical-src']
         end
 
-        link = doc.document.create_element('a', link_content, link_element_attrs)
-
-        doc.document.create_element('p').tap do |paragraph|
-          paragraph.children = link
-        end
+        doc.document.create_element('a', link_content, link_element_attrs)
       end
 
       def media_node(doc, element)
-        container_element_attrs = { class: "#{media_type}-container" }
+        container_element_attrs = { class: "media-container #{media_type}-container" }
 
-        doc.document.create_element( "div", container_element_attrs).tap do |container|
+        doc.document.create_element('span', container_element_attrs).tap do |container|
           container.add_child(media_element(doc, element))
-          container.add_child(download_paragraph(doc, element))
+          container.add_child(download_link(doc, element))
         end
       end
     end

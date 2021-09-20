@@ -25,6 +25,7 @@ describe('error tracking settings mutations', () => {
 
       expect(state.apiHost).toEqual('');
       expect(state.enabled).toEqual(false);
+      expect(state.integrated).toEqual(false);
       expect(state.selectedProject).toEqual(null);
       expect(state.token).toEqual('');
       expect(state.listProjectsEndpoint).toEqual(TEST_HOST);
@@ -38,6 +39,7 @@ describe('error tracking settings mutations', () => {
 
       expect(state.apiHost).toEqual('apiHost');
       expect(state.enabled).toEqual(true);
+      expect(state.integrated).toEqual(true);
       expect(state.selectedProject).toEqual(projectList[0]);
       expect(state.token).toEqual('token');
       expect(state.listProjectsEndpoint).toEqual(TEST_HOST);
@@ -77,6 +79,12 @@ describe('error tracking settings mutations', () => {
 
       expect(state.connectSuccessful).toBe(false);
       expect(state.connectError).toBe(false);
+    });
+
+    it.each([true, false])('should update `integrated` to `%s`', (integrated) => {
+      mutations[types.UPDATE_INTEGRATED](state, integrated);
+
+      expect(state.integrated).toBe(integrated);
     });
   });
 });

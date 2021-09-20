@@ -28,7 +28,8 @@ RSpec.describe Projects::ForkService do
                                namespace: @from_namespace,
                                star_count: 107,
                                avatar: avatar,
-                               description: 'wow such project')
+                               description: 'wow such project',
+                               external_authorization_classification_label: 'classification-label')
         @to_user = create(:user)
         @to_namespace = @to_user.namespace
         @from_project.add_user(@to_user, :developer)
@@ -66,6 +67,7 @@ RSpec.describe Projects::ForkService do
           it { expect(to_project.description).to eq(@from_project.description) }
           it { expect(to_project.avatar.file).to be_exists }
           it { expect(to_project.ci_config_path).to eq(@from_project.ci_config_path) }
+          it { expect(to_project.external_authorization_classification_label).to eq(@from_project.external_authorization_classification_label) }
 
           # This test is here because we had a bug where the from-project lost its
           # avatar after being forked.

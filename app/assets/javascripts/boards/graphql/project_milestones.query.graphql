@@ -1,4 +1,4 @@
-query groupMilestones(
+query projectMilestones(
   $fullPath: ID!
   $state: MilestoneStateEnum
   $includeAncestors: Boolean

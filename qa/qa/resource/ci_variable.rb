@@ -22,7 +22,7 @@ module QA
 
         Page::Project::Menu.perform(&:go_to_ci_cd_settings)
 
-        Page::Project::Settings::CICD.perform do |setting|
+        Page::Project::Settings::CiCd.perform do |setting|
           setting.expand_ci_variables do |page|
             page.click_add_variable
             page.fill_variable(key, value, masked)

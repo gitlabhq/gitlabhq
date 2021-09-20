@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButton } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import NoteableNote from '~/notes/components/noteable_note.vue';
@@ -106,7 +105,7 @@ export default {
       <div
         v-if="draftCommands"
         class="referenced-commands draft-note-commands"
-        v-html="draftCommands"
+        v-html="draftCommands /* eslint-disable-line vue/no-v-html */"
       ></div>
 
       <p class="draft-note-actions d-flex">

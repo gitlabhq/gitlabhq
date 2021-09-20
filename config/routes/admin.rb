@@ -93,6 +93,7 @@ namespace :admin do
     member do
       post :pause
       post :resume
+      post :retry
     end
   end
 

@@ -125,8 +125,7 @@ export default {
     // This method is defined here instead of in `methods`
     // because we need to access the .cancel() method
     // lodash attaches to the function, which is
-    // made inaccessible by Vue. More info:
-    // https://stackoverflow.com/a/52988020/1063392
+    // made inaccessible by Vue.
     this.debouncedSearch = debounce(function search() {
       this.search(this.searchQuery);
     }, SEARCH_DEBOUNCE_MS);

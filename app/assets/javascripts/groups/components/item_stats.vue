@@ -40,24 +40,31 @@ export default {
       return this.item.type === ITEM_TYPE.GROUP;
     },
   },
+  methods: {
+    displayValue(value) {
+      return this.isGroup && value !== undefined;
+    },
+  },
 };
 </script>
 
 <template>
   <div class="stats gl-text-gray-500">
     <item-stats-value
-      v-if="isGroup"
+      v-if="displayValue(item.subgroupCount)"
       :title="__('Subgroups')"
       :value="item.subgroupCount"
       css-class="number-subgroups gl-ml-5"
       icon-name="folder-o"
+      data-testid="subgroups-count"
     />
     <item-stats-value
-      v-if="isGroup"
+      v-if="displayValue(item.projectCount)"
       :title="__('Projects')"
       :value="item.projectCount"
       css-class="number-projects gl-ml-5"
       icon-name="bookmark"
+      data-testid="projects-count"
     />
     <item-stats-value
       v-if="isGroup"

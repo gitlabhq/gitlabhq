@@ -1,0 +1,21 @@
+description: "Click pipeline empty state template"
+category: default
+action: template_clicked
+label_description: "Template name or \"Getting-Started\""
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: growth
+product_stage: growth
+product_group: group::activation
+product_category:
+milestone: "13.11"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58808
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

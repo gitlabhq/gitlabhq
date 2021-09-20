@@ -24,9 +24,11 @@ When a fast-forward merge is not possible, the user is given the option to rebas
 
 ## Enabling fast-forward merges
 
-1. Navigate to your project's **Settings** and search for the 'Merge method'
-1. Select the **Fast-forward merge** option
-1. Hit **Save changes** for the changes to take effect
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. In the **Merge method** section, select **Fast-forward merge**.
+1. Select **Save changes**.
 
 Now, when you visit the merge request page, you can accept it
 **only if a fast-forward merge is possible**.

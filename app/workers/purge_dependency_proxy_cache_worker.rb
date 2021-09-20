@@ -27,6 +27,6 @@ class PurgeDependencyProxyCacheWorker
   def valid?
     return unless @group
 
-    can?(@current_user, :admin_group, @group) && @group.dependency_proxy_feature_available?
+    can?(@current_user, :admin_group, @group)
   end
 end

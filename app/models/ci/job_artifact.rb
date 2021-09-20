@@ -10,6 +10,9 @@ module Ci
     include Artifactable
     include FileStoreMounter
     include EachBatch
+    include IgnorableColumns
+
+    ignore_columns %i[id_convert_to_bigint job_id_convert_to_bigint], remove_with: '14.5', remove_after: '2021-11-22'
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
@@ -182,7 +185,6 @@ module Ci
     scope :order_expired_desc, -> { order(expire_at: :desc) }
     scope :with_destroy_preloads, -> { includes(project: [:route, :statistics]) }
 
-    scope :scoped_project, -> { where('ci_job_artifacts.project_id = projects.id') }
     scope :for_project, ->(project) { where(project_id: project) }
     scope :created_in_time_range, ->(from: nil, to: nil) { where(created_at: from..to) }
 
@@ -231,6 +233,17 @@ module Ci
       legacy_path: 1,
       hashed_path: 2
     }
+
+    # `locked` will be populated from the source of truth on Ci::Pipeline
+    # in order to clean up expired job artifacts in a performant way.
+    # The values should be the same as `Ci::Pipeline.lockeds` with the
+    # additional value of `unknown` to indicate rows that have not
+    # yet been populated from the parent Ci::Pipeline
+    enum locked: {
+      unlocked: 0,
+      artifacts_locked: 1,
+      unknown: 2
+    }, _prefix: :artifact
 
     def validate_file_format!
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym

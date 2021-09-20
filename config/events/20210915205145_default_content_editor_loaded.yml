@@ -1,0 +1,21 @@
+description: "Wiki content editor loaded"
+category: default
+action: content_editor_loaded
+label_description: "`wiki_content_editor`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: create
+product_group: group::editor
+product_category:
+milestone: "14.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62919
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -126,6 +126,10 @@ module API
       expose :keep_latest_artifacts_available?, as: :keep_latest_artifact
 
       # rubocop: disable CodeReuse/ActiveRecord
+      def self.preload_resource(project)
+        ActiveRecord::Associations::Preloader.new.preload(project, project_group_links: { group: :route })
+      end
+
       def self.preload_relation(projects_relation, options = {})
         # Preloading topics, should be done with using only `:topics`,
         # as `:topics` are defined as: `has_many :topics, through: :taggings`
@@ -140,12 +144,21 @@ module API
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,
-                                         forked_from_project: [:route, :topics, :group, :project_feature, namespace: [:route, :owner]])
+                                         forked_from_project: [:route, :topics, :topics_acts_as_taggable, :group, :project_feature, namespace: [:route, :owner]])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def self.forks_counting_projects(projects_relation)
-        projects_relation + projects_relation.map(&:forked_from_project).compact
+      def self.execute_batch_counting(projects_relation)
+        # Call the count methods on every project, so the BatchLoader would load them all at
+        # once when the entities are rendered
+        projects_relation.each(&:open_issues_count)
+        projects_relation.map(&:forked_from_project).compact.each(&:forks_count)
+
+        super
+      end
+
+      def self.repositories_for_preload(projects_relation)
+        super + projects_relation.map(&:forked_from_project).compact.map(&:repository)
       end
     end
   end

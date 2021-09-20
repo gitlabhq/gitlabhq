@@ -107,6 +107,7 @@ tree:
       - lists:
         - label:
           - :priorities
+    - :service_desk_setting
   group_members:
     - :user
 
@@ -120,6 +121,41 @@ included_attributes:
     - :name
   ci_cd_settings:
     - :group_runners_enabled
+  metrics_setting:
+    - :dashboard_timezone
+    - :external_dashboard_url
+    - :project_id
+  project_badges:
+    - :created_at
+    - :group_id
+    - :image_url
+    - :link_url
+    - :name
+    - :project_id
+    - :type
+    - :updated_at
+  pipeline_schedules:
+    - :active
+    - :created_at
+    - :cron
+    - :cron_timezone
+    - :description
+    - :next_run_at
+    - :owner_id
+    - :project_id
+    - :ref
+    - :updated_at
+  error_tracking_setting:
+    - :api_url
+    - :organization_name
+    - :project_id
+    - :project_name
+  auto_devops:
+    - :created_at
+    - :deploy_strategy
+    - :enabled
+    - :project_id
+    - :updated_at
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -127,6 +163,7 @@ excluded_attributes:
     - :name
     - :path
     - :namespace_id
+    - :project_namespace_id
     - :creator_id
     - :pool_repository_id
     - :import_url
@@ -297,6 +334,7 @@ excluded_attributes:
     - :integrated
   service_desk_setting:
     - :outgoing_name
+    - :file_template_project_id
   priorities:
     - :label_id
   events:
@@ -331,6 +369,9 @@ excluded_attributes:
   project_members:
     - :source_id
     - :invite_email_success
+    - :state
+  group_members:
+    - :state
   metrics:
     - :merge_request_id
     - :pipeline_id
@@ -359,6 +400,7 @@ excluded_attributes:
   boards:
     - :milestone_id
     - :iteration_id
+    - :iteration_cadence_id
   lists:
     - :board_id
     - :label_id
@@ -454,7 +496,6 @@ ee:
         - :unprotect_access_levels
       - protected_environments:
         - :deploy_access_levels
-      - :service_desk_setting
       - :security_setting
       - :push_rule
 

@@ -40,6 +40,8 @@ In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 sidekiq['routing_rules'] = [
+  # Do not re-route workers that require their own queue
+  ['tags=needs_own_queue', nil],
   # Route all non-CPU-bound workers that are high urgency to `high-urgency` queue
   ['resource_boundary!=cpu&urgency=high', 'high-urgency'],
   # Route all database, gitaly and global search workers that are throttled to `throttled` queue
@@ -164,3 +166,32 @@ with the migration to avoid losing jobs entirely, especially in a system with
 long queues of jobs. The migration can be done by following the migration steps
 mentioned in [Sidekiq job
 migration](../../raketasks/sidekiq_job_migration.md)
+
+### Workers that cannot be migrated
+
+Some workers cannot share a queue with other workers - typically because
+they check the size of their own queue - and so must be excluded from
+this process. We recommend excluding these from any further worker
+routing by adding a rule to keep them in their own queue, for example:
+
+```ruby
+sidekiq['routing_rules'] = [
+  ['tags=needs_own_queue', nil],
+  # ...
+]
+```
+
+These queues will also need to be included in at least one [Sidekiq
+queue group](extra_sidekiq_processes.md#start-multiple-processes).
+
+The following table shows the workers that should have their own queue:
+
+| Worker name | Queue name | GitLab issue |
+| --- | --- | --- |
+| `EmailReceiverWorker` | `email_receiver` | [`gitlab-com/gl-infra/scalability#1263`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1263) |
+| `ServiceDeskEmailReceiverWorker` | `service_desk_email_receiver` | [`gitlab-com/gl-infra/scalability#1263`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1263) |
+| `ProjectImportScheduleWorker` | `project_import_schedule` | [`gitlab-org/gitlab#340630`](https://gitlab.com/gitlab-org/gitlab/-/issues/340630) |
+| `HashedStorage::MigratorWorker` | `hashed_storage:hashed_storage_migrator` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |
+| `HashedStorage::ProjectMigrateWorker` | `hashed_storage:hashed_storage_project_migrate` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |
+| `HashedStorage::ProjectRollbackWorker` | `hashed_storage:hashed_storage_project_rollback` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |
+| `HashedStorage::RollbackerWorker` | `hashed_storage:hashed_storage_rollbacker` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |

@@ -16,6 +16,10 @@ tasks:
         # GitLab
         [[ -d /workspace/gitlab ]] && ln -fs /workspace/gitlab /workspace/gitlab-development-kit/gitlab
         mv /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
+        # update gdk.yml
+        gdk config set gitlab.rails.hostname $(gp url 3000 | sed -e 's+^http[s]*://++')
+        gdk config set gitlab.rails.port 443
+        gdk config set gitlab.rails.https.enabled true
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
         gdk reconfigure

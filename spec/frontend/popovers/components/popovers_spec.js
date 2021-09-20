@@ -54,17 +54,20 @@ describe('popovers/components/popovers.vue', () => {
       expect(wrapper.findAll(GlPopover)).toHaveLength(1);
     });
 
-    it('supports HTML content', async () => {
-      const content = 'content with <b>HTML</b>';
-      await buildWrapper(
-        createPopoverTarget({
-          content,
-          html: true,
-        }),
-      );
-      const html = wrapper.find(GlPopover).html();
+    describe('supports HTML content', () => {
+      const svgIcon = '<svg><use xlink:href="icons.svg#test"></use></svg>';
 
-      expect(html).toContain(content);
+      it.each`
+        description                         | content                          | render
+        ${'renders html content correctly'} | ${'<b>HTML</b>'}                 | ${'<b>HTML</b>'}
+        ${'removes any unsafe content'}     | ${'<script>alert(XSS)</script>'} | ${''}
+        ${'renders svg icons correctly'}    | ${svgIcon}                       | ${svgIcon}
+      `('$description', async ({ content, render }) => {
+        await buildWrapper(createPopoverTarget({ content, html: true }));
+
+        const html = wrapper.find(GlPopover).html();
+        expect(html).toContain(render);
+      });
     });
 
     it.each`

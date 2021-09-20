@@ -12,7 +12,6 @@ pages:
   needs:
     - job: "rspec:coverage"
     - job: "coverage-frontend"
-    - job: "karma"
     - job: "compile-production-assets"
     - job: "compile-storybook"
     # `update-tests-metadata` only runs on GitLab.com's EE schedules pipelines
@@ -27,7 +26,6 @@ pages:
     - mkdir -p public/$(dirname "$KNAPSACK_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$FLAKY_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$RSPEC_PACKED_TESTS_MAPPING_PATH")
     - mv coverage/ public/coverage-ruby/ || true
     - mv coverage-frontend/ public/coverage-frontend/ || true
-    - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv storybook/public public/storybook || true
     - cp .public/assets/application-*.css public/application.css || true
     - mv $KNAPSACK_RSPEC_SUITE_REPORT_PATH public/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || true

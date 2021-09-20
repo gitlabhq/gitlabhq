@@ -4,10 +4,10 @@ key_path: usage_activity_by_stage_monthly.plan.service_desk_enabled_projects
 description: Count creator ids from projects with service desk enabled
 product_section: dev
 product_stage: plan
-product_group: group::plan
+product_group: group::product planning
 product_category: service_desk
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: database
 distribution:
@@ -15,6 +15,7 @@ distribution:
 - ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

@@ -32,28 +32,30 @@ Management projects are restricted to the following:
   group (or descendants) as the cluster's group.
 - For instance-level clusters, there are no such restrictions.
 
-## Usage
+## How to create and configure a cluster management project
 
-To use a cluster management project for a cluster:
+To use a cluster management project to manage your cluster:
 
-1. Select the project.
-1. Configure your pipelines.
-1. Set an environment scope.
+1. Create a new project to serve as the cluster management project
+for your cluster. We recommend that you
+[create this project based on the Cluster Management project template](management_project_template.md#create-a-new-project-based-on-the-cluster-management-template).
+1. [Associate the cluster with the management project](#associate-the-cluster-management-project-with-the-cluster).
+1. [Configure your cluster's pipelines](#configuring-your-pipeline).
+1. [Set the environment scope](#setting-the-environment-scope).
 
-### Selecting a cluster management project
+### Associate the cluster management project with the cluster
 
-To select a cluster management project to use:
+To associate a cluster management project with your cluster:
 
 1. Navigate to the appropriate configuration page. For a:
    - [Project-level cluster](../project/clusters/index.md), go to your project's
      **Infrastructure > Kubernetes clusters** page.
    - [Group-level cluster](../group/clusters/index.md), go to your group's **Kubernetes**
      page.
-   - [Instance-level cluster](../instance/clusters/index.md), go to **Menu >** **{admin}** **Admin > Kubernetes** page.
-1. Select the project using **Cluster management project field** in the **Advanced settings**
-   section.
-
-![Selecting a cluster management project under Advanced settings](img/advanced-settings-cluster-management-project-v12_5.png)
+   - [Instance-level cluster](../instance/clusters/index.md), on the top bar, select **Menu > Admin > Kubernetes**.
+1. Expand **Advanced settings**.
+1. From the **Cluster management project** dropdown, select the cluster management project
+you created in the previous step.
 
 ### Configuring your pipeline
 

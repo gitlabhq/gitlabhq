@@ -4,15 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
   around do |example|
-    Sidekiq::Queue.new('authorized_projects').clear
+    Sidekiq::Queue.new('default').clear
     Sidekiq::Testing.disable!(&example)
-    Sidekiq::Queue.new('authorized_projects').clear
+    Sidekiq::Queue.new('default').clear
   end
 
-  def add_job(user, args)
+  def add_job(args, user:, klass: 'AuthorizedProjectsWorker')
     Sidekiq::Client.push(
-      'class' => 'AuthorizedProjectsWorker',
-      'queue' => 'authorized_projects',
+      'class' => klass,
+      'queue' => 'default',
       'args' => args,
       'meta.user' => user.username
     )
@@ -20,13 +20,13 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
 
   describe '#drop_jobs!' do
     shared_examples 'queue processing' do
-      let(:sidekiq_queue) { described_class.new('authorized_projects') }
+      let(:sidekiq_queue) { described_class.new('default') }
       let_it_be(:sidekiq_queue_user) { create(:user) }
 
       before do
-        add_job(create(:user), [1])
-        add_job(sidekiq_queue_user, [2])
-        add_job(sidekiq_queue_user, [3])
+        add_job([1], user: create(:user))
+        add_job([2], user: sidekiq_queue_user, klass: 'MergeWorker')
+        add_job([3], user: sidekiq_queue_user)
       end
 
       context 'when the queue is not processed in time' do
@@ -68,11 +68,19 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
       end
     end
 
+    context 'when there are jobs matching the class name' do
+      include_examples 'queue processing' do
+        let(:search_metadata) { { user: sidekiq_queue_user.username, worker_class: 'AuthorizedProjectsWorker' } }
+        let(:timeout_deleted) { 1 }
+        let(:no_timeout_deleted) { 1 }
+      end
+    end
+
     context 'when there are no valid metadata keys passed' do
       it 'raises NoMetadataError' do
-        add_job(create(:user), [1])
+        add_job([1], user: create(:user))
 
-        expect { described_class.new('authorized_projects').drop_jobs!({ username: 'sidekiq_queue_user' }, timeout: 1) }
+        expect { described_class.new('default').drop_jobs!({ username: 'sidekiq_queue_user' }, timeout: 1) }
           .to raise_error(described_class::NoMetadataError)
       end
     end

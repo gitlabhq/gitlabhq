@@ -5,12 +5,11 @@ module Gitlab
     class Experiment
       FEATURE_FLAG_SUFFIX = "_experiment_percentage"
 
-      attr_reader :key, :tracking_category, :use_backwards_compatible_subject_index, :rollout_strategy
+      attr_reader :key, :tracking_category, :rollout_strategy
 
       def initialize(key, **params)
         @key = key
         @tracking_category = params[:tracking_category]
-        @use_backwards_compatible_subject_index = params[:use_backwards_compatible_subject_index]
         @rollout_strategy = params[:rollout_strategy] || :cookie
       end
 

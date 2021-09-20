@@ -2616,6 +2616,23 @@ RSpec.describe API::Projects do
       expect(json_response).to have_key 'service_desk_enabled'
       expect(json_response).to have_key 'service_desk_address'
     end
+
+    context 'when project is shared to multiple groups' do
+      it 'avoids N+1 queries' do
+        create(:project_group_link, project: project)
+        get api("/projects/#{project.id}", user)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{project.id}", user)
+        end
+
+        create(:project_group_link, project: project)
+
+        expect do
+          get api("/projects/#{project.id}", user)
+        end.not_to exceed_query_limit(control)
+      end
+    end
   end
 
   describe 'GET /projects/:id/users' do

@@ -83,6 +83,10 @@ module Featurable
     end
   end
 
+  included do
+    validate :allowed_access_levels
+  end
+
   def access_level(feature)
     public_send(self.class.access_level_attribute(feature)) # rubocop:disable GitlabSecurity/PublicSend
   end
@@ -93,5 +97,22 @@ module Featurable
 
   def string_access_level(feature)
     self.class.str_from_access_level(access_level(feature))
+  end
+
+  private
+
+  def allowed_access_levels
+    validator = lambda do |field|
+      level = public_send(field) || ENABLED # rubocop:disable GitlabSecurity/PublicSend
+      not_allowed = level > ENABLED
+      self.errors.add(field, "cannot have public visibility level") if not_allowed
+    end
+
+    (self.class.available_features - feature_validation_exclusion).each {|f| validator.call("#{f}_access_level")}
+  end
+
+  # Features that we should exclude from the validation
+  def feature_validation_exclusion
+    []
   end
 end

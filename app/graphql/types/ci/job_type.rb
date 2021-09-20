@@ -2,9 +2,10 @@
 
 module Types
   module Ci
+    # rubocop: disable Graphql/AuthorizeTypes
+    # The permission is presented through `StageType` that has its own authorization
     class JobType < BaseObject
       graphql_name 'CiJob'
-      authorize :read_commit_status
 
       connection_type_class(Types::CountableConnectionType)
 

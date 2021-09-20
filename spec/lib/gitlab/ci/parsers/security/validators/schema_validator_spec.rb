@@ -6,7 +6,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
   using RSpec::Parameterized::TableSyntax
 
   where(:report_type, :expected_errors, :valid_data) do
-    :sast | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
+    'sast' | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
+    :sast  | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
     :secret_detection | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
   end
 

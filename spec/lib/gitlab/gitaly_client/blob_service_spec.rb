@@ -92,13 +92,14 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
   describe '#list_blobs' do
     let(:limit) { 0 }
     let(:bytes_limit) { 0 }
-    let(:expected_params) { { revisions: revisions, limit: limit, bytes_limit: bytes_limit } }
+    let(:with_paths) { false }
+    let(:expected_params) { { revisions: revisions, limit: limit, bytes_limit: bytes_limit, with_paths: with_paths } }
 
     before do
       ::Gitlab::GitalyClient.clear_stubs!
     end
 
-    subject { client.list_blobs(revisions, limit: limit, bytes_limit: bytes_limit) }
+    subject { client.list_blobs(revisions, limit: limit, bytes_limit: bytes_limit, with_paths: with_paths) }
 
     context 'with a single revision' do
       let(:revisions) { ['master'] }
@@ -134,6 +135,24 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
       let(:revisions) { ['master', '--not', '--all'] }
       let(:limit) { 10 }
       let(:bytes_lmit) { 1024 }
+
+      it 'sends a list_blobs message' do
+        expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+            .and_return([])
+        end
+
+        subject
+      end
+    end
+
+    context 'with paths' do
+      let(:revisions) { ['master'] }
+      let(:limit) { 10 }
+      let(:bytes_lmit) { 1024 }
+      let(:with_paths) { true }
 
       it 'sends a list_blobs message' do
         expect_next_instance_of(Gitaly::BlobService::Stub) do |service|

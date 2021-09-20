@@ -36,7 +36,7 @@ In order to:
   [deploy to a Kubernetes cluster](../project/clusters/index.md#deploying-to-a-kubernetes-cluster)
   successfully.
 - Show pod usage correctly, you must
-  [enable Deploy Boards](../project/deploy_boards.md#enabling-deploy-boards).
+  [enable deploy boards](../project/deploy_boards.md#enabling-deploy-boards).
 
 After you have successful deployments to your group-level or instance-level cluster:
 

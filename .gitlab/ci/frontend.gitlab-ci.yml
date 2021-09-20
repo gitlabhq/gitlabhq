@@ -11,7 +11,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-git-2.31-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.36
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7-git-2.31-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.36
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -132,6 +132,7 @@ rspec frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs
+  parallel: 2
 
 rspec frontend_fixture as-if-foss:
   extends:
@@ -171,6 +172,8 @@ graphql-schema-dump:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
+  before_script:
+    - *yarn-install
   stage: test
 
 eslint-as-if-foss:
@@ -180,55 +183,19 @@ eslint-as-if-foss:
     - .as-if-foss
   needs: []
   script:
-    - *yarn-install
     - run_timed_command "yarn run lint:eslint:all"
-
-.karma-base:
-  extends: .frontend-test-base
-  script:
-    - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
-    - *yarn-install
-    - run_timed_command "yarn karma"
-
-karma:
-  extends:
-    - .karma-base
-    - .frontend:rules:default-frontend-jobs
-  needs:
-    - job: "rspec frontend_fixture"
-    - job: "rspec-ee frontend_fixture"
-      optional: true
-  coverage: '/^Statements *: (\d+\.\d+%)/'
-  artifacts:
-    name: coverage-javascript
-    expire_in: 31d
-    when: always
-    paths:
-      - chrome_debug.log
-      - coverage-javascript/
-      - tmp/tests/frontend/
-    reports:
-      junit: junit_karma.xml
-      cobertura: coverage-javascript/cobertura-coverage.xml
-
-karma-as-if-foss:
-  extends:
-    - .karma-base
-    - .frontend:rules:default-frontend-jobs-as-if-foss
-    - .as-if-foss
-  needs: ["rspec frontend_fixture as-if-foss"]
 
 .jest-base:
   extends: .frontend-test-base
   script:
-    - *yarn-install
-    - run_timed_command "yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js"
+    - run_timed_command "yarn jest:ci"
 
 jest:
   extends:
     - .jest-base
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:jest
   needs:
+    - job: "detect-tests"
     - job: "rspec frontend_fixture"
     - job: "rspec-ee frontend_fixture"
       optional: true
@@ -244,12 +211,18 @@ jest:
       junit: junit_jest.xml
   parallel: 5
 
+jest minimal:
+  extends:
+    - jest
+    - .frontend:rules:jest:minimal
+  script:
+    - run_timed_command "yarn jest:ci:minimal"
+
 jest-integration:
   extends:
     - .frontend-test-base
     - .frontend:rules:default-frontend-jobs
   script:
-    - *yarn-install
     - run_timed_command "yarn jest:integration --ci"
   needs:
     - job: "rspec frontend_fixture"
@@ -270,7 +243,11 @@ coverage-frontend:
     - .default-retry
     - .yarn-cache
     - .frontend:rules:ee-mr-and-default-branch-only
-  needs: ["jest"]
+  needs:
+    - job: "jest"
+      optional: true
+    - job: "jest minimal"
+      optional: true
   stage: post-test
   before_script:
     - *yarn-install
@@ -298,9 +275,13 @@ coverage-frontend:
     - *yarn-install
     - run_timed_command "retry yarn run webpack-prod"
 
-qa-frontend-node:10:
+qa-frontend-node:12:
   extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY}node:dubnium
+  image: ${GITLAB_DEPENDENCY_PROXY}node:12
+
+qa-frontend-node:14:
+  extends: .qa-frontend-node
+  image: ${GITLAB_DEPENDENCY_PROXY}node:14
 
 qa-frontend-node:latest:
   extends:
@@ -351,7 +332,6 @@ bundle-size-review:
   extends:
     - .frontend-test-base
   script:
-    - *yarn-install
     - run_timed_command "yarn generate:startup_css"
     - yarn check:startup_css
 
@@ -379,7 +359,6 @@ startup-css-check as-if-foss:
     - .frontend-test-base
     - .storybook-yarn-cache
   script:
-    - *yarn-install  # storybook depends on the global webpack config, so we must install global deps.
     - *storybook-yarn-install
     - yarn run storybook:build
 

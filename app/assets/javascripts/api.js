@@ -870,6 +870,14 @@ const Api = {
     return axios.put(url, freezePeriod);
   },
 
+  deleteFreezePeriod(id, freezePeriodId) {
+    const url = Api.buildUrl(this.freezePeriodPath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':freeze_period_id', encodeURIComponent(freezePeriodId));
+
+    return axios.delete(url);
+  },
+
   trackRedisCounterEvent(event) {
     if (!gon.features?.usageDataApi) {
       return null;

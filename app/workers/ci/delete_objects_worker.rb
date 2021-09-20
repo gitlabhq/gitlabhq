@@ -10,7 +10,6 @@ module Ci
     include LimitedCapacity::Worker
 
     feature_category :continuous_integration
-    tags :exclude_from_kubernetes
     idempotent!
 
     def perform_work(*args)

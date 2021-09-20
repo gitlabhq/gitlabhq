@@ -64,7 +64,7 @@ module GemExtensions
             end
 
             if scope.order_values.empty? && ordered
-              split_scope = DisableJoins::Relation.create(scope.klass, key, join_ids)
+              split_scope = ::GemExtensions::ActiveRecord::DisableJoins::Relation.create(scope.klass, key, join_ids)
               split_scope.where_clause += scope.where_clause
               split_scope
             else

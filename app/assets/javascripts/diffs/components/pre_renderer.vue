@@ -17,7 +17,6 @@ export default {
   },
   mounted() {
     this.width = this.$el.parentNode.offsetWidth;
-    window.test = this;
 
     this.$_itemsWithSizeWatcher = this.$watch('vscrollParent.itemsWithSize', async () => {
       await this.$nextTick();

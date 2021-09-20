@@ -103,40 +103,42 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def each_build(params, &blk)
-      queue = ::Ci::Queue::BuildQueueService.new(runner)
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339429') do
+        queue = ::Ci::Queue::BuildQueueService.new(runner)
 
-      builds = begin
-        if runner.instance_type?
-          queue.builds_for_shared_runner
-        elsif runner.group_type?
-          queue.builds_for_group_runner
-        else
-          queue.builds_for_project_runner
+        builds = begin
+          if runner.instance_type?
+            queue.builds_for_shared_runner
+          elsif runner.group_type?
+            queue.builds_for_group_runner
+          else
+            queue.builds_for_project_runner
+          end
         end
+
+        if runner.ref_protected?
+          builds = queue.builds_for_protected_runner(builds)
+        end
+
+        # pick builds that does not have other tags than runner's one
+        builds = queue.builds_matching_tag_ids(builds, runner.tags.ids)
+
+        # pick builds that have at least one tag
+        unless runner.run_untagged?
+          builds = queue.builds_with_any_tags(builds)
+        end
+
+        # pick builds that older than specified age
+        if params.key?(:job_age)
+          builds = queue.builds_queued_before(builds, params[:job_age].seconds.ago)
+        end
+
+        build_ids = retrieve_queue(-> { queue.execute(builds) })
+
+        @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
+
+        build_ids.each { |build_id| yield Ci::Build.find(build_id) }
       end
-
-      if runner.ref_protected?
-        builds = queue.builds_for_protected_runner(builds)
-      end
-
-      # pick builds that does not have other tags than runner's one
-      builds = queue.builds_matching_tag_ids(builds, runner.tags.ids)
-
-      # pick builds that have at least one tag
-      unless runner.run_untagged?
-        builds = queue.builds_with_any_tags(builds)
-      end
-
-      # pick builds that older than specified age
-      if params.key?(:job_age)
-        builds = queue.builds_queued_before(builds, params[:job_age].seconds.ago)
-      end
-
-      build_ids = retrieve_queue(-> { queue.execute(builds) })
-
-      @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
-
-      build_ids.each { |build_id| yield Ci::Build.find(build_id) }
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -269,6 +271,15 @@ module Ci
         missing_dependency_failure: -> (build, _) { !build.has_valid_build_dependencies? },
         runner_unsupported: -> (build, params) { !build.supported_runner?(params.dig(:info, :features)) },
         archived_failure: -> (build, _) { build.archived? }
+      }.merge(builds_enabled_checks)
+    end
+
+    def builds_enabled_checks
+      return {} unless ::Feature.enabled?(:ci_queueing_builds_enabled_checks, runner, default_enabled: :yaml)
+
+      {
+        project_deleted: -> (build, _) { build.project.pending_delete? },
+        builds_disabled: -> (build, _) { !build.project.builds_enabled? }
       }
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Runtime::Env do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
 
   shared_examples 'boolean method' do |**kwargs|
     it_behaves_like 'boolean method with parameter', kwargs

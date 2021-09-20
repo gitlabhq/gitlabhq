@@ -191,3 +191,6 @@ export const isVirtualScrollingEnabled = (state) => {
       getParameterValues('virtual_scrolling')[0] === 'true')
   );
 };
+
+export const isBatchLoading = (state) => state.batchLoadingState === 'loading';
+export const isBatchLoadingError = (state) => state.batchLoadingState === 'error';

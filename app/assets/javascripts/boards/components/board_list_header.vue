@@ -201,7 +201,7 @@ export default {
       });
     },
     addToLocalStorage() {
-      if (AccessorUtilities.isLocalStorageAccessSafe()) {
+      if (AccessorUtilities.canUseLocalStorage()) {
         localStorage.setItem(`${this.uniqueKey}.collapsed`, this.list.collapsed);
       }
     },

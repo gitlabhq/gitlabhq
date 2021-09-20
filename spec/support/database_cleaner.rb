@@ -14,7 +14,7 @@ RSpec.configure do |config|
   end
 
   config.append_after(:context, :migration) do
-    delete_from_all_tables!
+    delete_from_all_tables!(except: ['work_item_types'])
 
     # Postgres maximum number of columns in a table is 1600 (https://github.com/postgres/postgres/blob/de41869b64d57160f58852eab20a27f248188135/src/include/access/htup_details.h#L23-L47).
     # And since:
@@ -61,7 +61,7 @@ RSpec.configure do |config|
 
     example.run
 
-    delete_from_all_tables!
+    delete_from_all_tables!(except: ['work_item_types'])
 
     self.class.use_transactional_tests = true
   end

@@ -29,6 +29,7 @@ After your merge request has been approved according to our [approval guidelines
 ## Backports
 
 - [ ] Once the MR is ready to be merged, create MRs targeting the latest 3 stable branches
+   * The 3 stable branches correspond to the versions in the title of the Security Release Tracking Issue.
    * At this point, it might be easy to squash the commits from the MR into one
    * You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
 - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the [Security Release merge request template].

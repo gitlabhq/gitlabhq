@@ -3,21 +3,25 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:private_mrs_project) do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
-  let(:user2)             { create(:user) }
-  let(:non_member)        { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
   let_it_be(:guest)       { create(:user) }
   let_it_be(:author)      { create(:author) }
   let_it_be(:assignee)    { create(:assignee) }
-  let(:admin)             { create(:user, :admin) }
-  let(:issue_title)       { 'foo' }
-  let(:issue_description) { 'closed' }
-  let!(:closed_issue) do
+  let_it_be(:admin) { create(:user, :admin) }
+
+  let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  let_it_be(:empty_milestone) { create(:milestone, title: '2.0.0', project: project) }
+
+  let_it_be(:closed_issue) do
     create :closed_issue,
            author: user,
            assignees: [user],
@@ -29,7 +33,7 @@ RSpec.describe API::Issues do
            closed_at: 1.hour.ago
   end
 
-  let!(:confidential_issue) do
+  let_it_be(:confidential_issue) do
     create :issue,
            :confidential,
            project: project,
@@ -39,7 +43,7 @@ RSpec.describe API::Issues do
            updated_at: 2.hours.ago
   end
 
-  let!(:issue) do
+  let_it_be(:issue) do
     create :issue,
            author: user,
            assignees: [user],
@@ -47,21 +51,16 @@ RSpec.describe API::Issues do
            milestone: milestone,
            created_at: generate(:past_time),
            updated_at: 1.hour.ago,
-           title: issue_title,
-           description: issue_description
+           title: 'foo',
+           description: 'bar'
   end
 
   let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
 
-  let!(:label_link) { create(:label_link, label: label, target: issue) }
-  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  let_it_be(:empty_milestone) do
-    create(:milestone, title: '2.0.0', project: project)
-  end
-
-  let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
+  let_it_be(:label_link) { create(:label_link, label: label, target: issue) }
+  let_it_be(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let(:no_milestone_title) { 'None' }
   let(:any_milestone_title) { 'Any' }
@@ -683,6 +682,71 @@ RSpec.describe API::Issues do
         end
       end
 
+      context 'filtering by milestone_id' do
+        let_it_be(:upcoming_milestone) { create(:milestone, project: project, title: "upcoming milestone", start_date: 1.day.ago, due_date: 1.day.from_now) }
+        let_it_be(:started_milestone) { create(:milestone, project: project, title: "started milestone", start_date: 2.days.ago, due_date: 1.day.ago) }
+        let_it_be(:future_milestone) { create(:milestone, project: project, title: "future milestone", start_date: 7.days.from_now, due_date: 14.days.from_now) }
+        let_it_be(:issue_upcoming) { create(:issue, project: project, state: :opened, milestone: upcoming_milestone) }
+        let_it_be(:issue_started) { create(:issue, project: project, state: :opened, milestone: started_milestone) }
+        let_it_be(:issue_future) { create(:issue, project: project, state: :opened, milestone: future_milestone) }
+        let_it_be(:issue_none) { create(:issue, project: project, state: :opened) }
+
+        let(:wildcard_started) { 'Started' }
+        let(:wildcard_upcoming) { 'Upcoming' }
+        let(:wildcard_any) { 'Any' }
+        let(:wildcard_none) { 'None' }
+
+        where(:milestone_id, :not_milestone, :expected_issues) do
+          ref(:wildcard_none)     | nil | lazy { [issue_none.id] }
+          ref(:wildcard_any)      | nil | lazy { [issue_future.id, issue_started.id, issue_upcoming.id, issue.id, closed_issue.id] }
+          ref(:wildcard_started)  | nil | lazy { [issue_started.id, issue_upcoming.id] }
+          ref(:wildcard_upcoming) | nil | lazy { [issue_upcoming.id] }
+          ref(:wildcard_any)      | "upcoming milestone" | lazy { [issue_future.id, issue_started.id, issue.id, closed_issue.id] }
+          ref(:wildcard_upcoming) | "upcoming milestone" | []
+        end
+
+        with_them do
+          it "returns correct issues when filtering with 'milestone_id' and optionally negated 'milestone'" do
+            get api('/issues', user), params: { milestone_id: milestone_id, not: not_milestone ? { milestone: not_milestone } : {} }
+
+            expect_paginated_array_response(expected_issues)
+          end
+        end
+
+        context 'negated filtering' do
+          where(:not_milestone_id, :expected_issues) do
+            ref(:wildcard_started)  | lazy { [issue_future.id] }
+            ref(:wildcard_upcoming) | lazy { [issue_started.id] }
+          end
+
+          with_them do
+            it "returns correct issues when filtering with negated 'milestone_id'" do
+              get api('/issues', user), params: { not: { milestone_id: not_milestone_id } }
+
+              expect_paginated_array_response(expected_issues)
+            end
+          end
+        end
+
+        context 'when mutually exclusive params are passed' do
+          where(:params) do
+            [
+              [lazy { { milestone: "foo", milestone_id: wildcard_any } }],
+              [lazy { { not: { milestone: "foo", milestone_id: wildcard_any } } }]
+            ]
+          end
+
+          with_them do
+            it "raises an error", :aggregate_failures do
+              get api('/issues', user), params: params
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response["error"]).to include("mutually exclusive")
+            end
+          end
+        end
+      end
+
       it 'returns an array of issues found by iids' do
         get api('/issues', user), params: { iids: [closed_issue.iid] }
 
@@ -711,8 +775,8 @@ RSpec.describe API::Issues do
                    milestone: milestone,
                    created_at: closed_issue.created_at,
                    updated_at: 1.hour.ago,
-                   title: issue_title,
-                   description: issue_description
+                   title: 'foo',
+                   description: 'bar'
           end
 
           it 'page breaks first page correctly' do
@@ -751,6 +815,18 @@ RSpec.describe API::Issues do
         expect_paginated_array_response([closed_issue.id, issue.id])
       end
 
+      it 'sorts by title asc when requested' do
+        get api('/issues', user), params: { order_by: :title, sort: :asc }
+
+        expect_paginated_array_response([issue.id, closed_issue.id])
+      end
+
+      it 'sorts by title desc when requested' do
+        get api('/issues', user), params: { order_by: :title, sort: :desc }
+
+        expect_paginated_array_response([closed_issue.id, issue.id])
+      end
+
       context 'with issues list sort options' do
         it 'accepts only predefined order by params' do
           API::Helpers::IssuesHelpers.sort_options.each do |sort_opt|
@@ -760,7 +836,7 @@ RSpec.describe API::Issues do
         end
 
         it 'fails to sort with non predefined options' do
-          %w(milestone title abracadabra).each do |sort_opt|
+          %w(milestone abracadabra).each do |sort_opt|
             get api('/issues', user), params: { order_by: sort_opt, sort: 'asc' }
             expect(response).to have_gitlab_http_status(:bad_request)
           end
@@ -1001,13 +1077,15 @@ RSpec.describe API::Issues do
   end
 
   describe 'DELETE /projects/:id/issues/:issue_iid' do
+    let(:issue_for_deletion) { create(:issue, author: user, assignees: [user], project: project) }
+
     it 'rejects a non member from deleting an issue' do
-      delete api("/projects/#{project.id}/issues/#{issue.iid}", non_member)
+      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", non_member)
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it 'rejects a developer from deleting an issue' do
-      delete api("/projects/#{project.id}/issues/#{issue.iid}", author)
+      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", author)
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
@@ -1016,13 +1094,13 @@ RSpec.describe API::Issues do
       let(:project)   { create(:project, namespace: owner.namespace) }
 
       it 'deletes the issue if an admin requests it' do
-        delete api("/projects/#{project.id}/issues/#{issue.iid}", owner)
+        delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", owner)
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}", owner) }
+        let(:request) { api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", owner) }
       end
     end
 
@@ -1035,7 +1113,7 @@ RSpec.describe API::Issues do
     end
 
     it 'returns 404 when using the issue ID instead of IID' do
-      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
+      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

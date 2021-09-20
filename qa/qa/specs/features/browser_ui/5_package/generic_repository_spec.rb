@@ -98,7 +98,7 @@ module QA
         package.remove_via_api!
       end
 
-      it 'uploads a generic package, downloads and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1108' do
+      it 'uploads a generic package, downloads and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1628' do
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|

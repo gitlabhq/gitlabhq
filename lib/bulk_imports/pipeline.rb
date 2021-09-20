@@ -69,8 +69,8 @@ module BulkImports
       # Multiple transformers can be defined within a single
       # pipeline and run sequentially for each record in the
       # following order:
-      #   - Transformers defined using `transformer` class method
       #   - Instance method `transform`
+      #   - Transformers defined using `transformer` class method
       #
       # Instance method `transform` is always the last to run.
       #

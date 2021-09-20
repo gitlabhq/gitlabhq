@@ -213,8 +213,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  def allowed_environment_attributes
+    attributes = [:external_url]
+    attributes << :name if action_name == "create"
+    attributes
+  end
+
   def environment_params
-    params.require(:environment).permit(:name, :external_url)
+    params.require(:environment).permit(allowed_environment_attributes)
   end
 
   def environment

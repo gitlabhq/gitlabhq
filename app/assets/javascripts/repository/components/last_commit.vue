@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
@@ -125,7 +124,7 @@ export default {
             :href="commit.webPath"
             :class="{ 'font-italic': !commit.message }"
             class="commit-row-message item-title"
-            v-html="commit.titleHtml"
+            v-html="commit.titleHtml /* eslint-disable-line vue/no-v-html */"
           />
           <gl-button
             v-if="commit.descriptionHtml"
@@ -153,11 +152,14 @@ export default {
             v-if="commitDescription"
             :class="{ 'd-block': showDescription }"
             class="commit-row-description gl-mb-3"
-            v-html="commitDescription"
+            v-html="commitDescription /* eslint-disable-line vue/no-v-html */"
           ></pre>
         </div>
         <div class="commit-actions flex-row">
-          <div v-if="commit.signatureHtml" v-html="commit.signatureHtml"></div>
+          <div
+            v-if="commit.signatureHtml"
+            v-html="commit.signatureHtml /* eslint-disable-line vue/no-v-html */"
+          ></div>
           <div v-if="commit.pipeline" class="ci-status-link">
             <gl-link
               v-gl-tooltip.left

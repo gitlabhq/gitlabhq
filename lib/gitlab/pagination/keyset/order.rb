@@ -152,15 +152,24 @@ module Gitlab
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
-        def apply_cursor_conditions(scope, values = {}, options = { use_union_optimization: false })
+        def apply_cursor_conditions(scope, values = {}, options = { use_union_optimization: false, in_operator_optimization_options: nil })
           values ||= {}
           transformed_values = values.with_indifferent_access
-          scope = apply_custom_projections(scope)
+          scope = apply_custom_projections(scope.dup)
 
           where_values = build_where_values(transformed_values)
 
           if options[:use_union_optimization] && where_values.size > 1
             build_union_query(scope, where_values).reorder(self)
+          elsif options[:in_operator_optimization_options]
+            opts = options[:in_operator_optimization_options]
+
+            Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+              **{
+                scope: scope.reorder(self),
+                values: values
+              }.merge(opts)
+            ).execute
           else
             scope.where(build_or_query(where_values)) # rubocop: disable CodeReuse/ActiveRecord
           end
@@ -187,7 +196,7 @@ module Gitlab
           columns = Arel::Nodes::Grouping.new(column_definitions.map(&:column_expression))
           values = Arel::Nodes::Grouping.new(column_definitions.map do |column_definition|
             value = values[column_definition.attribute_name]
-            Arel::Nodes.build_quoted(value, column_definition.column_expression)
+            build_quoted(value, column_definition.column_expression)
           end)
 
           if column_definitions.first.ascending_order?
@@ -197,6 +206,12 @@ module Gitlab
           end
         end
 
+        def build_quoted(value, column_expression)
+          return value if value.instance_of?(Arel::Nodes::SqlLiteral)
+
+          Arel::Nodes.build_quoted(value, column_expression)
+        end
+
         # Adds extra columns to the SELECT clause
         def apply_custom_projections(scope)
           additional_projections = column_definitions.select(&:add_to_projections).map do |column_definition|
@@ -204,7 +219,7 @@ module Gitlab
             column_definition.column_expression.dup.as(column_definition.attribute_name).to_sql
           end
 
-          scope = scope.select(*scope.arel.projections, *additional_projections) if additional_projections
+          scope = scope.reselect(*scope.arel.projections, *additional_projections) unless additional_projections.blank?
           scope
         end
 

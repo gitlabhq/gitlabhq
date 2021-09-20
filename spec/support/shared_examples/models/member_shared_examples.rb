@@ -300,8 +300,21 @@ RSpec.shared_examples_for "member creation" do
       end
     end
   end
+end
 
-  describe '.add_users' do
+RSpec.shared_examples_for "bulk member creation" do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+
+  describe '#execute' do
+    it 'raises an error when exiting_members is not passed in the args hash' do
+      expect do
+        described_class.new(source, user, :maintainer, current_user: user).execute
+      end.to raise_error(ArgumentError, 'existing_members must be included in the args hash')
+    end
+  end
+
+  describe '.add_users', :aggregate_failures do
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
@@ -310,8 +323,8 @@ RSpec.shared_examples_for "member creation" do
 
       expect(members).to be_a Array
       expect(members.size).to eq(2)
-      expect(members.first).to be_a member_type
-      expect(members.first).to be_persisted
+      expect(members).to all(be_a(member_type))
+      expect(members).to all(be_persisted)
     end
 
     it 'returns an empty array' do
@@ -328,6 +341,43 @@ RSpec.shared_examples_for "member creation" do
 
       expect(members.size).to eq(4)
       expect(members.first).to be_invite
+    end
+
+    context 'with de-duplication' do
+      it 'with the same user by id and user' do
+        members = described_class.add_users(source, [user1.id, user1, user1.id, user2, user2.id, user2], :maintainer)
+
+        expect(members).to be_a Array
+        expect(members.size).to eq(2)
+        expect(members).to all(be_a(member_type))
+        expect(members).to all(be_persisted)
+      end
+
+      it 'with the same user sent more than once' do
+        members = described_class.add_users(source, [user1, user1], :maintainer)
+
+        expect(members).to be_a Array
+        expect(members.size).to eq(1)
+        expect(members).to all(be_a(member_type))
+        expect(members).to all(be_persisted)
+      end
+    end
+
+    context 'when a member already exists' do
+      before do
+        source.add_user(user1, :developer)
+      end
+
+      it 'supports existing users as expected' do
+        user3 = create(:user)
+
+        members = described_class.add_users(source, [user1.id, user2, user3.id], :maintainer)
+
+        expect(members).to be_a Array
+        expect(members.size).to eq(3)
+        expect(members).to all(be_a(member_type))
+        expect(members).to all(be_persisted)
+      end
     end
   end
 end

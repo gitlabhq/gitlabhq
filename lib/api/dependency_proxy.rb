@@ -15,7 +15,7 @@ module API
       end
     end
 
-    before do
+    after_validation do
       authorize! :admin_group, user_group
     end
 
@@ -35,6 +35,8 @@ module API
         # rubocop:disable CodeReuse/Worker
         PurgeDependencyProxyCacheWorker.perform_async(current_user.id, user_group.id)
         # rubocop:enable CodeReuse/Worker
+
+        status :accepted
       end
     end
   end

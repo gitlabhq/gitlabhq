@@ -4,7 +4,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Group and project members API
+# Group and project members API **(FREE)**
 
 ## Valid access levels
 
@@ -92,7 +92,7 @@ Gets a list of group or project members viewable by the authenticated user, incl
 
 If a user is a member of this group or project and also of one or more ancestor groups,
 only its membership with the highest `access_level` is returned.
-([Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56677)] in GitLab 13.11.)
+([Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56677) in GitLab 13.11.)
 This represents the effective permission of the user.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
@@ -552,7 +552,7 @@ Example response:
   "state": "active",
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
-  "expires_at": "2012-10-22T14:13:35Z",
+  "expires_at": "2012-10-22",
   "access_level": 40,
   "email": "john@example.com",
   "override": false

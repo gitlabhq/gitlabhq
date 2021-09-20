@@ -38,7 +38,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:bulk_import) unless staging?
         Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
 
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
@@ -54,10 +53,14 @@ module QA
         end
       end
 
-      # Non blocking issues:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/331252
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/333678 <- can cause 500 when creating user and group back to back
-      it 'imports group from UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785' do
+      it(
+        'imports group from UI',
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1806',
+        issue_1: 'https://gitlab.com/gitlab-org/gitlab/-/issues/331252',
+        issue_2: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333678',
+        # mostly impacts testing as it makes small groups import slower
+        issue_3: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332351'
+      ) do
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(imported_group.path, imported_group.sandbox.path)
 
@@ -73,7 +76,6 @@ module QA
       after do
         user.remove_via_api!
       ensure
-        Runtime::Feature.disable(:bulk_import) unless staging?
         Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
       end
     end

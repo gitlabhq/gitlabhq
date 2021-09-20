@@ -311,23 +311,42 @@ RSpec.describe Projects::PipelinesController do
 
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
-      def create_build_with_artifacts(stage, stage_idx, name)
-        create(:ci_build, :artifacts, :tags, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+      def create_build_with_artifacts(stage, stage_idx, name, status)
+        create(:ci_build, :artifacts, :tags, status, user: user, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+      end
+
+      def create_bridge(stage, stage_idx, name, status)
+        create(:ci_bridge, status, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
       end
 
       before do
-        create_build_with_artifacts('build', 0, 'job1')
-        create_build_with_artifacts('build', 0, 'job2')
+        create_build_with_artifacts('build', 0, 'job1', :failed)
+        create_build_with_artifacts('build', 0, 'job2', :running)
+        create_build_with_artifacts('build', 0, 'job3', :pending)
+        create_bridge('deploy', 1, 'deploy-a', :failed)
+        create_bridge('deploy', 1, 'deploy-b', :created)
       end
 
-      it 'avoids N+1 database queries', :request_store do
-        control_count = ActiveRecord::QueryRecorder.new { get_pipeline_html }.count
+      it 'avoids N+1 database queries', :request_store, :use_sql_query_cache do
+        # warm up
+        get_pipeline_html
         expect(response).to have_gitlab_http_status(:ok)
 
-        create_build_with_artifacts('build', 0, 'job3')
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get_pipeline_html
+          expect(response).to have_gitlab_http_status(:ok)
+        end
 
-        expect { get_pipeline_html }.not_to exceed_query_limit(control_count)
-        expect(response).to have_gitlab_http_status(:ok)
+        create_build_with_artifacts('build', 0, 'job4', :failed)
+        create_build_with_artifacts('build', 0, 'job5', :running)
+        create_build_with_artifacts('build', 0, 'job6', :pending)
+        create_bridge('deploy', 1, 'deploy-c', :failed)
+        create_bridge('deploy', 1, 'deploy-d', :created)
+
+        expect do
+          get_pipeline_html
+          expect(response).to have_gitlab_http_status(:ok)
+        end.not_to exceed_all_query_limit(control)
       end
     end
 
@@ -1270,6 +1289,38 @@ RSpec.describe Projects::PipelinesController do
         get_config_variables
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when project uses external project ci config' do
+      let(:other_project) { create(:project) }
+      let(:sha) { 'master' }
+      let(:service) { ::Ci::ListConfigVariablesService.new(other_project, user) }
+
+      let(:ci_config) do
+        {
+          variables: {
+            KEY1: { value: 'val 1', description: 'description 1' }
+          },
+          test: {
+            stage: 'test',
+            script: 'echo'
+          }
+        }
+      end
+
+      before do
+        project.update!(ci_config_path: ".gitlab-ci.yml@#{other_project.full_path}")
+        synchronous_reactive_cache(service)
+      end
+
+      it 'returns other project config variables' do
+        expect(::Ci::ListConfigVariablesService).to receive(:new).with(other_project, anything).and_return(service)
+
+        get_config_variables
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['KEY1']).to eq({ 'value' => 'val 1', 'description' => 'description 1' })
       end
     end
 

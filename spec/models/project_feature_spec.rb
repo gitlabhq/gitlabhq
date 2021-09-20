@@ -41,18 +41,15 @@ RSpec.describe ProjectFeature do
     end
   end
 
-  context 'public features' do
-    features = ProjectFeature::FEATURES - %i(pages)
+  it_behaves_like 'access level validation', ProjectFeature::FEATURES - %i(pages) do
+    let(:container_features) { project.project_feature }
+  end
 
-    features.each do |feature|
-      it "does not allow public access level for #{feature}" do
-        project_feature = project.project_feature
-        field = "#{feature}_access_level".to_sym
-        project_feature.update_attribute(field, ProjectFeature::PUBLIC)
+  it 'allows public access level for :pages feature' do
+    project_feature = project.project_feature
+    project_feature.pages_access_level = ProjectFeature::PUBLIC
 
-        expect(project_feature.valid?).to be_falsy, "#{field} failed"
-      end
-    end
+    expect(project_feature.valid?).to be_truthy
   end
 
   describe 'default pages access level' do

@@ -24,7 +24,7 @@ Peek.into Peek::Views::Tracing if Labkit::Tracing.tracing_url_enabled?
 # See https://github.com/peek/peek/blob/master/lib/peek/views/view.rb
 Peek.views
 
-ActiveSupport::Notifications.subscribe('endpoint_run.grape') do |_name, _start, _finish, _id, payload|
+ActiveSupport::Notifications.subscribe('format_response.grape') do |_name, _start, _finish, _id, payload|
   if request_id = payload[:env]['action_dispatch.request_id']
     Peek.adapter.save(request_id)
   end

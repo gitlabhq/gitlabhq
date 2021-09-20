@@ -15,15 +15,15 @@ module Resolvers
 
     argument :title, GraphQL::Types::String,
              required: false,
-             description: 'The title of the milestone.'
+             description: 'Title of the milestone.'
 
     argument :search_title, GraphQL::Types::String,
              required: false,
-             description: 'A search string for the title.'
+             description: 'Search string for the title.'
 
     argument :containing_date, Types::TimeType,
              required: false,
-             description: 'A date that the milestone contains.'
+             description: 'Date the milestone contains.'
 
     argument :sort, Types::MilestoneSortEnum,
              description: 'Sort milestones by this criteria.',

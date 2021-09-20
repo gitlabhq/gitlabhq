@@ -505,7 +505,7 @@ $line-removed-dark: #fac5cd !default;
  * would hide other layers (selected text, matching brackets).
  *
  * When the transparent colors get layered on white background, they create their
- * full opacity counterparts (computed with https://stackoverflow.com/a/12228643/606571):
+ * full opacity counterparts:
  *
  *  - white + $line-added-transparent = $line-added
  *  - white + $line-added-transparent + $line-added-dark-transparent = $line-added-dark

@@ -34,7 +34,6 @@ module Projects
         # We need `.connected_to_user` here otherwise when a group has an
         # invitee, it would make the following query return 0 rows since a NULL
         # user_id would be present in the subquery
-        # See http://stackoverflow.com/questions/129077/not-in-clause-and-null-values
         non_null_user_ids = project.project_members.connected_to_user.select(:user_id)
         GroupMembersFinder.new(project.group).execute.where.not(user_id: non_null_user_ids)
       end

@@ -115,7 +115,7 @@ export default {
               :label="$options.i18n.toggleLabel"
               label-position="hidden"
               data-testid="feature-flag-status-toggle"
-              data-track-event="click_button"
+              data-track-action="click_button"
               data-track-label="feature_flag_toggle"
               @change="toggleFeatureFlag(featureFlag)"
             />

@@ -18,6 +18,18 @@ RSpec.describe Projects::ServicesController do
     project.add_maintainer(user)
   end
 
+  it_behaves_like IntegrationsActions do
+    let(:integration_attributes) { { project: project } }
+
+    let(:routing_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: integration.to_param
+      }
+    end
+  end
+
   describe '#test' do
     context 'when the integration is not testable' do
       it 'renders 404' do

@@ -11,3 +11,5 @@ export const TOGGLE_CREATE_MR_LABEL = __('Start a new merge request with these c
 
 export const COMMIT_MESSAGE_SUBJECT_MAX_LENGTH = 52;
 export const COMMIT_MESSAGE_BODY_MAX_LENGTH = 72;
+
+export const LIMITED_CONTAINER_WIDTH_CLASS = 'limit-container-width';

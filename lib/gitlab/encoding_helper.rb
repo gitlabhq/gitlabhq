@@ -40,15 +40,7 @@ module Gitlab
     def detect_encoding(data, limit: CharlockHolmes::EncodingDetector::DEFAULT_BINARY_SCAN_LEN, cache_key: nil)
       return if data.nil?
 
-      if Feature.enabled?(:cached_encoding_detection, type: :development, default_enabled: :yaml)
-        return CharlockHolmes::EncodingDetector.new(limit).detect(data) unless cache_key.present?
-
-        Rails.cache.fetch([:detect_binary, CharlockHolmes::VERSION, cache_key], expires_in: 1.week) do
-          CharlockHolmes::EncodingDetector.new(limit).detect(data)
-        end
-      else
-        CharlockHolmes::EncodingDetector.new(limit).detect(data)
-      end
+      CharlockHolmes::EncodingDetector.new(limit).detect(data)
     end
 
     def detect_binary?(data, detect = nil)

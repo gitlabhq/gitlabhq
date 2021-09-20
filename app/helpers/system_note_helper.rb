@@ -39,7 +39,8 @@ module SystemNoteHelper
     'alert_issue_added' => 'issues',
     'new_alert_added' => 'warning',
     'severity' => 'information-o',
-    'cloned' => 'documents'
+    'cloned' => 'documents',
+    'issue_type' => 'pencil-square'
   }.freeze
 
   def system_note_icon_name(note)

@@ -66,6 +66,7 @@ module Ci
     has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :generic_commit_statuses, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus'
     has_many :job_artifacts, through: :builds
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
@@ -307,6 +308,7 @@ module Ci
     scope :ci_and_parent_sources, -> { where(source: Enums::Ci::Pipeline.ci_and_parent_sources.values) }
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
+    scope :where_not_sha, -> (sha) { where.not(sha: sha) }
     scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
     scope :for_sha_or_source_sha, -> (sha) { for_sha(sha).or(for_source_sha(sha)) }
     scope :for_ref, -> (ref) { where(ref: ref) }
@@ -317,7 +319,6 @@ module Ci
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
     scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
-    scope :eager_load_project, -> { eager_load(project: [:route, { namespace: :route }]) }
     scope :with_pipeline_source, -> (source) { where(source: source)}
 
     scope :outside_pipeline_family, ->(pipeline) do
@@ -588,13 +589,11 @@ module Ci
     end
 
     def cancel_running(retries: 1)
-      commit_status_relations = [:project, :pipeline]
-      ci_build_relations = [:deployment, :taggings]
+      preloaded_relations = [:project, :pipeline, :deployment, :taggings]
 
       retry_lock(cancelable_statuses, retries, name: 'ci_pipeline_cancel_running') do |cancelables|
         cancelables.find_in_batches do |batch|
-          ActiveRecord::Associations::Preloader.new.preload(batch, commit_status_relations)
-          ActiveRecord::Associations::Preloader.new.preload(batch.select { |job| job.is_a?(Ci::Build) }, ci_build_relations)
+          Preloaders::CommitStatusPreloader.new(batch).execute(preloaded_relations)
 
           batch.each do |job|
             yield(job) if block_given?
@@ -1108,7 +1107,7 @@ module Ci
           merge_request.modified_paths
         elsif branch_updated?
           push_details.modified_paths
-        elsif external_pull_request? && ::Feature.enabled?(:ci_modified_paths_of_external_prs, project, default_enabled: :yaml)
+        elsif external_pull_request?
           external_pull_request.modified_paths
         end
       end
@@ -1220,24 +1219,12 @@ module Ci
       self.ci_ref = Ci::Ref.ensure_for(self)
     end
 
-    # We need `base_and_ancestors` in a specific order to "break" when needed.
-    # If we use `find_each`, then the order is broken.
-    # rubocop:disable Rails/FindEach
     def reset_source_bridge!(current_user)
-      if ::Feature.enabled?(:ci_reset_bridge_with_subsequent_jobs, project, default_enabled: :yaml)
-        return unless bridge_waiting?
+      return unless bridge_waiting?
 
-        source_bridge.pending!
-        Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
-      else
-        self_and_upstreams.includes(:source_bridge).each do |pipeline|
-          break unless pipeline.bridge_waiting?
-
-          pipeline.source_bridge.pending!
-        end
-      end
+      source_bridge.pending!
+      Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
     end
-    # rubocop:enable Rails/FindEach
 
     # EE-only
     def merge_train_pipeline?

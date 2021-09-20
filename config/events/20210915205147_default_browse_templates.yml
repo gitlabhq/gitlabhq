@@ -1,0 +1,21 @@
+description: "Browse Pipeline editor templates"
+category: default
+action: browse_templates
+label_description: "`pipeline_editor`"
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: verify
+product_group: group::pipeline_authoring
+product_category:
+milestone: "14.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64349
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

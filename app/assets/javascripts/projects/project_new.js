@@ -71,6 +71,17 @@ const deriveProjectPathFromUrl = ($projectImportUrl) => {
   }
 };
 
+const bindHowToImport = () => {
+  $('.how_to_import_link').on('click', (e) => {
+    e.preventDefault();
+    $(e.currentTarget).next('.modal').show();
+  });
+
+  $('.modal-header .close').on('click', () => {
+    $('.modal').hide();
+  });
+};
+
 const bindEvents = () => {
   const $newProjectForm = $('#new_project');
   const $projectImportUrl = $('#project_import_url');
@@ -88,14 +99,7 @@ const bindEvents = () => {
     return;
   }
 
-  $('.how_to_import_link').on('click', (e) => {
-    e.preventDefault();
-    $(e.currentTarget).next('.modal').show();
-  });
-
-  $('.modal-header .close').on('click', () => {
-    $('.modal').hide();
-  });
+  bindHowToImport();
 
   $('.btn_import_gitlab_project').on('click', () => {
     const importHref = $('a.btn_import_gitlab_project').attr('href');
@@ -174,3 +178,5 @@ export default {
   onProjectNameChange,
   onProjectPathChange,
 };
+
+export { bindHowToImport };

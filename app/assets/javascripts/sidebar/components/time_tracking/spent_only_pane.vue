@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { sprintf, s__ } from '~/locale';
 
 export default {
@@ -27,5 +26,5 @@ export default {
 </script>
 
 <template>
-  <div data-testid="spentOnlyPane" v-html="timeSpent"></div>
+  <div data-testid="spentOnlyPane" v-html="timeSpent /* eslint-disable-line vue/no-v-html */"></div>
 </template>

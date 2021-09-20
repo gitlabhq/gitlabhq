@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { escape } from 'lodash';
 import createFlash from '~/flash';
@@ -171,7 +170,7 @@ export default {
           v-if="!rebaseInProgress && !canPushToSourceBranch"
           class="gl-font-weight-bold gl-ml-0!"
           data-testid="rebase-message"
-          v-html="fastForwardMergeText"
+          v-html="fastForwardMergeText /* eslint-disable-line vue/no-v-html */"
         ></span>
         <div
           v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"

@@ -10,7 +10,7 @@ An [awarded emoji](../user/award_emojis.md) tells a thousand words.
 
 We call GitLab objects on which you can award an emoji "awardables". You can award emojis on the following:
 
-- [Epics](../user/group/epics/index.md) ([API](epics.md)).
+- [Epics](../user/group/epics/index.md) ([API](epics.md)). **(PREMIUM)**
 - [Issues](../user/project/issues/index.md) ([API](issues.md)).
 - [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
 - [Snippets](../user/snippets.md) ([API](snippets.md)).

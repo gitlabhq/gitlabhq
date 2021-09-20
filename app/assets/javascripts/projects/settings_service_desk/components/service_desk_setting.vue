@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlFormSelect, GlToggle, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormSelect,
+  GlToggle,
+  GlLoadingIcon,
+  GlSprintf,
+  GlFormInput,
+  GlLink,
+} from '@gitlab/ui';
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -14,6 +22,8 @@ export default {
     GlToggle,
     GlLoadingIcon,
     GlSprintf,
+    GlFormInput,
+    GlLink,
   },
   props: {
     isEnabled: {
@@ -148,17 +158,37 @@ export default {
           <span class="sr-only">{{ __('Fetching incoming email') }}</span>
         </template>
 
-        <template v-if="hasProjectKeySupport">
-          <label for="service-desk-project-suffix" class="mt-3">
-            {{ __('Project name suffix') }}
-          </label>
-          <input id="service-desk-project-suffix" v-model.trim="projectKey" class="form-control" />
-          <span class="form-text text-muted">
-            {{
-              __('A string appended to the project path to form the Service Desk email address.')
-            }}
-          </span>
-        </template>
+        <label for="service-desk-project-suffix" class="mt-3">
+          {{ __('Project name suffix') }}
+        </label>
+        <gl-form-input
+          v-if="hasProjectKeySupport"
+          id="service-desk-project-suffix"
+          v-model.trim="projectKey"
+          data-testid="project-suffix"
+          class="form-control"
+        />
+        <span v-if="hasProjectKeySupport" class="form-text text-muted">
+          {{ __('A string appended to the project path to form the Service Desk email address.') }}
+        </span>
+        <span v-else class="form-text text-muted">
+          <gl-sprintf
+            :message="
+              __(
+                'To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}',
+              )
+            "
+          >
+            <template #link="{ content }">
+              <gl-link
+                href="https://docs.gitlab.com/ee/user/project/service_desk.html#using-a-custom-email-address"
+                target="_blank"
+                class="gl-text-blue-600 font-size-inherit"
+                >{{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </span>
 
         <label for="service-desk-template-select" class="mt-3">
           {{ __('Template to append to all Service Desk issues') }}

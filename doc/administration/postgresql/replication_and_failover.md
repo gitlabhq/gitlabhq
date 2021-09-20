@@ -72,13 +72,13 @@ the PgBouncer service.
 
 ### Connection flow
 
-Each service in the package comes with a set of [default ports](https://docs.gitlab.com/omnibus/package-information/defaults.html#ports). You may need to make specific firewall rules for the connections listed below:
+Each service in the package comes with a set of [default ports](../package_information/defaults.md#ports). You may need to make specific firewall rules for the connections listed below:
 
-- Application servers connect to either PgBouncer directly via its [default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#pgbouncer) or via a configured Internal Load Balancer (TCP) that serves multiple PgBouncers.
-- PgBouncer connects to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
+- Application servers connect to either PgBouncer directly via its [default port](../package_information/defaults.md) or via a configured Internal Load Balancer (TCP) that serves multiple PgBouncers.
+- PgBouncer connects to the primary database servers [PostgreSQL default port](../package_information/defaults.md)
 - Patroni actively manages the running PostgreSQL processes and configuration.
-- PostgreSQL secondaries connect to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
-- Consul servers and agents connect to each others [Consul default ports](https://docs.gitlab.com/omnibus/package-information/defaults.html#consul)
+- PostgreSQL secondaries connect to the primary database servers [PostgreSQL default port](../package_information/defaults.md)
+- Consul servers and agents connect to each others [Consul default ports](../package_information/defaults.md)
 
 ## Setting it up
 
@@ -183,7 +183,7 @@ Few things to remember about the service itself:
 
 - The service runs as the same system account as the database
   - In the package, this is by default `gitlab-psql`
-- If you use a non-default user account for PgBouncer service (by default `pgbouncer`), you need to specify this username. 
+- If you use a non-default user account for PgBouncer service (by default `pgbouncer`), you need to specify this username.
 - Passwords are stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed, and in plain text
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
@@ -306,7 +306,7 @@ If you enable Monitoring, it must be enabled on **all** database servers.
 #### Enable TLS support for the Patroni API
 
 By default, Patroni's [REST API](https://patroni.readthedocs.io/en/latest/rest_api.html#rest-api) is served over HTTP.
-You have the option to enable TLS and use HTTPS over the same [port](https://docs.gitlab.com/omnibus/package-information/defaults.html#patroni).
+You have the option to enable TLS and use HTTPS over the same [port](../package_information/defaults.md).
 
 To enable TLS, you need PEM-formatted certificate and private key files. Both files must be readable by the PostgreSQL user (`gitlab-psql` by default, or the one set by `postgresql['username']`):
 
@@ -789,7 +789,7 @@ You do not need any special consideration for Patroni while provisioning your da
 
 Patroni monitors the cluster and handles any failover. When the primary node fails it works with Consul to notify PgBouncer. On failure, Patroni handles the transitioning of the old primary to a replica and rejoins it to the cluster automatically.
 
-With Patroni, the connection flow is slightly different. Patroni on each node connects to Consul agent to join the cluster. Only after this point it decides if the node is the primary or a replica. Based on this decision, it configures and starts PostgreSQL which it communicates with directly over a Unix socket. This means that if the Consul cluster is not functional or does not have a leader, Patroni and by extension PostgreSQL does not start. Patroni also exposes a REST API which can be accessed via its [default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#patroni)
+With Patroni, the connection flow is slightly different. Patroni on each node connects to Consul agent to join the cluster. Only after this point it decides if the node is the primary or a replica. Based on this decision, it configures and starts PostgreSQL which it communicates with directly over a Unix socket. This means that if the Consul cluster is not functional or does not have a leader, Patroni and by extension PostgreSQL does not start. Patroni also exposes a REST API which can be accessed via its [default port](../package_information/defaults.md)
 on each node.
 
 ### Check replication status

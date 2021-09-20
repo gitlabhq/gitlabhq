@@ -13,7 +13,6 @@ module Analytics
       DEFAULT_DELAY = 3.minutes.freeze
 
       feature_category :devops_reports
-      tags :exclude_from_kubernetes
       urgency :low
 
       idempotent!

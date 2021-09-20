@@ -16,24 +16,49 @@
 %section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'ip_limits_content' } }
   .settings-header
     %h4
-      = _('User and IP Rate Limits')
+      = _('User and IP rate limits')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure limits for web and API requests.')
+      = _('Set limits for web and API requests.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/user_and_ip_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'ip_limits'
 
 %section.settings.as-packages-limits.no-animate#js-packages-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'packages_limits_content' } }
   .settings-header
     %h4
-      = _('Package Registry Rate Limits')
+      = _('Package registry rate limits')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure specific limits for Packages API requests that supersede the general user and IP rate limits.')
+      = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/package_registry_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'package_registry_limits'
+- if Feature.enabled?(:files_api_throttling, default_enabled: :yaml)
+  %section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'files-limits-settings' } }
+    .settings-header
+      %h4
+        = _('Files API Rate Limits')
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded_by_default? ? _('Collapse') : _('Expand')
+      %p
+        = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
+    .settings-content
+      = render 'files_limits'
+
+%section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'git_lfs_limits_content' } }
+  .settings-header
+    %h4
+      = _('Git LFS Rate Limits')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure specific limits for Git LFS requests that supersede the general user and IP rate limits.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/git_lfs_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = render 'git_lfs_limits'
 
 %section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_content' } }
   .settings-header
@@ -76,22 +101,24 @@
 %section.settings.as-note-limits.no-animate#js-note-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
-      = _('Notes Rate Limits')
+      = _('Notes rate limit')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure limit for notes created per minute by web and API requests.')
+      = _('Set the per-user rate limit for notes created by web or API requests.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/rate_limit_on_notes_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'note_limits'
 
 %section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
-      = _('Import/Export Rate Limits')
+      = _('Import and export rate limits')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure limits for Project/Group Import/Export.')
+      = _('Set per-user rate limits for imports and exports of projects and groups.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/import_export_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'import_export_limits'
 

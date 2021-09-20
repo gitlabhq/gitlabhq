@@ -48,10 +48,11 @@ module FeatureFlags
       end
     end
 
-    def created_scope_message(scope)
-      "Created rule #{scope.environment_scope} "\
-      "and set it as #{scope.active ? "active" : "inactive"} "\
-      "with strategies #{scope.strategies}."
+    def created_strategy_message(strategy)
+      scopes = strategy.scopes
+                 .map { |scope| %Q("#{scope.environment_scope}") }
+                 .join(', ')
+      %Q(Created strategy "#{strategy.name}" with scopes #{scopes}.)
     end
 
     def feature_flag_by_name

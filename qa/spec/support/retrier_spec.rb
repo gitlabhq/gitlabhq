@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'logger'
-require 'timecop'
-
 RSpec.describe QA::Support::Retrier do
   before do
     logger = ::Logger.new $stdout

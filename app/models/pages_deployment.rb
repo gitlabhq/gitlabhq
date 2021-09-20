@@ -16,6 +16,7 @@ class PagesDeployment < ApplicationRecord
   scope :migrated_from_legacy_storage, -> { where(file: MIGRATED_FILE_NAME) }
   scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
+  scope :project_id_in, ->(ids) { where(project_id: ids) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
@@ -27,10 +28,6 @@ class PagesDeployment < ApplicationRecord
 
   mount_file_store_uploader ::Pages::DeploymentUploader
 
-  def log_geo_deleted_event
-    # this is to be adressed in https://gitlab.com/groups/gitlab-org/-/epics/589
-  end
-
   def migrated?
     file.filename == MIGRATED_FILE_NAME
   end
@@ -41,3 +38,5 @@ class PagesDeployment < ApplicationRecord
     self.size = file.size
   end
 end
+
+PagesDeployment.prepend_mod

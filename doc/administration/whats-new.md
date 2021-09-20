@@ -29,7 +29,7 @@ in the first patch release, such as `13.10.1`.
 
 You can configure the What's new variant:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**, then expand **What's new**.
 1. Choose one of the following options:
 

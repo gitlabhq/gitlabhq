@@ -27,7 +27,7 @@ RSpec.describe ResolvesPipelines do
     project.add_developer(current_user)
   end
 
-  it { is_expected.to have_graphql_arguments(:status, :ref, :sha) }
+  it { is_expected.to have_graphql_arguments(:status, :ref, :sha, :source) }
 
   it 'finds all pipelines' do
     expect(resolve_pipelines).to contain_exactly(pipeline, failed_pipeline, ref_pipeline, sha_pipeline)
@@ -43,6 +43,30 @@ RSpec.describe ResolvesPipelines do
 
   it 'allows filtering by sha' do
     expect(resolve_pipelines(sha: 'deadbeef')).to contain_exactly(sha_pipeline)
+  end
+
+  context 'filtering by source' do
+    let_it_be(:source_pipeline) { create(:ci_pipeline, project: project, source: 'web') }
+
+    context 'when `dast_view_scans` feature flag is disabled' do
+      before do
+        stub_feature_flags(dast_view_scans: false)
+      end
+
+      it 'does not filter by source' do
+        expect(resolve_pipelines(source: 'web')).to contain_exactly(pipeline, failed_pipeline, ref_pipeline, sha_pipeline, source_pipeline)
+      end
+    end
+
+    context 'when `dast_view_scans` feature flag is enabled' do
+      it 'does filter by source' do
+        expect(resolve_pipelines(source: 'web')).to contain_exactly(source_pipeline)
+      end
+
+      it 'returns all the pipelines' do
+        expect(resolve_pipelines).to contain_exactly(pipeline, failed_pipeline, ref_pipeline, sha_pipeline, source_pipeline)
+      end
+    end
   end
 
   it 'does not return any pipelines if the user does not have access' do

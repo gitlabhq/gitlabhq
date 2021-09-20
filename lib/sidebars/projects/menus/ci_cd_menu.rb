@@ -15,11 +15,6 @@ module Sidebars
           add_item(pipeline_schedules_menu_item)
         end
 
-        override :link
-        def link
-          project_pipelines_path(context.project)
-        end
-
         override :extra_container_html_options
         def extra_container_html_options
           {

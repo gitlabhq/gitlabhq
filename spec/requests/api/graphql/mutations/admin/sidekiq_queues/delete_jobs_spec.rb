@@ -9,7 +9,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues do
 
   let(:queue) { 'authorized_projects' }
 
-  let(:variables) { { user: admin.username, queue_name: queue } }
+  let(:variables) { { user: admin.username, worker_class: 'AuthorizedProjectsWorker', queue_name: queue } }
   let(:mutation) { graphql_mutation(:admin_sidekiq_queues_delete_jobs, variables) }
 
   def mutation_response

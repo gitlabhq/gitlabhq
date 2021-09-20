@@ -28,11 +28,17 @@ module Environments
     private
 
     def stop_in_batch
-      environments = Environment.auto_stoppable(BATCH_SIZE)
+      environments = Environment.preload_project.select(:id, :project_id).auto_stoppable(BATCH_SIZE)
 
-      return false unless environments.exists?
+      return false if environments.empty?
 
-      Environments::StopService.execute_in_batch(environments)
+      Environments::AutoStopWorker.bulk_perform_async_with_contexts(
+        environments,
+        arguments_proc: -> (environment) { environment.id },
+        context_proc: -> (environment) { { project: environment.project } }
+      )
+
+      true
     end
   end
 end

@@ -50,6 +50,7 @@ except those captured by `runit`.
 | [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes | **{check-circle}** Yes  |
 | [NGINX](#nginx-logs)                            | **{check-circle}** Yes | **{check-circle}** Yes  |
 | [PostgreSQL Logs](#postgresql-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Praefect Logs](#praefect-logs)                 | **{dotted-circle}** Yes| **{check-circle}** Yes  |
 | [Prometheus Logs](#prometheus-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
 | [Puma](#puma-logs)                              | **{check-circle}** Yes | **{check-circle}** Yes  |
 | [Redis Logs](#redis-logs)                       | **{dotted-circle}** No | **{check-circle}** Yes  |
@@ -62,9 +63,6 @@ Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production_json.log`
 - Installations from source: `/home/git/gitlab/log/production_json.log`
-
-When GitLab is running in an environment other than production,
-the corresponding log file is shown here.
 
 It contains a structured log for Rails controller requests received from
 GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/).
@@ -215,9 +213,6 @@ Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production.log`
 - Installations from source: `/home/git/gitlab/log/production.log`
-
-When GitLab is running in an environment other than production,
-the corresponding log file is shown here.
 
 It contains information about all performed requests. You can see the
 URL and type of request, IP address, and what parts of code were
@@ -556,10 +551,9 @@ access to Git repositories.
 
 ### For GitLab versions 12.10 and up
 
-For GitLab version 12.10 and later, there are two `gitlab-shell.log` files.
 Information containing `git-{upload-pack,receive-pack}` requests is at
 `/var/log/gitlab/gitlab-shell/gitlab-shell.log`. Information about hooks to
-GitLab Shell from Gitaly is at `/var/log/gitlab/gitaly/gitlab-shell.log`.
+GitLab Shell from Gitaly is at `/var/log/gitlab/gitaly/current`.
 
 Example log entries for `/var/log/gitlab/gitlab-shell/gitlab-shell.log`:
 
@@ -585,7 +579,7 @@ Example log entries for `/var/log/gitlab/gitlab-shell/gitlab-shell.log`:
 }
 ```
 
-Example log entries for `/var/log/gitlab/gitaly/gitlab-shell.log`:
+Example log entries for `/var/log/gitlab/gitaly/current`:
 
 ```json
 {
@@ -667,6 +661,12 @@ packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 This file is at `/var/log/gitlab/gitaly/gitaly_ruby_json.log` and is
 produced by [`gitaly-ruby`](gitaly/reference.md#gitaly-ruby). It contains an
 access log of gRPC calls made by Gitaly to `gitaly-ruby`.
+
+### `gitaly_hooks.log`
+
+This file is at `/var/log/gitlab/gitaly/gitaly_hooks.log` and is
+produced by `gitaly-hooks` command. It also contains records about
+failures received during processing of the responses from GitLab API.
 
 ## Puma Logs
 
@@ -1062,6 +1062,12 @@ For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/g
 
 For Omnibus GitLab installations, GitLab Kubernetes Agent Server logs are
 in `/var/log/gitlab/gitlab-kas/`.
+
+## Praefect Logs
+
+For Omnibus GitLab installations, Praefect logs are in `/var/log/gitlab/praefect/`.
+
+GitLab also tracks [Prometheus metrics for Praefect](gitaly/#monitor-gitaly-cluster).
 
 ## Performance bar stats
 

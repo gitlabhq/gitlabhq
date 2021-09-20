@@ -66,7 +66,7 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="selectedTimezoneLabel" block lazy menu-class="gl-w-full!">
+  <gl-dropdown :text="selectedTimezoneLabel" block lazy menu-class="gl-w-full!" v-bind="$attrs">
     <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus />
     <gl-dropdown-item
       v-for="timezone in filteredResults"

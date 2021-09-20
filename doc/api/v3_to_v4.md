@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # API V3 to API V4
 
 WARNING:
-The GitLab API v3 was removed in [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36819).
+The GitLab API v3 was [removed](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36819) in GitLab 11.0.
 
 For information about the current version of the GitLab API, read the [API documentation](index.md).
 

@@ -118,7 +118,7 @@ export default {
       required: true,
     },
   },
-  hasLocalStorage: AccessorUtils.isLocalStorageAccessSafe(),
+  hasLocalStorage: AccessorUtils.canUseLocalStorage(),
   data() {
     return {
       errorSearchQuery: '',

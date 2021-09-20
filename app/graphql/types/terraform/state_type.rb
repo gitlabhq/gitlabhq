@@ -19,7 +19,7 @@ module Types
 
       field :locked_by_user, Types::UserType,
             null: true,
-            description: 'The user currently holding a lock on the Terraform state.'
+            description: 'User currently holding a lock on the Terraform state.'
 
       field :locked_at, Types::TimeType,
             null: true,
@@ -28,7 +28,7 @@ module Types
       field :latest_version, Types::Terraform::StateVersionType,
             complexity: 3,
             null: true,
-            description: 'The latest version of the Terraform state.'
+            description: 'Latest version of the Terraform state.'
 
       field :created_at, Types::TimeType,
             null: false,

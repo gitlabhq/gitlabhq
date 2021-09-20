@@ -6,11 +6,14 @@ RSpec.describe DependencyProxy::Manifest, type: :model do
     it { is_expected.to belong_to(:group) }
   end
 
+  it_behaves_like 'having unique enum values'
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:group) }
     it { is_expected.to validate_presence_of(:file) }
     it { is_expected.to validate_presence_of(:file_name) }
     it { is_expected.to validate_presence_of(:digest) }
+    it { is_expected.to validate_presence_of(:status) }
   end
 
   describe 'file is being stored' do

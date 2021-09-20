@@ -4,7 +4,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Epic Boards **(PREMIUM)**
+# Epic boards **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5067) in GitLab 13.10.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290039) in GitLab 14.1.
@@ -54,7 +54,7 @@ Prerequisites:
 
 To delete the active epic board:
 
-1. Select the dropdown with the current board name in the upper left corner of the Epic Boards page.
+1. Select the dropdown with the current board name in the upper left corner of the epic boards page.
 1. Select **Delete board**.
 1. Select **Delete**.
 

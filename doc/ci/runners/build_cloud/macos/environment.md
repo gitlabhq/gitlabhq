@@ -4,12 +4,12 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# VM instances and images for Build Cloud for macOS 
+# VM instances and images for Build Cloud for macOS
 
 When you use the Build Cloud for macOS:
 
-- Each of your jobs runs in a newly provisioned VM, which is dedicated to the specific job. 
-- The VM is active only for the duration of the job and immediately deleted. 
+- Each of your jobs runs in a newly provisioned VM, which is dedicated to the specific job.
+- The VM is active only for the duration of the job and immediately deleted.
 
 ## VM types
 

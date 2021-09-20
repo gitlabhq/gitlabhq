@@ -110,7 +110,7 @@ export default {
           <div :class="previewColorClasses" :style="previewColor" data-testid="color-preview">
             <gl-form-input
               type="color"
-              class="gl-absolute gl-top-0 gl-left-0 gl-h-full! gl-p-0! gl-m-0! gl-cursor-pointer gl-opacity-0"
+              class="gl-absolute gl-top-0 gl-left-0 gl-h-full! gl-p-0! gl-m-0! gl-opacity-0"
               tabindex="-1"
               :value="value"
               @input="handleColorChange"

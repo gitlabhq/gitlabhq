@@ -43,6 +43,7 @@ export default {
       isSharedRunnerEnabled: this.isEnabled,
       errorMessage: null,
       successfulValidation: false,
+      ccAlertDismissed: false,
     };
   },
   computed: {
@@ -50,7 +51,8 @@ export default {
       return (
         this.isCreditCardValidationRequired &&
         !this.isSharedRunnerEnabled &&
-        !this.successfulValidation
+        !this.successfulValidation &&
+        !this.ccAlertDismissed
       );
     },
   },
@@ -89,6 +91,7 @@ export default {
         class="gl-pb-5"
         :custom-message="$options.i18n.REQUIRES_VALIDATION_TEXT"
         @verifiedCreditCard="creditCardValidated"
+        @dismiss="ccAlertDismissed = true"
       />
 
       <gl-toggle

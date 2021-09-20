@@ -6,8 +6,8 @@ module Types
     description 'Milestone ID wildcard values'
 
     value 'NONE', 'No milestone is assigned.'
-    value 'ANY', 'A milestone is assigned.'
-    value 'STARTED', 'An open, started milestone (start date <= today).'
-    value 'UPCOMING', 'An open milestone due in the future (due date >= today).'
+    value 'ANY', 'Milestone is assigned.'
+    value 'STARTED', 'Milestone assigned is open and started (start date <= today).'
+    value 'UPCOMING', 'Milestone assigned is due closest in the future (due date > today).'
   end
 end

@@ -5,185 +5,70 @@ require 'spec_helper'
 RSpec.describe Resolvers::Ci::RunnersResolver do
   include GraphqlHelpers
 
-  let_it_be(:user) { create_default(:user, :admin) }
-  let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :repository, :public) }
-
-  let_it_be(:inactive_project_runner) do
-    create(:ci_runner, :project, projects: [project], description: 'inactive project runner', token: 'abcdef', active: false, contacted_at: 1.minute.ago, tag_list: %w(project_runner))
-  end
-
-  let_it_be(:offline_project_runner) do
-    create(:ci_runner, :project, projects: [project], description: 'offline project runner', token: 'defghi', contacted_at: 1.day.ago, tag_list: %w(project_runner active_runner))
-  end
-
-  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], token: 'mnopqr', description: 'group runner', contacted_at: 1.second.ago) }
-  let_it_be(:instance_runner) { create(:ci_runner, :instance, description: 'shared runner', token: 'stuvxz', contacted_at: 2.minutes.ago, tag_list: %w(instance_runner active_runner)) }
-
   describe '#resolve' do
-    subject { resolve(described_class, ctx: { current_user: user }, args: args).items.to_a }
+    let(:obj) { nil }
+    let(:args) { {} }
 
-    let(:args) do
-      {}
-    end
+    subject { resolve(described_class, obj: obj, ctx: { current_user: user }, args: args) }
 
-    context 'when the user cannot see runners' do
-      let(:user) { create(:user) }
+    include_context 'runners resolver setup'
+
+    # First, we can do a couple of basic real tests to verify common cases. That ensures that the code works.
+    context 'when user cannot see runners' do
+      let(:user) { build(:user) }
 
       it 'returns no runners' do
-        is_expected.to be_empty
+        expect(subject.items.to_a).to eq([])
       end
     end
 
-    context 'without sort' do
+    context 'when user can see runners' do
+      let(:obj) { nil }
+
       it 'returns all the runners' do
-        is_expected.to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, instance_runner)
+        expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
       end
     end
 
-    context 'with a sort argument' do
-      context "set to :contacted_asc" do
-        let(:args) do
-          { sort: :contacted_asc }
-        end
+    # Then, we can check specific edge cases for this resolver
+    context 'with obj not set to nil' do
+      let(:obj) { build(:project) }
 
-        it { is_expected.to eq([offline_project_runner, instance_runner, inactive_project_runner, group_runner]) }
-      end
-
-      context "set to :contacted_desc" do
-        let(:args) do
-          { sort: :contacted_desc }
-        end
-
-        it { is_expected.to eq([offline_project_runner, instance_runner, inactive_project_runner, group_runner].reverse) }
-      end
-
-      context "set to :created_at_desc" do
-        let(:args) do
-          { sort: :created_at_desc }
-        end
-
-        it { is_expected.to eq([instance_runner, group_runner, offline_project_runner, inactive_project_runner]) }
-      end
-
-      context "set to :created_at_asc" do
-        let(:args) do
-          { sort: :created_at_asc }
-        end
-
-        it { is_expected.to eq([instance_runner, group_runner, offline_project_runner, inactive_project_runner].reverse) }
+      it 'raises an error' do
+        expect { subject }.to raise_error(a_string_including('Unexpected parent type'))
       end
     end
 
-    context 'when type is filtered' do
+    # Here we have a mocked part. We assume that all possible edge cases are covered in RunnersFinder spec. So we don't need to test them twice.
+    # Only thing we can do is to verify that args from the resolver is correctly transformed to params of the Finder and we return the Finder's result back.
+    describe 'Allowed query arguments' do
+      let(:finder) { instance_double(::Ci::RunnersFinder) }
       let(:args) do
-        { type: runner_type.to_s }
+        {
+          status: 'active',
+          type: :instance_type,
+          tag_list: ['active_runner'],
+          search: 'abc',
+          sort: :contacted_asc
+        }
       end
 
-      context 'to instance runners' do
-        let(:runner_type) { :instance_type }
-
-        it 'returns the instance runner' do
-          is_expected.to contain_exactly(instance_runner)
-        end
+      let(:expected_params) do
+        {
+          status_status: 'active',
+          type_type: :instance_type,
+          tag_name: ['active_runner'],
+          preload: { tag_name: nil },
+          search: 'abc',
+          sort: 'contacted_asc'
+        }
       end
 
-      context 'to group runners' do
-        let(:runner_type) { :group_type }
+      it 'calls RunnersFinder with expected arguments' do
+        allow(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
+        allow(finder).to receive(:execute).once.and_return([:execute_return_value])
 
-        it 'returns the group runner' do
-          is_expected.to contain_exactly(group_runner)
-        end
-      end
-
-      context 'to project runners' do
-        let(:runner_type) { :project_type }
-
-        it 'returns the project runner' do
-          is_expected.to contain_exactly(inactive_project_runner, offline_project_runner)
-        end
-      end
-    end
-
-    context 'when status is filtered' do
-      let(:args) do
-        { status: runner_status.to_s }
-      end
-
-      context 'to active runners' do
-        let(:runner_status) { :active }
-
-        it 'returns the instance and group runners' do
-          is_expected.to contain_exactly(offline_project_runner, group_runner, instance_runner)
-        end
-      end
-
-      context 'to offline runners' do
-        let(:runner_status) { :offline }
-
-        it 'returns the offline project runner' do
-          is_expected.to contain_exactly(offline_project_runner)
-        end
-      end
-    end
-
-    context 'when tag list is filtered' do
-      let(:args) do
-        { tag_list: tag_list }
-      end
-
-      context 'with "project_runner" tag' do
-        let(:tag_list) { ['project_runner'] }
-
-        it 'returns the project_runner runners' do
-          is_expected.to contain_exactly(offline_project_runner, inactive_project_runner)
-        end
-      end
-
-      context 'with "project_runner" and "active_runner" tags as comma-separated string' do
-        let(:tag_list) { ['project_runner,active_runner'] }
-
-        it 'returns the offline_project_runner runner' do
-          is_expected.to contain_exactly(offline_project_runner)
-        end
-      end
-
-      context 'with "active_runner" and "instance_runner" tags as array' do
-        let(:tag_list) { %w[instance_runner active_runner] }
-
-        it 'returns the offline_project_runner runner' do
-          is_expected.to contain_exactly(instance_runner)
-        end
-      end
-    end
-
-    context 'when text is filtered' do
-      let(:args) do
-        { search: search_term }
-      end
-
-      context 'to "project"' do
-        let(:search_term) { 'project' }
-
-        it 'returns both project runners' do
-          is_expected.to contain_exactly(inactive_project_runner, offline_project_runner)
-        end
-      end
-
-      context 'to "group"' do
-        let(:search_term) { 'group' }
-
-        it 'returns group runner' do
-          is_expected.to contain_exactly(group_runner)
-        end
-      end
-
-      context 'to "defghi"' do
-        let(:search_term) { 'defghi' }
-
-        it 'returns runners containing term in token' do
-          is_expected.to contain_exactly(offline_project_runner)
-        end
+        expect(subject.items.to_a).to eq([:execute_return_value])
       end
     end
   end

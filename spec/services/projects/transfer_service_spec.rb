@@ -292,10 +292,37 @@ RSpec.describe Projects::TransferService do
     end
   end
 
-  context 'target namespace allows developers to create projects' do
+  context 'target namespace matches current namespace' do
+    let(:group) { user.namespace }
+
+    it 'does not allow project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace]).to include('Project is already in this namespace.')
+    end
+  end
+
+  context 'when user does not own the project' do
+    let(:project) { create(:project, :repository, :legacy_storage) }
+
+    before do
+      project.add_developer(user)
+    end
+
+    it 'does not allow project transfer to the target namespace' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.errors[:new_namespace]).to include("You don't have permission to transfer this project.")
+    end
+  end
+
+  context 'when user can create projects in the target namespace' do
     let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
 
-    context 'the user is a member of the target namespace with developer permissions' do
+    context 'but has only developer permissions in the target namespace' do
       before do
         group.add_developer(user)
       end
@@ -305,7 +332,7 @@ RSpec.describe Projects::TransferService do
 
         expect(transfer_result).to eq false
         expect(project.namespace).to eq(user.namespace)
-        expect(project.errors[:new_namespace]).to include('Transfer failed, please contact an admin.')
+        expect(project.errors[:new_namespace]).to include("You don't have permission to transfer projects into that namespace.")
       end
     end
   end

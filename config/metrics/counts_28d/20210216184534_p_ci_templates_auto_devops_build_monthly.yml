@@ -7,13 +7,13 @@ product_stage: configure
 product_group: group::configure
 product_category: infrastructure_as_code
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - p_ci_templates_auto_devops_build
+  - p_ci_templates_auto_devops_build
 distribution:
 - ce
 - ee
@@ -22,3 +22,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

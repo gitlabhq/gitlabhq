@@ -93,7 +93,7 @@ export default {
         class="float-right lock-edit btn gl-text-gray-900! gl-ml-auto hide-collapsed btn-default btn-sm gl-button btn-default-tertiary gl-mr-n2"
         href="#"
         data-testid="edit-link"
-        data-track-event="click_edit_button"
+        data-track-action="click_edit_button"
         data-track-label="right_sidebar"
         data-track-property="lock_issue"
         @click.prevent="toggleForm"

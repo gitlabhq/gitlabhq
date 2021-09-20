@@ -31,7 +31,6 @@ export default class BlobFileDropzone {
       autoProcessQueue: false,
       url: form.attr('action'),
       // Rails uses a hidden input field for PUT
-      // http://stackoverflow.com/questions/21056482/how-to-set-method-put-in-form-tag-in-rails
       method,
       clickable: true,
       uploadMultiple: false,

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using MySQL
+# Using MySQL **(FREE)**
 
 Many applications depend on MySQL as their database, and you may
 need it for your tests to run.
@@ -16,11 +16,9 @@ If you want to use a MySQL container, you can use [GitLab Runner](../runners/ind
 
 This example shows you how to set a username and password that GitLab uses to access the MySQL container. If you do not set a username and password, you must use `root`.
 
-1. [Create CI/CD variables](../variables/index.md#custom-cicd-variables) for your
-   MySQL database and password by going to **Settings > CI/CD**, expanding **Variables**,
-   and clicking **Add Variable**.
-
-   This example uses `$MYSQL_DB` and `$MYSQL_PASS` as the keys.
+NOTE:
+Variables set in the GitLab UI are not passed down to the service containers.
+[Learn more](../variables/index.md).
 
 1. To specify a MySQL image, add the following to your `.gitlab-ci.yml` file:
 
@@ -39,8 +37,8 @@ This example shows you how to set a username and password that GitLab uses to ac
    ```yaml
    variables:
      # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
-     MYSQL_DATABASE: $MYSQL_DB
-     MYSQL_ROOT_PASSWORD: $MYSQL_PASS
+     MYSQL_DATABASE: $MYSQL_DATABASE
+     MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
    ```
 
    The MySQL container uses `MYSQL_DATABASE` and `MYSQL_ROOT_PASSWORD` to connect to the database.

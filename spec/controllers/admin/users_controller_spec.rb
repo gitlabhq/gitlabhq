@@ -146,7 +146,7 @@ RSpec.describe Admin::UsersController do
 
       it 'sends the user a rejection email' do
         expect_next_instance_of(NotificationService) do |notification|
-          allow(notification).to receive(:user_admin_rejection).with(user.name, user.notification_email)
+          allow(notification).to receive(:user_admin_rejection).with(user.name, user.notification_email_or_default)
         end
 
         subject
@@ -165,7 +165,7 @@ RSpec.describe Admin::UsersController do
       it 'displays the error' do
         subject
 
-        expect(flash[:alert]).to eq('This user does not have a pending request')
+        expect(flash[:alert]).to eq('User does not have a pending request')
       end
 
       it 'does not email the user' do

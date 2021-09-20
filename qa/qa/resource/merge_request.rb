@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   module Resource
     class MergeRequest < Base
@@ -25,7 +23,7 @@ module QA
                  :state
 
       attribute :project do
-        Project.fabricate! do |resource|
+        Project.fabricate_via_api! do |resource|
           resource.name = 'project-with-merge-request'
         end
       end

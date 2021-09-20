@@ -11,6 +11,7 @@ body.gl-dark {
   --green-700: #91d4a8;
   --blue-400: #1f75cb;
   --orange-400: #ab6100;
+  --purple-100: #2f2a6b;
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --black: #fff;
@@ -373,6 +374,38 @@ h1 {
 }
 .m-auto {
   margin: auto !important;
+}
+.gl-form-input,
+.gl-form-input.form-control {
+  background-color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 0.875rem;
+  line-height: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  height: auto;
+  color: #fafafa;
+  box-shadow: inset 0 0 0 1px #868686;
+  border-style: none;
+  appearance: none;
+  -moz-appearance: none;
+}
+.gl-form-input:disabled,
+.gl-form-input:not(.form-control-plaintext):not([type="color"]):read-only,
+.gl-form-input.form-control:disabled,
+.gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
+  background-color: #1f1f1f;
+  color: #868686;
+  box-shadow: inset 0 0 0 1px #404040;
+  cursor: not-allowed;
+}
+.gl-form-input::placeholder,
+.gl-form-input.form-control::placeholder {
+  color: #868686;
 }
 .gl-button {
   display: inline-flex;
@@ -1237,7 +1270,7 @@ input {
 .nav-sidebar-inner-scroll > div.context-header a .avatar-container {
   font-weight: 400;
   flex: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .nav-sidebar-inner-scroll > div.context-header a .avatar-container.rect-avatar {
   border-style: none;
@@ -1247,7 +1280,7 @@ input {
   a
   .avatar-container.rect-avatar
   .avatar.s32 {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items {
   margin-top: 0.25rem;
@@ -1261,7 +1294,7 @@ input {
 .sidebar-top-level-items .context-header a .avatar-container {
   font-weight: 400;
   flex: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items .context-header a .avatar-container.rect-avatar {
   border-style: none;
@@ -1271,7 +1304,7 @@ input {
   a
   .avatar-container.rect-avatar
   .avatar.s32 {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items > li .badge.badge-pill {
   border-radius: 0.5rem;
@@ -1409,6 +1442,9 @@ svg.s12 {
 svg.s16 {
   vertical-align: -3px;
 }
+.header-search {
+  width: 320px;
+}
 .search {
   margin: 0 8px;
 }
@@ -1479,7 +1515,7 @@ svg.s16 {
   float: left;
   margin-right: 16px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .avatar.s16,
 .avatar-container.s16 {
@@ -1524,7 +1560,7 @@ svg.s16 {
   background-color: #660e00;
 }
 .identicon.bg2 {
-  background-color: #f4f0ff;
+  background-color: #232150;
 }
 .identicon.bg3 {
   background-color: #f1f1ff;
@@ -1635,6 +1671,22 @@ body.gl-dark
   .notification-dot {
   background-color: #fafafa;
 }
+body.gl-dark .header-search {
+  background-color: rgba(250, 250, 250, 0.2) !important;
+}
+body.gl-dark .header-search svg {
+  color: rgba(250, 250, 250, 0.8) !important;
+}
+body.gl-dark .header-search input {
+  background-color: transparent;
+  color: rgba(250, 250, 250, 0.8);
+}
+body.gl-dark .header-search input::placeholder {
+  color: rgba(250, 250, 250, 0.8);
+}
+body.gl-dark .header-search input:active::placeholder {
+  color: #fafafa;
+}
 body.gl-dark .search form {
   background-color: rgba(250, 250, 250, 0.2);
 }
@@ -1651,7 +1703,7 @@ body.gl-dark .nav-sidebar li.active > a {
 body.gl-dark .nav-sidebar .fly-out-top-item a,
 body.gl-dark .nav-sidebar .fly-out-top-item.active a,
 body.gl-dark .nav-sidebar .fly-out-top-item .fly-out-top-item-container {
-  background-color: #2f2a6b;
+  background-color: var(--purple-100, #e1d8f9);
   color: var(--black, #333);
 }
 body.gl-dark .logo-text svg {
@@ -1667,6 +1719,14 @@ body.gl-dark .navbar-gitlab .navbar-nav li.active > a,
 body.gl-dark .navbar-gitlab .navbar-nav li.active > button {
   color: var(--gl-text-color);
   background-color: var(--gray-200);
+}
+body.gl-dark .navbar-gitlab .header-search {
+  background-color: var(--gray-100) !important;
+  box-shadow: inset 0 0 0 1px var(--border-color) !important;
+}
+body.gl-dark .navbar-gitlab .header-search:active {
+  background-color: var(--gray-100) !important;
+  box-shadow: inset 0 0 0 1px var(--blue-200) !important;
 }
 body.gl-dark .navbar-gitlab .search form {
   background-color: var(--gray-100);
@@ -1746,6 +1806,17 @@ body.gl-dark {
   --indigo-900: #ebebfa;
   --indigo-950: #f7f7ff;
   --indigo-900-alpha-008: rgba(235, 235, 250, 0.08);
+  --purple-50: #232150;
+  --purple-100: #2f2a6b;
+  --purple-200: #453894;
+  --purple-300: #5943b6;
+  --purple-400: #694cc0;
+  --purple-500: #7b58cf;
+  --purple-600: #9475db;
+  --purple-700: #ac93e6;
+  --purple-800: #cbbbf2;
+  --purple-900: #e1d8f9;
+  --purple-950: #f4f0ff;
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --white: #333;

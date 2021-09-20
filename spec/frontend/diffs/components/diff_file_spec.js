@@ -242,32 +242,20 @@ describe('DiffFile', () => {
       });
 
       it.each`
-        loggedIn | featureOn | bool
-        ${true}  | ${true}   | ${true}
-        ${false} | ${true}   | ${false}
-        ${true}  | ${false}  | ${false}
-        ${false} | ${false}  | ${false}
-      `(
-        'should be $bool when { userIsLoggedIn: $loggedIn, featureEnabled: $featureOn }',
-        ({ loggedIn, featureOn, bool }) => {
-          setLoggedIn(loggedIn);
+        loggedIn | bool
+        ${true}  | ${true}
+        ${false} | ${false}
+      `('should be $bool when { userIsLoggedIn: $loggedIn }', ({ loggedIn, bool }) => {
+        setLoggedIn(loggedIn);
 
-          ({ wrapper } = createComponent({
-            options: {
-              provide: {
-                glFeatures: {
-                  localFileReviews: featureOn,
-                },
-              },
-            },
-            props: {
-              file: store.state.diffs.diffFiles[0],
-            },
-          }));
+        ({ wrapper } = createComponent({
+          props: {
+            file: store.state.diffs.diffFiles[0],
+          },
+        }));
 
-          expect(wrapper.vm.showLocalFileReviews).toBe(bool);
-        },
-      );
+        expect(wrapper.vm.showLocalFileReviews).toBe(bool);
+      });
     });
   });
 

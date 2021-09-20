@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import {
   GlToast,
   GlModal,
@@ -8,6 +7,7 @@ import {
   GlFormCheckbox,
   GlDropdown,
   GlDropdownItem,
+  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import $ from 'jquery';
 import Vue from 'vue';
@@ -49,6 +49,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -234,6 +235,7 @@ export default {
     },
   },
   statusTimeRanges,
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
@@ -267,7 +269,7 @@ export default {
               @click="setEmoji"
             >
               <template #button-content>
-                <span v-html="emojiTag"></span>
+                <span v-safe-html:[$options.safeHtmlConfig]="emojiTag"></span>
                 <span
                   v-show="noEmoji"
                   class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
@@ -289,7 +291,7 @@ export default {
               class="js-toggle-emoji-menu emoji-menu-toggle-button btn"
               @click="showEmojiMenu"
             >
-              <span v-html="emojiTag"></span>
+              <span v-safe-html:[$options.safeHtmlConfig]="emojiTag"></span>
               <span
                 v-show="noEmoji"
                 class="js-no-emoji-placeholder no-emoji-placeholder position-relative"

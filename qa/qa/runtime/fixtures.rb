@@ -5,7 +5,7 @@ require 'tmpdir'
 module QA
   module Runtime
     module Fixtures
-      include Support::Api
+      include Support::API
 
       TemplateNotFoundError = Class.new(RuntimeError)
 

@@ -99,10 +99,14 @@ describe('LeaveModal', () => {
       });
     });
 
-    it("does NOT display oncall schedules list when member's user is NOT a part of on-call schedules ", () => {
+    it("does NOT display oncall schedules list when member's user is NOT a part of on-call schedules ", async () => {
+      wrapper.destroy();
+
       const memberWithoutOncallSchedules = cloneDeep(member);
-      delete (memberWithoutOncallSchedules, 'user.oncallSchedules');
+      delete memberWithoutOncallSchedules.user.oncallSchedules;
       createComponent({ member: memberWithoutOncallSchedules });
+      await nextTick();
+
       expect(findOncallSchedulesList().exists()).toBe(false);
     });
   });

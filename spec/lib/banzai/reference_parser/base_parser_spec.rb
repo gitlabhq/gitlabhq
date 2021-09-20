@@ -247,15 +247,15 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
       end
     end
 
-    it 'returns referenceable and visible objects, alongside nodes that are referenceable but not visible' do
-      expect(subject.gather_references(nodes)).to match(
-        visible: contain_exactly(6, 8, 10),
-        not_visible: match_array(nodes.select { |n| n.id.even? && n.id <= 5 })
-      )
+    it 'returns referenceable and visible objects, alongside all and visible nodes' do
+      referenceable = nodes.select { |n| n.id.even? }
+      visible = nodes.select { |n| [6, 8, 10].include?(n.id) }
+
+      expect_gathered_references(subject.gather_references(nodes), [6, 8, 10], referenceable, visible)
     end
 
     it 'is always empty if the input is empty' do
-      expect(subject.gather_references([])) .to match(visible: be_empty, not_visible: be_empty)
+      expect_gathered_references(subject.gather_references([]), [], [], [])
     end
   end
 

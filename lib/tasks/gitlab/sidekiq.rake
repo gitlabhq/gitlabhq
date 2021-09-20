@@ -86,9 +86,8 @@ namespace :gitlab do
           # 3: high priority
           # 5: _super_ high priority, this should only be used for _very_ important queues
           #
-          # As per http://stackoverflow.com/a/21241357/290102 the formula for calculating
-          # the likelihood of a job being popped off a queue (given all queues have work
-          # to perform) is:
+          # The formula for calculating the likelihood of a job being popped off a queue
+          # (given all queues have work to perform) is:
           #
           #     chance = (queue weight / total weight of all queues) * 100
         BANNER

@@ -39,13 +39,4 @@ RSpec.describe 'Freeze Periods (JavaScript fixtures)' do
       expect(response).to be_successful
     end
   end
-
-  describe TimeZoneHelper, '(JavaScript fixtures)' do
-    let(:response) { timezone_data.to_json }
-
-    it 'api/freeze-periods/timezone_data.json' do
-      # Looks empty but does things
-      # More info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38525/diffs#note_391048415
-    end
-  end
 end

@@ -32,6 +32,7 @@ itself: # project
     - pages_https_only
     - pending_delete
     - pool_repository_id
+    - project_namespace_id
     - pull_mirror_available_overridden
     - pull_mirror_branch_prefix
     - remote_mirror_available_overridden
@@ -55,6 +56,7 @@ itself: # project
     - can_create_merge_request_in
     - compliance_frameworks
     - container_expiration_policy
+    - container_registry_enabled
     - container_registry_image_prefix
     - default_branch
     - empty_repo
@@ -149,6 +151,7 @@ build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
     - project_id
     - issue_template_key
+    - file_template_project_id
     - outgoing_name
   remapped_attributes:
     project_key: service_desk_address

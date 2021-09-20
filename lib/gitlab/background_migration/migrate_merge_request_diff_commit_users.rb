@@ -14,7 +14,7 @@ module Gitlab
 
       # The number of rows in merge_request_diff_commits to get in a single
       # query.
-      COMMIT_ROWS_PER_QUERY = 10_000
+      COMMIT_ROWS_PER_QUERY = 1_000
 
       # The number of rows in merge_request_diff_commits to update in a single
       # query.
@@ -78,6 +78,8 @@ module Gitlab
       # rubocop: enable Style/Documentation
 
       def perform(start_id, stop_id)
+        return if already_processed?(start_id, stop_id)
+
         # This Hash maps user names + emails to their corresponding rows in
         # merge_request_diff_commit_users.
         user_mapping = {}
@@ -92,6 +94,13 @@ module Gitlab
           'MigrateMergeRequestDiffCommitUsers',
           [start_id, stop_id]
         )
+      end
+
+      def already_processed?(start_id, stop_id)
+        Database::BackgroundMigrationJob
+          .for_migration_execution('MigrateMergeRequestDiffCommitUsers', [start_id, stop_id])
+          .succeeded
+          .any?
       end
 
       # Returns the data we'll use to determine what merge_request_diff_commits

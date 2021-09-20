@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "description": "Distinct users by provider",
+  "properties": {
+    "two-factor": {"type": "number", "description": " Number of unique user logins using two factor authentication" },
+    "two-factor-via-u2f-device": {"type": "number", "description": " Number of unique user logins using two factor authentication via U2F" },
+    "two-factor-via-webauthn-device": {"type": "number", "description": " Number of unique user logins using two factor authentication via two-factor-via-webauthn-device" },
+    "standard": {"type": "number", "description": " Number of unique user logins using password authentication" },
+    "google_oauth2": {"type": "number", "description": " Number of unique user logins using Google OAuth authentication" },
+    "twitter": {"type": "number", "description": " Number of unique user logins using Twitter authentication" },
+    "github": {"type": "number", "description": " Number of unique user logins using Github authentication" },
+    "bitbucket": {"type": "number", "description": " Number of unique user logins using Bitbucket authentication" },
+    "group_saml": {"type": "number", "description": " Number of unique user logins using group SAML authentication" },
+    "salesforce": {"type": "number", "description": " Number of unique user logins using group Salesforce authentication" }
+  }
+}

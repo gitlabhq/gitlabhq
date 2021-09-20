@@ -245,9 +245,14 @@ $gl-line-height-42: px-to-rem(42px);
   width: $grid-size * 28;
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1491
+// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
 .gl-min-w-8 {
   min-width: $gl-spacing-scale-8;
+}
+
+// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
+.gl-min-w-10 {
+  min-width: $gl-spacing-scale-10;
 }
 
 // Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1526
@@ -257,4 +262,22 @@ $gl-line-height-42: px-to-rem(42px);
 
 .gl-opacity-7 {
   opacity: 0.7;
+}
+
+/**
+  Note: ::-webkit-scrollbar is a non-standard rule only
+  supported by webkit browsers.
+
+  It is added here to migrate components that use
+  scrolling-links() mixin from `app/assets/stylesheets/framework/mixins.scss`.
+
+  It should not be used elsewhere: it may impact accessibility as well as
+  add browser compatibility issues.
+
+  See: https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+**/
+.gl-webkit-scrollbar-display-none {
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

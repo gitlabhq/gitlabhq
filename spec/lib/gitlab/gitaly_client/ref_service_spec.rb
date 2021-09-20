@@ -92,6 +92,36 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
+  describe '#find_branch' do
+    it 'sends a find_branch message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_branch)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(branch: Gitaly::Branch.new(name: 'name', target_commit: build(:gitaly_commit))))
+
+      client.find_branch('name')
+    end
+  end
+
+  describe '#find_tag' do
+    it 'sends a find_tag message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_tag)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(tag: Gitaly::Tag.new))
+
+      client.find_tag('name')
+    end
+
+    context 'when tag is empty' do
+      it 'does not send a fing_tag message' do
+        expect_any_instance_of(Gitaly::RefService::Stub).not_to receive(:find_tag)
+
+        expect(client.find_tag('')).to be_nil
+      end
+    end
+  end
+
   describe '#default_branch_name' do
     it 'sends a find_default_branch_name message' do
       expect_any_instance_of(Gitaly::RefService::Stub)
@@ -100,16 +130,6 @@ RSpec.describe Gitlab::GitalyClient::RefService do
         .and_return(double(name: 'foo'))
 
       client.default_branch_name
-    end
-  end
-
-  describe '#list_new_blobs' do
-    it 'raises DeadlineExceeded when timeout is too small' do
-      newrev = '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51'
-
-      expect do
-        client.list_new_blobs(newrev, dynamic_timeout: 0.001)
-      end.to raise_error(GRPC::DeadlineExceeded)
     end
   end
 
@@ -154,6 +174,22 @@ RSpec.describe Gitlab::GitalyClient::RefService do
 
       client.tags
     end
+
+    context 'with sorting option' do
+      it 'sends a correct find_all_tags message' do
+        expected_sort_by = Gitaly::FindAllTagsRequest::SortBy.new(
+          key: :REFNAME,
+          direction: :ASCENDING
+        )
+
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_all_tags)
+          .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
+          .and_return([])
+
+        client.tags(sort_by: 'name_asc')
+      end
+    end
   end
 
   describe '#branch_names_contains_sha' do
@@ -187,13 +223,6 @@ RSpec.describe Gitlab::GitalyClient::RefService do
 
       client.get_tag_signatures(['some_tag_id'])
     end
-  end
-
-  describe '#find_ref_name', :seed_helper do
-    subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
-
-    it { is_expected.to be_utf8 }
-    it { is_expected.to eq('refs/heads/master') }
   end
 
   describe '#ref_exists?', :seed_helper do

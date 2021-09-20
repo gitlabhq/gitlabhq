@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import $ from 'jquery';
 import { isEmpty } from 'lodash';
 import { scrollToElement } from '~/lib/utils/common_utils';
@@ -103,7 +102,10 @@ export default {
       <evidence-block v-if="hasEvidence" :release="release" />
 
       <div ref="gfm-content" class="card-text gl-mt-3">
-        <div class="md" v-html="release.descriptionHtml"></div>
+        <div
+          class="md"
+          v-html="release.descriptionHtml /* eslint-disable-line vue/no-v-html */"
+        ></div>
       </div>
     </div>
 

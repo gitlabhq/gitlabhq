@@ -51,7 +51,7 @@ RSpec.describe Nav::NewDropdownHelper do
               title: 'Invite members',
               href: expected_href,
               data: {
-                track_event: 'click_link',
+                track_action: 'click_link',
                 track_label: 'test_tracking_label',
                 track_property: :invite_members_new_dropdown
               }
@@ -99,12 +99,12 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has project menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'GitLab',
+              title: _('GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_project',
                 title: 'New project/repository',
                 href: '/projects/new',
-                data: { track_event: 'click_link_new_project', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_project_link' }
+                data: { track_action: 'click_link_new_project', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_project_link' }
               )
             )
           )
@@ -117,12 +117,12 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has group menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'GitLab',
+              title: _('GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_group',
                 title: 'New group',
                 href: '/groups/new',
-                data: { track_event: 'click_link_new_group', track_label: 'plus_menu_dropdown' }
+                data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown' }
               )
             )
           )
@@ -135,12 +135,12 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has new snippet menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'GitLab',
+              title: _('GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_snippet',
                 title: 'New snippet',
                 href: '/-/snippets/new',
-                data: { track_event: 'click_link_new_snippet_parent', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_snippet_link' }
+                data: { track_action: 'click_link_new_snippet_parent', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_snippet_link' }
               )
             )
           )
@@ -178,7 +178,7 @@ RSpec.describe Nav::NewDropdownHelper do
                 id: 'new_project',
                 title: 'New project/repository',
                 href: "/projects/new?namespace_id=#{group.id}",
-                data: { track_event: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
+                data: { track_action: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
               )
             )
           )
@@ -196,7 +196,7 @@ RSpec.describe Nav::NewDropdownHelper do
                 id: 'new_subgroup',
                 title: 'New subgroup',
                 href: "/groups/new?parent_id=#{group.id}",
-                data: { track_event: 'click_link_new_subgroup', track_label: 'plus_menu_dropdown' }
+                data: { track_action: 'click_link_new_subgroup', track_label: 'plus_menu_dropdown' }
               )
             )
           )
@@ -245,7 +245,7 @@ RSpec.describe Nav::NewDropdownHelper do
                 id: 'new_issue',
                 title: 'New issue',
                 href: "/#{project.path_with_namespace}/-/issues/new",
-                data: { track_event: 'click_link_new_issue', track_label: 'plus_menu_dropdown', qa_selector: 'new_issue_link' }
+                data: { track_action: 'click_link_new_issue', track_label: 'plus_menu_dropdown', qa_selector: 'new_issue_link' }
               )
             )
           )
@@ -263,7 +263,7 @@ RSpec.describe Nav::NewDropdownHelper do
                 id: 'new_mr',
                 title: 'New merge request',
                 href: "/#{merge_project.path_with_namespace}/-/merge_requests/new",
-                data: { track_event: 'click_link_new_mr', track_label: 'plus_menu_dropdown' }
+                data: { track_action: 'click_link_new_mr', track_label: 'plus_menu_dropdown' }
               )
             )
           )
@@ -281,7 +281,7 @@ RSpec.describe Nav::NewDropdownHelper do
                 id: 'new_snippet',
                 title: 'New snippet',
                 href: "/#{project.path_with_namespace}/-/snippets/new",
-                data: { track_event: 'click_link_new_snippet_project', track_label: 'plus_menu_dropdown' }
+                data: { track_action: 'click_link_new_snippet_project', track_label: 'plus_menu_dropdown' }
               )
             )
           )

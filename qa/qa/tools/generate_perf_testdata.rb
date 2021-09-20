@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-require 'faker'
 require 'yaml'
 require_relative '../../qa'
 # This script generates testdata for Performance Testing.
@@ -12,7 +10,7 @@ require_relative '../../qa'
 module QA
   module Tools
     class GeneratePerfTestdata
-      include Support::Api
+      include Support::API
 
       def initialize
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']

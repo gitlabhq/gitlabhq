@@ -194,23 +194,6 @@ RSpec.describe MergeRequests::SquashService do
           expect(service.execute).to match(status: :error, message: a_string_including('squash'))
         end
       end
-
-      context 'with an error in squash in progress check' do
-        before do
-          allow(repository).to receive(:squash_in_progress?)
-            .and_raise(Gitlab::Git::Repository::GitError, error)
-        end
-
-        it 'logs the stage and output' do
-          expect(service).to receive(:log_error).with(exception: an_instance_of(Gitlab::Git::Repository::GitError), message: 'Failed to check squash in progress')
-
-          service.execute
-        end
-
-        it 'returns an error' do
-          expect(service.execute).to match(status: :error, message: 'An error occurred while checking whether another squash is in progress.')
-        end
-      end
     end
 
     context 'when any other exception is thrown' do

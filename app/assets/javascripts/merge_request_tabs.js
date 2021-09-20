@@ -7,20 +7,17 @@ import createEventHub from '~/helpers/event_hub_factory';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
 import createFlash from './flash';
-import initChangesDropdown from './init_changes_dropdown';
+import { initDiffStatsDropdown } from './init_diff_stats_dropdown';
 import axios from './lib/utils/axios_utils';
 import {
   parseUrlPathname,
-  handleLocationHash,
   isMetaClick,
   parseBoolean,
   scrollToElement,
 } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
-import { getLocationHash } from './lib/utils/url_utility';
 import { __ } from './locale';
-import Notes from './notes';
 import syntaxHighlight from './syntax_highlight';
 
 // MergeRequestTabs
@@ -67,6 +64,8 @@ import syntaxHighlight from './syntax_highlight';
 //   </div>
 //
 
+// <100ms is typically indistinguishable from "instant" for users, but allows for re-rendering
+const FAST_DELAY_FOR_RERENDER = 75;
 // Store the `location` object, allowing for easier stubbing in tests
 let { location } = window;
 
@@ -85,6 +84,8 @@ export default class MergeRequestTabs {
     this.navbar = document.querySelector('.navbar-gitlab');
     this.peek = document.getElementById('js-peek');
     this.paddingTop = 16;
+
+    this.scrollPositions = {};
 
     this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
 
@@ -139,10 +140,29 @@ export default class MergeRequestTabs {
     }
   }
 
+  storeScroll() {
+    if (this.currentTab) {
+      this.scrollPositions[this.currentTab] = document.documentElement.scrollTop;
+    }
+  }
+  recallScroll(action) {
+    const storedPosition = this.scrollPositions[action];
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: storedPosition && storedPosition > 0 ? storedPosition : 0,
+        left: 0,
+        behavior: 'auto',
+      });
+    }, FAST_DELAY_FOR_RERENDER);
+  }
+
   clickTab(e) {
     if (e.currentTarget) {
       e.stopImmediatePropagation();
       e.preventDefault();
+
+      this.storeScroll();
 
       const { action } = e.currentTarget.dataset || {};
 
@@ -193,6 +213,14 @@ export default class MergeRequestTabs {
         this.destroyPipelinesView();
       } else if (this.isDiffAction(action)) {
         if (!isInVueNoteablePage()) {
+          /*
+            for pages where we have not yet converted to the new vue
+            implementation we load the diff tab content the old way,
+            inserting html rendered by the backend.
+
+            in practice, this only occurs when comparing commits in
+            the new merge request form page.
+          */
           this.loadDiff(href);
         }
         if (bp.getBreakpointSize() !== 'xl') {
@@ -205,8 +233,14 @@ export default class MergeRequestTabs {
         this.resetViewContainer();
         this.mountPipelinesView();
       } else {
-        this.mergeRequestTabPanes.querySelector('#notes').style.display = 'block';
-        this.mergeRequestTabs.querySelector('.notes-tab').classList.add('active');
+        const notesTab = this.mergeRequestTabs.querySelector('.notes-tab');
+        const notesPane = this.mergeRequestTabPanes.querySelector('#notes');
+        if (notesPane) {
+          notesPane.style.display = 'block';
+        }
+        if (notesTab) {
+          notesTab.classList.add('active');
+        }
 
         if (bp.getBreakpointSize() !== 'xs') {
           this.expandView();
@@ -216,6 +250,8 @@ export default class MergeRequestTabs {
       }
 
       $('.detail-page-description').renderGFM();
+
+      this.recallScroll(action);
     } else if (action === this.currentAction) {
       // ContentTop is used to handle anything at the top of the page before the main content
       const mainContentContainer = document.querySelector('.content-wrapper');
@@ -379,6 +415,7 @@ export default class MergeRequestTabs {
     pipelineTableViewEl.appendChild(this.commitPipelinesTable.$el);
   }
 
+  // load the diff tab content from the backend
   loadDiff(source) {
     if (this.diffsLoaded) {
       document.dispatchEvent(new CustomEvent('scroll'));
@@ -396,8 +433,7 @@ export default class MergeRequestTabs {
       .then(({ data }) => {
         const $container = $('#diffs');
         $container.html(data.html);
-
-        initChangesDropdown(this.stickyTop);
+        initDiffStatsDropdown(this.stickyTop);
 
         localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
         syntaxHighlight($('#diffs .js-syntax-highlight'));
@@ -419,25 +455,6 @@ export default class MergeRequestTabs {
             actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
           }).init();
         });
-
-        // Scroll any linked note into view
-        // Similar to `toggler_behavior` in the discussion tab
-        const hash = getLocationHash();
-        const anchor = hash && $container.find(`.note[id="${hash}"]`);
-        if (anchor && anchor.length > 0) {
-          const notesContent = anchor.closest('.notes-content');
-          const lineType = notesContent.hasClass('new') ? 'new' : 'old';
-          Notes.instance.toggleDiffNote({
-            target: anchor,
-            lineType,
-            forceShow: true,
-          });
-          anchor[0].scrollIntoView();
-          handleLocationHash();
-          // We have multiple elements on the page with `#note_xxx`
-          // (discussion and diff tabs) and `:target` only applies to the first
-          anchor.addClass('target');
-        }
 
         this.toggleLoading(false);
       })

@@ -10,6 +10,7 @@
 #
 # - BaseContainerService for services scoped by container (project or group)
 # - BaseProjectService for services scoped to projects
+# - BaseGroupService for services scoped to groups
 #
 # or, create a new base class and update this comment.
 class BaseService

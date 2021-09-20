@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab Ultimate 12.0.
 
 Use the dependency list to review your project's dependencies and key
-details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings. 
+details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings.
 
 To see the dependency list, go to your project and select **Security & Compliance > Dependency List**.
 
@@ -49,7 +49,7 @@ can also be sorted by name or by the packager that installed them.
 If a dependency has known vulnerabilities, view them by clicking the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
 vulnerability, its severity and description appears below it. To view more details of a vulnerability,
-select the vulnerability’s description. The [vulnerability's details](../vulnerabilities) page is opened.
+select the vulnerability's description. The [vulnerability's details](../vulnerabilities) page is opened.
 
 ### Dependency paths
 
@@ -78,8 +78,8 @@ You can download your project's full list of dependencies and their details in
 
 ### In the UI
 
-You can download your project’s list of dependencies and their details in JSON format by selecting the **Export** button. Note that the dependency list only shows the results of the last successful pipeline to run on the default branch.
+You can download your project's list of dependencies and their details in JSON format by selecting the **Export** button. Note that the dependency list only shows the results of the last successful pipeline to run on the default branch.
 
 ### Using the API
 
-You can download your project’s list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the gemnasium family of analyzers and [not any other of the GitLab dependency analyzers](../dependency_scanning/analyzers.md).
+You can download your project's list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the gemnasium family of analyzers and [not any other of the GitLab dependency analyzers](../dependency_scanning/analyzers.md).

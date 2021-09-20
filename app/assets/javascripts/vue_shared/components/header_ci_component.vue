@@ -1,6 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlTooltipDirective, GlLink, GlButton, GlTooltip } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlTooltip, GlSafeHtmlDirective } from '@gitlab/ui';
 import { glEmojiTag } from '../../emoji';
 import { __, sprintf } from '../../locale';
 import CiIconBadge from './ci_badge_link.vue';
@@ -25,6 +24,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   EMOJI_REF: 'EMOJI_REF',
   props: {
@@ -37,8 +37,9 @@ export default {
       required: true,
     },
     itemId: {
-      type: Number,
-      required: true,
+      type: String,
+      required: false,
+      default: '',
     },
     time: {
       type: String,
@@ -86,6 +87,13 @@ export default {
     message() {
       return this.user?.status?.message;
     },
+    item() {
+      if (this.itemId) {
+        return `${this.itemName} #${this.itemId}`;
+      }
+
+      return this.itemName;
+    },
   },
 
   methods: {
@@ -93,6 +101,7 @@ export default {
       this.$emit('clickedSidebarButton');
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
@@ -105,7 +114,7 @@ export default {
     <section class="header-main-content gl-mr-3">
       <ci-icon-badge :status="status" />
 
-      <strong data-testid="ci-header-item-text"> {{ itemName }} #{{ itemId }} </strong>
+      <strong data-testid="ci-header-item-text">{{ item }}</strong>
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('triggered') }}</template>
       <template v-else>{{ __('created') }}</template>
@@ -130,8 +139,8 @@ export default {
         <span
           v-if="statusTooltipHTML"
           :ref="$options.EMOJI_REF"
+          v-safe-html:[$options.safeHtmlConfig]="statusTooltipHTML"
           :data-testid="message"
-          v-html="statusTooltipHTML"
         ></span>
       </template>
     </section>

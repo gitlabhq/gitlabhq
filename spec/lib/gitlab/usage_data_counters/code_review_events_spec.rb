@@ -15,7 +15,7 @@ RSpec.describe 'Code review events' do
 
     code_review_events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category("code_review")
 
-    exceptions = %w[i_code_review_mr_diffs i_code_review_mr_single_file_diffs]
+    exceptions = %w[i_code_review_mr_diffs i_code_review_mr_single_file_diffs i_code_review_total_suggestions_applied i_code_review_total_suggestions_added]
     code_review_aggregated_events += exceptions
 
     expect(code_review_events - code_review_aggregated_events).to be_empty

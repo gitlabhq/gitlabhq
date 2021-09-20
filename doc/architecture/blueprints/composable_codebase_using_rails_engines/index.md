@@ -6,6 +6,9 @@ comments: false
 description: 'Making a GitLab codebase composable - allowing to run parts of the application'
 ---
 
+NOTE:
+Due to our focus on improving the overall availability of GitLab.com and reducing tech debt, we do not have capacity to act on this blueprint. We will re-evaluate in Q1-FY23.
+
 # Composable GitLab codebase - using Rails Engines
 
 The one of the major risks of a single codebase is an infinite growth of the whole

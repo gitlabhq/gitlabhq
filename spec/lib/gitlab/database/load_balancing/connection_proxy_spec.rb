@@ -3,7 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
-  let(:proxy) { described_class.new }
+  let(:proxy) do
+    config = Gitlab::Database::LoadBalancing::Configuration
+      .new(ActiveRecord::Base)
+
+    described_class.new(Gitlab::Database::LoadBalancing::LoadBalancer.new(config))
+  end
 
   describe '#select' do
     it 'performs a read' do
@@ -35,9 +40,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     describe 'using a SELECT FOR UPDATE query' do
       it 'runs the query on the primary and sticks to it' do
         arel = double(:arel, locked: true)
+        session = Gitlab::Database::LoadBalancing::Session.new
+
+        allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+          .and_return(session)
+
+        expect(session).to receive(:write!)
 
         expect(proxy).to receive(:write_using_load_balancer)
-          .with(:select_all, arel, 'foo', [], sticky: true)
+          .with(:select_all, arel, 'foo', [])
 
         proxy.select_all(arel, 'foo')
       end
@@ -58,8 +69,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   Gitlab::Database::LoadBalancing::ConnectionProxy::STICKY_WRITES.each do |name|
     describe "#{name}" do
       it 'runs the query on the primary and sticks to it' do
-        expect(proxy).to receive(:write_using_load_balancer)
-          .with(name, 'foo', sticky: true)
+        session = Gitlab::Database::LoadBalancing::Session.new
+
+        allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+          .and_return(session)
+
+        expect(session).to receive(:write!)
+        expect(proxy).to receive(:write_using_load_balancer).with(name, 'foo')
 
         proxy.send(name, 'foo')
       end
@@ -108,7 +124,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   # We have an extra test for #transaction here to make sure that nested queries
   # are also sent to a primary.
   describe '#transaction' do
-    let(:session) { double(:session) }
+    let(:session) { Gitlab::Database::LoadBalancing::Session.new }
 
     before do
       allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
@@ -192,7 +208,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       proxy.foo('foo')
     end
 
-    it 'properly forwards trailing hash arguments' do
+    it 'properly forwards keyword arguments' do
       allow(proxy.load_balancer).to receive(:read_write)
 
       expect(proxy).to receive(:write_using_load_balancer).and_call_original
@@ -217,7 +233,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         proxy.foo('foo')
       end
 
-      it 'properly forwards trailing hash arguments' do
+      it 'properly forwards keyword arguments' do
         allow(proxy.load_balancer).to receive(:read)
 
         expect(proxy).to receive(:read_using_load_balancer).and_call_original
@@ -297,20 +313,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         .and_return(session)
     end
 
-    it 'uses but does not stick to the primary when sticking is disabled' do
+    it 'uses but does not stick to the primary' do
       expect(proxy.load_balancer).to receive(:read_write).and_yield(connection)
       expect(connection).to receive(:foo).with('foo')
       expect(session).not_to receive(:write!)
 
       proxy.write_using_load_balancer(:foo, 'foo')
-    end
-
-    it 'sticks to the primary when sticking is enabled' do
-      expect(proxy.load_balancer).to receive(:read_write).and_yield(connection)
-      expect(connection).to receive(:foo).with('foo')
-      expect(session).to receive(:write!)
-
-      proxy.write_using_load_balancer(:foo, 'foo', sticky: true)
     end
   end
 end

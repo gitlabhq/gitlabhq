@@ -9,7 +9,7 @@ module QA
       Flow::Login.sign_in
     end
 
-    it 'user can add an SSH key', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1685' do
+    it 'user can add an SSH key', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1304' do
       key = Resource::SSHKey.fabricate_via_browser_ui! do |resource|
         resource.title = key_title
       end
@@ -20,7 +20,7 @@ module QA
 
     # Note this context ensures that the example it contains is executed after the example above. Be aware of the order of execution if you add new examples in either context.
     context 'after adding an ssh key' do
-      it 'can delete an ssh key', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1686' do
+      it 'can delete an ssh key', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1303' do
         Page::Main::Menu.perform(&:click_edit_profile_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
         Page::Profile::SSHKeys.perform do |ssh_keys|

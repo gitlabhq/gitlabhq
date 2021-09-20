@@ -69,6 +69,10 @@ module Gitlab
           partition_name <=> other.partition_name
         end
 
+        def holds_data?
+          conn.execute("SELECT 1 FROM #{fully_qualified_partition} LIMIT 1").ntuples > 0
+        end
+
         private
 
         def date_or_nil(obj)

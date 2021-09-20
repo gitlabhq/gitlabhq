@@ -25,17 +25,13 @@ RSpec.describe Banzai::Filter::AudioLinkFilter do
     it 'replaces the image tag with an audio tag' do
       container = filter(image).children.first
 
-      expect(container.name).to eq 'div'
-      expect(container['class']).to eq 'audio-container'
+      expect(container.name).to eq 'span'
+      expect(container['class']).to eq 'media-container audio-container'
 
-      audio, paragraph = container.children
+      audio, link = container.children
 
       expect(audio.name).to eq 'audio'
       expect(audio['src']).to eq src
-
-      expect(paragraph.name).to eq 'p'
-
-      link = paragraph.children.first
 
       expect(link.name).to eq 'a'
       expect(link['href']).to eq src
@@ -105,14 +101,12 @@ RSpec.describe Banzai::Filter::AudioLinkFilter do
       image = %(<img src="#{proxy_src}" data-canonical-src="#{canonical_src}"/>)
       container = filter(image).children.first
 
-      expect(container['class']).to eq 'audio-container'
+      expect(container['class']).to eq 'media-container audio-container'
 
-      audio, paragraph = container.children
+      audio, link = container.children
 
       expect(audio['src']).to eq proxy_src
       expect(audio['data-canonical-src']).to eq canonical_src
-
-      link = paragraph.children.first
 
       expect(link['href']).to eq proxy_src
     end

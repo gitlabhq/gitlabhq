@@ -74,16 +74,10 @@ class Import::FogbugzController < Import::BaseController
 
   protected
 
-  # rubocop: disable CodeReuse/ActiveRecord
   override :importable_repos
   def importable_repos
-    repos = client.repos
-
-    already_added_projects_names = already_added_projects.map(&:import_source)
-
-    repos.reject { |repo| already_added_projects_names.include? repo.name }
+    client.repos
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   override :incompatible_repos
   def incompatible_repos

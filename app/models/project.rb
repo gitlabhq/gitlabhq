@@ -103,6 +103,8 @@ class Project < ApplicationRecord
 
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
+  after_save :save_topics
+
   after_create -> { create_or_load_association(:project_feature) }
 
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -118,7 +120,6 @@ class Project < ApplicationRecord
 
   use_fast_destroy :build_trace_chunks
 
-  after_destroy -> { run_after_commit { legacy_remove_pages } }
   after_destroy :remove_exports
 
   after_validation :check_pending_delete
@@ -127,12 +128,31 @@ class Project < ApplicationRecord
   after_initialize :use_hashed_storage
   after_create :check_repository_absence!
 
+  # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
+  # TODO: remove 'acts_as_ordered_taggable_on'  and ':topics_acts_as_taggable' in the further process of the migration
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
   acts_as_ordered_taggable_on :topics
+  has_many :topics_acts_as_taggable, -> { order("#{ActsAsTaggableOn::Tagging.table_name}.id") },
+                     class_name: 'ActsAsTaggableOn::Tag',
+                     through: :topic_taggings,
+                     source: :tag
+
+  has_many :project_topics, -> { order(:id) }, class_name: 'Projects::ProjectTopic'
+  has_many :topics, through: :project_topics, class_name: 'Projects::Topic'
+
+  # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
+  # TODO: remove 'topics' in the further process of the migration
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
+  alias_method :topics_new, :topics
+  def topics
+    self.topics_acts_as_taggable + self.topics_new
+  end
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
   attr_accessor :skip_disk_validation
+  attr_writer :topic_list
 
   alias_attribute :title, :name
 
@@ -141,6 +161,9 @@ class Project < ApplicationRecord
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
+  # Sync deletion via DB Trigger to ensure we do not have
+  # a project without a project_namespace (or vice-versa)
+  belongs_to :project_namespace, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -188,6 +211,7 @@ class Project < ApplicationRecord
   has_one :unify_circuit_integration, class_name: 'Integrations::UnifyCircuit'
   has_one :webex_teams_integration, class_name: 'Integrations::WebexTeams'
   has_one :youtrack_integration, class_name: 'Integrations::Youtrack'
+  has_one :zentao_integration, class_name: 'Integrations::Zentao'
 
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
@@ -317,6 +341,7 @@ class Project < ApplicationRecord
   # build traces. Currently there's no efficient way of removing this data in
   # bulk that doesn't involve loading the rows into memory. As a result we're
   # still using `dependent: :destroy` here.
+  has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
   has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
@@ -355,6 +380,7 @@ class Project < ApplicationRecord
   has_many :jira_imports, -> { order 'jira_imports.created_at' }, class_name: 'JiraImportState', inverse_of: :project
 
   has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult'
+  has_many :ci_feature_usages, class_name: 'Projects::CiFeatureUsage'
 
   has_many :repository_storage_moves, class_name: 'Projects::RepositoryStorageMove', inverse_of: :container
 
@@ -503,6 +529,7 @@ class Project < ApplicationRecord
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
+  scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
   scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
@@ -623,6 +650,19 @@ class Project < ApplicationRecord
     joins(:service_desk_setting).where('service_desk_settings.project_key' => key)
   end
 
+  scope :with_topic, ->(topic_name) do
+    topic = Projects::Topic.find_by_name(topic_name)
+    acts_as_taggable_on_topic = ActsAsTaggableOn::Tag.find_by_name(topic_name)
+
+    return none unless topic || acts_as_taggable_on_topic
+
+    relations = []
+    relations << where(id: topic.project_topics.select(:project_id)) if topic
+    relations << where(id: acts_as_taggable_on_topic.taggings.select(:taggable_id)) if acts_as_taggable_on_topic
+
+    Project.from_union(relations)
+  end
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
@@ -638,7 +678,7 @@ class Project < ApplicationRecord
   mount_uploader :bfg_object_map, AttachmentUploader
 
   def self.with_api_entity_associations
-    preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
+    preload(:project_feature, :route, :topics, :topics_acts_as_taggable, :group, :timelogs, namespace: [:route, :owner])
   end
 
   def self.with_web_entity_associations
@@ -1421,7 +1461,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    []
+    [:zentao]
   end
 
   def find_or_initialize_integration(name)
@@ -1640,6 +1680,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def membership_locked?
+    false
+  end
+
   def bots
     users.project_bot
   end
@@ -1747,6 +1791,9 @@ class Project < ApplicationRecord
     Ci::Runner.from_union([runners, group_runners, available_shared_runners])
   end
 
+  # Once issue 339937 is fixed, please search for all mentioned of
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/339937,
+  # and remove the allow_cross_joins_across_databases.
   def active_runners
     strong_memoize(:active_runners) do
       all_available_runners.active
@@ -1754,7 +1801,9 @@ class Project < ApplicationRecord
   end
 
   def any_online_runners?(&block)
-    online_runners_with_tags.any?(&block)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
+      online_runners_with_tags.any?(&block)
+    end
   end
 
   def valid_runners_token?(token)
@@ -1763,7 +1812,15 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)
-    Projects::OpenIssuesCountService.new(self, current_user).count
+    return Projects::OpenIssuesCountService.new(self, current_user).count unless current_user.nil?
+
+    BatchLoader.for(self).batch(replace_methods: false) do |projects, loader|
+      issues_count_per_project = ::Projects::BatchOpenIssuesCountService.new(projects).refresh_cache_and_retrieve_data
+
+      issues_count_per_project.each do |project, count|
+        loader.call(project, count)
+      end
+    end
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -1848,27 +1905,6 @@ class Project < ApplicationRecord
                .where(exclude_keys_linked_to_other_projects)
                .delete_all
   end
-
-  # TODO: remove this method https://gitlab.com/gitlab-org/gitlab/-/issues/320775
-  # rubocop: disable CodeReuse/ServiceClass
-  def legacy_remove_pages
-    return unless ::Settings.pages.local_store.enabled
-
-    # Projects with a missing namespace cannot have their pages removed
-    return unless namespace
-
-    mark_pages_as_not_deployed unless destroyed?
-
-    # 1. We rename pages to temporary directory
-    # 2. We wait 5 minutes, due to NFS caching
-    # 3. We asynchronously remove pages with force
-    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
-
-    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
-      PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
-    end
-  end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def mark_pages_as_deployed(artifacts_archive: nil)
     ensure_pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)
@@ -2093,6 +2129,10 @@ class Project < ApplicationRecord
         # Docker doesn't allow. The proxy expects it to be downcased.
         value: "#{Gitlab.host_with_port}/#{namespace.root_ancestor.path.downcase}#{DependencyProxy::URL_SUFFIX}"
       )
+      variables.append(
+        key: 'CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX',
+        value: "#{Gitlab.host_with_port}/#{namespace.full_path.downcase}#{DependencyProxy::URL_SUFFIX}"
+      )
     end
   end
 
@@ -2239,7 +2279,7 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def forks_count
-    BatchLoader.for(self).batch do |projects, loader|
+    BatchLoader.for(self).batch(replace_methods: false) do |projects, loader|
       fork_count_per_project = ::Projects::BatchForksCountService.new(projects).refresh_cache_and_retrieve_data
 
       fork_count_per_project.each do |project, count|
@@ -2491,6 +2531,10 @@ class Project < ApplicationRecord
     ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
   end
 
+  def uses_external_project_ci_config?
+    !!(ci_config_path =~ %r{@.+/.+})
+  end
+
   def limited_protected_branches(limit)
     protected_branches.limit(limit)
   end
@@ -2599,6 +2643,10 @@ class Project < ApplicationRecord
     repository.gitlab_ci_yml_for(sha, ci_config_path_or_default)
   end
 
+  def ci_config_external_project
+    Project.find_by_full_path(ci_config_path.split('@', 2).last)
+  end
+
   def enabled_group_deploy_keys
     return GroupDeployKey.none unless group
 
@@ -2669,7 +2717,36 @@ class Project < ApplicationRecord
     ci_cd_settings.group_runners_enabled?
   end
 
+  def topic_list
+    self.topics.map(&:name)
+  end
+
+  override :after_change_head_branch_does_not_exist
+  def after_change_head_branch_does_not_exist(branch)
+    self.errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
+  end
+
   private
+
+  def save_topics
+    return if @topic_list.nil?
+
+    @topic_list = @topic_list.split(',') if @topic_list.instance_of?(String)
+    @topic_list = @topic_list.map(&:strip).uniq.reject(&:empty?)
+
+    if @topic_list != self.topic_list || self.topics_acts_as_taggable.any?
+      self.topics_new.delete_all
+      self.topics = @topic_list.map { |topic| Projects::Topic.find_or_create_by(name: topic) }
+
+      # Remove old topics (ActsAsTaggableOn::Tag)
+      # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
+      # TODO: remove in the further process of the migration
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
+      self.topic_taggings.clear
+    end
+
+    @topic_list = nil
+  end
 
   def find_integration(integrations, name)
     integrations.find { _1.to_param == name }
@@ -2832,12 +2909,8 @@ class Project < ApplicationRecord
     update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?) if Gitlab::Database.read_write?
   end
 
-  def active_runners_with_tags
-    @active_runners_with_tags ||= active_runners.with_tags
-  end
-
   def online_runners_with_tags
-    @online_runners_with_tags ||= active_runners_with_tags.online
+    @online_runners_with_tags ||= active_runners.with_tags.online
   end
 end
 

@@ -186,12 +186,15 @@ func (r *Resizer) Inject(w http.ResponseWriter, req *http.Request, paramsData st
 	}
 	defer imageFile.reader.Close()
 
+	widthLabelVal := strconv.Itoa(int(params.Width))
+
 	outcome.originalFileSize = imageFile.contentLength
 
 	setLastModified(w, imageFile.lastModified)
 	// If the original file has not changed, then any cached resized versions have not changed either.
 	if checkNotModified(req, imageFile.lastModified) {
 		writeNotModified(w)
+		imageResizeDurations.WithLabelValues(params.ContentType, widthLabelVal).Observe(time.Since(start).Seconds())
 		outcome.ok(statusClientCache)
 		return
 	}
@@ -221,7 +224,6 @@ func (r *Resizer) Inject(w http.ResponseWriter, req *http.Request, paramsData st
 		return
 	}
 
-	widthLabelVal := strconv.Itoa(int(params.Width))
 	imageResizeDurations.WithLabelValues(params.ContentType, widthLabelVal).Observe(time.Since(start).Seconds())
 
 	outcome.ok(statusSuccess)

@@ -14,10 +14,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
 
-  before_action do
-    push_frontend_feature_flag(:pipeline_source_filter, project, type: :development, default_enabled: :yaml)
-  end
-
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
 
@@ -195,7 +191,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   def config_variables
     respond_to do |format|
       format.json do
-        result = Ci::ListConfigVariablesService.new(@project, current_user).execute(params[:sha])
+        project = @project.uses_external_project_ci_config? ? @project.ci_config_external_project : @project
+        result = Ci::ListConfigVariablesService.new(project, current_user).execute(params[:sha])
 
         result.nil? ? head(:no_content) : render(json: result)
       end
@@ -297,7 +294,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def index_params
-    params.permit(:scope, :username, :ref, :status)
+    params.permit(:scope, :username, :ref, :status, :source)
   end
 
   def enable_code_quality_walkthrough_experiment

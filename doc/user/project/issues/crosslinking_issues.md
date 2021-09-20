@@ -19,14 +19,20 @@ issue itself and the first commit related to that issue.
 
 If the issue and the code you're committing are both in the same project,
 add `#xxx` to the commit message, where `xxx` is the issue number.
-If they are not in the same project, you can add the full URL to the issue
-(`https://gitlab.com/<username>/<projectname>/issues/<xxx>`).
 
 ```shell
 git commit -m "this is my commit message. Ref #xxx"
 ```
 
-or
+If they are in different projects, but in the same group,
+add `projectname#xxx` to the commit message.
+
+```shell
+git commit -m "this is my commit message. Ref projectname#xxx"
+```
+
+If they are not in the same group, you can add the full URL to the issue
+(`https://gitlab.com/<username>/<projectname>/issues/<xxx>`).
 
 ```shell
 git commit -m "this is my commit message. Related to https://gitlab.com/<username>/<projectname>/issues/<xxx>"

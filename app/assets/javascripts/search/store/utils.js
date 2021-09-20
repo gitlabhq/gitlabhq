@@ -6,7 +6,7 @@ function extractKeys(object, keyList) {
 }
 
 export const loadDataFromLS = (key) => {
-  if (!AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (!AccessorUtilities.canUseLocalStorage()) {
     return [];
   }
 
@@ -20,7 +20,7 @@ export const loadDataFromLS = (key) => {
 };
 
 export const setFrequentItemToLS = (key, data, itemData) => {
-  if (!AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (!AccessorUtilities.canUseLocalStorage()) {
     return [];
   }
 

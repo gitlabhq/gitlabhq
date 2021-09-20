@@ -43,7 +43,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 - Hosting code in repositories with version control.
 - Tracking proposals for new implementations, bug reports, and feedback with a
   fully featured [Issue tracker](project/issues/index.md).
-- Organizing and prioritizing with [Issue Boards](project/issue_board.md).
+- Organizing and prioritizing with [issue boards](project/issue_board.md).
 - Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
   branch with [Review Apps](../ci/review_apps/index.md).
 - Building, testing, and deploying with built-in [Continuous Integration](../ci/index.md).
@@ -58,7 +58,7 @@ With GitLab Enterprise Edition, you can also:
 - Improve collaboration with:
   - [Merge Request Approvals](project/merge_requests/approvals/index.md).
   - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md).
-  - [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
+  - [Multiple issue boards](project/issue_board.md#multiple-issue-boards).
 - Create formal relationships between issues with [linked issues](project/issues/related_issues.md).
 - Use [Burndown Charts](project/milestones/burndown_and_burnup_charts.md) to track progress during a sprint or while working on a new version of their software.
 - Leverage [Elasticsearch](../integration/elasticsearch.md) with [Advanced Search](search/advanced_search.md) for faster, more advanced code search across your entire GitLab instance.
@@ -66,7 +66,7 @@ With GitLab Enterprise Edition, you can also:
 - [Mirror a repository](project/repository/repository_mirroring.md) from elsewhere on your local server.
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](../ci/pipelines/multi_project_pipelines.md).
 - [Lock files](project/file_lock.md) to prevent conflicts.
-- View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](project/deploy_boards.md).
+- View the current health and status of each CI environment running on Kubernetes with [deploy boards](project/deploy_boards.md).
 - Leverage continuous delivery method with [Canary Deployments](project/canary_deployments.md).
 - Scan your code for vulnerabilities and [display them in merge requests](application_security/sast/index.md).
 

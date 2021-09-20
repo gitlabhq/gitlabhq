@@ -5,10 +5,6 @@ module QA
     module Strategy
       extend self
 
-      def extend_autoloads!
-        # noop
-      end
-
       def perform_before_hooks
         # The login page could take some time to load the first time it is visited.
         # We visit the login page and wait for it to properly load only once before the tests.

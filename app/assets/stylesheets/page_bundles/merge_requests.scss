@@ -40,7 +40,7 @@
 
   position: -webkit-sticky;
   position: sticky;
-  // Unitless zero values are not allowed in calculations https://stackoverflow.com/a/55391061
+  // Unitless zero values are not allowed in calculations
   // stylelint-disable-next-line length-zero-no-unit
   top: calc(#{$top-pos} + var(--system-header-height, 0px) + var(--performance-bar-height, 0px));
   // stylelint-disable-next-line length-zero-no-unit

@@ -9,7 +9,7 @@ Vue.use(Translate);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
+  defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
 });
 
 export default () => {
@@ -32,7 +32,6 @@ export default () => {
         newEnvironmentPath: environmentsData.newEnvironmentPath,
         helpPagePath: environmentsData.helpPagePath,
         canCreateEnvironment: parseBoolean(environmentsData.canCreateEnvironment),
-        canReadEnvironment: parseBoolean(environmentsData.canReadEnvironment),
       };
     },
     render(createElement) {
@@ -42,7 +41,6 @@ export default () => {
           newEnvironmentPath: this.newEnvironmentPath,
           helpPagePath: this.helpPagePath,
           canCreateEnvironment: this.canCreateEnvironment,
-          canReadEnvironment: this.canReadEnvironment,
         },
       });
     },

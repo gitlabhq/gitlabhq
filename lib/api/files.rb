@@ -35,10 +35,9 @@ module API
         not_found!('Commit') unless @commit
 
         @repo = user_project.repository
-        @blob = @repo.blob_at(@commit.sha, params[:file_path])
+        @blob = @repo.blob_at(@commit.sha, params[:file_path], limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
 
         not_found!('File') unless @blob
-        @blob.load_all_data!
       end
 
       def commit_response(attrs)
@@ -48,13 +47,21 @@ module API
         }
       end
 
+      def content_sha
+        Rails.cache.fetch("blob_content_sha256:#{user_project.full_path}:#{@blob.id}") do
+          @blob.load_all_data!
+
+          Digest::SHA256.hexdigest(@blob.data)
+        end
+      end
+
       def blob_data
         {
           file_name: @blob.name,
           file_path: @blob.path,
           size: @blob.size,
           encoding: "base64",
-          content_sha256: Digest::SHA256.hexdigest(@blob.data),
+          content_sha256: content_sha,
           ref: params[:ref],
           blob_id: @blob.id,
           commit_id: @commit.id,
@@ -153,6 +160,8 @@ module API
       end
       get ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
+
+        @blob.load_all_data!
 
         data = blob_data
 

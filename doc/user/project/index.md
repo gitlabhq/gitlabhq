@@ -22,8 +22,8 @@ Projects include the following [features](https://about.gitlab.com/features/):
 **Repositories:**
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team.
-  - [Issue Boards](issue_board.md): Organize and prioritize your workflow.
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (Issue Boards) for a project.
+  - [Issue boards](issue_board.md): Organize and prioritize your workflow.
+  - [Multiple issue boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (issue boards) for a project.
 - [Repositories](repository/index.md): Host your code in a fully-integrated platform.
   - [Branches](repository/branches/index.md): Use Git branching strategies to
   collaborate on code.
@@ -41,8 +41,8 @@ Projects include the following [features](https://about.gitlab.com/features/):
 **Issues and merge requests:**
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team.
-  - [Issue Boards](issue_board.md): Organize and prioritize your workflow.
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (Issue Boards) for a project.
+  - [Issue boards](issue_board.md): Organize and prioritize your workflow.
+  - [Multiple issue boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (issue boards) for a project.
 - [Merge Requests](merge_requests/index.md): Apply a branching
   strategy and get reviewed by your team.
   - [Merge Request Approvals](merge_requests/approvals/index.md): Ask for approval before
@@ -141,7 +141,7 @@ There are numerous [APIs](../../api/index.md) to use with your projects:
 - [Threads](../../api/discussions.md)
 - [General](../../api/projects.md)
 - [Import/export](../../api/project_import_export.md)
-- [Issue Board](../../api/boards.md)
+- [Issue board](../../api/boards.md)
 - [Labels](../../api/labels.md)
 - [Markdown](../../api/markdown.md)
 - [Merge Requests](../../api/merge_requests.md)

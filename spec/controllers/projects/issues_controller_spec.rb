@@ -109,6 +109,14 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
+    it_behaves_like 'issuable list with anonymous search disabled' do
+      let(:params) { { namespace_id: project.namespace, project_id: project } }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+    end
+
     it_behaves_like 'paginated collection' do
       let!(:issue_list) { create_list(:issue, 2, project: project) }
       let(:collection) { project.issues }
@@ -300,6 +308,8 @@ RSpec.describe Projects::IssuesController do
 
       it 'fills in an issue for a discussion' do
         note = create(:note_on_merge_request, project: project)
+
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).to receive(:track_resolve_thread_in_issue_action).with(user: user)
 
         get :new, params: { namespace_id: project.namespace.path, project_id: project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id }
 
@@ -1176,12 +1186,22 @@ RSpec.describe Projects::IssuesController do
       project.issues.first
     end
 
+    context 'when creating an incident' do
+      it 'sets the correct issue_type' do
+        issue = post_new_issue(issue_type: 'incident')
+
+        expect(issue.issue_type).to eq('incident')
+        expect(issue.work_item_type.base_type).to eq('incident')
+      end
+    end
+
     it 'creates the issue successfully', :aggregate_failures do
       issue = post_new_issue
 
       expect(issue).to be_a(Issue)
       expect(issue.persisted?).to eq(true)
       expect(issue.issue_type).to eq('issue')
+      expect(issue.work_item_type.base_type).to eq('issue')
     end
 
     context 'resolving discussions in MergeRequest' do

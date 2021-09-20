@@ -33,9 +33,6 @@ You can integrate your Kubernetes cluster with
 [Prometheus](https://prometheus.io/) for monitoring key metrics of your
 apps directly from the GitLab UI.
 
-[Alerts](../../operations/metrics/alerts.md) can be configured the same way as
-for [external Prometheus instances](../../operations/metrics/alerts.md#external-prometheus-instances).
-
 Once enabled, you can see metrics from services available in the
 [metrics library](../project/integrations/prometheus_library/index.md).
 

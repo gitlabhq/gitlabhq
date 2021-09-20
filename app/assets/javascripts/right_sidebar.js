@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import { hide } from '~/tooltips';
+import { hide, fixTitle } from '~/tooltips';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
@@ -75,6 +75,9 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   }
 
   $this.attr('data-original-title', tooltipLabel);
+  $this.attr('title', tooltipLabel);
+  fixTitle($this);
+  hide($this);
 
   if (!triggered) {
     Cookies.set('collapsed_gutter', $('.right-sidebar').hasClass('right-sidebar-collapsed'));
@@ -99,7 +102,7 @@ Sidebar.prototype.toggleTodo = function (e) {
     })
     .catch(() =>
       createFlash({
-        message: sprintf(__('There was an error %{message} todo.'), {
+        message: sprintf(__('There was an error %{message} to-do item.'), {
           message:
             ajaxType === 'post' ? s__('RightSidebar|adding a') : s__('RightSidebar|deleting the'),
         }),

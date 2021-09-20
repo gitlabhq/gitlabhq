@@ -208,16 +208,18 @@ module Ci
         Arel.sql("(#{arel_tag_names_array.to_sql})")
       ]
 
-      group(*unique_params).pluck('array_agg(ci_runners.id)', *unique_params).map do |values|
-        Gitlab::Ci::Matching::RunnerMatcher.new({
-          runner_ids: values[0],
-          runner_type: values[1],
-          public_projects_minutes_cost_factor: values[2],
-          private_projects_minutes_cost_factor: values[3],
-          run_untagged: values[4],
-          access_level: values[5],
-          tag_list: values[6]
-        })
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339621') do
+        group(*unique_params).pluck('array_agg(ci_runners.id)', *unique_params).map do |values|
+          Gitlab::Ci::Matching::RunnerMatcher.new({
+            runner_ids: values[0],
+            runner_type: values[1],
+            public_projects_minutes_cost_factor: values[2],
+            private_projects_minutes_cost_factor: values[3],
+            run_untagged: values[4],
+            access_level: values[5],
+            tag_list: values[6]
+          })
+        end
       end
     end
 
@@ -385,6 +387,12 @@ module Ci
       read_attribute(:contacted_at)
     end
 
+    def namespace_ids
+      strong_memoize(:namespace_ids) do
+        runner_namespaces.pluck(:namespace_id).compact
+      end
+    end
+
     private
 
     def cleanup_runner_queue
@@ -420,14 +428,18 @@ module Ci
     end
 
     def no_projects
-      if projects.any?
-        errors.add(:runner, 'cannot have projects assigned')
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        if projects.any?
+          errors.add(:runner, 'cannot have projects assigned')
+        end
       end
     end
 
     def no_groups
-      if groups.any?
-        errors.add(:runner, 'cannot have groups assigned')
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        if groups.any?
+          errors.add(:runner, 'cannot have groups assigned')
+        end
       end
     end
 

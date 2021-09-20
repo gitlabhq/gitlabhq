@@ -46,7 +46,7 @@ branch. The [Developer role](../../../permissions.md) is required to do so.
 
 ## Multi-line suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53310) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53310) in GitLab 11.10.
 
 Reviewers can also suggest changes to multiple lines with a single suggestion
 within merge request diff threads by adjusting the range offsets. The

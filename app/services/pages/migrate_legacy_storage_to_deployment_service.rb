@@ -2,10 +2,7 @@
 
 module Pages
   class MigrateLegacyStorageToDeploymentService
-    ExclusiveLeaseTakenError = Class.new(StandardError)
-
     include BaseServiceUtility
-    include ::Pages::LegacyStorageLease
 
     attr_reader :project
 
@@ -16,18 +13,6 @@ module Pages
     end
 
     def execute
-      result = try_obtain_lease do
-        execute_unsafe
-      end
-
-      raise ExclusiveLeaseTakenError, "Can't migrate pages for project #{project.id}: exclusive lease taken" if result.nil?
-
-      result
-    end
-
-    private
-
-    def execute_unsafe
       zip_result = ::Pages::ZipDirectoryService.new(project.pages_path, ignore_invalid_entries: @ignore_invalid_entries).execute
 
       if zip_result[:status] == :error

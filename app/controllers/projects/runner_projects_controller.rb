@@ -15,7 +15,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     path = project_runners_path(project)
 
     if @runner.assign_to(project, current_user)
-      redirect_to path
+      redirect_to path, notice: s_('Runners|Runner assigned to project.')
     else
       assign_to_messages = @runner.errors.messages[:assign_to]
       alert = assign_to_messages&.join(',') || 'Failed adding runner to project'
@@ -28,6 +28,6 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     runner_project = project.runner_projects.find(params[:id])
     runner_project.destroy
 
-    redirect_to project_runners_path(project), status: :found
+    redirect_to project_runners_path(project), status: :found, notice: s_('Runners|Runner unassigned from project.')
   end
 end

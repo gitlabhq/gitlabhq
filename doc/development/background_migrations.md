@@ -254,7 +254,7 @@ existing data. Since we're dealing with a lot of rows we'll schedule jobs in
 batches instead of doing this one by one:
 
 ```ruby
-class ScheduleExtractServicesUrl < ActiveRecord::Migration[4.2]
+class ScheduleExtractServicesUrl < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -281,7 +281,7 @@ jobs and manually run on any un-migrated rows. Such a migration would look like
 this:
 
 ```ruby
-class ConsumeRemainingExtractServicesUrlJobs < ActiveRecord::Migration[4.2]
+class ConsumeRemainingExtractServicesUrlJobs < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -463,8 +463,6 @@ end
 
 ```ruby
 # Post deployment migration
-include Gitlab::Database::MigrationHelpers
-
 MIGRATION = 'YourBackgroundMigrationName'
 DELAY_INTERVAL = 2.minutes.to_i # can be different
 BATCH_SIZE = 10_000 # can be different
@@ -494,8 +492,6 @@ You can reschedule pending migrations from the `background_migration_jobs` table
 
 ```ruby
 # Post deployment migration
-include Gitlab::Database::MigrationHelpers
-
 MIGRATION = 'YourBackgroundMigrationName'
 DELAY_INTERVAL = 2.minutes
 
@@ -511,3 +507,16 @@ end
 ```
 
 See [`db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb) for a full example.
+
+### Viewing failure error logs
+
+After running a background migration, if any jobs have failed, you can view the logs in [Kibana](https://log.gprd.gitlab.net/goto/3afc1393447c401d7602c1874793e2f6).
+View the production Sidekiq log and filter for:
+
+- `json.class: BackgroundMigrationWorker`
+- `json.job_status: fail`
+- `json.args: <MyBackgroundMigrationClassName>`
+
+Looking at the `json.error_class`, `json.error_message` and `json.error_backtrace` values may be helpful in understanding why the jobs failed.
+
+Depending on when and how the failure occurred, you may find other helpful information by filtering with `json.class: <MyBackgroundMigrationClassName>`.

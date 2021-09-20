@@ -39,7 +39,7 @@ export default {
     target="_blank"
     rel="noopener noreferrer nofollow"
     :class="cssClass"
-    data-track-event="open_review_app"
+    data-track-action="open_review_app"
     data-track-label="review_app"
   >
     {{ display.text }} <gl-icon class="fgray" name="external-link" />

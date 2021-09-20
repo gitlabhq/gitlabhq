@@ -12,54 +12,6 @@ module Members
       def access_levels
         raise NotImplementedError
       end
-
-      def add_users(source, users, access_level, current_user: nil, expires_at: nil)
-        return [] unless users.present?
-
-        emails, users, existing_members = parse_users_list(source, users)
-
-        Member.transaction do
-          (emails + users).map! do |user|
-            new(source,
-                user,
-                access_level,
-                existing_members: existing_members,
-                current_user: current_user,
-                expires_at: expires_at)
-              .execute
-          end
-        end
-      end
-
-      private
-
-      def parse_users_list(source, list)
-        emails = []
-        user_ids = []
-        users = []
-        existing_members = {}
-
-        list.each do |item|
-          case item
-          when User
-            users << item
-          when Integer
-            user_ids << item
-          when /\A\d+\Z/
-            user_ids << item.to_i
-          when Devise.email_regexp
-            emails << item
-          end
-        end
-
-        if user_ids.present?
-          users.concat(User.id_in(user_ids))
-          # the below will automatically discard invalid user_ids
-          existing_members = source.members_and_requesters.where(user_id: user_ids).index_by(&:user_id) # rubocop:todo CodeReuse/ActiveRecord
-        end
-
-        [emails, users, existing_members]
-      end
     end
 
     def initialize(source, user, access_level, **args)
@@ -149,18 +101,10 @@ module Members
     end
 
     def find_or_initialize_member_by_user
-      if existing_members
-        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/334062
-        # i'm not so sure this is needed as the parse_users_list looks at members_and_requesters...
-        # so it is like we could just do a find or initialize by here and be fine
-        existing_members[user.id] || source.members.build(user_id: user.id)
-      else
-        source.members_and_requesters.find_or_initialize_by(user_id: user.id) # rubocop:todo CodeReuse/ActiveRecord
-      end
-    end
-
-    def existing_members
-      args[:existing_members]
+      # have to use members and requesters here since project/group limits on requested_at being nil for members and
+      # wouldn't be found in `source.members` if it already existed
+      # this of course will not treat active invites the same since we aren't searching on email
+      source.members_and_requesters.find_or_initialize_by(user_id: user.id) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     def ldap

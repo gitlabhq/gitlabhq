@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_support/deprecation'
-require 'gitlab/qa'
 require 'uri'
 
 module QA
@@ -402,6 +401,10 @@ module QA
 
       def gitlab_tls_certificate
         ENV['GITLAB_TLS_CERTIFICATE']
+      end
+
+      def export_metrics?
+        running_in_ci? && enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: true)
       end
 
       private

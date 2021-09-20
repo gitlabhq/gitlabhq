@@ -141,9 +141,7 @@ export default {
       return Math.floor(Math.random() * 28);
     },
     showDailyLimitMessage({ value }) {
-      return (
-        value === KEY_CUSTOM && this.glFeatures.ciDailyLimitForPipelineSchedules && this.dailyLimit
-      );
+      return value === KEY_CUSTOM && this.dailyLimit;
     },
   },
 };

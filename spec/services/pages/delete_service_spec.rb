@@ -12,27 +12,6 @@ RSpec.describe Pages::DeleteService do
     project.mark_pages_as_deployed
   end
 
-  it 'deletes published pages', :sidekiq_inline do
-    expect_next_instance_of(Gitlab::PagesTransfer) do |pages_transfer|
-      expect(pages_transfer).to receive(:rename_project).and_return true
-    end
-
-    expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, project.namespace.full_path, anything)
-
-    service.execute
-  end
-
-  it "doesn't remove anything from the legacy storage if local_store is disabled", :sidekiq_inline do
-    allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
-
-    expect(project.pages_deployed?).to be(true)
-    expect(PagesWorker).not_to receive(:perform_in)
-
-    service.execute
-
-    expect(project.pages_deployed?).to be(false)
-  end
-
   it 'marks pages as not deployed' do
     expect do
       service.execute

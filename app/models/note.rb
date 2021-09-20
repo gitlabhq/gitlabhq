@@ -48,6 +48,9 @@ class Note < ApplicationRecord
   # Attribute used to store the attributes that have been changed by quick actions.
   attr_accessor :commands_changes
 
+  # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
+  attr_accessor :skip_keep_around_commits
+
   default_value_for :system, false
 
   attr_mentionable :note, pipeline: :note
@@ -112,7 +115,6 @@ class Note < ApplicationRecord
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
   scope :with_updated_at, ->(time) { where(updated_at: time) }
   scope :with_suggestions, -> { joins(:suggestions) }
-  scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, -> do
@@ -579,7 +581,8 @@ class Note < ApplicationRecord
   end
 
   def post_processed_cache_key
-    cache_key_items = [cache_key, author.cache_key]
+    cache_key_items = [cache_key, author&.cache_key]
+    cache_key_items << project.team.human_max_access(author&.id) if author.present?
     cache_key_items << Digest::SHA1.hexdigest(redacted_note_html) if redacted_note_html.present?
 
     cache_key_items.join(':')
@@ -602,14 +605,6 @@ class Note < ApplicationRecord
   end
 
   private
-
-  # Using this method followed by a call to *save* may result in *ActiveRecord::RecordNotUnique* exception
-  # in a multi-threaded environment. Make sure to use it within a *safe_ensure_unique* block.
-  def model_user_mention
-    return if user_mentions.is_a?(ActiveRecord::NullRelation)
-
-    user_mentions.first_or_initialize
-  end
 
   def system_note_viewable_by?(user)
     return true unless system_note_metadata
@@ -648,7 +643,7 @@ class Note < ApplicationRecord
       user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
     else
       refs = all_references(user)
-      refs.all.any? && refs.stateful_not_visible_counter == 0
+      refs.all.any? && refs.all_visible?
     end
   end
 

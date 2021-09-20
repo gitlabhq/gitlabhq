@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationRecord < ActiveRecord::Base
+  self.gitlab_schema = :gitlab_main
   self.abstract_class = true
 
   alias_method :reset, :reload
@@ -30,7 +31,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.safe_ensure_unique(retries: 0)
-    transaction(requires_new: true) do
+    transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
       yield
     end
   rescue ActiveRecord::RecordNotUnique
@@ -54,7 +55,7 @@ class ApplicationRecord < ActiveRecord::Base
   # currently one third of the default 15-second timeout
   def self.with_fast_read_statement_timeout(timeout_ms = 5000)
     ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
-      transaction(requires_new: true) do
+      transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         connection.exec_query("SET LOCAL statement_timeout = #{timeout_ms}")
 
         yield
@@ -63,14 +64,6 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.safe_find_or_create_by(*args, &block)
-    return optimized_safe_find_or_create_by(*args, &block) if Feature.enabled?(:optimize_safe_find_or_create_by, default_enabled: :yaml)
-
-    safe_ensure_unique(retries: 1) do
-      find_or_create_by(*args, &block)
-    end
-  end
-
-  def self.optimized_safe_find_or_create_by(*args, &block)
     record = find_by(*args)
     return record if record.present?
 
@@ -79,7 +72,7 @@ class ApplicationRecord < ActiveRecord::Base
     #
     # When calling this method on an association, just calling `self.create` would call `ActiveRecord::Persistence.create`
     # and that skips some code that adds the newly created record to the association.
-    transaction(requires_new: true) { all.create(*args, &block) }
+    transaction(requires_new: true) { all.create(*args, &block) } # rubocop:disable Performance/ActiveRecordSubtransactions
   rescue ActiveRecord::RecordNotUnique
     find_by(*args)
   end
@@ -103,21 +96,16 @@ class ApplicationRecord < ActiveRecord::Base
     enum(enum_mod.key => values)
   end
 
-  def self.transaction(**options, &block)
-    if options[:requires_new] && track_subtransactions?
-      ::Gitlab::Database::Metrics.subtransactions_increment(self.name)
-    end
-
-    super(**options, &block)
-  end
-
-  def self.track_subtransactions?
-    ::Feature.enabled?(:active_record_subtransactions_counter, type: :ops, default_enabled: :yaml) &&
-      connection.transaction_open?
-  end
-
   def self.cached_column_list
     self.column_names.map { |column_name| self.arel_table[column_name] }
+  end
+
+  def self.default_select_columns
+    if ignored_columns.any?
+      cached_column_list
+    else
+      arel_table[Arel.star]
+    end
   end
 
   def readable_by?(user)

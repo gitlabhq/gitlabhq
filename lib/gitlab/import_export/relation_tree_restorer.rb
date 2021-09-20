@@ -61,7 +61,9 @@ module Gitlab
       # the configuration yaml file too.
       # Finally, it updates each attribute in the newly imported project/group.
       def create_relations!
-        relations.each(&method(:process_relation!))
+        relations.each do |relation_key, relation_definition|
+          process_relation!(relation_key, relation_definition)
+        end
       end
 
       def process_relation!(relation_key, relation_definition)

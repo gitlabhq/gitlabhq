@@ -13,6 +13,7 @@ fragment IssueFragment on Issue {
   updatedAt
   upvotes
   userDiscussionsCount @include(if: $isSignedIn)
+  webPath
   webUrl
   assignees {
     nodes {

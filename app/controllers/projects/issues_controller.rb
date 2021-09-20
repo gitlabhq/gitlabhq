@@ -42,9 +42,8 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:tribute_autocomplete, @project)
     push_frontend_feature_flag(:vue_issuables_list, project)
-    push_frontend_feature_flag(:usage_data_design_action, project, default_enabled: true)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:vue_issues_list, project)
+    push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
   end
 
@@ -118,7 +117,11 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue = @noteable = service.execute
 
     @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
-    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
+
+    if params[:discussion_to_resolve]
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_resolve_thread_in_issue_action(user: current_user)
+      @discussion_to_resolve = service.discussions_to_resolve.first
+    end
 
     respond_with(@issue)
   end
@@ -228,7 +231,7 @@ class Projects::IssuesController < Projects::ApplicationController
     IssuableExportCsvWorker.perform_async(:issue, current_user.id, project.id, finder_options.to_h) # rubocop:disable CodeReuse/Worker
 
     index_path = project_issues_path(project)
-    message = _('Your CSV export has started. It will be emailed to %{email} when complete.') % { email: current_user.notification_email }
+    message = _('Your CSV export has started. It will be emailed to %{email} when complete.') % { email: current_user.notification_email_or_default }
     redirect_to(index_path, notice: message)
   end
 

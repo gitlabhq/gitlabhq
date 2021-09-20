@@ -7,7 +7,6 @@ module QA
         view "app/assets/javascripts/import_entities/import_groups/components/import_table.vue" do
           element :import_table
           element :import_item
-          element :import_group_button
           element :import_status_indicator
         end
 
@@ -17,6 +16,10 @@ module QA
 
         view "app/assets/javascripts/import_entities/components/group_dropdown.vue" do
           element :target_namespace_selector_dropdown
+        end
+
+        view "app/assets/javascripts/import_entities/import_groups/components/import_actions_cell.vue" do
+          element :import_group_button
         end
 
         # Import source group in to target group

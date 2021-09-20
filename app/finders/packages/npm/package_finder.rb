@@ -5,18 +5,23 @@ module Packages
       delegate :find_by_version, to: :execute
       delegate :last, to: :execute
 
-      def initialize(package_name, project: nil, namespace: nil)
+      # /!\ CAUTION: don't use last_of_each_version: false with find_by_version. Ordering is not
+      # guaranteed!
+      def initialize(package_name, project: nil, namespace: nil, last_of_each_version: true)
         @package_name = package_name
         @project = project
         @namespace = namespace
+        @last_of_each_version = last_of_each_version
       end
 
       def execute
-        base.npm
-            .with_name(@package_name)
-            .installable
-            .last_of_each_version
-            .preload_files
+        result = base.npm
+                     .with_name(@package_name)
+                     .installable
+
+        return result unless @last_of_each_version
+
+        result.last_of_each_version
       end
 
       private

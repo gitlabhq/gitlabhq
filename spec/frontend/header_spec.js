@@ -59,8 +59,8 @@ describe('Header', () => {
     beforeEach(() => {
       setFixtures(`
       <li class="js-nav-user-dropdown">
-        <a class="js-buy-pipeline-minutes-link" data-track-event="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy Pipeline minutes</a>
-        <a class="js-upgrade-plan-link" data-track-event="click_upgrade_link" data-track-label="free" data-track-property="user_dropdown">Upgrade</a>
+        <a class="js-buy-pipeline-minutes-link" data-track-action="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy Pipeline minutes</a>
+        <a class="js-upgrade-plan-link" data-track-action="click_upgrade_link" data-track-label="free" data-track-property="user_dropdown">Upgrade</a>
       </li>`);
 
       trackingSpy = mockTracking('_category_', $('.js-nav-user-dropdown').element, jest.spyOn);

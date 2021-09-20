@@ -14,17 +14,32 @@ Compliance report gives you the ability to see a group's merge request activity.
 high-level view for all projects in the group. For example, code approved for merging into
 production.
 
-To access compliance report for a group, go to **{shield}** **Security & Compliance > Compliance**
-on the group's menu.
+You can use the report to:
+
+- Get an overview of the latest merge request for each project.
+- See if merge requests were approved and by whom.
+- See merge request authors.
+- See the latest [CI/CD pipeline](../../../ci/pipelines/index.md) result for each merge request.
+
+## View the compliance report for a group
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To view the compliance report:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Compliance**.
 
 NOTE:
-Compliance report shows only the latest merge request on each project.
+The compliance report shows only the latest merge request on each project.
 
 ## Merge request drawer
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299357) in GitLab 14.1.
 
-When you click on a row, a drawer is shown that provides further details about the merge
+When you select a row, a drawer is shown that provides further details about the merge
 request:
 
 - Project name and [compliance framework label](../../project/settings/index.md#compliance-frameworks),
@@ -35,22 +50,6 @@ request:
 - A list of users that commented on the merge request.
 - A list of users that approved the merge request.
 - The user that merged the merge request.
-
-## Use cases
-
-This feature is for people who care about the compliance status of projects within their group.
-
-You can use the report to:
-
-- Get an overview of the latest merge request for each project.
-- See if merge requests were approved and by whom.
-- See merge request authors.
-- See the latest [CI Pipeline](../../../ci/pipelines/index.md) result for each merge request.
-
-## Permissions
-
-- On [GitLab Ultimate](https://about.gitlab.com/pricing/) tier.
-- By **Administrators** and **Group Owners**.
 
 ## Approval status and separation of duties
 
@@ -85,14 +84,23 @@ The data provides a comprehensive view with respect to merge commits. It include
 merge request author, merge request ID, merge user, pipeline ID, group name, project name, and merge request approvers.
 Depending on the merge strategy, the merge commit SHA can be a merge commit, squash commit, or a diff head commit.
 
-To download the Chain of Custody report, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu and click **List of all merge commits**
+To download the Chain of Custody report:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Compliance**.
+1. Select **List of all merge commits**.
 
 ### Commit-specific Chain of Custody Report **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
 
-You can generate a commit-specific Chain of Custody report for a given commit SHA. To do so, select
-the dropdown next to the **List of all merge commits** button at the top of the compliance report.
+You can generate a commit-specific Chain of Custody report for a given commit SHA.
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Compliance**.
+1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{angle-down}**).
+1. Enter the merge commit SHA, and then select **Export commit custody report**.
+   SHA and then select **Export commit custody report**.
 
 NOTE:
 The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.

@@ -1,9 +1,7 @@
 /* eslint-disable no-new */
 
-import { mountSidebarLabels, getSidebarOptions } from '~/sidebar/mount_sidebar';
+import { getSidebarOptions } from '~/sidebar/mount_sidebar';
 import IssuableContext from './issuable_context';
-import LabelsSelect from './labels_select';
-import MilestoneSelect from './milestone_select';
 import Sidebar from './right_sidebar';
 
 export default () => {
@@ -13,12 +11,6 @@ export default () => {
 
   const sidebarOptions = getSidebarOptions(sidebarOptEl);
 
-  new MilestoneSelect({
-    full_path: sidebarOptions.fullPath,
-  });
-  new LabelsSelect();
   new IssuableContext(sidebarOptions.currentUser);
   Sidebar.initialize();
-
-  mountSidebarLabels();
 };

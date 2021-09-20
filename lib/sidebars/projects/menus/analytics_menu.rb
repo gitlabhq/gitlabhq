@@ -21,7 +21,7 @@ module Sidebars
         def link
           return cycle_analytics_menu_item.link if cycle_analytics_menu_item.render?
 
-          renderable_items.first.link
+          super
         end
 
         override :extra_container_html_options

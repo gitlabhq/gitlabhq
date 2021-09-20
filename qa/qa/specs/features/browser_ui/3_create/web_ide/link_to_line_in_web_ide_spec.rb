@@ -18,7 +18,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'can link to a specific line of code in Web IDE', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1102' do
+      it 'can link to a specific line of code in Web IDE', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1844' do
         project.visit!
 
         Page::Project::Show.perform(&:open_web_ide!)

@@ -29,7 +29,7 @@ repositories:
 
 1. In GitHub, create a token:
    1. Open <https://github.com/settings/tokens/new>.
-   1. Create a **Personal Access Token**. 
+   1. Create a **Personal Access Token**.
    1. Enter a **Token description** and update the scope to allow
       `repo` and `admin:repo_hook` so that GitLab can access your project,
       update commit statuses, and create a web hook to notify GitLab of new commits.
@@ -57,7 +57,7 @@ To manually enable GitLab CI/CD for your repository:
 
 1. In GitHub, create a token:
    1. Open <https://github.com/settings/tokens/new>.
-   1. Create a **Personal Access Token**. 
+   1. Create a **Personal Access Token**.
    1. Enter a **Token description** and update the scope to allow
       `repo` so that GitLab can access your project and update commit statuses.
 1. In GitLab, create a project:

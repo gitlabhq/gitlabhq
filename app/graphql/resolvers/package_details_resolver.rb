@@ -6,7 +6,7 @@ module Resolvers
 
     argument :id, ::Types::GlobalIDType[::Packages::Package],
       required: true,
-      description: 'The global ID of the package.'
+      description: 'Global ID of the package.'
 
     def ready?(**args)
       context[self.class] ||= { executions: 0 }

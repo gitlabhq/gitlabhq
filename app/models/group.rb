@@ -18,6 +18,10 @@ class Group < Namespace
   include EachBatch
   include BulkMemberAccessLoad
 
+  def self.sti_name
+    'Group'
+  end
+
   has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -74,13 +78,16 @@ class Group < Namespace
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :dependency_proxy_setting, class_name: 'DependencyProxy::GroupSetting'
+  has_one :dependency_proxy_image_ttl_policy, class_name: 'DependencyProxy::ImageTtlGroupPolicy'
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
   has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
 
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::GroupDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, to: :namespace_settings
+  has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
+
+  delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -260,6 +267,15 @@ class Group < Namespace
     Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
+  def dependency_proxy_image_prefix
+    # The namespace path can include uppercase letters, which
+    # Docker doesn't allow. The proxy expects it to be downcased.
+    url = "#{web_url.downcase}#{DependencyProxy::URL_SUFFIX}"
+
+    # Docker images do not include the protocol
+    url.partition('//').last
+  end
+
   def human_name
     full_name
   end
@@ -296,7 +312,7 @@ class Group < Namespace
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    Members::Groups::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
+    Members::Groups::BulkCreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       self,
       users,
       access_level,
@@ -642,6 +658,10 @@ class Group < Namespace
     members.owners.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
+  def membership_locked?
+    false # to support project and group calling this as 'source'
+  end
+
   def supports_events?
     false
   end
@@ -734,6 +754,22 @@ class Group < Namespace
     Timelog.in_group(self)
   end
 
+  def cached_issues_state_count_enabled?
+    Feature.enabled?(:cached_issues_state_count, self, default_enabled: :yaml)
+  end
+
+  def organizations
+    ::CustomerRelations::Organization.where(group_id: self.id)
+  end
+
+  def contacts
+    ::CustomerRelations::Contact.where(group_id: self.id)
+  end
+
+  def dependency_proxy_image_ttl_policy
+    super || build_dependency_proxy_image_ttl_policy
+  end
+
   private
 
   def max_member_access(user_ids)
@@ -822,9 +858,15 @@ class Group < Namespace
   end
 
   def self.groups_including_descendants_by(group_ids)
-    Gitlab::ObjectHierarchy
-      .new(Group.where(id: group_ids))
+    groups = Group.where(id: group_ids)
+
+    if Feature.enabled?(:linear_group_including_descendants_by, default_enabled: :yaml)
+      groups.self_and_descendants
+    else
+      Gitlab::ObjectHierarchy
+      .new(groups)
       .base_and_descendants
+    end
   end
 
   def disable_shared_runners!

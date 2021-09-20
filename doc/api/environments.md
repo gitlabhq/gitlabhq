@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Environments API
+# Environments API **(FREE)**
 
 ## List environments
 
@@ -194,7 +194,7 @@ PUT /projects/:id/environments/:environments_id
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`            | integer/string | yes                               | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user            |
 | `environment_id` | integer | yes | The ID of the environment  |
-| `name`          | string  | no                                | The new name of the environment  |
+| `name`          | string  | no                                | [Deprecated and will be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) |
 | `external_url`  | string  | no                                | The new `external_url`           |
 
 ```shell

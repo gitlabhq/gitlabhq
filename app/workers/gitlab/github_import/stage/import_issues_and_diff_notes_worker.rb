@@ -12,23 +12,35 @@ module Gitlab
         include GithubImport::Queue
         include StageMethods
 
-        # The importers to run in this stage. Issues can't be imported earlier
-        # on as we also use these to enrich pull requests with assigned labels.
-        IMPORTERS = [
-          Importer::IssuesImporter,
-          Importer::DiffNotesImporter
-        ].freeze
-
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          waiters = IMPORTERS.each_with_object({}) do |klass, hash|
+          waiters = importers(project).each_with_object({}) do |klass, hash|
             info(project.id, message: "starting importer", importer: klass.name)
             waiter = klass.new(project, client).execute
             hash[waiter.key] = waiter.jobs_remaining
           end
 
           AdvanceStageWorker.perform_async(project.id, waiters, :notes)
+        end
+
+        # The importers to run in this stage. Issues can't be imported earlier
+        # on as we also use these to enrich pull requests with assigned labels.
+        def importers(project)
+          [
+            Importer::IssuesImporter,
+            diff_notes_importer(project)
+          ]
+        end
+
+        private
+
+        def diff_notes_importer(project)
+          if project.group.present? && Feature.enabled?(:github_importer_single_endpoint_notes_import, project.group, type: :ops, default_enabled: :yaml)
+            Importer::SingleEndpointDiffNotesImporter
+          else
+            Importer::DiffNotesImporter
+          end
         end
       end
     end

@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
+import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
 
 import { s__ } from '~/locale';
@@ -12,6 +12,9 @@ export default {
     AddRequest,
     DetailedMetric,
     RequestSelector,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     store: {
@@ -129,6 +132,7 @@ export default {
       this.currentRequest = newRequestId;
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 <template>
@@ -144,7 +148,7 @@ export default {
           class="current-host"
           :class="{ canary: currentRequest.details.host.canary }"
         >
-          <span v-html="birdEmoji"></span>
+          <span v-safe-html:[$options.safeHtmlConfig]="birdEmoji"></span>
           {{ currentRequest.details.host.hostname }}
         </span>
       </div>

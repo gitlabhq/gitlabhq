@@ -51,18 +51,22 @@ module API
         optional :ref, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
         optional :path, type: String, desc: 'The path of the tree'
         optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
+
         use :pagination
+        optional :pagination, type: String, values: %w(legacy keyset), default: 'legacy', desc: 'Specify the pagination method'
+
+        given pagination: -> (value) { value == 'keyset' } do
+          optional :page_token, type: String, desc: 'Record from which to start the keyset pagination'
+        end
       end
       get ':id/repository/tree' do
-        ref = params[:ref] || user_project.default_branch
-        path = params[:path] || nil
+        tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false))
 
-        commit = user_project.commit(ref)
-        not_found!('Tree') unless commit
+        not_found!("Tree") unless tree_finder.commit_exists?
 
-        tree = user_project.repository.tree(commit.id, path, recursive: params[:recursive])
-        entries = ::Kaminari.paginate_array(tree.sorted_entries)
-        present paginate(entries), with: Entities::TreeObject
+        tree = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(tree_finder)
+
+        present tree, with: Entities::TreeObject
       end
 
       desc 'Get raw blob contents from the repository'

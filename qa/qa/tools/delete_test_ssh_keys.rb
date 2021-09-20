@@ -15,7 +15,7 @@ require_relative '../../qa'
 module QA
   module Tools
     class DeleteTestSSHKeys
-      include Support::Api
+      include Support::API
 
       ITEMS_PER_PAGE = '100'
 

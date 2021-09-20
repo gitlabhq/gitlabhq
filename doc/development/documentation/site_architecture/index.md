@@ -33,7 +33,6 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
     D --> E
     E -- Build pipeline --> F
     F[docs.gitlab.com]
-    G[/ce/]
     H[/ee/]
     I[/runner/]
     J[/omnibus/]
@@ -42,7 +41,6 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
     F --> I
     F --> J
     F --> K
-    H -- symlink --> G
 ```
 
 GitLab docs content isn't kept in the `gitlab-docs` repository.
@@ -53,15 +51,6 @@ product, and all together are pulled to generate the docs website:
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc)
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs)
 - [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
-
-NOTE:
-In September 2019, we [moved towards a single codebase](https://gitlab.com/gitlab-org/gitlab/-/issues/2952),
-as such the docs for CE and EE are now identical. For historical reasons and
-in order not to break any existing links throughout the internet, we still
-maintain the CE docs (`https://docs.gitlab.com/ce/`), although it is hidden
-from the website, and is now a symlink to the EE docs. When
-[Support wildcard redirects](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/500) is resolved,
-we can remove this completely.
 
 ## Assets
 

@@ -7,28 +7,35 @@ module API
     class_methods do
       def prepare_relation(projects_relation, options = {})
         projects_relation = preload_relation(projects_relation, options)
+
         execute_batch_counting(projects_relation)
-        # Call the forks count method on every project, so the BatchLoader would load them all at
-        # once when the entities are rendered
-        projects_relation.each(&:forks_count)
+
+        preload_repository_cache(projects_relation)
 
         projects_relation
       end
 
+      # This is overridden by the specific Entity class to
+      # preload assocations that it needs
       def preload_relation(projects_relation, options = {})
         projects_relation
       end
 
-      def forks_counting_projects(projects_relation)
-        projects_relation
-      end
-
-      def batch_open_issues_counting(projects_relation)
-        ::Projects::BatchOpenIssuesCountService.new(projects_relation).refresh_cache
-      end
-
+      # This is overridden by the specific Entity class to
+      # batch load certain counts
       def execute_batch_counting(projects_relation)
-        batch_open_issues_counting(projects_relation)
+      end
+
+      def preload_repository_cache(projects_relation)
+        repositories = repositories_for_preload(projects_relation)
+
+        Gitlab::RepositoryCache::Preloader.new(repositories).preload( # rubocop:disable CodeReuse/ActiveRecord
+          %i[exists? root_ref has_visible_content? avatar readme_path]
+        )
+      end
+
+      def repositories_for_preload(projects_relation)
+        projects_relation.map(&:repository)
       end
     end
   end

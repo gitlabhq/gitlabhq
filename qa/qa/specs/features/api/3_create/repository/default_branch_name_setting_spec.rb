@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   RSpec.describe 'Create' do
     describe 'Default branch name instance setting', :requires_admin, :skip_live_env do
@@ -13,7 +11,7 @@ module QA
         Runtime::ApplicationSettings.restore_application_settings(:default_branch_name)
       end
 
-      it 'sets the default branch name for a new project', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1018' do
+      it 'sets the default branch name for a new project', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1247' do
         project = Resource::Project.fabricate_via_api! do |project|
           project.name = "default-branch-name"
           project.initialize_with_readme = true
@@ -32,7 +30,7 @@ module QA
         end
       end
 
-      it 'allows a project to be created via the CLI with a different default branch name', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1019' do
+      it 'allows a project to be created via the CLI with a different default branch name', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1246' do
         project_name = "default-branch-name-via-cli-#{SecureRandom.hex(8)}"
         group = Resource::Group.fabricate_via_api!
 

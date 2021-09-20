@@ -1,0 +1,3 @@
+fragment Job on CiJob {
+  id
+}

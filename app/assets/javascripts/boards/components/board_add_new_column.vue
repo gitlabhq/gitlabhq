@@ -2,9 +2,6 @@
 import { GlFormRadio, GlFormRadioGroup, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
-import { ListType } from '~/boards/constants';
-import boardsStore from '~/boards/stores/boards_store';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export default {
   components: {
@@ -24,7 +21,7 @@ export default {
   },
   computed: {
     ...mapState(['labels', 'labelsLoading']),
-    ...mapGetters(['getListByLabelId', 'shouldUseGraphQL']),
+    ...mapGetters(['getListByLabelId']),
     columnForSelected() {
       return this.getListByLabelId(this.selectedId);
     },
@@ -34,17 +31,6 @@ export default {
   },
   methods: {
     ...mapActions(['createList', 'fetchLabels', 'highlightList', 'setAddColumnFormVisibility']),
-    highlight(listId) {
-      if (this.shouldUseGraphQL) {
-        this.highlightList(listId);
-      } else {
-        const list = boardsStore.state.lists.find(({ id }) => id === listId);
-        list.highlighted = true;
-        setTimeout(() => {
-          list.highlighted = false;
-        }, 2000);
-      }
-    },
     addList() {
       if (!this.selectedLabel) {
         return;
@@ -54,23 +40,11 @@ export default {
 
       if (this.columnForSelected) {
         const listId = this.columnForSelected.id;
-        this.highlight(listId);
+        this.highlightList(listId);
         return;
       }
 
-      if (this.shouldUseGraphQL) {
-        this.createList({ labelId: this.selectedId });
-      } else {
-        const listObj = {
-          labelId: getIdFromGraphQLId(this.selectedId),
-          title: this.selectedLabel.title,
-          position: boardsStore.state.lists.length - 2,
-          list_type: ListType.label,
-          label: this.selectedLabel,
-        };
-
-        boardsStore.new(listObj);
-      }
+      this.createList({ labelId: this.selectedId });
     },
 
     filterItems(searchTerm) {

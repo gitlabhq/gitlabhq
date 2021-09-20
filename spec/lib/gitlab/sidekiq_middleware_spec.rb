@@ -66,12 +66,12 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         ::Gitlab::SidekiqMiddleware::BatchLoader,
         ::Labkit::Middleware::Sidekiq::Server,
         ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
-        ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
         ::Gitlab::SidekiqMiddleware::AdminMode::Server,
         ::Gitlab::SidekiqVersioning::Middleware,
         ::Gitlab::SidekiqStatus::ServerMiddleware,
         ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
-        ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server
+        ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
+        ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
       ]
     end
 
@@ -177,12 +177,12 @@ RSpec.describe Gitlab::SidekiqMiddleware do
       [
         ::Gitlab::SidekiqMiddleware::WorkerContext::Client,
         ::Labkit::Middleware::Sidekiq::Client,
+        ::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware,
         ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client,
         ::Gitlab::SidekiqStatus::ClientMiddleware,
         ::Gitlab::SidekiqMiddleware::AdminMode::Client,
         ::Gitlab::SidekiqMiddleware::SizeLimiter::Client,
-        ::Gitlab::SidekiqMiddleware::ClientMetrics,
-        ::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware
+        ::Gitlab::SidekiqMiddleware::ClientMetrics
       ]
     end
 

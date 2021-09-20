@@ -3,12 +3,12 @@
 require 'rspec/core/sandbox'
 
 RSpec.describe QA::Specs::Helpers::Quarantine do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
   include QA::Specs::Helpers::RSpec
 
   around do |ex|
     RSpec::Core::Sandbox.sandboxed do |config|
-      config.formatter = QA::Specs::Helpers::QuarantineFormatter
+      config.formatter = QA::Support::Formatters::QuarantineFormatter
 
       # If there is an example-within-an-example, we want to make sure the inner example
       # does not get a reference to the outer example (the real spec) if it calls

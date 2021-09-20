@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Set up an Audit Report with GraphQL
+# Set up an Audit Report with GraphQL **(FREE)**
 
 This page describes how you can use the GraphiQL explorer to set up an audit report
 for a specific subset of users.

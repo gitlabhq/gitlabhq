@@ -36,8 +36,8 @@ RSpec.shared_examples 'process helm service index request' do |user_type, status
 
       expect(yaml_response.keys).to contain_exactly('apiVersion', 'entries', 'generated', 'serverInfo')
       expect(yaml_response['entries']).to be_a(Hash)
-      expect(yaml_response['entries'].keys).to contain_exactly(package.name)
-      expect(yaml_response['serverInfo']).to eq({ 'contextPath' => "/api/v4/projects/#{project.id}/packages/helm" })
+      expect(yaml_response['entries'].keys).to contain_exactly(package.name, package2.name)
+      expect(yaml_response['serverInfo']).to eq({ 'contextPath' => "/api/v4/projects/#{project_id}/packages/helm" })
 
       package_entry = yaml_response['entries'][package.name]
 
@@ -45,6 +45,14 @@ RSpec.shared_examples 'process helm service index request' do |user_type, status
       expect(package_entry.first.keys).to contain_exactly('name', 'version', 'apiVersion', 'created', 'digest', 'urls')
       expect(package_entry.first['digest']).to eq('fd2b2fa0329e80a2a602c2bb3b40608bcd6ee5cf96cf46fd0d2800a4c129c9db')
       expect(package_entry.first['urls']).to eq(["charts/#{package.name}-#{package.version}.tgz"])
+
+      package_entry = yaml_response['entries'][package2.name]
+
+      expect(package_entry.length).to eq(1)
+      expect(package_entry.first.keys).to contain_exactly('name', 'version', 'apiVersion', 'created', 'digest', 'urls', 'description')
+      expect(package_entry.first['digest']).to eq('file2')
+      expect(package_entry.first['description']).to eq('hello from stable channel')
+      expect(package_entry.first['urls']).to eq(['charts/filename2.tgz'])
     end
   end
 end
@@ -174,6 +182,13 @@ RSpec.shared_examples 'process helm download content request' do |user_type, sta
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if user_type != :anonymous && user_type != :not_a_member
+
+      expect_next_found_instance_of(::Packages::PackageFile) do |package_file|
+        expect(package_file).to receive(:file).and_wrap_original do |m, *args|
+          expect(package_file.id).to eq(package_file2.id)
+          m.call(*args)
+        end
+      end
     end
 
     it_behaves_like 'a package tracking event', 'API::HelmPackages', 'pull_package'
@@ -189,7 +204,7 @@ end
 
 RSpec.shared_examples 'rejects helm access with unknown project id' do
   context 'with an unknown project' do
-    let(:project) { OpenStruct.new(id: 1234567890) }
+    let(:project_id) { 1234567890 }
 
     context 'as anonymous' do
       it_behaves_like 'rejects helm packages access', :anonymous, :unauthorized

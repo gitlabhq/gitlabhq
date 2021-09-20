@@ -7,12 +7,14 @@ module Gitlab
         class Redactor
           include ::Gitlab::Graphql::Laziness
 
-          def initialize(type, context)
+          def initialize(type, context, resolver)
             @type = type
             @context = context
+            @resolver = resolver
           end
 
           def redact(nodes)
+            perform_before_authorize_action(nodes)
             remove_unauthorized(nodes)
 
             nodes
@@ -28,6 +30,13 @@ module Gitlab
           end
 
           private
+
+          def perform_before_authorize_action(nodes)
+            before_connection_authorization_block = @resolver&.before_connection_authorization_block
+            return unless before_connection_authorization_block.respond_to?(:call)
+
+            before_connection_authorization_block.call(nodes, @context[:current_user])
+          end
 
           def remove_unauthorized(nodes)
             nodes
@@ -49,14 +58,14 @@ module Gitlab
         end
 
         def redact_connection(conn, context)
-          redactor = Redactor.new(@field.type.unwrap.node_type, context)
+          redactor = Redactor.new(@field.type.unwrap.node_type, context, @field.resolver)
           return unless redactor.active?
 
           conn.redactor = redactor if conn.respond_to?(:redactor=)
         end
 
         def redact_list(list, context)
-          redactor = Redactor.new(@field.type.unwrap, context)
+          redactor = Redactor.new(@field.type.unwrap, context, @field.resolver)
           redactor.redact(list) if redactor.active?
         end
       end

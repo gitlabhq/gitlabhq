@@ -34,11 +34,35 @@ RSpec.describe ErrorTracking::CollectErrorService do
       expect(error.platform).to eq 'ruby'
       expect(error.last_seen_at).to eq '2021-07-08T12:59:16Z'
 
-      expect(event.description).to eq 'ActionView::MissingTemplate'
+      expect(event.description).to start_with 'Missing template posts/error2'
       expect(event.occurred_at).to eq '2021-07-08T12:59:16Z'
       expect(event.level).to eq 'error'
       expect(event.environment).to eq 'development'
       expect(event.payload).to eq parsed_event
+    end
+
+    context 'unusual payload' do
+      let(:modified_event) { parsed_event }
+
+      context 'missing transaction' do
+        it 'builds actor from stacktrace' do
+          modified_event.delete('transaction')
+
+          event = described_class.new(project, nil, event: modified_event).execute
+
+          expect(event.error.actor).to eq 'find()'
+        end
+      end
+
+      context 'timestamp is numeric' do
+        it 'parses timestamp' do
+          modified_event['timestamp'] = '1631015580.50'
+
+          event = described_class.new(project, nil, event: modified_event).execute
+
+          expect(event.occurred_at).to eq '2021-09-07T11:53:00.5'
+        end
+      end
     end
   end
 end

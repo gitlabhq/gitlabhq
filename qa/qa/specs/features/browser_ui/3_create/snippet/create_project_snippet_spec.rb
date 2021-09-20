@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do # to be converted to a smoke test once proved to be stable
     describe 'Project snippet creation' do
-      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/839' do
+      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1358' do
         Flow::Login.sign_in
 
         Resource::ProjectSnippet.fabricate_via_browser_ui! do |snippet|

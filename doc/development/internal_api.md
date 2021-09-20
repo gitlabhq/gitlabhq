@@ -501,6 +501,56 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
      "http://localhost:3000/api/v4/internal/kubernetes/modules/cilium_alert"
 ```
 
+### Create Starboard vulnerability
+
+Called from the GitLab Kubernetes Agent Server (`kas`) to create a security vulnerability
+from a Starboard vulnerability report. This request is idempotent. Multiple requests with the same data
+create a single vulnerability.
+
+| Attribute       | Type   | Required | Description |
+|:----------------|:-------|:---------|:------------|
+| `vulnerability` | Hash   | yes      | Vulnerability data matching the security report schema [`vulnerability` field](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json). |
+| `scanner`       | Hash   | yes      | Scanner data matching the security report schema [`scanner` field](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json). |
+
+```plaintext
+PUT internal/kubernetes/modules/starboard_vulnerability
+```
+
+Example Request:
+
+```shell
+curl --request PUT --header "Gitlab-Kas-Api-Request: <JWT token>" \
+     --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" \
+     --url "http://localhost:3000/api/v4/internal/kubernetes/modules/starboard_vulnerability" \
+     --data '{
+  "vulnerability": {
+    "name": "CVE-123-4567 in libc",
+    "severity": "high",
+    "confidence": "unknown",
+    "location": {
+      "kubernetes_resource": {
+        "namespace": "production",
+        "kind": "deployment",
+        "name": "nginx",
+        "container": "nginx"
+      }
+    },
+    "identifiers": [
+      {
+        "type": "cve",
+        "name": "CVE-123-4567",
+        "value": "CVE-123-4567"
+      }
+    ]
+  },
+  "scanner": {
+    "id": "starboard_trivy",
+    "name": "Trivy (via Starboard Operator)",
+    "vendor": "GitLab"
+  }
+}'
+```
+
 ## Subscriptions
 
 The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
@@ -675,7 +725,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --url http://localhost:3000/api/v4/namespaces/123/minutes \
+  --url "http://localhost:3000/api/v4/namespaces/123/minutes" \
   --header 'Content-Type: application/json' \
   --header 'PRIVATE-TOKEN: <admin access token>' \
   --data '{
@@ -719,7 +769,7 @@ Example request:
 
 ```shell
 curl --request PATCH \
-  --url http://localhost:3000/api/v4/namespaces/123/minutes/move/321 \
+  --url "http://localhost:3000/api/v4/namespaces/123/minutes/move/321" \
   --header 'PRIVATE-TOKEN: <admin access token>'
 ```
 

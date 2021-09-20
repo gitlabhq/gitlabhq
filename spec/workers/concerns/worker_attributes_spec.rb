@@ -35,45 +35,17 @@ RSpec.describe WorkerAttributes do
       end
     end
 
-    context 'when job is idempotent' do
-      context 'when data_consistency is not :always' do
-        it 'raise exception' do
-          worker.idempotent!
-
-          expect { worker.data_consistency(:sticky) }
-            .to raise_error("Class can't be marked as idempotent if data_consistency is not set to :always")
-        end
+    context 'when feature_flag is provided' do
+      before do
+        stub_feature_flags(test_feature_flag: false)
+        skip_feature_flags_yaml_validation
+        skip_default_enabled_yaml_check
       end
 
-      context 'when feature_flag is provided' do
-        before do
-          stub_feature_flags(test_feature_flag: false)
-          skip_feature_flags_yaml_validation
-          skip_default_enabled_yaml_check
-        end
+      it 'returns correct feature flag value' do
+        worker.data_consistency(:sticky, feature_flag: :test_feature_flag)
 
-        it 'returns correct feature flag value' do
-          worker.data_consistency(:sticky, feature_flag: :test_feature_flag)
-
-          expect(worker.get_data_consistency_feature_flag_enabled?).not_to be_truthy
-        end
-      end
-    end
-  end
-
-  describe '.idempotent!' do
-    it 'sets `idempotent` attribute of the worker class to true' do
-      worker.idempotent!
-
-      expect(worker.send(:class_attributes)[:idempotent]).to eq(true)
-    end
-
-    context 'when data consistency is not :always' do
-      it 'raise exception' do
-        worker.data_consistency(:sticky)
-
-        expect { worker.idempotent! }
-          .to raise_error("Class can't be marked as idempotent if data_consistency is not set to :always")
+        expect(worker.get_data_consistency_feature_flag_enabled?).not_to be_truthy
       end
     end
   end

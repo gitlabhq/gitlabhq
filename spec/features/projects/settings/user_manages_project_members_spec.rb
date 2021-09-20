@@ -43,10 +43,15 @@ RSpec.describe 'Projects > Settings > User manages project members' do
 
     visit(project_project_members_path(project))
 
-    click_link('Import a project')
+    click_on 'Import from a project'
+    click_on 'Select a project'
+    wait_for_requests
 
-    select2(project2.id, from: '#source_project_id')
-    click_button('Import project members')
+    click_button project2.name
+    click_button 'Import project members'
+    wait_for_requests
+
+    page.refresh
 
     expect(find_member_row(user_mike)).to have_content('Reporter')
   end

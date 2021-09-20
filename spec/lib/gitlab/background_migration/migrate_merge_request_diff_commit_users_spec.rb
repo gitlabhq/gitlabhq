@@ -91,6 +91,18 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateMergeRequestDiffCommitUsers d
   end
 
   describe '#perform' do
+    it 'skips jobs that have already been completed' do
+      Gitlab::Database::BackgroundMigrationJob.create!(
+        class_name: 'MigrateMergeRequestDiffCommitUsers',
+        arguments: [1, 10],
+        status: :succeeded
+      )
+
+      expect(migration).not_to receive(:get_data_to_update)
+
+      migration.perform(1, 10)
+    end
+
     it 'migrates the data in the range' do
       commits.create!(
         merge_request_diff_id: diff.id,

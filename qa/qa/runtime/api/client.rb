@@ -36,16 +36,28 @@ module QA
             if Runtime::Env.admin_personal_access_token
               Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
             else
-              user = Resource::User.fabricate_via_api! do |user|
-                user.username = Runtime::User.admin_username
-                user.password = Runtime::User.admin_password
+              # To return an API client that has admin access, we need a user with admin access to confirm that
+              # the API client user has admin access.
+              client = nil
+              Flow::Login.while_signed_in_as_admin do
+                admin_token = Resource::PersonalAccessToken.fabricate! do |pat|
+                  pat.user = Runtime::User.admin
+                end.token
+
+                client = Runtime::API::Client.new(:gitlab, personal_access_token: admin_token)
+
+                user = QA::Resource::User.init do |user|
+                  user.username = QA::Runtime::User.admin_username
+                  user.password = QA::Runtime::User.admin_password
+                  user.api_client = client
+                end.reload!
+
+                unless user.admin? # rubocop: disable Cop/UserAdmin
+                  raise AuthorizationError, "User '#{user.username}' is not an administrator."
+                end
               end
 
-              unless user.admin?
-                raise AuthorizationError, "User '#{user.username}' is not an administrator."
-              end
-
-              Runtime::API::Client.new(:gitlab, user: user)
+              client
             end
           end
         end

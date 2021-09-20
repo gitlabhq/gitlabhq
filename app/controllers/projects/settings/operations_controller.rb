@@ -136,6 +136,7 @@ module Projects
 
           error_tracking_setting_attributes: [
             :enabled,
+            :integrated,
             :api_host,
             :token,
             project: [:slug, :name, :organization_slug, :organization_name]

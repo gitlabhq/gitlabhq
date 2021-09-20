@@ -42,7 +42,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       allow_tree_conflicts: display_merge_conflicts_in_diff?
     }
 
-    if diff_options_hash[:paths].blank? && Feature.enabled?(:diffs_batch_render_cached, project, default_enabled: :yaml)
+    if diff_options_hash[:paths].blank?
       # NOTE: Any variables that would affect the resulting json needs to be added to the cache_context to avoid stale cache issues.
       cache_context = [
         current_user&.cache_key,

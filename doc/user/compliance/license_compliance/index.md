@@ -40,7 +40,7 @@ compliance report is shown properly.
 
 ![License Compliance Widget](img/license_compliance_v13_0.png)
 
-You can click on a license to see more information.
+You can select a license to see more information.
 
 When GitLab detects a **Denied** license, you can view it in the [license list](#license-list).
 
@@ -49,11 +49,20 @@ When GitLab detects a **Denied** license, you can view it in the [license list](
 You can view and modify existing policies from the [policies](#policies) tab.
 ![Edit Policy](img/policies_maintainer_edit_v14_2.png)
 
+## License expressions
+
+GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/).
+License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
+if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](#policies),
+GitLab evaluates the composite license as _denied_, as this is the safer option.
+The ability to support other license expression operators (like `OR`, `WITH`) is tracked
+in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6571).
+
 ## Supported languages and package managers
 
 The following languages and package managers are supported.
 
-Java 8 and Gradle 1.x projects are not supported. The minimum supported version of Maven is 3.2.5.
+Gradle 1.x projects are not supported. The minimum supported version of Maven is 3.2.5.
 
 | Language   | Package managers                                                                             | Notes |
 |------------|----------------------------------------------------------------------------------------------|-------|
@@ -140,12 +149,12 @@ License Compliance can be configured using CI/CD variables.
 | `ADDITIONAL_CA_CERT_BUNDLE` | no       | Bundle of trusted CA certificates (currently supported in Pip, Pipenv, Maven, Gradle, Yarn, and npm projects). |
 | `ASDF_JAVA_VERSION`         | no       | Version of Java to use for the scan. |
 | `ASDF_NODEJS_VERSION`       | no       | Version of Node.js to use for the scan. |
-| `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. |
+| `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. [Configuration](#selecting-the-version-of-python) |
 | `ASDF_RUBY_VERSION`         | no       | Version of Ruby to use for the scan. |
 | `GRADLE_CLI_OPTS`           | no       | Additional arguments for the Gradle executable. If not supplied, defaults to `--exclude-task=test`. |
 | `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if you have multiple projects in nested directories, you can update your `.gitlab-ci-yml` template to specify a recursive scan, like `LICENSE_FINDER_CLI_OPTS: '--recursive'`. |
-| `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. |
-| `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. |
+| `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. [Configuration](#selecting-the-version-of-java) |
+| `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. [Configuration](#selecting-the-version-of-python) |
 | `MAVEN_CLI_OPTS`            | no       | Additional arguments for the `mvn` executable. If not supplied, defaults to `-DskipTests`. |
 | `PIP_INDEX_URL`             | no       | Base URL of Python Package Index (default: `https://pypi.org/simple/`). |
 | `SECURE_ANALYZERS_PREFIX`   | no       | Set the Docker registry base address to download the analyzer from. |
@@ -245,6 +254,12 @@ Alternatively, you can use a Java key store to verify the TLS connection. For in
 generate a key store file, see the
 [Maven Guide to Remote repository access through authenticated HTTPS](http://maven.apache.org/guides/mini/guide-repository-ssl.html).
 
+### Selecting the version of Java
+
+License Compliance uses Java 8 by default. You can specify a different Java version using `LM_JAVA_VERSION`.
+
+`LM_JAVA_VERSION` only accepts versions: 8, 11, 14, 15.
+
 ### Selecting the version of Python
 
 > - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
@@ -263,6 +278,8 @@ license_scanning:
   variables:
     LM_PYTHON_VERSION: 2
 ```
+
+`LM_PYTHON_VERSION` or `ASDF_PYTHON_VERSION` can be used to specify the desired version of Python. When both variables are specified `LM_PYTHON_VERSION` takes precedence.
 
 ### Custom root certificates for Python
 
@@ -693,15 +710,16 @@ instance's administrator can manually update it with a [Rake task](../../../rake
 The License list allows you to see your project's licenses and key
 details about them.
 
-In order for the licenses to appear under the license list, the following
+For the licenses to appear under the license list, the following
 requirements must be met:
 
 1. The License Compliance CI job must be [configured](#configuration) for your project.
 1. Your project must use at least one of the
    [supported languages and package managers](#supported-languages-and-package-managers).
 
-Once everything is set, navigate to **Security & Compliance > License Compliance**
-in your project's sidebar, and the licenses are displayed, where:
+When everything is configured, on the left sidebar, select **Security & Compliance > License Compliance**.
+
+The licenses are displayed, where:
 
 - **Name:** The name of the license.
 - **Component:** The components which have this license.
@@ -741,8 +759,10 @@ license.
 
 You can enable `License-Check` one of two ways:
 
-1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
-1. Click **Enable** or **Edit**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge request approvals**.
+1. Select **Enable** or **Edit**.
 1. Add or change the **Rule name** to `License-Check` (case sensitive).
 
 ![License Check Approver Rule](img/license-check_v13_4.png)
@@ -802,11 +822,11 @@ or using the appropriate [`ASDF_<tool>_VERSION`](https://asdf-vm.com/#/core-conf
 activate the appropriate version.
 
 For example, the following `.tool-versions` file activates version `12.16.3` of [Node.js](https://nodejs.org/)
-and version `2.7.2` of [Ruby](https://www.ruby-lang.org/).
+and version `2.7.4` of [Ruby](https://www.ruby-lang.org/).
 
 ```plaintext
 nodejs 12.16.3
-ruby 2.7.2
+ruby 2.7.4
 ```
 
 The next example shows how to activate the same versions of the tools mentioned above by using CI/CD variables defined in your
@@ -819,7 +839,7 @@ include:
 license_scanning:
   variables:
     ASDF_NODEJS_VERSION: '12.16.3'
-    ASDF_RUBY_VERSION: '2.7.2'
+    ASDF_RUBY_VERSION: '2.7.4'
 ```
 
 A full list of variables can be found in [CI/CD variables](#available-cicd-variables).

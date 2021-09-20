@@ -9,14 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
-WARNING:
-Versions of GitLab prior to 14.0 used Clair as the default container scanning engine. GitLab 14.0
-removes Clair from the product and replaces it with two new scanners. If you
-run container scanning with the default settings, GitLab switches you seamlessly and automatically
-to Trivy in GitLab 14.0. However, if you customized the variables in your container scanning job,
-you should review the [migration guide](#change-scanners)
-and make any necessary updates.
-
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra job in your pipeline that scans for those vulnerabilities and
 displays them in a merge request, you can use GitLab to audit your Docker-based apps.
@@ -57,37 +49,9 @@ To enable container scanning in your pipeline, you need the following:
 
 ## Configuration
 
-How you enable container scanning depends on your GitLab version:
-
-- GitLab 11.9 and later: [Include](../../../ci/yaml/index.md#includetemplate) the
-  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
-  that comes with your GitLab installation.
-- GitLab versions earlier than 11.9: Copy and use the job from the
-  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
-
-Other changes:
-
-- GitLab 13.6 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) better support for
-  [FIPS](https://csrc.nist.gov/publications/detail/fips/140/2/final) by upgrading the
-  `CS_MAJOR_VERSION` from `2` to `3`. Version `3` of the `container_scanning` Docker image uses
-  [`centos:centos8`](https://hub.docker.com/_/centos)
-  as the new base. It also removes the use of the [start.sh](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/merge_requests/77)
-  script and instead executes the analyzer by default. Any customizations made to the
-  `container_scanning` job's [`before_script`](../../../ci/yaml/index.md#before_script)
-  and [`after_script`](../../../ci/yaml/index.md#after_script)
-  blocks may not work with the new version. To roll back to the previous [`alpine:3.11.3`](https://hub.docker.com/_/alpine)-based
-  Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-cicd-variables)
-  variable.
-- GitLab 13.9 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) integration with
-  [Trivy](https://github.com/aquasecurity/trivy) by upgrading `CS_MAJOR_VERSION` from `3` to `4`.
-- GitLab 14.0 [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61850)
-  an integration with [Trivy](https://github.com/aquasecurity/trivy)
-  as the default for container scanning, and also [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326279)
-  an integration with [Grype](https://github.com/anchore/grype)
-  as an alternative scanner.
-
-To include the `Container-Scanning.gitlab-ci.yml` template (GitLab 11.9 and later), add the
-following to your `.gitlab-ci.yml` file:
+To enable container scanning, add the
+[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
+to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
@@ -157,7 +121,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
 | `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:4` | Docker image of the analyzer. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
-| `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. | Trivy. The registry must listen on port `80/tcp`. |
+| `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |
 | `DOCKER_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
 | `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). | All |
@@ -625,3 +589,29 @@ To prevent the error, ensure the Docker version that the runner is using is
 ### Getting warning message `gl-container-scanning-report.json: no matching files`
 
 For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+
+## Changes
+
+- GitLab 13.6 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) better support for
+  [FIPS](https://csrc.nist.gov/publications/detail/fips/140/2/final) by upgrading the
+  `CS_MAJOR_VERSION` from `2` to `3`. Version `3` of the `container_scanning` Docker image uses
+  [`centos:centos8`](https://hub.docker.com/_/centos)
+  as the new base. It also removes the use of the [start.sh](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/merge_requests/77)
+  script and instead executes the analyzer by default. Any customizations made to the
+  `container_scanning` job's [`before_script`](../../../ci/yaml/index.md#before_script)
+  and [`after_script`](../../../ci/yaml/index.md#after_script)
+  blocks may not work with the new version. To roll back to the previous [`alpine:3.11.3`](https://hub.docker.com/_/alpine)-based
+  Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-cicd-variables)
+  variable.
+- GitLab 13.9 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) integration with
+  [Trivy](https://github.com/aquasecurity/trivy) by upgrading `CS_MAJOR_VERSION` from `3` to `4`.
+- GitLab 13.9 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/321451) the integration with
+  [Clair](https://github.com/quay/clair/).
+- GitLab 14.0 [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61850)
+  an integration with [Trivy](https://github.com/aquasecurity/trivy)
+  as the default for container scanning, and also [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326279)
+  an integration with [Grype](https://github.com/anchore/grype)
+  as an alternative scanner.
+
+Other changes to the container scanning analyzer can be found in the project's
+[changelog](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/CHANGELOG.md).

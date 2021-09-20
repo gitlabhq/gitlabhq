@@ -42,7 +42,7 @@ To find it in GitLab:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access Tokens**.
 
 Learn more about generating a personal access token in the
 [Personal Access Token Documentation](../user/profile/personal_access_tokens.md).

@@ -74,7 +74,9 @@ module ErrorTracking
         # We are going to support more options in the future.
         # For now we implement the bare minimum for rendering the list in UI.
         filter_opts = {
-          status: opts[:issue_status]
+          status: opts[:issue_status],
+          sort: opts[:sort],
+          limit: opts[:limit]
         }
 
         errors = ErrorTracking::ErrorsFinder.new(current_user, project, filter_opts).execute

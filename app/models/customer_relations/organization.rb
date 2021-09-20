@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class CustomerRelations::Organization < ApplicationRecord
+  include StripAttribute
+
   self.table_name = "customer_relations_organizations"
 
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'group_id'
 
-  before_validation :strip_whitespace!
+  strip_attributes! :name
 
   enum state: {
     inactive: 0,
@@ -21,11 +23,5 @@ class CustomerRelations::Organization < ApplicationRecord
   def self.find_by_name(group_id, name)
     where(group: group_id)
     .where('LOWER(name) = LOWER(?)', name)
-  end
-
-  private
-
-  def strip_whitespace!
-    name&.strip!
   end
 end

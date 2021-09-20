@@ -15,6 +15,7 @@ RSpec.describe "Issues > User edits issue", :js do
 
   context 'with authorized user' do
     before do
+      stub_feature_flags(labels_widget: false)
       project.add_developer(user)
       project_with_milestones.add_developer(user)
       sign_in(user)

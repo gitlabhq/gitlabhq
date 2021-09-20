@@ -5,12 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Reverting changes **(FREE)**
+# Revert changes **(FREE)**
 
 You can use Git's powerful feature to [revert any commit](https://git-scm.com/docs/git-revert "Git revert documentation")
 by clicking the **Revert** button in merge requests and commit details.
 
-## Reverting a merge request
+## Revert a merge request
 
 NOTE:
 The **Revert** button is available only for merge requests
@@ -34,7 +34,7 @@ create a new merge request with the revert changes.
 
 After the merge request has been reverted, the **Revert** button is no longer available.
 
-## Reverting a commit
+## Revert a commit
 
 You can revert a commit from the commit details page:
 

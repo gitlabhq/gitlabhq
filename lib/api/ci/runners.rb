@@ -222,6 +222,56 @@ module API
         end
       end
 
+      resource :runners do
+        before { authenticate_non_get! }
+
+        desc 'Resets runner registration token' do
+          success Entities::Ci::ResetRegistrationTokenResult
+        end
+        post 'reset_registration_token' do
+          authorize! :update_runners_registration_token
+
+          ApplicationSetting.current.reset_runners_registration_token!
+          present ApplicationSetting.current_without_cache.runners_registration_token, with: Entities::Ci::ResetRegistrationTokenResult
+        end
+      end
+
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
+      end
+      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        before { authenticate_non_get! }
+
+        desc 'Resets runner registration token' do
+          success Entities::Ci::ResetRegistrationTokenResult
+        end
+        post ':id/runners/reset_registration_token' do
+          project = find_project! user_project.id
+          authorize! :update_runners_registration_token, project
+
+          project.reset_runners_token!
+          present project.runners_token, with: Entities::Ci::ResetRegistrationTokenResult
+        end
+      end
+
+      params do
+        requires :id, type: String, desc: 'The ID of a group'
+      end
+      resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        before { authenticate_non_get! }
+
+        desc 'Resets runner registration token' do
+          success Entities::Ci::ResetRegistrationTokenResult
+        end
+        post ':id/runners/reset_registration_token' do
+          group = find_group! user_group.id
+          authorize! :update_runners_registration_token, group
+
+          group.reset_runners_token!
+          present group.runners_token, with: Entities::Ci::ResetRegistrationTokenResult
+        end
+      end
+
       helpers do
         def filter_runners(runners, scope, allowed_scopes: ::Ci::Runner::AVAILABLE_SCOPES)
           return runners unless scope.present?

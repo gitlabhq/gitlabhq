@@ -153,3 +153,15 @@ RSpec.shared_examples 'a package tracking event' do |category, action|
     expect_snowplow_event(category: category, action: action, **snowplow_gitlab_standard_context)
   end
 end
+
+RSpec.shared_examples 'not a package tracking event' do
+  before do
+    stub_feature_flags(collect_package_events: true)
+  end
+
+  it 'does not create a gitlab tracking event', :snowplow, :aggregate_failures do
+    expect { subject }.not_to change { Packages::Event.count }
+
+    expect_no_snowplow_event
+  end
+end

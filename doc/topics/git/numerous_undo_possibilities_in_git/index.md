@@ -209,7 +209,7 @@ To recover from multiple incorrect commits:
 The commits are now `A-B-C-D-E`.
 
 Alternatively, with GitLab,
-you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
+you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-commit)
 that commit into a new merge request.
 
 NOTE:
@@ -388,7 +388,6 @@ git filter-branch --tree-filter 'rm filename' HEAD
 
 The `git filter-branch` command might be slow on large repositories.
 Tools are available to execute Git commands more quickly.
-An alternative is the open source community-maintained tool [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 These tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 

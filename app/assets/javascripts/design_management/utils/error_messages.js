@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { __, s__, n__, sprintf } from '~/locale';
 
 export const ADD_DISCUSSION_COMMENT_ERROR = s__(

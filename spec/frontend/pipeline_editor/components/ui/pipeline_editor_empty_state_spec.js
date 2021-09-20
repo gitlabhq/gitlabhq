@@ -7,7 +7,6 @@ describe('Pipeline editor empty state', () => {
   let wrapper;
   const defaultProvide = {
     glFeatures: {
-      pipelineEditorBranchSwitcher: true,
       pipelineEditorEmptyStateAction: false,
     },
     emptyStateIllustrationPath: 'my/svg/path',
@@ -81,18 +80,6 @@ describe('Pipeline editor empty state', () => {
 
       await findConfirmButton().vm.$emit('click');
       expect(wrapper.emitted(expectedEvent)).toHaveLength(1);
-    });
-
-    describe('with branch switcher feature flag OFF', () => {
-      it('does not render the file nav', () => {
-        createComponent({
-          provide: {
-            glFeatures: { pipelineEditorBranchSwitcher: false },
-          },
-        });
-
-        expect(findFileNav().exists()).toBe(false);
-      });
     });
   });
 });

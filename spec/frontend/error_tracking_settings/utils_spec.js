@@ -11,12 +11,14 @@ describe('error tracking settings utils', () => {
       const emptyFrontendSettingsObject = {
         apiHost: '',
         enabled: false,
+        integrated: false,
         token: '',
         selectedProject: null,
       };
       const transformedEmptySettingsObject = {
         api_host: null,
         enabled: false,
+        integrated: false,
         token: null,
         project: null,
       };

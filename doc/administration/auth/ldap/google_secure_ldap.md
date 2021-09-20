@@ -87,6 +87,7 @@ values obtained during the LDAP client configuration earlier:
        password: 'd6V5H8nhMUW9AuDP25abXeLd'
        encryption: 'simple_tls'
        verify_certificates: true
+       retry_empty_result_with_codes: [80]
 
        tls_options:
          cert: |
@@ -159,6 +160,7 @@ values obtained during the LDAP client configuration earlier:
          password: 'd6V5H8nhMUW9AuDP25abXeLd'
          encryption: 'simple_tls'
          verify_certificates: true
+         retry_empty_result_with_codes: [80]
 
          tls_options:
            cert: |
@@ -213,7 +215,7 @@ values obtained during the LDAP client configuration earlier:
 ## Using encrypted credentials
 
 You can optionally store the `bind_dn` and `password` in a separate encrypted configuration file using the
-[same steps as the regular LDAP integration](index.md#using-encrypted-credentials).
+[same steps as the regular LDAP integration](index.md#use-encrypted-credentials).
 
 <!-- ## Troubleshooting
 

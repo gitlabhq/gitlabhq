@@ -407,7 +407,7 @@ describe('Board Store Mutations', () => {
   describe('MUTATE_ISSUE_SUCCESS', () => {
     it('updates issue in issues state', () => {
       const issues = {
-        436: { id: rawIssue.id },
+        [rawIssue.id]: { id: rawIssue.id },
       };
 
       state = {
@@ -419,7 +419,7 @@ describe('Board Store Mutations', () => {
         issue: rawIssue,
       });
 
-      expect(state.boardItems).toEqual({ 436: { ...mockIssue, id: 436 } });
+      expect(state.boardItems).toEqual({ [mockIssue.id]: mockIssue });
     });
   });
 
@@ -545,7 +545,7 @@ describe('Board Store Mutations', () => {
       expect(state.groupProjectsFlags.isLoading).toBe(true);
     });
 
-    it('Should set isLoading in groupProjectsFlags to true in state when fetchNext is true', () => {
+    it('Should set isLoadingMore in groupProjectsFlags to true in state when fetchNext is true', () => {
       mutations[types.REQUEST_GROUP_PROJECTS](state, true);
 
       expect(state.groupProjectsFlags.isLoadingMore).toBe(true);

@@ -195,7 +195,7 @@ You can use this snippet: `https://gitlab.com/gitlab-org/gitlab/snippets/1924954
 You can execute the script from the `gdk/gitlab` directory like this:
 
 ```shell
-bundle exec rails r  /path_to_sript/script.rb project_name /path_to_extracted_project request_store_enabled
+bundle exec rails r  /path_to_script/script.rb project_name /path_to_extracted_project request_store_enabled
 ```
 
 ## Troubleshooting

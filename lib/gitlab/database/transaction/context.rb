@@ -6,9 +6,8 @@ module Gitlab
       class Context
         attr_reader :context
 
-        LOG_DEPTH_THRESHOLD = 8
-        LOG_SAVEPOINTS_THRESHOLD = 32
-        LOG_DURATION_S_THRESHOLD = 300
+        LOG_SAVEPOINTS_THRESHOLD = 1    # 1 `SAVEPOINT` created in a transaction
+        LOG_DURATION_S_THRESHOLD = 120  # transaction that is running for 2 minutes or longer
         LOG_THROTTLE_DURATION = 1
 
         def initialize
@@ -17,6 +16,10 @@ module Gitlab
 
         def set_start_time
           @context[:start_time] = current_timestamp
+        end
+
+        def set_depth(depth)
+          @context[:depth] = [@context[:depth].to_i, depth].max
         end
 
         def increment_savepoints
@@ -31,12 +34,13 @@ module Gitlab
           @context[:releases] = @context[:releases].to_i + 1
         end
 
-        def set_depth(depth)
-          @context[:depth] = [@context[:depth].to_i, depth].max
-        end
-
         def track_sql(sql)
           (@context[:queries] ||= []).push(sql)
+        end
+
+        def track_backtrace(backtrace)
+          cleaned_backtrace = Gitlab::BacktraceCleaner.clean_backtrace(backtrace)
+          (@context[:backtraces] ||= []).push(cleaned_backtrace)
         end
 
         def duration
@@ -45,28 +49,18 @@ module Gitlab
           current_timestamp - @context[:start_time]
         end
 
-        def depth_threshold_exceeded?
-          @context[:depth].to_i > LOG_DEPTH_THRESHOLD
-        end
-
         def savepoints_threshold_exceeded?
-          @context[:savepoints].to_i > LOG_SAVEPOINTS_THRESHOLD
+          @context[:savepoints].to_i >= LOG_SAVEPOINTS_THRESHOLD
         end
 
         def duration_threshold_exceeded?
-          duration.to_i > LOG_DURATION_S_THRESHOLD
-        end
-
-        def log_savepoints?
-          depth_threshold_exceeded? || savepoints_threshold_exceeded?
-        end
-
-        def log_duration?
-          duration_threshold_exceeded?
+          duration.to_i >= LOG_DURATION_S_THRESHOLD
         end
 
         def should_log?
-          !logged_already? && (log_savepoints? || log_duration?)
+          return false if logged_already?
+
+          savepoints_threshold_exceeded? || duration_threshold_exceeded?
         end
 
         def commit
@@ -75,6 +69,10 @@ module Gitlab
 
         def rollback
           log(:rollback)
+        end
+
+        def backtraces
+          @context[:backtraces].to_a
         end
 
         private
@@ -110,7 +108,8 @@ module Gitlab
             savepoints_count: @context[:savepoints].to_i,
             rollbacks_count: @context[:rollbacks].to_i,
             releases_count: @context[:releases].to_i,
-            sql: queries
+            sql: queries,
+            savepoint_backtraces: backtraces
           }
 
           application_info(attributes)

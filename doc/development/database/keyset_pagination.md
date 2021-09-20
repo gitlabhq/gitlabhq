@@ -36,7 +36,8 @@ Keyset pagination works without any configuration for simple ActiveRecord querie
 - Order by one column.
 - Order by two columns, where the last column is the primary key.
 
-The library can detect nullable and non-distinct columns and based on these, it will add extra ordering using the primary key. This is necessary because keyset pagination expects distinct order by values:
+The library detects nullable and non-distinct columns and based on these, adds extra ordering
+using the primary key. This is necessary because keyset pagination expects distinct order by values:
 
 ```ruby
 Project.order(:created_at).keyset_paginate.records # ORDER BY created_at, id
@@ -79,7 +80,7 @@ cursor = paginator.cursor_for_next_page # encoded column attributes for the next
 paginator = Project.order(:name).keyset_paginate(cursor: cursor).records # loading the next page
 ```
 
-Since keyset pagination does not support page numbers, we are restricted to go to the following pages:
+Because keyset pagination does not support page numbers, we are restricted to go to the following pages:
 
 - Next page
 - Previous page
@@ -111,7 +112,8 @@ In the HAML file, we can render the records:
 
 The performance of the keyset pagination depends on the database index configuration and the number of columns we use in the `ORDER BY` clause.
 
-In case we order by the primary key (`id`), then the generated queries will be efficient since the primary key is covered by a database index.
+In case we order by the primary key (`id`), then the generated queries are efficient because
+the primary key is covered by a database index.
 
 When two or more columns are used in the `ORDER BY` clause, it's advised to check the generated database query and make sure that the correct index configuration is used. More information can be found on the [pagination guideline page](pagination_guidelines.md#index-coverage).
 
@@ -149,7 +151,9 @@ puts paginator2.records.to_a # UNION query
 
 ## Complex order configuration
 
-Common `ORDER BY` configurations will be handled by the `keyset_paginate` method automatically so no manual configuration is needed. There are a few edge cases where order object configuration is necessary:
+Common `ORDER BY` configurations are handled by the `keyset_paginate` method automatically
+so no manual configuration is needed. There are a few edge cases where order object
+configuration is necessary:
 
 - `NULLS LAST` ordering.
 - Function-based ordering.
@@ -170,12 +174,13 @@ scope.keyset_paginate # raises: Gitlab::Pagination::Keyset::Paginator::Unsupport
 
 The `keyset_paginate` method raises an error because the order value on the query is a custom SQL string and not an [`Arel`](https://www.rubydoc.info/gems/arel) AST node. The keyset library cannot automatically infer configuration values from these kinds of queries.
 
-To make keyset pagination work, we need to configure custom order objects, to do so, we need to collect information about the order columns:
+To make keyset pagination work, we must configure custom order objects, to do so, we must
+collect information about the order columns:
 
-- `relative_position` can have duplicated values since no unique index is present.
-- `relative_position` can have null values because we don't have a not null constraint on the column. For this, we need to determine where will we see NULL values, at the beginning of the resultset or the end (`NULLS LAST`).
-- Keyset pagination requires distinct order columns, so we'll need to add the primary key (`id`) to make the order distinct.
-- Jumping to the last page and paginating backwards actually reverses the `ORDER BY` clause. For this, we'll need to provide the reversed `ORDER BY` clause.
+- `relative_position` can have duplicated values because no unique index is present.
+- `relative_position` can have null values because we don't have a not null constraint on the column. For this, we must determine where we see NULL values, at the beginning of the result set, or the end (`NULLS LAST`).
+- Keyset pagination requires distinct order columns, so we must add the primary key (`id`) to make the order distinct.
+- Jumping to the last page and paginating backwards actually reverses the `ORDER BY` clause. For this, we must provide the reversed `ORDER BY` clause.
 
 Example:
 
@@ -206,7 +211,8 @@ scope.keyset_paginate.records # works
 
 ### Function-based ordering
 
-In the following example, we multiply the `id` by 10 and ordering by that value. Since the `id` column is unique, we need to define only one column:
+In the following example, we multiply the `id` by 10 and order by that value. Because the `id`
+column is unique, we define only one column:
 
 ```ruby
 order = Gitlab::Pagination::Keyset::Order.build([
@@ -233,7 +239,8 @@ The `add_to_projections` flag tells the paginator to expose the column expressio
 
 ### `iid` based ordering
 
-When ordering issues, the database ensures that we'll have distinct `iid` values within a project. Ordering by one column is enough to make the pagination work if the `project_id` filter is present:
+When ordering issues, the database ensures that we have distinct `iid` values in a project.
+Ordering by one column is enough to make the pagination work if the `project_id` filter is present:
 
 ```ruby
 order = Gitlab::Pagination::Keyset::Order.build([

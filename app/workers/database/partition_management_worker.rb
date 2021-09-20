@@ -12,7 +12,7 @@ module Database
     idempotent!
 
     def perform
-      Gitlab::Database::Partitioning::PartitionManager.new.sync_partitions
+      Gitlab::Database::Partitioning.sync_partitions
     ensure
       Gitlab::Database::Partitioning::PartitionMonitoring.new.report_metrics
     end

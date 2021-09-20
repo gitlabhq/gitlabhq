@@ -32,10 +32,10 @@ GET /projects/:id/pipelines
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `status`  | string  | no       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
+| `source`  | string  | no       | In [GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325439), how the pipeline was triggered, one of: `push`, `web`, `trigger`, `schedule`, `api`, `external`, `pipeline`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, `ondemand_dast_scan`, or `ondemand_dast_validation`. |
 | `ref`     | string  | no       | The ref of pipelines |
 | `sha`     | string  | no       | The SHA of pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
-| `name`| string  | no       | _([Deprecated in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336953))_ The name of the user who triggered pipelines |
 | `username`| string  | no       | The username of the user who triggered pipelines |
 | `updated_after` | datetime | no | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime | no | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -55,6 +55,7 @@ Example of response
     "iid": 12,
     "project_id": 1,
     "status": "pending",
+    "soure": "push",
     "ref": "new-pipeline",
     "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
     "web_url": "https://example.com/foo/bar/pipelines/47",
@@ -66,6 +67,7 @@ Example of response
     "iid": 13,
     "project_id": 1,
     "status": "pending",
+    "soure": "web",
     "ref": "new-pipeline",
     "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
     "web_url": "https://example.com/foo/bar/pipelines/48",
@@ -212,7 +214,7 @@ Sample response:
 
 ### Get a pipeline's test report summary
 
-> Introduced in [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471) in GitLab 14.2.
 
 NOTE:
 This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.

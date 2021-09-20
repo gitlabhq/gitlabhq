@@ -53,7 +53,6 @@ const importAll = ({ state, dispatch }) => {
 
 const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) => {
   const nextPage = state.pageInfo.page + 1;
-  commit(types.SET_PAGE, nextPage);
   commit(types.REQUEST_REPOS);
 
   const { provider, filter } = state;
@@ -67,11 +66,10 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
       }),
     )
     .then(({ data }) => {
+      commit(types.SET_PAGE, nextPage);
       commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true }));
     })
     .catch((e) => {
-      commit(types.SET_PAGE, nextPage - 1);
-
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
       } else if (tooManyRequests(e)) {

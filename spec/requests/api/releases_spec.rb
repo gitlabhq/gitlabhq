@@ -839,7 +839,7 @@ RSpec.describe API::Releases do
 
       context 'when a valid token is provided' do
         it 'creates the release for a running job' do
-          job.update!(status: :running)
+          job.update!(status: :running, project: project)
           post api("/projects/#{project.id}/releases"), params: params.merge(job_token: job.token)
 
           expect(response).to have_gitlab_http_status(:created)

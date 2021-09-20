@@ -1,7 +1,8 @@
 global:
   appConfig:
     enableUsagePing: false
-  imagePullPolicy: Always
+  image:
+    pullPolicy: Always
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/ttl: 10

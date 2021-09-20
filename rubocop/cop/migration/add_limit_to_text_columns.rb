@@ -13,8 +13,13 @@ module RuboCop
       class AddLimitToTextColumns < RuboCop::Cop::Cop
         include MigrationHelpers
 
+        TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE = 2021_09_10_00_00_00
+
         MSG = 'Text columns should always have a limit set (255 is suggested). ' \
-          'You can add a limit to a `text` column by using `add_text_limit`'
+          'You can add a limit to a `text` column by using `add_text_limit` or by using `.text... limit: 255` inside `create_table`'
+
+        TEXT_LIMIT_ATTRIBUTE_NOT_ALLOWED = 'Text columns should always have a limit set (255 is suggested). Using limit: is not supported in this version. ' \
+        'You can add a limit to a `text` column by using `add_text_limit` or `.text_limit` inside `create_table`'
 
         def_node_matcher :reverting?, <<~PATTERN
           (def :down ...)
@@ -37,14 +42,28 @@ module RuboCop
           node.each_descendant(:send) do |send_node|
             next unless text_operation?(send_node)
 
-            # We require a limit for the same table and attribute name
-            if text_limit_missing?(node, *table_and_attribute_name(send_node))
-              add_offense(send_node, location: :selector)
+            if text_operation_with_limit?(send_node)
+              add_offense(send_node, location: :selector, message: TEXT_LIMIT_ATTRIBUTE_NOT_ALLOWED) if version(node) < TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE
+            else
+              # We require a limit for the same table and attribute name
+              if text_limit_missing?(node, *table_and_attribute_name(send_node))
+                add_offense(send_node, location: :selector)
+              end
             end
           end
         end
 
         private
+
+        def text_operation_with_limit?(node)
+          migration_method = node.children[1]
+
+          return unless migration_method == :text
+
+          if attributes = node.children[3]
+            attributes.pairs.find { |pair| pair.key.value == :limit }.present?
+          end
+        end
 
         def text_operation?(node)
           # Don't complain about text arrays

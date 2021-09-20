@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'octokit'
-
 module QA
   module Resource
     class ProjectImportedFromGithub < Resource::Project
@@ -68,7 +66,7 @@ module QA
           response = post(request_url(api_trigger_mirror_pull_path), nil)
 
           Runtime::Logger.info "Mirror pull request response: #{response}"
-          response.code == Support::Api::HTTP_STATUS_OK
+          response.code == Support::API::HTTP_STATUS_OK
         end
       end
 

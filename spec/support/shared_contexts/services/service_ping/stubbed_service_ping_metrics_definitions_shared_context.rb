@@ -6,21 +6,25 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
   let(:metrics_definitions) { standard_metrics + subscription_metrics + operational_metrics + optional_metrics }
   let(:standard_metrics) do
     [
-      metric_attributes('uuid', "standard")
+      metric_attributes('uuid', 'standard'),
+      metric_attributes('recorded_at', 'standard'),
+      metric_attributes('settings.collected_data_categories', 'standard', 'object')
     ]
   end
 
   let(:operational_metrics) do
     [
-      metric_attributes('counts.merge_requests', "operational"),
+      metric_attributes('counts.merge_requests', 'operational'),
       metric_attributes('counts.todos', "operational")
     ]
   end
 
   let(:optional_metrics) do
     [
-      metric_attributes('counts.boards', "optional"),
-      metric_attributes('gitaly.filesystems', '').except('data_category')
+      metric_attributes('counts.boards', 'optional', 'number'),
+      metric_attributes('gitaly.filesystems', '').except('data_category'),
+      metric_attributes('usage_activity_by_stage.monitor.projects_with_enabled_alert_integrations_histogram', 'optional', 'object'),
+      metric_attributes('topology', 'optional', 'object')
     ]
   end
 
@@ -34,10 +38,11 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
     )
   end
 
-  def metric_attributes(key_path, category)
+  def metric_attributes(key_path, category, value_type = 'string')
     {
       'key_path' => key_path,
-      'data_category' => category
+      'data_category' => category,
+      'value_type' => value_type
     }
   end
 end

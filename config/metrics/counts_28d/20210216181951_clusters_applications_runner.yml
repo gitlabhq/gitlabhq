@@ -7,9 +7,9 @@ product_stage: verify
 product_group: group::runner
 product_category: runner
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
-data_source: 
+data_source: database
 distribution:
 - ce
 - ee
@@ -17,5 +17,5 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true
 performance_indicator_type: []
+milestone: "<13.9"

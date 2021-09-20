@@ -13,10 +13,16 @@ module Gitlab
       # balancer with said hosts. Requests may continue to use the old hosts
       # until they complete.
       class ServiceDiscovery
+        EmptyDnsResponse = Class.new(StandardError)
+
         attr_reader :interval, :record, :record_type, :disconnect_timeout,
                     :load_balancer
 
         MAX_SLEEP_ADJUSTMENT = 10
+
+        MAX_DISCOVERY_RETRIES = 3
+
+        RETRY_DELAY_RANGE = (0.1..0.2).freeze
 
         RECORD_TYPES = {
           'A' => Net::DNS::A,
@@ -43,14 +49,14 @@ module Gitlab
         # use_tcp - Use TCP instaed of UDP to look up resources
         # load_balancer - The load balancer instance to use
         def initialize(
+          load_balancer,
           nameserver:,
           port:,
           record:,
           record_type: 'A',
           interval: 60,
           disconnect_timeout: 120,
-          use_tcp: false,
-          load_balancer: LoadBalancing.proxy.load_balancer
+          use_tcp: false
         )
           @nameserver = nameserver
           @port = port
@@ -76,15 +82,23 @@ module Gitlab
         end
 
         def perform_service_discovery
-          refresh_if_necessary
-        rescue StandardError => error
-          # Any exceptions that might occur should be reported to
-          # Sentry, instead of silently terminating this thread.
-          Gitlab::ErrorTracking.track_exception(error)
+          MAX_DISCOVERY_RETRIES.times do
+            return refresh_if_necessary
+          rescue StandardError => error
+            # Any exceptions that might occur should be reported to
+            # Sentry, instead of silently terminating this thread.
+            Gitlab::ErrorTracking.track_exception(error)
 
-          Gitlab::AppLogger.error(
-            "Service discovery encountered an error: #{error.message}"
-          )
+            Gitlab::Database::LoadBalancing::Logger.error(
+              event: :service_discovery_failure,
+              message: "Service discovery encountered an error: #{error.message}",
+              host_list_length: load_balancer.host_list.length
+            )
+
+            # Slightly randomize the retry delay so that, in the case of a total
+            # dns outage, all starting services do not pressure the dns server at the same time.
+            sleep(rand(RETRY_DELAY_RANGE))
+          end
 
           interval
         end
@@ -99,7 +113,22 @@ module Gitlab
 
           current = addresses_from_load_balancer
 
-          replace_hosts(from_dns) if from_dns != current
+          if from_dns != current
+            ::Gitlab::Database::LoadBalancing::Logger.info(
+              event: :host_list_update,
+              message: "Updating the host list for service discovery",
+              host_list_length: from_dns.length,
+              old_host_list_length: current.length
+            )
+            replace_hosts(from_dns)
+          else
+            ::Gitlab::Database::LoadBalancing::Logger.info(
+              event: :host_list_unchanged,
+              message: "Unchanged host list for service discovery",
+              host_list_length: from_dns.length,
+              old_host_list_length: current.length
+            )
+          end
 
           interval
         end
@@ -140,6 +169,8 @@ module Gitlab
             when Net::DNS::SRV
               addresses_from_srv_record(response)
             end
+
+          raise EmptyDnsResponse if addresses.empty?
 
           # Addresses are sorted so we can directly compare the old and new
           # addresses, without having to use any additional data structures.

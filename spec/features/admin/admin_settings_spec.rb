@@ -269,10 +269,7 @@ RSpec.describe 'Admin updates settings' do
     end
 
     context 'Integrations page' do
-      let(:mailgun_events_receiver_enabled) { true }
-
       before do
-        stub_feature_flags(mailgun_events_receiver: mailgun_events_receiver_enabled)
         visit general_admin_application_settings_path
       end
 
@@ -286,26 +283,16 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.hide_third_party_offers).to be true
       end
 
-      context 'when mailgun_events_receiver feature flag is enabled' do
-        it 'enabling Mailgun events', :aggregate_failures do
-          page.within('.as-mailgun') do
-            check 'Enable Mailgun event receiver'
-            fill_in 'Mailgun HTTP webhook signing key', with: 'MAILGUN_SIGNING_KEY'
-            click_button 'Save changes'
-          end
-
-          expect(page).to have_content 'Application settings saved successfully'
-          expect(current_settings.mailgun_events_enabled).to be true
-          expect(current_settings.mailgun_signing_key).to eq 'MAILGUN_SIGNING_KEY'
+      it 'enabling Mailgun events', :aggregate_failures do
+        page.within('.as-mailgun') do
+          check 'Enable Mailgun event receiver'
+          fill_in 'Mailgun HTTP webhook signing key', with: 'MAILGUN_SIGNING_KEY'
+          click_button 'Save changes'
         end
-      end
 
-      context 'when mailgun_events_receiver feature flag is disabled' do
-        let(:mailgun_events_receiver_enabled) { false }
-
-        it 'does not have mailgun' do
-          expect(page).not_to have_selector('.as-mailgun')
-        end
+        expect(page).to have_content 'Application settings saved successfully'
+        expect(current_settings.mailgun_events_enabled).to be true
+        expect(current_settings.mailgun_signing_key).to eq 'MAILGUN_SIGNING_KEY'
       end
     end
 
@@ -559,6 +546,50 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.dns_rebinding_protection_enabled).to be false
       end
 
+      it 'changes User and IP Rate Limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-ip-limits') do
+          check 'Enable unauthenticated API request rate limit'
+          fill_in 'Maximum unauthenticated API requests per rate limit period per IP', with: 100
+          fill_in 'Unauthenticated API rate limit period in seconds', with: 200
+
+          check 'Enable unauthenticated web request rate limit'
+          fill_in 'Maximum unauthenticated web requests per rate limit period per IP', with: 300
+          fill_in 'Unauthenticated web rate limit period in seconds', with: 400
+
+          check 'Enable authenticated API request rate limit'
+          fill_in 'Maximum authenticated API requests per rate limit period per user', with: 500
+          fill_in 'Authenticated API rate limit period in seconds', with: 600
+
+          check 'Enable authenticated web request rate limit'
+          fill_in 'Maximum authenticated web requests per rate limit period per user', with: 700
+          fill_in 'Authenticated web rate limit period in seconds', with: 800
+
+          fill_in 'Plain-text response to send to clients that hit a rate limit', with: 'Custom message'
+
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+
+        expect(current_settings).to have_attributes(
+          throttle_unauthenticated_api_enabled: true,
+          throttle_unauthenticated_api_requests_per_period: 100,
+          throttle_unauthenticated_api_period_in_seconds: 200,
+          throttle_unauthenticated_enabled: true,
+          throttle_unauthenticated_requests_per_period: 300,
+          throttle_unauthenticated_period_in_seconds: 400,
+          throttle_authenticated_api_enabled: true,
+          throttle_authenticated_api_requests_per_period: 500,
+          throttle_authenticated_api_period_in_seconds: 600,
+          throttle_authenticated_web_enabled: true,
+          throttle_authenticated_web_requests_per_period: 700,
+          throttle_authenticated_web_period_in_seconds: 800,
+          rate_limiting_response_text: 'Custom message'
+        )
+      end
+
       it 'changes Issues rate limits settings' do
         visit network_admin_application_settings_path
 
@@ -569,6 +600,20 @@ RSpec.describe 'Admin updates settings' do
 
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.issues_create_limit).to eq(0)
+      end
+
+      it 'changes Files API rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('[data-testid="files-limits-settings"]') do
+          check 'Enable unauthenticated API request rate limit'
+          fill_in 'Max unauthenticated API requests per period per IP', with: 10
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.throttle_unauthenticated_files_api_enabled).to be true
+        expect(current_settings.throttle_unauthenticated_files_api_requests_per_period).to eq(10)
       end
     end
 

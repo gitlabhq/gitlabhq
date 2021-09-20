@@ -94,20 +94,6 @@ RSpec.describe Projects::FeatureFlagsController do
       is_expected.to match_response_schema('feature_flags')
     end
 
-    it 'returns false for active when the feature flag is inactive even if it has an active scope' do
-      create(:operations_feature_flag_scope,
-             feature_flag: feature_flag_inactive,
-             environment_scope: 'production',
-             active: true)
-
-      subject
-
-      expect(response).to have_gitlab_http_status(:ok)
-      feature_flag_json = json_response['feature_flags'].second
-
-      expect(feature_flag_json['active']).to eq(false)
-    end
-
     it 'returns the feature flag iid' do
       subject
 
@@ -181,7 +167,7 @@ RSpec.describe Projects::FeatureFlagsController do
     subject { get(:show, params: params, format: :json) }
 
     let!(:feature_flag) do
-      create(:operations_feature_flag, :legacy_flag, project: project)
+      create(:operations_feature_flag, project: project)
     end
 
     let(:params) do
@@ -197,7 +183,7 @@ RSpec.describe Projects::FeatureFlagsController do
 
       expect(json_response['name']).to eq(feature_flag.name)
       expect(json_response['active']).to eq(feature_flag.active)
-      expect(json_response['version']).to eq('legacy_flag')
+      expect(json_response['version']).to eq('new_version_flag')
     end
 
     it 'matches json schema' do
@@ -245,46 +231,6 @@ RSpec.describe Projects::FeatureFlagsController do
       end
     end
 
-    context 'when feature flags have additional scopes' do
-      context 'when there is at least one active scope' do
-        let!(:feature_flag) do
-          create(:operations_feature_flag, project: project, active: false)
-        end
-
-        let!(:feature_flag_scope_production) do
-          create(:operations_feature_flag_scope,
-                feature_flag: feature_flag,
-                environment_scope: 'review/*',
-                active: true)
-        end
-
-        it 'returns false for active' do
-          subject
-
-          expect(json_response['active']).to eq(false)
-        end
-      end
-
-      context 'when all scopes are inactive' do
-        let!(:feature_flag) do
-          create(:operations_feature_flag, project: project, active: false)
-        end
-
-        let!(:feature_flag_scope_production) do
-          create(:operations_feature_flag_scope,
-                feature_flag: feature_flag,
-                environment_scope: 'production',
-                active: false)
-        end
-
-        it 'recognizes the feature flag as inactive' do
-          subject
-
-          expect(json_response['active']).to be_falsy
-        end
-      end
-    end
-
     context 'with a version 2 feature flag' do
       let!(:new_version_feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project)
@@ -319,22 +265,6 @@ RSpec.describe Projects::FeatureFlagsController do
 
   describe 'GET edit' do
     subject { get(:edit, params: params) }
-
-    context 'with legacy flags' do
-      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project) }
-
-      let(:params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          iid: feature_flag.iid
-        }
-      end
-
-      it 'returns not found' do
-        is_expected.to have_gitlab_http_status(:not_found)
-      end
-    end
 
     context 'with new version flags' do
       let!(:feature_flag) { create(:operations_feature_flag, project: project) }
@@ -376,14 +306,6 @@ RSpec.describe Projects::FeatureFlagsController do
 
       expect(json_response['name']).to eq('my_feature_flag')
       expect(json_response['active']).to be_truthy
-    end
-
-    it 'creates a default scope' do
-      subject
-
-      expect(json_response['scopes'].count).to eq(1)
-      expect(json_response['scopes'].first['environment_scope']).to eq('*')
-      expect(json_response['scopes'].first['active']).to be_truthy
     end
 
     it 'matches json schema' do
@@ -432,119 +354,6 @@ RSpec.describe Projects::FeatureFlagsController do
 
       it 'returns 404' do
         is_expected.to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'when creates additional scope' do
-      let(:params) do
-        view_params.merge({
-          operations_feature_flag: {
-            name: 'my_feature_flag',
-            active: true,
-            scopes_attributes: [{ environment_scope: '*', active: true },
-                                { environment_scope: 'production', active: false }]
-          }
-        })
-      end
-
-      it 'creates feature flag scopes successfully' do
-        expect { subject }.to change { Operations::FeatureFlagScope.count }.by(2)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'creates feature flag scopes in a correct order' do
-        subject
-
-        expect(json_response['scopes'].first['environment_scope']).to eq('*')
-        expect(json_response['scopes'].second['environment_scope']).to eq('production')
-      end
-
-      context 'when default scope is not placed first' do
-        let(:params) do
-          view_params.merge({
-            operations_feature_flag: {
-              name: 'my_feature_flag',
-              active: true,
-              scopes_attributes: [{ environment_scope: 'production', active: false },
-                                  { environment_scope: '*', active: true }]
-            }
-          })
-        end
-
-        it 'returns 400' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message'])
-            .to include('Default scope has to be the first element')
-        end
-      end
-    end
-
-    context 'when creates additional scope with a percentage rollout' do
-      it 'creates a strategy for the scope' do
-        params = view_params.merge({
-          operations_feature_flag: {
-            name: 'my_feature_flag',
-            active: true,
-            scopes_attributes: [{ environment_scope: '*', active: true },
-                                { environment_scope: 'production', active: false,
-                                  strategies: [{ name: 'gradualRolloutUserId',
-                                                 parameters: { groupId: 'default', percentage: '42' } }] }]
-          }
-        })
-
-        post(:create, params: params, format: :json)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        production_strategies_json = json_response['scopes'].second['strategies']
-        expect(production_strategies_json).to eq([{
-          'name' => 'gradualRolloutUserId',
-          'parameters' => { "groupId" => "default", "percentage" => "42" }
-        }])
-      end
-    end
-
-    context 'when creates additional scope with a userWithId strategy' do
-      it 'creates a strategy for the scope' do
-        params = view_params.merge({
-          operations_feature_flag: {
-            name: 'my_feature_flag',
-            active: true,
-            scopes_attributes: [{ environment_scope: '*', active: true },
-                                { environment_scope: 'production', active: false,
-                                  strategies: [{ name: 'userWithId',
-                                                 parameters: { userIds: '123,4,6722' } }] }]
-          }
-        })
-
-        post(:create, params: params, format: :json)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        production_strategies_json = json_response['scopes'].second['strategies']
-        expect(production_strategies_json).to eq([{
-          'name' => 'userWithId',
-          'parameters' => { "userIds" => "123,4,6722" }
-        }])
-      end
-    end
-
-    context 'when creates an additional scope without a strategy' do
-      it 'creates a default strategy' do
-        params = view_params.merge({
-          operations_feature_flag: {
-            name: 'my_feature_flag',
-            active: true,
-            scopes_attributes: [{ environment_scope: '*', active: true }]
-          }
-        })
-
-        post(:create, params: params, format: :json)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        default_strategies_json = json_response['scopes'].first['strategies']
-        expect(default_strategies_json).to eq([{ "name" => "default", "parameters" => {} }])
       end
     end
 
@@ -744,7 +553,7 @@ RSpec.describe Projects::FeatureFlagsController do
   describe 'DELETE destroy.json' do
     subject { delete(:destroy, params: params, format: :json) }
 
-    let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project) }
+    let!(:feature_flag) { create(:operations_feature_flag, project: project) }
 
     let(:params) do
       {
@@ -760,10 +569,6 @@ RSpec.describe Projects::FeatureFlagsController do
 
     it 'deletes one feature flag' do
       expect { subject }.to change { Operations::FeatureFlag.count }.by(-1)
-    end
-
-    it 'destroys the default scope' do
-      expect { subject }.to change { Operations::FeatureFlagScope.count }.by(-1)
     end
 
     it 'matches json schema' do
@@ -789,14 +594,6 @@ RSpec.describe Projects::FeatureFlagsController do
 
       it 'returns not found' do
         is_expected.to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'when there is an additional scope' do
-      let!(:scope) { create_scope(feature_flag, 'production', false) }
-
-      it 'destroys the default scope and production scope' do
-        expect { subject }.to change { Operations::FeatureFlagScope.count }.by(-2)
       end
     end
 
@@ -828,70 +625,9 @@ RSpec.describe Projects::FeatureFlagsController do
       put(:update, params: params, format: :json, as: :json)
     end
 
-    context 'with a legacy feature flag' do
-      subject { put(:update, params: params, format: :json) }
-
-      let!(:feature_flag) do
-        create(:operations_feature_flag,
-               :legacy_flag,
-               name: 'ci_live_trace',
-               active: true,
-               project: project)
-      end
-
-      let(:params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          iid: feature_flag.iid,
-          operations_feature_flag: {
-            name: 'ci_new_live_trace'
-          }
-        }
-      end
-
-      context 'when user is reporter' do
-        let(:user) { reporter }
-
-        it 'returns 404' do
-          is_expected.to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context "when changing default scope's spec" do
-        let(:params) do
-          {
-            namespace_id: project.namespace,
-            project_id: project,
-            iid: feature_flag.iid,
-            operations_feature_flag: {
-              scopes_attributes: [
-                {
-                  id: feature_flag.default_scope.id,
-                  environment_scope: 'review/*'
-                }
-              ]
-            }
-          }
-        end
-
-        it 'returns 400' do
-          is_expected.to have_gitlab_http_status(:bad_request)
-        end
-      end
-
-      it 'does not update a legacy feature flag' do
-        put_request(feature_flag, name: 'ci_new_live_trace')
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq(["Legacy feature flags are read-only"])
-      end
-    end
-
     context 'with a version 2 feature flag' do
       let!(:new_version_flag) do
         create(:operations_feature_flag,
-               :new_version_flag,
                name: 'new-feature',
                active: true,
                project: project)

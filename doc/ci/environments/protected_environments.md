@@ -7,7 +7,7 @@ type: concepts, howto
 
 # Protected environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in GitLab 11.3.
 
 [Environments](../environments/index.md) can be used for different reasons:
 
@@ -157,15 +157,9 @@ For more information, see [Deployment safety](deployment_safety.md).
 
 ## Group-level protected environments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in [GitLab Premium](https://about.gitlab.com/pricing/) 14.0.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-group-level-protected-environments). **(FREE SELF)**
-
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in GitLab 14.0. [Deployed behind the `group_level_protected_environments` flag](../../administration/feature_flags.md), disabled by default.
+> - [Feature flag `group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) removed in GitLab 14.3.
+> - [Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) on GitLab and on GitLab.com in 14.3.
 
 Typically, large enterprise organizations have an explicit permission boundary
 between [developers and operators](https://about.gitlab.com/topics/devops/).
@@ -251,32 +245,13 @@ To protect a group-level environment:
 
 1. Make sure your environments have the correct
    [`deployment_tier`](index.md#deployment-tier-of-environments) defined in
-   `gitlab-ci.yml`.
+   `.gitlab-ci.yml`.
 1. Configure the group-level protected environments via the
    [REST API](../../api/group_protected_environments.md).
 
 NOTE:
 Configuration [via the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/325249)
 is scheduled for a later release.
-
-### Enable or disable Group-level protected environments **(FREE SELF)**
-
-Group-level protected environments is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:group_level_protected_environments)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:group_level_protected_environments)
-```
 
 <!-- ## Troubleshooting
 

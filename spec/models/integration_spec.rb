@@ -825,4 +825,20 @@ RSpec.describe Integration do
         .to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES)
     end
   end
+
+  describe '#password_fields' do
+    it 'returns all fields with type `password`' do
+      allow(subject).to receive(:fields).and_return([
+        { name: 'password', type: 'password' },
+        { name: 'secret', type: 'password' },
+        { name: 'public', type: 'text' }
+      ])
+
+      expect(subject.password_fields).to match_array(%w[password secret])
+    end
+
+    it 'returns an empty array if no password fields exist' do
+      expect(subject.password_fields).to eq([])
+    end
+  end
 end

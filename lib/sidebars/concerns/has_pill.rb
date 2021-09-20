@@ -21,8 +21,8 @@ module Sidebars
         {}
       end
 
-      def format_cached_count(count_service, count)
-        if count > count_service::CACHED_COUNT_THRESHOLD
+      def format_cached_count(threshold, count)
+        if count > threshold
           number_to_human(
             count,
             units: { thousand: 'k', million: 'm' }, precision: 1, significant: false, format: '%n%u'

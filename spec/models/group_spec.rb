@@ -30,10 +30,12 @@ RSpec.describe Group do
     it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_one(:dependency_proxy_setting) }
+    it { is_expected.to have_one(:dependency_proxy_image_ttl_policy) }
     it { is_expected.to have_many(:dependency_proxy_blobs) }
     it { is_expected.to have_many(:dependency_proxy_manifests) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
+    it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -80,7 +82,7 @@ RSpec.describe Group do
           group = build(:group, parent: build(:namespace))
 
           expect(group).not_to be_valid
-          expect(group.errors[:parent_id].first).to eq('a group cannot have a user namespace as its parent')
+          expect(group.errors[:parent_id].first).to eq('user namespace cannot be the parent of another namespace')
         end
 
         it 'allows a group to have another group as its parent' do
@@ -2273,19 +2275,27 @@ RSpec.describe Group do
   end
 
   describe '.groups_including_descendants_by' do
-    it 'returns the expected groups for a group and its descendants' do
-      parent_group1 = create(:group)
-      child_group1 = create(:group, parent: parent_group1)
-      child_group2 = create(:group, parent: parent_group1)
+    let_it_be(:parent_group1) { create(:group) }
+    let_it_be(:parent_group2) { create(:group) }
+    let_it_be(:extra_group)   { create(:group) }
+    let_it_be(:child_group1)  { create(:group, parent: parent_group1) }
+    let_it_be(:child_group2)  { create(:group, parent: parent_group1) }
+    let_it_be(:child_group3)  { create(:group, parent: parent_group2) }
 
-      parent_group2 = create(:group)
-      child_group3 = create(:group, parent: parent_group2)
+    subject { described_class.groups_including_descendants_by([parent_group2.id, parent_group1.id]) }
 
-      create(:group)
+    shared_examples 'returns the expected groups for a group and its descendants' do
+      specify { is_expected.to contain_exactly(parent_group1, parent_group2, child_group1, child_group2, child_group3) }
+    end
 
-      groups = described_class.groups_including_descendants_by([parent_group2.id, parent_group1.id])
+    it_behaves_like 'returns the expected groups for a group and its descendants'
 
-      expect(groups).to contain_exactly(parent_group1, parent_group2, child_group1, child_group2, child_group3)
+    context 'when :linear_group_including_descendants_by feature flag is disabled' do
+      before do
+        stub_feature_flags(linear_group_including_descendants_by: false)
+      end
+
+      it_behaves_like 'returns the expected groups for a group and its descendants'
     end
   end
 
@@ -2477,6 +2487,12 @@ RSpec.describe Group do
     end
   end
 
+  describe '#membership_locked?' do
+    it 'returns false' do
+      expect(build(:group)).not_to be_membership_locked
+    end
+  end
+
   describe '#default_owner' do
     let(:group) { build(:group) }
 
@@ -2619,6 +2635,26 @@ RSpec.describe Group do
     end
   end
 
+  describe '.organizations' do
+    it 'returns organizations belonging to the group' do
+      organization1 = create(:organization, group: group)
+      create(:organization)
+      organization3 = create(:organization, group: group)
+
+      expect(group.organizations).to contain_exactly(organization1, organization3)
+    end
+  end
+
+  describe '.contacts' do
+    it 'returns contacts belonging to the group' do
+      contact1 = create(:contact, group: group)
+      create(:contact)
+      contact3 = create(:contact, group: group)
+
+      expect(group.contacts).to contain_exactly(contact1, contact3)
+    end
+  end
+
   describe '#to_ability_name' do
     it 'returns group' do
       group = build(:group)
@@ -2694,6 +2730,42 @@ RSpec.describe Group do
       expect(count_service).to receive(:count)
 
       group.open_merge_requests_count
+    end
+  end
+
+  describe '#dependency_proxy_image_prefix' do
+    let_it_be(:group) { build_stubbed(:group, path: 'GroupWithUPPERcaseLetters') }
+
+    it 'converts uppercase letters to lowercase' do
+      expect(group.dependency_proxy_image_prefix).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
+    end
+
+    it 'removes the protocol' do
+      expect(group.dependency_proxy_image_prefix).not_to include('http')
+    end
+  end
+
+  describe '#dependency_proxy_image_ttl_policy' do
+    subject(:ttl_policy) { group.dependency_proxy_image_ttl_policy }
+
+    it 'builds a new policy if one does not exist', :aggregate_failures do
+      expect(ttl_policy.ttl).to eq(90)
+      expect(ttl_policy.enabled).to eq(false)
+      expect(ttl_policy.created_at).to be_nil
+      expect(ttl_policy.updated_at).to be_nil
+    end
+
+    context 'with existing policy' do
+      before do
+        group.dependency_proxy_image_ttl_policy.update!(ttl: 30, enabled: true)
+      end
+
+      it 'returns the policy if it already exists', :aggregate_failures do
+        expect(ttl_policy.ttl).to eq(30)
+        expect(ttl_policy.enabled).to eq(true)
+        expect(ttl_policy.created_at).not_to be_nil
+        expect(ttl_policy.updated_at).not_to be_nil
+      end
     end
   end
 end

@@ -90,6 +90,7 @@ callstack
 callstacks
 Camo
 canonicalized
+captcha
 CentOS
 Certbot
 changeset
@@ -160,7 +161,12 @@ deprovisions
 dequarantine
 dequarantined
 dequarantining
+deserialization
+deserialize
+deserializers
+deserializes
 DevOps
+Dhall
 disambiguates
 discoverability
 dismissable
@@ -209,6 +215,7 @@ fixup
 Flawfinder
 Flowdock
 Fluentd
+Flycheck
 Forgerock
 formatters
 Fugit
@@ -469,6 +476,7 @@ queryable
 Quicktime
 Rackspace
 Raspbian
+rbenv
 rbtrace
 Rdoc
 reachability
@@ -815,8 +823,10 @@ Worldline
 Xcode
 Xeon
 YouTrack
+ytt
 Yubico
 Zeitwerk
 Zendesk
+ZenTao
 zsh
 Zstandard

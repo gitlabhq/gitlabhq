@@ -24,6 +24,10 @@ module Types
                as: :issue_types,
                description: 'Filter by the given issue types.',
                required: false
+
+      argument :milestone_wildcard_id, ::Types::MilestoneWildcardIdEnum,
+               required: false,
+               description: 'Filter by milestone ID wildcard.'
     end
   end
 end

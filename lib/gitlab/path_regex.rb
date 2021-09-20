@@ -184,6 +184,10 @@ module Gitlab
       @repository_git_route_regex ||= /#{repository_route_regex}\.git/.freeze
     end
 
+    def repository_git_lfs_route_regex
+      @repository_git_lfs_route_regex ||= %r{#{repository_git_route_regex}\/(info\/lfs|gitlab-lfs)\/}.freeze
+    end
+
     def repository_wiki_git_route_regex
       @repository_wiki_git_route_regex ||= /#{full_namespace_route_regex}\.*\.wiki\.git/.freeze
     end

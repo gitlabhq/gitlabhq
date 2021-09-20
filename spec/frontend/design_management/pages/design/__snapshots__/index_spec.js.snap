@@ -25,7 +25,9 @@ exports[`Design management design index page renders design index 1`] = `
     <div
       class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
     >
-      <design-scaler-stub />
+      <design-scaler-stub
+        maxscale="2"
+      />
     </div>
   </div>
    
@@ -186,7 +188,9 @@ exports[`Design management design index page with error GlAlert is rendered in c
     <div
       class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
     >
-      <design-scaler-stub />
+      <design-scaler-stub
+        maxscale="2"
+      />
     </div>
   </div>
    

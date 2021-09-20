@@ -4,7 +4,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Features flags API
+# Feature flags API **(FREE SELF)**
 
 This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/index.md).
 

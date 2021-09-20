@@ -84,17 +84,20 @@ RSpec.describe BulkImportWorker do
 
         expect { subject.perform(bulk_import.id) }
           .to change(BulkImports::Tracker, :count)
-          .by(BulkImports::Stage.pipelines.size * 2)
+          .by(BulkImports::Groups::Stage.pipelines.size * 2)
 
         expect(entity_1.trackers).not_to be_empty
         expect(entity_2.trackers).not_to be_empty
       end
 
       context 'when there are created entities to process' do
-        it 'marks a batch of entities as started, enqueues EntityWorker, ExportRequestWorker and reenqueues' do
-          stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 1)
+        let_it_be(:bulk_import) { create(:bulk_import, :created) }
 
-          bulk_import = create(:bulk_import, :created)
+        before do
+          stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 1)
+        end
+
+        it 'marks a batch of entities as started, enqueues EntityWorker, ExportRequestWorker and reenqueues' do
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
 
@@ -105,6 +108,16 @@ RSpec.describe BulkImportWorker do
           subject.perform(bulk_import.id)
 
           expect(bulk_import.entities.map(&:status_name)).to contain_exactly(:created, :started)
+        end
+
+        context 'when there are project entities to process' do
+          it 'does not enqueue ExportRequestWorker' do
+            create(:bulk_import_entity, :created, :project_entity, bulk_import: bulk_import)
+
+            expect(BulkImports::ExportRequestWorker).not_to receive(:perform_async)
+
+            subject.perform(bulk_import.id)
+          end
         end
       end
 

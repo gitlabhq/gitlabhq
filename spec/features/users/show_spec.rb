@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User page' do
   include ExternalAuthorizationServiceHelpers
 
-  let_it_be(:user) { create(:user, bio: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
+  let_it_be(:user) { create(:user, bio: '<b>Lorem</b> <i>ipsum</i> dolor sit <a href="https://example.com">amet</a>') }
 
   subject(:visit_profile) { visit(user_path(user)) }
 
@@ -186,7 +186,17 @@ RSpec.describe 'User page' do
   end
 
   context 'with blocked profile' do
-    let_it_be(:user) { create(:user, state: :blocked) }
+    let_it_be(:user) do
+      create(
+        :user,
+        state: :blocked,
+        organization: 'GitLab - work info test',
+        job_title: 'Frontend Engineer',
+        pronunciation: 'pruh-nuhn-see-ay-shn'
+      )
+    end
+
+    let_it_be(:status) { create(:user_status, user: user, message: "Working hard!") }
 
     it 'shows no tab' do
       subject
@@ -211,7 +221,10 @@ RSpec.describe 'User page' do
       subject
 
       expect(page).not_to have_css(".profile-user-bio")
-      expect(page).not_to have_css(".profile-link-holder")
+      expect(page).not_to have_content('GitLab - work info test')
+      expect(page).not_to have_content('Frontend Engineer')
+      expect(page).not_to have_content('Working hard!')
+      expect(page).not_to have_content("Pronounced as: pruh-nuhn-see-ay-shn")
     end
 
     it 'shows username' do
@@ -222,7 +235,17 @@ RSpec.describe 'User page' do
   end
 
   context 'with unconfirmed user' do
-    let_it_be(:user) { create(:user, :unconfirmed) }
+    let_it_be(:user) do
+      create(
+        :user,
+        :unconfirmed,
+        organization: 'GitLab - work info test',
+        job_title: 'Frontend Engineer',
+        pronunciation: 'pruh-nuhn-see-ay-shn'
+      )
+    end
+
+    let_it_be(:status) { create(:user_status, user: user, message: "Working hard!") }
 
     shared_examples 'unconfirmed user profile' do
       before do
@@ -240,7 +263,10 @@ RSpec.describe 'User page' do
 
       it 'shows no additional fields' do
         expect(page).not_to have_css(".profile-user-bio")
-        expect(page).not_to have_css(".profile-link-holder")
+        expect(page).not_to have_content('GitLab - work info test')
+        expect(page).not_to have_content('Frontend Engineer')
+        expect(page).not_to have_content('Working hard!')
+        expect(page).not_to have_content("Pronounced as: pruh-nuhn-see-ay-shn")
       end
 
       it 'shows private profile message' do
@@ -400,6 +426,29 @@ RSpec.describe 'User page' do
         expect(page).to have_selector('[itemprop="email"]')
         expect(page).to have_selector('span[itemprop="jobTitle"]')
         expect(page).to have_selector('span[itemprop="worksFor"]')
+      end
+    end
+  end
+
+  context 'GPG keys' do
+    context 'when user has verified GPG keys' do
+      let_it_be(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
+      let_it_be(:gpg_key) { create(:gpg_key, user: user, key: GpgHelpers::User1.public_key) }
+      let_it_be(:gpg_key2) { create(:gpg_key, user: user, key: GpgHelpers::User1.public_key2) }
+
+      it 'shows link to public GPG keys' do
+        subject
+
+        expect(page).to have_link('View public GPG keys', href: user_gpg_keys_path(user))
+      end
+    end
+
+    context 'when user does not have verified GPG keys' do
+      it 'does not show link to public GPG keys' do
+        subject
+
+        expect(page).not_to have_link('View public GPG key', href: user_gpg_keys_path(user))
+        expect(page).not_to have_link('View public GPG keys', href: user_gpg_keys_path(user))
       end
     end
   end

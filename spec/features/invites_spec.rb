@@ -189,6 +189,16 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       end
 
       context 'email confirmation enabled' do
+        context 'when user is not valid in sign up form' do
+          let(:new_user) { build_stubbed(:user, first_name: '', last_name: '') }
+
+          it 'fails sign up and redirects back to sign up', :aggregate_failures do
+            expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
+            expect(page).to have_content('prohibited this user from being saved')
+            expect(current_path).to eq(user_registration_path)
+          end
+        end
+
         context 'with invite email acceptance', :snowplow do
           it 'tracks the accepted invite' do
             fill_in_sign_up_form(new_user)
@@ -209,6 +219,20 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
 
           it 'tracks the accepted invite' do
             expect(experiment(:invite_email_preview_text)).to track(:accepted)
+                                                                .with_context(actor: group_invite)
+                                                                .on_next_instance
+
+            fill_in_sign_up_form(new_user)
+          end
+        end
+
+        context 'with invite email acceptance for the invite_email_from experiment', :experiment do
+          let(:extra_params) do
+            { invite_type: Emails::Members::INITIAL_INVITE, experiment_name: 'invite_email_from' }
+          end
+
+          it 'tracks the accepted invite' do
+            expect(experiment(:invite_email_from)).to track(:accepted)
                                                                 .with_context(actor: group_invite)
                                                                 .on_next_instance
 

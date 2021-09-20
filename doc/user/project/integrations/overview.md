@@ -12,8 +12,10 @@ functionality to GitLab.
 
 ## Accessing integrations
 
-You can find the available integrations under your project's
-**Settings > Integrations** page.
+To find the available integrations for your project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
 
 There are more than 20 integrations to integrate with. Select the one that you
 want to configure.
@@ -60,6 +62,7 @@ Click on the service links to see further configuration instructions and details
 | [Unify Circuit](unify_circuit.md)                         | Receive events notifications.                                                                | **{dotted-circle}** No |
 | [Webex Teams](webex_teams.md)                             | Receive events notifications.                                                                | **{dotted-circle}** No |
 | [YouTrack](youtrack.md)                                   | Use YouTrack as the issue tracker.                                                           | **{dotted-circle}** No |
+| [ZenTao](zentao.md)                                       | Use ZenTao as the issue tracker.                                                           | **{dotted-circle}** No |
 
 ## Push hooks limit
 

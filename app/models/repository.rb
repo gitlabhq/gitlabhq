@@ -161,8 +161,8 @@ class Repository
     CommitCollection.new(container, commits, ref)
   end
 
-  def commits_between(from, to)
-    commits = Gitlab::Git::Commit.between(raw_repository, from, to)
+  def commits_between(from, to, limit: nil)
+    commits = Gitlab::Git::Commit.between(raw_repository, from, to, limit: limit)
     commits = Commit.decorate(commits, container) if commits.present?
     commits
   end
@@ -191,7 +191,11 @@ class Repository
   end
 
   def find_tag(name)
-    tags.find { |tag| tag.name == name }
+    if @tags.blank? && Feature.enabled?(:find_tag_via_gitaly, project, default_enabled: :yaml)
+      raw_repository.find_tag(name)
+    else
+      tags.find { |tag| tag.name == name }
+    end
   end
 
   def ambiguous_ref?(ref)
@@ -627,7 +631,14 @@ class Repository
   def license
     return unless license_key
 
-    Licensee::License.new(license_key)
+    licensee_object = Licensee::License.new(license_key)
+
+    return if licensee_object.name.blank?
+
+    licensee_object
+  rescue Licensee::InvalidLicense => ex
+    Gitlab::ErrorTracking.track_exception(ex)
+    nil
   end
   memoize_method :license
 
@@ -721,18 +732,9 @@ class Repository
   end
 
   def tags_sorted_by(value)
-    case value
-    when 'name_asc'
-      VersionSorter.sort(tags) { |tag| tag.name }
-    when 'name_desc'
-      VersionSorter.rsort(tags) { |tag| tag.name }
-    when 'updated_desc'
-      tags_sorted_by_committed_date.reverse
-    when 'updated_asc'
-      tags_sorted_by_committed_date
-    else
-      tags
-    end
+    return raw_repository.tags(sort_by: value) if Feature.enabled?(:gitaly_tags_finder, project, default_enabled: :yaml)
+
+    tags_ruby_sort(value)
   end
 
   # Params:
@@ -1125,9 +1127,14 @@ class Repository
       copy_gitattributes(branch)
       after_change_head
     else
-      container.errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
+      container.after_change_head_branch_does_not_exist(branch)
+
       false
     end
+  end
+
+  def cache
+    @cache ||= Gitlab::RepositoryCache.new(self)
   end
 
   private
@@ -1144,10 +1151,6 @@ class Repository
     ::Commit.new(commit, container) if commit
   end
 
-  def cache
-    @cache ||= Gitlab::RepositoryCache.new(self)
-  end
-
   def redis_set_cache
     @redis_set_cache ||= Gitlab::RepositorySetCache.new(self)
   end
@@ -1160,6 +1163,23 @@ class Repository
     @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
   end
 
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/339741
+  def tags_ruby_sort(value)
+    case value
+    when 'name_asc'
+      VersionSorter.sort(tags) { |tag| tag.name }
+    when 'name_desc'
+      VersionSorter.rsort(tags) { |tag| tag.name }
+    when 'updated_desc'
+      tags_sorted_by_committed_date.reverse
+    when 'updated_asc'
+      tags_sorted_by_committed_date
+    else
+      tags
+    end
+  end
+
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/339741
   def tags_sorted_by_committed_date
     # Annotated tags can point to any object (e.g. a blob), but generally
     # tags point to a commit. If we don't have a commit, then just default

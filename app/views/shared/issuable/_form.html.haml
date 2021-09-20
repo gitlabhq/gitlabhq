@@ -66,7 +66,7 @@
   - if issuable.new_record?
     = form.submit "Create #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm gl-mr-2', data: { qa_selector: 'issuable_create_button' }
   - else
-    = form.submit 'Save changes', class: 'gl-button btn btn-confirm gl-mr-2'
+    = form.submit _('Save changes'), class: 'gl-button btn btn-confirm gl-mr-2'
 
   - if issuable.new_record?
     = link_to _('Cancel'), polymorphic_path([@project, issuable.class]), class: 'btn gl-button btn-default'

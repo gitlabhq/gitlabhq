@@ -1,13 +1,15 @@
 ---
 data_category: optional
 key_path: database.adapter
-description: This metric only returns a value of PostgreSQL in supported versions of GitLab. It could be removed from the usage ping. Historically MySQL was also supported.
+description: This metric only returns a value of PostgreSQL in supported versions
+  of GitLab. It could be removed from the usage ping. Historically MySQL was also
+  supported.
 product_section: enablement
 product_stage: enablement
 product_group: group::enablement distribution
 product_category: collection
 value_type: string
-status: data_available
+status: active
 time_frame: none
 data_source: system
 distribution:
@@ -18,3 +20,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

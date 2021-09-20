@@ -8,13 +8,13 @@ product_stage: verify
 product_group: group::testing
 product_category: code_testing
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_testing_test_case_parsed
+  - i_testing_test_case_parsed
 distribution:
 - ce
 - ee
@@ -23,3 +23,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

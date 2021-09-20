@@ -58,7 +58,10 @@ During this configuration, note the following:
 - The `Tenant URL` and `secret token` are the ones retrieved in the
   [previous step](#gitlab-configuration).
 - It is recommended to set a notification email and check the **Send an email notification when a failure occurs** checkbox.
-- For mappings, we will only leave `Synchronize Azure Active Directory Users to AppName` enabled.
+- For mappings, we only leave `Synchronize Azure Active Directory Users to AppName` enabled.
+  `Synchronize Azure Active Directory Groups to AppName` is usually disabled. However, this
+  does not mean Azure AD users cannot be provisioned in groups. Leaving it enabled does not break
+  the SCIM user provisioning, but causes errors in Azure AD that may be confusing and misleading.
 
 You can then test the connection by clicking on **Test Connection**. If the connection is successful, be sure to save your configuration before moving on. See below for [troubleshooting](#troubleshooting).
 
@@ -69,13 +72,13 @@ Follow [Azure documentation to configure the attribute mapping](https://docs.mic
 The following table below provides an attribute mapping known to work with GitLab. If
 your SAML configuration differs from [the recommended SAML settings](index.md#azure-setup-notes),
 modify the corresponding `customappsso` settings accordingly. If a mapping is not listed in the
-table, use the Azure defaults.
+table, use the Azure defaults. For a list of required attributes, refer to the [SCIM API documentation](../../../api/scim.md).
 
-| Azure Active Directory Attribute | `customappsso` Attribute | Matching precedence |
-| -------------------------------- | ---------------------- | -------------------- |
-| `objectId`                       | `externalId`           | 1 |
-| `userPrincipalName`              | `emails[type eq "work"].value` |  |
-| `mailNickname`                   | `userName`             |  |
+| Azure Active Directory Attribute | `customappsso` Attribute       | Matching precedence |
+| -------------------------------- | ------------------------------ | ------------------- |
+| `objectId`                       | `externalId`                   | 1                   |
+| `userPrincipalName`              | `emails[type eq "work"].value` |                     |
+| `mailNickname`                   | `userName`                     |                     |
 
 For guidance, you can view [an example configuration in the troubleshooting reference](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory).
 
@@ -162,6 +165,12 @@ graph TD
   B -->|Yes| D[GitLab sends message back 'Email exists']
 ```
 
+During provisioning:
+
+- Both primary and secondary emails are considered when checking whether a GitLab user account exists.
+- Duplicate usernames are also handled, by adding suffix `1` upon user creation. For example,
+  due to already existing `test_user` username, `test_user1` is used.
+
 As long as [Group SAML](index.md) has been configured, existing GitLab.com users can link to their accounts in one of the following ways:
 
 - By updating their *primary* email address in their GitLab.com user account to match their identity provider's user profile email address.
@@ -183,13 +192,12 @@ For role information, please see the [Group SAML page](index.md#user-access-and-
 
 ### Blocking access
 
-To rescind access to the group, remove the user from the identity
-provider or users list for the specific app.
-
-Upon the next sync, the user is deprovisioned, which means that the user is removed from the group.
+To rescind access to the top-level group, all sub-groups, and projects, remove or deactivate the user
+on the identity provider. SCIM providers generally update GitLab with the changes on demand, which
+is minutes at most. The user's membership is revoked and they immediately lose access.
 
 NOTE:
-Deprovisioning does not delete the user account.
+Deprovisioning does not delete the GitLab user account.
 
 ```mermaid
 graph TD
@@ -260,9 +268,9 @@ Alternatively, users can be removed from the SCIM app which de-links all removed
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
-| Problem                                                                      | Solution           |
-|------------------------------------------------------------------------------|--------------------|
-| SAML and SCIM identity mismatch. | First [verify that the user's SAML NameId matches the SCIM externalId](#how-do-i-verify-users-saml-nameid-matches-the-scim-externalid) and then [update or fix the mismatched SCIM externalId and SAML NameId](#update-or-fix-mismatched-scim-externalid-and-saml-nameid). |
+| Problem                                                                   | Solution                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SAML and SCIM identity mismatch.                                          | First [verify that the user's SAML NameId matches the SCIM externalId](#how-do-i-verify-users-saml-nameid-matches-the-scim-externalid) and then [update or fix the mismatched SCIM externalId and SAML NameId](#update-or-fix-mismatched-scim-externalid-and-saml-nameid).                                                                                                                                                                              |
 | SCIM identity mismatch between GitLab and the Identify Provider SCIM app. | You can confirm whether you're hitting the error because of your SCIM identity mismatch between your SCIM app and GitLab.com by using [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) which shows up in the `id` key and compares it with the user `externalId` in the SCIM app. You can use the same [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to update the SCIM `id` for the user on GitLab.com. |
 
 ### Azure

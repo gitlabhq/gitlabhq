@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlSprintf, GlBadge } from '@gitlab/ui';
+import { GlIcon, GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -20,6 +20,9 @@ export default {
     MetadataItem,
     GlBadge,
     TimeAgoTooltip,
+  },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
   },
   i18n: {
     packageInfo: __('v%{version} published %{timeAgo}'),
@@ -60,18 +63,26 @@ export default {
     },
   },
   mounted() {
-    this.isDesktop = GlBreakpointInstance.isDesktop();
+    this.checkBreakpoints();
   },
   methods: {
     dynamicSlotName(index) {
       return `metadata-tag${index}`;
+    },
+    checkBreakpoints() {
+      this.isDesktop = GlBreakpointInstance.isDesktop();
     },
   },
 };
 </script>
 
 <template>
-  <title-area :title="packageEntity.name" :avatar="packageIcon" data-qa-selector="package_title">
+  <title-area
+    v-gl-resize-observer="checkBreakpoints"
+    :title="packageEntity.name"
+    :avatar="packageIcon"
+    data-qa-selector="package_title"
+  >
     <template #sub-header>
       <gl-icon name="eye" class="gl-mr-3" />
       <span data-testid="sub-header">

@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
@@ -110,6 +109,10 @@ export default {
 <template>
   <div ref="markdownPreview" class="md-previewer" data-testid="md-previewer">
     <gl-skeleton-loading v-if="isLoading" />
-    <div v-else class="md gl-ml-auto gl-mr-auto" v-html="previewContent"></div>
+    <div
+      v-else
+      class="md gl-ml-auto gl-mr-auto"
+      v-html="previewContent /* eslint-disable-line vue/no-v-html */"
+    ></div>
   </div>
 </template>

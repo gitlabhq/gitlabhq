@@ -4,7 +4,6 @@ require 'cgi'
 require 'uri'
 require 'fileutils'
 require 'tmpdir'
-require 'securerandom'
 
 module QA
   module Git

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { first } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';

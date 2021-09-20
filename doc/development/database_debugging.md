@@ -25,6 +25,12 @@ If you just want to delete everything and start over with an empty DB (approxima
 bundle exec rake db:reset RAILS_ENV=development
 ```
 
+If you want to seed the empty DB with sample data (approximately 4 minutes):
+
+```shell
+bundle exec rake dev:setup
+```
+
 If you just want to delete everything and start over with sample data (approximately 4 minutes). This
 also does `db:reset` and runs DB-specific migrations:
 
@@ -63,6 +69,36 @@ bundle exec rails db -e development
 - `CREATE TABLE board_labels();`: Create a table called `board_labels`
 - `SELECT * FROM schema_migrations WHERE version = '20170926203418';`: Check if a migration was run
 - `DELETE FROM schema_migrations WHERE version = '20170926203418';`: Manually remove a migration
+
+## Access the database with a GUI
+
+Most GUIs (DataGrid, RubyMine, DBeaver) require a TCP connection to the database, but by default 
+the database runs on a UNIX socket. To be able to access the database from these tools, some steps 
+are needed:
+
+1. On the GDK root directory, run:
+
+   ```shell
+   gdk config set postgresql.host localhost
+   ```
+
+1. Open your `gdk.yml`, and confirm that it has the following lines:
+
+   ```yaml
+   postgresql:
+      host: localhost
+   ```
+
+1. Reconfigure GDK:
+
+   ```shell
+   gdk reconfigure
+   ```
+
+1. On your database GUI, select `localhost` as host, `5432` as port and `gitlabhq_development` as database.
+   Alternatively, you can use the connection string `postgresql://localhost:5432/gitlabhq_development`.
+
+The new connection should be working now.
 
 ## Access the GDK database with Visual Studio Code
 

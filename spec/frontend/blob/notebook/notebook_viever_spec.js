@@ -11,6 +11,7 @@ describe('iPython notebook renderer', () => {
   let mock;
 
   const endpoint = 'test';
+  const relativeRawPath = '';
   const mockNotebook = {
     cells: [
       {
@@ -27,7 +28,7 @@ describe('iPython notebook renderer', () => {
   };
 
   const mountComponent = () => {
-    wrapper = shallowMount(component, { propsData: { endpoint } });
+    wrapper = shallowMount(component, { propsData: { endpoint, relativeRawPath } });
   };
 
   const findLoading = () => wrapper.find(GlLoadingIcon);

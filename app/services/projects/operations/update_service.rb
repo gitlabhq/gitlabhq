@@ -94,6 +94,7 @@ module Projects
           }
         }
         params[:error_tracking_setting_attributes][:token] = settings[:token] unless /\A\*+\z/.match?(settings[:token]) # Don't update token if we receive masked value
+        params[:error_tracking_setting_attributes][:integrated] = settings[:integrated] unless settings[:integrated].nil?
 
         params
       end

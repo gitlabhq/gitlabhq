@@ -22,7 +22,7 @@ on your configuration:
 
 - **Omnibus GitLab installations**: Mattermost is bundled with
   [Omnibus GitLab](https://docs.gitlab.com/omnibus/). To configure Mattermost for Omnibus GitLab, read the
-  [Omnibus GitLab Mattermost documentation](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
+  [Omnibus GitLab Mattermost documentation](../../../integration/mattermost/index.md).
 - **If Mattermost is installed on the same server as GitLab**, use the
   [automated configuration](#automated-configuration).
 - **For all other installations**, use the [manual configuration](#manual-configuration).
@@ -68,7 +68,7 @@ information from GitLab. To get this information:
 
 1. In a different browser tab than your current Mattermost session, sign in to
    GitLab as a user with [Administrator role](../../permissions.md).
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. In the left menu, select **Settings > Integrations**, then select
    **Mattermost slash commands**.
 1. GitLab displays potential values for Mattermost settings. Copy the **Request URL**

@@ -19,7 +19,7 @@ importance.
 
 GitLab is built on top of [Ruby on Rails](https://rubyonrails.org/), and we're using [RSpec](https://github.com/rspec/rspec-rails#feature-specs) for all
 the backend tests, with [Capybara](https://github.com/teamcapybara/capybara) for end-to-end integration testing.
-On the frontend side, we're using [Jest](https://jestjs.io/) and [Karma](http://karma-runner.github.io/)/[Jasmine](https://jasmine.github.io/) for JavaScript unit and
+On the frontend side, we're using [Jest](https://jestjs.io/) for JavaScript unit and
 integration testing.
 
 Following are two great articles that everyone should read to understand what
@@ -40,7 +40,7 @@ system tests, parameterized tests etc.
 
 ## [Frontend testing standards and style guidelines](frontend_testing.md)
 
-Everything you should know about how to write good Frontend tests: Karma,
+Everything you should know about how to write good Frontend tests: Jest,
 testing promises, stubbing etc.
 
 ## [Flaky tests](flaky_tests.md)

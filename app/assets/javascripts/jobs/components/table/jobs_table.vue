@@ -141,7 +141,7 @@ export default {
     </template>
 
     <template #cell(actions)="{ item }">
-      <actions-cell :job="item" />
+      <actions-cell class="gl-float-right" :job="item" />
     </template>
   </gl-table>
 </template>

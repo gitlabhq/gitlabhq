@@ -15,13 +15,13 @@
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, options: { class: 'icon' })
             = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project
-        .home-panel-metadata.d-flex.flex-wrap.text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal
+        .home-panel-metadata.text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal
           - if can?(current_user, :read_project, @project)
             - button_class = "btn gl-button btn-sm btn-tertiary btn-default-tertiary home-panel-metadata"
             - button_text = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
             = clipboard_button(title: s_('ProjectPage|Copy project ID'), text: @project.id, hide_button_icon: true, button_text: button_text, class: button_class, qa_selector: 'project_id_content', itemprop: 'identifier')
           - if current_user
-            %span.access-request-links.gl-ml-3
+            %span.gl-display-inline-block.gl-vertical-align-middle.gl-ml-3
               = render 'shared/members/access_request_links', source: @project
 
           .gl-mt-3.gl-pl-3.gl-w-full
@@ -31,7 +31,7 @@
       .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5
         - if current_user
           - if current_user.admin?
-            = link_to [:admin, @project], class: 'btn gl-button btn-icon gl-align-self-start gl-py-2! gl-mr-3', title: s_('View project in admin area'),
+            = link_to [:admin, @project], class: 'btn gl-button btn-icon gl-align-self-start gl-py-2! gl-mr-3', title: _('View project in admin area'),
               data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = sprite_icon('admin')
           .gl-display-flex.gl-align-items-start.gl-mr-3

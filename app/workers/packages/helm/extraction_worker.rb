@@ -20,9 +20,7 @@ module Packages
 
         ::Packages::Helm::ProcessFileService.new(channel, package_file).execute
 
-      rescue ::Packages::Helm::ExtractFileMetadataService::ExtractionError,
-             ::Packages::Helm::ProcessFileService::ExtractionError,
-             ::ActiveModel::ValidationError => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, project_id: package_file.project_id)
         package_file.package.update_column(:status, :error)
       end

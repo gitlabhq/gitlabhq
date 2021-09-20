@@ -33,7 +33,11 @@ module Types
     mount_mutation Mutations::Branches::Create, calls_gitaly: true
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
     mount_mutation Mutations::CustomEmoji::Create, feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomEmoji::Destroy, feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomerRelations::Organizations::Create
+    mount_mutation Mutations::CustomerRelations::Organizations::Update
     mount_mutation Mutations::Discussions::ToggleResolve
+    mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
@@ -103,9 +107,9 @@ module Types
     mount_mutation Mutations::Ci::Job::Unschedule
     mount_mutation Mutations::Ci::JobTokenScope::AddProject
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
-    mount_mutation Mutations::Ci::Runner::Update, feature_flag: :runner_graphql_query
-    mount_mutation Mutations::Ci::Runner::Delete, feature_flag: :runner_graphql_query
-    mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset, feature_flag: :runner_graphql_query
+    mount_mutation Mutations::Ci::Runner::Update
+    mount_mutation Mutations::Ci::Runner::Delete
+    mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create

@@ -155,23 +155,6 @@ module Gitlab
         )
       end
 
-      def squash_in_progress?(squash_id)
-        request = Gitaly::IsSquashInProgressRequest.new(
-          repository: @gitaly_repo,
-          squash_id: squash_id.to_s
-        )
-
-        response = GitalyClient.call(
-          @storage,
-          :repository_service,
-          :is_squash_in_progress,
-          request,
-          timeout: GitalyClient.fast_timeout
-        )
-
-        response.in_progress
-      end
-
       def fetch_source_branch(source_repository, source_branch, local_ref)
         request = Gitaly::FetchSourceBranchRequest.new(
           repository: @gitaly_repo,
@@ -275,25 +258,6 @@ module Gitlab
             repository: @gitaly_repo,
             path: path
           ),
-          timeout: GitalyClient.fast_timeout
-        )
-
-        nil
-      end
-
-      def set_config(entries)
-        return if entries.empty?
-
-        request = Gitaly::SetConfigRequest.new(repository: @gitaly_repo)
-        entries.each do |key, value|
-          request.entries << build_set_config_entry(key, value)
-        end
-
-        GitalyClient.call(
-          @storage,
-          :repository_service,
-          :set_config,
-          request,
           timeout: GitalyClient.fast_timeout
         )
 

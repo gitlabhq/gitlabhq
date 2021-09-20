@@ -5,8 +5,6 @@ module Gitlab
     # Configuration settings and methods for interacting with a PostgreSQL
     # database, with support for multiple databases.
     class Connection
-      DEFAULT_POOL_HEADROOM = 10
-
       attr_reader :scope
 
       # Initializes a new `Database`.
@@ -18,20 +16,6 @@ module Gitlab
         @scope = scope
         @version = nil
         @open_transactions_baseline = 0
-      end
-
-      # We configure the database connection pool size automatically based on
-      # the configured concurrency. We also add some headroom, to make sure we
-      # don't run out of connections when more threads besides the 'user-facing'
-      # ones are running.
-      #
-      # Read more about this in
-      # doc/development/database/client_side_connection_pool.md
-      def default_pool_size
-        headroom =
-          (ENV["DB_POOL_HEADROOM"].presence || DEFAULT_POOL_HEADROOM).to_i
-
-        Gitlab::Runtime.max_threads + headroom
       end
 
       def config
@@ -48,7 +32,7 @@ module Gitlab
       end
 
       def pool_size
-        config[:pool] || default_pool_size
+        config[:pool] || Database.default_pool_size
       end
 
       def username
@@ -77,7 +61,9 @@ module Gitlab
 
       def db_config_with_default_pool_size
         db_config_object = scope.connection_db_config
-        config = db_config_object.configuration_hash.merge(pool: default_pool_size)
+        config = db_config_object
+          .configuration_hash
+          .merge(pool: Database.default_pool_size)
 
         ActiveRecord::DatabaseConfigurations::HashConfig.new(
           db_config_object.env_name,
@@ -88,7 +74,16 @@ module Gitlab
 
       # Disables prepared statements for the current database connection.
       def disable_prepared_statements
-        scope.establish_connection(config.merge(prepared_statements: false))
+        db_config_object = scope.connection_db_config
+        config = db_config_object.configuration_hash.merge(prepared_statements: false)
+
+        hash_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          db_config_object.env_name,
+          db_config_object.name,
+          config
+        )
+
+        scope.establish_connection(hash_config)
       end
 
       # Check whether the underlying database is in read-only mode
@@ -174,8 +169,11 @@ module Gitlab
       end
 
       def exists?
-        connection
-
+        # We can't _just_ check if `connection` raises an error, as it will
+        # point to a `ConnectionProxy`, and obtaining those doesn't involve any
+        # database queries. So instead we obtain the database version, which is
+        # cached after the first call.
+        connection.schema_cache.database_version
         true
       rescue StandardError
         false
@@ -187,6 +185,19 @@ module Gitlab
           .first
 
         row['system_identifier']
+      end
+
+      def pg_wal_lsn_diff(location1, location2)
+        lsn1 = connection.quote(location1)
+        lsn2 = connection.quote(location2)
+
+        query = <<-SQL.squish
+            SELECT pg_wal_lsn_diff(#{lsn1}, #{lsn2})
+              AS result
+        SQL
+
+        row = connection.select_all(query).first
+        row['result'] if row
       end
 
       # @param [ActiveRecord::Connection] ar_connection

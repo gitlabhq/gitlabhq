@@ -12,7 +12,7 @@ self-managed instances. If you are an Admin user, you can access the Admin Area
 by visiting `/admin` on your self-managed instance. You can also access it through
 the UI:
 
-- GitLab versions 14.0 and later: on the top bar, select **Menu >** **{admin}** **Admin**.
+- GitLab versions 14.0 and later: on the top bar, select **Menu > Admin**.
 - GitLab versions 13.12 and earlier: on the top bar, select the Admin Area icon (**{admin}**).
 
 NOTE:
@@ -47,7 +47,7 @@ The Dashboard provides statistics and system information about the GitLab instan
 
 To access the Dashboard, either:
 
-- On the top bar, select **Menu >** **{admin}** **Admin**.
+- On the top bar, select **Menu > Admin**.
 - Visit `/admin` on your self-managed instance.
 
 The Dashboard is the default view of the Admin Area, and is made up of the following sections:
@@ -71,8 +71,8 @@ You can administer all projects in the GitLab instance from the Admin Area's Pro
 
 To access the Projects page:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Overview > Projects**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Projects**.
 1. Select the **All**, **Private**, **Internal**, or **Public** tab to list only
    projects of that criteria.
 
@@ -111,8 +111,8 @@ You can combine the filter options. For example, to list only public projects wi
 
 You can administer all users in the GitLab instance from the Admin Area's Users page:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Overview > Users**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
 
 To list users matching a specific criteria, click on one of the following tabs on the **Users** page:
 
@@ -156,8 +156,8 @@ This allows the administrator to "see what the user sees," and take actions on b
 You can impersonate a user in the following ways:
 
 - Through the UI:
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
-  1. In the left sidebar, select **Overview > Users**.
+  1. On the top bar, select **Menu > Admin**.
+  1. On the left sidebar, select **Overview > Users**.
   1. From the list of users, select a user.
   1. Select **Impersonate**.
 - With the API, using [impersonation tokens](../../api/index.md#impersonation-tokens).
@@ -199,6 +199,18 @@ The following totals are also included:
 
 GitLab billing is based on the number of [**Billable users**](../../subscriptions/self_managed/index.md#billable-users).
 
+#### Add email to user
+
+You must be an administrator to manually add emails to users:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users** (`/admin/users`).
+1. Locate the user and select them.
+1. Select **Edit**.
+1. In **Email**, enter the new email address. This adds the new email address to the
+   user and sets the previous email address to be a secondary.
+1. Select **Save changes**.
+
 ### User cohorts
 
 The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
@@ -209,8 +221,8 @@ You can administer all groups in the GitLab instance from the Admin Area's Group
 
 To access the Groups page:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Overview > Groups**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Groups**.
 
 For each group, the page displays their name, description, size, number of projects in the group,
 number of members, and whether the group is private, internal, or public. To edit a group, click
@@ -231,8 +243,8 @@ You can administer all jobs in the GitLab instance from the Admin Area's Jobs pa
 
 To access the Jobs page:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Overview > Jobs**. All jobs are listed, in descending order of job ID.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Jobs**. All jobs are listed, in descending order of job ID.
 1. Click the **All** tab to list all jobs. Click the **Pending**, **Running**, or **Finished**
    tab to list only jobs of that status.
 
@@ -257,8 +269,8 @@ You can administer all runners in the GitLab instance from the Admin Area's **Ru
 
 To access the **Runners** page:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Overview > Runners**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Runners**.
 
 The **Runners** page features:
 
@@ -307,8 +319,8 @@ page. For more details, see [Gitaly](../../administration/gitaly/index.md).
 
 To access the **Gitaly Servers** page:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Overview > Gitaly Servers**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Gitaly Servers**.
 
 For each Gitaly server, the following details are listed:
 

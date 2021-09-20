@@ -16,6 +16,9 @@ stages:
 init:
   extends: .terraform:init
 
+fmt:
+  extends: .terraform:fmt
+
 validate:
   extends: .terraform:validate
 

@@ -284,7 +284,7 @@ RSpec.describe IssuesHelper do
         iid: issue.iid,
         is_issue_author: 'false',
         issue_type: 'issue',
-        new_issue_path: new_project_issue_path(project),
+        new_issue_path: new_project_issue_path(project, { issue: { description: "Related to \##{issue.iid}.\n\n" } }),
         project_path: project.full_path,
         report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),
         submit_as_spam_path: mark_as_spam_project_issue_path(project, issue)
@@ -310,21 +310,21 @@ RSpec.describe IssuesHelper do
         can_bulk_update: 'true',
         can_edit: 'true',
         can_import_issues: 'true',
-        email: current_user&.notification_email,
+        email: current_user&.notification_email_or_default,
         emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'),
         empty_state_svg_path: '#',
         export_csv_path: export_csv_project_issues_path(project),
-        has_project_issues: project_issues(project).exists?.to_s,
+        full_path: project.full_path,
+        has_any_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
+        is_project: 'true',
         is_signed_in: current_user.present?.to_s,
-        issues_path: project_issues_path(project),
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         markdown_help_path: help_page_path('user/markdown'),
         max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
         new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.id }),
         project_import_jira_path: project_import_jira_path(project),
-        project_path: project.full_path,
         quick_actions_help_path: help_page_path('user/project/quick_actions'),
         reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
         rss_path: '#',
@@ -332,11 +332,11 @@ RSpec.describe IssuesHelper do
         sign_in_path: new_user_session_path
       }
 
-      expect(helper.issues_list_data(project, current_user, finder)).to include(expected)
+      expect(helper.project_issues_list_data(project, current_user, finder)).to include(expected)
     end
   end
 
-  describe '#issues_list_data' do
+  describe '#project_issues_list_data' do
     context 'when user is signed in' do
       it_behaves_like 'issues list data' do
         let(:current_user) { double.as_null_object }
@@ -347,6 +347,33 @@ RSpec.describe IssuesHelper do
       it_behaves_like 'issues list data' do
         let(:current_user) { nil }
       end
+    end
+  end
+
+  describe '#group_issues_list_data' do
+    let(:group) { create(:group) }
+    let(:current_user) { double.as_null_object }
+    let(:issues) { [] }
+
+    it 'returns expected result' do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:image_path).and_return('#')
+      allow(helper).to receive(:url_for).and_return('#')
+
+      expected = {
+        autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+        calendar_path: '#',
+        empty_state_svg_path: '#',
+        full_path: group.full_path,
+        has_any_issues: issues.to_a.any?.to_s,
+        is_signed_in: current_user.present?.to_s,
+        jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
+        rss_path: '#',
+        sign_in_path: new_user_session_path
+      }
+
+      expect(helper.group_issues_list_data(group, current_user, issues)).to include(expected)
     end
   end
 
@@ -407,6 +434,57 @@ RSpec.describe IssuesHelper do
         end
 
         it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '#issue_hidden?' do
+    context 'when issue is hidden' do
+      let_it_be(:banned_user) { build(:user, :banned) }
+      let_it_be(:hidden_issue) { build(:issue, author: banned_user) }
+
+      context 'when `ban_user_feature_flag` feature flag is enabled' do
+        it 'returns `true`' do
+          expect(helper.issue_hidden?(hidden_issue)).to eq(true)
+        end
+      end
+
+      context 'when `ban_user_feature_flag` feature flag is disabled' do
+        before do
+          stub_feature_flags(ban_user_feature_flag: false)
+        end
+
+        it 'returns `false`' do
+          expect(helper.issue_hidden?(hidden_issue)).to eq(false)
+        end
+      end
+    end
+
+    context 'when issue is not hidden' do
+      it 'returns `false`' do
+        expect(helper.issue_hidden?(issue)).to eq(false)
+      end
+    end
+  end
+
+  describe '#hidden_issue_icon' do
+    let_it_be(:banned_user) { build(:user, :banned) }
+    let_it_be(:hidden_issue) { build(:issue, author: banned_user) }
+    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
+
+    before do
+      allow(helper).to receive(:sprite_icon).and_return(mock_svg)
+    end
+
+    context 'when issue is hidden' do
+      it 'returns icon with tooltip' do
+        expect(helper.hidden_issue_icon(hidden_issue)).to eq("<span class=\"has-tooltip\" title=\"This issue is hidden because its author has been banned\">#{mock_svg}</span>")
+      end
+    end
+
+    context 'when issue is not hidden' do
+      it 'returns `nil`' do
+        expect(helper.hidden_issue_icon(issue)).to be_nil
       end
     end
   end

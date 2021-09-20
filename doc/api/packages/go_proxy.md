@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Go Proxy API
+# Go Proxy API **(FREE SELF)**
 
 This is the API documentation for [Go Packages](../../user/packages/go_proxy/index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to

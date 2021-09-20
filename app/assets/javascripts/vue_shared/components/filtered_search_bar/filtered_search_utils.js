@@ -177,13 +177,10 @@ function filteredSearchTermValue(value) {
  * @param  {Object} options
  * @param  {String} [options.filteredSearchTermKey] if set, a FILTERED_SEARCH_TERM filter is created to this parameter. `'search'` is suggested
  * @param  {String[]} [options.filterNamesAllowList] if set, only this list of filters names is mapped
- * @param  {Boolean} [options.legacySpacesDecode] if set, plus symbols (+) are not encoded as spaces. `false` is suggested
  * @return {Object} filter object with filter names and their values
  */
-export function urlQueryToFilter(query = '', options = {}) {
-  const { filteredSearchTermKey, filterNamesAllowList, legacySpacesDecode = true } = options;
-
-  const filters = queryToObject(query, { gatherArrays: true, legacySpacesDecode });
+export function urlQueryToFilter(query = '', { filteredSearchTermKey, filterNamesAllowList } = {}) {
+  const filters = queryToObject(query, { gatherArrays: true });
   return Object.keys(filters).reduce((memo, key) => {
     const value = filters[key];
     if (!value) {
@@ -222,7 +219,7 @@ export function urlQueryToFilter(query = '', options = {}) {
  */
 export function getRecentlyUsedSuggestions(recentSuggestionsStorageKey) {
   let recentlyUsedSuggestions = [];
-  if (AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (AccessorUtilities.canUseLocalStorage()) {
     recentlyUsedSuggestions = JSON.parse(localStorage.getItem(recentSuggestionsStorageKey)) || [];
   }
   return recentlyUsedSuggestions;
@@ -240,7 +237,7 @@ export function setTokenValueToRecentlyUsed(recentSuggestionsStorageKey, tokenVa
 
   recentlyUsedSuggestions.splice(0, 0, { ...tokenValue });
 
-  if (AccessorUtilities.isLocalStorageAccessSafe()) {
+  if (AccessorUtilities.canUseLocalStorage()) {
     localStorage.setItem(
       recentSuggestionsStorageKey,
       JSON.stringify(uniqWith(recentlyUsedSuggestions, isEqual).slice(0, MAX_RECENT_TOKENS_SIZE)),

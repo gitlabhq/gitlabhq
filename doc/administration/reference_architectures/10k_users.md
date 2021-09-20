@@ -1550,7 +1550,7 @@ To configure the Praefect nodes, on each one:
    # Configure the Consul agent
    consul['enable'] = true
    ## Enable service discovery for Prometheus
-   consul['monitoring_service_discovery'] =  true
+   consul['monitoring_service_discovery'] = true
 
    # START user configuration
    # Please set the real values as explained in Required Information section
@@ -2390,7 +2390,7 @@ The following tables and diagram detail the hybrid environment using the same fo
 as the normal environment above.
 
 First are the components that run in Kubernetes. The recommendation at this time is to
-use Google Cloud’s Kubernetes Engine (GKE) and associated machine types, but the memory
+use Google Cloud's Kubernetes Engine (GKE) and associated machine types, but the memory
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 

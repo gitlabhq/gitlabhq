@@ -565,21 +565,18 @@ RSpec.describe 'Filter issues', :js do
     end
 
     it 'maintains filter' do
-      # Closed
-      find('.issues-state-filters [data-state="closed"]').click
+      click_link 'Closed'
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
       expect(page).to have_link(closed_issue.title)
 
-      # Opened
-      find('.issues-state-filters [data-state="opened"]').click
+      click_link 'Open'
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 4)
 
-      # All
-      find('.issues-state-filters [data-state="all"]').click
+      click_link 'All'
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 5)

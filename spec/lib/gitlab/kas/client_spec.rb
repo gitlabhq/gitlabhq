@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Kas::Client do
   let_it_be(:project) { create(:project) }
+  let_it_be(:agent) { create(:cluster_agent, project: project) }
 
   describe '#initialize' do
     context 'kas is not enabled' do
@@ -42,6 +43,32 @@ RSpec.describe Gitlab::Kas::Client do
 
       expect(token).to receive(:issuer=).with(Settings.gitlab.host)
       expect(token).to receive(:audience=).with(described_class::JWT_AUDIENCE)
+    end
+
+    describe '#get_connected_agents' do
+      let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsRequest) }
+      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsResponse, agents: connected_agents) }
+
+      let(:connected_agents) { [double] }
+
+      subject { described_class.new.get_connected_agents(project: project) }
+
+      before do
+        expect(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .and_return(stub)
+
+        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsRequest).to receive(:new)
+          .with(project_id: project.id)
+          .and_return(request)
+
+        expect(stub).to receive(:get_connected_agents)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(connected_agents) }
     end
 
     describe '#list_agent_config_files' do

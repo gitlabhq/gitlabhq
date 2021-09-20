@@ -8,11 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Keep your GitLab instance up and running smoothly.
 
-- [Clean up Redis sessions](cleaning_up_redis_sessions.md): Prior to GitLab 7.3,
-  user sessions did not automatically expire from Redis. If
-  you have been running a large GitLab server (thousands of users) since before
-  GitLab 7.3 we recommend cleaning up stale sessions to compact the Redis
-  database after you upgrade to GitLab 7.3.
 - [Rake tasks](../../raketasks/index.md): Tasks for common administration and operational processes such as
   [cleaning up unneeded items from GitLab instance](../../raketasks/cleanup.md), integrity checks,
   and more.

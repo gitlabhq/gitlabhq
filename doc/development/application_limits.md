@@ -40,9 +40,7 @@ It's recommended to create two separate migration script files.
    desired limit using `create_or_update_plan_limit` migration helper, such as:
 
    ```ruby
-   class InsertProjectHooksPlanLimits < ActiveRecord::Migration[5.2]
-     include Gitlab::Database::MigrationHelpers
-
+   class InsertProjectHooksPlanLimits < Gitlab::Database::Migration[1.0]
      def up
        create_or_update_plan_limit('project_hooks', 'default', 0)
        create_or_update_plan_limit('project_hooks', 'free', 10)

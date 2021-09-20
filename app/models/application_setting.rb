@@ -6,6 +6,7 @@ class ApplicationSetting < ApplicationRecord
   include TokenAuthenticatable
   include ChronicDurationAttribute
   include IgnorableColumns
+  include Sanitizable
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_column :seat_link_enabled, remove_with: '14.4', remove_after: '2021-09-22'
@@ -31,6 +32,8 @@ class ApplicationSetting < ApplicationRecord
   belongs_to :instance_group, class_name: "Group", foreign_key: 'instance_administrators_group_id'
   alias_attribute :instance_group_id, :instance_administrators_group_id
   alias_attribute :instance_administrators_group, :instance_group
+
+  sanitizes! :default_branch_name
 
   def self.kroki_formats_attributes
     {
@@ -204,6 +207,10 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0,
                             less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte }
 
+  validates :jobs_per_stage_page_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_expiration_policies_enable_historic_entries,
@@ -343,6 +350,8 @@ class ApplicationSetting < ApplicationRecord
 
   validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobytes }
+  validates :max_yaml_size_bytes, numericality: { only_integer: true, greater_than: 0 }, presence: true
+  validates :max_yaml_depth, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
   validates :email_restrictions, untrusted_regexp: true
 
@@ -463,53 +472,28 @@ class ApplicationSetting < ApplicationRecord
             length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
-  validates :throttle_unauthenticated_requests_per_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_unauthenticated_period_in_seconds,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_unauthenticated_packages_api_requests_per_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_unauthenticated_packages_api_period_in_seconds,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_authenticated_api_requests_per_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_authenticated_api_period_in_seconds,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_authenticated_web_requests_per_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_authenticated_web_period_in_seconds,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_authenticated_packages_api_requests_per_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_authenticated_packages_api_period_in_seconds,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_protected_paths_requests_per_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
-
-  validates :throttle_protected_paths_period_in_seconds,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
+  with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
+    validates :throttle_unauthenticated_api_requests_per_period
+    validates :throttle_unauthenticated_api_period_in_seconds
+    validates :throttle_unauthenticated_requests_per_period
+    validates :throttle_unauthenticated_period_in_seconds
+    validates :throttle_unauthenticated_packages_api_requests_per_period
+    validates :throttle_unauthenticated_packages_api_period_in_seconds
+    validates :throttle_unauthenticated_files_api_requests_per_period
+    validates :throttle_unauthenticated_files_api_period_in_seconds
+    validates :throttle_authenticated_api_requests_per_period
+    validates :throttle_authenticated_api_period_in_seconds
+    validates :throttle_authenticated_git_lfs_requests_per_period
+    validates :throttle_authenticated_git_lfs_period_in_seconds
+    validates :throttle_authenticated_web_requests_per_period
+    validates :throttle_authenticated_web_period_in_seconds
+    validates :throttle_authenticated_packages_api_requests_per_period
+    validates :throttle_authenticated_packages_api_period_in_seconds
+    validates :throttle_authenticated_files_api_requests_per_period
+    validates :throttle_authenticated_files_api_period_in_seconds
+    validates :throttle_protected_paths_requests_per_period
+    validates :throttle_protected_paths_period_in_seconds
+  end
 
   validates :notes_create_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -533,6 +517,18 @@ class ApplicationSetting < ApplicationRecord
 
   validates :floc_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
+
+  enum sidekiq_job_limiter_mode: {
+         Gitlab::SidekiqMiddleware::SizeLimiter::Validator::TRACK_MODE => 0,
+         Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE => 1 # The default
+       }
+
+  validates :sidekiq_job_limiter_mode,
+            inclusion: { in: self.sidekiq_job_limiter_modes }
+  validates :sidekiq_job_limiter_compression_threshold_bytes,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :sidekiq_job_limiter_limit_bytes,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
@@ -573,7 +569,7 @@ class ApplicationSetting < ApplicationRecord
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
-  before_validation :sanitize_default_branch_name
+  before_validation :normalize_default_branch_name
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -603,12 +599,8 @@ class ApplicationSetting < ApplicationRecord
     !!(sourcegraph_url =~ %r{\Ahttps://(www\.)?sourcegraph\.com})
   end
 
-  def sanitize_default_branch_name
-    self.default_branch_name = if default_branch_name.blank?
-                                 nil
-                               else
-                                 Sanitize.fragment(self.default_branch_name)
-                               end
+  def normalize_default_branch_name
+    self.default_branch_name = default_branch_name.presence
   end
 
   def instance_review_permitted?
@@ -622,7 +614,7 @@ class ApplicationSetting < ApplicationRecord
   def self.create_from_defaults
     check_schema!
 
-    transaction(requires_new: true) do
+    transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
       super
     end
   rescue ActiveRecord::RecordNotUnique

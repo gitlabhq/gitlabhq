@@ -159,7 +159,9 @@ We recommended you run a scan of the `default` branch before enabling feature br
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both NEW and EXISTING findings.
 
-From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type. Select **View Full Report** to go directly to the **Security** tab in the latest branch pipeline.
+From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type. Select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
+
+![Security scanning results in a merge request](img/mr_security_scanning_results_v14_3.png)
 
 ## View security scan information in the pipeline Security tab
 
@@ -221,7 +223,8 @@ For this approval group, you must set the number of approvals required to greate
 
 Follow these steps to enable `Vulnerability-Check`:
 
-1. Go to your project and select **Settings > General**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
 1. Expand **Merge request approvals**.
 1. Select **Enable** or **Edit**.
 1. Set the **Security scanners** that the rule applies to.
@@ -269,7 +272,7 @@ under your project's settings:
 
 ## DAST On-Demand Scans
 
-If you don’t want scans running in your normal DevOps process you can use on-demand scans instead. For more details, see [on-demand scans](dast/index.md#on-demand-scans). This feature is only available for DAST. If you run an on-demand scan against the default branch, it is reported as a "successful pipeline" and these results are included in the security dashboard and vulnerability report.
+If you don't want scans running in your normal DevOps process you can use on-demand scans instead. For more details, see [on-demand scans](dast/index.md#on-demand-scans). This feature is only available for DAST. If you run an on-demand scan against the default branch, it is reported as a "successful pipeline" and these results are included in the security dashboard and vulnerability report.
 
 ## Security report validation
 
@@ -336,6 +339,16 @@ For more details about which findings or vulnerabilities you can view in each of
 - [Resolve the vulnerability](vulnerabilities/index.md#resolve-a-vulnerability), if a solution is known.
 
 ## Troubleshooting
+
+### Secure job failing with exit code 1
+
+If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for
+more verbose output that is helpful for troubleshooting.
+
+```yaml
+variables:
+  SECURE_LOG_LEVEL: "debug"
+```
 
 ### Outdated security reports
 

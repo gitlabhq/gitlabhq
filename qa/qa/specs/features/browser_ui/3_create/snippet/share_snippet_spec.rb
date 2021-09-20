@@ -21,7 +21,7 @@ module QA
       end
 
       context 'when the snippet is public' do
-        it 'can be shared with not signed-in users', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1016' do
+        it 'can be shared with not signed-in users', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1248' do
           snippet.visit!
 
           sharing_link = Page::Dashboard::Snippet::Show.perform do |snippet|
@@ -43,7 +43,7 @@ module QA
       end
 
       context 'when the snippet is changed to private' do
-        it 'does not display Embed/Share dropdown', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1015' do
+        it 'does not display Embed/Share dropdown', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1249' do
           snippet.visit!
 
           Page::Dashboard::Snippet::Show.perform do |snippet|

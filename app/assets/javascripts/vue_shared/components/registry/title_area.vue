@@ -1,5 +1,6 @@
 <script>
 import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import { isEqual } from 'lodash';
 
 export default {
   name: 'TitleArea',
@@ -36,13 +37,21 @@ export default {
       metadataSlots: [],
     };
   },
-  async mounted() {
-    const METADATA_PREFIX = 'metadata-';
-    this.metadataSlots = Object.keys(this.$slots).filter((k) => k.startsWith(METADATA_PREFIX));
+  mounted() {
+    this.recalculateMetadataSlots();
+  },
+  updated() {
+    this.recalculateMetadataSlots();
+  },
+  methods: {
+    recalculateMetadataSlots() {
+      const METADATA_PREFIX = 'metadata-';
+      const metadataSlots = Object.keys(this.$slots).filter((k) => k.startsWith(METADATA_PREFIX));
 
-    // we need to wait for next tick to ensure that dynamic names slots are picked up
-    await this.$nextTick();
-    this.metadataSlots = Object.keys(this.$slots).filter((k) => k.startsWith(METADATA_PREFIX));
+      if (!isEqual(metadataSlots, this.metadataSlots)) {
+        this.metadataSlots = metadataSlots;
+      }
+    },
   },
 };
 </script>

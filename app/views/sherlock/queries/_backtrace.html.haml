@@ -8,7 +8,7 @@
         %li
           %strong
             - if defined?(BetterErrors)
-              = link_to(location.path, BetterErrors.editor[location.path, location.line])
+              = link_to(location.path, BetterErrors.editor.url(location.path, location.line))
             - else
               = location.path
           %small.light

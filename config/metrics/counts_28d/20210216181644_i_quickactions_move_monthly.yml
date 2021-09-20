@@ -7,17 +7,18 @@ product_stage: plan
 product_group: group::project management
 product_category: issue_tracking
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_quickactions_move
+  - i_quickactions_move
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
 - premium
 - ultimate
+milestone: "<13.9"

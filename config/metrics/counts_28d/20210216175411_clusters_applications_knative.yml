@@ -1,15 +1,15 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_applications_knative
-description: Total GitLab Managed clusters with Knative enabled
+description: Count user ids from GitLab Managed clusters with Knative enabled
 product_section: ops
 product_stage: configure
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
-data_source: 
+data_source: database
 distribution:
 - ce
 - ee
@@ -17,6 +17,6 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true
-name: "count_distinct_user_id_from_<adjective describing: '(clusters_applications_knative.status IN (3, 5))'>_clusters_<with>_<adjective describing: '(clusters_applications_knative.status IN (3, 5))'>_clusters_applications_knative"
+name: 'count_distinct_user_id_from_clusters_applications_knative'
 performance_indicator_type: []
+milestone: "<13.9"

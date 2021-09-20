@@ -33,13 +33,13 @@ module Ci
     #
     def simple_variables
       strong_memoize(:simple_variables) do
-        scoped_variables(environment: nil).to_runner_variables
+        scoped_variables(environment: nil)
       end
     end
 
     def simple_variables_without_dependencies
       strong_memoize(:variables_without_dependencies) do
-        scoped_variables(environment: nil, dependencies: false).to_runner_variables
+        scoped_variables(environment: nil, dependencies: false)
       end
     end
 

@@ -176,6 +176,16 @@ module ApplicationSettingsHelper
         "and the value is encrypted at rest.")
   end
 
+  def sidekiq_job_limiter_mode_help_text
+    _("How the job limiter handles jobs exceeding the thresholds specified below. "\
+      "The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and "\
+      "raises an exception if the compressed size exceeds the limit.")
+  end
+
+  def sidekiq_job_limiter_modes_for_select
+    ApplicationSetting.sidekiq_job_limiter_modes.keys.map { |mode| [mode.humanize, mode] }
+  end
+
   def visible_attributes
     [
       :abuse_notification_email,
@@ -263,6 +273,8 @@ module ApplicationSettingsHelper
       :max_attachment_size,
       :max_import_size,
       :max_pages_size,
+      :max_yaml_size_bytes,
+      :max_yaml_depth,
       :metrics_method_call_threshold,
       :minimum_password_length,
       :mirror_available,
@@ -309,18 +321,30 @@ module ApplicationSettingsHelper
       :throttle_authenticated_api_enabled,
       :throttle_authenticated_api_period_in_seconds,
       :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_git_lfs_enabled,
+      :throttle_authenticated_git_lfs_period_in_seconds,
+      :throttle_authenticated_git_lfs_requests_per_period,
       :throttle_authenticated_web_enabled,
       :throttle_authenticated_web_period_in_seconds,
       :throttle_authenticated_web_requests_per_period,
       :throttle_authenticated_packages_api_enabled,
       :throttle_authenticated_packages_api_period_in_seconds,
       :throttle_authenticated_packages_api_requests_per_period,
+      :throttle_authenticated_files_api_enabled,
+      :throttle_authenticated_files_api_period_in_seconds,
+      :throttle_authenticated_files_api_requests_per_period,
+      :throttle_unauthenticated_api_enabled,
+      :throttle_unauthenticated_api_period_in_seconds,
+      :throttle_unauthenticated_api_requests_per_period,
       :throttle_unauthenticated_enabled,
       :throttle_unauthenticated_period_in_seconds,
       :throttle_unauthenticated_requests_per_period,
       :throttle_unauthenticated_packages_api_enabled,
       :throttle_unauthenticated_packages_api_period_in_seconds,
       :throttle_unauthenticated_packages_api_requests_per_period,
+      :throttle_unauthenticated_files_api_enabled,
+      :throttle_unauthenticated_files_api_period_in_seconds,
+      :throttle_unauthenticated_files_api_requests_per_period,
       :throttle_protected_paths_enabled,
       :throttle_protected_paths_period_in_seconds,
       :throttle_protected_paths_requests_per_period,
@@ -372,7 +396,11 @@ module ApplicationSettingsHelper
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,
       :keep_latest_artifact,
-      :whats_new_variant
+      :whats_new_variant,
+      :user_deactivation_emails_enabled,
+      :sidekiq_job_limiter_mode,
+      :sidekiq_job_limiter_compression_threshold_bytes,
+      :sidekiq_job_limiter_limit_bytes
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end

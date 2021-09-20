@@ -43,7 +43,7 @@ module QA
         merge_request.visit!
       end
 
-      it 'applies a single suggestion with a custom message' do
+      it 'applies a single suggestion with a custom message', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1815' do
         Page::MergeRequest::Show.perform do |merge_request|
           merge_request.click_diffs_tab
           merge_request.apply_suggestion_with_message(commit_message)

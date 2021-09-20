@@ -2,6 +2,7 @@ package roundtripper
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net"
 	"net/http"
@@ -15,10 +16,6 @@ import (
 )
 
 func mustParseAddress(address, scheme string) string {
-	if scheme == "https" {
-		panic("TLS is not supported for backend connections")
-	}
-
 	for _, suffix := range []string{"", ":" + scheme} {
 		address += suffix
 		if host, port, err := net.SplitHostPort(address); err == nil && host != "" && port != "" {
@@ -31,9 +28,14 @@ func mustParseAddress(address, scheme string) string {
 
 // NewBackendRoundTripper returns a new RoundTripper instance using the provided values
 func NewBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout time.Duration, developmentMode bool) http.RoundTripper {
+	return newBackendRoundTripper(backend, socket, proxyHeadersTimeout, developmentMode, nil)
+}
+
+func newBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout time.Duration, developmentMode bool, tlsConf *tls.Config) http.RoundTripper {
 	// Copied from the definition of http.DefaultTransport. We can't literally copy http.DefaultTransport because of its hidden internal state.
 	transport, dialer := newBackendTransport()
 	transport.ResponseHeaderTimeout = proxyHeadersTimeout
+	transport.TLSClientConfig = tlsConf
 
 	if backend != nil && socket == "" {
 		address := mustParseAddress(backend.Host, backend.Scheme)

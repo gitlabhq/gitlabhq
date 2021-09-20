@@ -5,7 +5,7 @@ module Types
     class CustomEmoji < BasePermissionType
       graphql_name 'CustomEmojiPermissions'
 
-      abilities :create_custom_emoji, :read_custom_emoji
+      abilities :create_custom_emoji, :read_custom_emoji, :delete_custom_emoji
     end
   end
 end

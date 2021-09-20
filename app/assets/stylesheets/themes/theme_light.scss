@@ -45,6 +45,16 @@ body {
       }
     }
 
+    .header-search {
+      background-color: $white !important;
+      box-shadow: inset 0 0 0 1px $border-color !important;
+
+      &:hover {
+        background-color: $white !important;
+        box-shadow: inset 0 0 0 1px $blue-200 !important;
+      }
+    }
+
     .search {
       form {
         background-color: $white;

@@ -18,7 +18,10 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def new
-    @application = Doorkeeper::Application.new
+    # Default access tokens to expire. This preserves backward compatibility
+    # with existing applications. This will be removed in 15.0.
+    # Removal issue: https://gitlab.com/gitlab-org/gitlab/-/issues/340848
+    @application = Doorkeeper::Application.new(expire_access_tokens: true)
   end
 
   def edit
@@ -55,10 +58,13 @@ class Admin::ApplicationsController < Admin::ApplicationController
     @application = ApplicationsFinder.new(id: params[:id]).execute
   end
 
-  # Only allow a trusted parameter "white list" through.
+  def permitted_params
+    super << :trusted
+  end
+
   def application_params
-    params
-      .require(:doorkeeper_application)
-      .permit(:name, :redirect_uri, :trusted, :scopes, :confidential)
+    super.tap do |params|
+      params[:owner] = nil
+    end
   end
 end

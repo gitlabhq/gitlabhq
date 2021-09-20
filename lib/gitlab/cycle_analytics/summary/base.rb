@@ -16,6 +16,10 @@ module Gitlab
         def value
           raise NotImplementedError, "Expected #{self.name} to implement value"
         end
+
+        private
+
+        attr_reader :project, :options
       end
     end
   end

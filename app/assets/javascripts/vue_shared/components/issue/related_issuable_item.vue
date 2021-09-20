@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import '~/commons/bootstrap';
 import { GlIcon, GlTooltip, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
@@ -72,7 +71,7 @@ export default {
       class="item-contents gl-display-flex gl-align-items-center gl-flex-wrap gl-flex-grow-1 flex-xl-nowrap gl-min-h-7"
     >
       <!-- Title area: Status icon (XL) and title -->
-      <div class="item-title d-flex align-items-xl-center mb-xl-0">
+      <div class="item-title d-flex align-items-xl-center mb-xl-0 gl-min-w-0">
         <div ref="iconElementXL">
           <gl-icon
             v-if="hasState"
@@ -85,7 +84,7 @@ export default {
           />
         </div>
         <gl-tooltip :target="() => $refs.iconElementXL">
-          <span v-html="stateTitle"></span>
+          <span v-html="stateTitle /* eslint-disable-line vue/no-v-html */"></span>
         </gl-tooltip>
         <gl-icon
           v-if="confidential"
@@ -111,7 +110,7 @@ export default {
             class="item-path-area item-path-id d-flex align-items-center mr-2 mt-2 mt-xl-0 ml-xl-2"
           >
             <gl-tooltip :target="() => this.$refs.iconElement">
-              <span v-html="stateTitle"></span>
+              <span v-html="stateTitle /* eslint-disable-line vue/no-v-html */"></span>
             </gl-tooltip>
             <span v-gl-tooltip :title="itemPath" class="path-id-text d-inline-block">{{
               itemPath

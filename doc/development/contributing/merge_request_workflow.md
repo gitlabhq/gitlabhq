@@ -223,10 +223,18 @@ the contribution acceptance criteria below:
 
 ## Definition of done
 
-If you contribute to GitLab please know that changes involve more than just
+If you contribute to GitLab, please know that changes involve more than just
 code. We use the following [definition of done](https://www.agilealliance.org/glossary/definition-of-done).
-Your contribution is not *done* until you have made sure it meets all of these
+To reach the definition of done, the merge request must create no regressions and meet all these criteria:
+
+- Verified as working in production on GitLab.com.
+- Verified as working for self-managed instances.
+
+If a regression occurs, we prefer you revert the change. We break the definition of done into two phases: [MR Merge](#mr-merge) and [Production use](#production-use).
+Your contribution is *incomplete* until you have made sure it meets all of these
 requirements.
+
+### MR Merge
 
 1. Clear description explaining the relevancy of the contribution.
 1. Working and clean code that is commented where needed.
@@ -238,17 +246,30 @@ requirements.
 1. [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. [Changelog entry added](../changelog.md), if necessary.
-1. Reviewed by relevant reviewers and all concerns are addressed for Availability, Regressions, Security. Documentation reviews should take place as soon as possible, but they should not block a merge request.
-1. Merged by a project maintainer.
+1. Reviewed by relevant reviewers, and all concerns are addressed for Availability, Regressions, and Security. Documentation reviews should take place as soon as possible, but they should not block a merge request.
+1. The [MR acceptance checklist](../code_review.md#acceptance-checklist) has been checked as confirmed in the MR.
 1. Create an issue in the [infrastructure issue tracker](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues) to inform the Infrastructure department when your contribution is changing default settings or introduces a new setting, if relevant.
-1. Confirmed to be working in the [Canary stage](https://about.gitlab.com/handbook/engineering/#canary-testing) with no new [Sentry](https://about.gitlab.com/handbook/engineering/#sentry) errors or on GitLab.com once the contribution is deployed.
-1. Added to the [release post](https://about.gitlab.com/handbook/marketing/blog/release-posts/),
-   if relevant.
-1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.
 1. [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-at-the-system-level-aka-end-to-end-tests)
    added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams)
    with any questions.
+1. The change is tested in a review app where possible and if appropriate.
 1. The new feature does not degrade the user experience of the product.
+1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
+1. An agreed-upon rollout plan.  
+1. Merged by a project maintainer.
+
+### Production use
+
+1. Confirmed to be working in staging before implementing the change in production, where possible.
+1. Confirmed to be working in the production with no new [Sentry](https://about.gitlab.com/handbook/engineering/#sentry) errors after the contribution is deployed.
+1. Confirmed that the rollout plan has been completed.
+1. If there is a performance risk in the change, I have analyzed the performance of the system before and after the change.
+1. *If the merge request uses feature flags, per-project or per-group enablement, and a staged rollout:*
+   - Confirmed to be working on GitLab projects.
+   - Confirmed to be working at each stage for all projects added.  
+1. Added to the [release post](https://about.gitlab.com/handbook/marketing/blog/release-posts/),
+   if relevant.
+1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.
 
 Contributions do not require approval from the [Product team](https://about.gitlab.com/handbook/product/product-processes/#gitlab-pms-arent-the-arbiters-of-community-contributions).
 

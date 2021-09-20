@@ -57,6 +57,7 @@
         pattern: ".{#{@minimum_password_length},}",
         title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
       %p.gl-field-hint.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
+    = render_if_exists 'devise/shared/phone_verification', form: f
     %div
     - if show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce

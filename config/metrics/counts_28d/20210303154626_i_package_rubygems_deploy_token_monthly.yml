@@ -7,7 +7,7 @@ product_stage: package
 product_group: group::package
 product_category: package_registry
 value_type: number
-status: data_available
+status: active
 milestone: '13.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53480
 time_frame: 28d

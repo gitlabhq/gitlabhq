@@ -1,9 +1,10 @@
 #import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
 #import "./issue.fragment.graphql"
 
-query getProjectIssues(
+query getIssues(
+  $isProject: Boolean = false
   $isSignedIn: Boolean = false
-  $projectPath: ID!
+  $fullPath: ID!
   $search: String
   $sort: IssueSort
   $state: IssuableState
@@ -20,7 +21,35 @@ query getProjectIssues(
   $firstPageSize: Int
   $lastPageSize: Int
 ) {
-  project(fullPath: $projectPath) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    issues(
+      includeSubgroups: true
+      search: $search
+      sort: $sort
+      state: $state
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+      before: $beforeCursor
+      after: $afterCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        ...IssueFragment
+        reference(full: true)
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
     issues(
       search: $search
       sort: $sort

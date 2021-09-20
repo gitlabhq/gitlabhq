@@ -19,6 +19,7 @@ export default function initMrNotes() {
     action: mrShowNode.dataset.mrAction,
   });
 
+  initDiffsApp(store);
   initNotesApp();
 
   document.addEventListener('merged:UpdateActions', () => {
@@ -26,20 +27,25 @@ export default function initMrNotes() {
     initCherryPickCommitModal();
   });
 
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#js-vue-discussion-counter',
-    name: 'DiscussionCounter',
-    components: {
-      discussionCounter,
-    },
-    store,
-    render(createElement) {
-      return createElement('discussion-counter');
-    },
-  });
+  requestIdleCallback(() => {
+    const el = document.getElementById('js-vue-discussion-counter');
 
-  initDiscussionFilters(store);
-  initSortDiscussions(store);
-  initDiffsApp(store);
+    if (el) {
+      // eslint-disable-next-line no-new
+      new Vue({
+        el,
+        name: 'DiscussionCounter',
+        components: {
+          discussionCounter,
+        },
+        store,
+        render(createElement) {
+          return createElement('discussion-counter');
+        },
+      });
+    }
+
+    initDiscussionFilters(store);
+    initSortDiscussions(store);
+  });
 }

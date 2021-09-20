@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab provides an integration for updating the pipeline statuses on GitHub.
 This is especially useful if using GitLab for CI/CD only.
 
-This project integration is separate from the [instance wide GitHub integration](../import/github.md#mirroring-and-pipeline-status-sharing)
+This project integration is separate from the [instance wide GitHub integration](../import/github.md#mirror-a-repository-and-share-pipeline-status)
 and is automatically configured on [GitHub import](../../../integration/github.md).
 
 ![Pipeline status update on GitHub](img/github_status_check_pipeline_update.png)

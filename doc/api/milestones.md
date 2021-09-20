@@ -32,7 +32,7 @@ Parameters:
 | `state`                           | string | optional | Return only `active` or `closed` milestones |
 | `title`                           | string | optional | Return only the milestones having the given `title` |
 | `search`                          | string | optional | Return only milestones with a title or description matching the provided string |
-| `include_parent_milestones`       | boolean | optional | Include group milestones from parent group and its ancestors. Introduced in [GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/196066) |
+| `include_parent_milestones`       | boolean | optional | Include group milestones from parent group and its ancestors. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196066) in GitLab 13.4 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/milestones"

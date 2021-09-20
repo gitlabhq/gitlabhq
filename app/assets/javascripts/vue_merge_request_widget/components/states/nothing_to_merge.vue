@@ -1,6 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import emptyStateSVG from 'icons/_mr_widget_empty_state.svg';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -10,6 +9,9 @@ export default {
     GlButton,
     GlSprintf,
     GlLink,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     mr: {
@@ -21,6 +23,7 @@ export default {
     return { emptyStateSVG };
   },
   ciHelpPage: helpPagePath('/ci/quick_start/index.html'),
+  safeHtmlConfig: { ADD_TAGS: ['use'] },
 };
 </script>
 
@@ -30,7 +33,7 @@ export default {
       <div
         class="artwork col-md-5 order-md-last col-12 text-center d-flex justify-content-center align-items-center"
       >
-        <span v-html="emptyStateSVG"></span>
+        <span v-safe-html:[$options.safeHtmlConfig]="emptyStateSVG"></span>
       </div>
       <div class="text col-md-7 order-md-first col-12">
         <p class="highlight">

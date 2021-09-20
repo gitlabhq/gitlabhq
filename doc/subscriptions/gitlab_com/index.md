@@ -91,20 +91,33 @@ The following table describes details of your subscription:
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/292086) in GitLab 13.8 to include public
     email address.
 
-To view a list of seats being used, go to **Settings > Billing**.
-Under **Seats currently in use**, select **See usage**.
-
-You can also see this information in your group settings by going to **Menu > Groups > Your Group > Settings > Usage Quotas**, and the information about **Seat usage** will be under the **Seats** tab.
-
 The **Seat usage** page lists all users occupying seats. Details for each user include:
 
 - Full name
 - Username
 - Public email address (if they have provided one in their [user settings](../../user/profile/index.md#access-your-user-settings))
 
-The Seat usage listing is updated live, but the usage statistics on the billing page are updated
+The seat usage listing is updated live, but the usage statistics on the billing page are updated
 only once per day. For this reason there can be a minor difference between the seat usage listing
 and the billing page.
+
+Every user is included in seat usage, with the following exceptions:
+
+- Users who are pending approval.
+- Members with the Guest role on an Ultimate subscription.
+- Users without project or group memberships on an Ultimate subscription.
+- GitLab-created service accounts: `Ghost User` and bots
+  ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
+  [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and
+  so on.)
+
+### View seat usage
+
+To view a list of seats being used:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Under the **Seats** tab, view usage information.
 
 ### Search seat usage
 
@@ -326,7 +339,7 @@ Quotas apply to:
 
   1. In the top-right corner, select your avatar.
   1. Select **Edit profile**.
-  1. In the left sidebar, select **[Usage Quotas](https://gitlab.com/-/profile/usage_quotas#pipelines-quota-tab)**.
+  1. On the left sidebar, select **[Usage Quotas](https://gitlab.com/-/profile/usage_quotas#pipelines-quota-tab)**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a
 specific runner set up for your projects, there is no limit to your build time on GitLab SaaS.
@@ -362,7 +375,7 @@ To purchase additional minutes for your personal namespace:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Usage Quotas**.
+1. On the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional minutes** and GitLab redirects you to the Customers Portal.
 1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, click **Buy more CI minutes**, and complete the details about the transaction. Once we have processed your payment, the extra CI minutes are synced to your personal namespace.
 1. To confirm the available CI minutes for your personal projects, go to the **Usage Quotas** settings again.

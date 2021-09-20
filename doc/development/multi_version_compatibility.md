@@ -124,7 +124,7 @@ GitLab.com, the feature can be enabled in ChatOps and validated on GitLab.com.
 
 **However, it is not necessarily safe to enable the feature by default.** If the
 feature flag is removed, or the default is flipped to enabled, in the same release
-where the code was merged, then customers performing [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates)
+where the code was merged, then customers performing [zero-downtime updates](../update/zero_downtime.md)
 will end up running the new frontend code against the previous release's API.
 
 If you're not sure whether it's safe to enable all the changes at once, then one
@@ -201,7 +201,7 @@ gantt
   section Database
     Schema A      :done, schemaA, 00:00  , 1h
     Schema B      :crit, schemaB, after migr, 58m
-    Schema C.     : schmeaC, after postmigr, 1h
+    Schema C.     : schemaC, after postmigr, 1h
 
   section Machine A
     Version N      :done, mavn, 00:00 , 75m

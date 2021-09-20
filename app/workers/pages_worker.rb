@@ -8,7 +8,6 @@ class PagesWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options retry: 3
   feature_category :pages
   loggable_arguments 0, 1
-  tags :requires_disk_io, :exclude_from_kubernetes
   worker_resource_boundary :cpu
 
   def perform(action, *arg)

@@ -27,8 +27,8 @@ When you click **Issues**, GitLab shows the opened issues assigned to you:
 
 You can search through **Open**, **Closed**, or **All** issues.
 
-You can also filter the results using the search and filter field, as described below in
-[Filtering issue and merge request lists](#filtering-issue-and-merge-request-lists).
+You can also filter the results using the search and filter field, as described in
+[Filter issue and merge request lists](#filter-issue-and-merge-request-lists).
 
 ### Issues and MRs assigned to you or created by you
 
@@ -37,11 +37,11 @@ in the search field in the upper right corner:
 
 ![shortcut to your issues and merge requests](img/issues_mrs_shortcut.png)
 
-### Filtering issue and merge request lists
+### Filter issue and merge request lists
 
-> - Filtering by Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab Ultimate 12.9.
-> - Filtering by child Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab Ultimate 13.0.
-> - Filtering by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. Moved to GitLab Premium in 13.9.
+> - Filter by Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab Ultimate 12.9.
+> - Filter by child Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab Ultimate 13.0.
+> - Filter by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. Moved to GitLab Premium in 13.9.
 
 Follow these steps to filter the **Issues** and **Merge Requests** list pages in projects and
 groups:
@@ -64,12 +64,13 @@ groups:
    - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
 1. Enter the text to [filter the attribute by](#filters-autocomplete).
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
-   `AND`.
+   `AND`. For example, filtering by an Author and Milestone `!=` 12.6 filters for the issues where the
+   author matches your selection, and the milestone is not 12.6:
 
-For example, filtering by Author `=` Jane and Milestone `!=` 12.6 filters for the issues where Jane
-is the author and the milestone is not 12.6.
+   ![filter issues in a project](img/issue_search_filter_v12_7.png)
 
-![filter issues in a project](img/issue_search_filter_v12_7.png)
+GitLab displays the results on-screen, but you can also
+[retrieve them as an RSS feed](#retrieve-search-results-as-feed).
 
 ### Filtering by **None** / **Any**
 
@@ -95,6 +96,21 @@ You can filter issues and merge requests by specific terms included in titles or
   - Search is limited to 4096 characters and 64 terms per query.
 
 ![filter issues by specific terms](img/issue_search_by_term.png)
+
+### Retrieve search results as feed
+
+> Feeds for merge requests were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66336) in GitLab 14.3.
+
+GitLab provides RSS feeds of search results for your project. To subscribe to the
+RSS feed of search results:
+
+1. Go to your project's page.
+1. On the left sidebar, select **Issues** or **Merge requests**.
+1. Build your search query as described in [Filter issue and merge request lists](#filter-issue-and-merge-request-lists).
+1. Select the feed symbol **{rss}** to display the results as an RSS feed in Atom format.
+
+The URL of the result contains both a feed token, and your search query.
+You can add this URL to your feed reader.
 
 ### Filtering by ID
 
@@ -217,12 +233,12 @@ filters them for you as you type.
 You can also **Explore** all public and internal groups available in GitLab.com,
 and sort them by **Last created**, **Oldest created**, **Last updated**, or **Oldest updated**.
 
-## Issue Boards
+## Issue boards
 
-From an [Issue Board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
+From an [issue board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
 You can also filter them by name (issue title), from the field **Filter by name**, which is loaded as you type.
 
-To search for issues to add to lists present in your Issue Board, click
+To search for issues to add to lists present in your issue board, click
 the button **Add issues** on the top-right of your screen, opening a modal window from which
 you can, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
 and **Labels**, select multiple issues to add to a list of your choice:

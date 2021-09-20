@@ -145,6 +145,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :packages_and_registries, only: [:show]
         end
 
+        resources :usage_quotas, only: [:index]
+
         resources :autocomplete_sources, only: [] do
           collection do
             get 'members'
@@ -351,6 +353,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :alert_management, only: [:index] do
           get 'details', on: :member
         end
+
+        resources :work_items, only: [:index]
 
         resource :tracing, only: [:show]
 
@@ -599,7 +603,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :vulnerability_feedback, :security, :dependencies, :issues,
                                             :pipelines, :pipeline_schedules, :runners, :snippets)
     end
-
     # rubocop: disable Cop/PutProjectRoutesUnderScope
     resources(:projects,
               path: '/',

@@ -92,23 +92,5 @@ RSpec.describe Users::MigrateToGhostUserService do
         let(:created_record) { create(:review, author: user) }
       end
     end
-
-    context "when record migration fails with a rollback exception" do
-      before do
-        expect_any_instance_of(ActiveRecord::Associations::CollectionProxy)
-          .to receive(:update_all).and_raise(ActiveRecord::Rollback)
-      end
-
-      context "for records that were already migrated" do
-        let!(:issue) { create(:issue, project: project, author: user) }
-        let!(:merge_request) { create(:merge_request, source_project: project, author: user, target_branch: "first") }
-
-        it "reverses the migration" do
-          service.execute
-
-          expect(issue.reload.author).to eq(user)
-        end
-      end
-    end
   end
 end

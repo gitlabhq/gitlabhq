@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButton, GlFormGroup, GlFormInput, GlModal, GlModalDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -85,7 +84,7 @@ export default {
       </p>
     </div>
     <div class="col-lg-9">
-      <p v-html="sectionDescription"></p>
+      <p v-html="sectionDescription /* eslint-disable-line vue/no-v-html */"></p>
       <gl-form-group :label="__('URL')" label-for="notify-url" label-class="label-bold">
         <div class="input-group">
           <gl-form-input id="notify-url" :readonly="true" :value="notifyUrl" />

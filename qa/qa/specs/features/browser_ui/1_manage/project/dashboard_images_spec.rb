@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
-
 module QA
   RSpec.describe 'Manage', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/212145', type: :stale } do
     describe 'Check for broken images', :requires_admin do
@@ -41,13 +39,13 @@ module QA
         end
       end
 
-      context 'when logged in as a new user', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1693' do
+      context 'when logged in as a new user', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1549' do
         it_behaves_like 'loads all images' do
           let(:new_user) { @new_user }
         end
       end
 
-      context 'when logged in as a new admin', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1727' do
+      context 'when logged in as a new admin', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1550' do
         it_behaves_like 'loads all images' do
           let(:new_user) { @new_admin }
         end

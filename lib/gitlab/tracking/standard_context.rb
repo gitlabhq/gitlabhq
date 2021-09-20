@@ -8,7 +8,8 @@ module Gitlab
 
       def initialize(namespace: nil, project: nil, user: nil, **extra)
         @namespace = namespace
-        @plan = @namespace&.actual_plan_name
+        @plan = namespace&.actual_plan_name
+        @project = project
         @extra = extra
       end
 
@@ -34,13 +35,28 @@ module Gitlab
 
       private
 
+      attr_accessor :namespace, :project, :extra, :plan
+
       def to_h
         {
           environment: environment,
           source: source,
-          plan: @plan,
-          extra: @extra
+          plan: plan,
+          extra: extra
+        }.merge(project_and_namespace)
+      end
+
+      def project_and_namespace
+        return {} unless ::Feature.enabled?(:add_namespace_and_project_to_snowplow_tracking, default_enabled: :yaml)
+
+        {
+          namespace_id: namespace&.id,
+          project_id: project_id
         }
+      end
+
+      def project_id
+        project.is_a?(Integer) ? project : project&.id
       end
     end
   end

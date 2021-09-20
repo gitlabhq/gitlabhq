@@ -34,6 +34,44 @@ describe('MergeRequestTabs', () => {
     gl.mrWidget = {};
   });
 
+  describe('clickTab', () => {
+    let params;
+
+    beforeEach(() => {
+      document.documentElement.scrollTop = 100;
+
+      params = {
+        metaKey: false,
+        ctrlKey: false,
+        which: 1,
+        stopImmediatePropagation() {},
+        preventDefault() {},
+        currentTarget: {
+          getAttribute(attr) {
+            return attr === 'href' ? 'a/tab/url' : null;
+          },
+        },
+      };
+    });
+
+    it("stores the current scroll position if there's an active tab", () => {
+      testContext.class.currentTab = 'someTab';
+
+      testContext.class.clickTab(params);
+
+      expect(testContext.class.scrollPositions.someTab).toBe(100);
+    });
+
+    it("doesn't store a scroll position if there's no active tab", () => {
+      // this happens on first load, and we just don't want to store empty values in the `null` property
+      testContext.class.currentTab = null;
+
+      testContext.class.clickTab(params);
+
+      expect(testContext.class.scrollPositions).toEqual({});
+    });
+  });
+
   describe('opensInNewTab', () => {
     const windowTarget = '_blank';
     let clickTabParams;
@@ -258,6 +296,7 @@ describe('MergeRequestTabs', () => {
     beforeEach(() => {
       jest.spyOn(mainContent, 'getBoundingClientRect').mockReturnValue({ top: 10 });
       jest.spyOn(tabContent, 'getBoundingClientRect').mockReturnValue({ top: 100 });
+      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
       jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
         return selector === '.content-wrapper' ? mainContent : tabContent;
       });
@@ -267,8 +306,6 @@ describe('MergeRequestTabs', () => {
     it('calls window scrollTo with options if document has scrollBehavior', () => {
       document.documentElement.style.scrollBehavior = '';
 
-      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
-
       testContext.class.tabShown('commits', 'foobar');
 
       expect(window.scrollTo.mock.calls[0][0]).toEqual({ top: 39, behavior: 'smooth' });
@@ -276,11 +313,50 @@ describe('MergeRequestTabs', () => {
 
     it('calls window scrollTo with two args if document does not have scrollBehavior', () => {
       jest.spyOn(document.documentElement, 'style', 'get').mockReturnValue({});
-      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
       testContext.class.tabShown('commits', 'foobar');
 
       expect(window.scrollTo.mock.calls[0]).toEqual([0, 39]);
+    });
+
+    describe('when switching tabs', () => {
+      const SCROLL_TOP = 100;
+
+      beforeAll(() => {
+        jest.useFakeTimers();
+      });
+
+      beforeEach(() => {
+        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+        testContext.class.mergeRequestTabs = document.createElement('div');
+        testContext.class.mergeRequestTabPanes = document.createElement('div');
+        testContext.class.currentTab = 'tab';
+        testContext.class.scrollPositions = { newTab: SCROLL_TOP };
+      });
+
+      afterAll(() => {
+        jest.useRealTimers();
+      });
+
+      it('scrolls to the stored position, if one is stored', () => {
+        testContext.class.tabShown('newTab');
+
+        jest.advanceTimersByTime(250);
+
+        expect(window.scrollTo.mock.calls[0][0]).toEqual({
+          top: SCROLL_TOP,
+          left: 0,
+          behavior: 'auto',
+        });
+      });
+
+      it('scrolls to 0, if no position is stored', () => {
+        testContext.class.tabShown('unknownTab');
+
+        jest.advanceTimersByTime(250);
+
+        expect(window.scrollTo.mock.calls[0][0]).toEqual({ top: 0, left: 0, behavior: 'auto' });
+      });
     });
   });
 });

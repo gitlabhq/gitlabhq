@@ -10,6 +10,7 @@ import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
+import { getInstrumentationLink } from './apollo/instrumentation_link';
 
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',
@@ -140,14 +141,17 @@ export default (resolvers = {}, config = {}) => {
   const appLink = ApolloLink.split(
     hasSubscriptionOperation,
     new ActionCableLink(),
-    ApolloLink.from([
-      requestCounterLink,
-      performanceBarLink,
-      new StartupJSLink(),
-      apolloCaptchaLink,
-      uploadsLink,
-      requestLink,
-    ]),
+    ApolloLink.from(
+      [
+        getInstrumentationLink(),
+        requestCounterLink,
+        performanceBarLink,
+        new StartupJSLink(),
+        apolloCaptchaLink,
+        uploadsLink,
+        requestLink,
+      ].filter(Boolean),
+    ),
   );
 
   return new ApolloClient({

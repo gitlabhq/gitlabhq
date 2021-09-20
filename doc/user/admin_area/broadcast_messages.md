@@ -54,7 +54,7 @@ To display messages to users on your GitLab instance, add a broadcast message.
 
 To add a broadcast message:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Messages**.
 1. Add the text for the message to the **Message** field. You can style a message's content using Markdown, emoji, and the `a` and `br` HTML tags.
    The `br` tag inserts a line break. The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
@@ -84,7 +84,7 @@ If you need to make changes to a broadcast message, you can edit it.
 
 To edit a broadcast message:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Messages**.
 1. From the list of broadcast messages, select the edit button for the message.
 1. After making the required changes, select **Update broadcast message**.
@@ -98,7 +98,7 @@ You can delete a broadcast message while it's active.
 
 To delete a broadcast message:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Messages**.
 1. From the list of broadcast messages, select the delete button for the message.
 

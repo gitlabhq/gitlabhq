@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Runtime::API::Client do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
 
   describe 'initialization' do
     it 'defaults to :gitlab address' do

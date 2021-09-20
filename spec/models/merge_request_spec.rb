@@ -151,43 +151,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe '#squash_in_progress?' do
-    let(:repo_path) do
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        subject.source_project.repository.path
-      end
-    end
-
-    let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
-
-    before do
-      system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{squash_path} master))
-    end
-
-    it 'returns true when there is a current squash directory' do
-      expect(subject.squash_in_progress?).to be_truthy
-    end
-
-    it 'returns false when there is no squash directory' do
-      FileUtils.rm_rf(squash_path)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the squash directory has expired' do
-      time = 20.minutes.ago.to_time
-      File.utime(time, time, squash_path)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the source project has been removed' do
-      allow(subject).to receive(:source_project).and_return(nil)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-  end
-
   describe '#squash?' do
     let(:merge_request) { build(:merge_request, squash: squash) }
 

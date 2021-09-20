@@ -1,19 +1,20 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_weekly
-description: "Count of projects using `AWS/Deploy-ECS.gitlab-ci.yml` template in last 7 days."
+description: Count of projects using `AWS/Deploy-ECS.gitlab-ci.yml` template in last
+  7 days.
 product_section: ops
 product_stage: release
-product_group: "group::release"
+product_group: group::release
 product_category: continuous_delivery
 value_type: number
-status: data_available
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - p_ci_templates_aws_deploy_ecs
+  - p_ci_templates_aws_deploy_ecs
 distribution:
 - ce
 - ee
@@ -21,3 +22,4 @@ tier:
 - free
 - premium
 - ultimate
+milestone: "<13.9"

@@ -43,11 +43,19 @@ module API
         # N+1 is solved then by using `subject.topics.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
-                         .preload(:import_state, :topics)
+                         .preload(:import_state, :topics, :topics_acts_as_taggable)
                          .preload(:auto_devops)
                          .preload(namespace: [:route, :owner])
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def self.execute_batch_counting(projects_relation)
+        # Call the count methods on every project, so the BatchLoader would load them all at
+        # once when the entities are rendered
+        projects_relation.each(&:forks_count)
+
+        super
+      end
 
       private
 

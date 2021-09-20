@@ -25,19 +25,15 @@ RSpec.describe Banzai::Filter::VideoLinkFilter do
     it 'replaces the image tag with a video tag' do
       container = filter(image).children.first
 
-      expect(container.name).to eq 'div'
-      expect(container['class']).to eq 'video-container'
+      expect(container.name).to eq 'span'
+      expect(container['class']).to eq 'media-container video-container'
 
-      video, paragraph = container.children
+      video, link = container.children
 
       expect(video.name).to eq 'video'
       expect(video['src']).to eq src
       expect(video['width']).to eq "400"
       expect(video['preload']).to eq 'metadata'
-
-      expect(paragraph.name).to eq 'p'
-
-      link = paragraph.children.first
 
       expect(link.name).to eq 'a'
       expect(link['href']).to eq src
@@ -107,14 +103,12 @@ RSpec.describe Banzai::Filter::VideoLinkFilter do
       image = %(<img src="#{proxy_src}" data-canonical-src="#{canonical_src}"/>)
       container = filter(image).children.first
 
-      expect(container['class']).to eq 'video-container'
+      expect(container['class']).to eq 'media-container video-container'
 
-      video, paragraph = container.children
+      video, link = container.children
 
       expect(video['src']).to eq proxy_src
       expect(video['data-canonical-src']).to eq canonical_src
-
-      link = paragraph.children.first
 
       expect(link['href']).to eq proxy_src
     end

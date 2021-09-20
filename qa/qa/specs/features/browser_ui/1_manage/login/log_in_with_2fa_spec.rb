@@ -35,7 +35,7 @@ module QA
         group.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
       end
 
-      it 'allows enforcing 2FA via UI and logging in with 2FA', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/898' do
+      it 'allows enforcing 2FA via UI and logging in with 2FA', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1320' do
         enforce_two_factor_authentication_on_group(group)
 
         enable_two_factor_authentication_for_user(developer_user)

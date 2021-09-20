@@ -2,36 +2,31 @@
   = form_errors(@application_setting)
 
   %fieldset
-    %h5
-      = _('Unauthenticated API request rate limit')
+    = _("The package registry rate limits can help reduce request volume (like from crawlers or abusive bots).")
+
+  %fieldset
     .form-group
       .form-check
         = f.check_box :throttle_unauthenticated_packages_api_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_unauthenticated_packages_api_checkbox' }
         = f.label :throttle_unauthenticated_packages_api_enabled, class: 'form-check-label label-bold' do
           = _('Enable unauthenticated API request rate limit')
-        %span.form-text.text-muted
-          = _('Helps reduce request volume (e.g. from crawlers or abusive bots)')
     .form-group
-      = f.label :throttle_unauthenticated_packages_api_requests_per_period, 'Max unauthenticated API requests per period per IP', class: 'label-bold'
+      = f.label :throttle_unauthenticated_packages_api_requests_per_period, _('Maximum unauthenticated API requests per rate limit period per IP'), class: 'label-bold'
       = f.number_field :throttle_unauthenticated_packages_api_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_unauthenticated_packages_api_period_in_seconds, 'Unauthenticated API rate limit period in seconds', class: 'label-bold'
+      = f.label :throttle_unauthenticated_packages_api_period_in_seconds, _('Unauthenticated API rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_unauthenticated_packages_api_period_in_seconds, class: 'form-control gl-form-input'
     %hr
-    %h5
-      = _('Authenticated API request rate limit')
     .form-group
       .form-check
         = f.check_box :throttle_authenticated_packages_api_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_authenticated_packages_api_checkbox' }
         = f.label :throttle_authenticated_packages_api_enabled, class: 'form-check-label label-bold' do
           = _('Enable authenticated API request rate limit')
-        %span.form-text.text-muted
-          = _('Helps reduce request volume (e.g. from crawlers or abusive bots)')
     .form-group
-      = f.label :throttle_authenticated_packages_api_requests_per_period, 'Max authenticated API requests per period per user', class: 'label-bold'
+      = f.label :throttle_authenticated_packages_api_requests_per_period, _('Maximum authenticated API requests per rate limit period per user'), class: 'label-bold'
       = f.number_field :throttle_authenticated_packages_api_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_authenticated_packages_api_period_in_seconds, 'Authenticated API rate limit period in seconds', class: 'label-bold'
+      = f.label :throttle_authenticated_packages_api_period_in_seconds, _('Authenticated API rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_authenticated_packages_api_period_in_seconds, class: 'form-control gl-form-input'
 
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

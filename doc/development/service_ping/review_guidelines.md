@@ -59,7 +59,7 @@ are regular backend changes.
   metrics that are based on Database.
 - For tracking using Redis HLL (HyperLogLog):
   - Check the Redis slot.
-  - Check if a [feature flag is needed](index.md#recommendations).
+  - Check if a [feature flag is needed](implement.md#recommendations).
 - For a metric's YAML definition:
   - Check the metric's `description`.
   - Check the metric's `key_path`.

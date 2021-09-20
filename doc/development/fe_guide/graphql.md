@@ -421,14 +421,16 @@ is still validated.
 Again, make sure that those overrides are as short-lived as possible by tracking their removal in
 the appropriate issue.
 
-#### Feature flags in queries
+#### Feature-flagged queries
 
-Sometimes it may be helpful to have an entity in the GraphQL query behind a feature flag.
-One example is working on a feature where the backend has already been merged but the frontend
-has not. In this case, you may consider putting the GraphQL entity behind a feature flag to allow smaller
-merge requests to be created and merged.
+In cases where the backend is complete and the frontend is being implemented behind a feature flag,
+a couple options are available to leverage the feature flag in the GraphQL queries.
 
-To do this we can use the `@include` directive to exclude an entity if the `if` statement passes.
+##### The `@include` directive
+
+The `@include` (or its opposite, `@skip`) can be used to control whether an entity should be
+included in the query. If the `@include` directive evaluates to `false`, the entity's resolver is
+not hit and the entity is excluded from the response. For example:
 
 ```graphql
 query getAuthorData($authorNameEnabled: Boolean = false) {
@@ -455,6 +457,34 @@ export default {
   },
 };
 ```
+
+Note that, even if the directive evaluates to `false`, the guarded entity is sent to the backend and
+matched against the GraphQL schema. So this approach requires that the feature-flagged entity
+exists in the schema, even if the feature flag is disabled. When the feature flag is turned off, it
+is recommended that the resolver returns `null` at the very least.
+
+##### Different versions of a query
+
+There's another approach that involves duplicating the standard query, and it should be avoided. The copy includes the new entities
+while the original remains unchanged. It is up to the production code to trigger the right query
+based on the feature flag's status. For example:
+
+```javascript
+export default {
+  apollo: {
+    user: {
+      query() {
+        return this.glFeatures.authorNameEnabled ? NEW_QUERY : ORIGINAL_QUERY,
+      }
+    }
+  },
+};
+```
+
+This approach is not recommended as it results in bigger merge requests and requires maintaining
+two similar queries for as long as the feature flag exists. This can be used in cases where the new
+GraphQL entities are not yet part of the schema, or if they are feature-flagged at the schema level
+(`new_entity: :feature_flag`).
 
 ### Manually triggering queries
 
@@ -1310,7 +1340,7 @@ describe('when query times out', () => {
     expect(getAlert().exists()).toBe(false);
     expect(getGraph().exists()).toBe(true);
 
-    /* fails again, alert retuns but data persists */
+    /* fails again, alert returns but data persists */
     await advanceApolloTimers();
     expect(getAlert().exists()).toBe(true);
     expect(getGraph().exists()).toBe(true);

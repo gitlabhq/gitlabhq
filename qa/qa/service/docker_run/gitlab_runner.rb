@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'resolv'
-require 'securerandom'
 
 module QA
   module Service

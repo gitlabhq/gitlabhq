@@ -5,6 +5,16 @@ module Gitlab
     class RefService
       include Gitlab::EncodingHelper
 
+      TAGS_SORT_KEY = {
+        'name' => Gitaly::FindAllTagsRequest::SortBy::Key::REFNAME,
+        'updated' => Gitaly::FindAllTagsRequest::SortBy::Key::CREATORDATE
+      }.freeze
+
+      TAGS_SORT_DIRECTION = {
+        'asc' => Gitaly::SortDirection::ASCENDING,
+        'desc' => Gitaly::SortDirection::DESCENDING
+      }.freeze
+
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @repository = repository
@@ -52,38 +62,6 @@ module Gitlab
         consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
       end
 
-      def find_ref_name(commit_id, ref_prefix)
-        request = Gitaly::FindRefNameRequest.new(
-          repository: @gitaly_repo,
-          commit_id: commit_id,
-          prefix: ref_prefix
-        )
-        response = GitalyClient.call(@storage, :ref_service, :find_ref_name, request, timeout: GitalyClient.medium_timeout)
-        encode!(response.name.dup)
-      end
-
-      def list_new_blobs(newrev, limit = 0, dynamic_timeout: nil)
-        request = Gitaly::ListNewBlobsRequest.new(
-          repository: @gitaly_repo,
-          commit_id: newrev,
-          limit: limit
-        )
-
-        timeout =
-          if dynamic_timeout
-            [dynamic_timeout, GitalyClient.medium_timeout].min
-          else
-            GitalyClient.medium_timeout
-          end
-
-        response = GitalyClient.call(@storage, :ref_service, :list_new_blobs, request, timeout: timeout)
-        response.flat_map do |msg|
-          # Returns an Array of Gitaly::NewBlobObject objects
-          # Available methods are: #size, #oid and #path
-          msg.new_blob_objects
-        end
-      end
-
       def count_tag_names
         tag_names.count
       end
@@ -94,13 +72,15 @@ module Gitlab
 
       def local_branches(sort_by: nil, pagination_params: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
-        request.sort_by = sort_by_param(sort_by) if sort_by
+        request.sort_by = sort_local_branches_by_param(sort_by) if sort_by
         response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request, timeout: GitalyClient.fast_timeout)
         consume_find_local_branches_response(response)
       end
 
-      def tags
+      def tags(sort_by: nil)
         request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
+        request.sort_by = sort_tags_by_param(sort_by) if sort_by
+
         response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request, timeout: GitalyClient.medium_timeout)
         consume_tags_response(response)
       end
@@ -125,6 +105,21 @@ module Gitlab
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, encode!(branch.name.dup), branch.target_commit.id, target_commit)
+      end
+
+      def find_tag(tag_name)
+        return if tag_name.blank?
+
+        request = Gitaly::FindTagRequest.new(
+          repository: @gitaly_repo,
+          tag_name: encode_binary(tag_name)
+        )
+
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_tag, request, timeout: GitalyClient.medium_timeout)
+        tag = response.tag
+        return unless tag
+
+        Gitlab::Git::Tag.new(@repository, tag)
       end
 
       def delete_refs(refs: [], except_with_prefixes: [])
@@ -211,13 +206,24 @@ module Gitlab
         response.flat_map { |message| message.names.map { |name| yield(name) } }
       end
 
-      def sort_by_param(sort_by)
+      def sort_local_branches_by_param(sort_by)
         sort_by = 'name' if sort_by == 'name_asc'
 
         enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
         raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
 
         enum_value
+      end
+
+      def sort_tags_by_param(sort_by)
+        match = sort_by.match(/^(?<key>name|updated)_(?<direction>asc|desc)$/)
+
+        return unless match
+
+        Gitaly::FindAllTagsRequest::SortBy.new(
+          key: TAGS_SORT_KEY[match[:key]],
+          direction: TAGS_SORT_DIRECTION[match[:direction]]
+        )
       end
 
       def consume_find_local_branches_response(response)

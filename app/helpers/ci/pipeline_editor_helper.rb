@@ -16,7 +16,6 @@ module Ci
         "ci-config-path": project.ci_config_path_or_default,
         "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
         "ci-help-page-path" => help_page_path('ci/index'),
-        "commit-sha" => commit_sha,
         "default-branch" => project.default_branch_or_main,
         "empty-state-illustration-path" => image_path('illustrations/empty-state/empty-dag-md.svg'),
         "initial-branch-name" => initial_branch,

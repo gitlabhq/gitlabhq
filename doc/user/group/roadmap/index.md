@@ -32,7 +32,7 @@ When you hover over a milestone bar or title, a popover appears with its title, 
 date. You can also click the chevron (**{chevron-down}**) next to the **Milestones** heading to
 toggle the list of the milestone bars.
 
-![roadmap view](img/roadmap_view_v13_2.png)
+![roadmap view](img/roadmap_view_v14_3.png)
 
 ## Sort and filter the Roadmap
 
@@ -52,7 +52,7 @@ filtering them by what's important for you.
 
 A dropdown menu lets you show only open or closed epics. By default, all epics are shown.
 
-![epics state dropdown](img/epics_state_dropdown_v12_10.png)
+![epics state dropdown](img/epics_state_dropdown_v14_3.png)
 
 You can sort epics in the Roadmap view by:
 
@@ -101,18 +101,38 @@ Feature.disable(:async_filtering)
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198062), Timelines were moved to the Premium tier.
 
-Roadmap supports the following date ranges:
+### Date range presets
 
-- Quarters
-- Months (default)
-- Weeks
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/204994) in GitLab 14.3. [Deployed behind the `roadmap_daterange_filter` flag](../../../administration/feature_flags.md), disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group,
+ask an administrator to [enable the `roadmap_daterange_filter` flag](../../../administration/feature_flags.md).
+On GitLab.com, this feature is available.
+The feature is ready for production use.
+
+Roadmap provides three date range options, each with predetermined timeline duration:
+
+- **This quarter**: includes weeks present in current quarter.
+- **This year**: includes weeks or months present in current year.
+- **Within 3 years**: includes weeks, months, or quarters present in the previous 18 months and
+  upcoming 18 months (that is, three years in total).
+
+### Layout presets
+
+Depending on selected [date range preset](#date-range-presets), Roadmap supports the following layout presets:
+
+- **Quarters**: only available when the "Within 3 years" date range is selected.
+- **Months**: available when either "This year" or "Within 3 years" date range is selected.
+- **Weeks** (default): available for all the date range presets.
 
 ### Quarters
 
 ![roadmap date range in quarters](img/roadmap_timeline_quarters.png)
 
 In the **Quarters** preset, roadmap shows epics and milestones which have start or due dates
-**falling within** or **going through** past quarter, current quarter, and the next four quarters,
+**falling within** currently selected date range preset,
 where **today**
 is shown by the vertical red line in the timeline. The sub-headers underneath the quarter name on
 the timeline header represent the month of the quarter.
@@ -123,7 +143,7 @@ the timeline header represent the month of the quarter.
 
 In the **Months** preset, roadmap shows epics and milestones which have start or due dates
 **falling within** or
-**going through** the past month, current month, and the next five months, where **today**
+**going through** currently selected date range preset, where **today**
 is shown by the vertical red line in the timeline. The sub-headers underneath the month name on
 the timeline header represent the date on starting day (Sunday) of the week. This preset is
 selected by default.
@@ -133,7 +153,7 @@ selected by default.
 ![roadmap date range in weeks](img/roadmap_timeline_weeks.png)
 
 In the **Weeks** preset, roadmap shows epics and milestones which have start or due dates **falling
-within** or **going through** the past week, current week and the next four weeks, where **today**
+within** or **going through** currently selected date range preset, where **today**
 is shown by the vertical red line in the timeline. The sub-headers underneath the week name on
 the timeline header represent the days of the week.
 

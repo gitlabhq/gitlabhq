@@ -207,7 +207,7 @@ RSpec.shared_examples 'an editable mentionable' do
 end
 
 RSpec.shared_examples 'mentions in description' do |mentionable_type|
-  shared_examples 'when storing user mentions' do
+  context 'when storing user mentions' do
     before do
       mentionable.store_mentions!
     end
@@ -238,26 +238,10 @@ RSpec.shared_examples 'mentions in description' do |mentionable_type|
       end
     end
   end
-
-  context 'when store_mentions_without_subtransaction is enabled' do
-    before do
-      stub_feature_flags(store_mentions_without_subtransaction: true)
-    end
-
-    it_behaves_like 'when storing user mentions'
-  end
-
-  context 'when store_mentions_without_subtransaction is disabled' do
-    before do
-      stub_feature_flags(store_mentions_without_subtransaction: false)
-    end
-
-    it_behaves_like 'when storing user mentions'
-  end
 end
 
 RSpec.shared_examples 'mentions in notes' do |mentionable_type|
-  shared_examples 'when mentionable notes contain mentions' do
+  context 'when mentionable notes contain mentions' do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let(:group) { create(:group) }
@@ -276,22 +260,6 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
       expect(mentionable.referenced_projects(user)).to eq [mentionable.project].compact # epic.project is nil, and we want empty []
       expect(mentionable.referenced_groups(user)).to eq [group]
     end
-  end
-
-  context 'when store_mentions_without_subtransaction is enabled' do
-    before do
-      stub_feature_flags(store_mentions_without_subtransaction: true)
-    end
-
-    it_behaves_like 'when mentionable notes contain mentions'
-  end
-
-  context 'when store_mentions_without_subtransaction is disabled' do
-    before do
-      stub_feature_flags(store_mentions_without_subtransaction: false)
-    end
-
-    it_behaves_like 'when mentionable notes contain mentions'
   end
 end
 

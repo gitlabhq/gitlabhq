@@ -43,7 +43,7 @@ number of pods that are defined for the deployment, which are configured when th
 cluster is created.
 
 For example, if your application has 10 pods and a 10% rollout job runs, the new instance of the
-application is deployed to a single pod while the remaining nine are present the previous instance.
+application is deployed to a single pod while the rest of the pods show the previous instance of the application.
 
 First we [define the template as manual](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L100-103):
 
@@ -135,5 +135,5 @@ to switch to a different deployment. Both deployments are running in parallel, a
 can be switched to at any time.
 
 An [example deployable application](https://gitlab.com/gl-release/blue-green-example)
-is available, with a [`gitlab-ci.yml` CI/CD configuration file](https://gitlab.com/gl-release/blue-green-example/blob/master/.gitlab-ci.yml)
+is available, with a [`.gitlab-ci.yml` CI/CD configuration file](https://gitlab.com/gl-release/blue-green-example/blob/master/.gitlab-ci.yml)
 that demonstrates blue-green deployments.

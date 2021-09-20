@@ -217,17 +217,6 @@ module Mentionable
   def user_mention_association
     association(:user_mentions).reflection
   end
-
-  # User mention that is parsed from model description rather then its related notes.
-  # Models that have a description attribute like Issue, MergeRequest, Epic, Snippet may have such a user mention.
-  # Other mentionable models like Commit, DesignManagement::Design, will never have such record as those do not have
-  # a description attribute.
-  #
-  # Using this method followed by a call to *save* may result in *ActiveRecord::RecordNotUnique* exception
-  # in a multi-threaded environment. Make sure to use it within a *safe_ensure_unique* block.
-  def model_user_mention
-    user_mentions.where(note_id: nil).first_or_initialize
-  end
 end
 
 Mentionable.prepend_mod_with('Mentionable')

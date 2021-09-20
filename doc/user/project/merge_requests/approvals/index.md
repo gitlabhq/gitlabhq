@@ -61,7 +61,9 @@ GitLab displays one of these buttons after the body of the merge request:
 
 Eligible approvers can also use the `/approve`
 [quick action](../../../project/quick_actions.md) when adding a comment to
-a merge request.
+a merge request.  [In GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/292936),
+if a user approves a merge request and is shown in the reviewer list, a green check mark
+(**{check-circle-filled}**) displays next to their name.
 
 After a merge request receives the [number and type of approvals](rules.md) you configure, it can merge
 unless it's blocked for another reason. Merge requests can be blocked by other problems,

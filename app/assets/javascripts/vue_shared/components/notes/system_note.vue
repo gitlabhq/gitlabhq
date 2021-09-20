@@ -1,6 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
-
 /**
  * Common component to render a system note, icon and user information.
  *
@@ -97,6 +95,9 @@ export default {
   methods: {
     ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use'], // to support icon SVGs
+  },
 };
 </script>
 
@@ -106,7 +107,7 @@ export default {
     :class="{ target: isTargetNote, 'pr-0': shouldShowDescriptionVersion }"
     class="note system-note note-wrapper"
   >
-    <div class="timeline-icon" v-html="iconHtml"></div>
+    <div v-safe-html:[$options.safeHtmlConfig]="iconHtml" class="timeline-icon"></div>
     <div class="timeline-content">
       <div class="note-header">
         <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">

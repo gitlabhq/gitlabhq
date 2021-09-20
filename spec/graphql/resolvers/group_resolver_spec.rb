@@ -20,9 +20,14 @@ RSpec.describe Resolvers::GroupResolver do
     end
 
     it 'resolves an unknown full_path to nil' do
-      result = batch_sync { resolve_group('unknown/project') }
+      result = batch_sync { resolve_group('unknown/group') }
 
       expect(result).to be_nil
+    end
+
+    it 'treats group full path as case insensitive' do
+      result = batch_sync { resolve_group(group1.full_path.upcase) }
+      expect(result).to eq group1
     end
   end
 

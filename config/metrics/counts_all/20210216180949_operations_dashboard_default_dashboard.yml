@@ -3,16 +3,17 @@ data_category: optional
 key_path: usage_activity_by_stage.monitor.operations_dashboard_default_dashboard
 description: Active users with enabled operations dashboard
 product_section: ops
-product_stage:
+product_stage: monitor
 product_group: group::monitor
 product_category: metrics
 value_type: number
-status: data_available
+status: active
 time_frame: all
 data_source: database
 distribution:
-  - ce
-  - ee
+- ce
+- ee
 tier:
-  - free
-  - premium
+- free
+- premium
+milestone: "<13.9"

@@ -16,7 +16,7 @@ RSpec.describe 'Slack slash commands', :js do
   end
 
   it 'shows a help message' do
-    expect(page).to have_content('This service allows users to perform common')
+    expect(page).to have_content('Perform common operations in this project')
   end
 
   it 'redirects to the integrations page after saving but not activating' do
@@ -42,6 +42,6 @@ RSpec.describe 'Slack slash commands', :js do
   end
 
   it 'shows help content' do
-    expect(page).to have_content('This service allows users to perform common operations on this project by entering slash commands in Slack.')
+    expect(page).to have_content('Perform common operations in this project by entering slash commands in Slack.')
   end
 end

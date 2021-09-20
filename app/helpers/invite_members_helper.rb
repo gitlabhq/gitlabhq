@@ -9,14 +9,6 @@ module InviteMembersHelper
     Feature.enabled?(:invite_members_group_modal, project.group) && can?(current_user, :admin_project_member, project)
   end
 
-  def can_invite_group_for_project?(project)
-    # do not use the can_admin_project_member? helper here due to structure of the view and how membership_locked?
-    # is leveraged for inviting groups
-    Feature.enabled?(:invite_members_group_modal, project.group) &&
-      can?(current_user, :admin_project_member, project) &&
-      project.allowed_to_share_with_group?
-  end
-
   def invite_accepted_notice(member)
     case member.source
     when Project

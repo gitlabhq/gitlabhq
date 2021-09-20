@@ -28,7 +28,7 @@ module Suggestions
         Gitlab::Database.main.bulk_insert('suggestions', rows) # rubocop:disable Gitlab/BulkInsert
       end
 
-      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_add_suggestion_action(user: @note.author)
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_add_suggestion_action(note: @note)
     end
   end
 end

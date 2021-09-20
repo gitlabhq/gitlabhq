@@ -42,30 +42,4 @@ RSpec.describe 'Group Issue Boards', :js do
       end
     end
   end
-
-  context 'when graphql_board_lists FF disabled' do
-    before do
-      stub_feature_flags(graphql_board_lists: false)
-      sign_in(user)
-
-      visit group_board_path(group, board)
-      wait_for_requests
-    end
-
-    it 'only shows valid labels for the issue project and group' do
-      click_card(card)
-
-      page.within('.labels') do
-        click_link 'Edit'
-
-        wait_for_requests
-
-        page.within('.selectbox') do
-          expect(page).to have_content(project_1_label.title)
-          expect(page).to have_content(group_label.title)
-          expect(page).not_to have_content(project_2_label.title)
-        end
-      end
-    end
-  end
 end

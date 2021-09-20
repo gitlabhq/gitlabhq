@@ -4,6 +4,7 @@ module Gitlab
   module Ci
     class Trace
       include ::Gitlab::ExclusiveLeaseHelpers
+      include ::Gitlab::Utils::StrongMemoize
       include Checksummable
 
       LOCK_TTL = 10.minutes
@@ -23,6 +24,8 @@ module Gitlab
       attr_reader :job
 
       delegate :old_trace, to: :job
+      delegate :can_attempt_archival_now?, :increment_archival_attempts!,
+        :archival_attempts_message, to: :trace_metadata
 
       def initialize(job)
         @job = job
@@ -188,11 +191,7 @@ module Gitlab
       def unsafe_archive!
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        if trace_artifact
-          unsafe_trace_cleanup!
-
-          raise AlreadyArchivedError, 'Could not archive again'
-        end
+        unsafe_trace_conditionally_cleanup_before_retry!
 
         if job.trace_chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
@@ -212,12 +211,19 @@ module Gitlab
         end
       end
 
-      def unsafe_trace_cleanup!
+      def already_archived?
+        # TODO check checksum to ensure archive completed successfully
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/259619
+        trace_artifact.archived_trace_exists?
+      end
+
+      def unsafe_trace_conditionally_cleanup_before_retry!
         return unless trace_artifact
 
-        if trace_artifact.archived_trace_exists?
+        if already_archived?
           # An archive already exists, so make sure to remove the trace chunks
           erase_trace_chunks!
+          raise AlreadyArchivedError, 'Could not archive again'
         else
           # An archive already exists, but its associated file does not, so remove it
           trace_artifact.destroy!
@@ -251,11 +257,19 @@ module Gitlab
         File.open(path) do |stream|
           # TODO: Set `file_format: :raw` after we've cleaned up legacy traces migration
           # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20307
-          job.create_job_artifacts_trace!(
+          trace_artifact = job.create_job_artifacts_trace!(
             project: job.project,
             file_type: :trace,
             file: stream,
             file_sha256: self.class.hexdigest(path))
+
+          trace_metadata.track_archival!(trace_artifact.id)
+        end
+      end
+
+      def trace_metadata
+        strong_memoize(:trace_metadata) do
+          job.ensure_trace_metadata!
         end
       end
 

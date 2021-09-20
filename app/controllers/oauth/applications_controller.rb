@@ -25,7 +25,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   def create
-    @application = Applications::CreateService.new(current_user, create_application_params).execute(request)
+    @application = Applications::CreateService.new(current_user, application_params).execute(request)
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
@@ -51,8 +51,10 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
     @authorized_apps = @authorized_tokens.map(&:application).uniq.reject(&:nil?)
 
-    # Don't overwrite a value possibly set by `create`
-    @application ||= Doorkeeper::Application.new
+    # Default access tokens to expire. This preserves backward compatibility
+    # with existing applications. This will be removed in 15.0.
+    # Removal issue: https://gitlab.com/gitlab-org/gitlab/-/issues/340848
+    @application ||= Doorkeeper::Application.new(expire_access_tokens: true)
   end
 
   # Override Doorkeeper to scope to the current user
@@ -64,8 +66,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     render "errors/not_found", layout: "errors", status: :not_found
   end
 
-  def create_application_params
-    application_params.tap do |params|
+  def application_params
+    super.tap do |params|
       params[:owner] = current_user
     end
   end

@@ -135,6 +135,20 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       environment.stop
     end
+
+    context 'when environment has auto stop period' do
+      let!(:environment) { create(:environment, :available, :auto_stoppable, project: project) }
+
+      it 'clears auto stop period when the environment has stopped' do
+        environment.stop!
+
+        expect(environment.auto_stop_at).to be_nil
+      end
+
+      it 'does not clear auto stop period when the environment has not stopped' do
+        expect(environment.auto_stop_at).to be_present
+      end
+    end
   end
 
   describe '.for_name_like' do
@@ -230,55 +244,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       let!(:environment) { create(:environment) }
 
       it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.stop_actions' do
-    subject { environments.stop_actions }
-
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user) { create(:user) }
-
-    let(:environments) { Environment.all }
-
-    before_all do
-      project.add_developer(user)
-      project.repository.add_branch(user, 'review/feature-1', 'master')
-      project.repository.add_branch(user, 'review/feature-2', 'master')
-    end
-
-    shared_examples_for 'correct filtering' do
-      it 'returns stop actions for available environments only' do
-        expect(subject.count).to eq(1)
-        expect(subject.first.name).to eq('stop_review_app')
-        expect(subject.first.ref).to eq('review/feature-1')
-      end
-    end
-
-    before do
-      create_review_app(user, project, 'review/feature-1')
-      create_review_app(user, project, 'review/feature-2')
-    end
-
-    it 'returns stop actions for environments' do
-      expect(subject.count).to eq(2)
-      expect(subject).to match_array(Ci::Build.where(name: 'stop_review_app'))
-    end
-
-    context 'when one of the stop actions has already been executed' do
-      before do
-        Ci::Build.where(ref: 'review/feature-2').find_by_name('stop_review_app').enqueue!
-      end
-
-      it_behaves_like 'correct filtering'
-    end
-
-    context 'when one of the deployments does not have stop action' do
-      before do
-        Deployment.where(ref: 'review/feature-2').update_all(on_stop: nil)
-      end
-
-      it_behaves_like 'correct filtering'
     end
   end
 
@@ -726,6 +691,28 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#last_deployable' do
+    subject { environment.last_deployable }
+
+    context 'does not join across databases' do
+      let(:pipeline_a) { create(:ci_pipeline, project: project) }
+      let(:pipeline_b) { create(:ci_pipeline, project: project) }
+      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
+      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
+
+      before do
+        create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+      end
+
+      it 'when called' do
+        with_cross_joins_prevented do
+          expect(subject.id).to eq(ci_build_a.id)
+        end
+      end
+    end
+  end
+
   describe '#last_visible_deployment' do
     subject { environment.last_visible_deployment }
 
@@ -764,6 +751,86 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         let!(:deployment) { create(:deployment, :canceled, environment: environment) }
 
         it { is_expected.to eq(deployment) }
+      end
+    end
+  end
+
+  describe '#last_visible_deployable' do
+    subject { environment.last_visible_deployable }
+
+    context 'does not join across databases' do
+      let(:pipeline_a) { create(:ci_pipeline, project: project) }
+      let(:pipeline_b) { create(:ci_pipeline, project: project) }
+      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
+      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
+
+      before do
+        create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+      end
+
+      it 'for direct call' do
+        with_cross_joins_prevented do
+          expect(subject.id).to eq(ci_build_b.id)
+        end
+      end
+
+      it 'for preload' do
+        environment.reload
+
+        with_cross_joins_prevented do
+          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
+          expect(subject.id).to eq(ci_build_b.id)
+        end
+      end
+    end
+
+    context 'call after preload' do
+      it 'fetches from association cache' do
+        pipeline = create(:ci_pipeline, project: project)
+        ci_build = create(:ci_build, project: project, pipeline: pipeline)
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
+
+        environment.reload
+        ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
+
+        query_count = ActiveRecord::QueryRecorder.new do
+          expect(subject.id).to eq(ci_build.id)
+        end.count
+
+        expect(query_count).to eq(0)
+      end
+    end
+
+    context 'when the feature for disable_join is disabled' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:ci_build) { create(:ci_build, project: project, pipeline: pipeline) }
+
+      before do
+        stub_feature_flags(environment_last_visible_pipeline_disable_joins: false)
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
+      end
+
+      context 'for preload' do
+        it 'executes the original association instead of override' do
+          environment.reload
+          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
+
+          expect_any_instance_of(Deployment).not_to receive(:deployable)
+
+          query_count = ActiveRecord::QueryRecorder.new do
+            expect(subject.id).to eq(ci_build.id)
+          end.count
+
+          expect(query_count).to eq(0)
+        end
+      end
+
+      context 'for direct call' do
+        it 'executes the original association instead of override' do
+          expect_any_instance_of(Deployment).not_to receive(:deployable)
+          expect(subject.id).to eq(ci_build.id)
+        end
       end
     end
   end
@@ -812,6 +879,35 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       expect(last_pipeline).to eq(failed_pipeline)
     end
 
+    context 'does not join across databases' do
+      let(:pipeline_a) { create(:ci_pipeline, project: project) }
+      let(:pipeline_b) { create(:ci_pipeline, project: project) }
+      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
+      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
+
+      before do
+        create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+      end
+
+      subject { environment.last_visible_pipeline }
+
+      it 'for direct call' do
+        with_cross_joins_prevented do
+          expect(subject.id).to eq(pipeline_b.id)
+        end
+      end
+
+      it 'for preload' do
+        environment.reload
+
+        with_cross_joins_prevented do
+          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
+          expect(subject.id).to eq(pipeline_b.id)
+        end
+      end
+    end
+
     context 'for the environment' do
       it 'returns the last pipeline' do
         pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
@@ -847,6 +943,57 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
           last_pipeline = environment.last_visible_pipeline
 
           expect(last_pipeline).to eq(failed_pipeline)
+        end
+      end
+    end
+
+    context 'call after preload' do
+      it 'fetches from association cache' do
+        pipeline = create(:ci_pipeline, project: project)
+        ci_build = create(:ci_build, project: project, pipeline: pipeline)
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
+
+        environment.reload
+        ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
+
+        query_count = ActiveRecord::QueryRecorder.new do
+          expect(environment.last_visible_pipeline.id).to eq(pipeline.id)
+        end.count
+
+        expect(query_count).to eq(0)
+      end
+    end
+
+    context 'when the feature for disable_join is disabled' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:ci_build) { create(:ci_build, project: project, pipeline: pipeline) }
+
+      before do
+        stub_feature_flags(environment_last_visible_pipeline_disable_joins: false)
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
+      end
+
+      subject { environment.last_visible_pipeline }
+
+      context 'for preload' do
+        it 'executes the original association instead of override' do
+          environment.reload
+          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
+
+          expect_any_instance_of(Ci::Build).not_to receive(:pipeline)
+
+          query_count = ActiveRecord::QueryRecorder.new do
+            expect(subject.id).to eq(pipeline.id)
+          end.count
+
+          expect(query_count).to eq(0)
+        end
+      end
+
+      context 'for direct call' do
+        it 'executes the original association instead of override' do
+          expect_any_instance_of(Ci::Build).not_to receive(:pipeline)
+          expect(subject.id).to eq(pipeline.id)
         end
       end
     end

@@ -73,7 +73,6 @@ module EnvironmentHelper
       external_url: environment.external_url,
       can_update_environment: can?(current_user, :update_environment, environment),
       can_destroy_environment: can_destroy_environment?(environment),
-      can_read_environment: can?(current_user, :read_environment, environment),
       can_stop_environment: can?(current_user, :stop_environment, environment),
       can_admin_environment: can?(current_user, :admin_environment, project),
       environment_metrics_path: environment_metrics_path(environment),

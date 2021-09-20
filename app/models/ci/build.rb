@@ -90,6 +90,10 @@ module Ci
       end
     end
 
+    def persisted_environment=(environment)
+      strong_memoize(:persisted_environment) { environment }
+    end
+
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -165,8 +169,6 @@ module Ci
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
-
-    scope :with_secure_reports_from_options, -> (job_type) { where('options like :job_type', job_type: "%:artifacts:%:reports:%:#{job_type}:%") }
 
     scope :with_secure_reports_from_config_options, -> (job_types) do
       joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
@@ -306,7 +308,9 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.deployment&.run
+        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+          build.deployment&.run
+        end
 
         build.run_after_commit do
           build.pipeline.persistent_ref.create
@@ -328,7 +332,9 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        build.deployment&.succeed
+        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+          build.deployment&.succeed
+        end
 
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
@@ -341,7 +347,9 @@ module Ci
         next unless build.deployment
 
         begin
-          build.deployment.drop!
+          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+            build.deployment.drop!
+          end
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
         end
@@ -362,10 +370,12 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build, transition|
-        if transition.to_name == :skipped
-          build.deployment&.skip
-        else
-          build.deployment&.cancel
+        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+          if transition.to_name == :skipped
+            build.deployment&.skip
+          else
+            build.deployment&.cancel
+          end
         end
       end
     end
@@ -712,6 +722,10 @@ module Ci
       update_column(:trace, nil)
     end
 
+    def ensure_trace_metadata!
+      Ci::BuildTraceMetadata.find_or_upsert_for!(id)
+    end
+
     def artifacts_expose_as
       options.dig(:artifacts, :expose_as)
     end
@@ -748,7 +762,9 @@ module Ci
 
     def any_runners_available?
       cache_for_available_runners do
-        project.active_runners.exists?
+        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937') do
+          project.active_runners.exists?
+        end
       end
     end
 
@@ -1013,9 +1029,10 @@ module Ci
 
     # Consider this object to have a structural integrity problems
     def doom!
-      update_columns(
-        status: :failed,
-        failure_reason: :data_integrity_failure)
+      transaction do
+        update_columns(status: :failed, failure_reason: :data_integrity_failure)
+        all_queuing_entries.delete_all
+      end
     end
 
     def degradation_threshold

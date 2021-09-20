@@ -1,0 +1,10 @@
+#import "../fragments/job.fragment.graphql"
+
+mutation unscheduleJob($id: CiBuildID!) {
+  jobUnschedule(input: { id: $id }) {
+    job {
+      ...Job
+    }
+    errors
+  }
+}

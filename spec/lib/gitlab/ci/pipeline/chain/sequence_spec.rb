@@ -8,8 +8,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
 
   let(:pipeline) { build_stubbed(:ci_pipeline) }
   let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project) }
-  let(:first_step) { spy('first step') }
-  let(:second_step) { spy('second step') }
+  let(:first_step) { spy('first step', name: 'FirstStep') }
+  let(:second_step) { spy('second step', name: 'SecondStep') }
   let(:sequence) { [first_step, second_step] }
   let(:histogram) { spy('prometheus metric') }
 
@@ -59,6 +59,17 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
       subject.build!
 
       expect(histogram).to have_received(:observe)
+    end
+
+    it 'adds step sequence duration to duration histogram' do
+      expect(command.metrics)
+        .to receive(:pipeline_creation_step_duration_histogram)
+        .twice
+        .and_return(histogram)
+      expect(histogram).to receive(:observe).with({ step: 'FirstStep' }, any_args).ordered
+      expect(histogram).to receive(:observe).with({ step: 'SecondStep' }, any_args).ordered
+
+      subject.build!
     end
 
     it 'records pipeline size by pipeline source in a histogram' do

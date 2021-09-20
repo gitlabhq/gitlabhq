@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '../constants';
 import PreviewDropdown from './preview_dropdown.vue';
 import PublishButton from './publish_button.vue';
 
@@ -10,7 +11,6 @@ export default {
   },
   computed: {
     ...mapGetters(['isNotesFetched']),
-    ...mapGetters('batchComments', ['draftsCount']),
   },
   watch: {
     isNotesFetched() {
@@ -19,13 +19,19 @@ export default {
       }
     },
   },
+  mounted() {
+    document.body.classList.add(REVIEW_BAR_VISIBLE_CLASS_NAME);
+  },
+  beforeDestroy() {
+    document.body.classList.remove(REVIEW_BAR_VISIBLE_CLASS_NAME);
+  },
   methods: {
     ...mapActions('batchComments', ['expandAllDiscussions']),
   },
 };
 </script>
 <template>
-  <div v-show="draftsCount > 0">
+  <div>
     <nav class="review-bar-component" data-testid="review_bar_component">
       <div
         class="review-bar-content d-flex gl-justify-content-end"

@@ -1,0 +1,8 @@
+---
+name: github_importer_lower_per_page_limit
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67150
+rollout_issue_url:
+milestone: '14.2'
+type: ops
+group: group::import
+default_enabled: false

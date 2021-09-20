@@ -139,4 +139,51 @@ RSpec.describe Boards::Issues::ListService do
     end
     # rubocop: enable RSpec/MultipleMemoizedHelpers
   end
+
+  describe '.initialize_relative_positions' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :empty_repo) }
+    let_it_be(:board) { create(:board, project: project) }
+    let_it_be(:backlog) { create(:backlog_list, board: board) }
+
+    let(:issue) { create(:issue, project: project, relative_position: nil) }
+
+    context "when 'Gitlab::Database::read_write?' is true" do
+      before do
+        allow(Gitlab::Database).to receive(:read_write?).and_return(true)
+      end
+
+      context 'user cannot move issues' do
+        it 'does not initialize the relative positions of issues' do
+          described_class.initialize_relative_positions(board, user, [issue])
+
+          expect(issue.relative_position).to eq nil
+        end
+      end
+
+      context 'user can move issues' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'initializes the relative positions of issues' do
+          described_class.initialize_relative_positions(board, user, [issue])
+
+          expect(issue.relative_position).not_to eq nil
+        end
+      end
+    end
+
+    context "when 'Gitlab::Database::read_write?' is false" do
+      before do
+        allow(Gitlab::Database).to receive(:read_write?).and_return(false)
+      end
+
+      it 'does not initialize the relative positions of issues' do
+        described_class.initialize_relative_positions(board, user, [issue])
+
+        expect(issue.relative_position).to eq nil
+      end
+    end
+  end
 end

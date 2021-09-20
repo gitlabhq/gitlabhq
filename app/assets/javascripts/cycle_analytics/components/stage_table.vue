@@ -23,8 +23,8 @@ import TotalTime from './total_time_component.vue';
 const DEFAULT_WORKFLOW_TITLE_PROPERTIES = {
   thClass: 'gl-w-half',
   key: PAGINATION_SORT_FIELD_END_EVENT,
-  sortable: true,
 };
+
 const WORKFLOW_COLUMN_TITLES = {
   issues: { ...DEFAULT_WORKFLOW_TITLE_PROPERTIES, label: __('Issues') },
   jobs: { ...DEFAULT_WORKFLOW_TITLE_PROPERTIES, label: __('Jobs') },
@@ -84,6 +84,11 @@ export default {
       required: false,
       default: null,
     },
+    sortable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     if (this.pagination) {
@@ -122,9 +127,11 @@ export default {
           key: PAGINATION_SORT_FIELD_DURATION,
           label: __('Time'),
           thClass: 'gl-w-half',
-          sortable: true,
         },
-      ];
+      ].map((field) => ({
+        ...field,
+        sortable: this.sortable,
+      }));
     },
     prevPage() {
       return Math.max(this.pagination.page - 1, 0);

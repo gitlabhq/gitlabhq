@@ -12,6 +12,7 @@ module Projects
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
       @default_branch = @params.delete(:default_branch)
+      @readme_template = @params.delete(:readme_template)
 
       build_topics
     end
@@ -89,10 +90,14 @@ module Projects
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
 
-      # Skip writing the config for project imports/forks because it
-      # will always fail since the Git directory doesn't exist until
-      # a background job creates it (see Project#add_import_job).
-      @project.set_full_path unless @project.import?
+      if @project.import?
+        experiment(:combined_registration, user: current_user).track(:import_project)
+      else
+        # Skip writing the config for project imports/forks because it
+        # will always fail since the Git directory doesn't exist until
+        # a background job creates it (see Project#add_import_job).
+        @project.set_full_path
+      end
 
       unless @project.gitlab_project_import?
         @project.create_wiki unless skip_wiki?
@@ -149,10 +154,14 @@ module Projects
         branch_name: @default_branch.presence || @project.default_branch_or_main,
         commit_message: 'Initial commit',
         file_path: 'README.md',
-        file_content: experiment(:new_project_readme_content, namespace: @project.namespace).run_with(@project)
+        file_content: readme_content
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute
+    end
+
+    def readme_content
+      @readme_template.presence || experiment(:new_project_readme_content, namespace: @project.namespace).run_with(@project)
     end
 
     def skip_wiki?

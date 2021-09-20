@@ -3,6 +3,7 @@
 *.mo
 *.edit.po
 *.rej
+.dir-locals.el
 .DS_Store
 .bundle
 .chef
@@ -49,7 +50,6 @@ eslint-report.html
 /config/sidekiq.yml
 /config/registry.key
 /coverage/*
-/coverage-javascript/
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /db/data.yml

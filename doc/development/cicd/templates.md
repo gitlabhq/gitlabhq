@@ -178,10 +178,10 @@ This includes:
 
 - Repository/project requirements.
 - Expected behavior.
-- Any places that need to be edited by users before using the template.
+- Any places that must be edited by users before using the template.
 - If the template should be used by copy pasting it into a configuration file, or
   by using it with the `include` keyword in an existing pipeline.
-- If any variables need to be saved in the project's CI/CD settings.
+- If any variables must be saved in the project's CI/CD settings.
 
 ```yaml
 # Use this template to publish an application that uses the ABC server.
@@ -289,9 +289,9 @@ If the `latest` template does not exist yet, you can copy [the stable template](
 ### How to include an older stable template
 
 Users may want to use an older [stable template](#stable-version) that is not bundled
-in the current GitLab package. For example, the stable templates in GitLab v13.0 and
-GitLab v14.0 could be so different that a user wants to continue using the v13.0 template even
-after upgrading to GitLab 14.0.
+in the current GitLab package. For example, the stable templates in GitLab 13.0 and
+GitLab 14.0 could be so different that a user wants to continue using the GitLab 13.0
+template even after upgrading to GitLab 14.0.
 
 You can add a note in the template or in documentation explaining how to use `include:remote`
 to include older template versions. If other templates are included with `include: template`,
@@ -335,7 +335,7 @@ follow the progress.
 
 ## Testing
 
-Each CI/CD template must be tested in order to make sure that it's safe to be published.
+Each CI/CD template must be tested to make sure that it's safe to be published.
 
 ### Manual QA
 
@@ -380,7 +380,7 @@ is updated in a major version GitLab release.
 
 A template could contain malicious code. For example, a template that contains the `export` shell command in a job
 might accidentally expose secret project CI/CD variables in a job log.
-If you're unsure if it's secure or not, you need to ask security experts for cross-validation.
+If you're unsure if it's secure or not, you must ask security experts for cross-validation.
 
 ## Contribute CI/CD template merge requests
 

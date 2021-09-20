@@ -334,6 +334,52 @@ git config --global url."https://${user}:${personal_access_token}@gitlab.example
 git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.example.com"
 ```
 
+### Fetch Go modules from Geo secondary sites
+
+As Go modules are stored in Git repositories, you can use the [Geo](../../administration/geo/index.md)
+feature that allows Git repositories to be accessed on the secondary Geo servers.
+
+In the following examples, the primary's site domain name is `gitlab.example.com`,
+and the secondary's is `gitlab-secondary.example.com`.
+
+`go get` will initially generate some HTTP traffic to the primary, but when the module
+download commences, the `insteadOf` configuration sends the traffic to the secondary.
+
+#### Use SSH to access the Geo secondary
+
+To fetch Go modules from the secondary using SSH:
+
+1. Reconfigure Git on the client to send traffic for the primary to the secondary:
+
+   ```plaintext
+   git config --global url."git@gitlab-secondary.example.com".insteadOf "https://gitlab.example.com"
+   git config --global url."git@gitlab-secondary.example.com".insteadOf "http://gitlab.example.com"
+   ```
+
+1. Ensure the client is set up for SSH access to GitLab repositories. This can be tested on the primary,
+   and GitLab will replicate the public key to the secondary.
+
+#### Use HTTP to access the Geo secondary
+
+Using HTTP to fetch Go modules does not work with CI/CD job tokens, only with
+persistent access tokens that are replicated to the secondary.
+
+To fetch Go modules from the secondary using HTTP:
+
+1. Put in place a Git `insteadOf` redirect on the client:
+
+   ```plaintext
+   git config --global url."https://gitlab-secondary.example.com".insteadOf "https://gitlab.example.com"
+   ```
+
+1. Generate a [personal access token](../profile/personal_access_tokens.md) and
+   provide those credentials in the client's `~/.netrc` file:
+
+   ```plaintext
+   machine gitlab.example.com login USERNAME password TOKEN
+   machine gitlab-secondary.example.com login USERNAME password TOKEN
+   ```
+
 ## Access project page with project ID
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.

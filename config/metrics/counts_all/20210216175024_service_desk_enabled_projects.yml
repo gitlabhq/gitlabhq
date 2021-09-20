@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::certify
 product_category: service_desk
 value_type: number
-status: data_available
+status: active
 time_frame: all
 data_source: database
 distribution:
@@ -16,3 +16,4 @@ distribution:
 tier:
 - free
 performance_indicator_type: []
+milestone: "<13.9"

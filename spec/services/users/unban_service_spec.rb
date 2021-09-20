@@ -50,7 +50,7 @@ RSpec.describe Users::UnbanService do
           response = unban_user
 
           expect(response[:status]).to eq(:error)
-          expect(response[:message]).to match(/State cannot transition/)
+          expect(response[:message]).to match('You cannot unban active users.')
         end
 
         it_behaves_like 'does not modify the BannedUser record or user state'

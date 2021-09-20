@@ -20,9 +20,18 @@ export default {
   },
   [types.SET_INITIAL_STATE](
     state,
-    { apiHost, enabled, project, token, listProjectsEndpoint, operationsSettingsEndpoint },
+    {
+      apiHost,
+      enabled,
+      integrated,
+      project,
+      token,
+      listProjectsEndpoint,
+      operationsSettingsEndpoint,
+    },
   ) {
     state.enabled = parseBoolean(enabled);
+    state.integrated = parseBoolean(integrated);
     state.apiHost = apiHost;
     state.token = token;
     state.listProjectsEndpoint = listProjectsEndpoint;
@@ -37,6 +46,9 @@ export default {
   },
   [types.UPDATE_ENABLED](state, enabled) {
     state.enabled = enabled;
+  },
+  [types.UPDATE_INTEGRATED](state, integrated) {
+    state.integrated = integrated;
   },
   [types.UPDATE_TOKEN](state, token) {
     state.token = token;

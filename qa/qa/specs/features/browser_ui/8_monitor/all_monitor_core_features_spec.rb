@@ -10,13 +10,13 @@ module QA
       @project.visit!
     end
 
-    it 'configures custom metrics', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/872' do
+    it 'configures custom metrics', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1334' do
       verify_add_custom_metric
       verify_edit_custom_metric
       verify_delete_custom_metric
     end
 
-    it 'duplicates to create dashboard to custom', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/871' do
+    it 'duplicates to create dashboard to custom', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1335' do
       Page::Project::Menu.perform(&:go_to_monitor_metrics)
 
       Page::Project::Monitor::Metrics::Show.perform do |on_dashboard|
@@ -27,7 +27,7 @@ module QA
       end
     end
 
-    it 'verifies data on filtered deployed environment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/874' do
+    it 'verifies data on filtered deployed environment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1332' do
       Page::Project::Menu.perform(&:go_to_monitor_metrics)
 
       Page::Project::Monitor::Metrics::Show.perform do |on_dashboard|
@@ -37,7 +37,7 @@ module QA
       end
     end
 
-    it 'filters using the quick range', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/873' do
+    it 'filters using the quick range', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1333' do
       Page::Project::Menu.perform(&:go_to_monitor_metrics)
 
       Page::Project::Monitor::Metrics::Show.perform do |on_dashboard|
@@ -52,7 +52,7 @@ module QA
       end
     end
 
-    it 'observes cluster health graph', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/920' do
+    it 'observes cluster health graph', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1311' do
       Page::Project::Menu.perform(&:go_to_infrastructure_kubernetes)
 
       Page::Project::Infrastructure::Kubernetes::Index.perform do |cluster_list|
@@ -65,7 +65,7 @@ module QA
       end
     end
 
-    it 'uses templating variables for metrics dashboards' do
+    it 'uses templating variables for metrics dashboards', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1926' do
       templating_dashboard_yml = Pathname
                                      .new(__dir__)
                                      .join('../../../../fixtures/metrics_dashboards/templating.yml')

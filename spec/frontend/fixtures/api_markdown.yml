@@ -12,14 +12,71 @@
   markdown: |-
     * {-deleted-}
     * {+added+}
-- name: subscript
-  markdown: H<sub>2</sub>O
-- name: superscript
-  markdown: 2<sup>8</sup> = 256
 - name: strike
   markdown: '~~del~~'
 - name: horizontal_rule
   markdown: '---'
+- name: html_marks
+  markdown: |-
+    * Content editor is ~~great~~<ins>amazing</ins>.
+    * If the changes <abbr title="Looks good to merge">LGTM</abbr>, please <abbr title="Merge when pipeline succeeds">MWPS</abbr>.
+    * The English song <q>Oh I do like to be beside the seaside</q> looks like this in Hebrew: <span dir="rtl">אה, אני אוהב להיות ליד חוף הים</span>. In the computer's memory, this is stored as <bdo dir="ltr">אה, אני אוהב להיות ליד חוף הים</bdo>.
+    * <cite>The Scream</cite> by Edvard Munch. Painted in 1893.
+    * <dfn>HTML</dfn> is the standard markup language for creating web pages.
+    * Do not forget to buy <mark>milk</mark> today.
+    * This is a paragraph and <small>smaller text goes here</small>.
+    * The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.
+    * Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).
+    * WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.
+    * The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
+    * The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.
+    * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
+    * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
+    * The **Pythagorean theorem** is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var>
+- name: div
+  markdown: |-
+    <div>plain text</div>
+    <div>
+
+    just a plain ol' div, not much to _expect_!
+
+    </div>
+- name: figure
+  markdown: |-
+    <figure>
+
+    ![Elephant at sunset](elephant-sunset.jpg)
+
+    <figcaption>An elephant at sunset</figcaption>
+    </figure>
+    <figure>
+
+    ![A crocodile wearing crocs](croc-crocs.jpg)
+
+    <figcaption>
+
+    A crocodile wearing _crocs_!
+
+    </figcaption>
+    </figure>
+- name: description_list
+  markdown: |-
+    <dl>
+    <dt>Frog</dt>
+    <dd>Wet green thing</dd>
+    <dt>Rabbit</dt>
+    <dd>Warm fluffy thing</dd>
+    <dt>Punt</dt>
+    <dd>Kick a ball</dd>
+    <dd>Take a bet</dd>
+    <dt>Color</dt>
+    <dt>Colour</dt>
+    <dd>
+
+    Any hue except _white_ or **black**
+
+    </dd>
+    </dl>
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
 - name: attachment_link
@@ -66,16 +123,31 @@
 - name: thematic_break
   markdown: |-
     ---
-- name: bullet_list
+- name: bullet_list_style_1
   markdown: |-
     * list item 1
     * list item 2
       * embedded list item 3
+- name: bullet_list_style_2
+  markdown: |-
+    - list item 1
+    - list item 2
+      * embedded list item 3
+- name: bullet_list_style_3
+  markdown: |-
+    + list item 1
+    + list item 2
+      - embedded list item 3
 - name: ordered_list
   markdown: |-
     1. list item 1
     2. list item 2
     3. list item 3
+- name: ordered_list_with_start_order
+  markdown: |-
+    134. list item 1
+    135. list item 2
+    136. list item 3
 - name: task_list
   markdown: |-
     * [x] hello
@@ -92,6 +164,11 @@
        1. [ ] of nested
           1. [x] task list
           2. [ ] items
+- name: ordered_task_list_with_order
+  markdown: |-
+    4893. [x] hello
+    4894. [x] world
+    4895. [ ] example
 - name: image
   markdown: '![alt text](https://gitlab.com/logo.png)'
 - name: hard_break
@@ -102,17 +179,28 @@
   markdown: |-
     | header | header |
     |--------|--------|
-    | cell | cell |
-    | cell | cell |
-- name: table_with_alignment
-  markdown: |-
-    | header | : header : | header : |
-    |--------|------------|----------|
-    | cell | cell | cell |
-    | cell | cell | cell |
+    | `code` | cell with **bold** |
+    | ~~strike~~ | cell with _italic_ |
+
+    # content after table
 - name: emoji
   markdown: ':sparkles: :heart: :100:'
 - name: reference
   context: project_wiki
   markdown: |-
     Hi @gitlab - thank you for reporting this ~bug (#1) we hope to fix it in %1.1 as part of !1
+- name: audio
+  markdown: '![Sample Audio](https://gitlab.com/gitlab.mp3)'
+- name: video
+  markdown: '![Sample Video](https://gitlab.com/gitlab.mp4)'
+- name: audio_and_video_in_lists
+  markdown: |-
+    * ![Sample Audio](https://gitlab.com/1.mp3)
+    * ![Sample Video](https://gitlab.com/2.mp4)
+
+    1. ![Sample Video](https://gitlab.com/1.mp4)
+    2. ![Sample Audio](https://gitlab.com/2.mp3)
+
+    * [x] ![Sample Audio](https://gitlab.com/1.mp3)
+    * [x] ![Sample Audio](https://gitlab.com/2.mp3)
+    * [x] ![Sample Video](https://gitlab.com/3.mp4)

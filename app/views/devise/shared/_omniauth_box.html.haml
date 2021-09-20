@@ -7,10 +7,10 @@
   .d-flex.justify-content-between.flex-wrap
     - providers.each do |provider|
       - has_icon = provider_has_icon?(provider)
-      = button_to omniauth_authorize_path(:user, provider), id: "oauth-login-#{provider}", class: "btn gl-button btn-default omniauth-btn oauth-login #{qa_class_for_provider(provider)}" do
+      = button_to omniauth_authorize_path(:user, provider), id: "oauth-login-#{provider}", class: "btn gl-button btn-default omniauth-btn oauth-login #{qa_class_for_provider(provider)}", form: { class: 'gl-w-full' } do
         - if has_icon
           = provider_image_tag(provider)
-        %span
+        %span.gl-button-text
           = label_for_provider(provider)
   - unless hide_remember_me
     %fieldset.remember-me

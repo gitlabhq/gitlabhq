@@ -100,6 +100,23 @@ module API
           end
         end
 
+        namespace 'kubernetes/agent_configuration' do
+          desc 'POST agent configuration' do
+            detail 'Store configuration for an agent'
+          end
+          params do
+            requires :agent_id, type: Integer, desc: 'ID of the configured Agent'
+            requires :agent_config, type: JSON, desc: 'Configuration for the Agent'
+          end
+          post '/' do
+            agent = Clusters::Agent.find(params[:agent_id])
+
+            Clusters::Agents::RefreshAuthorizationService.new(agent, config: params[:agent_config]).execute
+
+            no_content!
+          end
+        end
+
         namespace 'kubernetes/usage_metrics' do
           desc 'POST usage metrics' do
             detail 'Updates usage metrics for agent'

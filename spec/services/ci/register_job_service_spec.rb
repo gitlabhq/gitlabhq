@@ -40,12 +40,16 @@ module Ci
         context 'runner follow tag list' do
           it "picks build with the same tag" do
             pending_job.update!(tag_list: ["linux"])
+            pending_job.reload
+            pending_job.create_queuing_entry!
             specific_runner.update!(tag_list: ["linux"])
             expect(execute(specific_runner)).to eq(pending_job)
           end
 
           it "does not pick build with different tag" do
             pending_job.update!(tag_list: ["linux"])
+            pending_job.reload
+            pending_job.create_queuing_entry!
             specific_runner.update!(tag_list: ["win32"])
             expect(execute(specific_runner)).to be_falsey
           end
@@ -56,6 +60,8 @@ module Ci
 
           it "does not pick build with tag" do
             pending_job.update!(tag_list: ["linux"])
+            pending_job.reload
+            pending_job.create_queuing_entry!
             expect(execute(specific_runner)).to be_falsey
           end
 
@@ -81,8 +87,30 @@ module Ci
           end
 
           context 'for specific runner' do
-            it 'does not pick a build' do
-              expect(execute(specific_runner)).to be_nil
+            context 'with FF disabled' do
+              before do
+                stub_feature_flags(
+                  ci_pending_builds_project_runners_decoupling: false,
+                  ci_queueing_builds_enabled_checks: false)
+              end
+
+              it 'does not pick a build' do
+                expect(execute(specific_runner)).to be_nil
+              end
+            end
+
+            context 'with FF enabled' do
+              before do
+                stub_feature_flags(
+                  ci_pending_builds_project_runners_decoupling: true,
+                  ci_queueing_builds_enabled_checks: true)
+              end
+
+              it 'does not pick a build' do
+                expect(execute(specific_runner)).to be_nil
+                expect(pending_job.reload).to be_failed
+                expect(pending_job.queuing_entry).to be_nil
+              end
             end
           end
         end
@@ -219,6 +247,8 @@ module Ci
           before do
             project.update!(shared_runners_enabled: true, group_runners_enabled: true)
             project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+
+            pending_job.reload.create_queuing_entry!
           end
 
           context 'and uses shared runner' do
@@ -236,7 +266,29 @@ module Ci
           context 'and uses project runner' do
             let(:build) { execute(specific_runner) }
 
-            it { expect(build).to be_nil }
+            context 'with FF disabled' do
+              before do
+                stub_feature_flags(
+                  ci_pending_builds_project_runners_decoupling: false,
+                  ci_queueing_builds_enabled_checks: false)
+              end
+
+              it { expect(build).to be_nil }
+            end
+
+            context 'with FF enabled' do
+              before do
+                stub_feature_flags(
+                  ci_pending_builds_project_runners_decoupling: true,
+                  ci_queueing_builds_enabled_checks: true)
+              end
+
+              it 'does not pick a build' do
+                expect(build).to be_nil
+                expect(pending_job.reload).to be_failed
+                expect(pending_job.queuing_entry).to be_nil
+              end
+            end
           end
         end
 
@@ -304,6 +356,8 @@ module Ci
         context 'disallow group runners' do
           before do
             project.update!(group_runners_enabled: false)
+
+            pending_job.reload.create_queuing_entry!
           end
 
           context 'group runner' do
@@ -735,6 +789,30 @@ module Ci
         context 'with ci_queueing_denormalize_shared_runners_information disabled' do
           before do
             stub_feature_flags(ci_queueing_denormalize_shared_runners_information: false)
+          end
+
+          include_examples 'handles runner assignment'
+        end
+
+        context 'with ci_queueing_denormalize_tags_information enabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_tags_information: true)
+          end
+
+          include_examples 'handles runner assignment'
+        end
+
+        context 'with ci_queueing_denormalize_tags_information disabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_tags_information: false)
+          end
+
+          include_examples 'handles runner assignment'
+        end
+
+        context 'with ci_queueing_denormalize_namespace_traversal_ids disabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_namespace_traversal_ids: false)
           end
 
           include_examples 'handles runner assignment'

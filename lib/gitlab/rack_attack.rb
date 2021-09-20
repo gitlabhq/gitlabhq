@@ -82,15 +82,27 @@ module Gitlab
     end
 
     def self.configure_throttles(rack_attack)
-      throttle_or_track(rack_attack, 'throttle_unauthenticated', Gitlab::Throttle.unauthenticated_options) do |req|
-        if req.throttle_unauthenticated?
-          req.ip
+      # Each of these settings follows the same pattern of specifying separate
+      # authenticated and unauthenticated rates via settings
+      Gitlab::Throttle::REGULAR_THROTTLES.each do |throttle|
+        unauthenticated_options = Gitlab::Throttle.options(throttle, authenticated: false)
+        throttle_or_track(rack_attack, "throttle_unauthenticated_#{throttle}", unauthenticated_options) do |req|
+          if req.throttle?(throttle, authenticated: false)
+            req.ip
+          end
+        end
+
+        authenticated_options = Gitlab::Throttle.options(throttle, authenticated: true)
+        throttle_or_track(rack_attack, "throttle_authenticated_#{throttle}", authenticated_options) do |req|
+          if req.throttle?(throttle, authenticated: true)
+            req.throttled_user_id([:api])
+          end
         end
       end
 
-      throttle_or_track(rack_attack, 'throttle_authenticated_api', Gitlab::Throttle.authenticated_api_options) do |req|
-        if req.throttle_authenticated_api?
-          req.throttled_user_id([:api])
+      throttle_or_track(rack_attack, 'throttle_unauthenticated_web', Gitlab::Throttle.unauthenticated_web_options) do |req|
+        if req.throttle_unauthenticated_web?
+          req.ip
         end
       end
 
@@ -127,14 +139,8 @@ module Gitlab
         end
       end
 
-      throttle_or_track(rack_attack, 'throttle_unauthenticated_packages_api', Gitlab::Throttle.unauthenticated_packages_api_options) do |req|
-        if req.throttle_unauthenticated_packages_api?
-          req.ip
-        end
-      end
-
-      throttle_or_track(rack_attack, 'throttle_authenticated_packages_api', Gitlab::Throttle.authenticated_packages_api_options) do |req|
-        if req.throttle_authenticated_packages_api?
+      throttle_or_track(rack_attack, 'throttle_authenticated_git_lfs', Gitlab::Throttle.throttle_authenticated_git_lfs_options) do |req|
+        if req.throttle_authenticated_git_lfs?
           req.throttled_user_id([:api])
         end
       end
@@ -159,7 +165,15 @@ module Gitlab
       return false if dry_run_config.empty?
       return true if dry_run_config == '*'
 
-      dry_run_config.split(',').map(&:strip).include?(name)
+      dry_run_throttles = dry_run_config.split(',').map(&:strip)
+
+      # `throttle_unauthenticated` was split into API and web, so to maintain backwards-compatibility
+      # this throttle name now controls both rate limits.
+      if dry_run_throttles.include?('throttle_unauthenticated')
+        dry_run_throttles += %w[throttle_unauthenticated_api throttle_unauthenticated_web]
+      end
+
+      dry_run_throttles.include?(name)
     end
 
     def self.user_allowlist

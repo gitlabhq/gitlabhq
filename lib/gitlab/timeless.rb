@@ -6,7 +6,8 @@ module Gitlab
       original_record_timestamps = model.record_timestamps
       model.record_timestamps = false
 
-      if block.arity.abs == 1
+      # negative arity means arguments are optional
+      if block.arity == 1 || block.arity < 0
         block.call(model)
       else
         block.call

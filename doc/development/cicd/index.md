@@ -16,7 +16,7 @@ to learn how to update the [reference page](../../ci/yaml/index.md).
 
 ## CI Architecture overview
 
-The following is a simplified diagram of the CI architecture. Some details are left out in order to focus on
+The following is a simplified diagram of the CI architecture. Some details are left out to focus on
 the main components.
 
 ![CI software architecture](img/ci_architecture.png)
@@ -73,7 +73,7 @@ which picks the next job and assigns it to the runner. At this point the job tra
 For more details read [Job scheduling](#job-scheduling)).
 
 While a job is being executed, the runner sends logs back to the server as well any possible artifacts
-that need to be stored. Also, a job may depend on artifacts from previous jobs in order to run. In this
+that must be stored. Also, a job may depend on artifacts from previous jobs to run. In this
 case the runner downloads them using a dedicated API endpoint.
 
 Artifacts are stored in object storage, while metadata is kept in the database. An important example of artifacts
@@ -111,7 +111,7 @@ Once all jobs are completed for the current stage, the server "unlocks" all the 
 
 ### Communication between runner and GitLab server
 
-Once the runner is [registered](https://docs.gitlab.com/runner/register/) using the registration token, the server knows what type of jobs it can execute. This depends on:
+After the runner is [registered](https://docs.gitlab.com/runner/register/) using the registration token, the server knows what type of jobs it can execute. This depends on:
 
 - The type of runner it is registered as:
   - a shared runner
@@ -119,7 +119,7 @@ Once the runner is [registered](https://docs.gitlab.com/runner/register/) using 
   - a project specific runner
 - Any associated tags.
 
-The runner initiates the communication by requesting jobs to execute with `POST /api/v4/jobs/request`. Although this polling generally happens every few seconds we leverage caching via HTTP headers to reduce the server-side work load if the job queue doesn't change.
+The runner initiates the communication by requesting jobs to execute with `POST /api/v4/jobs/request`. Although polling happens every few seconds, we leverage caching through HTTP headers to reduce the server-side work load if the job queue doesn't change.
 
 This API endpoint runs [`Ci::RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/register_job_service.rb), which:
 

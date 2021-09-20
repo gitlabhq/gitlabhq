@@ -1,0 +1,59 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { STATUSES } from '~/import_entities/constants';
+import ImportSourceCell from '~/import_entities/import_groups/components/import_source_cell.vue';
+import { generateFakeEntry } from '../graphql/fixtures';
+
+describe('import source cell', () => {
+  let wrapper;
+  let group;
+
+  const createComponent = (props) => {
+    wrapper = shallowMount(ImportSourceCell, {
+      propsData: {
+        ...props,
+      },
+      stubs: { GlSprintf },
+    });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  describe('when group status is NONE', () => {
+    beforeEach(() => {
+      group = generateFakeEntry({ id: 1, status: STATUSES.NONE });
+      createComponent({ group });
+    });
+
+    it('renders link to a group', () => {
+      const link = wrapper.findComponent(GlLink);
+      expect(link.attributes().href).toBe(group.web_url);
+      expect(link.text()).toContain(group.full_path);
+    });
+
+    it('does not render last imported line', () => {
+      expect(wrapper.text()).not.toContain('Last imported to');
+    });
+  });
+
+  describe('when group status is FINISHED', () => {
+    beforeEach(() => {
+      group = generateFakeEntry({ id: 1, status: STATUSES.FINISHED });
+      createComponent({ group });
+    });
+
+    it('renders link to a group', () => {
+      const link = wrapper.findComponent(GlLink);
+      expect(link.attributes().href).toBe(group.web_url);
+      expect(link.text()).toContain(group.full_path);
+    });
+
+    it('renders last imported line', () => {
+      expect(wrapper.text()).toMatchInterpolatedText(
+        'fake_group_1 Last imported to root/last-group1',
+      );
+    });
+  });
+});

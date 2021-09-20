@@ -4,16 +4,18 @@ key_path: usage_activity_by_stage_monthly.plan.epics
 description: Count distinct author ids from epics
 product_section: dev
 product_stage: plan
-product_group: group::plan
+product_group: group::product planning
 product_category: epics
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: database
 distribution:
 - ee
 tier:
 - premium
+- ultimate
 performance_indicator_type:
 - gmau
 - paid_gmau
+milestone: "<13.9"

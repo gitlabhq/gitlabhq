@@ -65,7 +65,7 @@ request's page at the top-right side:
 After you have created the merge request, you can also:
 
 - [Discuss](../../discussions/index.md) your implementation with your team in the merge request thread.
-- [Perform inline code reviews](reviews/index.md#perform-inline-code-reviews).
+- [Perform inline code reviews](reviews/index.md).
 - Add [merge request dependencies](merge_request_dependencies.md) to restrict it to be merged only when other merge requests have been merged. **(PREMIUM)**
 - Preview continuous integration [pipelines on the merge request widget](widgets.md).
 - Preview how your changes look directly on your deployed application with [Review Apps](widgets.md#live-preview-with-review-apps).
@@ -166,10 +166,13 @@ is set for deletion, the merge request widget displays the
 ### Branch retargeting on merge **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
-> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) in GitLab 13.10.
-> - Recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [disable it](#enable-or-disable-branch-retargeting-on-merge). **(FREE SELF)**
+> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) GitLab 13.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to
+[disable the `retarget_merge_requests` flag](../../../administration/feature_flags.md).
 
 In specific circumstances, GitLab can retarget the destination branch of
 open merge request, if the destination branch merges while the merge request is
@@ -203,22 +206,3 @@ This improvement is [tracked as a follow-up](https://gitlab.com/gitlab-org/gitla
 - Take one thing at a time and ship the smallest changes possible. By doing so,
   reviews are faster and your changes are less prone to errors.
 - Do not use capital letters nor special chars in branch names.
-
-### Enable or disable branch retargeting on merge **(FREE SELF)**
-
-Automatically retargeting merge requests is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:retarget_merge_requests)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:retarget_merge_requests)
-```

@@ -19,7 +19,7 @@ Database reviewers are domain experts who have substantial experience with datab
 A database review is required whenever an application update [touches the database](../database_review.md#general-process).
 
 The database reviewer is tasked with reviewing the database specific updates and
-making sure that any queries or modifications will perform without issues
+making sure that any queries or modifications perform without issues
 at the scale of GitLab.com.
 
 For more information on the database review process, check the [database review guidelines](../database_review.md).
@@ -72,7 +72,7 @@ topics and use cases. The most frequently required during database reviewing are
 - [Avoiding downtime in migrations](../avoiding_downtime_in_migrations.md).
 - [SQL guidelines](../sql.md) for working with SQL queries.
 
-## How to apply for becoming a database maintainer
+## How to apply to become a database maintainer
 
 Once a database reviewer feels confident on switching to a database maintainer,
 they can update their [team profile](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team.yml)

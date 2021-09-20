@@ -15,13 +15,13 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'user registers a new specific runner', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1764' do
+      it 'user registers a new specific runner', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1600' do
         Flow::Login.sign_in
 
         runner.project.visit!
 
         Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-        Page::Project::Settings::CICD.perform do |settings|
+        Page::Project::Settings::CiCd.perform do |settings|
           sleep 5 # Runner should register within 5 seconds
 
           settings.expand_runners_settings do |page|

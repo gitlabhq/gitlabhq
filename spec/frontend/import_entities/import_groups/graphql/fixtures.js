@@ -9,6 +9,10 @@ export const generateFakeEntry = ({ id, status, ...rest }) => ({
     target_namespace: 'root',
     new_name: `group${id}`,
   },
+  last_import_target: {
+    target_namespace: 'root',
+    new_name: `last-group${id}`,
+  },
   id,
   progress: {
     id: `test-${id}`,

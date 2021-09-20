@@ -169,6 +169,22 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
           it { expect(entry).to be_valid }
         end
       end
+
+      context 'when rules are used' do
+        let(:config) { { script: 'ls', cache: { key: 'test' }, rules: rules } }
+
+        let(:rules) do
+          [
+            { if: '$CI_PIPELINE_SOURCE == "schedule"', when: 'never' },
+            [
+              { if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+              { if: '$CI_PIPELINE_SOURCE == "merge_request_event"' }
+            ]
+          ]
+        end
+
+        it { expect(entry).to be_valid }
+      end
     end
 
     context 'when entry value is not correct' do
@@ -485,6 +501,70 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
           end
         end
       end
+
+      context 'when invalid rules are used' do
+        let(:config) { { script: 'ls', cache: { key: 'test' }, rules: rules } }
+
+        context 'with rules nested more than max allowed levels' do
+          let(:sample_rule) { { if: '$THIS == "other"', when: 'always' } }
+
+          let(:rules) do
+            [
+              { if: '$THIS == "that"', when: 'always' },
+              [
+                { if: '$SKIP', when: 'never' },
+                [
+                  sample_rule,
+                  [
+                    sample_rule,
+                    [
+                      sample_rule,
+                      [
+                        sample_rule,
+                        [
+                          sample_rule,
+                          [
+                            sample_rule,
+                            [
+                              sample_rule,
+                              [
+                                sample_rule,
+                                [
+                                  sample_rule,
+                                  [
+                                    sample_rule,
+                                    [sample_rule]
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          end
+
+          it { expect(entry).not_to be_valid }
+        end
+
+        context 'with rules with invalid keys' do
+          let(:rules) do
+            [
+              { invalid_key: 'invalid' },
+              [
+                { if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+                { if: '$CI_PIPELINE_SOURCE == "merge_request_event"' }
+              ]
+            ]
+          end
+
+          it { expect(entry).not_to be_valid }
+        end
+      end
     end
   end
 
@@ -615,6 +695,29 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
                    job_variables: {},
                    root_variables_inheritance: true,
                    scheduling_type: :stage)
+        end
+      end
+    end
+
+    context 'when job is using tags' do
+      context 'when limit is reached' do
+        let(:tags) { Array.new(100) { |i| "tag-#{i}" } }
+        let(:config) { { tags: tags, script: 'test' } }
+
+        it 'returns error', :aggregate_failures do
+          expect(entry).not_to be_valid
+          expect(entry.errors)
+            .to include "tags config must be less than the limit of #{Gitlab::Ci::Config::Entry::Tags::TAGS_LIMIT} tags"
+        end
+      end
+
+      context 'when limit is not reached' do
+        let(:config) { { tags: %w[tag1 tag2], script: 'test' } }
+
+        it 'returns a valid entry', :aggregate_failures do
+          expect(entry).to be_valid
+          expect(entry.errors).to be_empty
+          expect(entry.tags).to eq(%w[tag1 tag2])
         end
       end
     end

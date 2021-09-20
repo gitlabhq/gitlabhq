@@ -4,7 +4,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Users API
+# Users API **(FREE)**
 
 ## List users
 
@@ -39,7 +39,7 @@ GET /users
 ]
 ```
 
-You can also search for users by name or primary email using `?search=`. For example. `/users?search=John`.
+You can also search for users by name, username, primary email, or secondary email, by using `?search=`. For example. `/users?search=John`.
 
 In addition, you can lookup users by username:
 
@@ -124,7 +124,6 @@ GET /users
     "created_at": "2012-05-23T08:00:58Z",
     "is_admin": false,
     "bio": "",
-    "bio_html": "",
     "location": null,
     "skype": "",
     "linkedin": "",
@@ -164,7 +163,6 @@ GET /users
     "created_at": "2012-05-23T08:01:01Z",
     "is_admin": false,
     "bio": "",
-    "bio_html": "",
     "location": null,
     "skype": "",
     "linkedin": "",
@@ -191,7 +189,7 @@ GET /users
 ]
 ```
 
-Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
 
 ```json
 [
@@ -207,7 +205,7 @@ Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see 
 ]
 ```
 
-Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `group_saml` provider option and `provisioned_by_group_id` parameter:
 
 ```json
@@ -261,7 +259,7 @@ GET /users?with_custom_attributes=true
 
 ## Single user
 
-Get a single user.
+Get a single user. This endpoint can be accessed without authentication.
 
 ### For user
 
@@ -283,7 +281,6 @@ Parameters:
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "bio": "",
-  "bio_html": "",
   "bot": false,
   "location": null,
   "public_email": "john@example.com",
@@ -322,7 +319,6 @@ Example Responses:
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": "",
-  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -361,7 +357,7 @@ Example Responses:
 NOTE:
 The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
-Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `shared_runners_minutes_limit`, `is_auditor`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
@@ -375,7 +371,7 @@ the `shared_runners_minutes_limit`, `is_auditor`, and `extra_shared_runners_minu
 }
 ```
 
-Users on GitLab.com [Premium or higher](https://about.gitlab.com/pricing/) also
+Users on [GitLab.com Premium or higher](https://about.gitlab.com/pricing/) also
 see the `group_saml` option and `provisioned_by_group_id` parameter:
 
 ```json
@@ -551,7 +547,6 @@ GET /user
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "bio": "",
-  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -601,7 +596,6 @@ GET /user
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
   "bio": "",
-  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -633,7 +627,7 @@ GET /user
 }
 ```
 
-Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see these
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see these
 parameters:
 
 - `shared_runners_minutes_limit`
@@ -668,7 +662,7 @@ Example response:
 
 ## Get the status of a user
 
-Get the status of a user.
+Get the status of a user. This endpoint can be accessed without authentication.
 
 ```plaintext
 GET /users/:id_or_username/status
@@ -812,7 +806,7 @@ Example response:
 
 ### Followers and following
 
-Get the followers of a user.
+Get the followers of a user. This endpoint can be accessed without authentication.
 
 ```plaintext
 GET /users/:id/followers
@@ -1467,6 +1461,46 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
 
+## Ban user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
+
+Bans the specified user. Available only for admin.
+
+```plaintext
+POST /users/:id/ban
+```
+
+Parameters:
+
+- `id` (required) - ID of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to ban a user that is not active.
+
+## Unban user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
+
+Unbans the specified user. Available only for admin.
+
+```plaintext
+POST /users/:id/unban
+```
+
+Parameters:
+
+- `id` (required) - ID of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if the user cannot be found.
+- `403 Forbidden` when trying to unban a user that is not banned.
+
 ### Get user contribution events
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)
@@ -1562,6 +1596,45 @@ Example Responses:
 
 ```json
 { "message": "The user you are trying to approve is not pending approval" }
+```
+
+## Reject user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339925) in GitLab 14.3.
+
+Rejects specified user that is [pending approval](../user/admin_area/moderate_users.md#users-pending-approval). Available only for administrators.
+
+```plaintext
+POST /users/:id/reject
+```
+
+Parameters:
+
+- `id` (required) - ID of specified user
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/reject"
+```
+
+Returns:
+
+- `200 OK` on success.
+- `403 Forbidden` if not authenticated as an administrator.
+- `404 User Not Found` if user cannot be found.
+- `409 Conflict` if user is not pending approval.
+
+Example Responses:
+
+```json
+{ "message": "Success" }
+```
+
+```json
+{ "message": "404 User Not Found" }
+```
+
+```json
+{ "message": "User does not have a pending request" }
 ```
 
 ## Get an impersonation token of a user

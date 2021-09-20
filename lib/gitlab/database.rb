@@ -2,7 +2,11 @@
 
 module Gitlab
   module Database
+    DATABASE_NAMES = %w[main ci].freeze
+
+    MAIN_DATABASE_NAME = 'main'
     CI_DATABASE_NAME = 'ci'
+    DEFAULT_POOL_HEADROOM = 10
 
     # This constant is used when renaming tables concurrently.
     # If you plan to rename a table using the `rename_table_safely` method, add your table here one milestone before the rename.
@@ -57,6 +61,20 @@ module Gitlab
 
     def self.main
       DATABASES[PRIMARY_DATABASE_NAME]
+    end
+
+    # We configure the database connection pool size automatically based on the
+    # configured concurrency. We also add some headroom, to make sure we don't
+    # run out of connections when more threads besides the 'user-facing' ones
+    # are running.
+    #
+    # Read more about this in
+    # doc/development/database/client_side_connection_pool.md
+    def self.default_pool_size
+      headroom =
+        (ENV["DB_POOL_HEADROOM"].presence || DEFAULT_POOL_HEADROOM).to_i
+
+      Gitlab::Runtime.max_threads + headroom
     end
 
     def self.has_config?(database_name)
@@ -145,11 +163,19 @@ module Gitlab
     def self.allow_cross_joins_across_databases(url:)
       # this method is implemented in:
       # spec/support/database/prevent_cross_joins.rb
+      yield
     end
 
+    # This method will allow cross database modifications within the block
+    # Example:
+    #
+    # allow_cross_database_modification_within_transaction(url: 'url-to-an-issue') do
+    #   create(:build) # inserts ci_build and project record in one transaction
+    # end
     def self.allow_cross_database_modification_within_transaction(url:)
-      # this method is implemented in:
+      # this method will be overridden in:
       # spec/support/database/cross_database_modification_check.rb
+      yield
     end
 
     def self.add_post_migrate_path_to_rails(force: false)
@@ -172,14 +198,30 @@ module Gitlab
       ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name)
     end
 
-    def self.db_config_name(ar_connection)
-      if ar_connection.respond_to?(:pool) &&
-          ar_connection.pool.respond_to?(:db_config) &&
-          ar_connection.pool.db_config.respond_to?(:name)
-        return ar_connection.pool.db_config.name
-      end
+    def self.db_config_for_connection(connection)
+      return unless connection
 
-      'unknown'
+      # The LB connection proxy does not have a direct db_config
+      # that can be referenced
+      return if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
+
+      # During application init we might receive `NullPool`
+      return unless connection.respond_to?(:pool) &&
+        connection.pool.respond_to?(:db_config)
+
+      connection.pool.db_config
+    end
+
+    # At the moment, the connection can only be retrieved by
+    # Gitlab::Database::LoadBalancer#read or #read_write or from the
+    # ActiveRecord directly. Therefore, if the load balancer doesn't
+    # recognize the connection, this method returns the primary role
+    # directly. In future, we may need to check for other sources.
+    # Expected returned names:
+    # main, main_replica, ci, ci_replica, unknown
+    def self.db_config_name(connection)
+      db_config = db_config_for_connection(connection)
+      db_config&.name || 'unknown'
     end
 
     def self.read_only?
@@ -207,9 +249,13 @@ module Gitlab
       extend ActiveSupport::Concern
 
       class_methods do
-        # A monkeypatch over ActiveRecord::Base.transaction.
-        # It provides observability into transactional methods.
+        # A patch over ActiveRecord::Base.transaction that provides
+        # observability into transactional methods.
         def transaction(**options, &block)
+          if options[:requires_new] && connection.transaction_open?
+            ::Gitlab::Database::Metrics.subtransactions_increment(self.name)
+          end
+
           ActiveSupport::Notifications.instrument('transaction.active_record', { connection: connection }) do
             super(**options, &block)
           end

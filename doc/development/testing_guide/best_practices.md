@@ -54,7 +54,7 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
 
-We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.2/Warning.html)
+We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.4/Warning.html)
 by default when running specs. Making these warnings more visible to developers
 helps upgrading to newer Ruby versions.
 
@@ -367,26 +367,34 @@ If needed, you can scope interactions within a specific area of the page by usin
 As you will likely be scoping to an element such as a `div`, which typically does not have a label,
 you may use a `data-testid` selector in this case.
 
+##### Externalized contents
+
+Test expectations against externalized contents should call the same
+externalizing method to match the translation. For example, you should use the `_`
+method in Ruby and `__` method in JavaScript.
+
+See [Internationalization for GitLab - Test files](../i18n/externalization.md#test-files) for details.
+
 ##### Actions
 
 Where possible, use more specific [actions](https://rubydoc.info/github/teamcapybara/capybara/master/Capybara/Node/Actions), such as the ones below.
 
 ```ruby
 # good
-click_button 'Submit review'
+click_button _('Submit review')
 
-click_link 'UI testing docs'
+click_link _('UI testing docs')
 
-fill_in 'Search projects', with: 'gitlab' # fill in text input with text
+fill_in _('Search projects'), with: 'gitlab' # fill in text input with text
 
-select 'Last updated', from: 'Sort by' # select an option from a select input
+select _('Last updated'), from: 'Sort by' # select an option from a select input
 
-check 'Checkbox label'
-uncheck 'Checkbox label'
+check _('Checkbox label')
+uncheck _('Checkbox label')
 
-choose 'Radio input label'
+choose _('Radio input label')
 
-attach_file('Attach a file', '/path/to/file.png')
+attach_file(_('Attach a file'), '/path/to/file.png')
 
 # bad - interactive elements must have accessible names, so
 # we should be able to use one of the specific actions above
@@ -403,17 +411,17 @@ Where possible, use more specific [finders](https://rubydoc.info/github/teamcapy
 
 ```ruby
 # good
-find_button 'Submit review'
-find_button 'Submit review', disabled: true
+find_button _('Submit review')
+find_button _('Submit review'), disabled: true
 
-find_link 'UI testing docs'
-find_link 'UI testing docs', href: docs_url
+find_link _('UI testing docs')
+find_link _('UI testing docs'), href: docs_url
 
-find_field 'Search projects'
-find_field 'Search projects', with: 'gitlab' # find the input field with text
-find_field 'Search projects', disabled: true
-find_field 'Checkbox label', checked: true
-find_field 'Checkbox label', unchecked: true
+find_field _('Search projects')
+find_field _('Search projects'), with: 'gitlab' # find the input field with text
+find_field _('Search projects'), disabled: true
+find_field _('Checkbox label'), checked: true
+find_field _('Checkbox label'), unchecked: true
 
 # acceptable when finding a element that is not a button, link, or field
 find('[data-testid="element"]')
@@ -425,31 +433,31 @@ Where possible, use more specific [matchers](https://rubydoc.info/github/teamcap
 
 ```ruby
 # good
-expect(page).to have_button 'Submit review'
-expect(page).to have_button 'Submit review', disabled: true
-expect(page).to have_button 'Notifications', class: 'is-checked' # assert the "Notifications" GlToggle is checked
+expect(page).to have_button _('Submit review')
+expect(page).to have_button _('Submit review'), disabled: true
+expect(page).to have_button _('Notifications'), class: 'is-checked' # assert the "Notifications" GlToggle is checked
 
-expect(page).to have_link 'UI testing docs'
-expect(page).to have_link 'UI testing docs', href: docs_url # assert the link has an href
+expect(page).to have_link _('UI testing docs')
+expect(page).to have_link _('UI testing docs'), href: docs_url # assert the link has an href
 
-expect(page).to have_field 'Search projects'
-expect(page).to have_field 'Search projects', disabled: true
-expect(page).to have_field 'Search projects', with: 'gitlab' # assert the input field has text
+expect(page).to have_field _('Search projects')
+expect(page).to have_field _('Search projects'), disabled: true
+expect(page).to have_field _('Search projects'), with: 'gitlab' # assert the input field has text
 
-expect(page).to have_checked_field 'Checkbox label'
-expect(page).to have_unchecked_field 'Radio input label'
+expect(page).to have_checked_field _('Checkbox label')
+expect(page).to have_unchecked_field _('Radio input label')
 
-expect(page).to have_select 'Sort by'
-expect(page).to have_select 'Sort by', selected: 'Last updated' # assert the option is selected
-expect(page).to have_select 'Sort by', options: ['Last updated', 'Created date', 'Due date'] # assert an exact list of options
-expect(page).to have_select 'Sort by', with_options: ['Created date', 'Due date'] # assert a partial list of options
+expect(page).to have_select _('Sort by')
+expect(page).to have_select _('Sort by'), selected: 'Last updated' # assert the option is selected
+expect(page).to have_select _('Sort by'), options: ['Last updated', 'Created date', 'Due date'] # assert an exact list of options
+expect(page).to have_select _('Sort by'), with_options: ['Created date', 'Due date'] # assert a partial list of options
 
-expect(page).to have_text 'Some paragraph text.'
-expect(page).to have_text 'Some paragraph text.', exact: true # assert exact match
+expect(page).to have_text _('Some paragraph text.')
+expect(page).to have_text _('Some paragraph text.'), exact: true # assert exact match
 
 expect(page).to have_current_path 'gitlab/gitlab-test/-/issues'
 
-expect(page).to have_title 'Not Found'
+expect(page).to have_title _('Not Found')
 
 # acceptable when a more specific matcher above is not possible
 expect(page).to have_css 'h2', text: 'Issue title'
@@ -652,6 +660,12 @@ option as well to completely load a new object.
 let_it_be_with_refind(:project) { create(:project) }
 let_it_be(:project, refind: true) { create(:project) }
 ```
+
+Note that `let_it_be` cannot be used with factories that has stubs, such as `allow`.
+The reason is that `let_it_be` happens in a `before(:all)` block, and RSpec does not
+allow stubs in `before(:all)`.
+See this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340487) for more details.
+To resolve, use `let`, or change the factory to not use stubs.
 
 ### Time-sensitive tests
 
@@ -1197,6 +1211,8 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
 - Factories and their traits should produce valid objects that are [verified by specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories_spec.rb).
+- Avoid the use of [`skip_callback`](https://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-skip_callback) in factories.
+  See [issue #247865](https://gitlab.com/gitlab-org/gitlab/-/issues/247865) for details.
 
 ### Fixtures
 

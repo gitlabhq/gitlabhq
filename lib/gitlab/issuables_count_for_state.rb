@@ -5,11 +5,14 @@ module Gitlab
   class IssuablesCountForState
     # The name of the Gitlab::SafeRequestStore cache key.
     CACHE_KEY = :issuables_count_for_state
+    # The expiration time for the Rails cache.
+    CACHE_EXPIRES_IN = 1.hour
+    THRESHOLD = 1000
 
     # The state values that can be safely casted to a Symbol.
     STATES = %w[opened closed merged all].freeze
 
-    attr_reader :project
+    attr_reader :project, :finder
 
     def self.declarative_policy_class
       'IssuablePolicy'
@@ -18,11 +21,12 @@ module Gitlab
     # finder - The finder class to use for retrieving the issuables.
     # fast_fail - restrict counting to a shorter period, degrading gracefully on
     # failure
-    def initialize(finder, project = nil, fast_fail: false)
+    def initialize(finder, project = nil, fast_fail: false, store_in_redis_cache: false)
       @finder = finder
       @project = project
       @fast_fail = fast_fail
       @cache = Gitlab::SafeRequestStore[CACHE_KEY] ||= initialize_cache
+      @store_in_redis_cache = store_in_redis_cache
     end
 
     def for_state_or_opened(state = nil)
@@ -52,7 +56,16 @@ module Gitlab
     private
 
     def cache_for_finder
-      @cache[@finder]
+      cached_counts = Rails.cache.read(redis_cache_key, cache_options) if cache_issues_count?
+
+      cached_counts ||= @cache[finder]
+      return cached_counts if cached_counts.empty?
+
+      if cache_issues_count? && cached_counts.values.all? { |count| count >= THRESHOLD }
+        Rails.cache.write(redis_cache_key, cached_counts, cache_options)
+      end
+
+      cached_counts
     end
 
     def cast_state_to_symbol?(state)
@@ -107,6 +120,34 @@ module Gitlab
         :gitlab_issuable_fast_count_by_state_failures_total,
         "Count of failed calls to IssuableFinder#count_by_state with fast failure"
       ).increment
+    end
+
+    def cache_issues_count?
+      @store_in_redis_cache &&
+        finder.instance_of?(IssuesFinder) &&
+        parent_group.present? &&
+        !params_include_filters?
+    end
+
+    def parent_group
+      finder.params.group
+    end
+
+    def redis_cache_key
+      ['group', parent_group&.id, 'issues']
+    end
+
+    def cache_options
+      { expires_in: CACHE_EXPIRES_IN }
+    end
+
+    def params_include_filters?
+      non_filtering_params = %i[
+        scope state sort group_id include_subgroups
+        attempt_group_search_optimizations non_archived issue_types
+      ]
+
+      finder.params.except(*non_filtering_params).values.any?
     end
   end
 end

@@ -7,7 +7,7 @@ product_stage: create
 product_group: group::editor
 product_category: static_site_editor
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 distribution:
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

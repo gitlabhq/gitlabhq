@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
@@ -14,6 +13,10 @@ import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
+
+function cleanUpLine(content) {
+  return unescape(stripHtml(content).replace(/\\n/g, '%br').replace(/\n/g, ''));
+}
 
 export default {
   components: {
@@ -129,7 +132,7 @@ export default {
               return text;
             }
 
-            return unescape(stripHtml(richText).replace(/\n/g, ''));
+            return cleanUpLine(richText);
           })
           .join('\\n');
       }
@@ -141,7 +144,7 @@ export default {
           return text;
         }
 
-        return unescape(stripHtml(richText).replace(/\n/g, ''));
+        return cleanUpLine(richText);
       }
 
       return '';
@@ -272,6 +275,7 @@ export default {
       :can-suggest="canSuggest"
       :show-suggest-popover="showSuggestPopover"
       :suggestion-start-index="suggestionsStartIndex"
+      data-testid="markdownHeader"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
@@ -319,14 +323,20 @@ export default {
         v-show="previewMarkdown"
         ref="markdown-preview"
         class="js-vue-md-preview md md-preview-holder"
-        v-html="markdownPreview"
+        v-html="markdownPreview /* eslint-disable-line vue/no-v-html */"
       ></div>
     </template>
     <template v-if="previewMarkdown && !markdownPreviewLoading">
-      <div v-if="referencedCommands" class="referenced-commands" v-html="referencedCommands"></div>
+      <div
+        v-if="referencedCommands"
+        class="referenced-commands"
+        v-html="referencedCommands /* eslint-disable-line vue/no-v-html */"
+      ></div>
       <div v-if="shouldShowReferencedUsers" class="referenced-users">
         <gl-icon name="warning-solid" />
-        <span v-html="addMultipleToDiscussionWarning"></span>
+        <span
+          v-html="addMultipleToDiscussionWarning /* eslint-disable-line vue/no-v-html */"
+        ></span>
       </div>
     </template>
   </div>

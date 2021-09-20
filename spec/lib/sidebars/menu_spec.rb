@@ -198,4 +198,27 @@ RSpec.describe Sidebars::Menu do
       end
     end
   end
+
+  describe '#link' do
+    let(:foo_path) { '/foo_path'}
+
+    let(:foo_menu) do
+      ::Sidebars::MenuItem.new(
+        title: 'foo',
+        link: foo_path,
+        active_routes: {},
+        item_id: :foo
+      )
+    end
+
+    it 'returns first visible menu item link' do
+      menu.add_item(foo_menu)
+
+      expect(menu.link).to eq foo_path
+    end
+
+    it 'returns nil if there are no visible menu items' do
+      expect(menu.link).to be_nil
+    end
+  end
 end

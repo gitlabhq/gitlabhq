@@ -1,0 +1,10 @@
+#import "../fragments/job.fragment.graphql"
+
+mutation playJob($id: CiBuildID!) {
+  jobPlay(input: { id: $id }) {
+    job {
+      ...Job
+    }
+    errors
+  }
+}

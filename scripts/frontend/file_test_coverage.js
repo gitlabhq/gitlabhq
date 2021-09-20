@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 
 const sourceDirectories = ['app/assets/javascripts'];
-const testDirectories = ['spec/javascripts', 'spec/frontend'];
+const testDirectories = ['spec/frontend'];
 
 if (fs.existsSync('ee')) {
   sourceDirectories.forEach((dir) => {

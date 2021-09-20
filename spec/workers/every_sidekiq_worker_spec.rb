@@ -436,6 +436,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'TodosDestroyer::ConfidentialEpicWorker' => 3,
         'TodosDestroyer::ConfidentialIssueWorker' => 3,
         'TodosDestroyer::DestroyedIssuableWorker' => 3,
+        'TodosDestroyer::DestroyedDesignsWorker' => 3,
         'TodosDestroyer::EntityLeaveWorker' => 3,
         'TodosDestroyer::GroupPrivateWorker' => 3,
         'TodosDestroyer::PrivateFeaturesWorker' => 3,
@@ -452,6 +453,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'WaitForClusterCreationWorker' => 3,
         'WebHookWorker' => 4,
         'WebHooks::DestroyWorker' => 3,
+        'WebHooks::LogExecutionWorker' => 3,
         'Wikis::GitGarbageCollectWorker' => false,
         'X509CertificateRevokeWorker' => 3
       }

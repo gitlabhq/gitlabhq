@@ -10,9 +10,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   before_action :feature_flag, only: [:edit, :update, :destroy]
 
-  before_action :ensure_flag_writable!, only: [:update]
-  before_action :exclude_legacy_flags_check, only: [:edit]
-
   feature_category :feature_flags
 
   def index
@@ -96,18 +93,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   def feature_flag
     @feature_flag ||= @noteable = project.operations_feature_flags.find_by_iid!(params[:iid])
-  end
-
-  def ensure_flag_writable!
-    if feature_flag.legacy_flag?
-      render_error_json(['Legacy feature flags are read-only'])
-    end
-  end
-
-  def exclude_legacy_flags_check
-    if feature_flag.legacy_flag?
-      not_found
-    end
   end
 
   def create_params

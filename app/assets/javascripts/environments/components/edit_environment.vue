@@ -18,6 +18,7 @@ export default {
   data() {
     return {
       formEnvironment: {
+        id: this.environment.id,
         name: this.environment.name,
         externalUrl: this.environment.external_url,
       },
@@ -33,7 +34,6 @@ export default {
       axios
         .put(this.updateEnvironmentPath, {
           id: this.environment.id,
-          name: this.formEnvironment.name,
           external_url: this.formEnvironment.externalUrl,
         })
         .then(({ data: { path } }) => visitUrl(path))

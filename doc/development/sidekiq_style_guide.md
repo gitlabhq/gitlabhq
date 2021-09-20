@@ -713,7 +713,7 @@ default weight, which is 1.
 
 ## Worker context
 
-> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
 
 To have some more information about workers in the logs, we add
 [metadata to the jobs in the form of an
@@ -1002,9 +1002,7 @@ When renaming queues, use the `sidekiq_queue_migrate` helper migration method
 in a **post-deployment migration**:
 
 ```ruby
-class MigrateTheRenamedSidekiqQueue < ActiveRecord::Migration[5.0]
-  include Gitlab::Database::MigrationHelpers
-
+class MigrateTheRenamedSidekiqQueue < Gitlab::Database::Migration[1.0]
   def up
     sidekiq_queue_migrate 'old_queue_name', to: 'new_queue_name'
   end

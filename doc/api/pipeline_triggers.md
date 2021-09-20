@@ -38,6 +38,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
+The trigger token is displayed in full if the trigger token was created by the authenticated
+user. Trigger tokens created by other users are shortened to four characters.
+
 ## Get trigger details
 
 Get details of project's build trigger.

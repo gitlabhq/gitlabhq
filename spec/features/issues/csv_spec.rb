@@ -44,7 +44,7 @@ RSpec.describe 'Issues csv', :js do
     request_csv
 
     expect(page).to have_content 'CSV export has started'
-    expect(page).to have_content "emailed to #{user.notification_email}"
+    expect(page).to have_content "emailed to #{user.notification_email_or_default}"
   end
 
   it 'includes a csv attachment', :sidekiq_might_not_need_inline do

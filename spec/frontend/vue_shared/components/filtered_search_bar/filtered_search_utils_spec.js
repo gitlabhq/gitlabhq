@@ -25,7 +25,7 @@ import {
 const mockStorageKey = 'recent-tokens';
 
 function setLocalStorageAvailability(isAvailable) {
-  jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(isAvailable);
+  jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(isAvailable);
 }
 
 describe('Filtered Search Utils', () => {
@@ -309,7 +309,7 @@ describe('urlQueryToFilter', () => {
       {
         [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
       },
-      { filteredSearchTermKey: 'search', legacySpacesDecode: false },
+      { filteredSearchTermKey: 'search' },
     ],
     [
       'search=my terms&foo=bar&nop=xxx',

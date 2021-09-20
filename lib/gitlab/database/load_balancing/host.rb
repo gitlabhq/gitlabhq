@@ -29,11 +29,15 @@ module Gitlab
           @host = host
           @port = port
           @load_balancer = load_balancer
-          @pool = load_balancer.create_replica_connection_pool(::Gitlab::Database::LoadBalancing.pool_size, host, port)
+          @pool = load_balancer.create_replica_connection_pool(
+            load_balancer.configuration.pool_size,
+            host,
+            port
+          )
           @online = true
           @last_checked_at = Time.zone.now
 
-          interval = ::Gitlab::Database::LoadBalancing.replica_check_interval
+          interval = load_balancer.configuration.replica_check_interval
           @intervals = (interval..(interval * 2)).step(0.5).to_a
         end
 
@@ -108,7 +112,7 @@ module Gitlab
 
         def replication_lag_below_threshold?
           if (lag_time = replication_lag_time)
-            lag_time <= ::Gitlab::Database::LoadBalancing.max_replication_lag_time
+            lag_time <= load_balancer.configuration.max_replication_lag_time
           else
             false
           end
@@ -125,7 +129,7 @@ module Gitlab
           # only do this if we haven't replicated in a while so we only need
           # to connect to the primary when truly necessary.
           if (lag_size = replication_lag_size)
-            lag_size <= ::Gitlab::Database::LoadBalancing.max_replication_difference
+            lag_size <= load_balancer.configuration.max_replication_difference
           else
             false
           end
@@ -159,8 +163,6 @@ module Gitlab
 
         def primary_write_location
           load_balancer.primary_write_location
-        ensure
-          load_balancer.release_primary_connection
         end
 
         def database_replica_location

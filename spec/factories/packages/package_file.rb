@@ -212,11 +212,12 @@ FactoryBot.define do
         package_name { package&.name || 'foo' }
         sequence(:package_version) { |n| package&.version || "v#{n}" }
         channel { 'stable' }
+        description { nil }
       end
 
       after :create do |package_file, evaluator|
         unless evaluator.without_loaded_metadatum
-          create :helm_file_metadatum, package_file: package_file, channel: evaluator.channel
+          create :helm_file_metadatum, package_file: package_file, channel: evaluator.channel, description: evaluator.description
         end
       end
     end

@@ -8,9 +8,13 @@ module.exports = {
     moduleNameMapper: {
       '^test_helpers(/.*)$': '<rootDir>/spec/frontend_integration/test_helpers$1',
       '^ee_else_ce_test_helpers(/.*)$': '<rootDir>/spec/frontend_integration/test_helpers$1',
+      '^jh_else_ce_test_helpers(/.*)$': '<rootDir>/spec/frontend_integration/test_helpers$1',
     },
     moduleNameMapperEE: {
       '^ee_else_ce_test_helpers(/.*)$': '<rootDir>/ee/spec/frontend_integration/test_helpers$1',
+    },
+    moduleNameMapperJH: {
+      '^jh_else_ce_test_helpers(/.*)$': '<rootDir>/jh/spec/frontend_integration/test_helpers$1',
     },
   }),
 };

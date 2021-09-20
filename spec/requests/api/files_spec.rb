@@ -95,6 +95,19 @@ RSpec.describe API::Files do
         expect(response.headers['X-Gitlab-Content-Sha256']).to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
       end
 
+      it 'caches sha256 of the content', :use_clean_rails_redis_caching do
+        head api(route(file_path), current_user, **options), params: params
+
+        expect(Rails.cache.fetch("blob_content_sha256:#{project.full_path}:#{response.headers['X-Gitlab-Blob-Id']}"))
+          .to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
+
+        expect_next_instance_of(Gitlab::Git::Blob) do |instance|
+          expect(instance).not_to receive(:load_all_data!)
+        end
+
+        head api(route(file_path), current_user, **options), params: params
+      end
+
       it 'returns file by commit sha' do
         # This file is deleted on HEAD
         file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"

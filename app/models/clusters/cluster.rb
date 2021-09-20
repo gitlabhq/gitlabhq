@@ -148,6 +148,7 @@ module Clusters
     scope :with_management_project, -> { where.not(management_project: nil) }
 
     scope :for_project_namespace, -> (namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
+    scope :with_name, -> (name) { where(name: name) }
 
     # with_application_prometheus scope is deprecated, and scheduled for removal
     # in %14.0. See https://gitlab.com/groups/gitlab-org/-/epics/4280

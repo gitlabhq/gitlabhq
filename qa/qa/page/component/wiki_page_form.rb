@@ -47,6 +47,7 @@ module QA
           within_element(:try_new_editor_container) do
             click_button('Use the new editor')
           end
+          has_element?(:content_editor_container)
         end
       end
     end

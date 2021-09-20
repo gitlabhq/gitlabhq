@@ -30,7 +30,7 @@ module QA
           @group.sandbox.remove_member(@user)
         end
 
-        it 'is not allowed to push code via the CLI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1660' do
+        it 'is not allowed to push code via the CLI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1712' do
           expect do
             Resource::Repository::Push.fabricate! do |push|
               push.repository_http_uri = @project.repository_http_location.uri
@@ -43,7 +43,7 @@ module QA
           end.to raise_error(QA::Support::Run::CommandError, /You are not allowed to push code to this project/)
         end
 
-        it 'is not allowed to create a file via the API', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1661' do
+        it 'is not allowed to create a file via the API', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1711' do
           expect do
             Resource::File.fabricate_via_api! do |file|
               file.api_client = @user_api_client
@@ -56,7 +56,7 @@ module QA
           end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError, /403 Forbidden/)
         end
 
-        it 'is not allowed to commit via the API', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1662' do
+        it 'is not allowed to commit via the API', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1710' do
           expect do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.api_client = @user_api_client

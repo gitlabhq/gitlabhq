@@ -4,8 +4,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '../../utils';
 import MainGraphWrapper from '../graph_shared/main_graph_wrapper.vue';
 import ActionComponent from '../jobs_shared/action_component.vue';
-import { accessValue } from './accessors';
-import { GRAPHQL } from './constants';
 import JobGroupDropdown from './job_group_dropdown.vue';
 import JobItem from './job_item.vue';
 
@@ -65,6 +63,21 @@ export default {
       required: true,
     },
   },
+  jobClasses: [
+    'gl-py-3',
+    'gl-px-4',
+    'gl-border-gray-100',
+    'gl-border-solid',
+    'gl-border-1',
+    'gl-bg-white',
+    'gl-rounded-7',
+    'gl-hover-bg-gray-50',
+    'gl-focus-bg-gray-50',
+    'gl-hover-text-gray-900',
+    'gl-focus-text-gray-900',
+    'gl-hover-border-gray-200',
+    'gl-focus-border-gray-200',
+  ],
   titleClasses: [
     'gl-font-weight-bold',
     'gl-pipeline-job-width',
@@ -97,7 +110,7 @@ export default {
   },
   methods: {
     getGroupId(group) {
-      return accessValue(GRAPHQL, 'groupId', group);
+      return group.name;
     },
     groupId(group) {
       return `ci-badge-${escape(group.name)}`;
@@ -134,7 +147,7 @@ export default {
           :action-icon="action.icon"
           :tooltip-text="action.title"
           :link="action.path"
-          class="js-stage-action stage-action rounded"
+          class="js-stage-action"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
       </div>
@@ -157,7 +170,7 @@ export default {
           :pipeline-expanded="pipelineExpanded"
           :pipeline-id="pipelineId"
           :stage-name="showStageName ? group.stageName : ''"
-          css-class-job-name="gl-build-content"
+          :css-class-job-name="$options.jobClasses"
           :class="[
             { 'gl-opacity-3': isFadedOut(group.name) },
             'gl-transition-duration-slow gl-transition-timing-function-ease',
@@ -169,6 +182,7 @@ export default {
             :group="group"
             :stage-name="showStageName ? group.stageName : ''"
             :pipeline-id="pipelineId"
+            :css-class-job-name="$options.jobClasses"
           />
         </div>
       </div>

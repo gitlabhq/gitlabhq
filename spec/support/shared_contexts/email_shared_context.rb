@@ -18,6 +18,15 @@ RSpec.shared_context :email_shared_context do
   end
 end
 
+def email_fixture(path)
+  fixture_file(path).gsub('project_id', project.project_id.to_s)
+end
+
+def service_desk_fixture(path, slug: nil, key: 'mykey')
+  slug ||= project.full_path_slug.to_s
+  fixture_file(path).gsub('project_slug', slug).gsub('project_key', key)
+end
+
 RSpec.shared_examples :reply_processing_shared_examples do
   context 'when the user could not be found' do
     before do

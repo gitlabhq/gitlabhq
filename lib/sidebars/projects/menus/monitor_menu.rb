@@ -19,11 +19,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          renderable_items.first&.link
-        end
-
         override :extra_container_html_options
         def extra_container_html_options
           {

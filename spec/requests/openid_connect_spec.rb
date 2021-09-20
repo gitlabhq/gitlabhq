@@ -149,7 +149,15 @@ RSpec.describe 'OpenID Connect requests' do
     end
 
     context 'ID token payload' do
+      let!(:group1) { create :group }
+      let!(:group2) { create :group }
+      let!(:group3) { create :group, parent: group2 }
+      let!(:group4) { create :group, parent: group3 }
+
       before do
+        group1.add_user(user, Gitlab::Access::OWNER)
+        group3.add_user(user, Gitlab::Access::DEVELOPER)
+
         request_access_token!
         @payload = JSON::JWT.decode(json_response['id_token'], :skip_verification)
       end
@@ -175,7 +183,12 @@ RSpec.describe 'OpenID Connect requests' do
       end
 
       it 'does not include any unknown properties' do
-        expect(@payload.keys).to eq %w[iss sub aud exp iat auth_time sub_legacy email email_verified]
+        expect(@payload.keys).to eq %w[iss sub aud exp iat auth_time sub_legacy email email_verified groups_direct]
+      end
+
+      it 'does include groups' do
+        expected_groups = [group1.full_path, group3.full_path]
+        expect(@payload['groups_direct']).to match_array(expected_groups)
       end
     end
 
@@ -331,7 +344,15 @@ RSpec.describe 'OpenID Connect requests' do
     end
 
     context 'ID token payload' do
+      let!(:group1) { create :group }
+      let!(:group2) { create :group }
+      let!(:group3) { create :group, parent: group2 }
+      let!(:group4) { create :group, parent: group3 }
+
       before do
+        group1.add_user(user, Gitlab::Access::OWNER)
+        group3.add_user(user, Gitlab::Access::DEVELOPER)
+
         request_access_token!
         @payload = JSON::JWT.decode(json_response['id_token'], :skip_verification)
       end
@@ -342,6 +363,11 @@ RSpec.describe 'OpenID Connect requests' do
 
       it 'has true in email_verified claim' do
         expect(@payload['email_verified']).to eq(true)
+      end
+
+      it 'does include groups' do
+        expected_groups = [group1.full_path, group3.full_path]
+        expect(@payload['groups_direct']).to match_array(expected_groups)
       end
     end
   end

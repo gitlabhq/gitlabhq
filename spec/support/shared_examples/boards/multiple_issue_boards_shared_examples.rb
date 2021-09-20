@@ -3,13 +3,9 @@
 RSpec.shared_examples 'multiple issue boards' do
   context 'authorized user' do
     before do
-      stub_feature_flags(board_new_list: false)
-
       parent.add_maintainer(user)
 
       login_as(user)
-
-      stub_feature_flags(board_new_list: false)
 
       visit boards_path
       wait_for_requests
@@ -79,13 +75,13 @@ RSpec.shared_examples 'multiple issue boards' do
         expect(page).to have_content(board2.name)
       end
 
-      click_button 'Add list'
+      click_button 'Create list'
 
-      wait_for_requests
+      click_button 'Select a label'
 
-      page.within '.dropdown-menu-issues-board-new' do
-        click_link planning.title
-      end
+      page.choose(planning.title)
+
+      click_button 'Add to board'
 
       wait_for_requests
 

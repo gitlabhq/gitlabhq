@@ -6,6 +6,7 @@ RSpec.describe Resolvers::IssuesResolver do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
 
   let_it_be(:group)         { create(:group) }
   let_it_be(:project)       { create(:project, group: group) }
@@ -19,6 +20,7 @@ RSpec.describe Resolvers::IssuesResolver do
   let_it_be(:issue4)    { create(:issue) }
   let_it_be(:label1)    { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
+  let_it_be(:upvote_award) { create(:award_emoji, :upvote, user: current_user, awardable: issue1) }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::IssueType.connection_type)
@@ -27,6 +29,7 @@ RSpec.describe Resolvers::IssuesResolver do
   context "with a project" do
     before_all do
       project.add_developer(current_user)
+      project.add_reporter(reporter)
       create(:label_link, label: label1, target: issue1)
       create(:label_link, label: label1, target: issue2)
       create(:label_link, label: label2, target: issue2)
@@ -198,6 +201,27 @@ RSpec.describe Resolvers::IssuesResolver do
         end
       end
 
+      context 'filtering by reaction emoji' do
+        let_it_be(:downvoted_issue) { create(:issue, project: project) }
+        let_it_be(:downvote_award) { create(:award_emoji, :downvote, user: current_user, awardable: downvoted_issue) }
+
+        it 'filters by reaction emoji' do
+          expect(resolve_issues(my_reaction_emoji: upvote_award.name)).to contain_exactly(issue1)
+        end
+
+        it 'filters by reaction emoji wildcard "none"' do
+          expect(resolve_issues(my_reaction_emoji: 'none')).to contain_exactly(issue2)
+        end
+
+        it 'filters by reaction emoji wildcard "any"' do
+          expect(resolve_issues(my_reaction_emoji: 'any')).to contain_exactly(issue1, downvoted_issue)
+        end
+
+        it 'filters by negated reaction emoji' do
+          expect(resolve_issues(not: { my_reaction_emoji: downvote_award.name })).to contain_exactly(issue1, issue2)
+        end
+      end
+
       context 'when searching issues' do
         it 'returns correct issues' do
           expect(resolve_issues(search: 'foo')).to contain_exactly(issue2)
@@ -234,6 +258,14 @@ RSpec.describe Resolvers::IssuesResolver do
 
         it 'returns issues without the specified assignee_id' do
           expect(resolve_issues(not: { assignee_id: [assignee.id] })).to contain_exactly(issue1)
+        end
+
+        context 'when filtering by negated author' do
+          let_it_be(:issue_by_reporter) { create(:issue, author: reporter, project: project, state: :opened) }
+
+          it 'returns issues without the specified author_username' do
+            expect(resolve_issues(not: { author_username: issue1.author.username })).to contain_exactly(issue_by_reporter)
+          end
         end
       end
 
@@ -380,6 +412,22 @@ RSpec.describe Resolvers::IssuesResolver do
 
               expect(resolved).to be_a(::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
             end
+          end
+        end
+
+        context 'when sorting by title' do
+          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:issue1) { create(:issue, project: project, title: 'foo') }
+          let_it_be(:issue2) { create(:issue, project: project, title: 'bar') }
+          let_it_be(:issue3) { create(:issue, project: project, title: 'baz') }
+          let_it_be(:issue4) { create(:issue, project: project, title: 'Baz 2') }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :title_asc).to_a).to eq [issue2, issue3, issue4, issue1]
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :title_desc).to_a).to eq [issue1, issue4, issue3, issue2]
           end
         end
       end

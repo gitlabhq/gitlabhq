@@ -13,60 +13,74 @@ RSpec.describe API::DependencyProxy, api: true do
     group.add_owner(user)
     stub_config(dependency_proxy: { enabled: true })
     stub_last_activity_update
-    group.create_dependency_proxy_setting!(enabled: true)
   end
 
   describe 'DELETE /groups/:id/dependency_proxy/cache' do
-    subject { delete api("/groups/#{group.id}/dependency_proxy/cache", user) }
+    subject { delete api("/groups/#{group_id}/dependency_proxy/cache", user) }
 
-    context 'with feature available and enabled' do
-      let_it_be(:lease_key) { "dependency_proxy:delete_group_blobs:#{group.id}" }
+    shared_examples 'responding to purge requests' do
+      context 'with feature available and enabled' do
+        let_it_be(:lease_key) { "dependency_proxy:delete_group_blobs:#{group.id}" }
 
-      context 'an admin user' do
-        it 'deletes the blobs and returns no content' do
-          stub_exclusive_lease(lease_key, timeout: 1.hour)
-          expect(PurgeDependencyProxyCacheWorker).to receive(:perform_async)
-
-          subject
-
-          expect(response).to have_gitlab_http_status(:no_content)
-        end
-
-        context 'called multiple times in one hour', :clean_gitlab_redis_shared_state do
-          it 'returns 409 with an error message' do
-            stub_exclusive_lease_taken(lease_key, timeout: 1.hour)
+        context 'an admin user' do
+          it 'deletes the blobs and returns no content' do
+            stub_exclusive_lease(lease_key, timeout: 1.hour)
+            expect(PurgeDependencyProxyCacheWorker).to receive(:perform_async)
 
             subject
 
-            expect(response).to have_gitlab_http_status(:conflict)
-            expect(response.body).to include('This request has already been made.')
+            expect(response).to have_gitlab_http_status(:accepted)
+            expect(response.body).to eq('202')
           end
 
-          it 'executes service only for the first time' do
-            expect(PurgeDependencyProxyCacheWorker).to receive(:perform_async).once
+          context 'called multiple times in one hour', :clean_gitlab_redis_shared_state do
+            it 'returns 409 with an error message' do
+              stub_exclusive_lease_taken(lease_key, timeout: 1.hour)
 
-            2.times { subject }
+              subject
+
+              expect(response).to have_gitlab_http_status(:conflict)
+              expect(response.body).to include('This request has already been made.')
+            end
+
+            it 'executes service only for the first time' do
+              expect(PurgeDependencyProxyCacheWorker).to receive(:perform_async).once
+
+              2.times { subject }
+            end
           end
+        end
+
+        context 'a non-admin' do
+          let(:user) { create(:user) }
+
+          before do
+            group.add_maintainer(user)
+          end
+
+          it_behaves_like 'returning response status', :forbidden
         end
       end
 
-      context 'a non-admin' do
-        let(:user) { create(:user) }
-
+      context 'depencency proxy is not enabled in the config' do
         before do
-          group.add_maintainer(user)
+          stub_config(dependency_proxy: { enabled: false })
         end
 
-        it_behaves_like 'returning response status', :forbidden
+        it_behaves_like 'returning response status', :not_found
       end
     end
 
-    context 'depencency proxy is not enabled' do
-      before do
-        stub_config(dependency_proxy: { enabled: false })
-      end
+    context 'with a group id' do
+      let(:group_id) { group.id }
 
-      it_behaves_like 'returning response status', :not_found
+      it_behaves_like 'responding to purge requests'
+    end
+
+    context 'with an url encoded group id' do
+      let(:group_id) { ERB::Util.url_encode(group.full_path) }
+
+      it_behaves_like 'responding to purge requests'
     end
   end
 end

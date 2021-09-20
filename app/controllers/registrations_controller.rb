@@ -21,9 +21,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     set_user_state
-    accept_pending_invitations
 
     super do |new_user|
+      accept_pending_invitations if new_user.persisted?
+
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
 
@@ -146,8 +147,12 @@ class RegistrationsController < Devise::RegistrationsController
     resource.persisted? && resource.blocked_pending_approval?
   end
 
+  def sign_up_params_attributes
+    [:username, :email, :name, :first_name, :last_name, :password]
+  end
+
   def sign_up_params
-    params.require(:user).permit(:username, :email, :name, :first_name, :last_name, :password)
+    params.require(:user).permit(sign_up_params_attributes)
   end
 
   def resource_name
@@ -201,6 +206,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     experiment_name = session.delete(:invite_email_experiment_name)
     experiment(:invite_email_preview_text, actor: member).track(:accepted) if experiment_name == 'invite_email_preview_text'
+    experiment(:invite_email_from, actor: member).track(:accepted) if experiment_name == 'invite_email_from'
     Gitlab::Tracking.event(self.class.name, 'accepted', label: 'invite_email', property: member.id.to_s)
   end
 

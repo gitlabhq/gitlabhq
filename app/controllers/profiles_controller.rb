@@ -103,8 +103,8 @@ class ProfilesController < Profiles::ApplicationController
     @username_param ||= user_params.require(:username)
   end
 
-  def user_params
-    @user_params ||= params.require(:user).permit(
+  def user_params_attributes
+    [
       :avatar,
       :bio,
       :email,
@@ -130,6 +130,12 @@ class ProfilesController < Profiles::ApplicationController
       :pronouns,
       :pronunciation,
       status: [:emoji, :message, :availability]
-    )
+    ]
+  end
+
+  def user_params
+    @user_params ||= params.require(:user).permit(user_params_attributes)
   end
 end
+
+ProfilesController.prepend_mod

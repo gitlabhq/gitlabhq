@@ -1,3 +1,4 @@
+import { getAllExperimentContexts } from '~/experimentation/utils';
 import { DEFAULT_SNOWPLOW_OPTIONS } from './constants';
 import getStandardContext from './get_standard_context';
 import Tracking from './tracking';
@@ -38,10 +39,14 @@ export function initDefaultTrackers() {
 
   const opts = { ...DEFAULT_SNOWPLOW_OPTIONS, ...window.snowplowOptions };
 
+  // must be before initializing the trackers
+  Tracking.setAnonymousUrls();
+
   window.snowplow('enableActivityTracking', 30, 30);
   // must be after enableActivityTracking
   const standardContext = getStandardContext();
-  window.snowplow('trackPageView', null, [standardContext]);
+  const experimentContexts = getAllExperimentContexts();
+  window.snowplow('trackPageView', null, [standardContext, ...experimentContexts]);
 
   if (window.snowplowOptions.formTracking) {
     Tracking.enableFormTracking(opts.formTrackingConfig);

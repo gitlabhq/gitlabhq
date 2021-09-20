@@ -16,10 +16,6 @@ We offer extensive integrations to help you connect and manage your Kubernetes c
 
 Read through this document to get started.
 
-## Clusters infrastructure
-
-Use [Infrastructure as Code](../../infrastructure) to create and manage your clusters with the GitLab integration with Terraform.
-
 ## Benefit from the GitLab-Kubernetes integration
 
 Using the GitLab-Kubernetes integration, you can benefit of GitLab
@@ -30,76 +26,18 @@ features such as:
 - Use [role-based or attribute-based access controls](cluster_access.md).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 - Connect GitLab to in-cluster applications using [cluster integrations](../../clusters/integrations.md).
-- Use [Deploy Boards](../deploy_boards.md) to see the health and status of each CI [environment](../../../ci/environments/index.md) running on your Kubernetes cluster.
+- Use [deploy boards](../deploy_boards.md) to see the health and status of each CI [environment](../../../ci/environments/index.md) running on your Kubernetes cluster.
 - Use [Canary deployments](../canary_deployments.md) to update only a portion of your fleet with the latest version of your application.
 - View your [Kubernetes podlogs](kubernetes_pod_logs.md) directly in GitLab.
 - Connect to your cluster through GitLab [web terminals](deploy_to_cluster.md#web-terminals-for-kubernetes-clusters).
 
 ## Supported cluster versions
 
-GitLab is committed to support at least two production-ready Kubernetes minor
-versions at any given time. We regularly review the versions we support, and
-provide a three-month deprecation period before we remove support of a specific
-version. The range of supported versions is based on the evaluation of:
+See the [Kubernetes clusters versions supported by GitLab](../../infrastructure/clusters/connect/index.md#supported-cluster-versions).
 
-- The versions supported by major managed Kubernetes providers.
-- The versions [supported by the Kubernetes community](https://kubernetes.io/releases/version-skew-policy/#supported-versions).
+## Connect your cluster to GitLab
 
-GitLab supports the following Kubernetes versions, and you can upgrade your
-Kubernetes version to any supported version at any time:
-
-- 1.19 (support ends on February 22, 2022)
-- 1.18 (support ends on November 22, 2021)
-- 1.17 (support ends on September 22, 2021)
-- 1.16 (support ends on July 22, 2021)
-- 1.15 (support ends on May 22, 2021)
-
-Some GitLab features may support versions outside the range provided here.
-
-## Add and remove clusters
-
-You can create new or add existing clusters to GitLab:
-
-- On the project-level, to have a cluster dedicated to a project.
-- On the [group level](../../group/clusters/index.md), to use the same cluster across multiple projects within your group.
-- On the [instance level](../../instance/clusters/index.md), to use the same cluster across multiple groups and projects. **(FREE SELF)**
-
-To create new clusters, use one of the following methods:
-
-- [Infrastructure as Code](../../infrastructure/index.md) (**recommended**).
-- [Cluster certificates](add_remove_clusters.md) (**deprecated**).
-
-You can also [add existing clusters](add_existing_cluster.md) to GitLab.
-
-## View your clusters
-
-To view your project-level Kubernetes clusters, to go **Infrastructure > Kubernetes clusters**
-from your project. On this page, you can add a new cluster
-and view information about your existing clusters, such as:
-
-- Nodes count.
-- Rough estimates of memory and CPU usage.
-
-## Configuring your Kubernetes cluster
-
-Use the [GitLab Kubernetes Agent](../../clusters/agent/index.md) to safely
-configure your clusters. Otherwise, there are [security implications](#security-implications).
-
-### Security implications
-
-WARNING:
-The whole cluster security is based on a model where [developers](../../permissions.md)
-are trusted, so **only trusted users should be allowed to control your clusters**.
-
-The default cluster configuration grants access to a wide set of
-functionalities needed to successfully build and deploy a containerized
-application. Bear in mind that the same credentials are used for all the
-applications running on the cluster.
-
-## Multiple Kubernetes clusters
-
-See how to associate [multiple Kubernetes clusters](multiple_kubernetes_clusters.md)
-with your GitLab project.
+Learn how to [create new and connect existing clusters to GitLab](../../infrastructure/clusters/connect/index.md).
 
 ## Cluster integrations
 

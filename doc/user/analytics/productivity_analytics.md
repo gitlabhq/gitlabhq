@@ -50,11 +50,11 @@ The following metrics and visualizations are available on a project or group lev
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13188) in GitLab 12.4.
 
-GitLab has the ability to filter analytics based on a date range. To filter results:
+You can filter analytics based on a date range. To filter results:
 
 1. Select a group.
-1. Optionally select a project.
-1. Select a date range using the available date pickers.
+1. Optional. Select a project.
+1. Select a date range by using the available date pickers.
 
 ## Permissions
 

@@ -223,13 +223,15 @@ If a repository you're interested in is located on a different server, and you w
 to browse its content and its activity using the GitLab interface, you can configure
 mirror pulling:
 
-1. If you [configured two-factor authentication (2FA)](https://docs.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa)
-   for GitHub, create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-   with the `read_repository` scope. If 2FA is enabled, this personal access
+1. If your remote repository is on GitHub and you have
+   [two-factor authentication (2FA) configured](https://docs.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa),
+   create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+   with the `repo` scope. If 2FA is enabled, this personal access
    token serves as your GitHub password.
 1. In your project, go to **Settings > Repository**, and then expand the
    **Mirroring repositories** section.
-1. In the **Git repository URL** field, enter a repository URL.
+1. In the **Git repository URL** field, enter a repository URL. Include the username
+   in the URL if required: `https://MYUSERNAME@github.com/group/PROJECTNAME.git`
 1. In the **Mirror direction** dropdown, select **Pull**.
 1. In the **Authentication method** dropdown, select your authentication method.
 1. Select from the following checkboxes, if needed:
@@ -611,7 +613,7 @@ If you receive this error after creating a new project using
 Check if the repository owner is specified in the URL of your mirrored repository:
 
 1. Go to your project.
-1. In the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, select **Settings > Repository**.
 1. Select **Mirroring repositories**.
 1. If no repository owner is specified, delete and add the URL again in this format:
 

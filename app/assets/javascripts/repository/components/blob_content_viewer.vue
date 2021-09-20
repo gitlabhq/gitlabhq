@@ -118,7 +118,7 @@ export default {
       return this.$apollo.queries.project.loading || this.isLoadingLegacyViewer;
     },
     isBinaryFileType() {
-      return this.isBinary || this.viewer.fileType === 'download';
+      return this.isBinary || this.blobInfo.simpleViewer?.fileType !== 'text';
     },
     blobInfo() {
       const nodes = this.project?.repository?.blobs?.nodes || [];
@@ -180,7 +180,7 @@ export default {
     <div v-if="blobInfo && !isLoading" class="file-holder">
       <blob-header
         :blob="blobInfo"
-        :hide-viewer-switcher="!hasRichViewer || isBinary"
+        :hide-viewer-switcher="!hasRichViewer || isBinaryFileType"
         :is-binary="isBinaryFileType"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
@@ -188,7 +188,7 @@ export default {
       >
         <template #actions>
           <blob-edit
-            :show-edit-button="!isBinary"
+            :show-edit-button="!isBinaryFileType"
             :edit-path="blobInfo.editBlobPath"
             :web-ide-path="blobInfo.ideEditPath"
           />

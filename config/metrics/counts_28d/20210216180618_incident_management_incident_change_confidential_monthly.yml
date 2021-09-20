@@ -5,15 +5,15 @@ description: Count of users changing incidents to confidential per month
 product_section: ops
 product_stage: monitor
 product_group: group::monitor
-product_category: 
+product_category:
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - incident_management_incident_change_confidential
+  - incident_management_incident_change_confidential
 distribution:
 - ce
 - ee
@@ -22,3 +22,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

@@ -28,7 +28,7 @@ module QA
         end
       end
 
-      it 'creates an issue via custom template', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1229' do
+      it 'creates an issue via custom template', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1612' do
         Resource::Issue.fabricate_via_browser_ui! do |issue|
           issue.project = template_project
           issue.template = template_name

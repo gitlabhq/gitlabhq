@@ -94,7 +94,7 @@ describe('User Popover Component', () => {
     const bio = 'My super interesting bio';
 
     it('should show only bio if work information is not available', () => {
-      const user = { ...DEFAULT_PROPS.user, bio, bioHtml: bio };
+      const user = { ...DEFAULT_PROPS.user, bio };
 
       createWrapper({ user });
 
@@ -117,7 +117,6 @@ describe('User Popover Component', () => {
       const user = {
         ...DEFAULT_PROPS.user,
         bio,
-        bioHtml: bio,
         workInformation: 'Frontend Engineer at GitLab',
       };
 
@@ -127,16 +126,15 @@ describe('User Popover Component', () => {
       expect(findWorkInformation().text()).toBe('Frontend Engineer at GitLab');
     });
 
-    it('should not encode special characters in bio', () => {
+    it('should encode special characters in bio', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        bio: 'I like CSS',
-        bioHtml: 'I like <b>CSS</b>',
+        bio: 'I like <b>CSS</b>',
       };
 
       createWrapper({ user });
 
-      expect(findBio().html()).toContain('I like <b>CSS</b>');
+      expect(findBio().html()).toContain('I like &lt;b&gt;CSS&lt;/b&gt;');
     });
 
     it('shows icon for bio', () => {
@@ -250,6 +248,13 @@ describe('User Popover Component', () => {
       const securityBotDocsLink = findSecurityBotDocsLink();
       expect(securityBotDocsLink.exists()).toBe(true);
       expect(securityBotDocsLink.attributes('href')).toBe(SECURITY_BOT_USER.websiteUrl);
+      expect(securityBotDocsLink.text()).toBe('Learn more about GitLab Security Bot');
+    });
+
+    it("doesn't escape user's name", () => {
+      createWrapper({ user: { ...SECURITY_BOT_USER, name: '%<>\';"' } });
+      const securityBotDocsLink = findSecurityBotDocsLink();
+      expect(securityBotDocsLink.text()).toBe('Learn more about %<>\';"');
     });
   });
 });

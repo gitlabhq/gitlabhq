@@ -61,7 +61,8 @@ module Projects
         # initializing the project, as that would cause a foreign key constraint
         # exception.
         relations_block:           -> (project) { build_fork_network_member(project) },
-        skip_disk_validation:      skip_disk_validation
+        skip_disk_validation:      skip_disk_validation,
+        external_authorization_classification_label: @project.external_authorization_classification_label
       }
 
       if @project.avatar.present? && @project.avatar.image?

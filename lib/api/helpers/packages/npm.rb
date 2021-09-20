@@ -57,7 +57,11 @@ module API
                                    .by_path(namespace_path)
               next unless namespace
 
-              finder = ::Packages::Npm::PackageFinder.new(package_name, namespace: namespace)
+              finder = ::Packages::Npm::PackageFinder.new(
+                package_name,
+                namespace: namespace,
+                last_of_each_version: false
+              )
 
               finder.last&.project_id
             end

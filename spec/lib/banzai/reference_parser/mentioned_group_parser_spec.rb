@@ -19,7 +19,7 @@ RSpec.describe Banzai::ReferenceParser::MentionedGroupParser do
         it 'returns empty array' do
           link['data-group'] = project.group.id.to_s
 
-          expect_gathered_references(subject.gather_references([link]), [], 1)
+          expect_gathered_references(subject.gather_references([link]), [], [link], [])
         end
       end
 
@@ -30,7 +30,7 @@ RSpec.describe Banzai::ReferenceParser::MentionedGroupParser do
         end
 
         it 'returns groups' do
-          expect_gathered_references(subject.gather_references([link]), [group], 0)
+          expect_gathered_references(subject.gather_references([link]), [group], [link], [link])
         end
       end
 
@@ -38,7 +38,7 @@ RSpec.describe Banzai::ReferenceParser::MentionedGroupParser do
         it 'returns an empty Array' do
           link['data-group'] = 'test-non-existing'
 
-          expect_gathered_references(subject.gather_references([link]), [], 1)
+          expect_gathered_references(subject.gather_references([link]), [], [link], [])
         end
       end
     end

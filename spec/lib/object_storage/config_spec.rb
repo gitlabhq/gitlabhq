@@ -188,6 +188,7 @@ RSpec.describe ObjectStorage::Config do
   end
 
   context 'with SSE-KMS enabled' do
+    it { expect(subject.aws_server_side_encryption_enabled?).to be true }
     it { expect(subject.server_side_encryption).to eq('AES256') }
     it { expect(subject.server_side_encryption_kms_key_id).to eq('arn:aws:12345') }
     it { expect(subject.fog_attributes.keys).to match_array(%w(x-amz-server-side-encryption x-amz-server-side-encryption-aws-kms-key-id)) }
@@ -196,6 +197,7 @@ RSpec.describe ObjectStorage::Config do
   context 'with only server side encryption enabled' do
     let(:storage_options) { { server_side_encryption: 'AES256' } }
 
+    it { expect(subject.aws_server_side_encryption_enabled?).to be true }
     it { expect(subject.server_side_encryption).to eq('AES256') }
     it { expect(subject.server_side_encryption_kms_key_id).to be_nil }
     it { expect(subject.fog_attributes).to eq({ 'x-amz-server-side-encryption' => 'AES256' }) }
@@ -204,6 +206,7 @@ RSpec.describe ObjectStorage::Config do
   context 'without encryption enabled' do
     let(:storage_options) { {} }
 
+    it { expect(subject.aws_server_side_encryption_enabled?).to be false }
     it { expect(subject.server_side_encryption).to be_nil }
     it { expect(subject.server_side_encryption_kms_key_id).to be_nil }
     it { expect(subject.fog_attributes).to eq({}) }
@@ -215,6 +218,5 @@ RSpec.describe ObjectStorage::Config do
     end
 
     it { expect(subject.enabled?).to be false }
-    it { expect(subject.fog_attributes).to eq({}) }
   end
 end

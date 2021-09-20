@@ -1,5 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
+import { sortBy } from 'lodash';
 import { mapState } from 'vuex';
 
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -23,6 +24,9 @@ export default {
       'labelsFilterBasePath',
       'labelsFilterParam',
     ]),
+    sortedSelectedLabels() {
+      return sortBy(this.selectedLabels, (label) => (isScopedLabel(label) ? 0 : 1));
+    },
   },
   methods: {
     labelFilterUrl(label) {
@@ -47,7 +51,7 @@ export default {
     <span v-if="!selectedLabels.length" class="text-secondary">
       <slot></slot>
     </span>
-    <template v-for="label in selectedLabels" v-else>
+    <template v-for="label in sortedSelectedLabels" v-else>
       <gl-label
         :key="label.id"
         data-qa-selector="selected_label_content"

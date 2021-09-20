@@ -102,7 +102,7 @@ RSpec.describe Issue do
       end
 
       it 'records current metrics' do
-        expect_any_instance_of(Issue::Metrics).to receive(:record!)
+        expect(Issue::Metrics).to receive(:record!)
 
         create(:issue, project: reusable_project)
       end
@@ -111,7 +111,6 @@ RSpec.describe Issue do
         before do
           subject.metrics.delete
           subject.reload
-          subject.metrics # make sure metrics association is cached (currently nil)
         end
 
         it 'creates the metrics record' do
@@ -166,8 +165,8 @@ RSpec.describe Issue do
       expect(described_class.simple_sorts.keys).to include(
         *%w(created_asc created_at_asc created_date created_desc created_at_desc
             closest_future_date closest_future_date_asc due_date due_date_asc due_date_desc
-            id_asc id_desc relative_position relative_position_asc
-            updated_desc updated_asc updated_at_asc updated_at_desc))
+            id_asc id_desc relative_position relative_position_asc updated_desc updated_asc
+            updated_at_asc updated_at_desc title_asc title_desc))
     end
   end
 
@@ -201,6 +200,25 @@ RSpec.describe Issue do
       subject { described_class.order_severity_desc }
 
       it { is_expected.to eq([issue_high_severity, issue_low_severity, issue_no_severity]) }
+    end
+  end
+
+  describe '.order_title' do
+    let_it_be(:issue1) { create(:issue, title: 'foo') }
+    let_it_be(:issue2) { create(:issue, title: 'bar') }
+    let_it_be(:issue3) { create(:issue, title: 'baz') }
+    let_it_be(:issue4) { create(:issue, title: 'Baz 2') }
+
+    context 'sorting ascending' do
+      subject { described_class.order_title_asc }
+
+      it { is_expected.to eq([issue2, issue3, issue4, issue1]) }
+    end
+
+    context 'sorting descending' do
+      subject { described_class.order_title_desc }
+
+      it { is_expected.to eq([issue1, issue4, issue3, issue2]) }
     end
   end
 
@@ -1177,17 +1195,32 @@ RSpec.describe Issue do
     it 'refreshes the number of open issues of the project' do
       project = subject.project
 
-      expect { subject.destroy! }
-        .to change { project.open_issues_count }.from(1).to(0)
+      expect do
+        subject.destroy!
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_issues_count }.from(1).to(0)
     end
   end
 
   describe '.public_only' do
-    it 'only returns public issues' do
-      public_issue = create(:issue, project: reusable_project)
-      create(:issue, project: reusable_project, confidential: true)
+    let_it_be(:banned_user) { create(:user, :banned) }
+    let_it_be(:public_issue) { create(:issue, project: reusable_project) }
+    let_it_be(:confidential_issue) { create(:issue, project: reusable_project, confidential: true) }
+    let_it_be(:hidden_issue) { create(:issue, project: reusable_project, author: banned_user) }
 
+    it 'only returns public issues' do
       expect(described_class.public_only).to eq([public_issue])
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(ban_user_feature_flag: false)
+      end
+
+      it 'returns public and hidden issues' do
+        expect(described_class.public_only).to eq([public_issue, hidden_issue])
+      end
     end
   end
 
@@ -1402,19 +1435,19 @@ RSpec.describe Issue do
   describe 'scheduling rebalancing' do
     before do
       allow_next_instance_of(RelativePositioning::Mover) do |mover|
-        allow(mover).to receive(:move) { raise ActiveRecord::QueryCanceled }
+        allow(mover).to receive(:move) { raise RelativePositioning::NoSpaceLeft }
       end
     end
 
     shared_examples 'schedules issues rebalancing' do
       let(:issue) { build_stubbed(:issue, relative_position: 100, project: project) }
 
-      it 'schedules rebalancing if we time-out when moving' do
+      it 'schedules rebalancing if there is no space left' do
         lhs = build_stubbed(:issue, relative_position: 99, project: project)
         to_move = build(:issue, project: project)
         expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project_id, namespace_id)
 
-        expect { to_move.move_between(lhs, issue) }.to raise_error(ActiveRecord::QueryCanceled)
+        expect { to_move.move_between(lhs, issue) }.to raise_error(RelativePositioning::NoSpaceLeft)
       end
     end
 

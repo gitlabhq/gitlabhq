@@ -4,7 +4,7 @@ import { s__ } from '~/locale';
 
 export default {
   i18n: {
-    buttonLabel: s__('MergeRequests|Resolve this thread in a new issue'),
+    buttonLabel: s__('MergeRequests|Create issue to resolve thread'),
   },
   name: 'ResolveWithIssueButton',
   components: {

@@ -6,7 +6,7 @@ product_stage: monitor
 product_group: group::monitor
 product_category: incident_management
 value_type: number
-status: implemented
+status: active
 milestone: "14.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66422
 time_frame: 28d

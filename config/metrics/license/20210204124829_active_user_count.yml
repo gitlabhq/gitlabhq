@@ -6,7 +6,8 @@ product_stage: growth
 product_group: group::product intelligence
 product_category: collection
 value_type: string
-status: data_available
+status: active
+milestone: "<13.9"
 data_category: subscription
 time_frame: none
 data_source: database

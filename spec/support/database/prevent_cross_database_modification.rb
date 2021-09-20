@@ -74,18 +74,20 @@ module Database
 
       return if cross_database_context[:transaction_depth_by_db].values.all?(&:zero?)
 
-      tables = PgQuery.parse(sql).dml_tables
+      parsed_query = PgQuery.parse(sql)
+      tables = sql.downcase.include?(' for update') ? parsed_query.tables : parsed_query.dml_tables
 
       return if tables.empty?
 
       cross_database_context[:modified_tables_by_db][database].merge(tables)
 
       all_tables = cross_database_context[:modified_tables_by_db].values.map(&:to_a).flatten
+      schemas = Database::GitlabSchema.table_schemas(all_tables)
 
-      unless PreventCrossJoins.only_ci_or_only_main?(all_tables)
+      if schemas.many?
         raise Database::PreventCrossDatabaseModification::CrossDatabaseModificationAcrossUnsupportedTablesError,
-          "Cross-database data modification queries (CI and Main) were detected within " \
-          "a transaction '#{all_tables.join(", ")}' discovered"
+          "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
+          "a transaction modifying the '#{all_tables.to_a.join(", ")}'"
       end
     end
   end

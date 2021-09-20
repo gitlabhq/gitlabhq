@@ -9,6 +9,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
 
+## Password requirements
+
+GitLab.com has the following requirements for passwords on new accounts and password changes:
+
+- Minimum character length 8 characters.
+- Maximum character length 128 characters.
+- All characters are accepted. For example, `~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `()`,
+  `[]`, `_`, `+`,  `=`, and `-`.
+
+## SSH key restrictions
+
+GitLab.com uses the default [SSH key restrictions](../../security/ssh_keys_restrictions.md).
+
 ## SSH host keys fingerprints
 
 Below are the fingerprints for SSH host keys on GitLab.com. The first time you
@@ -123,6 +136,7 @@ the related documentation.
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited |
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
+| [Max pipelines per schedule](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day) | `24` for Free tier, `288` for all paid tiers | Unlimited |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 | Max test cases per [unit test report](../../ci/unit_test_reports.md) | `500_000` | Unlimited |
 | [Max registered runners](../../administration/instance_limits.md#number-of-registered-runners-per-scope) | `50` per-project and per-group for Free tier,<br/>`1_000` per-group for all paid tiers / `1_000` per-project for all paid tiers | `1_000` per-group / `1_000` per-project |
@@ -292,7 +306,7 @@ endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
 For information on rate limiting responses, see:
 
 - [List of headers on responses to blocked requests](../admin_area/settings/user_and_ip_rate_limits.md#response-headers).
-- [Customizable response text](../admin_area/settings/user_and_ip_rate_limits.md#response-text).
+- [Customizable response text](../admin_area/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
 
 ### Protected paths throttle
 
@@ -349,7 +363,7 @@ doesn't return the following headers:
 ### Visibility settings
 
 If created before GitLab 12.2 (July 2019), these items have the
-[Internal visibility](../../public_access/public_access.md#internal-projects)
+[Internal visibility](../../public_access/public_access.md#internal-projects-and-groups)
 setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
 
 - Projects

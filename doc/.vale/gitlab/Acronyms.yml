@@ -107,6 +107,7 @@ exceptions:
   - NTP
   - ONLY
   - OSS
+  - OTP
   - OWASP
   - PAT
   - PCI-DSS

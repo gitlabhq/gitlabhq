@@ -228,8 +228,13 @@ git push --force-with-lease origin my-feature-branch
 ```
 
 If the branch you want to force-push is [protected](../../user/project/protected_branches.md),
-you can't force-push to it unless you unprotect it first. Then you can
-force-push and re-protect it.
+you can't force push to it unless you either:
+
+- Unprotect it.
+- [Allow force push](../../user/project/protected_branches.md#allow-force-push-on-a-protected-branch)
+  to it.
+
+Then you can force push and protect it again.
 
 ## Merge conflicts
 

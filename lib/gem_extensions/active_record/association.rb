@@ -15,7 +15,7 @@ module GemExtensions
 
       def scope
         if disable_joins
-          DisableJoins::Associations::AssociationScope.create.scope(self)
+          ::GemExtensions::ActiveRecord::DisableJoins::Associations::AssociationScope.create.scope(self)
         else
           super
         end
@@ -25,7 +25,7 @@ module GemExtensions
         if klass
           @association_scope ||= begin # rubocop:disable Gitlab/ModuleWithInstanceVariables
             if disable_joins
-              DisableJoins::Associations::AssociationScope.scope(self)
+              ::GemExtensions::ActiveRecord::DisableJoins::Associations::AssociationScope.scope(self)
             else
               super
             end

@@ -6,6 +6,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BaseComponent from '~/cycle_analytics/components/base.vue';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
+import ValueStreamFilters from '~/cycle_analytics/components/value_stream_filters.vue';
 import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
 import { NOT_ENOUGH_DATA_ERROR } from '~/cycle_analytics/constants';
 import initState from '~/cycle_analytics/store/state';
@@ -30,13 +31,14 @@ Vue.use(Vuex);
 
 let wrapper;
 
+const { id: groupId, path: groupPath } = currentGroup;
 const defaultState = {
   permissions,
   currentGroup,
   createdBefore,
   createdAfter,
   stageCounts,
-  endpoints: { fullPath },
+  endpoints: { fullPath, groupId, groupPath },
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {
@@ -74,6 +76,7 @@ function createComponent({ initialState, initialGetters } = {}) {
 
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findPathNavigation = () => wrapper.findComponent(PathNavigation);
+const findFilters = () => wrapper.findComponent(ValueStreamFilters);
 const findOverviewMetrics = () => wrapper.findComponent(ValueStreamMetrics);
 const findStageTable = () => wrapper.findComponent(StageTable);
 const findStageEvents = () => findStageTable().props('stageEvents');
@@ -121,6 +124,29 @@ describe('Value stream analytics component', () => {
 
   it('renders the stage table events', () => {
     expect(findStageEvents()).toEqual(selectedStageEvents);
+  });
+
+  it('renders the filters', () => {
+    expect(findFilters().exists()).toBe(true);
+  });
+
+  it('displays the date range selector and hides the project selector', () => {
+    expect(findFilters().props()).toMatchObject({
+      hasProjectFilter: false,
+      hasDateRangeFilter: true,
+    });
+  });
+
+  it('passes the paths to the filter bar', () => {
+    expect(findFilters().props()).toEqual({
+      groupId,
+      groupPath,
+      endDate: createdBefore,
+      hasDateRangeFilter: true,
+      hasProjectFilter: false,
+      selectedProjects: [],
+      startDate: createdAfter,
+    });
   });
 
   it('does not render the loading icon', () => {

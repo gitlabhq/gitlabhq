@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
       let(:config) do
         [
           { if: '$THIS == "that"', when: 'always' },
-          [{ if: '$SKIP', when: 'never' }]
+          [{ if: '$SKIP', when: 'never' }, { if: '$THIS == "other"', when: 'always' }]
         ]
       end
 
@@ -64,11 +64,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
       let(:config) do
         [
           { if: '$THIS == "that"', when: 'always' },
-          [{ if: '$SKIP', when: 'never' }, [{ if: '$THIS == "other"', when: 'aways' }]]
+          [{ if: '$SKIP', when: 'never' }, [{ if: '$THIS == "other"', when: 'always' }]]
         ]
       end
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.to be_valid }
     end
   end
 
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
     context 'with rules nested more than one level' do
       let(:first_rule) { { if: '$THIS == "that"', when: 'always' } }
       let(:second_rule) { { if: '$SKIP', when: 'never' } }
-      let(:third_rule) { { if: '$THIS == "other"', when: 'aways' } }
+      let(:third_rule) { { if: '$THIS == "other"', when: 'always' } }
 
       let(:config) do
         [

@@ -1,3 +1,4 @@
+import { GlModal } from '@gitlab/ui';
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
@@ -29,6 +30,8 @@ describe('Deploy freeze table', () => {
   const findAddDeployFreezeButton = () => wrapper.find('[data-testid="add-deploy-freeze"]');
   const findEditDeployFreezeButton = () => wrapper.find('[data-testid="edit-deploy-freeze"]');
   const findDeployFreezeTable = () => wrapper.find('[data-testid="deploy-freeze-table"]');
+  const findDeleteDeployFreezeButton = () => wrapper.find('[data-testid="delete-deploy-freeze"]');
+  const findDeleteDeployFreezeModal = () => wrapper.findComponent(GlModal);
 
   beforeEach(() => {
     createComponent();
@@ -70,6 +73,29 @@ describe('Deploy freeze table', () => {
 
         expect(store.dispatch).toHaveBeenCalledWith(
           'setFreezePeriod',
+          store.state.freezePeriods[0],
+        );
+      });
+
+      it('displays delete deploy freeze button', () => {
+        expect(findDeleteDeployFreezeButton().exists()).toBe(true);
+      });
+
+      it('confirms a user wants to delete a deploy freeze', async () => {
+        const [{ freezeStart, freezeEnd, cronTimezone }] = store.state.freezePeriods;
+        await findDeleteDeployFreezeButton().trigger('click');
+        const modal = findDeleteDeployFreezeModal();
+        expect(modal.text()).toContain(
+          `Deploy freeze from ${freezeStart} to ${freezeEnd} in ${cronTimezone.formattedTimezone} will be removed.`,
+        );
+      });
+
+      it('deletes the freeze period on confirmation', async () => {
+        await findDeleteDeployFreezeButton().trigger('click');
+        const modal = findDeleteDeployFreezeModal();
+        modal.vm.$emit('primary');
+        expect(store.dispatch).toHaveBeenCalledWith(
+          'deleteFreezePeriod',
           store.state.freezePeriods[0],
         );
       });

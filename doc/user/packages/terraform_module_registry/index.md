@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Terraform module registry **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
 
 Publish Terraform modules in your project's Infrastructure Registry, then reference them using GitLab
 as a Terraform module registry.
@@ -16,7 +16,7 @@ as a Terraform module registry.
 To authenticate to the Terraform module registry, you need either:
 
 - A [personal access token](../../../api/index.md#personalproject-access-tokens) with at least `read_api` rights.
-- A [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token).
+- A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
 ## Publish a Terraform Module
 
@@ -40,6 +40,10 @@ PUT /projects/:id/packages/terraform/modules/:module_name/:module_system/:module
 | `module_version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
 
 Provide the file content in the request body.
+
+Note that, in the following example, the request must end with `/file`.
+If you send a request ending with something else, it results in a 404
+error `{"error":"404 Not Found"}`.
 
 Example request using a personal access token:
 

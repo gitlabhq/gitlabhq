@@ -10,17 +10,16 @@ import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue';
 import {
+  COMMIT_SHA_POLL_INTERVAL,
   EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_ERROR,
   EDITOR_APP_STATUS_LOADING,
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
 } from './constants';
-import updateCommitShaMutation from './graphql/mutations/update_commit_sha.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
 import getAppStatus from './graphql/queries/client/app_status.graphql';
-import getCommitSha from './graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import getIsNewCiConfigFile from './graphql/queries/client/is_new_ci_config_file.graphql';
 import getTemplate from './graphql/queries/get_starter_template.query.graphql';
@@ -50,6 +49,7 @@ export default {
       failureType: null,
       failureReasons: [],
       initialCiFileContent: '',
+      isFetchingCommitSha: false,
       isNewCiConfigFile: false,
       lastCommittedContent: '',
       currentCiFileContent: '',
@@ -136,7 +136,7 @@ export default {
       update(data) {
         const { ciConfig } = data || {};
         const stageNodes = ciConfig?.stages?.nodes || [];
-        const stages = unwrapStagesWithNeeds(stageNodes);
+        const stages = unwrapStagesWithNeeds(JSON.parse(JSON.stringify(stageNodes)));
 
         return { ...ciConfig, stages };
       },
@@ -156,7 +156,25 @@ export default {
       query: getAppStatus,
     },
     commitSha: {
-      query: getCommitSha,
+      query: getLatestCommitShaQuery,
+      variables() {
+        return {
+          projectPath: this.projectFullPath,
+          ref: this.currentBranch,
+        };
+      },
+      update(data) {
+        const latestCommitSha = data.project?.repository?.tree?.lastCommit?.sha;
+
+        if (this.isFetchingCommitSha && latestCommitSha === this.commitSha) {
+          this.$apollo.queries.commitSha.startPolling(COMMIT_SHA_POLL_INTERVAL);
+          return this.commitSha;
+        }
+
+        this.isFetchingCommitSha = false;
+        this.$apollo.queries.commitSha.stopPolling();
+        return latestCommitSha;
+      },
     },
     currentBranch: {
       query: getCurrentBranch,
@@ -257,37 +275,9 @@ export default {
     updateCiConfig(ciFileContent) {
       this.currentCiFileContent = ciFileContent;
     },
-    async updateCommitSha({ newBranch }) {
-      let fetchResults;
-
-      try {
-        fetchResults = await this.$apollo.query({
-          query: getLatestCommitShaQuery,
-          variables: {
-            projectPath: this.projectFullPath,
-            ref: newBranch,
-          },
-        });
-      } catch {
-        this.showFetchError();
-        return;
-      }
-
-      if (fetchResults.errors?.length > 0) {
-        this.showFetchError();
-        return;
-      }
-
-      const pipelineNodes = fetchResults?.data?.project?.pipelines?.nodes ?? [];
-      if (pipelineNodes.length === 0) {
-        return;
-      }
-
-      const commitSha = pipelineNodes[0].sha;
-      this.$apollo.mutate({
-        mutation: updateCommitShaMutation,
-        variables: { commitSha },
-      });
+    updateCommitSha() {
+      this.isFetchingCommitSha = true;
+      this.$apollo.queries.commitSha.refetch();
     },
     updateOnCommit({ type }) {
       this.reportSuccess(type);
@@ -336,6 +326,7 @@ export default {
         :ci-config-data="ciConfigData"
         :ci-file-content="currentCiFileContent"
         :is-new-ci-config-file="isNewCiConfigFile"
+        :commit-sha="commitSha"
         @commit="updateOnCommit"
         @resetContent="resetContent"
         @showError="showErrorAlert"

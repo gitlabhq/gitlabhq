@@ -87,6 +87,7 @@ export default {
       <linked-pipelines-mini-list
         v-if="hasDownstream"
         :triggered="downstreamPipelines"
+        :pipeline-path="pipeline.path"
         data-testid="commit-box-mini-graph-downstream"
       />
     </div>

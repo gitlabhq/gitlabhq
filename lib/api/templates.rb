@@ -11,7 +11,7 @@ module API
       },
       gitlab_ci_ymls: {
         gitlab_version: 8.9,
-        feature_category: :continuous_integration
+        feature_category: :pipeline_authoring
       },
       dockerfiles: {
         gitlab_version: 8.15,

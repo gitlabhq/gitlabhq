@@ -44,6 +44,31 @@ describe('~/lib/dompurify', () => {
     expect(sanitize('<strong></strong>', { ALLOWED_TAGS: [] })).toBe('');
   });
 
+  describe('includes default configuration', () => {
+    it('with empty config', () => {
+      const svgIcon = '<svg width="100"><use></use></svg>';
+      expect(sanitize(svgIcon, {})).toBe(svgIcon);
+    });
+
+    it('with valid config', () => {
+      expect(sanitize('<a href="#" data-remote="true"></a>', { ALLOWED_TAGS: ['a'] })).toBe(
+        '<a href="#"></a>',
+      );
+    });
+  });
+
+  it("doesn't sanitize local references", () => {
+    const htmlHref = `<svg><use href="#some-element"></use></svg>`;
+    const htmlXlink = `<svg><use xlink:href="#some-element"></use></svg>`;
+
+    expect(sanitize(htmlHref)).toBe(htmlHref);
+    expect(sanitize(htmlXlink)).toBe(htmlXlink);
+  });
+
+  it("doesn't sanitize gl-emoji", () => {
+    expect(sanitize('<p><gl-emoji>💯</gl-emoji></p>')).toBe('<p><gl-emoji>💯</gl-emoji></p>');
+  });
+
   describe.each`
     type          | gon
     ${'root'}     | ${rootGon}

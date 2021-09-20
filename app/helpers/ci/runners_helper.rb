@@ -65,6 +65,15 @@ module Ci
       }
     end
 
+    def group_runners_data_attributes(group)
+      {
+        registration_token: group.runners_token,
+        group_id: group.id,
+        group_full_path: group.full_path,
+        runner_install_help_page: 'https://docs.gitlab.com/runner/install/'
+      }
+    end
+
     def toggle_shared_runners_settings_data(project)
       {
         is_enabled: "#{project.shared_runners_enabled?}",

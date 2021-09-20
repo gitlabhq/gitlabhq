@@ -19,7 +19,7 @@ module Types
           description: 'State of the environment, for example: available/stopped.'
 
     field :path, GraphQL::Types::String, null: false,
-          description: 'The path to the environment.'
+          description: 'Path to the environment.'
 
     field :metrics_dashboard, Types::Metrics::DashboardType, null: true,
           description: 'Metrics dashboard schema for the environment.',
@@ -28,6 +28,6 @@ module Types
     field :latest_opened_most_severe_alert,
           Types::AlertManagement::AlertType,
           null: true,
-          description: 'The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.'
+          description: 'Most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.'
   end
 end

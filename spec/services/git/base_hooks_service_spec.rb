@@ -19,8 +19,12 @@ RSpec.describe Git::BaseHooksService do
         :push_hooks
       end
 
-      def commits
+      def limited_commits
         []
+      end
+
+      def commits_count
+        0
       end
     end
   end

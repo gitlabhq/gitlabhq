@@ -14,8 +14,23 @@ class MergeRequest::Metrics < ApplicationRecord
   scope :with_valid_time_to_merge, -> { where(arel_table[:merged_at].gt(arel_table[:created_at])) }
   scope :by_target_project, ->(project) { where(target_project_id: project) }
 
-  def self.time_to_merge_expression
-    Arel.sql('EXTRACT(epoch FROM SUM(AGE(merge_request_metrics.merged_at, merge_request_metrics.created_at)))')
+  class << self
+    def time_to_merge_expression
+      Arel.sql('EXTRACT(epoch FROM SUM(AGE(merge_request_metrics.merged_at, merge_request_metrics.created_at)))')
+    end
+
+    def record!(mr)
+      sql = <<~SQL
+        INSERT INTO #{self.table_name} (merge_request_id, target_project_id, updated_at, created_at)
+        VALUES (#{mr.id}, #{mr.target_project_id}, NOW(), NOW())
+        ON CONFLICT (merge_request_id)
+        DO UPDATE SET
+        target_project_id = EXCLUDED.target_project_id,
+        updated_at = NOW()
+      SQL
+
+      connection.execute(sql)
+    end
   end
 
   private

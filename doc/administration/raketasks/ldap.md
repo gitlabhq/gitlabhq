@@ -44,7 +44,7 @@ waiting for the next scheduled group sync to be run.
 
 NOTE:
 If you'd like to change the frequency at which a group sync is performed,
-[adjust the cron schedule](../auth/ldap/index.md#adjusting-ldap-group-sync-schedule)
+[adjust the cron schedule](../auth/ldap/index.md#adjust-ldap-group-sync-schedule)
 instead.
 
 **Omnibus Installation**
@@ -151,7 +151,8 @@ sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider] force=ye
 
 ## Secrets
 
-GitLab can use [LDAP configuration secrets](../auth/ldap/index.md#using-encrypted-credentials) to read from an encrypted file. The following Rake tasks are provided for updating the contents of the encrypted file.
+GitLab can use [LDAP configuration secrets](../auth/ldap/index.md#use-encrypted-credentials) to read from an encrypted file.
+The following Rake tasks are provided for updating the contents of the encrypted file.
 
 ### Show secret
 

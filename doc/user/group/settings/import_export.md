@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 # Group import/export **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
 
 Existing groups running on any GitLab instance or GitLab.com can be exported with all their related data and moved to a
 new GitLab instance.
@@ -22,7 +22,7 @@ See also:
 Users with the [Owner role](../../permissions.md) for a group can enable
 import and export for that group:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General > Visibility and access controls**.
 1. Scroll to **Import sources**.
 1. Enable the desired **Import sources**.
@@ -69,7 +69,7 @@ Users with the [Owner role](../../permissions.md) for a group can export the
 contents of that group:
 
 1. On the top bar, select **Menu >** **Groups** and find your group.
-1. In the left sidebar, select **Settings**.
+1. On the left sidebar, select **Settings**.
 1. Scroll to the **Advanced** section, and select **Export Group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in NDJSON format.

@@ -21,8 +21,6 @@ class BuildSuccessWorker # rubocop:disable Scalability/IdempotentWorker
 
   private
 
-  ##
-  # TODO: This should be processed in DeploymentSuccessWorker once we started storing `action` value in `deployments` records
   def stop_environment(build)
     build.persisted_environment.fire_state_event(:stop)
   end

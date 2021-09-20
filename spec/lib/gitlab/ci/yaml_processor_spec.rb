@@ -590,14 +590,6 @@ module Gitlab
             end
 
             it_behaves_like 'has warnings and expected error', /build job: need test is not defined in current or prior stages/
-
-            context 'with ci_same_stage_job_needs FF disabled' do
-              before do
-                stub_feature_flags(ci_same_stage_job_needs: false)
-              end
-
-              it_behaves_like 'has warnings and expected error', /build job: need test is not defined in prior stages/
-            end
           end
         end
       end
@@ -1809,14 +1801,6 @@ module Gitlab
           let(:dependencies) { ['deploy'] }
 
           it_behaves_like 'returns errors', 'test1 job: dependency deploy is not defined in current or prior stages'
-
-          context 'with ci_same_stage_job_needs FF disabled' do
-            before do
-              stub_feature_flags(ci_same_stage_job_needs: false)
-            end
-
-            it_behaves_like 'returns errors', 'test1 job: dependency deploy is not defined in prior stages'
-          end
         end
 
         context 'when a job depends on another job that references a not-yet defined stage' do
@@ -2053,14 +2037,6 @@ module Gitlab
           let(:needs) { ['deploy'] }
 
           it_behaves_like 'returns errors', 'test1 job: need deploy is not defined in current or prior stages'
-
-          context 'with ci_same_stage_job_needs FF disabled' do
-            before do
-              stub_feature_flags(ci_same_stage_job_needs: false)
-            end
-
-            it_behaves_like 'returns errors', 'test1 job: need deploy is not defined in prior stages'
-          end
         end
 
         context 'needs and dependencies that are mismatching' do

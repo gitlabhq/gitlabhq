@@ -237,60 +237,6 @@ RSpec.describe Environments::StopService do
     end
   end
 
-  describe '.execute_in_batch' do
-    subject { described_class.execute_in_batch(environments) }
-
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user) { create(:user) }
-
-    let(:environments) { Environment.available }
-
-    before_all do
-      project.add_developer(user)
-      project.repository.add_branch(user, 'review/feature-1', 'master')
-      project.repository.add_branch(user, 'review/feature-2', 'master')
-    end
-
-    before do
-      create_review_app(user, project, 'review/feature-1')
-      create_review_app(user, project, 'review/feature-2')
-    end
-
-    it 'stops environments' do
-      expect { subject }
-        .to change { project.environments.all.map(&:state).uniq }
-        .from(['available']).to(['stopped'])
-
-      expect(project.environments.all.map(&:auto_stop_at).uniq).to eq([nil])
-    end
-
-    it 'plays stop actions' do
-      expect { subject }
-        .to change { Ci::Build.where(name: 'stop_review_app').map(&:status).uniq }
-        .from(['manual']).to(['pending'])
-    end
-
-    context 'when user does not have a permission to play the stop action' do
-      before do
-        project.team.truncate
-      end
-
-      it 'tracks the exception' do
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(Gitlab::Access::AccessDeniedError, anything)
-          .twice
-          .and_call_original
-
-        subject
-      end
-
-      after do
-        project.add_developer(user)
-      end
-    end
-  end
-
   def expect_environment_stopped_on(branch)
     expect { service.execute_for_branch(branch) }
       .to change { Environment.last.state }.from('available').to('stopped')

@@ -8,7 +8,7 @@ module QA
       class << self
         # Documentation: https://docs.gitlab.com/ee/api/features.html
 
-        include Support::Api
+        include Support::API
 
         SetFeatureError = Class.new(RuntimeError)
         AuthorizationError = Class.new(RuntimeError)
@@ -17,7 +17,7 @@ module QA
         def remove(key)
           request = Runtime::API::Request.new(api_client, "/features/#{key}")
           response = delete(request.url)
-          unless response.code == QA::Support::Api::HTTP_STATUS_NO_CONTENT
+          unless response.code == QA::Support::API::HTTP_STATUS_NO_CONTENT
             raise SetFeatureError, "Deleting feature flag #{key} failed with `#{response}`."
           end
         end
@@ -100,7 +100,7 @@ module QA
           scopes[:user] = scopes[:user].username if scopes.key?(:user)
           request = Runtime::API::Request.new(api_client, "/features/#{key}")
           response = post(request.url, scopes.merge({ value: value }))
-          unless response.code == QA::Support::Api::HTTP_STATUS_CREATED
+          unless response.code == QA::Support::API::HTTP_STATUS_CREATED
             raise SetFeatureError, "Setting feature flag #{key} to #{value} failed with `#{response}`."
           end
         end

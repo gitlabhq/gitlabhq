@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'allure-rspec'
-
 describe QA::Runtime::AllureReport do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
 
   let(:rspec_config) { double('RSpec::Core::Configuration', 'add_formatter': nil, after: nil) }
 
@@ -70,7 +68,8 @@ describe QA::Runtime::AllureReport do
 
     it 'adds rspec and metadata formatter' do
       expect(rspec_config).to have_received(:add_formatter).with(AllureRspecFormatter).ordered
-      expect(rspec_config).to have_received(:add_formatter).with(QA::Support::AllureMetadataFormatter).ordered
+      expect(rspec_config).to have_received(:add_formatter)
+        .with(QA::Support::Formatters::AllureMetadataFormatter).ordered
     end
 
     it 'configures screenshot saving' do

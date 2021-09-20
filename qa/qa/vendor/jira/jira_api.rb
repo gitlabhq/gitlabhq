@@ -5,7 +5,7 @@ module QA
     module Jira
       class JiraAPI
         include Scenario::Actable
-        include Support::Api
+        include Support::API
 
         def base_url
           host = QA::Runtime::Env.jira_hostname || 'localhost'

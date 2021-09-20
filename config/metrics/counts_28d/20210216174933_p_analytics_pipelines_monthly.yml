@@ -5,18 +5,21 @@ description: Unique visitors to /groups/:group/-/analytics/ci_cd by month
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category: 
+product_category:
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - p_analytics_pipelines
+  - p_analytics_pipelines
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
 performance_indicator_type: []
+milestone: "<13.9"

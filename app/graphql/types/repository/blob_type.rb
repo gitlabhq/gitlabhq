@@ -48,10 +48,10 @@ module Types
             description: 'Size (in bytes) of the blob, or the blob target if stored externally.'
 
       field :raw_blob, GraphQL::Types::String, null: true, method: :data,
-            description: 'The raw content of the blob.'
+            description: 'Raw content of the blob.'
 
       field :raw_text_blob, GraphQL::Types::String, null: true, method: :text_only_data,
-            description: 'The raw content of the blob, if the blob is text data.'
+            description: 'Raw content of the blob, if the blob is text data.'
 
       field :stored_externally, GraphQL::Types::Boolean, null: true, method: :stored_externally?,
             description: "Whether the blob's content is stored externally (for instance, in LFS)."
@@ -69,7 +69,7 @@ module Types
             description: 'Web path to replace the blob content.'
 
       field :file_type, GraphQL::Types::String, null: true,
-            description: 'The expected format of the blob based on the extension.'
+            description: 'Expected format of the blob based on the extension.'
 
       field :simple_viewer, type: Types::BlobViewerType,
             description: 'Blob content simple viewer.',

@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about..example/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# NuGet API
+# NuGet API **(FREE)**
 
 This is the API documentation for [NuGet Packages](../../user/packages/nuget_repository/index.md).
 
@@ -73,7 +73,7 @@ curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v
 Write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/mynugetpkg.1.3.0.17.nupkg" >> MyNuGetPkg.1.3.0.17.nupkg
+curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/mynugetpkg.1.3.0.17.nupkg" > MyNuGetPkg.1.3.0.17.nupkg
 ```
 
 This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current directory.

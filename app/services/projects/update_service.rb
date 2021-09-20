@@ -105,6 +105,7 @@ module Projects
       end
 
       update_pages_config if changing_pages_related_config?
+      update_pending_builds if shared_runners_toggled?
     end
 
     def after_rename_service(project)
@@ -177,6 +178,16 @@ module Projects
       topic_list = topics || tag_list
 
       params[:topic_list] ||= topic_list if topic_list
+    end
+
+    def update_pending_builds
+      update_params = { instance_runners_enabled: project.shared_runners_enabled }
+
+      ::Ci::UpdatePendingBuildService.new(project, update_params).execute
+    end
+
+    def shared_runners_toggled?
+      project.previous_changes.include?('shared_runners_enabled')
     end
   end
 end

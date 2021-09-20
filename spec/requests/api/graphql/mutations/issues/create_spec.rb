@@ -39,11 +39,14 @@ RSpec.describe 'Create an issue' do
     end
 
     it 'creates the issue' do
-      post_graphql_mutation(mutation, current_user: current_user)
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+      end.to change(Issue, :count).by(1)
 
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['issue']).to include(input)
       expect(mutation_response['issue']).to include('discussionLocked' => true)
+      expect(Issue.last.work_item_type.base_type).to eq('issue')
     end
   end
 end

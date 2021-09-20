@@ -11,7 +11,7 @@ RSpec.describe Ci::CreatePipelineService do
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
+    stub_ci_pipeline_to_return_yaml_file
   end
 
   describe '#execute' do
@@ -991,6 +991,58 @@ RSpec.describe Ci::CreatePipelineService do
       end
     end
 
+    context 'when resource group is defined for review app deployment' do
+      before do
+        config = YAML.dump(
+          review_app: {
+            stage: 'test',
+            script: 'deploy',
+            environment: {
+              name: 'review/$CI_COMMIT_REF_SLUG',
+              on_stop: 'stop_review_app'
+            },
+            resource_group: '$CI_ENVIRONMENT_NAME'
+          },
+          stop_review_app: {
+            stage: 'test',
+            script: 'stop',
+            when: 'manual',
+            environment: {
+              name: 'review/$CI_COMMIT_REF_SLUG',
+              action: 'stop'
+            },
+            resource_group: '$CI_ENVIRONMENT_NAME'
+          }
+        )
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'persists the association correctly' do
+        result = execute_service.payload
+        deploy_job = result.builds.find_by_name!(:review_app)
+        stop_job = result.builds.find_by_name!(:stop_review_app)
+
+        expect(result).to be_persisted
+        expect(deploy_job.resource_group.key).to eq('review/master')
+        expect(stop_job.resource_group.key).to eq('review/master')
+        expect(project.resource_groups.count).to eq(1)
+      end
+
+      it 'initializes scoped variables only once for each build' do
+        # Bypassing `stub_build` hack because it distrubs the expectations below.
+        allow_next_instances_of(Gitlab::Ci::Build::Context::Build, 2) do |build_context|
+          allow(build_context).to receive(:variables) { Gitlab::Ci::Variables::Collection.new }
+        end
+
+        expect_next_instances_of(::Ci::Build, 2) do |ci_build|
+          expect(ci_build).to receive(:scoped_variables).once.and_call_original
+        end
+
+        expect(execute_service.payload).to be_created_successfully
+      end
+    end
+
     context 'with timeout' do
       context 'when builds with custom timeouts are configured' do
         before do
@@ -1248,16 +1300,47 @@ RSpec.describe Ci::CreatePipelineService do
     end
 
     context 'when pipeline variables are specified' do
-      let(:variables_attributes) do
-        [{ key: 'first', secret_value: 'world' },
-         { key: 'second', secret_value: 'second_world' }]
-      end
-
       subject(:pipeline) { execute_service(variables_attributes: variables_attributes).payload }
 
-      it 'creates a pipeline with specified variables' do
-        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
-          .to eq variables_attributes.map(&:with_indifferent_access)
+      context 'with valid pipeline variables' do
+        let(:variables_attributes) do
+          [{ key: 'first', secret_value: 'world' },
+           { key: 'second', secret_value: 'second_world' }]
+        end
+
+        it 'creates a pipeline with specified variables' do
+          expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
+            .to eq variables_attributes.map(&:with_indifferent_access)
+        end
+      end
+
+      context 'with duplicate pipeline variables' do
+        let(:variables_attributes) do
+          [{ key: 'hello', secret_value: 'world' },
+           { key: 'hello', secret_value: 'second_world' }]
+        end
+
+        it 'fails to create the pipeline' do
+          expect(pipeline).to be_failed
+          expect(pipeline.variables).to be_empty
+          expect(pipeline.errors[:base]).to eq(['Duplicate variable name: hello'])
+        end
+      end
+
+      context 'with more than one duplicate pipeline variable' do
+        let(:variables_attributes) do
+          [{ key: 'hello', secret_value: 'world' },
+           { key: 'hello', secret_value: 'second_world' },
+           { key: 'single', secret_value: 'variable' },
+           { key: 'other', secret_value: 'value' },
+           { key: 'other', secret_value: 'other value' }]
+        end
+
+        it 'fails to create the pipeline' do
+          expect(pipeline).to be_failed
+          expect(pipeline.variables).to be_empty
+          expect(pipeline.errors[:base]).to eq(['Duplicate variable names: hello, other'])
+        end
       end
     end
 

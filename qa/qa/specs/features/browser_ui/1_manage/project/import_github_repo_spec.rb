@@ -40,7 +40,7 @@ module QA
         user.remove_via_api!
       end
 
-      it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1762' do
+      it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1607' do
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(Runtime::Env.github_access_token)
           import_page.import!(github_repo, group.full_path, imported_project_name)

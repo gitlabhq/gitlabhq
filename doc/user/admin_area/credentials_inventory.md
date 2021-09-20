@@ -25,7 +25,7 @@ and [delete](#delete-a-users-ssh-key) and see:
 
 To access the Credentials inventory:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Credentials**.
 
 The following is an example of the Credentials inventory page:

@@ -362,6 +362,9 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
       end
     end
 
+    let(:commits_count) { service.send(:commits_count) }
+    let(:threshold_limit) { described_class::PROCESS_COMMIT_LIMIT + 1 }
+
     let(:oldrev) { project.commit(commit_ids.first).parent_id }
     let(:newrev) { commit_ids.last }
 
@@ -373,17 +376,31 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
       let(:oldrev) { Gitlab::Git::BLANK_SHA }
 
       it 'processes a limited number of commit messages' do
+        expect(project.repository)
+          .to receive(:commits)
+          .with(newrev, limit: threshold_limit)
+          .and_call_original
+
         expect(ProcessCommitWorker).to receive(:perform_async).twice
 
         service.execute
+
+        expect(commits_count).to eq(project.repository.commit_count_for_ref(newrev))
       end
     end
 
     context 'updating the default branch' do
       it 'processes a limited number of commit messages' do
+        expect(project.repository)
+          .to receive(:commits_between)
+          .with(oldrev, newrev, limit: threshold_limit)
+          .and_call_original
+
         expect(ProcessCommitWorker).to receive(:perform_async).twice
 
         service.execute
+
+        expect(commits_count).to eq(project.repository.count_commits_between(oldrev, newrev))
       end
     end
 
@@ -391,9 +408,13 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
       let(:newrev) { Gitlab::Git::BLANK_SHA }
 
       it 'does not process commit messages' do
+        expect(project.repository).not_to receive(:commits)
+        expect(project.repository).not_to receive(:commits_between)
         expect(ProcessCommitWorker).not_to receive(:perform_async)
 
         service.execute
+
+        expect(commits_count).to eq(0)
       end
     end
 
@@ -402,9 +423,16 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
       let(:oldrev) { Gitlab::Git::BLANK_SHA }
 
       it 'processes a limited number of commit messages' do
+        expect(project.repository)
+          .to receive(:commits_between)
+          .with(project.default_branch, newrev, limit: threshold_limit)
+          .and_call_original
+
         expect(ProcessCommitWorker).to receive(:perform_async).twice
 
         service.execute
+
+        expect(commits_count).to eq(project.repository.count_commits_between(project.default_branch, branch))
       end
     end
 
@@ -412,9 +440,15 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
       let(:branch) { 'fix' }
 
       it 'processes a limited number of commit messages' do
+        expect(project.repository)
+          .to receive(:commits_between)
+          .with(oldrev, newrev, limit: threshold_limit)
+          .and_call_original
+
         expect(ProcessCommitWorker).to receive(:perform_async).twice
 
         service.execute
+        expect(commits_count).to eq(project.repository.count_commits_between(oldrev, newrev))
       end
     end
 
@@ -423,9 +457,13 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
       let(:newrev) { Gitlab::Git::BLANK_SHA }
 
       it 'does not process commit messages' do
+        expect(project.repository).not_to receive(:commits)
+        expect(project.repository).not_to receive(:commits_between)
         expect(ProcessCommitWorker).not_to receive(:perform_async)
 
         service.execute
+
+        expect(commits_count).to eq(0)
       end
     end
 

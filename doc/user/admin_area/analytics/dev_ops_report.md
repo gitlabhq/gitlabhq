@@ -14,13 +14,13 @@ from planning to monitoring.
 
 To see DevOps Report:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Analytics > DevOps Report**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Analytics > DevOps Report**.
 
 ## DevOps Score
 
 NOTE:
-To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping).
+To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). This is because DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
 
 You can use the DevOps score to compare your DevOps status to other organizations.
 
@@ -45,6 +45,7 @@ feature is available.
 > - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
 > - Dependency Scanning metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328034) in GitLab 14.2.
 > - Multi-select [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
+> - Overview table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/335638) in GitLab 14.3.
 
 DevOps Adoption shows you which groups in your organization are using the most essential features of GitLab:
 

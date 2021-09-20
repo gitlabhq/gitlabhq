@@ -85,7 +85,7 @@ class DeduplicateEpicIids < ActiveRecord::Migration[6.0]
 
       instance = subject.is_a?(::Class) ? nil : subject
 
-      subject.transaction(requires_new: true) do
+      subject.transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         InternalId.create!(
           **scope,
           usage: usage_value,

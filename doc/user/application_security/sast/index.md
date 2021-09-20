@@ -361,6 +361,9 @@ To create a custom ruleset:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292686) in GitLab 14.2.
 
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the `vulnerability_flags` flag](../../../administration/feature_flags.md). On GitLab.com, this feature is available.
+
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
 ### Using CI/CD variables to pass credentials for private repositories
@@ -669,19 +672,19 @@ import the following default SAST analyzer images from `registry.gitlab.com` int
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/eslint:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/flawfinder:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/gosec:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/kubesec:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/pmd-apex:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2
+registry.gitlab.com/security-products/sast/bandit:2
+registry.gitlab.com/security-products/sast/brakeman:2
+registry.gitlab.com/security-products/sast/eslint:2
+registry.gitlab.com/security-products/sast/flawfinder:2
+registry.gitlab.com/security-products/sast/gosec:3
+registry.gitlab.com/security-products/sast/kubesec:2
+registry.gitlab.com/security-products/sast/nodejs-scan:2
+registry.gitlab.com/security-products/sast/phpcs-security-audit:2
+registry.gitlab.com/security-products/sast/pmd-apex:2
+registry.gitlab.com/security-products/sast/security-code-scan:2
+registry.gitlab.com/security-products/sast/semgrep:2
+registry.gitlab.com/security-products/sast/sobelow:2
+registry.gitlab.com/security-products/sast/spotbugs:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

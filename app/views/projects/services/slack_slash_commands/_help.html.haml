@@ -4,22 +4,21 @@
 .info-well
   .well-segment
     %p
-      = s_("SlackService|This service allows users to perform common operations on this project by entering slash commands in Slack.")
+      = s_("SlackService|Perform common operations in this project by entering slash commands in Slack.")
       = link_to help_page_path('user/project/integrations/slack_slash_commands.md'), target: '_blank' do
-        = _("View documentation")
+        = _("Learn more.")
         = sprite_icon('external-link')
     %p.inline
-      = s_("SlackService|See list of available commands in Slack after setting up this service, by entering")
-    %kbd.inline /&lt;command&gt; help
+      = s_("SlackService|After setup, get a list of available Slack slash commands by entering")
+      %kbd.inline /&lt;command&gt; help
     - if integration.project_level?
-      %p= _("To set up this service:")
+      %p= _("To set up this integration:")
       %ul.list-unstyled.indent-list
         %li
-          1.
-          = link_to 'https://my.slack.com/services/new/slash-commands', target: '_blank', rel: 'noreferrer noopener nofollow' do
-            Add a slash command
-            = sprite_icon('external-link')
-          in your Slack team with these options:
+          - slash_command_link_url = 'https://my.slack.com/services/new/slash-commands'
+          - slash_command_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: slash_command_link_url }
+          - slash_command_link_end = ' %{external_link_icon}</a>'.html_safe % { external_link_icon: sprite_icon('external-link') }
+          = html_escape(s_('SlackService|1. %{slash_command_link_start}Add a slash command%{slash_command_link_end} in your Slack team using this information:')) % { slash_command_link_start: slash_command_link_start, slash_command_link_end: slash_command_link_end }
 
       %hr
 
@@ -89,6 +88,6 @@
 
       %ul.list-unstyled.indent-list
         %li
-          = html_escape(s_("SlackService|2. Paste the %{strong_open}Token%{strong_close} into the field below")) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
+          = html_escape(s_("SlackService|2. Paste the token from Slack in the %{strong_open}Token%{strong_close} field below.")) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
         %li
-          = html_escape(s_("SlackService|3. Select the %{strong_open}Active%{strong_close} checkbox, press %{strong_open}Save changes%{strong_close} and start using GitLab inside Slack!")) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
+          = html_escape(s_("SlackService|3. Select the %{strong_open}Active%{strong_close} checkbox, select %{strong_open}Save changes%{strong_close}, and start using slash commands in Slack!")) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }

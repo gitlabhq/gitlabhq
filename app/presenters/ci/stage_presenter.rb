@@ -4,6 +4,8 @@ module Ci
   class StagePresenter < Gitlab::View::Presenter::Delegated
     presents :stage
 
+    PRELOADED_RELATIONS = [:pipeline, :metadata, :tags, :job_artifacts_archive, :downstream_pipeline].freeze
+
     def latest_ordered_statuses
       preload_statuses(stage.statuses.latest_ordered)
     end
@@ -15,18 +17,9 @@ module Ci
     private
 
     def preload_statuses(statuses)
-      loaded_statuses = statuses.load
-      statuses.tap do |statuses|
-        # rubocop: disable CodeReuse/ActiveRecord
-        ActiveRecord::Associations::Preloader.new.preload(preloadable_statuses(loaded_statuses), %w[pipeline tags job_artifacts_archive metadata])
-        # rubocop: enable CodeReuse/ActiveRecord
-      end
-    end
+      Preloaders::CommitStatusPreloader.new(statuses).execute(PRELOADED_RELATIONS)
 
-    def preloadable_statuses(statuses)
-      statuses.reject do |status|
-        status.instance_of?(::GenericCommitStatus) || status.instance_of?(::Ci::Bridge)
-      end
+      statuses
     end
   end
 end

@@ -15,14 +15,6 @@
   }
 }
 
-.dropdown-menu-issues-board-new {
-  width: 320px;
-
-  .dropdown-content {
-    max-height: 140px;
-  }
-}
-
 .issue-board-dropdown-content {
   margin: 0;
   padding: $gl-padding-4 $gl-padding $gl-padding;
@@ -256,7 +248,8 @@
     margin-right: 4px;
   }
 
-  .confidential-icon {
+  .confidential-icon,
+  .hidden-icon {
     color: var(--orange-500, $orange-500);
     cursor: help;
   }
@@ -435,6 +428,10 @@
    * filtered-search-box input element increases in size on Linux smaller breakpoints
    */
   height: $input-height;
+}
+
+.issue-boards-content {
+  isolation: isolate;
 }
 
 .issue-boards-content.is-focused {

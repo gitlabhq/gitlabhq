@@ -10,7 +10,7 @@ The following guidelines explain the steps to follow at each stage of a metric's
 
 ## Add a new metric
 
-Please follow the [Implementing Service Ping](index.md#implementing-service-ping) guide.
+Follow the [Implement Service Ping](implement.md) guide.
 
 ## Change an existing metric
 
@@ -39,7 +39,7 @@ For GitLab 12.6, the metric was changed to filter out archived projects:
 }
 ```
 
-In this scenario all instances running up to GitLab 12.5 continue to report `example_metric`,
+In this scenario, all instances running up to GitLab 12.5 continue to report `example_metric`,
 including all archived projects, while all instances running GitLab 12.6 and higher filters
 out such projects. As Service Ping data is collected from all reporting instances, the
 resulting dataset includes mixed data, which distorts any following business analysis.

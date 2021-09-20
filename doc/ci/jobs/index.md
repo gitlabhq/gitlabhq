@@ -58,7 +58,7 @@ In each place, if you hover over the failed job you can see the reason it failed
 
 ![Pipeline detail](img/job_failure_reason.png)
 
-In [GitLab 10.8](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17814) and later,
+In [GitLab 10.8 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17814),
 you can also see the reason it failed on the Job detail page.
 
 ## The order of jobs in a pipeline
@@ -99,7 +99,7 @@ You can recognize when a pipeline has grouped jobs if you don't see the retry or
 cancel button inside them. Hovering over them shows the number of grouped
 jobs. Click to expand them.
 
-![Grouped pipelines](img/pipelines_grouped.png)
+![Grouped pipelines](img/pipeline_grouped_jobs_v14_2.png)
 
 To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/index.md),
 separate each job name with a number and one of the following:
@@ -129,9 +129,7 @@ build ruby 3/3:
     - echo "ruby3"
 ```
 
-In the pipeline, the result is a group named `build ruby` with three jobs:
-
-![Job group](img/job_group_v12_10.png)
+The pipeline graph displays a group named `build ruby` with three jobs.
 
 The jobs are ordered by comparing the numbers from left to right. You
 usually want the first number to be the index and the second number to be the total.
@@ -179,7 +177,7 @@ For example, if you start rolling out new code and:
 - Users experience trouble with the new code, you can stop the timed incremental rollout by canceling the pipeline
   and [rolling](../environments/index.md#retry-or-roll-back-a-deployment) back to the last stable version.
 
-![Pipelines example](img/pipeline_incremental_rollout.png)
+![Pipelines example](img/pipeline_delayed_job_v14_2.png)
 
 ## Expand and collapse job log sections
 

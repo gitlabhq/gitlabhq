@@ -11,10 +11,6 @@ FactoryBot.define do
     confirmation_token { nil }
     can_create_group { true }
 
-    after(:stub) do |user|
-      user.notification_email = user.email
-    end
-
     trait :admin do
       admin { true }
     end

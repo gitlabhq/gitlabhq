@@ -7,7 +7,7 @@ product_stage: manage
 product_group: group::import
 product_category: importers
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: database
 distribution:
@@ -20,3 +20,4 @@ tier:
 performance_indicator_type:
 - gmau
 - paid_gmau
+milestone: "<13.9"

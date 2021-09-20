@@ -15,7 +15,7 @@ Available resources for the [GitLab REST API](index.md) can be grouped in the fo
 See also:
 
 - [V3 to V4](v3_to_v4.md).
-- Adding [deploy keys for multiple projects](deploy_keys.md#adding-deploy-keys-to-multiple-projects).
+- Adding [deploy keys for multiple projects](deploy_keys.md#add-deploy-keys-to-multiple-projects).
 - [API Resources for various templates](#templates-api-resources).
 
 ## Project resources
@@ -129,7 +129,7 @@ The following API resources are available outside of project and group contexts 
 
 | Resource                                           | Available endpoints                                                     |
 |:---------------------------------------------------|:------------------------------------------------------------------------|
-| [Instance-level CI/CD variables](instance_level_ci_variables.md) | `/admin/ci/variables`                                     |
+| [Instance-level CI/CD variables](instance_level_ci_variables.md) **(FREE SELF)** | `/admin/ci/variables`                     |
 | [Sidekiq queues administration](admin_sidekiq_queues.md) **(FREE SELF)** | `/admin/sidekiq/queues/:queue_name`               |
 | [Appearance](appearance.md) **(FREE SELF)**        | `/application/appearance`                                               |
 | [Applications](applications.md)                    | `/applications`                                                         |
@@ -145,7 +145,7 @@ The following API resources are available outside of project and group contexts 
 | [Group Activity Analytics](group_activity_analytics.md) | `/analytics/group_activity/{issues_count | merge_requests_count | new_members_count }`  |
 | [Group repository storage moves](group_repository_storage_moves.md) **(PREMIUM SELF)** | `/group_repository_storage_moves` |
 | [Import repository from GitHub](import.md)         | `/import/github`                                                        |
-| [Instance clusters](instance_clusters.md)          | `/admin/clusters`                                                       |
+| [Instance clusters](instance_clusters.md) **(FREE SELF)** | `/admin/clusters`                                                |
 | [Issues](issues.md)                                | `/issues` (also available for groups and projects)                      |
 | [Issues Statistics](issues_statistics.md)          | `/issues_statistics` (also available for groups and projects)           |
 | [Jobs](jobs.md)                                    | `/job`                                                                  |

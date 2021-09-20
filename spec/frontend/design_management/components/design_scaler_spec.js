@@ -13,7 +13,11 @@ describe('Design management design scaler component', () => {
   const setScale = (scale) => wrapper.vm.setScale(scale);
 
   const createComponent = () => {
-    wrapper = shallowMount(DesignScaler);
+    wrapper = shallowMount(DesignScaler, {
+      propsData: {
+        maxScale: 2,
+      },
+    });
   };
 
   beforeEach(() => {
@@ -61,6 +65,18 @@ describe('Design management design scaler component', () => {
     expect(wrapper.emitted('scale')).toEqual([[1.2]]);
   });
 
+  it('computes & increments correct stepSize based on maxScale', async () => {
+    wrapper.setProps({ maxScale: 11 });
+
+    await wrapper.vm.$nextTick();
+
+    getIncreaseScaleButton().vm.$emit('click');
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted().scale[0][0]).toBe(3);
+  });
+
   describe('when `scale` value is 1', () => {
     it('disables the "reset" button', () => {
       const resetButton = getResetScaleButton();
@@ -77,7 +93,7 @@ describe('Design management design scaler component', () => {
     });
   });
 
-  describe('when `scale` value is 2 (maximum)', () => {
+  describe('when `scale` value is maximum', () => {
     beforeEach(async () => {
       setScale(2);
       await wrapper.vm.$nextTick();

@@ -1,6 +1,5 @@
 import { sortBy, cloneDeep } from 'lodash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ListType } from './constants';
+import { ListType, MilestoneIDs } from './constants';
 
 export function getMilestone() {
   return null;
@@ -49,12 +48,10 @@ export function formatListIssues(listIssues) {
     return {
       ...map,
       [list.id]: sortedIssues.map((i) => {
-        const id = getIdFromGraphQLId(i.id);
+        const { id } = i;
 
         const listIssue = {
           ...i,
-          id,
-          fullId: i.id,
           labels: i.labels?.nodes || [],
           assignees: i.assignees?.nodes || [],
         };
@@ -108,7 +105,10 @@ export function formatIssueInput(issueInput, boardConfig) {
 
   return {
     ...issueInput,
-    milestoneId: milestoneId ? fullMilestoneId(milestoneId) : null,
+    milestoneId:
+      milestoneId && milestoneId !== MilestoneIDs.ANY
+        ? fullMilestoneId(milestoneId)
+        : issueInput?.milestoneId,
     labelIds: [...labelIds, ...(labels?.map((l) => fullLabelId(l)) || [])],
     assigneeIds: [...assigneeIds, ...(assigneeId ? [fullUserId(assigneeId)] : [])],
   };

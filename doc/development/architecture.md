@@ -603,14 +603,14 @@ For monitoring deployed apps, see [Jaeger tracing documentation](../operations/t
 - Layer: Core Service
 - Process: `logrotate`
 
-GitLab is comprised of a large number of services that all log. We started bundling our own Logrotate
-as of GitLab 7.4 to make sure we were logging responsibly. This is just a packaged version of the common open source offering.
+GitLab is comprised of a large number of services that all log. We bundle our own Logrotate
+to make sure we were logging responsibly. This is just a packaged version of the common open source offering.
 
 #### Mattermost
 
 - [Project page](https://github.com/mattermost/mattermost-server/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/gitlab-mattermost/)
+  - [Omnibus](../integration/mattermost/index.md)
   - [Charts](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html)
 - Layer: Core Service (Processor)
 - GitLab.com: [Mattermost](../user/project/integrations/mattermost.md)

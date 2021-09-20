@@ -65,7 +65,7 @@ promote a Geo replica and perform a failover.
 
 On the **secondary** node:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
@@ -130,7 +130,7 @@ follow these steps to avoid unnecessary data loss:
       connection.
 
    1. On the **primary** node:
-      1. On the top bar, select **Menu >** **{admin}** **Admin**.
+      1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dhasboard, select **Cron**.
       1. Select `Disable All` to disable any non-Geo periodic background jobs.
@@ -148,7 +148,7 @@ follow these steps to avoid unnecessary data loss:
       [data not managed by Geo](../../replication/datatypes.md#limitations-on-replicationverification),
       trigger the final replication process now.
    1. On the **primary** node:
-      1. On the top bar, select **Menu >** **{admin}** **Admin**.
+      1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
          those with `geo` in the name to drop to 0.
@@ -163,7 +163,7 @@ follow these steps to avoid unnecessary data loss:
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** node:
-      1. On the top bar, select **Menu >** **{admin}** **Admin**.
+      1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
          queues to drop to 0 queued and 0 running jobs.

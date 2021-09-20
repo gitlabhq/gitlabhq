@@ -28,7 +28,7 @@ module QA
         praefect_manager.reset_primary_to_original
       end
 
-      it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/976' do
+      it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1267' do
         # Create a new project with a commit and wait for it to replicate
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -66,7 +66,7 @@ module QA
       end
 
       context 'when recovering from dataloss after failover' do
-        it 'automatically reconciles', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/977' do
+        it 'automatically reconciles', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1266' do
           # Start the old primary node again
           praefect_manager.start_primary_node
           praefect_manager.wait_for_health_check_current_primary_node

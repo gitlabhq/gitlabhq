@@ -34,7 +34,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'pipeline schedule is canceled', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1730' do
+      it 'pipeline schedule is canceled', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1825' do
         user.block!
 
         expect(pipeline_schedule[:active]).not_to be_truthy, "Expected schedule active state to be false - active state #{pipeline_schedule[:active]}"

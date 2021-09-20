@@ -1,5 +1,6 @@
 query getPermissions($projectPath: ID!) {
   project(fullPath: $projectPath) {
+    id
     __typename
     userPermissions {
       __typename

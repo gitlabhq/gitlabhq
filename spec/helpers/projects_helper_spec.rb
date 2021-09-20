@@ -498,7 +498,7 @@ RSpec.describe ProjectsHelper do
       context 'user has a configured commit email' do
         before do
           confirmed_email = create(:email, :confirmed, user: user)
-          user.update!(commit_email: confirmed_email)
+          user.update!(commit_email: confirmed_email.email)
         end
 
         it 'returns the commit email' do

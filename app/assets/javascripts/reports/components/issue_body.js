@@ -1,18 +1,16 @@
 import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
-import AccessibilityIssueBody from '../accessibility_report/components/accessibility_issue_body.vue';
-import CodequalityIssueBody from '../codequality_report/components/codequality_issue_body.vue';
-import TestIssueBody from '../grouped_test_report/components/test_issue_body.vue';
 
 export const components = {
-  AccessibilityIssueBody,
-  CodequalityIssueBody,
-  TestIssueBody,
+  AccessibilityIssueBody: () =>
+    import('../accessibility_report/components/accessibility_issue_body.vue'),
+  CodequalityIssueBody: () => import('../codequality_report/components/codequality_issue_body.vue'),
+  TestIssueBody: () => import('../grouped_test_report/components/test_issue_body.vue'),
 };
 
 export const componentNames = {
-  AccessibilityIssueBody: AccessibilityIssueBody.name,
-  CodequalityIssueBody: CodequalityIssueBody.name,
-  TestIssueBody: TestIssueBody.name,
+  AccessibilityIssueBody: 'AccessibilityIssueBody',
+  CodequalityIssueBody: 'CodequalityIssueBody',
+  TestIssueBody: 'TestIssueBody',
 };
 
 export const iconComponents = {

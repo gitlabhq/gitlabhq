@@ -45,7 +45,7 @@ This template requires:
   - Use [Pipelines for merge requests](../../../ci/pipelines/merge_request_pipelines.md#configure-pipelines-for-merge-requests)
 - [Pipelines for Merged Results](../../../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results)
   enabled in the project settings.
-- A Docker image with Ruby available. The template uses `image: ruby:2.6` by default, but you [can override](../../../ci/yaml/includes.md#overriding-external-template-values) this.
+- A Docker image with Ruby available. The template uses `image: ruby:2.6` by default, but you [can override](../../../ci/yaml/includes.md#override-included-configuration-values) this.
 
 ## Configuring Fast RSpec Failure
 

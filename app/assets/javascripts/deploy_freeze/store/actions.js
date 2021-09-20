@@ -1,5 +1,6 @@
 import Api from '~/api';
 import createFlash from '~/flash';
+import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
 
@@ -51,6 +52,21 @@ export const updateFreezePeriod = (store) =>
       cron_timezone: state.selectedTimezoneIdentifier,
     }),
   );
+
+export const deleteFreezePeriod = ({ state, commit }, { id }) => {
+  commit(types.REQUEST_DELETE_FREEZE_PERIOD, id);
+
+  return Api.deleteFreezePeriod(state.projectId, id)
+    .then(() => commit(types.RECEIVE_DELETE_FREEZE_PERIOD_SUCCESS, id))
+    .catch((e) => {
+      createFlash({
+        message: __('Error: Unable to delete deploy freeze'),
+      });
+      commit(types.RECEIVE_DELETE_FREEZE_PERIOD_ERROR, id);
+
+      logError(`Unable to delete deploy freeze`, e);
+    });
+};
 
 export const fetchFreezePeriods = ({ commit, state }) => {
   commit(types.REQUEST_FREEZE_PERIODS);

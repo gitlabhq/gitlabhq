@@ -185,4 +185,25 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
       end
     end
   end
+
+  describe "#order_direction_as_sql_string" do
+    let(:nulls_last_order) do
+      described_class.new(
+        attribute_name: :name,
+        column_expression: Project.arel_table[:name],
+        order_expression: Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', :desc),
+        reversed_order_expression: Gitlab::Database.nulls_first_order('merge_request_metrics.merged_at', :asc),
+        order_direction: :desc,
+        nullable: :nulls_last, # null values are always last
+        distinct: false
+      )
+    end
+
+    it { expect(project_name_column.order_direction_as_sql_string).to eq('ASC') }
+    it { expect(project_name_column.reverse.order_direction_as_sql_string).to eq('DESC') }
+    it { expect(project_name_lower_column.order_direction_as_sql_string).to eq('DESC') }
+    it { expect(project_name_lower_column.reverse.order_direction_as_sql_string).to eq('ASC') }
+    it { expect(nulls_last_order.order_direction_as_sql_string).to eq('DESC NULLS LAST') }
+    it { expect(nulls_last_order.reverse.order_direction_as_sql_string).to eq('ASC NULLS FIRST') }
+  end
 end

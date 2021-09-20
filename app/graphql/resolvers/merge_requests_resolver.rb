@@ -49,7 +49,7 @@ module Resolvers
 
     argument :state, ::Types::MergeRequestStateEnum,
              required: false,
-             description: 'A merge request state. If provided, all resolved merge requests will have this state.'
+             description: 'Merge request state. If provided, all resolved merge requests will have this state.'
 
     argument :labels, [GraphQL::Types::String],
              required: false,

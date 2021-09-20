@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'rails'
+require 'png_quantizator'
+require 'parallel'
+require 'rainbow/ext/string'
+require_relative '../tooling/lib/tooling/images'
+
+return if Rails.env.production?
+
+def usage
+  puts <<~EOF
+    Usage: #{$0} [compress|lint] [PATH..]
+
+      compress  Compress all documentation PNG images using pngquant.
+      lint      Checks that all documentation PNG images have been compressed with pngquant.
+
+      PATH      One or more files or directories. If empty, `doc/**/*.png` is used.
+
+  EOF
+end
+
+command = ARGV.shift
+paths = ARGV.presence || ['doc']
+
+files = paths.flat_map do |path|
+  File.directory?(path) ? Dir.glob(File.join(path, '/**/*.png')) : path
+end
+
+case command
+when 'compress'
+  puts "Compressing #{files.size} PNG files"
+
+  Parallel.each(files) do |file|
+    was_uncompressed, savings = Tooling::Image.compress_image(file)
+
+    if was_uncompressed
+      puts "#{file} was reduced by #{savings} bytes"
+    end
+  end
+when 'lint'
+  puts "Checking #{files.size} PNG files"
+
+  uncompressed_files = Parallel.map(files) do |file|
+    is_uncompressed, _ = Tooling::Image.compress_image(file, true)
+    if is_uncompressed
+      puts "Uncompressed file detected: ".color(:red) + file
+      file
+    end
+  end.compact
+
+  if uncompressed_files.empty?
+    puts "All documentation images are optimally compressed!".color(:green)
+  else
+    warn(
+      "The #{uncompressed_files.size} image(s) above have not been optimally compressed using pngquant.".color(:red),
+      'Please run "bin/pngquant compress" and commit the result.'
+    )
+    abort
+  end
+else
+  usage
+end

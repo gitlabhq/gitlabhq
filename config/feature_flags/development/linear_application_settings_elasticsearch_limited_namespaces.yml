@@ -1,0 +1,8 @@
+---
+name: linear_application_settings_elasticsearch_limited_namespaces
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68931
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339438
+milestone: '14.3'
+type: development
+group: group::access
+default_enabled: false

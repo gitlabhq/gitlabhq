@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 type: index, howto
@@ -130,7 +130,7 @@ There are some important differences in the way runners work in comparison to ag
 
 - Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/runners_scope.md).
   They self-select jobs from the scopes you've defined automatically.
-- You can also [use tags](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
+- You can also [use tags](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) for finer control, and
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
@@ -199,7 +199,7 @@ GitLab takes advantage of our connected ecosystem to automatically pull these ki
 your Merge Requests, pipeline details pages, and other locations. You may find that you actually don't
 need to configure anything to have these appear.
 
-If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../index.md#feature-set) has the full list
+If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../index.md#gitlab-cicd-features) has the full list
 of bundled features and links to the documentation for each.
 
 ### Templates
@@ -230,7 +230,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 The agent section is used to define how a pipeline executes. For GitLab, we use [runners](../runners/index.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
 of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users).
-We also support using [tags](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
+We also support using [tags](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) to direct different jobs
 to different runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use

@@ -1,14 +1,12 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { DEFAULT_DAYS_TO_DISPLAY } from '../constants';
-import { formatMedianValues, calculateFormattedDayInPast } from '../utils';
+import { formatMedianValues } from '../utils';
 import * as types from './mutation_types';
 
 export default {
-  [types.INITIALIZE_VSA](state, { endpoints, features }) {
+  [types.INITIALIZE_VSA](state, { endpoints, features, createdBefore, createdAfter }) {
     state.endpoints = endpoints;
-    const { now, past } = calculateFormattedDayInPast(DEFAULT_DAYS_TO_DISPLAY);
-    state.createdBefore = now;
-    state.createdAfter = past;
+    state.createdBefore = createdBefore;
+    state.createdAfter = createdAfter;
     state.features = features;
   },
   [types.SET_LOADING](state, loadingState) {
@@ -20,11 +18,9 @@ export default {
   [types.SET_SELECTED_STAGE](state, stage) {
     state.selectedStage = stage;
   },
-  [types.SET_DATE_RANGE](state, daysInPast) {
-    state.daysInPast = daysInPast;
-    const { now, past } = calculateFormattedDayInPast(daysInPast);
-    state.createdBefore = now;
-    state.createdAfter = past;
+  [types.SET_DATE_RANGE](state, { createdAfter, createdBefore }) {
+    state.createdBefore = createdBefore;
+    state.createdAfter = createdAfter;
   },
   [types.REQUEST_VALUE_STREAMS](state) {
     state.valueStreams = [];

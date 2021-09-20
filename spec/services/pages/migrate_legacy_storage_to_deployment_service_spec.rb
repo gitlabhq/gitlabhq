@@ -114,13 +114,5 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
         described_class.new(project).execute
       end.not_to change { project.pages_metadatum.reload.pages_deployment_id }.from(old_deployment.id)
     end
-
-    it 'raises exception if exclusive lease is taken' do
-      described_class.new(project).try_obtain_lease do
-        expect do
-          described_class.new(project).execute
-        end.to raise_error(described_class::ExclusiveLeaseTakenError)
-      end
-    end
   end
 end

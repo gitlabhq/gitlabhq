@@ -16,7 +16,7 @@
           #{t('sherlock.origin')}:
         %strong
           - if defined?(BetterErrors)
-            = link_to(frame.path, BetterErrors.editor[frame.path, frame.line])
+            = link_to(frame.path, BetterErrors.editor.url(frame.path, frame.line))
           - else
             = frame.path
         %small.light

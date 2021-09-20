@@ -14,8 +14,11 @@ module QA
           end
 
           base.view 'app/assets/javascripts/notes/components/comment_form.vue' do
-            element :comment_button
             element :comment_field
+          end
+
+          base.view 'app/assets/javascripts/notes/components/comment_type_dropdown.vue' do
+            element :comment_button
             element :discussion_menu_item
           end
 

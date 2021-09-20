@@ -49,6 +49,11 @@ export const emojiFixtureMap = {
     unicodeVersion: '5.1',
     description: 'white medium star',
   },
+  xss: {
+    moji: '<img src=x onerror=prompt(1)>',
+    unicodeVersion: '5.1',
+    description: 'xss',
+  },
 };
 
 export const mockEmojiData = Object.keys(emojiFixtureMap).reduce((acc, k) => {

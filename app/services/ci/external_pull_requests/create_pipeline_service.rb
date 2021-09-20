@@ -16,8 +16,14 @@ module Ci
       private
 
       def create_pipeline_for(pull_request)
-        Ci::CreatePipelineService.new(project, current_user, create_params(pull_request))
-          .execute(:external_pull_request_event, external_pull_request: pull_request)
+        if ::Feature.enabled?(:ci_create_external_pr_pipeline_async, project, default_enabled: :yaml)
+          Ci::ExternalPullRequests::CreatePipelineWorker.perform_async(
+            project.id, current_user.id, pull_request.id
+          )
+        else
+          Ci::CreatePipelineService.new(project, current_user, create_params(pull_request))
+            .execute(:external_pull_request_event, external_pull_request: pull_request)
+        end
       end
 
       def create_params(pull_request)

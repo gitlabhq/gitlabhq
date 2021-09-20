@@ -14,8 +14,8 @@ tag) with an API call.
 
 The following methods of authentication are supported:
 
-- [Trigger token](#trigger-token)
-- [CI job token](#ci-job-token)
+- Trigger tokens: A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
+- [CI job tokens](../jobs/ci_job_token.md).
 
 If using the `$CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)
 to limit which jobs run in a pipeline, the value could be either `pipeline` or `trigger`,
@@ -27,71 +27,6 @@ depending on which trigger method is used.
 | `trigger`                   | Using the trigger API using a generated trigger token |
 
 This also applies when using the `pipelines` or `triggers` keywords with the legacy [`only/except` basic syntax](../yaml/index.md#only--except).
-
-### Trigger token
-
-A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
-
-WARNING:
-Passing plain text tokens in public projects is a security issue. Potential
-attackers can impersonate the user that exposed their trigger token publicly in
-their `.gitlab-ci.yml` file. Use [CI/CD variables](../variables/index.md)
-to protect trigger tokens.
-
-### CI job token
-
-You can use the `CI_JOB_TOKEN` [CI/CD variable](../variables/index.md#predefined-cicd-variables) (used to authenticate
-with the [GitLab Container Registry](../../user/packages/container_registry/index.md)) in the following cases.
-
-#### When used with multi-project pipelines
-
-> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2017) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.3.
-> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [made available](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) in all tiers in GitLab 12.4.
-
-This way of triggering can only be used when invoked inside `.gitlab-ci.yml`,
-and it creates a dependent pipeline relation visible on the
-[pipeline graph](../pipelines/multi_project_pipelines.md). For example:
-
-```yaml
-trigger_pipeline:
-  stage: deploy
-  script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
-  rules:
-    - if: $CI_COMMIT_TAG
-```
-
-Pipelines triggered that way also expose a special variable:
-`CI_PIPELINE_SOURCE=pipeline`.
-
-Read more about the [pipelines trigger API](../../api/pipeline_triggers.md).
-
-#### When a pipeline depends on the artifacts of another pipeline **(PREMIUM)**
-
-> The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
-
-With the introduction of dependencies between different projects, one of
-them may need to access artifacts created by a previous one. This process
-must be granted for authorized accesses, and it can be done using the
-`CI_JOB_TOKEN` variable that identifies a specific job. For example:
-
-```yaml
-build_submodule:
-  image: debian
-  stage: test
-  script:
-    - apt update && apt install -y unzip
-    - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"
-    - unzip artifacts.zip
-  rules:
-    - if: $CI_COMMIT_TAG
-```
-
-This allows you to use that for multi-project pipelines and download artifacts
-from any project to which you have access as this follows the same principles
-with the [permission model](../../user/permissions.md#job-permissions).
-
-Read more about the [jobs API](../../api/job_artifacts.md#download-the-artifacts-archive).
 
 ## Adding a new trigger
 
@@ -105,6 +40,12 @@ then use inside your scripts or `.gitlab-ci.yml`. You also have a nice
 overview of the time the triggers were last used.
 
 ![Triggers page overview](img/triggers_page.png)
+
+WARNING:
+Passing plain text tokens in public projects is a security issue. Potential
+attackers can impersonate the user that exposed their trigger token publicly in
+their `.gitlab-ci.yml` file. Use [CI/CD variables](../variables/index.md)
+to protect trigger tokens.
 
 ## Revoking a trigger
 

@@ -8,6 +8,7 @@ FactoryBot.define do
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
     issue_type { :issue }
+    association :work_item_type, :default
 
     trait :confidential do
       confidential { true }
@@ -59,6 +60,7 @@ FactoryBot.define do
 
     factory :incident do
       issue_type { :incident }
+      association :work_item_type, :default, :incident
     end
   end
 end

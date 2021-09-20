@@ -8,7 +8,7 @@ module QA
         let(:first_added_commit_message) { 'commit over git' }
         let(:second_added_commit_message) { 'commit over api' }
 
-        it 'pushes to gitaly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1118' do
+        it 'pushes to gitaly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1843' do
           project = Resource::Project.fabricate! do |project|
             project.name = "mTLS"
             project.initialize_with_readme = true

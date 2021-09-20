@@ -12,6 +12,12 @@ FactoryBot.define do
     issue_tracker
   end
 
+  factory :datadog_integration, class: 'Integrations::Datadog' do
+    project
+    active { true }
+    api_key { 'secret' }
+  end
+
   factory :emails_on_push_integration, class: 'Integrations::EmailsOnPush' do
     project
     type { 'EmailsOnPushService' }
@@ -74,6 +80,32 @@ FactoryBot.define do
           username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
           project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
           vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype, deployment_type: evaluator.deployment_type
+        )
+      end
+    end
+  end
+
+  factory :zentao_integration, class: 'Integrations::Zentao' do
+    project
+    active { true }
+    type { 'ZentaoService' }
+
+    transient do
+      create_data { true }
+      url { 'https://jihudemo.zentao.net' }
+      api_url { '' }
+      api_token { 'ZENTAO_TOKEN' }
+      zentao_product_xid { '3' }
+    end
+
+    after(:build) do |integration, evaluator|
+      if evaluator.create_data
+        integration.zentao_tracker_data = build(:zentao_tracker_data,
+          integration: integration,
+          url: evaluator.url,
+          api_url: evaluator.api_url,
+          api_token: evaluator.api_token,
+          zentao_product_xid: evaluator.zentao_product_xid
         )
       end
     end

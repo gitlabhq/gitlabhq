@@ -16,7 +16,7 @@ module QA
       end
 
       context 'when file name starts with a dash and contains hash, semicolon, colon, and question mark' do
-        it 'renders repository file tree correctly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1779' do
+        it 'renders repository file tree correctly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1810' do
           Resource::File.fabricate_via_api! do |file|
             file.project = project
             file.commit_message = 'Add new file'

@@ -87,7 +87,7 @@ at the project level or the [group level](../user/group/index.md#group-push-rule
 
 To create global push rules:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Push Rules**.
 
 To override global push rules in a project's settings:
@@ -141,8 +141,7 @@ Feature.disable(:reject_unsigned_commits_by_gitlab)
 
 ## Prevent pushing secrets to the repository
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385) in GitLab 8.12.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 Secrets such as credential files, SSH private keys, and other files containing secrets should never be committed to source control.
 GitLab enables you to turn on a predefined denylist of files which can't be
@@ -217,8 +216,7 @@ id_ecdsa
 
 ## Prohibited file names
 
-> - Introduced in GitLab 7.10.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 Each filename contained in a Git push is compared to the regular expression in this field. Filenames in Git consist of both the file's name and any directory that may precede it. A singular regular expression can contain multiple independent matches used as exclusions. File names can be broadly matched to any location in the repository, or restricted to specific locations. Filenames can also be partial matches used to exclude file types by extension.
 

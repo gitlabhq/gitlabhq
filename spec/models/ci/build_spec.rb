@@ -1307,7 +1307,9 @@ RSpec.describe Ci::Build do
 
     shared_examples_for 'avoid deadlock' do
       it 'executes UPDATE in the right order' do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
+        recorded = with_cross_database_modification_prevented do
+          ActiveRecord::QueryRecorder.new { subject }
+        end
 
         index_for_build = recorded.log.index { |l| l.include?("UPDATE \"ci_builds\"") }
         index_for_deployment = recorded.log.index { |l| l.include?("UPDATE \"deployments\"") }
@@ -1322,7 +1324,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'avoid deadlock'
 
       it 'transits deployment status to running' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_running
       end
@@ -1340,7 +1344,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to success' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_success
       end
@@ -1353,7 +1359,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to failed' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_failed
       end
@@ -1365,7 +1373,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'avoid deadlock'
 
       it 'transits deployment status to skipped' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_skipped
       end
@@ -1378,7 +1388,9 @@ RSpec.describe Ci::Build do
       it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to canceled' do
-        subject
+        with_cross_database_modification_prevented do
+          subject
+        end
 
         expect(deployment).to be_canceled
       end
@@ -2630,6 +2642,10 @@ RSpec.describe Ci::Build do
           { key: 'CI_DEPENDENCY_PROXY_SERVER', value: Gitlab.host_with_port, public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX',
             value: "#{Gitlab.host_with_port}/#{project.namespace.root_ancestor.path.downcase}#{DependencyProxy::URL_SUFFIX}",
+            public: true,
+            masked: false },
+          { key: 'CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX',
+            value: "#{Gitlab.host_with_port}/#{project.namespace.full_path.downcase}#{DependencyProxy::URL_SUFFIX}",
             public: true,
             masked: false },
           { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true, masked: false },
@@ -5241,6 +5257,35 @@ RSpec.describe Ci::Build do
 
     it 'returns builds with coverage regex values' do
       expect(described_class.with_coverage_regex).to eq([build_with_coverage_regex])
+    end
+  end
+
+  describe '#ensure_trace_metadata!' do
+    it 'delegates to Ci::BuildTraceMetadata' do
+      expect(Ci::BuildTraceMetadata)
+        .to receive(:find_or_upsert_for!)
+        .with(build.id)
+
+      build.ensure_trace_metadata!
+    end
+  end
+
+  describe '#doom!' do
+    subject { build.doom! }
+
+    let_it_be(:build) { create(:ci_build, :queued) }
+
+    it 'updates status and failure_reason', :aggregate_failures do
+      subject
+
+      expect(build.status).to eq("failed")
+      expect(build.failure_reason).to eq("data_integrity_failure")
+    end
+
+    it 'drops associated pending build' do
+      subject
+
+      expect(build.reload.queuing_entry).not_to be_present
     end
   end
 end

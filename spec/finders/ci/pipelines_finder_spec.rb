@@ -113,27 +113,6 @@ RSpec.describe Ci::PipelinesFinder do
       end
     end
 
-    context 'when name is specified' do
-      let(:user) { create(:user) }
-      let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
-
-      context 'when name exists' do
-        let(:params) { { name: user.name } }
-
-        it 'returns matched pipelines' do
-          is_expected.to eq([pipeline])
-        end
-      end
-
-      context 'when name does not exist' do
-        let(:params) { { name: 'invalid-name' } }
-
-        it 'returns empty' do
-          is_expected.to be_empty
-        end
-      end
-    end
-
     context 'when username is specified' do
       let(:user) { create(:user) }
       let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
@@ -258,20 +237,8 @@ RSpec.describe Ci::PipelinesFinder do
       let!(:push_pipeline) { create(:ci_pipeline, project: project, source: 'push') }
       let!(:api_pipeline) { create(:ci_pipeline, project: project, source: 'api') }
 
-      context 'when `pipeline_source_filter` feature flag is disabled' do
-        before do
-          stub_feature_flags(pipeline_source_filter: false)
-        end
-
-        it 'returns all the pipelines' do
-          is_expected.to contain_exactly(web_pipeline, push_pipeline, api_pipeline)
-        end
-      end
-
-      context 'when `pipeline_source_filter` feature flag is enabled' do
-        it 'returns only the matched pipeline' do
-          is_expected.to eq([web_pipeline])
-        end
+      it 'returns only the matched pipeline' do
+        is_expected.to eq([web_pipeline])
       end
     end
 

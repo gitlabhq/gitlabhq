@@ -11,6 +11,9 @@ RSpec.describe GroupPolicy do
 
     it do
       expect_allowed(:read_group)
+      expect_allowed(:read_organization)
+      expect_allowed(:read_contact)
+      expect_allowed(:read_counts)
       expect_allowed(*read_group_permissions)
       expect_disallowed(:upload_file)
       expect_disallowed(*reporter_permissions)
@@ -30,6 +33,9 @@ RSpec.describe GroupPolicy do
     end
 
     it { expect_disallowed(:read_group) }
+    it { expect_disallowed(:read_organization) }
+    it { expect_disallowed(:read_contact) }
+    it { expect_disallowed(:read_counts) }
     it { expect_disallowed(*read_group_permissions) }
   end
 
@@ -42,6 +48,9 @@ RSpec.describe GroupPolicy do
     end
 
     it { expect_disallowed(:read_group) }
+    it { expect_disallowed(:read_organization) }
+    it { expect_disallowed(:read_contact) }
+    it { expect_disallowed(:read_counts) }
     it { expect_disallowed(*read_group_permissions) }
   end
 
@@ -245,6 +254,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { nil }
 
       it do
+        expect_disallowed(:read_counts)
         expect_disallowed(*read_group_permissions)
         expect_disallowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
@@ -258,6 +268,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { guest }
 
       it do
+        expect_allowed(:read_counts)
         expect_allowed(*read_group_permissions)
         expect_allowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
@@ -271,6 +282,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { reporter }
 
       it do
+        expect_allowed(:read_counts)
         expect_allowed(*read_group_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
@@ -284,6 +296,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { developer }
 
       it do
+        expect_allowed(:read_counts)
         expect_allowed(*read_group_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
@@ -297,6 +310,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { maintainer }
 
       it do
+        expect_allowed(:read_counts)
         expect_allowed(*read_group_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
@@ -310,6 +324,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { owner }
 
       it do
+        expect_allowed(:read_counts)
         expect_allowed(*read_group_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
@@ -878,6 +893,34 @@ RSpec.describe GroupPolicy do
     end
   end
 
+  describe 'dependency proxy' do
+    context 'feature disabled' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_disallowed(:read_dependency_proxy) }
+      it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+    end
+
+    context 'feature enabled' do
+      before do
+        stub_config(dependency_proxy: { enabled: true })
+        group.create_dependency_proxy_setting!(enabled: true)
+      end
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_allowed(:admin_dependency_proxy) }
+      end
+    end
+  end
+
   context 'deploy token access' do
     let!(:group_deploy_token) do
       create(:group_deploy_token, group: group, deploy_token: deploy_token)
@@ -890,6 +933,8 @@ RSpec.describe GroupPolicy do
 
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_group) }
+      it { is_expected.to be_allowed(:read_organization) }
+      it { is_expected.to be_allowed(:read_contact) }
       it { is_expected.to be_disallowed(:create_package) }
     end
 
@@ -899,7 +944,21 @@ RSpec.describe GroupPolicy do
       it { is_expected.to be_allowed(:create_package) }
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_group) }
+      it { is_expected.to be_allowed(:read_organization) }
+      it { is_expected.to be_allowed(:read_contact) }
       it { is_expected.to be_disallowed(:destroy_package) }
+    end
+
+    context 'a deploy token with dependency proxy scopes' do
+      let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+
+      before do
+        stub_config(dependency_proxy: { enabled: true })
+        group.create_dependency_proxy_setting!(enabled: true)
+      end
+
+      it { is_expected.to be_allowed(:read_dependency_proxy) }
+      it { is_expected.to be_disallowed(:admin_dependency_proxy) }
     end
   end
 

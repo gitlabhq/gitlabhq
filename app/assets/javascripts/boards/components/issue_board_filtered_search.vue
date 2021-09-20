@@ -6,6 +6,7 @@ import issueBoardFilters from '~/boards/issue_board_filters';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
+import { DEFAULT_MILESTONES_GRAPHQL } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -63,17 +64,17 @@ export default {
 
       return [
         {
-          icon: 'labels',
-          title: label,
-          type: 'label_name',
+          icon: 'user',
+          title: assignee,
+          type: 'assignee_username',
           operators: [
             { value: '=', description: is },
             { value: '!=', description: isNot },
           ],
-          token: LabelToken,
-          unique: false,
-          symbol: '~',
-          fetchLabels,
+          token: AuthorToken,
+          unique: true,
+          fetchAuthors,
+          preloadedAuthors: this.preloadedAuthors(),
         },
         {
           icon: 'pencil',
@@ -90,17 +91,27 @@ export default {
           preloadedAuthors: this.preloadedAuthors(),
         },
         {
-          icon: 'user',
-          title: assignee,
-          type: 'assignee_username',
+          icon: 'labels',
+          title: label,
+          type: 'label_name',
           operators: [
             { value: '=', description: is },
             { value: '!=', description: isNot },
           ],
-          token: AuthorToken,
+          token: LabelToken,
+          unique: false,
+          symbol: '~',
+          fetchLabels,
+        },
+        {
+          type: 'milestone_title',
+          title: milestone,
+          icon: 'clock',
+          symbol: '%',
+          token: MilestoneToken,
           unique: true,
-          fetchAuthors,
-          preloadedAuthors: this.preloadedAuthors(),
+          defaultMilestones: DEFAULT_MILESTONES_GRAPHQL,
+          fetchMilestones: this.fetchMilestones,
         },
         {
           icon: 'issues',
@@ -113,16 +124,6 @@ export default {
             { icon: 'issue-type-issue', value: types.ISSUE, title: issue },
             { icon: 'issue-type-incident', value: types.INCIDENT, title: incident },
           ],
-        },
-        {
-          type: 'milestone_title',
-          title: milestone,
-          icon: 'clock',
-          symbol: '%',
-          token: MilestoneToken,
-          unique: true,
-          defaultMilestones: [], // todo: https://gitlab.com/gitlab-org/gitlab/-/issues/337044#note_640010094
-          fetchMilestones: this.fetchMilestones,
         },
         {
           type: 'weight',

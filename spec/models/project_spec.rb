@@ -16,6 +16,7 @@ RSpec.describe Project, factory_default: :keep do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
+    it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
@@ -137,6 +138,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:timelogs) }
     it { is_expected.to have_many(:error_tracking_errors).class_name('ErrorTracking::Error') }
     it { is_expected.to have_many(:error_tracking_client_keys).class_name('ErrorTracking::ClientKey') }
+    it { is_expected.to have_many(:pending_builds).class_name('Ci::PendingBuild') }
+    it { is_expected.to have_many(:ci_feature_usages).class_name('Projects::CiFeatureUsage') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -180,6 +183,20 @@ RSpec.describe Project, factory_default: :keep do
     context 'after initialized' do
       it "has a project_feature" do
         expect(described_class.new.project_feature).to be_present
+      end
+    end
+
+    context 'when deleting project' do
+      # using delete rather than destroy due to `delete` skipping AR hooks/callbacks
+      # so it's ensured to work at the DB level. Uses AFTER DELETE trigger.
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'also deletes the associated ProjectNamespace' do
+        project.delete
+
+        expect { project.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { project_namespace.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
@@ -599,6 +616,12 @@ RSpec.describe Project, factory_default: :keep do
 
     with_them do
       it { expect(subject).to eq(result_pipeline_locked) }
+    end
+  end
+
+  describe '#membership_locked?' do
+    it 'returns false' do
+      expect(build(:project)).not_to be_membership_locked
     end
   end
 
@@ -1051,12 +1074,12 @@ RSpec.describe Project, factory_default: :keep do
       project.open_issues_count(user)
     end
 
-    it 'invokes the count service with no current_user' do
-      count_service = instance_double(Projects::OpenIssuesCountService)
-      expect(Projects::OpenIssuesCountService).to receive(:new).with(project, nil).and_return(count_service)
-      expect(count_service).to receive(:count)
+    it 'invokes the batch count service with no current_user' do
+      count_service = instance_double(Projects::BatchOpenIssuesCountService)
+      expect(Projects::BatchOpenIssuesCountService).to receive(:new).with([project]).and_return(count_service)
+      expect(count_service).to receive(:refresh_cache_and_retrieve_data).and_return({})
 
-      project.open_issues_count
+      project.open_issues_count.to_s
     end
   end
 
@@ -1257,19 +1280,19 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'returns an active external wiki' do
-      create(:service, project: project, type: 'ExternalWikiService', active: true)
+      create(:external_wiki_integration, project: project, active: true)
 
       is_expected.to be_kind_of(Integrations::ExternalWiki)
     end
 
     it 'does not return an inactive external wiki' do
-      create(:service, project: project, type: 'ExternalWikiService', active: false)
+      create(:external_wiki_integration, project: project, active: false)
 
       is_expected.to eq(nil)
     end
 
     it 'sets Project#has_external_wiki when it is nil' do
-      create(:service, project: project, type: 'ExternalWikiService', active: true)
+      create(:external_wiki_integration, project: project, active: true)
       project.update_column(:has_external_wiki, nil)
 
       expect { subject }.to change { project.has_external_wiki }.from(nil).to(true)
@@ -1279,36 +1302,40 @@ RSpec.describe Project, factory_default: :keep do
   describe '#has_external_wiki' do
     let_it_be(:project) { create(:project) }
 
-    def subject
+    def has_external_wiki
       project.reload.has_external_wiki
     end
 
-    specify { is_expected.to eq(false) }
+    specify { expect(has_external_wiki).to eq(false) }
 
-    context 'when there is an active external wiki service' do
-      let!(:service) do
-        create(:service, project: project, type: 'ExternalWikiService', active: true)
+    context 'when there is an active external wiki integration' do
+      let(:active) { true }
+
+      let!(:integration) do
+        create(:external_wiki_integration, project: project, active: active)
       end
 
-      specify { is_expected.to eq(true) }
+      specify { expect(has_external_wiki).to eq(true) }
 
       it 'becomes false if the external wiki service is destroyed' do
         expect do
-          Integration.find(service.id).delete
-        end.to change { subject }.to(false)
+          Integration.find(integration.id).delete
+        end.to change { has_external_wiki }.to(false)
       end
 
       it 'becomes false if the external wiki service becomes inactive' do
         expect do
-          service.update_column(:active, false)
-        end.to change { subject }.to(false)
+          integration.update_column(:active, false)
+        end.to change { has_external_wiki }.to(false)
       end
-    end
 
-    it 'is false when external wiki service is not active' do
-      create(:service, project: project, type: 'ExternalWikiService', active: false)
+      context 'when created as inactive' do
+        let(:active) { false }
 
-      is_expected.to eq(false)
+        it 'is false' do
+          expect(has_external_wiki).to eq(false)
+        end
+      end
     end
   end
 
@@ -2536,7 +2563,7 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#uses_default_ci_config?' do
-    let(:project) { build(:project)}
+    let(:project) { build(:project) }
 
     it 'has a custom ci config path' do
       project.ci_config_path = 'something_custom'
@@ -2554,6 +2581,44 @@ RSpec.describe Project, factory_default: :keep do
       project.ci_config_path = nil
 
       expect(project.uses_default_ci_config?).to be_truthy
+    end
+  end
+
+  describe '#uses_external_project_ci_config?' do
+    subject(:uses_external_project_ci_config) { project.uses_external_project_ci_config? }
+
+    let(:project) { build(:project) }
+
+    context 'when ci_config_path is configured with external project' do
+      before do
+        project.ci_config_path = '.gitlab-ci.yml@hello/world'
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when ci_config_path is nil' do
+      before do
+        project.ci_config_path = nil
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when ci_config_path is configured with a file in the project' do
+      before do
+        project.ci_config_path = 'hello/world/gitlab-ci.yml'
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when ci_config_path is configured with remote file' do
+      before do
+        project.ci_config_path = 'https://example.org/file.yml'
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 
@@ -3257,6 +3322,16 @@ RSpec.describe Project, factory_default: :keep do
       expect(project).to receive(:reload_default_branch)
 
       project.after_repository_change_head
+    end
+  end
+
+  describe '#after_change_head_branch_does_not_exist' do
+    let_it_be(:project) { create(:project) }
+
+    it 'adds an error to container if branch does not exist' do
+      expect do
+        project.after_change_head_branch_does_not_exist('unexisted-branch')
+      end.to change { project.errors.size }.from(0).to(1)
     end
   end
 
@@ -4493,44 +4568,6 @@ RSpec.describe Project, factory_default: :keep do
 
         expect(project.deploy_keys).to include(key)
       end
-    end
-  end
-
-  describe '#legacy_remove_pages' do
-    let(:project) { create(:project).tap { |project| project.mark_pages_as_deployed } }
-    let(:pages_metadatum) { project.pages_metadatum }
-    let(:namespace) { project.namespace }
-    let(:pages_path) { project.pages_path }
-
-    around do |example|
-      FileUtils.mkdir_p(pages_path)
-      begin
-        example.run
-      ensure
-        FileUtils.rm_rf(pages_path)
-      end
-    end
-
-    it 'removes the pages directory and marks the project as not having pages deployed' do
-      expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
-      expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
-
-      expect { project.legacy_remove_pages }.to change { pages_metadatum.reload.deployed }.from(true).to(false)
-    end
-
-    it 'does nothing if updates on legacy storage are disabled' do
-      allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
-
-      expect(Gitlab::PagesTransfer).not_to receive(:new)
-      expect(PagesWorker).not_to receive(:perform_in)
-
-      project.legacy_remove_pages
-    end
-
-    it 'is run when the project is destroyed' do
-      expect(project).to receive(:legacy_remove_pages).and_call_original
-
-      expect { project.destroy! }.not_to raise_error
     end
   end
 
@@ -7037,6 +7074,15 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#ci_config_external_project' do
+    subject(:ci_config_external_project) { project.ci_config_external_project }
+
+    let(:other_project) { create(:project) }
+    let(:project) { build(:project, ci_config_path: ".gitlab-ci.yml@#{other_project.full_path}") }
+
+    it { is_expected.to eq(other_project) }
+  end
+
   describe '#enabled_group_deploy_keys' do
     let_it_be(:project) { create(:project) }
 
@@ -7131,15 +7177,96 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'topics' do
-    let_it_be(:project) { create(:project, topic_list: 'topic1, topic2, topic3') }
+    let_it_be(:project) { create(:project, name: 'topic-project', topic_list: 'topic1, topic2, topic3') }
 
     it 'topic_list returns correct string array' do
-      expect(project.topic_list).to match_array(%w[topic1 topic2 topic3])
+      expect(project.topic_list).to eq(%w[topic1 topic2 topic3])
     end
 
-    it 'topics returns correct tag records' do
-      expect(project.topics.first.class.name).to eq('ActsAsTaggableOn::Tag')
-      expect(project.topics.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+    it 'topics returns correct topic records' do
+      expect(project.topics.first.class.name).to eq('Projects::Topic')
+      expect(project.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+    end
+
+    context 'topic_list=' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:topic_list, :expected_result) do
+        ['topicA', 'topicB']              | %w[topicA topicB] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
+        ['topicB', 'topicA']              | %w[topicB topicA] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
+        ['   topicC  ', ' topicD    ']    | %w[topicC topicD]
+        ['topicE', 'topicF', 'topicE']    | %w[topicE topicF] # rubocop:disable Style/WordArray
+        ['topicE  ', 'topicF', ' topicE'] | %w[topicE topicF]
+        'topicA, topicB'                  | %w[topicA topicB]
+        'topicB, topicA'                  | %w[topicB topicA]
+        '   topicC  , topicD    '         | %w[topicC topicD]
+        'topicE, topicF, topicE'          | %w[topicE topicF]
+        'topicE  , topicF,  topicE'       | %w[topicE topicF]
+      end
+
+      with_them do
+        it 'set topics' do
+          project.topic_list = topic_list
+          project.save!
+
+          expect(project.topics.map(&:name)).to eq(expected_result)
+        end
+      end
+
+      it 'set topics if only the order is changed' do
+        project.topic_list = 'topicA, topicB'
+        project.save!
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topicA topicB])
+
+        project.topic_list = 'topicB, topicA'
+        project.save!
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topicB topicA])
+      end
+
+      it 'does not persist topics before project is saved' do
+        project.topic_list = 'topicA, topicB'
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+      end
+
+      it 'does not update topics if project is not valid' do
+        project.name = nil
+        project.topic_list = 'topicA, topicB'
+
+        expect(project.save).to be_falsy
+        expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+      end
+    end
+
+    context 'during ExtractProjectTopicsIntoSeparateTable migration' do
+      before do
+        topic_a = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicA')
+        topic_b = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicB')
+
+        project.reload.topics_acts_as_taggable = [topic_a, topic_b]
+        project.save!
+        project.reload
+      end
+
+      it 'topic_list returns correct string array' do
+        expect(project.topic_list).to eq(%w[topicA topicB topic1 topic2 topic3])
+      end
+
+      it 'topics returns correct topic records' do
+        expect(project.topics.map(&:class)).to eq([ActsAsTaggableOn::Tag, ActsAsTaggableOn::Tag, Projects::Topic, Projects::Topic, Projects::Topic])
+        expect(project.topics.map(&:name)).to eq(%w[topicA topicB topic1 topic2 topic3])
+      end
+
+      it 'topic_list= sets new topics and removes old topics' do
+        project.topic_list = 'new-topic1, new-topic2'
+        project.save!
+        project.reload
+
+        expect(project.topics.map(&:class)).to eq([Projects::Topic, Projects::Topic])
+        expect(project.topics.map(&:name)).to eq(%w[new-topic1 new-topic2])
+      end
     end
   end
 

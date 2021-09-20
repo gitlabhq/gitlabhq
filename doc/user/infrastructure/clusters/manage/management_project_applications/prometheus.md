@@ -25,8 +25,3 @@ You can customize the installation of Prometheus by updating the
 management project. Refer to the
 [Configuration section](https://github.com/helm/charts/tree/master/stable/prometheus#configuration)
 of the Prometheus chart's README for the available configuration options.
-
-Support for installing the Prometheus managed application is provided by the
-GitLab APM group. If you run into unknown issues,
-[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
-least 2 people from the [APM group](https://about.gitlab.com/handbook/product/categories/#apm-group).

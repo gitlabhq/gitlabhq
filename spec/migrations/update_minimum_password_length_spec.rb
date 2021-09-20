@@ -13,7 +13,7 @@ RSpec.describe UpdateMinimumPasswordLength do
 
   before do
     stub_const('ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH', 10)
-    allow(Devise.password_length).to receive(:min).and_return(12)
+    allow(Devise).to receive(:password_length).and_return(12..20)
   end
 
   it 'correctly migrates minimum_password_length' do

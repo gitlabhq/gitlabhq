@@ -11,7 +11,7 @@ module Gitlab
 
         expose_attribute :noteable_type, :noteable_id, :commit_id, :file_path,
                          :diff_hunk, :author, :note, :created_at, :updated_at,
-                         :github_id
+                         :github_id, :original_commit_id
 
         NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i.freeze
 
@@ -34,6 +34,7 @@ module Gitlab
             noteable_id: matches[:iid].to_i,
             file_path: note.path,
             commit_id: note.commit_id,
+            original_commit_id: note.original_commit_id,
             diff_hunk: note.diff_hunk,
             author: user,
             note: note.body,

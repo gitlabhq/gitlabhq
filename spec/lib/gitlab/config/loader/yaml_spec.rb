@@ -15,6 +15,24 @@ RSpec.describe Gitlab::Config::Loader::Yaml do
     YAML
   end
 
+  context 'when max yaml size and depth are set in ApplicationSetting' do
+    let(:yaml_size) { 2.megabytes }
+    let(:yaml_depth) { 200 }
+
+    before do
+      stub_application_setting(max_yaml_size_bytes: yaml_size, max_yaml_depth: yaml_depth)
+    end
+
+    it 'uses ApplicationSetting values rather than the defaults' do
+      expect(Gitlab::Utils::DeepSize)
+        .to receive(:new)
+        .with(any_args, { max_size: yaml_size, max_depth: yaml_depth })
+        .and_call_original
+
+      loader.load!
+    end
+  end
+
   context 'when yaml syntax is correct' do
     let(:yml) { 'image: ruby:2.7' }
 

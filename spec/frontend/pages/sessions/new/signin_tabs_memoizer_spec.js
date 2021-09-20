@@ -21,7 +21,7 @@ describe('SigninTabsMemoizer', () => {
   beforeEach(() => {
     loadFixtures(fixtureTemplate);
 
-    jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(true);
+    jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
   });
 
   it('does nothing if no tab was previously selected', () => {
@@ -90,7 +90,7 @@ describe('SigninTabsMemoizer', () => {
     });
 
     it('should set .isLocalStorageAvailable', () => {
-      expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
+      expect(AccessorUtilities.canUseLocalStorage).toHaveBeenCalled();
       expect(memo.isLocalStorageAvailable).toBe(true);
     });
   });

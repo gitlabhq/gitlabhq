@@ -444,6 +444,10 @@ the system saves only the first 20 of them. Note that vulnerabilities in the [Pi
 Security](../../user/application_security/security_dashboard/#pipeline-security)
 tab do not enforce this limit and all identifiers present in the report artifact are displayed.
 
+### Details
+
+The `details` field is an object that supports many different content elements that are displayed when viewing vulnerability information. An example of the various data elements can be seen in the [security-reports repository](https://gitlab.com/gitlab-examples/security/security-reports/-/tree/master/samples/details-example).
+
 ### Location
 
 The `location` indicates where the vulnerability has been detected.
@@ -453,10 +457,6 @@ Internally GitLab extracts some attributes of the `location` to generate the **l
 which is used to track vulnerabilities
 as new commits are pushed to the repository.
 The attributes used to generate the location fingerprint also depend on the type of scanning.
-
-### Details
-
-The `details` field is an object that supports many different content elements that are displayed when viewing vulnerability information. An example of the various data elements can be seen in the [security-reports repository](https://gitlab.com/gitlab-examples/security/security-reports/-/tree/master/samples/details-example).
 
 #### Dependency Scanning
 

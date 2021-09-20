@@ -17,12 +17,12 @@ module Types
         field :deleted_jobs,
               GraphQL::Types::Int,
               null: true,
-              description: 'The number of matching jobs deleted.'
+              description: 'Number of matching jobs deleted.'
 
         field :queue_size,
               GraphQL::Types::Int,
               null: true,
-              description: 'The queue size after processing.'
+              description: 'Queue size after processing.'
       end
     end
   end

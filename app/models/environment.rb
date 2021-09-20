@@ -27,11 +27,10 @@ class Environment < ApplicationRecord
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   has_one :last_deployment, -> { success.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
-  has_one :last_deployable, through: :last_deployment, source: 'deployable', source_type: 'CommitStatus'
-  has_one :last_pipeline, through: :last_deployable, source: 'pipeline'
   has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
-  has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus'
-  has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline'
+  has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus', disable_joins: -> { ::Feature.enabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml) }
+  has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline', disable_joins: -> { ::Feature.enabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml) }
+
   has_one :upcoming_deployment, -> { running.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
@@ -77,6 +76,7 @@ class Environment < ApplicationRecord
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :preload_cluster, -> { preload(last_deployment: :cluster) }
+  scope :preload_project, -> { preload(:project) }
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
   scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
 
@@ -132,6 +132,10 @@ class Environment < ApplicationRecord
     state :available
     state :stopped
 
+    before_transition any => :stopped do |environment|
+      environment.auto_stop_at = nil
+    end
+
     after_transition do |environment|
       environment.expire_etag_cache
     end
@@ -168,33 +172,6 @@ class Environment < ApplicationRecord
   end
 
   class << self
-    ##
-    # This method returns stop actions (jobs) for multiple environments within one
-    # query. It's useful to avoid N+1 problem.
-    #
-    # NOTE: The count of environments should be small~medium (e.g. < 5000)
-    def stop_actions
-      cte = cte_for_deployments_with_stop_action
-      ci_builds = Ci::Build.arel_table
-
-      inner_join_stop_actions = ci_builds.join(cte.table).on(
-        ci_builds[:project_id].eq(cte.table[:project_id])
-          .and(ci_builds[:ref].eq(cte.table[:ref]))
-          .and(ci_builds[:name].eq(cte.table[:on_stop]))
-      ).join_sources
-
-      pipeline_ids = ci_builds.join(cte.table).on(
-        ci_builds[:id].eq(cte.table[:deployable_id])
-      ).project(:commit_id)
-
-      Ci::Build.joins(inner_join_stop_actions)
-               .with(cte.to_arel)
-               .where(ci_builds[:commit_id].in(pipeline_ids))
-               .where(status: Ci::HasStatus::BLOCKED_STATUS)
-               .preload_project_and_pipeline_project
-               .preload(:user, :metadata, :deployment)
-    end
-
     def count_by_state
       environments_count_by_state = group(:state).count
 
@@ -202,15 +179,35 @@ class Environment < ApplicationRecord
         count_hash[state] = environments_count_by_state[state.to_s] || 0
       end
     end
+  end
 
-    private
+  def last_deployable
+    last_deployment&.deployable
+  end
 
-    def cte_for_deployments_with_stop_action
-      Gitlab::SQL::CTE.new(:deployments_with_stop_action,
-        Deployment.where(environment_id: select(:id))
-          .distinct_on_environment
-          .stoppable)
-    end
+  # NOTE: Below assocation overrides is a workaround for issue https://gitlab.com/gitlab-org/gitlab/-/issues/339908
+  # It helps to avoid cross joins with the CI database.
+  # Caveat: It also overrides and losses the default AR caching mechanism.
+  # Read - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68870#note_677227727
+
+  # NOTE: Association Preloads does not use the overriden definitions below.
+  # Association Preloads when preloading uses the original definitions from the relationships above.
+  # https://github.com/rails/rails/blob/75ac626c4e21129d8296d4206a1960563cc3d4aa/activerecord/lib/active_record/associations/preloader.rb#L158
+  # But after preloading, when they are called it is using the overriden methods below.
+  # So we are checking for `association_cached?(:association_name)` in the overridden methods and calling `super` which inturn fetches the preloaded values.
+
+  # Overriding association
+  def last_visible_deployable
+    return super if association_cached?(:last_visible_deployable) || ::Feature.disabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml)
+
+    last_visible_deployment&.deployable
+  end
+
+  # Overriding association
+  def last_visible_pipeline
+    return super if association_cached?(:last_visible_pipeline) || ::Feature.disabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml)
+
+    last_visible_deployable&.pipeline
   end
 
   def clear_prometheus_reactive_cache!(query_name)

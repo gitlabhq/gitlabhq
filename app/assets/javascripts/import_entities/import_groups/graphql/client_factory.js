@@ -5,10 +5,13 @@ import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { STATUSES } from '../../constants';
 import { i18n, NEW_NAME_FIELD } from '../constants';
+import { isAvailableForImport } from '../utils';
 import bulkImportSourceGroupItemFragment from './fragments/bulk_import_source_group_item.fragment.graphql';
+import bulkImportSourceGroupProgressFragment from './fragments/bulk_import_source_group_progress.fragment.graphql';
 import addValidationErrorMutation from './mutations/add_validation_error.mutation.graphql';
 import removeValidationErrorMutation from './mutations/remove_validation_error.mutation.graphql';
 import setImportProgressMutation from './mutations/set_import_progress.mutation.graphql';
+import setImportTargetMutation from './mutations/set_import_target.mutation.graphql';
 import updateImportStatusMutation from './mutations/update_import_status.mutation.graphql';
 import availableNamespacesQuery from './queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupQuery from './queries/bulk_import_source_group.query.graphql';
@@ -34,6 +37,7 @@ function makeGroup(data) {
   };
   const NESTED_OBJECT_FIELDS = {
     import_target: clientTypenames.BulkImportTarget,
+    last_import_target: clientTypenames.BulkImportTarget,
     progress: clientTypenames.BulkImportProgress,
   };
 
@@ -55,6 +59,7 @@ async function checkImportTargetIsValid({ client, newName, targetNamespace, sour
     data: { existingGroup, existingProject },
   } = await client.query({
     query: groupAndProjectQuery,
+    fetchPolicy: 'no-cache',
     variables: {
       fullPath: `${targetNamespace}/${newName}`,
     },
@@ -82,6 +87,7 @@ async function checkImportTargetIsValid({ client, newName, targetNamespace, sour
 }
 
 const localProgressId = (id) => `not-started-${id}`;
+const nextName = (name) => `${name}-1`;
 
 export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGroupsManager }) {
   const groupsManager = new GroupsManager({
@@ -140,17 +146,28 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
                 const { jobId, importState: cachedImportState } =
                   groupsManager.getImportStateFromStorageByGroupId(group.id) ?? {};
 
+                const status = cachedImportState?.status ?? STATUSES.NONE;
+
+                const importTarget =
+                  status === STATUSES.FINISHED && cachedImportState.importTarget
+                    ? {
+                        target_namespace: cachedImportState.importTarget.target_namespace,
+                        new_name: nextName(cachedImportState.importTarget.new_name),
+                      }
+                    : cachedImportState?.importTarget ?? {
+                        new_name: group.full_path,
+                        target_namespace: availableNamespaces[0]?.full_path ?? '',
+                      };
+
                 return makeGroup({
                   ...group,
                   validation_errors: [],
                   progress: {
                     id: jobId ?? localProgressId(group.id),
-                    status: cachedImportState?.status ?? STATUSES.NONE,
+                    status,
                   },
-                  import_target: cachedImportState?.importTarget ?? {
-                    new_name: group.full_path,
-                    target_namespace: availableNamespaces[0]?.full_path ?? '',
-                  },
+                  import_target: importTarget,
+                  last_import_target: cachedImportState?.importTarget ?? null,
                 });
               }),
               pageInfo: {
@@ -161,7 +178,7 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
 
             setTimeout(() => {
               response.nodes.forEach((group) => {
-                if (group.progress.status === STATUSES.NONE) {
+                if (isAvailableForImport(group)) {
                   checkImportTargetIsValid({
                     client,
                     newName: group.import_target.new_name,
@@ -193,32 +210,18 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
           targetNamespace,
           newName,
         });
+
         return makeGroup({
           id: sourceGroupId,
           import_target: {
             target_namespace: targetNamespace,
             new_name: newName,
+            id: sourceGroupId,
           },
         });
       },
 
-      setTargetNamespace: (_, { targetNamespace, sourceGroupId }) =>
-        makeGroup({
-          id: sourceGroupId,
-          import_target: {
-            target_namespace: targetNamespace,
-          },
-        }),
-
-      setNewName: (_, { newName, sourceGroupId }) =>
-        makeGroup({
-          id: sourceGroupId,
-          import_target: {
-            new_name: newName,
-          },
-        }),
-
-      async setImportProgress(_, { sourceGroupId, status, jobId }) {
+      async setImportProgress(_, { sourceGroupId, status, jobId, importTarget }) {
         if (jobId) {
           groupsManager.updateImportProgress(jobId, status);
         }
@@ -229,16 +232,46 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
             id: jobId ?? localProgressId(sourceGroupId),
             status,
           },
+          last_import_target: {
+            __typename: clientTypenames.BulkImportTarget,
+            ...importTarget,
+          },
         });
       },
 
-      async updateImportStatus(_, { id, status }) {
-        groupsManager.updateImportProgress(id, status);
+      async updateImportStatus(_, { id, status: newStatus }, { client, getCacheKey }) {
+        groupsManager.updateImportProgress(id, newStatus);
+
+        const progressItem = client.readFragment({
+          fragment: bulkImportSourceGroupProgressFragment,
+          fragmentName: 'BulkImportSourceGroupProgress',
+          id: getCacheKey({
+            __typename: clientTypenames.BulkImportProgress,
+            id,
+          }),
+        });
+
+        const isInProgress = Boolean(progressItem);
+        const { status: currentStatus } = progressItem ?? {};
+        if (newStatus === STATUSES.FINISHED && isInProgress && currentStatus !== newStatus) {
+          const groups = groupsManager.getImportedGroupsByJobId(id);
+
+          groups.forEach(async ({ id: groupId, importTarget }) => {
+            client.mutate({
+              mutation: setImportTargetMutation,
+              variables: {
+                sourceGroupId: groupId,
+                targetNamespace: importTarget.target_namespace,
+                newName: nextName(importTarget.new_name),
+              },
+            });
+          });
+        }
 
         return {
           __typename: clientTypenames.BulkImportProgress,
           id,
-          status,
+          status: newStatus,
         };
       },
 
@@ -327,10 +360,10 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
             return { status: STATUSES.NONE };
           })
           .then((newStatus) =>
-            sourceGroupIds.forEach((sourceGroupId) =>
+            sourceGroupIds.forEach((sourceGroupId, idx) =>
               client.mutate({
                 mutation: setImportProgressMutation,
-                variables: { sourceGroupId, ...newStatus },
+                variables: { sourceGroupId, ...newStatus, importTarget: groups[idx].import_target },
               }),
             ),
           )

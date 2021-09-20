@@ -8,6 +8,17 @@ FactoryBot.define do
     base_type { WorkItem::Type.base_types[:issue] }
     icon_name { 'issue-type-issue' }
 
+    initialize_with do
+      type_base_attributes = attributes.with_indifferent_access.slice(:base_type, :namespace, :namespace_id)
+
+      # Expect base_types to exist on the DB
+      if type_base_attributes.slice(:namespace, :namespace_id).compact.empty?
+        WorkItem::Type.find_or_initialize_by(type_base_attributes).tap { |type| type.assign_attributes(attributes) }
+      else
+        WorkItem::Type.new(attributes)
+      end
+    end
+
     trait :default do
       namespace { nil }
     end

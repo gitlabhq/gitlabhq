@@ -3,14 +3,14 @@
 module Emails
   class DestroyService < ::Emails::BaseService
     def execute(email)
-      email.destroy && update_secondary_emails!
+      email.destroy && update_secondary_emails!(email.email)
     end
 
     private
 
-    def update_secondary_emails!
+    def update_secondary_emails!(deleted_email)
       result = ::Users::UpdateService.new(@current_user, user: @user).execute do |user|
-        user.update_secondary_emails!
+        user.unset_secondary_emails_matching_deleted_email!(deleted_email)
       end
 
       result[:status] == :success

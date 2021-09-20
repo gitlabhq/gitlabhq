@@ -17,6 +17,7 @@ module Operations
     has_internal_id :iid, scope: :project
 
     default_value_for :active, true
+    default_value_for :version, :new_version_flag
 
     # scopes exists only for the first version
     has_many :scopes, class_name: 'Operations::FeatureFlagScope'
@@ -39,8 +40,6 @@ module Operations
     validate :first_default_scope, on: :create, if: :has_scopes?
     validate :version_associations
 
-    before_create :build_default_scope, if: -> { legacy_flag? && scopes.none? }
-
     accepts_nested_attributes_for :scopes, allow_destroy: true
     accepts_nested_attributes_for :strategies, allow_destroy: true
 
@@ -52,7 +51,6 @@ module Operations
     scope :new_version_only, -> { where(version: :new_version_flag)}
 
     enum version: {
-      legacy_flag: 1,
       new_version_flag: 2
     }
 
@@ -127,8 +125,6 @@ module Operations
     def version_associations
       if new_version_flag? && scopes.any?
         errors.add(:version_associations, 'version 2 feature flags may not have scopes')
-      elsif legacy_flag? && strategies.any?
-        errors.add(:version_associations, 'version 1 feature flags may not have strategies')
       end
     end
 

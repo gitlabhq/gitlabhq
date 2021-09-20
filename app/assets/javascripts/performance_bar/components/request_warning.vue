@@ -1,11 +1,13 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlPopover } from '@gitlab/ui';
+import { GlPopover, GlSafeHtmlDirective } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
 
 export default {
   components: {
     GlPopover,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     htmlId: {
@@ -32,11 +34,12 @@ export default {
   methods: {
     glEmojiTag,
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 <template>
   <span v-if="hasWarnings" class="gl-cursor-default">
-    <span :id="htmlId" v-html="glEmojiTag('warning')"></span>
+    <span :id="htmlId" v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('warning')"></span>
     <gl-popover placement="bottom" :target="htmlId" :content="warningMessage" />
   </span>
 </template>

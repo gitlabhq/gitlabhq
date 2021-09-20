@@ -222,6 +222,16 @@ RSpec.describe Projects::EnvironmentsController do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    context 'when name is passed' do
+      let(:params) { environment_params.merge(environment: { name: "new name" }) }
+
+      it 'ignores name' do
+        expect do
+          subject
+        end.not_to change { environment.reload.name }
+      end
+    end
   end
 
   describe 'PATCH #stop' do

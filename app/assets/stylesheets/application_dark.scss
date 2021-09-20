@@ -44,6 +44,17 @@ body.gl-dark {
       }
     }
 
+    .header-search {
+      background-color: var(--gray-100) !important;
+      box-shadow: inset 0 0 0 1px var(--border-color) !important;
+
+      &:active,
+      &:hover {
+        background-color: var(--gray-100) !important;
+        box-shadow: inset 0 0 0 1px var(--blue-200) !important;
+      }
+    }
+
     .search {
       form {
         background-color: var(--gray-100);

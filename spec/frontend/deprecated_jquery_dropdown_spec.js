@@ -323,7 +323,7 @@ describe('deprecatedJQueryDropdown', () => {
         const li = dropdown.renderItem(item, null, 3);
         const link = li.querySelector('a');
 
-        expect(link).toHaveAttr('data-track-event', 'click_text');
+        expect(link).toHaveAttr('data-track-action', 'click_text');
         expect(link).toHaveAttr('data-track-label', 'some_value_for_label');
         expect(link).toHaveAttr('data-track-value', '3');
         expect(link).toHaveAttr('data-track-property', 'suggestion-category');

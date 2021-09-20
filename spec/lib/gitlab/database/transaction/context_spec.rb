@@ -62,30 +62,32 @@ RSpec.describe Gitlab::Database::Transaction::Context do
     it { expect(data[:queries]).to eq(['SELECT 1', 'SELECT * FROM users']) }
   end
 
+  describe '#track_backtrace' do
+    before do
+      subject.track_backtrace(caller)
+    end
+
+    it { expect(data[:backtraces]).to be_a(Array) }
+    it { expect(data[:backtraces]).to all(be_a(Array)) }
+    it { expect(data[:backtraces].length).to eq(1) }
+    it { expect(data[:backtraces][0][0]).to be_a(String) }
+
+    it 'appends the backtrace' do
+      subject.track_backtrace(caller)
+
+      expect(data[:backtraces].length).to eq(2)
+      expect(subject.backtraces).to be_a(Array)
+      expect(subject.backtraces).to all(be_a(Array))
+      expect(subject.backtraces[1][0]).to be_a(String)
+    end
+  end
+
   describe '#duration' do
     before do
       subject.set_start_time
     end
 
     it { expect(subject.duration).to be >= 0 }
-  end
-
-  context 'when depth is low' do
-    it 'does not log data upon COMMIT' do
-      expect(subject).not_to receive(:application_info)
-
-      subject.commit
-    end
-
-    it 'does not log data upon ROLLBACK' do
-      expect(subject).not_to receive(:application_info)
-
-      subject.rollback
-    end
-
-    it '#should_log? returns false' do
-      expect(subject.should_log?).to be false
-    end
   end
 
   shared_examples 'logs transaction data' do
@@ -116,17 +118,9 @@ RSpec.describe Gitlab::Database::Transaction::Context do
     end
   end
 
-  context 'when depth exceeds threshold' do
-    before do
-      subject.set_depth(described_class::LOG_DEPTH_THRESHOLD + 1)
-    end
-
-    it_behaves_like 'logs transaction data'
-  end
-
   context 'when savepoints count exceeds threshold' do
     before do
-      data[:savepoints] = described_class::LOG_SAVEPOINTS_THRESHOLD + 1
+      data[:savepoints] = 1
     end
 
     it_behaves_like 'logs transaction data'

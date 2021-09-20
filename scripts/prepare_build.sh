@@ -10,7 +10,12 @@ fi
 cp config/gitlab.yml.example config/gitlab.yml
 sed -i 's/bin_path: \/usr\/bin\/git/bin_path: \/usr\/local\/bin\/git/' config/gitlab.yml
 
-cp config/database.yml.postgresql config/database.yml
+if [ "$DECOMPOSED_DB" == "true" ]; then
+  echo "Using decomposed database config (config/database.yml.decomposed-postgresql)"
+  cp config/database.yml.decomposed-postgresql config/database.yml
+else
+  cp config/database.yml.postgresql config/database.yml
+fi
 
 if [ -f config/database_geo.yml.postgresql ]; then
   cp config/database_geo.yml.postgresql config/database_geo.yml

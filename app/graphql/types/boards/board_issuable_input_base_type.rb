@@ -14,7 +14,7 @@ module Types
 
       argument :my_reaction_emoji, GraphQL::Types::String,
                required: false,
-               description: 'Filter by reaction emoji applied by the current user.'
+               description: 'Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported.'
     end
   end
 end

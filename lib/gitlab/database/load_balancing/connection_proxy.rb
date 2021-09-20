@@ -34,15 +34,15 @@ module Gitlab
         ).freeze
 
         # hosts - The hosts to use for load balancing.
-        def initialize(hosts = [])
-          @load_balancer = LoadBalancer.new(hosts)
+        def initialize(load_balancer)
+          @load_balancer = load_balancer
         end
 
         def select_all(arel, name = nil, binds = [], preparable: nil)
           if arel.respond_to?(:locked) && arel.locked
             # SELECT ... FOR UPDATE queries should be sent to the primary.
-            write_using_load_balancer(:select_all, arel, name, binds,
-                                      sticky: true)
+            current_session.write!
+            write_using_load_balancer(:select_all, arel, name, binds)
           else
             read_using_load_balancer(:select_all, arel, name, binds)
           end
@@ -56,7 +56,8 @@ module Gitlab
 
         STICKY_WRITES.each do |name|
           define_method(name) do |*args, **kwargs, &block|
-            write_using_load_balancer(name, *args, sticky: true, **kwargs, &block)
+            current_session.write!
+            write_using_load_balancer(name, *args, **kwargs, &block)
           end
         end
 
@@ -65,11 +66,18 @@ module Gitlab
             track_read_only_transaction!
             read_using_load_balancer(:transaction, *args, **kwargs, &block)
           else
-            write_using_load_balancer(:transaction, *args, sticky: true, **kwargs, &block)
+            current_session.write!
+            write_using_load_balancer(:transaction, *args, **kwargs, &block)
           end
 
         ensure
           untrack_read_only_transaction!
+        end
+
+        def respond_to_missing?(name, include_private = false)
+          @load_balancer.read_write do |connection|
+            connection.respond_to?(name, include_private)
+          end
         end
 
         # Delegates all unknown messages to a read-write connection.
@@ -102,18 +110,13 @@ module Gitlab
         # name - The name of the method to call on a connection object.
         # sticky - If set to true the session will stick to the master after
         #          the write.
-        def write_using_load_balancer(name, *args, sticky: false, **kwargs, &block)
+        def write_using_load_balancer(...)
           if read_only_transaction?
             raise WriteInsideReadOnlyTransactionError, 'A write query is performed inside a read-only transaction'
           end
 
           @load_balancer.read_write do |connection|
-            # Sticking has to be enabled before calling the method. Not doing so
-            # could lead to methods called in a block still being performed on a
-            # secondary instead of on a primary (when necessary).
-            current_session.write! if sticky
-
-            connection.send(name, *args, **kwargs, &block)
+            connection.send(...)
           end
         end
 

@@ -22,10 +22,6 @@ export default {
       type: Object,
       required: true,
     },
-    canReadEnvironment: {
-      type: Boolean,
-      required: true,
-    },
   },
   methods: {
     onChangePage(page) {
@@ -42,7 +38,7 @@ export default {
     <slot name="empty-state"></slot>
 
     <div v-if="!isLoading && environments.length > 0" class="table-holder">
-      <environment-table :environments="environments" :can-read-environment="canReadEnvironment" />
+      <environment-table :environments="environments" />
 
       <table-pagination
         v-if="pagination && pagination.totalPages > 1"

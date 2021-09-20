@@ -2,6 +2,8 @@
 
 # rubocop:disable Style/SignalException
 
+DEFAULT_BRANCH = 'master'
+
 THROUGHPUT_LABELS = [
   'Community contribution',
   'security',
@@ -29,12 +31,12 @@ end
 
 has_milestone = !gitlab.mr_json["milestone"].nil?
 
-unless has_milestone
+unless has_milestone || (helper.security_mr? && gitlab.branch_for_base == DEFAULT_BRANCH)
   warn "This merge request does not refer to an existing milestone.", sticky: false
 end
 
 has_pick_into_stable_label = gitlab.mr_labels.find { |label| label.start_with?('Pick into') }
 
-if gitlab.branch_for_base != "master" && !has_pick_into_stable_label && !helper.security_mr?
-  warn "Most of the time, merge requests should target `master`. Otherwise, please set the relevant `Pick into X.Y` label."
+if gitlab.branch_for_base != DEFAULT_BRANCH && !has_pick_into_stable_label && !helper.security_mr?
+  warn "Most of the time, merge requests should target `#{DEFAULT_BRANCH}`. Otherwise, please set the relevant `Pick into X.Y` label."
 end

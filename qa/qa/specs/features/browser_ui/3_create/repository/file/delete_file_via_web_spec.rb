@@ -12,7 +12,7 @@ module QA
         file.visit!
       end
 
-      it 'user deletes a file via the Web', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1095' do
+      it 'user deletes a file via the Web', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1631' do
         Page::File::Show.perform do |file|
           file.click_delete
           file.add_commit_message(commit_message_for_delete)

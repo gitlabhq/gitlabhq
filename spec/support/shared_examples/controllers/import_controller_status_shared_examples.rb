@@ -19,14 +19,4 @@ RSpec.shared_examples 'import controller status' do
     expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
     expect(json_response.dig("provider_repos", 0, "id")).to eq(repo_id)
   end
-
-  it "does not show already added project" do
-    project = create(:project, import_type: provider_name, namespace: user.namespace, import_status: :finished, import_source: import_source)
-    stub_client(client_repos_field => [repo])
-
-    get :status, format: :json
-
-    expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
-    expect(json_response.dig("provider_repos")).to eq([])
-  end
 end

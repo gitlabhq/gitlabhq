@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To enable the GitLab Prometheus metrics:
 
 1. Log in to GitLab as a user with Administrator [role](../../../user/permissions.md).
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Add link to Prometheus**.
 1. [Restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart) for the changes to take effect.
@@ -252,12 +252,26 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_group_wiki_repositories_synced`           | Gauge   | 13.10 | Number of syncable group wikis synced on secondary | `url` |
 | `geo_group_wiki_repositories_failed`           | Gauge   | 13.10 | Number of syncable group wikis failed on secondary | `url` |
 | `geo_group_wiki_repositories_registry`         | Gauge   | 13.10 | Number of syncable group wikis in the registry | `url` |
+| `geo_pages_deployments`                        | Gauge   | 14.3  | Number of pages deployments on primary | `url` |
+| `geo_pages_deployments_checksum_total`         | Gauge   | 14.3  | Number of pages deployments tried to checksum on primary | `url` |
+| `geo_pages_deployments_checksummed`            | Gauge   | 14.3  | Number of pages deployments successfully checksummed on primary | `url` |
+| `geo_pages_deployments_checksum_failed`        | Gauge   | 14.3  | Number of pages deployments failed to calculate the checksum on primary | `url` |
+| `geo_pages_deployments_synced`                 | Gauge   | 14.3  | Number of syncable pages deployments synced on secondary | `url` |
+| `geo_pages_deployments_failed`                 | Gauge   | 14.3  | Number of syncable pages deployments failed to sync on secondary | `url` |
+| `geo_pages_deployments_registry`               | Gauge   | 14.3  | Number of pages deployments in the registry | `url` |
+| `geo_pages_deployments_verification_total`     | Gauge   | 14.3  | Number of pages deployments verifications tried on secondary | `url` |
+| `geo_pages_deployments_verified`               | Gauge   | 14.3  | Number of pages deployments verified on secondary | `url` |
+| `geo_pages_deployments_verification_failed`    | Gauge   | 14.3  | Number of pages deployments verifications failed on secondary | `url` |
 | `limited_capacity_worker_running_jobs`         | Gauge   | 13.5  | Number of running jobs | `worker` |
 | `limited_capacity_worker_max_running_jobs`     | Gauge   | 13.5  | Maximum number of running jobs | `worker` |
 | `limited_capacity_worker_remaining_work_count` | Gauge   | 13.5  | Number of jobs waiting to be enqueued | `worker` |
 | `destroyed_job_artifacts_count_total`          | Counter | 13.6  | Number of destroyed expired job artifacts | |
 | `destroyed_pipeline_artifacts_count_total`     | Counter | 13.8  | Number of destroyed expired pipeline artifacts | |
 | `gitlab_optimistic_locking_retries`            | Histogram | 13.10  | Number of retry attempts to execute optimistic retry lock | |
+| `geo_uploads`                      | Gauge   | 14.1  | Number of uploads on primary | `url` |
+| `geo_uploads_synced`               | Gauge   | 14.1  | Number of uploads synced on secondary | `url` |
+| `geo_uploads_failed`               | Gauge   | 14.1  | Number of syncable uploads failed to sync on secondary | `url` |
+| `geo_uploads_registry`             | Gauge   | 14.1  | Number of uploads in the registry | `url` |
 
 ## Database load balancing metrics **(PREMIUM SELF)**
 

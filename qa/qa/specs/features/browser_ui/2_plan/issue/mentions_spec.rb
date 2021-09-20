@@ -23,7 +23,7 @@ module QA
         end.visit!
       end
 
-      it 'mentions another user in an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1166' do
+      it 'mentions another user in an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1186' do
         Page::Project::Issue::Show.perform do |show|
           at_username = "@#{user.username}"
 

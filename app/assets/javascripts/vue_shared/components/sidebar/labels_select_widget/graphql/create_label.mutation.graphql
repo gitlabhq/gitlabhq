@@ -6,9 +6,7 @@ mutation createLabel($title: String!, $color: String, $projectPath: ID, $groupPa
       id
       color
       description
-      descriptionHtml
       title
-      textColor
     }
     errors
   }

@@ -43,7 +43,7 @@ Example Response:
 
 ## Remove a star from a dashboard
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31892) in GitLab 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31892) in GitLab 13.0.
 
 ```plaintext
 DELETE /projects/:id/metrics/user_starred_dashboards

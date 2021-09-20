@@ -36,27 +36,34 @@ RSpec.describe Namespace do
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
 
     context 'validating the parent of a namespace' do
-      context 'when the namespace has no parent' do
-        it 'allows a namespace to have no parent associated with it' do
-          namespace = build(:namespace)
+      using RSpec::Parameterized::TableSyntax
 
-          expect(namespace).to be_valid
-        end
+      where(:parent_type, :child_type, :error) do
+        nil         | 'User'      | nil
+        nil         | 'Group'     | nil
+        nil         | 'Project'   | 'must be set for a project namespace'
+        'Project'   | 'User'      | 'project namespace cannot be the parent of another namespace'
+        'Project'   | 'Group'     | 'project namespace cannot be the parent of another namespace'
+        'Project'   | 'Project'   | 'project namespace cannot be the parent of another namespace'
+        'Group'     | 'User'      | 'cannot not be used for user namespace'
+        'Group'     | 'Group'     | nil
+        'Group'     | 'Project'   | nil
+        'User'      | 'User'      | 'cannot not be used for user namespace'
+        'User'      | 'Group'     | 'user namespace cannot be the parent of another namespace'
+        'User'      | 'Project'   | nil
       end
 
-      context 'when the namespace has a parent' do
-        it 'does not allow a namespace to have a group as its parent' do
-          namespace = build(:namespace, parent: build(:group))
+      with_them do
+        it 'validates namespace parent' do
+          parent = build(:namespace, type: parent_type) if parent_type
+          namespace = build(:namespace, type: child_type, parent: parent)
 
-          expect(namespace).not_to be_valid
-          expect(namespace.errors[:parent_id].first).to eq('a user namespace cannot have a parent')
-        end
-
-        it 'does not allow a namespace to have another namespace as its parent' do
-          namespace = build(:namespace, parent: build(:namespace))
-
-          expect(namespace).not_to be_valid
-          expect(namespace.errors[:parent_id].first).to eq('a user namespace cannot have a parent')
+          if error
+            expect(namespace).not_to be_valid
+            expect(namespace.errors[:parent_id].first).to eq(error)
+          else
+            expect(namespace).to be_valid
+          end
         end
       end
 
@@ -153,6 +160,65 @@ RSpec.describe Namespace do
 
         expect(namespace).to be_valid
         expect(namespace.name).to eq('something new')
+      end
+    end
+  end
+
+  describe 'handling STI', :aggregate_failures do
+    let(:namespace_type) { nil }
+    let(:parent) { nil }
+    let(:namespace) { Namespace.find(create(:namespace, type: namespace_type, parent: parent).id) }
+
+    context 'creating a Group' do
+      let(:namespace_type) { 'Group' }
+
+      it 'is valid' do
+        expect(namespace).to be_a(Group)
+        expect(namespace.kind).to eq('group')
+        expect(namespace.group?).to be_truthy
+      end
+    end
+
+    context 'creating a ProjectNamespace' do
+      let(:namespace_type) { 'Project' }
+      let(:parent) { create(:group) }
+
+      it 'is valid' do
+        expect(Namespace.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
+        expect(namespace.kind).to eq('project')
+        expect(namespace.project?).to be_truthy
+      end
+    end
+
+    context 'creating a UserNamespace' do
+      let(:namespace_type) { 'User' }
+
+      it 'is valid' do
+        # TODO: We create a normal Namespace until
+        #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68894 is ready
+        expect(Namespace.find(namespace.id)).to be_a(Namespace)
+        expect(namespace.kind).to eq('user')
+        expect(namespace.user?).to be_truthy
+      end
+    end
+
+    context 'creating a default Namespace' do
+      let(:namespace_type) { nil }
+
+      it 'is valid' do
+        expect(Namespace.find(namespace.id)).to be_a(Namespace)
+        expect(namespace.kind).to eq('user')
+        expect(namespace.user?).to be_truthy
+      end
+    end
+
+    context 'creating an unknown Namespace type' do
+      let(:namespace_type) { 'One' }
+
+      it 'defaults to a Namespace' do
+        expect(Namespace.find(namespace.id)).to be_a(Namespace)
+        expect(namespace.kind).to eq('user')
+        expect(namespace.user?).to be_truthy
       end
     end
   end
@@ -285,6 +351,12 @@ RSpec.describe Namespace do
         max_artifacts_size: 10
       )
     end
+  end
+
+  describe '#owner_required?' do
+    specify { expect(build(:project_namespace).owner_required?).to be_falsey }
+    specify { expect(build(:group).owner_required?).to be_falsey }
+    specify { expect(build(:namespace).owner_required?).to be_truthy }
   end
 
   describe '#visibility_level_field' do
@@ -1375,6 +1447,13 @@ RSpec.describe Namespace do
 
       it 'returns root_ancestor for root group without a query' do
         expect { root_group.root_ancestor }.not_to exceed_query_limit(0)
+      end
+
+      it 'returns root_ancestor for nested group with a single query' do
+        nested_group = create(:group, parent: root_group)
+        nested_group.reload
+
+        expect { nested_group.root_ancestor }.not_to exceed_query_limit(1)
       end
 
       it 'returns the top most ancestor' do

@@ -10,7 +10,8 @@ This Rake task enables [namespaces](../user/group/index.md#namespaces) for proje
 
 ## Enable usernames and namespaces for user projects
 
-This command enables the namespaces feature introduced in GitLab 4.0. It moves every project in its namespace folder.
+This command enables the namespaces feature. It moves every project in its
+namespace folder.
 
 The **repository location changes as part of this task**, so you must **update all your Git URLs** to
 point to the new location.
@@ -19,7 +20,7 @@ To change your username:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. On the left sidebar, select **Account**.
 1. In the **Change username** section, type the new username.
 1. Select **Update username**.
 

@@ -18,24 +18,24 @@ module QA
       end
 
       context 'when developers and maintainers are allowed to push to a protected branch' do
-        it 'user with push rights successfully pushes to the protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/447' do
+        it 'user with push rights successfully pushes to the protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1563' do
           create_protected_branch(allowed_to_push: {
             roles: Resource::ProtectedBranch::Roles::DEVS_AND_MAINTAINERS
           })
 
           push = push_new_file(branch_name)
 
-          expect(push.output).to match(/remote: To create a merge request for protected-branch, visit/)
+          expect(push.output).to match(/To create a merge request for protected-branch, visit/)
         end
       end
 
       context 'when developers and maintainers are not allowed to push to a protected branch' do
-        it 'user without push rights fails to push to the protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/449' do
+        it 'user without push rights fails to push to the protected branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1562' do
           create_protected_branch(allowed_to_push: {
             roles: Resource::ProtectedBranch::Roles::NO_ONE
           })
 
-          expect { push_new_file(branch_name) }.to raise_error(QA::Support::Run::CommandError, /remote: GitLab: You are not allowed to push code to protected branches on this project\.([\s\S]+)\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
+          expect { push_new_file(branch_name) }.to raise_error(QA::Support::Run::CommandError, /You are not allowed to push code to protected branches on this project\.([\s\S]+)\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
         end
       end
 

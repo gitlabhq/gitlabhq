@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan', :orchestrated, :smtp, :requires_admin do
     describe 'Email Notification' do
-      include Support::Api
+      include Support::API
 
       let!(:user) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
@@ -20,7 +20,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/676' do
+      it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1448' do
         project.visit!
 
         Page::Project::Menu.perform(&:click_members)

@@ -5,7 +5,6 @@
   br_tag: '<br/>'.html_safe,
   role: member.human_access.downcase }
 - join_text =  s_('InviteEmail|Join now')
-- join_url = invite_url(@token, invite_type: Emails::Members::INITIAL_INVITE, experiment_name: 'invite_email_preview_text')
 - inviter_name = member.created_by.name if member.created_by
 
 - experiment(:invite_email_preview_text, actor: member) do |experiment_instance|
@@ -17,7 +16,7 @@
           = s_('InviteEmail|Join your team on GitLab! %{inviter} invited you to %{project_or_group_name}') % { inviter: inviter_name, project_or_group_name: placeholders[:project_or_group_name] }
         - else
           = s_('InviteEmail|Join your team on GitLab! You are invited to %{project_or_group_name}') % { project_or_group_name: placeholders[:project_or_group_name] }
-      = gmail_goto_action(join_text, join_url)
+      = gmail_goto_action(join_text, invited_join_url(@token, member))
 
 %tr
   %td.text-content{ colspan: 2 }
@@ -28,7 +27,7 @@
       - else
         = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders
     %p.invite-actions
-      = link_to join_text, join_url, class: 'invite-btn-join'
+      = link_to join_text, invited_join_url(@token, member), class: 'invite-btn-join'
 %tr.border-top
   %td.text-content.mailer-align-left.half-width
     %h4

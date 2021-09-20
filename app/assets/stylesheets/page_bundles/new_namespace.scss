@@ -17,10 +17,10 @@ $new-namespace-panel-height: 240px;
 
 .new-namespace-panel {
   &:hover {
-    background-color: $gray-10;
+    background-color: var(--gray-50, $gray-10);
   }
 
-  color: $purple-700;
+  color: var(--purple-700, $purple-700);
   min-height: $new-namespace-panel-height;
   text-align: center;
   @include media-breakpoint-up(lg) {

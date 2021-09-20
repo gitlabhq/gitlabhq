@@ -129,3 +129,25 @@ or the path to `config.yaml` inside the project is not valid.
 
 To fix this, ensure that the paths to the configuration repository and to the `config.yaml` file
 are correct.
+
+### KAS logs - `dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused`
+
+If you are running a self-managed GitLab instance and:
+
+- The instance isn't running behind an SSL-terminating proxy.
+- The instance doesn't have HTTPS configured on the GitLab instance itself.
+- The instance's hostname resolves locally to its internal IP address.
+
+You may see the following error when the KAS tries to connect to the GitLab API:
+
+```json
+{"level":"error","time":"2021-08-16T14:56:47.289Z","msg":"GetAgentInfo()","correlation_id":"01FD7QE35RXXXX8R47WZFBAXTN","grpc_service":"gitlab.agent.reverse_tunnel.rpc.ReverseTunnel","grpc_method":"Connect","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": dial tcp 172.17.0.4:443: connect: connection refused"}
+```
+
+To fix this for [Omnibus](https://docs.gitlab.com/omnibus/) package installations,
+set the following parameter in `/etc/gitlab/gitlab.rb`
+(replacing `gitlab.example.com` with your GitLab instance's hostname):
+
+```ruby
+gitlab_kas['gitlab_address'] = 'http://gitlab.example.com'
+```

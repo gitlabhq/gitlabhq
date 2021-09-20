@@ -9,6 +9,36 @@ module Gitlab
       API_VERSION = "cilium.io/v2"
       KIND = 'CiliumNetworkPolicy'
 
+      PREDEFINED_POLICIES = {
+        'allow-inbound-http' => <<~YAML.rstrip,
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          metadata:
+            name: allow-inbound-http
+          spec:
+            endpointSelector:
+              matchLabels:
+                network-policy.gitlab.com/disabled_by: gitlab
+            ingress:
+            - toPorts:
+              - ports:
+                - port: '80'
+                - port: '443'
+        YAML
+        'drop-outbound' => <<~YAML.rstrip
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          metadata:
+            name: drop-outbound
+          spec:
+            endpointSelector:
+              matchLabels:
+                network-policy.gitlab.com/disabled_by: gitlab
+            egress:
+            - {}
+        YAML
+      }.freeze
+
       # We are modeling existing kubernetes resource and don't have
       # control over amount of parameters.
       # rubocop:disable Metrics/ParameterLists

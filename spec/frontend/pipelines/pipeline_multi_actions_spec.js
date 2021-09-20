@@ -1,4 +1,4 @@
-import { GlAlert, GlDropdown, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlDropdown, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -51,6 +51,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAllArtifactItems = () => wrapper.findAllByTestId(artifactItemTestId);
   const findFirstArtifactItem = () => wrapper.findByTestId(artifactItemTestId);
   const findEmptyMessage = () => wrapper.findByTestId('artifacts-empty-message');
@@ -101,6 +102,15 @@ describe('Pipeline Multi Actions Dropdown', () => {
       createComponent({ mockData: { artifacts: [] } });
 
       expect(findEmptyMessage().exists()).toBe(true);
+    });
+
+    describe('while loading artifacts', () => {
+      it('should render a loading spinner and no empty message', () => {
+        createComponent({ mockData: { isLoading: true, artifacts: [] } });
+
+        expect(findLoadingIcon().exists()).toBe(true);
+        expect(findEmptyMessage().exists()).toBe(false);
+      });
     });
 
     describe('with a failing request', () => {

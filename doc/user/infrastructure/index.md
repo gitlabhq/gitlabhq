@@ -6,9 +6,40 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Infrastructure management **(FREE)**
 
-GitLab provides you with great solutions to help you manage your
-infrastructure:
+With the rise of DevOps and SRE approaches, infrastructure management becomes codified,
+automatable, and software development best practices gain their place around infrastructure
+management too. On one hand, the daily tasks of classical operations people changed
+and are more similar to traditional software development. On the other hand, software engineers
+are more likely to control their whole DevOps lifecycle, including deployments and delivery.
 
-- [Infrastructure as Code and GitOps](iac/index.md)
-- [Kubernetes clusters](../project/clusters/index.md)
-- [Runbooks](../project/clusters/runbooks/index.md)
+GitLab offers various features to speed up and simplify your infrastructure management practices.
+
+## Infrastructure as Code
+
+GitLab has deep integrations with Terraform to run Infrastructure as Code pipelines
+and support various processes. Terraform is considered the standard in cloud infrastructure provisioning.
+The various GitLab integrations help you:
+
+- Get started quickly without any setup.
+- Collaborate around infrastructure changes in merge requests the same as you might
+  with code changes.
+- Scale using a module registry.
+
+Learn more about how GitLab can help you run [Infrastructure as Code](iac/index.md).
+
+## Integrated Kubernetes management
+
+GitLab has special integrations with Kubernetes to help you deploy, manage and troubleshoot
+third-party or custom applications in Kubernetes clusters. Auto DevOps provides a full
+DevSecOps pipeline by default targeted at Kubernetes based deployments. To support
+all the GitLab features, GitLab offers a cluster management project for easy onboarding.
+The deploy boards provide quick insights into your cluster, including pod logs tailing.
+
+Learn more about the [GitLab integration with Kubernetes](../project/clusters/index.md).
+
+## Runbooks in GitLab
+
+Runbooks are a collection of documented procedures that explain how to carry out a task,
+such as starting, stopping, debugging, or troubleshooting a system.
+
+Read more about [how executable runbooks work in GitLab](../project/clusters/runbooks/index.md).

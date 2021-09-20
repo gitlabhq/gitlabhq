@@ -65,8 +65,15 @@ module Gitlab
     # Note: By default the order is breadth-first
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors(upto: nil, hierarchy_order: nil)
-      recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(unscoped_model.all)
-      recursive_query = recursive_query.order(depth: hierarchy_order) if hierarchy_order
+      cte = base_and_ancestors_cte(upto, hierarchy_order)
+
+      recursive_query = if hierarchy_order
+                          # othewise depth won't be available for outer query
+                          cte.apply_to(unscoped_model.all.select(objects_table[Arel.star])).order(depth: hierarchy_order)
+                        else
+                          cte.apply_to(unscoped_model.all)
+                        end
+
       read_only(recursive_query)
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -78,7 +85,10 @@ module Gitlab
     # and incremented as we go down the descendant tree
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_descendants(with_depth: false)
-      read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(unscoped_model.all))
+      outer_select_relation = unscoped_model.all
+      outer_select_relation = outer_select_relation.select(objects_table[Arel.star]) if with_depth # Otherwise Active Record will not select `depth` as it's not a table column
+
+      read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(outer_select_relation))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -145,7 +155,7 @@ module Gitlab
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
 
       base_query = ancestors_base.except(:order)
-      base_query = base_query.select("1 as #{DEPTH_COLUMN}", "ARRAY[#{objects_table.name}.id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if hierarchy_order
+      base_query = base_query.select("1 as #{DEPTH_COLUMN}", "ARRAY[#{objects_table.name}.id] AS tree_path", "false AS tree_cycle", base_query.default_select_columns) if hierarchy_order
 
       cte << base_query
 
@@ -162,7 +172,7 @@ module Gitlab
           cte.table[DEPTH_COLUMN] + 1,
           "tree_path || #{quoted_objects_table_name}.id",
           "#{quoted_objects_table_name}.id = ANY(tree_path)",
-          objects_table[Arel.star]
+          parent_query.default_select_columns
         ).where(cte.table[:tree_cycle].eq(false))
       end
 
@@ -178,7 +188,7 @@ module Gitlab
       cte = SQL::RecursiveCTE.new(:base_and_descendants)
 
       base_query = descendants_base.except(:order)
-      base_query = base_query.select("1 AS #{DEPTH_COLUMN}", "ARRAY[#{objects_table.name}.id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if with_depth
+      base_query = base_query.select("1 AS #{DEPTH_COLUMN}", "ARRAY[#{objects_table.name}.id] AS tree_path", "false AS tree_cycle", base_query.default_select_columns) if with_depth
 
       cte << base_query
 
@@ -195,7 +205,7 @@ module Gitlab
           cte.table[DEPTH_COLUMN] + 1,
           "tree_path || #{quoted_objects_table_name}.id",
           "#{quoted_objects_table_name}.id = ANY(tree_path)",
-          objects_table[Arel.star]
+          descendants_query.default_select_columns
         ).where(cte.table[:tree_cycle].eq(false))
       end
 

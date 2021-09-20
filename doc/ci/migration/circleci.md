@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 type: index, howto
@@ -121,11 +121,11 @@ stages:
   - test
   - deploy
 
-job 1:
+job1:
   stage: build
   script: make build dependencies
 
-job 2:
+job2:
   stage: build
   script: make build artifacts
 
@@ -216,12 +216,12 @@ jobs:
 Example of the same workflow using `rules` in GitLab CI/CD:
 
 ```yaml
-deploy_prod:
+deploy:
   stage: deploy
   script:
-    - echo "Deploy to production server"
+    - echo "Deploy job"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^rc-/'
 ```
 
 ### Caching

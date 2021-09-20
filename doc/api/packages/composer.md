@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Composer API
+# Composer API **(FREE)**
 
 This is the API documentation for [Composer Packages](../../user/packages/composer_repository/index.md).
 
@@ -108,13 +108,14 @@ V1.
 GET group/:id/-/packages/composer/:package_name$:sha
 ```
 
-Note the `$` symbol in the URL. When making requests, you may need to use the URL-encoded version of
-the symbol `%24` (see example below).
+Note the `$` symbol in the URL. When making requests, you may need the
+URL-encoded version of the symbol `%24`. Refer to the example after
+the table:
 
-| Attribute      | Type   | Required | Description |
-| -------------- | ------ | -------- | ----------- |
-| `id`           | string | yes      | The ID or full path of the group. |
-| `package_name` | string | yes      | The name of the package. |
+| Attribute      | Type   | Required | Description                                                                           |
+|----------------|--------|----------|---------------------------------------------------------------------------------------|
+| `id`           | string | yes      | The ID or full path of the group.                                                     |
+| `package_name` | string | yes      | The name of the package.                                                              |
 | `sha`          | string | yes      | The SHA digest of the package, provided by the [V1 packages list](#v1-packages-list). |
 
 ```shell

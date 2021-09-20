@@ -33,7 +33,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'creates an MR with code coverage statistics', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1740' do
+      it 'creates an MR with code coverage statistics', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1373' do
         runner.project.visit!
         configure_code_coverage(simplecov)
         merge_request.visit!
@@ -49,7 +49,7 @@ module QA
 
     def configure_code_coverage(coverage_tool_pattern)
       Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-      Page::Project::Settings::CICD.perform do |settings|
+      Page::Project::Settings::CiCd.perform do |settings|
         settings.expand_general_pipelines do |coverage|
           coverage.configure_coverage_regex(coverage_tool_pattern)
         end

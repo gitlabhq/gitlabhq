@@ -645,29 +645,6 @@ describe('URL utility', () => {
     });
   });
 
-  describe('urlParamsToObject', () => {
-    it('parses path for label with trailing +', () => {
-      // eslint-disable-next-line import/no-deprecated
-      expect(urlUtils.urlParamsToObject('label_name[]=label%2B', {})).toEqual({
-        label_name: ['label+'],
-      });
-    });
-
-    it('parses path for milestone with trailing +', () => {
-      // eslint-disable-next-line import/no-deprecated
-      expect(urlUtils.urlParamsToObject('milestone_title=A%2B', {})).toEqual({
-        milestone_title: 'A+',
-      });
-    });
-
-    it('parses path for search terms with spaces', () => {
-      // eslint-disable-next-line import/no-deprecated
-      expect(urlUtils.urlParamsToObject('search=two+words', {})).toEqual({
-        search: 'two words',
-      });
-    });
-  });
-
   describe('queryToObject', () => {
     it.each`
       case                                                                      | query                               | options                                             | result

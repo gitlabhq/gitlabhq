@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Container Registry Online Garbage Collection', :registry_gc, only: { subdomain: %i[pre] }, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/337791', type: :waiting_on } do
+    describe 'Container Registry Online Garbage Collection', :registry_gc, only: { subdomain: %i[pre] } do
       let(:group) { Resource::Group.fabricate_via_api! }
 
       let(:imported_project) do
@@ -90,7 +90,7 @@ module QA
         end
       end
 
-      it 'runs the online garbage collector tool', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1854' do
+      it 'runs the online garbage collector tool', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1889' do
         imported_project.visit!
 
         Flow::Pipeline.visit_latest_pipeline

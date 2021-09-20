@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::product planning
 product_category: design_management
 value_type: number
-status: data_available
+status: active
 time_frame: all
 data_source: redis
 distribution:
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

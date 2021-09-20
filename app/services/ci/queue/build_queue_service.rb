@@ -24,26 +24,30 @@ module Ci
 
       # rubocop:disable CodeReuse/ActiveRecord
       def builds_for_group_runner
-        # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
-        groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
+        if strategy.use_denormalized_namespace_traversal_ids?
+          strategy.builds_for_group_runner
+        else
+          # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
+          groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
 
-        hierarchy_groups = Gitlab::ObjectHierarchy
-          .new(groups)
-          .base_and_descendants
+          hierarchy_groups = Gitlab::ObjectHierarchy
+            .new(groups)
+            .base_and_descendants
 
-        projects = Project.where(namespace_id: hierarchy_groups)
-          .with_group_runners_enabled
-          .with_builds_enabled
-          .without_deleted
+          projects = Project.where(namespace_id: hierarchy_groups)
+            .with_group_runners_enabled
+            .with_builds_enabled
+            .without_deleted
 
-        relation = new_builds.where(project: projects)
+          relation = new_builds.where(project: projects)
 
-        order(relation)
+          order(relation)
+        end
       end
 
       def builds_for_project_runner
         relation = new_builds
-          .where(project: runner.projects.without_deleted.with_builds_enabled)
+          .where(project: runner_projects_relation)
 
         order(relation)
       end
@@ -81,6 +85,14 @@ module Ci
           else
             Queue::BuildsTableStrategy.new(runner)
           end
+        end
+      end
+
+      def runner_projects_relation
+        if ::Feature.enabled?(:ci_pending_builds_project_runners_decoupling, runner, default_enabled: :yaml)
+          runner.runner_projects.select(:project_id)
+        else
+          runner.projects.without_deleted.with_builds_enabled
         end
       end
     end

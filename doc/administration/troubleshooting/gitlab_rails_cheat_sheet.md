@@ -243,7 +243,7 @@ project.update!(repository_read_only: true)
 ### Transfer project from one namespace to another
 
 ```ruby
- p= Project.find_by_full_path('<project_path>')
+p = Project.find_by_full_path('<project_path>')
 
  # To set the owner of the project
  current_user= p.creator
@@ -416,9 +416,9 @@ p.create_wiki  ### creates the wiki project on the filesystem
 ### In case of issue boards not loading properly and it's getting time out. We need to call the Issue Rebalancing service to fix this
 
 ```ruby
-p=Project.find_by_full_path('PROJECT PATH')
+p = Project.find_by_full_path('PROJECT PATH')
 
-IssueRebalancingService.new(p.issues.take).execute
+Issues::RelativePositionRebalancingService.new(p.root_namespace.all_projects).execute
 ```
 
 ## Imports / Exports
@@ -594,6 +594,17 @@ Using cURL and jq (up to a max 100, see the [pagination docs](../../api/index.md
 ```shell
 curl --silent --header "Private-Token: ********************" \
      "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
+```
+
+### Update Daily Billable & Historical users
+
+```ruby
+# Forces recount of historical (max) users
+::HistoricalDataWorker.new.perform
+
+# Forces recount of daily billable users
+identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
 ```
 
 ### Block or Delete Users that have no projects or groups
@@ -999,8 +1010,8 @@ This content has been moved to the [Troubleshooting Sidekiq docs](sidekiq.md).
 ### Get information about LFS objects and associated project
 
 ```ruby
-o=LfsObject.find_by(oid: "<oid>")
-p=Project.find(LfsObjectsProject.find_by_lfs_object_id(o.id).project_id)
+o = LfsObject.find_by(oid: "<oid>")
+p = Project.find(LfsObjectsProject.find_by_lfs_object_id(o.id).project_id)
 ```
 
 You can then delete these records from the database with:

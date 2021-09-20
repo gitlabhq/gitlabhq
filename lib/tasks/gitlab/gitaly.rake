@@ -15,8 +15,7 @@ namespace :gitlab do
       gdk_gitaly_dir = ENV.fetch('GDK_GITALY', Rails.root.join('../gitaly'))
 
       # Our test setup expects a git repo, so clone rather than copy
-      version = Gitlab::GitalyClient.expected_server_version
-      checkout_or_clone_version(version: version, repo: gdk_gitaly_dir, target_dir: args.dir, clone_opts: %w[--depth 1])
+      clone_repo(gdk_gitaly_dir, args.dir, clone_opts: %w[--depth 1]) unless Dir.exist?(args.dir)
 
       # We assume the GDK gitaly already compiled binaries
       build_dir = File.join(gdk_gitaly_dir, '_build')
@@ -31,7 +30,7 @@ namespace :gitlab do
       FileUtils.cp_r(ruby_bundle_file, args.dir)
 
       gitaly_binary = File.join(build_dir, 'bin', 'gitaly')
-      warn_gitaly_out_of_date!(gitaly_binary, version)
+      warn_gitaly_out_of_date!(gitaly_binary, Gitlab::GitalyClient.expected_server_version)
     rescue Errno::ENOENT => e
       puts "Could not copy files, did you run `gdk update`? Error: #{e.message}"
 

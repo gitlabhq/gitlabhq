@@ -10,7 +10,6 @@ module Namespaces
 
     feature_category :product_analytics
     worker_resource_boundary :cpu
-    tags :exclude_from_kubernetes
     urgency :low
 
     deduplicate :until_executed

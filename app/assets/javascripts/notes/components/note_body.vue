@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import $ from 'jquery';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -163,7 +162,11 @@ export default {
       @addToBatch="addSuggestionToBatch"
       @removeFromBatch="removeSuggestionFromBatch"
     />
-    <div v-else class="note-text md" v-html="note.note_html"></div>
+    <div
+      v-else
+      class="note-text md"
+      v-html="note.note_html /* eslint-disable-line vue/no-v-html */"
+    ></div>
     <note-form
       v-if="isEditing"
       ref="noteForm"

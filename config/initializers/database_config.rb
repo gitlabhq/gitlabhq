@@ -24,7 +24,7 @@ ActiveRecord::Base.establish_connection(Gitlab::Database.main.db_config_with_def
 
 Gitlab.ee do
   if Gitlab::Runtime.sidekiq? && Gitlab::Geo.geo_database_configured?
-    Rails.configuration.geo_database['pool'] = Gitlab::Database.main.default_pool_size
+    Rails.configuration.geo_database['pool'] = Gitlab::Database.default_pool_size
     Geo::TrackingBase.establish_connection(Rails.configuration.geo_database)
   end
 end

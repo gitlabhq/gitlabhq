@@ -12,7 +12,6 @@ module Ci
     # rubocop:enable Scalability/CronWorkerContext
 
     feature_category :continuous_integration
-    tags :exclude_from_kubernetes
     idempotent!
 
     def perform(*args)

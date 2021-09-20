@@ -8,37 +8,55 @@ RSpec.describe DesignManagement::Action do
   end
 
   describe 'scopes' do
-    describe '.most_recent' do
-      let_it_be(:design_a) { create(:design) }
-      let_it_be(:design_b) { create(:design) }
-      let_it_be(:design_c) { create(:design) }
+    let_it_be(:issue) { create(:issue) }
+    let_it_be(:design_a) { create(:design, issue: issue) }
+    let_it_be(:design_b) { create(:design, issue: issue) }
 
-      let(:designs) { [design_a, design_b, design_c] }
+    context 'with 3 designs' do
+      let_it_be(:design_c) { create(:design, issue: issue) }
 
-      before_all do
-        create(:design_version, designs: [design_a, design_b, design_c])
-        create(:design_version, designs: [design_a, design_b])
-        create(:design_version, designs: [design_a])
+      let_it_be(:action_a_1) { create(:design_action, design: design_a) }
+      let_it_be(:action_a_2) { create(:design_action, design: design_a, event: :deletion) }
+      let_it_be(:action_b)   { create(:design_action, design: design_b) }
+      let_it_be(:action_c)   { create(:design_action, design: design_c, event: :deletion) }
+
+      describe '.most_recent' do
+        let(:designs) { [design_a, design_b, design_c] }
+
+        before_all do
+          create(:design_version, designs: [design_a, design_b, design_c])
+          create(:design_version, designs: [design_a, design_b])
+          create(:design_version, designs: [design_a])
+        end
+
+        it 'finds the correct version for each design' do
+          dvs = described_class.where(design: designs)
+
+          expected = designs
+            .map(&:id)
+            .zip(dvs.order("version_id DESC").pluck(:version_id).uniq)
+
+          actual = dvs.most_recent.map { |dv| [dv.design_id, dv.version_id] }
+
+          expect(actual).to eq(expected)
+        end
       end
 
-      it 'finds the correct version for each design' do
-        dvs = described_class.where(design: designs)
+      describe '.by_design' do
+        it 'returns the actions by design_id' do
+          expect(described_class.by_design([design_a.id, design_b.id]))
+            .to match_array([action_a_1, action_a_2, action_b])
+        end
+      end
 
-        expected = designs
-          .map(&:id)
-          .zip(dvs.order("version_id DESC").pluck(:version_id).uniq)
-
-        actual = dvs.most_recent.map { |dv| [dv.design_id, dv.version_id] }
-
-        expect(actual).to eq(expected)
+      describe '.by_event' do
+        it 'returns the actions by event type' do
+          expect(described_class.by_event(:deletion)).to match_array([action_a_2, action_c])
+        end
       end
     end
 
     describe '.up_to_version' do
-      let_it_be(:issue) { create(:issue) }
-      let_it_be(:design_a) { create(:design, issue: issue) }
-      let_it_be(:design_b) { create(:design, issue: issue) }
-
       # let bindings are not available in before(:all) contexts,
       # so we need to redefine the array on each construction.
       let_it_be(:oldest) { create(:design_version, designs: [design_a, design_b]) }

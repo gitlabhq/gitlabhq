@@ -13,7 +13,7 @@ module QA
         file.visit!
       end
 
-      it 'user edits a file via the Web', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1094' do
+      it 'user edits a file via the Web', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1632' do
         Page::File::Show.perform(&:click_edit)
 
         Page::File::Form.perform do |file|

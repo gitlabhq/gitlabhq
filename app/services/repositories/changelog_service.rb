@@ -61,7 +61,7 @@ module Repositories
     # rubocop: enable Metrics/ParameterLists
 
     def execute
-      config = Gitlab::Changelog::Config.from_git(@project)
+      config = Gitlab::Changelog::Config.from_git(@project, @user)
       from = start_of_commit_range(config)
 
       # For every entry we want to only include the merge request that

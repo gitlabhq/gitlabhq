@@ -1,3 +1,4 @@
+import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
@@ -21,55 +22,52 @@ const mockData = [
     },
   },
 ];
-let vm;
+let wrapper;
 let mock;
 
 function factory(projects = mockData) {
   mock = new MockAdapter(axios);
   mock.onGet(/api\/(.*)\/projects\/gitlab-org%2Fgitlab-ce\/forks/).reply(200, projects);
 
-  vm = shallowMount(ProjectFormGroup, {
+  wrapper = shallowMount(ProjectFormGroup, {
     propsData: {
       namespacePath: 'gitlab-org',
       projectPath: 'gitlab-org/gitlab-ce',
       newForkPath: 'https://test.com',
       helpPagePath: '/help',
     },
+    stubs: { GlSprintf },
   });
+
+  return axios.waitForAll();
 }
 
 describe('Confidential merge request project form group component', () => {
   afterEach(() => {
     mock.restore();
-    vm.destroy();
+    wrapper.destroy();
   });
 
-  it('renders fork dropdown', () => {
-    factory();
+  it('renders fork dropdown', async () => {
+    await factory();
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.element).toMatchSnapshot();
+    expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('sets selected project as first fork', async () => {
+    await factory();
+
+    expect(wrapper.vm.selectedProject).toEqual({
+      id: 1,
+      name: 'root / gitlab-ce',
+      pathWithNamespace: 'root/gitlab-ce',
+      namespaceFullpath: 'root',
     });
   });
 
-  it('sets selected project as first fork', () => {
-    factory();
+  it('renders empty state when response is empty', async () => {
+    await factory([]);
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.vm.selectedProject).toEqual({
-        id: 1,
-        name: 'root / gitlab-ce',
-        pathWithNamespace: 'root/gitlab-ce',
-        namespaceFullpath: 'root',
-      });
-    });
-  });
-
-  it('renders empty state when response is empty', () => {
-    factory([]);
-
-    return vm.vm.$nextTick(() => {
-      expect(vm.element).toMatchSnapshot();
-    });
+    expect(wrapper.element).toMatchSnapshot();
   });
 });

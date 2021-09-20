@@ -4,11 +4,13 @@ require 'spec_helper'
 RSpec.describe 'Query.project.pipeline.stages' do
   include GraphqlHelpers
 
-  let(:project) { create(:project, :repository, :public) }
-  let(:user) { create(:user) }
-  let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
-  let(:stage_graphql_data) { graphql_data['project']['pipeline']['stages'] }
+  subject(:post_query) { post_graphql(query, current_user: user) }
 
+  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
+  let(:stage_nodes) { graphql_data_at(:project, :pipeline, :stages, :nodes) }
   let(:params) { {} }
 
   let(:fields) do
@@ -33,14 +35,42 @@ RSpec.describe 'Query.project.pipeline.stages' do
     )
   end
 
-  before do
+  before_all do
     create(:ci_stage_entity, pipeline: pipeline, name: 'deploy')
-    post_graphql(query, current_user: user)
+    create_list(:ci_build, 2, pipeline: pipeline, stage: 'deploy')
   end
 
-  it_behaves_like 'a working graphql query'
+  it_behaves_like 'a working graphql query' do
+    before do
+      post_query
+    end
+  end
 
   it 'returns the stage of a pipeline' do
-    expect(stage_graphql_data['nodes'].first['name']).to eq('deploy')
+    post_query
+
+    expect(stage_nodes.first['name']).to eq('deploy')
+  end
+
+  describe 'job pagination' do
+    let(:job_nodes) { graphql_dig_at(stage_nodes, :jobs, :nodes) }
+
+    it 'returns up to default limit jobs per stage' do
+      post_query
+
+      expect(job_nodes.count).to eq(2)
+    end
+
+    context 'when the limit is manually set' do
+      before do
+        stub_application_setting(jobs_per_stage_page_size: 1)
+      end
+
+      it 'returns up to custom limit jobs per stage' do
+        post_query
+
+        expect(job_nodes.count).to eq(1)
+      end
+    end
   end
 end

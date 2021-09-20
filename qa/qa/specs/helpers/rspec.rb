@@ -19,12 +19,21 @@ module QA
         # expanding into the global state
         # See: https://github.com/rspec/rspec-core/issues/2603
         def describe_successfully(*args, &describe_body)
-          reporter = ::RSpec.configuration.reporter
-
-          example_group = RSpec.describe(*args, &describe_body)
+          example_group = ::RSpec.describe(*args, &describe_body)
           ran_successfully = example_group.run reporter
           expect(ran_successfully).to eq true
           example_group
+        end
+
+        def send_stop_notification
+          reporter.notify(
+            :stop,
+            ::RSpec::Core::Notifications::ExamplesNotification.new(reporter)
+          )
+        end
+
+        def reporter
+          ::RSpec.configuration.reporter
         end
       end
     end

@@ -155,6 +155,20 @@ module Gitlab
           @execution_message[:approve] = _('Approved the current merge request.')
         end
 
+        desc _('Unapprove a merge request')
+        explanation _('Unapprove the current merge request.')
+        types MergeRequest
+        condition do
+          quick_action_target.persisted? && quick_action_target.can_be_unapproved_by?(current_user)
+        end
+        command :unapprove do
+          success = MergeRequests::RemoveApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
+
+          next unless success
+
+          @execution_message[:unapprove] = _('Unapproved the current merge request.')
+        end
+
         desc do
           if quick_action_target.allows_multiple_reviewers?
             _('Assign reviewer(s)')

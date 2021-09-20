@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
   include Database::TriggerHelpers
+  include Database::TableSchemaHelpers
 
   let(:migration) do
     ActiveRecord::Migration.new.extend(described_class)
@@ -11,6 +12,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
 
   before do
     allow(migration).to receive(:puts)
+
+    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
   end
 
   shared_examples_for 'Setting up to rename a column' do
@@ -216,6 +219,107 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
     it_behaves_like 'Cleaning up from renaming a column' do
       let(:operation) { :cleanup_concurrent_column_rename }
       let(:added_column) { :original }
+    end
+  end
+
+  describe '#create_table' do
+    let(:table_name) { :test_table }
+    let(:column_attributes) do
+      [
+        { name: 'id',         sql_type: 'bigint',                   null: false, default: nil    },
+        { name: 'created_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
+        { name: 'updated_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
+        { name: 'some_id',    sql_type: 'integer',                  null: false, default: nil    },
+        { name: 'active',     sql_type: 'boolean',                  null: false, default: 'true' },
+        { name: 'name',       sql_type: 'text',                     null: true,  default: nil    }
+      ]
+    end
+
+    context 'using a limit: attribute on .text' do
+      it 'creates the table as expected' do
+        migration.create_table table_name do |t|
+          t.timestamps_with_timezone
+          t.integer :some_id, null: false
+          t.boolean :active, null: false, default: true
+          t.text :name, limit: 100
+        end
+
+        expect_table_columns_to_match(column_attributes, table_name)
+        expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 100')
+      end
+    end
+  end
+
+  describe '#with_lock_retries' do
+    let(:model) do
+      ActiveRecord::Migration.new.extend(described_class)
+    end
+
+    let(:buffer) { StringIO.new }
+    let(:in_memory_logger) { Gitlab::JsonLogger.new(buffer) }
+    let(:env) { { 'DISABLE_LOCK_RETRIES' => 'true' } }
+
+    it 'sets the migration class name in the logs' do
+      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+
+      buffer.rewind
+      expect(buffer.read).to include("\"class\":\"#{model.class}\"")
+    end
+
+    where(raise_on_exhaustion: [true, false])
+
+    with_them do
+      it 'sets raise_on_exhaustion as requested' do
+        with_lock_retries = double
+        expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
+        expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: raise_on_exhaustion)
+
+        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) { }
+      end
+    end
+
+    it 'does not raise on exhaustion by default' do
+      with_lock_retries = double
+      expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
+      expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
+
+      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+    end
+
+    it 'defaults to disallowing subtransactions' do
+      with_lock_retries = double
+      expect(Gitlab::Database::WithLockRetries).to receive(:new).with(hash_including(allow_savepoints: false)).and_return(with_lock_retries)
+      expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
+
+      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+    end
+
+    context 'when in transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(true)
+      end
+
+      context 'when lock retries are enabled' do
+        before do
+          allow(model).to receive(:enable_lock_retries?).and_return(true)
+        end
+
+        it 'does not use Gitlab::Database::WithLockRetries and executes the provided block directly' do
+          expect(Gitlab::Database::WithLockRetries).not_to receive(:new)
+
+          expect(model.with_lock_retries(env: env, logger: in_memory_logger) { :block_result }).to eq(:block_result)
+        end
+      end
+
+      context 'when lock retries are not enabled' do
+        before do
+          allow(model).to receive(:enable_lock_retries?).and_return(false)
+        end
+
+        it 'raises an error' do
+          expect { model.with_lock_retries(env: env, logger: in_memory_logger) { } }.to raise_error /can not be run inside an already open transaction/
+        end
+      end
     end
   end
 end

@@ -117,7 +117,6 @@ export const handleLocationHash = () => {
 };
 
 // Check if element scrolled into viewport from above or below
-// Courtesy http://stackoverflow.com/a/7557433/414749
 export const isInViewport = (el, offset = {}) => {
   const rect = el.getBoundingClientRect();
   const { top, left } = offset;
@@ -560,11 +559,9 @@ export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
  * Method to round of values with decimal places
  * with provided precision.
  *
- * Taken from https://stackoverflow.com/a/7343013/414749
- *
  * Eg; roundOffFloat(3.141592, 3) = 3.142
  *
- * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * Refer to spec/frontend/lib/utils/common_utils_spec.js for
  * more supported examples.
  *
  * @param {Float} number
@@ -581,7 +578,7 @@ export const roundOffFloat = (number, precision = 0) => {
  *
  * Eg; roundToNearestHalf(3.141592) = 3, roundToNearestHalf(3.41592) = 3.5
  *
- * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * Refer to spec/frontend/lib/utils/common_utils_spec.js for
  * more supported examples.
  *
  * @param {Float} number
@@ -595,7 +592,7 @@ export const roundToNearestHalf = (num) => Math.round(num * 2).toFixed() / 2;
  *
  * Eg; roundDownFloat(3.141592, 3) = 3.141
  *
- * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * Refer to spec/frontend/lib/utils/common_utils_spec.js for
  * more supported examples.
  *
  * @param {Float} number
@@ -645,7 +642,7 @@ export const NavigationType = {
  *        matched with our query.
  *
  *    You can learn more about behaviour of this method by referring to tests
- *    within `spec/javascripts/lib/utils/common_utils_spec.js`.
+ *    within `spec/frontend/lib/utils/common_utils_spec.js`.
  *
  * @param {string} query String to search for
  * @param {object} searchSpace Object containing properties to search in for `query`

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state do
+RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state, :sidekiq_inline do
   include CreateEnvironmentsHelpers
   include ExclusiveLeaseHelpers
 
@@ -40,6 +40,15 @@ RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state d
         .from(['available']).to(['stopped'])
 
       expect(Ci::Build.where(name: 'stop_review_app').map(&:status).uniq).to eq(['pending'])
+    end
+
+    it 'schedules stop processes in bulk' do
+      args = [[Environment.find_by_name('review/feature-1').id], [Environment.find_by_name('review/feature-2').id]]
+
+      expect(Environments::AutoStopWorker)
+        .to receive(:bulk_perform_async).with(args).once.and_call_original
+
+      subject
     end
 
     context 'when the other sidekiq worker has already been running' do

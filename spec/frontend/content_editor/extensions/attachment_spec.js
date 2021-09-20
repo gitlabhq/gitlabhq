@@ -1,18 +1,23 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { once } from 'lodash';
-import waitForPromises from 'helpers/wait_for_promises';
 import Attachment from '~/content_editor/extensions/attachment';
 import Image from '~/content_editor/extensions/image';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
 import httpStatus from '~/lib/utils/http_status';
-import { loadMarkdownApiResult } from '../markdown_processing_examples';
 import { createTestEditor, createDocBuilder } from '../test_utils';
+
+const PROJECT_WIKI_ATTACHMENT_IMAGE_HTML = `<p data-sourcepos="1:1-1:27" dir="auto">
+  <a class="no-attachment-icon" href="/group1/project1/-/wikis/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="test-file.png">
+    <img alt="test-file" class="lazy" data-src="/group1/project1/-/wikis/test-file.png" data-canonical-src="test-file.png">
+  </a>
+</p>`;
+const PROJECT_WIKI_ATTACHMENT_LINK_HTML = `<p data-sourcepos="1:1-1:26" dir="auto">
+  <a href="/group1/project1/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a>
+</p>`;
 
 describe('content_editor/extensions/attachment', () => {
   let tiptapEditor;
-  let eq;
   let doc;
   let p;
   let image;
@@ -25,6 +30,24 @@ describe('content_editor/extensions/attachment', () => {
   const imageFile = new File(['foo'], 'test-file.png', { type: 'image/png' });
   const attachmentFile = new File(['foo'], 'test-file.zip', { type: 'application/zip' });
 
+  const expectDocumentAfterTransaction = ({ number, expectedDoc, action }) => {
+    return new Promise((resolve) => {
+      let counter = 1;
+      const handleTransaction = () => {
+        if (counter === number) {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+          tiptapEditor.off('update', handleTransaction);
+          resolve();
+        }
+
+        counter += 1;
+      };
+
+      tiptapEditor.on('update', handleTransaction);
+      action();
+    });
+  };
+
   beforeEach(() => {
     renderMarkdown = jest.fn();
 
@@ -34,7 +57,6 @@ describe('content_editor/extensions/attachment', () => {
 
     ({
       builders: { doc, p, image, loading, link },
-      eq,
     } = createDocBuilder({
       tiptapEditor,
       names: {
@@ -76,9 +98,7 @@ describe('content_editor/extensions/attachment', () => {
       const base64EncodedFile = 'data:image/png;base64,Zm9v';
 
       beforeEach(() => {
-        renderMarkdown.mockResolvedValue(
-          loadMarkdownApiResult('project_wiki_attachment_image').body,
-        );
+        renderMarkdown.mockResolvedValue(PROJECT_WIKI_ATTACHMENT_IMAGE_HTML);
       });
 
       describe('when uploading succeeds', () => {
@@ -92,18 +112,14 @@ describe('content_editor/extensions/attachment', () => {
           mock.onPost().reply(httpStatus.OK, successResponse);
         });
 
-        it('inserts an image with src set to the encoded image file and uploading true', (done) => {
+        it('inserts an image with src set to the encoded image file and uploading true', async () => {
           const expectedDoc = doc(p(image({ uploading: true, src: base64EncodedFile })));
 
-          tiptapEditor.on(
-            'update',
-            once(() => {
-              expect(eq(tiptapEditor.state.doc, expectedDoc)).toBe(true);
-              done();
-            }),
-          );
-
-          tiptapEditor.commands.uploadAttachment({ file: imageFile });
+          await expectDocumentAfterTransaction({
+            number: 1,
+            expectedDoc,
+            action: () => tiptapEditor.commands.uploadAttachment({ file: imageFile }),
+          });
         });
 
         it('updates the inserted image with canonicalSrc when upload is successful', async () => {
@@ -118,11 +134,11 @@ describe('content_editor/extensions/attachment', () => {
             ),
           );
 
-          tiptapEditor.commands.uploadAttachment({ file: imageFile });
-
-          await waitForPromises();
-
-          expect(eq(tiptapEditor.state.doc, expectedDoc)).toBe(true);
+          await expectDocumentAfterTransaction({
+            number: 2,
+            expectedDoc,
+            action: () => tiptapEditor.commands.uploadAttachment({ file: imageFile }),
+          });
         });
       });
 
@@ -131,14 +147,14 @@ describe('content_editor/extensions/attachment', () => {
           mock.onPost().reply(httpStatus.INTERNAL_SERVER_ERROR);
         });
 
-        it('resets the doc to orginal state', async () => {
+        it('resets the doc to original state', async () => {
           const expectedDoc = doc(p(''));
 
-          tiptapEditor.commands.uploadAttachment({ file: imageFile });
-
-          await waitForPromises();
-
-          expect(eq(tiptapEditor.state.doc, expectedDoc)).toBe(true);
+          await expectDocumentAfterTransaction({
+            number: 2,
+            expectedDoc,
+            action: () => tiptapEditor.commands.uploadAttachment({ file: imageFile }),
+          });
         });
 
         it('emits an error event that includes an error message', (done) => {
@@ -153,7 +169,7 @@ describe('content_editor/extensions/attachment', () => {
     });
 
     describe('when the file has a zip (or any other attachment) mime type', () => {
-      const markdownApiResult = loadMarkdownApiResult('project_wiki_attachment_link').body;
+      const markdownApiResult = PROJECT_WIKI_ATTACHMENT_LINK_HTML;
 
       beforeEach(() => {
         renderMarkdown.mockResolvedValue(markdownApiResult);
@@ -170,18 +186,14 @@ describe('content_editor/extensions/attachment', () => {
           mock.onPost().reply(httpStatus.OK, successResponse);
         });
 
-        it('inserts a loading mark', (done) => {
+        it('inserts a loading mark', async () => {
           const expectedDoc = doc(p(loading({ label: 'test-file' })));
 
-          tiptapEditor.on(
-            'update',
-            once(() => {
-              expect(eq(tiptapEditor.state.doc, expectedDoc)).toBe(true);
-              done();
-            }),
-          );
-
-          tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
+          await expectDocumentAfterTransaction({
+            number: 1,
+            expectedDoc,
+            action: () => tiptapEditor.commands.uploadAttachment({ file: attachmentFile }),
+          });
         });
 
         it('updates the loading mark with a link with canonicalSrc and href attrs', async () => {
@@ -198,11 +210,11 @@ describe('content_editor/extensions/attachment', () => {
             ),
           );
 
-          tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
-
-          await waitForPromises();
-
-          expect(eq(tiptapEditor.state.doc, expectedDoc)).toBe(true);
+          await expectDocumentAfterTransaction({
+            number: 2,
+            expectedDoc,
+            action: () => tiptapEditor.commands.uploadAttachment({ file: attachmentFile }),
+          });
         });
       });
 
@@ -214,11 +226,11 @@ describe('content_editor/extensions/attachment', () => {
         it('resets the doc to orginal state', async () => {
           const expectedDoc = doc(p(''));
 
-          tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
-
-          await waitForPromises();
-
-          expect(eq(tiptapEditor.state.doc, expectedDoc)).toBe(true);
+          await expectDocumentAfterTransaction({
+            number: 2,
+            expectedDoc,
+            action: () => tiptapEditor.commands.uploadAttachment({ file: attachmentFile }),
+          });
         });
 
         it('emits an error event that includes an error message', (done) => {

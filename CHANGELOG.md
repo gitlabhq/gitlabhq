@@ -593,6 +593,25 @@ entry.
 - [Add helpful text to URL group validation and limit text](gitlab-org/gitlab@59a5a6266cb0d5434596170ffa36e4e74b8d2c2c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65369)) **GitLab Enterprise Edition**
 - [Refactor external storage admin area configuration UI and docs](gitlab-org/gitlab@497ba4fc8f4ec1d234c9f5f1ec5c69712b8c7cb3) ([merge request](gitlab-org/gitlab!66219))
 
+## 14.1.5 (2021-09-02)
+
+### Fixed (1 change)
+
+- [Geo: Replicate multi-arch containers](gitlab-org/gitlab@4f74fe9fb6f53cd877d8f793e2ef74c4177006d1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624)) **GitLab Enterprise Edition**
+
+## 14.1.4 (2021-08-31)
+
+### Security (8 changes)
+
+- [Update apollo_upload_server dependency](gitlab-org/security/gitlab@34e7e3b7590fd76d0f618091551651e8065edfd2) ([merge request](gitlab-org/security/gitlab!1700))
+- [Ensure shared group members lose project access after group deletion](gitlab-org/security/gitlab@4a7b8203776b719c06186c1b189a8cf21572fcd4) ([merge request](gitlab-org/security/gitlab!1684))
+- [Fix stored XSS vulnerability in Datadog settings form](gitlab-org/security/gitlab@0906814af604e7fcab54a96bccadcba11207387d) ([merge request](gitlab-org/security/gitlab!1671))
+- [Inherit user external status while creating project bots](gitlab-org/security/gitlab@d5a26c4145d917b5b49e207e03669d2b7e4ee617) ([merge request](gitlab-org/security/gitlab!1665))
+- [Escape issue reference and title for Jira issues](gitlab-org/security/gitlab@4153444b76421ddf3a7fd21f1fc0500700a4e263) ([merge request](gitlab-org/security/gitlab!1662)) **GitLab Enterprise Edition**
+- [Require sign in for .keys endpoint on non-public instances](gitlab-org/security/gitlab@b090b3f6dee6d21d93595c5e46e6c5c7fc30f1fb) ([merge request](gitlab-org/security/gitlab!1658))
+- [Only create jira connect NS subscriptions for admins](gitlab-org/security/gitlab@3f2040c0e2c90f3fcafdbf0f86bd2591bd458dff) ([merge request](gitlab-org/security/gitlab!1648))
+- [Prevent non-admins from configuring Jira connect app](gitlab-org/security/gitlab@fa864c0a2eaf450033f4c594cea07d9f24144cd6) ([merge request](gitlab-org/security/gitlab!1644))
+
 ## 14.1.3 (2021-08-17)
 
 ### Fixed (2 changes)
@@ -1210,6 +1229,38 @@ entry.
 - [Add more logging to track encoding errors appending CI traces](gitlab-org/gitlab@6f240a53fe0d56910347a0615d575ac8c3e7215e) ([merge request](gitlab-org/gitlab!63920))
 - [Remove diffs gradual load feature flag](gitlab-org/gitlab@027d7c4327b5b6205a84281239027273517bf81b) ([merge request](gitlab-org/gitlab!55478))
 - [Remove partial index for Hashed Storage migration](gitlab-org/gitlab@3ed017a1023d7b0941a7606b69e6caee8d22f15c) ([merge request](gitlab-org/gitlab!62920))
+
+## 14.0.10 (2021-09-02)
+
+No changes.
+
+## 14.0.9 (2021-08-31)
+
+### Security (9 changes)
+
+- [Update apollo_upload_server dependency](gitlab-org/security/gitlab@ced741d93fa664f0c152f524949258bf969b7667) ([merge request](gitlab-org/security/gitlab!1701))
+- [Ensure shared group members lose project access after group deletion](gitlab-org/security/gitlab@3a41f4e29c01188aaaf01ab5e3deec2a9eeed18e) ([merge request](gitlab-org/security/gitlab!1685))
+- [Fix stored XSS vulnerability in Datadog settings form](gitlab-org/security/gitlab@269e5bf96b5e97c3b8e6f6b8b3f593d958de2ecb) ([merge request](gitlab-org/security/gitlab!1672))
+- [Inherit user external status while creating project bots](gitlab-org/security/gitlab@5bae4e53bd4c363270b2fc2e308b81d2a2a388a6) ([merge request](gitlab-org/security/gitlab!1666))
+- [Escape issue reference and title for Jira issues](gitlab-org/security/gitlab@0397f2b393d563559c49c39c0ba1d192d08a10d7) ([merge request](gitlab-org/security/gitlab!1663)) **GitLab Enterprise Edition**
+- [Require sign in for .keys endpoint on non-public instances](gitlab-org/security/gitlab@13a7f6001f663b3745159fa37b518ba4a43355bd) ([merge request](gitlab-org/security/gitlab!1659))
+- [Update Import/Export to use public email when mapping users](gitlab-org/security/gitlab@f3d1b800af55986cef83aeaf4df1312e3070f0c5) ([merge request](gitlab-org/security/gitlab!1654)) **GitLab Enterprise Edition**
+- [Only create jira connect NS subscriptions for admins](gitlab-org/security/gitlab@34bdcd45f24eaa051702834fb6c3568e45721004) ([merge request](gitlab-org/security/gitlab!1647))
+- [Prevent non-admins from configuring Jira connect app](gitlab-org/security/gitlab@4af692246224b1cd1e2fe3c6d0ac2613c0f8fe39) ([merge request](gitlab-org/security/gitlab!1643))
+
+## 14.0.8 (2021-08-25)
+
+### Fixed (1 change)
+
+- [Fix: Sidekiq workers delete each other's metrics](gitlab-org/gitlab@98a85fcbcdf2f8dfef83e552a850591e8952c057) ([merge request](gitlab-org/gitlab!68761))
+
+### Changed (1 change)
+
+- [Resolve "operator does not exist: integer[] || bigint in...](gitlab-org/gitlab@273cc43f7928e89fd11237b58fdfdfb8a24e5493) ([merge request](gitlab-org/gitlab!68761))
+
+### Other (1 change)
+
+- [Revert backfill on ci_build_trace_sections](gitlab-org/gitlab@10a5ad9dce9014eb8af6493402dcdd1658dbd62a) ([merge request](gitlab-org/gitlab!68761))
 
 ## 14.0.7 (2021-08-03)
 
@@ -1943,6 +1994,10 @@ entry.
 - [Track usage of the resolve UI](gitlab-org/gitlab@83519fa35b9b2ab17dbd181a1786be8e78d3efb1) ([merge request](gitlab-org/gitlab!61654))
 - [Add missing metrics information](gitlab-org/gitlab@89cd7fe3b95323e635b2d73e08549b2e6153dc4d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61772/edit))
 - [Track usage of the resolve UI](gitlab-org/gitlab@35c8e30fce288cecefcf2f7c0077d4608e696519) ([merge request](gitlab-org/gitlab!61654))
+
+## 13.12.11 (2021-09-02)
+
+No changes.
 
 ## 13.12.10 (2021-08-10)
 

@@ -435,6 +435,27 @@ Ci::JobArtifact.where(project: project).order(size: :desc).limit(50).map { |a| p
 You can change the number of job artifacts listed by modifying `.limit(50)` to
 the number you want.
 
+#### List artifacts in a single project
+
+List the artifacts for a single project, sorted by artifact size. The output includes the:
+
+- ID of the job that created the artifact
+- artifact size
+- artifact file type
+- artifact creation date
+- on-disk location of the artifact
+
+```ruby
+p = Project.find_by_id(:project ID)
+arts = Ci::JobArtifact.where(project: p)
+
+list = arts.order('sort DESC').limit(50).each do |art|
+    puts "Job ID: #{art.job_id} - Size: #{art.size}b - Type: #{art.file_type} - Created: #{art.created_at} - File loc: #{art.file}"
+end
+```
+
+To change the number of projects listed, change the number in `limit(50)`.
+
 #### Delete job artifacts from jobs completed before a specific date
 
 WARNING:

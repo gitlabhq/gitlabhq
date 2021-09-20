@@ -83,7 +83,7 @@ module Clusters
         project_id: clusterable.id
       }
 
-      model.sanitize_sql_array([Arel.sql(order), values])
+      Arel.sql(model.sanitize_sql_array([Arel.sql(order), values]))
     end
 
     def group_clusters_base_query

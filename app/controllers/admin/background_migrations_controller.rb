@@ -29,9 +29,16 @@ class Admin::BackgroundMigrationsController < Admin::ApplicationController
     redirect_back fallback_location: { action: 'index' }
   end
 
+  def retry
+    migration = batched_migration_class.find(params[:id])
+    migration.retry_failed_jobs! if migration.failed?
+
+    redirect_back fallback_location: { action: 'index' }
+  end
+
   private
 
   def batched_migration_class
-    Gitlab::Database::BackgroundMigration::BatchedMigration
+    @batched_migration_class ||= Gitlab::Database::BackgroundMigration::BatchedMigration
   end
 end

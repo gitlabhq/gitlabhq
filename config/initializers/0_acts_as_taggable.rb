@@ -13,3 +13,7 @@ raise "Counter cache is not disabled" if
 ActsAsTaggableOn::Tagging.include IgnorableColumns
 ActsAsTaggableOn::Tagging.ignore_column :id_convert_to_bigint, remove_with: '14.2', remove_after: '2021-08-22'
 ActsAsTaggableOn::Tagging.ignore_column :taggable_id_convert_to_bigint, remove_with: '14.2', remove_after: '2021-08-22'
+
+# The tags and taggings are supposed to be part of `gitlab_ci`
+ActsAsTaggableOn::Tag.gitlab_schema = :gitlab_ci
+ActsAsTaggableOn::Tagging.gitlab_schema = :gitlab_ci

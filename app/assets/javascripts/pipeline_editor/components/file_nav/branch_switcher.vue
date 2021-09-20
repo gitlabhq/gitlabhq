@@ -158,11 +158,9 @@ export default {
       const updatedPath = setUrlParams({ branch_name: newBranch });
       historyPushState(updatedPath);
 
-      this.$emit('updateCommitSha', { newBranch });
-
       // refetching the content will cause a lot of components to re-render,
       // including the text editor which uses the commit sha to register the CI schema
-      // so we need to make sure the commit sha is updated first
+      // so we need to make sure the currentBranch (and consequently, the commitSha) are updated first
       await this.$nextTick();
       this.$emit('refetchContent');
     },

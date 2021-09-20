@@ -38,8 +38,9 @@ AllCops:
     - 'workhorse/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
-  CacheRootDirectory: tmp
-  MaxFilesInCache: 25000
+  # Use absolute path to avoid orphan directories with changed workspace root.
+  CacheRootDirectory: <%= Dir.getwd %>/tmp
+  MaxFilesInCache: 30000
 
 Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Enabled: true
@@ -711,3 +712,13 @@ QA/SelectorUsage:
     - 'ee/spec/**/*.rb'
   Exclude:
     - 'spec/rubocop/**/*_spec.rb'
+
+Performance/ActiveRecordSubtransactions:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
+Performance/ActiveRecordSubtransactionMethods:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'

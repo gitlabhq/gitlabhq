@@ -244,10 +244,9 @@ function deploy() {
   echoinfo "Deploying ${release} to ${CI_ENVIRONMENT_URL} ..." true
 
   IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
-  gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-ee"
+  gitlab_toolbox_image_repository="${IMAGE_REPOSITORY}/gitlab-toolbox-ee"
   gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-ee"
   gitlab_webservice_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
-  gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-toolbox-ee"
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
   gitaly_image_tag=$(parse_gitaly_image_tag)
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
@@ -272,7 +271,7 @@ HELM_CMD=$(cat << EOF
     --set releaseOverride="${release}" \
     --set global.hosts.hostSuffix="${HOST_SUFFIX}" \
     --set global.hosts.domain="${REVIEW_APPS_DOMAIN}" \
-    --set gitlab.migrations.image.repository="${gitlab_migrations_image_repository}" \
+    --set gitlab.migrations.image.repository="${gitlab_toolbox_image_repository}" \
     --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
     --set gitlab.gitaly.image.tag="${gitaly_image_tag}" \
@@ -286,7 +285,7 @@ HELM_CMD=$(cat << EOF
     --set gitlab.webservice.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.webservice.workhorse.image="${gitlab_workhorse_image_repository}" \
     --set gitlab.webservice.workhorse.tag="${CI_COMMIT_REF_SLUG}" \
-    --set gitlab.task-runner.image.repository="${gitlab_task_runner_image_repository}" \
+    --set gitlab.task-runner.image.repository="${gitlab_toolbox_image_repository}" \
     --set gitlab.task-runner.image.tag="${CI_COMMIT_REF_SLUG}"
 EOF
 )

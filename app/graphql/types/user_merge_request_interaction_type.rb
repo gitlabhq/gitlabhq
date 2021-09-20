@@ -28,7 +28,7 @@ module Types
     field :review_state,
           ::Types::MergeRequestReviewStateEnum,
           null: true,
-          description: 'The state of the review by this user.'
+          description: 'State of the review by this user.'
 
     field :reviewed,
           type: ::GraphQL::Types::Boolean,

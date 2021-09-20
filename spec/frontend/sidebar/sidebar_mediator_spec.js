@@ -63,8 +63,6 @@ describe('Sidebar mediator', () => {
     expect(mediator.store.assignees).toEqual(mockData.assignees);
     expect(mediator.store.humanTimeEstimate).toEqual(mockData.human_time_estimate);
     expect(mediator.store.humanTotalTimeSpent).toEqual(mockData.human_total_time_spent);
-    expect(mediator.store.participants).toEqual(mockData.participants);
-    expect(mediator.store.subscribed).toEqual(mockData.subscribed);
     expect(mediator.store.timeEstimate).toEqual(mockData.time_estimate);
     expect(mediator.store.totalTimeSpent).toEqual(mockData.total_time_spent);
   });
@@ -115,21 +113,6 @@ describe('Sidebar mediator', () => {
 
       moveIssueSpy.mockRestore();
       urlSpy.mockRestore();
-    });
-  });
-
-  it('toggle subscription', () => {
-    mediator.store.setSubscribedState(false);
-    mock.onPost(mediatorMockData.toggleSubscriptionEndpoint).reply(200, {});
-    const spy = jest
-      .spyOn(mediator.service, 'toggleSubscription')
-      .mockReturnValue(Promise.resolve());
-
-    return mediator.toggleSubscription().then(() => {
-      expect(spy).toHaveBeenCalled();
-      expect(mediator.store.subscribed).toEqual(true);
-
-      spy.mockRestore();
     });
   });
 });

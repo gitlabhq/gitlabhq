@@ -468,6 +468,7 @@ RSpec.describe Gitlab::PathRegex do
     end
 
     let_it_be(:git_paths) { container_paths.map { |path| path + '.git' } }
+    let_it_be(:git_lfs_paths) { git_paths.flat_map { |path| [path + '/info/lfs/', path + '/gitlab-lfs/'] } }
     let_it_be(:snippet_paths) { container_paths.grep(%r{snippets/\d}) }
     let_it_be(:wiki_git_paths) { (container_paths - snippet_paths).map { |path| path + '.wiki.git' } }
     let_it_be(:invalid_git_paths) { invalid_paths.map { |path| path + '.git' } }
@@ -495,6 +496,15 @@ RSpec.describe Gitlab::PathRegex do
       it 'matches the expected paths' do
         expect_route_match(git_paths + wiki_git_paths)
         expect_no_route_match(container_paths + invalid_paths + invalid_git_paths)
+      end
+    end
+
+    describe '.repository_git_lfs_route_regex' do
+      subject { %r{\A#{described_class.repository_git_lfs_route_regex}\z} }
+
+      it 'matches the expected paths' do
+        expect_route_match(git_lfs_paths)
+        expect_no_route_match(container_paths + invalid_paths + git_paths + invalid_git_paths)
       end
     end
 

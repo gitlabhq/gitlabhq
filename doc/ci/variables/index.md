@@ -20,6 +20,15 @@ You can use [predefined CI/CD variables](#predefined-cicd-variables) or define c
 - [Group CI/CD variables](#add-a-cicd-variable-to-a-group).
 - [Instance CI/CD variables](#add-a-cicd-variable-to-an-instance).
 
+NOTE:
+Variables set in the GitLab UI are **not** passed down to [service containers](../docker/using_docker_images.md).
+To set them, assign them to variables in the UI, then re-assign them in your `.gitlab-ci.yml`:
+
+```yaml
+variables:
+  SA_PASSWORD: $SA_PASSWORD
+```
+
 > For more information about advanced use of GitLab CI/CD:
 >
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Get to productivity faster with these [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/)
@@ -116,7 +125,7 @@ Use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual
 keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
 
-### Use variables or `$` in other variables
+### Use variables in other variables
 
 You can use variables inside other variables:
 
@@ -129,7 +138,9 @@ job:
     - 'eval "$LS_CMD"'  # Executes 'ls -al'
 ```
 
-If you do not want the `$` interpreted as the start of a variable, use `$$` instead:
+#### Use the `$` character in variables
+
+If you do not want the `$` character interpreted as the start of a variable, use `$$` instead:
 
 ```yaml
 job:
@@ -228,7 +239,7 @@ You can define instance variables via the UI or [API](../../api/instance_level_c
 
 To add an instance variable:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD** and expand the **Variables** section.
 1. Select the **Add variable** button, and fill in the details:
 
@@ -293,6 +304,26 @@ An alternative to `File` type variables is to:
 echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
 # Pass the newly created file to kubectl
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
+```
+
+#### Store multiple values in one variable
+
+It is not possible to create a CI/CD variable that is an array of values, but you
+can use shell scripting techniques for similar behavior.
+
+For example, you can store multiple variables separated by a space in a variable,
+then loop through the values with a script:
+
+```yaml
+job1:
+  variables:
+    FOLDERS: src test docs
+  script:
+    - |
+      for FOLDER in $FOLDERS
+        do
+          echo "The path is root/${FOLDER}"
+        done
 ```
 
 ### Mask a CI/CD variable

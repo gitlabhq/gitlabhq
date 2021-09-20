@@ -21,6 +21,8 @@ module Gitlab
         gon.sentry_environment   = Gitlab.config.sentry.environment
       end
 
+      gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
+      gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
@@ -35,6 +37,7 @@ module Gitlab
       gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
       gon.time_display_relative  = true
       gon.ee                     = Gitlab.ee?
+      gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
 
       if current_user
@@ -51,6 +54,7 @@ module Gitlab
       push_frontend_feature_flag(:usage_data_api, type: :ops, default_enabled: :yaml)
       push_frontend_feature_flag(:security_auto_fix, default_enabled: false)
       push_frontend_feature_flag(:improved_emoji_picker, default_enabled: :yaml)
+      push_frontend_feature_flag(:new_header_search, default_enabled: :yaml)
     end
 
     # Exposes the state of a feature flag to the frontend code.

@@ -170,6 +170,45 @@ Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), itself deployed with 
 
 See [Review Apps](../review_apps.md) for more details about Review Apps.
 
+## Test reports
+
+### Allure report
+
+For additional test results visibility, tests that run on pipelines generate
+and host [Allure](https://github.com/allure-framework/allure2) test reports.
+
+The `QA` framework is using the [Allure RSpec](https://github.com/allure-framework/allure-ruby/blob/master/allure-rspec/README.md)
+gem to generate source files for the `Allure` test report. An additional job
+in the pipeline:
+
+- Fetches these source files from all test jobs.
+- Generates and uploads the report to the `GCS` bucket `gitlab-qa-allure-report` under the project `gitlab-qa-resources`.
+
+A common CI template for report uploading is stored in 
+[`allure-report.yml`](https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/master/ci/allure-report.yml).
+
+#### Merge requests
+
+When these tests are executed in the scope of merge requests, the `Allure` report is
+uploaded to the `GCS` bucket and comment is added linking to their respective reports.
+
+#### Scheduled pipelines
+
+Scheduled pipelines for these tests contain a `generate-allure-report` job under the `Report` stage. They also output
+a link to the current test report.
+
+#### Static report links
+
+Each type of scheduled pipeline generates a static link for the latest test report according to its stage:
+
+- [`master`](https://storage.googleapis.com/gitlab-qa-allure-reports/package-and-qa/master/index.html)
+- [`staging-full`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-full/master/index.html)
+- [`staging-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity/master/index.html)
+- [`staging-sanity-no-admin`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity-no-admin/master/index.html)
+- [`canary-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/canary-sanity/master/index.html)
+- [`production`](https://storage.googleapis.com/gitlab-qa-allure-reports/production/master/index.html)
+- [`production-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/production-sanity/master/index.html)
+
 ## How do I run the tests?
 
 If you are not [testing code in a merge request](#testing-code-in-merge-requests),

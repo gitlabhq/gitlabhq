@@ -88,7 +88,7 @@ export default {
 <template>
   <section data-testid="registry-settings-app">
     <cleanup-policy-enabled-alert v-if="showCleanupPolicyOnAlert" :project-path="projectPath" />
-    <settings-block default-expanded>
+    <settings-block :collapsible="false">
       <template #title> {{ __('Clean up image tags') }}</template>
       <template #description>
         <span data-testid="description">

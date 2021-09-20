@@ -7,8 +7,6 @@ module Packages
 
       attr_reader :name, :packages
 
-      NPM_VALID_DEPENDENCY_TYPES = %i[dependencies devDependencies bundleDependencies peerDependencies].freeze
-
       def initialize(name, packages)
         @name = name
         @packages = packages
@@ -17,12 +15,16 @@ module Packages
       def versions
         package_versions = {}
 
-        packages.each do |package|
-          package_file = package.package_files.last
+        packages.each_batch do |relation|
+          relation.including_dependency_links
+                  .preload_files
+                  .each do |package|
+                    package_file = package.package_files.last
 
-          next unless package_file
+                    next unless package_file
 
-          package_versions[package.version] = build_package_version(package, package_file)
+                    package_versions[package.version] = build_package_version(package, package_file)
+                  end
         end
 
         package_versions
@@ -59,11 +61,8 @@ module Packages
 
       def build_package_dependencies(package)
         dependencies = Hash.new { |h, key| h[key] = {} }
-        dependency_links = package.dependency_links
-                                  .with_dependency_type(NPM_VALID_DEPENDENCY_TYPES)
-                                  .includes_dependency
 
-        dependency_links.find_each do |dependency_link|
+        package.dependency_links.each do |dependency_link|
           dependency = dependency_link.dependency
           dependencies[dependency_link.dependency_type][dependency.name] = dependency.version_pattern
         end
@@ -72,13 +71,13 @@ module Packages
       end
 
       def sorted_versions
-        versions = packages.map(&:version).compact
+        versions = packages.pluck_versions.compact
         VersionSorter.sort(versions)
       end
 
       def package_tags
         Packages::Tag.for_packages(packages)
-                    .preload_package
+                     .preload_package
       end
     end
   end

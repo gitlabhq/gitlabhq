@@ -51,8 +51,11 @@ class IssuableBaseService < ::BaseProjectService
       params.delete(:canonical_issue_id)
       params.delete(:project)
       params.delete(:discussion_locked)
-      params.delete(:confidential)
     end
+
+    # confidential attribute is a special type of metadata and needs to be allowed to be set
+    # by non-members on issues in public projects so that security issues can be reported as confidential.
+    params.delete(:confidential) unless can?(current_user, :set_confidentiality, issuable)
 
     filter_assignees(issuable)
     filter_milestone

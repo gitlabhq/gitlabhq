@@ -195,7 +195,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
 
         expect(Gitlab::Cache::Import::Caching)
           .to receive(:write)
-          .with(an_instance_of(String), email)
+          .with(an_instance_of(String), email, timeout: Gitlab::Cache::Import::Caching::TIMEOUT)
 
         finder.email_for_github_username('kittens')
       end
@@ -208,6 +208,16 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
 
         expect(Gitlab::Cache::Import::Caching)
           .not_to receive(:write)
+
+        expect(finder.email_for_github_username('kittens')).to be_nil
+      end
+
+      it 'shortens the timeout for Email address in cache when an Email address is private/nil from GitHub' do
+        user = double(:user, email: nil)
+        expect(client).to receive(:user).with('kittens').and_return(user)
+
+        expect(Gitlab::Cache::Import::Caching)
+          .to receive(:write).with(an_instance_of(String), nil, timeout: Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
 
         expect(finder.email_for_github_username('kittens')).to be_nil
       end

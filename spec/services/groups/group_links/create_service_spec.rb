@@ -6,18 +6,20 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute' do
   let(:parent_group_user) { create(:user) }
   let(:group_user) { create(:user) }
   let(:child_group_user) { create(:user) }
+  let(:prevent_sharing) { false }
 
   let_it_be(:group_parent) { create(:group, :private) }
   let_it_be(:group) { create(:group, :private, parent: group_parent) }
   let_it_be(:group_child) { create(:group, :private, parent: group) }
 
-  let_it_be(:shared_group_parent, refind: true) { create(:group, :private) }
-  let_it_be(:shared_group, refind: true) { create(:group, :private, parent: shared_group_parent) }
-  let_it_be(:shared_group_child) { create(:group, :private, parent: shared_group) }
+  let(:ns_for_parent) { create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: prevent_sharing) }
+  let(:shared_group_parent) { create(:group, :private, namespace_settings: ns_for_parent) }
+  let(:shared_group) { create(:group, :private, parent: shared_group_parent) }
+  let(:shared_group_child) { create(:group, :private, parent: shared_group) }
 
-  let_it_be(:project_parent) { create(:project, group: shared_group_parent) }
-  let_it_be(:project) { create(:project, group: shared_group) }
-  let_it_be(:project_child) { create(:project, group: shared_group_child) }
+  let(:project_parent) { create(:project, group: shared_group_parent) }
+  let(:project) { create(:project, group: shared_group) }
+  let(:project_child) { create(:project, group: shared_group_child) }
 
   let(:opts) do
     {
@@ -129,9 +131,7 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute' do
   end
 
   context 'sharing outside the hierarchy is disabled' do
-    before do
-      shared_group_parent.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: true)
-    end
+    let(:prevent_sharing) { true }
 
     it 'prevents sharing with a group outside the hierarchy' do
       result = subject.execute

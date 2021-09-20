@@ -10,7 +10,7 @@ module Gitlab
 
         def initialize(variables = [], errors = nil)
           @variables = []
-          @variables_by_key = {}
+          @variables_by_key = Hash.new { |h, k| h[k] = [] }
           @errors = errors
 
           variables.each { |variable| self.append(variable) }
@@ -19,7 +19,7 @@ module Gitlab
         def append(resource)
           item = Collection::Item.fabricate(resource)
           @variables.append(item)
-          @variables_by_key[item[:key]] = item
+          @variables_by_key[item[:key]] << item
 
           self
         end
@@ -46,7 +46,12 @@ module Gitlab
         end
 
         def [](key)
-          @variables_by_key[key]
+          all(key)&.last
+        end
+
+        def all(key)
+          vars = @variables_by_key[key]
+          vars unless vars.empty?
         end
 
         def size
@@ -72,7 +77,7 @@ module Gitlab
             match = Regexp.last_match
             if match[:key]
               # we matched variable
-              if variable = @variables_by_key[match[:key]]
+              if variable = self[match[:key]]
                 variable.value
               elsif keep_undefined
                 match[0]
@@ -85,7 +90,7 @@ module Gitlab
         end
 
         def sort_and_expand_all(project, keep_undefined: false)
-          return self if Feature.disabled?(:variable_inside_variable, project)
+          return self if Feature.disabled?(:variable_inside_variable, project, default_enabled: :yaml)
 
           sorted = Sort.new(self)
           return self.class.new(self, sorted.errors) unless sorted.valid?

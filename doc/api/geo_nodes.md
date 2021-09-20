@@ -393,6 +393,18 @@ Example response:
     "package_files_verification_failed_count": null,
     "package_files_synced_in_percentage": "0.00%",
     "package_files_verified_in_percentage": "0.00%",
+    "pages_deployments_count": 5,
+    "pages_deployments_checksum_total_count": 5,
+    "pages_deployments_checksummed_count": 5,
+    "pages_deployments_checksum_failed_count": 0,
+    "pages_deployments_synced_count": null,
+    "pages_deployments_failed_count": null,
+    "pages_deployments_registry_count": null,
+    "pages_deployments_verification_total_count": null,
+    "pages_deployments_verified_count": null,
+    "pages_deployments_verification_failed_count": null,
+    "pages_deployments_synced_in_percentage": "0.00%",
+    "pages_deployments_verified_in_percentage": "0.00%",
     "terraform_state_versions_count": 5,
     "terraform_state_versions_checksum_total_count": 5,
     "terraform_state_versions_checksummed_count": 5,
@@ -441,6 +453,11 @@ Example response:
     "pipeline_artifacts_verification_failed_count": null,
     "pipeline_artifacts_synced_in_percentage": "0.00%",
     "pipeline_artifacts_verified_in_percentage": "0.00%",
+    "uploads_count": 5,
+    "uploads_synced_count": null,
+    "uploads_failed_count": 0,
+    "uploads_registry_count": null,
+    "uploads_synced_in_percentage": "0.00%",
   },
   {
     "geo_node_id": 2,
@@ -583,6 +600,11 @@ Example response:
     "pipeline_artifacts_verification_failed_count": 0,
     "pipeline_artifacts_synced_in_percentage": "100.00%",
     "pipeline_artifacts_verified_in_percentage": "100.00%",
+    "uploads_count": 5,
+    "uploads_synced_count": null,
+    "uploads_failed_count": 0,
+    "uploads_registry_count": null,
+    "uploads_synced_in_percentage": "0.00%",
   }
 ]
 ```
@@ -722,6 +744,11 @@ Example response:
   "pipeline_artifacts_verification_failed_count": 0,
   "pipeline_artifacts_synced_in_percentage": "100.00%",
   "pipeline_artifacts_verified_in_percentage": "100.00%",
+  "uploads_count": 5,
+  "uploads_synced_count": null,
+  "uploads_failed_count": 0,
+  "uploads_registry_count": null,
+  "uploads_synced_in_percentage": "0.00%",
 }
 ```
 

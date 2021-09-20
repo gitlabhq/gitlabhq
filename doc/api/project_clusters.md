@@ -294,7 +294,7 @@ Parameters:
 | `platform_kubernetes_attributes[token]`     | string  | no       | The token to authenticate against Kubernetes                                               |
 | `platform_kubernetes_attributes[ca_cert]`   | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
 | `platform_kubernetes_attributes[namespace]` | string  | no       | The unique namespace related to the project                                                |
-| `environment_scope`                         | string  | no       | The associated environment to the cluster **(PREMIUM)**                                    |
+| `environment_scope`                         | string  | no       | The associated environment to the cluster                                                  |
 
 NOTE:
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added

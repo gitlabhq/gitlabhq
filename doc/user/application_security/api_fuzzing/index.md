@@ -85,7 +85,7 @@ In GitLab 14.0 and later, API fuzzing configuration files must be in your reposi
 
 ### Web API fuzzing configuration form
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -98,17 +98,16 @@ a YAML snippet that you can paste in your GitLab CI/CD configuration.
 
 To generate an API Fuzzing configuration snippet:
 
-1. From your project's home page, go to **Security & Compliance > Configuration** in the left
-   sidebar.
-1. Select **Configure** in the **API Fuzzing** row.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. In the **API Fuzzing** row, select **Configure**.
 1. Complete the form as needed. Read below for more information on available configuration options.
 1. Select **Generate code snippet**.
    A modal opens with the YAML snippet corresponding to the options you've selected in the form.
 1. Choose one of the following actions:
-   1. Select **Copy code and open `.gitlab-ci.yml` file** to copy the snippet to your clipboard and
-      be redirected to your project's `.gitlab-ci.yml` file where you can paste the YAML
-      configuration.
-   1. Select **Copy code only** to copy the snippet to your clipboard and close the modal.
+   1. To copy the snippet to your clipboard and be redirected to your project's `.gitlab-ci.yml` file,
+      where you can paste the YAML configuration, select **Copy code and open `.gitlab-ci.yml` file**.
+   1. To copy the snippet to your clipboard and close the modal, select **Copy code only**.
 
 ### OpenAPI Specification
 
@@ -995,7 +994,7 @@ Follow these steps to view details of a fuzzing fault:
      **API Fuzzing detected N potential vulnerabilities**. Click the title to display the fault
      details.
 
-1. Click the fault's title to display the fault's details. The table below describes these details.
+1. Select the fault's title to display the fault's details. The table below describes these details.
 
    | Field               | Description                                                                             |
    |:--------------------|:----------------------------------------------------------------------------------------|

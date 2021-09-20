@@ -249,7 +249,7 @@ the tracking database on port 5432.
    gitlab-rake geo:db:create
    ```
 
-1. The reconfigure should automatically migrate the database. You can migrate the database manually if needed, for example if `gitlab_rails['auto_migrate'] = false`:
+1. The reconfigure should automatically migrate the database. You can migrate the database manually if needed, for example if `geo_secondary['auto_migrate'] = false`:
 
    ```shell
    gitlab-rake geo:db:migrate

@@ -2,6 +2,7 @@
 
 module Ci
   class ApplicationRecord < ::ApplicationRecord
+    self.gitlab_schema = :gitlab_ci
     self.abstract_class = true
 
     def self.table_name_prefix

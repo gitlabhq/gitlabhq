@@ -72,13 +72,5 @@ RSpec.describe FeatureFlagsFinder do
         subject
       end
     end
-
-    context 'with a legacy flag' do
-      let!(:feature_flag_3) { create(:operations_feature_flag, :legacy_flag, name: 'flag-c', project: project) }
-
-      it 'returns new flags' do
-        is_expected.to eq([feature_flag_1, feature_flag_2])
-      end
-    end
   end
 end

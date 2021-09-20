@@ -13,11 +13,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          renderable_items.first.link
-        end
-
         override :title
         def title
           context.group.subgroup? ? _('Subgroup information') : _('Group information')

@@ -18,6 +18,11 @@ class Namespace < ApplicationRecord
 
   ignore_column :delayed_project_removal, remove_with: '14.1', remove_after: '2021-05-22'
 
+  # Tells ActiveRecord not to store the full class name, in order to space some space
+  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
+  self.store_full_sti_class = false
+  self.store_full_class_name = false
+
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
   # Android repo (15) + some extra backup.
@@ -52,7 +57,7 @@ class Namespace < ApplicationRecord
   has_one :admin_note, inverse_of: :namespace
   accepts_nested_attributes_for :admin_note, update_only: true
 
-  validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
+  validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,
     length: { maximum: 255 }
@@ -131,6 +136,21 @@ class Namespace < ApplicationRecord
   attr_writer :root_ancestor, :emails_disabled_memoized
 
   class << self
+    def sti_class_for(type_name)
+      case type_name
+      when 'Group'
+        Group
+      when 'Project'
+        Namespaces::ProjectNamespace
+      when 'User'
+        # TODO: We create a normal Namespace until
+        #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68894 is ready
+        Namespace
+      else
+        Namespace
+      end
+    end
+
     def by_path(path)
       find_by('lower(path) = :value', value: path.downcase)
     end
@@ -227,15 +247,27 @@ class Namespace < ApplicationRecord
   end
 
   def kind
-    type == 'Group' ? 'group' : 'user'
-  end
+    return 'group' if group?
+    return 'project' if project?
 
-  def user?
-    kind == 'user'
+    'user' # defaults to user
   end
 
   def group?
-    type == 'Group'
+    type == Group.sti_name
+  end
+
+  def project?
+    type == Namespaces::ProjectNamespace.sti_name
+  end
+
+  def user?
+    # That last bit ensures we're considered a user namespace as a default
+    type.nil? || type == Namespaces::UserNamespace.sti_name || !(group? || project?)
+  end
+
+  def owner_required?
+    user?
   end
 
   def find_fork_of(project)
@@ -498,17 +530,27 @@ class Namespace < ApplicationRecord
 
   def nesting_level_allowed
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
-      errors.add(:parent_id, 'has too deep level of nesting')
+      errors.add(:parent_id, _('has too deep level of nesting'))
     end
   end
 
   def validate_parent_type
-    return unless has_parent?
+    unless has_parent?
+      if project?
+        errors.add(:parent_id, _('must be set for a project namespace'))
+      end
+
+      return
+    end
+
+    if parent.project?
+      errors.add(:parent_id, _('project namespace cannot be the parent of another namespace'))
+    end
 
     if user?
-      errors.add(:parent_id, 'a user namespace cannot have a parent')
+      errors.add(:parent_id, _('cannot not be used for user namespace'))
     elsif group?
-      errors.add(:parent_id, 'a group cannot have a user namespace as its parent') if parent.user?
+      errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user?
     end
   end
 

@@ -123,17 +123,102 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
   end
 
   describe '#[]' do
-    variable = { key: 'VAR', value: 'value', public: true, masked: false }
+    subject { Gitlab::Ci::Variables::Collection.new(variables)[var_name] }
 
-    collection = described_class.new([variable])
+    shared_examples 'an array access operator' do
+      context 'for a non-existent variable name' do
+        let(:var_name) { 'UNKNOWN_VAR' }
 
-    it 'returns nil for a non-existent variable name' do
-      expect(collection['UNKNOWN_VAR']).to be_nil
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'for an existent variable name' do
+        let(:var_name) { 'VAR' }
+
+        it 'returns the last Item' do
+          is_expected.to be_an_instance_of(Gitlab::Ci::Variables::Collection::Item)
+          expect(subject.to_runner_variable).to eq(variables.last)
+        end
+      end
     end
 
-    it 'returns Item for an existent variable name' do
-      expect(collection['VAR']).to be_an_instance_of(Gitlab::Ci::Variables::Collection::Item)
-      expect(collection['VAR'].to_runner_variable).to eq(variable)
+    context 'with variable key with single entry' do
+      let(:variables) do
+        [
+          { key: 'VAR', value: 'value', public: true, masked: false }
+        ]
+      end
+
+      it_behaves_like 'an array access operator'
+    end
+
+    context 'with variable key with multiple entries' do
+      let(:variables) do
+        [
+          { key: 'VAR', value: 'value', public: true, masked: false },
+          { key: 'VAR', value: 'override value', public: true, masked: false }
+        ]
+      end
+
+      it_behaves_like 'an array access operator'
+    end
+  end
+
+  describe '#all' do
+    subject { described_class.new(variables).all(var_name) }
+
+    shared_examples 'a method returning all known variables or nil' do
+      context 'for a non-existent variable name' do
+        let(:var_name) { 'UNKNOWN_VAR' }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'for an existing variable name' do
+        let(:var_name) { 'VAR' }
+
+        it 'returns all expected Items' do
+          is_expected.to eq(expected_variables.map { |v| Gitlab::Ci::Variables::Collection::Item.fabricate(v) })
+        end
+      end
+    end
+
+    context 'with variable key with single entry' do
+      let(:variables) do
+        [
+          { key: 'VAR', value: 'value', public: true, masked: false }
+        ]
+      end
+
+      it_behaves_like 'a method returning all known variables or nil' do
+        let(:expected_variables) do
+          [
+            { key: 'VAR', value: 'value', public: true, masked: false }
+          ]
+        end
+      end
+    end
+
+    context 'with variable key with multiple entries' do
+      let(:variables) do
+        [
+          { key: 'VAR', value: 'value', public: true, masked: false },
+          { key: 'VAR', value: 'override value', public: true, masked: false }
+        ]
+      end
+
+      it_behaves_like 'a method returning all known variables or nil' do
+        let(:expected_variables) do
+          [
+            { key: 'VAR', value: 'value', public: true, masked: false },
+            { key: 'VAR', value: 'override value', public: true, masked: false }
+          ]
+        end
+      end
     end
   end
 

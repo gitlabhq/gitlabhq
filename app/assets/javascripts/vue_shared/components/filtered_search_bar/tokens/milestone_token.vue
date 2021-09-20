@@ -39,8 +39,16 @@ export default {
   },
   methods: {
     getActiveMilestone(milestones, data) {
-      return milestones.find(
-        (milestone) => milestone.title.toLowerCase() === stripQuotes(data).toLowerCase(),
+      /* We need to check default milestones against the value not the
+       * title because there is a discrepancy between the value graphql
+       * accepts and the title.
+       * https://gitlab.com/gitlab-org/gitlab/-/issues/337687#note_648058797
+       */
+
+      return (
+        milestones.find(
+          (milestone) => milestone.title.toLowerCase() === stripQuotes(data).toLowerCase(),
+        ) || this.defaultMilestones.find(({ value }) => value === data)
       );
     },
     fetchMilestones(searchTerm) {

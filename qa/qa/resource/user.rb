@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   module Resource
     class User < Base
@@ -117,6 +115,10 @@ module QA
         '/users'
       end
 
+      def api_put_path
+        "/users/#{id}"
+      end
+
       def api_block_path
         "/users/#{id}/block"
       end
@@ -153,6 +155,16 @@ module QA
         raise ResourceUpdateFailedError, "Failed to block user. Request returned (#{response.code}): `#{response}`."
       end
 
+      def set_public_email
+        response = put(Runtime::API::Request.new(api_client, api_put_path).url, { public_email: email })
+        return if response.code == HTTP_STATUS_OK
+
+        raise(
+          ResourceUpdateFailedError,
+          "Failed to set public email. Request returned (#{response.code}): `#{response}`."
+        )
+      end
+
       private
 
       def ldap_post_body
@@ -175,7 +187,8 @@ module QA
       end
 
       def fetching_own_data?
-        api_user&.username == username || Runtime::User.username == username
+        runtime_username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
+        api_user&.username == username || runtime_username == username
       end
     end
   end

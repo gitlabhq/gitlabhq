@@ -123,7 +123,7 @@ export default {
         category="primary"
         variant="confirm"
         type="submit"
-        data-track-event="click_button"
+        data-track-action="click_button"
         data-qa-selector="save_comment_button"
         @click="$emit('submit-form')"
       >

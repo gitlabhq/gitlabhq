@@ -3,14 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe UserCalloutsController do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
   end
 
   describe "POST #create" do
-    subject { post :create, params: { feature_name: feature_name }, format: :json }
+    let(:params) { { feature_name: feature_name } }
+
+    subject { post :create, params: params, format: :json }
 
     context 'with valid feature name' do
       let(:feature_name) { UserCallout.feature_names.each_key.first }
@@ -30,9 +32,8 @@ RSpec.describe UserCalloutsController do
       context 'when callout entry already exists' do
         let!(:callout) { create(:user_callout, feature_name: UserCallout.feature_names.each_key.first, user: user) }
 
-        it 'returns success' do
-          subject
-
+        it 'returns success', :aggregate_failures do
+          expect { subject }.not_to change { UserCallout.count }
           expect(response).to have_gitlab_http_status(:ok)
         end
       end

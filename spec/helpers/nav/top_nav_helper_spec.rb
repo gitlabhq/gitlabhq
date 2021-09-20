@@ -142,7 +142,7 @@ RSpec.describe Nav::TopNavHelper do
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
             css_class: 'qa-projects-dropdown',
             data: {
-              track_event: 'click_dropdown',
+              track_action: 'click_dropdown',
               track_label: 'projects_dropdown'
             },
             icon: 'project',
@@ -248,7 +248,7 @@ RSpec.describe Nav::TopNavHelper do
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
             css_class: 'qa-groups-dropdown',
             data: {
-              track_event: 'click_dropdown',
+              track_action: 'click_dropdown',
               track_label: 'groups_dropdown'
             },
             icon: 'group',

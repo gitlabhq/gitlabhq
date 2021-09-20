@@ -47,8 +47,26 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
         <!---->
          
         <div
+          class="gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-align-items-center gl-px-5"
+        >
+          <div
+            class="gl-display-flex"
+          >
+            <!---->
+          </div>
+           
+          <div
+            class="gl-display-flex"
+          >
+            <!---->
+          </div>
+        </div>
+         
+        <div
           class="gl-new-dropdown-contents"
         >
+          <!---->
+           
           <li
             class="gl-new-dropdown-item"
             role="presentation"

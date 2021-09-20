@@ -14,31 +14,31 @@ module Types
     field :time_spent,
           GraphQL::Types::Int,
           null: false,
-          description: 'The time spent displayed in seconds.'
+          description: 'Time spent displayed in seconds.'
 
     field :user,
           Types::UserType,
           null: false,
-          description: 'The user that logged the time.'
+          description: 'User that logged the time.'
 
     field :issue,
           Types::IssueType,
           null: true,
-          description: 'The issue that logged time was added to.'
+          description: 'Issue that logged time was added to.'
 
     field :merge_request,
           Types::MergeRequestType,
           null: true,
-          description: 'The merge request that logged time was added to.'
+          description: 'Merge request that logged time was added to.'
 
     field :note,
           Types::Notes::NoteType,
           null: true,
-          description: 'The note where the quick action to add the logged time was executed.'
+          description: 'Note where the quick action was executed to add the logged time.'
 
     field :summary, GraphQL::Types::String,
           null: true,
-          description: 'The summary of how the time was spent.'
+          description: 'Summary of how the time was spent.'
 
     def user
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find

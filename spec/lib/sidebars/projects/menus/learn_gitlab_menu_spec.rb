@@ -4,15 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
   let_it_be(:project) { build(:project) }
-  let_it_be(:experiment_enabled) { true }
-  let_it_be(:tracking_category) { 'Growth::Activation::Experiment::LearnGitLabB' }
+  let_it_be(:learn_gitlab_enabled) { true }
 
   let(:context) do
     Sidebars::Projects::Context.new(
       current_user: nil,
       container: project,
-      learn_gitlab_experiment_enabled: experiment_enabled,
-      learn_gitlab_experiment_tracking_category: tracking_category
+      learn_gitlab_enabled: learn_gitlab_enabled
     )
   end
 
@@ -27,7 +25,6 @@ RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
       {
         class: 'home',
         data: {
-          track_property: tracking_category,
           track_label: 'learn_gitlab'
         }
       }
@@ -46,7 +43,7 @@ RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
     end
 
     context 'when learn gitlab experiment is disabled' do
-      let(:experiment_enabled) { false }
+      let(:learn_gitlab_enabled) { false }
 
       it 'returns false' do
         expect(subject.render?).to eq false
@@ -62,7 +59,7 @@ RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
     end
 
     context 'when learn gitlab experiment is disabled' do
-      let(:experiment_enabled) { false }
+      let(:learn_gitlab_enabled) { false }
 
       it 'returns false' do
         expect(subject.has_pill?).to eq false

@@ -42,6 +42,7 @@ class ApplicationController < ActionController::Base
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.
   before_action :auth_user
+  before_action :limit_session_time, if: -> { !current_user }
 
   prepend_around_action :set_current_context
 
@@ -51,7 +52,7 @@ class ApplicationController < ActionController::Base
   around_action :set_current_admin
 
   after_action :set_page_title_header, if: :json_request?
-  after_action :limit_session_time, if: -> { !current_user }
+  after_action :ensure_authenticated_session_time, if: -> { current_user }
 
   protect_from_forgery with: :exception, prepend: true
 
@@ -62,7 +63,8 @@ class ApplicationController < ActionController::Base
     :bitbucket_import_enabled?, :bitbucket_import_configured?,
     :bitbucket_server_import_enabled?, :fogbugz_import_enabled?,
     :git_import_enabled?, :gitlab_project_import_enabled?,
-    :manifest_import_enabled?, :phabricator_import_enabled?
+    :manifest_import_enabled?, :phabricator_import_enabled?,
+    :masked_page_url
 
   # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
   # concerns due to caching private data.

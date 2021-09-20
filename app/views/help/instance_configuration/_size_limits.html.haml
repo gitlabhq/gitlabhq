@@ -1,0 +1,40 @@
+- size_limits = @instance_configuration.settings[:size_limits]
+- content_for :table_content do
+  - if size_limits.present?
+    %li= link_to _('Size Limits'), '#size-limits'
+
+- content_for :settings_content do
+  - if size_limits.present?
+    %h2#size-limits
+      = _('Size Limits')
+
+    %p
+      = _('There are several size limits in place.')
+    .table-responsive
+    %table
+      %thead
+        %tr
+          %th= _('Setting')
+          %th= instance_configuration_host(@instance_configuration.settings[:host])
+      %tbody
+        %tr
+          %td= _('Maximum attachment size')
+          %td= instance_configuration_human_size_cell(size_limits[:max_attachment_size])
+        %tr
+          %td= _('Maximum push size')
+          %td= instance_configuration_human_size_cell(size_limits[:receive_max_input_size])
+        %tr
+          %td= _('Maximum import size')
+          %td= instance_configuration_human_size_cell(size_limits[:max_import_size])
+        %tr
+          %td= _('Maximum diff patch size')
+          %td= instance_configuration_human_size_cell(size_limits[:diff_max_patch_bytes])
+        %tr
+          %td= _('Maximum job artifact size')
+          %td= instance_configuration_human_size_cell(size_limits[:max_artifacts_size])
+        %tr
+          %td= _('Maximum page size')
+          %td= instance_configuration_human_size_cell(size_limits[:max_pages_size])
+        %tr
+          %td= _('Maximum snippet size')
+          %td= instance_configuration_human_size_cell(size_limits[:snippet_size_limit])

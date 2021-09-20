@@ -127,6 +127,13 @@ module Gitlab
         end
       end
 
+      def find_tag(name)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.find_tag(name)
+        end
+      rescue CommandError
+      end
+
       def local_branches(sort_by: nil, pagination_params: nil)
         wrapped_gitaly_errors do
           gitaly_ref_client.local_branches(sort_by: sort_by, pagination_params: pagination_params)
@@ -191,9 +198,9 @@ module Gitlab
 
       # Returns an Array of Tags
       #
-      def tags
+      def tags(sort_by: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.tags
+          gitaly_ref_client.tags(sort_by: sort_by)
         end
       end
 
@@ -360,27 +367,31 @@ module Gitlab
         end
       end
 
-      def new_blobs(newrev, dynamic_timeout: nil)
-        return [] if newrev.blank? || newrev == ::Gitlab::Git::BLANK_SHA
+      def new_blobs(newrevs, dynamic_timeout: nil)
+        newrevs = Array.wrap(newrevs).reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
+        return [] if newrevs.empty?
 
-        strong_memoize("new_blobs_#{newrev}") do
-          wrapped_gitaly_errors do
-            gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
-          end
+        newrevs = newrevs.uniq.sort
+
+        @new_blobs ||= Hash.new do |h, revs|
+          h[revs] = blobs(['--not', '--all', '--not'] + newrevs, with_paths: true, dynamic_timeout: dynamic_timeout)
         end
+
+        @new_blobs[newrevs]
       end
 
       # List blobs reachable via a set of revisions. Supports the
       # pseudo-revisions `--not` and `--all`. Uses the minimum of
       # GitalyClient.medium_timeout and dynamic timeout if the dynamic
       # timeout is set, otherwise it'll always use the medium timeout.
-      def blobs(revisions, dynamic_timeout: nil)
+      def blobs(revisions, with_paths: false, dynamic_timeout: nil)
         revisions = revisions.reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
 
         return [] if revisions.blank?
 
         wrapped_gitaly_errors do
-          gitaly_blob_client.list_blobs(revisions, limit: REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
+          gitaly_blob_client.list_blobs(revisions, limit: REV_LIST_COMMIT_LIMIT,
+                                        with_paths: with_paths, dynamic_timeout: dynamic_timeout)
         end
       end
 
@@ -491,13 +502,6 @@ module Gitlab
         []
       end
 
-      # Returns a RefName for a given SHA
-      def ref_name_for_sha(ref_path, sha)
-        raise ArgumentError, "sha can't be empty" unless sha.present?
-
-        gitaly_ref_client.find_ref_name(sha, ref_path)
-      end
-
       # Get refs hash which key is the commit id
       # and value is a Gitlab::Git::Tag or Gitlab::Git::Branch
       # Note that both inherit from Gitlab::Git::Ref
@@ -605,10 +609,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_operation_client.rm_tag(tag_name, user)
         end
-      end
-
-      def find_tag(name)
-        tags.find { |tag| tag.name == name }
       end
 
       def merge_to_ref(user, **kwargs)
@@ -876,12 +876,6 @@ module Gitlab
         end
       end
 
-      def squash_in_progress?(squash_id)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.squash_in_progress?(squash_id)
-        end
-      end
-
       def bundle_to_disk(save_path)
         wrapped_gitaly_errors do
           gitaly_repository_client.create_bundle(save_path)
@@ -911,17 +905,7 @@ module Gitlab
         # This guard avoids Gitaly log/error spam
         raise NoRepository, 'repository does not exist' unless exists?
 
-        if Feature.enabled?(:set_full_path)
-          gitaly_repository_client.set_full_path(full_path)
-        else
-          set_config('gitlab.fullpath' => full_path)
-        end
-      end
-
-      def set_config(entries)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.set_config(entries)
-        end
+        gitaly_repository_client.set_full_path(full_path)
       end
 
       def disconnect_alternates

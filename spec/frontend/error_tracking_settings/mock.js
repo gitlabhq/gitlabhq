@@ -42,6 +42,7 @@ export const sampleBackendProject = {
 export const sampleFrontendSettings = {
   apiHost: 'apiHost',
   enabled: false,
+  integrated: false,
   token: 'token',
   selectedProject: {
     slug: normalizedProject.slug,
@@ -54,6 +55,7 @@ export const sampleFrontendSettings = {
 export const transformedSettings = {
   api_host: 'apiHost',
   enabled: false,
+  integrated: false,
   token: 'token',
   project: {
     slug: normalizedProject.slug,
@@ -71,6 +73,7 @@ export const defaultProps = {
 export const initialEmptyState = {
   apiHost: '',
   enabled: false,
+  integrated: false,
   project: null,
   token: '',
   listProjectsEndpoint: TEST_HOST,
@@ -80,6 +83,7 @@ export const initialEmptyState = {
 export const initialPopulatedState = {
   apiHost: 'apiHost',
   enabled: true,
+  integrated: true,
   project: JSON.stringify(projectList[0]),
   token: 'token',
   listProjectsEndpoint: TEST_HOST,

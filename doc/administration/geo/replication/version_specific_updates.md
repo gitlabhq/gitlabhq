@@ -8,8 +8,43 @@ type: howto
 # Version-specific update instructions **(PREMIUM SELF)**
 
 Review this page for update instructions for your version. These steps
-accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
+accompany the [general steps](updating_the_geo_sites.md#general-update-steps)
 for updating Geo nodes.
+
+## Updating to 14.1, 14.2, 14.3
+
+We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture (for example `amd64`) would be replicated to the secondary node. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
+
+You can check if you are affected by running:
+
+```shell
+docker manifest inspect <SECONDARY_IMAGE_LOCATION> | jq '.mediaType'
+```
+
+Where `<SECONDARY_IMAGE_LOCATION>` is a container image on your secondary node.
+If the output matches `application/vnd.docker.distribution.manifest.list.v2+json`
+(there can be a `mediaType` entry at several levels, we only care about the top level entry),
+then you don't need to do anything.
+
+Otherwise, on all your **secondary** nodes, in a [Rails console](../../operations/rails_console.md), run the following:
+
+ ```ruby
+ list_type = 'application/vnd.docker.distribution.manifest.list.v2+json'
+
+ Geo::ContainerRepositoryRegistry.synced.each do |gcr|
+   cr = gcr.container_repository
+   primary = Geo::ContainerRepositorySync.new(cr)
+   cr.tags.each do |tag|
+     primary_manifest = JSON.parse(primary.send(:client).repository_raw_manifest(cr.path, tag.name))
+     next unless primary_manifest['mediaType'].eql?(list_type)
+
+     cr.delete_tag_by_name(tag.name)
+   end
+   primary.execute
+ end
+ ```
+
+If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry, we recommend [upgrading](updating_the_geo_sites.md) to at least GitLab 14.1.
 
 ## Updating to GitLab 14.0/14.1
 
@@ -277,7 +312,7 @@ GitLab 12.2 includes the following minor PostgreSQL updates:
 
 This update occurs even if major PostgreSQL updates are disabled.
 
-Before [refreshing Foreign Data Wrapper during a Geo upgrade](https://docs.gitlab.com/omnibus/update/README.html#run-post-deployment-migrations-and-checks),
+Before [refreshing Foreign Data Wrapper during a Geo upgrade](../../../update/zero_downtime.md#step-4-run-post-deployment-migrations-and-checks),
 restart the Geo tracking database:
 
 ```shell

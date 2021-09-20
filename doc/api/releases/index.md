@@ -4,7 +4,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Releases API
+# Releases API **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
 > - Using this API you can manipulate GitLab [Release](../../user/project/releases/index.md) entries.
@@ -21,7 +21,7 @@ For authentication, the Releases API accepts either:
 
 - A [Personal Access Token](../../user/profile/personal_access_tokens.md) using the
   `PRIVATE-TOKEN` header.
-- The [GitLab CI/CD job token](../index.md#gitlab-cicd-job-token) `$CI_JOB_TOKEN` using
+- The [GitLab CI/CD job token](../../ci/jobs/ci_job_token.md) `$CI_JOB_TOKEN` using
   the `JOB-TOKEN` header.
 
 ## List Releases
@@ -89,8 +89,8 @@ Example response:
             "state":"closed",
             "created_at":"2019-07-12T19:45:44.256Z",
             "updated_at":"2019-07-12T19:45:44.256Z",
-            "due_date":"2019-08-16T11:00:00.256Z",
-            "start_date":"2019-07-30T12:00:00.256Z",
+            "due_date":"2019-08-16",
+            "start_date":"2019-07-30",
             "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
             "issue_stats": {
                "total": 98,
@@ -106,8 +106,8 @@ Example response:
             "state":"closed",
             "created_at":"2019-07-16T14:00:12.256Z",
             "updated_at":"2019-07-16T14:00:12.256Z",
-            "due_date":"2019-08-16T11:00:00.256Z",
-            "start_date":"2019-07-30T12:00:00.256Z",
+            "due_date":"2019-08-16",
+            "start_date":"2019-07-30",
             "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
             "issue_stats": {
                "total": 24,
@@ -292,8 +292,8 @@ Example response:
          "state":"closed",
          "created_at":"2019-07-12T19:45:44.256Z",
          "updated_at":"2019-07-12T19:45:44.256Z",
-         "due_date":"2019-08-16T11:00:00.256Z",
-         "start_date":"2019-07-30T12:00:00.256Z",
+         "due_date":"2019-08-16",
+         "start_date":"2019-07-30",
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
          "issue_stats": {
             "total": 98,
@@ -309,8 +309,8 @@ Example response:
          "state":"closed",
          "created_at":"2019-07-16T14:00:12.256Z",
          "updated_at":"2019-07-16T14:00:12.256Z",
-         "due_date":"2019-08-16T11:00:00.256Z",
-         "start_date":"2019-07-30T12:00:00.256Z",
+         "due_date":"2019-08-16",
+         "start_date":"2019-07-30",
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
          "issue_stats": {
             "total": 24,
@@ -434,8 +434,8 @@ Example response:
          "state":"closed",
          "created_at":"2019-07-12T19:45:44.256Z",
          "updated_at":"2019-07-12T19:45:44.256Z",
-         "due_date":"2019-08-16T11:00:00.256Z",
-         "start_date":"2019-07-30T12:00:00.256Z",
+         "due_date":"2019-08-16",
+         "start_date":"2019-07-30",
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
          "issue_stats": {
             "total": 99,
@@ -451,8 +451,8 @@ Example response:
          "state":"closed",
          "created_at":"2019-07-16T14:00:12.256Z",
          "updated_at":"2019-07-16T14:00:12.256Z",
-         "due_date":"2019-08-16T11:00:00.256Z",
-         "start_date":"2019-07-30T12:00:00.256Z",
+         "due_date":"2019-08-16",
+         "start_date":"2019-07-30",
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
          "issue_stats": {
             "total": 24,
@@ -499,7 +499,7 @@ Example response:
 
 ### Group milestones **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in GitLab 13.5.
 
 Group milestones associated with the project may be specified in the `milestones`
 array for [Create a release](#create-a-release) and [Update a release](#update-a-release)
@@ -508,7 +508,7 @@ adding milestones for ancestor groups raises an error.
 
 ## Collect release evidence **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
 
 Create Evidence for an existing Release.
 
@@ -600,8 +600,8 @@ Example response:
          "state":"active",
          "created_at":"2019-09-01T13:00:00.256Z",
          "updated_at":"2019-09-01T13:00:00.256Z",
-         "due_date":"2019-09-20T13:00:00.256Z",
-         "start_date":"2019-09-05T12:00:00.256Z",
+         "due_date":"2019-09-20",
+         "start_date":"2019-09-05",
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/3",
          "issue_stats": {
             "opened": 11,

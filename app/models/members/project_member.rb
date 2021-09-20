@@ -44,7 +44,7 @@ class ProjectMember < Member
         project_ids.each do |project_id|
           project = Project.find(project_id)
 
-          Members::Projects::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
+          Members::Projects::BulkCreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
             project,
             users,
             access_level,

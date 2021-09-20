@@ -19,7 +19,7 @@ export const LOCAL_STORAGE_KEY = 'gl-keyboard-shortcuts-customizations';
  */
 export const getCustomizations = memoize(() => {
   let parsedCustomizations = {};
-  const localStorageIsSafe = AccessorUtilities.isLocalStorageAccessSafe();
+  const localStorageIsSafe = AccessorUtilities.canUseLocalStorage();
 
   if (localStorageIsSafe) {
     try {

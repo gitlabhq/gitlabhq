@@ -27,10 +27,6 @@ RSpec.describe 'Pipeline Editor', :js do
   end
 
   context 'branch switcher' do
-    before do
-      stub_feature_flags(pipeline_editor_branch_switcher: true)
-    end
-
     def switch_to_branch(branch)
       find('[data-testid="branch-selector"]').click
 

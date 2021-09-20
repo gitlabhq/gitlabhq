@@ -18,17 +18,6 @@ RSpec.describe Projects::UpdatePagesService do
 
   subject { described_class.new(project, build) }
 
-  before do
-    stub_feature_flags(skip_pages_deploy_to_legacy_storage: false)
-    project.legacy_remove_pages
-  end
-
-  context '::TMP_EXTRACT_PATH' do
-    subject { described_class::TMP_EXTRACT_PATH }
-
-    it { is_expected.not_to match(Gitlab::PathRegex.namespace_format_regex) }
-  end
-
   context 'for new artifacts' do
     context "for a valid job" do
       let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }
@@ -52,36 +41,6 @@ RSpec.describe Projects::UpdatePagesService do
         expect(project.pages_metadatum).to be_deployed
         expect(project.pages_metadatum.artifacts_archive).to eq(artifacts_archive)
         expect(project.pages_deployed?).to be_truthy
-
-        # Check that all expected files are extracted
-        %w[index.html zero .hidden/file].each do |filename|
-          expect(File.exist?(File.join(project.pages_path, 'public', filename))).to be_truthy
-        end
-      end
-
-      it 'creates a temporary directory with the project and build ID' do
-        expect(Dir).to receive(:mktmpdir).with("project-#{project.id}-build-#{build.id}-", anything).and_call_original
-
-        subject.execute
-      end
-
-      it "doesn't deploy to legacy storage if it's disabled" do
-        allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
-
-        expect(execute).to eq(:success)
-        expect(project.pages_deployed?).to be_truthy
-
-        expect(File.exist?(File.join(project.pages_path, 'public', 'index.html'))).to eq(false)
-      end
-
-      it "doesn't deploy to legacy storage if skip_pages_deploy_to_legacy_storage is enabled" do
-        allow(Settings.pages.local_store).to receive(:enabled).and_return(true)
-        stub_feature_flags(skip_pages_deploy_to_legacy_storage: true)
-
-        expect(execute).to eq(:success)
-        expect(project.pages_deployed?).to be_truthy
-
-        expect(File.exist?(File.join(project.pages_path, 'public', 'index.html'))).to eq(false)
       end
 
       it 'creates pages_deployment and saves it in the metadata' do
@@ -97,16 +56,6 @@ RSpec.describe Projects::UpdatePagesService do
         expect(deployment.file_sha256).to eq(artifacts_archive.file_sha256)
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
         expect(deployment.ci_build_id).to eq(build.id)
-      end
-
-      it 'fails if another deployment is in progress' do
-        subject.try_obtain_lease do
-          expect do
-            execute
-          end.to raise_error("Failed to deploy pages - other deployment is in progress")
-
-          expect(GenericCommitStatus.last.description).to eq("Failed to deploy pages - other deployment is in progress")
-        end
       end
 
       it 'does not fail if pages_metadata is absent' do
@@ -156,70 +105,15 @@ RSpec.describe Projects::UpdatePagesService do
         expect(GenericCommitStatus.last.description).to eq("pages site contains 3 file entries, while limit is set to 2")
       end
 
-      it 'removes pages after destroy' do
-        expect(PagesWorker).to receive(:perform_in)
-        expect(project.pages_deployed?).to be_falsey
-        expect(Dir.exist?(File.join(project.pages_path))).to be_falsey
-
-        expect(execute).to eq(:success)
-
-        expect(project.pages_metadatum).to be_deployed
-        expect(project.pages_deployed?).to be_truthy
-        expect(Dir.exist?(File.join(project.pages_path))).to be_truthy
-
-        project.destroy!
-
-        expect(Dir.exist?(File.join(project.pages_path))).to be_falsey
-        expect(ProjectPagesMetadatum.find_by_project_id(project)).to be_nil
-      end
-
-      context 'when using empty file' do
-        let(:file) { empty_file }
-
-        it 'fails to extract' do
-          expect { execute }
-            .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
-        end
-      end
-
-      context 'when using pages with non-writeable public' do
-        let(:file) { fixture_file_upload("spec/fixtures/pages_non_writeable.zip") }
-
-        context 'when using RubyZip' do
-          it 'succeeds to extract' do
-            expect(execute).to eq(:success)
-            expect(project.pages_metadatum).to be_deployed
-          end
-        end
-      end
-
       context 'when timeout happens by DNS error' do
         before do
           allow_next_instance_of(described_class) do |instance|
-            allow(instance).to receive(:extract_zip_archive!).and_raise(SocketError)
+            allow(instance).to receive(:create_pages_deployment).and_raise(SocketError)
           end
         end
 
         it 'raises an error' do
           expect { execute }.to raise_error(SocketError)
-
-          build.reload
-          expect(deploy_status).to be_failed
-          expect(project.pages_metadatum).not_to be_deployed
-        end
-      end
-
-      context 'when failed to extract zip artifacts' do
-        before do
-          expect_next_instance_of(described_class) do |instance|
-            expect(instance).to receive(:extract_zip_archive!)
-              .and_raise(Projects::UpdatePagesService::FailedToExtractError)
-          end
-        end
-
-        it 'raises an error' do
-          expect { execute }
-            .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
 
           build.reload
           expect(deploy_status).to be_failed
@@ -338,12 +232,6 @@ RSpec.describe Projects::UpdatePagesService do
     end
   end
 
-  it 'fails to remove project pages when no pages is deployed' do
-    expect(PagesWorker).not_to receive(:perform_in)
-    expect(project.pages_deployed?).to be_falsey
-    project.destroy!
-  end
-
   it 'fails if no artifacts' do
     expect(execute).not_to eq(:success)
   end
@@ -384,38 +272,6 @@ RSpec.describe Projects::UpdatePagesService do
     end
   end
 
-  context 'when file size is spoofed' do
-    let(:metadata) { spy('metadata') }
-
-    include_context 'pages zip with spoofed size'
-
-    before do
-      file = fixture_file_upload(fake_zip_path, 'pages.zip')
-      metafile = fixture_file_upload('spec/fixtures/pages.zip.meta')
-
-      create(:ci_job_artifact, :archive, file: file, job: build)
-      create(:ci_job_artifact, :metadata, file: metafile, job: build)
-
-      allow(build).to receive(:artifacts_metadata_entry).with('public/', recursive: true)
-                        .and_return(metadata)
-      allow(metadata).to receive(:total_size).and_return(100)
-
-      # to pass entries count check
-      root_metadata = double('root metadata')
-      allow(build).to receive(:artifacts_metadata_entry).with('', recursive: true)
-                        .and_return(root_metadata)
-      allow(root_metadata).to receive_message_chain(:entries, :count).and_return(10)
-    end
-
-    it 'raises an error' do
-      expect do
-        subject.execute
-      end.to raise_error(Projects::UpdatePagesService::FailedToExtractError,
-                         'Entry public/index.html should be 1B but is larger when inflated')
-      expect(deploy_status).to be_script_failure
-    end
-  end
-
   context 'when retrying the job' do
     let!(:older_deploy_job) do
       create(:generic_commit_status, :failed, pipeline: pipeline,
@@ -434,18 +290,6 @@ RSpec.describe Projects::UpdatePagesService do
       expect(execute).to eq(:success)
 
       expect(older_deploy_job.reload).to be_retried
-    end
-
-    context 'when FF ci_fix_commit_status_retried is disabled' do
-      before do
-        stub_feature_flags(ci_fix_commit_status_retried: false)
-      end
-
-      it 'does not mark older pages:deploy jobs retried' do
-        expect(execute).to eq(:success)
-
-        expect(older_deploy_job.reload).not_to be_retried
-      end
     end
   end
 

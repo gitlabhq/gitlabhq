@@ -431,7 +431,7 @@ module Gitlab
           replace_table = Gitlab::Database::Partitioning::ReplaceTable.new(original_table_name.to_s,
               replacement_table_name, replaced_table_name, primary_key_name)
 
-          with_lock_retries do
+          transaction do
             drop_sync_trigger(original_table_name)
 
             replace_table.perform do |sql|

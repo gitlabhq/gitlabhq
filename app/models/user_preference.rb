@@ -20,7 +20,7 @@ class UserPreference < ApplicationRecord
     less_than_or_equal_to: Gitlab::TabWidth::MAX
   }
 
-  enum experience_level: { novice: 0, experienced: 1 }
+  ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
 
   default_value_for :tab_width, value: Gitlab::TabWidth::DEFAULT, allows_nil: false
   default_value_for :timezone, value: Time.zone.tzinfo.name, allows_nil: false

@@ -12,15 +12,15 @@ module Resolvers
 
     argument :author_id, ::Types::GlobalIDType[::User],
               required: false,
-              description: 'The ID of an author.'
+              description: 'ID of an author.'
 
     argument :project_id, ::Types::GlobalIDType[::Project],
               required: false,
-              description: 'The ID of a project.'
+              description: 'ID of a project.'
 
     argument :type, Types::Snippets::TypeEnum,
               required: false,
-              description: 'The type of snippet.'
+              description: 'Type of snippet.'
 
     argument :explore,
               GraphQL::Types::Boolean,

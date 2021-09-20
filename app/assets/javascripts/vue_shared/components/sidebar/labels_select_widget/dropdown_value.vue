@@ -1,5 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
+import { sortBy } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
@@ -7,6 +8,7 @@ export default {
   components: {
     GlLabel,
   },
+  inject: ['allowScopedLabels'],
   props: {
     disableLabels: {
       type: Boolean,
@@ -21,10 +23,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    allowScopedLabels: {
-      type: Boolean,
-      required: true,
-    },
     labelsFilterBasePath: {
       type: String,
       required: true,
@@ -32,6 +30,11 @@ export default {
     labelsFilterParam: {
       type: String,
       required: true,
+    },
+  },
+  computed: {
+    sortedSelectedLabels() {
+      return sortBy(this.selectedLabels, (label) => (isScopedLabel(label) ? 0 : 1));
     },
   },
   methods: {
@@ -63,7 +66,7 @@ export default {
     </span>
     <template v-else>
       <gl-label
-        v-for="label in selectedLabels"
+        v-for="label in sortedSelectedLabels"
         :key="label.id"
         data-qa-selector="selected_label_content"
         :data-qa-label-name="label.title"

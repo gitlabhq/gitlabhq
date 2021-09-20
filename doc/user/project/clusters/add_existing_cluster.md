@@ -4,10 +4,16 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Add an existing Kubernetes cluster
+# Connect existing clusters through cluster certificates
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,
 or instance and benefit from the integration with GitLab.
+
+WARNING:
+The process described on this page uses cluster certificates to connect your cluster
+to GitLab. Although this method still works, it is **no longer recommended**.
+To connect your cluster to GitLab, we **recommend** using the [GitLab Kubernetes Agent](../../clusters/agent/index.md)
+instead. **(PREMIUM)**
 
 ## Prerequisites
 
@@ -61,7 +67,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 1. Navigate to your:
    1. Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level cluster.
    1. Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   1. **Menu >** **{admin}** **Admin >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   1. **Menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Click the **Add existing cluster** tab and fill in the details:
    1. **Kubernetes cluster name** (required) - The name you wish to give the cluster.
@@ -211,7 +217,8 @@ integration to work properly.
 WARNING:
 Disabling RBAC means that any application running in the cluster,
 or user who can authenticate to the cluster, has full API access. This is a
-[security concern](index.md#security-implications), and may not be desirable.
+[security concern](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates),
+and may not be desirable.
 
 To effectively disable RBAC, global permissions can be applied granting full access:
 

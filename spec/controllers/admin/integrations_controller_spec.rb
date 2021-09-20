@@ -9,6 +9,14 @@ RSpec.describe Admin::IntegrationsController do
     sign_in(admin)
   end
 
+  it_behaves_like IntegrationsActions do
+    let(:integration_attributes) { { instance: true, project: nil } }
+
+    let(:routing_params) do
+      { id: integration.to_param }
+    end
+  end
+
   describe '#edit' do
     Integration.available_integration_names.each do |integration_name|
       context "#{integration_name}" do

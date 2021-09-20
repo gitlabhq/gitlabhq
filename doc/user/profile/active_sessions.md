@@ -18,7 +18,7 @@ To list all active sessions:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Active Sessions**.
+1. On the left sidebar, select **Active Sessions**.
 
 ![Active sessions list](img/active_sessions_list.png)
 
@@ -35,7 +35,7 @@ To revoke an active session:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Active Sessions**.
+1. On the left sidebar, select **Active Sessions**.
 1. Select **Revoke** next to a session. The current session cannot be revoked, as this would sign you out of GitLab.
 
 NOTE:

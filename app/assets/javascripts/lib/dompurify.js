@@ -3,7 +3,7 @@ import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
 
 const defaultConfig = {
   // Safely allow SVG <use> tags
-  ADD_TAGS: ['use'],
+  ADD_TAGS: ['use', 'gl-emoji'],
   // Prevent possible XSS attacks with data-* attributes used by @rails/ujs
   // See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1421
   FORBID_ATTR: ['data-remote', 'data-url', 'data-type', 'data-method'],
@@ -16,7 +16,7 @@ const getAllowedIconUrls = (gon = window.gon) =>
 const isUrlAllowed = (url) => getAllowedIconUrls().some((allowedUrl) => url.startsWith(allowedUrl));
 
 const isHrefSafe = (url) =>
-  isUrlAllowed(url) || isUrlAllowed(relativePathToAbsolute(url, getBaseURL()));
+  isUrlAllowed(url) || isUrlAllowed(relativePathToAbsolute(url, getBaseURL())) || url.match(/^#/);
 
 const removeUnsafeHref = (node, attr) => {
   if (!node.hasAttribute(attr)) {
@@ -52,4 +52,4 @@ addHook('afterSanitizeAttributes', (node) => {
   }
 });
 
-export const sanitize = (val, config = defaultConfig) => dompurifySanitize(val, config);
+export const sanitize = (val, config) => dompurifySanitize(val, { ...defaultConfig, ...config });

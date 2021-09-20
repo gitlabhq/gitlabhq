@@ -32,12 +32,12 @@ official ways to update GitLab:
 
 ### Linux packages (Omnibus GitLab)
 
-The [Omnibus update guide](https://docs.gitlab.com/omnibus/update/)
+The [package upgrade guide](package/index.md)
 contains the steps needed to update a package installed by official GitLab
 repositories.
 
 There are also instructions when you want to
-[update to a specific version](https://docs.gitlab.com/omnibus/update/#multi-step-upgrade-using-the-official-repositories).
+[update to a specific version](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 ### Installation from source
 
@@ -70,6 +70,10 @@ Instructions on how to update a cloud-native deployment are in
 Use the [version mapping](https://docs.gitlab.com/charts/installation/version_mappings.html)
 from the chart version to GitLab version to determine the [upgrade path](#upgrade-paths).
 
+## Plan your upgrade
+
+See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
+
 ## Checking for background migrations before upgrading
 
 Certain major/minor releases may require different migrations to be
@@ -79,7 +83,7 @@ finished before you update to the newer version.
 
 To check the status of [batched background migrations](../user/admin_area/monitoring/background_migrations.md):
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Migrations**.
 
    ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
@@ -174,15 +178,15 @@ migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
 ## Upgrade paths
 
-Upgrading across multiple GitLab versions in one go is *only possible with downtime*.
-The following examples assume a downtime upgrade.
-See the section below for [zero downtime upgrades](#upgrading-without-downtime).
+Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
+The following examples assume downtime is acceptable while upgrading.
+If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> [`8.12.0`](#upgrades-from-versions-earlier-than-812) -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [`14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -190,7 +194,7 @@ upgrade paths.
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `14.1.2`       | `13.9.2`     | `13.9.2` -> `13.12.9` -> `14.0.7` -> `14.1.2`                                                        | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`.                                                          |
-| `13.5.4`       | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4`                                        | Three intermediate versions are required: `12.10`, `13.0` and `13.1`, then `13.5.4`.                                              |
+| `13.12.10`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.10`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.10`.                               |
 | `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
 | `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
 | `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                              | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`.                                       |
@@ -229,76 +233,7 @@ upgraded to. This is to ensure [compatibility with GitLab versions](https://docs
 
 ## Upgrading without downtime
 
-Starting with GitLab 9.1.0 it's possible to upgrade to a newer major, minor, or
-patch version of GitLab without having to take your GitLab instance offline.
-However, for this to work there are the following requirements:
-
-- You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to
-   9.3. If you skip releases, database modifications may be run in the wrong
-   sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
-- You have to use [post-deployment
-   migrations](../development/post_deployment_migrations.md) (included in
-   [zero downtime update steps below](#steps)).
-- You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
-- Multi-node GitLab instance. Single-node instances may experience brief interruptions
-  [as services restart (Puma in particular)](https://docs.gitlab.com/omnibus/update/README.html#single-node-deployment).
-
-Most of the time you can safely upgrade from a patch release to the next minor
-release if the patch release is not the latest. For example, upgrading from
-9.1.1 to 9.2.0 should be safe even if 9.1.2 has been released. We do recommend
-you check the release posts of any releases between your current and target
-version just in case they include any migrations that may require you to upgrade
-1 release at a time.
-
-Some releases may also include so called "background migrations". These
-migrations are performed in the background by Sidekiq and are often used for
-migrating data. Background migrations are only added in the monthly releases.
-
-Certain major/minor releases may require a set of background migrations to be
-finished. To guarantee this, such a release processes any remaining jobs
-before continuing the upgrading procedure. While this doesn't require downtime
-(if the above conditions are met) we require that you [wait for background
-migrations to complete](#checking-for-background-migrations-before-upgrading)
-between each major/minor release upgrade.
-The time necessary to complete these migrations can be reduced by
-increasing the number of Sidekiq workers that can process jobs in the
-`background_migration` queue. To see the size of this queue,
-[Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
-
-As a rule of thumb, any database smaller than 10 GB doesn't take too much time to
-upgrade; perhaps an hour at most per minor release. Larger databases however may
-require more time, but this is highly dependent on the size of the database and
-the migrations that are being performed.
-
-### Examples
-
-To help explain this, let's look at some examples.
-
-**Example 1:** You are running a large GitLab installation using version 9.4.2,
-which is the latest patch release of 9.4. When GitLab 9.5.0 is released this
-installation can be safely upgraded to 9.5.0 without requiring downtime if the
-requirements mentioned above are met. You can also skip 9.5.0 and upgrade to
-9.5.1 after it's released, but you **can not** upgrade straight to 9.6.0; you
-_have_ to first upgrade to a 9.5.Z release.
-
-**Example 2:** You are running a large GitLab installation using version 9.4.2,
-which is the latest patch release of 9.4. GitLab 9.5 includes some background
-migrations, and 10.0 requires these to be completed (processing any
-remaining jobs for you). Skipping 9.5 is not possible without downtime, and due
-to the background migrations would require potentially hours of downtime
-depending on how long it takes for the background migrations to complete. To
-work around this you have to upgrade to 9.5.Z first, then wait at least a
-week before upgrading to 10.0.
-
-**Example 3:** You use MySQL as the database for GitLab. Any upgrade to a new
-major/minor release requires downtime. If a release includes any background
-migrations this could potentially lead to hours of downtime, depending on the
-size of your database. To work around this you must use PostgreSQL and
-meet the other online upgrade requirements mentioned above.
-
-### Steps
-
-Steps to [upgrade without downtime](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
+Read how to [upgrade without downtime](zero_downtime.md).
 
 ## Upgrading between editions
 
@@ -320,7 +255,7 @@ Edition, follow the guides below based on the installation method:
   to a version upgrade: stop the server, get the code, update configuration files for
   the new functionality, install libraries and do migrations, update the init
   script, start the application and check its status.
-- [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#update-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
+- [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to update your Omnibus
   GitLab Community Edition to the Enterprise Edition.
 
 ### Enterprise to Community Edition
@@ -351,21 +286,43 @@ These include:
 Apart from the instructions in this section, you should also check the
 installation-specific upgrade instructions, based on how you installed GitLab:
 
-- [Linux packages (Omnibus GitLab)](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes)
+- [Linux packages (Omnibus GitLab)](../update/package/index.md#version-specific-changes)
 - [Helm charts](https://docs.gitlab.com/charts/installation/upgrade.html)
 
 NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.3.0
+
+Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../install/installation.md#2-ruby)
+for how to proceed.
+
+- GitLab 14.3.0 contains post-deployment migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
+
+  - [`ci_builds.id`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70245)
+  - [`ci_builds.stage_id`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66688)
+  - [`ci_builds_metadata`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65692)
+  - [`taggings`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66625)
+  - [`events`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64779)
+
+  If the migrations are executed as part of a no-downtime deployment, there's a risk of failure due to lock conflicts with the application logic, resulting in lock timeout or deadlocks. In each case, these migrations are safe to re-run until successful:
+
+  ```shell
+  # For Omnibus GitLab
+  sudo gitlab-rake db:migrate
+
+  # For source installations
+  sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
+  ```
+
 ### 14.2.0
 
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
   [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
   for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.Z, you need
-  to update to at least 14.1.0 that contains the same fix before you update to
-  to 14.2.
+  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
+  to update to at least 14.1.0 that contains the same fix before you update to 14.2.
 - GitLab 14.2.0 contains background migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
 
   - [`ci_build_needs`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65216)
@@ -393,7 +350,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
   [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
   for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.Z, you need
+  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
   to update to at least 14.1.0 that contains the same fix before you update to
   a later version.
 
@@ -480,6 +437,17 @@ DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on co
 To work around this bug, follow the previous steps to complete the update.
 More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
 
+### 13.8.8
+
+GitLab 13.8 includes a background migration to address [an issue with duplicate service records](https://gitlab.com/gitlab-org/gitlab/-/issues/290008). If duplicate services are present, this background migration must complete before a unique index is applied to the services table, which was [introduced in GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52563). Upgrades from GitLab 13.8 and earlier to later versions must include an intermediate upgrade to GitLab 13.8.8 and [must wait until the background migrations complete](#checking-for-background-migrations-before-upgrading) before proceeding.
+
+If duplicate services are still present, an upgrade to 13.9.x or later results in a failed upgrade with the following error:
+
+```console
+PG::UniqueViolation: ERROR:  could not create unique index "index_services_on_project_id_and_type_unique"
+DETAIL:  Key (project_id, type)=(NNN, ServiceName) is duplicated.
+```
+
 ### 13.6.0
 
 Ruby 2.7.2 is required. GitLab does not start with Ruby 2.6.6 or older versions.
@@ -528,7 +496,7 @@ The Rails upgrade included a change to CSRF token generation which is
 not backwards-compatible - GitLab servers with the new Rails version
 generate CSRF tokens that are not recognizable by GitLab servers
 with the older Rails version - which could cause non-GET requests to
-fail for [multi-node GitLab installations](https://docs.gitlab.com/omnibus/update/#multi-node--ha-deployment).
+fail for [multi-node GitLab installations](zero_downtime.md#multi-node--ha-deployment).
 
 So, if you are using multiple Rails servers and specifically upgrading from 13.0,
 all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later:
@@ -576,12 +544,6 @@ After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
-
-### Upgrades from versions earlier than 8.12
-
-- `8.11.Z` and earlier: you might have to upgrade to `8.12.0` specifically before you can upgrade to `8.17.7`. This was [reported in an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/207259).
-- [CI changes prior to version 8.0](https://docs.gitlab.com/omnibus/update/README.html#updating-gitlab-ci-from-prior-540-to-version-714-via-omnibus-gitlab)
-  when it was merged into GitLab.
 
 ## Miscellaneous
 

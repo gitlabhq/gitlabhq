@@ -145,7 +145,7 @@ also upgraded.
 
 Workhorse now has two websocket connections, albeit with
 differing subprotocols. It decodes incoming frames from the
-browser, re-encodes them to the the channel's subprotocol, and
+browser, re-encodes them to the channel's subprotocol, and
 sends them to the channel. Similarly, it decodes incoming
 frames from the channel, re-encodes them to the browser's
 subprotocol, and sends them to the browser.

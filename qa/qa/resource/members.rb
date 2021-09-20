@@ -12,7 +12,7 @@ module QA
           QA::Runtime::Logger.debug(%Q[Adding user #{user.username} to #{full_path} #{self.class.name}])
 
           response = post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
-          response.code == QA::Support::Api::HTTP_STATUS_CREATED
+          response.code == QA::Support::API::HTTP_STATUS_CREATED
         end
       end
 
@@ -31,7 +31,7 @@ module QA
           QA::Runtime::Logger.debug(%Q[Sharing #{self.class.name} with #{group.name}])
 
           response = post Runtime::API::Request.new(api_client, api_share_path).url, { group_id: group.id, group_access: access_level }
-          response.code == QA::Support::Api::HTTP_STATUS_CREATED
+          response.code == QA::Support::API::HTTP_STATUS_CREATED
         end
       end
 

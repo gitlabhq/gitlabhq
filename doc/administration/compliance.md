@@ -31,3 +31,4 @@ relevant compliance standards.
 |**[Compliance frameworks](../user/project/settings/index.md#compliance-frameworks)**<br>Create a custom compliance framework at the group level to describe the type of compliance requirements any child project needs to follow. | Premium+ | **{check-circle}** Yes | Group |
 |**[Compliance pipelines](../user/project/settings/index.md#compliance-pipeline-configuration)**<br>Define a pipeline configuration to run for any projects with a given compliance framework. | Ultimate | **{check-circle}** Yes | Group |
 |**[Compliance report](../user/compliance/compliance_report/index.md)**<br>Quickly get visibility into the compliance posture of your organization. | Ultimate | **{check-circle}** Yes | Group |
+|**[External Status Checks](../user/project/merge_requests/status_checks.md)**<br>Interface with third party systems you already use during development to ensure you remain compliant. | Ultimate | **{check-circle}** Yes | Project |

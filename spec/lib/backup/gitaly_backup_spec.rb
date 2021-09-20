@@ -131,8 +131,19 @@ RSpec.describe Backup::GitalyBackup do
     context 'parallel option set' do
       let(:parallel) { 3 }
 
-      it 'does not pass parallel option through' do
-        expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything).and_call_original
+      it 'passes parallel option through' do
+        expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything, '-parallel', '3').and_call_original
+
+        subject.start(:restore)
+        subject.wait
+      end
+    end
+
+    context 'parallel_storage option set' do
+      let(:parallel_storage) { 3 }
+
+      it 'passes parallel option through' do
+        expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything, '-parallel-storage', '3').and_call_original
 
         subject.start(:restore)
         subject.wait

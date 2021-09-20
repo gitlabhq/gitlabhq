@@ -16,18 +16,18 @@ Import your projects from Bitbucket Cloud to GitLab with minimal effort.
 
 The Bitbucket importer can import:
 
-- Repository description (GitLab 7.7+)
-- Git repository data (GitLab 7.7+)
-- Issues (GitLab 7.7+)
-- Issue comments (GitLab 8.15+)
-- Pull requests (GitLab 8.4+)
-- Pull request comments (GitLab 8.15+)
-- Milestones (GitLab 8.15+)
-- Wiki (GitLab 8.15+)
+- Repository description
+- Git repository data
+- Issues
+- Issue comments
+- Pull requests
+- Pull request comments
+- Milestones
+- Wiki
 
 When importing:
 
-- References to pull requests and issues are preserved (GitLab 8.7+).
+- References to pull requests and issues are preserved.
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as
   private in GitLab as well.
 

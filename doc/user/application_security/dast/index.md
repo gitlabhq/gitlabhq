@@ -74,7 +74,7 @@ If your application utilizes Docker containers you have another option for deplo
 After your Docker build job completes and your image is added to your container registry, you can use the image as a
 [service](../../../ci/services/index.md).
 
-By using service definitions in your `gitlab-ci.yml`, you can scan services with the DAST analyzer.
+By using service definitions in your `.gitlab-ci.yml`, you can scan services with the DAST analyzer.
 
 ```yaml
 stages:
@@ -328,6 +328,8 @@ Vulnerability rules in an API scan are different than those in a normal website 
 
 A new DAST API scanning engine is available in GitLab 13.12 and later. For more details, see [DAST API scanning engine](../dast_api). The new scanning engine supports REST, SOAP, GraphQL, and generic APIs using forms, XML, and JSON. Testing can be performed using OpenAPI, Postman Collections, and HTTP Archive (HAR) documents.
 
+The target API instance’s base URL is provided by using the `DAST_API_TARGET_URL` variable or an `environment_url.txt` file.
+
 #### Specification format
 
 API scans support OpenAPI V2 and OpenAPI V3 specifications. You can define these specifications using `JSON` or `YAML`.
@@ -339,7 +341,7 @@ The specification does not have to be hosted on the same host as the API being t
 
 ```yaml
 include:
-  - template: DAST.gitlab-ci.yml
+  - template: DAST-API.gitlab-ci.yml
 
 variables:
   DAST_API_OPENAPI: http://my.api/api-specification.yml
@@ -390,7 +392,7 @@ the following DAST configuration can be used:
 
 ```yaml
 include:
-  - template: DAST.gitlab-ci.yml
+  - template: DAST-API.gitlab-ci.yml
 
 variables:
   DAST_API_OPENAPI: http://api-test.host.com/api-specification.yml
@@ -405,7 +407,7 @@ Headers are applied to every request DAST makes.
 
 ```yaml
 include:
-  - template: DAST.gitlab-ci.yml
+  - template: DAST-API.gitlab-ci.yml
 
 variables:
   DAST_API_OPENAPI: http://api-test.api.com/api-specification.yml
@@ -553,6 +555,9 @@ DAST scan with both configured exits with an error.
 By default, several rules are disabled because they either take a long time to
 run or frequently generate false positives. The complete list of disabled rules
 can be found in [exclude_rules.yml](https://gitlab.com/gitlab-org/security-products/dast/-/blob/main/src/config/exclude_rules.yml).
+
+The lists for `DAST_EXCLUDE_RULES` and `DAST_ONLY_INCLUDE_RULES` **must** be enclosed in double
+quotes (`"`), otherwise they are interpreted as numeric values.
 
 ### Hide sensitive information
 
@@ -742,7 +747,7 @@ dast:
     when: always
 ```
 
-### Available CI/CD variables
+## Available CI/CD variables
 
 These CI/CD variables are specific to DAST. They can be used to customize the behavior of DAST to your requirements.
 
@@ -762,7 +767,7 @@ These CI/CD variables are specific to DAST. They can be used to customize the be
 | `DAST_AUTO_UPDATE_ADDONS`                        | boolean       | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false`. |
 | `DAST_BROWSER_PATH_TO_LOGIN_FORM` <sup>1,2</sup> | selector      | Comma-separated list of selectors that will be clicked on prior to attempting to enter `DAST_USERNAME` and `DAST_PASSWORD` into the login form. Example: `"css:.navigation-menu,css:.login-menu-item"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326633) in GitLab 14.1. |
 | `DAST_DEBUG` <sup>1</sup>                        | boolean       | Enable debug message output. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_EXCLUDE_RULES`                             | string        | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). For example, `HTTP Parameter Override` has a rule ID of `10026`. Cannot be used when `DAST_ONLY_INCLUDE_RULES` is set. **Note:** In earlier versions of GitLab the excluded rules were executed but vulnerabilities they generated were suppressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
+| `DAST_EXCLUDE_RULES`                             | string        | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. The whole list **must** be enclosed in double quotes (`"`). Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). For example, `HTTP Parameter Override` has a rule ID of `10026`. Cannot be used when `DAST_ONLY_INCLUDE_RULES` is set. **Note:** In earlier versions of GitLab the excluded rules were executed but vulnerabilities they generated were suppressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
 | `DAST_EXCLUDE_URLS` <sup>1,2</sup>               | URLs          | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. Example, `http://example.com/sign-out`. |
 | `DAST_FIRST_SUBMIT_FIELD` <sup>2</sup>           | string        | The `id` or `name` of the element that when clicked submits the username form of a multi-page login process. For example, `css:button[type='user-submit']`. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED`      | boolean       | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293595)** in GitLab 14.0. Set to `true` to require domain validation when running DAST full scans. Not supported for API scans. Default: `false` |
@@ -772,7 +777,7 @@ These CI/CD variables are specific to DAST. They can be used to customize the be
 | `DAST_MARKDOWN_REPORT`                           | string        | The filename of the Markdown report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_MASK_HTTP_HEADERS`                         | string        | Comma-separated list of request and response headers to be masked (GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
 | `DAST_MAX_URLS_PER_VULNERABILITY`                | number        | The maximum number of URLs reported for a single vulnerability. `DAST_MAX_URLS_PER_VULNERABILITY` is set to `50` by default. To list all the URLs set to `0`. [Introduced](https://gitlab.com/gitlab-org/security-products/dast/-/merge_requests/433) in GitLab 13.12. |
-| `DAST_ONLY_INCLUDE_RULES`                        | string        | Set to a comma-separated list of Vulnerability Rule IDs to configure the scan to run only them. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). Cannot be used when `DAST_EXCLUDE_RULES` is set. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250651) in GitLab 13.12. |
+| `DAST_ONLY_INCLUDE_RULES`                        | string        | Set to a comma-separated list of Vulnerability Rule IDs to configure the scan to run only them. The whole list **must** be enclosed in double quotes (`"`). Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). Cannot be used when `DAST_EXCLUDE_RULES` is set. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250651) in GitLab 13.12. |
 | `DAST_PASSWORD` <sup>1,2</sup>                   | string        | The password to authenticate to in the website. Example: `P@55w0rd!` |
 | `DAST_PASSWORD_FIELD` <sup>1,2</sup>             | string        | The selector of password field at the sign-in HTML form. Example: `id:password` |
 | `DAST_PATHS`                                     | string        | Set to a comma-separated list of URLs for DAST to scan. For example, `/page1.html,/category1/page3.html,/page2.html`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4. |
@@ -795,7 +800,7 @@ These CI/CD variables are specific to DAST. They can be used to customize the be
 1. Available to an on-demand DAST scan.
 1. Used for authentication.
 
-#### Selectors
+### Selectors
 
 Selectors are used by CI/CD variables to specify the location of an element displayed on a page in a browser.
 Selectors have the format `type`:`search string`. The crawler will search for the selector using the search string based on the type.
@@ -808,7 +813,7 @@ Selectors have the format `type`:`search string`. The crawler will search for th
 | `xpath`       | `xpath://input[@id="my-button"]/a` | Searches for a HTML element with the provided XPath. Note that XPath searches are expected to be less performant than other searches. |
 | None provided | `a.click-me`                       | Defaults to searching using a CSS selector. |
 
-##### Find selectors with Google Chrome
+#### Find selectors with Google Chrome
 
 Chrome DevTools element selector tool is an effective way to find a selector.
 
@@ -824,7 +829,7 @@ Chrome DevTools element selector tool is an effective way to find a selector.
 In this example, the `id="user_login"` appears to be a good candidate. You can use this as a selector as the DAST username field by setting
 `DAST_USERNAME_FIELD: "id:user_login"`.
 
-##### Choose the right selector
+#### Choose the right selector
 
 Judicious choice of selector leads to a scan that is resilient to the application changing.
 
@@ -919,7 +924,7 @@ The DAST job does not require the project's repository to be present when runnin
 > - Auditing for DAST profile management was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
-the scan. You must start it manually.
+the scan. You must either start it manually, or schedule it to run.
 
 An on-demand DAST scan:
 
@@ -927,8 +932,6 @@ An on-demand DAST scan:
   [scanner profile](#scanner-profile).
 - Is associated with your project's default branch.
 - Is saved on creation so it can be run later.
-
-In GitLab 13.10 and later, you can select to run an on-demand scan against a specific branch.
 
 ### On-demand scan modes
 
@@ -941,23 +944,34 @@ An on-demand scan can be run in active or passive mode:
 
 ### Run an on-demand DAST scan
 
-NOTE:
-You must have permission to run an on-demand DAST scan against a protected branch.
-The default branch is automatically protected. For more information, see
-[Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
-
 Prerequisites:
 
+- You must have permission to run an on-demand DAST scan against a protected branch. The default
+  branch is automatically protected. For more information, read
+  [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 - A [scanner profile](#create-a-scanner-profile).
 - A [site profile](#create-a-site-profile).
-- If you are running an active scan the site profile must be [validated](#validate-a-site-profile).
+- If you are running an active scan the site profile must have been [validated](#validate-a-site-profile).
 
-To run an on-demand scan, either:
+You can run an on-demand scan immediately, once at a scheduled date and time or at a specified
+frequency:
 
-- [Create and run an on-demand scan](#create-and-run-an-on-demand-scan).
+- Every day
+- Every week
+- Every month
+- Every 3 months
+- Every 6 months
+- Every year
+
+To run an on-demand scan immediately, either:
+
+- [Create and run an on-demand scan immediately](#create-and-run-an-on-demand-scan-immediately).
 - [Run a previously saved on-demand scan](#run-a-saved-on-demand-scan).
 
-#### Create and run an on-demand scan
+To run an on-demand scan either at a scheduled date or frequency, read
+[Schedule an on-demand scan](#schedule-an-on-demand-scan).
+
+#### Create and run an on-demand scan immediately
 
 1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left
    sidebar.
@@ -965,19 +979,60 @@ To run an on-demand scan, either:
 1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown.
 1. In **Scanner profile**, select a scanner profile from the dropdown.
 1. In **Site profile**, select a site profile from the dropdown.
-1. To run the on-demand scan now, select **Save and run scan**. Otherwise select **Save scan** to
-   [run](#run-a-saved-on-demand-scan) it later.
+1. To run the on-demand scan immediately, select **Save and run scan**. Otherwise, select
+   **Save scan** to [run](#run-a-saved-on-demand-scan) it later.
 
 The on-demand DAST scan runs and the project's dashboard shows the results.
 
-### List saved on-demand scans
+#### Run a saved on-demand scan
+
+To run a saved on-demand scan:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. Select **Manage DAST scans**.
+1. In the **DAST Profiles** row, select **Manage**.
+1. Select the **Saved Scans** tab.
+1. In the scan's row, select **Run scan**.
+
+   If the branch saved in the scan no longer exists, you must first
+   [edit the scan](#edit-an-on-demand-scan), select a new branch, and save the edited scan.
+
+The on-demand DAST scan runs, and the project's dashboard shows the results.
+
+#### Schedule an on-demand scan
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3. [Deployed behind the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md), disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user,
+ask an administrator to [disable the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md).
+The feature is not ready for production use.
+
+To schedule a scan:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
+1. Complete the **Scan name** and **Description** text boxes.
+1. In GitLab 13.10 and later, from the **Branch** dropdown list, select the desired branch.
+1. In the **Scanner profile** section, from the dropdown list, select a scanner profile.
+1. In the **Site profile** section, from the dropdown list, select a site profile.
+1. Select **Schedule scan**.
+1. In the **Start time** section, select a time zone, date, and time.
+1. From the **Repeats** dropdown list, select your desired frequency:
+    - To run the scan once, select **Never**.
+    - For a recurring scan, select any other option.
+1. To run the on-demand scan immediately, select **Save and run scan**. To [run](#run-a-saved-on-demand-scan) it according to the schedule you set, select
+   **Save scan**.
+
+#### List saved on-demand scans
 
 To list saved on-demand scans:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Select the **Saved Scans** tab.
 
-### View details of an on-demand scan
+#### View details of an on-demand scan
 
 To view details of an on-demand scan:
 
@@ -987,22 +1042,7 @@ To view details of an on-demand scan:
 1. Select the **Saved Scans** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 
-### Run a saved on-demand scan
-
-To run a saved on-demand scan:
-
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage DAST scans**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select the **Saved Scans** tab.
-1. In the scan's row select **Run scan**.
-
-   If the branch saved in the scan no longer exists, you must first
-   [edit the scan](#edit-an-on-demand-scan), select a new branch, and save the edited scan.
-
-The on-demand DAST scan runs and the project's dashboard shows the results.
-
-### Edit an on-demand scan
+#### Edit an on-demand scan
 
 To edit an on-demand scan:
 
@@ -1014,7 +1054,7 @@ To edit an on-demand scan:
 1. Edit the form.
 1. Select **Save scan**.
 
-### Delete an on-demand scan
+#### Delete an on-demand scan
 
 To delete an on-demand scan:
 
@@ -1049,11 +1089,7 @@ When an API site type is selected, a [host override](#host-override) is used to 
 #### Site profile validation
 
 > - Site profile validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
-> - Meta tag validation [enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2 and is ready for production use.
-> - Meta tag validation [enabled with `dast_meta_tag_validation flag` flag](https://gitlab.com/gitlab-org/gitlab/-/issues/337711) for self-managed GitLab in GitLab 14.2 and is ready for production use.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the `dast_meta_tag_validation` flag](../../../administration/feature_flags.md). On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+> - Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
 
 Site profile validation reduces the risk of running an active scan against the wrong website. A site
 must be validated before an active scan can run against it. The site validation methods are as
@@ -1096,7 +1132,7 @@ To edit an existing site profile:
 1. Edit the fields then select **Save profile**.
 
 If a site profile is linked to a security policy, a user cannot edit the profile from this page. See
-[Scan Policies](../policies/index.md)
+[Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 #### Delete a site profile
@@ -1110,7 +1146,7 @@ To delete an existing site profile:
 1. Select **Delete** to confirm the deletion.
 
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
-See [Scan Policies](../policies/index.md)
+See [Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 #### Validate a site profile
@@ -1146,6 +1182,21 @@ To validate a site profile:
 The site is validated and an active scan can run against it.
 
 If a validated site profile's target URL is edited, the site's validation status is revoked.
+
+#### Retry a failed validation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322609) in GitLab 14.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an
+administrator to [disable the `dast_failed_site_validations` flag](../../../administration/feature_flags.md).
+
+If a site profile's validation fails, you can retry it by selecting the **Retry validation** button
+in the profiles list.
+
+When loading the DAST profiles library, past failed validations are listed above the profiles
+list. You can also retry the validation from there by selecting the **Retry validation** link in
+the alert. You can also dismiss the alert to revoke failed validations.
 
 #### Revoke a site profile's validation status
 
@@ -1240,7 +1291,7 @@ To edit a scanner profile:
 1. Select **Save profile**.
 
 If a scanner profile is linked to a security policy, a user cannot edit the profile from this page.
-See [Scan Policies](../policies/index.md)
+See [Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 #### Delete a scanner profile
@@ -1254,7 +1305,7 @@ To delete a scanner profile:
 1. Select **Delete**.
 
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this
-page. See [Scan Policies](../policies/index.md)
+page. See [Scan Execution Policies](../policies/index.md#scan-execution-policy-editor)
 for more information.
 
 ### Auditing
@@ -1311,9 +1362,9 @@ dast:
 By default, DAST downloads all artifacts defined by previous jobs in the pipeline. If
 your DAST job does not rely on `environment_url.txt` to define the URL under test or any other files created
 in previous jobs, we recommend you don't download artifacts. To avoid downloading
-artifacts, add the following to your `gitlab-ci.yml` file:
+artifacts, add the following to your `.gitlab-ci.yml` file:
 
-```json
+```yaml
 dast:
    dependencies: []
 ```

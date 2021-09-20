@@ -33,12 +33,12 @@ module Types
           type: GraphQL::Types::String,
           null: true,
           method: :project_creation_level_str,
-          description: 'The permission level required to create projects in the group.'
+          description: 'Permission level required to create projects in the group.'
     field :subgroup_creation_level,
           type: GraphQL::Types::String,
           null: true,
           method: :subgroup_creation_level_str,
-          description: 'The permission level required to create subgroups within the group.'
+          description: 'Permission level required to create subgroups within the group.'
 
     field :require_two_factor_authentication,
           type: GraphQL::Types::Boolean,
@@ -101,7 +101,7 @@ module Types
     field :label,
           Types::LabelType,
           null: true,
-          description: 'A label available on this group.' do
+          description: 'Label available on this group.' do
             argument :title,
                      type: GraphQL::Types::String,
                      required: true,
@@ -127,6 +127,46 @@ module Types
     field :packages,
           description: 'Packages of the group.',
           resolver: Resolvers::GroupPackagesResolver
+
+    field :dependency_proxy_setting,
+          Types::DependencyProxy::GroupSettingType,
+          null: true,
+          description: 'Dependency Proxy settings for the group.'
+
+    field :dependency_proxy_manifests,
+          Types::DependencyProxy::ManifestType.connection_type,
+          null: true,
+          description: 'Dependency Proxy manifests.'
+
+    field :dependency_proxy_blobs,
+          Types::DependencyProxy::BlobType.connection_type,
+          null: true,
+          description: 'Dependency Proxy blobs.'
+
+    field :dependency_proxy_image_count,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Number of dependency proxy images cached in the group.'
+
+    field :dependency_proxy_blob_count,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Number of dependency proxy blobs cached in the group.'
+
+    field :dependency_proxy_total_size,
+          GraphQL::Types::String,
+          null: false,
+          description: 'Total size of the dependency proxy cached images.'
+
+    field :dependency_proxy_image_prefix,
+          GraphQL::Types::String,
+          null: false,
+          description: 'Prefix for pulling images when using the dependency proxy.'
+
+    field :dependency_proxy_image_ttl_policy,
+          Types::DependencyProxy::ImageTtlGroupPolicyType,
+          null: true,
+          description: 'Dependency proxy TTL policy for the group.'
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
@@ -155,6 +195,19 @@ module Types
           complexity: 5,
           resolver: Resolvers::GroupsResolver
 
+    field :runners, Types::Ci::RunnerType.connection_type,
+          null: true,
+          resolver: Resolvers::Ci::GroupRunnersResolver,
+          description: "Find runners visible to the current user."
+
+    field :organizations, Types::CustomerRelations::OrganizationType.connection_type,
+          null: true,
+          description: "Find organizations of this group."
+
+    field :contacts, Types::CustomerRelations::ContactType.connection_type,
+          null: true,
+          description: "Find contacts of this group."
+
     def avatar_url
       object.avatar_url(only_path: false)
     end
@@ -165,6 +218,20 @@ module Types
 
     def container_repositories_count
       group.container_repositories.size
+    end
+
+    def dependency_proxy_image_count
+      group.dependency_proxy_manifests.count
+    end
+
+    def dependency_proxy_blob_count
+      group.dependency_proxy_blobs.count
+    end
+
+    def dependency_proxy_total_size
+      ActiveSupport::NumberHelper.number_to_human_size(
+        group.dependency_proxy_manifests.sum(:size) + group.dependency_proxy_blobs.sum(:size)
+      )
     end
 
     private

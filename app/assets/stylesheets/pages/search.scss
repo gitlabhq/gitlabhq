@@ -37,6 +37,25 @@ input[type='checkbox']:hover {
     0 0 0 1px lighten($dropdown-input-focus-shadow, 20%);
 }
 
+.header-search {
+  width: 320px;
+
+  input,
+  svg {
+    transition: border-color ease-in-out $default-transition-duration,
+      background-color ease-in-out $default-transition-duration;
+  }
+}
+
+.header-search-dropdown-menu {
+  max-height: $dropdown-max-height;
+  top: $header-height;
+}
+
+.header-search-dropdown-content {
+  max-height: $dropdown-max-height;
+}
+
 .search {
   margin: 0 8px;
 

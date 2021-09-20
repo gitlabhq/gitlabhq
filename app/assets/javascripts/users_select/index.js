@@ -536,9 +536,6 @@ function UsersSelect(currentUser, els, options = {}) {
       opened(e) {
         const $el = $(e.currentTarget);
         const selected = getSelected();
-        if ($dropdown.hasClass('js-issue-board-sidebar') && selected.length === 0) {
-          this.addInput($dropdown.data('fieldName'), 0, {});
-        }
         $el.find('.is-active').removeClass('is-active');
 
         function highlightSelected(id) {
@@ -547,8 +544,6 @@ function UsersSelect(currentUser, els, options = {}) {
 
         if (selected.length > 0) {
           getSelected().forEach((selectedId) => highlightSelected(selectedId));
-        } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-          highlightSelected(0);
         } else {
           highlightSelected(selectedId);
         }

@@ -42,7 +42,7 @@ class ProjectTeam
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    Members::Projects::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
+    Members::Projects::BulkCreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       project,
       users,
       access_level,

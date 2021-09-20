@@ -25,17 +25,13 @@ module Git
       raise NotImplementedError, "Please implement #{self.class}##{__method__}"
     end
 
-    # The changeset, ordered with the newest commit last
-    def commits
+    # This should return PROCESS_COMMIT_LIMIT commits, ordered with newest last
+    def limited_commits
       raise NotImplementedError, "Please implement #{self.class}##{__method__}"
     end
 
-    def limited_commits
-      @limited_commits ||= commits.last(PROCESS_COMMIT_LIMIT)
-    end
-
     def commits_count
-      commits.count
+      raise NotImplementedError, "Please implement #{self.class}##{__method__}"
     end
 
     def event_message

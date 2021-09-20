@@ -159,7 +159,7 @@ steps to upgrade to v2:
 To use a specific version of Auto Deploy dependencies, specify the previous Auto Deploy
 stable template that contains the [desired version of `auto-deploy-image` and `auto-deploy-app`](#verify-dependency-versions).
 
-For example, if the template is bundled in GitLab v13.3, change your `.gitlab-ci.yml` to:
+For example, if the template is bundled in GitLab 13.3, change your `.gitlab-ci.yml` to:
 
 ```yaml
 include:
@@ -258,7 +258,7 @@ change. If that happens, the deployment job fails with a message similar to:
 ```plaintext
 *************************************************************************************
                                    [WARNING]
-Detected a major version difference between the the chart that is currently deploying (auto-deploy-app-v0.7.0), and the previously deployed chart (auto-deploy-app-v1.0.0).
+Detected a major version difference between the chart that is currently deploying (auto-deploy-app-v0.7.0), and the previously deployed chart (auto-deploy-app-v1.0.0).
 A new major version might not be backward compatible with the current release (production). The deployment could fail or be stuck in an unrecoverable status.
 ...
 ```

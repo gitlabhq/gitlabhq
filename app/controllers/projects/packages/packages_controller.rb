@@ -9,8 +9,6 @@ module Projects
 
       def show
         @package = project.packages.find(params[:id])
-        @package_files = @package.package_files.recent
-        @maven_metadatum = @package.maven_metadatum
       end
     end
   end

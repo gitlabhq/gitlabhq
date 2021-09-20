@@ -45,7 +45,7 @@ class OnboardingProgress < ApplicationRecord
     def onboard(namespace)
       return unless root_namespace?(namespace)
 
-      safe_find_or_create_by(namespace: namespace)
+      create(namespace: namespace)
     end
 
     def onboarding?(namespace)

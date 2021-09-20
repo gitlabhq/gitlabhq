@@ -7,8 +7,6 @@ module API
 
       before { authenticate_non_get! }
 
-      feature_category :continuous_integration
-
       params do
         requires :id, type: String, desc: 'The project ID'
       end
@@ -44,7 +42,6 @@ module API
           optional :ref,      type: String, desc: 'The ref of pipelines'
           optional :sha,      type: String, desc: 'The sha of pipelines'
           optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations'
-          optional :name,     type: String, desc: '(deprecated) The name of the user who triggered pipelines'
           optional :username, type: String, desc: 'The username of the user who triggered pipelines'
           optional :updated_before, type: DateTime, desc: 'Return pipelines updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
           optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
@@ -54,7 +51,7 @@ module API
                               desc: 'Sort pipelines'
           optional :source,   type: String, values: ::Ci::Pipeline.sources.keys
         end
-        get ':id/pipelines' do
+        get ':id/pipelines', feature_category: :continuous_integration do
           authorize! :read_pipeline, user_project
           authorize! :read_build, user_project
 
@@ -70,7 +67,7 @@ module API
           requires :ref, type: String, desc: 'Reference'
           optional :variables, Array, desc: 'Array of variables available in the pipeline'
         end
-        post ':id/pipeline' do
+        post ':id/pipeline', feature_category: :continuous_integration do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20711')
 
           authorize! :create_pipeline, user_project
@@ -97,7 +94,7 @@ module API
         params do
           optional :ref, type: String, desc: 'branch ref of pipeline'
         end
-        get ':id/pipelines/latest' do
+        get ':id/pipelines/latest', feature_category: :continuous_integration do
           authorize! :read_pipeline, latest_pipeline
 
           present latest_pipeline, with: Entities::Ci::Pipeline
@@ -110,7 +107,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        get ':id/pipelines/:pipeline_id' do
+        get ':id/pipelines/:pipeline_id', feature_category: :continuous_integration do
           authorize! :read_pipeline, pipeline
 
           present pipeline, with: Entities::Ci::Pipeline
@@ -126,7 +123,7 @@ module API
           use :pagination
         end
 
-        get ':id/pipelines/:pipeline_id/jobs' do
+        get ':id/pipelines/:pipeline_id/jobs', feature_category: :continuous_integration do
           authorize!(:read_pipeline, user_project)
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
@@ -149,7 +146,7 @@ module API
           use :pagination
         end
 
-        get ':id/pipelines/:pipeline_id/bridges' do
+        get ':id/pipelines/:pipeline_id/bridges', feature_category: :pipeline_authoring do
           authorize!(:read_build, user_project)
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
@@ -169,7 +166,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        get ':id/pipelines/:pipeline_id/variables' do
+        get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_authoring do
           authorize! :read_pipeline_variable, pipeline
 
           present pipeline.variables, with: Entities::Ci::Variable
@@ -182,7 +179,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        get ':id/pipelines/:pipeline_id/test_report' do
+        get ':id/pipelines/:pipeline_id/test_report', feature_category: :code_testing do
           authorize! :read_build, pipeline
 
           present pipeline.test_reports, with: TestReportEntity, details: true
@@ -195,7 +192,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        get ':id/pipelines/:pipeline_id/test_report_summary' do
+        get ':id/pipelines/:pipeline_id/test_report_summary', feature_category: :code_testing do
           authorize! :read_build, pipeline
 
           present pipeline.test_report_summary, with: TestReportSummaryEntity
@@ -208,7 +205,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        delete ':id/pipelines/:pipeline_id' do
+        delete ':id/pipelines/:pipeline_id', feature_category: :continuous_integration do
           authorize! :destroy_pipeline, pipeline
 
           destroy_conditionally!(pipeline) do
@@ -223,7 +220,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        post ':id/pipelines/:pipeline_id/retry' do
+        post ':id/pipelines/:pipeline_id/retry', feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
           pipeline.retry_failed(current_user)
@@ -238,7 +235,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        post ':id/pipelines/:pipeline_id/cancel' do
+        post ':id/pipelines/:pipeline_id/cancel', feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
           pipeline.cancel_running

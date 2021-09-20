@@ -16,12 +16,26 @@ module Ci
         builds_ordered_for_shared_runners(shared_builds)
       end
 
+      def builds_for_group_runner
+        return new_builds.none if runner.namespace_ids.empty?
+
+        new_builds.where('ci_pending_builds.namespace_traversal_ids && ARRAY[?]::int[]', runner.namespace_ids)
+      end
+
       def builds_matching_tag_ids(relation, ids)
-        relation.merge(CommitStatus.matches_tag_ids(ids, table: 'ci_pending_builds', column: 'build_id'))
+        if ::Feature.enabled?(:ci_queueing_denormalize_tags_information, runner, default_enabled: :yaml)
+          relation.for_tags(runner.tags_ids)
+        else
+          relation.merge(CommitStatus.matches_tag_ids(ids, table: 'ci_pending_builds', column: 'build_id'))
+        end
       end
 
       def builds_with_any_tags(relation)
-        relation.merge(CommitStatus.with_any_tags(table: 'ci_pending_builds', column: 'build_id'))
+        if ::Feature.enabled?(:ci_queueing_denormalize_tags_information, runner, default_enabled: :yaml)
+          relation.where('cardinality(tag_ids) > 0')
+        else
+          relation.merge(CommitStatus.with_any_tags(table: 'ci_pending_builds', column: 'build_id'))
+        end
       end
 
       def order(relation)
@@ -42,6 +56,10 @@ module Ci
 
       def use_denormalized_minutes_data?
         ::Feature.enabled?(:ci_queueing_denormalize_ci_minutes_information, runner, type: :development, default_enabled: :yaml)
+      end
+
+      def use_denormalized_namespace_traversal_ids?
+        ::Feature.enabled?(:ci_queueing_denormalize_namespace_traversal_ids, runner, type: :development, default_enabled: :yaml)
       end
 
       private

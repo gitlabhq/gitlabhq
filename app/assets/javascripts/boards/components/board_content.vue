@@ -5,31 +5,22 @@ import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import defaultSortableConfig from '~/sortable/sortable_config';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DraggableItemTypes } from '../constants';
 import BoardColumn from './board_column.vue';
-import BoardColumnDeprecated from './board_column_deprecated.vue';
 
 export default {
   draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
     BoardColumn,
-    BoardColumnDeprecated,
     BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
     EpicBoardContentSidebar: () =>
       import('ee_component/boards/components/epic_board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['canAdminList'],
   props: {
-    lists: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     disabled: {
       type: Boolean,
       required: true,
@@ -37,20 +28,15 @@ export default {
   },
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
-    ...mapGetters(['isSwimlanesOn', 'isEpicBoard']),
-    useNewBoardColumnComponent() {
-      return this.glFeatures.graphqlBoardLists || this.isSwimlanesOn || this.isEpicBoard;
-    },
+    ...mapGetters(['isSwimlanesOn', 'isEpicBoard', 'isIssueBoard']),
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
     },
     boardListsToUse() {
-      return this.useNewBoardColumnComponent
-        ? sortBy([...Object.values(this.boardLists)], 'position')
-        : this.lists;
+      return sortBy([...Object.values(this.boardLists)], 'position');
     },
     canDragColumns() {
-      return (this.isEpicBoard || this.glFeatures.graphqlBoardLists) && this.canAdminList;
+      return this.canAdminList;
     },
     boardColumnWrapper() {
       return this.canDragColumns ? Draggable : 'div';
@@ -67,9 +53,6 @@ export default {
       };
 
       return this.canDragColumns ? options : {};
-    },
-    boardColumnComponent() {
-      return this.useNewBoardColumnComponent ? BoardColumn : BoardColumnDeprecated;
     },
   },
   methods: {
@@ -95,8 +78,7 @@ export default {
       class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
       @end="moveList"
     >
-      <component
-        :is="boardColumnComponent"
+      <board-column
         v-for="(list, index) in boardListsToUse"
         :key="index"
         ref="board"
@@ -118,10 +100,7 @@ export default {
       :disabled="disabled"
     />
 
-    <board-content-sidebar
-      v-if="isSwimlanesOn || glFeatures.graphqlBoardLists"
-      data-testid="issue-boards-sidebar"
-    />
+    <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />
 
     <epic-board-content-sidebar v-else-if="isEpicBoard" data-testid="epic-boards-sidebar" />
   </div>

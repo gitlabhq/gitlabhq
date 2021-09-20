@@ -4,7 +4,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Project access tokens API
+# Project access tokens API **(FREE)**
 
 You can read more about [project access tokens](../user/project/settings/project_access_tokens.md).
 

@@ -12,6 +12,7 @@ fragment IssueNode on Issue {
   humanTotalTimeSpent
   emailsDisabled
   confidential
+  hidden
   webUrl
   relativePosition
   assignees {

@@ -13,6 +13,8 @@ end
 
 cookie_key = if Rails.env.development?
                "_gitlab_session_#{Digest::SHA256.hexdigest(Rails.root.to_s)}"
+             elsif ::Gitlab.ee? && ::Gitlab::Geo.connected? && ::Gitlab::Geo.secondary?
+               "_gitlab_session_geo_#{Digest::SHA256.hexdigest(GeoNode.current_node_name)}"
              else
                "_gitlab_session"
              end

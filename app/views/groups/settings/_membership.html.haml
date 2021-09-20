@@ -1,0 +1,6 @@
+%h5= _('Membership')
+
+.form-group
+  = render 'shared/allow_request_access', form: f
+
+= render_if_exists 'groups/member_lock_setting', f: f, group: @group

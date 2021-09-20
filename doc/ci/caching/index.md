@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, concepts, howto
 ---
@@ -37,15 +37,15 @@ can't link to files outside it.
 - Define artifacts per job.
 - Subsequent jobs in later stages of the same pipeline can use artifacts.
 - Different projects cannot share artifacts.
-
-Artifacts expire after 30 days unless you define an [expiration time](../yaml/index.md#artifactsexpire_in).
-Use [dependencies](../yaml/index.md#dependencies) to control which jobs fetch the artifacts.
+- Artifacts expire after 30 days by default. You can define a custom [expiration time](../yaml/index.md#artifactsexpire_in).
+- The latest artifacts do not expire if [keep latest artifacts](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs) is enabled.
+- Use [dependencies](../yaml/index.md#dependencies) to control which jobs fetch the artifacts.
 
 ## Good caching practices
 
 To ensure maximum availability of the cache, do one or more of the following:
 
-- [Tag your runners](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
+- [Tag your runners](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) and use the tag on jobs
   that share the cache.
 - [Use runners that are only available to a particular project](../runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects).
 - [Use a `key`](../yaml/index.md#cachekey) that fits your workflow. For example,

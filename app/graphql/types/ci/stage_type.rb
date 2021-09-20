@@ -15,9 +15,8 @@ module Types
             description: 'Group of jobs for the stage.'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
             description: 'Detailed status of the stage.'
-      field :jobs, Ci::JobType.connection_type, null: true,
-            description: 'Jobs for the stage.',
-            method: 'latest_statuses'
+      field :jobs, Types::Ci::JobType.connection_type, null: true,
+            description: 'Jobs for the stage.'
       field :status, GraphQL::Types::String,
             null: true,
             description: 'Status of the pipeline stage.'
@@ -48,19 +47,25 @@ module Types
         end
       end
 
+      def jobs
+        GraphQL::Pagination::ActiveRecordRelationConnection.new(
+          object.latest_statuses,
+          max_page_size: Gitlab::CurrentSettings.current_application_settings.jobs_per_stage_page_size
+        )
+      end
+
       private
 
       # rubocop: disable CodeReuse/ActiveRecord
       def jobs_for_pipeline(pipeline, stage_ids, include_needs)
-        builds_results = pipeline.latest_builds.where(stage_id: stage_ids).preload(:job_artifacts, :project)
-        bridges_results = pipeline.bridges.where(stage_id: stage_ids).preload(:project)
-        builds_results = builds_results.preload(:needs) if include_needs
-        bridges_results = bridges_results.preload(:needs) if include_needs
-        commit_status_results = pipeline.latest_statuses.where(stage_id: stage_ids)
+        jobs = pipeline.statuses.latest.where(stage_id: stage_ids)
 
-        results = builds_results | bridges_results | commit_status_results
+        preloaded_relations = [:project, :metadata, :job_artifacts, :downstream_pipeline]
+        preloaded_relations << :needs if include_needs
 
-        results.group_by(&:stage_id)
+        Preloaders::CommitStatusPreloader.new(jobs).execute(preloaded_relations)
+
+        jobs.group_by(&:stage_id)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

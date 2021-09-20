@@ -1,0 +1,48 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
+  subject { described_class }
+
+  describe '.available_for_type?' do
+    it 'returns true for Group' do
+      expect(subject.available_for_type?(Group.all)).to be_truthy
+    end
+
+    it 'return false for other types of relations' do
+      expect(subject.available_for_type?(User.all)).to be_falsey
+    end
+  end
+
+  describe '.available?' do
+    let(:request_context) { double('request_context', params: { order_by: order_by, sort: sort }) }
+    let(:cursor_based_request_context) { Gitlab::Pagination::Keyset::CursorBasedRequestContext.new(request_context) }
+
+    context 'with order-by name asc' do
+      let(:order_by) { :name }
+      let(:sort) { :asc }
+
+      it 'returns true for Group' do
+        expect(subject.available?(cursor_based_request_context, Group.all)).to be_truthy
+      end
+
+      it 'return false for other types of relations' do
+        expect(subject.available?(cursor_based_request_context, User.all)).to be_falsey
+      end
+    end
+
+    context 'with other order-by columns' do
+      let(:order_by) { :path }
+      let(:sort) { :asc }
+
+      it 'returns false for Group' do
+        expect(subject.available?(cursor_based_request_context, Group.all)).to be_falsey
+      end
+
+      it 'return false for other types of relations' do
+        expect(subject.available?(cursor_based_request_context, User.all)).to be_falsey
+      end
+    end
+  end
+end

@@ -10,7 +10,7 @@ require_relative '../../qa'
 module QA
   module Tools
     class DeleteProjects
-      include Support::Api
+      include Support::API
 
       def initialize
         raise ArgumentError, "Please provide GITLAB_ADDRESS environment variable" unless ENV['GITLAB_ADDRESS']

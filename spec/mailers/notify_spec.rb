@@ -71,7 +71,7 @@ RSpec.describe Notify do
       it 'is sent to the assignee as the author' do
         aggregate_failures do
           expect_sender(current_user)
-          expect(subject).to deliver_to(recipient.notification_email)
+          expect(subject).to deliver_to(recipient.notification_email_or_default)
         end
       end
     end
@@ -710,7 +710,7 @@ RSpec.describe Notify do
 
       it 'contains all the useful information' do
         to_emails = subject.header[:to].addrs.map(&:address)
-        expect(to_emails).to eq([recipient.notification_email])
+        expect(to_emails).to eq([recipient.notification_email_or_default])
 
         is_expected.to have_subject "Request to join the #{project.full_name} project"
         is_expected.to have_body_text project.full_name
@@ -800,8 +800,7 @@ RSpec.describe Notify do
           is_expected.to have_body_text project_member.invite_token
           is_expected.to have_link('Join now',
                                    href: invite_url(project_member.invite_token,
-                                                    invite_type: Emails::Members::INITIAL_INVITE,
-                                                    experiment_name: 'invite_email_preview_text'))
+                                                    invite_type: Emails::Members::INITIAL_INVITE))
           is_expected.to have_content("#{inviter.name} invited you to join the")
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
@@ -818,10 +817,51 @@ RSpec.describe Notify do
           is_expected.to have_body_text project_member.invite_token
           is_expected.to have_link('Join now',
                                    href: invite_url(project_member.invite_token,
-                                                    invite_type: Emails::Members::INITIAL_INVITE,
-                                                    experiment_name: 'invite_email_preview_text'))
+                                                    invite_type: Emails::Members::INITIAL_INVITE))
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
+        end
+      end
+
+      context 'with invite_email_preview_text enabled', :experiment do
+        before do
+          stub_experiments(invite_email_preview_text: :control)
+        end
+
+        it 'has the correct invite_url with params' do
+          is_expected.to have_link('Join now',
+                                   href: invite_url(project_member.invite_token,
+                                                    invite_type: Emails::Members::INITIAL_INVITE,
+                                                    experiment_name: 'invite_email_preview_text'))
+        end
+
+        it 'tracks the sent invite' do
+          expect(experiment(:invite_email_preview_text)).to track(:assignment)
+                                                      .with_context(actor: project_member)
+                                                      .on_next_instance
+
+          invite_email.deliver_now
+        end
+      end
+
+      context 'with invite_email_from enabled', :experiment do
+        before do
+          stub_experiments(invite_email_from: :control)
+        end
+
+        it 'has the correct invite_url with params' do
+          is_expected.to have_link('Join now',
+                                   href: invite_url(project_member.invite_token,
+                                                    invite_type: Emails::Members::INITIAL_INVITE,
+                                                    experiment_name: 'invite_email_from'))
+        end
+
+        it 'tracks the sent invite' do
+          expect(experiment(:invite_email_from)).to track(:assignment)
+                                                      .with_context(actor: project_member)
+                                                      .on_next_instance
+
+          invite_email.deliver_now
         end
       end
 
@@ -838,15 +878,15 @@ RSpec.describe Notify do
         end
       end
 
-      context 'when on gitlab.com' do
+      context 'when mailgun events are enabled' do
         before do
-          allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+          stub_application_setting(mailgun_events_enabled: true)
         end
 
         it 'has custom headers' do
           aggregate_failures do
-            expect(subject).to have_header('X-Mailgun-Tag', 'invite_email')
-            expect(subject).to have_header('X-Mailgun-Variables', { 'invite_token' => project_member.invite_token }.to_json)
+            expect(subject).to have_header('X-Mailgun-Tag', ::Members::Mailgun::INVITE_EMAIL_TAG)
+            expect(subject).to have_header('X-Mailgun-Variables', { ::Members::Mailgun::INVITE_EMAIL_TOKEN_KEY => project_member.invite_token }.to_json)
           end
         end
       end
@@ -1007,7 +1047,7 @@ RSpec.describe Notify do
         it 'is sent to the given recipient as the author' do
           aggregate_failures do
             expect_sender(note_author)
-            expect(subject).to deliver_to(recipient.notification_email)
+            expect(subject).to deliver_to(recipient.notification_email_or_default)
           end
         end
 
@@ -1164,7 +1204,7 @@ RSpec.describe Notify do
         it 'is sent to the given recipient as the author' do
           aggregate_failures do
             expect_sender(note_author)
-            expect(subject).to deliver_to(recipient.notification_email)
+            expect(subject).to deliver_to(recipient.notification_email_or_default)
           end
         end
 
@@ -1301,7 +1341,7 @@ RSpec.describe Notify do
 
       it 'contains all the useful information' do
         to_emails = subject.header[:to].addrs.map(&:address)
-        expect(to_emails).to eq([recipient.notification_email])
+        expect(to_emails).to eq([recipient.notification_email_or_default])
 
         is_expected.to have_subject "Request to join the #{group.name} group"
         is_expected.to have_body_text group.name

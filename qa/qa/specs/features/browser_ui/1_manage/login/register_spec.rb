@@ -14,7 +14,7 @@ module QA
   end
 
   RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin do
-    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/935' do
+    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1300' do
       before do
         # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not an admin
         # So we need to set it to nil in order to create a new token for admin user so that we are able to set_application_settings
@@ -39,7 +39,7 @@ module QA
       end
     end
 
-    describe 'standard', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/936' do
+    describe 'standard', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1652' do
       context 'when admin approval is not required' do
         before(:all) do
           set_require_admin_approval_after_user_signup_via_api(false)
@@ -66,7 +66,7 @@ module QA
             end
           end
 
-          it 'allows recreating with same credentials', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/937' do
+          it 'allows recreating with same credentials', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1651' do
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 
             Flow::Login.sign_in(as: user, skip_page_validation: true)
@@ -106,7 +106,7 @@ module QA
           end
         end
 
-        it 'allows user login after approval', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1076' do
+        it 'allows user login after approval', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1639' do
           expect(page).to have_text(signed_up_waiting_approval_text)
 
           Flow::Login.sign_in(as: @user, skip_page_validation: true)

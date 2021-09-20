@@ -14,9 +14,13 @@ class ErrorTracking::ClientKey < ApplicationRecord
     find_by(public_key: key)
   end
 
+  def sentry_dsn
+    @sentry_dsn ||= ErrorTracking::Collector::Dsn.build_url(public_key, project_id)
+  end
+
   private
 
   def generate_key
-    self.public_key = "glet_#{SecureRandom.hex}"
+    self.public_key ||= "glet_#{SecureRandom.hex}"
   end
 end

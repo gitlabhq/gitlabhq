@@ -36,9 +36,7 @@ After you add or change an existing common metric, you must [re-run the import s
 Or, you can create a database migration:
 
 ```ruby
-class ImportCommonMetrics < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
+class ImportCommonMetrics < Gitlab::Database::Migration[1.0]
   def up
     ::Gitlab::DatabaseImporters::CommonMetrics::Importer.new.execute
   end

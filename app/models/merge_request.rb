@@ -615,8 +615,8 @@ class MergeRequest < ApplicationRecord
     context_commits.count
   end
 
-  def commits(limit: nil)
-    return merge_request_diff.commits(limit: limit) if merge_request_diff.persisted?
+  def commits(limit: nil, load_from_gitaly: false)
+    return merge_request_diff.commits(limit: limit, load_from_gitaly: load_from_gitaly) if merge_request_diff.persisted?
 
     commits_arr = if compare_commits
                     reversed_commits = compare_commits.reverse
@@ -628,8 +628,8 @@ class MergeRequest < ApplicationRecord
     CommitCollection.new(source_project, commits_arr, source_branch)
   end
 
-  def recent_commits
-    commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE)
+  def recent_commits(load_from_gitaly: false)
+    commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: load_from_gitaly)
   end
 
   def commits_count
@@ -1349,7 +1349,9 @@ class MergeRequest < ApplicationRecord
   def has_ci?
     return false if has_no_commits?
 
-    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+      !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
+    end
   end
 
   def branch_missing?
@@ -1835,15 +1837,10 @@ class MergeRequest < ApplicationRecord
       Ability.allowed?(user, :push_code, source_project)
   end
 
-  def squash_in_progress?
-    # The source project can be deleted
-    return false unless source_project
-
-    source_project.repository.squash_in_progress?(id)
-  end
-
   def find_actual_head_pipeline
-    all_pipelines.for_sha_or_source_sha(diff_head_sha).first
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+      all_pipelines.for_sha_or_source_sha(diff_head_sha).first
+    end
   end
 
   def etag_caching_enabled?
@@ -1860,25 +1857,29 @@ class MergeRequest < ApplicationRecord
 
   override :ensure_metrics
   def ensure_metrics
-    # Backward compatibility: some merge request metrics records will not have target_project_id filled in.
-    # In that case the first `safe_find_or_create_by` will return false.
-    # The second finder call will be eliminated in https://gitlab.com/gitlab-org/gitlab/-/issues/233507
-    metrics_record = MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id, target_project_id: target_project_id) || MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id)
+    if Feature.enabled?(:use_upsert_query_for_mr_metrics)
+      MergeRequest::Metrics.record!(self)
+    else
+      # Backward compatibility: some merge request metrics records will not have target_project_id filled in.
+      # In that case the first `safe_find_or_create_by` will return false.
+      # The second finder call will be eliminated in https://gitlab.com/gitlab-org/gitlab/-/issues/233507
+      metrics_record = MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id, target_project_id: target_project_id) || MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id)
 
-    metrics_record.tap do |metrics_record|
-      # Make sure we refresh the loaded association object with the newly created/loaded item.
-      # This is needed in order to have the exact functionality than before.
-      #
-      # Example:
-      #
-      # merge_request.metrics.destroy
-      # merge_request.ensure_metrics
-      # merge_request.metrics # should return the metrics record and not nil
-      # merge_request.metrics.merge_request # should return the same MR record
+      metrics_record.tap do |metrics_record|
+        # Make sure we refresh the loaded association object with the newly created/loaded item.
+        # This is needed in order to have the exact functionality than before.
+        #
+        # Example:
+        #
+        # merge_request.metrics.destroy
+        # merge_request.ensure_metrics
+        # merge_request.metrics # should return the metrics record and not nil
+        # merge_request.metrics.merge_request # should return the same MR record
 
-      metrics_record.target_project_id = target_project_id
-      metrics_record.association(:merge_request).target = self
-      association(:metrics).target = metrics_record
+        metrics_record.target_project_id = target_project_id
+        metrics_record.association(:merge_request).target = self
+        association(:metrics).target = metrics_record
+      end
     end
   end
 
@@ -1914,6 +1915,20 @@ class MergeRequest < ApplicationRecord
   def context_commits_diff
     strong_memoize(:context_commits_diff) do
       ContextCommitsDiff.new(self)
+    end
+  end
+
+  def lazy_upvotes_count
+    BatchLoader.for(id).batch(default_value: 0) do |ids, loader|
+      counts = AwardEmoji
+        .where(awardable_id: ids)
+        .upvotes
+        .group(:awardable_id)
+        .count
+
+      counts.each do |id, count|
+        loader.call(id, count)
+      end
     end
   end
 

@@ -1,6 +1,7 @@
 query getLinkedPipelines($fullPath: ID!, $iid: ID!) {
   project(fullPath: $fullPath) {
     pipeline(iid: $iid) {
+      path
       downstream {
         nodes {
           id

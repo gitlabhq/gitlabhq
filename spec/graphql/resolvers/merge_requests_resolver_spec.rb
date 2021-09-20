@@ -294,16 +294,6 @@ RSpec.describe Resolvers::MergeRequestsResolver do
           nils_last(mr.metrics.merged_at)
         end
 
-        context 'when label filter is given and the optimized_issuable_label_filter feature flag is off' do
-          before do
-            stub_feature_flags(optimized_issuable_label_filter: false)
-          end
-
-          it 'does not raise PG::GroupingError' do
-            expect { resolve_mr(project, sort: :merged_at_desc, labels: %w[a b]) }.not_to raise_error
-          end
-        end
-
         context 'when sorting by closed at' do
           before do
             merge_request_1.metrics.update!(latest_closed_at: 10.days.ago)

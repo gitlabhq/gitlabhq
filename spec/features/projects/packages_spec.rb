@@ -37,14 +37,6 @@ RSpec.describe 'Packages' do
 
       it_behaves_like 'packages list'
 
-      context 'when package_details_apollo feature flag is off' do
-        before do
-          stub_feature_flags(package_details_apollo: false)
-        end
-
-        it_behaves_like 'package details link'
-      end
-
       it_behaves_like 'package details link'
 
       context 'deleting a package' do

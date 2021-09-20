@@ -20,8 +20,10 @@ module Gitlab
       MR_CREATE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_create_multiline_mr_comment'
       MR_EDIT_MULTILINE_COMMENT_ACTION = 'i_code_review_user_edit_multiline_mr_comment'
       MR_REMOVE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_remove_multiline_mr_comment'
-      MR_ADD_SUGGESTION_ACTION = 'i_code_review_user_add_suggestion'
-      MR_APPLY_SUGGESTION_ACTION = 'i_code_review_user_apply_suggestion'
+      MR_USER_ADD_SUGGESTION_ACTION = 'i_code_review_user_add_suggestion'
+      MR_TOTAL_ADD_SUGGESTION_ACTION = 'i_code_review_total_suggestions_added'
+      MR_USER_APPLY_SUGGESTION_ACTION = 'i_code_review_user_apply_suggestion'
+      MR_TOTAL_APPLY_SUGGESTION_ACTION = 'i_code_review_total_suggestions_applied'
       MR_MARKED_AS_DRAFT_ACTION = 'i_code_review_user_marked_as_draft'
       MR_UNMARKED_AS_DRAFT_ACTION = 'i_code_review_user_unmarked_as_draft'
       MR_RESOLVE_THREAD_ACTION = 'i_code_review_user_resolve_thread'
@@ -46,6 +48,7 @@ module Gitlab
       MR_LABELS_CHANGED_ACTION = 'i_code_review_user_labels_changed'
       MR_LOAD_CONFLICT_UI_ACTION = 'i_code_review_user_load_conflict_ui'
       MR_RESOLVE_CONFLICT_ACTION = 'i_code_review_user_resolve_conflict'
+      MR_RESOLVE_THREAD_IN_ISSUE_ACTION = 'i_code_review_user_resolve_thread_in_issue'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -112,8 +115,9 @@ module Gitlab
           track_unique_action_by_user(MR_PUBLISH_REVIEW_ACTION, user)
         end
 
-        def track_add_suggestion_action(user:)
-          track_unique_action_by_user(MR_ADD_SUGGESTION_ACTION, user)
+        def track_add_suggestion_action(note:)
+          track_unique_action_by_user(MR_USER_ADD_SUGGESTION_ACTION, note.author)
+          track_unique_action_by_objects(MR_TOTAL_ADD_SUGGESTION_ACTION, note.suggestions)
         end
 
         def track_marked_as_draft_action(user:)
@@ -124,16 +128,17 @@ module Gitlab
           track_unique_action_by_user(MR_UNMARKED_AS_DRAFT_ACTION, user)
         end
 
-        def track_apply_suggestion_action(user:)
-          track_unique_action_by_user(MR_APPLY_SUGGESTION_ACTION, user)
+        def track_apply_suggestion_action(user:, suggestions:)
+          track_unique_action_by_user(MR_USER_APPLY_SUGGESTION_ACTION, user)
+          track_unique_action_by_objects(MR_TOTAL_APPLY_SUGGESTION_ACTION, suggestions)
         end
 
         def track_users_assigned_to_mr(users:)
-          track_unique_action_by_users(MR_ASSIGNED_USERS_ACTION, users)
+          track_unique_action_by_objects(MR_ASSIGNED_USERS_ACTION, users)
         end
 
         def track_users_review_requested(users:)
-          track_unique_action_by_users(MR_REVIEW_REQUESTED_USERS_ACTION, users)
+          track_unique_action_by_objects(MR_REVIEW_REQUESTED_USERS_ACTION, users)
         end
 
         def track_title_edit_action(user:)
@@ -210,6 +215,10 @@ module Gitlab
           track_unique_action_by_user(MR_RESOLVE_CONFLICT_ACTION, user)
         end
 
+        def track_resolve_thread_in_issue_action(user:)
+          track_unique_action_by_user(MR_RESOLVE_THREAD_IN_ISSUE_ACTION, user)
+        end
+
         private
 
         def track_unique_action_by_merge_request(action, merge_request)
@@ -222,10 +231,10 @@ module Gitlab
           track_unique_action(action, user.id)
         end
 
-        def track_unique_action_by_users(action, users)
-          return if users.blank?
+        def track_unique_action_by_objects(action, objects)
+          return if objects.blank?
 
-          track_unique_action(action, users.map(&:id))
+          track_unique_action(action, objects.map(&:id))
         end
 
         def track_unique_action(action, value)

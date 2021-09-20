@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 require 'airborne'
-require 'securerandom'
 require 'digest'
 
 module QA
   RSpec.describe 'Create' do
     describe 'Compare archives of different user projects with the same name and check they\'re different' do
-      include Support::Api
+      include Support::API
       let(:project_name) { "project-archive-download-#{SecureRandom.hex(8)}" }
 
       let(:archive_types) { %w(tar.gz tar.bz2 tar zip) }
@@ -28,7 +27,7 @@ module QA
         end
       end
 
-      it 'download archives of each user project then check they are different', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/427' do
+      it 'download archives of each user project then check they are different', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1575' do
         archive_checksums = {}
 
         users.each do |user_key, user_info|

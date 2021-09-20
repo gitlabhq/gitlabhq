@@ -36,87 +36,40 @@ module Gitlab
 
       # Returns a Hash containing the load balancing configuration.
       def self.configuration
-        Gitlab::Database.main.config[:load_balancing] || {}
-      end
-
-      # Returns the maximum replica lag size in bytes.
-      def self.max_replication_difference
-        (configuration['max_replication_difference'] || 8.megabytes).to_i
-      end
-
-      # Returns the maximum lag time for a replica.
-      def self.max_replication_lag_time
-        (configuration['max_replication_lag_time'] || 60.0).to_f
-      end
-
-      # Returns the interval (in seconds) to use for checking the status of a
-      # replica.
-      def self.replica_check_interval
-        (configuration['replica_check_interval'] || 60).to_f
-      end
-
-      # Returns the additional hosts to use for load balancing.
-      def self.hosts
-        configuration['hosts'] || []
-      end
-
-      def self.service_discovery_enabled?
-        configuration.dig('discover', 'record').present?
-      end
-
-      def self.service_discovery_configuration
-        conf = configuration['discover'] || {}
-
-        {
-          nameserver: conf['nameserver'] || 'localhost',
-          port: conf['port'] || 8600,
-          record: conf['record'],
-          record_type: conf['record_type'] || 'A',
-          interval: conf['interval'] || 60,
-          disconnect_timeout: conf['disconnect_timeout'] || 120,
-          use_tcp: conf['use_tcp'] || false
-        }
-      end
-
-      def self.pool_size
-        Gitlab::Database.main.pool_size
+        @configuration ||= Configuration.for_model(ActiveRecord::Base)
       end
 
       # Returns true if load balancing is to be enabled.
       def self.enable?
         return false if Gitlab::Runtime.rake?
-        return false unless self.configured?
 
-        true
+        configured?
       end
 
-      # Returns true if load balancing has been configured. Since
-      # Sidekiq does not currently use load balancing, we
-      # may want Web application servers to detect replication lag by
-      # posting the write location of the database if load balancing is
-      # configured.
       def self.configured?
-        hosts.any? || service_discovery_enabled?
+        configuration.load_balancing_enabled? ||
+          configuration.service_discovery_enabled?
       end
 
       def self.start_service_discovery
-        return unless service_discovery_enabled?
+        return unless configuration.service_discovery_enabled?
 
-        ServiceDiscovery.new(service_discovery_configuration).start
+        ServiceDiscovery
+          .new(proxy.load_balancer, **configuration.service_discovery)
+          .start
       end
 
       # Configures proxying of requests.
-      def self.configure_proxy(proxy = ConnectionProxy.new(hosts))
-        ActiveRecord::Base.load_balancing_proxy = proxy
+      def self.configure_proxy
+        lb = LoadBalancer.new(configuration, primary_only: !enable?)
+        ActiveRecord::Base.load_balancing_proxy = ConnectionProxy.new(lb)
 
         # Populate service discovery immediately if it is configured
-        if service_discovery_enabled?
-          ServiceDiscovery.new(service_discovery_configuration).perform_service_discovery
+        if configuration.service_discovery_enabled?
+          ServiceDiscovery
+            .new(lb, **configuration.service_discovery)
+            .perform_service_discovery
         end
-      end
-
-      def self.active_record_models
-        ActiveRecord::Base.descendants
       end
 
       DB_ROLES = [
@@ -126,24 +79,12 @@ module Gitlab
       ].freeze
 
       # Returns the role (primary/replica) of the database the connection is
-      # connecting to. At the moment, the connection can only be retrieved by
-      # Gitlab::Database::LoadBalancer#read or #read_write or from the
-      # ActiveRecord directly. Therefore, if the load balancer doesn't
-      # recognize the connection, this method returns the primary role
-      # directly. In future, we may need to check for other sources.
+      # connecting to.
       def self.db_role_for_connection(connection)
-        return ROLE_UNKNOWN unless connection
+        db_config = Database.db_config_for_connection(connection)
+        return ROLE_UNKNOWN unless db_config
 
-        # The connection proxy does not have a role assigned
-        # as this is dependent on a execution context
-        return ROLE_UNKNOWN if connection.is_a?(ConnectionProxy)
-
-        # During application init we might receive `NullPool`
-        return ROLE_UNKNOWN unless connection.respond_to?(:pool) &&
-          connection.pool.respond_to?(:db_config) &&
-          connection.pool.db_config.respond_to?(:name)
-
-        if connection.pool.db_config.name.ends_with?(LoadBalancer::REPLICA_SUFFIX)
+        if db_config.name.ends_with?(LoadBalancer::REPLICA_SUFFIX)
           ROLE_REPLICA
         else
           ROLE_PRIMARY

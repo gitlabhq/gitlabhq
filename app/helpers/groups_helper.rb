@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 module GroupsHelper
-  def group_sidebar_links
-    @group_sidebar_links ||= get_group_sidebar_links
-  end
-
-  def group_sidebar_link?(link)
-    group_sidebar_links.include?(link)
-  end
-
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end
@@ -31,29 +23,6 @@ module GroupsHelper
 
   def can_admin_group_member?(group)
     Ability.allowed?(current_user, :admin_group_member, group)
-  end
-
-  def group_issues_count(state:)
-    IssuesFinder
-      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
-      .execute
-      .count
-  end
-
-  def group_merge_requests_count(state:)
-    MergeRequestsFinder
-      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
-      .execute
-      .count
-  end
-
-  def group_dependency_proxy_image_prefix(group)
-    # The namespace path can include uppercase letters, which
-    # Docker doesn't allow. The proxy expects it to be downcased.
-    url = "#{group_url(group).downcase}#{DependencyProxy::URL_SUFFIX}"
-
-    # Docker images do not include the protocol
-    url.partition('//').last
   end
 
   def group_icon_url(group, options = {})
@@ -153,12 +122,6 @@ module GroupsHelper
     groups.to_json
   end
 
-  def show_invite_banner?(group)
-    can?(current_user, :admin_group, group) &&
-    !just_created? &&
-    !multiple_members?(group)
-  end
-
   def render_setting_to_allow_project_access_token_creation?(group)
     group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
   end
@@ -172,44 +135,6 @@ module GroupsHelper
   end
 
   private
-
-  def just_created?
-    flash[:notice] =~ /successfully created/
-  end
-
-  def multiple_members?(group)
-    group.member_count > 1 || group.members_with_parents.count > 1
-  end
-
-  def get_group_sidebar_links
-    links = [:overview, :group_members]
-
-    resources = [:activity, :issues, :boards, :labels, :milestones,
-                 :merge_requests]
-    links += resources.select do |resource|
-      can?(current_user, "read_group_#{resource}".to_sym, @group)
-    end
-
-    # TODO Proper policies, such as `read_group_runners, should be implemented per
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
-    if can?(current_user, :admin_group, @group) && Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
-      links << :runners
-    end
-
-    if can?(current_user, :read_cluster, @group)
-      links << :kubernetes
-    end
-
-    if can?(current_user, :admin_group, @group)
-      links << :settings
-    end
-
-    if can?(current_user, :read_wiki, @group)
-      links << :wiki
-    end
-
-    links
-  end
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
@@ -270,6 +195,18 @@ module GroupsHelper
 
   def group_url_error_message
     s_('GroupSettings|Please choose a group URL with no special characters or spaces.')
+  end
+
+  # Maps `jobs_to_be_done` values to option texts
+  def localized_jobs_to_be_done_choices
+    {
+      basics: _('I want to learn the basics of Git'),
+      move_repository: _('I want to move my repository to GitLab from somewhere else'),
+      code_storage: _('I want to store my code'),
+      exploring: _('I want to explore GitLab to see if it’s worth switching to'),
+      ci: _('I want to use GitLab CI with my existing repository'),
+      other: _('A different reason')
+    }.with_indifferent_access.freeze
   end
 end
 

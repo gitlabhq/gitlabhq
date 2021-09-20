@@ -119,3 +119,24 @@ You can search a specific issue or merge request by its ID with a special prefix
 
 - To search by issue ID, use prefix `#` followed by issue ID. For example, [#23456](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%2323456&group_id=9970&project_id=278964)
 - To search by merge request ID, use prefix `!` followed by merge request ID. For example [!23456](https://gitlab.com/search?snippets=&scope=merge_requests&repository_ref=&search=%2123456&group_id=9970&project_id=278964)
+
+## Global search scopes **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
+
+To improve the performance of your instance's global search, you can limit
+the scope of the search. To do so, you can exclude global search scopes by disabling
+[`ops` feature flags](../../development/feature_flags/index.md#ops-type).
+
+Global search has all its scopes **enabled** by default in GitLab SaaS and
+self-managed instances. A GitLab administrator can disable the following `ops`
+feature flags to limit the scope of your instance's global search and optimize
+its performance:
+
+| Scope | Feature flag | Description |
+|--|--|--|
+| Code | `global_search_code_tab` | When enabled, the global search includes code as part of the search. |
+| Commits | `global_search_commits_tab` | When enabled, the global search includes commits as part of the search. |
+| Issues | `global_search_issues_tab` | When enabled, the global search includes issues as part of the search. |
+| Merge Requests | `global_search_merge_requests_tab` | When enabled, the global search includes merge requests as part of the search. |
+| Wiki | `global_search_wiki_tab` | When enabled, the global search includes wiki as part of the search. |

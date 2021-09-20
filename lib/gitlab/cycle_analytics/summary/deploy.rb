@@ -24,3 +24,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::CycleAnalytics::Summary::Deploy.prepend_mod_with('Gitlab::CycleAnalytics::Summary::Deploy')

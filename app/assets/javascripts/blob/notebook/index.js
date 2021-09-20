@@ -6,6 +6,9 @@ export default () => {
 
   return new Vue({
     el,
+    provide: {
+      relativeRawPath: el.dataset.relativeRawPath,
+    },
     render(createElement) {
       return createElement(NotebookViewer, {
         props: {

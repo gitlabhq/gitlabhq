@@ -46,6 +46,7 @@ module Integrations
       has_one :issue_tracker_data, autosave: true, inverse_of: :integration, foreign_key: :service_id, class_name: 'Integrations::IssueTrackerData'
       has_one :jira_tracker_data, autosave: true, inverse_of: :integration, foreign_key: :service_id, class_name: 'Integrations::JiraTrackerData'
       has_one :open_project_tracker_data, autosave: true, inverse_of: :integration, foreign_key: :service_id, class_name: 'Integrations::OpenProjectTrackerData'
+      has_one :zentao_tracker_data, autosave: true, inverse_of: :integration, foreign_key: :integration_id, class_name: 'Integrations::ZentaoTrackerData'
 
       def data_fields
         raise NotImplementedError

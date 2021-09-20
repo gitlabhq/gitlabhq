@@ -55,7 +55,7 @@ module QA
         end
       end
 
-      include Support::Api
+      include Support::API
       attr_writer :api_resource, :api_response
 
       def api_put(body = api_put_body)

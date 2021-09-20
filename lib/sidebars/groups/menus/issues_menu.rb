@@ -17,11 +17,6 @@ module Sidebars
           true
         end
 
-        override :link
-        def link
-          issues_group_path(context.group)
-        end
-
         override :title
         def title
           _('Issues')
@@ -43,7 +38,7 @@ module Sidebars
             count_service = ::Groups::OpenIssuesCountService
             count = count_service.new(context.group, context.current_user).count
 
-            format_cached_count(count_service, count)
+            format_cached_count(count_service::CACHED_COUNT_THRESHOLD, count)
           end
         end
 

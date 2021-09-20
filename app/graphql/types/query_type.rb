@@ -62,7 +62,7 @@ module Types
             argument :id,
                      type: ::Types::GlobalIDType[::ContainerRepository],
                      required: true,
-                     description: 'The global ID of the container repository.'
+                     description: 'Global ID of the container repository.'
           end
 
     field :package,
@@ -84,13 +84,13 @@ module Types
     field :issue, Types::IssueType,
           null: true,
           description: 'Find an issue.' do
-            argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'The global ID of the issue.'
+            argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'Global ID of the issue.'
           end
 
     field :merge_request, Types::MergeRequestType,
           null: true,
           description: 'Find a merge request.' do
-            argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'The global ID of the merge request.'
+            argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'Global ID of the merge request.'
           end
 
     field :instance_statistics_measurements,
@@ -120,14 +120,12 @@ module Types
           null: true,
           resolver: Resolvers::Ci::RunnerResolver,
           extras: [:lookahead],
-          description: "Find a runner.",
-          feature_flag: :runner_graphql_query
+          description: "Find a runner."
 
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::RunnersResolver,
-          description: "Find runners visible to the current user.",
-          feature_flag: :runner_graphql_query
+          description: "Find runners visible to the current user."
 
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
 

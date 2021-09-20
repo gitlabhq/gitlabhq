@@ -183,6 +183,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.where_not_sha' do
+    let_it_be(:pipeline) { create(:ci_pipeline, sha: 'abcx') }
+    let_it_be(:pipeline_2) { create(:ci_pipeline, sha: 'abc') }
+
+    let(:sha) { 'abc' }
+
+    subject { described_class.where_not_sha(sha) }
+
+    it 'returns the pipeline without the specified sha' do
+      is_expected.to contain_exactly(pipeline)
+    end
+
+    context 'when argument is array' do
+      let(:sha) { %w[abc abcx] }
+
+      it 'returns the pipelines without the specified shas' do
+        pipeline_3 = create(:ci_pipeline, sha: 'abcy')
+        is_expected.to contain_exactly(pipeline_3)
+      end
+    end
+  end
+
   describe '.for_source_sha' do
     subject { described_class.for_source_sha(source_sha) }
 
@@ -2014,16 +2036,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it 'returns external pull request modified paths' do
         expect(pipeline.modified_paths).to match(external_pull_request.modified_paths)
-      end
-
-      context 'when the FF ci_modified_paths_of_external_prs is disabled' do
-        before do
-          stub_feature_flags(ci_modified_paths_of_external_prs: false)
-        end
-
-        it 'returns nil' do
-          expect(pipeline.modified_paths).to be_nil
-        end
       end
     end
   end
@@ -4523,51 +4535,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let(:pipeline) { create(:ci_pipeline, :created, project: project) }
 
     subject(:reset_bridge) { pipeline.reset_source_bridge!(project.owner) }
-
-    # This whole block will be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/329194
-    # It contains some duplicate checks.
-    context 'when the FF ci_reset_bridge_with_subsequent_jobs is disabled' do
-      before do
-        stub_feature_flags(ci_reset_bridge_with_subsequent_jobs: false)
-      end
-
-      context 'when the pipeline is a child pipeline and the bridge is depended' do
-        let!(:parent_pipeline) { create(:ci_pipeline) }
-        let!(:bridge) { create_bridge(parent_pipeline, pipeline, true) }
-
-        it 'marks source bridge as pending' do
-          reset_bridge
-
-          expect(bridge.reload).to be_pending
-        end
-
-        context 'when the parent pipeline has subsequent jobs after the bridge' do
-          let!(:after_bridge_job) { create(:ci_build, :skipped, pipeline: parent_pipeline, stage_idx: bridge.stage_idx + 1) }
-
-          it 'does not touch subsequent jobs of the bridge' do
-            reset_bridge
-
-            expect(after_bridge_job.reload).to be_skipped
-          end
-        end
-
-        context 'when the parent pipeline has a dependent upstream pipeline' do
-          let(:upstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
-          let!(:upstream_bridge) { create_bridge(upstream_pipeline, parent_pipeline, true) }
-
-          let(:upstream_upstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
-          let!(:upstream_upstream_bridge) { create_bridge(upstream_upstream_pipeline, upstream_pipeline, true) }
-
-          it 'marks all source bridges as pending' do
-            reset_bridge
-
-            expect(bridge.reload).to be_pending
-            expect(upstream_bridge.reload).to be_pending
-            expect(upstream_upstream_bridge.reload).to be_pending
-          end
-        end
-      end
-    end
 
     context 'when the pipeline is a child pipeline and the bridge is depended' do
       let!(:parent_pipeline) { create(:ci_pipeline) }

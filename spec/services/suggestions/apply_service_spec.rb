@@ -70,7 +70,7 @@ RSpec.describe Suggestions::ApplyService do
       author = suggestions.first.note.author
 
       expect(user.commit_email).not_to eq(user.email)
-      expect(commit.author_email).to eq(author.commit_email)
+      expect(commit.author_email).to eq(author.commit_email_or_default)
       expect(commit.committer_email).to eq(user.commit_email)
       expect(commit.author_name).to eq(author.name)
       expect(commit.committer_name).to eq(user.name)
@@ -79,7 +79,7 @@ RSpec.describe Suggestions::ApplyService do
     it 'tracks apply suggestion event' do
       expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
         .to receive(:track_apply_suggestion_action)
-        .with(user: user)
+        .with(user: user, suggestions: suggestions)
 
       apply(suggestions)
     end
@@ -333,9 +333,9 @@ RSpec.describe Suggestions::ApplyService do
           end
 
           it 'created commit by same author and committer' do
-            expect(user.commit_email).to eq(author.commit_email)
+            expect(user.commit_email).to eq(author.commit_email_or_default)
             expect(author).to eq(user)
-            expect(commit.author_email).to eq(author.commit_email)
+            expect(commit.author_email).to eq(author.commit_email_or_default)
             expect(commit.committer_email).to eq(user.commit_email)
             expect(commit.author_name).to eq(author.name)
             expect(commit.committer_name).to eq(user.name)
@@ -350,7 +350,7 @@ RSpec.describe Suggestions::ApplyService do
           it 'created commit has authors info and commiters info' do
             expect(user.commit_email).not_to eq(user.email)
             expect(author).not_to eq(user)
-            expect(commit.author_email).to eq(author.commit_email)
+            expect(commit.author_email).to eq(author.commit_email_or_default)
             expect(commit.committer_email).to eq(user.commit_email)
             expect(commit.author_name).to eq(author.name)
             expect(commit.committer_name).to eq(user.name)
@@ -359,7 +359,7 @@ RSpec.describe Suggestions::ApplyService do
       end
 
       context 'multiple suggestions' do
-        let(:author_emails) { suggestions.map {|s| s.note.author.commit_email } }
+        let(:author_emails) { suggestions.map {|s| s.note.author.commit_email_or_default } }
         let(:first_author) { suggestion.note.author }
         let(:commit) { project.repository.commit }
 
@@ -369,8 +369,8 @@ RSpec.describe Suggestions::ApplyService do
           end
 
           it 'uses first authors information' do
-            expect(author_emails).to include(first_author.commit_email).exactly(3)
-            expect(commit.author_email).to eq(first_author.commit_email)
+            expect(author_emails).to include(first_author.commit_email_or_default).exactly(3)
+            expect(commit.author_email).to eq(first_author.commit_email_or_default)
           end
         end
 

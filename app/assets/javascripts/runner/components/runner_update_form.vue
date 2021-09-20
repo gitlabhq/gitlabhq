@@ -135,9 +135,9 @@ export default {
     </gl-form-checkbox>
 
     <gl-form-checkbox
+      v-if="canBeLockedToProject"
       v-model="model.locked"
       data-testid="runner-field-locked"
-      :disabled="!canBeLockedToProject"
     >
       {{ __('Lock to current projects') }}
       <template #help>

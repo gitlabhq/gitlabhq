@@ -36,7 +36,7 @@ For the installation options, see [the main installation page](index.md).
 Installation of GitLab on these operating systems is possible, but not supported.
 Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
 
-Please see [OS versions that are no longer supported](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html) for Omnibus installs page
+Please see [OS versions that are no longer supported](../administration/package_information/deprecated_os.md) for Omnibus installs page
 for a list of supported and unsupported OS versions as well as the last support GitLab version for that OS.
 
 ### Microsoft Windows
@@ -59,6 +59,8 @@ Redis version 6.0 or higher is recommended, as this is what ships with
 ### Storage
 
 The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repositories combined take up.
+
+The Omnibus GitLab package requires about 2.5 GB of storage space for installation.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using [logical volume management (LVM)](https://en.wikipedia.org/wiki/Logical_volume_management) so you can add more hard drives when you need them.
 
@@ -197,7 +199,7 @@ Take for example the following scenarios:
   ```plaintext
   The highest number from
   2
-  And 
+  And
   [
   the lowest number from
     - number of cores: 2
@@ -212,11 +214,11 @@ Take for example the following scenarios:
   ```plaintext
   The highest number from
   2
-  And 
+  And
   [
   the lowest number from
     - number of cores: 4
-    - memory limit: (4 - 1.5) = 2.5 
+    - memory limit: (4 - 1.5) = 2.5
   ]
   ```
 
@@ -227,7 +229,7 @@ Take for example the following scenarios:
   ```plaintext
   The highest number from
   2
-  And 
+  And
   [
   the lowest number from
     - number of cores: 4
@@ -253,6 +255,12 @@ of [legacy Rugged code](../administration/gitaly/index.md#direct-access-to-git-i
 - In all other cases, the recommended number of threads is `4`. We don't recommend setting this
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
 works.
+
+### Puma per worker maximum memory
+
+By default, each Puma worker will be limited to 1024 MB of memory.
+This setting [can be adjusted](../administration/operations/puma.md#puma-worker-killer) and should be considered
+if you need to increase the number of Puma workers.
 
 ## Redis and Sidekiq
 
@@ -321,7 +329,7 @@ For the listed web browsers, GitLab supports:
 
 NOTE:
 We don't support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
-in the future because we have features such as Issue Boards which require JavaScript extensively.
+in the future because we have features such as issue boards which require JavaScript extensively.
 
 <!-- ## Troubleshooting
 

@@ -297,9 +297,6 @@ dependency. You can install a package from the scope of your instance or your pr
 If multiple packages have the same recipe, when you install
 a package, the most recently-published package is retrieved.
 
-WARNING:
-Project-level packages [cannot be downloaded currently](https://gitlab.com/gitlab-org/gitlab/-/issues/270129).
-
 Conan packages are often installed as dependencies by using the `conanfile.txt`
 file.
 

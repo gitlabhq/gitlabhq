@@ -4,7 +4,7 @@ group: Memory
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Sidekiq MemoryKiller
+# Sidekiq MemoryKiller **(FREE SELF)**
 
 The GitLab Rails application code suffers from memory leaks. For web requests
 this problem is made manageable using

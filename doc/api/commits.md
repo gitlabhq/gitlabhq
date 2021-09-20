@@ -289,11 +289,11 @@ Example response:
 
 ```
 
-## Cherry pick a commit
+## Cherry-pick a commit
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047) in GitLab 8.15.
 
-Cherry picks a commit to a given branch.
+Cherry-picks a commit to a given branch.
 
 ```plaintext
 POST /projects/:id/repository/commits/:sha/cherry_pick
@@ -381,7 +381,7 @@ Parameters:
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `sha`     | string         | yes      | Commit SHA to revert                                                            |
 | `branch`  | string         | yes      | Target branch name                                                              |
-| `dry_run` | boolean        | no       | Does not commit any changes. Default is false. [Introduced in GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/231032) |
+| `dry_run` | boolean        | no       | Does not commit any changes. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231032) in GitLab 13.3 |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=master" \

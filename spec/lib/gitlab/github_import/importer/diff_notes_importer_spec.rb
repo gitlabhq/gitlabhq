@@ -12,6 +12,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
       html_url: 'https://github.com/foo/bar/pull/42',
       path: 'README.md',
       commit_id: '123abc',
+      original_commit_id: 'original123abc',
       diff_hunk: "@@ -1 +1 @@\n-Hello\n+Hello world",
       user: double(:user, id: 4, login: 'alice'),
       body: 'Hello world',

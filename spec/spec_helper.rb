@@ -160,11 +160,11 @@ RSpec.configure do |config|
   config.include GitlabRoutingHelper
   config.include StubExperiments
   config.include StubGitlabCalls
-  config.include StubGitlabData
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include TestEnv
   config.include FileReadHelpers
+  config.include Database::MultipleDatabases
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature
@@ -221,6 +221,8 @@ RSpec.configure do |config|
     # Enable all features by default for testing
     # Reset any changes in after hook.
     stub_all_feature_flags
+
+    TestEnv.seed_db
   end
 
   config.after(:all) do
@@ -259,6 +261,9 @@ RSpec.configure do |config|
       # Using FortiToken Cloud as OTP provider is disabled by default in
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_token_cloud: false)
+
+      # Disable for now whilst we add more states
+      stub_feature_flags(restructured_mr_widget: false)
 
       # These feature flag are by default disabled and used in disaster recovery mode
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
@@ -300,6 +305,15 @@ RSpec.configure do |config|
       # Can be removed when we find a better way to deal with the problem.
       # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
       stub_feature_flags(block_issue_repositioning: false)
+
+      # These are ops feature flags that are disabled by default
+      stub_feature_flags(disable_anonymous_search: false)
+      stub_feature_flags(disable_anonymous_project_search: false)
+
+      # Disable the refactored top nav search until there is functionality
+      # Can be removed once all existing functionality has been replicated
+      # For more information check https://gitlab.com/gitlab-org/gitlab/-/issues/339348
+      stub_feature_flags(new_header_search: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else

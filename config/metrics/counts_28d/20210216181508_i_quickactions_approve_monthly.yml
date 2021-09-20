@@ -7,17 +7,13 @@ product_stage: create
 product_group: group::code review
 product_category: code_review
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_quickactions_approve
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-    - i_quickactions_approve
+  - i_quickactions_approve
 distribution:
 - ce
 - ee
@@ -25,3 +21,4 @@ tier:
 - free
 - premium
 - ultimate
+milestone: "<13.9"

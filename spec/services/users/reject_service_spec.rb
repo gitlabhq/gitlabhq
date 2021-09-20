@@ -27,7 +27,7 @@ RSpec.describe Users::RejectService do
           it 'returns error result' do
             expect(subject[:status]).to eq(:error)
             expect(subject[:message])
-              .to match(/This user does not have a pending request/)
+              .to match(/User does not have a pending request/)
           end
         end
       end
@@ -44,7 +44,7 @@ RSpec.describe Users::RejectService do
 
         it 'emails the user on rejection' do
           expect_next_instance_of(NotificationService) do |notification|
-            allow(notification).to receive(:user_admin_rejection).with(user.name, user.notification_email)
+            allow(notification).to receive(:user_admin_rejection).with(user.name, user.notification_email_or_default)
           end
 
           subject

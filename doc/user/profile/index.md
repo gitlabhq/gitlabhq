@@ -31,7 +31,7 @@ To change your password:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Password**.
+1. On the left sidebar, select **Password**.
 1. In the **Current password** field, enter your current password.
 1. In the **New password** and **Password confirmation** field, enter your new password.
 1. Select **Save password**.
@@ -55,9 +55,20 @@ To change your username:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. On the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
 1. Select **Update username**.
+
+## Add emails to your user profile
+
+To add new email to your account:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Emails**.
+1. In the **Email** box, enter the new email.
+1. Select **Add email address**.
+1. Verify your email address with the verification email received.
 
 ## Make your user profile page private
 
@@ -219,6 +230,7 @@ To set your time zone:
 A commit email is an email address displayed in every Git-related action carried out through the GitLab interface.
 
 Any of your own verified email addresses can be used as the commit email.
+Your primary email is used by default.
 
 To change your commit email:
 

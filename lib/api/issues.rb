@@ -14,6 +14,10 @@ module API
       params :negatable_issue_filter_params do
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
+        optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
+                 desc: 'Return issues assigned to milestones without the specified timebox value ("Any", "None", "Upcoming" or "Started")'
+        mutually_exclusive :milestone_id, :milestone
+
         optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
 
         optional :author_id, type: Integer, desc: 'Return issues which are not authored by the user with the given ID'
@@ -32,9 +36,14 @@ module API
       params :issues_stats_params do
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
+        # 'milestone_id' only accepts wildcard values 'Any', 'None', 'Upcoming', 'Started'
+        # the param has '_id' in the name to keep consistency (ex. assignee_id accepts id and wildcard values).
+        optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
+                 desc: 'Return issues assigned to milestones with the specified timebox value ("Any", "None", "Upcoming" or "Started")'
         optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
+        mutually_exclusive :milestone_id, :milestone
 
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :author_username, type: String, desc: 'Return issues which are authored by the user with the given username'
@@ -69,7 +78,7 @@ module API
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                  desc: 'Return opened, closed, or all issues'
         optional :order_by, type: String, values: Helpers::IssuesHelpers.sort_options, default: 'created_at',
-                 desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
+                 desc: 'Return issues ordered by `created_at`, `due_date`, `label_priority`, `milestone_due`, `popularity`, `priority`, `relative_position`, `title`, or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                  desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :due_date, type: String, values: %w[0 overdue week month next_month_and_previous_two_weeks] << '',

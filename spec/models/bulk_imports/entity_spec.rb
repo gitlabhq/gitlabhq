@@ -154,4 +154,57 @@ RSpec.describe BulkImports::Entity, type: :model do
       expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed')
     end
   end
+
+  describe '#pipelines' do
+    context 'when entity is group' do
+      it 'returns group pipelines' do
+        entity = build(:bulk_import_entity, :group_entity)
+
+        expect(entity.pipelines.flatten).to include(BulkImports::Groups::Pipelines::GroupPipeline)
+      end
+    end
+
+    context 'when entity is project' do
+      it 'returns project pipelines' do
+        entity = build(:bulk_import_entity, :project_entity)
+
+        expect(entity.pipelines.flatten).to include(BulkImports::Projects::Pipelines::ProjectPipeline)
+      end
+    end
+  end
+
+  describe '#create_pipeline_trackers!' do
+    context 'when entity is group' do
+      it 'creates trackers for group entity' do
+        entity = create(:bulk_import_entity, :group_entity)
+        entity.create_pipeline_trackers!
+
+        expect(entity.trackers.count).to eq(BulkImports::Groups::Stage.pipelines.count)
+        expect(entity.trackers.map(&:pipeline_name)).to include(BulkImports::Groups::Pipelines::GroupPipeline.to_s)
+      end
+    end
+
+    context 'when entity is project' do
+      it 'creates trackers for project entity' do
+        entity = create(:bulk_import_entity, :project_entity)
+        entity.create_pipeline_trackers!
+
+        expect(entity.trackers.count).to eq(BulkImports::Projects::Stage.pipelines.count)
+        expect(entity.trackers.map(&:pipeline_name)).to include(BulkImports::Projects::Pipelines::ProjectPipeline.to_s)
+      end
+    end
+  end
+
+  describe '#pipeline_exists?' do
+    let_it_be(:entity) { create(:bulk_import_entity, :group_entity) }
+
+    it 'returns true when the given pipeline name exists in the pipelines list' do
+      expect(entity.pipeline_exists?(BulkImports::Groups::Pipelines::GroupPipeline)).to eq(true)
+      expect(entity.pipeline_exists?('BulkImports::Groups::Pipelines::GroupPipeline')).to eq(true)
+    end
+
+    it 'returns false when the given pipeline name exists in the pipelines list' do
+      expect(entity.pipeline_exists?('BulkImports::Groups::Pipelines::InexistentPipeline')).to eq(false)
+    end
+  end
 end

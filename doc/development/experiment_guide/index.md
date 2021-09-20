@@ -8,11 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Experiments can be conducted by any GitLab team, most often the teams from the [Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/). Experiments are not tied to releases because they primarily target GitLab.com.
 
-Experiments are run as an A/B/n test, and are behind a feature flag to turn the test on or off. Based on the data the experiment generates, the team decides if the experiment had a positive impact and should be made the new default, or rolled back.
+Experiments are run as an A/B/n test, and are behind an [experiment feature flag](../feature_flags/#experiment-type) to turn the test on or off. Based on the data the experiment generates, the team decides if the experiment had a positive impact and should be made the new default, or rolled back.
 
-## Experiment tracking issue
+## Experiment rollout issue
 
-Each experiment should have an [Experiment tracking](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&state=opened&label_name[]=growth%20experiment&search=%22Experiment+tracking%22) issue to track the experiment from roll-out through to cleanup/removal. The tracking issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment. Immediately after an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
+Each experiment should have an [experiment rollout](https://gitlab.com/groups/gitlab-org/-/boards/1352542) issue to track the experiment from rollout through to cleanup and removal.
+The rollout issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment.
+When an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
 After the deadline, the issue needs to be resolved and either:
 
 - It was successful and the experiment becomes the new default.
@@ -29,6 +31,10 @@ run) shouldn't impact GitLab availability. To avoid or identify issues,
 experiments are initially deployed to a small number of users. Regardless,
 experiments still need tests.
 
+Experiments must have corresponding [frontend or feature tests](../testing_guide/index.md) to ensure they
+exist in the application. These tests should help prevent the experiment code from
+being removed before the [experiment cleanup process](https://about.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-cleanup-issue) starts.
+
 If, as a reviewer or maintainer, you find code that would usually fail review
 but is acceptable for now, mention your concerns with a note that there's no
 need to change the code. The author can then add a comment to this piece of code
@@ -38,22 +44,14 @@ addressed.
 
 ## Implementing an experiment
 
-There are currently two options when implementing an experiment.
+[`GLEX`](https://gitlab.com/gitlab-org/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
 
-One is built into GitLab directly and has been around for a while (this is called
-`Exerimentation Module`), and the other is provided by
-[`gitlab-experiment`](https://gitlab.com/gitlab-org/gitlab-experiment) and is referred
-to as `Gitlab::Experiment` -- GLEX for short.
+For more information, see [Implementing an A/B/n experiment using GLEX](gitlab_experiment.md).
 
-Both approaches use [experiment](../feature_flags/index.md#experiment-type)
-feature flags. We recommend using GLEX rather than `Experimentation Module` for new experiments.
+There are still some longer running experiments using the [`Exerimentation Module`](experimentation.md).
 
-- [Implementing an A/B/n experiment using GLEX](gitlab_experiment.md)
-- [Implementing an A/B experiment using `Experimentation Module`](experimentation.md)
-
-Historical Context: `Experimentation Module` was built iteratively with the needs that
-appeared while implementing Growth sub-department experiments, while GLEX was built
-with the findings of the team and an easier to use API.
+Both approaches use [experiment](../feature_flags/index.md#experiment-type) feature flags.
+`GLEX` is the preferred option for new experiments.
 
 ### Add new icons and illustrations for experiments
 

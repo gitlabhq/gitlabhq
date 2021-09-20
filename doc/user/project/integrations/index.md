@@ -17,8 +17,8 @@ For more information, read the
 [overview of integrations](overview.md) or learn how to manage your integrations:
 
 - *For GitLab 13.3 and later,* read [Project integration management](../../admin_area/settings/project_integration_management.md).
-- *For GitLab 13.2 and earlier,* read [Service Templates](services_templates.md),
-  which are deprecated and [scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268032)
+- *For GitLab 13.2 and earlier,* read [Integration Management](../../admin_area/settings/project_integration_management.md),
+  which replaced the deprecated Service Templates [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268032)
   in GitLab 14.0.
 
 ## Project webhooks

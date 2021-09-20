@@ -188,7 +188,7 @@ module Gitlab
       merge_requests = MergeRequestsFinder.new(current_user, issuable_params).execute
 
       unless default_project_filter
-        merge_requests = merge_requests.in_projects(project_ids_relation)
+        merge_requests = merge_requests.of_projects(project_ids_relation)
       end
 
       apply_sort(merge_requests, scope: 'merge_requests')

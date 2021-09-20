@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.tagger.timezone).to eq("+0200") }
     end
 
-    shared_examples 'signed tag' do
+    describe 'signed tag' do
       let(:project) { create(:project, :repository) }
       let(:tag) { project.repository.find_tag('v1.1.1') }
 
@@ -52,18 +52,6 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.tagger.email).to eq("r.meier@siemens.com") }
       it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1574261780)) }
       it { expect(tag.tagger.timezone).to eq("+0100") }
-    end
-
-    context 'with :get_tag_signatures enabled' do
-      it_behaves_like 'signed tag'
-    end
-
-    context 'with :get_tag_signatures disabled' do
-      before do
-        stub_feature_flags(get_tag_signatures: false)
-      end
-
-      it_behaves_like 'signed tag'
     end
 
     it { expect(repository.tags.size).to eq(SeedRepo::Repo::TAGS.size) }

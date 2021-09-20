@@ -18,7 +18,7 @@ module Gitlab
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
       end
 
-      def snowplow_options(group)
+      def options(group)
         additional_features = Feature.enabled?(:additional_snowplow_tracking, group)
         {
           namespace: SNOWPLOW_NAMESPACE,

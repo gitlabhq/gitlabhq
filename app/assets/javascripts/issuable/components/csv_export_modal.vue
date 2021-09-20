@@ -63,7 +63,7 @@ export default {
         </gl-sprintf>
         <gl-sprintf
           v-else
-          :message="n__('1 merge request selected', '%d merge request selected', issuableCount)"
+          :message="n__('1 merge request selected', '%d merge requests selected', issuableCount)"
         >
           <template #issuableCount>{{ issuableCount }}</template>
         </gl-sprintf>
@@ -89,7 +89,7 @@ export default {
         :href="exportCsvPath"
         data-method="post"
         :data-qa-selector="`export_${issuableType}_button`"
-        data-track-event="click_button"
+        data-track-action="click_button"
         :data-track-label="`export_${issuableType}_csv`"
       >
         <gl-sprintf :message="__('Export %{name}')">

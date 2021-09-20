@@ -57,7 +57,11 @@ module Issuable
       items.each do |issuable|
         next unless can?(current_user, :"update_#{type}", issuable)
 
-        update_class.new(**update_class.constructor_container_arg(issuable.issuing_parent), current_user: current_user, params: params).execute(issuable)
+        update_class.new(
+          **update_class.constructor_container_arg(issuable.issuing_parent),
+          current_user: current_user,
+          params: dup_params
+        ).execute(issuable)
       end
 
       items
@@ -76,6 +80,19 @@ module Issuable
         .id_in(ids)
         .of_projects(projects)
         .includes_for_bulk_update
+    end
+
+    # Duplicates params and its top-level values
+    # We cannot use deep_dup because ActiveRecord objects will result
+    # to new records with no id assigned
+    def dup_params
+      dup = HashWithIndifferentAccess.new
+
+      params.each do |key, value|
+        dup[key] = value.is_a?(ActiveRecord::Base) ? value : value.dup
+      end
+
+      dup
     end
 
     def response_success(message: nil, payload: nil)

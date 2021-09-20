@@ -124,6 +124,16 @@ module Resolvers
       [args[:iid], args[:iids]].any? ? 0 : 0.01
     end
 
+    def self.before_connection_authorization(&block)
+      @before_connection_authorization_block = block
+    end
+
+    # rubocop: disable Style/TrivialAccessors
+    def self.before_connection_authorization_block
+      @before_connection_authorization_block
+    end
+    # rubocop: enable Style/TrivialAccessors
+
     def offset_pagination(relation)
       ::Gitlab::Graphql::Pagination::OffsetPaginatedRelation.new(relation)
     end

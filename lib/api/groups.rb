@@ -108,6 +108,20 @@ module API
         present paginate(groups), options
       end
 
+      def present_groups_with_pagination_strategies(params, groups)
+        return present_groups(params, groups) if current_user.present? || Feature.disabled?(:keyset_pagination_for_groups_api)
+
+        options = {
+          with: Entities::Group,
+          current_user: nil,
+          statistics: false
+        }
+
+        groups, options = with_custom_attributes(groups, options)
+
+        present paginate_with_strategies(groups), options
+      end
+
       def delete_group(group)
         destroy_conditionally!(group) do |group|
           ::Groups::DestroyService.new(group, current_user).async_execute
@@ -168,7 +182,7 @@ module API
       end
       get do
         groups = find_groups(declared_params(include_missing: false), params[:id])
-        present_groups params, groups
+        present_groups_with_pagination_strategies params, groups
       end
 
       desc 'Create a group. Available only for users who can create groups.' do

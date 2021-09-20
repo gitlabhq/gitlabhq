@@ -5,6 +5,7 @@ import * as actions from '~/deploy_freeze/store/actions';
 import * as types from '~/deploy_freeze/store/mutation_types';
 import getInitialState from '~/deploy_freeze/store/state';
 import createFlash from '~/flash';
+import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
@@ -12,6 +13,7 @@ jest.mock('~/api.js');
 jest.mock('~/flash.js');
 
 describe('deploy freeze store actions', () => {
+  const freezePeriodFixture = freezePeriodsFixture[0];
   let mock;
   let state;
 
@@ -24,6 +26,7 @@ describe('deploy freeze store actions', () => {
     Api.freezePeriods.mockResolvedValue({ data: freezePeriodsFixture });
     Api.createFreezePeriod.mockResolvedValue();
     Api.updateFreezePeriod.mockResolvedValue();
+    Api.deleteFreezePeriod.mockResolvedValue();
   });
 
   afterEach(() => {
@@ -192,6 +195,48 @@ describe('deploy freeze store actions', () => {
           expect(createFlash).toHaveBeenCalledWith({
             message: 'There was an error fetching the deploy freezes.',
           }),
+      );
+    });
+  });
+
+  describe('deleteFreezePeriod', () => {
+    it('dispatch correct actions on deleting a freeze period', () => {
+      testAction(
+        actions.deleteFreezePeriod,
+        freezePeriodFixture,
+        state,
+        [
+          { type: 'REQUEST_DELETE_FREEZE_PERIOD', payload: freezePeriodFixture.id },
+          { type: 'RECEIVE_DELETE_FREEZE_PERIOD_SUCCESS', payload: freezePeriodFixture.id },
+        ],
+        [],
+        () =>
+          expect(Api.deleteFreezePeriod).toHaveBeenCalledWith(
+            state.projectId,
+            freezePeriodFixture.id,
+          ),
+      );
+    });
+
+    it('should show flash error and set error in state on delete failure', () => {
+      jest.spyOn(logger, 'logError').mockImplementation();
+      const error = new Error();
+      Api.deleteFreezePeriod.mockRejectedValue(error);
+
+      testAction(
+        actions.deleteFreezePeriod,
+        freezePeriodFixture,
+        state,
+        [
+          { type: 'REQUEST_DELETE_FREEZE_PERIOD', payload: freezePeriodFixture.id },
+          { type: 'RECEIVE_DELETE_FREEZE_PERIOD_ERROR', payload: freezePeriodFixture.id },
+        ],
+        [],
+        () => {
+          expect(createFlash).toHaveBeenCalled();
+
+          expect(logger.logError).toHaveBeenCalledWith('Unable to delete deploy freeze', error);
+        },
       );
     });
   });

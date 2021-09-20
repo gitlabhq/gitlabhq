@@ -97,7 +97,9 @@ module Gitlab
         def observe_queue_size(size_proc, runner_type)
           return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
 
-          self.class.queue_size_total.observe({ runner_type: runner_type }, size_proc.call.to_f)
+          size = size_proc.call.to_f
+          self.class.queue_size_total.observe({ runner_type: runner_type }, size)
+          self.class.current_queue_size.set({ runner_type: runner_type }, size)
         end
 
         def observe_queue_time(metric, runner_type)
@@ -196,6 +198,15 @@ module Gitlab
             labels = {}
 
             Gitlab::Metrics.histogram(name, comment, labels, buckets)
+          end
+        end
+
+        def self.current_queue_size
+          strong_memoize(:current_queue_size) do
+            name = :gitlab_ci_current_queue_size
+            comment = 'Current size of initialized CI/CD builds queue'
+
+            Gitlab::Metrics.gauge(name, comment)
           end
         end
 

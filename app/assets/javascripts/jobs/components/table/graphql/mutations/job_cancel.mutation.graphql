@@ -1,0 +1,10 @@
+#import "../fragments/job.fragment.graphql"
+
+mutation cancelJob($id: CiBuildID!) {
+  jobCancel(input: { id: $id }) {
+    job {
+      ...Job
+    }
+    errors
+  }
+}

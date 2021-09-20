@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe UserPolicy do
-  let(:current_user) { create(:user) }
-  let(:user) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
+  let_it_be(:regular_user) { create(:user) }
+  let_it_be(:subject_user) { create(:user) }
+
+  let(:current_user) { regular_user }
+  let(:user) { subject_user }
 
   subject { described_class.new(current_user, user) }
 
@@ -16,7 +20,7 @@ RSpec.describe UserPolicy do
     let(:token) { create(:personal_access_token, user: user) }
 
     context 'when user is admin' do
-      let(:current_user) { create(:user, :admin) }
+      let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:read_user_personal_access_tokens) }
@@ -42,7 +46,7 @@ RSpec.describe UserPolicy do
 
   describe "creating a different user's Personal Access Tokens" do
     context 'when current_user is admin' do
-      let(:current_user) { create(:user, :admin) }
+      let(:current_user) { admin }
 
       context 'when admin mode is enabled and current_user is not blocked', :enable_admin_mode do
         it { is_expected.to be_allowed(:create_user_personal_access_token) }
@@ -92,7 +96,7 @@ RSpec.describe UserPolicy do
     end
 
     context "when an admin user tries to destroy a regular user" do
-      let(:current_user) { create(:user, :admin) }
+      let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(ability) }
@@ -104,7 +108,7 @@ RSpec.describe UserPolicy do
     end
 
     context "when an admin user tries to destroy a ghost user" do
-      let(:current_user) { create(:user, :admin) }
+      let(:current_user) { admin }
       let(:user) { create(:user, :ghost) }
 
       it { is_expected.not_to be_allowed(ability) }
@@ -132,7 +136,7 @@ RSpec.describe UserPolicy do
 
     context 'disabling the two-factor authentication of another user' do
       context 'when the executor is an admin', :enable_admin_mode do
-        let(:current_user) { create(:user, :admin) }
+        let(:current_user) { admin }
 
         it { is_expected.to be_allowed(:disable_two_factor) }
       end
@@ -145,7 +149,7 @@ RSpec.describe UserPolicy do
 
   describe "reading a user's group count" do
     context "when current_user is an admin", :enable_admin_mode do
-      let(:current_user) { create(:user, :admin) }
+      let(:current_user) { admin }
 
       it { is_expected.to be_allowed(:read_group_count) }
     end
@@ -170,6 +174,32 @@ RSpec.describe UserPolicy do
 
     context 'when the user is confirmed' do
       it { is_expected.to be_allowed(:read_user_profile) }
+    end
+  end
+
+  describe ':read_user_groups' do
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_user_groups) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:read_user_groups) }
+      end
+    end
+
+    context 'when user is not an admin' do
+      context 'requesting their own manageable groups' do
+        subject { described_class.new(current_user, current_user) }
+
+        it { is_expected.to be_allowed(:read_user_groups) }
+      end
+
+      context "requesting a different user's manageable groups" do
+        it { is_expected.not_to be_allowed(:read_user_groups) }
+      end
     end
   end
 end

@@ -36,6 +36,14 @@ For more details about the Puma configuration, see the
 
 ## Puma Worker Killer
 
+Puma forks worker processes as part of a strategy to reduce memory use.
+
+Each time a worker is created, it shares memory with the primary process and
+only uses additional memory when it makes changes or additions to its memory pages.
+
+Memory use by workers therefore increases over time, and Puma Worker Killer is the
+mechanism that recovers this memory.
+
 By default:
 
 - The [Puma Worker Killer](https://github.com/schneems/puma_worker_killer) restarts a worker if it
@@ -55,6 +63,47 @@ To change the memory limit setting:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+There are costs associated with killing and replacing workers including
+reduced capacity to run GitLab, and CPU that is consumed
+restarting the workers. `per_worker_max_memory_mb` should be set to a
+higher value if the worker killer is replacing workers too often.
+
+Worker count is calculated based on CPU cores, so a small GitLab deployment
+with 4-8 workers may experience performance issues if workers are being restarted
+frequently, once or more per minute. This is too often.
+
+A higher value of `1200` or more would be beneficial if the server has free memory.
+
+The worker killer checks every 20 seconds, and can be monitored using
+[the Puma log](../logs.md#puma_stdoutlog) `/var/log/gitlab/puma/puma_stdout.log`.
+For example, for GitLab 13.5:
+
+```plaintext
+PumaWorkerKiller: Out of memory. 4 workers consuming total: 4871.23828125 MB
+out of max: 4798.08 MB. Sending TERM to pid 26668 consuming 1001.00390625 MB.
+```
+
+From this output:
+
+- The formula that calculates the maximum memory value results in workers
+  being killed before they reach the `per_worker_max_memory_mb` value.
+- The default values for the formula before GitLab 13.5 were 550MB for the primary
+  and `per_worker_max_memory_mb` specified 850MB for each worker.
+- As of GitLab 13.5 the values are primary: 800MB, worker: 1024MB.
+- The threshold for workers to be killed is set at 98% of the limit:
+
+  ```plaintext
+  0.98 * ( 800 + ( worker_processes * 1024MB ) )
+  ```
+
+- In the log output above, `0.98 * ( 800 + ( 4 * 1024 ) )` returns the
+  `max: 4798.08 MB` value.
+
+Increasing the maximum to `1200`, for example, would set a `max: 5488 MB` value.
+
+Workers use additional memory on top of the shared memory, how much
+depends on a site's use of GitLab.
 
 ## Worker timeout
 
@@ -95,7 +144,6 @@ considered as a fair tradeoff in a memory-constraint environment.
 
 When running Puma in Single mode, some features are not supported:
 
-- Phased restart do not work: [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Puma Worker Killer](https://gitlab.com/gitlab-org/gitlab/-/issues/300664)
 

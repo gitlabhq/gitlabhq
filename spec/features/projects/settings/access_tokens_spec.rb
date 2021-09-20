@@ -65,7 +65,7 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
       click_on 'Create project access token'
 
       expect(active_project_access_tokens).to have_text(name)
-      expect(active_project_access_tokens).to have_text('In')
+      expect(active_project_access_tokens).to have_text('in')
       expect(active_project_access_tokens).to have_text('api')
       expect(active_project_access_tokens).to have_text('read_api')
       expect(active_project_access_tokens).to have_text('Maintainer')
@@ -155,6 +155,18 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
       visit project_settings_access_tokens_path(project)
 
       expect(active_project_access_tokens).to have_text(project_access_token.name)
+    end
+
+    context 'when User#time_display_relative is false' do
+      before do
+        user.update!(time_display_relative: false)
+      end
+
+      it 'shows absolute times for expires_at' do
+        visit project_settings_access_tokens_path(project)
+
+        expect(active_project_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %d'))
+      end
     end
   end
 

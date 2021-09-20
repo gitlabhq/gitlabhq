@@ -36,6 +36,5 @@ exclude_paths:
   - webpack-report/
   - log/
   - backups/
-  - coverage-javascript/
   - plugins/
   - file_hooks/

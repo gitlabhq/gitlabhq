@@ -7,12 +7,12 @@ module Namespaces
       include RecursiveScopes
 
       def root_ancestor
-        return self if parent.nil?
-
-        if persisted?
+        if persisted? && !parent_id.nil?
           strong_memoize(:root_ancestor) do
-            recursive_self_and_ancestors.reorder(nil).find_by(parent_id: nil)
+            recursive_ancestors.reorder(nil).find_by(parent_id: nil)
           end
+        elsif parent.nil?
+          self
         else
           parent.root_ancestor
         end

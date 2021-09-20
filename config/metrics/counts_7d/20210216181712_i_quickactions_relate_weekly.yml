@@ -5,19 +5,20 @@ description: Count of WAU using the `/relate` quick action
 product_section: dev
 product_stage: plan
 product_group: group::project management
-product_category: issue_tracking 
+product_category: issue_tracking
 value_type: number
-status: data_available
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_quickactions_relate
+  - i_quickactions_relate
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
+milestone: "<13.9"

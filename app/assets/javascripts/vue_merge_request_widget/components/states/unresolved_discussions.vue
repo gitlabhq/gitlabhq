@@ -46,7 +46,7 @@ export default {
         size="small"
         icon="issue-new"
       >
-        {{ s__('mrWidget|Resolve all threads in new issue') }}
+        {{ s__('mrWidget|Create issue to resolve all threads') }}
       </gl-button>
     </div>
   </div>

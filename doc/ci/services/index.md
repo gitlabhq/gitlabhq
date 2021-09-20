@@ -6,7 +6,7 @@ comments: false
 type: index
 ---
 
-# Services
+# Services **(FREE)**
 
 The `services` keyword defines a Docker image that runs during a `job`
 linked to the Docker image that the image keyword defines. This allows
@@ -186,6 +186,34 @@ following these rules:
 To override the default behavior, you can
 [specify a service alias](#available-settings-for-services).
 
+### Connecting services
+
+You can use inter-dependent services with complex jobs, like end-to-end tests where an
+external API needs to communicate with its own database.
+
+For example, for an end-to-end test for a front-end application that uses an API, and where the API needs a database:
+
+```yaml
+end-to-end-tests:
+  image: node:latest
+  services:
+    - name: selenium/standalone-firefox:${FIREFOX_VERSION}
+      alias: firefox
+    - name: registry.gitlab.com/organization/private-api:latest
+      alias: backend-api
+    - postgres:9.6.19
+  variables:
+    FF_NETWORK_PER_BUILD: 1
+    POSTGRES_PASSWORD: supersecretpassword
+    BACKEND_POSTGRES_HOST: postgres
+  script:
+    - npm install
+    - npm test
+```
+
+For this solution to work, you must use
+[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
+
 ## Passing CI/CD variables to services
 
 You can also pass custom CI/CD [variables](../variables/index.md)
@@ -310,6 +338,34 @@ services:
 ```
 
 The syntax of `command` is similar to [Dockerfile's `CMD`](https://docs.docker.com/engine/reference/builder/#cmd).
+
+## Using `services` with `docker run` (Docker-in-Docker) side-by-side
+
+Containers started with `docker run` can also connect to services provided by GitLab.
+
+When booting the service is expensive or time consuming, you can use
+this technique to run tests from different client environments,
+while only booting up the tested service once.
+
+```yaml
+access-service:
+  stage: build
+  image: docker:19.03.1
+  services:
+    - docker:dind                    # necessary for docker run
+    - tutum/wordpress:latest
+  variables:
+    FF_NETWORK_PER_BUILD: "true"     # activate container-to-container networking
+  script: |
+    docker run --rm --name curl \
+      --volume  "$(pwd)":"$(pwd)"    \
+      --workdir "$(pwd)"             \
+      --network=host                 \
+      curlimages/curl:7.74.0 curl "http://tutum-wordpress"
+```
+
+For this solution to work, you must use
+[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
 
 ## How Docker integration works
 

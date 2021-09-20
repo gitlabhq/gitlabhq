@@ -1,24 +1,25 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_due_weekly
-description: Count of WAU using the `/due` quick action to change the due date on an issuable 
+description: Count of WAU using the `/due` quick action to change the due date on
+  an issuable
 product_section: dev
 product_stage: plan
 product_group: group::project management
 product_category: issue_tracking
 value_type: number
-status: data_available
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_quickactions_due
+  - i_quickactions_due
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
+- premium
 - ultimate
-
+milestone: "<13.9"

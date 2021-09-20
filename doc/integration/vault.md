@@ -23,7 +23,7 @@ The following assumes you already have Vault installed and running.
 
    1. In the top-right corner, select your avatar.
    1. Select **Edit profile**.
-   1. In the left sidebar, select **Applications**.
+   1. On the left sidebar, select **Applications**.
    1. Fill out the application **Name** and [**Redirect URI**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
    1. Select the **OpenID** scope.
    1. Select **Save application**.

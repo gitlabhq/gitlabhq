@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ErrorTracking::Error < ApplicationRecord
+  include Sortable
+
   belongs_to :project
 
   has_many :events, class_name: 'ErrorTracking::ErrorEvent'
@@ -22,11 +24,28 @@ class ErrorTracking::Error < ApplicationRecord
   def self.report_error(name:, description:, actor:, platform:, timestamp:)
     safe_find_or_create_by(
       name: name,
-      description: description,
       actor: actor,
       platform: platform
-    ) do |error|
-      error.update!(last_seen_at: timestamp)
+    ).tap do |error|
+      error.update!(
+        # Description can contain object id, so it can't be
+        # used as a group criteria for similar errors.
+        description: description,
+        last_seen_at: timestamp
+      )
+    end
+  end
+
+  def self.sort_by_attribute(method)
+    case method.to_s
+    when 'last_seen'
+      order(last_seen_at: :desc)
+    when 'first_seen'
+      order(first_seen_at: :desc)
+    when 'frequency'
+      order(events_count: :desc)
+    else
+      order_id_desc
     end
   end
 

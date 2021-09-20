@@ -7,6 +7,8 @@ module WebHooks
     data_consistency :always
     feature_category :integrations
     urgency :low
+    sidekiq_options retry: 3
+    loggable_arguments 0, 2, 3
 
     idempotent!
 

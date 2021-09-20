@@ -9,6 +9,14 @@ module Boards
         IssuesFinder.valid_params
       end
 
+      # It is a class method because we cannot apply it
+      # prior to knowing how many items should be fetched for a list.
+      def self.initialize_relative_positions(board, current_user, issues)
+        if Gitlab::Database.read_write? && !board.disabled_for?(current_user)
+          Issue.move_nulls_to_end(issues)
+        end
+      end
+
       private
 
       def order(items)

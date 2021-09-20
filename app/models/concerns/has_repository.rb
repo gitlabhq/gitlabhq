@@ -122,4 +122,8 @@ module HasRepository
   def after_repository_change_head
     reload_default_branch
   end
+
+  def after_change_head_branch_does_not_exist(branch)
+    # No-op (by default)
+  end
 end

@@ -181,7 +181,7 @@ include:
 review:
   stage: deploy
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     url: http://$CI_ENVIRONMENT_SLUG.example.com
   script:
     - run_deploy_script

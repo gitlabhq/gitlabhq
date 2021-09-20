@@ -9,7 +9,7 @@ const makeNewImportedProject = (importedProject) => ({
     sanitizedName: importedProject.name,
     providerLink: importedProject.providerLink,
   },
-  importedProject,
+  importedProject: { ...importedProject },
 });
 
 const makeNewIncompatibleProject = (project) => ({
@@ -63,15 +63,16 @@ export default {
         factory: makeNewIncompatibleProject,
       });
 
-      state.repositories = [
-        ...newImportedProjects,
-        ...state.repositories,
-        ...repositories.providerRepos.map((project) => ({
+      const existingProjects = [...newImportedProjects, ...state.repositories];
+      const existingProjectNames = new Set(existingProjects.map((p) => p.importSource.fullName));
+      const newProjects = repositories.providerRepos
+        .filter((project) => !existingProjectNames.has(project.fullName))
+        .map((project) => ({
           importSource: project,
           importedProject: null,
-        })),
-        ...newIncompatibleProjects,
-      ];
+        }));
+
+      state.repositories = [...existingProjects, ...newProjects, ...newIncompatibleProjects];
 
       if (incompatibleRepos.length === 0 && repositories.providerRepos.length === 0) {
         state.pageInfo.page -= 1;

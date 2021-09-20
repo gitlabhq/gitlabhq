@@ -135,21 +135,21 @@ module RelativePositioning
     before, after = [before, after].sort_by(&:relative_position) if before && after
 
     RelativePositioning.mover.move(self, before, after)
-  rescue ActiveRecord::QueryCanceled, NoSpaceLeft => e
+  rescue NoSpaceLeft => e
     could_not_move(e)
     raise e
   end
 
   def move_after(before = self)
     RelativePositioning.mover.move(self, before, nil)
-  rescue ActiveRecord::QueryCanceled, NoSpaceLeft => e
+  rescue NoSpaceLeft => e
     could_not_move(e)
     raise e
   end
 
   def move_before(after = self)
     RelativePositioning.mover.move(self, nil, after)
-  rescue ActiveRecord::QueryCanceled, NoSpaceLeft => e
+  rescue NoSpaceLeft => e
     could_not_move(e)
     raise e
   end
@@ -159,9 +159,6 @@ module RelativePositioning
   rescue NoSpaceLeft => e
     could_not_move(e)
     self.relative_position = MAX_POSITION
-  rescue ActiveRecord::QueryCanceled => e
-    could_not_move(e)
-    raise e
   end
 
   def move_to_start
@@ -169,9 +166,6 @@ module RelativePositioning
   rescue NoSpaceLeft => e
     could_not_move(e)
     self.relative_position = MIN_POSITION
-  rescue ActiveRecord::QueryCanceled => e
-    could_not_move(e)
-    raise e
   end
 
   # This method is used during rebalancing - override it to customise the update

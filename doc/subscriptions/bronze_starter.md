@@ -32,7 +32,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Overriding user permissions](../user/group/index.md#override-user-permissions)
   - [User contribution analytics](../user/group/contribution_analytics/index.md)
   - [Kerberos integration](../integration/kerberos.md)
-- Issue Boards:
+- Issue boards:
   - [Configurable issue boards](../user/project/issue_board.md#configurable-issue-boards)
   - [Sum of issue weights](../user/project/issue_board.md#sum-of-issue-weights)
   - [Work In Progress limits](../user/project/issue_board.md#work-in-progress-limits)
@@ -51,13 +51,13 @@ the tiers are no longer mentioned in GitLab documentation:
   - Syncing information through LDAP:
     - Groups: [one group](../administration/auth/ldap/ldap-troubleshooting.md#sync-one-group),
       [all groups programmatically](../administration/auth/ldap/index.md#group-sync),
-      [group sync schedule](../administration/auth/ldap/index.md#adjusting-ldap-group-sync-schedule), and
+      [group sync schedule](../administration/auth/ldap/index.md#adjust-ldap-group-sync-schedule), and
       [all groups manually](../administration/auth/ldap/ldap-troubleshooting.md#sync-all-groups)
     - [Configuration settings](../administration/auth/ldap/index.md#ldap-sync-configuration-settings)
     - Users: [all users](../administration/auth/ldap/index.md#user-sync),
       [administrators](../administration/auth/ldap/index.md#administrator-sync),
-      [user sync schedule](../administration/auth/ldap/index.md#adjusting-ldap-user-sync-schedule)
-    - [Adding group links](../administration/auth/ldap/index.md#adding-group-links)
+      [user sync schedule](../administration/auth/ldap/index.md#adjust-ldap-user-sync-schedule)
+    - [Adding group links](../administration/auth/ldap/index.md#add-group-links)
     - [Lock memberships to LDAP synchronization](../administration/auth/ldap/index.md#global-group-memberships-lock)
     - Rake tasks for [LDAP tasks](../administration/raketasks/ldap.md), including
       [syncing groups](../administration/raketasks/ldap.md#run-a-group-sync)
@@ -102,7 +102,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Shared runners pipeline minutes quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
 - [Push rules](../push_rules/push_rules.md)
 - SAML for self-managed GitLab instance:
-  - [Administrator groups](../integration/saml.md#admin-groups)
+  - [Administrator groups](../integration/saml.md#administrator-groups)
   - [Auditor groups](../integration/saml.md#auditor-groups)
   - [External groups](../integration/saml.md#external-groups)
   - [Required groups](../integration/saml.md#required-groups)

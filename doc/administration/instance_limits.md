@@ -78,6 +78,16 @@ This setting limits the request rate on the Packages API per user or IP. For mor
 
 - **Default rate limit**: Disabled by default.
 
+### Git LFS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68642) in GitLab 14.3.
+
+This setting limits the request rate on the [Git LFS](../topics/git/lfs/index.md)
+requests per user. For more information, read
+[GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md).
+
+- **Default rate limit**: Disabled by default.
+
 ### Import/Export
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35728) in GitLab 13.2.
@@ -387,6 +397,31 @@ To set this limit for a self-managed installation, run the following in the
 Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 ```
 
+### Limit the number of pipelines created by a pipeline schedule per day
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323066) in GitLab 14.0.
+
+You can limit the number of pipelines that pipeline schedules can trigger per day.
+
+Schedules that try to run pipelines more frequently than the limit are slowed to a maximum frequency.
+The frequency is calculated by dividing 1440 (the number minutes in a day) by the
+limit value. For example, for a maximum frequency of:
+
+- Once per minute, the limit must be `1440`.
+- Once per 10 minutes, the limit must be `144`.
+- Once per 60 minutes, the limit must be `24`
+
+There is no limit for self-managed instances by default.
+
+To set this limit to `1440` on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_daily_pipeline_schedule_triggers: 1440)
+```
+
+This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+
 ### Number of instance level variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216097) in GitLab 13.1.
@@ -513,19 +548,61 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
 
+### Maximum number of active DAST profile schedules per project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68551) in GitLab 14.3.
+
+Limit the number of active DAST profile schedules per project. A DAST profile schedule can be active or inactive.
+
+You can change the limit in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+Update `dast_profile_schedules` with the new value:
+
+```ruby
+Plan.default.actual_limits.update!(dast_profile_schedules: 50)
+```
+
+### Maximum size and depth of CI/CD configuration YAML files
+
+The default maximum size of a CI/CD configuration YAML file is 1 megabyte and the default depth is 100.
+
+You can change these limits in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+Update `max_yaml_size_bytes` with the new value in megabytes:
+
+```ruby
+ApplicationSetting.update!(max_yaml_size_bytes: 2.megabytes)
+```
+
+Update `max_yaml_depth` with the new value in megabytes:
+
+```ruby
+ApplicationSetting.update!(max_yaml_depth: 125)
+```
+
+To disable this limitation entirely, disable the feature flag in the console:
+
+```ruby
+Feature.disable(:ci_yaml_limit_size)
+```
+
 ## Instance monitoring and metrics
 
-### Incident Management inbound alert limits
+### Limit inbound incident management alerts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17859) in GitLab 12.5.
 
-Limiting inbound alerts for an incident reduces the number of alerts (issues)
-that can be created within a period of time, which can help prevent overloading
-your incident responders with duplicate issues. You can reduce the volume of
-alerts in the following ways:
+You can limit the number of inbound alerts for [incidents](../operations/incident_management/incidents.md)
+that can be created in a period of time. The inbound [incident management](../operations/incident_management/index.md)
+alert limit can help prevent overloading your incident responders by reducing the
+number of alerts or duplicate issues.
 
-- Max requests per period per project, 3600 seconds by default.
-- Rate limit period in seconds, 3600 seconds by default.
+To set inbound incident management alert limits:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Network**.
+1. Expand General **Incident Management Limits**.
+1. Select the **Enable Incident Management inbound alert limit** checkbox.
+1. Optional. Input a custom value for **Maximum requests per project per rate limit period**. Default is 3600.
+1. Optional. Input a custom value for **Rate limit period**. Default is 3600 seconds.
 
 ### Prometheus Alert JSON payloads
 
@@ -577,9 +654,9 @@ panel_groups:
 
 See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard) for the maximum number of displayed projects.
 
-## Environment data on Deploy Boards
+## Environment data on deploy boards
 
-[Deploy Boards](../user/project/deploy_boards.md) load information from Kubernetes about
+[Deploy boards](../user/project/deploy_boards.md) load information from Kubernetes about
 Pods and Deployments. However, data over 10 MB for a certain environment read from
 Kubernetes won't be shown.
 
@@ -645,7 +722,7 @@ indexed, which have a separate limit. For more information, read
 - For self-managed installations, the field length is unlimited by default.
 
 You can configure this limit for self-managed installations when you
-[enable Elasticsearch](../integration/elasticsearch.md#enabling-advanced-search).
+[enable Elasticsearch](../integration/elasticsearch.md#enable-advanced-search).
 Set the limit to `0` to disable it.
 
 ## Wiki limits
@@ -733,7 +810,7 @@ Set the limit to `0` to allow any file size.
 
 When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 versions.
 
-## Branch retargeting on merge **(FREE SELF)**
+## Branch retargeting on merge
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 

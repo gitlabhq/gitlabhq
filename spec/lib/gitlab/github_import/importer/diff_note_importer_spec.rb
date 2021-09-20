@@ -20,6 +20,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
       noteable_type: 'MergeRequest',
       noteable_id: 1,
       commit_id: '123abc',
+      original_commit_id: 'original123abc',
       file_path: 'README.md',
       diff_hunk: hunk,
       author: Gitlab::GithubImport::Representation::User
@@ -64,13 +65,14 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
             LegacyDiffNote.table_name,
             [
               {
+                discussion_id: anything,
                 noteable_type: 'MergeRequest',
                 noteable_id: merge_request.id,
                 project_id: project.id,
                 author_id: user.id,
                 note: 'Hello',
                 system: false,
-                commit_id: '123abc',
+                commit_id: 'original123abc',
                 line_code: note.line_code,
                 type: 'LegacyDiffNote',
                 created_at: created_at,
@@ -95,13 +97,14 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
             LegacyDiffNote.table_name,
             [
               {
+                discussion_id: anything,
                 noteable_type: 'MergeRequest',
                 noteable_id: merge_request.id,
                 project_id: project.id,
                 author_id: project.creator_id,
                 note: "*Created by: #{user.username}*\n\nHello",
                 system: false,
-                commit_id: '123abc',
+                commit_id: 'original123abc',
                 line_code: note.line_code,
                 type: 'LegacyDiffNote',
                 created_at: created_at,

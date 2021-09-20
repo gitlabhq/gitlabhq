@@ -40,7 +40,7 @@ module QA
           Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         end
 
-        it 'can trigger pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/946' do
+        it 'can trigger pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1650' do
           Page::Project::Pipeline::Index.perform do |index|
             expect(index).not_to have_pipeline # should not auto trigger pipeline
             index.click_run_pipeline_button

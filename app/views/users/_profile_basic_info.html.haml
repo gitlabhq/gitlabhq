@@ -1,6 +1,6 @@
-%p.mb-1.mb-sm-2.mt-2.mt-sm-3
-  %span.middle-dot-divider
+.gl-text-gray-900.gl-mt-4
+  = render 'middle_dot_divider' do
     @#{@user.username}
   - if can?(current_user, :read_user_profile, @user)
-    %span.middle-dot-divider
+    = render 'middle_dot_divider' do
       = s_('Member since %{date}') % { date: @user.created_at.to_date.to_s(:long) }

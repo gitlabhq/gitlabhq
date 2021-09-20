@@ -6,7 +6,17 @@ require_migration!('create_base_work_item_types')
 RSpec.describe CreateBaseWorkItemTypes, :migration do
   let!(:work_item_types) { table(:work_item_types) }
 
+  after(:all) do
+    # Make sure base types are recreated after running the migration
+    # because migration specs are not run in a transaction
+    WorkItem::Type.delete_all
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.import
+  end
+
   it 'creates default data' do
+    # Need to delete all as base types are seeded before entire test suite
+    WorkItem::Type.delete_all
+
     reversible_migration do |migration|
       migration.before -> {
         # Depending on whether the migration has been run before,

@@ -2,8 +2,16 @@ import { GlFilteredSearch, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
+import { statusTokenConfig } from '~/runner/components/search_tokens/status_token_config';
 import TagToken from '~/runner/components/search_tokens/tag_token.vue';
-import { PARAM_KEY_STATUS, PARAM_KEY_RUNNER_TYPE, PARAM_KEY_TAG } from '~/runner/constants';
+import { tagTokenConfig } from '~/runner/components/search_tokens/tag_token_config';
+import { typeTokenConfig } from '~/runner/components/search_tokens/type_token_config';
+import {
+  PARAM_KEY_STATUS,
+  PARAM_KEY_RUNNER_TYPE,
+  PARAM_KEY_TAG,
+  STATUS_ACTIVE,
+} from '~/runner/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -13,12 +21,12 @@ describe('RunnerList', () => {
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
   const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findSortOptions = () => wrapper.findAllComponents(GlDropdownItem);
-  const findActiveRunnersMessage = () => wrapper.findByTestId('active-runners-message');
+  const findActiveRunnersMessage = () => wrapper.findByTestId('runner-count');
 
   const mockDefaultSort = 'CREATED_DESC';
   const mockOtherSort = 'CONTACTED_DESC';
   const mockFilters = [
-    { type: PARAM_KEY_STATUS, value: { data: 'ACTIVE', operator: '=' } },
+    { type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } },
     { type: 'filtered-search-term', value: { data: '' } },
   ];
   const mockActiveRunnersCount = 2;
@@ -28,12 +36,15 @@ describe('RunnerList', () => {
       shallowMount(RunnerFilteredSearchBar, {
         propsData: {
           namespace: 'runners',
+          tokens: [],
           value: {
             filters: [],
             sort: mockDefaultSort,
           },
-          activeRunnersCount: mockActiveRunnersCount,
           ...props,
+        },
+        slots: {
+          'runner-count': `Runners currently online: ${mockActiveRunnersCount}`,
         },
         stubs: {
           FilteredSearch,
@@ -64,12 +75,6 @@ describe('RunnerList', () => {
     );
   });
 
-  it('Displays a large active runner count', () => {
-    createComponent({ props: { activeRunnersCount: 2000 } });
-
-    expect(findActiveRunnersMessage().text()).toBe('Runners currently online: 2,000');
-  });
-
   it('sets sorting options', () => {
     const SORT_OPTIONS_COUNT = 2;
 
@@ -78,7 +83,13 @@ describe('RunnerList', () => {
     expect(findSortOptions().at(1).text()).toBe('Last contact');
   });
 
-  it('sets tokens', () => {
+  it('sets tokens to the filtered search', () => {
+    createComponent({
+      props: {
+        tokens: [statusTokenConfig, typeTokenConfig, tagTokenConfig],
+      },
+    });
+
     expect(findFilteredSearch().props('tokens')).toEqual([
       expect.objectContaining({
         type: PARAM_KEY_STATUS,

@@ -218,14 +218,14 @@ export default class Clusters {
   }
 
   setBannerDismissedState(status, isDismissed) {
-    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+    if (AccessorUtilities.canUseLocalStorage()) {
       window.localStorage.setItem(this.clusterBannerDismissedKey, `${status}_${isDismissed}`);
     }
   }
 
   isBannerDismissed(status) {
     let bannerState;
-    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+    if (AccessorUtilities.canUseLocalStorage()) {
       bannerState = window.localStorage.getItem(this.clusterBannerDismissedKey);
     }
 
@@ -233,7 +233,7 @@ export default class Clusters {
   }
 
   setClusterNewlyCreated(state) {
-    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+    if (AccessorUtilities.canUseLocalStorage()) {
       window.localStorage.setItem(this.clusterNewlyCreatedKey, Boolean(state));
     }
   }
@@ -242,7 +242,7 @@ export default class Clusters {
     // once this is true, it will always be true for a given page load
     if (!this.isNewlyCreated) {
       let newlyCreated;
-      if (AccessorUtilities.isLocalStorageAccessSafe()) {
+      if (AccessorUtilities.canUseLocalStorage()) {
         newlyCreated = window.localStorage.getItem(this.clusterNewlyCreatedKey);
       }
 

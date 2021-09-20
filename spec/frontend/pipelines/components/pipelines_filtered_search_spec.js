@@ -33,8 +33,6 @@ describe('Pipelines filtered search', () => {
   };
 
   beforeEach(() => {
-    window.gon = { features: { pipelineSourceFilter: true } };
-
     mock = new MockAdapter(axios);
 
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(users);

@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Restrict allowed SSH key technologies and minimum length
+# Restrict allowed SSH key technologies and minimum length **(FREE SELF)**
 
 `ssh-keygen` allows users to create RSA keys with as few as 768 bits, which
 falls well below recommendations from certain standards groups (such as the US
@@ -20,7 +20,7 @@ algorithms.
 GitLab allows you to restrict the allowed SSH key technology as well as specify
 the minimum key length for each technology:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
 1. Expand the **Visibility and access controls** section:
 
@@ -35,6 +35,16 @@ An icon is visible to the user of a restricted key in the SSH keys section of th
 ![Restricted SSH key icon](img/ssh_keys_restricted_key_icon.png)
 
 Hovering over this icon tells you why the key is restricted.
+
+## Default settings
+
+By default, the GitLab.com and self-managed settings for the
+[supported key types](../ssh/index.md#supported-ssh-key-types) are:
+
+- RSA SSH keys are allowed.
+- DSA SSH keys are forbidden ([since GitLab 11.0](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys)).
+- ECDSA SSH keys are allowed.
+- ED25519 SSH keys are allowed.
 
 <!-- ## Troubleshooting
 

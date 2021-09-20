@@ -59,6 +59,7 @@ RSpec.describe 'merge requests discussions' do
       let!(:first_note) { create(:diff_note_on_merge_request, author: author, noteable: merge_request, project: project, note: "reference: #{reference.to_reference}") }
       let!(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
       let!(:award_emoji) { create(:award_emoji, awardable: first_note) }
+      let!(:author_membership) { project.add_maintainer(author) }
 
       before do
         # Make a request to cache the discussions
@@ -222,6 +223,16 @@ RSpec.describe 'merge requests discussions' do
       context 'when author status changes' do
         before do
           Users::SetStatusService.new(author, message: "updated status").execute
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author role changes' do
+        before do
+          Members::UpdateService.new(user, access_level: Gitlab::Access::GUEST).execute(author_membership)
         end
 
         it_behaves_like 'cache miss' do

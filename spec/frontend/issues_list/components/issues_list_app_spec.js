@@ -5,17 +5,17 @@ import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
-import getIssuesCountQuery from 'ee_else_ce/issues_list/queries/get_issues_count.query.graphql';
+import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
+  getIssuesCountsQueryResponse,
   getIssuesQueryResponse,
   filteredTokens,
   locationSearch,
   urlParams,
-  getIssuesCountQueryResponse,
 } from 'jest/issues_list/mock_data';
 import createFlash from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -63,15 +63,15 @@ describe('IssuesListApp component', () => {
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
+    fullPath: 'path/to/project',
+    hasAnyIssues: true,
     hasBlockedIssuesFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
-    hasProjectIssues: true,
+    isProject: true,
     isSignedIn: true,
-    issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
-    projectPath: 'path/to/project',
     rssPath: 'rss/path',
     showNewIssueLink: true,
     signInPath: 'sign/in/path',
@@ -97,12 +97,12 @@ describe('IssuesListApp component', () => {
   const mountComponent = ({
     provide = {},
     issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
-    issuesQueryCountResponse = jest.fn().mockResolvedValue(getIssuesCountQueryResponse),
+    issuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse),
     mountFn = shallowMount,
   } = {}) => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
-      [getIssuesCountQuery, issuesQueryCountResponse],
+      [getIssuesCountsQuery, issuesCountsQueryResponse],
     ];
     const apolloProvider = createMockApollo(requestHandlers);
 
@@ -134,7 +134,7 @@ describe('IssuesListApp component', () => {
 
     it('renders', () => {
       expect(findIssuableList().props()).toMatchObject({
-        namespace: defaultProvide.projectPath,
+        namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
         searchInputPlaceholder: IssuesListApp.i18n.searchPlaceholder,
         sortOptions: getSortOptions(true, true),
@@ -191,7 +191,7 @@ describe('IssuesListApp component', () => {
           setWindowLocation(search);
 
           wrapper = mountComponent({
-            provide: { ...defaultProvide, isSignedIn: true },
+            provide: { isSignedIn: true },
             mountFn: mount,
           });
 
@@ -208,7 +208,15 @@ describe('IssuesListApp component', () => {
 
       describe('when user is not signed in', () => {
         it('does not render', () => {
-          wrapper = mountComponent({ provide: { ...defaultProvide, isSignedIn: false } });
+          wrapper = mountComponent({ provide: { isSignedIn: false } });
+
+          expect(findCsvImportExportButtons().exists()).toBe(false);
+        });
+      });
+
+      describe('when in a group context', () => {
+        it('does not render', () => {
+          wrapper = mountComponent({ provide: { isProject: false } });
 
           expect(findCsvImportExportButtons().exists()).toBe(false);
         });
@@ -349,7 +357,7 @@ describe('IssuesListApp component', () => {
         beforeEach(() => {
           setWindowLocation(`?search=no+results`);
 
-          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
         });
 
         it('shows empty state', () => {
@@ -363,7 +371,7 @@ describe('IssuesListApp component', () => {
 
       describe('when "Open" tab has no issues', () => {
         beforeEach(() => {
-          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
         });
 
         it('shows empty state', () => {
@@ -379,7 +387,7 @@ describe('IssuesListApp component', () => {
         beforeEach(() => {
           setWindowLocation(`?state=${IssuableStates.Closed}`);
 
-          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
         });
 
         it('shows empty state', () => {
@@ -395,7 +403,7 @@ describe('IssuesListApp component', () => {
       describe('when user is logged in', () => {
         beforeEach(() => {
           wrapper = mountComponent({
-            provide: { hasProjectIssues: false, isSignedIn: true },
+            provide: { hasAnyIssues: false, isSignedIn: true },
             mountFn: mount,
           });
         });
@@ -434,7 +442,7 @@ describe('IssuesListApp component', () => {
       describe('when user is logged out', () => {
         beforeEach(() => {
           wrapper = mountComponent({
-            provide: { hasProjectIssues: false, isSignedIn: false },
+            provide: { hasAnyIssues: false, isSignedIn: false },
           });
         });
 
@@ -571,9 +579,9 @@ describe('IssuesListApp component', () => {
 
   describe('errors', () => {
     describe.each`
-      error                      | mountOption                   | message
-      ${'fetching issues'}       | ${'issuesQueryResponse'}      | ${IssuesListApp.i18n.errorFetchingIssues}
-      ${'fetching issue counts'} | ${'issuesQueryCountResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
+      error                      | mountOption                    | message
+      ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${IssuesListApp.i18n.errorFetchingIssues}
+      ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
     `('when there is an error $error', ({ mountOption, message }) => {
       beforeEach(() => {
         wrapper = mountComponent({
@@ -625,78 +633,99 @@ describe('IssuesListApp component', () => {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/1',
         iid: '101',
-        title: 'Issue one',
+        reference: 'group/project#1',
+        webPath: '/group/project/-/issues/1',
       };
       const issueTwo = {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/2',
         iid: '102',
-        title: 'Issue two',
+        reference: 'group/project#2',
+        webPath: '/group/project/-/issues/2',
       };
       const issueThree = {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/3',
         iid: '103',
-        title: 'Issue three',
+        reference: 'group/project#3',
+        webPath: '/group/project/-/issues/3',
       };
       const issueFour = {
         ...defaultQueryResponse.data.project.issues.nodes[0],
         id: 'gid://gitlab/Issue/4',
         iid: '104',
-        title: 'Issue four',
+        reference: 'group/project#4',
+        webPath: '/group/project/-/issues/4',
       };
-      const response = {
+      const response = (isProject = true) => ({
         data: {
-          project: {
+          [isProject ? 'project' : 'group']: {
             issues: {
               ...defaultQueryResponse.data.project.issues,
               nodes: [issueOne, issueTwo, issueThree, issueFour],
             },
           },
         },
-      };
-
-      beforeEach(() => {
-        wrapper = mountComponent({ issuesQueryResponse: jest.fn().mockResolvedValue(response) });
-        jest.runOnlyPendingTimers();
       });
 
       describe('when successful', () => {
-        describe.each`
-          description                       | issueToMove   | oldIndex | newIndex | moveBeforeId    | moveAfterId
-          ${'to the beginning of the list'} | ${issueThree} | ${2}     | ${0}     | ${null}         | ${issueOne.id}
-          ${'down the list'}                | ${issueOne}   | ${0}     | ${1}     | ${issueTwo.id}  | ${issueThree.id}
-          ${'up the list'}                  | ${issueThree} | ${2}     | ${1}     | ${issueOne.id}  | ${issueTwo.id}
-          ${'to the end of the list'}       | ${issueTwo}   | ${1}     | ${3}     | ${issueFour.id} | ${null}
-        `(
-          'when moving issue $description',
-          ({ issueToMove, oldIndex, newIndex, moveBeforeId, moveAfterId }) => {
-            it('makes API call to reorder the issue', async () => {
-              findIssuableList().vm.$emit('reorder', { oldIndex, newIndex });
-
-              await waitForPromises();
-
-              expect(axiosMock.history.put[0]).toMatchObject({
-                url: joinPaths(defaultProvide.issuesPath, issueToMove.iid, 'reorder'),
-                data: JSON.stringify({
-                  move_before_id: getIdFromGraphQLId(moveBeforeId),
-                  move_after_id: getIdFromGraphQLId(moveAfterId),
-                }),
+        describe.each([true, false])('when isProject=%s', (isProject) => {
+          describe.each`
+            description                       | issueToMove   | oldIndex | newIndex | moveBeforeId    | moveAfterId
+            ${'to the beginning of the list'} | ${issueThree} | ${2}     | ${0}     | ${null}         | ${issueOne.id}
+            ${'down the list'}                | ${issueOne}   | ${0}     | ${1}     | ${issueTwo.id}  | ${issueThree.id}
+            ${'up the list'}                  | ${issueThree} | ${2}     | ${1}     | ${issueOne.id}  | ${issueTwo.id}
+            ${'to the end of the list'}       | ${issueTwo}   | ${1}     | ${3}     | ${issueFour.id} | ${null}
+          `(
+            'when moving issue $description',
+            ({ issueToMove, oldIndex, newIndex, moveBeforeId, moveAfterId }) => {
+              beforeEach(() => {
+                wrapper = mountComponent({
+                  provide: { isProject },
+                  issuesQueryResponse: jest.fn().mockResolvedValue(response(isProject)),
+                });
+                jest.runOnlyPendingTimers();
               });
-            });
-          },
-        );
+
+              it('makes API call to reorder the issue', async () => {
+                findIssuableList().vm.$emit('reorder', { oldIndex, newIndex });
+
+                await waitForPromises();
+
+                expect(axiosMock.history.put[0]).toMatchObject({
+                  url: joinPaths(issueToMove.webPath, 'reorder'),
+                  data: JSON.stringify({
+                    move_before_id: getIdFromGraphQLId(moveBeforeId),
+                    move_after_id: getIdFromGraphQLId(moveAfterId),
+                    group_full_path: isProject ? undefined : defaultProvide.fullPath,
+                  }),
+                });
+              });
+            },
+          );
+        });
       });
 
       describe('when unsuccessful', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            issuesQueryResponse: jest.fn().mockResolvedValue(response()),
+          });
+          jest.runOnlyPendingTimers();
+        });
+
         it('displays an error message', async () => {
-          axiosMock.onPut(joinPaths(defaultProvide.issuesPath, issueOne.iid, 'reorder')).reply(500);
+          axiosMock.onPut(joinPaths(issueOne.webPath, 'reorder')).reply(500);
 
           findIssuableList().vm.$emit('reorder', { oldIndex: 0, newIndex: 1 });
 
           await waitForPromises();
 
-          expect(createFlash).toHaveBeenCalledWith({ message: IssuesListApp.i18n.reorderError });
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.reorderError,
+            captureError: true,
+            error: new Error('Request failed with status code 500'),
+          });
         });
       });
     });

@@ -43,7 +43,10 @@ const KNOWN_TYPES = [
   },
 ];
 
-export function isTextFile({ name, raw, content, mimeType = '' }) {
+export function isTextFile({ name, raw, binary, content, mimeType = '' }) {
+  // some file objects already have a `binary` property set on them. If so, use it first
+  if (typeof binary === 'boolean') return !binary;
+
   const knownType = KNOWN_TYPES.find((type) => type.isMatch(mimeType, name));
   if (knownType) return knownType.isText;
 

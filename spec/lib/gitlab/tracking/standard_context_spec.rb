@@ -87,8 +87,26 @@ RSpec.describe Gitlab::Tracking::StandardContext do
       end
     end
 
-    it 'does not contain any ids' do
-      expect(snowplow_context.to_json[:data].keys).not_to include(:user_id, :project_id, :namespace_id)
+    it 'does not contain user id' do
+      expect(snowplow_context.to_json[:data].keys).not_to include(:user_id)
+    end
+
+    it 'contains namespace and project ids' do
+      expect(snowplow_context.to_json[:data].keys).to include(:project_id, :namespace_id)
+    end
+
+    it 'accepts just project id as integer' do
+      expect { described_class.new(project: 1).to_context }.not_to raise_error
+    end
+
+    context 'without add_namespace_and_project_to_snowplow_tracking feature' do
+      before do
+        stub_feature_flags(add_namespace_and_project_to_snowplow_tracking: false)
+      end
+
+      it 'does not contain any ids' do
+        expect(snowplow_context.to_json[:data].keys).not_to include(:user_id, :project_id, :namespace_id)
+      end
     end
   end
 end

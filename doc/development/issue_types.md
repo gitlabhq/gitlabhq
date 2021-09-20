@@ -4,7 +4,10 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Types
+# Issue Types (DEPRECATED)
+
+WARNING:
+We are deprecating Issue Types as of GitLab 14.2 in favor of [Work Items and Work Item Types](work_items.md).
 
 Sometimes when a new resource type is added it's not clear if it should be only an
 "extension" of Issue (Issue Type) or if it should be a new first-class resource type

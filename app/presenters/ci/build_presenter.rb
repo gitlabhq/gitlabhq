@@ -12,11 +12,11 @@ module Ci
       erased_by.name if erased_by_user?
     end
 
-    def status_title
+    def status_title(status = detailed_status)
       if auto_canceled?
         "Job is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}"
       else
-        tooltip_for_badge
+        tooltip_for_badge(status)
       end
     end
 
@@ -41,8 +41,8 @@ module Ci
 
     private
 
-    def tooltip_for_badge
-      detailed_status.badge_tooltip.capitalize
+    def tooltip_for_badge(status)
+      status.badge_tooltip.capitalize
     end
 
     def detailed_status

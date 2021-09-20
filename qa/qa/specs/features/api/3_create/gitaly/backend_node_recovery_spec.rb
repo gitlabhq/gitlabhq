@@ -22,7 +22,7 @@ module QA
           praefect_manager.reset_primary_to_original
         end
 
-        it 'recovers from dataloss', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/978' do
+        it 'recovers from dataloss', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1265' do
           # Create a new project with a commit and wait for it to replicate
           praefect_manager.wait_for_replication(project.id)
 

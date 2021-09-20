@@ -22,7 +22,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1616' do
+      it 'creates a merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1836' do
         feature_mr.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|

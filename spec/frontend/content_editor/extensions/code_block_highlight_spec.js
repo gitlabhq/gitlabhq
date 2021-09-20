@@ -1,9 +1,15 @@
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
-import { loadMarkdownApiResult } from '../markdown_processing_examples';
 import { createTestEditor } from '../test_utils';
 
+const CODE_BLOCK_HTML = `<pre class="code highlight js-syntax-highlight language-javascript" lang="javascript" v-pre="true">
+  <code>
+    <span id="LC1" class="line" lang="javascript">
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span>
+    </span>
+  </code>
+</pre>`;
+
 describe('content_editor/extensions/code_block_highlight', () => {
-  let codeBlockHtmlFixture;
   let parsedCodeBlockHtmlFixture;
   let tiptapEditor;
 
@@ -11,13 +17,10 @@ describe('content_editor/extensions/code_block_highlight', () => {
   const preElement = () => parsedCodeBlockHtmlFixture.querySelector('pre');
 
   beforeEach(() => {
-    const { html } = loadMarkdownApiResult('code_block');
-
     tiptapEditor = createTestEditor({ extensions: [CodeBlockHighlight] });
-    codeBlockHtmlFixture = html;
-    parsedCodeBlockHtmlFixture = parseHTML(codeBlockHtmlFixture);
+    parsedCodeBlockHtmlFixture = parseHTML(CODE_BLOCK_HTML);
 
-    tiptapEditor.commands.setContent(codeBlockHtmlFixture);
+    tiptapEditor.commands.setContent(CODE_BLOCK_HTML);
   });
 
   it('extracts language and params attributes from Markdown API output', () => {

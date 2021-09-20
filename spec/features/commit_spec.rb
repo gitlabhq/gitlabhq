@@ -42,7 +42,7 @@ RSpec.describe 'Commit' do
         visit project_commit_path(project, commit)
       end
 
-      it "shows an adjusted count for changed files on this page" do
+      it "shows an adjusted count for changed files on this page", :js do
         expect(page).to have_content("Showing 1 changed file")
       end
 

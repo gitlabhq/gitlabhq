@@ -9,6 +9,7 @@ module Types
     DEFAULT_COMPLEXITY = 1
 
     attr_reader :deprecation, :doc_reference
+    attr_writer :max_page_size # Can be removed with :performance_roadmap feature flag: https://gitlab.com/gitlab-org/gitlab/-/issues/337198
 
     def initialize(**kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)

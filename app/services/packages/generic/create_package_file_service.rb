@@ -29,7 +29,8 @@ module Packages
 
         package.update_column(:status, params[:status]) if params[:status] && params[:status] != package.status
 
-        package.build_infos.safe_find_or_create_by!(pipeline: params[:build].pipeline) if params[:build].present?
+        package.create_build_infos!(params[:build])
+
         package
       end
 

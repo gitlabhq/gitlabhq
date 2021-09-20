@@ -61,33 +61,38 @@ export default {
 <template>
   <div class="gl-mt-3 gl-py-2 gl-px-3 bg-gray-light border-top border-bottom">
     <filter-bar
-      class="js-filter-bar filtered-search-box gl-display-flex gl-mb-2 gl-mr-3 gl-border-none"
+      data-testid="vsa-filter-bar"
+      class="filtered-search-box gl-display-flex gl-mb-2 gl-mr-3 gl-border-none"
       :group-path="groupPath"
     />
     <div
       v-if="hasDateRangeFilter || hasProjectFilter"
       class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-justify-content-space-between"
     >
-      <projects-dropdown-filter
-        v-if="hasProjectFilter"
-        :key="groupId"
-        class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
-        :group-id="groupId"
-        :group-namespace="groupPath"
-        :query-params="projectsQueryParams"
-        :multi-select="$options.multiProjectSelect"
-        :default-projects="selectedProjects"
-        @selected="$emit('selectProject', $event)"
-      />
-      <date-range
-        v-if="hasDateRangeFilter"
-        :start-date="startDate"
-        :end-date="endDate"
-        :max-date-range="$options.maxDateRange"
-        :include-selected-date="true"
-        class="js-daterange-picker"
-        @change="$emit('setDateRange', $event)"
-      />
+      <div>
+        <projects-dropdown-filter
+          v-if="hasProjectFilter"
+          :key="groupId"
+          class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
+          :group-id="groupId"
+          :group-namespace="groupPath"
+          :query-params="projectsQueryParams"
+          :multi-select="$options.multiProjectSelect"
+          :default-projects="selectedProjects"
+          @selected="$emit('selectProject', $event)"
+        />
+      </div>
+      <div>
+        <date-range
+          v-if="hasDateRangeFilter"
+          :start-date="startDate"
+          :end-date="endDate"
+          :max-date-range="$options.maxDateRange"
+          :include-selected-date="true"
+          class="js-daterange-picker"
+          @change="$emit('setDateRange', $event)"
+        />
+      </div>
     </div>
   </div>
 </template>

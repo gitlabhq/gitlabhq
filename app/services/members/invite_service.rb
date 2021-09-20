@@ -18,7 +18,7 @@ module Members
       params[:email]
     end
 
-    def validate_invites!
+    def validate_invitable!
       super
 
       # we need the below due to add_users hitting Members::CreatorService.parse_users_list and ignoring invalid emails

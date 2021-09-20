@@ -6,7 +6,7 @@ product_stage:
 product_group:
 product_category:
 value_type: <%= value_type %>
-status: implemented
+status: active
 milestone: "<%= milestone %>"
 introduced_by_url:
 time_frame: <%= time_frame %>

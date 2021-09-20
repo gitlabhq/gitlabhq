@@ -359,7 +359,7 @@ func configureRoutes(u *upstream) {
 		u.route("", "^/-/metrics$", defaultUpstream),
 
 		// Authentication routes
-		u.route("", "^/users/(sign_in|sign_out)$", defaultUpstream),
+		u.route("", "^/users/auth/geo/(sign_in|sign_out)$", defaultUpstream),
 		u.route("", "^/oauth/geo/(auth|callback|logout)$", defaultUpstream),
 
 		// Admin Area > Geo routes

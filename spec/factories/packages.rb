@@ -112,7 +112,7 @@ FactoryBot.define do
 
     factory :npm_package do
       sequence(:name) { |n| "@#{project.root_namespace.path}/package-#{n}"}
-      version { '1.0.0' }
+      sequence(:version) { |n| "1.0.#{n}" }
       package_type { :npm }
 
       after :create do |package|
@@ -353,5 +353,13 @@ FactoryBot.define do
   factory :packages_tag, class: 'Packages::Tag' do
     package
     sequence(:name) { |n| "tag-#{n}"}
+  end
+
+  factory :packages_build_info, class: 'Packages::BuildInfo' do
+    package
+
+    trait :with_pipeline do
+      association :pipeline, factory: [:ci_pipeline, :with_job]
+    end
   end
 end

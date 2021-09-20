@@ -3,21 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Issues RSS' do
-  let!(:user) { create(:user) }
-  let(:group) { create(:group) }
-  let(:project) { create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { project_issues_path(project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let_it_be(:path) { project_issues_path(project) }
+  let_it_be(:issue) { create(:issue, project: project, assignees: [user]) }
 
-  before do
-    create(:issue, project: project, assignees: [user])
+  before_all do
     group.add_developer(user)
   end
 
   context 'when signed in' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      project.add_developer(user)
+    end
 
     before do
-      project.add_developer(user)
       sign_in(user)
       visit path
     end
@@ -36,26 +39,6 @@ RSpec.describe 'Project Issues RSS' do
   end
 
   describe 'feeds' do
-    shared_examples 'updates atom feed link' do |type|
-      it "for #{type}" do
-        sign_in(user)
-        visit path
-
-        link = find_link('Subscribe to RSS feed')
-        params = CGI.parse(URI.parse(link[:href]).query)
-        auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-        auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
-
-        expected = {
-          'feed_token' => [user.feed_token],
-          'assignee_id' => [user.id.to_s]
-        }
-
-        expect(params).to include(expected)
-        expect(auto_discovery_params).to include(expected)
-      end
-    end
-
     it_behaves_like 'updates atom feed link', :project do
       let(:path) { project_issues_path(project, assignee_id: user.id) }
     end

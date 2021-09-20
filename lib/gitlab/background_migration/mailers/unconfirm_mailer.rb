@@ -14,7 +14,7 @@ module Gitlab
           mail(
             template_path: 'unconfirm_mailer',
             template_name: 'unconfirm_notification_email',
-            to: @user.notification_email,
+            to: @user.notification_email_or_default,
             subject: subject('GitLab email verification request')
           )
         end

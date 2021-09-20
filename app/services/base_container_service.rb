@@ -2,12 +2,12 @@
 
 # Base class, scoped by container (project or group).
 #
-# New or existing services which only require project as a container
-# should subclass BaseProjectService.
+# New or existing services which only require a project or group container
+# should subclass BaseProjectService or BaseGroupService.
 #
-# If you require a different but specific, non-polymorphic container (such
-# as group), consider creating a new subclass such as BaseGroupService,
-# and update the related comment at the top of the original BaseService.
+# If you require a different but specific, non-polymorphic container
+# consider creating a new subclass, and update the related comment at
+# the top of the original BaseService.
 class BaseContainerService
   include BaseServiceUtility
 

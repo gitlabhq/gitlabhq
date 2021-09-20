@@ -5,9 +5,10 @@ module ReferenceParserHelpers
     Nokogiri::HTML.fragment('<a></a>').children[0]
   end
 
-  def expect_gathered_references(result, visible, not_visible_count)
+  def expect_gathered_references(result, visible, nodes, visible_nodes)
     expect(result[:visible]).to eq(visible)
-    expect(result[:not_visible].count).to eq(not_visible_count)
+    expect(result[:nodes]).to eq(nodes)
+    expect(result[:visible_nodes]).to eq(visible_nodes)
   end
 
   RSpec.shared_examples 'no project N+1 queries' do

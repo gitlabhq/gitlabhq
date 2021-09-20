@@ -4,15 +4,7 @@
 - page_title "##{@runner.id} (#{@runner.short_sha})"
 - add_to_breadcrumbs _('Runners'), admin_runners_path
 
-- if Feature.enabled?(:runner_detailed_view_vue_ui, current_user, default_enabled: :yaml)
-  #js-runner-details{ data: {runner_id: @runner.id} }
-- else
-  %h2.page-title
-    = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
-    = render 'shared/runners/runner_type_badge', runner: @runner
-  = render 'shared/runners/runner_type_alert', runner: @runner
-  .gl-mb-6
-    = render 'shared/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner), in_gitlab_com_admin_context: Gitlab.com?
+#js-runner-details{ data: {runner_id: @runner.id} }
 
 .row
   .col-md-6
@@ -35,7 +27,7 @@
                         %strong
                           = project.full_name
                       .gl-alert-actions
-                        = link_to s_('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
+                        = link_to _('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
 
     %table.table{ data: { testid: 'unassigned-projects' } }
       %thead
@@ -60,7 +52,7 @@
             .float-right
               = form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
                 = f.hidden_field :runner_id, value: @runner.id
-                = f.submit _('Enable'), class: 'gl-button btn btn-sm'
+                = f.submit _('Enable'), class: 'gl-button btn btn-sm', data: { confirm: (s_('Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?') if @runner.instance_type?) }
     = paginate_without_count @projects
 
   .col-md-6

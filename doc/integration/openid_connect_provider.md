@@ -49,6 +49,7 @@ The following user information is shared with clients:
 | `website`        | `string`  | URL for the user's website
 | `profile`        | `string`  | URL for the user's GitLab profile
 | `picture`        | `string`  | URL for the user's GitLab avatar
-| `groups`         | `array`   | Names of the groups the user is a member of
+| `groups`         | `array`   | Paths for the groups the user is a member of, either directly or through an ancestor group.
+| `groups_direct`  | `array`   | Paths for the groups the user is a direct member of.
 
-The claims `sub`, `sub_legacy`, `email` and `email_verified` are included in the ID token, all other claims are available from the `/oauth/userinfo` endpoint used by OIDC clients.
+The claims `sub`, `sub_legacy`, `email`, `email_verified` and `groups_direct` are included in the ID token. All other claims are available from the `/oauth/userinfo` endpoint used by OIDC clients.

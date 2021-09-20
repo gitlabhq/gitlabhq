@@ -1,4 +1,11 @@
 fragment VersionListItem on DesignVersion {
   id
   sha
+  createdAt
+  author {
+    __typename
+    id
+    name
+    avatarUrl
+  }
 }

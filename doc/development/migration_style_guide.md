@@ -70,7 +70,7 @@ graph LR
 
     H -->|Yes| E[Regular migration]
     H -->|No| I[Post-deploy migration<br/>+ feature flag]
- 
+
     D -->|Yes| F[Post-deploy migration]
     D -->|No| G[Background migration]
 ```
@@ -217,6 +217,40 @@ In case you need to insert, update, or delete a significant amount of data, you:
 - Must disable the single transaction with `disable_ddl_transaction!`.
 - Should consider doing it in a [Background Migration](background_migrations.md).
 
+## Migration helpers and versioning
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
+
+Various helper methods are available for many common patterns in database migrations. Those
+helpers can be found in `Gitlab::Database::MigrationHelpers` and related modules.
+
+In order to allow changing a helper's behavior over time, we implement a versioning scheme
+for migration helpers. This allows us to maintain the behavior of a helper for already
+existing migrations but change the behavior for any new migrations.
+
+For that purpose, all database migrations should inherit from `Gitlab::Database::Migration`,
+which is a "versioned" class. For new migrations, the latest version should be used (which
+can be looked up in `Gitlab::Database::Migration::MIGRATION_CLASSES`) to use the latest version
+of migration helpers.
+
+In this example, we use version 1.0 of the migration class:
+
+```ruby
+class TestMigration < Gitlab::Database::Migration[1.0]
+  def change
+  end
+end
+```
+
+Do not include `Gitlab::Database::MigrationHelpers` directly into a
+migration. Instead, use the latest version of `Gitlab::Database::Migration`, which exposes the latest
+version of migration helpers automatically.
+
+Migration helpers and versioning were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986)
+in GitLab 14.3.
+For merge requests targeting previous stable branches, use the old format and still inherit from
+`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[1.0]`.
+
 ## Retry mechanism when acquiring database locks
 
 When changing the database schema, we use helper methods to invoke DDL (Data Definition
@@ -247,87 +281,91 @@ This problem could cause failed application upgrade processes and even applicati
 stability issues, since the table may be inaccessible for a short period of time.
 
 To increase the reliability and stability of database migrations, the GitLab codebase
-offers a helper method to retry the operations with different `lock_timeout` settings
-and wait time between the attempts. Multiple smaller attempts to acquire the necessary
+offers a method to retry the operations with different `lock_timeout` settings
+and wait time between the attempts. Multiple shorter attempts to acquire the necessary
 lock allow the database to process other statements.
 
-### Examples
+There are two distinct ways to use lock retries:
+
+1. Inside a transactional migration: use `enable_lock_retries!`.
+1. Inside a non-transactional migration: use `with_lock_retries`.
+
+If possible, enable lock-retries for any migration that touches a [high-traffic table](#high-traffic-tables).
+
+### Usage with transactional migrations
+
+Regular migrations execute the full migration in a transaction. We can enable the
+lock-retry methodology by calling `enable_lock_retries!` at the migration level.
+
+This leads to the lock timeout being controlled for this migration. Also, it can lead to retrying the full
+migration if the lock could not be granted within the timeout.
+
+Note that, while this is currently an opt-in setting, we prefer to use lock-retries for all migrations and
+plan to make this the default going forward.
+
+Occasionally a migration may need to acquire multiple locks on different objects.
+To prevent catalog bloat, ask for all those locks explicitly before performing any DDL.
+A better strategy is to split the migration, so that we only need to acquire one lock at the time.
 
 **Removing a column:**
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
+enable_lock_retries!
 
 def up
-  with_lock_retries do
-    remove_column :users, :full_name
-  end
+  remove_column :users, :full_name
 end
 
 def down
-  with_lock_retries do
-    add_column :users, :full_name, :string
-  end
+  add_column :users, :full_name, :string
 end
 ```
 
 **Multiple changes on the same table:**
 
-The helper `with_lock_retries` wraps all operations into a single transaction. When you have the lock,
+With the lock-retry methodology enabled, all operations wrap into a single transaction. When you have the lock,
 you should do as much as possible inside the transaction rather than trying to get another lock later.
 Be careful about running long database statements within the block. The acquired locks are kept until the transaction (block) finishes and depending on the lock type, it might block other database operations.
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
+enable_lock_retries!
 
 def up
-  with_lock_retries do
-    add_column :users, :full_name, :string
-    add_column :users, :bio, :string
-  end
+  add_column :users, :full_name, :string
+  add_column :users, :bio, :string
 end
 
 def down
-  with_lock_retries do
-    remove_column :users, :full_name
-    remove_column :users, :bio
-  end
+  remove_column :users, :full_name
+  remove_column :users, :bio
 end
 ```
 
 **Removing a foreign key:**
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
+enable_lock_retries!
 
 def up
-  with_lock_retries do
-    remove_foreign_key :issues, :projects
-  end
+  remove_foreign_key :issues, :projects
 end
 
 def down
-  with_lock_retries do
-    add_foreign_key :issues, :projects
-  end
+  add_foreign_key :issues, :projects
 end
 ```
 
 **Changing default value for a column:**
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
+enable_lock_retries!
 
 def up
-  with_lock_retries do
-    change_column_default :merge_requests, :lock_version, from: nil, to: 0
-  end
+  change_column_default :merge_requests, :lock_version, from: nil, to: 0
 end
 
 def down
-  with_lock_retries do
-    change_column_default :merge_requests, :lock_version, from: 0, to: nil
-  end
+  change_column_default :merge_requests, :lock_version, from: 0, to: nil
 end
 ```
 
@@ -336,25 +374,23 @@ end
 We can wrap the `create_table` method with `with_lock_retries`:
 
 ```ruby
+enable_lock_retries!
+
 def up
-  with_lock_retries do
-    create_table :issues do |t|
-      t.references :project, index: true, null: false, foreign_key: { on_delete: :cascade }
-      t.string :title, limit: 255
-    end
+  create_table :issues do |t|
+    t.references :project, index: true, null: false, foreign_key: { on_delete: :cascade }
+    t.string :title, limit: 255
   end
 end
 
 def down
-  with_lock_retries do
-    drop_table :issues
-  end
+  drop_table :issues
 end
 ```
 
 **Creating a new table when we have two foreign keys:**
 
-Only one foreign key should be created per migration. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
+Only one foreign key should be created per transaction. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
 
 For this, we need three migrations:
 
@@ -387,8 +423,6 @@ We can use the `add_concurrent_foreign_key` method in this case, as this helper 
 has the lock retries built into it.
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 disable_ddl_transaction!
 
 def up
@@ -405,8 +439,6 @@ end
 Adding foreign key to `users`:
 
 ```ruby
-include Gitlab::Database::MigrationHelpers
-
 disable_ddl_transaction!
 
 def up
@@ -420,16 +452,20 @@ def down
 end
 ```
 
-**Usage with `disable_ddl_transaction!`**
+### Usage with non-transactional migrations (`disable_ddl_transaction!`)
 
-Generally the `with_lock_retries` helper should work with `disable_ddl_transaction!`. A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
+Only when we disable transactional migrations using `disable_ddl_transaction!`, we can use
+the `with_lock_retries` helper to guard an individual sequence of steps. It opens a transaction
+to execute the given block.
+
+A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
 
 ```ruby
 disable_ddl_transaction!
 
 def up
   with_lock_retries do
-    add_column :users, :name, :text
+    add_column :users, :name, :text unless column_exists?(:users, :name)
   end
 
   add_text_limit :users, :name, 255 # Includes constraint validation (full table scan)
@@ -450,7 +486,8 @@ end
 
 ### When to use the helper method
 
-The `with_lock_retries` helper method can be used when you normally use
+You can **only** use the `with_lock_retries` helper method when the execution is not already inside
+an open transaction (using Postgres subtransactions is discouraged). It can be used with
 standard Rails migration helper methods. Calling more than one migration
 helper is not a problem if they're executed on the same table.
 
@@ -498,11 +535,11 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
+class MyMigration < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
+
   def up
     remove_concurrent_index :table_name, :column_name, name: INDEX_NAME
   end
@@ -549,7 +586,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
+class MyMigration < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -594,7 +631,7 @@ The easiest way to test for existence of an index by name is to use the
 be used with a name option. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
+class MyMigration < Gitlab::Database::Migration[1.0]
   include Gitlab::Database::MigrationHelpers
 
   INDEX_NAME = 'index_name'
@@ -631,7 +668,7 @@ Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.
 
 ```ruby
-class Migration < ActiveRecord::Migration[6.0]
+class Migration < Gitlab::Database::Migration[1.0]
 
   def change
     add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
@@ -677,7 +714,7 @@ expensive and disruptive operation for larger tables, but in reality it's not.
 Take the following migration as an example:
 
 ```ruby
-class DefaultRequestAccessGroups < ActiveRecord::Migration[5.2]
+class DefaultRequestAccessGroups < Gitlab::Database::Migration[1.0]
   def change
     change_column_default(:namespaces, :request_access_enabled, from: false, to: true)
   end
@@ -884,7 +921,7 @@ The Rails 5 natively supports `JSONB` (binary JSON) column type.
 Example migration adding this column:
 
 ```ruby
-class AddOptionsToBuildMetadata < ActiveRecord::Migration[5.0]
+class AddOptionsToBuildMetadata < Gitlab::Database::Migration[1.0]
   def change
     add_column :ci_builds_metadata, :config_options, :jsonb
   end
@@ -916,7 +953,7 @@ Do not store `attr_encrypted` attributes as `:text` in the database; use
 efficient:
 
 ```ruby
-class AddSecretToSomething < ActiveRecord::Migration[5.0]
+class AddSecretToSomething < Gitlab::Database::Migration[1.0]
   def change
     add_column :something, :encrypted_secret, :binary
     add_column :something, :encrypted_secret_iv, :binary
@@ -974,7 +1011,7 @@ If you need more complex logic, you can define and use models local to a
 migration. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
+class MyMigration < Gitlab::Database::Migration[1.0]
   class Project < ActiveRecord::Base
     self.table_name = 'projects'
   end
@@ -1073,7 +1110,7 @@ in a previous migration.
 It is important not to leave out the `User.reset_column_information` command, in order to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
 
 ```ruby
-class AddAndSeedMyColumn < ActiveRecord::Migration[6.0]
+class AddAndSeedMyColumn < Gitlab::Database::Migration[1.0]
   class User < ActiveRecord::Base
     self.table_name = 'users'
   end

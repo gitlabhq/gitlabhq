@@ -5,29 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Connection do
   let(:connection) { described_class.new }
 
-  describe '#default_pool_size' do
-    before do
-      allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)
-    end
-
-    it 'returns the max thread size plus a fixed headroom of 10' do
-      expect(connection.default_pool_size).to eq(17)
-    end
-
-    it 'returns the max thread size plus a DB_POOL_HEADROOM if this env var is present' do
-      stub_env('DB_POOL_HEADROOM', '7')
-
-      expect(connection.default_pool_size).to eq(14)
-    end
-  end
-
   describe '#config' do
     it 'returns a HashWithIndifferentAccess' do
       expect(connection.config).to be_an_instance_of(HashWithIndifferentAccess)
     end
 
     it 'returns a default pool size' do
-      expect(connection.config).to include(pool: connection.default_pool_size)
+      expect(connection.config)
+        .to include(pool: Gitlab::Database.default_pool_size)
     end
 
     it 'does not cache its results' do
@@ -43,7 +28,7 @@ RSpec.describe Gitlab::Database::Connection do
       it 'returns the default pool size' do
         expect(connection).to receive(:config).and_return({ pool: nil })
 
-        expect(connection.pool_size).to eq(connection.default_pool_size)
+        expect(connection.pool_size).to eq(Gitlab::Database.default_pool_size)
       end
     end
 
@@ -129,7 +114,7 @@ RSpec.describe Gitlab::Database::Connection do
 
   describe '#db_config_with_default_pool_size' do
     it 'returns db_config with our default pool size' do
-      allow(connection).to receive(:default_pool_size).and_return(9)
+      allow(Gitlab::Database).to receive(:default_pool_size).and_return(9)
 
       expect(connection.db_config_with_default_pool_size.pool).to eq(9)
     end
@@ -143,7 +128,7 @@ RSpec.describe Gitlab::Database::Connection do
 
   describe '#disable_prepared_statements' do
     around do |example|
-      original_config = ::Gitlab::Database.main.config
+      original_config = connection.scope.connection.pool.db_config
 
       example.run
 
@@ -160,6 +145,12 @@ RSpec.describe Gitlab::Database::Connection do
       connection.disable_prepared_statements
 
       expect(connection.scope.connection.prepared_statements).to eq(false)
+    end
+
+    it 'retains the connection name' do
+      connection.disable_prepared_statements
+
+      expect(connection.scope.connection_db_config.name).to eq('main')
     end
 
     context 'with dynamic connection pool size' do
@@ -393,34 +384,28 @@ RSpec.describe Gitlab::Database::Connection do
   end
 
   describe '#cached_column_exists?' do
-    it 'only retrieves data once' do
-      expect(connection.scope.connection)
-        .to receive(:columns)
-        .once.and_call_original
-
-      2.times do
-        expect(connection.cached_column_exists?(:projects, :id)).to be_truthy
-        expect(connection.cached_column_exists?(:projects, :bogus_column)).to be_falsey
+    it 'only retrieves the data from the schema cache' do
+      queries = ActiveRecord::QueryRecorder.new do
+        2.times do
+          expect(connection.cached_column_exists?(:projects, :id)).to be_truthy
+          expect(connection.cached_column_exists?(:projects, :bogus_column)).to be_falsey
+        end
       end
+
+      expect(queries.count).to eq(0)
     end
   end
 
   describe '#cached_table_exists?' do
-    it 'only retrieves data once per table' do
-      expect(connection.scope.connection)
-        .to receive(:data_source_exists?)
-        .with(:projects)
-        .once.and_call_original
-
-      expect(connection.scope.connection)
-        .to receive(:data_source_exists?)
-        .with(:bogus_table_name)
-        .once.and_call_original
-
-      2.times do
-        expect(connection.cached_table_exists?(:projects)).to be_truthy
-        expect(connection.cached_table_exists?(:bogus_table_name)).to be_falsey
+    it 'only retrieves the data from the schema cache' do
+      queries = ActiveRecord::QueryRecorder.new do
+        2.times do
+          expect(connection.cached_table_exists?(:projects)).to be_truthy
+          expect(connection.cached_table_exists?(:bogus_table_name)).to be_falsey
+        end
       end
+
+      expect(queries.count).to eq(0)
     end
 
     it 'returns false when database does not exist' do
@@ -433,16 +418,14 @@ RSpec.describe Gitlab::Database::Connection do
   end
 
   describe '#exists?' do
-    it 'returns true if `ActiveRecord::Base.connection` succeeds' do
-      expect(connection.scope).to receive(:connection)
-
+    it 'returns true if the database exists' do
       expect(connection.exists?).to be(true)
     end
 
-    it 'returns false if `ActiveRecord::Base.connection` fails' do
-      expect(connection.scope).to receive(:connection) do
-        raise ActiveRecord::NoDatabaseError, 'broken'
-      end
+    it "returns false if the database doesn't exist" do
+      expect(connection.scope.connection.schema_cache)
+        .to receive(:database_version)
+        .and_raise(ActiveRecord::NoDatabaseError)
 
       expect(connection.exists?).to be(false)
     end

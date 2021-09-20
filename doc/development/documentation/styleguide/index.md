@@ -420,6 +420,11 @@ Some contractions, however, should be avoided:
   | Requests to localhost are not allowed.   | Requests to localhost aren't allowed.   |
   | Specified URL cannot be used.            | Specified URL can't be used.            |
 
+### Acronyms
+
+If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
+When possible, try to avoid acronyms in headings.
+
 ## Text
 
 - [Write in Markdown](#markdown).
@@ -438,7 +443,20 @@ Some contractions, however, should be avoided:
   - List item 2
   ```
 
+### Comments
+
+To embed comments within Markdown, use standard HTML comments that are not rendered
+when published. Example:
+
+```html
+<!-- This is a comment that is not rendered -->
+```
+
 ### Emphasis
+
+Use **bold** rather than italic to provide emphasis. GitLab uses a sans-serif font and italic text does not stand out as much as it would in a serif font. For details, see [Butterick's Practical Typography guide on bold or italic](https://practicaltypography.com/bold-or-italic.html).
+
+You can use italics when you are introducing a term for the first time. Otherwise, use bold.
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
 - Use underscore (`_`) for text in italics (`_italic_`).
@@ -460,6 +478,7 @@ Follow these guidelines for punctuation:
 | Use serial commas (Oxford commas) before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | You can create new issues, merge requests, and milestones. |
 | Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | You should try this - or not. |
 | When a colon is part of a sentence, always use lowercase after the colon. | Linked issues: a way to create a relationship between issues. |
+| Do not use typographer's quotes. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).) | "It's the questions we can't answer that teach us the most"---Patrick Rothfuss |
 
 <!-- vale gitlab.Repetition = YES -->
 
@@ -751,6 +770,7 @@ Valid for Markdown content only, not for front matter entries:
 
 For other punctuation rules, refer to the
 [Pajamas Design System Punctuation section](https://design.gitlab.com/content/punctuation/).
+This is overridden by the [documentation-specific punctuation rules](#punctuation).
 
 ## Headings
 
@@ -1003,9 +1023,23 @@ document to ensure it links to the most recent version of the file.
 
 ## Navigation
 
-When documenting navigation through the user interface, use these terms and styles.
+When documenting how to navigate through the GitLab UI:
 
-### What to call the menus
+- Always use location, then action.
+  - `From the **Visibility** list,` (location) `select **Public**.` (action)
+- Be brief and specific. For example:
+  - Avoid: `Select **Save** for the changes to take effect.`
+  - Use instead: `Select **Save**.`
+- When selecting from high-level UI elements, use the word **on**.
+  - Avoid: `From the left sidebar...` or `In the left sidebar...`
+  - Use instead: `On the left sidebar...`
+- If a step must include a reason, start the step with it.
+  - Avoid: `Select the link in the merge request to view the changes.`
+  - Use instead: `To view the changes, select the link in the merge request.`
+- If a step is optional, start the step with the word `Optional` followed by a period.
+  - `1. Optional. Enter a name for the dog.`
+
+### Names for menus
 
 Use these terms when referring to the main GitLab user interface
 elements:
@@ -1017,9 +1051,14 @@ elements:
 - **Right sidebar**: This is the navigation sidebar on the right of the user
   interface, specific to the open issue, merge request, or epic.
 
-### How to document the menus
+### Names for UI elements
 
-To be consistent, use this format when you write about UI navigation.
+UI elements, like button and checkbox names, should be **bold**.
+Guidance for each individual UI element is in [the word list](word_list.md).
+
+### How to write navigation task steps
+
+To be consistent, use this format when you write navigation steps in a task topic.
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -1034,20 +1073,27 @@ Another example:
 An Admin Area example:
 
 ```markdown
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 ```
 
-This text renders this output:
+To select your avatar:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+```markdown
+1. On the top bar, in the top right corner, select your avatar.
+```
 
 ## Images
 
 Images, including screenshots, can help a reader better understand a concept.
-However, they can be hard to maintain, and should be used sparingly.
+However, they should be used sparingly because:
 
-Before including an image in the documentation, ensure it provides value to the
-reader.
+- They tend to become out-of-date.
+- They are difficult and expensive to localize.
+- They cannot be read by screen readers.
+
+If you do include an image in the documentation, ensure it provides value.
+Don't use `lorem ipsum` text. Try to replicate how the feature would be
+used in a real-world scenario, and [use realistic text](#fake-user-information).
 
 ### Capture the image
 
@@ -1106,7 +1152,7 @@ known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
 open source. Install it by visiting the official website and following the
 instructions for your OS.
 
-GitLab has a [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/pngquant.rake)
+GitLab has a [Ruby script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/pngquant)
 that you can use to automate the process. In the root directory of your local
 copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
 
@@ -1114,19 +1160,26 @@ copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
   been compressed:
 
   ```shell
-  bundle exec rake pngquant:lint
+  bin/pngquant lint
   ```
 
 - Compress all documentation PNG images using `pngquant`:
 
   ```shell
-  bundle exec rake pngquant:compress
+  bin/pngquant compress
   ```
 
-The only caveat is that the task runs on all images under `doc/`, not only the
-ones you might have included in a merge request. In that case, you can run the
-compress task and only commit the images that are relevant to your merge
-request.
+- Compress specific files:
+
+  ```shell
+  bin/pngquant compress doc/user/img/award_emoji_select.png doc/user/img/markdown_logo.png
+  ```
+
+- Compress all PNG files in a specific directory:
+
+  ```shell
+  bin/pngquant compress doc/user/img
+  ```
 
 ## Videos
 
@@ -1288,64 +1341,22 @@ For a complete reference on code blocks, see the [Kramdown guide](https://about.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
-directly in the documentation.
+directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
 
-This way, you can achieve a consistent look when writing about interacting with
-GitLab user interface elements.
+In most cases, you should avoid using the icons in text.
+However, you can use an icon when hover text is the only
+available way to describe a UI element. For example, **Delete** or **Edit** buttons
+often have hover text only.
 
-Usage examples:
+When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
 
-- Icon with default size (16px): `**{icon-name}**`
+- Avoid: `Select **{pencil}** **Edit**.` This generates as: Select **{pencil}** **Edit**.
+- Use instead: `Select **Edit** (**{pencil}**).` This generates as: Select **Edit** (**{pencil}**).
 
-  Example: `**{tanuki}**` renders as: **{tanuki}**.
-- Icon with custom size: `**{icon-name, size}**`
+Do not use words to describe the icon:
 
-  Available sizes (in pixels): 8, 10, 12, 14, 16, 18, 24, 32, 48, and 72
-
-  Example: `**{tanuki, 24}**` renders as: **{tanuki, 24}**.
-- Icon with custom size and class: `**{icon-name, size, class-name}**`.
-
-  You can access any class available to this element in GitLab documentation CSS.
-
-  Example with `float-right`, a
-  [Bootstrap utility class](https://getbootstrap.com/docs/4.4/utilities/float/):
-  `**{tanuki, 32, float-right}**` renders as: **{tanuki, 32, float-right}**
-
-### When to use icons
-
-Icons should be used sparingly, and only in ways that aid and do not hinder the
-readability of the text.
-
-For example, this Markdown adds little to the accompanying text:
-
-```markdown
-1. Go to **{home}** **Project information > Details**.
-```
-
-1. Go to **{home}** **Project information > Details**.
-
-However, these tables might help the reader connect the text to the user
-interface:
-
-```markdown
-| Section                  | Description                                                                                                                 |
-|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
-| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
-| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit events. |
-| **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
-```
-
-| Section                  | Description                                                                                                                 |
-|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
-| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
-| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit events. |
-| **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
-
-Use an icon when you find yourself having to describe an interface element. For
-example:
-
-- Do: Select the Admin Area icon ( **{admin}** ).
-- Don't: Select the Admin Area icon (the wrench icon).
+- Avoid: `Select **Erase job log** (the trash icon).`
+- Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
 
 ## Alert boxes
 
@@ -1456,27 +1467,9 @@ Follow these styles when you're describing user interface elements in an
 application:
 
 - For elements with a visible label, use that label in bold with matching case.
-  For example, `the **Cancel** button`.
+  For example, `Select **Cancel**`.
 - For elements with a tooltip or hover label, use that label in bold with
-  matching case. For example, `the **Add status emoji** button`.
-
-### Verbs for UI elements
-
-Use these verbs for specific uses with user interface
-elements:
-
-| Recommended         | Used for                              | Replaces              |
-|:--------------------|:--------------------------------------|:----------------------|
-| select              | buttons, links, menu items, dropdowns | click, press, hit     |
-| select or clear     | checkboxes                            | enable, click, press  |
-| expand              | expandable sections                   | open                  |
-| turn on or turn off | toggles                               | flip, enable, disable |
-
-### Other Verbs
-
-| Recommended | Used for                        | Replaces              |
-|:------------|:--------------------------------|:----------------------|
-| go to       | making a browser go to location | navigate to, open     |
+  matching case. For example, `Select **Add status emoji**`.
 
 ## GitLab versions
 
@@ -1504,10 +1497,6 @@ tagged and released set of documentation for your installed version:
 When a feature is added or updated, you can include its version information
 either as a **Version history** item or as an inline text reference.
 
-Version text shouldn't include information about the tier in which the feature
-is available. This information is provided by the [product badge](#product-tier-badges)
-displayed for the page or feature.
-
 #### Version text in the **Version History**
 
 If all content in a section is related, add version text after the header for
@@ -1523,6 +1512,10 @@ the section. The version information must:
 - Whenever possible, include a link to the completed issue, merge request, or epic
   that introduced the feature. An issue is preferred over a merge request, and
   a merge request is preferred over an epic.
+- Do not include information about the tier, unless documenting a tier change
+  (for example, `Feature X [moved](issue-link) to Premium in GitLab 19.2`).
+- Do not link to the pricing page.
+  The tier is provided by the [product badge](#product-tier-badges) on the heading.
 
 ```markdown
 ## Feature name
@@ -1647,37 +1640,24 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges are displayed as orange text next to a heading. For example:
+Tier badges are displayed as orange text next to a heading. These badges link to the GitLab
+pricing page. For example:
 
 ![Tier badge](img/tier_badge.png)
 
 You must assign a tier badge:
 
-- To [all H1 topic headings](#product-tier-badges-on-headings).
+- To all H1 topic headings.
 - To topic headings that don't apply to the same tier as the H1.
-- To [sections of a topic](#product-tier-badges-on-other-content),
-  if they apply to a tier other than what applies to the H1.
 
-#### Product tier badges on headings
-
-To add a tier badge to a heading, add the relevant [tier badge](#available-product-tier-badges)
+To add a tier badge to a heading, add the relevant tier badge
 after the heading text. For example:
 
 ```markdown
 # Heading title **(FREE)**
 ```
 
-#### Product tier badges on other content
-
-In paragraphs, list names, and table cells, an information icon displays when you
-add a tier badge. More verbose information displays when a user points to the icon:
-
-- `**(FREE)**` displays as **(FREE)**
-- `**(FREE SELF)**` displays as **(FREE SELF)**
-- `**(FREE SAAS)**` displays as **(FREE SAAS)**
-
-The `**(FREE)**` generates a `span` element to trigger the
-badges and tooltips (`<span class="badge-trigger free">`).
+Do not add tier badges inline with other text. The single source of truth for a feature should be the heading where the functionality is described.
 
 #### Available product tier badges
 

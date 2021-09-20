@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'logger'
-require 'timecop'
 require 'active_support/core_ext/integer/time'
 
 RSpec.describe QA::Support::Repeater do

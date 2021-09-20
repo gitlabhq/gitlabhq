@@ -74,6 +74,7 @@ RSpec.describe 'factories' do
     milestone_release
     namespace
     project_broken_repo
+    project_namespace
     project_repository
     prometheus_alert
     prometheus_alert_event

@@ -25,9 +25,9 @@ Read more in the Helm documentation about these topics:
 
 To authenticate to the Helm repository, you need either:
 
-- A [personal access token](../../../api/index.md#personalproject-access-tokens).
-- A [deploy token](../../project/deploy_tokens/index.md).
-- A [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token).
+- A [personal access token](../../../api/index.md#personalproject-access-tokens) with the scope set to `api`.
+- A [deploy token](../../project/deploy_tokens/index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
+- A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
 ## Publish a package
 
@@ -35,23 +35,34 @@ NOTE:
 You can publish Helm charts with duplicate names or versions. If duplicates exist, GitLab always
 returns the chart with the latest version.
 
-Once built, a chart can be uploaded to the `stable` channel with `curl` or `helm-push`:
+Once built, a chart can be uploaded to the desired channel with `curl` or `helm-push`:
 
 - With `curl`:
 
   ```shell
   curl --request POST \
        --form 'chart=@mychart-0.1.0.tgz' \
-       --user <username>:<personal_access_token> \
-       https://gitlab.example.com/api/v4/projects/1/packages/helm/api/stable/charts
+       --user <username>:<access_token> \
+       https://gitlab.example.com/api/v4/projects/<project_id>/packages/helm/api/<channel>/charts
   ```
+
+  - `<username>`: the GitLab username or the deploy token username.
+  - `<access_token>`: the personal access token or the deploy token.
+  - `<project_id>`: the project ID (like `42`) or the
+    [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the project (like `group%2Fproject`).
+  - `<channel>`: the name of the channel (like `stable`).
 
 - With the [`helm-push`](https://github.com/chartmuseum/helm-push/#readme) plugin:
 
   ```shell
-  helm repo add --username <username> --password <personal_access_token> project-1 https://gitlab.example.com/api/v4/projects/1/packages/helm/stable
+  helm repo add --username <username> --password <access_token> project-1 https://gitlab.example.com/api/v4/projects/<project_id>/packages/helm/<channel>
   helm push mychart-0.1.0.tgz project-1
   ```
+
+  - `<username>`: the GitLab username or the deploy token username.
+  - `<access_token>`: the personal access token or the deploy token.
+  - `<project_id>`: the project ID (like `42`).
+  - `<channel>`: the name of the channel (like `stable`).
 
 ## Use CI/CD to publish a Helm package
 
@@ -69,17 +80,30 @@ stages:
 upload:
   stage: upload
   script:
-    - 'curl --request POST --user gitlab-ci-token:$CI_JOB_TOKEN --form "chart=@mychart-0.1.0.tgz" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/api/stable/charts"'
+    - 'curl --request POST --user gitlab-ci-token:$CI_JOB_TOKEN --form "chart=@mychart-0.1.0.tgz" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/api/<channel>/charts"'
 ```
 
+- `<username>`: the GitLab username or the deploy token username.
+- `<access_token>`: the personal access token or the deploy token.
+- `<channel>`: the name of the channel (like `stable`).
+
 ## Install a package
+
+NOTE:
+When requesting a package, GitLab considers only the 300 most recent packages created.
+For each package, only the most recent package file is returned.
 
 To install the latest version of a chart, use the following command:
 
 ```shell
-helm repo add --username <username> --password <personal_access_token> project-1 https://gitlab.example.com/api/v4/projects/1/packages/helm/stable
+helm repo add --username <username> --password <access_token> project-1 https://gitlab.example.com/api/v4/projects/<project_id>/packages/helm/<channel>
 helm install my-release project-1/mychart
 ```
+
+- `<username>`: the GitLab username or the deploy token username.
+- `<access_token>`: the personal access token or the deploy token.
+- `<project_id>`: the project ID (like `42`).
+- `<channel>`: the name of the channel (like `stable`).
 
 If the repo has previously been added, you may need to run:
 

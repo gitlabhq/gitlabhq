@@ -128,13 +128,15 @@ class Issue < ApplicationRecord
   }
   scope :with_issue_type, ->(types) { where(issue_type: types) }
 
-  scope :public_only, -> { where(confidential: false) }
+  scope :public_only, -> {
+    without_hidden.where(confidential: false)
+  }
+
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :without_hidden, -> {
     if Feature.enabled?(:ban_user_feature_flag)
-      where(id: joins('LEFT JOIN banned_users ON banned_users.user_id = issues.author_id WHERE banned_users.user_id IS NULL')
-      .select('issues.id'))
+      where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
     else
       all
     end
@@ -320,6 +322,13 @@ class Issue < ApplicationRecord
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'id',
       order_expression: arel_table[:id].desc
+    )
+  end
+
+  def self.column_order_id_asc
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'id',
+      order_expression: arel_table[:id].asc
     )
   end
 
@@ -584,15 +593,9 @@ class Issue < ApplicationRecord
       confidential_changed?(from: true, to: false)
   end
 
-  # Ensure that the metrics association is safely created and respecting the unique constraint on issue_id
   override :ensure_metrics
   def ensure_metrics
-    if !association(:metrics).loaded? || metrics.blank?
-      metrics_record = Issue::Metrics.safe_find_or_create_by(issue: self)
-      self.metrics = metrics_record
-    end
-
-    metrics.record!
+    Issue::Metrics.record!(self)
   end
 
   def record_create_action

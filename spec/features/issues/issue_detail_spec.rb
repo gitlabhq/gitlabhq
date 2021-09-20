@@ -32,6 +32,21 @@ RSpec.describe 'Issue Detail', :js do
     end
   end
 
+  context 'when issue description has emojis' do
+    let(:issue) { create(:issue, project: project, author: user, description: 'hello world :100:') }
+
+    before do
+      sign_in(user)
+      visit project_issue_path(project, issue)
+    end
+
+    it 'renders gl-emoji tag' do
+      page.within('.description') do
+        expect(page).to have_selector('gl-emoji', count: 1)
+      end
+    end
+  end
+
   context 'when issue description has xss snippet' do
     before do
       issue.update!(description: '![xss" onload=alert(1);//](a)')

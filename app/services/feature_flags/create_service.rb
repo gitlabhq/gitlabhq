@@ -24,8 +24,8 @@ module FeatureFlags
     def audit_message(feature_flag)
       message_parts = ["Created feature flag #{feature_flag.name} with description \"#{feature_flag.description}\"."]
 
-      message_parts += feature_flag.scopes.map do |scope|
-        created_scope_message(scope)
+      message_parts += feature_flag.strategies.map do |strategy|
+        created_strategy_message(strategy)
       end
 
       message_parts.join(" ")

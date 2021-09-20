@@ -6,7 +6,7 @@ product_stage: growth
 product_group: group::product intelligence
 product_category: collection
 value_type: string
-status: data_available
+status: active
 milestone: "9.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
 time_frame: none

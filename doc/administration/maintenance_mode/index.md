@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Maintenance Mode **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab Premium 13.9.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab 13.9.
 
 Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, Container repositories, and so on.
 
@@ -21,7 +21,7 @@ Maintenance Mode allows most external actions that do not change internal state.
 There are three ways to enable Maintenance Mode as an administrator:
 
 - **Web UI**:
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -45,7 +45,7 @@ There are three ways to enable Maintenance Mode as an administrator:
 There are three ways to disable Maintenance Mode:
 
 - **Web UI**:
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -171,7 +171,7 @@ it is recommended that you disable all cron jobs except for those related to Geo
 
 To monitor queues and disable jobs:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 
 ### Incident management

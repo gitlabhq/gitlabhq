@@ -26,7 +26,7 @@ their own accounts by either:
 
 As an Admin user, you can manually create users:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users** (`/admin/users`).
 1. Select **New user**.
 

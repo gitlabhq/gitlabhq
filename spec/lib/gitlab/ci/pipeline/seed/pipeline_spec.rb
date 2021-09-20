@@ -34,10 +34,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
     described_class.new(seed_context, stages_attributes)
   end
 
-  before do
-    stub_feature_flags(ci_same_stage_job_needs: false)
-  end
-
   describe '#stages' do
     it 'returns the stage resources' do
       stages = seed.stages

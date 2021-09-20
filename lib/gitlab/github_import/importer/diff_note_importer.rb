@@ -24,13 +24,14 @@ module Gitlab
           note_body = MarkdownText.format(note.note, note.author, author_found)
 
           attributes = {
+            discussion_id: Discussion.discussion_id(note),
             noteable_type: 'MergeRequest',
             noteable_id: mr_id,
             project_id: project.id,
             author_id: author_id,
             note: note_body,
             system: false,
-            commit_id: note.commit_id,
+            commit_id: note.original_commit_id,
             line_code: note.line_code,
             type: 'LegacyDiffNote',
             created_at: note.created_at,

@@ -7,6 +7,8 @@ RSpec.describe ApplicationSetting do
 
   subject(:setting) { described_class.create_from_defaults }
 
+  it_behaves_like 'sanitizable', :application_setting, %i[default_branch_name]
+
   it { include(CacheableAttributes) }
   it { include(ApplicationSettingImplementation) }
   it { expect(described_class.current_without_cache).to eq(described_class.last) }
@@ -79,11 +81,18 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
+    it { is_expected.to validate_presence_of(:max_yaml_size_bytes) }
+    it { is_expected.to validate_numericality_of(:max_yaml_size_bytes).only_integer.is_greater_than(0) }
+    it { is_expected.to validate_presence_of(:max_yaml_depth) }
+    it { is_expected.to validate_numericality_of(:max_yaml_depth).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_pages_size) }
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
     end
+
+    it { is_expected.to validate_presence_of(:jobs_per_stage_page_size) }
+    it { is_expected.to validate_numericality_of(:jobs_per_stage_page_size).only_integer.is_greater_than_or_equal_to(0) }
 
     it { is_expected.not_to allow_value(7).for(:minimum_password_length) }
     it { is_expected.not_to allow_value(129).for(:minimum_password_length) }
@@ -921,6 +930,8 @@ RSpec.describe ApplicationSetting do
     context 'throttle_* settings' do
       where(:throttle_setting) do
         %i[
+          throttle_unauthenticated_api_requests_per_period
+          throttle_unauthenticated_api_period_in_seconds
           throttle_unauthenticated_requests_per_period
           throttle_unauthenticated_period_in_seconds
           throttle_authenticated_api_requests_per_period
@@ -931,6 +942,12 @@ RSpec.describe ApplicationSetting do
           throttle_unauthenticated_packages_api_period_in_seconds
           throttle_authenticated_packages_api_requests_per_period
           throttle_authenticated_packages_api_period_in_seconds
+          throttle_unauthenticated_files_api_requests_per_period
+          throttle_unauthenticated_files_api_period_in_seconds
+          throttle_authenticated_files_api_requests_per_period
+          throttle_authenticated_files_api_period_in_seconds
+          throttle_authenticated_git_lfs_requests_per_period
+          throttle_authenticated_git_lfs_period_in_seconds
         ]
       end
 
@@ -941,6 +958,20 @@ RSpec.describe ApplicationSetting do
         it { is_expected.not_to allow_value('three').for(throttle_setting) }
         it { is_expected.not_to allow_value(nil).for(throttle_setting) }
       end
+    end
+
+    context 'sidekiq job limiter settings' do
+      it 'has the right defaults', :aggregate_failures do
+        expect(setting.sidekiq_job_limiter_mode).to eq('compress')
+        expect(setting.sidekiq_job_limiter_compression_threshold_bytes)
+          .to eq(Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_COMPRESSION_THRESHOLD_BYTES)
+        expect(setting.sidekiq_job_limiter_limit_bytes)
+          .to eq(Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_SIZE_LIMIT)
+      end
+
+      it { is_expected.to allow_value('track').for(:sidekiq_job_limiter_mode) }
+      it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_compression_threshold_bytes).only_integer.is_greater_than_or_equal_to(0) }
+      it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_limit_bytes).only_integer.is_greater_than_or_equal_to(0) }
     end
   end
 

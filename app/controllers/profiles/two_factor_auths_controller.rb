@@ -2,6 +2,7 @@
 
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_two_factor_requirement
+  before_action :ensure_verified_primary_email, only: [:show, :create]
   before_action do
     push_frontend_feature_flag(:webauthn)
   end
@@ -57,7 +58,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         @codes = user.generate_otp_backup_codes!
       end
 
-      helpers.dismiss_account_recovery_regular_check
+      helpers.dismiss_two_factor_auth_recovery_settings_check
 
       render 'create'
     else
@@ -108,7 +109,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     Users::UpdateService.new(current_user, user: current_user).execute! do |user|
       @codes = user.generate_otp_backup_codes!
 
-      helpers.dismiss_account_recovery_regular_check
+      helpers.dismiss_two_factor_auth_recovery_settings_check
     end
   end
 
@@ -217,5 +218,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
     s_(%{The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}.})
         .html_safe % { group_links: group_links.html_safe, leave_group_links: leave_group_links.html_safe }
+  end
+
+  def ensure_verified_primary_email
+    return unless Feature.enabled?(:ensure_verified_primary_email_for_2fa, default_enabled: :yaml)
+
+    unless current_user.two_factor_enabled? || current_user.primary_email_verified?
+      redirect_to profile_emails_path, notice: s_('You need to verify your primary email first before enabling Two-Factor Authentication.')
+    end
   end
 end

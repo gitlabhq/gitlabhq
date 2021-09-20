@@ -9,7 +9,6 @@ module DesignManagement
     sidekiq_options retry: 3
 
     feature_category :design_management
-    tags :exclude_from_kubernetes
     idempotent!
     urgency :low
 

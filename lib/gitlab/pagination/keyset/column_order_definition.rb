@@ -173,6 +173,18 @@ module Gitlab
           distinct
         end
 
+        def order_direction_as_sql_string
+          sql_string = ascending_order? ? +'ASC' : +'DESC'
+
+          if nulls_first?
+            sql_string << ' NULLS FIRST'
+          elsif nulls_last?
+            sql_string << ' NULLS LAST'
+          end
+
+          sql_string
+        end
+
         private
 
         attr_reader :reversed_order_expression, :nullable, :distinct

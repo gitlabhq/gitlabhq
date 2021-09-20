@@ -73,6 +73,7 @@ module Gitlab
         end
       end
 
+      # @deprecated Use `create_table` in V2 instead
       #
       # Creates a new table, optionally allowing the caller to add check constraints to the table.
       # Aside from that addition, this method should behave identically to Rails' `create_table` method.
@@ -380,6 +381,8 @@ module Gitlab
       # The timings can be controlled via the +timing_configuration+ parameter.
       # If the lock was not acquired within the retry period, a last attempt is made without using +lock_timeout+.
       #
+      # Note this helper uses subtransactions when run inside an already open transaction.
+      #
       # ==== Examples
       #   # Invoking without parameters
       #   with_lock_retries do
@@ -411,7 +414,8 @@ module Gitlab
         raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
         merged_args = {
           klass: self.class,
-          logger: Gitlab::BackgroundMigration::Logger
+          logger: Gitlab::BackgroundMigration::Logger,
+          allow_savepoints: true
         }.merge(kwargs)
 
         Gitlab::Database::WithLockRetries.new(**merged_args)
@@ -600,17 +604,17 @@ module Gitlab
       # new_column - The name of the new column.
       # trigger_name - The name of the trigger to use (optional).
       def install_rename_triggers(table, old, new, trigger_name: nil)
-        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).create(old, new, trigger_name: trigger_name)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table, connection: connection).create(old, new, trigger_name: trigger_name)
       end
 
       # Removes the triggers used for renaming a column concurrently.
       def remove_rename_triggers(table, trigger)
-        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).drop(trigger)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table, connection: connection).drop(trigger)
       end
 
       # Returns the (base) name to use for triggers when renaming columns.
       def rename_trigger_name(table, old, new)
-        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).name(old, new)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table, connection: connection).name(old, new)
       end
 
       # Changes the type of a column concurrently.
@@ -968,42 +972,7 @@ module Gitlab
       # columns - The name, or array of names, of the column(s) that we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
       def initialize_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        unless table_exists?(table)
-          raise "Table #{table} does not exist"
-        end
-
-        unless column_exists?(table, primary_key)
-          raise "Column #{primary_key} does not exist on #{table}"
-        end
-
-        columns = Array.wrap(columns)
-        columns.each do |column|
-          next if column_exists?(table, column)
-
-          raise ArgumentError, "Column #{column} does not exist on #{table}"
-        end
-
-        check_trigger_permissions!(table)
-
-        conversions = columns.to_h { |column| [column, convert_to_bigint_column(column)] }
-
-        with_lock_retries do
-          conversions.each do |(source_column, temporary_name)|
-            column = column_for(table, source_column)
-
-            if (column.name.to_s == primary_key.to_s) || !column.null
-              # If the column to be converted is either a PK or is defined as NOT NULL,
-              # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
-              # That way, we skip the expensive validation step required to add
-              #  a NOT NULL constraint at the end of the process
-              add_column(table, temporary_name, :bigint, default: column.default || 0, null: false)
-            else
-              add_column(table, temporary_name, :bigint, default: column.default)
-            end
-          end
-
-          install_rename_triggers(table, conversions.keys, conversions.values)
-        end
+        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :bigint)
       end
 
       # Reverts `initialize_conversion_of_integer_to_bigint`
@@ -1018,6 +987,17 @@ module Gitlab
         remove_rename_triggers(table, trigger_name)
 
         temporary_columns.each { |column| remove_column(table, column) }
+      end
+      alias_method :cleanup_conversion_of_integer_to_bigint, :revert_initialize_conversion_of_integer_to_bigint
+
+      # Reverts `cleanup_conversion_of_integer_to_bigint`
+      #
+      # table - The name of the database table containing the columns
+      # columns - The name, or array of names, of the column(s) that we have converted to bigint.
+      # primary_key - The name of the primary key column (most often :id)
+
+      def restore_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
+        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :int)
       end
 
       # Backfills the new columns used in an integer-to-bigint conversion using background migrations.
@@ -1400,13 +1380,11 @@ into similar problems in the future (e.g. when new tables are created).
       # validate - Whether to validate the constraint in this call
       #
       def add_check_constraint(table, check, constraint_name, validate: true)
-        validate_check_constraint_name!(constraint_name)
-
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
-        if transaction_open?
-          raise 'add_check_constraint can not be run inside a transaction'
-        end
+        validate_not_in_transaction!(:add_check_constraint)
+
+        validate_check_constraint_name!(constraint_name)
 
         if check_constraint_exists?(table, constraint_name)
           warning_message = <<~MESSAGE
@@ -1451,6 +1429,10 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       def remove_check_constraint(table, constraint_name)
+        # This is technically not necessary, but aligned with add_check_constraint
+        # and allows us to continue use with_lock_retries here
+        validate_not_in_transaction!(:remove_check_constraint)
+
         validate_check_constraint_name!(constraint_name)
 
         # DROP CONSTRAINT requires an EXCLUSIVE lock
@@ -1648,6 +1630,45 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       private
+
+      def create_temporary_columns_and_triggers(table, columns, primary_key: :id, data_type: :bigint)
+        unless table_exists?(table)
+          raise "Table #{table} does not exist"
+        end
+
+        unless column_exists?(table, primary_key)
+          raise "Column #{primary_key} does not exist on #{table}"
+        end
+
+        columns = Array.wrap(columns)
+        columns.each do |column|
+          next if column_exists?(table, column)
+
+          raise ArgumentError, "Column #{column} does not exist on #{table}"
+        end
+
+        check_trigger_permissions!(table)
+
+        conversions = columns.to_h { |column| [column, convert_to_bigint_column(column)] }
+
+        with_lock_retries do
+          conversions.each do |(source_column, temporary_name)|
+            column = column_for(table, source_column)
+
+            if (column.name.to_s == primary_key.to_s) || !column.null
+              # If the column to be converted is either a PK or is defined as NOT NULL,
+              # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
+              # That way, we skip the expensive validation step required to add
+              #  a NOT NULL constraint at the end of the process
+              add_column(table, temporary_name, data_type, default: column.default || 0, null: false)
+            else
+              add_column(table, temporary_name, data_type, default: column.default)
+            end
+          end
+
+          install_rename_triggers(table, conversions.keys, conversions.values)
+        end
+      end
 
       def validate_check_constraint_name!(constraint_name)
         if constraint_name.to_s.length > MAX_IDENTIFIER_NAME_LENGTH

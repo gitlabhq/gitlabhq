@@ -10,7 +10,6 @@ module BulkImports
     idempotent!
     loggable_arguments 2, 3
     feature_category :importers
-    tags :exclude_from_kubernetes
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
 
     def perform(user_id, portable_id, portable_class, relation)

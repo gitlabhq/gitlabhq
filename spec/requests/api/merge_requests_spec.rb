@@ -1072,7 +1072,7 @@ RSpec.describe API::MergeRequests do
   end
 
   describe "GET /groups/:id/merge_requests" do
-    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group, reload: true) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: group, only_allow_merge_if_pipeline_succeeds: false) }
 
     include_context 'with merge requests'

@@ -159,7 +159,7 @@ RSpec.describe Suggestions::CreateService do
       it 'tracks add suggestion event' do
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
           .to receive(:track_add_suggestion_action)
-          .with(user: note.author)
+          .with(note: note)
 
         subject.execute
       end

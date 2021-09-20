@@ -12,10 +12,11 @@ If correctly set up, emails that require an action are marked in Gmail.
 
 ![GMail actions button](img/gmail_action_buttons_for_gitlab.png)
 
-To get this functioning, you need to be registered with Google. For instructions, see
+To get this functioning, you must be registered with Google. For instructions, see
 [Register with Google](https://developers.google.com/gmail/markup/registering-with-google).
 
-This process has many steps. Make sure that you fulfill all requirements set by Google to avoid your application being rejected by Google.
+This process has many steps. Make sure that you fulfill all requirements set by
+Google to avoid your application being rejected by Google.
 
 In particular, note:
 

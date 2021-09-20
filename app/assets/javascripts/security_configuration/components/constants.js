@@ -10,6 +10,7 @@ import {
   REPORT_TYPE_CONTAINER_SCANNING,
   REPORT_TYPE_CLUSTER_IMAGE_SCANNING,
   REPORT_TYPE_COVERAGE_FUZZING,
+  REPORT_TYPE_CORPUS_MANAGEMENT,
   REPORT_TYPE_API_FUZZING,
   REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
@@ -103,6 +104,12 @@ export const COVERAGE_FUZZING_CONFIG_HELP_PATH = helpPagePath(
   'user/application_security/coverage_fuzzing/index',
   { anchor: 'configuration' },
 );
+
+export const CORPUS_MANAGEMENT_NAME = __('Corpus Management');
+export const CORPUS_MANAGEMENT_DESCRIPTION = s__(
+  'SecurityConfiguration|Manage corpus files used as mutation sources in coverage fuzzing.',
+);
+export const CORPUS_MANAGEMENT_CONFIG_TEXT = s__('SecurityConfiguration|Manage corpus');
 
 export const API_FUZZING_NAME = __('API Fuzzing');
 export const API_FUZZING_DESCRIPTION = __('Find bugs in your code with API fuzzing.');
@@ -202,6 +209,14 @@ export const securityFeatures = [
     helpPath: COVERAGE_FUZZING_HELP_PATH,
     configurationHelpPath: COVERAGE_FUZZING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_COVERAGE_FUZZING,
+    secondary: gon?.features?.corpusManagement
+      ? {
+          type: REPORT_TYPE_CORPUS_MANAGEMENT,
+          name: CORPUS_MANAGEMENT_NAME,
+          description: CORPUS_MANAGEMENT_DESCRIPTION,
+          configurationText: CORPUS_MANAGEMENT_CONFIG_TEXT,
+        }
+      : {},
   },
 ];
 

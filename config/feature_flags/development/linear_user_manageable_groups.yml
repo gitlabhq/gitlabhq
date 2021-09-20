@@ -1,0 +1,8 @@
+---
+name: linear_user_manageable_groups
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68845
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339434
+milestone: '14.3'
+type: development
+group: group::access
+default_enabled: false

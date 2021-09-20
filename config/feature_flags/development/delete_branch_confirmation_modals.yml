@@ -2,7 +2,7 @@
 name: delete_branch_confirmation_modals
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56782
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329052
-milestone: '13.12'
+milestone: '14.3'
 type: development
 group: group::expansion
-default_enabled: false
+default_enabled: true

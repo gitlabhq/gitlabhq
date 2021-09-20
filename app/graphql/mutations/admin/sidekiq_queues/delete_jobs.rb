@@ -8,12 +8,17 @@ module Mutations
 
         ADMIN_MESSAGE = 'You must be an admin to use this mutation'
 
-        Gitlab::ApplicationContext::KNOWN_KEYS.each do |key|
+        ::Gitlab::ApplicationContext::KNOWN_KEYS.each do |key|
           argument key,
                    GraphQL::Types::String,
                    required: false,
-                   description: "Delete jobs matching #{key} in the context metadata"
+                   description: "Delete jobs matching #{key} in the context metadata."
         end
+
+        argument ::Gitlab::SidekiqQueue::WORKER_KEY,
+                 GraphQL::Types::String,
+                 required: false,
+                 description: 'Delete jobs with the given worker class.'
 
         argument :queue_name,
                  GraphQL::Types::String,

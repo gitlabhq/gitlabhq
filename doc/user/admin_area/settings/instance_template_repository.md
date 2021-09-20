@@ -7,7 +7,7 @@ type: reference
 
 # Instance template repository **(PREMIUM SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in GitLab Premium 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in GitLab Premium 11.3.
 
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the
@@ -19,8 +19,8 @@ while the project remains secure.
 
 To select a project to serve as the custom template repository:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Templates**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Templates**.
 1. Select the project:
 
    ![File templates in the Admin Area](img/file_template_admin_area_v14_0.png)

@@ -8,7 +8,7 @@ RSpec.describe CustomerRelations::Organization, type: :model do
   end
 
   describe 'validations' do
-    subject { create(:organization) }
+    subject { build(:organization) }
 
     it { is_expected.to validate_presence_of(:group) }
     it { is_expected.to validate_presence_of(:name) }

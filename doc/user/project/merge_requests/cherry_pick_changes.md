@@ -11,7 +11,7 @@ GitLab implements Git's powerful feature to
 [cherry-pick any commit](https://git-scm.com/docs/git-cherry-pick "Git cherry-pick documentation")
 with a **Cherry-pick** button in merge requests and commit details.
 
-## Cherry-picking a merge request
+## Cherry-pick a merge request
 
 After the merge request has been merged, a **Cherry-pick** button displays
 to cherry-pick the changes introduced by that merge request.
@@ -25,7 +25,7 @@ where you can choose to either:
 - Cherry-pick the changes directly into the selected branch.
 - Create a new merge request with the cherry-picked changes.
 
-### Cherry-pick tracking
+### Track a cherry-pick
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2675) in GitLab 12.9.
 
@@ -40,7 +40,7 @@ NOTE:
 We only track cherry-pick executed from GitLab (both UI and API). Support for tracking cherry-picked commits through the command line
 is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/202215).
 
-## Cherry-picking a commit
+## Cherry-pick a commit
 
 You can cherry-pick a commit from the commit details page:
 

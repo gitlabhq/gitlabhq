@@ -503,7 +503,7 @@ GET /projects/:id/services/emails-on-push
 
 ## Confluence service
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220934) in GitLab 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220934) in GitLab 13.2.
 
 Replaces the link to the internal wiki with a link to a Confluence Cloud Workspace.
 
@@ -659,7 +659,7 @@ PUT /projects/:id/services/hangouts-chat
 ```
 
 NOTE:
-Specific event parameters (for example, `push_events` flag) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+Specific event parameters (for example, `push_events` flag) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 
@@ -1119,7 +1119,7 @@ PUT /projects/:id/services/slack
 ```
 
 NOTE:
-Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 
@@ -1153,6 +1153,8 @@ Parameters:
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `vulnerability_channel` | string | false | **(ULTIMATE)** The name of the channel to receive vulnerability event notifications. |
+| `vulnerability_events` | boolean | false | **(ULTIMATE)** Enable notifications for vulnerability events |
 
 ### Delete Slack service
 
@@ -1229,7 +1231,7 @@ PUT /projects/:id/services/mattermost
 ```
 
 NOTE:
-Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 
@@ -1250,6 +1252,7 @@ Parameters:
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `vulnerability_events` | boolean | false | **(ULTIMATE)** Enable notifications for vulnerability events |
 | `push_channel` | string | false | The name of the channel to receive push events notifications |
 | `issue_channel` | string | false | The name of the channel to receive issues events notifications |
 | `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
@@ -1259,6 +1262,7 @@ Parameters:
 | `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
 | `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
+| `vulnerability_channel` | string | false | **(ULTIMATE)** The name of the channel to receive vulnerability events notifications |
 
 ### Delete Mattermost notifications service
 
@@ -1361,7 +1365,7 @@ GET /projects/:id/services/jenkins
 A continuous integration and build server
 
 NOTE:
-This service was [removed in v13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/1600)
+This service was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1600) in GitLab 13.0.
 
 ### Create/Edit Jenkins CI (Deprecated) service
 

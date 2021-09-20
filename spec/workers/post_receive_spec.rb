@@ -22,6 +22,8 @@ RSpec.describe PostReceive do
     create(:project, :repository, auto_cancel_pending_pipelines: 'disabled')
   end
 
+  let(:job_args) { [gl_repository, key_id, base64_changes] }
+
   def perform(changes: base64_changes)
     described_class.new.perform(gl_repository, key_id, changes)
   end
@@ -282,6 +284,8 @@ RSpec.describe PostReceive do
         end
       end
     end
+
+    it_behaves_like 'an idempotent worker'
   end
 
   describe '#process_wiki_changes' do
@@ -352,6 +356,8 @@ RSpec.describe PostReceive do
         perform
       end
     end
+
+    it_behaves_like 'an idempotent worker'
   end
 
   context 'webhook' do
@@ -458,6 +464,8 @@ RSpec.describe PostReceive do
           end
         end
       end
+
+      it_behaves_like 'an idempotent worker'
     end
 
     context 'with PersonalSnippet' do
@@ -484,5 +492,7 @@ RSpec.describe PostReceive do
 
       described_class.new.perform(gl_repository, key_id, base64_changes)
     end
+
+    it_behaves_like 'an idempotent worker'
   end
 end

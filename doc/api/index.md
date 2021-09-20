@@ -125,7 +125,7 @@ There are several ways you can authenticate with the GitLab API:
 - [Personal access tokens](../user/profile/personal_access_tokens.md)
 - [Project access tokens](../user/project/settings/project_access_tokens.md)
 - [Session cookie](#session-cookie)
-- [GitLab CI/CD job token](#gitlab-cicd-job-token) **(Specific endpoints only)**
+- [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) **(Specific endpoints only)**
 
 Project access tokens are supported by:
 
@@ -207,118 +207,6 @@ generate a new session cookie isn't supported.
 The primary user of this authentication method is the web frontend of GitLab
 itself. The web frontend can use the API as the authenticated user to get a
 list of projects without explicitly passing an access token.
-
-### GitLab CI/CD job token
-
-When a pipeline job is about to run, GitLab generates a unique token and injects it as the
-[`CI_JOB_TOKEN` predefined variable](../ci/variables/predefined_variables.md).
-
-You can use a GitLab CI/CD job token to authenticate with specific API endpoints:
-
-- Packages:
-  - [Package Registry](../user/packages/package_registry/index.md). To push to the
-    Package Registry, you can use [deploy tokens](../user/project/deploy_tokens/index.md).
-  - [Container Registry](../user/packages/container_registry/index.md)
-    (the `$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`).
-  - [Container Registry API](container_registry.md) (scoped to the job's project, when the `ci_job_token_scope` feature flag is enabled)
-- [Get job artifacts](job_artifacts.md#get-job-artifacts).
-- [Get job token's job](jobs.md#get-job-tokens-job).
-- [Pipeline triggers](pipeline_triggers.md), using the `token=` parameter.
-- [Release creation](releases/index.md#create-a-release).
-- [Terraform plan](../user/infrastructure/index.md).
-
-The token has the same permissions to access the API as the user that triggers the
-pipeline. Therefore, this user must be assigned to [a role that has the required privileges](../user/permissions.md).
-
-The token is valid only while the pipeline job runs. After the job finishes, you can't
-use the token anymore.
-
-A job token can access a project's resources without any configuration, but it might
-give extra permissions that aren't necessary. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
-to redesign the feature for more strategic control of the access permissions.
-
-#### GitLab CI/CD job token security
-
-To make sure that this token doesn't leak, GitLab:
-
-- Masks the job token in job logs.
-- Grants permissions to the job token only when the job is running.
-
-To make sure that this token doesn't leak, you should also configure
-your [runners](../ci/runners/README.md) to be secure. Avoid:
-
-- Using Docker's `privileged` mode if the machines are re-used.
-- Using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
-  run on the same machine.
-
-If you have an insecure GitLab Runner configuration, you increase the risk that someone
-tries to steal tokens from other jobs.
-
-#### Limit GitLab CI/CD job token access
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1.
-> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ci-job-token-scope-limit). **(FREE SELF)**
-
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
-
-You can limit the access scope of a project's CI/CD job token to increase the
-job token's security. A job token might give extra permissions that aren't necessary
-to access specific private resources. Limiting the job token access scope reduces the risk of a leaked
-token being used to access private data that the user associated to the job can access.
-
-Control the job token access scope with an allowlist of other projects authorized
-to be accessed by authenticating with the current project's job token. By default
-the token scope only allows access to the same project where the token comes from.
-Other projects can be added and removed by maintainers with access to both projects.
-
-This setting is enabled by default for all new projects, and disabled by default in projects
-created before GitLab 14.1. It is strongly recommended that project maintainers enable this
-setting at all times, and configure the allowlist for cross-project access if needed.
-
-For example, when the setting is enabled, jobs in a pipeline in project `A` have
-a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
-to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
-If project `B` is public or internal, it doesn't need to be added to the allowlist.
-The job token scope is only for controlling access to private projects.
-
-To enable and configure the job token scope limit:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Token Access**.
-1. Toggle **Limit CI_JOB_TOKEN access** to enabled.
-1. (Optional) Add existing projects to the token's access scope. The user adding a
-   project must have the [maintainer role](../user/permissions.md) in both projects.
-
-If the job token scope limit is disabled, the token can potentially be used to authenticate
-API requests to all projects accessible to the user that triggered the job.
-
-There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
-the feature with more strategic control of the access permissions.
-
-##### Enable or disable CI job token scope limit **(FREE SELF)**
-
-The GitLab CI/CD job token access scope limit is under development and not ready for production
-use. It is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_scoped_job_token)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_scoped_job_token)
-```
 
 ### Impersonation tokens
 
@@ -574,21 +462,42 @@ The response header includes a link to the next page. For example:
 ```http
 HTTP/1.1 200 OK
 ...
-Links: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
 Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
 Status: 200 OK
 ...
 ```
 
+The link to the next page contains an additional filter `id_after=42` that
+excludes already-retrieved records.
+
+As another example, the following request lists 50 [groups](groups.md) per page ordered
+by `name` ascending using keyset pagination:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups?pagination=keyset&per_page=50&order_by=name&sort=asc"
+```
+
+The response header includes a link to the next page:
+
+```http
+HTTP/1.1 200 OK
+...
+Link: <https://gitlab.example.com/api/v4/groups?pagination=keyset&per_page=50&order_by=name&sort=asc&cursor=eyJuYW1lIjoiRmxpZ2h0anMiLCJpZCI6IjI2IiwiX2tkIjoibiJ9>; rel="next"
+Status: 200 OK
+...
+```
+
+The link to the next page contains an additional filter `cursor=eyJuYW1lIjoiRmxpZ2h0anMiLCJpZCI6IjI2IiwiX2tkIjoibiJ9` that
+excludes already-retrieved records.
+
+The type of filter depends on the
+`order_by` option used, and we can have more than one additional filter.
+
 WARNING:
-The `Links` header is scheduled to be removed in GitLab 14.0 to be aligned with the
+The `Links` header was removed in GitLab 14.0 to be aligned with the
 [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
 header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)
 and should be used instead.
-
-The link to the next page contains an additional filter `id_after=42` that
-excludes already-retrieved records. The type of filter depends on the
-`order_by` option used, and we may have more than one additional filter.
 
 When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is
@@ -601,9 +510,10 @@ pagination headers.
 Keyset-based pagination is supported only for selected resources and ordering
 options:
 
-| Resource                | Order |
-|-------------------------|-------|
-| [Projects](projects.md) | `order_by=id` only. |
+| Resource                 | Options                          | Availability                            |
+|:-------------------------|:---------------------------------|:----------------------------------------|
+| [Projects](projects.md)  | `order_by=id` only               | Authenticated and unauthenticated users |
+| [Groups](groups.md)      | `order_by=name`, `sort=asc` only | Unauthenticated users only              |
 
 ## Path parameters
 
@@ -675,7 +585,7 @@ send the payload body:
 
   ```shell
   curl --request POST --header "Content-Type: application/json" \
-       --data '{"name":"<example-name>", "description":"<example-description"}' "https://gitlab/api/v4/projects"
+       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab/api/v4/projects"
   ```
 
 URL encoded query strings have a length limitation. Requests that are too large
@@ -705,7 +615,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --form "namespace=email" \
 --form "path=impapi" \
---form "file=@/path/to/somefile.txt"
+--form "file=@/path/to/somefile.txt" \
 --form "override_params[visibility]=private" \
 --form "override_params[some_other_param]=some_value" \
 "https://gitlab.example.com/api/v4/projects/import"
@@ -718,7 +628,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ```shell
 curl --globoff --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-"https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[][key]=VAR1&variables[][value]=hello&variables[][key]=VAR2&variables[][value]=world"
+"https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[0][key]=VAR1&variables[0][value]=hello&variables[1][key]=VAR2&variables[1][value]=world"
 
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --header "Content-Type: application/json" \

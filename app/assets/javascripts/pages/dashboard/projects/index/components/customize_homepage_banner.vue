@@ -77,7 +77,7 @@ export default {
       );
 
       if (button) {
-        button.setAttribute('data-track-event', 'click_go_to_preferences');
+        button.setAttribute('data-track-action', 'click_go_to_preferences');
         button.setAttribute('data-track-label', this.trackLabel);
       }
     },

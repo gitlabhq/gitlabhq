@@ -1,18 +1,17 @@
 ---
 data_category: optional
 key_path: counts_weekly.aggregated_metrics.code_review_category_monthly_active_users
-name: "0"
-description:
-product_section:
-product_stage:
-product_group:
+description: Unique users performing actions on code review events
+product_section: dev
+product_stage: devops::create
+product_group: group::code review
 product_category:
 value_type: number
-status: data_available
+status: active
 milestone: "13.12"
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53553/
 time_frame: 7d
-data_source:
+data_source: redis_hll
 distribution:
 - ce
 - ee
@@ -20,4 +19,4 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true
+

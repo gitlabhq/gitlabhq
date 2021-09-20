@@ -128,7 +128,6 @@ In order to run the test you can use the following commands:
 - `bin/rake spec:unit` to run only the unit tests
 - `bin/rake spec:integration` to run only the integration tests
 - `bin/rake spec:system` to run only the system tests
-- `bin/rake karma` to run the Karma test suite
 
 `bin/rake spec` takes significant time to pass.
 Instead of running the full test suite locally, you can save a lot of time by running
@@ -188,6 +187,17 @@ Alternatively you can use the following on each spec run,
 ```shell
 bundle exec spring rspec some_spec.rb
 ```
+
+## Generate initial RuboCop TODO list
+
+One way to generate the initial list is to run the Rake task `rubocop:todo:generate`:
+
+```shell
+bundle exec rake rubocop:todo:generate
+```
+
+See [Resolving RuboCop exceptions](contributing/style_guides.md#resolving-rubocop-exceptions)
+on how to proceed from here.
 
 ## Compile Frontend Assets
 

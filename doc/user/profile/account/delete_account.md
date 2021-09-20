@@ -21,14 +21,14 @@ As a user, to delete your own account:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
 
 ## As an administrator
 
 As an administrator, to delete a user account:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select a user.
 1. Under the **Account** tab, select:

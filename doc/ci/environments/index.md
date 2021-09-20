@@ -99,7 +99,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -109,9 +109,9 @@ deploy_review:
 
 In this example:
 
-- The `name` is `review/$CI_COMMIT_REF_NAME`. Because the [environment name](../yaml/index.md#environmentname)
+- The `name` is `review/$CI_COMMIT_REF_SLUG`. Because the [environment name](../yaml/index.md#environmentname)
   can contain slashes (`/`), you can use this pattern to distinguish between dynamic and static environments.
-- For the `url`, you could use `$CI_COMMIT_REF_NAME`, but because this value
+- For the `url`, you could use `$CI_COMMIT_REF_SLUG`, but because this value
   may contain a `/` or other characters that would not be valid in a domain name or URL,
   use `$CI_ENVIRONMENT_SLUG` instead. The `$CI_ENVIRONMENT_SLUG` variable is guaranteed to be unique.
 
@@ -177,7 +177,7 @@ You can find the play button in the pipelines, environments, deployments, and jo
 
 If you are deploying to a [Kubernetes cluster](../../user/project/clusters/index.md)
 associated with your project, you can configure these deployments from your
-`gitlab-ci.yml` file.
+`.gitlab-ci.yml` file.
 
 NOTE:
 Kubernetes configuration isn't supported for Kubernetes clusters that are
@@ -385,7 +385,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
   rules:
@@ -396,7 +396,7 @@ stop_review:
   script:
     - echo "Remove review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     action: stop
   rules:
     - if: $CI_MERGE_REQUEST_ID
@@ -440,7 +440,7 @@ is created or updated. The environment runs until `stop_review_app` is executed:
 review_app:
   script: deploy-review-app
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     on_stop: stop_review_app
     auto_stop_in: 1 week
   rules:
@@ -449,7 +449,7 @@ review_app:
 stop_review_app:
   script: stop-review-app
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     action: stop
   rules:
     - if: $CI_MERGE_REQUEST_ID
@@ -538,7 +538,7 @@ then in the UI, the environments are grouped under that heading:
 ![Environment groups](img/environments_dynamic_groups_v13_10.png)
 
 The following example shows how to start your environment names with `review`.
-The `$CI_COMMIT_REF_NAME` variable is populated with the branch name at runtime:
+The `$CI_COMMIT_REF_SLUG` variable is populated with the branch name at runtime:
 
 ```yaml
 deploy_review:
@@ -546,7 +546,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
 ```
 
 ### Environment incident management
@@ -566,7 +566,7 @@ to get alerts when there are critical issues that need immediate attention.
 
 #### View the latest alerts for environments **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
 If you [set up alerts for Prometheus metrics](../../operations/metrics/alerts.md),
 alerts for environments are shown on the environments page. The alert with the highest
@@ -582,7 +582,7 @@ deployment tab from the environment page and select which deployment to roll bac
 
 #### Auto Rollback **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 
 In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
 production. However, problematic code can still make it to production. For example, inefficient code
@@ -682,9 +682,9 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 ### Scope environments with specs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - [Environment scoping for CI/CD variables was moved to all tiers](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) in GitLab 12.2.
-> - [Environment scoping for Group CI/CD variables](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) added to GitLab Premium in 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in GitLab Premium 9.4.
+> - Environment scoping for CI/CD variables was [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) from GitLab Premium to GitLab Free in 12.2.
+> - Environment scoping for Group CI/CD variables [added](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) to GitLab Premium in 13.11.
 
 You can limit the environment scope of a CI/CD variable by
 defining which environments it can be available for.
@@ -728,11 +728,24 @@ like [Review Apps](../review_apps/index.md) (`review/*`).
 The most specific spec takes precedence over the other wildcard matching. In this case,
 the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
+### Rename an environment
+
+> Renaming environments through the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3. Renaming environments through the API was deprecated and [will be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.0.
+
+Renaming an environment through the UI is not possible.
+Instead, you need to delete the old environment and create a new one:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Find the environment and stop it.
+1. Delete the environment.
+1. Create a new environment with your preferred name.
+
 ## Related topics
 
 - [Use GitLab CI to deploy to multiple environments (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
 - [Review Apps](../review_apps/index.md): Use dynamic environments to deploy your code for every branch.
-- [Deploy Boards](../../user/project/deploy_boards.md): View the status of your applications running on Kubernetes.
+- [Deploy boards](../../user/project/deploy_boards.md): View the status of your applications running on Kubernetes.
 - [Protected environments](protected_environments.md): Determine who can deploy code to your environments.
 - [Environments Dashboard](../environments/environments_dashboard.md): View a summary of each
   environment's operational health. **(PREMIUM)**
@@ -763,14 +776,14 @@ To ensure the `action: stop` can always run when needed, you can:
   deploy_review:
     stage: deploy
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       url: https://$CI_ENVIRONMENT_SLUG.example.com
       on_stop: stop_review
 
   stop_review:
     stage: deploy
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       action: stop
     when: manual
   ```
@@ -790,7 +803,7 @@ To ensure the `action: stop` can always run when needed, you can:
   deploy_review:
     stage: deploy
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       url: https://$CI_ENVIRONMENT_SLUG.example.com
       on_stop: stop_review
 
@@ -799,7 +812,7 @@ To ensure the `action: stop` can always run when needed, you can:
     needs:
       - deploy_review
     environment:
-      name: review/$CI_COMMIT_REF_NAME
+      name: review/$CI_COMMIT_REF_SLUG
       action: stop
     when: manual
   ```

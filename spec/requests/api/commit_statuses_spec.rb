@@ -345,38 +345,12 @@ RSpec.describe API::CommitStatuses do
           expect(json_response['status']).to eq('success')
         end
 
-        context 'feature flags' do
-          using RSpec::Parameterized::TableSyntax
+        it 'retries the commit status', :sidekiq_might_not_need_inline do
+          post_request
 
-          where(:ci_fix_commit_status_retried, :ci_remove_update_retried_from_process_pipeline, :previous_statuses_retried) do
-            true  | true  | true
-            true  | false | true
-            false | true  | false
-            false | false | true
-          end
-
-          with_them do
-            before do
-              stub_feature_flags(
-                ci_fix_commit_status_retried: ci_fix_commit_status_retried,
-                ci_remove_update_retried_from_process_pipeline: ci_remove_update_retried_from_process_pipeline
-              )
-            end
-
-            it 'retries a commit status', :sidekiq_might_not_need_inline do
-              post_request
-
-              expect(CommitStatus.count).to eq 2
-
-              if previous_statuses_retried
-                expect(CommitStatus.first).to be_retried
-                expect(CommitStatus.last.pipeline).to be_success
-              else
-                expect(CommitStatus.first).not_to be_retried
-                expect(CommitStatus.last.pipeline).to be_failed
-              end
-            end
-          end
+          expect(CommitStatus.count).to eq 2
+          expect(CommitStatus.first).to be_retried
+          expect(CommitStatus.last.pipeline).to be_success
         end
       end
 

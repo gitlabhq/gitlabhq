@@ -11,8 +11,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/customization/branded_login_page.
 There are several options for customizing the appearance of a self-managed instance
 of GitLab. To access these settings:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Appearance**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Appearance**.
 
 ## Navigation bar
 

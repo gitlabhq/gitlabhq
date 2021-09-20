@@ -3,7 +3,7 @@
 module Types
   class CommitActionType < BaseInputObject
     argument :action, type: Types::CommitActionModeEnum, required: true,
-          description: 'The action to perform, create, delete, move, update, chmod.'
+          description: 'Action to perform: create, delete, move, update, or chmod.'
     argument :file_path, type: GraphQL::Types::String, required: true,
           description: 'Full path to the file.'
     argument :content, type: GraphQL::Types::String, required: false,

@@ -32,7 +32,7 @@ RSpec.describe 'User edit profile' do
     fill_in 'user_skype', with: 'testskype'
     fill_in 'user_linkedin', with: 'testlinkedin'
     fill_in 'user_twitter', with: 'testtwitter'
-    fill_in 'user_website_url', with: 'testurl'
+    fill_in 'user_website_url', with: 'http://testurl.com'
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab :tada:'
     fill_in 'user_job_title', with: 'Frontend Engineer'
@@ -43,15 +43,27 @@ RSpec.describe 'User edit profile' do
       skype: 'testskype',
       linkedin: 'testlinkedin',
       twitter: 'testtwitter',
-      website_url: 'testurl',
+      website_url: 'http://testurl.com',
       bio: 'I <3 GitLab :tada:',
-      bio_html: '<p data-sourcepos="1:1-1:18" dir="auto">I &lt;3 GitLab <gl-emoji title="party popper" data-name="tada" data-unicode-version="6.0">🎉</gl-emoji></p>',
       job_title: 'Frontend Engineer',
       organization: 'GitLab'
     )
 
     expect(find('#user_location').value).to eq 'Ukraine'
     expect(page).to have_content('Profile was successfully updated')
+  end
+
+  it 'does not set secondary emails without user input' do
+    fill_in 'user_organization', with: 'GitLab'
+    submit_settings
+
+    user.reload
+    expect(page).to have_field('user_commit_email', with: '')
+    expect(page).to have_field('user_public_email', with: '')
+
+    User::SECONDARY_EMAIL_ATTRIBUTES.each do |attribute|
+      expect(user.read_attribute(attribute)).to be_blank
+    end
   end
 
   it 'shows an error if the full name contains an emoji', :js do
@@ -63,6 +75,17 @@ RSpec.describe 'User edit profile' do
       expect(find('.gl-field-error')).not_to have_selector('.hidden')
       expect(find('.gl-field-error')).to have_content('Using emojis in names seems fun, but please try to set a status message instead')
     end
+  end
+
+  it 'shows an error if the website url is not valid' do
+    fill_in 'user_website_url', with: 'admin@gitlab.com'
+    submit_settings
+
+    expect(user.reload).to have_attributes(
+      website_url: ''
+    )
+
+    expect(page).to have_content('Website url is not a valid URL')
   end
 
   describe 'when I change my email' do

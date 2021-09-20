@@ -136,7 +136,7 @@ export default {
         size="small"
         class="gl-text-gray-900! gl-ml-auto hide-collapsed gl-mr-n2"
         data-testid="edit-button"
-        :data-track-event="tracking.event"
+        :data-track-action="tracking.event"
         :data-track-label="tracking.label"
         :data-track-property="tracking.property"
         data-qa-selector="edit_link"

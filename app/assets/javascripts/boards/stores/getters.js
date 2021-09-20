@@ -16,7 +16,7 @@ export default {
   },
 
   activeBoardItem: (state) => {
-    return state.boardItems[state.activeId] || { iid: '', id: '', fullId: '' };
+    return state.boardItems[state.activeId] || { iid: '', id: '' };
   },
 
   groupPathForActiveIssue: (_, getters) => {
@@ -50,9 +50,5 @@ export default {
 
   isEpicBoard: () => {
     return false;
-  },
-
-  shouldUseGraphQL: () => {
-    return gon?.features?.graphqlBoardLists;
   },
 };

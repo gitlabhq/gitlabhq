@@ -24,6 +24,8 @@ module Gitlab
           instance.project_job_url(object.project, object, **options)
         when Commit
           commit_url(object, **options)
+        when Compare
+          compare_url(object, **options)
         when Group
           instance.group_canonical_url(object, **options)
         when Issue
@@ -66,6 +68,12 @@ module Gitlab
         return '' unless commit.project
 
         instance.commit_url(commit, **options)
+      end
+
+      def compare_url(compare, **options)
+        return '' unless compare.project
+
+        instance.project_compare_url(compare.project, **options.merge(compare.to_param))
       end
 
       def note_url(note, **options)

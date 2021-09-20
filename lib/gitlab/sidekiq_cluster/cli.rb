@@ -57,6 +57,11 @@ module Gitlab
         worker_queues = SidekiqConfig::CliMethods.worker_queues(@rails_path)
 
         queue_groups = argv.map do |queues_or_query_string|
+          if queues_or_query_string =~ /[\r\n]/
+            raise CommandError,
+              'The queue arguments cannot contain newlines'
+          end
+
           next worker_queues if queues_or_query_string == SidekiqConfig::WorkerMatcher::WILDCARD_MATCH
 
           # When using the queue query syntax, we treat each queue group

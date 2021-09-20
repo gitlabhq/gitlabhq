@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
 
   describe '#schema_directory' do
     it 'returns db/schema_migrations' do
-      expect(context.schema_directory).to eq(File.join(Rails.root, 'db/schema_migrations'))
+      expect(context.schema_directory).to eq(File.join(Rails.root, described_class.default_schema_migrations_path))
     end
 
     context 'CI database' do
@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
       it 'returns a directory path that is database specific' do
         skip_if_multiple_databases_not_setup
 
-        expect(context.schema_directory).to eq(File.join(Rails.root, 'db/schema_migrations'))
+        expect(context.schema_directory).to eq(File.join(Rails.root, described_class.default_schema_migrations_path))
       end
     end
 
@@ -123,9 +123,5 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
         expect(context.versions_to_create).to eq([version1, version2, version3, version4])
       end
     end
-  end
-
-  def skip_if_multiple_databases_not_setup
-    skip 'Skipping because multiple databases not set up' unless Gitlab::Database.has_config?(:ci)
   end
 end

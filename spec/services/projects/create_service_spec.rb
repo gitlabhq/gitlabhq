@@ -86,7 +86,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     subject(:project) { create_project(user, opts) }
 
     context "with 'topics' parameter" do
-      let(:opts) { { topics: 'topics' } }
+      let(:opts) { { name: 'topic-project', topics: 'topics' } }
 
       it 'keeps them as specified' do
         expect(project.topic_list).to eq(%w[topics])
@@ -94,7 +94,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     context "with 'topic_list' parameter" do
-      let(:opts) { { topic_list: 'topic_list' } }
+      let(:opts) { { name: 'topic-project', topic_list: 'topic_list' } }
 
       it 'keeps them as specified' do
         expect(project.topic_list).to eq(%w[topic_list])
@@ -102,7 +102,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     context "with 'tag_list' parameter (deprecated)" do
-      let(:opts) { { tag_list: 'tag_list' } }
+      let(:opts) { { name: 'topic-project', tag_list: 'tag_list' } }
 
       it 'keeps them as specified' do
         expect(project.topic_list).to eq(%w[tag_list])
@@ -345,6 +345,12 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(imported_project.import_data).to be_persisted
       expect(imported_project.import_data.data).to eq(import_data[:data])
       expect(imported_project.import_url).to eq('http://import-url')
+    end
+
+    it 'tracks for the combined_registration experiment', :experiment do
+      expect(experiment(:combined_registration)).to track(:import_project).on_next_instance
+
+      imported_project
     end
   end
 
@@ -599,6 +605,18 @@ RSpec.describe Projects::CreateService, '#execute' do
             git branch -M example_branch
             git push -uf origin example_branch
           MARKDOWN
+        end
+      end
+
+      context 'and readme_template is specified' do
+        before do
+          opts[:readme_template] = "# GitLab\nThis is customized template."
+        end
+
+        it_behaves_like 'creates README.md'
+
+        it 'creates README.md with specified template' do
+          expect(project.repository.readme.data).to include('This is customized template.')
         end
       end
     end

@@ -5,11 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Optimizing GitLab for large repositories
+# Optimize GitLab for large repositories **(FREE)**
 
 Large repositories consisting of more than 50k files in a worktree
-often require special consideration because of
-the time required to clone and check out.
+may require more optimizations beyond
+[pipeline efficiency](../pipelines/pipeline_efficiency.md)
+because of the time required to clone and check out.
 
 GitLab and GitLab Runner handle this scenario well
 but require optimized configuration to efficiently perform its
@@ -250,6 +251,8 @@ This makes the cloning configuration to be part of the given runner
 and does not require us to update each `.gitlab-ci.yml`.
 
 ## Pre-clone step
+
+> [An issue exists](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/463) to remove the need for this optimization.
 
 For very active repositories with a large number of references and files, you can also
 optimize your CI jobs by seeding repository data with GitLab Runner's [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section).

@@ -18,7 +18,7 @@ Regexp notes:
 const identifierInstanceRegex = /((?:\[.+?\]){1}(?:\[\]|\[.+?\])?(?!:))/g;
 
 const isIdentifierInstance = (literal) => {
-  // Reset lastIndex as global flag in regexp are stateful (https://stackoverflow.com/a/11477448)
+  // Reset lastIndex as global flag in regexp are stateful
   identifierInstanceRegex.lastIndex = 0;
   return identifierInstanceRegex.test(literal);
 };

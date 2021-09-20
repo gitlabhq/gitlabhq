@@ -1,6 +1,7 @@
 import { Image } from '@tiptap/extension-image';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import ImageWrapper from '../components/wrappers/image.vue';
+import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 const resolveImageEl = (element) =>
   element.nodeName === 'IMG' ? element : element.querySelector('img');
@@ -27,27 +28,27 @@ export default Image.extend({
         parseHTML: (element) => {
           const img = resolveImageEl(element);
 
-          return {
-            src: img.dataset.src || img.getAttribute('src'),
-          };
+          return img.dataset.src || img.getAttribute('src');
         },
       },
       canonicalSrc: {
         default: null,
-        parseHTML: (element) => {
-          return {
-            canonicalSrc: element.dataset.canonicalSrc,
-          };
-        },
+        parseHTML: (element) => element.dataset.canonicalSrc,
       },
       alt: {
         default: null,
         parseHTML: (element) => {
           const img = resolveImageEl(element);
 
-          return {
-            alt: img.getAttribute('alt'),
-          };
+          return img.getAttribute('alt');
+        },
+      },
+      title: {
+        default: null,
+        parseHTML: (element) => {
+          const img = resolveImageEl(element);
+
+          return img.getAttribute('title');
         },
       },
     };
@@ -55,7 +56,7 @@ export default Image.extend({
   parseHTML() {
     return [
       {
-        priority: 100,
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
         tag: 'a.no-attachment-icon',
       },
       {

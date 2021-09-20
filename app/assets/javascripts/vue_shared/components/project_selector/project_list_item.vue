@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { isString } from 'lodash';
 import highlight from '~/lib/utils/highlight';
@@ -61,7 +60,7 @@ export default {
       <div
         :title="project.name"
         class="js-project-name text-truncate"
-        v-html="highlightedProjectName"
+        v-html="highlightedProjectName /* eslint-disable-line vue/no-v-html */"
       ></div>
     </div>
   </gl-button>

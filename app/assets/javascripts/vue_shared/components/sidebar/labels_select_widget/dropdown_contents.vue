@@ -1,22 +1,21 @@
 <script>
-import { GlButton } from '@gitlab/ui';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlButton, GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
 
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
+import { isDropdownVariantSidebar, isDropdownVariantEmbedded } from './utils';
 
 export default {
   components: {
     DropdownContentsLabelsView,
     DropdownContentsCreateView,
     GlButton,
+    GlDropdown,
+    GlDropdownItem,
+    GlLink,
   },
+  inject: ['allowLabelCreate', 'labelsManagePath'],
   props: {
-    renderOnTop: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     labelsCreateTitle: {
       type: String,
       required: true,
@@ -33,6 +32,10 @@ export default {
       type: String,
       required: true,
     },
+    dropdownButtonText: {
+      type: String,
+      required: true,
+    },
     footerCreateLabelTitle: {
       type: String,
       required: true,
@@ -41,70 +44,105 @@ export default {
       type: String,
       required: true,
     },
+    variant: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      showDropdownContentsCreateView: false,
+    };
   },
   computed: {
-    ...mapState(['showDropdownContentsCreateView']),
-    ...mapGetters(['isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     dropdownContentsView() {
       if (this.showDropdownContentsCreateView) {
         return 'dropdown-contents-create-view';
       }
       return 'dropdown-contents-labels-view';
     },
-    directionStyle() {
-      const bottom = this.isDropdownVariantSidebar ? '3rem' : '2rem';
-      return this.renderOnTop ? { bottom } : {};
-    },
     dropdownTitle() {
       return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
     },
+    showDropdownFooter() {
+      return (
+        !this.showDropdownContentsCreateView &&
+        (this.isDropdownVariantSidebar(this.variant) ||
+          this.isDropdownVariantEmbedded(this.variant))
+      );
+    },
   },
   methods: {
-    ...mapActions(['toggleDropdownContentsCreateView', 'toggleDropdownContents']),
+    showDropdown() {
+      this.$refs.dropdown.show();
+    },
+    toggleDropdownContentsCreateView() {
+      this.showDropdownContentsCreateView = !this.showDropdownContentsCreateView;
+    },
+    toggleDropdownContent() {
+      this.toggleDropdownContentsCreateView();
+      // Required to recalculate dropdown position as its size changes
+      this.$refs.dropdown.$refs.dropdown.$_popper.scheduleUpdate();
+    },
+    isDropdownVariantSidebar,
+    isDropdownVariantEmbedded,
   },
 };
 </script>
 
 <template>
-  <div
-    class="labels-select-dropdown-contents gl-w-full gl-my-2 gl-py-3 gl-rounded-base gl-absolute"
+  <gl-dropdown
+    ref="dropdown"
+    :text="dropdownButtonText"
+    class="gl-w-full gl-mt-2"
     data-qa-selector="labels_dropdown_content"
-    :style="directionStyle"
   >
-    <div
-      v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
-      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
-      data-testid="dropdown-title"
-    >
-      <gl-button
-        v-if="showDropdownContentsCreateView"
-        :aria-label="__('Go back')"
-        variant="link"
-        size="small"
-        class="js-btn-back dropdown-header-button p-0"
-        icon="arrow-left"
-        @click="toggleDropdownContentsCreateView"
-      />
-      <span class="flex-grow-1">{{ dropdownTitle }}</span>
-      <gl-button
-        :aria-label="__('Close')"
-        variant="link"
-        size="small"
-        class="dropdown-header-button gl-p-0!"
-        icon="close"
-        @click="toggleDropdownContents"
-      />
-    </div>
+    <template #header>
+      <div
+        v-if="isDropdownVariantSidebar(variant) || isDropdownVariantEmbedded(variant)"
+        class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
+      >
+        <gl-button
+          v-if="showDropdownContentsCreateView"
+          :aria-label="__('Go back')"
+          variant="link"
+          size="small"
+          class="js-btn-back dropdown-header-button gl-p-0"
+          icon="arrow-left"
+          data-testid="go-back-button"
+          @click.stop="toggleDropdownContent"
+        />
+        <span class="gl-flex-grow-1">{{ dropdownTitle }}</span>
+        <gl-button
+          :aria-label="__('Close')"
+          variant="link"
+          size="small"
+          class="dropdown-header-button gl-p-0!"
+          icon="close"
+          @click="$emit('closeDropdown')"
+        />
+      </div>
+    </template>
     <component
       :is="dropdownContentsView"
       :selected-labels="selectedLabels"
       :allow-multiselect="allowMultiselect"
-      :labels-list-title="labelsListTitle"
-      :footer-create-label-title="footerCreateLabelTitle"
-      :footer-manage-label-title="footerManageLabelTitle"
       @hideCreateView="toggleDropdownContentsCreateView"
-      @closeDropdown="$emit('closeDropdown', $event)"
-      @toggleDropdownContentsCreateView="toggleDropdownContentsCreateView"
+      @setLabels="$emit('setLabels', $event)"
     />
-  </div>
+    <template #footer>
+      <div v-if="showDropdownFooter" data-testid="dropdown-footer">
+        <gl-dropdown-item
+          v-if="allowLabelCreate"
+          data-testid="create-label-button"
+          @click.native.capture.stop="toggleDropdownContent"
+        >
+          {{ footerCreateLabelTitle }}
+        </gl-dropdown-item>
+        <gl-dropdown-item :href="labelsManagePath" @click.native.capture.stop>
+          {{ footerManageLabelTitle }}
+        </gl-dropdown-item>
+      </div>
+    </template>
+  </gl-dropdown>
 </template>

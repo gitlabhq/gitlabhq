@@ -82,6 +82,10 @@ To create a group:
    - Underscores
    - Dashes and dots (it cannot start with dashes or end in a dot)
 1. Choose the [visibility level](../../public_access/public_access.md).
+1. Personalize your GitLab experience by answering the following questions:
+   - What is your role?
+   - Who will be using this group?
+   - What will you use this group for?
 1. Invite GitLab members or other users to join the group.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -263,7 +267,7 @@ These Group Activity Analytics can be enabled with the `group_activity_analytics
 
 ### View group activity
 
-You can view the most recent actions taken in a group.
+You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
 1. On the top bar, select **Menu > Groups**.
 1. Select **Your Groups**.
@@ -312,7 +316,7 @@ In GitLab 13.11, you can optionally replace the sharing form with a modal window
 To share a group after enabling this feature:
 
 1. Go to your group's page.
-1. In the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
+1. On the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
 1. Select a group, and select a **Max role**.
 1. (Optional) Select an **Access expiration date**.
 1. Select **Invite**.
@@ -664,16 +668,16 @@ Projects can be configured to be deleted either:
 
 - Immediately.
 - After a delayed interval. During this interval period, the projects are in a read-only state
-  and can be restored, if required. The default interval period is seven days but
+  and can be restored. The default interval period is seven days but
   [is configurable](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
-On:
+On self-managed GitLab, projects are deleted immediately by default.
+In GitLab 14.2 and later, an administrator can
+[change the default setting](../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion)
+for projects in newly-created groups.
 
-- GitLab self-managed instances, projects are deleted immediately by default. In GitLab
-  14.2 and later, an administrator can
-  [change the default setting](../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion) for projects in newly-created groups.
-- GitLab.com, see [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
-  the default setting.
+On GitLab.com, see the [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
+the default setting.
 
 To enable delayed deletion of projects in a group:
 
@@ -750,7 +754,7 @@ The group's new subgroups have push rules set for them based on either:
 - [Transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
 - [Share a project with a group](../project/members/share_project_with_groups.md): Give all group members access to the project at once.
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
-- [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group): Enforce 2FA
+- [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
 - Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md)..
 

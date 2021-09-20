@@ -39,8 +39,11 @@ RSpec.describe Issues::ReopenService do
       it 'refreshes the number of opened issues' do
         service = described_class.new(project: project, current_user: user)
 
-        expect { service.execute(issue) }
-          .to change { project.open_issues_count }.from(0).to(1)
+        expect do
+          service.execute(issue)
+
+          BatchLoader::Executor.clear_current
+        end.to change { project.open_issues_count }.from(0).to(1)
       end
 
       it 'deletes milestone issue counters cache' do

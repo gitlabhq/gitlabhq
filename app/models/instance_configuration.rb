@@ -13,7 +13,7 @@ class InstanceConfiguration
       { ssh_algorithms_hashes: ssh_algorithms_hashes,
         host: host,
         gitlab_pages: gitlab_pages,
-        gitlab_ci: gitlab_ci,
+        size_limits: size_limits,
         package_file_size_limits: package_file_size_limits,
         rate_limits: rate_limits }.deep_symbolize_keys
     end
@@ -38,11 +38,16 @@ class InstanceConfiguration
   rescue Resolv::ResolvError
   end
 
-  def gitlab_ci
-    Settings.gitlab_ci
-            .to_h
-            .merge(artifacts_max_size: { value: Gitlab::CurrentSettings.max_artifacts_size.megabytes,
-                                         default: 100.megabytes })
+  def size_limits
+    {
+      max_attachment_size: application_settings[:max_attachment_size].megabytes,
+      receive_max_input_size: application_settings[:receive_max_input_size]&.megabytes,
+      max_import_size: application_settings[:max_import_size] > 0 ? application_settings[:max_import_size].megabytes : nil,
+      diff_max_patch_bytes: application_settings[:diff_max_patch_bytes].bytes,
+      max_artifacts_size: application_settings[:max_artifacts_size].megabytes,
+      max_pages_size: application_settings[:max_pages_size] > 0 ? application_settings[:max_pages_size].megabytes : nil,
+      snippet_size_limit: application_settings[:snippet_size_limit]&.bytes
+    }
   end
 
   def package_file_size_limits

@@ -51,7 +51,7 @@ module ErrorTracking
     end
 
     def integrated_client?
-      integrated && ::Feature.enabled?(:integrated_error_tracking, project)
+      integrated
     end
 
     def api_url=(value)

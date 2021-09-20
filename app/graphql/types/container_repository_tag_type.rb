@@ -14,7 +14,7 @@ module Types
     field :digest, GraphQL::Types::String, null: true, description: 'Digest of the tag.'
     field :revision, GraphQL::Types::String, null: true, description: 'Revision of the tag.'
     field :short_revision, GraphQL::Types::String, null: true, description: 'Short revision of the tag.'
-    field :total_size, GraphQL::Types::BigInt, null: true, description: 'The size of the tag.'
+    field :total_size, GraphQL::Types::BigInt, null: true, description: 'Size of the tag.'
     field :created_at, Types::TimeType, null: true, description: 'Timestamp when the tag was created.'
     field :can_delete, GraphQL::Types::Boolean, null: false, description: 'Can the current user delete this tag.'
 

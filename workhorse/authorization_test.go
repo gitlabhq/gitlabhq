@@ -10,7 +10,7 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/correlation"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"

@@ -25,6 +25,16 @@ class Compare
     @straight = straight
   end
 
+  # Return a Hash of parameters for passing to a URL helper
+  #
+  # See `namespace_project_compare_url`
+  def to_param
+    {
+      from: @straight ? start_commit_sha : base_commit_sha,
+      to: head_commit_sha
+    }
+  end
+
   def cache_key
     [@project, :compare, diff_refs.hash]
   end

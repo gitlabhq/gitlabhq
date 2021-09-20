@@ -1,4 +1,5 @@
 import groupsSelect from '~/groups_select';
+import initImportAProjectModal from '~/invite_members/init_import_a_project_modal';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteMembersForm from '~/invite_members/init_invite_members_form';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
@@ -14,6 +15,7 @@ import UsersSelect from '~/users_select';
 groupsSelect();
 memberExpirationDate();
 memberExpirationDate('.js-access-expiration-date-groups');
+initImportAProjectModal();
 initInviteMembersModal();
 initInviteMembersTrigger();
 initInviteGroupTrigger();

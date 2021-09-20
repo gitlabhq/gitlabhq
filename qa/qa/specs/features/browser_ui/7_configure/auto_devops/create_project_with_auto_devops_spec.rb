@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-
 module QA
   RSpec.describe 'Configure' do
     let(:project) do
@@ -23,7 +21,7 @@ module QA
           cluster&.remove!
         end
 
-        it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1715' do
+        it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1422' do
           Flow::Login.sign_in
 
           # Set an application secret CI variable (prefixed with K8S_SECRET_)
@@ -102,7 +100,7 @@ module QA
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-        Page::Project::Settings::CICD.perform(&:expand_auto_devops)
+        Page::Project::Settings::CiCd.perform(&:expand_auto_devops)
         Page::Project::Settings::AutoDevops.perform(&:enable_autodevops)
 
         # Create AutoDevOps repo
@@ -115,7 +113,7 @@ module QA
         end
       end
 
-      it 'runs an AutoDevOps pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1847' do
+      it 'runs an AutoDevOps pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1564' do
         Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |pipeline|

@@ -17,3 +17,7 @@
       = button_to resume_admin_background_migration_path(migration),
         class: 'gl-button btn btn-icon has-tooltip', title: _('Resume'), 'aria-label' => _('Resume') do
         = sprite_icon('play', css_class: 'gl-button-icon gl-icon')
+    - elsif migration.failed?
+      = button_to retry_admin_background_migration_path(migration),
+        class: 'gl-button btn btn-icon has-tooltip', title: _('Retry'), 'aria-label' => _('Retry') do
+        = sprite_icon('retry', css_class: 'gl-button-icon gl-icon')

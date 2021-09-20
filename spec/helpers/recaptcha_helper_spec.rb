@@ -14,7 +14,7 @@ RSpec.describe RecaptchaHelper, type: :helper do
       it 'returns false' do
         stub_application_setting(recaptcha_enabled: false)
 
-        expect(helper.show_recaptcha_sign_up?).to be(false)
+        expect(helper.show_recaptcha_sign_up?).to be_falsey
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe RecaptchaHelper, type: :helper do
       it 'returns true' do
         stub_application_setting(recaptcha_enabled: true)
 
-        expect(helper.show_recaptcha_sign_up?).to be(true)
+        expect(helper.show_recaptcha_sign_up?).to be_truthy
       end
     end
   end

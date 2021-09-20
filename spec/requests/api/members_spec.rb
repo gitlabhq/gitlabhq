@@ -198,7 +198,7 @@ RSpec.describe API::Members do
 
               # Member attributes
               expect(json_response['access_level']).to eq(Member::DEVELOPER)
-              expect(json_response['created_at'].to_time).to be_like_time(developer.created_at)
+              expect(json_response['created_at'].to_time).to be_present
             end
           end
         end
@@ -311,36 +311,6 @@ RSpec.describe API::Members do
             expect(json_response['status']).to eq('error')
             expect(json_response['message']).to eq(error_message)
           end
-
-          context 'with invite_source considerations', :snowplow do
-            let(:params) { { user_id: user_ids, access_level: Member::DEVELOPER } }
-
-            it 'tracks the invite source as api' do
-              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: params
-
-              expect_snowplow_event(
-                category: 'Members::CreateService',
-                action: 'create_member',
-                label: 'members-api',
-                property: 'existing_user',
-                user: maintainer
-              )
-            end
-
-            it 'tracks the invite source from params' do
-              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: params.merge(invite_source: '_invite_source_')
-
-              expect_snowplow_event(
-                category: 'Members::CreateService',
-                action: 'create_member',
-                label: '_invite_source_',
-                property: 'existing_user',
-                user: maintainer
-              )
-            end
-          end
         end
       end
 
@@ -410,48 +380,28 @@ RSpec.describe API::Members do
       end
 
       context 'with areas_of_focus considerations', :snowplow do
-        context 'when there is 1 user to add' do
-          let(:user_id) { stranger.id }
+        let(:user_id) { stranger.id }
 
-          context 'when areas_of_focus is present in params' do
-            it 'tracks the areas_of_focus' do
-              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: { user_id: user_id, access_level: Member::DEVELOPER, areas_of_focus: 'Other' }
+        context 'when areas_of_focus is present in params' do
+          it 'tracks the areas_of_focus' do
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                 params: { user_id: user_id, access_level: Member::DEVELOPER, areas_of_focus: 'Other' }
 
-              expect_snowplow_event(
-                category: 'Members::CreateService',
-                action: 'area_of_focus',
-                label: 'Other',
-                property: source.members.last.id.to_s
-              )
-            end
-          end
-
-          context 'when areas_of_focus is not present in params' do
-            it 'does not track the areas_of_focus' do
-              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: { user_id: user_id, access_level: Member::DEVELOPER }
-
-              expect_no_snowplow_event(category: 'Members::CreateService', action: 'area_of_focus')
-            end
+            expect_snowplow_event(
+              category: 'Members::CreateService',
+              action: 'area_of_focus',
+              label: 'Other',
+              property: source.members.last.id.to_s
+            )
           end
         end
 
-        context 'when there are multiple users to add' do
-          let(:user_id) { [developer.id, stranger.id].join(',') }
+        context 'when areas_of_focus is not present in params' do
+          it 'does not track the areas_of_focus' do
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                 params: { user_id: user_id, access_level: Member::DEVELOPER }
 
-          context 'when areas_of_focus is present in params' do
-            it 'tracks the areas_of_focus' do
-              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: { user_id: user_id, access_level: Member::DEVELOPER, areas_of_focus: 'Other' }
-
-              expect_snowplow_event(
-                category: 'Members::CreateService',
-                action: 'area_of_focus',
-                label: 'Other',
-                property: source.members.last.id.to_s
-              )
-            end
+            expect_no_snowplow_event(category: 'Members::CreateService', action: 'area_of_focus')
           end
         end
       end

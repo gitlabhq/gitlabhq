@@ -26,7 +26,6 @@ import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql'
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import {
   mockLists,
@@ -107,12 +106,7 @@ describe('setFilters', () => {
 });
 
 describe('performSearch', () => {
-  it('should dispatch setFilters action', (done) => {
-    testAction(actions.performSearch, {}, {}, [], [{ type: 'setFilters', payload: {} }], done);
-  });
-
-  it('should dispatch setFilters, fetchLists and resetIssues action when graphqlBoardLists FF is on', (done) => {
-    window.gon = { features: { graphqlBoardLists: true } };
+  it('should dispatch setFilters, fetchLists and resetIssues action', (done) => {
     testAction(
       actions.performSearch,
       {},
@@ -496,12 +490,9 @@ describe('fetchLabels', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     const commit = jest.fn();
-    const getters = {
-      shouldUseGraphQL: () => true,
-    };
     const state = { boardType: 'group' };
 
-    await actions.fetchLabels({ getters, state, commit });
+    await actions.fetchLabels({ state, commit });
 
     expect(commit).toHaveBeenCalledWith(types.RECEIVE_LABELS_SUCCESS, labels);
   });
@@ -954,7 +945,7 @@ describe('moveIssue', () => {
 });
 
 describe('moveIssueCard and undoMoveIssueCard', () => {
-  describe('card should move without clonning', () => {
+  describe('card should move without cloning', () => {
     let state;
     let params;
     let moveMutations;
@@ -1221,8 +1212,8 @@ describe('updateMovedIssueCard', () => {
 
 describe('updateIssueOrder', () => {
   const issues = {
-    436: mockIssue,
-    437: mockIssue2,
+    [mockIssue.id]: mockIssue,
+    [mockIssue2.id]: mockIssue2,
   };
 
   const state = {
@@ -1231,7 +1222,7 @@ describe('updateIssueOrder', () => {
   };
 
   const moveData = {
-    itemId: 436,
+    itemId: mockIssue.id,
     fromListId: 'gid://gitlab/List/1',
     toListId: 'gid://gitlab/List/2',
   };
@@ -1490,7 +1481,7 @@ describe('addListNewIssue', () => {
             type: 'addListItem',
             payload: {
               list: fakeList,
-              item: formatIssue({ ...mockIssue, id: getIdFromGraphQLId(mockIssue.id) }),
+              item: formatIssue(mockIssue),
               position: 0,
             },
           },

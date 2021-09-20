@@ -274,7 +274,7 @@ class Integration < ApplicationRecord
   end
 
   def self.closest_group_integration(type, scope)
-    group_ids = scope.ancestors(hierarchy_order: :asc).select(:id)
+    group_ids = scope.ancestors(hierarchy_order: :asc).reselect(:id)
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
 
     where(type: type, group_id: group_ids, inherit_from_id: nil)
@@ -355,6 +355,10 @@ class Integration < ApplicationRecord
   def fields
     # implement inside child
     []
+  end
+
+  def password_fields
+    fields.select { |f| f[:type] == 'password' }.pluck(:name)
   end
 
   # Expose a list of fields in the JSON endpoint.

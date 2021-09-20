@@ -6,6 +6,118 @@ module Gitlab
       module V2
         include Gitlab::Database::MigrationHelpers
 
+        # Superseded by `create_table` override below
+        def create_table_with_constraints(*_)
+          raise <<~EOM
+            #create_table_with_constraints is not supported anymore - use #create_table instead, for example:
+
+              create_table :db_guides do |t|
+                t.bigint :stars, default: 0, null: false
+                t.text :title, limit: 128
+                t.text :notes, limit: 1024
+
+                t.check_constraint 'stars > 1000', name: 'so_many_stars'
+              end
+
+            See https://docs.gitlab.com/ee/development/database/strings_and_the_text_data_type.html
+          EOM
+        end
+
+        # Creates a new table, optionally allowing the caller to add text limit constraints to the table.
+        # This method only extends Rails' `create_table` method
+        #
+        # Example:
+        #
+        #    create_table :db_guides do |t|
+        #      t.bigint :stars, default: 0, null: false
+        #      t.text :title, limit: 128
+        #      t.text :notes, limit: 1024
+        #
+        #      t.check_constraint 'stars > 1000', name: 'so_many_stars'
+        #    end
+        #
+        # See Rails' `create_table` for more info on the available arguments.
+        #
+        # When adding foreign keys to other tables, consider wrapping the call into a with_lock_retries block
+        # to avoid traffic stalls.
+        def create_table(table_name, *args, **kwargs, &block)
+          helper_context = self
+
+          super do |t|
+            t.define_singleton_method(:text) do |column_name, **kwargs|
+              limit = kwargs.delete(:limit)
+
+              super(column_name, **kwargs)
+
+              if limit
+                # rubocop:disable GitlabSecurity/PublicSend
+                name = helper_context.send(:text_limit_name, table_name, column_name)
+                # rubocop:enable GitlabSecurity/PublicSend
+
+                column_name = helper_context.quote_column_name(column_name)
+                definition = "char_length(#{column_name}) <= #{limit}"
+
+                t.check_constraint(definition, name: name)
+              end
+            end
+
+            t.instance_eval(&block) unless block.nil?
+          end
+        end
+
+        # Executes the block with a retry mechanism that alters the +lock_timeout+ and +sleep_time+ between attempts.
+        # The timings can be controlled via the +timing_configuration+ parameter.
+        # If the lock was not acquired within the retry period, a last attempt is made without using +lock_timeout+.
+        #
+        # In order to retry the block, the method wraps the block into a transaction.
+        #
+        # When called inside an open transaction it will execute the block directly if lock retries are enabled
+        # with `enable_lock_retries!` at migration level, otherwise it will raise an error.
+        #
+        # ==== Examples
+        #   # Invoking without parameters
+        #   with_lock_retries do
+        #     drop_table :my_table
+        #   end
+        #
+        #   # Invoking with custom +timing_configuration+
+        #   t = [
+        #     [1.second, 1.second],
+        #     [2.seconds, 2.seconds]
+        #   ]
+        #
+        #   with_lock_retries(timing_configuration: t) do
+        #     drop_table :my_table # this will be retried twice
+        #   end
+        #
+        #   # Disabling the retries using an environment variable
+        #   > export DISABLE_LOCK_RETRIES=true
+        #
+        #   with_lock_retries do
+        #     drop_table :my_table # one invocation, it will not retry at all
+        #   end
+        #
+        # ==== Parameters
+        # * +timing_configuration+ - [[ActiveSupport::Duration, ActiveSupport::Duration], ...] lock timeout for the block, sleep time before the next iteration, defaults to `Gitlab::Database::WithLockRetries::DEFAULT_TIMING_CONFIGURATION`
+        # * +logger+ - [Gitlab::JsonLogger]
+        # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
+        def with_lock_retries(*args, **kwargs, &block)
+          if transaction_open?
+            if enable_lock_retries?
+              Gitlab::AppLogger.warn 'Lock retries already enabled, executing the block directly'
+              yield
+            else
+              raise <<~EOF
+              #{__callee__} can not be run inside an already open transaction
+
+              Use migration-level lock retries instead, see https://docs.gitlab.com/ee/development/migration_style_guide.html#retry-mechanism-when-acquiring-database-locks
+              EOF
+            end
+          else
+            super(*args, **kwargs.merge(allow_savepoints: false), &block)
+          end
+        end
+
         # Renames a column without requiring downtime.
         #
         # Concurrent renames work by using database triggers to ensure both the

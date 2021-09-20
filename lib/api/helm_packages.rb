@@ -44,15 +44,10 @@ module API
         get ":channel/index.yaml" do
           authorize_read_package!(authorized_user_project)
 
-          package_files = Packages::Helm::PackageFilesFinder.new(
-            authorized_user_project,
-            params[:channel],
-            order_by: 'created_at',
-            sort: 'desc'
-          ).execute
+          packages = Packages::Helm::PackagesFinder.new(authorized_user_project, params[:channel]).execute
 
           env['api.format'] = :yaml
-          present ::Packages::Helm::IndexPresenter.new(authorized_user_project, params[:id], package_files),
+          present ::Packages::Helm::IndexPresenter.new(params[:id], params[:channel], packages),
                       with: ::API::Entities::Helm::Index
         end
 
@@ -66,7 +61,7 @@ module API
         get ":channel/charts/:file_name.tgz", requirements: FILE_NAME_REQUIREMENTS do
           authorize_read_package!(authorized_user_project)
 
-          package_file = Packages::Helm::PackageFilesFinder.new(authorized_user_project, params[:channel], file_name: "#{params[:file_name]}.tgz").execute.last!
+          package_file = Packages::Helm::PackageFilesFinder.new(authorized_user_project, params[:channel], file_name: "#{params[:file_name]}.tgz").most_recent!
 
           track_package_event('pull_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace)
 

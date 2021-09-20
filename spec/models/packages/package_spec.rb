@@ -1165,4 +1165,47 @@ RSpec.describe Packages::Package, type: :model do
       it_behaves_like 'not enqueuing a sync worker job'
     end
   end
+
+  describe '#create_build_infos!' do
+    let_it_be(:package) { create(:package) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    let(:build) { double(pipeline: pipeline) }
+
+    subject { package.create_build_infos!(build) }
+
+    context 'with a valid build' do
+      it 'creates a build info' do
+        expect { subject }.to change { ::Packages::BuildInfo.count }.by(1)
+
+        last_build = ::Packages::BuildInfo.last
+        expect(last_build.package).to eq(package)
+        expect(last_build.pipeline).to eq(pipeline)
+      end
+
+      context 'with an already existing build info' do
+        let_it_be(:build_info) { create(:packages_build_info, package: package, pipeline: pipeline) }
+
+        it 'does not create a build info' do
+          expect { subject }.not_to change { ::Packages::BuildInfo.count }
+        end
+      end
+    end
+
+    context 'with a nil build' do
+      let(:build) { nil }
+
+      it 'does not create a build info' do
+        expect { subject }.not_to change { ::Packages::BuildInfo.count }
+      end
+    end
+
+    context 'with a build without a pipeline' do
+      let(:build) { double(pipeline: nil) }
+
+      it 'does not create a build info' do
+        expect { subject }.not_to change { ::Packages::BuildInfo.count }
+      end
+    end
+  end
 end

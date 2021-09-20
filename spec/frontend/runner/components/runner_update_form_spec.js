@@ -54,7 +54,7 @@ describe('RunnerUpdateForm', () => {
       ? ACCESS_LEVEL_REF_PROTECTED
       : ACCESS_LEVEL_NOT_PROTECTED,
     runUntagged: findRunUntaggedCheckbox().element.checked,
-    locked: findLockedCheckbox().element.checked,
+    locked: findLockedCheckbox().element?.checked || false,
     ipAddress: findIpInput().element.value,
     maximumTimeout: findMaxJobTimeoutInput().element.value || null,
     tagList: findTagsInput().element.value.split(',').filter(Boolean),
@@ -153,15 +153,15 @@ describe('RunnerUpdateForm', () => {
   });
 
   it.each`
-    runnerType       | attrDisabled  | outcome
-    ${INSTANCE_TYPE} | ${'disabled'} | ${'disabled'}
-    ${GROUP_TYPE}    | ${'disabled'} | ${'disabled'}
-    ${PROJECT_TYPE}  | ${undefined}  | ${'enabled'}
-  `(`When runner is $runnerType, locked field is $outcome`, ({ runnerType, attrDisabled }) => {
+    runnerType       | exists   | outcome
+    ${INSTANCE_TYPE} | ${false} | ${'hidden'}
+    ${GROUP_TYPE}    | ${false} | ${'hidden'}
+    ${PROJECT_TYPE}  | ${true}  | ${'shown'}
+  `(`When runner is $runnerType, locked field is $outcome`, ({ runnerType, exists }) => {
     const runner = { ...mockRunner, runnerType };
     createComponent({ props: { runner } });
 
-    expect(findLockedCheckbox().attributes('disabled')).toBe(attrDisabled);
+    expect(findLockedCheckbox().exists()).toBe(exists);
   });
 
   describe('On submit, runner gets updated', () => {

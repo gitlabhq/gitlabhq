@@ -349,7 +349,7 @@ or a failover promotes a different **Primary** node.
 
    ```yaml
    production:
-     url: redis://:redi-password-goes-here@gitlab-redis/
+     url: redis://:redis-password-goes-here@gitlab-redis/
      sentinels:
        -
          host: 10.0.0.1

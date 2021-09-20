@@ -20,6 +20,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
 
   before do
     allow(migration).to receive(:puts)
+    allow(migration).to receive(:transaction_open?).and_return(false)
 
     connection.execute(<<~SQL)
       CREATE TABLE #{table_name} (
@@ -127,6 +128,16 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
         end.to raise_error(ArgumentError, /#{table_name} is not a partitioned table/)
       end
     end
+
+    context 'when run inside a transaction block' do
+      it 'raises an error' do
+        expect(migration).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          migration.add_concurrent_partitioned_index(table_name, column_name)
+        end.to raise_error(/can not be run inside a transaction/)
+      end
+    end
   end
 
   describe '#remove_concurrent_partitioned_index_by_name' do
@@ -180,6 +191,16 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
         expect do
           migration.remove_concurrent_partitioned_index_by_name(table_name, index_name)
         end.to raise_error(ArgumentError, /#{table_name} is not a partitioned table/)
+      end
+    end
+
+    context 'when run inside a transaction block' do
+      it 'raises an error' do
+        expect(migration).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          migration.remove_concurrent_partitioned_index_by_name(table_name, index_name)
+        end.to raise_error(/can not be run inside a transaction/)
       end
     end
   end

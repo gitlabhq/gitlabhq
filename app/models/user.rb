@@ -39,6 +39,12 @@ class User < ApplicationRecord
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
 
+  SECONDARY_EMAIL_ATTRIBUTES = [
+    :commit_email,
+    :notification_email,
+    :public_email
+  ].freeze
+
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
   add_authentication_token_field :static_object_token
@@ -181,7 +187,7 @@ class User < ApplicationRecord
   has_many :todos
   has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :triggers,                 class_name: 'Ci::Trigger', foreign_key: :owner_id
 
   has_many :issue_assignees, inverse_of: :assignee
   has_many :merge_request_assignees, inverse_of: :assignee
@@ -194,6 +200,7 @@ class User < ApplicationRecord
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
+  has_many :group_callouts, class_name: 'Users::GroupCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
@@ -222,10 +229,9 @@ class User < ApplicationRecord
   validates :first_name, length: { maximum: 127 }
   validates :last_name, length: { maximum: 127 }
   validates :email, confirmation: true
-  validates :notification_email, presence: true
-  validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
+  validates :notification_email, devise_email: true, allow_blank: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, uniqueness: true, devise_email: true, allow_blank: true
-  validates :commit_email, devise_email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
+  validates :commit_email, devise_email: true, allow_blank: true, if: ->(user) { user.commit_email != user.email && user.commit_email != Gitlab::PrivateCommitEmail::TOKEN }
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
@@ -247,12 +253,10 @@ class User < ApplicationRecord
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
     message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
 
+  validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
+
   before_validation :sanitize_attrs
-  before_validation :set_public_email, if: :public_email_changed?
-  before_validation :set_commit_email, if: :commit_email_changed?
   before_save :default_private_profile_to_false
-  before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
-  before_save :set_commit_email, if: :commit_email_changed? # in case validation is skipped
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
@@ -302,14 +306,13 @@ class User < ApplicationRecord
             :gitpod_enabled, :gitpod_enabled=,
             :setup_for_company, :setup_for_company=,
             :render_whitespace_in_code, :render_whitespace_in_code=,
-            :experience_level, :experience_level=,
             :markdown_surround_selection, :markdown_surround_selection=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
   delegate :other_role, :other_role=, to: :user_detail, allow_nil: true
-  delegate :bio, :bio=, :bio_html, to: :user_detail, allow_nil: true
+  delegate :bio, :bio=, to: :user_detail, allow_nil: true
   delegate :webauthn_xid, :webauthn_xid=, to: :user_detail, allow_nil: true
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
@@ -347,6 +350,10 @@ class User < ApplicationRecord
       transition active: :banned
     end
 
+    event :unban do
+      transition banned: :active
+    end
+
     event :deactivate do
       # Any additional changes to this event should be also
       # reflected in app/workers/users/deactivate_dormant_users_worker.rb
@@ -374,7 +381,9 @@ class User < ApplicationRecord
     end
 
     after_transition any => :deactivated do |user|
-      NotificationService.new.user_deactivated(user.name, user.notification_email)
+      next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
+
+      NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
     end
     # rubocop: enable CodeReuse/ServiceClass
 
@@ -922,51 +931,18 @@ class User < ApplicationRecord
     end
   end
 
-  def notification_email_verified
-    return if read_attribute(:notification_email).blank? || temp_oauth_email?
-
-    errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email)
-  end
-
-  def public_email_verified
-    return if public_email.blank?
-
-    errors.add(:public_email, _("must be an email you have verified")) unless verified_emails.include?(public_email)
-  end
-
-  def commit_email_verified
-    return if read_attribute(:commit_email).blank?
-
-    errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email)
-  end
-
-  # Define commit_email-related attribute methods explicitly instead of relying
-  # on ActiveRecord to provide them. Some of the specs use the current state of
-  # the model code but an older database schema, so we need to guard against the
-  # possibility of the commit_email column not existing.
-
-  def commit_email
-    return self.email unless has_attribute?(:commit_email)
-
-    if super == Gitlab::PrivateCommitEmail::TOKEN
+  def commit_email_or_default
+    if self.commit_email == Gitlab::PrivateCommitEmail::TOKEN
       return private_commit_email
     end
 
     # The commit email is the same as the primary email if undefined
-    super.presence || self.email
+    self.commit_email.presence || self.email
   end
 
-  def commit_email=(email)
-    super if has_attribute?(:commit_email)
-  end
-
-  def commit_email_changed?
-    has_attribute?(:commit_email) && super
-  end
-
-  def notification_email
+  def notification_email_or_default
     # The notification email is the same as the primary email if undefined
-    super.presence || self.email
+    self.notification_email.presence || self.email
   end
 
   def private_commit_email
@@ -1009,7 +985,11 @@ class User < ApplicationRecord
 
   # Returns the groups a user is a member of, either directly or through a parent group
   def membership_groups
-    Gitlab::ObjectHierarchy.new(groups).base_and_descendants
+    if Feature.enabled?(:linear_user_membership_groups, self, default_enabled: :yaml)
+      groups.self_and_descendants
+    else
+      Gitlab::ObjectHierarchy.new(groups).base_and_descendants
+    end
   end
 
   # Returns a relation of groups the user has access to, including their parent
@@ -1292,29 +1272,15 @@ class User < ApplicationRecord
     self.name = self.name.gsub(%r{</?[^>]*>}, '')
   end
 
-  def set_notification_email
-    if notification_email.blank? || all_emails.exclude?(notification_email)
-      self.notification_email = email
+  def unset_secondary_emails_matching_deleted_email!(deleted_email)
+    secondary_email_attribute_changed = false
+    SECONDARY_EMAIL_ATTRIBUTES.each do |attribute|
+      if read_attribute(attribute) == deleted_email
+        self.write_attribute(attribute, nil)
+        secondary_email_attribute_changed = true
+      end
     end
-  end
-
-  def set_public_email
-    if public_email.blank? || all_emails.exclude?(public_email)
-      self.public_email = ''
-    end
-  end
-
-  def set_commit_email
-    if commit_email.blank? || verified_emails.exclude?(commit_email)
-      self.commit_email = nil
-    end
-  end
-
-  def update_secondary_emails!
-    set_notification_email
-    set_public_email
-    set_commit_email
-    save if notification_email_changed? || public_email_changed? || commit_email_changed?
+    save if secondary_email_attribute_changed
   end
 
   def admin_unsubscribe!
@@ -1569,7 +1535,11 @@ class User < ApplicationRecord
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)
-    owned_and_maintainer_group_hierarchy = Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+    owned_and_maintainer_group_hierarchy = if Feature.enabled?(:linear_user_manageable_groups, self, default_enabled: :yaml)
+                                             owned_or_maintainers_groups.self_and_descendants
+                                           else
+                                             Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+                                           end
 
     if include_groups_with_developer_maintainer_access
       union_sql = ::Gitlab::SQL::Union.new(
@@ -1628,6 +1598,8 @@ class User < ApplicationRecord
     true
   end
 
+  # TODO Please check all callers and remove allow_cross_joins_across_databases,
+  # when https://gitlab.com/gitlab-org/gitlab/-/issues/336436 is done.
   def ci_owned_runners
     @ci_owned_runners ||= begin
       project_runners = Ci::RunnerProject
@@ -1644,9 +1616,15 @@ class User < ApplicationRecord
     end
   end
 
+  def owns_runner?(runner)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
+      ci_owned_runners.exists?(runner.id)
+    end
+  end
+
   def notification_email_for(notification_group)
     # Return group-specific email address if present, otherwise return global notification email address
-    notification_group&.notification_email_for(self) || notification_email
+    notification_group&.notification_email_for(self) || notification_email_or_default
   end
 
   def notification_settings_for(source, inherit: false)
@@ -1935,10 +1913,14 @@ class User < ApplicationRecord
   def dismissed_callout?(feature_name:, ignore_dismissal_earlier_than: nil)
     callout = callouts_by_feature_name[feature_name]
 
-    return false unless callout
-    return callout.dismissed_after?(ignore_dismissal_earlier_than) if ignore_dismissal_earlier_than
+    callout_dismissed?(callout, ignore_dismissal_earlier_than)
+  end
 
-    true
+  def dismissed_callout_for_group?(feature_name:, group:, ignore_dismissal_earlier_than: nil)
+    source_feature_name = "#{feature_name}_#{group.id}"
+    callout = group_callouts_by_feature_name[source_feature_name]
+
+    callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
   # Load the current highest access by looking directly at the user's memberships
@@ -1960,6 +1942,11 @@ class User < ApplicationRecord
 
   def find_or_initialize_callout(feature_name)
     callouts.find_or_initialize_by(feature_name: ::UserCallout.feature_names[feature_name])
+  end
+
+  def find_or_initialize_group_callout(feature_name, group_id)
+    group_callouts
+      .find_or_initialize_by(feature_name: ::Users::GroupCallout.feature_names[feature_name], group_id: group_id)
   end
 
   def can_trigger_notifications?
@@ -2015,8 +2002,37 @@ class User < ApplicationRecord
 
   private
 
+  def notification_email_verified
+    return if notification_email.blank? || temp_oauth_email?
+
+    errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email_or_default)
+  end
+
+  def public_email_verified
+    return if public_email.blank?
+
+    errors.add(:public_email, _("must be an email you have verified")) unless verified_emails.include?(public_email)
+  end
+
+  def commit_email_verified
+    return if commit_email.blank?
+
+    errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email_or_default)
+  end
+
+  def callout_dismissed?(callout, ignore_dismissal_earlier_than)
+    return false unless callout
+    return callout.dismissed_after?(ignore_dismissal_earlier_than) if ignore_dismissal_earlier_than
+
+    true
+  end
+
   def callouts_by_feature_name
     @callouts_by_feature_name ||= callouts.index_by(&:feature_name)
+  end
+
+  def group_callouts_by_feature_name
+    @group_callouts_by_feature_name ||= group_callouts.index_by(&:source_feature_name)
   end
 
   def authorized_groups_without_shared_membership
@@ -2080,7 +2096,7 @@ class User < ApplicationRecord
   def check_username_format
     return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(".#{type}") }
 
-    errors.add(:username, _('ending with MIME type format is not allowed.'))
+    errors.add(:username, _('ending with a file extension is not allowed.'))
   end
 
   def groups_with_developer_maintainer_project_access
@@ -2090,9 +2106,12 @@ class User < ApplicationRecord
       project_creation_levels << nil
     end
 
-    developer_groups_hierarchy = ::Gitlab::ObjectHierarchy.new(developer_groups).base_and_descendants
-    ::Group.where(id: developer_groups_hierarchy.select(:id),
-                  project_creation_level: project_creation_levels)
+    if Feature.enabled?(:linear_user_groups_with_developer_maintainer_project_access, self, default_enabled: :yaml)
+      developer_groups.self_and_descendants.where(project_creation_level: project_creation_levels)
+    else
+      developer_groups_hierarchy = ::Gitlab::ObjectHierarchy.new(developer_groups).base_and_descendants
+      ::Group.where(id: developer_groups_hierarchy.select(:id), project_creation_level: project_creation_levels)
+    end
   end
 
   def no_recent_activity?

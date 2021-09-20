@@ -54,7 +54,7 @@ module Gitlab
 
           Users::UpdateService.new(gl_user, user: gl_user).execute!
 
-          gl_user.block if block_after_save
+          gl_user.block_pending_approval if block_after_save
 
           log.info "(#{provider}) saving user #{auth_hash.email} from login with admin => #{gl_user.admin}, extern_uid => #{auth_hash.uid}"
           gl_user

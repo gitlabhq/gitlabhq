@@ -13,27 +13,14 @@ RSpec.describe ProfilesHelper do
       private_email = user.private_commit_email
 
       emails = [
-        ["Use a private email - #{private_email}", Gitlab::PrivateCommitEmail::TOKEN],
+        [s_('Use primary email (%{email})') % { email: user.email }, ''],
+        [s_("Profiles|Use a private email - %{email}").html_safe % { email: private_email }, Gitlab::PrivateCommitEmail::TOKEN],
         user.email,
         confirmed_email1.email,
         confirmed_email2.email
       ]
 
       expect(helper.commit_email_select_options(user)).to match_array(emails)
-    end
-  end
-
-  describe '#selected_commit_email' do
-    let(:user) { create(:user) }
-
-    it 'returns main email when commit email attribute is nil' do
-      expect(helper.selected_commit_email(user)).to eq(user.email)
-    end
-
-    it 'returns DB stored commit_email' do
-      user.update!(commit_email: Gitlab::PrivateCommitEmail::TOKEN)
-
-      expect(helper.selected_commit_email(user)).to eq(Gitlab::PrivateCommitEmail::TOKEN)
     end
   end
 
@@ -149,6 +136,22 @@ RSpec.describe ProfilesHelper do
 
     it 'returns the description' do
       expect(helper.ssh_key_expires_field_description).to eq('Key can still be used after expiration.')
+    end
+  end
+
+  describe '#middle_dot_divider_classes' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:stacking, :breakpoint, :expected) do
+      nil  | nil | %w(gl-mb-3 gl-display-inline-block middle-dot-divider)
+      true | nil | %w(gl-mb-3 middle-dot-divider-sm gl-display-block gl-sm-display-inline-block)
+      nil  | :sm | %w(gl-mb-3 gl-display-inline-block middle-dot-divider-sm)
+    end
+
+    with_them do
+      it 'returns CSS classes needed to render the middle dot divider' do
+        expect(helper.middle_dot_divider_classes(stacking, breakpoint)).to eq expected
+      end
     end
   end
 

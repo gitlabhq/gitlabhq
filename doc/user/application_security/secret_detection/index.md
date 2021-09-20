@@ -35,7 +35,7 @@ GitLab displays identified secrets visibly in a few places:
 
 Secret Detection detects a variety of common secrets by default. You can also customize the secret detection patterns using [custom rulesets](#custom-rulesets).
 
-The [default ruleset provided by Gitleaks](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml) includes the following key types:
+The [default ruleset provided by TruffleHog and Gitleaks](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml) includes the following key types:
 
 - Cloud services:
   - Amazon Web Services (AWS)
@@ -89,12 +89,13 @@ However not all features are available on every tier. See the breakdown below fo
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                      | In Free             | In Ultimate        |
+| Capability                                                      | In Free & Premium   | In Ultimate        |
 |:----------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure Secret Detection Scanners](#configuration)           | **{check-circle}**  | **{check-circle}** |
 | [Customize Secret Detection Settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](../sast/index.md#reports-json-format)        | **{check-circle}**  | **{check-circle}** |
 | Presentation of JSON Report in Merge Request                    | **{dotted-circle}** | **{check-circle}** |
+| View identified secrets in the pipelines' **Security** tab      | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** | **{check-circle}** |
 
@@ -330,7 +331,7 @@ Import the following default Secret Detection analyzer images from `registry.git
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3
+registry.gitlab.com/security-products/secret-detection:3
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

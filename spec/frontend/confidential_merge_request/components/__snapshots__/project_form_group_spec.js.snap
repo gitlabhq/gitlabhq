@@ -17,11 +17,15 @@ exports[`Confidential merge request project form group component renders empty s
       
         No forks are available to you.
       <br />
-       
-      <gl-sprintf-stub
-        message="To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
-      />
-       
+       To protect this issue's confidentiality, 
+      <a
+        class="help-link"
+        href="https://test.com"
+        target="_blank"
+      >
+        fork this project
+      </a>
+       and set the fork's visibility to private. 
       <gl-link-stub
         class="w-auto p-0 d-inline-block text-primary bg-transparent"
         href="/help"
@@ -52,18 +56,16 @@ exports[`Confidential merge request project form group component renders fork dr
   </label>
    
   <div>
-    <!---->
+    <dropdown-stub
+      projects="[object Object],[object Object]"
+      selectedproject="[object Object]"
+    />
      
     <p
       class="text-muted mt-1 mb-0"
     >
       
-        No forks are available to you.
-      <br />
-       
-      <gl-sprintf-stub
-        message="To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
-      />
+        To protect this issue's confidentiality, a private fork of this project was selected.
        
       <gl-link-stub
         class="w-auto p-0 d-inline-block text-primary bg-transparent"

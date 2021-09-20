@@ -11,6 +11,8 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
   # the right settings are being exercised
   let(:settings_to_set) do
     {
+      throttle_unauthenticated_api_requests_per_period: 100,
+      throttle_unauthenticated_api_period_in_seconds: 1,
       throttle_unauthenticated_requests_per_period: 100,
       throttle_unauthenticated_period_in_seconds: 1,
       throttle_authenticated_api_requests_per_period: 100,
@@ -22,7 +24,13 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       throttle_unauthenticated_packages_api_requests_per_period: 100,
       throttle_unauthenticated_packages_api_period_in_seconds: 1,
       throttle_authenticated_packages_api_requests_per_period: 100,
-      throttle_authenticated_packages_api_period_in_seconds: 1
+      throttle_authenticated_packages_api_period_in_seconds: 1,
+      throttle_authenticated_git_lfs_requests_per_period: 100,
+      throttle_authenticated_git_lfs_period_in_seconds: 1,
+      throttle_unauthenticated_files_api_requests_per_period: 100,
+      throttle_unauthenticated_files_api_period_in_seconds: 1,
+      throttle_authenticated_files_api_requests_per_period: 100,
+      throttle_authenticated_files_api_period_in_seconds: 1
     }
   end
 
@@ -33,186 +41,21 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
   include_context 'rack attack cache store'
 
-  describe 'unauthenticated requests' do
-    let(:url_that_does_not_require_authentication) { '/users/sign_in' }
-    let(:url_api_internal) { '/api/v4/internal/check' }
-
-    before do
-      # Disabling protected paths throttle, otherwise requests to
-      # '/users/sign_in' are caught by this throttle.
-      settings_to_set[:throttle_protected_paths_enabled] = false
-
-      # Set low limits
-      settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
-      settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+  describe 'unauthenticated API requests' do
+    it_behaves_like 'rate-limited unauthenticated requests' do
+      let(:throttle_name) { 'throttle_unauthenticated_api' }
+      let(:throttle_setting_prefix) { 'throttle_unauthenticated_api' }
+      let(:url_that_does_not_require_authentication) { '/api/v4/projects' }
+      let(:url_that_is_not_matched) { '/users/sign_in' }
     end
+  end
 
-    context 'when the throttle is enabled' do
-      before do
-        settings_to_set[:throttle_unauthenticated_enabled] = true
-        stub_application_setting(settings_to_set)
-      end
-
-      it 'rejects requests over the rate limit' do
-        # At first, allow requests under the rate limit.
-        requests_per_period.times do
-          get url_that_does_not_require_authentication
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        # the last straw
-        expect_rejection { get url_that_does_not_require_authentication }
-      end
-
-      context 'with custom response text' do
-        before do
-          stub_application_setting(rate_limiting_response_text: 'Custom response')
-        end
-
-        it 'rejects requests over the rate limit' do
-          # At first, allow requests under the rate limit.
-          requests_per_period.times do
-            get url_that_does_not_require_authentication
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          # the last straw
-          expect_rejection { get url_that_does_not_require_authentication }
-          expect(response.body).to eq("Custom response\n")
-        end
-      end
-
-      it 'allows requests after throttling and then waiting for the next period' do
-        requests_per_period.times do
-          get url_that_does_not_require_authentication
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        expect_rejection { get url_that_does_not_require_authentication }
-
-        travel_to(period.from_now) do
-          requests_per_period.times do
-            get url_that_does_not_require_authentication
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          expect_rejection { get url_that_does_not_require_authentication }
-        end
-      end
-
-      it 'counts requests from different IPs separately' do
-        requests_per_period.times do
-          get url_that_does_not_require_authentication
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        expect_next_instance_of(Rack::Attack::Request) do |instance|
-          expect(instance).to receive(:ip).at_least(:once).and_return('1.2.3.4')
-        end
-
-        # would be over limit for the same IP
-        get url_that_does_not_require_authentication
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      context 'when the request is to the api internal endpoints' do
-        it 'allows requests over the rate limit' do
-          (1 + requests_per_period).times do
-            get url_api_internal, params: { secret_token: Gitlab::Shell.secret_token }
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-      end
-
-      context 'when the request is authenticated by a runner token' do
-        let(:request_jobs_url) { '/api/v4/jobs/request' }
-        let(:runner) { create(:ci_runner) }
-
-        it 'does not count as unauthenticated' do
-          (1 + requests_per_period).times do
-            post request_jobs_url, params: { token: runner.token }
-            expect(response).to have_gitlab_http_status(:no_content)
-          end
-        end
-      end
-
-      context 'when the request is to a health endpoint' do
-        let(:health_endpoint) { '/-/metrics' }
-
-        it 'does not throttle the requests' do
-          (1 + requests_per_period).times do
-            get health_endpoint
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-      end
-
-      context 'when the request is to a container registry notification endpoint' do
-        let(:secret_token) { 'secret_token' }
-        let(:events) { [{ action: 'push' }] }
-        let(:registry_endpoint) { '/api/v4/container_registry_event/events' }
-        let(:registry_headers) { { 'Content-Type' => ::API::ContainerRegistryEvent::DOCKER_DISTRIBUTION_EVENTS_V1_JSON } }
-
-        before do
-          allow(Gitlab.config.registry).to receive(:notification_secret) { secret_token }
-
-          event = spy(:event)
-          allow(::ContainerRegistry::Event).to receive(:new).and_return(event)
-          allow(event).to receive(:supported?).and_return(true)
-        end
-
-        it 'does not throttle the requests' do
-          (1 + requests_per_period).times do
-            post registry_endpoint,
-                 params: { events: events }.to_json,
-                 headers: registry_headers.merge('Authorization' => secret_token)
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-      end
-
-      it 'logs RackAttack info into structured logs' do
-        requests_per_period.times do
-          get url_that_does_not_require_authentication
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        arguments = a_hash_including({
-          message: 'Rack_Attack',
-          env: :throttle,
-          remote_ip: '127.0.0.1',
-          request_method: 'GET',
-          path: '/users/sign_in',
-          matched: 'throttle_unauthenticated'
-        })
-
-        expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
-
-        get url_that_does_not_require_authentication
-      end
-
-      it_behaves_like 'tracking when dry-run mode is set' do
-        let(:throttle_name) { 'throttle_unauthenticated' }
-
-        def do_request
-          get url_that_does_not_require_authentication
-        end
-      end
-    end
-
-    context 'when the throttle is disabled' do
-      before do
-        settings_to_set[:throttle_unauthenticated_enabled] = false
-        stub_application_setting(settings_to_set)
-      end
-
-      it 'allows requests over the rate limit' do
-        (1 + requests_per_period).times do
-          get url_that_does_not_require_authentication
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
+  describe 'unauthenticated web requests' do
+    it_behaves_like 'rate-limited unauthenticated requests' do
+      let(:throttle_name) { 'throttle_unauthenticated_web' }
+      let(:throttle_setting_prefix) { 'throttle_unauthenticated' }
+      let(:url_that_does_not_require_authentication) { '/users/sign_in' }
+      let(:url_that_is_not_matched) { '/api/v4/projects' }
     end
   end
 
@@ -473,9 +316,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated api throttle is enabled' do
           before do
-            settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
-            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_enabled] = true
+            settings_to_set[:throttle_unauthenticated_api_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_api_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_api_enabled] = true
             stub_application_setting(settings_to_set)
           end
 
@@ -486,6 +329,22 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
             end
 
             expect_rejection { do_request }
+          end
+        end
+
+        context 'when unauthenticated web throttle is enabled' do
+          before do
+            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores unauthenticated web throttle' do
+            (1 + requests_per_period).times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
           end
         end
       end
@@ -509,9 +368,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated api throttle is lower' do
           before do
-            settings_to_set[:throttle_unauthenticated_requests_per_period] = 0
-            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_enabled] = true
+            settings_to_set[:throttle_unauthenticated_api_requests_per_period] = 0
+            settings_to_set[:throttle_unauthenticated_api_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_api_enabled] = true
             stub_application_setting(settings_to_set)
           end
 
@@ -596,6 +455,317 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         context 'when authenticated packages api throttle is disabled' do
           before do
             settings_to_set[:throttle_authenticated_packages_api_enabled] = false
+          end
+
+          context 'when authenticated api throttle is enabled' do
+            before do
+              settings_to_set[:throttle_authenticated_api_requests_per_period] = requests_per_period
+              settings_to_set[:throttle_authenticated_api_period_in_seconds] = period_in_seconds
+              settings_to_set[:throttle_authenticated_api_enabled] = true
+              stub_application_setting(settings_to_set)
+            end
+
+            it 'rejects requests over the authenticated api rate limit' do
+              requests_per_period.times do
+                do_request
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+
+              expect_rejection { do_request }
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe 'authenticated git lfs requests', :api do
+    let_it_be(:project) { create(:project, :internal) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:token) { create(:personal_access_token, user: user) }
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
+
+    let(:request_method) { 'GET' }
+    let(:throttle_setting_prefix) { 'throttle_authenticated_git_lfs' }
+    let(:git_lfs_url) { "/#{project.full_path}.git/info/lfs/locks" }
+
+    before do
+      allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+      stub_application_setting(settings_to_set)
+    end
+
+    context 'with regular login' do
+      let(:url_that_requires_authentication) { git_lfs_url }
+
+      it_behaves_like 'rate-limited web authenticated requests'
+    end
+
+    context 'with the token in the headers' do
+      let(:request_args) { [git_lfs_url, { headers: basic_auth_headers(user, token) }] }
+      let(:other_user_request_args) { [git_lfs_url, { headers: basic_auth_headers(other_user, other_user_token) }] }
+
+      it_behaves_like 'rate-limited token-authenticated requests'
+    end
+
+    context 'precedence over authenticated web throttle' do
+      before do
+        settings_to_set[:throttle_authenticated_git_lfs_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_authenticated_git_lfs_period_in_seconds] = period_in_seconds
+      end
+
+      def do_request
+        get git_lfs_url, headers: basic_auth_headers(user, token)
+      end
+
+      context 'when authenticated git lfs throttle is enabled' do
+        before do
+          settings_to_set[:throttle_authenticated_git_lfs_enabled] = true
+        end
+
+        context 'when authenticated web throttle is lower' do
+          before do
+            settings_to_set[:throttle_authenticated_web_requests_per_period] = 0
+            settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_authenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores authenticated web throttle' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
+          end
+        end
+      end
+
+      context 'when authenticated git lfs throttle is disabled' do
+        before do
+          settings_to_set[:throttle_authenticated_git_lfs_enabled] = false
+        end
+
+        context 'when authenticated web throttle is enabled' do
+          before do
+            settings_to_set[:throttle_authenticated_web_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_authenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'rejects requests over the authenticated web rate limit' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
+          end
+        end
+      end
+    end
+  end
+
+  describe 'Files API' do
+    let(:request_method) { 'GET' }
+
+    context 'unauthenticated' do
+      let_it_be(:project) { create(:project, :public, :custom_repo, files: { 'README' => 'foo' }) }
+
+      let(:throttle_setting_prefix) { 'throttle_unauthenticated_files_api' }
+      let(:files_path_that_does_not_require_authentication) { "/api/v4/projects/#{project.id}/repository/files/README?ref=master" }
+
+      def do_request
+        get files_path_that_does_not_require_authentication
+      end
+
+      before do
+        settings_to_set[:throttle_unauthenticated_files_api_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_unauthenticated_files_api_period_in_seconds] = period_in_seconds
+      end
+
+      context 'when unauthenticated files api throttle is disabled' do
+        before do
+          settings_to_set[:throttle_unauthenticated_files_api_enabled] = false
+          stub_application_setting(settings_to_set)
+        end
+
+        it 'allows requests over the rate limit' do
+          (1 + requests_per_period).times do
+            do_request
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when unauthenticated api throttle is enabled' do
+          before do
+            settings_to_set[:throttle_unauthenticated_api_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_api_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_api_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'rejects requests over the unauthenticated api rate limit' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
+          end
+        end
+
+        context 'when unauthenticated web throttle is enabled' do
+          before do
+            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores unauthenticated web throttle' do
+            (1 + requests_per_period).times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
+
+      context 'when unauthenticated files api throttle is enabled' do
+        before do
+          settings_to_set[:throttle_unauthenticated_files_api_requests_per_period] = requests_per_period # 1
+          settings_to_set[:throttle_unauthenticated_files_api_period_in_seconds] = period_in_seconds # 10_000
+          settings_to_set[:throttle_unauthenticated_files_api_enabled] = true
+          stub_application_setting(settings_to_set)
+        end
+
+        it 'rejects requests over the rate limit' do
+          requests_per_period.times do
+            do_request
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          expect_rejection { do_request }
+        end
+
+        context 'when feature flag is off' do
+          before do
+            stub_feature_flags(files_api_throttling: false)
+          end
+
+          it 'allows requests over the rate limit' do
+            (1 + requests_per_period).times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
+        context 'when unauthenticated api throttle is lower' do
+          before do
+            settings_to_set[:throttle_unauthenticated_api_requests_per_period] = 0
+            settings_to_set[:throttle_unauthenticated_api_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_api_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores unauthenticated api throttle' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
+          end
+        end
+
+        it_behaves_like 'tracking when dry-run mode is set' do
+          let(:throttle_name) { 'throttle_unauthenticated_files_api' }
+        end
+      end
+    end
+
+    context 'authenticated', :api do
+      let_it_be(:project) { create(:project, :internal, :custom_repo, files: { 'README' => 'foo' }) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:token) { create(:personal_access_token, user: user) }
+      let_it_be(:other_user) { create(:user) }
+      let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
+
+      let(:throttle_setting_prefix) { 'throttle_authenticated_files_api' }
+      let(:api_partial_url) { "/projects/#{project.id}/repository/files/README?ref=master" }
+
+      before do
+        stub_application_setting(settings_to_set)
+      end
+
+      context 'with the token in the query string' do
+        let(:request_args) { [api(api_partial_url, personal_access_token: token), {}] }
+        let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token), {}] }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
+
+      context 'with the token in the headers' do
+        let(:request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
+        let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
+
+      context 'precedence over authenticated api throttle' do
+        before do
+          settings_to_set[:throttle_authenticated_files_api_requests_per_period] = requests_per_period
+          settings_to_set[:throttle_authenticated_files_api_period_in_seconds] = period_in_seconds
+        end
+
+        def do_request
+          get api(api_partial_url, personal_access_token: token)
+        end
+
+        context 'when authenticated files api throttle is enabled' do
+          before do
+            settings_to_set[:throttle_authenticated_files_api_enabled] = true
+          end
+
+          context 'when authenticated api throttle is lower' do
+            before do
+              settings_to_set[:throttle_authenticated_api_requests_per_period] = 0
+              settings_to_set[:throttle_authenticated_api_period_in_seconds] = period_in_seconds
+              settings_to_set[:throttle_authenticated_api_enabled] = true
+              stub_application_setting(settings_to_set)
+            end
+
+            it 'ignores authenticated api throttle' do
+              requests_per_period.times do
+                do_request
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+
+              expect_rejection { do_request }
+            end
+          end
+
+          context 'when feature flag is off' do
+            before do
+              stub_feature_flags(files_api_throttling: false)
+            end
+
+            it 'allows requests over the rate limit' do
+              (1 + requests_per_period).times do
+                do_request
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
+        end
+
+        context 'when authenticated files api throttle is disabled' do
+          before do
+            settings_to_set[:throttle_authenticated_files_api_enabled] = false
           end
 
           context 'when authenticated api throttle is enabled' do

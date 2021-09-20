@@ -98,7 +98,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
           css_class: 'qa-projects-dropdown',
-          data: { track_label: "projects_dropdown", track_event: "click_dropdown" },
+          data: { track_label: "projects_dropdown", track_action: "click_dropdown" },
           view: PROJECTS_VIEW,
           shortcut_href: dashboard_projects_path,
           **projects_menu_item_attrs
@@ -112,7 +112,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           active: nav == 'group' || active_nav_link?(path: %w[dashboard/groups explore/groups]),
           css_class: 'qa-groups-dropdown',
-          data: { track_label: "groups_dropdown", track_event: "click_dropdown" },
+          data: { track_label: "groups_dropdown", track_action: "click_dropdown" },
           view: GROUPS_VIEW,
           shortcut_href: dashboard_groups_path,
           **groups_menu_item_attrs

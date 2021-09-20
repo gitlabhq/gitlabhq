@@ -12,8 +12,6 @@ module QA
         def configure!
           return unless Env.generate_allure_report?
 
-          require 'allure-rspec'
-
           configure_allure
           configure_attachments
           configure_rspec
@@ -31,6 +29,13 @@ module QA
           AllureRspec.configure do |config|
             config.results_directory = 'tmp/allure-results'
             config.clean_results_directory = true
+
+            # automatically attach links to testcases and issues
+            config.tms_tag = :testcase
+            config.link_tms_pattern = '{}'
+            config.issue_tag = :issue
+            config.link_issue_pattern = '{}'
+
             config.environment_properties = environment_info if Env.running_in_ci?
 
             # Set custom environment name to separate same specs executed on different environments
@@ -68,7 +73,7 @@ module QA
         def configure_rspec
           RSpec.configure do |config|
             config.add_formatter(AllureRspecFormatter)
-            config.add_formatter(QA::Support::AllureMetadataFormatter)
+            config.add_formatter(QA::Support::Formatters::AllureMetadataFormatter)
           end
         end
 

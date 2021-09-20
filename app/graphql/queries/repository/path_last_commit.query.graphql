@@ -1,5 +1,6 @@
 query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
   project(fullPath: $projectPath) {
+    id
     __typename
     repository {
       __typename

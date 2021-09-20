@@ -1,13 +1,11 @@
 /* eslint-disable func-names, no-underscore-dangle, no-new, consistent-return, no-shadow, no-param-reassign, no-lonely-if, no-empty */
 /* global Issuable */
-/* global ListLabel */
 
 import $ from 'jquery';
 import { difference, isEqual, escape, sortBy, template, union } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import IssuableBulkUpdateActions from '~/issuable_bulk_update_sidebar/issuable_bulk_update_actions';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import boardsStore from './boards/stores/boards_store';
 import CreateLabelDropdown from './create_label';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
@@ -43,7 +41,6 @@ export default class LabelsSelect {
       const $form = $dropdown.closest('form, .js-issuable-update');
       const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
       const $value = $block.find('.value');
-      const $dropdownMenu = $dropdown.parent().find('.dropdown-menu');
       const $loading = $block.find('.block-loading').addClass('gl-display-none');
       const fieldName = $dropdown.data('fieldName');
       let initialSelected = $selectbox
@@ -341,14 +338,10 @@ export default class LabelsSelect {
           }
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
-        vue: $dropdown.hasClass('js-issue-board-sidebar'),
+        vue: false,
         clicked(clickEvent) {
-          const { $el, e, isMarking } = clickEvent;
+          const { e, isMarking } = clickEvent;
           const label = clickEvent.selectedObj;
-
-          const hideLoader = () => {
-            $loading.addClass('gl-display-none');
-          };
 
           const page = $('body').attr('data-page');
           const isIssueIndex = page === 'projects:issues:index';
@@ -375,40 +368,6 @@ export default class LabelsSelect {
             }
           } else if ($dropdown.hasClass('js-filter-submit')) {
             return $dropdown.closest('form').submit();
-          } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-            if ($el.hasClass('is-active')) {
-              boardsStore.detail.issue.labels.push(
-                new ListLabel({
-                  id: label.id,
-                  title: label.title,
-                  color: label.color,
-                  textColor: '#fff',
-                }),
-              );
-            } else {
-              let { labels } = boardsStore.detail.issue;
-              labels = labels.filter((selectedLabel) => selectedLabel.id !== label.id);
-              boardsStore.detail.issue.labels = labels;
-            }
-
-            $loading.removeClass('gl-display-none');
-            const oldLabels = boardsStore.detail.issue.labels;
-
-            boardsStore.detail.issue
-              .update($dropdown.attr('data-issue-update'))
-              .then(() => {
-                if (isScopedLabel(label)) {
-                  const prevIds = oldLabels.map((label) => label.id);
-                  const newIds = boardsStore.detail.issue.labels.map((label) => label.id);
-                  const differentIds = prevIds.filter((x) => !newIds.includes(x));
-                  $dropdown.data('marked', newIds);
-                  $dropdownMenu
-                    .find(differentIds.map((id) => `[data-label-id="${id}"]`).join(','))
-                    .removeClass('is-active');
-                }
-              })
-              .then(hideLoader)
-              .catch(hideLoader);
           } else if (handleClick) {
             e.preventDefault();
             handleClick(label);
@@ -417,13 +376,6 @@ export default class LabelsSelect {
             } else {
               return saveLabelData();
             }
-          }
-        },
-        opened() {
-          if ($dropdown.hasClass('js-issue-board-sidebar')) {
-            const previousSelection = $dropdown.attr('data-selected');
-            this.selected = previousSelection ? previousSelection.split(',') : [];
-            $dropdown.data('deprecatedJQueryDropdown').updateLabel();
           }
         },
         preserveContext: true,

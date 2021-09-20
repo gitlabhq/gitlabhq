@@ -16,7 +16,7 @@ module LiveDebugger
     puts "The current user credentials are: #{@current_user.username} / #{@current_user.password}" if @current_user
     puts "Press any key to resume the execution of the example!!"
 
-    `open #{current_url}` if is_headless_disabled?
+    `open #{current_url}` unless is_headless_disabled?
 
     loop until $stdin.getch
 

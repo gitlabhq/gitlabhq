@@ -58,10 +58,7 @@ module ApplicationWorker
       Gitlab::SidekiqConfig::WorkerRouter.queue_name_from_worker_name(self)
     end
 
-    override :validate_worker_attributes!
     def validate_worker_attributes!
-      super
-
       # Since the delayed data_consistency will use sidekiq built in retry mechanism, it is required that this mechanism
       # is not disabled.
       if retry_disabled? && get_data_consistency == :delayed
@@ -79,6 +76,13 @@ module ApplicationWorker
       super.tap do
         validate_worker_attributes!
       end
+    end
+
+    override :data_consistency
+    def data_consistency(data_consistency, feature_flag: nil)
+      super
+
+      validate_worker_attributes!
     end
 
     def perform_async(*args)

@@ -41,6 +41,10 @@ module Gitlab
       def endpoint_id
         Labkit::Context.current&.get_attribute(:caller_id)
       end
+
+      def db_config_name
+        ::Gitlab::Database.db_config_name(marginalia_adapter)
+      end
     end
   end
 end

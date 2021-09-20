@@ -56,29 +56,14 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       let(:templates) do
         {
           "" => [
-            { name: "another_issue_template", id: "another_issue_template" },
-            { name: "custom_issue_template", id: "custom_issue_template" }
+            { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
+            { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
           ]
         }
       end
 
-      it 'returns project templates only' do
+      it 'returns project templates' do
         expect(helper.issuable_templates_names(Issue.new)).to eq(%w[another_issue_template custom_issue_template])
-      end
-    end
-
-    context 'without matching project templates' do
-      let(:templates) do
-        {
-          "Project Templates" => [
-            { name: "another_issue_template", id: "another_issue_template", project_id: non_existing_record_id },
-            { name: "custom_issue_template", id: "custom_issue_template", project_id: non_existing_record_id }
-          ]
-        }
-      end
-
-      it 'returns empty array' do
-        expect(helper.issuable_templates_names(Issue.new)).to eq([])
       end
     end
 

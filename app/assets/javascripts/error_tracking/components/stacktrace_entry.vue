@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlTooltip, GlSprintf, GlIcon } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -132,7 +131,7 @@ export default {
             <td
               class="line_content"
               :class="{ old: isHighlighted(lineNum(line)) }"
-              v-html="lineCode(line)"
+              v-html="lineCode(line) /* eslint-disable-line vue/no-v-html */"
             ></td>
           </tr>
         </template>

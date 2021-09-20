@@ -109,6 +109,32 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
+  describe '#tags' do
+    subject { repository.tags }
+
+    it 'gets tags from GitalyClient' do
+      expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+        expect(service).to receive(:tags)
+      end
+
+      subject
+    end
+
+    context 'with sorting option' do
+      subject { repository.tags(sort_by: 'name_asc') }
+
+      it 'gets tags from GitalyClient' do
+        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+          expect(service).to receive(:tags).with(sort_by: 'name_asc')
+        end
+
+        subject
+      end
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tags
+  end
+
   describe '#archive_metadata' do
     let(:storage_path) { '/tmp' }
     let(:cache_key) { File.join(repository.gl_repository, SeedRepo::LastCommit::ID) }
@@ -936,6 +962,159 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#new_blobs' do
+    let(:repository) { mutable_repository }
+    let(:repository_rugged) { mutable_repository_rugged }
+    let(:blob) { create_blob('This is a new blob') }
+    let(:commit) { create_commit('nested/new-blob.txt' => blob) }
+
+    def create_blob(content)
+      repository_rugged.write(content, :blob)
+    end
+
+    def create_commit(blobs)
+      author = { name: 'Test User', email: 'mail@example.com', time: Time.now }
+
+      index = repository_rugged.index
+      blobs.each do |path, oid|
+        index.add(path: path, oid: oid, mode: 0100644)
+      end
+
+      Rugged::Commit.create(repository_rugged,
+                            author: author,
+                            committer: author,
+                            message: "Message",
+                            parents: [],
+                            tree: index.write_tree(repository_rugged))
+    end
+
+    subject { repository.new_blobs(newrevs).to_a }
+
+    shared_examples '#new_blobs with revisions' do
+      before do
+        expect_next_instance_of(Gitlab::GitalyClient::BlobService) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with(expected_newrevs,
+                  limit: Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT,
+                  with_paths: true,
+                  dynamic_timeout: nil)
+            .once
+            .and_call_original
+        end
+      end
+
+      it 'enumerates new blobs' do
+        expect(subject).to match_array(expected_blobs)
+      end
+
+      it 'memoizes results' do
+        expect(subject).to match_array(expected_blobs)
+        expect(subject).to match_array(expected_blobs)
+      end
+    end
+
+    context 'with a single revision' do
+      let(:newrevs) { commit }
+      let(:expected_newrevs) { ['--not', '--all', '--not', newrevs] }
+      let(:expected_blobs) do
+        [have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with a single-entry array' do
+      let(:newrevs) { [commit] }
+      let(:expected_newrevs) { ['--not', '--all', '--not'] + newrevs }
+      let(:expected_blobs) do
+        [have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with multiple revisions' do
+      let(:another_blob) { create_blob('Another blob') }
+      let(:newrevs) { [commit, create_commit('another_path.txt' => another_blob)] }
+      let(:expected_newrevs) { ['--not', '--all', '--not'] + newrevs.sort }
+      let(:expected_blobs) do
+        [
+          have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18),
+          have_attributes(class: Gitlab::Git::Blob, id: another_blob, path: 'another_path.txt', size: 12)
+        ]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with partially blank revisions' do
+      let(:newrevs) { [nil, commit, Gitlab::Git::BLANK_SHA] }
+      let(:expected_newrevs) { ['--not', '--all', '--not', commit] }
+      let(:expected_blobs) do
+        [
+          have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)
+        ]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with repeated revisions' do
+      let(:newrevs) { [commit, commit, commit] }
+      let(:expected_newrevs) { ['--not', '--all', '--not', commit] }
+      let(:expected_blobs) do
+        [
+          have_attributes(class: Gitlab::Git::Blob, id: blob, path: 'nested/new-blob.txt', size: 18)
+        ]
+      end
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    context 'with preexisting commits' do
+      let(:newrevs) { ['refs/heads/master'] }
+      let(:expected_newrevs) { ['--not', '--all', '--not'] + newrevs }
+      let(:expected_blobs) { [] }
+
+      it_behaves_like '#new_blobs with revisions'
+    end
+
+    shared_examples '#new_blobs without revisions' do
+      before do
+        expect(Gitlab::GitalyClient::BlobService).not_to receive(:new)
+      end
+
+      it 'returns an empty array' do
+        expect(subject).to eq([])
+      end
+    end
+
+    context 'with a single nil newrev' do
+      let(:newrevs) { nil }
+
+      it_behaves_like '#new_blobs without revisions'
+    end
+
+    context 'with a single zero newrev' do
+      let(:newrevs) { Gitlab::Git::BLANK_SHA }
+
+      it_behaves_like '#new_blobs without revisions'
+    end
+
+    context 'with an empty array' do
+      let(:newrevs) { [] }
+
+      it_behaves_like '#new_blobs without revisions'
+    end
+
+    context 'with array containing only empty refs' do
+      let(:newrevs) { [nil, Gitlab::Git::BLANK_SHA] }
+
+      it_behaves_like '#new_blobs without revisions'
+    end
+  end
+
   describe '#new_commits' do
     let(:repository) { mutable_repository }
     let(:new_commit) do
@@ -1129,28 +1308,6 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       branch = repository.find_branch('this-is-garbage')
 
       expect(branch).to eq(nil)
-    end
-  end
-
-  describe '#ref_name_for_sha' do
-    let(:ref_path) { 'refs/heads' }
-    let(:sha) { repository.find_branch('master').dereferenced_target.id }
-    let(:ref_name) { 'refs/heads/master' }
-
-    it 'returns the ref name for the given sha' do
-      expect(repository.ref_name_for_sha(ref_path, sha)).to eq(ref_name)
-    end
-
-    it "returns an empty name if the ref doesn't exist" do
-      expect(repository.ref_name_for_sha(ref_path, "000000")).to eq("")
-    end
-
-    it "raise an exception if the ref is empty" do
-      expect { repository.ref_name_for_sha(ref_path, "") }.to raise_error(ArgumentError)
-    end
-
-    it "raise an exception if the ref is nil" do
-      expect { repository.ref_name_for_sha(ref_path, nil) }.to raise_error(ArgumentError)
     end
   end
 
@@ -1732,83 +1889,42 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#set_full_path' do
-    shared_examples '#set_full_path' do
-      before do
-        repository_rugged.config["gitlab.fullpath"] = repository_path
-      end
+    before do
+      repository_rugged.config["gitlab.fullpath"] = repository_path
+    end
 
-      context 'is given a path' do
-        it 'writes it to disk' do
-          repository.set_full_path(full_path: "not-the/real-path.git")
+    context 'is given a path' do
+      it 'writes it to disk' do
+        repository.set_full_path(full_path: "not-the/real-path.git")
 
-          config = File.read(File.join(repository_path, "config"))
+        config = File.read(File.join(repository_path, "config"))
 
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = not-the/real-path.git")
-        end
-      end
-
-      context 'it is given an empty path' do
-        it 'does not write it to disk' do
-          repository.set_full_path(full_path: "")
-
-          config = File.read(File.join(repository_path, "config"))
-
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = #{repository_path}")
-        end
-      end
-
-      context 'repository does not exist' do
-        it 'raises NoRepository and does not call Gitaly WriteConfig' do
-          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
-
-          expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
-
-          expect do
-            repository.set_full_path(full_path: 'foo/bar.git')
-          end.to raise_error(Gitlab::Git::Repository::NoRepository)
-        end
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = not-the/real-path.git")
       end
     end
 
-    context 'with :set_full_path enabled' do
-      before do
-        stub_feature_flags(set_full_path: true)
+    context 'it is given an empty path' do
+      it 'does not write it to disk' do
+        repository.set_full_path(full_path: "")
+
+        config = File.read(File.join(repository_path, "config"))
+
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = #{repository_path}")
       end
-
-      it_behaves_like '#set_full_path'
     end
 
-    context 'with :set_full_path disabled' do
-      before do
-        stub_feature_flags(set_full_path: false)
+    context 'repository does not exist' do
+      it 'raises NoRepository and does not call Gitaly WriteConfig' do
+        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
+
+        expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
+
+        expect do
+          repository.set_full_path(full_path: 'foo/bar.git')
+        end.to raise_error(Gitlab::Git::Repository::NoRepository)
       end
-
-      it_behaves_like '#set_full_path'
-    end
-  end
-
-  describe '#set_config' do
-    let(:repository) { mutable_repository }
-    let(:entries) do
-      {
-        'test.foo1' => 'bla bla',
-        'test.foo2' => 1234,
-        'test.foo3' => true
-      }
-    end
-
-    it 'can set config settings' do
-      expect(repository.set_config(entries)).to be_nil
-
-      expect(repository_rugged.config['test.foo1']).to eq('bla bla')
-      expect(repository_rugged.config['test.foo2']).to eq('1234')
-      expect(repository_rugged.config['test.foo3']).to eq('true')
-    end
-
-    after do
-      entries.keys.each { |k| repository_rugged.config.delete(k) }
     end
   end
 

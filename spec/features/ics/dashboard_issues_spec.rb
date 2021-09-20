@@ -4,8 +4,20 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Issues Calendar Feed' do
   describe 'GET /issues' do
-    let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
-    let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
+    let!(:user) do
+      user = create(:user, email: 'private1@example.com')
+      public_email = create(:email, :confirmed, user: user, email: 'public1@example.com')
+      user.update!(public_email: public_email.email)
+      user
+    end
+
+    let!(:assignee) do
+      user = create(:user, email: 'private2@example.com')
+      public_email = create(:email, :confirmed, user: user, email: 'public2@example.com')
+      user.update!(public_email: public_email.email)
+      user
+    end
+
     let!(:project) { create(:project) }
     let(:milestone) { create(:milestone, project_id: project.id, title: 'v1.0') }
 

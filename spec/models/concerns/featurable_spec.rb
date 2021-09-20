@@ -30,8 +30,11 @@ RSpec.describe Featurable do
 
   describe '.set_available_features' do
     let!(:klass) do
-      Class.new do
+      Class.new(ApplicationRecord) do
         include Featurable
+
+        self.table_name = 'project_features'
+
         set_available_features %i(feature1 feature2)
 
         def feature1_access_level

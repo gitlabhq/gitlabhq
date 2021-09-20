@@ -3,6 +3,6 @@
 - page_title _("Edit"), @label.name, _("Labels")
 
 %h3.page-title
-  Edit Label
+  = _('Edit Label')
 %hr
 = render 'shared/labels/form', url: project_label_path(@project, @label), back_path: project_labels_path(@project)

@@ -31,6 +31,10 @@ module Ci
         end
       end
 
+      def builds_for_group_runner
+        raise NotImplementedError
+      end
+
       def builds_matching_tag_ids(relation, ids)
         # pick builds that does not have other tags than runner's one
         relation.matches_tag_ids(ids)
@@ -58,6 +62,10 @@ module Ci
       end
 
       def use_denormalized_minutes_data?
+        false
+      end
+
+      def use_denormalized_namespace_traversal_ids?
         false
       end
 

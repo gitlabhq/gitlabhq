@@ -13,18 +13,18 @@
             = @group.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
               = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
-        .home-panel-metadata.d-flex.align-items-center.text-secondary
+        .home-panel-metadata.text-secondary
           %span
             = _("Group ID: %{group_id}") % { group_id: @group.id }
           - if current_user
-            %span.access-request-links.gl-ml-3
+            %span.gl-ml-3
               = render 'shared/members/access_request_links', source: @group
 
     .home-panel-buttons.col-md-12.col-lg-6
       - if current_user
         .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2{ data: { testid: 'group-buttons' } }
           - if current_user.admin?
-            = link_to [:admin, @group], class: 'btn btn-default gl-button btn-icon gl-mt-3 gl-mr-2', title: s_('View group in admin area'),
+            = link_to [:admin, @group], class: 'btn btn-default gl-button btn-icon gl-mt-3 gl-mr-2', title: _('View group in admin area'),
               data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = sprite_icon('admin')
           - if @notification_setting

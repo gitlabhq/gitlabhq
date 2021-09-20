@@ -13,7 +13,7 @@ export default {
   },
   data() {
     return {
-      localStorageUsable: AccessorUtilities.isLocalStorageAccessSafe(),
+      localStorageUsable: AccessorUtilities.canUseLocalStorage(),
       shortcutsEnabled: !shouldDisableShortcuts(),
     };
   },

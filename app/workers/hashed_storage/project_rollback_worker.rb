@@ -11,9 +11,8 @@ module HashedStorage
     queue_namespace :hashed_storage
     loggable_arguments 1
 
-    # Gitlab::HashedStorage::Migrator#rollback_pending? depends on the
-    # queue size of this worker.
-    tags :exclude_from_gitlab_com, :needs_own_queue
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/340629
+    tags :needs_own_queue
 
     attr_reader :project_id
 

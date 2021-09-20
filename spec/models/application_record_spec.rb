@@ -39,7 +39,7 @@ RSpec.describe ApplicationRecord do
 
     let(:suggestion_attributes) { attributes_for(:suggestion).merge!(note_id: note.id) }
 
-    shared_examples '.safe_find_or_create_by' do
+    describe '.safe_find_or_create_by' do
       it 'creates the suggestion avoiding race conditions' do
         existing_suggestion = double(:Suggestion)
 
@@ -63,7 +63,7 @@ RSpec.describe ApplicationRecord do
       end
     end
 
-    shared_examples '.safe_find_or_create_by!' do
+    describe '.safe_find_or_create_by!' do
       it 'creates a record using safe_find_or_create_by' do
         expect(Suggestion.safe_find_or_create_by!(suggestion_attributes))
           .to be_a(Suggestion)
@@ -87,24 +87,6 @@ RSpec.describe ApplicationRecord do
         expect { Suggestion.safe_find_or_create_by!(attributes) }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
-    end
-
-    context 'when optimized_safe_find_or_create_by is enabled' do
-      before do
-        stub_feature_flags(optimized_safe_find_or_create_by: true)
-      end
-
-      it_behaves_like '.safe_find_or_create_by'
-      it_behaves_like '.safe_find_or_create_by!'
-    end
-
-    context 'when optimized_safe_find_or_create_by is disabled' do
-      before do
-        stub_feature_flags(optimized_safe_find_or_create_by: false)
-      end
-
-      it_behaves_like '.safe_find_or_create_by'
-      it_behaves_like '.safe_find_or_create_by!'
     end
   end
 
@@ -164,6 +146,23 @@ RSpec.describe ApplicationRecord do
         end
       end
     end
+
+    # rubocop:disable Database/MultipleDatabases
+    it 'increments a counter when a transaction is created in ActiveRecord' do
+      expect(described_class.connection.transaction_open?).to be false
+
+      expect(::Gitlab::Database::Metrics)
+        .to receive(:subtransactions_increment)
+        .with('ActiveRecord::Base')
+        .once
+
+      ActiveRecord::Base.transaction do
+        ActiveRecord::Base.transaction(requires_new: true) do
+          expect(ActiveRecord::Base.connection.transaction_open?).to be true
+        end
+      end
+    end
+    # rubocop:enable Database/MultipleDatabases
   end
 
   describe '.with_fast_read_statement_timeout' do
@@ -234,6 +233,48 @@ RSpec.describe ApplicationRecord do
           end.to raise_error(ActiveRecord::QueryCanceled)
         end
       end
+    end
+  end
+
+  describe '.default_select_columns' do
+    shared_examples_for 'selects identically to the default' do
+      it 'generates the same sql as the default' do
+        expected_sql = test_model.all.to_sql
+        generated_sql = test_model.all.select(test_model.default_select_columns).to_sql
+
+        expect(expected_sql).to eq(generated_sql)
+      end
+    end
+
+    before do
+      ApplicationRecord.connection.execute(<<~SQL)
+        create table tests (
+          id bigserial primary key not null,
+          ignore_me text
+        )
+      SQL
+    end
+    context 'without an ignored column' do
+      let(:test_model) do
+        Class.new(ApplicationRecord) do
+          self.table_name = 'tests'
+        end
+      end
+
+      it_behaves_like 'selects identically to the default'
+    end
+
+    context 'with an ignored column' do
+      let(:test_model) do
+        Class.new(ApplicationRecord) do
+          include IgnorableColumns
+          self.table_name = 'tests'
+
+          ignore_columns :ignore_me, remove_after: '2100-01-01', remove_with: '99.12'
+        end
+      end
+
+      it_behaves_like 'selects identically to the default'
     end
   end
 end

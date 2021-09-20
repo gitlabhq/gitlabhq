@@ -4,9 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Boards **(FREE)**
+# Issue boards **(FREE)**
 
-The GitLab Issue Board is a software project management tool used to plan,
+The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
 It can be used as a [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) or a
 [Scrum](https://en.wikipedia.org/wiki/Scrum_(software_development)) board.
@@ -46,7 +46,7 @@ To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enter
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/vjccjHI7aGI) of
-the Issue Board feature.
+the issue board feature.
 
 ## Multiple issue boards
 
@@ -70,7 +70,7 @@ GitLab automatically loads the last board you visited.
 
 To create a new issue board:
 
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click the dropdown with the current board name in the upper left corner of the issue boards page.
 1. Click **Create new board**.
 1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
 
@@ -78,7 +78,7 @@ To create a new issue board:
 
 To delete the currently active issue board:
 
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click the dropdown with the current board name in the upper left corner of the issue boards page.
 1. Click **Delete board**.
 1. Click **Delete** to confirm.
 
@@ -195,7 +195,7 @@ card includes:
 ## Permissions
 
 Users with the [Reporter and higher roles](../permissions.md) can use all the functionality of the
-Issue Board feature to create or delete lists. They can also drag issues from one list to another.
+issue board feature to create or delete lists. They can also drag issues from one list to another.
 
 ## How GitLab orders issues in a list
 
@@ -229,8 +229,7 @@ and vice versa.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
 > - [Deployed behind a feature flag](../feature_flags.md), enabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-graphql-based-issue-boards). **(FREE SELF)**
+> - [Feature flag `graphql_board_lists`](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) removed in GitLab 14.3
 
 There can be
 [risks when disabling released features](../../administration/feature_flags.md#risks-when-disabling-released-features).
@@ -271,7 +270,7 @@ clicking **View scope**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/m5UTNCSqaDk) of
-the Configurable Issue Board feature.
+the configurable issue board feature.
 
 ### Focus mode
 
@@ -339,14 +338,14 @@ As in other list types, click the trash icon to remove a list.
 ### Iteration lists **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11.
-> - [Deployed behind the `board_new_list` and `iteration_board_lists` feature flags](../feature_flags.md), enabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to disable the feature flags: [`board_new_list`](#enable-or-disable-new-add-list-form) and [`iteration_board_lists`](#enable-or-disable-iteration-lists-in-boards). **(PREMIUM SELF)**
+> - Enabled on GitLab.com and is ready for production use.
+> - Enabled with `iteration_board_lists` flag for self-managed GitLab and is ready for production use.
+>   GitLab administrators can opt to [disable the feature flag](#enable-or-disable-iteration-lists-in-boards).
 
-There can be
-[risks when disabling released features](../../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an
+administrator to [disable the `iteration_board_lists` flag](../../administration/feature_flags.md).
+On GitLab.com, this feature is available.
 
 You're also able to create lists of an iteration.
 These are lists that filter issues by the assigned
@@ -387,7 +386,7 @@ appears on the right. There you can see and edit the issue's:
 
 - Title
 - Assignees
-- Epic **PREMIUM**
+- Epic **(PREMIUM)**
 - Milestone
 - Time tracking value (view only)
 - Due date
@@ -673,51 +672,7 @@ A few things to remember:
   by default. If you have more than 20 issues, start scrolling down and the next
   20 appear.
 
-### Enable or disable GraphQL-based issue boards **(FREE SELF)**
-
-NOTE:
-When enabling GraphQL-based issue boards, you must also enable the
-[new add list form](#enable-or-disable-new-add-list-form).
-
-It is deployed behind a feature flag that is **enabled by default** as of GitLab 14.1.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:graphql_board_lists)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:graphql_board_lists)
-```
-
-### Enable or disable new add list form **(FREE SELF)**
-
-The new form for adding lists is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:board_new_list)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:board_new_list)
-```
-
 ### Enable or disable iteration lists in boards **(PREMIUM SELF)**
-
-NOTE:
-When disabling iteration lists in boards, you also need to disable the [new add list form](#enable-or-disable-new-add-list-form).
 
 The iteration list is under development but ready for production use. It is
 deployed behind a feature flag that is **enabled by default**.

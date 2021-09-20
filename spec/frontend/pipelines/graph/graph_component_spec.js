@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GRAPHQL, LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
+import { LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
@@ -53,9 +53,6 @@ describe('graph component', () => {
           ...defaultData,
           ...data,
         };
-      },
-      provide: {
-        dataMethod: GRAPHQL,
       },
       stubs: {
         'links-inner': true,

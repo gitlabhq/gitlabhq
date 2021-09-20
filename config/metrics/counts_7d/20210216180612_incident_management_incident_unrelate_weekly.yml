@@ -1,13 +1,14 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_unrelate_weekly
-description: Count of unique users removing issue that are related to an incident per week
+description: Count of unique users removing issue that are related to an incident
+  per week
 product_section: ops
 product_stage: monitor
 product_group: group::monitor
-product_category: 
+product_category:
 value_type: number
-status: data_available
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
@@ -22,3 +23,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

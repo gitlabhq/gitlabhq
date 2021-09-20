@@ -10,8 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Administrators have access to instance-wide analytics:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Analytics**.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Analytics**.
 
 There are several kinds of statistics:
 

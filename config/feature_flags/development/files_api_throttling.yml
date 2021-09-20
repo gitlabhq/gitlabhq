@@ -1,0 +1,8 @@
+---
+name: files_api_throttling
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68560
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338903
+milestone: '14.3'
+type: development
+group: group::source code
+default_enabled: false

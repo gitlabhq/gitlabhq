@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -169,7 +168,7 @@ export default {
         v-on="
           authorStatusHasTooltip ? { mouseenter: removeEmojiTitle, mouseleave: addEmojiTitle } : {}
         "
-        v-html="authorStatus"
+        v-html="authorStatus /* eslint-disable-line vue/no-v-html */"
       ></span>
       <span class="text-nowrap author-username">
         <a

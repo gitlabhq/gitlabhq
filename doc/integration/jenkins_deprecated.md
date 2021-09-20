@@ -40,7 +40,7 @@ In GitLab, perform the following steps.
 ### Read access to repository
 
 Jenkins needs read access to the GitLab repository. We already specified a
-private key to use in Jenkins, now we need to add a public one to the GitLab
+private key to use in Jenkins, now we must add a public one to the GitLab
 project. For that case we need a Deploy key. Read the documentation on
 [how to set up a Deploy key](../user/project/deploy_keys/index.md).
 
@@ -50,7 +50,8 @@ Now navigate to GitLab services page and activate Jenkins
 
 ![screen](img/jenkins_gitlab_service.png)
 
-Done! When you push to GitLab, it creates a build for Jenkins. You can view the merge request build status with a link to the Jenkins build.
+Done! When you push to GitLab, it creates a build for Jenkins. You can view the
+merge request build status with a link to the Jenkins build.
 
 ### Multi-project Configuration
 

@@ -227,56 +227,38 @@ RSpec.describe MergeRequestsFinder do
         end
       end
 
-      shared_examples ':label_name parameter' do
-        describe ':label_name parameter' do
-          let(:common_labels) { create_list(:label, 3) }
-          let(:distinct_labels) { create_list(:label, 3) }
-          let(:merge_requests) do
-            common_attrs = {
-              source_project: project1, target_project: project1, author: user
-            }
-            distinct_labels.map do |label|
-              labels = [label, *common_labels]
-              create(:labeled_merge_request, :closed, labels: labels, **common_attrs)
-            end
-          end
-
-          def find(label_name)
-            described_class.new(user, label_name: label_name).execute
-          end
-
-          it 'accepts a single label' do
-            found = find(distinct_labels.first.title)
-            common = find(common_labels.first.title)
-
-            expect(found).to contain_exactly(merge_requests.first)
-            expect(common).to match_array(merge_requests)
-          end
-
-          it 'accepts an array of labels, all of which must match' do
-            all_distinct = find(distinct_labels.pluck(:title))
-            all_common = find(common_labels.pluck(:title))
-
-            expect(all_distinct).to be_empty
-            expect(all_common).to match_array(merge_requests)
+      describe ':label_name parameter' do
+        let(:common_labels) { create_list(:label, 3) }
+        let(:distinct_labels) { create_list(:label, 3) }
+        let(:merge_requests) do
+          common_attrs = {
+            source_project: project1, target_project: project1, author: user
+          }
+          distinct_labels.map do |label|
+            labels = [label, *common_labels]
+            create(:labeled_merge_request, :closed, labels: labels, **common_attrs)
           end
         end
-      end
 
-      context 'when `optimized_issuable_label_filter` feature flag is off' do
-        before do
-          stub_feature_flags(optimized_issuable_label_filter: false)
+        def find(label_name)
+          described_class.new(user, label_name: label_name).execute
         end
 
-        it_behaves_like ':label_name parameter'
-      end
+        it 'accepts a single label' do
+          found = find(distinct_labels.first.title)
+          common = find(common_labels.first.title)
 
-      context 'when `optimized_issuable_label_filter` feature flag is on' do
-        before do
-          stub_feature_flags(optimized_issuable_label_filter: true)
+          expect(found).to contain_exactly(merge_requests.first)
+          expect(common).to match_array(merge_requests)
         end
 
-        it_behaves_like ':label_name parameter'
+        it 'accepts an array of labels, all of which must match' do
+          all_distinct = find(distinct_labels.pluck(:title))
+          all_common = find(common_labels.pluck(:title))
+
+          expect(all_distinct).to be_empty
+          expect(all_common).to match_array(merge_requests)
+        end
       end
 
       it 'filters by source project id' do
@@ -728,6 +710,36 @@ RSpec.describe MergeRequestsFinder do
 
         merge_requests = described_class.new(user, params).execute
         expect { merge_requests.load }.not_to raise_error
+      end
+
+      context 'filtering by search text' do
+        let!(:merge_request6) { create(:merge_request, source_project: project1, target_project: project1, source_branch: 'tanuki-branch', title: 'tanuki') }
+
+        let(:params) { { project_id: project1.id, search: 'tanuki' } }
+
+        context 'with anonymous user' do
+          let(:merge_requests) { described_class.new(nil, params).execute }
+
+          context 'with disable_anonymous_search feature flag enabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: true)
+            end
+
+            it 'does not perform search' do
+              expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request6)
+            end
+          end
+
+          context 'with disable_anonymous_search feature flag disabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: false)
+            end
+
+            it 'returns matching merge requests' do
+              expect(merge_requests).to contain_exactly(merge_request6)
+            end
+          end
+        end
       end
     end
 

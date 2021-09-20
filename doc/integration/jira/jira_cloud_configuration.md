@@ -11,10 +11,10 @@ on Atlassian cloud. To create the API token:
 
 1. Sign in to [`id.atlassian.com`](https://id.atlassian.com/manage-profile/security/api-tokens)
    with your email address. Use an account with *write* access to Jira projects.
-1. Go to **Settings > API tokens**.
+1. Go to **Settings > Atlassian account settings > Security > Create and manage API tokens**.
 1. Select **Create API token** to display a modal window with an API token.
-1. To copy the API token, select **Copy to clipboard**, or select **View** and write
-   down the new API token. You need this value when you
+1. In the dialog, enter a label for your token and select **Create**.
+1. To copy the API token, select **Copy**, then paste the token somewhere safe. You need this value when you
    [configure GitLab](configure.md).
 
 You need the newly created token, and the email

@@ -1,7 +1,6 @@
 /* eslint-disable func-names, consistent-return, one-var, no-return-assign */
 
 import $ from 'jquery';
-import 'jquery.waitforimages';
 
 // Width where images must fits in, for 2-up this gets divided by 2
 const availWidth = 900;
@@ -16,11 +15,7 @@ export default class ImageFile {
 
         // Load two-up view after images are loaded
         // so that we can display the correct width and height information
-        const $images = $('.two-up.view img', this.file);
-
-        $images.waitForImages(() => {
-          this.initView('two-up');
-        });
+        this.initView('two-up');
       }),
     );
   }

@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Conan API
+# Conan API **(FREE)**
 
 This is the API documentation for [Conan Packages](../../user/packages/conan_repository/index.md).
 

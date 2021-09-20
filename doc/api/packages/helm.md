@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Helm API
+# Helm API **(FREE)**
 
 This is the API documentation for [Helm](../../user/packages/helm_repository/index.md).
 
@@ -38,14 +38,14 @@ GET projects/:id/packages/helm/:channel/index.yaml
 
 ```shell
 curl --user <username>:<personal_access_token> \
-     https://gitlab.example.com/api/v4/projects/1/packages/helm/stable/index.yaml
+     "https://gitlab.example.com/api/v4/projects/1/packages/helm/stable/index.yaml"
 ```
 
 Write the output to a file:
 
 ```shell
 curl --user <username>:<personal_access_token> \
-     https://gitlab.example.com/api/v4/projects/1/packages/helm/stable/index.yaml \
+     "https://gitlab.example.com/api/v4/projects/1/packages/helm/stable/index.yaml" \
      --remote-name
 ```
 
@@ -67,7 +67,7 @@ GET projects/:id/packages/helm/:channel/charts/:file_name.tgz
 
 ```shell
 curl --user <username>:<personal_access_token> \
-     https://gitlab.example.com/api/v4/projects/1/packages/helm/stable/charts/mychart.tgz \
+     "https://gitlab.example.com/api/v4/projects/1/packages/helm/stable/charts/mychart.tgz" \
      --remote-name
 ```
 
@@ -91,5 +91,5 @@ POST projects/:id/packages/helm/api/:channel/charts
 curl --request POST \
      --form 'chart=@mychart.tgz' \
      --user <username>:<personal_access_token> \
-     https://gitlab.example.com/api/v4/projects/1/packages/helm/api/stable/charts
+     "https://gitlab.example.com/api/v4/projects/1/packages/helm/api/stable/charts"
 ```

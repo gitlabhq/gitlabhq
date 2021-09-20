@@ -39,7 +39,7 @@ export default {
       return this.value.map((i) => i.type);
     },
     tokens() {
-      const tokens = [
+      return [
         {
           type: this.$options.userType,
           icon: 'user',
@@ -77,20 +77,15 @@ export default {
           token: PipelineStatusToken,
           operators: OPERATOR_IS_ONLY,
         },
-      ];
-
-      if (gon.features.pipelineSourceFilter) {
-        tokens.push({
+        {
           type: this.$options.sourceType,
           icon: 'trigger-source',
           title: s__('Pipeline|Source'),
           unique: true,
           token: PipelineSourceToken,
           operators: OPERATOR_IS_ONLY,
-        });
-      }
-
-      return tokens;
+        },
+      ];
     },
     parsedParams() {
       return map(this.params, (val, key) => ({

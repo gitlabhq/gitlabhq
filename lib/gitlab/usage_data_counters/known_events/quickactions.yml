@@ -3,6 +3,10 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_unapprove
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
 - name: i_quickactions_assign_single
   category: quickactions
   redis_slot: quickactions

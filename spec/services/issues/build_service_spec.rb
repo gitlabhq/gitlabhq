@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Issues::BuildService do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
@@ -144,6 +146,8 @@ RSpec.describe Issues::BuildService do
         issue = build_issue(milestone_id: milestone.id)
 
         expect(issue.milestone).to eq(milestone)
+        expect(issue.issue_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('issue')
       end
 
       it 'sets milestone to nil if it is not available for the project' do
@@ -151,6 +155,15 @@ RSpec.describe Issues::BuildService do
         issue = build_issue(milestone_id: milestone.id)
 
         expect(issue.milestone).to be_nil
+      end
+
+      context 'when issue_type is incident' do
+        it 'sets the correct issue type' do
+          issue = build_issue(issue_type: 'incident')
+
+          expect(issue.issue_type).to eq('incident')
+          expect(issue.work_item_type.base_type).to eq('incident')
+        end
       end
     end
 
@@ -165,28 +178,37 @@ RSpec.describe Issues::BuildService do
       end
 
       context 'setting issue type' do
-        it 'defaults to issue if issue_type not given' do
-          issue = build_issue
+        shared_examples 'builds an issue' do
+          specify do
+            issue = build_issue(issue_type: issue_type)
+
+            expect(issue.issue_type).to eq(resulting_issue_type)
+            expect(issue.work_item_type_id).to eq(work_item_type_id)
+          end
+        end
+
+        it 'cannot set invalid issue type' do
+          issue = build_issue(issue_type: 'project')
 
           expect(issue).to be_issue
         end
 
-        it 'sets issue' do
-          issue = build_issue(issue_type: 'issue')
+        context 'with a corresponding WorkItem::Type' do
+          let_it_be(:type_issue_id) { WorkItem::Type.default_issue_type.id }
+          let_it_be(:type_incident_id) { WorkItem::Type.default_by_type(:incident).id }
 
-          expect(issue).to be_issue
-        end
+          where(:issue_type, :work_item_type_id, :resulting_issue_type) do
+            nil           | ref(:type_issue_id)       | 'issue'
+            'issue'       | ref(:type_issue_id)       | 'issue'
+            'incident'    | ref(:type_incident_id)    | 'incident'
+            'test_case'   | ref(:type_issue_id)       | 'issue' # update once support for test_case is enabled
+            'requirement' | ref(:type_issue_id)       | 'issue' # update once support for requirement is enabled
+            'invalid'     | ref(:type_issue_id)       | 'issue'
+          end
 
-        it 'sets incident' do
-          issue = build_issue(issue_type: 'incident')
-
-          expect(issue).to be_incident
-        end
-
-        it 'cannot set invalid type' do
-          issue = build_issue(issue_type: 'invalid type')
-
-          expect(issue).to be_issue
+          with_them do
+            it_behaves_like 'builds an issue'
+          end
         end
       end
     end

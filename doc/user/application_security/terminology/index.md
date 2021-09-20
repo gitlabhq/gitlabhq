@@ -38,6 +38,12 @@ The different places in an application that are vulnerable to attack. Secure pro
 search the attack surface during scans. Each product defines the attack surface differently. For
 example, SAST uses files and line numbers, and DAST uses URLs.
 
+### Corpus
+
+The set of meaningful test cases that are generated while the fuzzer is running. Each meaningful
+test case produces new coverage in the tested program. It's advised to re-use the corpus and pass it
+to subsequent runs.
+
 ### CVE
 
 Common Vulnerabilities and Exposures (CVE®) is a list of common identifiers for publicly known
@@ -141,6 +147,12 @@ A standard report format that Secure products comply with when creating JSON rep
 
 Provides an overview of all the vulnerabilities for a project, group, or GitLab instance.
 Vulnerabilities are only created from findings discovered on the project's default branch.
+
+### Seed corpus
+
+The set of test cases given as initial input to the fuzz target. This usually speeds up the fuzz
+target substantially. This can be either manually created test cases or auto-generated with the fuzz
+target itself from previous runs.
 
 ### Vendor
 

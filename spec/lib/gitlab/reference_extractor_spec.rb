@@ -332,14 +332,59 @@ RSpec.describe Gitlab::ReferenceExtractor do
       it 'returns visible references of given type' do
         expect(subject.references(:issue)).to eq([issue])
       end
-
-      it 'does not increase stateful_not_visible_counter' do
-        expect { subject.references(:issue) }.not_to change { subject.stateful_not_visible_counter }
-      end
     end
 
-    it 'increases stateful_not_visible_counter' do
-      expect { subject.references(:issue) }.to change { subject.stateful_not_visible_counter }.by(1)
+    it 'does not return any references' do
+      expect(subject.references(:issue)).to be_empty
+    end
+  end
+
+  describe '#all_visible?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:issue2) { create(:issue, project: project2) }
+
+    let(:text) { "Ref. #{issue.to_reference} and #{issue2.to_reference(project)}" }
+
+    subject { described_class.new(project, user) }
+
+    before do
+      subject.analyze(text)
+    end
+
+    it 'returns true if no references were parsed yet' do
+      expect(subject.all_visible?).to be_truthy
+    end
+
+    context 'when references was already called' do
+      let(:membership) { [] }
+
+      before do
+        membership.each { |p| p.add_developer(user) }
+
+        subject.references(:issue)
+      end
+
+      it 'returns false' do
+        expect(subject.all_visible?).to be_falsey
+      end
+
+      context 'when user can access only some references' do
+        let(:membership) { [project] }
+
+        it 'returns false' do
+          expect(subject.all_visible?).to be_falsey
+        end
+      end
+
+      context 'when user can access all references' do
+        let(:membership) { [project, project2] }
+
+        it 'returns true' do
+          expect(subject.all_visible?).to be_truthy
+        end
+      end
     end
   end
 end

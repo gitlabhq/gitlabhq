@@ -7,6 +7,8 @@ module Gitlab
         include Gitlab::Database::MigrationHelpers
         include Gitlab::Database::SchemaHelpers
 
+        ERROR_SCOPE = 'index'
+
         # Concurrently creates a new index on a partitioned table. In concept this works similarly to
         # `add_concurrent_index`, and won't block reads or writes on the table while the index is being built.
         #
@@ -21,6 +23,8 @@ module Gitlab
         #
         # See Rails' `add_index` for more info on the available arguments.
         def add_concurrent_partitioned_index(table_name, column_names, options = {})
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
           raise ArgumentError, 'A name is required for indexes added to partitioned tables' unless options[:name]
 
           partitioned_table = find_partitioned_table(table_name)
@@ -57,6 +61,8 @@ module Gitlab
         #
         #     remove_concurrent_partitioned_index_by_name :users, 'index_name_goes_here'
         def remove_concurrent_partitioned_index_by_name(table_name, index_name)
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
           find_partitioned_table(table_name)
 
           unless index_name_exists?(table_name, index_name)

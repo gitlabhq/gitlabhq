@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# Project-level Variables API
+# Project-level Variables API **(FREE)**
 
 ## List project variables
 

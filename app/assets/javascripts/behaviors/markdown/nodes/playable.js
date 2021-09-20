@@ -3,7 +3,6 @@
 
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { Node } from 'tiptap';
-import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 /**
  * Abstract base class for playable media, like video and audio.
@@ -33,33 +32,33 @@ export default class Playable extends Node {
     const parseDOM = [
       {
         tag: `.${this.mediaType}-container`,
-        skip: true,
-      },
-      {
-        tag: `.${this.mediaType}-container p`,
-        priority: HIGHER_PARSE_RULE_PRIORITY,
-        ignore: true,
-      },
-      {
-        tag: `${this.mediaType}[src]`,
-        getAttrs: (el) => ({ src: el.src, alt: el.dataset.title }),
+        getAttrs: (el) => ({
+          src: el.querySelector(this.mediaType).src,
+          alt: el.querySelector(this.mediaType).dataset.title,
+        }),
       },
     ];
 
     const toDOM = (node) => [
-      this.mediaType,
-      {
-        src: node.attrs.src,
-        controls: true,
-        'data-setup': '{}',
-        'data-title': node.attrs.alt,
-        ...this.extraElementAttrs,
-      },
+      'span',
+      { class: `media-container ${this.mediaType}-container` },
+      [
+        this.mediaType,
+        {
+          src: node.attrs.src,
+          controls: true,
+          'data-setup': '{}',
+          'data-title': node.attrs.alt,
+          ...this.extraElementAttrs,
+        },
+      ],
+      ['a', { href: node.attrs.src }, node.attrs.alt],
     ];
 
     return {
       attrs,
-      group: 'block',
+      group: 'inline',
+      inline: true,
       draggable: true,
       parseDOM,
       toDOM,
@@ -68,6 +67,5 @@ export default class Playable extends Node {
 
   toMarkdown(state, node) {
     defaultMarkdownSerializer.nodes.image(state, node);
-    state.closeBlock(node);
   }
 }

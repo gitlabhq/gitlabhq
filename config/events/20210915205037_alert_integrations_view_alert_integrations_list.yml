@@ -1,0 +1,21 @@
+description: "Show alert integrations list"
+category: "`Alert Integrations`"
+action: view_alert_integrations_list
+label_description: ""
+property_description: ""
+value_description: ""
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: monitor
+product_group: group::monitor
+product_category:
+milestone: "13.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44549
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

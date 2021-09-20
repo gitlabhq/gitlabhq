@@ -7,11 +7,14 @@ product_stage: manage
 product_group: group::optimize
 product_category:
 value_type: number
-status: data_available
+status: active
 time_frame: all
-data_source:
+data_source: redis_hll
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
+milestone: "<13.9"

@@ -111,7 +111,7 @@ example of such a transfer:
 GitLab provides a [vendored template](../../../ci/yaml/index.md#includetemplate)
 to ease this process.
 
-This template should be used in a new, empty project, with a `gitlab-ci.yml` file containing:
+This template should be used in a new, empty project, with a `.gitlab-ci.yml` file containing:
 
 ```yaml
 include:

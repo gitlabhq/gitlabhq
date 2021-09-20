@@ -7,7 +7,7 @@ product_stage: create
 product_group: group::editor
 product_category: web_ide
 value_type: number
-status: data_available
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
@@ -25,3 +25,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

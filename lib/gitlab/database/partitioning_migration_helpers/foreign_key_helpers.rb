@@ -6,6 +6,8 @@ module Gitlab
       module ForeignKeyHelpers
         include ::Gitlab::Database::SchemaHelpers
 
+        ERROR_SCOPE = 'foreign keys'
+
         # Adds a foreign key with only minimal locking on the tables involved.
         #
         # In concept it works similarly to add_concurrent_foreign_key, but we have
@@ -32,6 +34,8 @@ module Gitlab
         # name - The name of the foreign key.
         #
         def add_concurrent_partitioned_foreign_key(source, target, column:, on_delete: :cascade, name: nil)
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
           partition_options = {
             column: column,
             on_delete: on_delete,

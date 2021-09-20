@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Runners API
+# Runners API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640) in GitLab 8.5.
 
@@ -41,7 +41,6 @@ GET /runners?scope=active
 GET /runners?type=project_type
 GET /runners?status=active
 GET /runners?tag_list=tag1,tag2
-GET /runners?search=gitlab
 ```
 
 | Attribute   | Type           | Required | Description         |
@@ -50,7 +49,6 @@ GET /runners?search=gitlab
 | `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 | `tag_list`  | string array   | no       | List of the runner's tags |
-| `search`    | string         | no       | The full token or partial description text to match |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
@@ -85,7 +83,7 @@ Example response:
 ]
 ```
 
-## List all runners
+## List all runners **(FREE SELF)**
 
 Get a list of all runners in the GitLab instance (specific and shared). Access
 is restricted to users with `admin` privileges.
@@ -159,6 +157,8 @@ Example response:
     }
 ]
 ```
+
+To view more than the first 20 runners, use [pagination](index.md#pagination).
 
 ## Get runner's details
 
@@ -246,8 +246,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ```
 
 NOTE:
-The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320).
-and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
+The `token` attribute in the response was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/214320) in GitLab 12.10.
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/214322) in GitLab 13.0.
 
 Example response:
 
@@ -675,3 +675,48 @@ Response:
 |-----------|---------------------------------|
 | 200       | Credentials are valid           |
 | 403       | Credentials are invalid         |
+
+## Reset instance's runner registration token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+
+Resets the runner registration token for the GitLab instance.
+
+```plaintext
+POST /runners/reset_registration_token
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/runners/reset_registration_token"
+```
+
+## Reset project's runner registration token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+
+Resets the runner registration token for a project.
+
+```plaintext
+POST /projects/:id/runners/reset_registration_token
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
+```
+
+## Reset group's runner registration token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+
+Resets the runner registration token for a group.
+
+```plaintext
+POST /groups/:id/runners/reset_registration_token
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/groups/9/runners/reset_registration_token"
+```

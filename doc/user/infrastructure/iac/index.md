@@ -65,7 +65,7 @@ Amazon S3 or Google Cloud Storage. Its features include:
 - Locking and unlocking state.
 - Remote Terraform plan and apply execution.
 
-Read more on setting up and [using GitLab Managed Terraform states](../terraform_state.md)
+Read more on setting up and [using GitLab Managed Terraform states](terraform_state.md).
 
 ## Terraform module registry
 
@@ -81,7 +81,7 @@ solution to help collaboration around Terraform code changes and their expected
 effects using the Merge Request pages. This way users don't have to build custom
 tools or rely on 3rd party solutions to streamline their IaC workflows.
 
-Read more on setting up and [using the merge request integrations](../mr_integration.md).
+Read more on setting up and [using the merge request integrations](mr_integration.md).
 
 ## The GitLab Terraform provider
 

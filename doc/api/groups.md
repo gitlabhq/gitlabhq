@@ -4,7 +4,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Groups API
+# Groups API **(FREE)**
 
 ## List groups
 
@@ -12,6 +12,11 @@ Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+
+When accessed without authentication, this endpoint also supports [keyset pagination](index.md#keyset-based-pagination):
+
+- When requesting consecutive pages of results, we recommend you use keyset pagination.
+- Beyond a specific offset limit (specified by [max offset allowed by the REST API for offset-based pagination](../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination)), offset pagination is unavailable.
 
 Parameters:
 
@@ -764,6 +769,10 @@ For GitLab 14.0 and later, the [limit cannot be disabled](https://gitlab.com/git
 
 ## New group
 
+NOTE:
+On GitLab SaaS, you must use the GitLab UI to create groups without a parent group. You cannot
+use the API to do this.
+
 Creates a new project group. Available only for users who can create groups.
 
 ```plaintext
@@ -794,10 +803,6 @@ Parameters:
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
 | `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
-
-NOTE:
-On GitLab SaaS, you must use the GitLab UI to create groups without a parent group. You cannot
-use the API to do this.
 
 ### Options for `default_branch_protection`
 
@@ -1338,7 +1343,7 @@ DELETE /groups/:id/share/:group_id
 
 ## Push Rules **(PREMIUM)**
 
-> Introduced in [GitLab](https://about.gitlab.com/pricing/) 13.4.
+> Introduced in GitLab 13.4.
 
 ### Get group push rules **(PREMIUM)**
 
@@ -1370,7 +1375,7 @@ GET /groups/:id/push_rule
 }
 ```
 
-Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ```json

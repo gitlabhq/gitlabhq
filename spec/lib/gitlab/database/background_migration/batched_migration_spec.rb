@@ -234,6 +234,42 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#retry_failed_jobs!' do
+    let(:batched_migration) { create(:batched_background_migration, status: 'failed') }
+
+    subject(:retry_failed_jobs) { batched_migration.retry_failed_jobs! }
+
+    context 'when there are failed migration jobs' do
+      let!(:batched_background_migration_job) { create(:batched_background_migration_job, batched_migration: batched_migration, batch_size: 10, min_value: 6, max_value: 15, status: :failed, attempts: 3) }
+
+      before do
+        allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
+        end
+      end
+
+      it 'moves the status of the migration to active' do
+        retry_failed_jobs
+
+        expect(batched_migration.status).to eql 'active'
+      end
+
+      it 'changes the number of attempts to 0' do
+        retry_failed_jobs
+
+        expect(batched_background_migration_job.reload.attempts).to be_zero
+      end
+    end
+
+    context 'when there are no failed migration jobs' do
+      it 'moves the status of the migration to active' do
+        retry_failed_jobs
+
+        expect(batched_migration.status).to eql 'active'
+      end
+    end
+  end
+
   describe '#job_class_name=' do
     it_behaves_like 'an attr_writer that demodulizes assigned class names', :job_class_name
   end

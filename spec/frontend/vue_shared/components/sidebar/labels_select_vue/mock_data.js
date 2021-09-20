@@ -15,15 +15,6 @@ export const mockScopedLabel = {
 };
 
 export const mockLabels = [
-  mockRegularLabel,
-  mockScopedLabel,
-  {
-    id: 28,
-    title: 'Bug',
-    description: 'Label for bugs',
-    color: '#FF0000',
-    textColor: '#FFFFFF',
-  },
   {
     id: 29,
     title: 'Boog',
@@ -31,6 +22,15 @@ export const mockLabels = [
     color: '#FF0000',
     textColor: '#FFFFFF',
   },
+  {
+    id: 28,
+    title: 'Bug',
+    description: 'Label for bugs',
+    color: '#FF0000',
+    textColor: '#FFFFFF',
+  },
+  mockRegularLabel,
+  mockScopedLabel,
 ];
 
 export const mockCollapsedLabels = [

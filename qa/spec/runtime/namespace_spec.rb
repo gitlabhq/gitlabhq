@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Runtime::Namespace do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
 
   describe '.name' do
     context 'when CACHE_NAMESPACE_NAME is not defined' do

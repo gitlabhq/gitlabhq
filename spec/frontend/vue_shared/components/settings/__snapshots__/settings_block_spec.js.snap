@@ -8,12 +8,25 @@ exports[`Settings Block renders the correct markup 1`] = `
     class="settings-header"
   >
     <h4>
-      <div
-        data-testid="title-slot"
-      />
+      <span
+        aria-controls="settings_content_3"
+        aria-expanded="false"
+        class="gl-cursor-pointer"
+        data-testid="section-title-button"
+        id="settings_label_2"
+        role="button"
+        tabindex="0"
+      >
+        <div
+          data-testid="title-slot"
+        />
+      </span>
     </h4>
      
     <gl-button-stub
+      aria-controls="settings_content_3"
+      aria-expanded="false"
+      aria-label="Expand settings section"
       buttontextclasses=""
       category="primary"
       icon=""
@@ -33,7 +46,11 @@ exports[`Settings Block renders the correct markup 1`] = `
   </div>
    
   <div
+    aria-labelledby="settings_label_2"
     class="settings-content"
+    id="settings_content_3"
+    role="region"
+    tabindex="-1"
   >
     <div
       data-testid="default-slot"

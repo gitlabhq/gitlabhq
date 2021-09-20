@@ -23,6 +23,10 @@
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
 
+.decomposed-database-rspec:
+  variables:
+    DECOMPOSED_DB: "true"
+
 .rspec-base:
   extends: .rails-job-base
   stage: test
@@ -225,65 +229,6 @@ update-gitaly-binaries-cache:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
 
-.static-analysis-base:
-  extends:
-    - .default-retry
-    - .default-before_script
-    - .static-analysis-cache
-  needs: []
-  variables:
-    SETUP_DB: "false"
-    ENABLE_SPRING: "1"
-    # Disable warnings in browserslist which can break on backports
-    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
-    BROWSERSLIST_IGNORE_OLD_DATA: "true"
-
-update-static-analysis-cache:
-  extends:
-    - .static-analysis-base
-    - .static-analysis-cache-push
-    - .shared:rules:update-cache
-  stage: prepare
-  script:
-    - run_timed_command "bundle exec rubocop --parallel"  # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
-
-static-analysis:
-  extends:
-    - .static-analysis-base
-    - .static-analysis:rules:ee-and-foss
-  stage: test
-  parallel: 4
-  script:
-    - run_timed_command "retry yarn install --frozen-lockfile"
-    - scripts/static-analysis
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - tmp/feature_flags/
-
-static-analysis as-if-foss:
-  extends:
-    - static-analysis
-    - .static-analysis:rules:as-if-foss
-    - .as-if-foss
-
-zeitwerk-check:
-  extends:
-    - .rails-cache
-    - .default-before_script
-    - .rails:rules:ee-and-foss-unit
-  variables:
-    BUNDLE_WITHOUT: ""
-    SETUP_DB: "false"
-  needs: []
-  stage: test
-  script:
-    - sed -i -e "s/config\.autoloader = :classic/config\.autoloader = :zeitwerk/" config/application.rb
-    - RAILS_ENV=test bundle exec rake zeitwerk:check
-    - RAILS_ENV=development bundle exec rake zeitwerk:check
-    - RAILS_ENV=production bundle exec rake zeitwerk:check
-
 rspec migration pg12:
   extends:
     - .rspec-base-pg12
@@ -295,6 +240,12 @@ rspec migration pg12 minimal:
     - rspec migration pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-migration:minimal
+
+rspec migration pg12 decomposed:
+  extends:
+    - rspec migration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec unit pg12:
   extends:
@@ -308,6 +259,12 @@ rspec unit pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-unit:minimal
 
+rspec unit pg12 decomposed:
+  extends:
+    - rspec unit pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec integration pg12:
   extends:
     - .rspec-base-pg12
@@ -320,6 +277,12 @@ rspec integration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-integration:minimal
 
+rspec integration pg12 decomposed:
+  extends:
+    - rspec integration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec system pg12:
   extends:
     - .rspec-base-pg12
@@ -331,6 +294,12 @@ rspec system pg12 minimal:
     - rspec system pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-system:minimal
+
+rspec system pg12 decomposed:
+  extends:
+    - rspec system pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 # Dedicated job to test DB library code against PG11.
 # Note that these are already tested against PG12 in the `rspec unit pg12` / `rspec-ee unit pg12` jobs.
@@ -382,18 +351,12 @@ db:migrate-from-previous-major-version:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
     PROJECT_TO_CHECKOUT: "gitlab-foss"
-    TAG_TO_CHECKOUT: "v12.10.14"
+    TAG_TO_CHECKOUT: "v13.12.9"
   script:
     - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
     - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
     - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
     - git checkout -f FETCH_HEAD
-    # Patch Gemfile of the previous major version for compatibility.
-    - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
-    - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12'/" Gemfile
-    - sed -i -e "s/gem 'nokogiri', '~> 1.10.5'/gem 'nokogiri', '~> 1.11.0'/" Gemfile
-    - sed -i -e "s/gem 'mimemagic', '~> 0.3.2'/gem 'ruby-magic', '~> 0.4.0'/" Gemfile
-    - run_timed_command "bundle update --bundler google-protobuf nokogiri grpc mimemagic bootsnap"
     - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
     - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
     - git checkout -f $CI_COMMIT_SHA
@@ -554,6 +517,12 @@ rspec migration pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-migration:minimal
 
+rspec migration pg12-as-if-foss decomposed:
+  extends:
+    - rspec migration pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec unit pg12-as-if-foss:
   extends:
     - .rspec-base-pg12-as-if-foss
@@ -565,6 +534,12 @@ rspec unit pg12-as-if-foss minimal:
     - rspec unit pg12-as-if-foss
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-unit:minimal
+
+rspec unit pg12-as-if-foss decomposed:
+  extends:
+    - rspec unit pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec integration pg12-as-if-foss:
   extends:
@@ -578,6 +553,12 @@ rspec integration pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-integration:minimal
 
+rspec integration pg12-as-if-foss decomposed:
+  extends:
+    - rspec integration pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec system pg12-as-if-foss:
   extends:
     - .rspec-base-pg12-as-if-foss
@@ -589,6 +570,12 @@ rspec system pg12-as-if-foss minimal:
     - rspec system pg12-as-if-foss
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-system:minimal
+
+rspec system pg12-as-if-foss decomposed:
+  extends:
+    - rspec system pg12-as-if-foss
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec-ee migration pg12:
   extends:
@@ -603,6 +590,12 @@ rspec-ee migration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-migration:minimal
 
+rspec-ee migration pg12 decomposed:
+  extends:
+    - rspec-ee migration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec-ee unit pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -614,6 +607,12 @@ rspec-ee unit pg12 minimal:
     - rspec-ee unit pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-only-unit:minimal
+
+rspec-ee unit pg12 decomposed:
+  extends:
+    - rspec-ee unit pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec-ee integration pg12:
   extends:
@@ -627,6 +626,12 @@ rspec-ee integration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-integration:minimal
 
+rspec-ee integration pg12 decomposed:
+  extends:
+    - rspec-ee integration pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
+
 rspec-ee system pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -638,6 +643,12 @@ rspec-ee system pg12 minimal:
     - rspec-ee system pg12
     - .minimal-rspec-tests
     - .rails:rules:ee-only-system:minimal
+
+rspec-ee system pg12 decomposed:
+  extends:
+    - rspec-ee system pg12
+    - .decomposed-database-rspec
+    - .rails:rules:decomposed-databases
 
 rspec-ee unit pg12 geo:
   extends:

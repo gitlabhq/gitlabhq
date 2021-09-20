@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the Kubernetes Agent became available on GitLab.com.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
+> - The `ci_access` attribute was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -145,6 +146,40 @@ gitops:
   - id: project1    
     paths:
     - glob: '/**/*.yaml'
+```
+
+## Authorize groups to use an Agent
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
+
+If you use the same cluster across multiple projects, you can set up the CI/CD Tunnel
+to grant the Agent access to one or more groups. This way, all the projects that belong
+to the authorized groups can access the same Agent. This enables you to save resources and
+have a scalable setup.
+
+When you authorize a group, the agent's Kubernetes context is automatically injected
+into every project of the authorized group, and users can select the connection as
+described in the [CI/CD Tunnel documentation](ci_cd_tunnel.md).
+To authorize a group to access the Agent through the [CI/CD Tunnel](ci_cd_tunnel.md),
+use the `ci_access` attribute in your `config.yaml` configuration file.
+
+An Agent can only authorize groups in the same group hierarchy as the Agent's configuration project. At most
+100 groups can be authorized per Agent.
+
+To authorize a group:
+
+1. Edit your `.config.yaml` file under the `.gitlab/agents/<agent name>` directory.
+1. Add the `ci_access` attribute.
+1. Add the `groups` attribute into `ci_access`.
+1. Add the group `id` into `groups`, identifying the authorized group through its path.
+
+For example:
+
+```yaml
+ci_access:
+  # This agent is accessible from CI jobs in projects in these groups
+  groups:
+  - id: group/subgroup
 ```
 
 ## Surface network security alerts from cluster to GitLab

@@ -35,8 +35,19 @@ still access your account if you lose your U2F / WebAuthn device.
 
 ## Enabling 2FA
 
-There are multiple ways to enable two-factor authentication: by using a one-time
-password authenticator or a U2F / WebAuthn device.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35102) in GitLab 14.3, account email confirmation required.
+
+There are multiple ways to enable two-factor authentication (2FA):
+
+- Using a one-time password authenticator.
+- Using a U2F / WebAuthn device.
+
+In GitLab 14.3 and later, your account email must be confirmed to enable two-factor authentication.
+
+FLAG:
+On self-managed GitLab, account email confirmation requirement is enabled. To disable this
+restriction, ask an administrator to
+[disable the `ensure_verified_primary_email_for_2fa` flag](../../../administration/feature_flags.md).
 
 ### One-time password
 
@@ -377,7 +388,7 @@ have lost your code generation device) you can:
 - [Use a saved recovery code](#use-a-saved-recovery-code).
 - [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-ssh).
 - [Regenerate 2FA recovery codes](#regenerate-2fa-recovery-codes).
-- [Ask a GitLab administrator to disable two-factor authentication on your account](#ask-a-gitlab-administrator-to-disable-two-factor-authentication-on-your-account).
+- [Have 2FA disabled on your account](#have-2fa-disabled-on-your-account).
 
 ### Use a saved recovery code
 
@@ -454,12 +465,9 @@ To regenerate 2FA recovery codes, you need access to a desktop browser:
 NOTE:
 If you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
 
-### Ask a GitLab administrator to disable two-factor authentication on your account
+### Have 2FA disabled on your account
 
-If you cannot use a saved recovery code or generate new recovery codes, ask a
-GitLab global administrator to disable two-factor authentication for your
-account. This temporarily leaves your account in a less secure state.
-Sign in and re-enable two-factor authentication as soon as possible.
+If you cannot use a saved recovery code or generate new recovery codes then please submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new) requesting that a GitLab global administrator disables two-factor authentication for your account. Please note that only the actual owner of the account can make this request and that disabling this setting will temporarily leave your account in a less secure state. You should therefore sign in and re-enable two-factor authentication as soon as possible.
 
 ## Note to GitLab administrators
 
@@ -516,7 +524,7 @@ To avoid the time sync issue, enable time synchronization in the device that gen
   1. Go to Settings.
   1. Select General.
   1. Select Date & Time.
-  1. Enable Set Automatically. If it’s already enabled, disable it, wait a few seconds, and re-enable.
+  1. Enable Set Automatically. If it's already enabled, disable it, wait a few seconds, and re-enable.
 
 <!-- ## Troubleshooting
 

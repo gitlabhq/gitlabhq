@@ -1,9 +1,12 @@
+import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import mock from 'xhr-mock';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
 import dropzoneInput from '~/dropzone_input';
+import axios from '~/lib/utils/axios_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};
@@ -29,6 +32,16 @@ describe('dropzone_input', () => {
   });
 
   describe('handlePaste', () => {
+    const triggerPasteEvent = (clipboardData = {}) => {
+      const event = $.Event('paste');
+      const origEvent = new Event('paste');
+
+      origEvent.clipboardData = clipboardData;
+      event.originalEvent = origEvent;
+
+      $('.js-gfm-input').trigger(event);
+    };
+
     beforeEach(() => {
       loadFixtures('issues/new-issue.html');
 
@@ -38,23 +51,38 @@ describe('dropzone_input', () => {
     });
 
     it('pastes Markdown tables', () => {
-      const event = $.Event('paste');
-      const origEvent = new Event('paste');
-
-      origEvent.clipboardData = {
-        types: ['text/plain', 'text/html'],
-        getData: () => '<table><tr><td>Hello World</td></tr></table>',
-        items: [],
-      };
-      event.originalEvent = origEvent;
-
       jest.spyOn(PasteMarkdownTable.prototype, 'isTable');
       jest.spyOn(PasteMarkdownTable.prototype, 'convertToTableMarkdown');
 
-      $('.js-gfm-input').trigger(event);
+      triggerPasteEvent({
+        types: ['text/plain', 'text/html'],
+        getData: () => '<table><tr><td>Hello World</td></tr></table>',
+        items: [],
+      });
 
       expect(PasteMarkdownTable.prototype.isTable).toHaveBeenCalled();
       expect(PasteMarkdownTable.prototype.convertToTableMarkdown).toHaveBeenCalled();
+    });
+
+    it('passes truncated long filename to post request', async () => {
+      const axiosMock = new MockAdapter(axios);
+      const longFileName = 'a'.repeat(300);
+
+      triggerPasteEvent({
+        types: ['text/plain', 'text/html', 'text/rtf', 'Files'],
+        getData: () => longFileName,
+        items: [
+          {
+            kind: 'file',
+            type: 'image/png',
+            getAsFile: () => new Blob(),
+          },
+        ],
+      });
+
+      axiosMock.onPost().reply(httpStatusCodes.OK, { link: { markdown: 'foo' } });
+      await waitForPromises();
+      expect(axiosMock.history.post[0].data.get('file').name).toHaveLength(246);
     });
   });
 

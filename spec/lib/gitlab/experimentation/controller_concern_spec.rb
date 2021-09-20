@@ -7,10 +7,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
-        backwards_compatible_test_experiment: {
-          tracking_category: 'Team',
-          use_backwards_compatible_subject_index: true
-        },
         test_experiment: {
           tracking_category: 'Team',
           rollout_strategy: rollout_strategy
@@ -23,7 +19,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
     allow(Gitlab).to receive(:dev_env_or_com?).and_return(is_gitlab_com)
 
-    Feature.enable_percentage_of_time(:backwards_compatible_test_experiment_experiment_percentage, enabled_percentage)
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
   end
 
@@ -124,24 +119,15 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     end
 
     context 'cookie is present' do
-      using RSpec::Parameterized::TableSyntax
-
       before do
         cookies.permanent.signed[:experimentation_subject_id] = 'abcd-1234'
         get :index
       end
 
-      where(:experiment_key, :index_value) do
-        :test_experiment | 'abcd-1234'
-        :backwards_compatible_test_experiment | 'abcd1234'
-      end
+      it 'calls Gitlab::Experimentation.in_experiment_group? with the name of the experiment and the calculated experimentation_subject_index based on the uuid' do
+        expect(Gitlab::Experimentation).to receive(:in_experiment_group?).with(:test_experiment, subject: 'abcd-1234')
 
-      with_them do
-        it 'calls Gitlab::Experimentation.in_experiment_group?? with the name of the experiment and the calculated experimentation_subject_index based on the uuid' do
-          expect(Gitlab::Experimentation).to receive(:in_experiment_group?).with(experiment_key, subject: index_value)
-
-          check_experiment(experiment_key)
-        end
+        check_experiment(:test_experiment)
       end
 
       context 'when subject is given' do

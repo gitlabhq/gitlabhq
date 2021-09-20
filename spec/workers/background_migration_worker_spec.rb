@@ -14,7 +14,17 @@ RSpec.describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
   describe '#perform' do
     before do
       allow(worker).to receive(:jid).and_return(1)
-      expect(worker).to receive(:always_perform?).and_return(false)
+      allow(worker).to receive(:always_perform?).and_return(false)
+    end
+
+    it 'can run scheduled job and retried job concurrently' do
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:perform)
+        .with('Foo', [10, 20])
+        .exactly(2).time
+
+      worker.perform('Foo', [10, 20])
+      worker.perform('Foo', [10, 20], described_class::MAX_LEASE_ATTEMPTS - 1)
     end
 
     context 'when lease can be obtained' do
@@ -39,7 +49,7 @@ RSpec.describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
       before do
         expect(Gitlab::BackgroundMigration).not_to receive(:perform)
 
-        worker.lease_for('Foo').try_obtain
+        worker.lease_for('Foo', false).try_obtain
       end
 
       it 'reschedules the migration and decrements the lease_attempts' do
@@ -51,6 +61,10 @@ RSpec.describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
       end
 
       context 'when lease_attempts is 1' do
+        before do
+          worker.lease_for('Foo', true).try_obtain
+        end
+
         it 'reschedules the migration and decrements the lease_attempts' do
           expect(described_class)
             .to receive(:perform_in)
@@ -61,6 +75,10 @@ RSpec.describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
       end
 
       context 'when lease_attempts is 0' do
+        before do
+          worker.lease_for('Foo', true).try_obtain
+        end
+
         it 'gives up performing the migration' do
           expect(described_class).not_to receive(:perform_in)
           expect(Sidekiq.logger).to receive(:warn).with(

@@ -21,6 +21,10 @@ RSpec.describe BulkImports::PipelineWorker do
 
   before do
     stub_const('FakePipeline', pipeline_class)
+
+    allow(BulkImports::Groups::Stage)
+      .to receive(:pipelines)
+      .and_return([[0, pipeline_class]])
   end
 
   it 'runs the given pipeline successfully' do
@@ -29,12 +33,6 @@ RSpec.describe BulkImports::PipelineWorker do
       entity: entity,
       pipeline_name: 'FakePipeline'
     )
-
-    expect(BulkImports::Stage)
-      .to receive(:pipeline_exists?)
-      .with('FakePipeline')
-      .twice
-      .and_return(true)
 
     expect_next_instance_of(Gitlab::Import::Logger) do |logger|
       expect(logger)
@@ -110,7 +108,7 @@ RSpec.describe BulkImports::PipelineWorker do
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
         .with(
-          instance_of(NameError),
+          instance_of(BulkImports::Error),
           entity_id: entity.id,
           pipeline_name: pipeline_tracker.pipeline_name
         )
@@ -157,10 +155,10 @@ RSpec.describe BulkImports::PipelineWorker do
 
     before do
       stub_const('NdjsonPipeline', ndjson_pipeline)
-      allow(BulkImports::Stage)
-        .to receive(:pipeline_exists?)
-        .with('NdjsonPipeline')
-        .and_return(true)
+
+      allow(BulkImports::Groups::Stage)
+        .to receive(:pipelines)
+        .and_return([[0, ndjson_pipeline]])
     end
 
     it 'runs the pipeline successfully' do

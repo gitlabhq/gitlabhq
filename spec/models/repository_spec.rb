@@ -68,51 +68,69 @@ RSpec.describe Repository do
 
   describe 'tags_sorted_by' do
     let(:tags_to_compare) { %w[v1.0.0 v1.1.0] }
+    let(:feature_flag) { true }
+
+    before do
+      stub_feature_flags(gitaly_tags_finder: feature_flag)
+    end
 
     context 'name_desc' do
       subject { repository.tags_sorted_by('name_desc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+
+      context 'when feature flag is disabled' do
+        let(:feature_flag) { false }
+
+        it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+      end
     end
 
     context 'name_asc' do
       subject { repository.tags_sorted_by('name_asc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
-    end
 
-    context 'updated' do
-      let(:tag_a) { repository.find_tag('v1.0.0') }
-      let(:tag_b) { repository.find_tag('v1.1.0') }
-
-      context 'desc' do
-        subject { repository.tags_sorted_by('updated_desc').map(&:name) }
-
-        before do
-          double_first = double(committed_date: Time.current)
-          double_last = double(committed_date: Time.current - 1.second)
-
-          allow(tag_a).to receive(:dereferenced_target).and_return(double_first)
-          allow(tag_b).to receive(:dereferenced_target).and_return(double_last)
-          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
-        end
+      context 'when feature flag is disabled' do
+        let(:feature_flag) { false }
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
       end
+    end
+
+    context 'updated' do
+      let(:latest_tag) { 'v0.0.0' }
+
+      before do
+        rugged_repo(repository).tags.create(latest_tag, repository.commit.id)
+      end
+
+      after do
+        rugged_repo(repository).tags.delete(latest_tag)
+      end
+
+      context 'desc' do
+        subject { repository.tags_sorted_by('updated_desc').map(&:name) & (tags_to_compare + [latest_tag]) }
+
+        it { is_expected.to eq([latest_tag, 'v1.1.0', 'v1.0.0']) }
+
+        context 'when feature flag is disabled' do
+          let(:feature_flag) { false }
+
+          it { is_expected.to eq([latest_tag, 'v1.1.0', 'v1.0.0']) }
+        end
+      end
 
       context 'asc' do
-        subject { repository.tags_sorted_by('updated_asc').map(&:name) }
+        subject { repository.tags_sorted_by('updated_asc').map(&:name) & (tags_to_compare + [latest_tag]) }
 
-        before do
-          double_first = double(committed_date: Time.current - 1.second)
-          double_last = double(committed_date: Time.current)
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', latest_tag]) }
 
-          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
-          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
-          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
+        context 'when feature flag is disabled' do
+          let(:feature_flag) { false }
+
+          it { is_expected.to eq(['v1.0.0', 'v1.1.0', latest_tag]) }
         end
-
-        it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
       end
 
       context 'annotated tag pointing to a blob' do
@@ -125,29 +143,32 @@ RSpec.describe Repository do
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
 
           rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', **options)
-
-          double_first = double(committed_date: Time.current - 1.second)
-          double_last = double(committed_date: Time.current)
-
-          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
-          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
         end
 
-        it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
+
+        context 'when feature flag is disabled' do
+          let(:feature_flag) { false }
+
+          it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
+        end
 
         after do
           rugged_repo(repository).tags.delete(annotated_tag_name)
         end
       end
     end
-  end
 
-  describe '#ref_name_for_sha' do
-    it 'returns the ref' do
-      allow(repository.raw_repository).to receive(:ref_name_for_sha)
-        .and_return('refs/environments/production/77')
+    context 'unknown option' do
+      subject { repository.tags_sorted_by('unknown_desc').map(&:name) & tags_to_compare }
 
-      expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
+      it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
+
+      context 'when feature flag is disabled' do
+        let(:feature_flag) { false }
+
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
+      end
     end
   end
 
@@ -476,6 +497,29 @@ RSpec.describe Repository do
 
         subject
       end
+    end
+  end
+
+  describe '#commits_between' do
+    let(:commit) { project.commit }
+
+    it 'delegates to Gitlab::Git::Commit#between, returning decorated commits' do
+      expect(Gitlab::Git::Commit)
+        .to receive(:between)
+        .with(repository.raw_repository, commit.parent_id, commit.id, limit: 5)
+        .and_call_original
+
+      result = repository.commits_between(commit.parent_id, commit.id, limit: 5)
+
+      expect(result).to contain_exactly(instance_of(Commit), instance_of(Commit))
+    end
+
+    it 'defaults to no limit' do
+      expect(Gitlab::Git::Commit)
+        .to receive(:between)
+        .with(repository.raw_repository, commit.parent_id, commit.id, limit: nil)
+
+      repository.commits_between(commit.parent_id, commit.id)
     end
   end
 
@@ -1294,6 +1338,15 @@ RSpec.describe Repository do
       expect(repository.license).to be_nil
     end
 
+    it 'returns nil when license_key is not recognized' do
+      expect(repository).to receive(:license_key).twice.and_return('not-recognized')
+      expect(Gitlab::ErrorTracking).to receive(:track_exception) do |ex|
+        expect(ex).to be_a(Licensee::InvalidLicense)
+      end
+
+      expect(repository.license).to be_nil
+    end
+
     it 'returns other when the content is not recognizable' do
       license = Licensee::License.new('other')
       repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
@@ -1773,7 +1826,7 @@ RSpec.describe Repository do
 
       expect(merge_commit.message).to eq('Custom message')
       expect(merge_commit.author_name).to eq(user.name)
-      expect(merge_commit.author_email).to eq(user.commit_email)
+      expect(merge_commit.author_email).to eq(user.commit_email_or_default)
       expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
   end
@@ -2310,6 +2363,42 @@ RSpec.describe Repository do
       repository.rm_tag(build_stubbed(:user), 'v1.1.0')
 
       expect(repository.find_tag('v1.1.0')).to be_nil
+    end
+  end
+
+  describe '#find_tag' do
+    before do
+      allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+    end
+
+    it 'finds a tag with specified name by performing FindTag request' do
+      expect(Gitlab::GitalyClient)
+        .to receive(:call).with(anything, :ref_service, :find_tag, anything, anything).and_call_original
+
+      expect(repository.find_tag('v1.1.0').name).to eq('v1.1.0')
+    end
+
+    it 'does not perform Gitaly call when tags are preloaded' do
+      repository.tags
+
+      expect(Gitlab::GitalyClient).not_to receive(:call)
+
+      expect(repository.find_tag('v1.1.0').name).to eq('v1.1.0')
+    end
+
+    it 'returns nil when tag does not exists' do
+      expect(repository.find_tag('does-not-exist')).to be_nil
+    end
+
+    context 'when find_tag_via_gitaly is disabled' do
+      it 'fetches all tags' do
+        stub_feature_flags(find_tag_via_gitaly: false)
+
+        expect(Gitlab::GitalyClient)
+          .to receive(:call).with(anything, :ref_service, :find_all_tags, anything, anything).and_call_original
+
+        expect(repository.find_tag('v1.1.0').name).to eq('v1.1.0')
+      end
     end
   end
 
@@ -3230,26 +3319,54 @@ RSpec.describe Repository do
   describe '#change_head' do
     let(:branch) { repository.container.default_branch }
 
-    it 'adds an error to container if branch does not exist' do
-      expect(repository.change_head('unexisted-branch')).to be false
-      expect(repository.container.errors.size).to eq(1)
+    context 'when the branch exists' do
+      it 'returns truthy' do
+        expect(repository.change_head(branch)).to be_truthy
+      end
+
+      it 'does not call container.after_change_head_branch_does_not_exist' do
+        expect(repository.container).not_to receive(:after_change_head_branch_does_not_exist)
+
+        repository.change_head(branch)
+      end
+
+      it 'calls repository hooks' do
+        expect(repository).to receive(:before_change_head)
+        expect(repository).to receive(:after_change_head)
+
+        repository.change_head(branch)
+      end
+
+      it 'copies the gitattributes' do
+        expect(repository).to receive(:copy_gitattributes).with(branch)
+        repository.change_head(branch)
+      end
+
+      it 'reloads the default branch' do
+        expect(repository.container).to receive(:reload_default_branch)
+        repository.change_head(branch)
+      end
     end
 
-    it 'calls the before_change_head and after_change_head methods' do
-      expect(repository).to receive(:before_change_head)
-      expect(repository).to receive(:after_change_head)
+    context 'when the branch does not exist' do
+      let(:branch) { 'non-existent-branch' }
 
-      repository.change_head(branch)
-    end
+      it 'returns falsey' do
+        expect(repository.change_head(branch)).to be_falsey
+      end
 
-    it 'copies the gitattributes' do
-      expect(repository).to receive(:copy_gitattributes).with(branch)
-      repository.change_head(branch)
-    end
+      it 'calls container.after_change_head_branch_does_not_exist' do
+        expect(repository.container).to receive(:after_change_head_branch_does_not_exist).with(branch)
 
-    it 'reloads the default branch' do
-      expect(repository.container).to receive(:reload_default_branch)
-      repository.change_head(branch)
+        repository.change_head(branch)
+      end
+
+      it 'does not call repository hooks' do
+        expect(repository).not_to receive(:before_change_head)
+        expect(repository).not_to receive(:after_change_head)
+
+        repository.change_head(branch)
+      end
     end
   end
 end

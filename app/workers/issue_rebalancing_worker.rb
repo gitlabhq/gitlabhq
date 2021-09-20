@@ -10,7 +10,6 @@ class IssueRebalancingWorker
   idempotent!
   urgency :low
   feature_category :issue_tracking
-  tags :exclude_from_kubernetes
   deduplicate :until_executed, including_scheduled: true
 
   def perform(ignore = nil, project_id = nil, root_namespace_id = nil)
@@ -33,12 +32,8 @@ class IssueRebalancingWorker
       return
     end
 
-    # Temporary disable rebalancing for performance reasons
-    # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
-    return if projects_to_rebalance.take&.root_namespace&.issue_repositioning_disabled? # rubocop:disable CodeReuse/ActiveRecord
-
-    IssueRebalancingService.new(projects_to_rebalance).execute
-  rescue IssueRebalancingService::TooManyIssues => e
+    Issues::RelativePositionRebalancingService.new(projects_to_rebalance).execute
+  rescue Issues::RelativePositionRebalancingService::TooManyConcurrentRebalances => e
     Gitlab::ErrorTracking.log_exception(e, root_namespace_id: root_namespace_id, project_id: project_id)
   end
 

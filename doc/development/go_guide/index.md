@@ -65,7 +65,7 @@ Remember to run
 [SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
 **(ULTIMATE)** on your project (or at least the
 [`gosec` analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
-and to follow our [Security requirements](../code_review.md#security-requirements).
+and to follow our [Security requirements](../code_review.md#security).
 
 Web servers can take advantages of middlewares like [Secure](https://github.com/unrolled/secure).
 
@@ -196,7 +196,7 @@ library or framework:
 
 ### Subtests
 
-Use [subtests](https://blog.golang.org/subtests) whenever possible to improve
+Use [subtests](https://go.dev/blog/subtests) whenever possible to improve
 code readability and test output.
 
 ### Better output in tests
@@ -319,7 +319,7 @@ A few things to keep in mind when adding context:
 
 ### References for working with errors
 
-- [Go 1.13 errors](https://blog.golang.org/go1.13-errors).
+- [Go 1.13 errors](https://go.dev/blog/go1.13-errors).
 - [Programing with
   errors](https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html).
 - [Don't just check errors, handle them

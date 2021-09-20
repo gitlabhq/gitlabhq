@@ -7,12 +7,6 @@ type: howto
 
 # Geo **(PREMIUM SELF)**
 
-> - Introduced in GitLab Enterprise Edition 8.9.
-> - Using Geo in combination with
->   [multi-node architectures](../reference_architectures/index.md)
->   is considered **Generally Available** (GA) in
->   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
-
 Geo is the solution for widely distributed development teams and for providing a warm-standby as part of a disaster recovery strategy.
 
 ## Overview
@@ -144,7 +138,7 @@ The following table lists basic ports that must be open between the **primary** 
 | 22               | 22                 | TCP          |
 | 5432             |                    | PostgreSQL   |
 
-See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
+See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 
 NOTE:
 [Web terminal](../../ci/environments/index.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
@@ -214,11 +208,11 @@ For information on configuring Geo, see [Geo configuration](replication/configur
 
 ### Updating Geo
 
-For information on how to update your Geo site(s) to the latest GitLab version, see [Updating the Geo sites](replication/updating_the_geo_nodes.md).
+For information on how to update your Geo site(s) to the latest GitLab version, see [Updating the Geo sites](replication/updating_the_geo_sites.md).
 
 ### Pausing and resuming replication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in GitLab 13.2.
 
 WARNING:
 In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the
@@ -230,7 +224,7 @@ WARNING:
 Pausing and resuming of replication is currently only supported for Geo installations using an
 Omnibus GitLab-managed database. External databases are currently not supported.
 
-In some circumstances, like during [upgrades](replication/updating_the_geo_nodes.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
+In some circumstances, like during [upgrades](replication/updating_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the a node in the secondary site where the `postgresql` service is enabled.
 

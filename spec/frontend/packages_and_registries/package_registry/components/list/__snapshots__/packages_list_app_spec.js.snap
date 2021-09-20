@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`packages_list_app renders 1`] = `
+<div>
+  <div
+    help-url="foo"
+  />
+   
+  <div />
+   
+  <div>
+    <section
+      class="row empty-state text-center"
+    >
+      <div
+        class="col-12"
+      >
+        <div
+          class="svg-250 svg-content"
+        >
+          <img
+            alt=""
+            class="gl-max-w-full"
+            role="img"
+            src="helpSvg"
+          />
+        </div>
+      </div>
+       
+      <div
+        class="col-12"
+      >
+        <div
+          class="text-content gl-mx-auto gl-my-0 gl-p-5"
+        >
+          <h1
+            class="h4"
+          >
+            There are no packages yet
+          </h1>
+           
+          <p>
+            Learn how to 
+            <b-link-stub
+              class="gl-link"
+              event="click"
+              href="helpUrl"
+              routertag="a"
+              target="_blank"
+            >
+              publish and share your packages
+            </b-link-stub>
+             with GitLab.
+          </p>
+           
+          <div
+            class="gl-display-flex gl-flex-wrap gl-justify-content-center"
+          >
+            <!---->
+             
+            <!---->
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+`;

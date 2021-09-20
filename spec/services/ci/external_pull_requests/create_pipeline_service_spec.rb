@@ -12,7 +12,7 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
       project.add_maintainer(user)
     end
 
-    subject(:response) { described_class.new(project, user).execute(pull_request) }
+    subject(:execute) { described_class.new(project, user).execute(pull_request) }
 
     context 'when pull request is open' do
       before do
@@ -21,26 +21,43 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
 
       context 'when source sha is the head of the source branch' do
         let(:source_branch) { project.repository.branches.last }
-        let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService) }
 
         before do
           pull_request.update!(source_branch: source_branch.name, source_sha: source_branch.target)
         end
 
-        it 'creates a pipeline for external pull request', :aggregate_failures do
-          pipeline = response.payload
+        context 'when the FF ci_create_external_pr_pipeline_async is disabled' do
+          before do
+            stub_feature_flags(ci_create_external_pr_pipeline_async: false)
+          end
 
-          expect(response).to be_success
-          expect(pipeline).to be_valid
-          expect(pipeline).to be_persisted
-          expect(pipeline).to be_external_pull_request_event
-          expect(pipeline).to eq(project.ci_pipelines.last)
-          expect(pipeline.external_pull_request).to eq(pull_request)
-          expect(pipeline.user).to eq(user)
-          expect(pipeline.status).to eq('created')
-          expect(pipeline.ref).to eq(pull_request.source_branch)
-          expect(pipeline.sha).to eq(pull_request.source_sha)
-          expect(pipeline.source_sha).to eq(pull_request.source_sha)
+          it 'creates a pipeline for external pull request', :aggregate_failures do
+            pipeline = execute.payload
+
+            expect(execute).to be_success
+            expect(pipeline).to be_valid
+            expect(pipeline).to be_persisted
+            expect(pipeline).to be_external_pull_request_event
+            expect(pipeline).to eq(project.ci_pipelines.last)
+            expect(pipeline.external_pull_request).to eq(pull_request)
+            expect(pipeline.user).to eq(user)
+            expect(pipeline.status).to eq('created')
+            expect(pipeline.ref).to eq(pull_request.source_branch)
+            expect(pipeline.sha).to eq(pull_request.source_sha)
+            expect(pipeline.source_sha).to eq(pull_request.source_sha)
+          end
+        end
+
+        it 'enqueues Ci::ExternalPullRequests::CreatePipelineWorker' do
+          expect { execute }
+            .to change { ::Ci::ExternalPullRequests::CreatePipelineWorker.jobs.count }
+            .by(1)
+
+          args = ::Ci::ExternalPullRequests::CreatePipelineWorker.jobs.last['args']
+
+          expect(args[0]).to eq(project.id)
+          expect(args[1]).to eq(user.id)
+          expect(args[2]).to eq(pull_request.id)
         end
       end
 
@@ -53,11 +70,12 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
         end
 
         it 'does nothing', :aggregate_failures do
-          expect(Ci::CreatePipelineService).not_to receive(:new)
+          expect { execute }
+            .not_to change { ::Ci::ExternalPullRequests::CreatePipelineWorker.jobs.count }
 
-          expect(response).to be_error
-          expect(response.message).to eq('The source sha is not the head of the source branch')
-          expect(response.payload).to be_nil
+          expect(execute).to be_error
+          expect(execute.message).to eq('The source sha is not the head of the source branch')
+          expect(execute.payload).to be_nil
         end
       end
     end
@@ -68,11 +86,12 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
       end
 
       it 'does nothing', :aggregate_failures do
-        expect(Ci::CreatePipelineService).not_to receive(:new)
+        expect { execute }
+          .not_to change { ::Ci::ExternalPullRequests::CreatePipelineWorker.jobs.count }
 
-        expect(response).to be_error
-        expect(response.message).to eq('The pull request is not opened')
-        expect(response.payload).to be_nil
+        expect(execute).to be_error
+        expect(execute.message).to eq('The pull request is not opened')
+        expect(execute.payload).to be_nil
       end
     end
   end

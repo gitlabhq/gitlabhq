@@ -100,11 +100,13 @@ export default {
         :class="{ 'is-focused': focused }"
       >
         <top-toolbar ref="toolbar" class="gl-mb-4" />
-        <formatting-bubble-menu />
         <div v-if="isLoadingContent" class="gl-w-full gl-display-flex gl-justify-content-center">
           <gl-loading-icon size="sm" />
         </div>
-        <tiptap-editor-content v-else class="md" :editor="contentEditor.tiptapEditor" />
+        <template v-else>
+          <formatting-bubble-menu />
+          <tiptap-editor-content class="md" :editor="contentEditor.tiptapEditor" />
+        </template>
       </div>
     </div>
   </content-editor-provider>

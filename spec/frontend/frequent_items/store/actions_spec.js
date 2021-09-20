@@ -109,7 +109,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
     });
 
     it('should dispatch `receiveFrequentItemsError`', (done) => {
-      jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(false);
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
       mockedState.namespace = mockNamespace;
       mockedState.storageKey = mockStorageKey;
 

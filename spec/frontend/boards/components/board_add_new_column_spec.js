@@ -48,7 +48,6 @@ describe('Board card layout', () => {
             ...actions,
           },
           getters: {
-            shouldUseGraphQL: () => true,
             getListByLabelId: () => getListByLabelId,
           },
           state: {

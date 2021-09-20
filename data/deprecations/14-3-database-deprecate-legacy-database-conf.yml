@@ -1,0 +1,13 @@
+- name: "Legacy database configuration"
+  announcement_milestone: "14.3"
+  announcement_date: "2021-09-22"
+  removal_milestone: "15.0"
+  body: |
+   The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)
+   configuration located in `database.yml` is changing and the legacy format is deprecated. The legacy format
+   supported using a single PostgreSQL adapter, whereas the new format is changing to support multiple databases. The `main:` database needs to be defined as a first configuration item.
+   
+   This deprecation mainly impacts users compiling GitLab from source because Omnibus will handle this configuration automatically.
+  stage: Enablement
+  tiers: [Core, Premium, Ultimate]
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338182

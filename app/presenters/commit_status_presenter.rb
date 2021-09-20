@@ -27,7 +27,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     user_blocked: 'The user who created this job is blocked',
     ci_quota_exceeded: 'No more CI minutes available',
     no_matching_runner: 'No matching runner available',
-    trace_size_exceeded: 'The job log size limit was reached'
+    trace_size_exceeded: 'The job log size limit was reached',
+    builds_disabled: 'The CI/CD is disabled for this project'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

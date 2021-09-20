@@ -1,5 +1,6 @@
 import { GlFormTextarea, GlFormInput, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
@@ -48,7 +49,10 @@ describe('Pipeline Editor | Commit section', () => {
   let wrapper;
   let mockMutate;
 
-  const defaultProps = { ciFileContent: mockCiYml };
+  const defaultProps = {
+    ciFileContent: mockCiYml,
+    commitSha: mockCommitSha,
+  };
 
   const createComponent = ({ props = {}, options = {}, provide = {} } = {}) => {
     mockMutate = jest.fn().mockResolvedValue({
@@ -67,7 +71,6 @@ describe('Pipeline Editor | Commit section', () => {
       provide: { ...mockProvide, ...provide },
       data() {
         return {
-          commitSha: mockCommitSha,
           currentBranch: mockDefaultBranch,
           isNewCiConfigFile: Boolean(options?.isNewCiConfigfile),
         };
@@ -97,8 +100,7 @@ describe('Pipeline Editor | Commit section', () => {
       await findCommitForm().find('[data-testid="new-mr-checkbox"]').setChecked(openMergeRequest);
     }
     await findCommitForm().find('[type="submit"]').trigger('click');
-    // Simulate the write to local cache that occurs after a commit
-    await wrapper.setData({ commitSha: mockCommitNextSha });
+    await waitForPromises();
   };
 
   const cancelCommitForm = async () => {
@@ -175,6 +177,10 @@ describe('Pipeline Editor | Commit section', () => {
       expect(wrapper.emitted('commit')[0]).toEqual([{ type: COMMIT_SUCCESS }]);
     });
 
+    it('emits an event to refetch the commit sha', () => {
+      expect(wrapper.emitted('updateCommitSha')).toHaveLength(1);
+    });
+
     it('shows no saving state', () => {
       expect(findCommitBtnLoadingIcon().exists()).toBe(false);
     });
@@ -188,7 +194,6 @@ describe('Pipeline Editor | Commit section', () => {
         update: expect.any(Function),
         variables: {
           ...mockVariables,
-          lastCommitId: mockCommitNextSha,
           branch: mockDefaultBranch,
         },
       });
@@ -214,6 +219,10 @@ describe('Pipeline Editor | Commit section', () => {
           branch: newBranch,
         },
       });
+    });
+
+    it('does not emit an event to refetch the commit sha', () => {
+      expect(wrapper.emitted('updateCommitSha')).toBeUndefined();
     });
   });
 

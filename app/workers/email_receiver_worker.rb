@@ -11,7 +11,7 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
   urgency :high
   weight 2
 
-  # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1087#jobs-written-to-redis-without-passing-through-the-application
+  # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1263
   tags :needs_own_queue
 
   attr_accessor :raw

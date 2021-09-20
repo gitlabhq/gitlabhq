@@ -3,17 +3,8 @@
 module Projects
   class UpdatePagesService < BaseService
     InvalidStateError = Class.new(StandardError)
-    FailedToExtractError = Class.new(StandardError)
-    ExclusiveLeaseTaken = Class.new(StandardError)
-
-    include ::Pages::LegacyStorageLease
-
     BLOCK_SIZE = 32.kilobytes
     PUBLIC_DIR = 'public'
-
-    # this has to be invalid group name,
-    # as it shares the namespace with groups
-    TMP_EXTRACT_PATH = '@pages.tmp'
 
     # old deployment can be cached by pages daemon
     # so we need to give pages daemon some time update cache
@@ -42,7 +33,6 @@ module Projects
       validate_max_entries!
 
       build.artifacts_file.use_file do |artifacts_path|
-        deploy_to_legacy_storage(artifacts_path)
         create_pages_deployment(artifacts_path, build)
         success
       end
@@ -78,70 +68,6 @@ module Projects
       )
     end
 
-    def deploy_to_legacy_storage(artifacts_path)
-      # path today used by one project can later be used by another
-      # so we can't really scope this feature flag by project or group
-      return unless ::Settings.pages.local_store.enabled
-
-      return if Feature.enabled?(:skip_pages_deploy_to_legacy_storage, project, default_enabled: :yaml)
-
-      # Create temporary directory in which we will extract the artifacts
-      make_secure_tmp_dir(tmp_path) do |tmp_path|
-        extract_archive!(artifacts_path, tmp_path)
-
-        # Check if we did extract public directory
-        archive_public_path = File.join(tmp_path, PUBLIC_DIR)
-
-        raise InvalidStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
-
-        validate_outdated_sha!
-
-        deploy_page!(archive_public_path)
-      end
-    end
-
-    def extract_archive!(artifacts_path, temp_path)
-      if artifacts.ends_with?('.zip')
-        extract_zip_archive!(artifacts_path, temp_path)
-      else
-        raise InvalidStateError, 'unsupported artifacts format'
-      end
-    end
-
-    def extract_zip_archive!(artifacts_path, temp_path)
-      SafeZip::Extract.new(artifacts_path)
-        .extract(directories: [PUBLIC_DIR], to: temp_path)
-    rescue SafeZip::Extract::Error => e
-      raise FailedToExtractError, e.message
-    end
-
-    def deploy_page!(archive_public_path)
-      deployed = try_obtain_lease do
-        deploy_page_unsafe!(archive_public_path)
-        true
-      end
-
-      unless deployed
-        raise ExclusiveLeaseTaken, "Failed to deploy pages - other deployment is in progress"
-      end
-    end
-
-    def deploy_page_unsafe!(archive_public_path)
-      # Do atomic move of pages
-      # Move and removal may not be atomic, but they are significantly faster then extracting and removal
-      # 1. We move deployed public to previous public path (file removal is slow)
-      # 2. We move temporary public to be deployed public
-      # 3. We remove previous public path
-      FileUtils.mkdir_p(pages_path)
-      begin
-        FileUtils.move(public_path, previous_public_path)
-      rescue StandardError
-      end
-      FileUtils.move(archive_public_path, public_path)
-    ensure
-      FileUtils.rm_r(previous_public_path, force: true)
-    end
-
     def create_pages_deployment(artifacts_path, build)
       sha256 = build.job_artifacts_archive.file_sha256
 
@@ -163,22 +89,6 @@ module Projects
         project.id,
         deployment.id
       )
-    end
-
-    def tmp_path
-      @tmp_path ||= File.join(::Settings.pages.path, TMP_EXTRACT_PATH)
-    end
-
-    def pages_path
-      @pages_path ||= project.pages_path
-    end
-
-    def public_path
-      @public_path ||= File.join(pages_path, PUBLIC_DIR)
-    end
-
-    def previous_public_path
-      @previous_public_path ||= File.join(pages_path, "#{PUBLIC_DIR}.#{SecureRandom.hex}")
     end
 
     def ref
@@ -214,20 +124,6 @@ module Projects
 
     def pages_deployments_failed_total_counter
       @pages_deployments_failed_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_failed_total, "Counter of GitLab Pages deployments which failed")
-    end
-
-    def make_secure_tmp_dir(tmp_path)
-      FileUtils.mkdir_p(tmp_path)
-      path = Dir.mktmpdir(tmp_dir_prefix, tmp_path)
-      begin
-        yield(path)
-      ensure
-        FileUtils.remove_entry_secure(path)
-      end
-    end
-
-    def tmp_dir_prefix
-      "project-#{project.id}-build-#{build.id}-"
     end
 
     def validate_state!

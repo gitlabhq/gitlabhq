@@ -4,7 +4,6 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
-import getCommitSha from './graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import getLastCommitBranchQuery from './graphql/queries/client/last_commit_branch.query.graphql';
 import getPipelineEtag from './graphql/queries/client/pipeline_etag.graphql';
@@ -26,7 +25,6 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
 
   const {
     // Add to apollo cache as it can be updated by future queries
-    commitSha,
     initialBranchName,
     pipelineEtag,
     // Add to provide/inject API for static values
@@ -58,7 +56,11 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, { typeDefs, useGet: true }),
+    defaultClient: createDefaultClient(resolvers, {
+      typeDefs,
+      useGet: true,
+      assumeImmutableResults: true,
+    }),
   });
   const { cache } = apolloProvider.clients.defaultClient;
 
@@ -66,13 +68,6 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     query: getCurrentBranch,
     data: {
       currentBranch: initialBranchName || defaultBranch,
-    },
-  });
-
-  cache.writeQuery({
-    query: getCommitSha,
-    data: {
-      commitSha,
     },
   });
 

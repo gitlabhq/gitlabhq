@@ -86,6 +86,7 @@ module Gitlab
 
           def create_finding(data, remediations = [])
             identifiers = create_identifiers(data['identifiers'])
+            flags = create_flags(data['flags'])
             links = create_links(data['links'])
             location = create_location(data['location'] || {})
             signatures = create_signatures(tracking_data(data))
@@ -111,6 +112,7 @@ module Gitlab
                 scanner: create_scanner(data['scanner']),
                 scan: report&.scan,
                 identifiers: identifiers,
+                flags: flags,
                 links: links,
                 remediations: remediations,
                 raw_metadata: data.to_json,
@@ -203,6 +205,18 @@ module Gitlab
                 external_id: identifier['value'],
                 name: identifier['name'],
                 url: identifier['url']))
+          end
+
+          def create_flags(flags)
+            return [] unless flags.is_a?(Array)
+
+            flags.map { |flag| create_flag(flag) }.compact
+          end
+
+          def create_flag(flag)
+            return unless flag.is_a?(Hash)
+
+            ::Gitlab::Ci::Reports::Security::Flag.new(type: flag['type'], origin: flag['origin'], description: flag['description'])
           end
 
           def create_links(links)

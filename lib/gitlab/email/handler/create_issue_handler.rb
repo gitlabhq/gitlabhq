@@ -55,7 +55,7 @@ module Gitlab
         private
 
         def create_issue
-          Issues::CreateService.new(
+          ::Issues::CreateService.new(
             project: project,
             current_user: author,
             params: {

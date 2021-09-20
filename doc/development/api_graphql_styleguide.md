@@ -532,7 +532,7 @@ Example:
 ```ruby
 field :foo, GraphQL::Types::String,
       null: true,
-      description: 'Some test field. Will always return `null`' \
+      description: 'Some test field. Returns `null`' \
                    'if `my_feature_flag` feature flag is disabled.'
 
 def foo
@@ -940,7 +940,9 @@ class PostResolver < BaseResolver
 end
 ```
 
-You should never re-use resolvers directly. Resolvers have a complex life-cycle, with
+While you can use the same resolver class in two different places,
+such as in two different fields where the same object is exposed,
+you should never re-use resolver objects directly. Resolvers have a complex life-cycle, with
 authorization, readiness and resolution orchestrated by the framework, and at
 each stage [lazy values](#laziness) can be returned to take advantage of batching
 opportunities. Never instantiate a resolver or a mutation in application code.

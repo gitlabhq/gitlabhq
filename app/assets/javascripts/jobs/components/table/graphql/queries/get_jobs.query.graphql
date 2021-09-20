@@ -69,6 +69,7 @@ query getJobs(
         stuck
         userPermissions {
           readBuild
+          readJobArtifacts
         }
       }
     }

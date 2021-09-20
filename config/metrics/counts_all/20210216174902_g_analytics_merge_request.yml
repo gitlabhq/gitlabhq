@@ -10,9 +10,11 @@ value_type: number
 status: removed
 time_frame: 7d
 data_source: redis_hll
-data_source:
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
+milestone: "<13.9"

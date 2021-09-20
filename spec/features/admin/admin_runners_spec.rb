@@ -356,6 +356,7 @@ RSpec.describe "Admin Runners" do
 
           assigned_project = page.find('[data-testid="assigned-projects"]')
 
+          expect(page).to have_content('Runner assigned to project.')
           expect(assigned_project).to have_content(@project2.path)
         end
       end
@@ -399,13 +400,14 @@ RSpec.describe "Admin Runners" do
         visit admin_runner_path(runner)
       end
 
-      it 'enables specific runner for project' do
+      it 'removed specific runner from project' do
         within '[data-testid="assigned-projects"]' do
           click_on 'Disable'
         end
 
         new_runner_project = page.find('[data-testid="unassigned-projects"]')
 
+        expect(page).to have_content('Runner unassigned from project.')
         expect(new_runner_project).to have_content(@project1.path)
       end
     end

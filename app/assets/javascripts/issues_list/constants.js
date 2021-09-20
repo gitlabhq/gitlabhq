@@ -1,5 +1,3 @@
-import getIssuesCountQuery from 'ee_else_ce/issues_list/queries/get_issues_count.query.graphql';
-import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 import {
   FILTER_ANY,
@@ -22,6 +20,7 @@ const MILESTONE_DUE = 'milestone_due';
 const POPULARITY = 'popularity';
 const WEIGHT = 'weight';
 const LABEL_PRIORITY = 'label_priority';
+const TITLE = 'title';
 export const RELATIVE_POSITION = 'relative_position';
 export const LOADING_LIST_ITEMS_LENGTH = 8;
 export const PAGE_SIZE = 20;
@@ -43,6 +42,8 @@ export const sortOrderMap = {
   relative_position: { order_by: RELATIVE_POSITION, sort: ASC },
   weight_desc: { order_by: WEIGHT, sort: DESC },
   weight: { order_by: WEIGHT, sort: ASC },
+  title: { order_by: TITLE, sort: ASC },
+  title_desc: { order_by: TITLE, sort: DESC },
 };
 
 export const availableSortOptionsJira = [
@@ -146,6 +147,8 @@ export const POPULARITY_DESC = 'POPULARITY_DESC';
 export const PRIORITY_ASC = 'PRIORITY_ASC';
 export const PRIORITY_DESC = 'PRIORITY_DESC';
 export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
+export const TITLE_ASC = 'TITLE_ASC';
+export const TITLE_DESC = 'TITLE_DESC';
 export const UPDATED_ASC = 'UPDATED_ASC';
 export const UPDATED_DESC = 'UPDATED_DESC';
 export const WEIGHT_ASC = 'WEIGHT_ASC';
@@ -163,6 +166,7 @@ const LABEL_PRIORITY_ASC_SORT = 'label_priority_asc';
 const POPULARITY_ASC_SORT = 'popularity_asc';
 const WEIGHT_DESC_SORT = 'weight_desc';
 const BLOCKING_ISSUES_DESC_SORT = 'blocking_issues_desc';
+const TITLE_DESC_SORT = 'title_desc';
 
 export const urlSortParams = {
   [PRIORITY_ASC]: PRIORITY_ASC_SORT,
@@ -183,6 +187,8 @@ export const urlSortParams = {
   [WEIGHT_ASC]: WEIGHT,
   [WEIGHT_DESC]: WEIGHT_DESC_SORT,
   [BLOCKING_ISSUES_DESC]: BLOCKING_ISSUES_DESC_SORT,
+  [TITLE_ASC]: TITLE,
+  [TITLE_DESC]: TITLE_DESC_SORT,
 };
 
 export const MAX_LIST_SIZE = 10;
@@ -350,16 +356,4 @@ export const filters = {
       },
     },
   },
-};
-
-export const issuesCountSmartQueryBase = {
-  query: getIssuesCountQuery,
-  context: {
-    isSingleRequest: true,
-  },
-  update: ({ project }) => project?.issues.count,
-  error(error) {
-    createFlash({ message: i18n.errorFetchingCounts, captureError: true, error });
-  },
-  debounce: 200,
 };

@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Tracking do
     described_class.instance_variable_set("@snowplow", nil)
   end
 
-  describe '.snowplow_options' do
+  describe '.options' do
     it 'returns useful client options' do
       expected_fields = {
         namespace: 'gl',
@@ -22,13 +22,13 @@ RSpec.describe Gitlab::Tracking do
         linkClickTracking: true
       }
 
-      expect(subject.snowplow_options(nil)).to match(expected_fields)
+      expect(subject.options(nil)).to match(expected_fields)
     end
 
     it 'when feature flag is disabled' do
       stub_feature_flags(additional_snowplow_tracking: false)
 
-      expect(subject.snowplow_options(nil)).to include(
+      expect(subject.options(nil)).to include(
         formTracking: false,
         linkClickTracking: false
       )
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Tracking do
       it "delegates to #{klass} destination" do
         other_context = double(:context)
 
-        project = double(:project)
+        project = build_stubbed(:project)
         user = double(:user)
 
         expect(Gitlab::Tracking::StandardContext)

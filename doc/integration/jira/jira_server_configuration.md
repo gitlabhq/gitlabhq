@@ -25,7 +25,7 @@ This process creates a user named `gitlab` and adds it to a new group named `git
 1. Create a new user account (`gitlab`) with write access to
    projects in Jira.
    - **Email address**: Jira requires a valid email address, and sends a verification
-     email, which you need to set up the password.
+     email, which is required to set up the password.
    - **Username**: Jira creates the username by using the email prefix. You can change
      this username later.
    - **Password**: You must create a password, because the GitLab integration doesn't

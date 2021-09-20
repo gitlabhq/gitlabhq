@@ -10,6 +10,7 @@ import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import CommentForm from '~/notes/components/comment_form.vue';
+import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
 import * as constants from '~/notes/constants';
 import eventHub from '~/notes/event_hub';
 import { COMMENT_FORM } from '~/notes/i18n';
@@ -33,8 +34,8 @@ describe('issue_comment_form component', () => {
   const findAddToReviewButton = () => wrapper.findByTestId('add-to-review-button');
   const findAddCommentNowButton = () => wrapper.findByTestId('add-comment-now-button');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('confidential-note-checkbox');
-  const findCommentGlDropdown = () => wrapper.findByTestId('comment-button');
-  const findCommentButton = () => findCommentGlDropdown().find('button');
+  const findCommentTypeDropdown = () => wrapper.findComponent(CommentTypeDropdown);
+  const findCommentButton = () => findCommentTypeDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
 
   async function clickCommentButton({ waitForComponent = true, waitForNetwork = true } = {}) {
@@ -381,7 +382,7 @@ describe('issue_comment_form component', () => {
       it('should render comment button as disabled', () => {
         mountComponent();
 
-        expect(findCommentGlDropdown().props('disabled')).toBe(true);
+        expect(findCommentTypeDropdown().props('disabled')).toBe(true);
       });
 
       it('should enable comment button if it has note', async () => {
@@ -389,7 +390,7 @@ describe('issue_comment_form component', () => {
 
         await wrapper.setData({ note: 'Foo' });
 
-        expect(findCommentGlDropdown().props('disabled')).toBe(false);
+        expect(findCommentTypeDropdown().props('disabled')).toBe(false);
       });
 
       it('should update buttons texts when it has note', () => {
@@ -624,7 +625,7 @@ describe('issue_comment_form component', () => {
       it('when no drafts exist, should not render', () => {
         mountComponent();
 
-        expect(findCommentGlDropdown().exists()).toBe(true);
+        expect(findCommentTypeDropdown().exists()).toBe(true);
         expect(findAddToReviewButton().exists()).toBe(false);
         expect(findAddCommentNowButton().exists()).toBe(false);
       });
@@ -637,7 +638,7 @@ describe('issue_comment_form component', () => {
         it('should render', () => {
           mountComponent();
 
-          expect(findCommentGlDropdown().exists()).toBe(false);
+          expect(findCommentTypeDropdown().exists()).toBe(false);
           expect(findAddToReviewButton().exists()).toBe(true);
           expect(findAddCommentNowButton().exists()).toBe(true);
         });

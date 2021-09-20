@@ -500,15 +500,15 @@ RSpec.describe Note do
     let_it_be(:ext_issue) { create(:issue, project: ext_proj) }
 
     shared_examples "checks references" do
-      it "returns true" do
+      it "returns false" do
         expect(note.system_note_with_references_visible_for?(ext_issue.author)).to be_falsy
       end
 
-      it "returns false" do
+      it "returns true" do
         expect(note.system_note_with_references_visible_for?(private_user)).to be_truthy
       end
 
-      it "returns false if user visible reference count set" do
+      it "returns true if user visible reference count set" do
         note.user_visible_reference_count = 1
         note.total_reference_count = 1
 
@@ -516,7 +516,15 @@ RSpec.describe Note do
         expect(note.system_note_with_references_visible_for?(ext_issue.author)).to be_truthy
       end
 
-      it "returns true if ref count is 0" do
+      it "returns false if user visible reference count set but does not match total reference count" do
+        note.user_visible_reference_count = 1
+        note.total_reference_count = 2
+
+        expect(note).not_to receive(:reference_mentionables)
+        expect(note.system_note_with_references_visible_for?(ext_issue.author)).to be_falsy
+      end
+
+      it "returns false if ref count is 0" do
         note.user_visible_reference_count = 0
 
         expect(note).not_to receive(:reference_mentionables)
@@ -562,13 +570,35 @@ RSpec.describe Note do
       end
 
       it_behaves_like "checks references"
+    end
 
-      it "returns true if user visible reference count set and there is a private reference" do
-        note.user_visible_reference_count = 1
-        note.total_reference_count = 2
+    context "when there is a private issue and user reference" do
+      let_it_be(:ext_issue2) { create(:issue, project: ext_proj) }
 
-        expect(note).not_to receive(:reference_mentionables)
-        expect(note.system_note_with_references_visible_for?(ext_issue.author)).to be_falsy
+      let(:note) do
+        create :note,
+          noteable: ext_issue2, project: ext_proj,
+          note: "mentioned in #{private_issue.to_reference(ext_proj)} and pinged user #{private_user.to_reference}",
+          system: true
+      end
+
+      it_behaves_like "checks references"
+    end
+
+    context "when there is a publicly visible user reference" do
+      let(:note) do
+        create :note,
+          noteable: ext_issue, project: ext_proj,
+          note: "mentioned in #{ext_proj.owner.to_reference}",
+          system: true
+      end
+
+      it "returns true for other users" do
+        expect(note.system_note_with_references_visible_for?(ext_issue.author)).to be_truthy
+      end
+
+      it "returns true for anonymous users" do
+        expect(note.system_note_with_references_visible_for?(nil)).to be_truthy
       end
     end
   end
@@ -1543,7 +1573,15 @@ RSpec.describe Note do
     let(:note) { build(:note) }
 
     it 'returns cache key and author cache key by default' do
-      expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}")
+      expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}:#{note.project.team.human_max_access(note.author_id)}")
+    end
+
+    context 'when note has no author' do
+      let(:note) { build(:note, author: nil) }
+
+      it 'returns cache key only' do
+        expect(note.post_processed_cache_key).to eq("#{note.cache_key}:")
+      end
     end
 
     context 'when note has redacted_note_html' do
@@ -1554,7 +1592,7 @@ RSpec.describe Note do
       end
 
       it 'returns cache key with redacted_note_html sha' do
-        expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}:#{Digest::SHA1.hexdigest(redacted_note_html)}")
+        expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{note.author.cache_key}:#{note.project.team.human_max_access(note.author_id)}:#{Digest::SHA1.hexdigest(redacted_note_html)}")
       end
     end
   end

@@ -8,11 +8,12 @@ module Packages
       API_VERSION = 'v1'
       CHANNEL = 'channel'
       INDEX_YAML_SUFFIX = "/#{CHANNEL}/index.yaml"
+      EMPTY_HASH = {}.freeze
 
-      def initialize(project, project_id_param, package_files)
-        @project = project
+      def initialize(project_id_param, channel, packages)
         @project_id_param = project_id_param
-        @package_files = package_files
+        @channel = channel
+        @packages = packages
       end
 
       def api_version
@@ -20,10 +21,12 @@ module Packages
       end
 
       def entries
-        files = @package_files.preload_helm_file_metadata
+        return EMPTY_HASH unless @channel.present?
+
         result = Hash.new { |h, k| h[k] = [] }
 
-        files.find_each do |package_file|
+        # this .each is safe as we have max 300 objects
+        most_recent_package_files.each do |package_file|
           name = package_file.helm_metadata['name']
           result[name] << package_file.helm_metadata.merge({
             'created' => package_file.created_at.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'),
@@ -47,6 +50,16 @@ module Packages
         {
           'contextPath' => path.delete_suffix(INDEX_YAML_SUFFIX)
         }
+      end
+
+      private
+
+      def most_recent_package_files
+        ::Packages::PackageFile.most_recent_for(
+          @packages,
+          extra_join: :helm_file_metadatum,
+          extra_where: { packages_helm_file_metadata: { channel: @channel } }
+        ).preload_helm_file_metadata
       end
     end
   end

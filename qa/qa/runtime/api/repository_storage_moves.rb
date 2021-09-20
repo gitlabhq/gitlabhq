@@ -5,7 +5,7 @@ module QA
     module API
       module RepositoryStorageMoves
         extend self
-        extend Support::Api
+        extend Support::API
 
         RepositoryStorageMovesError = Class.new(RuntimeError)
 

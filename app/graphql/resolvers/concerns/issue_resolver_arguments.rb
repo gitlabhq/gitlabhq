@@ -30,7 +30,7 @@ module IssueResolverArguments
              description: 'Usernames of users assigned to the issue.'
     argument :assignee_id, GraphQL::Types::String,
              required: false,
-             description: 'ID of a user assigned to the issues, "none" and "any" values are supported.'
+             description: 'ID of a user assigned to the issues. Wildcard values "NONE" and "ANY" are supported.'
     argument :created_before, Types::TimeType,
              required: false,
              description: 'Issues created before this date.'
@@ -59,6 +59,9 @@ module IssueResolverArguments
     argument :milestone_wildcard_id, ::Types::MilestoneWildcardIdEnum,
               required: false,
               description: 'Filter issues by milestone ID wildcard.'
+    argument :my_reaction_emoji, GraphQL::Types::String,
+             required: false,
+             description: 'Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported.'
     argument :not, Types::Issues::NegatedIssueFilterInputType,
              description: 'Negated arguments.',
              prepare: ->(negated_args, ctx) { negated_args.to_h },

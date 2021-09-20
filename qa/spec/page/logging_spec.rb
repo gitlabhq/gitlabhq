@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'capybara/dsl'
-require 'logger'
 
 RSpec.describe QA::Support::Page::Logging do
   let(:page) { double.as_null_object }

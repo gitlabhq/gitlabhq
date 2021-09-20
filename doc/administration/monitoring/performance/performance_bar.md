@@ -72,7 +72,7 @@ From left to right, the performance bar displays:
 
 NOTE:
 Not all indicators are available in all environments. For instance, the memory view
-requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.2/thread-memory-allocations-2.7.patch)
+requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.4/thread-memory-allocations-2.7.patch)
 applied. When running GitLab locally using [GDK](../../../development/contributing/index.md#gitlab-development-kit),
 this is typically not the case and the memory view cannot be used.
 
@@ -104,7 +104,7 @@ The performance bar is disabled by default for non-administrators. To enable it
 for a given group:
 
 1. Sign in as a user with Administrator [role](../../../user/permissions.md).
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**
    (`admin/application_settings/metrics_and_profiling`), and expand
    **Profiling - Performance bar**.

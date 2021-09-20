@@ -182,7 +182,12 @@ describe('AppComponent', () => {
         jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
-        const fetchPagePromise = vm.fetchPage(2, null, null, true);
+        const fetchPagePromise = vm.fetchPage({
+          page: 2,
+          filterGroupsBy: null,
+          sortBy: null,
+          archived: true,
+        });
 
         expect(vm.isLoading).toBe(true);
         expect(vm.fetchGroups).toHaveBeenCalledWith({

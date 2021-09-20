@@ -136,14 +136,14 @@ module QA
         end
 
         def submit_pending_reviews
+          has_element?(:submit_review_button)
           within_element(:review_bar_content) do
             click_element(:review_preview_dropdown)
             click_element(:submit_review_button)
-
-            # After clicking the button, wait for it to disappear
-            # before moving on to the next part of the test
-            has_no_element?(:submit_review_button)
           end
+          # After clicking the button, wait for it to disappear
+          # before moving on to the next part of the test
+          has_no_element?(:submit_review_button)
         end
 
         def add_comment_to_diff(text)
@@ -285,6 +285,17 @@ module QA
           end
 
           raise "Rebase did not appear to be successful" unless success
+        end
+
+        def merge_immediately!
+          merge_moment_dropdown_found = has_element?(:merge_moment_dropdown, wait: 0)
+
+          if merge_moment_dropdown_found
+            click_element(:merge_moment_dropdown)
+            click_element(:merge_immediately_menu_item)
+          else
+            click_element(:merge_button)
+          end
         end
 
         def try_to_merge!

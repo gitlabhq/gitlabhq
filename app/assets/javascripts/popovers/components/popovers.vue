@@ -1,11 +1,5 @@
 <script>
-// We can't use v-safe-html here as the popover's title or content might contains SVGs that would
-// be stripped by the directive's sanitizer. Instead, we fallback on v-html and we use GitLab's
-// dompurify config that lets SVGs be rendered properly.
-// Context: https://gitlab.com/gitlab-org/gitlab/-/issues/247207
-/* eslint-disable vue/no-v-html */
-import { GlPopover } from '@gitlab/ui';
-import { sanitize } from '~/lib/dompurify';
+import { GlPopover, GlSafeHtmlDirective } from '@gitlab/ui';
 
 const newPopover = (element) => {
   const { content, html, placement, title, triggers = 'focus' } = element.dataset;
@@ -23,6 +17,9 @@ const newPopover = (element) => {
 export default {
   components: {
     GlPopover,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   data() {
     return {
@@ -71,9 +68,9 @@ export default {
     popoverExists(element) {
       return this.popovers.some((popover) => popover.target === element);
     },
-    getSafeHtml(html) {
-      return sanitize(html);
-    },
+  },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use'], // to support icon SVGs
   },
 };
 </script>
@@ -82,10 +79,10 @@ export default {
   <div>
     <gl-popover v-for="(popover, index) in popovers" :key="index" v-bind="popover">
       <template #title>
-        <span v-if="popover.html" v-html="getSafeHtml(popover.title)"></span>
+        <span v-if="popover.html" v-safe-html:[$options.safeHtmlConfig]="popover.title"></span>
         <span v-else>{{ popover.title }}</span>
       </template>
-      <span v-if="popover.html" v-html="getSafeHtml(popover.content)"></span>
+      <span v-if="popover.html" v-safe-html:[$options.safeHtmlConfig]="popover.content"></span>
       <span v-else>{{ popover.content }}</span>
     </gl-popover>
   </div>

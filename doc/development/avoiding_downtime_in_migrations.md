@@ -95,9 +95,7 @@ renaming. For example
 
 ```ruby
 # A regular migration in db/migrate
-class RenameUsersUpdatedAtToUpdatedAtTimestamp < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
+class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -125,9 +123,7 @@ We can perform this cleanup using
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class CleanupUsersUpdatedAtRename < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
+class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -174,9 +170,7 @@ as follows:
 
 ```ruby
 # A regular migration in db/migrate
-class ChangeUsersUsernameStringToText < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
+class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -195,9 +189,7 @@ Next we need to clean up our changes using a post-deployment migration:
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class ChangeUsersUsernameStringToTextCleanup < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
+class ChangeUsersUsernameStringToTextCleanup < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
@@ -245,9 +237,7 @@ the work / load over a longer time period, without slowing down deployments.
 For example, to change the column type using a background migration:
 
 ```ruby
-class ExampleMigration < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
+class ExampleMigration < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   class Issue < ActiveRecord::Base
@@ -289,9 +279,7 @@ release) by a cleanup migration, which should steal from the queue and handle
 any remaining rows. For example:
 
 ```ruby
-class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
+class MigrateRemainingIssuesClosedAt < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   class Issue < ActiveRecord::Base

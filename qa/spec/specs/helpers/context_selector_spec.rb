@@ -3,14 +3,14 @@
 require 'rspec/core/sandbox'
 
 RSpec.describe QA::Specs::Helpers::ContextSelector do
-  include Helpers::StubENV
+  include QA::Support::Helpers::StubEnv
   include QA::Specs::Helpers::RSpec
 
   around do |ex|
     QA::Runtime::Scenario.define(:gitlab_address, 'https://staging.gitlab.com')
 
     RSpec::Core::Sandbox.sandboxed do |config|
-      config.formatter = QA::Specs::Helpers::ContextFormatter
+      config.formatter = QA::Support::Formatters::ContextFormatter
 
       # If there is an example-within-an-example, we want to make sure the inner example
       # does not get a reference to the outer example (the real spec) if it calls

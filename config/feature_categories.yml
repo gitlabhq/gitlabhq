@@ -20,7 +20,6 @@
 - chatops
 - cloud_native_installation
 - cluster_cost_management
-- code_analytics
 - code_quality
 - code_review
 - code_testing
@@ -34,6 +33,7 @@
 - continuous_integration_scaling
 - database
 - dataops
+- delivery_management
 - dependency_firewall
 - dependency_proxy
 - dependency_scanning
@@ -42,6 +42,7 @@
 - disaster_recovery
 - dynamic_application_security_testing
 - editor_extension
+- environment_management
 - epics
 - error_tracking
 - experimentation_activation

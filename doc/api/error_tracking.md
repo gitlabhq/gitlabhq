@@ -51,7 +51,7 @@ PATCH /projects/:id/error_tracking/settings
 | ------------ | ------- | -------- | --------------------- |
 | `id`         | integer | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `active`     | boolean | yes      | Pass `true` to enable the already configured error tracking settings or `false` to disable it. |
-| `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. Available in [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68260) and later. |
+| `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. [Available in](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68260) GitLab 14.2 and later. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
@@ -67,4 +67,88 @@ Example response:
   "api_url": "https://sentry.io/api/0/projects/myawesomeproject/project",
   "integrated": false
 }
+```
+
+## Error Tracking client keys
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68384) in GitLab 14.3.
+
+For [integrated error tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) feature that is behind a disabled feature flag. Only for project maintainers.
+
+### List project client keys
+
+```plaintext
+GET /projects/:id/error_tracking/client_keys
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "active": true,
+    "public_key": "glet_aa77551d849c083f76d0bc545ed053a3",
+    "sentry_dsn": "https://glet_aa77551d849c083f76d0bc545ed053a3@gitlab.example.com/api/v4/error_tracking/collector/5"
+  },
+  {
+    "id": 3,
+    "active": true,
+    "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3",
+    "sentry_dsn": "https://glet_0ff98b1d849c083f76d0bc545ed053a3@gitlab.example.com/api/v4/error_tracking/collector/5"
+  }
+]
+```
+
+### Create a client key
+
+Creates a new client key for a project. The public key attribute is generated automatically.
+
+```plaintext
+POST /projects/:id/error_tracking/client_keys
+```
+
+| Attribute  | Type | Required | Description |
+| ---------  | ---- | -------- | ----------- |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
+```
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "active": true,
+  "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3",
+  "sentry_dsn": "https://glet_0ff98b1d849c083f76d0bc545ed053a3@gitlab.example.com/api/v4/error_tracking/collector/5"
+}
+```
+
+### Delete a client key
+
+Removes a client key from the project.
+
+```plaintext
+DELETE /projects/:id/error_tracking/client_keys/:key_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `key_id`  | integer | yes | The ID of the client key. |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys/13"
 ```

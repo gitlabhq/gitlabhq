@@ -145,7 +145,7 @@ may see the following message: `Access denied for your LDAP account`.
 
 We have a workaround, based on toggling the access level of affected users:
 
-1. As an administrator, on the top bar, select **Menu >** **{admin}** **Admin**.
+1. As an administrator, on the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the name of the affected user.
 1. In the user's administrative page, press **Edit** on the top right of the page.
@@ -203,7 +203,7 @@ field contains no data:
 
 To resolve this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, go to **Settings > General**.
 1. Expand both of the following:
    - **Account and limit**.
@@ -336,7 +336,7 @@ Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 
 ### Group memberships **(PREMIUM SELF)**
 
-#### Membership(s) not granted **(PREMIUM SELF)**
+#### Membership(s) not granted
 
 Sometimes you may think a particular user should be added to a GitLab group via
 LDAP group sync, but for some reason it's not happening. There are several
@@ -345,10 +345,10 @@ things to check to debug the situation.
 - Ensure LDAP configuration has a `group_base` specified.
   [This configuration](index.md#group-sync) is required for group sync to work properly.
 - Ensure the correct [LDAP group link is added to the GitLab
-  group](index.md#adding-group-links).
+  group](index.md#add-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
-  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Overview > Users**.
   1. Search for the user.
   1. Open the user by clicking their name. Do not click **Edit**.
@@ -356,7 +356,7 @@ things to check to debug the situation.
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured
-  interval](index.md#adjusting-ldap-group-sync-schedule) for the group to
+  interval](index.md#adjust-ldap-group-sync-schedule) for the group to
   sync. To speed up the process, either go to the GitLab group **Group information > Members**
   and press **Sync now** (sync one group) or [run the group sync Rake
   task](../../raketasks/ldap.md#run-a-group-sync) (sync all groups).
@@ -395,7 +395,7 @@ group sync](#sync-all-groups) in the rails console and [look through the
 output](#example-console-output-after-a-group-sync) to see what happens when
 GitLab syncs the `admin_group`.
 
-#### Sync all groups **(PREMIUM SELF)**
+#### Sync all groups
 
 NOTE:
 To sync all groups manually when debugging is unnecessary, [use the Rake
@@ -413,7 +413,7 @@ LdapAllGroupsSyncWorker.new.perform
 Next, [learn how to read the
 output](#example-console-output-after-a-group-sync).
 
-##### Example console output after a group sync **(PREMIUM SELF)**
+##### Example console output after a group sync
 
 Like the output from the user sync, the output from the [manual group
 sync](#sync-all-groups) is also very verbose. However, it contains lots
@@ -503,7 +503,7 @@ stating as such:
 No `admin_group` configured for 'ldapmain' provider. Skipping
 ```
 
-#### Sync one group **(PREMIUM SELF)**
+#### Sync one group
 
 [Syncing all groups](#sync-all-groups) can produce a lot of noise in the output, which can be
 distracting when you're only interested in troubleshooting the memberships of
@@ -525,7 +525,7 @@ EE::Gitlab::Auth::Ldap::Sync::Group.execute_all_providers(group)
 The output is similar to
 [that you get from syncing all groups](#example-console-output-after-a-group-sync).
 
-#### Query a group in LDAP **(PREMIUM SELF)**
+#### Query a group in LDAP
 
 When you'd like to confirm that GitLab can read a LDAP group and see all its members,
 you can run the following:

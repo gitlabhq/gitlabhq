@@ -17,13 +17,9 @@ module Sidebars
           add_item(monitor_menu_item)
           add_item(pages_menu_item)
           add_item(packages_and_registries_menu_item)
+          add_item(usage_quotas_menu_item)
 
           true
-        end
-
-        override :link
-        def link
-          edit_project_path(context.project)
         end
 
         override :title
@@ -144,6 +140,19 @@ module Sidebars
             link: project_settings_packages_and_registries_path(context.project),
             active_routes: { path: 'packages_and_registries#index' },
             item_id: :packages_and_registries
+          )
+        end
+
+        def usage_quotas_menu_item
+          unless Feature.enabled?(:project_storage_ui, context.project&.group, default_enabled: :yaml)
+            return ::Sidebars::NilMenuItem.new(item_id: :usage_quotas)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: s_('UsageQuota|Usage Quotas'),
+            link: project_usage_quotas_path(context.project),
+            active_routes: { path: 'usage_quotas#index' },
+            item_id: :usage_quotas
           )
         end
       end

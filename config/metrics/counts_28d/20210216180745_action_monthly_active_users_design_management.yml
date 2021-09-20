@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::product planning
 product_category: design_management
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 distribution:
@@ -19,3 +19,4 @@ tier:
 - ultimate
 performance_indicator_type:
 - paid_gmau
+milestone: "<13.9"

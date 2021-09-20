@@ -2,6 +2,7 @@
 import { GlAlert, GlPagination, GlSkeletonLoader } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { GRAPHQL_PAGE_SIZE, initialPaginationState } from './constants';
+import eventHub from './event_hub';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import JobsTable from './jobs_table.vue';
 import JobsTableEmptyState from './jobs_table_empty_state.vue';
@@ -74,7 +75,16 @@ export default {
       return Boolean(this.prevPage || this.nextPage) && !this.$apollo.loading;
     },
   },
+  mounted() {
+    eventHub.$on('jobActionPerformed', this.handleJobAction);
+  },
+  beforeDestroy() {
+    eventHub.$off('jobActionPerformed', this.handleJobAction);
+  },
   methods: {
+    handleJobAction() {
+      this.$apollo.queries.jobs.refetch({ statuses: this.scope });
+    },
     fetchJobsByStatus(scope) {
       this.scope = scope;
 

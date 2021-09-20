@@ -1,14 +1,15 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_management_project
-name: "count_distinct_user_id_from_management_project_clusters"
-description: Number of Kubernetes clusters with clusters management project being set
+name: count_distinct_user_id_from_management_project_clusters
+description: Number of Kubernetes clusters with clusters management project being
+  set
 product_section: ops
 product_stage: configure
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: database
 distribution:
@@ -19,3 +20,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

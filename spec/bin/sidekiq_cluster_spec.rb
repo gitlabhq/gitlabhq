@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'shellwords'
+require 'rspec-parameterized'
 
-RSpec.describe 'bin/sidekiq-cluster' do
+RSpec.describe 'bin/sidekiq-cluster', :aggregate_failures do
   using RSpec::Parameterized::TableSyntax
+
+  let(:root) { File.expand_path('../..', __dir__) }
 
   context 'when selecting some queues and excluding others' do
     where(:args, :included, :excluded) do
@@ -13,10 +16,10 @@ RSpec.describe 'bin/sidekiq-cluster' do
     end
 
     with_them do
-      it 'runs successfully', :aggregate_failures do
+      it 'runs successfully' do
         cmd = %w[bin/sidekiq-cluster --dryrun] + args
 
-        output, status = Gitlab::Popen.popen(cmd, Rails.root.to_s)
+        output, status = Gitlab::Popen.popen(cmd, root)
 
         expect(status).to be(0)
         expect(output).to include('bundle exec sidekiq')
@@ -31,15 +34,31 @@ RSpec.describe 'bin/sidekiq-cluster' do
       %w[*],
       %w[--queue-selector *]
     ].each do |args|
-      it "runs successfully with `#{args}`", :aggregate_failures do
+      it "runs successfully with `#{args}`" do
         cmd = %w[bin/sidekiq-cluster --dryrun] + args
 
-        output, status = Gitlab::Popen.popen(cmd, Rails.root.to_s)
+        output, status = Gitlab::Popen.popen(cmd, root)
 
         expect(status).to be(0)
         expect(output).to include('bundle exec sidekiq')
         expect(Shellwords.split(output)).to include('-qdefault,1')
         expect(Shellwords.split(output)).to include('-qcronjob:ci_archive_traces_cron,1')
+      end
+    end
+  end
+
+  context 'when arguments contain newlines' do
+    it 'raises an error' do
+      [
+        ["default\n"],
+        ["defaul\nt"]
+      ].each do |args|
+        cmd = %w[bin/sidekiq-cluster --dryrun] + args
+
+        output, status = Gitlab::Popen.popen(cmd, root)
+
+        expect(status).to be(1)
+        expect(output).to include('cannot contain newlines')
       end
     end
   end

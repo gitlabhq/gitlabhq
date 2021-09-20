@@ -148,13 +148,13 @@ RSpec.describe Gitlab::SearchResults do
       end
     end
 
-    it 'includes merge requests from source and target projects' do
+    it 'does not include merge requests from source projects' do
       forked_project = fork_project(project, user)
       merge_request_2 = create(:merge_request, target_project: project, source_project: forked_project, title: 'foo')
 
       results = described_class.new(user, 'foo', Project.where(id: forked_project.id))
 
-      expect(results.objects('merge_requests')).to include merge_request_2
+      expect(results.objects('merge_requests')).not_to include merge_request_2
     end
 
     describe '#merge_requests' do

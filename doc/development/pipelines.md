@@ -64,7 +64,7 @@ graph LR
     click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
     1-2["docs-lint markdown (1.5 minutes)"];
     click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=10224335&udv=0"
-    1-3["docs-lint links (6 minutes)"];
+    1-3["docs-lint links (5 minutes)"];
     click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356757&udv=0"
     1-4["ui-docs-links lint (2.5 minutes)"];
     click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=10823717&udv=1020379"
@@ -104,7 +104,7 @@ graph RL;
     1-18["kubesec-sast"];
     1-19["nodejs-scan-sast"];
     1-20["secrets-sast"];
-    1-21["static-analysis (30 minutes)"];
+    1-21["static-analysis (14 minutes)"];
     click 1-21 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
 
     class 1-3 criticalPath;
@@ -123,7 +123,7 @@ graph RL;
     2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
   end
 
-  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (11 minutes)"];
+  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (7 minutes)"];
   class 2_2-2 criticalPath;
   click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
   2_2-4["memory-on-boot (3.5 minutes)"];
@@ -152,16 +152,14 @@ graph RL;
     click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   end
 
-  3_1-1["jest (16 minutes)"];
+  3_1-1["jest (14.5 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  3_1-2["karma (2 minutes)"];
-  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
   subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
-    3_1-1 & 3_1-2 --> 2_2-2;
+    3_1-1 --> 2_2-2;
   end
 
-  3_2-1["rspec:coverage (5.3 minutes)"];
+  3_2-1["rspec:coverage (4 minutes)"];
   subgraph "Depends on `rspec` jobs";
     3_2-1 -.->|"(don't use needs because of limitations)"| 2_5-1;
     click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
@@ -208,7 +206,7 @@ graph RL;
     1-18["kubesec-sast"];
     1-19["nodejs-scan-sast"];
     1-20["secrets-sast"];
-    1-21["static-analysis (30 minutes)"];
+    1-21["static-analysis (14 minutes)"];
     click 1-21 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
 
     class 1-3 criticalPath;
@@ -228,7 +226,7 @@ graph RL;
     2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
   end
 
-  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (11 minutes)"];
+  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (7 minutes)"];
   class 2_2-2 criticalPath;
   click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
   2_2-4["memory-on-boot (3.5 minutes)"];
@@ -265,16 +263,14 @@ graph RL;
     click 2_6-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914314&udv=0"
   end
 
-  3_1-1["jest (16 minutes)"];
+  3_1-1["jest (14.5 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  3_1-2["karma (2 minutes)"];
-  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
   subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
-    3_1-1 & 3_1-2 --> 2_2-2;
+    3_1-1 --> 2_2-2;
   end
 
-  3_2-1["rspec:coverage (5.3 minutes)"];
+  3_2-1["rspec:coverage (4 minutes)"];
   subgraph "Depends on `rspec` jobs";
     3_2-1 -.->|"(don't use needs because of limitations)"| 2_5-1;
     click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
@@ -287,7 +283,7 @@ graph RL;
     click 4_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910777&udv=0"
   end
 
-  3_3-1["review-deploy (10.5 minutes)"];
+  3_3-1["review-deploy (9 minutes)"];
   subgraph "Played by `review-build-cng`";
     3_3-1 --> 2_6-1;
     class 3_3-1 criticalPath;
@@ -336,7 +332,7 @@ graph RL;
     1-18["kubesec-sast"];
     1-19["nodejs-scan-sast"];
     1-20["secrets-sast"];
-    1-21["static-analysis (30 minutes)"];
+    1-21["static-analysis (14 minutes)"];
     click 1-21 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
 
     class 1-5 criticalPath;
@@ -354,7 +350,7 @@ graph RL;
     class 2_3-1 criticalPath;
   end
 
-  2_4-1["package-and-qa (140 minutes)"];
+  2_4-1["package-and-qa (113 minutes)"];
   subgraph "Needs `build-qa-image` & `build-assets-image`";
     2_4-1 --> 1-2 & 2_3-1;
     class 2_4-1 criticalPath;
@@ -434,10 +430,27 @@ In the `detect-tests` job, we use this mapping to identify the minimal tests nee
 After a merge request has been approved, the pipeline would contain the full RSpec tests. This will ensure that all tests
 have been run before a merge request is merged.
 
+### Jest minimal jobs
+
+Before a merge request is approved, the pipeline will run a minimal set of Jest tests that are related to the merge request changes.
+This is to reduce the pipeline cost and shorten the job duration.
+
+To identify the minimal set of tests needed, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
+In this mode, `jest` would resolve all the dependencies of related to the changed files, which include test files that have these files in the dependency chain.
+
+After a merge request has been approved, the pipeline would contain the full Jest tests. This will ensure that all tests
+have been run before a merge request is merged.
+
+In addition, there are a few circumstances where we would always run the full Jest tests:
+
+- when `package.json`, `yarn.lock`, `jest` config changes
+- when vendored JavaScript is changed
+- when `.graphql` files are changed
+
 ### PostgreSQL versions testing
 
 Our test suite runs against PG12 as GitLab.com runs on PG12 and
-[Omnibus defaults to PG12 for new installs and upgrades](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html),
+[Omnibus defaults to PG12 for new installs and upgrades](../administration/package_information/postgresql_versions.md),
 Our test suite is currently running against PG11, since GitLab.com still runs on PG11.
 
 We do run our test suite against PG11 on nightly scheduled pipelines as well as upon specific
@@ -454,7 +467,7 @@ database library changes in MRs and `main` pipelines (with the `rspec db-library
 
 #### Long-term plan
 
-We follow the [PostgreSQL versions shipped with Omnibus GitLab](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html):
+We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administration/package_information/postgresql_versions.md):
 
 | PostgreSQL version | 13.11 (April 2021)     | 13.12 (May 2021)       | 14.0 (June 2021?)      |
 | -------------------| ---------------------- | ---------------------- | ---------------------- |
@@ -627,7 +640,6 @@ that is deployed in stage `review`.
   the `qa` stage's jobs (for example, Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as
   GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
-  [`coverage-javascript`](https://gitlab-org.gitlab.io/gitlab/coverage-javascript/),
   and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
   [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
 - `notify`: This stage includes jobs that notify various failures to Slack.

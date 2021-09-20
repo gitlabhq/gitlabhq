@@ -77,12 +77,12 @@ describe('Boards - Getters', () => {
   });
 
   describe('getBoardItemById', () => {
-    const state = { boardItems: { 1: 'issue' } };
+    const state = { boardItems: { 'gid://gitlab/Issue/1': 'issue' } };
 
     it.each`
-      id     | expected
-      ${'1'} | ${'issue'}
-      ${''}  | ${{}}
+      id                        | expected
+      ${'gid://gitlab/Issue/1'} | ${'issue'}
+      ${''}                     | ${{}}
     `('returns $expected when $id is passed to state', ({ id, expected }) => {
       expect(getters.getBoardItemById(state)(id)).toEqual(expected);
     });
@@ -90,11 +90,11 @@ describe('Boards - Getters', () => {
 
   describe('activeBoardItem', () => {
     it.each`
-      id     | expected
-      ${'1'} | ${'issue'}
-      ${''}  | ${{ id: '', iid: '', fullId: '' }}
+      id                        | expected
+      ${'gid://gitlab/Issue/1'} | ${'issue'}
+      ${''}                     | ${{ id: '', iid: '' }}
     `('returns $expected when $id is passed to state', ({ id, expected }) => {
-      const state = { boardItems: { 1: 'issue' }, activeId: id };
+      const state = { boardItems: { 'gid://gitlab/Issue/1': 'issue' }, activeId: id };
 
       expect(getters.activeBoardItem(state)).toEqual(expected);
     });

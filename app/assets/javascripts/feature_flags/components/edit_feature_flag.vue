@@ -48,7 +48,7 @@ export default {
         <gl-toggle
           :value="active"
           data-testid="feature-flag-status-toggle"
-          data-track-event="click_button"
+          data-track-action="click_button"
           data-track-label="feature_flag_toggle"
           class="gl-mr-4"
           :label="__('Feature flag status')"

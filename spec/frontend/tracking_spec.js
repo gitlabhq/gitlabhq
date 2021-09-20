@@ -1,10 +1,15 @@
 import { setHTMLFixture } from 'helpers/fixtures';
+import { TEST_HOST } from 'helpers/test_constants';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
-import { getExperimentData } from '~/experimentation/utils';
+import { getExperimentData, getAllExperimentContexts } from '~/experimentation/utils';
 import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
+import { REFERRER_TTL, URLS_CACHE_STORAGE_KEY } from '~/tracking/constants';
 import getStandardContext from '~/tracking/get_standard_context';
 
-jest.mock('~/experimentation/utils', () => ({ getExperimentData: jest.fn() }));
+jest.mock('~/experimentation/utils', () => ({
+  getExperimentData: jest.fn(),
+  getAllExperimentContexts: jest.fn(),
+}));
 
 describe('Tracking', () => {
   let standardContext;
@@ -12,9 +17,11 @@ describe('Tracking', () => {
   let bindDocumentSpy;
   let trackLoadEventsSpy;
   let enableFormTracking;
+  let setAnonymousUrlsSpy;
 
   beforeAll(() => {
     window.gl = window.gl || {};
+    window.gl.snowplowUrls = {};
     window.gl.snowplowStandardContext = {
       schema: 'iglu:com.gitlab/gitlab_standard',
       data: {
@@ -29,6 +36,7 @@ describe('Tracking', () => {
 
   beforeEach(() => {
     getExperimentData.mockReturnValue(undefined);
+    getAllExperimentContexts.mockReturnValue([]);
 
     window.snowplow = window.snowplow || (() => {});
     window.snowplowOptions = {
@@ -70,6 +78,7 @@ describe('Tracking', () => {
       enableFormTracking = jest
         .spyOn(Tracking, 'enableFormTracking')
         .mockImplementation(() => null);
+      setAnonymousUrlsSpy = jest.spyOn(Tracking, 'setAnonymousUrls').mockImplementation(() => null);
     });
 
     it('should activate features based on what has been enabled', () => {
@@ -99,6 +108,36 @@ describe('Tracking', () => {
     it('tracks page loaded events', () => {
       initDefaultTrackers();
       expect(trackLoadEventsSpy).toHaveBeenCalled();
+    });
+
+    it('calls the anonymized URLs method', () => {
+      initDefaultTrackers();
+      expect(setAnonymousUrlsSpy).toHaveBeenCalled();
+    });
+
+    describe('when there are experiment contexts', () => {
+      const experimentContexts = [
+        {
+          schema: TRACKING_CONTEXT_SCHEMA,
+          data: { experiment: 'experiment1', variant: 'control' },
+        },
+        {
+          schema: TRACKING_CONTEXT_SCHEMA,
+          data: { experiment: 'experiment_two', variant: 'candidate' },
+        },
+      ];
+
+      beforeEach(() => {
+        getAllExperimentContexts.mockReturnValue(experimentContexts);
+      });
+
+      it('includes those contexts alongside the standard context', () => {
+        initDefaultTrackers();
+        expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [
+          standardContext,
+          ...experimentContexts,
+        ]);
+      });
     });
   });
 
@@ -266,6 +305,110 @@ describe('Tracking', () => {
     });
   });
 
+  describe('.setAnonymousUrls', () => {
+    afterEach(() => {
+      window.gl.snowplowPseudonymizedPageUrl = '';
+      localStorage.removeItem(URLS_CACHE_STORAGE_KEY);
+    });
+
+    it('does nothing if URLs are not provided', () => {
+      Tracking.setAnonymousUrls();
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+      expect(localStorage.getItem(URLS_CACHE_STORAGE_KEY)).toBe(null);
+    });
+
+    it('sets the page URL when provided and populates the cache', () => {
+      window.gl.snowplowPseudonymizedPageUrl = TEST_HOST;
+
+      Tracking.setAnonymousUrls();
+
+      expect(snowplowSpy).toHaveBeenCalledWith('setCustomUrl', TEST_HOST);
+      expect(JSON.parse(localStorage.getItem(URLS_CACHE_STORAGE_KEY))[0]).toStrictEqual({
+        url: TEST_HOST,
+        referrer: '',
+        originalUrl: window.location.href,
+        timestamp: Date.now(),
+      });
+    });
+
+    it('appends the hash/fragment to the pseudonymized URL', () => {
+      const hash = 'first-heading';
+      window.gl.snowplowPseudonymizedPageUrl = TEST_HOST;
+      window.location.hash = hash;
+
+      Tracking.setAnonymousUrls();
+
+      expect(snowplowSpy).toHaveBeenCalledWith('setCustomUrl', `${TEST_HOST}#${hash}`);
+    });
+
+    it('does not set the referrer URL by default', () => {
+      window.gl.snowplowPseudonymizedPageUrl = TEST_HOST;
+
+      Tracking.setAnonymousUrls();
+
+      expect(snowplowSpy).not.toHaveBeenCalledWith('setReferrerUrl', expect.any(String));
+    });
+
+    describe('with referrers cache', () => {
+      const testUrl = '/namespace:1/project:2/-/merge_requests/5';
+      const testOriginalUrl = '/my-namespace/my-project/-/merge_requests/';
+      const setUrlsCache = (data) =>
+        localStorage.setItem(URLS_CACHE_STORAGE_KEY, JSON.stringify(data));
+
+      beforeEach(() => {
+        window.gl.snowplowPseudonymizedPageUrl = TEST_HOST;
+        Object.defineProperty(document, 'referrer', { value: '', configurable: true });
+      });
+
+      it('does nothing if a referrer can not be found', () => {
+        setUrlsCache([
+          {
+            url: testUrl,
+            originalUrl: TEST_HOST,
+            timestamp: Date.now(),
+          },
+        ]);
+
+        Tracking.setAnonymousUrls();
+
+        expect(snowplowSpy).not.toHaveBeenCalledWith('setReferrerUrl', expect.any(String));
+      });
+
+      it('sets referrer URL from the page URL found in cache', () => {
+        Object.defineProperty(document, 'referrer', { value: testOriginalUrl });
+        setUrlsCache([
+          {
+            url: testUrl,
+            originalUrl: testOriginalUrl,
+            timestamp: Date.now(),
+          },
+        ]);
+
+        Tracking.setAnonymousUrls();
+
+        expect(snowplowSpy).toHaveBeenCalledWith('setReferrerUrl', testUrl);
+      });
+
+      it('ignores and removes old entries from the cache', () => {
+        const oldTimestamp = Date.now() - (REFERRER_TTL + 1);
+        Object.defineProperty(document, 'referrer', { value: testOriginalUrl });
+        setUrlsCache([
+          {
+            url: testUrl,
+            originalUrl: testOriginalUrl,
+            timestamp: oldTimestamp,
+          },
+        ]);
+
+        Tracking.setAnonymousUrls();
+
+        expect(snowplowSpy).not.toHaveBeenCalledWith('setReferrerUrl', testUrl);
+        expect(localStorage.getItem(URLS_CACHE_STORAGE_KEY)).not.toContain(oldTimestamp);
+      });
+    });
+  });
+
   describe.each`
     term
     ${'event'}
@@ -349,7 +492,7 @@ describe('Tracking', () => {
     it('includes experiment data if linked to an experiment', () => {
       const mockExperimentData = {
         variant: 'candidate',
-        experiment: 'repo_integrations_link',
+        experiment: 'example',
         key: '2bff73f6bb8cc11156c50a8ba66b9b8b',
       };
       getExperimentData.mockReturnValue(mockExperimentData);

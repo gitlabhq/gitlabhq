@@ -46,7 +46,7 @@ The security dashboard and vulnerability report displays information about vulne
 
 ## Pipeline Security
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13496) in GitLab 12.3.
 
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of
 the project the pipeline ran against.
@@ -64,7 +64,7 @@ the analyzer outputs an
 
 ### Scan details
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3728) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3728) in GitLab 13.10.
 
 The **Scan details** section lists the scans run in the pipeline and the total number of
 vulnerabilities per scan. For the DAST scan, select **Download scanned resources** to download a
@@ -104,7 +104,7 @@ To download an SVG image of the chart, select **Save chart to an image** (**{dow
 
 ## Group Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in GitLab 11.5.
 
 The group Security Dashboard gives an overview of the vulnerabilities found in the default branches of the
 projects in a group and its subgroups. Access it by navigating to **Security > Security Dashboard**
@@ -139,7 +139,7 @@ Navigate to the group's [vulnerability report](../vulnerability_report/index.md)
 
 ## Security Center
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in GitLab 13.4.
 
 The Security Center is personal space where you manage vulnerabilities across all your projects. It
 displays the vulnerabilities present in the default branches of all the projects you configure. It includes
@@ -166,22 +166,17 @@ To add projects to the Security Center:
 After you add projects, the security dashboard and vulnerability report display the vulnerabilities
 found in those projects' default branches.
 
-## Keeping the dashboards up to date
+## Keep dashboards up to date
 
-The Security Dashboard displays information from the results of the most recent
-security scan on the [default branch](../../project/repository/branches/default.md),
-which means that security scans are performed every time the branch is updated.
-
-If the default branch is updated infrequently, scans are run infrequently and the
-information on the Security Dashboard can become outdated as new vulnerabilities
-are discovered.
+The Security Dashboard displays results of the most recent security scan on the
+[default branch](../../project/repository/branches/default.md). By default, security scans are run
+only when the default branch is updated. Information on the Security Dashboard may not reflect
+newly-discovered vulnerabilities.
 
 To ensure the information on the Security Dashboard is regularly updated,
-[configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a
-daily security scan. This updates the information displayed on the Security
-Dashboard regardless of how often the default branch is updated.
-
-That way, reports are created even if no code change happens.
+[configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a daily security scan.
+This updates the information displayed on the Security Dashboard regardless of how often the default
+branch is updated.
 
 WARNING:
 Running Dependency Scanning from a scheduled pipeline might result in false negatives if your
@@ -190,12 +185,6 @@ that lists all transient dependencies and keeps track of their exact versions. T
 can occur because the dependency version resolved during the scan might differ from the ones
 resolved when your project was built and released, in a previous pipeline. Java projects can't have
 lock files. Python projects can have lock files, but GitLab Secure tools don't support them.
-
-## Security scans using Auto DevOps
-
-When using [Auto DevOps](../../../topics/autodevops/index.md), use
-[special environment variables](../../../topics/autodevops/customize.md#cicd-variables)
-to configure daily security scans.
 
 <!-- ## Troubleshooting
 

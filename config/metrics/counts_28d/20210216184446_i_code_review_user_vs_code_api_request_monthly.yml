@@ -6,13 +6,13 @@ product_stage: create
 product_group: group::code review
 product_category: editor_extension
 value_type: number
-status: data_available
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_code_review_user_vs_code_api_request
+  - i_code_review_user_vs_code_api_request
 distribution:
 - ce
 - ee
@@ -21,3 +21,4 @@ tier:
 - premium
 - ultimate
 performance_indicator_type: []
+milestone: "<13.9"

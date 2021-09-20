@@ -34,7 +34,17 @@ module API
       end
 
       def self.sort_options
-        %w[created_at updated_at priority due_date relative_position label_priority milestone_due popularity]
+        %w[
+          created_at
+          due_date
+          label_priority
+          milestone_due
+          popularity
+          priority
+          relative_position
+          title
+          updated_at
+        ]
       end
 
       def issue_finder(args = {})
@@ -43,9 +53,11 @@ module API
         args.delete(:id)
         args[:not] ||= {}
         args[:milestone_title] ||= args.delete(:milestone)
-        args[:not][:milestone_title] ||= args[:not]&.delete(:milestone)
+        args[:milestone_wildcard_id] ||= args.delete(:milestone_id)
+        args[:not][:milestone_title] ||= args[:not].delete(:milestone)
+        args[:not][:milestone_wildcard_id] ||= args[:not].delete(:milestone_id)
         args[:label_name] ||= args.delete(:labels)
-        args[:not][:label_name] ||= args[:not]&.delete(:labels)
+        args[:not][:label_name] ||= args[:not].delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
         args[:sort] = "#{args[:order_by]}_#{args[:sort]}"
         args[:issue_types] ||= args.delete(:issue_type)

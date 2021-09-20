@@ -9,11 +9,12 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { cloneDeep } from 'lodash';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
+import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
 import createFlash from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
@@ -21,7 +22,6 @@ import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
   CREATED_DESC,
   i18n,
-  issuesCountSmartQueryBase,
   MAX_LIST_SIZE,
   PAGE_SIZE,
   PARAM_DUE_DATE,
@@ -117,8 +117,14 @@ export default {
     exportCsvPath: {
       default: '',
     },
+    fullPath: {
+      default: '',
+    },
     groupEpicsPath: {
       default: '',
+    },
+    hasAnyIssues: {
+      default: false,
     },
     hasBlockedIssuesFeature: {
       default: false,
@@ -132,25 +138,19 @@ export default {
     hasMultipleIssueAssigneesFeature: {
       default: false,
     },
-    hasProjectIssues: {
-      default: false,
-    },
     initialEmail: {
       default: '',
     },
-    isSignedIn: {
+    isProject: {
       default: false,
     },
-    issuesPath: {
-      default: '',
+    isSignedIn: {
+      default: false,
     },
     jiraIntegrationPath: {
       default: '',
     },
     newIssuePath: {
-      default: '',
-    },
-    projectPath: {
       default: '',
     },
     rssPath: {
@@ -164,18 +164,16 @@ export default {
     },
   },
   data() {
-    const filterTokens = getFilterTokens(window.location.search);
     const state = getParameterByName(PARAM_STATE);
     const sortKey = getSortKey(getParameterByName(PARAM_SORT));
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
 
-    this.initialFilterTokens = cloneDeep(filterTokens);
-
     return {
       dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
-      filterTokens,
+      filterTokens: getFilterTokens(window.location.search),
       issues: [],
+      issuesCounts: {},
       pageInfo: {},
       pageParams: getInitialPageParams(sortKey),
       showBulkEditSidebar: false,
@@ -189,67 +187,56 @@ export default {
       variables() {
         return this.queryVariables;
       },
-      update: ({ project }) => project?.issues.nodes ?? [],
+      update(data) {
+        return data[this.namespace]?.issues.nodes ?? [];
+      },
       result({ data }) {
-        this.pageInfo = data.project?.issues.pageInfo ?? {};
+        this.pageInfo = data[this.namespace]?.issues.pageInfo ?? {};
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
         createFlash({ message: this.$options.i18n.errorFetchingIssues, captureError: true, error });
       },
       skip() {
-        return !this.hasProjectIssues;
+        return !this.hasAnyIssues;
       },
       debounce: 200,
     },
-    countOpened: {
-      ...issuesCountSmartQueryBase,
+    issuesCounts: {
+      query: getIssuesCountsQuery,
       variables() {
-        return {
-          ...this.queryVariables,
-          state: IssuableStates.Opened,
-        };
+        return this.queryVariables;
+      },
+      update(data) {
+        return data[this.namespace] ?? {};
+      },
+      error(error) {
+        createFlash({ message: this.$options.i18n.errorFetchingCounts, captureError: true, error });
       },
       skip() {
-        return !this.hasProjectIssues;
+        return !this.hasAnyIssues;
       },
-    },
-    countClosed: {
-      ...issuesCountSmartQueryBase,
-      variables() {
-        return {
-          ...this.queryVariables,
-          state: IssuableStates.Closed,
-        };
-      },
-      skip() {
-        return !this.hasProjectIssues;
-      },
-    },
-    countAll: {
-      ...issuesCountSmartQueryBase,
-      variables() {
-        return {
-          ...this.queryVariables,
-          state: IssuableStates.All,
-        };
-      },
-      skip() {
-        return !this.hasProjectIssues;
+      debounce: 200,
+      context: {
+        isSingleRequest: true,
       },
     },
   },
   computed: {
     queryVariables() {
       return {
+        fullPath: this.fullPath,
+        isProject: this.isProject,
         isSignedIn: this.isSignedIn,
-        projectPath: this.projectPath,
         search: this.searchQuery,
         sort: this.sortKey,
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
       };
+    },
+    namespace() {
+      return this.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;
     },
     hasSearch() {
       return this.searchQuery || Object.keys(this.urlFilterParams).length;
@@ -262,6 +249,9 @@ export default {
     },
     isOpenTab() {
       return this.state === IssuableStates.Opened;
+    },
+    showCsvButtons() {
+      return this.isProject && this.isSignedIn;
     },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
@@ -405,10 +395,11 @@ export default {
       return getSortOptions(this.hasIssueWeightsFeature, this.hasBlockedIssuesFeature);
     },
     tabCounts() {
+      const { openedIssues, closedIssues, allIssues } = this.issuesCounts;
       return {
-        [IssuableStates.Opened]: this.countOpened,
-        [IssuableStates.Closed]: this.countClosed,
-        [IssuableStates.All]: this.countAll,
+        [IssuableStates.Opened]: openedIssues?.count,
+        [IssuableStates.Closed]: closedIssues?.count,
+        [IssuableStates.All]: allIssues?.count,
       };
     },
     currentTabCount() {
@@ -465,39 +456,41 @@ export default {
       return this.$apollo
         .query({
           query: searchLabelsQuery,
-          variables: { projectPath: this.projectPath, search },
+          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
-        .then(({ data }) => data.project.labels.nodes);
+        .then(({ data }) => data[this.namespace]?.labels.nodes);
     },
     fetchMilestones(search) {
       return this.$apollo
         .query({
           query: searchMilestonesQuery,
-          variables: { projectPath: this.projectPath, search },
+          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
-        .then(({ data }) => data.project.milestones.nodes);
+        .then(({ data }) => data[this.namespace]?.milestones.nodes);
     },
     fetchIterations(search) {
       const id = Number(search);
       const variables =
         !search || Number.isNaN(id)
-          ? { projectPath: this.projectPath, search }
-          : { projectPath: this.projectPath, id };
+          ? { fullPath: this.fullPath, search, isProject: this.isProject }
+          : { fullPath: this.fullPath, id, isProject: this.isProject };
 
       return this.$apollo
         .query({
           query: searchIterationsQuery,
           variables,
         })
-        .then(({ data }) => data.project.iterations.nodes);
+        .then(({ data }) => data[this.namespace]?.iterations.nodes);
     },
     fetchUsers(search) {
       return this.$apollo
         .query({
           query: searchUsersQuery,
-          variables: { projectPath: this.projectPath, search },
+          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
-        .then(({ data }) => data.project.projectMembers.nodes.map((member) => member.user));
+        .then(({ data }) =>
+          data[this.namespace]?.[`${this.namespace}Members`].nodes.map((member) => member.user),
+        );
     },
     getExportCsvPathWithQuery() {
       return `${this.exportCsvPath}${window.location.search}`;
@@ -578,19 +571,20 @@ export default {
       }
 
       return axios
-        .put(joinPaths(this.issuesPath, issueToMove.iid, 'reorder'), {
+        .put(joinPaths(issueToMove.webPath, 'reorder'), {
           move_before_id: isMovingToBeginning ? null : getIdFromGraphQLId(moveBeforeId),
           move_after_id: isMovingToEnd ? null : getIdFromGraphQLId(moveAfterId),
+          group_full_path: this.isProject ? undefined : this.fullPath,
         })
         .then(() => {
           const serializedVariables = JSON.stringify(this.queryVariables);
-          this.$apollo.mutate({
+          return this.$apollo.mutate({
             mutation: reorderIssuesMutation,
-            variables: { oldIndex, newIndex, serializedVariables },
+            variables: { oldIndex, newIndex, namespace: this.namespace, serializedVariables },
           });
         })
-        .catch(() => {
-          createFlash({ message: this.$options.i18n.reorderError });
+        .catch((error) => {
+          createFlash({ message: this.$options.i18n.reorderError, captureError: true, error });
         });
     },
     handleSort(sortKey) {
@@ -607,13 +601,13 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasProjectIssues">
+  <div v-if="hasAnyIssues">
     <issuable-list
-      :namespace="projectPath"
+      :namespace="fullPath"
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
-      :initial-filter-value="initialFilterTokens"
+      :initial-filter-value="filterTokens"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"
@@ -653,7 +647,7 @@ export default {
           :aria-label="$options.i18n.calendarLabel"
         />
         <csv-import-export-buttons
-          v-if="isSignedIn"
+          v-if="showCsvButtons"
           class="gl-md-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="currentTabCount"
@@ -766,6 +760,7 @@ export default {
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
         <csv-import-export-buttons
+          v-if="showCsvButtons"
           class="gl-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="currentTabCount"

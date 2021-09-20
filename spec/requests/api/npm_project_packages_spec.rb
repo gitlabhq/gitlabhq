@@ -120,9 +120,11 @@ RSpec.describe API::NpmProjectPackages do
       project.add_developer(user)
     end
 
+    subject(:upload_package_with_token) { upload_with_token(package_name, params) }
+
     shared_examples 'handling invalid record with 400 error' do
       it 'handles an ActiveRecord::RecordInvalid exception with 400 error' do
-        expect { upload_package_with_token(package_name, params) }
+        expect { upload_package_with_token }
           .not_to change { project.packages.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -136,6 +138,7 @@ RSpec.describe API::NpmProjectPackages do
           let(:params) { upload_params(package_name: package_name) }
 
           it_behaves_like 'handling invalid record with 400 error'
+          it_behaves_like 'not a package tracking event'
         end
 
         context 'invalid package version' do
@@ -157,6 +160,7 @@ RSpec.describe API::NpmProjectPackages do
             let(:params) { upload_params(package_name: package_name, package_version: version) }
 
             it_behaves_like 'handling invalid record with 400 error'
+            it_behaves_like 'not a package tracking event'
           end
         end
       end
@@ -169,8 +173,6 @@ RSpec.describe API::NpmProjectPackages do
 
         shared_examples 'handling upload with different authentications' do
           context 'with access token' do
-            subject { upload_package_with_token(package_name, params) }
-
             it_behaves_like 'a package tracking event', 'API::NpmPackages', 'push_package'
 
             it 'creates npm package with file' do
@@ -184,7 +186,7 @@ RSpec.describe API::NpmProjectPackages do
           end
 
           it 'creates npm package with file with job token' do
-            expect { upload_package_with_job_token(package_name, params) }
+            expect { upload_with_job_token(package_name, params) }
               .to change { project.packages.count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
 
@@ -205,7 +207,7 @@ RSpec.describe API::NpmProjectPackages do
             end
 
             it 'creates the package metadata' do
-              upload_package_with_token(package_name, params)
+              upload_package_with_token
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(project.reload.packages.find(json_response['id']).original_build_info.pipeline).to eq job.pipeline
@@ -215,7 +217,7 @@ RSpec.describe API::NpmProjectPackages do
 
         shared_examples 'uploading the package' do
           it 'uploads the package' do
-            expect { upload_package_with_token(package_name, params) }
+            expect { upload_package_with_token }
               .to change { project.packages.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -249,6 +251,7 @@ RSpec.describe API::NpmProjectPackages do
             let(:package_name) { "@#{group.path}/test" }
 
             it_behaves_like 'handling invalid record with 400 error'
+            it_behaves_like 'not a package tracking event'
 
             context 'with a new version' do
               let_it_be(:version) { '4.5.6' }
@@ -271,9 +274,14 @@ RSpec.describe API::NpmProjectPackages do
         let(:package_name) { "@#{group.path}/my_package_name" }
         let(:params) { upload_params(package_name: package_name) }
 
-        it 'returns an error if the package already exists' do
+        before do
           create(:npm_package, project: project, version: '1.0.1', name: "@#{group.path}/my_package_name")
-          expect { upload_package_with_token(package_name, params) }
+        end
+
+        it_behaves_like 'not a package tracking event'
+
+        it 'returns an error if the package already exists' do
+          expect { upload_package_with_token }
             .not_to change { project.packages.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -285,7 +293,7 @@ RSpec.describe API::NpmProjectPackages do
         let(:params) { upload_params(package_name: package_name, file: 'npm/payload_with_duplicated_packages.json') }
 
         it 'creates npm package with file and dependencies' do
-          expect { upload_package_with_token(package_name, params) }
+          expect { upload_package_with_token }
             .to change { project.packages.count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
             .and change { Packages::Dependency.count}.by(4)
@@ -297,11 +305,11 @@ RSpec.describe API::NpmProjectPackages do
         context 'with existing dependencies' do
           before do
             name = "@#{group.path}/existing_package"
-            upload_package_with_token(name, upload_params(package_name: name, file: 'npm/payload_with_duplicated_packages.json'))
+            upload_with_token(name, upload_params(package_name: name, file: 'npm/payload_with_duplicated_packages.json'))
           end
 
           it 'reuses them' do
-            expect { upload_package_with_token(package_name, params) }
+            expect { upload_package_with_token }
               .to change { project.packages.count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
               .and not_change { Packages::Dependency.count}
@@ -317,11 +325,11 @@ RSpec.describe API::NpmProjectPackages do
       put api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}"), params: params, headers: headers
     end
 
-    def upload_package_with_token(package_name, params = {})
+    def upload_with_token(package_name, params = {})
       upload_package(package_name, params.merge(access_token: token.token))
     end
 
-    def upload_package_with_job_token(package_name, params = {})
+    def upload_with_job_token(package_name, params = {})
       upload_package(package_name, params.merge(job_token: job.token))
     end
 

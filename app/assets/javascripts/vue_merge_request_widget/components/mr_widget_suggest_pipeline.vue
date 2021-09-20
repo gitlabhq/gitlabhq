@@ -98,7 +98,7 @@ export default {
               data-testid="add-pipeline-link"
               :data-track-property="humanAccess"
               :data-track-value="$options.SP_LINK_TRACK_VALUE"
-              :data-track-event="$options.SP_LINK_TRACK_EVENT"
+              :data-track-action="$options.SP_LINK_TRACK_EVENT"
               :data-track-label="$options.SP_TRACK_LABEL"
             >
               {{ content }}
@@ -139,7 +139,7 @@ export default {
             :href="pipelinePath"
             :data-track-property="humanAccess"
             :data-track-value="$options.SP_SHOW_TRACK_VALUE"
-            :data-track-event="$options.SP_SHOW_TRACK_EVENT"
+            :data-track-action="$options.SP_SHOW_TRACK_EVENT"
             :data-track-label="$options.SP_TRACK_LABEL"
           >
             {{ __('Show me how to add a pipeline') }}

@@ -33,6 +33,11 @@ export default {
       type: Object,
       required: true,
     },
+    commitSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
     isNewCiConfigFile: {
       type: Boolean,
       required: true,
@@ -54,7 +59,11 @@ export default {
 </script>
 <template>
   <div class="gl-mb-5">
-    <pipeline-status v-if="showPipelineStatus" :class="$options.pipelineStatusClasses" />
+    <pipeline-status
+      v-if="showPipelineStatus"
+      :commit-sha="commitSha"
+      :class="$options.pipelineStatusClasses"
+    />
     <validation-segment :class="validationStyling" :ci-config="ciConfigData" />
   </div>
 </template>

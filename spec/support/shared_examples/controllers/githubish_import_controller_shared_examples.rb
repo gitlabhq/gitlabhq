@@ -82,16 +82,6 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     expect(json_response.dig("provider_repos", 1, "id")).to eq(org_repo.id)
   end
 
-  it "does not show already added project" do
-    project = create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'asd/vim')
-    stub_client(repos: [repo], orgs: [], each_page: [OpenStruct.new(objects: [repo])].to_enum)
-
-    get :status, format: :json
-
-    expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
-    expect(json_response.dig("provider_repos")).to eq([])
-  end
-
   it "touches the etag cache store" do
     stub_client(repos: [], orgs: [], each_page: [])
 

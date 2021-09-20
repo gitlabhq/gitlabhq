@@ -32,10 +32,10 @@ export default {
   },
   methods: {
     change(page) {
-      const filterGroupsParam = getParameterByName('filter');
-      const sortParam = getParameterByName('sort');
-      const archivedParam = getParameterByName('archived');
-      eventHub.$emit(`${this.action}fetchPage`, page, filterGroupsParam, sortParam, archivedParam);
+      const filterGroupsBy = getParameterByName('filter');
+      const sortBy = getParameterByName('sort');
+      const archived = getParameterByName('archived');
+      eventHub.$emit(`${this.action}fetchPage`, { page, filterGroupsBy, sortBy, archived });
     },
   },
 };

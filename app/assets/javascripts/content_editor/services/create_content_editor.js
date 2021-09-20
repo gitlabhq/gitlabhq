@@ -2,19 +2,26 @@ import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import Attachment from '../extensions/attachment';
+import Audio from '../extensions/audio';
 import Blockquote from '../extensions/blockquote';
 import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import DescriptionItem from '../extensions/description_item';
+import DescriptionList from '../extensions/description_list';
+import Division from '../extensions/division';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
+import Figure from '../extensions/figure';
+import FigureCaption from '../extensions/figure_caption';
 import Gapcursor from '../extensions/gapcursor';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import History from '../extensions/history';
 import HorizontalRule from '../extensions/horizontal_rule';
+import HTMLMarks from '../extensions/html_marks';
 import Image from '../extensions/image';
 import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
@@ -34,6 +41,7 @@ import TableRow from '../extensions/table_row';
 import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
+import Video from '../extensions/video';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
@@ -62,19 +70,26 @@ export const createContentEditor = ({
 
   const builtInContentEditorExtensions = [
     Attachment.configure({ uploadsPath, renderMarkdown }),
+    Audio,
     Blockquote,
     Bold,
     BulletList,
     Code,
     CodeBlockHighlight,
+    DescriptionItem,
+    DescriptionList,
     Document,
+    Division,
     Dropcursor,
     Emoji,
+    Figure,
+    FigureCaption,
     Gapcursor,
     HardBreak,
     Heading,
     History,
     HorizontalRule,
+    ...HTMLMarks,
     Image,
     InlineDiff,
     Italic,
@@ -94,6 +109,7 @@ export const createContentEditor = ({
     TaskItem,
     TaskList,
     Text,
+    Video,
   ];
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];

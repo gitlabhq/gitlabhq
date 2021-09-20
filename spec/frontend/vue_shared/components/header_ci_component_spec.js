@@ -16,8 +16,6 @@ describe('Header CI Component', () => {
       text: 'failed',
       details_path: 'path',
     },
-    itemName: 'job',
-    itemId: 123,
     time: '2017-05-08T14:57:39.781Z',
     user: {
       web_url: 'path',
@@ -55,15 +53,11 @@ describe('Header CI Component', () => {
 
   describe('render', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ itemName: 'Pipeline' });
     });
 
     it('should render status badge', () => {
       expect(findIconBadge().exists()).toBe(true);
-    });
-
-    it('should render item name and id', () => {
-      expect(findHeaderItemText().text()).toBe('job #123');
     });
 
     it('should render timeago date', () => {
@@ -83,9 +77,29 @@ describe('Header CI Component', () => {
     });
   });
 
+  describe('with item id', () => {
+    beforeEach(() => {
+      createComponent({ itemName: 'Pipeline', itemId: '123' });
+    });
+
+    it('should render item name and id', () => {
+      expect(findHeaderItemText().text()).toBe('Pipeline #123');
+    });
+  });
+
+  describe('without item id', () => {
+    beforeEach(() => {
+      createComponent({ itemName: 'Job build_job' });
+    });
+
+    it('should render item name', () => {
+      expect(findHeaderItemText().text()).toBe('Job build_job');
+    });
+  });
+
   describe('slot', () => {
     it('should render header action buttons', () => {
-      createComponent({}, { slots: { default: 'Test Actions' } });
+      createComponent({ itemName: 'Job build_job' }, { slots: { default: 'Test Actions' } });
 
       expect(findActionButtons().exists()).toBe(true);
       expect(findActionButtons().text()).toBe('Test Actions');
@@ -94,7 +108,7 @@ describe('Header CI Component', () => {
 
   describe('shouldRenderTriggeredLabel', () => {
     it('should render created keyword when the shouldRenderTriggeredLabel is false', () => {
-      createComponent({ shouldRenderTriggeredLabel: false });
+      createComponent({ shouldRenderTriggeredLabel: false, itemName: 'Job build_job' });
 
       expect(wrapper.text()).toContain('created');
       expect(wrapper.text()).not.toContain('triggered');

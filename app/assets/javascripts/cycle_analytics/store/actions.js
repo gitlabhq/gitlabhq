@@ -163,6 +163,7 @@ const refetchStageData = (dispatch) => {
         dispatch('fetchCycleAnalyticsData'),
         dispatch('fetchStageData'),
         dispatch('fetchStageMedians'),
+        dispatch('fetchStageCountValues'),
       ]),
     )
     .finally(() => dispatch('setLoading', false));
@@ -170,13 +171,23 @@ const refetchStageData = (dispatch) => {
 
 export const setFilters = ({ dispatch }) => refetchStageData(dispatch);
 
-export const setDateRange = ({ dispatch, commit }, daysInPast) => {
-  commit(types.SET_DATE_RANGE, daysInPast);
+export const setDateRange = ({ dispatch, commit }, { createdAfter, createdBefore }) => {
+  commit(types.SET_DATE_RANGE, { createdAfter, createdBefore });
   return refetchStageData(dispatch);
 };
 
 export const initializeVsa = ({ commit, dispatch }, initialData = {}) => {
   commit(types.INITIALIZE_VSA, initialData);
+
+  const {
+    endpoints: { fullPath, groupPath, milestonesPath = '', labelsPath = '' },
+  } = initialData;
+  dispatch('filters/setEndpoints', {
+    labelsEndpoint: labelsPath,
+    milestonesEndpoint: milestonesPath,
+    groupEndpoint: groupPath,
+    projectEndpoint: fullPath,
+  });
 
   return dispatch('setLoading', true)
     .then(() => dispatch('fetchValueStreams'))

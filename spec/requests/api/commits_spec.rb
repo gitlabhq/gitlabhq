@@ -1879,6 +1879,26 @@ RSpec.describe API::Commits do
         expect(json_response['line_type']).to eq('new')
       end
 
+      it 'correctly adds a note for the "old" line type' do
+        commit    = project.repository.commit("markdown")
+        commit_id = commit.id
+        route     = "/projects/#{project_id}/repository/commits/#{commit_id}/comments"
+
+        post api(route, current_user), params: {
+          note: 'My comment',
+          path: commit.raw_diffs.first.old_path,
+          line: 4,
+          line_type: 'old'
+        }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('public_api/v4/commit_note')
+        expect(json_response['note']).to eq('My comment')
+        expect(json_response['path']).to eq(commit.raw_diffs.first.old_path)
+        expect(json_response['line']).to eq(4)
+        expect(json_response['line_type']).to eq('old')
+      end
+
       context 'when ref does not exist' do
         let(:commit_id) { 'unknown' }
 

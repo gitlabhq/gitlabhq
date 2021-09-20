@@ -6,10 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Downgrading from EE to CE
 
-If you ever decide to downgrade your Enterprise Edition back to the Community
-Edition, there are a few steps you need take before installing the CE package
-on top of the current EE package, or, if you are in an installation from source,
-before you change remotes and fetch the latest CE code.
+If you ever decide to downgrade your Enterprise Edition back to the
+Community Edition, there are a few steps you need take beforehand. On Omnibus GitLab
+installations, these steps are made before installing the CE package on top of
+the current EE package. On installations from source, they are done before
+you change remotes and fetch the latest CE code.
 
 ## Disable Enterprise-only features
 
@@ -17,8 +18,8 @@ First thing to do is to disable the following features.
 
 ### Authentication mechanisms
 
-Kerberos and Atlassian Crowd are only available on the Enterprise Edition, so
-you should disable these mechanisms before downgrading and you should provide
+Kerberos and Atlassian Crowd are only available on the Enterprise Edition. You
+should disable these mechanisms before downgrading. Be sure to provide
 alternative authentication methods to your users.
 
 ### Remove Service Integration entries from the database
@@ -35,63 +36,63 @@ column if you didn't intend it to be used for storing the inheritance class or o
 use another column for that information.)
 ```
 
-All integrations are created automatically for every project you have, so in order
-to avoid getting this error, you need to remove all records with the type set to
+All integrations are created automatically for every project you have.
+To avoid getting this error, you must remove all records with the type set to
 `GithubService` from your database:
 
-**Omnibus Installation**
+- **Omnibus Installation**
 
-```shell
-sudo gitlab-rails runner "Integration.where(type: ['GithubService']).delete_all"
-```
+  ```shell
+  sudo gitlab-rails runner "Integration.where(type: ['GithubService']).delete_all"
+  ```
 
-**Source Installation**
+- **Source Installation**
 
-```shell
-bundle exec rails runner "Integration.where(type: ['GithubService']).delete_all" production
-```
+  ```shell
+  bundle exec rails runner "Integration.where(type: ['GithubService']).delete_all" production
+  ```
 
 NOTE:
-If you are running `GitLab =< v13.0` you need to also remove `JenkinsDeprecatedService` records
-and if you are running `GitLab =< v13.6` you need to also remove `JenkinsService` records.
+If you are running `GitLab =< v13.0` you must also remove `JenkinsDeprecatedService` records
+and if you are running `GitLab =< v13.6` you must remove `JenkinsService` records.
 
 ### Variables environment scopes
 
-If you're using this feature and there are variables sharing the same
-key, but they have different scopes in a project, then you might want to
-revisit the environment scope setting for those variables.
+In GitLab Community Edition, [environment scopes](../user/group/clusters/index.md#environment-scopes)
+are completely ignored, so if you are using this feature there may be some
+necessary adjustments to your configuration. This is especially true if
+configuration variables share the same key, but have different
+scopes in a project. In cases like these you could accidentally get a variable
+which you're not expecting for a particular environment. Make sure that you have
+the right variables in this case.
 
-In CE, environment scopes are completely ignored, therefore you could
-accidentally get a variable which you're not expecting for a particular
-environment. Make sure that you have the right variables in this case.
-
-Data is completely preserved, so you could always upgrade back to EE and
-restore the behavior if you leave it alone.
+Your data is completely preserved in the transition, so you could always upgrade
+back to EE and restore the behavior if you leave it alone.
 
 ## Downgrade to CE
 
 After performing the above mentioned steps, you are now ready to downgrade your
 GitLab installation to the Community Edition.
 
-**Omnibus Installation**
+- **Omnibus Installation**
 
-To downgrade an Omnibus installation, it is sufficient to install the Community
-Edition package on top of the currently installed one. You can do this manually,
-by directly [downloading the package](https://packages.gitlab.com/gitlab/gitlab-ce)
-you need, or by adding our CE package repository and following the
-[CE installation instructions](https://about.gitlab.com/install/?version=ce).
+  To downgrade an Omnibus installation, it is sufficient to install the Community
+  Edition package on top of the currently installed one. You can do this manually,
+  by directly [downloading the package](https://packages.gitlab.com/gitlab/gitlab-ce)
+  you need, or by adding our CE package repository and following the
+  [CE installation instructions](https://about.gitlab.com/install/?version=ce).
 
-**Source Installation**
+- **Source Installation**
 
-To downgrade a source installation, you need to replace the current remote of
-your GitLab installation with the Community Edition's remote, fetch the latest
-changes, and checkout the latest stable branch:
-
-```shell
-git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
-git fetch --all
-git checkout 8-x-stable
-```
+  To downgrade a source installation, you must replace the current remote of
+  your GitLab installation with the Community Edition's remote. After that, you
+  can fetch the latest changes, and checkout the latest stable branch:
+  
+  ```shell
+  git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
+  git fetch --all
+  git checkout 8-x-stable
+  ```
 
 Remember to follow the correct [update guides](../update/index.md) to make
 sure all dependencies are up to date.

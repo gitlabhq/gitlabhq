@@ -7,7 +7,7 @@ product_stage: plan
 product_group: group::project management
 product_category: projects
 value_type: number
-status: data_available
+status: active
 time_frame: all
 data_source: database
 distribution:
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+milestone: "<13.9"

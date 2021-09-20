@@ -24,8 +24,3 @@ You can customize the installation of Ingress by updating the
 management project. Refer to the
 [chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
 for the available configuration options.
-
-Support for installing the Ingress managed application is provided by the GitLab Configure group.
-If you run into unknown issues, [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new),
-and ping at least 2 people from the
-[Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).

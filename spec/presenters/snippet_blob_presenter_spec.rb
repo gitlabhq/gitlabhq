@@ -10,6 +10,7 @@ RSpec.describe SnippetBlobPresenter do
 
   describe '#rich_data' do
     let(:data_endpoint_url) { "/-/snippets/#{snippet.id}/raw/#{branch}/#{file}" }
+    let(:data_raw_dir) { "/-/snippets/#{snippet.id}/raw/#{branch}/" }
 
     before do
       allow_next_instance_of(described_class) do |instance|
@@ -45,7 +46,7 @@ RSpec.describe SnippetBlobPresenter do
         let(:file) { 'test.ipynb' }
 
         it 'returns rich notebook content' do
-          expect(subject.strip).to eq %Q(<div class="file-content" data-endpoint="#{data_endpoint_url}" id="js-notebook-viewer"></div>)
+          expect(subject.strip).to eq %Q(<div class="file-content" data-endpoint="#{data_endpoint_url}" data-relative-raw-path="#{data_raw_dir}" id="js-notebook-viewer"></div>)
         end
       end
 

@@ -9,13 +9,19 @@ module Projects
       @projects = projects
     end
 
-    def refresh_cache
-      @projects.each do |project|
-        service = count_service.new(project)
-        unless service.count_stored?
-          service.refresh_cache { global_count[project.id].to_i }
+    def refresh_cache_and_retrieve_data
+      count_services = @projects.map { |project| count_service.new(project) }
+      services_by_cache_key = count_services.index_by(&:cache_key)
+
+      results = Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+        Rails.cache.fetch_multi(*services_by_cache_key.keys) do |key|
+          service = services_by_cache_key[key]
+
+          global_count[service.project.id].to_i
         end
       end
+
+      results.transform_keys! { |cache_key| services_by_cache_key[cache_key].project }
     end
 
     def project_ids

@@ -20,6 +20,10 @@ module API
       end
 
       expose :same, as: :compare_same_ref
+
+      expose :web_url do |compare, _|
+        Gitlab::UrlBuilder.build(compare)
+      end
     end
   end
 end

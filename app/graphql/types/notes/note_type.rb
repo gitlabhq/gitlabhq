@@ -40,9 +40,9 @@ module Types
       field :updated_at, Types::TimeType, null: false,
             description: "Timestamp of the note's last activity."
       field :discussion, Types::Notes::DiscussionType, null: true,
-            description: 'The discussion this note is a part of.'
+            description: 'Discussion this note is a part of.'
       field :position, Types::Notes::DiffPositionType, null: true,
-            description: 'The position of this note on a diff.'
+            description: 'Position of this note on a diff.'
       field :confidential, GraphQL::Types::Boolean, null: true,
             description: 'Indicates if this note is confidential.',
             method: :confidential?

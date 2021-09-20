@@ -40,10 +40,6 @@ class GroupEntity < Grape::Entity
     GroupsFinder.new(request.current_user, parent: group).execute.any?
   end
 
-  expose :number_projects_with_delimiter do |group|
-    number_with_delimiter(GroupProjectsFinder.new(group: group, current_user: request.current_user).execute.count)
-  end
-
   expose :number_users_with_delimiter do |group|
     number_with_delimiter(group.users.count)
   end

@@ -25,6 +25,11 @@ RSpec.describe Resolvers::ProjectResolver do
 
       expect(result).to be_nil
     end
+
+    it 'treats project full path as case insensitive' do
+      result = batch_sync { resolve_project(project1.full_path.upcase) }
+      expect(result).to eq project1
+    end
   end
 
   it 'does not increase complexity depending on number of load limits' do

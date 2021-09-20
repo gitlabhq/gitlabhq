@@ -13,7 +13,7 @@ It allows users to list, create, update, and delete group labels. Furthermore, u
 unsubscribe from group labels.
 
 NOTE:
-The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413).
+The `description_html` - was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) to response JSON in GitLab 12.7.
 
 ## List group labels
 
@@ -26,7 +26,7 @@ GET /groups/:id/labels
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | ----           | -------- | -----------                                                                                                                                                                  |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user.                                                               |
-| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31543))_ |
+| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31543) in GitLab 12.2)_ |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 | `include_descendant_groups` | boolean | no | Include descendant groups. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259024) in GitLab 13.6 |
 | `only_group_labels` | boolean | no | Toggle to include only group labels or also project labels. Defaults to `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259024) in GitLab 13.6 |

@@ -1,76 +1,81 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
 # GitLab CI/CD include examples **(FREE)**
 
-In addition to the [`includes` examples](index.md#include) listed in the
-[GitLab CI YAML reference](index.md), this page lists more variations of `include`
-usage.
+You can use [`include`](index.md#include) to include external YAML files in your CI/CD jobs.
 
-## Single string or array of multiple values
+## Include a single configuration file
 
-You can include your extra YAML file(s) either as a single string or
-an array of multiple values. The following examples are all valid.
+To include a single configuration file, use either of these syntax options:
 
-Single string with the `include:local` method implied:
+- `include` by itself with a single file, which is the same as
+  [`include:local`](index.md#includelocal):
 
-```yaml
-include: '/templates/.after-script-template.yml'
-```
+  ```yaml
+  include: '/templates/.after-script-template.yml'
+  ```
 
-Array with `include` method implied:
+- `include` with a single file, and you specify the `include` type:
 
-```yaml
-include:
-  - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-  - '/templates/.after-script-template.yml'
-```
+  ```yaml
+  include:
+    remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
+  ```
 
-Single string with `include` method specified explicitly:
+## Include an array of configuration files
 
-```yaml
-include:
-  remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-```
+You can include an array of configuration files:
 
-Array with `include:remote` being the single item:
+- If you do not specify an `include` type, the type defaults to [`include:local`](index.md#includelocal):
 
-```yaml
-include:
-  - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-```
+  ```yaml
+  include:
+    - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
+    - '/templates/.after-script-template.yml'
+  ```
 
-Array with multiple `include` methods specified explicitly:
+- You can define a single item array:
 
-```yaml
-include:
-  - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-  - local: '/templates/.after-script-template.yml'
-  - template: Auto-DevOps.gitlab-ci.yml
-```
+  ```yaml
+  include:
+    - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
+  ```
 
-Array mixed syntax:
+- You can define an array and explicitly specify multiple `include` types:
 
-```yaml
-include:
-  - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-  - '/templates/.after-script-template.yml'
-  - template: Auto-DevOps.gitlab-ci.yml
-  - project: 'my-group/my-project'
-    ref: main
-    file: '/templates/.gitlab-ci-template.yml'
-```
+  ```yaml
+  include:
+    - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
+    - local: '/templates/.after-script-template.yml'
+    - template: Auto-DevOps.gitlab-ci.yml
+  ```
 
-## Re-using a `before_script` template
+- You can define an array that combines both default and specific `include` type:
 
-In the following example, the content of `.before-script-template.yml` is
-automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
+  ```yaml
+  include:
+    - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
+    - '/templates/.after-script-template.yml'
+    - template: Auto-DevOps.gitlab-ci.yml
+    - project: 'my-group/my-project'
+      ref: main
+      file: '/templates/.gitlab-ci-template.yml'
+  ```
 
-Content of `https://gitlab.com/awesome-project/raw/main/.before-script-template.yml`:
+## Use `default` configuration from an included configuration file
+
+You can define a [`default`](index.md#custom-default-keyword-values) section in a
+configuration file. When you use a `default` section with the `include` keyword, the defaults apply to
+all jobs in the pipeline.
+
+For example, you can use a `default` section with [`before_script`](index.md#before_script).
+
+Content of a custom configuration file named `/templates/.before-script-template.yml`:
 
 ```yaml
 default:
@@ -83,19 +88,29 @@ default:
 Content of `.gitlab-ci.yml`:
 
 ```yaml
-include: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
+include: '/templates/.before-script-template.yml'
 
-rspec:
+rspec1:
+  script:
+    - bundle exec rspec
+
+rspec2:
   script:
     - bundle exec rspec
 ```
 
-## Overriding external template values
+The default `before_script` commands execute in both `rspec` jobs, before the `script` commands.
 
-The following example shows specific YAML-defined variables and details of the
-`production` job from an include file being customized in `.gitlab-ci.yml`.
+## Override included configuration values
 
-Content of `https://company.com/autodevops-template.yml`:
+When you use the `include` keyword, you can override the included configuration values to adapt them
+to your pipeline requirements.
+
+The following example shows an `include` file that is customized in the
+`.gitlab-ci.yml` file. Specific YAML-defined variables and details of the
+`production` job are overridden.
+
+Content of a custom configuration file named `autodevops-template.yml`:
 
 ```yaml
 variables:
@@ -136,17 +151,18 @@ production:
     url: https://domain.com
 ```
 
-In this case, the variables `POSTGRES_USER` and `POSTGRES_PASSWORD` along
-with the environment URL of the `production` job defined in
-`autodevops-template.yml` have been overridden by new values defined in
-`.gitlab-ci.yml`.
+The `POSTGRES_USER` and `POSTGRES_PASSWORD` variables
+and the `environment:url` of the `production` job defined in the `.gitlab-ci.yml` file
+override the values defined in the `autodevops-template.yml` file. The other keywords
+do not change. This method is called *merging*.
 
-The merging lets you extend and override dictionary mappings, but
-you cannot add or modify items to an included array. For example, to add
-an additional item to the production job script, you must repeat the
-existing script items:
+## Override included configuration arrays
 
-Content of `https://company.com/autodevops-template.yml`:
+You can use merging to extend and override configuration in an included template, but
+you cannot add or modify individual items in an array. For example, to add
+an additional `notify_owner` command to the extended `production` job's `script` array:
+
+Content of `autodevops-template.yml`:
 
 ```yaml
 production:
@@ -159,7 +175,7 @@ production:
 Content of `.gitlab-ci.yml`:
 
 ```yaml
-include: 'https://company.com/autodevops-template.yml'
+include: 'autodevops-template.yml'
 
 stages:
   - production
@@ -171,51 +187,32 @@ production:
     - notify_owner
 ```
 
-In this case, if `install_dependencies` and `deploy` were not repeated in
-`.gitlab-ci.yml`, they would not be part of the script for the `production`
-job in the combined CI configuration.
+If `install_dependencies` and `deploy` are not repeated in
+the `.gitlab-ci.yml` file, the `production` job would have only `notify_owner` in the script.
 
-## Using nested includes
+## Use nested includes
 
-The examples below show how includes can be nested from different sources
-using a combination of different methods.
+You can nest `include` sections in configuration files that are then included
+in another configuration. For example, for `include` keywords nested three deep:
 
-In this example, `.gitlab-ci.yml` includes local the file `/.gitlab-ci/another-config.yml`:
+Content of `.gitlab-ci.yml`:
 
 ```yaml
 include:
   - local: /.gitlab-ci/another-config.yml
 ```
 
-The `/.gitlab-ci/another-config.yml` includes a template and the `/templates/docker-workflow.yml` file
-from another project:
+Content of `/.gitlab-ci/another-config.yml`:
 
 ```yaml
 include:
-  - template: Bash.gitlab-ci.yml
-  - project: group/my-project
-    file: /templates/docker-workflow.yml
+  - local: /.gitlab-ci/config-defaults.yml
 ```
 
-The `/templates/docker-workflow.yml` present in `group/my-project` includes two local files
-of the `group/my-project`:
+Content of `/.gitlab-ci/config-defaults.yml`:
 
 ```yaml
-include:
-  - local: /templates/docker-build.yml
-  - local: /templates/docker-testing.yml
-```
-
-Our `/templates/docker-build.yml` present in `group/my-project` adds a `docker-build` job:
-
-```yaml
-docker-build:
-  script: docker build -t my-image .
-```
-
-Our second `/templates/docker-test.yml` present in `group/my-project` adds a `docker-test` job:
-
-```yaml
-docker-test:
-  script: docker run my-image /run/tests.sh
+default:
+  after_script:
+    - echo "Job complete."
 ```

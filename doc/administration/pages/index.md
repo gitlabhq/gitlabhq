@@ -196,43 +196,6 @@ to use the HTTPS protocol.
 WARNING:
 Multiple wildcards for one instance is not supported. Only one wildcard per instance can be assigned.
 
-### Additional configuration for Docker container
-
-The GitLab Pages daemon doesn't have permissions to bind mounts when it runs
-in a Docker container. To overcome this issue, you must change the `chroot`
-behavior:
-
-1. Edit `/etc/gitlab/gitlab.rb`.
-1. Set the `inplace_chroot` to `true` for GitLab Pages:
-
-   ```ruby
-   gitlab_pages['inplace_chroot'] = true
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-NOTE:
-`inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
-The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
-
-### Jailing mechanism disabled by default for API-based configuration
-
-Starting from GitLab 14.1 the [jailing/chroot mechanism is disabled by default](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/589).
-If you are using API-based configuration and the new [Zip storage architecture](#zip-storage)
-there is nothing you need to do.
-
-If you run into any problems, [open a new issue](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/new)
-and enable the jail again by setting the environment variable:
-
-1. Edit `/etc/gitlab/gitlab.rb`.
-1. Set the `DAEMON_ENABLE_JAIL` environment variable to `true` for GitLab Pages:
-
-   ```ruby
-   gitlab_pages['env']['DAEMON_ENABLE_JAIL'] = "true"
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
 ### Global settings
 
 Below is a table of all configuration settings known to Pages in Omnibus GitLab,
@@ -270,7 +233,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `auth_scope`                            | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
 | `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
 | `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
-| `inplace_chroot`                        | On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information. |
+| `inplace_chroot`                        | [REMOVED in GitLab 14.3.](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/561) On [systems that don't support bind-mounts](index.md#gitlab-pages-fails-to-start-in-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information. |
 | `enable_disk`                           | Allows the GitLab Pages daemon to serve content from disk. Shall be disabled if shared disk storage isn't available. |
 | `insecure_ciphers`                      | Use default list of cipher suites, may contain insecure ones like 3DES and RC4. |
 | `internal_gitlab_server`                | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`. |
@@ -298,8 +261,9 @@ control over how the Pages daemon runs and serves content in your environment.
 | `pages_path`                            | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`. |
 | **`pages_nginx[]`**                     |  |
 | `enable`                                | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains). |
-| `FF_ENABLE_REDIRECTS`                   | Feature flag to disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#disable-redirects) for more information. |
-| `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Will be removed in GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
+| `FF_ENABLE_REDIRECTS`                   | Feature flag to enable/disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-redirects) for more information. |
+| `FF_ENABLE_PLACEHOLDERS`                | Feature flag to enable/disable rewrites (disabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-rewrites) for more information.  |
+| `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Removed in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
 
 ---
 
@@ -393,7 +357,7 @@ adding a GitLab-controlled verification code to the DNS records for that domain.
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Clear the **Require users to prove ownership of custom domains** checkbox.
@@ -410,7 +374,7 @@ sites served under a custom domain.
 To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service.
@@ -465,7 +429,7 @@ pre-existing applications must modify the GitLab Pages OAuth application. Follow
 this:
 
 1. Enable [access control](#access-control).
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Applications**.
 1. Expand **GitLab Pages**.
 1. Clear the `api` scope's checkbox and select the desired scope's checkbox (for example,
@@ -484,7 +448,7 @@ This can be useful to preserve information published with Pages websites to the 
 of your instance only.
 To do that:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Select the **Disable public access to Pages sites** checkbox.
@@ -522,7 +486,7 @@ Authority (CA) in the system certificate store.
 
 For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
-### Zip serving and cache configuration
+### ZIP serving and cache configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
 
@@ -530,19 +494,19 @@ WARNING:
 These are advanced settings. The recommended default values are set inside GitLab Pages. You should
 change these settings only if absolutely necessary. Use extreme caution.
 
-GitLab Pages can serve content from zip archives through object storage (an
+GitLab Pages can serve content from ZIP archives through object storage (an
 [issue](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/485) exists for supporting disk storage
-as well). It uses an in-memory cache to increase the performance when serving content from a zip
+as well). It uses an in-memory cache to increase the performance when serving content from a ZIP
 archive. You can modify the cache behavior by changing the following configuration flags.
 
 | Setting | Description |
 | ------- | ----------- |
-| `zip_cache_expiration` | The cache expiration interval of zip archives. Must be greater than zero to avoid serving stale content. Default is 60s. |
+| `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is 60s. |
 | `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is 30s. |
 | `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is 30s. |
-| `zip_open_timeout` | The maximum time allowed to open a zip archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30s. |
+| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30s. |
 
-#### Zip cache refresh example
+#### ZIP cache refresh example
 
 Archives are refreshed in the cache (extending the time they are held in memory) if they're accessed
 before `zip_cache_expiration`, and the time left before expiring is less than or equal to
@@ -556,7 +520,7 @@ opened) it's refreshed. This extends the time the archive remains in memory from
 After an archive reaches `zip_cache_expiration`, it's marked as expired and removed on the next
 `zip_cache_cleanup` interval.
 
-![Zip cache configuration](img/zip_cache_configuration.png)
+![ZIP cache configuration](img/zip_cache_configuration.png)
 
 ## Activate verbose logging for daemon
 
@@ -665,7 +629,7 @@ Follow the steps below to configure the proxy listener of GitLab Pages.
 
 To set the global maximum pages size for a project:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Edit the **Maximum size of pages**.
@@ -741,6 +705,9 @@ database encryption. Proceed with caution.
 
    gitlab_pages['gitlab_server'] = 'http://<gitlab_server_IP_or_URL>'
    ```
+
+1. If you have custom UID/GID settings on the **GitLab server**, add them to the **Pages server** `/etc/gitlab/gitlab.rb` as well,
+   otherwise running a `gitlab-ctl reconfigure` on the **GitLab server** can change file ownership and cause Pages requests to fail.
 
 1. Create a backup of the secrets file on the **Pages server**:
 
@@ -1047,7 +1014,7 @@ If you use [object storage](#using-object-storage), you can disable local storag
 
 Starting from GitLab 13.12, this setting also disables the [legacy storage](#migrate-legacy-storage-to-zip-storage), so if you were using NFS to serve Pages, you can completely disconnect from it.
 
-## Migrate GitLab Pages to 14.0
+## Prepare GitLab Pages for 14.0
 
 In GitLab 14.0 a number of breaking changes were introduced which may require some user intervention.
 The steps below describe the best way to migrate without causing any downtime for your GitLab instance.
@@ -1104,6 +1071,9 @@ You can also find the log file in `/var/log/gitlab/gitlab-pages/current`.
 
 ### `open /etc/ssl/ca-bundle.pem: permission denied`
 
+WARNING:
+This issue is fixed in GitLab 14.3 and above, try upgrading GitLab first.
+
 GitLab Pages runs inside a `chroot` jail, usually in a uniquely numbered directory like
 `/tmp/gitlab-pages-*`.
 
@@ -1134,6 +1104,9 @@ sudo gitlab-ctl restart gitlab-pages
 ```
 
 ### `dial tcp: lookup gitlab.example.com` and `x509: certificate signed by unknown authority`
+
+WARNING:
+This issue is fixed in GitLab 14.3 and above, try upgrading GitLab first.
 
 When setting both `inplace_chroot` and `access_control` to `true`, you might encounter errors like:
 
@@ -1260,6 +1233,14 @@ For example, you can adapt the `rsync` strategy from the
 [moving repositories documentation](../operations/moving_repositories.md).
 Alternatively, run the CI pipelines of those projects that contain a `pages` job again.
 
+## 404 or 500 error when accessing GitLab Pages in a Geo setup
+
+Pages sites are only available on the primary Geo site, while the codebase of the project is available on all sites.
+
+If you try to access a Pages page on a secondary site, you will get a 404 or 500 HTTP code depending on the access control.
+
+Read more which [features don't support Geo replication/verification](../geo/replication/datatypes.md#limitations-on-replicationverification).
+
 ### Failed to connect to the internal GitLab API
 
 If you see the following error:
@@ -1297,7 +1278,7 @@ in all of your GitLab Pages instances.
 
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
-This problem most likely results from an [out-dated operating system](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html).
+This problem most likely results from an [out-dated operating system](../package_information/deprecated_os.md).
 The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://golang.org/pkg/crypto/rand/#pkg-variables).
 This requires the `getrandom` system call or `/dev/urandom` to be available on the host OS.
 Upgrading to an [officially supported operating system](https://about.gitlab.com/install/) is recommended.
@@ -1306,7 +1287,7 @@ Upgrading to an [officially supported operating system](https://about.gitlab.com
 
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Applications > GitLab Pages**.
 1. Edit the application.
 1. Under **Scopes**, ensure that the `api` scope is selected.
@@ -1391,17 +1372,12 @@ both servers.
 
 GitLab 14.0 introduces a number of changes to GitLab Pages which may require manual intervention.
 
-1. Firstly [follow the migration guide](#migrate-gitlab-pages-to-140).
+1. Firstly [follow the migration guide](#prepare-gitlab-pages-for-140).
+1. Try to upgrade to GitLab 14.3 or above. Some of the issues were fixed in GitLab 14.1, 14.2 and 14.3.
 1. If it doesn't work, see [GitLab Pages logs](#how-to-see-gitlab-pages-logs), and if you see any errors there then search them on this page.
 
-The most common problem is when using [`inplace_chroot`](#dial-tcp-lookup-gitlabexamplecom-and-x509-certificate-signed-by-unknown-authority).
-
-NOTE:
-Starting from 14.1, the chroot/jailing mechanism is
-[disabled by default for API-based configuration](#jailing-mechanism-disabled-by-default-for-api-based-configuration).
-
 WARNING:
-As the last resort you can temporarily enable legacy storage and configuration mechanisms. Support for them [will be removed in GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166), so GitLab Pages will stop working if don't resolve the underlying issue.
+In GitLab 14.0-14.2 you can temporarily enable legacy storage and configuration mechanisms.
 
 To do that:
 
@@ -1414,3 +1390,25 @@ To do that:
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+### GitLab Pages fails to start in Docker container
+
+WARNING:
+This issue is fixed in GitLab 14.3 and above, try upgrading GitLab first.
+
+The GitLab Pages daemon doesn't have permissions to bind mounts when it runs
+in a Docker container. To overcome this issue, you must change the `chroot`
+behavior:
+
+1. Edit `/etc/gitlab/gitlab.rb`.
+1. Set the `inplace_chroot` to `true` for GitLab Pages:
+
+   ```ruby
+   gitlab_pages['inplace_chroot'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+NOTE:
+`inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
+The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.

@@ -118,7 +118,7 @@ module API
         put do
           authorize_update_feature_flag!
           exclude_legacy_flags_check!
-          render_api_error!('PUT operations are not supported for legacy feature flags', :unprocessable_entity) if feature_flag.legacy_flag?
+          render_api_error!('PUT operations are not supported for legacy feature flags', :unprocessable_entity) unless feature_flag.new_version_flag?
 
           attrs = declared_params(include_missing: false)
 
@@ -207,7 +207,7 @@ module API
       end
 
       def exclude_legacy_flags_check!
-        if feature_flag.legacy_flag?
+        unless feature_flag.new_version_flag?
           not_found!
         end
       end

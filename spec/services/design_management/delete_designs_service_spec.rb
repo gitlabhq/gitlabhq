@@ -149,6 +149,12 @@ RSpec.describe DesignManagement::DeleteDesignsService do
           expect { run_service }
             .to change { designs.first.deleted? }.from(false).to(true)
         end
+
+        it 'schedules deleting todos for that design' do
+          expect(TodosDestroyer::DestroyedDesignsWorker).to receive(:perform_async).with([designs.first.id])
+
+          run_service
+        end
       end
 
       context 'more than one design is passed' do
@@ -166,6 +172,12 @@ RSpec.describe DesignManagement::DeleteDesignsService do
             .and change { counter.read(:delete) }.by(2)
             .and change { Event.count }.by(2)
             .and change { Event.destroyed_action.for_design.count }.by(2)
+        end
+
+        it 'schedules deleting todos for that design' do
+          expect(TodosDestroyer::DestroyedDesignsWorker).to receive(:perform_async).with(designs.map(&:id))
+
+          run_service
         end
 
         it_behaves_like "a success"

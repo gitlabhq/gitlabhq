@@ -75,7 +75,7 @@ We have also decided against using [Axios interceptors](https://github.com/axios
 
 ### Mock poll requests in tests with Axios
 
-Because polling function requires a header object, we need to always include an object as the third argument:
+Because a polling function requires a header object, we need to always include an object as the third argument:
 
 ```javascript
   mock.onGet('/users').reply(200, { foo: 'bar' }, {});

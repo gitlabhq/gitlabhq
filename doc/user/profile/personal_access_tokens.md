@@ -12,11 +12,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Introduced in GitLab 13.3: [Additional notifications for expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/214721).
 > - Introduced in GitLab 14.1: [Prefill token name and scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/334664).
 
-If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/index.md#personalproject-access-tokens). You can also use a personal access token with Git to authenticate over HTTP.
+Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
+
+- Authenticate with the [GitLab API](../../api/index.md#personalproject-access-tokens).
+- Authenticate with Git using HTTP Basic Authentication.
 
 In both cases, you authenticate with a personal access token in place of your password.
 
-Personal access tokens are required when [Two-Factor Authentication (2FA)](account/two_factor_authentication.md) is enabled.
+Personal access tokens are:
+
+- Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
+- Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
+  [GitLab managed Terraform state backend](../infrastructure/iac/terraform_state.md#using-a-gitlab-managed-terraform-state-backend-as-a-remote-data-source)
+  and [Docker container registry](../packages/container_registry/index.md#authenticate-with-the-container-registry),
+- Similar to [project access tokens](../project/settings/project_access_tokens.md), but are attached
+  to a user rather than a project.
+
+NOTE:
+Though required, GitLab usernames are ignored when authenticating with a personal access token.
+There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
+use the username.
 
 For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/index.md#personalproject-access-tokens).
 
@@ -29,7 +44,7 @@ You can create as many personal access tokens as you like.
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access Tokens**.
 1. Enter a name and optional expiry date for the token.
 1. Select the [desired scopes](#personal-access-token-scopes).
 1. Select **Create personal access token**.
@@ -53,7 +68,7 @@ At any time, you can revoke a personal access token.
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, select **Revoke**.
 
 ## View the last time a token was used
@@ -65,7 +80,7 @@ To view the last time a token was used:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, view the **Last Used** date.
 
 ## Personal access token scopes

@@ -427,7 +427,7 @@ POST /projects/:id/boards/:board_id/lists
 NOTE:
 Label, assignee and milestone arguments are mutually exclusive,
 that is, only one of them are accepted in a request.
-Check the [Issue Board documentation](../user/project/issue_board.md)
+Check the [issue board documentation](../user/project/issue_board.md)
 for more information regarding the required license for each list type.
 
 ```shell

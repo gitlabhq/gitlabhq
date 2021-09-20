@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
             allow(request_context).to receive(:request).and_return(fake_request)
             allow(project.repository).to receive(:branch_count).and_return(branches.size)
 
-            expect(finder).to receive(:execute).with(gitaly_pagination: true).and_return(branches)
+            expect(finder).to receive(:execute).and_return(branches)
             expect(request_context).to receive(:header).with('X-Per-Page', '2')
             expect(request_context).to receive(:header).with('X-Page', '1')
             expect(request_context).to receive(:header).with('X-Next-Page', '2')
@@ -99,6 +99,7 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
 
         before do
           allow(request_context).to receive(:request).and_return(fake_request)
+          allow(finder).to receive(:is_a?).with(BranchesFinder) { true }
           expect(finder).to receive(:execute).with(gitaly_pagination: true).and_return(branches)
         end
 

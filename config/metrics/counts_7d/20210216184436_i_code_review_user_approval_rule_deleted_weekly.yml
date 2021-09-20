@@ -1,22 +1,24 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_weekly
-description: Count of unique users per week who delete an approval rule to a merge request
+description: Count of unique users per week who delete an approval rule to a merge
+  request
 product_stage: create
 product_group: group::code review
 product_category: code_review
 value_type: number
-status: data_available
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_code_review_user_approval_rule_deleted
+  - i_code_review_user_approval_rule_deleted
 distribution:
 - ce
 - ee
 tier:
- - free
- - premium
- - ultimate
+- free
+- premium
+- ultimate
+milestone: "<13.9"

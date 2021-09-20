@@ -199,6 +199,16 @@ export default {
         },
       ];
     },
+    chartOptions() {
+      return {
+        ...this.$options.timesChartOptions,
+        yAxis: {
+          axisLabel: {
+            formatter: (value) => value,
+          },
+        },
+      };
+    },
   },
   methods: {
     hideAlert() {
@@ -314,7 +324,7 @@ export default {
         <strong>{{ __('Pipeline durations for the last 30 commits') }}</strong>
         <gl-column-chart
           :height="$options.chartContainerHeight"
-          :option="$options.timesChartOptions"
+          :option="chartOptions"
           :bars="timesChartTransformedData"
           :y-axis-title="__('Minutes')"
           :x-axis-title="__('Commit')"

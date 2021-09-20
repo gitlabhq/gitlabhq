@@ -8,11 +8,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
 
   let(:pipeline) { Ci::Pipeline.new }
 
-  let(:variables_attributes) do
-    [{ key: 'first', secret_value: 'world' },
-     { key: 'second', secret_value: 'second_world' }]
-  end
-
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       source: :push,
@@ -24,100 +19,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
       schedule: nil,
       merge_request: nil,
       project: project,
-      current_user: user,
-      variables_attributes: variables_attributes)
+      current_user: user)
   end
 
   let(:step) { described_class.new(pipeline, command) }
 
-  shared_examples 'builds pipeline' do
-    it 'builds a pipeline with the expected attributes' do
-      step.perform!
-
-      expect(pipeline.sha).not_to be_empty
-      expect(pipeline.sha).to eq project.commit.id
-      expect(pipeline.ref).to eq 'master'
-      expect(pipeline.tag).to be false
-      expect(pipeline.user).to eq user
-      expect(pipeline.project).to eq project
-    end
-  end
-
-  shared_examples 'breaks the chain' do
-    it 'returns true' do
-      step.perform!
-
-      expect(step.break?).to be true
-    end
-  end
-
-  shared_examples 'does not break the chain' do
-    it 'returns false' do
-      step.perform!
-
-      expect(step.break?).to be false
-    end
-  end
-
-  before do
-    stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
-  end
-
-  it_behaves_like 'does not break the chain'
-  it_behaves_like 'builds pipeline'
-
-  it 'sets pipeline variables' do
+  it 'does not break the chain' do
     step.perform!
 
-    expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
-      .to eq variables_attributes.map(&:with_indifferent_access)
+    expect(step.break?).to be false
   end
 
-  context 'when project setting restrict_user_defined_variables is enabled' do
-    before do
-      project.update!(restrict_user_defined_variables: true)
-    end
+  it 'builds a pipeline with the expected attributes' do
+    step.perform!
 
-    context 'when user is developer' do
-      it_behaves_like 'breaks the chain'
-      it_behaves_like 'builds pipeline'
-
-      it 'returns an error on variables_attributes', :aggregate_failures do
-        step.perform!
-
-        expect(pipeline.errors.full_messages).to eq(['Insufficient permissions to set pipeline variables'])
-        expect(pipeline.variables).to be_empty
-      end
-
-      context 'when variables_attributes is not specified' do
-        let(:variables_attributes) { nil }
-
-        it_behaves_like 'does not break the chain'
-        it_behaves_like 'builds pipeline'
-
-        it 'assigns empty variables' do
-          step.perform!
-
-          expect(pipeline.variables).to be_empty
-        end
-      end
-    end
-
-    context 'when user is maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
-
-      it_behaves_like 'does not break the chain'
-      it_behaves_like 'builds pipeline'
-
-      it 'assigns variables_attributes' do
-        step.perform!
-
-        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
-          .to eq variables_attributes.map(&:with_indifferent_access)
-      end
-    end
+    expect(pipeline.sha).not_to be_empty
+    expect(pipeline.sha).to eq project.commit.id
+    expect(pipeline.ref).to eq 'master'
+    expect(pipeline.tag).to be false
+    expect(pipeline.user).to eq user
+    expect(pipeline.project).to eq project
   end
 
   it 'returns a valid pipeline' do

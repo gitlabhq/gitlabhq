@@ -65,11 +65,11 @@ For an overview of how to configure Jira Development panel integration, see
 [Agile Management - GitLab Jira Development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
 
 To simplify administration, we recommend that a GitLab group maintainer or group owner
-(or instance administrator in the case of self-managed GitLab) set up the integration.
+(or, if possible, instance administrator in the case of self-managed GitLab) set up the integration.
 
 | Jira usage | GitLab.com customers need | GitLab self-managed customers need |
 |------------|---------------------------|------------------------------------|
-| [Atlassian cloud](https://www.atlassian.com/cloud) | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) application installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab and Jira. For more information, see the documentation for the [GitLab.com for Jira Cloud app](connect-app.md). | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab Jira Cloud application for self-managed instances](connect-app.md#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances) for more information. |
+| [Atlassian cloud](https://www.atlassian.com/cloud) | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab.com and Jira. For more information, see the documentation for the [GitLab.com for Jira Cloud app](connect-app.md). | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab.com for Jira Cloud app for self-managed instances](connect-app.md#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances) for more information. |
 | Your own server | The [Jira DVCS (distributed version control system) connector](dvcs.md). This syncs data hourly. | The [Jira DVCS Connector](dvcs.md). |
 
 Each GitLab project can be configured to connect to an entire Jira instance. That means after
@@ -88,10 +88,6 @@ documentation for [central administration of project integrations](../../user/ad
 This integration is not supported on GitLab instances under a
 [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab).
 For example, `http://example.com/gitlab`.
-
-## Related topics
-
-- [Using Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html) in Jira
 
 ## Troubleshooting
 

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Configuring runners
+# Configuring runners **(FREE)**
 
 If you have installed your own runners, you can configure and secure them in GitLab.
 
@@ -107,10 +107,10 @@ We're always looking for contributions that can mitigate these
 ### Reset the runner registration token for a project
 
 If you think that a registration token for a project was revealed, you should
-reset it. A token can be used to register another runner for the project. That new runner
-may then be used to obtain the values of secret variables or to clone project code.
+reset it. A registration token can be used to register another runner for the project.
+That new runner may then be used to obtain the values of secret variables or to clone project code.
 
-To reset the token:
+To reset the registration token:
 
 1. Go to the project's **Settings > CI/CD**.
 1. Expand the **General pipelines settings** section.
@@ -123,6 +123,16 @@ From now on the old token is no longer valid and does not register
 any new runners to the project. If you are using any tools to provision and
 register new runners, the tokens used in those tools should be updated to reflect the
 value of the new token.
+
+### Reset the runner authentication token
+
+If you think that an authentication token for a runner was revealed, you should
+reset it. An attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+
+To reset the authentication token, [unregister the runner](https://docs.gitlab.com/runner/commands/#gitlab-runner-unregister)
+and then [register](https://docs.gitlab.com/runner/commands/#gitlab-runner-register) it again.
+
+To verify that the previous authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
 ## Determine the IP address of a runner
 
@@ -142,7 +152,7 @@ different places.
 To view the IP address of a shared runner you must have admin access to
 the GitLab instance. To determine this:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
@@ -159,13 +169,13 @@ project.
 
 ![specific runner IP address](img/specific_runner_ip_address.png)
 
-## Use tags to limit the number of jobs using the runner
+## Use tags to control which jobs a runner can run
 
 You must set up a runner to be able to run all the different types of jobs
 that it may encounter on the projects it's shared over. This would be
 problematic for large amounts of projects, if it weren't for tags.
 
-GitLab CI tags are not the same as Git tags. GitLab CI tags are associated with runners.
+GitLab CI/CD tags are not the same as Git tags. GitLab CI/CD tags are associated with runners.
 Git tags are associated with commits.
 
 By tagging a runner for the types of jobs it can handle, you can make sure
@@ -173,6 +183,8 @@ shared runners will [only run the jobs they are equipped to run](../yaml/index.m
 
 For instance, at GitLab we have runners tagged with `rails` if they contain
 the appropriate dependencies to run Rails test suites.
+
+### Set a runner to run untagged jobs
 
 When you [register a runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
 [tagged jobs](../yaml/index.md#tags).
@@ -227,6 +239,48 @@ Example 2:
 1. The runner is configured to run untagged jobs and has no tags defined.
 1. A job that has no tags defined is executed and run.
 1. A second job that has a `docker` tag defined is stuck.
+
+### Use tags to run jobs on different platforms
+
+You can use tags to run different jobs on different platforms. For
+example, if you have an OS X runner with tag `osx` and a Windows runner with tag
+`windows`, you can run a job on each platform:
+
+```yaml
+windows job:
+  stage:
+    - build
+  tags:
+    - windows
+  script:
+    - echo Hello, %USERNAME%!
+
+osx job:
+  stage:
+    - build
+  tags:
+    - osx
+  script:
+    - echo "Hello, $USER!"
+```
+
+### Use CI/CD variables in tags
+
+> Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
+
+You can use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+
+```yaml
+variables:
+  KUBERNETES_RUNNER: kubernetes
+
+  job:
+    tags:
+      - docker
+      - $KUBERNETES_RUNNER
+    script:
+      - echo "Hello runner selector feature"
+```
 
 ## Configure runner behavior with variables
 
@@ -546,7 +600,7 @@ the following stages:
 | Variable                        | Description                                            |
 |---------------------------------|--------------------------------------------------------|
 | `ARTIFACT_DOWNLOAD_ATTEMPTS`    | Number of attempts to download artifacts running a job |
-| `EXECUTOR_JOB_SECTION_ATTEMPTS` | [In GitLab 12.10](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) and later, the number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
+| `EXECUTOR_JOB_SECTION_ATTEMPTS` | In [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450), the number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
 | `GET_SOURCES_ATTEMPTS`          | Number of attempts to fetch sources running a job      |
 | `RESTORE_CACHE_ATTEMPTS`        | Number of attempts to restore the cache running a job  |
 

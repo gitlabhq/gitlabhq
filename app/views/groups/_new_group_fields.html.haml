@@ -13,7 +13,10 @@
 - if Gitlab.config.mattermost.enabled
   .row
     = render 'create_chat_team', f: f
-.row
+
+= render 'personalize', f: f
+
+.row.js-invite-members-section
   .col-sm-4
     = render_if_exists 'shared/groups/invite_members'
 

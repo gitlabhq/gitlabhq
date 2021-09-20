@@ -1,0 +1,8 @@
+---
+name: ci_new_query_for_pending_stuck_jobs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68880
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339322
+milestone: '14.3'
+type: development
+group: group::pipeline execution
+default_enabled: false

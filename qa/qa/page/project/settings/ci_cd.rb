@@ -4,7 +4,7 @@ module QA
   module Page
     module Project
       module Settings
-        class CICD < Page::Base
+        class CiCd < Page::Base
           include QA::Page::Settings::Common
 
           view 'app/views/projects/settings/ci_cd/show.html.haml' do
@@ -43,4 +43,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::CICD.prepend_mod_with("Page::Project::Settings::CICD", namespace: QA)
+QA::Page::Project::Settings::CiCd.prepend_mod_with("Page::Project::Settings::CiCd", namespace: QA)

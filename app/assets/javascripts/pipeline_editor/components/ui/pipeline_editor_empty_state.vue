@@ -24,9 +24,6 @@ export default {
     },
   },
   computed: {
-    showFileNav() {
-      return this.glFeatures.pipelineEditorBranchSwitcher;
-    },
     showCTAButton() {
       return this.glFeatures.pipelineEditorEmptyStateAction;
     },
@@ -40,7 +37,7 @@ export default {
 </script>
 <template>
   <div>
-    <pipeline-editor-file-nav v-if="showFileNav" v-on="$listeners" />
+    <pipeline-editor-file-nav v-on="$listeners" />
     <div class="gl-display-flex gl-flex-direction-column gl-align-items-center gl-mt-11">
       <img :src="emptyStateIllustrationPath" />
       <h1 class="gl-font-size-h1">{{ $options.i18n.title }}</h1>

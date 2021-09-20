@@ -9,6 +9,7 @@ import isEmojiUnicodeSupported, {
   isHorceRacingSkinToneComboEmoji,
   isPersonZwjEmoji,
 } from '~/emoji/support/is_emoji_unicode_supported';
+import { sanitize } from '~/lib/dompurify';
 
 const emptySupportMap = {
   personZwj: false,
@@ -379,7 +380,7 @@ describe('emoji', () => {
   describe('searchEmoji', () => {
     const emojiFixture = Object.keys(mockEmojiData).reduce((acc, k) => {
       const { name, e, u, d } = mockEmojiData[k];
-      acc[k] = { name, e, u, d };
+      acc[k] = { name, e: sanitize(e), u, d };
 
       return acc;
     }, {});
@@ -397,6 +398,7 @@ describe('emoji', () => {
         'heart',
         'custard',
         'star',
+        'xss',
       ].map((name) => {
         return {
           emoji: emojiFixture[name],
@@ -618,6 +620,15 @@ describe('emoji', () => {
 
     it.each(testCases)('%s', (_, scoredItems, expected) => {
       expect(sortEmoji(scoredItems)).toEqual(expected);
+    });
+  });
+
+  describe('sanitize emojis', () => {
+    it('should return sanitized emoji', () => {
+      expect(getEmojiInfo('xss')).toEqual({
+        ...mockEmojiData.xss,
+        e: '<img src="x">',
+      });
     });
   });
 });

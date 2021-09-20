@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-require 'securerandom'
-
 module QA
   module Resource
     module Repository

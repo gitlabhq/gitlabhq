@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import {
   GlBadge,
   GlLink,
@@ -11,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import filesQuery from 'shared_queries/repository/files.query.graphql';
+import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -154,7 +154,8 @@ export default {
       return this.isFolder ? this.loadFolder() : this.loadBlob();
     },
     loadFolder() {
-      this.apolloQuery(filesQuery, {
+      const query = this.glFeatures.paginatedTreeGraphqlQuery ? paginatedTreeQuery : filesQuery;
+      this.apolloQuery(query, {
         projectPath: this.projectPath,
         ref: this.ref,
         path: this.path,
@@ -230,7 +231,7 @@ export default {
         :href="commit.commitPath"
         :title="commit.message"
         class="str-truncated-100 tree-commit-link"
-        v-html="commit.titleHtml"
+        v-html="commit.titleHtml /* eslint-disable-line vue/no-v-html */"
       />
       <gl-skeleton-loading v-else :lines="1" class="h-auto" />
     </td>

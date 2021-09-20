@@ -21,12 +21,6 @@ RSpec.describe ProjectCiCdSetting do
     end
   end
 
-  describe '#job_token_scope_enabled' do
-    it 'is false by default' do
-      expect(described_class.new.job_token_scope_enabled).to be_falsey
-    end
-  end
-
   describe '#default_git_depth' do
     let(:default_value) { described_class::DEFAULT_GIT_DEPTH }
 

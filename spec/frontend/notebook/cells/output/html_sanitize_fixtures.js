@@ -90,7 +90,8 @@ export default [
         '  </g>\n',
         '</svg>',
       ].join(),
-      output: '<svg height="115.02pt" id="svg2"',
+      output:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="388.84pt" version="1.0" id="svg2" height="115.02pt">',
     },
   ],
 ];

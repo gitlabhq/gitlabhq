@@ -4,7 +4,7 @@
 
 {% each entries %}
 - [{{ title }}]({{ commit.reference }})\
-{% if author.contributor %} by {{ author.reference }}{% end %}\
+{% if author.credit %} by {{ author.reference }}{% end %}\
 {% if merge_request %} ([merge request]({{ merge_request.reference }})){% end %}
 
 {% end %}

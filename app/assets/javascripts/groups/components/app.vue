@@ -136,7 +136,7 @@ export default {
         this.updateGroups(res, Boolean(filterGroupsBy));
       });
     },
-    fetchPage(page, filterGroupsBy, sortBy, archived) {
+    fetchPage({ page, filterGroupsBy, sortBy, archived }) {
       this.isLoading = true;
 
       return this.fetchGroups({

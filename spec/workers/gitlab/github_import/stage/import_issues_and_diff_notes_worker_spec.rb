@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker do
     it 'imports the issues and diff notes' do
       client = double(:client)
 
-      described_class::IMPORTERS.each do |klass|
+      worker.importers(project).each do |klass|
         importer = double(:importer)
         waiter = Gitlab::JobWaiter.new(2, '123')
 
@@ -29,6 +29,47 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker do
         .with(project.id, { '123' => 2 }, :notes)
 
       worker.import(client, project)
+    end
+  end
+
+  describe '#importers' do
+    context 'when project group is present' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:group) { create(:group, projects: [project]) }
+
+      context 'when feature flag github_importer_single_endpoint_notes_import is enabled' do
+        it 'includes single endpoint diff notes importer' do
+          project = create(:project)
+          group = create(:group, projects: [project])
+
+          stub_feature_flags(github_importer_single_endpoint_notes_import: group)
+
+          expect(worker.importers(project)).to contain_exactly(
+            Gitlab::GithubImport::Importer::IssuesImporter,
+            Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter
+          )
+        end
+      end
+
+      context 'when feature flag github_importer_single_endpoint_notes_import is disabled' do
+        it 'includes default diff notes importer' do
+          stub_feature_flags(github_importer_single_endpoint_notes_import: false)
+
+          expect(worker.importers(project)).to contain_exactly(
+            Gitlab::GithubImport::Importer::IssuesImporter,
+            Gitlab::GithubImport::Importer::DiffNotesImporter
+          )
+        end
+      end
+    end
+
+    context 'when project group is missing' do
+      it 'includes default diff notes importer' do
+        expect(worker.importers(project)).to contain_exactly(
+          Gitlab::GithubImport::Importer::IssuesImporter,
+          Gitlab::GithubImport::Importer::DiffNotesImporter
+        )
+      end
     end
   end
 end

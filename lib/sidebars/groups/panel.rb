@@ -16,11 +16,6 @@ module Sidebars
         add_menu(Sidebars::Groups::Menus::SettingsMenu.new(context))
       end
 
-      override :render_raw_menus_partial
-      def render_raw_menus_partial
-        'layouts/nav/sidebar/group_menus'
-      end
-
       override :aria_label
       def aria_label
         context.group.subgroup? ? _('Subgroup navigation') : _('Group navigation')
