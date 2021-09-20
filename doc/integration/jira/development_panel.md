@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Jira Development panel integration **(FREE)**
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to GitLab Free in 13.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
 
 With the Jira Development panel integration, you can reference Jira issues in GitLab.
 When configured, activity (such as pipeline, deployment, and feature flags) displays in the Jira issue's
@@ -75,7 +75,7 @@ To simplify administration, we recommend that a GitLab group maintainer or group
 Each GitLab project can be configured to connect to an entire Jira instance. That means after
 configuration, one GitLab project can interact with all Jira projects in that instance. For:
 
-- The [view Jira issues](issues.md#view-jira-issues) feature **(PREMIUM)**, you must associate a GitLab project with a
+- The [view Jira issues](issues.md#view-jira-issues) feature, you must associate a GitLab project with a
   specific Jira project.
 - Other features, you do not have to explicitly associate a GitLab project with any single Jira
   project.

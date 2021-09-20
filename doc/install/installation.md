@@ -557,9 +557,10 @@ sudo -u git cp config/database.yml.postgresql config/database.yml
 # Once modified, the `production` settings will be as follows:
 #
 #   production:
-#     adapter: postgresql
-#     encoding: unicode
-#     database: gitlabhq_production
+#     main:
+#       adapter: postgresql
+#       encoding: unicode
+#       database: gitlabhq_production
 #
 sudo -u git -H editor config/database.yml
 

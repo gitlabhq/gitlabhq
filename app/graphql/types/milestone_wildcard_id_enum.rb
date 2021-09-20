@@ -8,6 +8,6 @@ module Types
     value 'NONE', 'No milestone is assigned.'
     value 'ANY', 'Milestone is assigned.'
     value 'STARTED', 'Milestone assigned is open and started (start date <= today).'
-    value 'UPCOMING', 'Milestone assigned is due closest in the future (due date > today).'
+    value 'UPCOMING', 'Milestone assigned is due in the future (due date > today).'
   end
 end

@@ -409,31 +409,27 @@ describe('Tracking', () => {
     });
   });
 
-  describe.each`
-    term
-    ${'event'}
-    ${'action'}
-  `('tracking interface events with data-track-$term', ({ term }) => {
+  describe('tracking interface events with data-track-action', () => {
     let eventSpy;
 
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
       Tracking.bindDocument('_category_'); // only happens once
       setHTMLFixture(`
-        <input data-track-${term}="click_input1" data-track-label="_label_" value=0 />
-        <input data-track-${term}="click_input2" data-track-value=0 value=0/>
-        <input type="checkbox" data-track-${term}="toggle_checkbox" value=1 checked/>
-        <input class="dropdown" data-track-${term}="toggle_dropdown"/>
-        <div data-track-${term}="nested_event"><span class="nested"></span></div>
+        <input data-track-action="click_input1" data-track-label="_label_" value=0 />
+        <input data-track-action="click_input2" data-track-value=0 value=0/>
+        <input type="checkbox" data-track-action="toggle_checkbox" value=1 checked/>
+        <input class="dropdown" data-track-action="toggle_dropdown"/>
+        <div data-track-action="nested_event"><span class="nested"></span></div>
         <input data-track-bogus="click_bogusinput" data-track-label="_label_" value="_value_"/>
-        <input data-track-${term}="click_input3" data-track-experiment="example" value="_value_"/>
-        <input data-track-${term}="event_with_extra" data-track-extra='{ "foo": "bar" }' />
-        <input data-track-${term}="event_with_invalid_extra" data-track-extra="invalid_json" />
+        <input data-track-action="click_input3" data-track-experiment="example" value="_value_"/>
+        <input data-track-action="event_with_extra" data-track-extra='{ "foo": "bar" }' />
+        <input data-track-action="event_with_invalid_extra" data-track-extra="invalid_json" />
       `);
     });
 
-    it(`binds to clicks on elements matching [data-track-${term}]`, () => {
-      document.querySelector(`[data-track-${term}="click_input1"]`).click();
+    it(`binds to clicks on elements matching [data-track-action]`, () => {
+      document.querySelector(`[data-track-action="click_input1"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input1', {
         label: '_label_',
@@ -441,14 +437,14 @@ describe('Tracking', () => {
       });
     });
 
-    it(`does not bind to clicks on elements without [data-track-${term}]`, () => {
+    it(`does not bind to clicks on elements without [data-track-action]`, () => {
       document.querySelector('[data-track-bogus="click_bogusinput"]').click();
 
       expect(eventSpy).not.toHaveBeenCalled();
     });
 
     it('allows value override with the data-track-value attribute', () => {
-      document.querySelector(`[data-track-${term}="click_input2"]`).click();
+      document.querySelector(`[data-track-action="click_input2"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input2', {
         value: '0',
@@ -456,7 +452,7 @@ describe('Tracking', () => {
     });
 
     it('handles checkbox values correctly', () => {
-      const checkbox = document.querySelector(`[data-track-${term}="toggle_checkbox"]`);
+      const checkbox = document.querySelector(`[data-track-action="toggle_checkbox"]`);
 
       checkbox.click(); // unchecking
 
@@ -472,7 +468,7 @@ describe('Tracking', () => {
     });
 
     it('handles bootstrap dropdowns', () => {
-      const dropdown = document.querySelector(`[data-track-${term}="toggle_dropdown"]`);
+      const dropdown = document.querySelector(`[data-track-action="toggle_dropdown"]`);
 
       dropdown.dispatchEvent(new Event('show.bs.dropdown', { bubbles: true }));
 
@@ -497,7 +493,7 @@ describe('Tracking', () => {
       };
       getExperimentData.mockReturnValue(mockExperimentData);
 
-      document.querySelector(`[data-track-${term}="click_input3"]`).click();
+      document.querySelector(`[data-track-action="click_input3"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input3', {
         value: '_value_',
@@ -506,7 +502,7 @@ describe('Tracking', () => {
     });
 
     it('supports extra data as JSON', () => {
-      document.querySelector(`[data-track-${term}="event_with_extra"]`).click();
+      document.querySelector(`[data-track-action="event_with_extra"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'event_with_extra', {
         extra: { foo: 'bar' },
@@ -514,34 +510,30 @@ describe('Tracking', () => {
     });
 
     it('ignores extra if provided JSON is invalid', () => {
-      document.querySelector(`[data-track-${term}="event_with_invalid_extra"]`).click();
+      document.querySelector(`[data-track-action="event_with_invalid_extra"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'event_with_invalid_extra', {});
     });
   });
 
-  describe.each`
-    term
-    ${'event'}
-    ${'action'}
-  `('tracking page loaded events with -$term', ({ term }) => {
+  describe('tracking page loaded events with -action', () => {
     let eventSpy;
 
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
       setHTMLFixture(`
-        <div data-track-${term}="click_link" data-track-label="all_nested_links">
-          <input data-track-${term}="render" data-track-label="label1" value=1 data-track-property="_property_"/>
-          <span data-track-${term}="render" data-track-label="label2" data-track-value=1>
+        <div data-track-action="click_link" data-track-label="all_nested_links">
+          <input data-track-action="render" data-track-label="label1" value=1 data-track-property="_property_"/>
+          <span data-track-action="render" data-track-label="label2" data-track-value=1>
             <a href="#" id="link">Something</a>
           </span>
-          <input data-track-${term}="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
+          <input data-track-action="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
         </div>
       `);
       Tracking.trackLoadEvents('_category_'); // only happens once
     });
 
-    it(`sends tracking events when [data-track-${term}="render"] is on an element`, () => {
+    it(`sends tracking events when [data-track-action="render"] is on an element`, () => {
       expect(eventSpy.mock.calls).toEqual([
         [
           '_category_',
@@ -576,7 +568,7 @@ describe('Tracking', () => {
         eventSpy.mockClear();
       });
 
-      it(`avoids using ancestor [data-track-${term}="render"] tracking configurations`, () => {
+      it(`avoids using ancestor [data-track-action="render"] tracking configurations`, () => {
         link.dispatchEvent(new Event(event, { bubbles: true }));
 
         expect(eventSpy).not.toHaveBeenCalledWith(

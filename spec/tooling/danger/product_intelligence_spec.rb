@@ -74,7 +74,7 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
 
     context 'with snowplow files changed' do
       context 'when vue file changed' do
-        let(:changed_lines) { ['+data-track-event'] }
+        let(:changed_lines) { ['+data-track-action'] }
 
         it { is_expected.to match_array(['components/welcome.vue']) }
       end

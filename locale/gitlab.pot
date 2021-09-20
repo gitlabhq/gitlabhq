@@ -25075,6 +25075,9 @@ msgstr ""
 msgid "Pipeline|Source|Schedule"
 msgstr ""
 
+msgid "Pipeline|Source|Security Policy"
+msgstr ""
+
 msgid "Pipeline|Source|Trigger"
 msgstr ""
 

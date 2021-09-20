@@ -96,7 +96,7 @@ Consider this example:
 
 ## View Jira issues **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3622) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3622) in GitLab 13.2.
 
 You can browse, search, and view issues from a selected Jira project directly in GitLab,
 if your GitLab administrator [has configured it](configure.md).

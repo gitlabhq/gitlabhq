@@ -2,7 +2,6 @@
 
 module AlertManagement
   class AlertPresenter < Gitlab::View::Presenter::Delegated
-    include Gitlab::Utils::StrongMemoize
     include IncidentManagement::Settings
     include ActionView::Helpers::UrlHelper
 
@@ -65,6 +64,7 @@ module AlertManagement
     private
 
     attr_reader :alert, :project
+
     delegate :alert_markdown, :full_query, to: :parsed_payload
 
     def issue_summary_markdown

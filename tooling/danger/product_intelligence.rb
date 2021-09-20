@@ -66,7 +66,6 @@ module Tooling
         js_patterns = Regexp.union(
           'Tracking.event',
           /\btrack\(/,
-          'data-track-event',
           'data-track-action'
         )
         all_changed_files.select do |file|

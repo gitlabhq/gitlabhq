@@ -46,6 +46,22 @@ module QA
         end
       end
 
+      # Get group badges
+      #
+      # @return [Array<QA::Resource::GroupBadge>]
+      def badges
+        parse_body(api_get_from("#{api_get_path}/badges")).map do |badge|
+          GroupBadge.init do |resource|
+            resource.api_client = api_client
+            resource.group = self
+            resource.id = badge[:id]
+            resource.name = badge[:name]
+            resource.link_url = badge[:link_url]
+            resource.image_url = badge[:image_url]
+          end
+        end
+      end
+
       # API get path
       #
       # @return [String]

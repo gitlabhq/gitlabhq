@@ -22,9 +22,6 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
 export const ACTION_ATTR_SELECTOR = '[data-track-action]';
 export const LOAD_ACTION_ATTR_SELECTOR = '[data-track-action="render"]';
 
-export const DEPRECATED_EVENT_ATTR_SELECTOR = '[data-track-event]';
-export const DEPRECATED_LOAD_EVENT_ATTR_SELECTOR = '[data-track-event="render"]';
-
 export const URLS_CACHE_STORAGE_KEY = 'gl-snowplow-pseudonymized-urls';
 
 export const REFERRER_TTL = 24 * 60 * 60 * 1000;

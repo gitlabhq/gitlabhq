@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Doctor::Secrets do
   let!(:user) { create(:user, otp_secret: "test") }
   let!(:group) { create(:group, runners_token: "test") }
+  let!(:project) { create(:project) }
+  let!(:grafana_integration) { create(:grafana_integration, project: project, token: "test") }
   let(:logger) { double(:logger).as_null_object }
 
   subject { described_class.new(logger).run! }
@@ -35,6 +37,14 @@ RSpec.describe Gitlab::Doctor::Secrets do
       group.save!
 
       expect(logger).to receive(:info).with(/Group failures: 1/)
+
+      subject
+    end
+  end
+
+  context 'when GrafanaIntegration token is set via private method' do
+    it 'can access GrafanaIntegration token value' do
+      expect(logger).to receive(:info).with(/GrafanaIntegration failures: 0/)
 
       subject
     end

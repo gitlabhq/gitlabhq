@@ -1184,7 +1184,7 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       context 'with an already existing build info' do
-        let_it_be(:build_info) { create(:packages_build_info, package: package, pipeline: pipeline) }
+        let_it_be(:build_info) { create(:package_build_info, package: package, pipeline: pipeline) }
 
         it 'does not create a build info' do
           expect { subject }.not_to change { ::Packages::BuildInfo.count }

@@ -17,22 +17,26 @@ requests to be merged and much more.
 
 ## View your group's Insights
 
-You can access your group's Insights by clicking the **Analytics > Insights**
-link in the left sidebar.
+To access your group's Insights:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Insights**.
 
 ## Configure your Insights
 
-Navigate to your group's **Settings > General**, expand **Insights**, and choose
-the project that holds your `.gitlab/insights.yml` configuration file:
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Insights**.
+1. Choose the project that contains your `.gitlab/insights.yml` configuration file:
 
 ![group insights configuration](img/insights_group_configuration.png)
 
-If no configuration was set, a [default configuration file](
-https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml)
-will be used.
+If no configuration was set, a
+[default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml)
+is used.
 
-See the [Project's Insights documentation](../../project/insights/index.md) for
-more details about the `.gitlab/insights.yml` configuration file.
+See the [project's Insights documentation](../../project/insights/index.md) for
+details about the `.gitlab/insights.yml` configuration file.
 
 ## Permissions
 

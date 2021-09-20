@@ -229,9 +229,9 @@ class User < ApplicationRecord
   validates :first_name, length: { maximum: 127 }
   validates :last_name, length: { maximum: 127 }
   validates :email, confirmation: true
-  validates :notification_email, devise_email: true, allow_blank: true, if: ->(user) { user.notification_email != user.email }
+  validates :notification_email, devise_email: true, allow_blank: true
   validates :public_email, uniqueness: true, devise_email: true, allow_blank: true
-  validates :commit_email, devise_email: true, allow_blank: true, if: ->(user) { user.commit_email != user.email && user.commit_email != Gitlab::PrivateCommitEmail::TOKEN }
+  validates :commit_email, devise_email: true, allow_blank: true, unless: ->(user) { user.commit_email == Gitlab::PrivateCommitEmail::TOKEN }
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
