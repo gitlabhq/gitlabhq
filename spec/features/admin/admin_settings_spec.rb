@@ -602,18 +602,47 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.issues_create_limit).to eq(0)
       end
 
-      it 'changes Files API rate limits settings' do
-        visit network_admin_application_settings_path
+      shared_examples 'regular throttle rate limit settings' do
+        it 'changes rate limit settings' do
+          visit network_admin_application_settings_path
 
-        page.within('[data-testid="files-limits-settings"]') do
-          check 'Enable unauthenticated API request rate limit'
-          fill_in 'Max unauthenticated API requests per period per IP', with: 10
-          click_button 'Save changes'
+          page.within(".#{selector}") do
+            check 'Enable unauthenticated API request rate limit'
+            fill_in 'Maximum unauthenticated API requests per rate limit period per IP', with: 12
+            fill_in 'Unauthenticated API rate limit period in seconds', with: 34
+
+            check 'Enable authenticated API request rate limit'
+            fill_in 'Maximum authenticated API requests per rate limit period per user', with: 56
+            fill_in 'Authenticated API rate limit period in seconds', with: 78
+
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content "Application settings saved successfully"
+
+          expect(current_settings).to have_attributes(
+            "throttle_unauthenticated_#{fragment}_enabled" => true,
+            "throttle_unauthenticated_#{fragment}_requests_per_period" => 12,
+            "throttle_unauthenticated_#{fragment}_period_in_seconds" => 34,
+            "throttle_authenticated_#{fragment}_enabled" => true,
+            "throttle_authenticated_#{fragment}_requests_per_period" => 56,
+            "throttle_authenticated_#{fragment}_period_in_seconds" => 78
+          )
         end
+      end
 
-        expect(page).to have_content "Application settings saved successfully"
-        expect(current_settings.throttle_unauthenticated_files_api_enabled).to be true
-        expect(current_settings.throttle_unauthenticated_files_api_requests_per_period).to eq(10)
+      context 'Package Registry API rate limits' do
+        let(:selector) { 'as-packages-limits' }
+        let(:fragment) { :packages_api }
+
+        include_examples 'regular throttle rate limit settings'
+      end
+
+      context 'Files API rate limits' do
+        let(:selector) { 'as-files-limits' }
+        let(:fragment) { :files_api }
+
+        include_examples 'regular throttle rate limit settings'
       end
     end
 

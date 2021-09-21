@@ -13,11 +13,8 @@ import DiffFile from '~/diffs/components/diff_file.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 
-/* eslint-disable import/order */
-/* You know what: sometimes alphabetical isn't the best order */
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
-/* eslint-enable import/order */
 
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';

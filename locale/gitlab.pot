@@ -4765,9 +4765,6 @@ msgstr ""
 msgid "Authenticated API rate limit period in seconds"
 msgstr ""
 
-msgid "Authenticated API request rate limit"
-msgstr ""
-
 msgid "Authenticated API requests"
 msgstr ""
 
@@ -16679,9 +16676,6 @@ msgid "Helps prevent bots from creating issues"
 msgstr ""
 
 msgid "Helps prevent malicious users hide their activity"
-msgstr ""
-
-msgid "Helps reduce request volume (e.g. from crawlers or abusive bots)"
 msgstr ""
 
 msgid "Helps reduce request volume (for example, from crawlers or abusive bots)"
@@ -33764,9 +33758,6 @@ msgstr ""
 msgid "The number of times an upload record could not find its file"
 msgstr ""
 
-msgid "The package registry rate limits can help reduce request volume (like from crawlers or abusive bots)."
-msgstr ""
-
 msgid "The page could not be displayed because it timed out."
 msgstr ""
 
@@ -36036,9 +36027,6 @@ msgid "Unassigned"
 msgstr ""
 
 msgid "Unauthenticated API rate limit period in seconds"
-msgstr ""
-
-msgid "Unauthenticated API request rate limit"
 msgstr ""
 
 msgid "Unauthenticated requests"

@@ -1,5 +1,4 @@
 /* global $ */
-/* eslint-disable import/order */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';

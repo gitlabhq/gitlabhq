@@ -357,6 +357,8 @@ class ProjectPolicy < BasePolicy
     enable :update_commit_status
     enable :create_build
     enable :update_build
+    enable :read_resource_group
+    enable :update_resource_group
     enable :create_merge_request_from
     enable :create_wiki
     enable :push_code

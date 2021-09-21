@@ -13,6 +13,13 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::SizeLimiter::Server
         chain.add ::Gitlab::SidekiqMiddleware::Monitor
 
+        # Labkit wraps the job in the `Labkit::Context` resurrected from
+        # the job-hash. We need properties from the context for
+        # recording metrics, so this needs to be before
+        # `::Gitlab::SidekiqMiddleware::ServerMetrics` (if we're using
+        # that).
+        chain.add ::Labkit::Middleware::Sidekiq::Server
+
         if metrics
           chain.add ::Gitlab::SidekiqMiddleware::ServerMetrics
 
@@ -24,7 +31,6 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata
         chain.add ::Gitlab::SidekiqMiddleware::BatchLoader
-        chain.add ::Labkit::Middleware::Sidekiq::Server
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger
         chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Server
         chain.add ::Gitlab::SidekiqVersioning::Middleware

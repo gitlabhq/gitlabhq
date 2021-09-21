@@ -58,13 +58,13 @@ RSpec.describe Gitlab::SidekiqMiddleware do
     let(:all_sidekiq_middlewares) do
       [
         ::Gitlab::SidekiqMiddleware::Monitor,
+        ::Labkit::Middleware::Sidekiq::Server,
         ::Gitlab::SidekiqMiddleware::ServerMetrics,
         ::Gitlab::SidekiqMiddleware::ArgumentsLogger,
         ::Gitlab::SidekiqMiddleware::MemoryKiller,
         ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
         ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
         ::Gitlab::SidekiqMiddleware::BatchLoader,
-        ::Labkit::Middleware::Sidekiq::Server,
         ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
         ::Gitlab::SidekiqMiddleware::AdminMode::Server,
         ::Gitlab::SidekiqVersioning::Middleware,

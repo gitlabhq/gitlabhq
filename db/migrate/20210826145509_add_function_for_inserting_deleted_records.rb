@@ -6,7 +6,7 @@ class AddFunctionForInsertingDeletedRecords < ActiveRecord::Migration[6.1]
 
   def up
     execute(<<~SQL)
-      CREATE FUNCTION #{DELETED_RECORDS_INSERT_FUNCTION_NAME}()
+      CREATE OR REPLACE FUNCTION #{DELETED_RECORDS_INSERT_FUNCTION_NAME}()
       RETURNS TRIGGER AS
       $$
       BEGIN

@@ -72,6 +72,11 @@ class SomeCrossCuttingConcernWorker
 end
 ```
 
+Workers marked as not owned workers will, when possible, use the
+category of their caller (worker or HTTP endpoint) in metrics and logs.
+For instance, `ReactiveCachingWorker` can have multiple feature
+categories in metrics and logs.
+
 ## Rails controllers
 
 Specifying feature categories on controller actions can be done using

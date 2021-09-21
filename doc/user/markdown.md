@@ -524,7 +524,7 @@ GitLab Flavored Markdown recognizes the following:
 | specific user                   | `@user_name`               |                                         |                                |
 | specific group                  | `@group_name`              |                                         |                                |
 | entire team                     | `@all`                     |                                         |                                |
-| project                         | `namespace/project`        |                                         |                                |
+| project                         | `namespace/project>`       |                                         |                                |
 | issue                           | ``#123``                   | `namespace/project#123`                 | `project#123`                  |
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |

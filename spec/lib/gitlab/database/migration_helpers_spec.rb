@@ -1631,8 +1631,17 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     let(:worker) do
       Class.new do
         include Sidekiq::Worker
+
         sidekiq_options queue: 'test'
+
+        def self.name
+          'WorkerClass'
+        end
       end
+    end
+
+    before do
+      stub_const(worker.name, worker)
     end
 
     describe '#sidekiq_queue_length' do

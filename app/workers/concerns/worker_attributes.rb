@@ -46,8 +46,14 @@ module WorkerAttributes
       set_class_attribute(:feature_category, :not_owned)
     end
 
+    # Special case: if a worker is not owned, get the feature category
+    # (if present) from the calling context.
     def get_feature_category
-      get_class_attribute(:feature_category)
+      feature_category = get_class_attribute(:feature_category)
+
+      return feature_category unless feature_category == :not_owned
+
+      Gitlab::ApplicationContext.current_context_attribute('meta.feature_category') || feature_category
     end
 
     def feature_category_not_owned?

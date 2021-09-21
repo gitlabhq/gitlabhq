@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
-  let(:worker_class) do
+  let(:test_worker) do
     Class.new do
       def self.name
         "TestWorker"
@@ -23,6 +23,16 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
     end
   end
 
+  let(:not_owned_worker) do
+    Class.new(test_worker) do
+      def self.name
+        "NotOwnedWorker"
+      end
+
+      feature_category_not_owned!
+    end
+  end
+
   let(:other_worker) do
     Class.new do
       def self.name
@@ -37,7 +47,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
   end
 
   before do
-    stub_const("TestWorker", worker_class)
+    stub_const("TestWorker", test_worker)
+    stub_const("NotOwnedWorker", not_owned_worker)
     stub_const("OtherWorker", other_worker)
   end
 
@@ -57,10 +68,24 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
       expect(TestWorker.contexts['identifier'].keys).not_to include('meta.user')
     end
 
-    it 'takes the feature category from the worker' do
-      TestWorker.perform_async('identifier', 1)
+    context 'feature category' do
+      it 'takes the feature category from the worker' do
+        Gitlab::ApplicationContext.with_context(feature_category: 'authentication_and_authorization') do
+          TestWorker.perform_async('identifier', 1)
+        end
 
-      expect(TestWorker.contexts['identifier']).to include('meta.feature_category' => 'foo')
+        expect(TestWorker.contexts['identifier']).to include('meta.feature_category' => 'foo')
+      end
+
+      context 'when the worker is not owned' do
+        it 'takes the feature category from the surrounding context' do
+          Gitlab::ApplicationContext.with_context(feature_category: 'authentication_and_authorization') do
+            NotOwnedWorker.perform_async('identifier', 1)
+          end
+
+          expect(NotOwnedWorker.contexts['identifier']).to include('meta.feature_category' => 'authentication_and_authorization')
+        end
+      end
     end
 
     it "doesn't fail for unknown workers" do

@@ -732,6 +732,31 @@ The group's new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
+## Group approval rules **(ULTIMATE)**
+
+> Introduced in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+per group, ask an administrator to [enable the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md).
+The feature is not ready for production use.
+
+Group approval rules are an in-development feature that provides an interface for managing
+[project merge request approval rules](../project/merge_requests/approvals/index.md) at the
+top-level group level.
+
+The feature is limited to the user interface but the following merge requests extend the UI to:
+
+- [Enforce group settings on projects](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69750).
+- [Cascade group settings onto projects](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68476).
+
+To view the merge request approval rules UI for a group:
+
+1. Go to the top-level group's **Settings > General** page.
+1. Expand the **Merge request approvals** section.
+1. Select the settings you want.
+1. Select **Save changes**.
+
 ## Related topics
 
 - [Group wikis](../project/wiki/index.md)

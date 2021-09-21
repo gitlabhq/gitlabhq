@@ -88,7 +88,7 @@ rules:
         - pattern: test_fixtures/**
           group: internal
       alphabetize:
-        order: asc
+        order: ignore
 overrides:
   - files:
       - '**/spec/**/*'

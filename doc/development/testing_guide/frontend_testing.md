@@ -998,7 +998,7 @@ it like so:
 import Subject from '~/feature/the_subject.vue';
 
 // Force Jest to transpile and cache
-// eslint-disable-next-line import/order, no-unused-vars
+// eslint-disable-next-line no-unused-vars
 import _Thing from '~/feature/path/to/thing.vue';
 ```
 

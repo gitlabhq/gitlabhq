@@ -272,6 +272,8 @@ ci_pipelines:
 - dast_profiles_pipeline
 - dast_site_profile
 - dast_site_profiles_pipeline
+- package_build_infos
+- package_file_build_infos
 ci_refs:
 - project
 - ci_pipelines

@@ -17,6 +17,9 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:elasticsearch_requests_total) { double('elasticsearch calls total metric') }
 
   before do
+    allow(Gitlab::Metrics).to receive(:histogram).and_call_original
+    allow(Gitlab::Metrics).to receive(:counter).and_call_original
+
     allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_queue_duration_seconds, anything, anything, anything).and_return(queue_duration_seconds)
     allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_completion_seconds, anything, anything, anything).and_return(completion_seconds_metric)
     allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_cpu_seconds, anything, anything, anything).and_return(user_execution_seconds_metric)

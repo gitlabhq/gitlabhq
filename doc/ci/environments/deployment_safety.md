@@ -60,7 +60,7 @@ The improved pipeline flow **after** using the resource group:
 1. `deploy` job in Pipeline-A finishes.
 1. `deploy` job in Pipeline-B starts running.
 
-For more information, see [`resource_group` keyword in `.gitlab-ci.yml`](../yaml/index.md#resource_group).
+For more information, see [Resource Group documentation](../resource_groups/index.md).
 
 ## Skip outdated deployment jobs
 

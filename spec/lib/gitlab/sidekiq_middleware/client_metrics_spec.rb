@@ -63,5 +63,18 @@ RSpec.describe Gitlab::SidekiqMiddleware::ClientMetrics do
         Sidekiq::Testing.inline! { TestWorker.perform_in(1.second) }
       end
     end
+
+    context 'when the worker class cannot be found' do
+      it 'increments enqueued jobs metric with the worker labels set to NilClass' do
+        test_anonymous_worker = Class.new(TestWorker)
+
+        expect(enqueued_jobs_metric).to receive(:increment).with(a_hash_including(worker: 'NilClass'), 1)
+
+        # Sidekiq won't be able to create an instance of this class
+        expect do
+          Sidekiq::Testing.inline! { test_anonymous_worker.perform_async }
+        end.to raise_error(NameError)
+      end
+    end
   end
 end

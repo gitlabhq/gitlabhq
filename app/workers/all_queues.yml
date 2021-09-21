@@ -1890,7 +1890,7 @@
   :tags: []
 - :name: default
   :worker_name:
-  :feature_category:
+  :feature_category: :not_owned
   :has_external_dependencies:
   :urgency:
   :resource_boundary:
@@ -2215,7 +2215,7 @@
   :tags: []
 - :name: mailers
   :worker_name: ActionMailer::MailDeliveryJob
-  :feature_category: :issue_tracking
+  :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: low
   :resource_boundary:

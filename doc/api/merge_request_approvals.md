@@ -294,6 +294,7 @@ POST /projects/:id/approval_rules
 | `id`                   | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
 | `name`                 | string  | yes      | The name of the approval rule                                    |
 | `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
+| `rule_type`            | string  | no       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular`.
 | `user_ids`             | Array   | no       | The ids of users as approvers                                    |
 | `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
 | `protected_branch_ids` | Array   | no       | **(PREMIUM)** The ids of protected branches to scope the rule by |
@@ -377,6 +378,23 @@ POST /projects/:id/approval_rules
   ],
   "contains_hidden_groups": false
 }
+```
+
+You can increase the default number of 0 required approvers like this:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header 'Content-Type: application/json' \
+  --data '{"name": "Any name", "rule_type": "any_approver", "approvals_required": 2}'
+```
+
+Another example is creating an additional, user-specific rule:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header 'Content-Type: application/json' \
+  --data '{"name": "Name of your rule", "approvals_required": 3, "user_ids": [123, 456, 789]}' \
+  https://gitlab.example.com/api/v4/projects/<project_id>/approval_rules
 ```
 
 ### Update project-level rule

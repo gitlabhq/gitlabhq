@@ -13,6 +13,10 @@ RSpec.describe WorkerContext do
     end
   end
 
+  before do
+    stub_const(worker.name, worker)
+  end
+
   describe '.worker_context' do
     it 'allows modifying the context for the entire worker' do
       worker.worker_context(user: build_stubbed(:user))

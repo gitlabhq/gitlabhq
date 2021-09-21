@@ -3859,7 +3859,7 @@ can be deployed to, but there can be only one deployment per device at any given
 The `resource_group` value can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
 It can't start or end with `/`.
 
-For more information, see [Deployments Safety](../environments/deployment_safety.md).
+For more information, see [Resource Group documentation](../resource_groups/index.md).
 
 #### Pipeline-level concurrency control with Cross-Project/Parent-Child pipelines
 

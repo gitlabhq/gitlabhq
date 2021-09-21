@@ -211,6 +211,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       end
     end
 
+    include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call'
+
     before do
       stub_const('TestWorker', Class.new)
       TestWorker.class_eval do
@@ -233,9 +236,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         Sidekiq::Testing.inline! { example.run }
       end
     end
-
-    include_context 'server metrics with mocked prometheus'
-    include_context 'server metrics call'
 
     shared_context 'worker declaring data consistency' do
       let(:worker_class) { LBTestWorker }
@@ -305,6 +305,68 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
           expect(load_balancing_metric).not_to have_received(:increment)
         end
+      end
+    end
+  end
+
+  context 'feature attribution' do
+    let(:test_worker) do
+      category = worker_category
+
+      Class.new do
+        include Sidekiq::Worker
+        include WorkerAttributes
+
+        if category
+          feature_category category
+        else
+          feature_category_not_owned!
+        end
+
+        def perform
+        end
+      end
+    end
+
+    let(:context_category) { 'continuous_integration' }
+    let(:job) { { 'meta.feature_category' => 'continuous_integration' } }
+
+    before do
+      stub_const('TestWorker', test_worker)
+    end
+
+    around do |example|
+      with_sidekiq_server_middleware do |chain|
+        Gitlab::SidekiqMiddleware.server_configurator(
+          metrics: true,
+          arguments_logger: false,
+          memory_killer: false
+        ).call(chain)
+
+        Sidekiq::Testing.inline! { example.run }
+      end
+    end
+
+    include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call'
+
+    context 'when a worker has a feature category' do
+      let(:worker_category) { 'authentication_and_authorization' }
+
+      it 'uses that category for metrics' do
+        expect(completion_seconds_metric).to receive(:observe).with(a_hash_including(feature_category: worker_category), anything)
+
+        TestWorker.process_job(job)
+      end
+    end
+
+    context 'when a worker does not have a feature category' do
+      let(:worker_category) { nil }
+
+      it 'uses the category from the context for metrics' do
+        expect(completion_seconds_metric).to receive(:observe).with(a_hash_including(feature_category: context_category), anything)
+
+        TestWorker.process_job(job)
       end
     end
   end

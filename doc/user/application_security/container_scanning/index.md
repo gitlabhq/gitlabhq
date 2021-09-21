@@ -397,7 +397,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 We recommend that you set up a [scheduled pipeline](../../../ci/pipelines/schedules.md)
 to fetch the latest vulnerabilities database on a preset schedule.
 Automating this with a pipeline means you do not have to do it manually each time. You can use the
-following `.gitlab-yml.ci` example as a template.
+following `.gitlab-ci.yml` example as a template.
 
 ```yaml
 variables:

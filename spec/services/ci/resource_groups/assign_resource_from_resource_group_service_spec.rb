@@ -48,6 +48,92 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService do
           expect(build).to be_pending
         end
       end
+
+      context 'when process mode is oldest_first' do
+        let(:resource_group) { create(:ci_resource_group, process_mode: :oldest_first, project: project) }
+
+        it 'requests resource' do
+          subject
+
+          expect(build.reload).to be_pending
+          expect(build.resource).to be_present
+        end
+
+        context 'when the other job exists in the newer pipeline' do
+          let!(:build_2) { create(:ci_build, :waiting_for_resource, project: project, user: user, resource_group: resource_group) }
+
+          it 'requests resource for the job in the oldest pipeline' do
+            subject
+
+            expect(build.reload).to be_pending
+            expect(build.resource).to be_present
+            expect(build_2.reload).to be_waiting_for_resource
+            expect(build_2.resource).to be_nil
+          end
+        end
+
+        context 'when build is not `waiting_for_resource` state' do
+          let!(:build) { create(:ci_build, :created, project: project, user: user, resource_group: resource_group) }
+
+          it 'attempts to request a resource' do
+            expect_next_found_instance_of(Ci::Build) do |job|
+              expect(job).to receive(:enqueue_waiting_for_resource).and_call_original
+            end
+
+            subject
+          end
+
+          it 'does not change the job status' do
+            subject
+
+            expect(build.reload).to be_created
+            expect(build.resource).to be_nil
+          end
+        end
+      end
+
+      context 'when process mode is newest_first' do
+        let(:resource_group) { create(:ci_resource_group, process_mode: :newest_first, project: project) }
+
+        it 'requests resource' do
+          subject
+
+          expect(build.reload).to be_pending
+          expect(build.resource).to be_present
+        end
+
+        context 'when the other job exists in the newer pipeline' do
+          let!(:build_2) { create(:ci_build, :waiting_for_resource, project: project, user: user, resource_group: resource_group) }
+
+          it 'requests resource for the job in the newest pipeline' do
+            subject
+
+            expect(build.reload).to be_waiting_for_resource
+            expect(build.resource).to be_nil
+            expect(build_2.reload).to be_pending
+            expect(build_2.resource).to be_present
+          end
+        end
+
+        context 'when build is not `waiting_for_resource` state' do
+          let!(:build) { create(:ci_build, :created, project: project, user: user, resource_group: resource_group) }
+
+          it 'attempts to request a resource' do
+            expect_next_found_instance_of(Ci::Build) do |job|
+              expect(job).to receive(:enqueue_waiting_for_resource).and_call_original
+            end
+
+            subject
+          end
+
+          it 'does not change the job status' do
+            subject
+
+            expect(build.reload).to be_created
+            expect(build.resource).to be_nil
+          end
+        end
+      end
     end
 
     context 'when there are no available resources' do

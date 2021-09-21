@@ -248,6 +248,10 @@ RSpec.describe ApplicationWorker do
   end
 
   describe '.perform_async' do
+    before do
+      stub_const(worker.name, worker)
+    end
+
     shared_examples_for 'worker utilizes load balancing capabilities' do |data_consistency|
       before do
         worker.data_consistency(data_consistency)
@@ -282,6 +286,10 @@ RSpec.describe ApplicationWorker do
   end
 
   describe '.bulk_perform_async' do
+    before do
+      stub_const(worker.name, worker)
+    end
+
     it 'enqueues jobs in bulk' do
       Sidekiq::Testing.fake! do
         worker.bulk_perform_async([['Foo', [1]], ['Foo', [2]]])
@@ -293,6 +301,10 @@ RSpec.describe ApplicationWorker do
   end
 
   describe '.bulk_perform_in' do
+    before do
+      stub_const(worker.name, worker)
+    end
+
     context 'when delay is valid' do
       it 'correctly schedules jobs' do
         Sidekiq::Testing.fake! do
