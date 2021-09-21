@@ -14,6 +14,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
+import { initHeaderSearchApp } from '~/header_search';
 import initAlertHandler from './alert_handler';
 import { removeFlashClickListener } from './flash';
 import initTodoToggle from './header';
@@ -35,7 +36,6 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
-import { initHeaderSearchApp } from '~/header_search';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';

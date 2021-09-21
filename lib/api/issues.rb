@@ -375,6 +375,34 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Clone an existing issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :to_project_id, type: Integer, desc: 'The ID of the new project'
+        optional :with_notes, type: Boolean, desc: 'Clone issue with notes', default: false
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      post ':id/issues/:issue_iid/clone' do
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/340252')
+
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
+        not_found!('Issue') unless issue
+
+        target_project = Project.find_by(id: params[:to_project_id])
+        not_found!('Project') unless target_project
+
+        begin
+          issue = ::Issues::CloneService.new(project: user_project, current_user: current_user)
+            .execute(issue, target_project, with_notes: params[:with_notes])
+          present issue, with: Entities::Issue, current_user: current_user, project: target_project
+        rescue ::Issues::CloneService::CloneError => error
+          render_api_error!(error.message, 400)
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       desc 'Delete a project issue'
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
