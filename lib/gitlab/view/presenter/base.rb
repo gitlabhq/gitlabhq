@@ -47,8 +47,18 @@ module Gitlab
             true
           end
 
-          def presents(name)
-            define_method(name) { subject }
+          def presents(*target_classes, as: nil)
+            if target_classes.any? { |k| k.is_a?(Symbol) }
+              raise ArgumentError, "Unsupported target class type: #{target_classes}."
+            end
+
+            if self < ::Gitlab::View::Presenter::Delegated
+              target_classes.each { |k| delegator_target(k) }
+            elsif self < ::Gitlab::View::Presenter::Simple
+              # no-op
+            end
+
+            define_method(as) { subject } if as
           end
         end
       end

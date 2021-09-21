@@ -33,3 +33,38 @@ RSpec.shared_examples_for 'value stream analytics event' do
     end
   end
 end
+
+RSpec.shared_examples_for 'LEFT JOIN-able value stream analytics event' do
+  let(:params) { {} }
+  let(:instance) { described_class.new(params) }
+  let(:record_with_data) { nil }
+  let(:record_without_data) { nil }
+  let(:scope) { instance.object_type.all }
+
+  let(:records) do
+    scope_with_left_join = instance.include_in(scope)
+    scope_with_left_join.select(scope.model.arel_table[:id], instance.timestamp_projection.as('timestamp_column_data')).to_a
+  end
+
+  it 'can use the event as LEFT JOIN' do
+    expected_record_count = record_without_data.nil? ? 1 : 2
+
+    expect(records.count).to eq(expected_record_count)
+  end
+
+  context 'when looking at the record with data' do
+    subject(:record) { records.to_a.find { |r| r.id == record_with_data.id } }
+
+    it 'contains the timestamp expression' do
+      expect(record.timestamp_column_data).not_to eq(nil)
+    end
+  end
+
+  context 'when looking at the record without data' do
+    subject(:record) { records.to_a.find { |r| r.id == record_without_data.id } }
+
+    it 'returns nil for the timestamp expression' do
+      expect(record.timestamp_column_data).to eq(nil) if record_without_data
+    end
+  end
+end

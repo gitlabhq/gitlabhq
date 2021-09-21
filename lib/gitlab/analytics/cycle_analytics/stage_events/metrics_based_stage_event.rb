@@ -20,6 +20,10 @@ module Gitlab
           def column_list
             [timestamp_projection]
           end
+
+          def include_in(query)
+            super.left_joins(:metrics)
+          end
         end
       end
     end

@@ -183,6 +183,8 @@ queries they produce.
 Everything in `app/presenters`, used for exposing complex data to a Rails view,
 without having to create many instance variables.
 
+See [the documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/presenters/README.md) for more information.
+
 ### Serializers
 
 Everything in `app/serializers`, used for presenting the response to a request,

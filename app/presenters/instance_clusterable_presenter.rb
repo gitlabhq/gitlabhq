@@ -4,6 +4,8 @@ class InstanceClusterablePresenter < ClusterablePresenter
   extend ::Gitlab::Utils::Override
   include ActionView::Helpers::UrlHelper
 
+  presents ::Clusters::Instance
+
   def self.fabricate(clusterable, **attributes)
     attributes_with_presenter_class = attributes.merge(presenter_class: InstanceClusterablePresenter)
 

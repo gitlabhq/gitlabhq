@@ -4,6 +4,8 @@ class ProjectClusterablePresenter < ClusterablePresenter
   extend ::Gitlab::Utils::Override
   include ActionView::Helpers::UrlHelper
 
+  presents ::Project
+
   override :cluster_status_cluster_path
   def cluster_status_cluster_path(cluster, params = {})
     cluster_status_project_cluster_path(clusterable, cluster, params)

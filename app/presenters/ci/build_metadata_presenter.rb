@@ -9,8 +9,9 @@ module Ci
         job_timeout_source: 'job'
     }.freeze
 
-    presents :metadata
+    presents ::Ci::BuildMetadata, as: :metadata
 
+    delegator_override :timeout_source
     def timeout_source
       return unless metadata.timeout_source?
 

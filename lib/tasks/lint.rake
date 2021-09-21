@@ -12,6 +12,7 @@ unless Rails.env.production?
       dev:load
     ] do
       Gitlab::Utils::Override.verify!
+      Gitlab::Utils::DelegatorOverride.verify!
     end
 
     desc "GitLab | Lint | Lint JavaScript files using ESLint"

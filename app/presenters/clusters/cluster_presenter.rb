@@ -7,7 +7,9 @@ module Clusters
     include ActionView::Helpers::UrlHelper
     include IconsHelper
 
-    presents :cluster
+    delegator_override_with ::Gitlab::Utils::StrongMemoize # TODO: Remove `::Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
+
+    presents ::Clusters::Cluster, as: :cluster
 
     # We do not want to show the group path for clusters belonging to the
     # clusterable, only for the ancestor clusters.

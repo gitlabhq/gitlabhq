@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ProjectMemberPresenter < MemberPresenter
+  presents ::ProjectMember
+
   private
 
   def admin_member_permission

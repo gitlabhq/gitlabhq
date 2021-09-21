@@ -21,4 +21,9 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::PlanStageStart do
     expect(records).to match_array([issue1, issue2])
     expect(records).not_to include(issue_without_metrics)
   end
+
+  it_behaves_like 'LEFT JOIN-able value stream analytics event' do
+    let_it_be(:record_with_data) { create(:issue).tap { |i| i.metrics.update!(first_added_to_board_at: Time.current) } }
+    let_it_be(:record_without_data) { create(:issue) }
+  end
 end

@@ -4,7 +4,7 @@ module Releases
   class EvidencePresenter < Gitlab::View::Presenter::Delegated
     include ActionView::Helpers::UrlHelper
 
-    presents :evidence
+    presents ::Releases::Evidence, as: :evidence
 
     def filepath
       release = evidence.release

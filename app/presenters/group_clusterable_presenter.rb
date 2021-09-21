@@ -4,6 +4,8 @@ class GroupClusterablePresenter < ClusterablePresenter
   extend ::Gitlab::Utils::Override
   include ActionView::Helpers::UrlHelper
 
+  presents ::Group
+
   override :cluster_status_cluster_path
   def cluster_status_cluster_path(cluster, params = {})
     cluster_status_group_cluster_path(clusterable, cluster, params)

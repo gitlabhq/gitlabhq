@@ -1185,11 +1185,9 @@ If a validated site profile's target URL is edited, the site's validation status
 
 #### Retry a failed validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322609) in GitLab 14.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an
-administrator to [disable the `dast_failed_site_validations` flag](../../../administration/feature_flags.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322609) in GitLab 14.3.
+> - [Deployed behind the `dast_failed_site_validations` flag](../../../administration/feature_flags.md), enabled by default.
+> - [Feature flag `dast_failed_site_validations` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323961) in GitLab 14.4.
 
 If a site profile's validation fails, you can retry it by selecting the **Retry validation** button
 in the profiles list.

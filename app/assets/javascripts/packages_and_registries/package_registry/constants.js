@@ -1,5 +1,4 @@
-/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';
 export const PACKAGE_TYPE_MAVEN = 'MAVEN';
@@ -71,7 +70,7 @@ export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package.',
 );
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
-  __('PackageRegistry|Something went wrong while deleting the package file.'),
+  'PackageRegistry|Something went wrong while deleting the package file.',
 );
 export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
   'PackageRegistry|Package file deleted successfully',

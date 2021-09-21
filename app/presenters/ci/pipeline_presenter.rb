@@ -5,6 +5,9 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include ActionView::Helpers::UrlHelper
 
+    delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
+    delegator_override_with ActionView::Helpers::TagHelper # TODO: Remove `ActionView::Helpers::UrlHelper` inclusion as it overrides `Ci::Pipeline#tag`
+
     # We use a class method here instead of a constant, allowing EE to redefine
     # the returned `Hash` more easily.
     def self.failure_reasons
@@ -20,8 +23,9 @@ module Ci
         user_blocked: 'The user who created this pipeline is blocked.' }
     end
 
-    presents :pipeline
+    presents ::Ci::Pipeline, as: :pipeline
 
+    delegator_override :failed_builds
     def failed_builds
       return [] unless can?(current_user, :read_build, pipeline)
 
@@ -30,6 +34,7 @@ module Ci
       end
     end
 
+    delegator_override :failure_reason
     def failure_reason
       return unless pipeline.failure_reason?
 

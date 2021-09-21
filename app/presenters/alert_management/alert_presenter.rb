@@ -5,6 +5,9 @@ module AlertManagement
     include IncidentManagement::Settings
     include ActionView::Helpers::UrlHelper
 
+    presents ::AlertManagement::Alert
+    delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
+
     MARKDOWN_LINE_BREAK = "  \n"
     HORIZONTAL_LINE = "\n\n---\n\n"
 
@@ -29,6 +32,7 @@ module AlertManagement
       started_at&.strftime('%d %B %Y, %-l:%M%p (%Z)')
     end
 
+    delegator_override :details_url
     def details_url
       details_project_alert_management_url(project, alert.iid)
     end

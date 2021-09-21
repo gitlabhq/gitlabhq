@@ -3,7 +3,7 @@
 class CommitPresenter < Gitlab::View::Presenter::Delegated
   include GlobalID::Identification
 
-  presents :commit
+  presents ::Commit, as: :commit
 
   def status_for(ref)
     return unless can?(current_user, :read_commit_status, commit.project)

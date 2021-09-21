@@ -5,7 +5,7 @@ module Projects
     class DeployKeysPresenter < Gitlab::View::Presenter::Simple
       include Gitlab::Utils::StrongMemoize
 
-      presents :project
+      presents ::Project, as: :project
       delegate :size, to: :enabled_keys, prefix: true
       delegate :size, to: :available_project_keys, prefix: true
       delegate :size, to: :available_public_keys, prefix: true

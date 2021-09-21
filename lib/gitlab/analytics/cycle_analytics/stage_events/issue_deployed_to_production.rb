@@ -26,6 +26,10 @@ module Gitlab
             query.joins(merge_requests_closing_issues: { merge_request: [:metrics] }).where(mr_metrics_table[:first_deployed_to_production_at].gteq(mr_table[:created_at]))
           end
           # rubocop: enable CodeReuse/ActiveRecord
+
+          def include_in(query)
+            query.left_joins(merge_requests_closing_issues: { merge_request: [:metrics] })
+          end
         end
       end
     end

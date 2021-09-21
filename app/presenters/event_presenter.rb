@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EventPresenter < Gitlab::View::Presenter::Delegated
-  presents :event
+  presents ::Event, as: :event
 
   def initialize(subject, **attributes)
     super
@@ -10,6 +10,7 @@ class EventPresenter < Gitlab::View::Presenter::Delegated
   end
 
   # Caching `visible_to_user?` method in the presenter beause it might be called multiple times.
+  delegator_override :visible_to_user?
   def visible_to_user?(user = nil)
     @visible_to_user_cache.fetch(user&.id) { super(user) }
   end

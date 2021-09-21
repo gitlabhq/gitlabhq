@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class PagesDomainPresenter < Gitlab::View::Presenter::Delegated
-  presents :pages_domain
+  presents ::PagesDomain, as: :pages_domain
+
+  delegator_override :subject # TODO: Fix `Gitlab::View::Presenter::Delegated#subject` not to override `PagesDomain#subject`.
 
   def needs_verification?
     Gitlab::CurrentSettings.pages_domain_verification_enabled? && unverified?

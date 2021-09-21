@@ -12624,7 +12624,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectdastsitevalidationsnormalizedtargeturls"></a>`normalizedTargetUrls` | [`[String!]`](#string) | Normalized URL of the target to be scanned. |
-| <a id="projectdastsitevalidationsstatus"></a>`status` | [`DastSiteValidationStatusEnum`](#dastsitevalidationstatusenum) | Status of the site validation. Ignored if `dast_failed_site_validations` feature flag is disabled. |
+| <a id="projectdastsitevalidationsstatus"></a>`status` | [`DastSiteValidationStatusEnum`](#dastsitevalidationstatusenum) | Status of the site validation. |
 
 ##### `Project.environment`
 

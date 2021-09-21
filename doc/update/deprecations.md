@@ -16,6 +16,22 @@ To add a deprecation, use the example.yml file in `/data/deprecations/templates`
 then run `bin/rake gitlab:docs:compile_deprecations`.
 -->
 
+## 15.2
+
+### NFS for Git repository storage deprecated
+
+With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/)), we have deprecated development (bugfixes, performance improvements, etc) for NFS for Git repository storage in GitLab 14.0. We will continue to provide technical support for NFS for Git repositories throughout 14.x, but we will remove all support for NFS in GitLab 15.0. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
+
+Gitaly Cluster offers tremendous benefits for our customers such as:
+
+- [Variable replication factors](../administration/gitaly/index.md#replication-factor).
+- [Strong consistency](../administration/gitaly/index.md#strong-consistency).
+- [Distributed read capabilities](../administration/gitaly/index.md#distributed-reads).
+
+We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster).
+
+Announced: 2021-06-22
+
 ## 15.0
 
 ### Legacy database configuration
@@ -25,6 +41,14 @@ configuration located in `database.yml` is changing and the legacy format is dep
 supported using a single PostgreSQL adapter, whereas the new format is changing to support multiple databases. The `main:` database needs to be defined as a first configuration item.
 
 This deprecation mainly impacts users compiling GitLab from source because Omnibus will handle this configuration automatically.
+
+Announced: 2021-09-22
+
+### GitLab Serverless
+
+[GitLab Serverless](../user/project/clusters/serverless/index.md) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
+
+We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
 
 Announced: 2021-09-22
 
@@ -48,13 +72,13 @@ Note that we are not deprecating the Kerberos SPNEGO integration, only the old p
 
 Announced: 2021-09-22
 
-### GitLab Serverless
+## 14.6
 
-[GitLab Serverless](../user/project/clusters/serverless/index.md) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
+### Release CLI be distributed as a generic package
 
-We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
+The [release-cli](https://gitlab.com/gitlab-org/release-cli) will be released as a [generic package](https://gitlab.com/gitlab-org/release-cli/-/packages) starting in GitLab 14.2. We will continue to deploy it as a binary to S3 until GitLab 14.5 and stop distributing it in S3 in GitLab 14.6.
 
-Announced: 2021-09-22
+Announced: 2021-08-22
 
 ## 14.4
 
