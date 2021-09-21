@@ -44,14 +44,6 @@ This deprecation mainly impacts users compiling GitLab from source because Omnib
 
 Announced: 2021-09-22
 
-### GitLab Serverless
-
-[GitLab Serverless](../user/project/clusters/serverless/index.md) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
-
-We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
-
-Announced: 2021-09-22
-
 ### Audit events for repository push events
 
 Audit events for [repository events](../administration/audit_events.md#repository-push) are now deprecated and will be removed in GitLab 15.0.
@@ -69,6 +61,14 @@ The `omniauth-kerberos` gem will be removed in our next major release, GitLab 15
 This gem has not been maintained and has very little usage. We therefore plan to remove support for this authentication method and recommend using the Kerberos [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) integration instead. You can follow the [upgrade instructions](../integration/kerberos.md#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins) to upgrade from the `omniauth-kerberos` integration to the supported one.
 
 Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.
+
+Announced: 2021-09-22
+
+### GitLab Serverless
+
+[GitLab Serverless](../user/project/clusters/serverless/index.md) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
+
+We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
 
 Announced: 2021-09-22
 

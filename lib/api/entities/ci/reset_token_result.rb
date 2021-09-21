@@ -3,7 +3,7 @@
 module API
   module Entities
     module Ci
-      class ResetRegistrationTokenResult < Grape::Entity
+      class ResetTokenResult < Grape::Entity
         expose(:token) {|object| object}
       end
     end

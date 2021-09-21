@@ -1,7 +1,7 @@
 import { languages } from 'monaco-editor';
 import { TEST_HOST } from 'helpers/test_constants';
-import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '~/editor/constants';
 import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
+import ciSchemaPath from '~/editor/schema/ci.json';
 import SourceEditor from '~/editor/source_editor';
 
 const mockRef = 'AABBCCDD';
@@ -84,7 +84,7 @@ describe('~/editor/editor_ci_config_ext', () => {
         });
 
         expect(getConfiguredYmlSchema()).toEqual({
-          uri: `${TEST_HOST}/${mockProjectNamespace}/${mockProjectPath}/-/schema/${mockRef}/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
+          uri: `${TEST_HOST}${ciSchemaPath}`,
           fileMatch: [defaultBlobPath],
         });
       });
@@ -99,7 +99,7 @@ describe('~/editor/editor_ci_config_ext', () => {
         });
 
         expect(getConfiguredYmlSchema()).toEqual({
-          uri: `${TEST_HOST}/${mockProjectNamespace}/${mockProjectPath}/-/schema/${mockRef}/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
+          uri: `${TEST_HOST}${ciSchemaPath}`,
           fileMatch: ['another-ci-filename.yml'],
         });
       });

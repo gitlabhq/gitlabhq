@@ -342,6 +342,14 @@ module.exports = {
           esModule: false,
         },
       },
+      {
+        test: /editor\/schema\/.+\.json$/,
+        type: 'javascript/auto',
+        loader: 'file-loader',
+        options: {
+          name: '[name].[contenthash:8].[ext]',
+        },
+      },
     ],
   },
 

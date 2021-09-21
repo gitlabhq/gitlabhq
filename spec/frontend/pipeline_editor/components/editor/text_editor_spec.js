@@ -112,11 +112,6 @@ describe('Pipeline Editor | Text editor component', () => {
       it('configures editor with syntax highlight', () => {
         expect(mockUse).toHaveBeenCalledTimes(1);
         expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
-        expect(mockRegisterCiSchema).toHaveBeenCalledWith({
-          projectNamespace: mockProjectNamespace,
-          projectPath: mockProjectPath,
-          ref: mockCommitSha,
-        });
       });
     });
 

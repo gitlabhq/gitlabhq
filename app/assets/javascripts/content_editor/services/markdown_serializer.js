@@ -33,6 +33,7 @@ import Superscript from '../extensions/superscript';
 import Table from '../extensions/table';
 import TableCell from '../extensions/table_cell';
 import TableHeader from '../extensions/table_header';
+import TableOfContents from '../extensions/table_of_contents';
 import TableRow from '../extensions/table_row';
 import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
@@ -146,6 +147,10 @@ const defaultSerializerConfig = {
     [Paragraph.name]: defaultMarkdownSerializer.nodes.paragraph,
     [Reference.name]: (state, node) => {
       state.write(node.attrs.originalText || node.attrs.text);
+    },
+    [TableOfContents.name]: (state, node) => {
+      state.write('[[_TOC_]]');
+      state.closeBlock(node);
     },
     [Table.name]: renderTable,
     [TableCell.name]: renderTableCell,

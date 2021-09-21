@@ -37,6 +37,7 @@ import Superscript from '../extensions/superscript';
 import Table from '../extensions/table';
 import TableCell from '../extensions/table_cell';
 import TableHeader from '../extensions/table_header';
+import TableOfContents from '../extensions/table_of_contents';
 import TableRow from '../extensions/table_row';
 import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
@@ -104,6 +105,7 @@ export const createContentEditor = ({
     Superscript,
     TableCell,
     TableHeader,
+    TableOfContents,
     TableRow,
     Table,
     TaskItem,

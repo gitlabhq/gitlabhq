@@ -33,7 +33,12 @@ module QA
           within_element(:import_item, source_group: source_group_name) do
             click_element(:target_namespace_selector_dropdown)
             click_element(:target_group_dropdown_item, group_name: target_group_name)
-            click_element(:import_group_button)
+
+            retry_until do
+              click_element(:import_group_button)
+              # Make sure import started before waiting for completion
+              has_no_element?(:import_status_indicator, text: "Not started", wait: 1)
+            end
           end
         end
 

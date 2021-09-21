@@ -600,6 +600,94 @@ RSpec.describe API::Ci::Runners do
     end
   end
 
+  describe 'POST /runners/:id/reset_authentication_token' do
+    context 'admin user' do
+      it 'resets shared runner authentication token' do
+        expect do
+          post api("/runners/#{shared_runner.id}/reset_authentication_token", admin)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq({ 'token' => shared_runner.reload.token })
+        end.to change { shared_runner.reload.token }
+      end
+
+      it 'returns 404 if runner does not exist' do
+        post api('/runners/0/reset_authentication_token', admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'authorized user' do
+      it 'does not reset project runner authentication token without access to it' do
+        expect do
+          post api("/runners/#{project_runner.id}/reset_authentication_token", user2)
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end.not_to change { project_runner.reload.token }
+      end
+
+      it 'resets project runner authentication token for owned project' do
+        expect do
+          post api("/runners/#{project_runner.id}/reset_authentication_token", user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq({ 'token' => project_runner.reload.token })
+        end.to change { project_runner.reload.token }
+      end
+
+      it 'does not reset group runner authentication token with guest access' do
+        expect do
+          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_guest)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end.not_to change { group_runner_a.reload.token }
+      end
+
+      it 'does not reset group runner authentication token with reporter access' do
+        expect do
+          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_reporter)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end.not_to change { group_runner_a.reload.token }
+      end
+
+      it 'does not reset group runner authentication token with developer access' do
+        expect do
+          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_developer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end.not_to change { group_runner_a.reload.token }
+      end
+
+      it 'does not reset group runner authentication token with maintainer access' do
+        expect do
+          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_maintainer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end.not_to change { group_runner_a.reload.token }
+      end
+
+      it 'resets group runner authentication token with owner access' do
+        expect do
+          post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq({ 'token' => group_runner_a.reload.token })
+        end.to change { group_runner_a.reload.token }
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'does not reset authentication token' do
+        expect do
+          post api("/runners/#{shared_runner.id}/reset_authentication_token")
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end.not_to change { shared_runner.reload.token }
+      end
+    end
+  end
+
   describe 'GET /runners/:id/jobs' do
     let_it_be(:job_1) { create(:ci_build) }
     let_it_be(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }

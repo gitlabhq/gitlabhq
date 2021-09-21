@@ -204,3 +204,18 @@
     * [x] ![Sample Audio](https://gitlab.com/1.mp3)
     * [x] ![Sample Audio](https://gitlab.com/2.mp3)
     * [x] ![Sample Video](https://gitlab.com/3.mp4)
+- name: table_of_contents
+  markdown: |-
+    [[_TOC_]]
+
+    # Lorem
+
+    Well, that's just like... your opinion.. man.
+
+    ## Ipsum
+
+    ### Dolar
+
+    # Sit amit
+
+    ### I don't know

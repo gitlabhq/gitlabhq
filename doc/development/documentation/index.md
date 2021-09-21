@@ -108,23 +108,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 If you need help determining the correct stage, read [Ask for help](workflow.md#ask-for-help).
 
-### Document type metadata
-
-Originally discussed in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1280),
-each page should have a metadata tag called `type`. It can be one or more of the
-following:
-
-- `index`: It consists mostly of a list of links to other pages.
-  [Example page](../../index.md).
-- `concepts`: The background or context of a subject.
-  [Example page](../../topics/autodevops/index.md).
-- `howto`: Specific use case instructions.
-  [Example page](../../ssh/index.md).
-- `tutorial`: Learn a process/concept by doing.
-  [Example page](../../gitlab-basics/start-using-git.md).
-- `reference`: A collection of information used as a reference to use a feature
-  or a functionality. [Example page](../../ci/yaml/index.md).
-
 ### Redirection metadata
 
 The following metadata should be added when a page is moved to another location:
@@ -153,6 +136,11 @@ comments: false
 Each page can have additional, optional metadata (set in the
 [default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
 Nanoc layout), which is displayed at the top of the page if defined.
+
+### Deprecated metadata
+
+The `type` metadata parameter is deprecated but still exists in documentation
+pages. You can safely remove the `type` metadata parameter and its values.
 
 ## Move or rename a page
 

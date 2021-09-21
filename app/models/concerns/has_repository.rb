@@ -72,12 +72,10 @@ module HasRepository
   end
 
   def default_branch
-    @default_branch ||= repository.root_ref || default_branch_from_preferences
+    @default_branch ||= repository.empty? ? default_branch_from_preferences : repository.root_ref
   end
 
   def default_branch_from_preferences
-    return unless empty_repo?
-
     (default_branch_from_group_preferences || Gitlab::CurrentSettings.default_branch_name).presence
   end
 

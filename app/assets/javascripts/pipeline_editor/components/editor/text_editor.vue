@@ -9,15 +9,8 @@ export default {
     SourceEditor,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['ciConfigPath', 'projectPath', 'projectNamespace', 'defaultBranch'],
+  inject: ['ciConfigPath'],
   inheritAttrs: false,
-  props: {
-    commitSha: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
   methods: {
     onCiConfigUpdate(content) {
       this.$emit('updateCiConfig', content);
@@ -27,11 +20,7 @@ export default {
         const editorInstance = this.$refs.editor.getEditor();
 
         editorInstance.use(new CiSchemaExtension({ instance: editorInstance }));
-        editorInstance.registerCiSchema({
-          projectPath: this.projectPath,
-          projectNamespace: this.projectNamespace,
-          ref: this.commitSha || this.defaultBranch,
-        });
+        editorInstance.registerCiSchema();
       }
     },
   },

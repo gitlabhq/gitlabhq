@@ -9057,6 +9057,9 @@ msgstr ""
 msgid "Content parsed with %{link}."
 msgstr ""
 
+msgid "ContentEditor|Table of Contents"
+msgstr ""
+
 msgid "ContentEditor|You have to provide a renderMarkdown function or a custom serializer"
 msgstr ""
 
@@ -16817,6 +16820,9 @@ msgstr ""
 msgid "How do I set up this service?"
 msgstr ""
 
+msgid "How do I use a web terminal?"
+msgstr ""
+
 msgid "How it works"
 msgstr ""
 
@@ -20969,10 +20975,10 @@ msgstr ""
 msgid "Maximum time between updates that a mirror can have when scheduled to synchronize."
 msgstr ""
 
-msgid "Maximum time for web terminal websocket connection (in seconds). 0 for unlimited."
+msgid "Maximum time that users are allowed to skip the setup of two-factor authentication (in hours). Set to 0 (zero) to enforce at next sign in."
 msgstr ""
 
-msgid "Maximum time that users are allowed to skip the setup of two-factor authentication (in hours). Set to 0 (zero) to enforce at next sign in."
+msgid "Maximum time, in seconds, for a web terminal websocket connection. 0 for unlimited."
 msgstr ""
 
 msgid "Maximum unauthenticated API requests per rate limit period per IP"
@@ -30808,9 +30814,6 @@ msgstr ""
 msgid "Set limits for web and API requests."
 msgstr ""
 
-msgid "Set max session time for web terminal."
-msgstr ""
-
 msgid "Set milestone"
 msgstr ""
 
@@ -30857,6 +30860,9 @@ msgid "Set the due date to %{due_date}."
 msgstr ""
 
 msgid "Set the iteration to %{iteration_reference}."
+msgstr ""
+
+msgid "Set the maximum session time for a web terminal."
 msgstr ""
 
 msgid "Set the milestone to %{milestone_reference}."

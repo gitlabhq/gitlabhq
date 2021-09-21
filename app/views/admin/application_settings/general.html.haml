@@ -79,7 +79,8 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Set max session time for web terminal.')
+      = _('Set the maximum session time for a web terminal.')
+      = link_to _('How do I use a web terminal?'), help_page_path('ci/environments/index.md', anchor: 'web-terminals'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'terminal'
 
