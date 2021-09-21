@@ -59,7 +59,7 @@ Click on the service links to see further configuration instructions and details
 | [Slack application](gitlab_slack_application.md)          | Use Slack's official GitLab application.                                                     | **{dotted-circle}** No |
 | [Slack notifications](slack.md)                           | Send notifications about project events to Slack.                                            | **{dotted-circle}** No |
 | [Slack slash commands](slack_slash_commands.md)           | Enable slash commands in workspace.                                                          | **{dotted-circle}** No |
-| [Unify Circuit](unify_circuit.md)                         | Receive events notifications.                                                                | **{dotted-circle}** No |
+| [Unify Circuit](unify_circuit.md)                         | Send notifications about project events to Unify Circuit.                                    | **{dotted-circle}** No |
 | [Webex Teams](webex_teams.md)                             | Receive events notifications.                                                                | **{dotted-circle}** No |
 | [YouTrack](youtrack.md)                                   | Use YouTrack as the issue tracker.                                                           | **{dotted-circle}** No |
 | [ZenTao](zentao.md)                                       | Use ZenTao as the issue tracker.                                                           | **{dotted-circle}** No |

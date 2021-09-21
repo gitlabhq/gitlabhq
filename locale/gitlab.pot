@@ -4261,9 +4261,6 @@ msgstr ""
 msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests."
 msgstr ""
 
-msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests. "
-msgstr ""
-
 msgid "ApprovalSettings|Remove all approvals when commits are added to the source branch."
 msgstr ""
 
@@ -18248,6 +18245,9 @@ msgid "Integrations|Search Jira issues"
 msgstr ""
 
 msgid "Integrations|Send notifications about project events to Unify Circuit."
+msgstr ""
+
+msgid "Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}"
 msgstr ""
 
 msgid "Integrations|Sign in to add namespaces"
