@@ -47,6 +47,11 @@ export default {
       required: false,
       default: '',
     },
+    isOverviewTab: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters(['userCanReply']),
@@ -127,6 +132,7 @@ export default {
           :show-reply-button="userCanReply"
           :discussion-root="true"
           :discussion-resolve-path="discussion.resolve_path"
+          :is-overview-tab="isOverviewTab"
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >
@@ -176,6 +182,7 @@ export default {
           :line="diffLine"
           :discussion-root="index === 0"
           :discussion-resolve-path="discussion.resolve_path"
+          :is-overview-tab="isOverviewTab"
           @handleDeleteNote="$emit('deleteNote')"
         >
           <template #avatar-badge>

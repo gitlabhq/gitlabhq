@@ -4,6 +4,7 @@ module IssueResolverArguments
   extend ActiveSupport::Concern
 
   prepended do
+    include SearchArguments
     include LooksAhead
 
     argument :iid, GraphQL::Types::String,
@@ -49,9 +50,6 @@ module IssueResolverArguments
     argument :closed_after, Types::TimeType,
              required: false,
              description: 'Issues closed after this date.'
-    argument :search, GraphQL::Types::String,
-             required: false,
-             description: 'Search query for issue title or description.'
     argument :types, [Types::IssueTypeEnum],
              as: :issue_types,
              description: 'Filter issues by the given issue types.',
@@ -91,6 +89,7 @@ module IssueResolverArguments
     params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
     params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
     params_not_mutually_exclusive(args.fetch(:not, {}), mutually_exclusive_milestone_args)
+    validate_anonymous_search_access! if args[:search].present?
 
     super
   end

@@ -3,6 +3,8 @@
 module Projects
   module ContainerRepository
     class CleanupTagsService < BaseService
+      include ::Gitlab::Utils::StrongMemoize
+
       def execute(container_repository)
         return error('access denied') unless can_destroy?
         return error('invalid regex') unless valid_regex?
@@ -17,13 +19,16 @@ module Projects
         tags = truncate(tags)
         after_truncate_size = tags.size
 
-        tags = filter_keep_n(tags)
-        tags = filter_by_older_than(tags)
+        cached_tags_count = populate_tags_from_cache(container_repository, tags) || 0
+
+        tags = filter_keep_n(container_repository, tags)
+        tags = filter_by_older_than(container_repository, tags)
 
         delete_tags(container_repository, tags).tap do |result|
           result[:original_size] = original_size
           result[:before_truncate_size] = before_truncate_size
           result[:after_truncate_size] = after_truncate_size
+          result[:cached_tags_count] = cached_tags_count
           result[:before_delete_size] = tags.size
           result[:deleted_size] = result[:deleted]&.size
 
@@ -67,21 +72,26 @@ module Projects
         end
       end
 
-      def filter_keep_n(tags)
+      def filter_keep_n(container_repository, tags)
         return tags unless params['keep_n']
 
         tags = order_by_date(tags)
+        cache_tags(container_repository, tags.first(keep_n))
         tags.drop(keep_n)
       end
 
-      def filter_by_older_than(tags)
-        return tags unless params['older_than']
+      def filter_by_older_than(container_repository, tags)
+        return tags unless older_than
 
-        older_than = ChronicDuration.parse(params['older_than']).seconds.ago
+        older_than_timestamp = older_than_in_seconds.ago
 
-        tags.select do |tag|
-          tag.created_at && tag.created_at < older_than
+        tags, tags_to_keep = tags.partition do |tag|
+          tag.created_at && tag.created_at < older_than_timestamp
         end
+
+        cache_tags(container_repository, tags_to_keep)
+
+        tags
       end
 
       def can_destroy?
@@ -114,6 +124,28 @@ module Projects
         tags.sample(truncated_size)
       end
 
+      def populate_tags_from_cache(container_repository, tags)
+        cache(container_repository).populate(tags) if caching_enabled?(container_repository)
+      end
+
+      def cache_tags(container_repository, tags)
+        cache(container_repository).insert(tags, older_than_in_seconds) if caching_enabled?(container_repository)
+      end
+
+      def cache(container_repository)
+        # TODO Implement https://gitlab.com/gitlab-org/gitlab/-/issues/340277 to avoid passing
+        # the container repository parameter which is bad for a memoized function
+        strong_memoize(:cache) do
+          ::Projects::ContainerRepository::CacheTagsCreatedAtService.new(container_repository)
+        end
+      end
+
+      def caching_enabled?(container_repository)
+        params['container_expiration_policy'] &&
+          older_than.present? &&
+          Feature.enabled?(:container_registry_expiration_policies_caching, container_repository.project)
+      end
+
       def throttling_enabled?
         Feature.enabled?(:container_registry_expiration_policies_throttling)
       end
@@ -124,6 +156,16 @@ module Projects
 
       def keep_n
         params['keep_n'].to_i
+      end
+
+      def older_than_in_seconds
+        strong_memoize(:older_than_in_seconds) do
+          ChronicDuration.parse(older_than).seconds
+        end
+      end
+
+      def older_than
+        params['older_than']
       end
     end
   end

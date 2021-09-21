@@ -236,6 +236,36 @@ RSpec.describe Resolvers::IssuesResolver do
 
           resolve_issues(search: 'foo')
         end
+
+        context 'with anonymous user' do
+          let_it_be(:public_project) { create(:project, :public) }
+          let_it_be(:public_issue) { create(:issue, project: public_project, title: 'Test issue') }
+
+          context 'with disable_anonymous_search enabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: true)
+            end
+
+            it 'returns an error' do
+              error_message = "User must be authenticated to include the `search` argument."
+
+              expect { resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil }) }
+                .to raise_error(Gitlab::Graphql::Errors::ArgumentError, error_message)
+            end
+          end
+
+          context 'with disable_anonymous_search disabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: false)
+            end
+
+            it 'returns correct issues' do
+              expect(
+                resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil })
+              ).to contain_exactly(public_issue)
+            end
+          end
+        end
       end
 
       describe 'filters by negated params' do

@@ -19,7 +19,6 @@ import {
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -35,6 +34,7 @@ import {
   FiltersInfo,
   filterVariables,
 } from '../boards_util';
+import { gqlClient } from '../graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import groupBoardIterationsQuery from '../graphql/group_board_iterations.query.graphql';
 import groupBoardMilestonesQuery from '../graphql/group_board_milestones.query.graphql';
@@ -46,13 +46,6 @@ import projectBoardIterationsQuery from '../graphql/project_board_iterations.que
 import projectBoardMilestonesQuery from '../graphql/project_board_milestones.query.graphql';
 
 import * as types from './mutation_types';
-
-export const gqlClient = createGqClient(
-  {},
-  {
-    fetchPolicy: fetchPolicies.NO_CACHE,
-  },
-);
 
 export default {
   setInitialBoardData: ({ commit }, data) => {

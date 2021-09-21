@@ -5,6 +5,7 @@ module ContainerRegistry
     include Gitlab::Utils::StrongMemoize
 
     attr_reader :repository, :name
+    attr_writer :created_at
 
     delegate :registry, :client, to: :repository
     delegate :revision, :short_revision, to: :config_blob, allow_nil: true
@@ -73,9 +74,10 @@ module ContainerRegistry
     end
 
     def created_at
+      return @created_at if @created_at
       return unless config
 
-      strong_memoize(:created_at) do
+      strong_memoize(:memoized_created_at) do
         DateTime.rfc3339(config['created'])
       rescue ArgumentError
         nil

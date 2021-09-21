@@ -57,7 +57,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def attributes_from_personal_snippets
-    return {} unless namespace.user?
+    return {} unless namespace.user_namespace?
 
     from_personal_snippets.take.slice(SNIPPETS_SIZE_STAT_NAME)
   end

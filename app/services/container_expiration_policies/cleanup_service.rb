@@ -4,7 +4,7 @@ module ContainerExpirationPolicies
   class CleanupService
     attr_reader :repository
 
-    SERVICE_RESULT_FIELDS = %i[original_size before_truncate_size after_truncate_size before_delete_size deleted_size].freeze
+    SERVICE_RESULT_FIELDS = %i[original_size before_truncate_size after_truncate_size before_delete_size deleted_size cached_tags_count].freeze
 
     def initialize(repository)
       @repository = repository

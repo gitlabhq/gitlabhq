@@ -377,16 +377,6 @@ comment. Instead of always rendering these kind of elements they should only be
 rendered when actually needed. This ensures we don't spend time generating
 Haml/HTML when it's not used.
 
-## Instrumenting New Code
-
-**Summary:** always add instrumentation for new classes, modules, and methods.
-
-Newly added classes, modules, and methods must be instrumented. This ensures
-we can track the performance of this code over time.
-
-For more information see [Instrumentation](instrumentation.md). This guide
-describes how to add instrumentation and where to add it.
-
 ## Use of Caching
 
 **Summary:** cache data in memory or in Redis when it's needed multiple times in

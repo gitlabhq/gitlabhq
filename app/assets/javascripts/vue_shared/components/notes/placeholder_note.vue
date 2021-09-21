@@ -34,11 +34,22 @@ export default {
       type: Object,
       required: true,
     },
+    line: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     ...mapGetters(['getUserData']),
     renderedNote() {
       return renderMarkdown(this.note.body);
+    },
+    avatarSize() {
+      if (this.line) {
+        return 16;
+      }
+      return 40;
     },
   },
 };
@@ -50,7 +61,7 @@ export default {
       <user-avatar-link
         :link-href="getUserData.path"
         :img-src="getUserData.avatar_url"
-        :img-size="40"
+        :img-size="avatarSize"
       />
     </div>
     <div ref="note" :class="{ discussion: !note.individual_note }" class="timeline-content">

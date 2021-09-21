@@ -189,6 +189,27 @@ describe('issue_note', () => {
       createWrapper();
     });
 
+    describe('avatar sizes in diffs', () => {
+      const line = {
+        line_code: 'abc_1_1',
+        type: null,
+        old_line: '1',
+        new_line: '1',
+      };
+
+      it('should render 24px avatars', async () => {
+        wrapper.setProps({
+          note: { ...note },
+          discussionRoot: true,
+          line,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.findComponent(UserAvatarLink).props('imgSize')).toBe(24);
+      });
+    });
+
     it('should render user information', () => {
       const { author } = note;
       const avatar = wrapper.findComponent(UserAvatarLink);

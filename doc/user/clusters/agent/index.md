@@ -465,8 +465,12 @@ Additional management interfaces are planned for the GitLab Kubernetes Agent.
 1. Verify whether the removal occurred successfully. If the output in the Pod logs includes `unauthenticated`, it means that the agent was successfully removed:
 
    ```json
-      {"level":"warn","time":"2021-04-29T23:44:07.598Z","msg":"GetConfiguration.Recv failed","error":"rpc error:
-      code = Unauthenticated desc = unauthenticated"}
+   {
+       "level": "warn",
+       "time": "2021-04-29T23:44:07.598Z",
+       "msg": "GetConfiguration.Recv failed",
+       "error": "rpc error: code = Unauthenticated desc = unauthenticated"
+   }
    ```
 
 1. Delete the GitLab Kubernetes Agent in your cluster:
@@ -491,7 +495,12 @@ GitLab administrators can additionally view the [Kubernetes Agent Server logs](.
 #### Transport: Error while dialing failed to WebSocket dial
 
 ```json
-{"level":"warn","time":"2020-11-04T10:14:39.368Z","msg":"GetConfiguration failed","error":"rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://gitlab-kas:443/-/kubernetes-agent\\\": dial tcp: lookup gitlab-kas on 10.60.0.10:53: no such host\""}
+{
+  "level": "warn",
+  "time": "2020-11-04T10:14:39.368Z",
+  "msg": "GetConfiguration failed",
+  "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://gitlab-kas:443/-/kubernetes-agent\\\": dial tcp: lookup gitlab-kas on 10.60.0.10:53: no such host\""
+}
 ```
 
 This error is shown if there are some connectivity issues between the address
@@ -499,7 +508,13 @@ specified as `kas-address`, and your Agent pod. To fix it, make sure that you
 specified the `kas-address` correctly.
 
 ```json
-{"level":"error","time":"2021-06-25T21:15:45.335Z","msg":"Reverse tunnel","mod_name":"reverse_tunnel","error":"Connect(): rpc error: code = Unavailable desc = connection error: desc= \"transport: Error while dialing failed to WebSocket dial: expected handshake response status code 101 but got 301\""}
+{
+  "level": "error",
+  "time": "2021-06-25T21:15:45.335Z",
+  "msg": "Reverse tunnel",
+  "mod_name": "reverse_tunnel",
+  "error": "Connect(): rpc error: code = Unavailable desc = connection error: desc= \"transport: Error while dialing failed to WebSocket dial: expected handshake response status code 101 but got 301\""
+}
 ```
 
 This error occurs if the `kas-address` doesn't include a trailing slash. To fix it, make sure that the
@@ -509,7 +524,14 @@ or `ws://GitLab.host.tld:80/-/kubernetes-agent/`.
 #### ValidationError(Deployment.metadata)
 
 ```json
-{"level":"info","time":"2020-10-30T08:56:54.329Z","msg":"Synced","project_id":"root/kas-manifest001","resource_key":"apps/Deployment/kas-test001/nginx-deployment","sync_result":"error validating data: [ValidationError(Deployment.metadata): unknown field \"replicas\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"selector\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"template\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta]"}
+{
+  "level": "info",
+  "time": "2020-10-30T08:56:54.329Z",
+  "msg": "Synced",
+  "project_id": "root/kas-manifest001",
+  "resource_key": "apps/Deployment/kas-test001/nginx-deployment",
+  "sync_result": "error validating data: [ValidationError(Deployment.metadata): unknown field \"replicas\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"selector\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"template\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta]"
+}
 ```
 
 This error is shown if a manifest file is malformed, and Kubernetes can't
@@ -519,7 +541,12 @@ may try using them to create objects in Kubernetes directly for more troubleshoo
 #### Error while dialing failed to WebSocket dial: failed to send handshake request
 
 ```json
-{"level":"warn","time":"2020-10-30T09:50:51.173Z","msg":"GetConfiguration failed","error":"rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent\\\": net/http: HTTP/1.x transport connection broken: malformed HTTP response \\\"\\\\x00\\\\x00\\\\x06\\\\x04\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x05\\\\x00\\\\x00@\\\\x00\\\"\""}
+{
+  "level": "warn",
+  "time": "2020-10-30T09:50:51.173Z",
+  "msg": "GetConfiguration failed",
+  "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent\\\": net/http: HTTP/1.x transport connection broken: malformed HTTP response \\\"\\\\x00\\\\x00\\\\x06\\\\x04\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x05\\\\x00\\\\x00@\\\\x00\\\"\""
+}
 ```
 
 This error is shown if you configured `wss` as `kas-address` on the agent side,
@@ -535,7 +562,12 @@ issue is in progress, directly edit the deployment with the
 #### Decompressor is not installed for grpc-encoding
 
 ```json
-{"level":"warn","time":"2020-11-05T05:25:46.916Z","msg":"GetConfiguration.Recv failed","error":"rpc error: code = Unimplemented desc = grpc: Decompressor is not installed for grpc-encoding \"gzip\""}
+{
+  "level": "warn",
+  "time": "2020-11-05T05:25:46.916Z",
+  "msg": "GetConfiguration.Recv failed",
+  "error": "rpc error: code = Unimplemented desc = grpc: Decompressor is not installed for grpc-encoding \"gzip\""
+}
 ```
 
 This error is shown if the version of the agent is newer that the version of KAS.
@@ -544,7 +576,13 @@ To fix it, make sure that both `agentk` and KAS use the same versions.
 #### Certificate signed by unknown authority
 
 ```json
-{"level":"error","time":"2021-02-25T07:22:37.158Z","msg":"Reverse tunnel","mod_name":"reverse_tunnel","error":"Connect(): rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent/\\\": x509: certificate signed by unknown authority\""}
+{
+  "level": "error",
+  "time": "2021-02-25T07:22:37.158Z",
+  "msg": "Reverse tunnel",
+  "mod_name": "reverse_tunnel",
+  "error": "Connect(): rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent/\\\": x509: certificate signed by unknown authority\""
+}
 ```
 
 This error is shown if your GitLab instance is using a certificate signed by an internal CA that

@@ -205,4 +205,64 @@ describe('pipeline graph job item', () => {
       },
     );
   });
+
+  describe('job classes', () => {
+    it('job class is shown', () => {
+      createWrapper({
+        job: mockJob,
+        cssClassJobName: 'my-class',
+      });
+
+      expect(wrapper.find('a').classes()).toContain('my-class');
+
+      expect(wrapper.find('a').classes()).not.toContain(triggerActiveClass);
+    });
+
+    it('job class is shown, along with hover', () => {
+      createWrapper({
+        job: mockJob,
+        cssClassJobName: 'my-class',
+        sourceJobHovered: mockJob.name,
+      });
+
+      expect(wrapper.find('a').classes()).toContain('my-class');
+      expect(wrapper.find('a').classes()).toContain(triggerActiveClass);
+    });
+
+    it('multiple job classes are shown', () => {
+      createWrapper({
+        job: mockJob,
+        cssClassJobName: ['my-class-1', 'my-class-2'],
+      });
+
+      expect(wrapper.find('a').classes()).toContain('my-class-1');
+      expect(wrapper.find('a').classes()).toContain('my-class-2');
+
+      expect(wrapper.find('a').classes()).not.toContain(triggerActiveClass);
+    });
+
+    it('multiple job classes are shown conditionally', () => {
+      createWrapper({
+        job: mockJob,
+        cssClassJobName: { 'my-class-1': true, 'my-class-2': true },
+      });
+
+      expect(wrapper.find('a').classes()).toContain('my-class-1');
+      expect(wrapper.find('a').classes()).toContain('my-class-2');
+
+      expect(wrapper.find('a').classes()).not.toContain(triggerActiveClass);
+    });
+
+    it('multiple job classes are shown, along with a hover', () => {
+      createWrapper({
+        job: mockJob,
+        cssClassJobName: ['my-class-1', 'my-class-2'],
+        sourceJobHovered: mockJob.name,
+      });
+
+      expect(wrapper.find('a').classes()).toContain('my-class-1');
+      expect(wrapper.find('a').classes()).toContain('my-class-2');
+      expect(wrapper.find('a').classes()).toContain(triggerActiveClass);
+    });
+  });
 });

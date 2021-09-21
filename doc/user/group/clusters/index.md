@@ -14,8 +14,10 @@ Similar to [project-level](../../project/clusters/index.md) and
 group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
 your group, enabling you to use the same cluster across multiple projects.
 
-To view your group level Kubernetes clusters, navigate to your project and select
-**Kubernetes** from the left-hand menu.
+To view your group-level Kubernetes clusters:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Kubernetes**.
 
 ## Cluster management project
 
@@ -82,10 +84,11 @@ your cluster, which can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your group's **Kubernetes** page,
-   and select your cluster.
-1. Expand the **Advanced settings** section.
-1. Click **Clear cluster cache**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Kubernetes**.
+1. Select your cluster.
+1. Expand **Advanced settings**.
+1. Select **Clear cluster cache**.
 
 ## Base domain
 

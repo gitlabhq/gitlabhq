@@ -14,6 +14,12 @@ be accessed without authentication if the repository is publicly accessible.
 
 This command provides essentially the same functionality as the `git ls-tree` command. For more information, see the section _Tree Objects_ in the [Git internals documentation](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects/#_tree_objects).
 
+WARNING:
+This endpoint is changing to keyset-based pagination. Iterating pages of results
+with a number (`?page=2`) [is deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67509).
+Support for iterating with a number will become unsupported in GitLab 15.0. Use
+the new [keyset pagination system](index.md#keyset-based-pagination) instead.
+
 ```plaintext
 GET /projects/:id/repository/tree
 ```
@@ -27,6 +33,8 @@ Supported attributes:
 | `ref`       | string         | no       | The name of a repository branch or tag or if not given the default branch. |
 | `recursive` | boolean        | no       | Boolean value used to get a recursive tree (false by default). |
 | `per_page`  | integer        | no       | Number of results to show per page. If not specified, defaults to `20`. [Learn more on pagination](index.md#pagination). |
+| `pagination` | string        | no       | If set to `keyset`, use the new keyset pagination method. |
+| `page_token` | string        | no       | The tree record ID at which to fetch the next page. Used only with keyset pagination. |
 
 ```json
 [
@@ -640,7 +648,7 @@ In an entry, the following variables are available (here `foo.bar` means that
 - `author.reference`: a reference to the commit author (for example, `@alice`).
 - `author.contributor`: a boolean set to `true` when the author is not a project
   member, otherwise `false`.
-- `author.credit`: a boolean set to `true` when `author.contributor` is `true` or 
+- `author.credit`: a boolean set to `true` when `author.contributor` is `true` or
   when `include_groups` is configured, and the author is a member of one of the
   groups.
 - `merge_request.reference`: a reference to the merge request that first

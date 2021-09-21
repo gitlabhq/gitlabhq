@@ -66,6 +66,11 @@ export default {
       required: false,
       default: '',
     },
+    isOverviewTab: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -263,6 +268,7 @@ export default {
               :is-expanded="isExpanded"
               :line="line"
               :should-group-replies="shouldGroupReplies"
+              :is-overview-tab="isOverviewTab"
               @startReplying="showReplyForm"
               @deleteNote="deleteNoteHandler"
             >

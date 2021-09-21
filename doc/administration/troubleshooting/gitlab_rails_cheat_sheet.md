@@ -38,8 +38,6 @@ Array.methods.grep(/sing/)
 
 ## Find method source
 
-Works for [non-instrumented methods](../../development/instrumentation.md#checking-instrumented-methods):
-
 ```ruby
 instance_of_object.method(:foo).source_location
 

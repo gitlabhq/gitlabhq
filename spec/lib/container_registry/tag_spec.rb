@@ -60,6 +60,20 @@ RSpec.describe ContainerRegistry::Tag do
   end
 
   context 'manifest processing' do
+    shared_examples 'using the value manually set on created_at' do
+      let(:value) { 5.seconds.ago }
+
+      before do
+        tag.created_at = value
+      end
+
+      it 'does not use the config' do
+        expect(tag).not_to receive(:config)
+
+        expect(subject).to eq(value)
+      end
+    end
+
     context 'schema v1' do
       before do
         stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')
@@ -93,6 +107,8 @@ RSpec.describe ContainerRegistry::Tag do
           subject { tag.created_at }
 
           it { is_expected.to be_nil }
+
+          it_behaves_like 'using the value manually set on created_at'
         end
       end
     end
@@ -117,6 +133,8 @@ RSpec.describe ContainerRegistry::Tag do
         subject { tag.created_at }
 
         it { is_expected.to be_nil }
+
+        it_behaves_like 'using the value manually set on created_at'
       end
     end
 
@@ -154,6 +172,8 @@ RSpec.describe ContainerRegistry::Tag do
             subject { tag.created_at }
 
             it { is_expected.not_to be_nil }
+
+            it_behaves_like 'using the value manually set on created_at'
           end
         end
 

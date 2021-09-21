@@ -21,9 +21,10 @@ import {
   getMoveData,
   updateListPosition,
 } from '~/boards/boards_util';
+import { gqlClient } from '~/boards/graphql';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
-import actions, { gqlClient } from '~/boards/stores/actions';
+import actions from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
 

@@ -253,8 +253,6 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 
 ## Performance guides
 
-- [Instrumentation](instrumentation.md) for Ruby code running in production
-  environments.
 - [Performance guidelines](performance.md) for writing code, benchmarks, and
   certain patterns to avoid.
 - [Caching guidelines](caching.md) for using caching in Rails under a GitLab environment.

@@ -146,7 +146,8 @@ export function getMoveData(state, params) {
 }
 
 export function moveItemListHelper(item, fromList, toList) {
-  const updatedItem = item;
+  const updatedItem = cloneDeep(item);
+
   if (
     toList.listType === ListType.label &&
     !updatedItem.labels.find((label) => label.id === toList.label.id)

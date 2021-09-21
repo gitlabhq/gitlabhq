@@ -161,8 +161,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resource :projects
-
     draw :operations
     draw :jira_connect
 

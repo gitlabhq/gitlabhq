@@ -1,4 +1,3 @@
-import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import PortalVue from 'portal-vue';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -14,30 +13,17 @@ import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import initBoardsFilteredSearch from '~/boards/mount_filtered_search_issue_boards';
 import store from '~/boards/stores';
 import toggleFocusMode from '~/boards/toggle_focus';
-import createDefaultClient from '~/lib/graphql';
 import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
-import introspectionQueryResultData from '~/sidebar/fragmentTypes.json';
 import { fullBoardId } from './boards_util';
 import boardConfigToggle from './config_toggle';
+import { gqlClient } from './graphql';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
 Vue.use(VueApollo);
 Vue.use(PortalVue);
 
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData,
-});
-
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(
-    {},
-    {
-      cacheConfig: {
-        fragmentMatcher,
-      },
-      assumeImmutableResults: true,
-    },
-  ),
+  defaultClient: gqlClient,
 });
 
 function mountBoardApp(el) {

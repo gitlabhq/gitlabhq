@@ -99,7 +99,7 @@ module Clusters
       end
 
       def group_root_ancestor?
-        root_ancestor.group?
+        root_ancestor.group_namespace?
       end
     end
   end

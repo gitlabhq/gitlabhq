@@ -114,6 +114,7 @@ module API
     end
     get '/issues_statistics' do
       authenticate! unless params[:scope] == 'all'
+      validate_anonymous_search_access! if params[:search].present?
 
       present issues_statistics, with: Grape::Presenters::Presenter
     end
@@ -131,6 +132,7 @@ module API
       end
       get do
         authenticate! unless params[:scope] == 'all'
+        validate_anonymous_search_access! if params[:search].present?
         issues = paginate(find_issues)
 
         options = {
@@ -169,6 +171,7 @@ module API
         optional :non_archived, type: Boolean, desc: 'Return issues from non archived projects', default: true
       end
       get ":id/issues" do
+        validate_anonymous_search_access! if declared_params[:search].present?
         issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))
 
         options = {
@@ -187,6 +190,8 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
+        validate_anonymous_search_access! if declared_params[:search].present?
+
         present issues_statistics(group_id: user_group.id, include_subgroups: true), with: Grape::Presenters::Presenter
       end
     end
@@ -204,6 +209,7 @@ module API
         use :issues_params
       end
       get ":id/issues" do
+        validate_anonymous_search_access! if declared_params[:search].present?
         issues = paginate(find_issues(project_id: user_project.id))
 
         options = {
@@ -222,6 +228,8 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
+        validate_anonymous_search_access! if declared_params[:search].present?
+
         present issues_statistics(project_id: user_project.id), with: Grape::Presenters::Presenter
       end
 

@@ -175,7 +175,7 @@ RSpec.describe Namespace do
       it 'is valid' do
         expect(namespace).to be_a(Group)
         expect(namespace.kind).to eq('group')
-        expect(namespace.group?).to be_truthy
+        expect(namespace.group_namespace?).to be_truthy
       end
     end
 
@@ -186,7 +186,7 @@ RSpec.describe Namespace do
       it 'is valid' do
         expect(Namespace.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
         expect(namespace.kind).to eq('project')
-        expect(namespace.project?).to be_truthy
+        expect(namespace.project_namespace?).to be_truthy
       end
     end
 
@@ -198,7 +198,7 @@ RSpec.describe Namespace do
         #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68894 is ready
         expect(Namespace.find(namespace.id)).to be_a(Namespace)
         expect(namespace.kind).to eq('user')
-        expect(namespace.user?).to be_truthy
+        expect(namespace.user_namespace?).to be_truthy
       end
     end
 
@@ -208,7 +208,7 @@ RSpec.describe Namespace do
       it 'is valid' do
         expect(Namespace.find(namespace.id)).to be_a(Namespace)
         expect(namespace.kind).to eq('user')
-        expect(namespace.user?).to be_truthy
+        expect(namespace.user_namespace?).to be_truthy
       end
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Namespace do
       it 'defaults to a Namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespace)
         expect(namespace.kind).to eq('user')
-        expect(namespace.user?).to be_truthy
+        expect(namespace.user_namespace?).to be_truthy
       end
     end
   end
@@ -1558,8 +1558,8 @@ RSpec.describe Namespace do
     end
   end
 
-  describe '#user?' do
-    subject { namespace.user? }
+  describe '#user_namespace?' do
+    subject { namespace.user_namespace? }
 
     context 'when type is a user' do
       let(:user) { create(:user) }
