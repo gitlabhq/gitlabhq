@@ -111,7 +111,7 @@ For most JSON requests, POST, PUT, PATCH, and DELETE are blocked, and the API re
 
 |HTTP request | Allowed routes |  Notes |
 |:----:|:--------------------------------------:|:----:|
-| POST | `/admin/application_settings/general` | To allow updating application settings in the admin UI |
+| POST | `/admin/application_settings/general` | To allow updating application settings in the administrator UI |
 | PUT  | `/api/v4/application/settings` | To allow updating application settings with the API |
 | POST | `/users/sign_in` | To allow users to log in. |
 | POST | `/users/sign_out`| To allow users to log out. |
@@ -121,8 +121,8 @@ For most JSON requests, POST, PUT, PATCH, and DELETE are blocked, and the API re
 | POST | `.git/git-upload-pack` | To allow Git pull/clone. |
 | POST | `/api/v4/internal` | [internal API routes](../../development/internal_api.md) |
 | POST | `/admin/sidekiq` | To allow management of background jobs in the admin UI |
-| POST | `/admin/geo` | To allow updating Geo Nodes in the admin UI |
-| POST | `/api/v4/geo_replication`| To allow certain Geo-specific admin UI actions on secondary sites |
+| POST | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
+| POST | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
 
 ### GraphQL API
 

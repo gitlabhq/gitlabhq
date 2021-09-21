@@ -1,10 +1,11 @@
 <script>
-import { GlAlert, GlFormGroup, GlFormInputGroup, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlFormGroup, GlFormInputGroup, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+
+import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
 export default {
   components: {
@@ -14,6 +15,7 @@ export default {
     GlSprintf,
     ClipboardButton,
     TitleArea,
+    GlSkeletonLoader,
   },
   inject: ['groupPath', 'dependencyProxyAvailable'],
   i18n: {
@@ -27,10 +29,19 @@ export default {
   },
   data() {
     return {
-      dependencyProxyTotalSize: 0,
-      dependencyProxyImagePrefix: '',
-      dependencyProxyBlobCount: 0,
+      group: {},
     };
+  },
+  apollo: {
+    group: {
+      query: getDependencyProxyDetailsQuery,
+      skip() {
+        return !this.dependencyProxyAvailable;
+      },
+      variables() {
+        return { fullPath: this.groupPath };
+      },
+    },
   },
   computed: {
     infoMessages() {
@@ -40,9 +51,6 @@ export default {
           link: helpPagePath('user/packages/dependency_proxy/index'),
         },
       ];
-    },
-    humanizedTotalSize() {
-      return numberToHumanSize(this.dependencyProxyTotalSize);
     },
   },
 };
@@ -55,16 +63,18 @@ export default {
       {{ $options.i18n.proxyNotAvailableText }}
     </gl-alert>
 
+    <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
+
     <div v-else data-testid="main-area">
       <gl-form-group :label="$options.i18n.proxyImagePrefix">
         <gl-form-input-group
           readonly
-          :value="dependencyProxyImagePrefix"
+          :value="group.dependencyProxyImagePrefix"
           class="gl-layout-w-limited"
         >
           <template #append>
             <clipboard-button
-              :text="dependencyProxyImagePrefix"
+              :text="group.dependencyProxyImagePrefix"
               :title="$options.i18n.copyImagePrefixText"
             />
           </template>
@@ -72,8 +82,8 @@ export default {
         <template #description>
           <span data-qa-selector="dependency_proxy_count" data-testid="proxy-count">
             <gl-sprintf :message="$options.i18n.blobCountAndSize">
-              <template #count>{{ dependencyProxyBlobCount }}</template>
-              <template #size>{{ humanizedTotalSize }}</template>
+              <template #count>{{ group.dependencyProxyBlobCount }}</template>
+              <template #size>{{ group.dependencyProxyTotalSize }}</template>
             </gl-sprintf>
           </span>
         </template>

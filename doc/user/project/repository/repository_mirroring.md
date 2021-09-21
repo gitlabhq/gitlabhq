@@ -29,7 +29,7 @@ Users with the [Maintainer role](../../permissions.md) for the project can also 
 immediate update, unless:
 
 - The mirror is already being updated.
-- The [limit for pull mirroring interval seconds](../../../administration/instance_limits.md#pull-mirroring-interval) has not elapsed since its last update.
+- The [limit for pull mirroring interval seconds](../../../administration/instance_limits.md#pull-mirroring-interval) has not elapsed after its last update.
 
 For security reasons, the URL to the original repository is only displayed to users with the
 [Maintainer role](../../permissions.md) or the [Owner role](../../permissions.md) for the mirrored
@@ -39,7 +39,7 @@ project.
 
 The following are some possible use cases for repository mirroring:
 
-- You migrated to GitLab but still need to keep your project in another source. In that case, you
+- You migrated to GitLab but still must keep your project in another source. In that case, you
   can set it up to mirror to GitLab (pull) and all the essential history of commits, tags,
   and branches are available in your GitLab instance. **(PREMIUM)**
 - You have old projects in another source that you don't use actively anymore, but don't want to
@@ -110,7 +110,7 @@ After the mirror is created, this option can only be modified via the [API](../.
 
 ### Set up a push mirror from GitLab to GitHub
 
-To set up a mirror from GitLab to GitHub, you need to follow these steps:
+To set up a mirror from GitLab to GitHub, you must follow these steps:
 
 1. Create a [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) with the `public_repo` box checked.
 1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
@@ -360,7 +360,7 @@ If you select the:
 - **Detect host keys** button, GitLab fetches the host keys from the server and display the fingerprints.
 - **Input host keys manually** button, a field is displayed where you can paste in host keys.
 
-Assuming you used the former, you now need to verify that the fingerprints are
+Assuming you used the former, you now must verify that the fingerprints are
 those you expect. GitLab.com and other code hosting sites publish their
 fingerprints in the open for you to check:
 
@@ -384,7 +384,7 @@ $ cat /etc/ssh/ssh_host*pub | ssh-keygen -E md5 -l -f -
 ```
 
 NOTE:
-You may need to exclude `-E md5` for some older versions of SSH.
+You must exclude `-E md5` for some older versions of SSH.
 
 When mirroring the repository, GitLab checks that at least one of the
 stored host keys matches before connecting. This can prevent malicious code from
@@ -398,15 +398,15 @@ GitLab generates a 4096-bit RSA key that can be copied by selecting the **Copy S
 
 ![Repository mirroring copy SSH public key to clipboard button](img/repository_mirroring_copy_ssh_public_key_button.png)
 
-You then need to add the public SSH key to the other repository's configuration:
+You then must add the public SSH key to the other repository's configuration:
 
 - If the other repository is hosted on GitLab, you should add the public SSH key
   as a [deploy key](../../project/deploy_keys/index.md).
-- If the other repository is hosted elsewhere, you may need to add the key to
+- If the other repository is hosted elsewhere, you must add the key to
   your user's  `authorized_keys` file. Paste the entire public SSH key into the
   file on its own line and save it.
 
-If you need to change the key at any time, you can remove and re-add the mirror
+If you must change the key at any time, you can remove and re-add the mirror
 to generate a new key. Update the other repository with the new
 key to keep the mirror running.
 
@@ -591,7 +591,7 @@ set your email address on GitHub to be public, or disable the [Block command lin
 ### 4:Deadline Exceeded
 
 When upgrading to GitLab 11.11.8 or newer, a change in how usernames are represented means that you
-may need to update your mirroring username and password to ensure that `%40` characters are replaced with `@`.
+must update your mirroring username and password to ensure that `%40` characters are replaced with `@`.
 
 ### Connection blocked because server only allows public key authentication
 

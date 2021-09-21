@@ -26,7 +26,7 @@ and from merge requests:
      1. Select **Edit in Web IDE** to open the editor.
 - *When viewing a merge request* -
   1. Go to your merge request, and select the **Overview** tab.
-  1. Scroll to the widgets area, after the merge request description.
+  1. Scroll to the widgets section, after the merge request description.
   1. Select **Edit in Web IDE** if it is visible.
   1. If **Edit in Web IDE** is not visible:
      1. Select the **(angle-down)** next to **Open in Gitpod**.
@@ -231,7 +231,7 @@ left.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19318) in [GitLab Free](https://about.gitlab.com/pricing/) 11.0.
 
 To switch between your authored and assigned merge requests, click the
-dropdown in the top of the sidebar to open a list of merge requests. You need to commit or discard all your changes before switching to a different merge
+dropdown in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
 request.
 
 ## Switching branches
@@ -240,7 +240,7 @@ request.
 
 To switch between branches of the current project repository, click the dropdown
 in the top of the sidebar to open a list of branches.
-You need to commit or discard all your changes before switching to a
+You must commit or discard all your changes before switching to a
 different branch.
 
 ## Markdown editing
@@ -324,7 +324,7 @@ An example `package.json`:
 WARNING:
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
 GitLab.com shared runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
-so you would need to use your own private runner to make use of this feature.
+so you must use your own private runner to make use of this feature.
 
 [Interactive Web Terminals](../../../ci/interactive_web_terminal/index.md)
 give the project [Maintainers](../../permissions.md#project-members-permissions)
@@ -333,14 +333,14 @@ GitLab, including through the Web IDE.
 
 ### Runner configuration
 
-Some things need to be configured in the runner for the interactive web terminal
+Some things must be configured in the runner for the interactive web terminal
 to work:
 
 - The runner needs to have
   [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section).
   This section requires at least a `session_timeout` value (which defaults to 1800
   seconds) and a `listen_address` value. If `advertise_address` is not defined, `listen_address` is used.
-- If you are using a reverse proxy with your GitLab instance, web terminals need to be
+- If you are using a reverse proxy with your GitLab instance, web terminals must be
   [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support). **(ULTIMATE SELF)**
 
 If you have the terminal open and the job has finished with its tasks, the
@@ -355,7 +355,7 @@ The [File Sync](#file-syncing-to-web-terminal) feature is supported on Kubernete
 
 ### Web IDE configuration file
 
-In order to enable the Web IDE terminals you need to create the file
+To enable the Web IDE terminals you must create the file
 `.gitlab/.gitlab-webide.yml` inside the repository's root. This
 file is fairly similar to the [CI configuration file](../../../ci/yaml/index.md)
 syntax but with some restrictions:
@@ -456,7 +456,7 @@ terminal:
 ```
 
 - The `webide-file-sync` executable must start **after** the project
-  directory is available. This is why we need to add `sleep 5` to the `command`.
+  directory is available. This is why we must add `sleep 5` to the `command`.
   See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/-/issues/7) for
   more information.
 - `$CI_PROJECT_DIR` is a

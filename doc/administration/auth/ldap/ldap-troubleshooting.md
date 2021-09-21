@@ -90,7 +90,7 @@ established but GitLab doesn't show you LDAP users in the output, one of the
 following is most likely true:
 
 - The `bind_dn` user doesn't have enough permissions to traverse the user tree.
-- The user(s) don't fall under the [configured `base`](index.md#configuration).
+- The user(s) don't fall under the [configured `base`](index.md#configure-ldap).
 - The [configured `user_filter`](index.md#set-up-ldap-user-filter) blocks access to the user(s).
 
 In this case, you con confirm which of the above is true using
@@ -102,7 +102,7 @@ In this case, you con confirm which of the above is true using
 A user can have trouble signing in for any number of reasons. To get started,
 here are some questions to ask yourself:
 
-- Does the user fall under the [configured `base`](index.md#configuration) in
+- Does the user fall under the [configured `base`](index.md#configure-ldap) in
   LDAP? The user must fall under this `base` to sign in.
 - Does the user pass through the [configured `user_filter`](index.md#set-up-ldap-user-filter)?
   If one is not configured, this question can be ignored. If it is, then the
