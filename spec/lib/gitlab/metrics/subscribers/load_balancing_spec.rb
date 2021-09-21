@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store do
   let(:subscriber) { described_class.new }
 
-  before do
-    allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-  end
-
   describe '#caught_up_replica_pick' do
     shared_examples 'having payload result value' do |result, counter_name|
       subject { subscriber.caught_up_replica_pick(event) }

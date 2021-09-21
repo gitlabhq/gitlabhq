@@ -100,15 +100,15 @@ group, or instance, open the cluster's page according to the
 
 **Project-level clusters:**
 
-1. Go to your project's homepage.
+1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 
-**Group-level clusters:**
+**[Group-level clusters](../../../group/clusters/index.md):**
 
-1. Go to your group's homepage.
+1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Kubernetes**.
 
-**Instance-level clusters:** **(FREE SELF)**
+**[Instance-level clusters](../../../instance/clusters/index.md):**
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Kubernetes**.

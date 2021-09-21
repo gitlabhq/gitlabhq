@@ -194,7 +194,7 @@ RSpec.describe ApplicationRecord do
     end
 
     context 'with database load balancing' do
-      let(:session) { double(:session) }
+      let(:session) { Gitlab::Database::LoadBalancing::Session.new }
 
       before do
         allow(::Gitlab::Database::LoadBalancing::Session).to receive(:current).and_return(session)

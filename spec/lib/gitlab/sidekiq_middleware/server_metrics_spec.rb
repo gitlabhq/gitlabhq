@@ -250,60 +250,30 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       end
     end
 
-    context 'when load_balancing is enabled' do
-      before do
-        allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-      end
+    describe '#call' do
+      context 'when worker declares data consistency' do
+        include_context 'worker declaring data consistency'
 
-      describe '#call' do
-        context 'when worker declares data consistency' do
-          include_context 'worker declaring data consistency'
-
-          it 'increments load balancing counter with defined data consistency' do
-            process_job
-
-            expect(load_balancing_metric).to have_received(:increment).with(
-              a_hash_including(
-                data_consistency: :delayed,
-                load_balancing_strategy: 'replica'
-              ), 1)
-          end
-        end
-
-        context 'when worker does not declare data consistency' do
-          it 'increments load balancing counter with default data consistency' do
-            process_job
-
-            expect(load_balancing_metric).to have_received(:increment).with(
-              a_hash_including(
-                data_consistency: :always,
-                load_balancing_strategy: 'primary'
-              ), 1)
-          end
-        end
-      end
-    end
-
-    context 'when load_balancing is disabled' do
-      include_context 'worker declaring data consistency'
-
-      before do
-        allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
-      end
-
-      describe '#initialize' do
-        it 'does not set load_balancing metrics' do
-          expect(Gitlab::Metrics).not_to receive(:counter).with(:sidekiq_load_balancing_count, anything)
-
-          subject
-        end
-      end
-
-      describe '#call' do
-        it 'does not increment load balancing counter' do
+        it 'increments load balancing counter with defined data consistency' do
           process_job
 
-          expect(load_balancing_metric).not_to have_received(:increment)
+          expect(load_balancing_metric).to have_received(:increment).with(
+            a_hash_including(
+              data_consistency: :delayed,
+              load_balancing_strategy: 'replica'
+            ), 1)
+        end
+      end
+
+      context 'when worker does not declare data consistency' do
+        it 'increments load balancing counter with default data consistency' do
+          process_job
+
+          expect(load_balancing_metric).to have_received(:increment).with(
+            a_hash_including(
+              data_consistency: :always,
+              load_balancing_strategy: 'primary'
+            ), 1)
         end
       end
     end

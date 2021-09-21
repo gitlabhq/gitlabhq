@@ -13,6 +13,10 @@ module API
         normalize_path(app.namespace, app.options[:path].first)
       end
 
+      def endpoint_id_for_route(route)
+        "#{route.request_method} #{route.origin}"
+      end
+
       def route(methods, paths = ['/'], route_options = {}, &block)
         if category = route_options.delete(:feature_category)
           feature_category(category, Array(paths).map { |path| normalize_path(namespace, path) })

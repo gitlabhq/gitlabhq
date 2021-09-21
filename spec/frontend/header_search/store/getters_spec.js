@@ -5,6 +5,7 @@ import {
   MOCK_SEARCH_PATH,
   MOCK_ISSUE_PATH,
   MOCK_MR_PATH,
+  MOCK_AUTOCOMPLETE_PATH,
   MOCK_SEARCH_CONTEXT,
   MOCK_DEFAULT_SEARCH_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
@@ -12,6 +13,8 @@ import {
   MOCK_GROUP,
   MOCK_ALL_PATH,
   MOCK_SEARCH,
+  MOCK_AUTOCOMPLETE_OPTIONS,
+  MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
 } from '../mock_data';
 
 describe('Header Search Store Getters', () => {
@@ -22,6 +25,7 @@ describe('Header Search Store Getters', () => {
       searchPath: MOCK_SEARCH_PATH,
       issuesPath: MOCK_ISSUE_PATH,
       mrPath: MOCK_MR_PATH,
+      autocompletePath: MOCK_AUTOCOMPLETE_PATH,
       searchContext: MOCK_SEARCH_CONTEXT,
       ...initialState,
     });
@@ -51,6 +55,29 @@ describe('Header Search Store Getters', () => {
 
       it(`should return ${expectedPath}`, () => {
         expect(getters.searchQuery(state)).toBe(expectedPath);
+      });
+    });
+  });
+
+  describe.each`
+    project         | ref                | expectedPath
+    ${null}         | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=undefined&project_ref=null`}
+    ${MOCK_PROJECT} | ${null}            | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=${MOCK_PROJECT.id}&project_ref=null`}
+    ${MOCK_PROJECT} | ${MOCK_PROJECT.id} | ${`${MOCK_AUTOCOMPLETE_PATH}?term=${MOCK_SEARCH}&project_id=${MOCK_PROJECT.id}&project_ref=${MOCK_PROJECT.id}`}
+  `('autocompleteQuery', ({ project, ref, expectedPath }) => {
+    describe(`when project is ${project?.name} and project ref is ${ref}`, () => {
+      beforeEach(() => {
+        createState({
+          searchContext: {
+            project,
+            ref,
+          },
+        });
+        state.search = MOCK_SEARCH;
+      });
+
+      it(`should return ${expectedPath}`, () => {
+        expect(getters.autocompleteQuery(state)).toBe(expectedPath);
       });
     });
   });
@@ -205,6 +232,19 @@ describe('Header Search Store Getters', () => {
     it('returns the correct array', () => {
       expect(getters.scopedSearchOptions(state, mockGetters)).toStrictEqual(
         MOCK_SCOPED_SEARCH_OPTIONS,
+      );
+    });
+  });
+
+  describe('autocompleteGroupedSearchOptions', () => {
+    beforeEach(() => {
+      createState();
+      state.autocompleteOptions = MOCK_AUTOCOMPLETE_OPTIONS;
+    });
+
+    it('returns the correct grouped array', () => {
+      expect(getters.autocompleteGroupedSearchOptions(state)).toStrictEqual(
+        MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
       );
     });
   });

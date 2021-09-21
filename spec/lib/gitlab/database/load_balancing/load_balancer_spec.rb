@@ -277,31 +277,26 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   end
 
   describe '#connection_error?' do
-    before do
-      stub_const('Gitlab::Database::LoadBalancing::LoadBalancer::CONNECTION_ERRORS',
-                 [NotImplementedError])
-    end
-
     it 'returns true for a connection error' do
-      error = NotImplementedError.new
+      error = ActiveRecord::ConnectionNotEstablished.new
 
       expect(lb.connection_error?(error)).to eq(true)
     end
 
     it 'returns true for a wrapped connection error' do
-      wrapped = wrapped_exception(ActiveRecord::StatementInvalid, NotImplementedError)
+      wrapped = wrapped_exception(ActiveRecord::StatementInvalid, ActiveRecord::ConnectionNotEstablished)
 
       expect(lb.connection_error?(wrapped)).to eq(true)
     end
 
     it 'returns true for a wrapped connection error from a view' do
-      wrapped = wrapped_exception(ActionView::Template::Error, NotImplementedError)
+      wrapped = wrapped_exception(ActionView::Template::Error, ActiveRecord::ConnectionNotEstablished)
 
       expect(lb.connection_error?(wrapped)).to eq(true)
     end
 
     it 'returns true for deeply wrapped/nested errors' do
-      top = twice_wrapped_exception(ActionView::Template::Error, ActiveRecord::StatementInvalid, NotImplementedError)
+      top = twice_wrapped_exception(ActionView::Template::Error, ActiveRecord::StatementInvalid, ActiveRecord::ConnectionNotEstablished)
 
       expect(lb.connection_error?(top)).to eq(true)
     end

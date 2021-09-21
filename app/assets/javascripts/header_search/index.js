@@ -12,13 +12,13 @@ export const initHeaderSearchApp = () => {
     return false;
   }
 
-  const { searchPath, issuesPath, mrPath } = el.dataset;
+  const { searchPath, issuesPath, mrPath, autocompletePath } = el.dataset;
   let { searchContext } = el.dataset;
   searchContext = JSON.parse(searchContext);
 
   return new Vue({
     el,
-    store: createStore({ searchPath, issuesPath, mrPath, searchContext }),
+    store: createStore({ searchPath, issuesPath, mrPath, autocompletePath, searchContext }),
     render(createElement) {
       return createElement(HeaderSearchApp);
     },

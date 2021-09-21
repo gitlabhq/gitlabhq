@@ -72,8 +72,8 @@ class SomeCrossCuttingConcernWorker
 end
 ```
 
-Workers marked as not owned workers will, when possible, use the
-category of their caller (worker or HTTP endpoint) in metrics and logs.
+When possible, workers marked as "not owned" use their caller's
+category (worker or HTTP endpoint) in metrics and logs.
 For instance, `ReactiveCachingWorker` can have multiple feature
 categories in metrics and logs.
 

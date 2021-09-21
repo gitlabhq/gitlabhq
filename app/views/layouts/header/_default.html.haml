@@ -34,7 +34,8 @@
                   #js-header-search.header-search{ data: { 'search-context' => search_context.to_json,
                   'search-path' => search_path,
                   'issues-path' => issues_dashboard_path,
-                  'mr-path' => merge_requests_dashboard_path } }
+                  'mr-path' => merge_requests_dashboard_path,
+                  'autocomplete-path' => search_autocomplete_path } }
                     %input{ type: "text", placeholder: _('Search or jump to...'), class: 'form-control gl-form-input' }
                 - else
                   = render 'layouts/search'

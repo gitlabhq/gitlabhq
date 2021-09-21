@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::WithLockRetries do
   let(:logger) { Gitlab::Database::WithLockRetries::NULL_LOGGER }
   let(:subject) { described_class.new(env: env, logger: logger, allow_savepoints: allow_savepoints, timing_configuration: timing_configuration) }
   let(:allow_savepoints) { true }
-  let(:connection) { ActiveRecord::Base.connection }
+  let(:connection) { ActiveRecord::Base.retrieve_connection }
 
   let(:timing_configuration) do
     [

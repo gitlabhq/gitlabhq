@@ -23,6 +23,16 @@ export const searchQuery = (state) => {
   return `${state.searchPath}?${objectToQuery(query)}`;
 };
 
+export const autocompleteQuery = (state) => {
+  const query = {
+    term: state.search,
+    project_id: state.searchContext.project?.id,
+    project_ref: state.searchContext.ref,
+  };
+
+  return `${state.autocompletePath}?${objectToQuery(query)}`;
+};
+
 export const scopedIssuesPath = (state) => {
   return (
     state.searchContext.project_metadata?.issues_path ||
@@ -132,4 +142,26 @@ export const scopedSearchOptions = (state, getters) => {
   });
 
   return options;
+};
+
+export const autocompleteGroupedSearchOptions = (state) => {
+  const groupedOptions = {};
+  const results = [];
+
+  state.autocompleteOptions.forEach((option) => {
+    const category = groupedOptions[option.category];
+
+    if (category) {
+      category.data.push(option);
+    } else {
+      groupedOptions[option.category] = {
+        category: option.category,
+        data: [option],
+      };
+
+      results.push(groupedOptions[option.category]);
+    }
+  });
+
+  return results;
 };

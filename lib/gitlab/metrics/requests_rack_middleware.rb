@@ -16,6 +16,7 @@ module Gitlab
       HEALTH_ENDPOINT = %r{^/-/(liveness|readiness|health|metrics)/?$}.freeze
 
       FEATURE_CATEGORY_DEFAULT = 'unknown'
+      ENDPOINT_MISSING = 'unknown'
 
       # These were the top 5 categories at a point in time, chosen as a
       # reasonable default. If we initialize every category we'll end up
@@ -77,6 +78,8 @@ module Gitlab
 
           if !health_endpoint && ::Gitlab::Metrics.record_duration_for_status?(status)
             self.class.http_request_duration_seconds.observe({ method: method }, elapsed)
+
+            record_apdex_if_needed(elapsed)
           end
 
           [status, headers, body]
@@ -104,6 +107,28 @@ module Gitlab
 
       def feature_category
         ::Gitlab::ApplicationContext.current_context_attribute(:feature_category)
+      end
+
+      def endpoint_id
+        ::Gitlab::ApplicationContext.current_context_attribute(:caller_id)
+      end
+
+      def record_apdex_if_needed(elapsed)
+        return unless Gitlab::Metrics::RailsSlis.request_apdex_counters_enabled?
+
+        Gitlab::Metrics::Sli[:rails_request_apdex].increment(
+          labels: labels_from_context,
+          # hardcoded 1s here will be replaced by a per-endpoint value.
+          # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1223
+          success: elapsed < 1
+        )
+      end
+
+      def labels_from_context
+        {
+          feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT,
+          endpoint_id: endpoint_id.presence || ENDPOINT_MISSING
+        }
       end
     end
   end

@@ -28,9 +28,8 @@ RSpec.describe Gitlab::SidekiqMiddleware do
     stub_const('TestWorker', worker_class)
   end
 
-  shared_examples "a middleware chain" do |load_balancing_enabled|
+  shared_examples "a middleware chain" do
     before do
-      allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(load_balancing_enabled)
       configurator.call(chain)
     end
 
@@ -45,10 +44,10 @@ RSpec.describe Gitlab::SidekiqMiddleware do
     end
   end
 
-  shared_examples "a middleware chain for mailer" do |load_balancing_enabled|
+  shared_examples "a middleware chain for mailer" do
     let(:worker_class) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper }
 
-    it_behaves_like "a middleware chain", load_balancing_enabled
+    it_behaves_like "a middleware chain"
   end
 
   describe '.server_configurator' do
@@ -105,25 +104,8 @@ RSpec.describe Gitlab::SidekiqMiddleware do
     end
 
     context "all optional middlewares on" do
-      context "when load balancing is enabled" do
-        before do
-          allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer, :release_host)
-        end
-
-        it_behaves_like "a middleware chain", true
-        it_behaves_like "a middleware chain for mailer", true
-      end
-
-      context "when load balancing is disabled" do
-        let(:disabled_sidekiq_middlewares) do
-          [
-            Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
-          ]
-        end
-
-        it_behaves_like "a middleware chain", false
-        it_behaves_like "a middleware chain for mailer", false
-      end
+      it_behaves_like "a middleware chain"
+      it_behaves_like "a middleware chain for mailer"
     end
 
     context "all optional middlewares off" do
@@ -135,36 +117,16 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         )
       end
 
-      context "when load balancing is enabled" do
-        let(:disabled_sidekiq_middlewares) do
-          [
-            Gitlab::SidekiqMiddleware::ServerMetrics,
-            Gitlab::SidekiqMiddleware::ArgumentsLogger,
-            Gitlab::SidekiqMiddleware::MemoryKiller
-          ]
-        end
-
-        before do
-          allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer, :release_host)
-        end
-
-        it_behaves_like "a middleware chain", true
-        it_behaves_like "a middleware chain for mailer", true
+      let(:disabled_sidekiq_middlewares) do
+        [
+          Gitlab::SidekiqMiddleware::ServerMetrics,
+          Gitlab::SidekiqMiddleware::ArgumentsLogger,
+          Gitlab::SidekiqMiddleware::MemoryKiller
+        ]
       end
 
-      context "when load balancing is disabled" do
-        let(:disabled_sidekiq_middlewares) do
-          [
-            Gitlab::SidekiqMiddleware::ServerMetrics,
-            Gitlab::SidekiqMiddleware::ArgumentsLogger,
-            Gitlab::SidekiqMiddleware::MemoryKiller,
-            Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
-          ]
-        end
-
-        it_behaves_like "a middleware chain", false
-        it_behaves_like "a middleware chain for mailer", false
-      end
+      it_behaves_like "a middleware chain"
+      it_behaves_like "a middleware chain for mailer"
     end
   end
 
@@ -186,30 +148,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
       ]
     end
 
-    context "when load balancing is disabled" do
-      let(:disabled_sidekiq_middlewares) do
-        [
-          Gitlab::Database::LoadBalancing::SidekiqClientMiddleware
-        ]
-      end
-
-      it_behaves_like "a middleware chain", false
-      it_behaves_like "a middleware chain for mailer", false
-
-      # Sidekiq documentation states that the worker class could be a string
-      # or a class reference. We should test for both
-      context "worker_class as string value" do
-        let(:worker_args) { [worker_class.to_s, { 'args' => job_args }, queue, redis_pool] }
-        let(:middleware_expected_args) { [worker_class.to_s, hash_including({ 'args' => job_args }), queue, redis_pool] }
-
-        it_behaves_like "a middleware chain", false
-        it_behaves_like "a middleware chain for mailer", false
-      end
-    end
-
-    context "when load balancing is enabled" do
-      it_behaves_like "a middleware chain", true
-      it_behaves_like "a middleware chain for mailer", true
-    end
+    it_behaves_like "a middleware chain"
+    it_behaves_like "a middleware chain for mailer"
   end
 end

@@ -9,16 +9,7 @@ RSpec.describe "Every controller" do
     end
 
     let_it_be(:controller_actions) do
-      # This will return tuples of all controller actions defined in the routes
-      # Only for controllers inheriting ApplicationController
-      # Excluding controllers from gems (OAuth, Sidekiq)
-      Rails.application.routes.routes
-        .map { |route| route.required_defaults.presence }
-        .compact
-        .select { |route| route[:controller].present? && route[:action].present? }
-        .map { |route| [constantize_controller(route[:controller]), route[:action]] }
-        .select { |(controller, action)| controller&.include?(::Gitlab::WithFeatureCategory) }
-        .reject { |(controller, action)| controller == ApplicationController || controller == Devise::UnlocksController }
+      Gitlab::RequestEndpoints.all_controller_actions
     end
 
     let_it_be(:routes_without_category) do

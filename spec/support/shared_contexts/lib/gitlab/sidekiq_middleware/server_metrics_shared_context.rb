@@ -15,6 +15,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:redis_seconds_metric) { double('redis seconds metric') }
   let(:elasticsearch_seconds_metric) { double('elasticsearch seconds metric') }
   let(:elasticsearch_requests_total) { double('elasticsearch calls total metric') }
+  let(:load_balancing_metric) { double('load balancing metric') }
 
   before do
     allow(Gitlab::Metrics).to receive(:histogram).and_call_original
@@ -31,6 +32,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_retried_total, anything).and_return(retried_total_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_redis_requests_total, anything).and_return(redis_requests_total)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_elasticsearch_requests_total, anything).and_return(elasticsearch_requests_total)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_load_balancing_count, anything).and_return(load_balancing_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :all).and_return(running_jobs_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_concurrency, anything, {}, :all).and_return(concurrency_metric)
 

@@ -7,11 +7,17 @@ import createState from './state';
 
 Vue.use(Vuex);
 
-export const getStoreConfig = ({ searchPath, issuesPath, mrPath, searchContext }) => ({
+export const getStoreConfig = ({
+  searchPath,
+  issuesPath,
+  mrPath,
+  autocompletePath,
+  searchContext,
+}) => ({
   actions,
   getters,
   mutations,
-  state: createState({ searchPath, issuesPath, mrPath, searchContext }),
+  state: createState({ searchPath, issuesPath, mrPath, autocompletePath, searchContext }),
 });
 
 const createStore = (config) => new Vuex.Store(getStoreConfig(config));

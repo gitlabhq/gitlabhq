@@ -13,23 +13,21 @@ module Gitlab
       end
 
       def match?
-        if ::Gitlab::Database::LoadBalancing.enable?
-          # When a user merges a merge request, the following sequence happens:
-          #
-          # 1. Sidekiq: MergeService runs and updates the merge request in a locked state.
-          # 2. Gitaly: The UserMergeBranch RPC runs.
-          # 3. Gitaly (gitaly-ruby): This RPC calls the pre-receive hook.
-          # 4. Rails: This hook makes an API request to /api/v4/internal/allowed.
-          # 5. Rails: This API check does a SQL query for locked merge
-          #    requests with a matching SHA.
-          #
-          # Since steps 1 and 5 will happen on different database
-          # sessions, replication lag could erroneously cause step 5 to
-          # report no matching merge requests. To avoid this, we check
-          # the write location to ensure the replica can make this query.
-          track_session_metrics do
-            ::Gitlab::Database::LoadBalancing::Sticking.select_valid_host(:project, @project.id)
-          end
+        # When a user merges a merge request, the following sequence happens:
+        #
+        # 1. Sidekiq: MergeService runs and updates the merge request in a locked state.
+        # 2. Gitaly: The UserMergeBranch RPC runs.
+        # 3. Gitaly (gitaly-ruby): This RPC calls the pre-receive hook.
+        # 4. Rails: This hook makes an API request to /api/v4/internal/allowed.
+        # 5. Rails: This API check does a SQL query for locked merge
+        #    requests with a matching SHA.
+        #
+        # Since steps 1 and 5 will happen on different database
+        # sessions, replication lag could erroneously cause step 5 to
+        # report no matching merge requests. To avoid this, we check
+        # the write location to ensure the replica can make this query.
+        track_session_metrics do
+          ::Gitlab::Database::LoadBalancing::Sticking.select_valid_host(:project, @project.id)
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

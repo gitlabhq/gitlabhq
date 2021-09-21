@@ -53,10 +53,7 @@ module Gitlab
 
       def initialize
         @metrics = self.class.metrics
-
-        if ::Gitlab::Database::LoadBalancing.enable?
-          @metrics[:sidekiq_load_balancing_count] = ::Gitlab::Metrics.counter(:sidekiq_load_balancing_count, 'Sidekiq jobs with load balancing')
-        end
+        @metrics[:sidekiq_load_balancing_count] = ::Gitlab::Metrics.counter(:sidekiq_load_balancing_count, 'Sidekiq jobs with load balancing')
       end
 
       def call(worker, job, queue)
@@ -128,8 +125,6 @@ module Gitlab
       private
 
       def with_load_balancing_settings(job)
-        return unless ::Gitlab::Database::LoadBalancing.enable?
-
         keys = %w[load_balancing_strategy worker_data_consistency]
         return unless keys.all? { |k| job.key?(k) }
 

@@ -39,17 +39,25 @@ RSpec.shared_context 'structured_logger' do
     )
   end
 
+  let(:db_payload_defaults) do
+    metrics =
+      ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_counter_keys +
+      ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_duration_keys +
+      ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_keys +
+      [:db_duration_s]
+
+    metrics.each_with_object({}) do |key, result|
+      result[key.to_s] = 0
+    end
+  end
+
   let(:end_payload) do
-    start_payload.merge(
+    start_payload.merge(db_payload_defaults).merge(
       'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
       'job_status' => 'done',
       'duration_s' => 0.0,
       'completed_at' => timestamp.to_f,
-      'cpu_s' => 1.111112,
-      'db_duration_s' => 0.0,
-      'db_cached_count' => 0,
-      'db_count' => 0,
-      'db_write_count' => 0
+      'cpu_s' => 1.111112
     )
   end
 

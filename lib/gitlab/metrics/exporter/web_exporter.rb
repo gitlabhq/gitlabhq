@@ -15,6 +15,14 @@ module Gitlab
           end
         end
 
+        RailsMetricsInitializer = Struct.new(:app) do
+          def call(env)
+            Gitlab::Metrics::RailsSlis.initialize_request_slis_if_needed!
+
+            app.call(env)
+          end
+        end
+
         attr_reader :running
 
         # This exporter is always run on master process
@@ -44,6 +52,15 @@ module Gitlab
         end
 
         private
+
+        def rack_app
+          app = super
+
+          Rack::Builder.app do
+            use RailsMetricsInitializer
+            run app
+          end
+        end
 
         def start_working
           @running = true

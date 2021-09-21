@@ -230,39 +230,21 @@ RSpec.describe 'lograge', type: :request do
         end
       end
 
-      context 'when load balancing is enabled' do
-        before do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-        end
+      context 'with db payload' do
+        context 'when RequestStore is enabled', :request_store do
+          it 'includes db counters for load balancing' do
+            subscriber.process_action(event)
 
-        context 'with db payload' do
-          context 'when RequestStore is enabled', :request_store do
-            it 'includes db counters for load balancing' do
-              subscriber.process_action(event)
-
-              expect(log_data).to include(*db_load_balancing_logging_keys)
-            end
-          end
-
-          context 'when RequestStore is disabled' do
-            it 'does not include db counters for load balancing' do
-              subscriber.process_action(event)
-
-              expect(log_data).not_to include(*db_load_balancing_logging_keys)
-            end
+            expect(log_data).to include(*db_load_balancing_logging_keys)
           end
         end
-      end
 
-      context 'when load balancing is disabled' do
-        before do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
-        end
+        context 'when RequestStore is disabled' do
+          it 'does not include db counters for load balancing' do
+            subscriber.process_action(event)
 
-        it 'does not include db counters for load balancing' do
-          subscriber.process_action(event)
-
-          expect(log_data).not_to include(*db_load_balancing_logging_keys)
+            expect(log_data).not_to include(*db_load_balancing_logging_keys)
+          end
         end
       end
     end

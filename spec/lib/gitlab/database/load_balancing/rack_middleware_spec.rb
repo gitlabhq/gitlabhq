@@ -20,11 +20,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   end
 
   describe '.stick_or_unstick' do
-    before do
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
-        .and_return(true)
-    end
-
     it 'sticks or unsticks a single object and updates the Rack environment' do
       expect(Gitlab::Database::LoadBalancing::Sticking)
         .to receive(:unstick_or_continue_sticking)

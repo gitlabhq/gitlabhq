@@ -4,38 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing do
   describe '.proxy' do
-    before do
-      @previous_proxy = ActiveRecord::Base.load_balancing_proxy
+    it 'returns the connection proxy' do
+      proxy = double(:connection_proxy)
 
-      ActiveRecord::Base.load_balancing_proxy = connection_proxy
-    end
+      allow(ActiveRecord::Base)
+        .to receive(:load_balancing_proxy)
+        .and_return(proxy)
 
-    after do
-      ActiveRecord::Base.load_balancing_proxy = @previous_proxy
-    end
-
-    context 'when configured' do
-      let(:connection_proxy) { double(:connection_proxy) }
-
-      it 'returns the connection proxy' do
-        expect(subject.proxy).to eq(connection_proxy)
-      end
-    end
-
-    context 'when not configured' do
-      let(:connection_proxy) { nil }
-
-      it 'returns nil' do
-        expect(subject.proxy).to be_nil
-      end
-
-      it 'tracks an error to sentry' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          an_instance_of(subject::ProxyNotConfiguredError)
-        )
-
-        subject.proxy
-      end
+      expect(described_class.proxy).to eq(proxy)
     end
   end
 
@@ -50,46 +26,53 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
   end
 
-  describe '.enable?' do
-    before do
-      allow(described_class.configuration)
-        .to receive(:hosts)
-        .and_return(%w(foo))
+  describe '.enable_replicas?' do
+    context 'when hosts are specified' do
+      before do
+        allow(described_class.configuration)
+          .to receive(:hosts)
+          .and_return(%w(foo))
+      end
+
+      it 'returns true' do
+        expect(described_class.enable_replicas?).to eq(true)
+      end
+
+      it 'returns true when Sidekiq is being used' do
+        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+
+        expect(described_class.enable_replicas?).to eq(true)
+      end
+
+      it 'returns false when running inside a Rake task' do
+        allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+
+        expect(described_class.enable_replicas?).to eq(false)
+      end
     end
 
-    it 'returns false when no hosts are specified' do
-      allow(described_class.configuration).to receive(:hosts).and_return([])
+    context 'when no hosts are specified but service discovery is enabled' do
+      it 'returns true' do
+        allow(described_class.configuration).to receive(:hosts).and_return([])
+        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
 
-      expect(described_class.enable?).to eq(false)
+        allow(described_class.configuration)
+          .to receive(:service_discovery_enabled?)
+          .and_return(true)
+
+        expect(described_class.enable_replicas?).to eq(true)
+      end
     end
 
-    it 'returns true when Sidekiq is being used' do
-      allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+    context 'when no hosts are specified and service discovery is disabled' do
+      it 'returns false' do
+        allow(described_class.configuration).to receive(:hosts).and_return([])
+        allow(described_class.configuration)
+          .to receive(:service_discovery_enabled?)
+          .and_return(false)
 
-      expect(described_class.enable?).to eq(true)
-    end
-
-    it 'returns false when running inside a Rake task' do
-      allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
-
-      expect(described_class.enable?).to eq(false)
-    end
-
-    it 'returns true when load balancing should be enabled' do
-      allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
-
-      expect(described_class.enable?).to eq(true)
-    end
-
-    it 'returns true when service discovery is enabled' do
-      allow(described_class.configuration).to receive(:hosts).and_return([])
-      allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
-
-      allow(described_class.configuration)
-        .to receive(:service_discovery_enabled?)
-        .and_return(true)
-
-      expect(described_class.enable?).to eq(true)
+        expect(described_class.enable_replicas?).to eq(false)
+      end
     end
   end
 
@@ -118,41 +101,6 @@ RSpec.describe Gitlab::Database::LoadBalancing do
         .and_return(false)
 
       expect(described_class.configured?).to eq(false)
-    end
-  end
-
-  describe '.configure_proxy' do
-    before do
-      allow(ActiveRecord::Base).to receive(:load_balancing_proxy=)
-    end
-
-    it 'configures the connection proxy' do
-      described_class.configure_proxy
-
-      expect(ActiveRecord::Base).to have_received(:load_balancing_proxy=)
-        .with(Gitlab::Database::LoadBalancing::ConnectionProxy)
-    end
-
-    context 'when service discovery is enabled' do
-      it 'runs initial service discovery when configuring the connection proxy' do
-        discover = instance_spy(Gitlab::Database::LoadBalancing::ServiceDiscovery)
-
-        allow(described_class.configuration)
-          .to receive(:service_discovery)
-          .and_return({ record: 'foo' })
-
-        expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
-          .to receive(:new)
-          .with(
-            an_instance_of(Gitlab::Database::LoadBalancing::LoadBalancer),
-            an_instance_of(Hash)
-          )
-          .and_return(discover)
-
-        expect(discover).to receive(:perform_service_discovery)
-
-        described_class.configure_proxy
-      end
     end
   end
 
@@ -191,15 +139,41 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
   end
 
-  describe '.db_role_for_connection' do
-    context 'when the load balancing is not configured' do
-      let(:connection) { ActiveRecord::Base.connection }
+  describe '.perform_service_discovery' do
+    it 'does nothing if service discovery is disabled' do
+      expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
+        .not_to receive(:new)
 
-      it 'returns primary' do
-        expect(described_class.db_role_for_connection(connection)).to eq(:primary)
-      end
+      described_class.perform_service_discovery
     end
 
+    it 'performs service discovery when enabled' do
+      allow(described_class.configuration)
+        .to receive(:service_discovery_enabled?)
+        .and_return(true)
+
+      sv = instance_spy(Gitlab::Database::LoadBalancing::ServiceDiscovery)
+      cfg = Gitlab::Database::LoadBalancing::Configuration
+        .new(ActiveRecord::Base)
+      lb = Gitlab::Database::LoadBalancing::LoadBalancer.new(cfg)
+      proxy = Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
+
+      allow(described_class)
+        .to receive(:proxy)
+        .and_return(proxy)
+
+      expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
+        .to receive(:new)
+        .with(lb, cfg.service_discovery)
+        .and_return(sv)
+
+      expect(sv).to receive(:perform_service_discovery)
+
+      described_class.perform_service_discovery
+    end
+  end
+
+  describe '.db_role_for_connection' do
     context 'when the NullPool is used for connection' do
       let(:pool) { ActiveRecord::ConnectionAdapters::NullPool.new }
       let(:connection) { double(:connection, pool: pool) }
@@ -272,10 +246,6 @@ RSpec.describe Gitlab::Database::LoadBalancing do
       Class.new(ApplicationRecord) do
         self.table_name = "load_balancing_test"
       end
-    end
-
-    before do
-      model.singleton_class.prepend ::Gitlab::Database::LoadBalancing::ActiveRecordProxy
     end
 
     where(:queries, :include_transaction, :expected_results) do

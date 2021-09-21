@@ -36,6 +36,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
       it 'tracks request count and duration' do
         expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
         expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ method: 'get' }, a_positive_execution_time)
+        expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(labels: { feature_category: 'unknown', endpoint_id: 'unknown' }, success: true)
 
         subject.call(env)
       end
@@ -82,9 +83,10 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
     context '@app.call returns an error code' do
       let(:status) { '500' }
 
-      it 'tracks count but not duration' do
+      it 'tracks count but not duration or apdex' do
         expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '500', feature_category: 'unknown')
         expect(described_class).not_to receive(:http_request_duration_seconds)
+        expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
 
         subject.call(env)
       end
@@ -104,20 +106,23 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
         expect(described_class).to receive_message_chain(:rack_uncaught_errors_count, :increment)
         expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'unknown')
         expect(described_class.http_request_duration_seconds).not_to receive(:observe)
+        expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
 
         expect { subject.call(env) }.to raise_error(StandardError)
       end
     end
 
-    context 'feature category header' do
-      context 'when a feature category context is present' do
+    context 'application context' do
+      context 'when a context is present' do
         before do
-          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking')
+          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking', caller_id: 'IssuesController#show')
         end
 
-        it 'adds the feature category to the labels for http_requests_total' do
+        it 'adds the feature category to the labels for required metrics' do
           expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'issue_tracking')
           expect(described_class).not_to receive(:http_health_requests_total)
+          expect(Gitlab::Metrics::RailsSlis.request_apdex)
+            .to receive(:increment).with(labels: { feature_category: 'issue_tracking', endpoint_id: 'IssuesController#show' }, success: true)
 
           subject.call(env)
         end
@@ -127,6 +132,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
           expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get', status: '200')
           expect(described_class).not_to receive(:http_requests_total)
+          expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
 
           subject.call(env)
         end
@@ -140,15 +146,17 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
         it 'adds the feature category to the labels for http_requests_total' do
           expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'issue_tracking')
+          expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
 
           expect { subject.call(env) }.to raise_error(StandardError)
         end
       end
 
-      context 'when the feature category context is not available' do
-        it 'sets the feature category to unknown' do
+      context 'when the context is not available' do
+        it 'sets the required labels to unknown' do
           expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
           expect(described_class).not_to receive(:http_health_requests_total)
+          expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(labels: { feature_category: 'unknown', endpoint_id: 'unknown' }, success: true)
 
           subject.call(env)
         end

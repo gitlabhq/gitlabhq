@@ -30,6 +30,15 @@ RSpec.describe Gitlab::Metrics::Exporter::WebExporter do
       expect(readiness_probe.json).to include(status: 'ok')
       expect(readiness_probe.json).to include('web_exporter' => [{ 'status': 'ok' }])
     end
+
+    it 'initializes request metrics', :prometheus do
+      expect(Gitlab::Metrics::RailsSlis).to receive(:initialize_request_slis_if_needed!).and_call_original
+
+      http = Net::HTTP.new(exporter.server.config[:BindAddress], exporter.server.config[:Port])
+      response = http.request(Net::HTTP::Get.new('/metrics'))
+
+      expect(response.body).to include('gitlab_sli:rails_request_apdex')
+    end
   end
 
   describe '#mark_as_not_running!' do

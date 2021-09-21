@@ -1517,10 +1517,10 @@
   dependencies:
     prosemirror-inputrules "^1.1.3"
 
-"@tiptap/extension-code-block-lowlight@2.0.0-beta.38":
-  version "2.0.0-beta.38"
-  resolved "https://registry.yarnpkg.com/@tiptap/extension-code-block-lowlight/-/extension-code-block-lowlight-2.0.0-beta.38.tgz#2d0dc97ce2a25f4a8bd57fa179dbe591f3d66440"
-  integrity sha512-1JVmesa0RuKMYUKLbW34hCqHjPm5gRKv9NOU6jhI90xJHWG0pe+Am6MEfWosilB66DtcE43zP08aiKWgWBvI2A==
+"@tiptap/extension-code-block-lowlight@2.0.0-beta.39":
+  version "2.0.0-beta.39"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-code-block-lowlight/-/extension-code-block-lowlight-2.0.0-beta.39.tgz#f890fd33dfdda946d747798f050e08729f40517d"
+  integrity sha512-mXiHKc2hL6PcAAIMEiSxtscw60ILdV5Mq2sNlZ9QPwGAkiizb7TI6nOPfBWU2QB9l78MtW0+FBgV0K20Qs30cQ==
   dependencies:
     "@tiptap/extension-code-block" "^2.0.0-beta.18"
     "@types/lowlight" "^0.0.3"
@@ -9609,10 +9609,10 @@ prosemirror-keymap@^1.0.0, prosemirror-keymap@^1.1.2, prosemirror-keymap@^1.1.3,
     prosemirror-state "^1.0.0"
     w3c-keyname "^2.2.0"
 
-prosemirror-markdown@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/prosemirror-markdown/-/prosemirror-markdown-1.5.2.tgz#f188ad14caa8c2f499b4d3eb6082e19f1d9d366e"
-  integrity sha512-e9rVnRULVACEjCvIBOj5P2dGTE/nz8kKspA/GWZXVgtQgqeJEvQ+tUNeZkeRZJ2/I3XPzuWjeoWnwJmkMnIKrg==
+prosemirror-markdown@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-markdown/-/prosemirror-markdown-1.6.0.tgz#141c88e03c8892f2e93cf58b1382ab0b6088d012"
+  integrity sha512-y/gRpJIIrNArtkyMax7ypYafb+ZMjddbVHI+AwlcUfCLCCXK57cOmfBMKYVq9kdEKJYVdYHdoyWsVNn1nWLHUg==
   dependencies:
     markdown-it "^10.0.0"
     prosemirror-model "^1.0.0"
@@ -9631,10 +9631,10 @@ prosemirror-schema-basic@^1.1.2:
   dependencies:
     prosemirror-model "^1.2.0"
 
-prosemirror-schema-list@^1.1.4, prosemirror-schema-list@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/prosemirror-schema-list/-/prosemirror-schema-list-1.1.5.tgz#e7ad9e337ea3d77da6d6a4250f3d7bd51ae980a4"
-  integrity sha512-9gadhga/wySVfb/iZ2vOpndbG0XroeLw0HkkZN5demNbOea6U5oQtJmvyYWC7ZVf3WkhmVdVsOXrllM9JcC20A==
+prosemirror-schema-list@^1.1.4, prosemirror-schema-list@^1.1.5, prosemirror-schema-list@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/prosemirror-schema-list/-/prosemirror-schema-list-1.1.6.tgz#c3e13fe2f74750e4a53ff88d798dc0c4ccca6707"
+  integrity sha512-aFGEdaCWmJzouZ8DwedmvSsL50JpRkqhQ6tcpThwJONVVmCgI36LJHtoQ4VGZbusMavaBhXXr33zyD2IVsTlkw==
   dependencies:
     prosemirror-model "^1.0.0"
     prosemirror-transform "^1.0.0"

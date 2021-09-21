@@ -9,19 +9,12 @@ module Gitlab
 
         delegate :connection, :release_connection, :enable_query_cache!, :disable_query_cache!, :query_cache_enabled, to: :pool
 
-        CONNECTION_ERRORS =
-          if defined?(PG)
-            [
-              ActionView::Template::Error,
-              ActiveRecord::StatementInvalid,
-              PG::Error
-            ].freeze
-          else
-            [
-              ActionView::Template::Error,
-              ActiveRecord::StatementInvalid
-            ].freeze
-          end
+        CONNECTION_ERRORS = [
+          ActionView::Template::Error,
+          ActiveRecord::StatementInvalid,
+          ActiveRecord::ConnectionNotEstablished,
+          PG::Error
+        ].freeze
 
         # host - The address of the database.
         # load_balancer - The LoadBalancer that manages this Host.

@@ -122,7 +122,7 @@ RSpec.describe Gitlab::Database::BulkUpdate do
 
       stub_const('ActiveRecordBasePreparedStatementsInverted', klass)
 
-      c = ActiveRecord::Base.connection.instance_variable_get(:@config)
+      c = ActiveRecord::Base.retrieve_connection.instance_variable_get(:@config)
       inverted = c.merge(prepared_statements: !ActiveRecord::Base.connection.prepared_statements)
       ActiveRecordBasePreparedStatementsInverted.establish_connection(inverted)
 

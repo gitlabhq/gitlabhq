@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HeaderSearchApp from '~/header_search/components/app.vue';
+import HeaderSearchAutocompleteItems from '~/header_search/components/header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from '~/header_search/components/header_search_default_items.vue';
 import HeaderSearchScopedItems from '~/header_search/components/header_search_scoped_items.vue';
 import { ENTER_KEY, ESC_KEY } from '~/lib/utils/keys';
@@ -20,6 +21,7 @@ describe('HeaderSearchApp', () => {
 
   const actionSpies = {
     setSearch: jest.fn(),
+    fetchAutocompleteOptions: jest.fn(),
   };
 
   const createComponent = (initialState) => {
@@ -46,6 +48,8 @@ describe('HeaderSearchApp', () => {
   const findHeaderSearchDropdown = () => wrapper.findByTestId('header-search-dropdown-menu');
   const findHeaderSearchDefaultItems = () => wrapper.findComponent(HeaderSearchDefaultItems);
   const findHeaderSearchScopedItems = () => wrapper.findComponent(HeaderSearchScopedItems);
+  const findHeaderSearchAutocompleteItems = () =>
+    wrapper.findComponent(HeaderSearchAutocompleteItems);
 
   describe('template', () => {
     it('always renders Header Search Input', () => {
@@ -74,11 +78,11 @@ describe('HeaderSearchApp', () => {
     });
 
     describe.each`
-      search         | showDefault | showScoped
-      ${null}        | ${true}     | ${false}
-      ${''}          | ${true}     | ${false}
-      ${MOCK_SEARCH} | ${false}    | ${true}
-    `('Header Search Dropdown Items', ({ search, showDefault, showScoped }) => {
+      search         | showDefault | showScoped | showAutocomplete
+      ${null}        | ${true}     | ${false}   | ${false}
+      ${''}          | ${true}     | ${false}   | ${false}
+      ${MOCK_SEARCH} | ${false}    | ${true}    | ${true}
+    `('Header Search Dropdown Items', ({ search, showDefault, showScoped, showAutocomplete }) => {
       describe(`when search is ${search}`, () => {
         beforeEach(() => {
           createComponent({ search });
@@ -92,6 +96,10 @@ describe('HeaderSearchApp', () => {
 
         it(`should${showScoped ? '' : ' not'} render the Scoped Dropdown Items`, () => {
           expect(findHeaderSearchScopedItems().exists()).toBe(showScoped);
+        });
+
+        it(`should${showAutocomplete ? '' : ' not'} render the Autocomplete Dropdown Items`, () => {
+          expect(findHeaderSearchAutocompleteItems().exists()).toBe(showAutocomplete);
         });
       });
     });
@@ -139,12 +147,18 @@ describe('HeaderSearchApp', () => {
         });
       });
 
-      it('calls setSearch when search input event is fired', async () => {
-        findHeaderSearchInput().vm.$emit('input', MOCK_SEARCH);
+      describe('onInput', () => {
+        beforeEach(() => {
+          findHeaderSearchInput().vm.$emit('input', MOCK_SEARCH);
+        });
 
-        await wrapper.vm.$nextTick();
+        it('calls setSearch with search term', () => {
+          expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), MOCK_SEARCH);
+        });
 
-        expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), MOCK_SEARCH);
+        it('calls fetchAutocompleteOptions', () => {
+          expect(actionSpies.fetchAutocompleteOptions).toHaveBeenCalled();
+        });
       });
 
       it('submits a search onKey-Enter', async () => {

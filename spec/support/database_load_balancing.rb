@@ -2,8 +2,6 @@
 
 RSpec.configure do |config|
   config.before(:each, :db_load_balancing) do
-    allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-
     config = Gitlab::Database::LoadBalancing::Configuration
       .new(ActiveRecord::Base, [Gitlab::Database.main.config['host']])
     lb = ::Gitlab::Database::LoadBalancing::LoadBalancer.new(config)

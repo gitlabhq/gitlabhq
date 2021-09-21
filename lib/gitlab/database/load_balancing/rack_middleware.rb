@@ -18,8 +18,6 @@ module Gitlab
         # namespace - The namespace to use for sticking.
         # id - The identifier to use for sticking.
         def self.stick_or_unstick(env, namespace, id)
-          return unless ::Gitlab::Database::LoadBalancing.enable?
-
           ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking(namespace, id)
 
           env[STICK_OBJECT] ||= Set.new

@@ -34,7 +34,7 @@ module API
       end
 
       def endpoint_id
-        "#{request.request_method} #{route.origin}"
+        ::API::Base.endpoint_id_for_route(route)
       end
     end
   end

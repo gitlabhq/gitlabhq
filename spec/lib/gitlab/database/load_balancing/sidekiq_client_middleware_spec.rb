@@ -5,14 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
   let(:middleware) { described_class.new }
 
-  let(:load_balancer) { double.as_null_object }
+  let(:load_balancer) { Gitlab::Database::LoadBalancing.proxy.load_balancer }
   let(:worker_class) { 'TestDataConsistencyWorker' }
   let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e" } }
 
   before do
     skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
-    allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer).and_return(load_balancer)
   end
 
   after do

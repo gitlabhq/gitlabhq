@@ -8,39 +8,24 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
   end
 
   describe '.stick_if_necessary' do
-    context 'when sticking is disabled' do
-      it 'does not perform any sticking' do
-        expect(described_class).not_to receive(:stick)
+    it 'does not stick if no write was performed' do
+      allow(Gitlab::Database::LoadBalancing::Session.current)
+        .to receive(:performed_write?)
+        .and_return(false)
 
-        described_class.stick_if_necessary(:user, 42)
-      end
+      expect(described_class).not_to receive(:stick)
+
+      described_class.stick_if_necessary(:user, 42)
     end
 
-    context 'when sticking is enabled' do
-      before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
-          .and_return(true)
-      end
+    it 'sticks to the primary if a write was performed' do
+      allow(Gitlab::Database::LoadBalancing::Session.current)
+        .to receive(:performed_write?)
+        .and_return(true)
 
-      it 'does not stick if no write was performed' do
-        allow(Gitlab::Database::LoadBalancing::Session.current)
-          .to receive(:performed_write?)
-          .and_return(false)
+      expect(described_class).to receive(:stick).with(:user, 42)
 
-        expect(described_class).not_to receive(:stick)
-
-        described_class.stick_if_necessary(:user, 42)
-      end
-
-      it 'sticks to the primary if a write was performed' do
-        allow(Gitlab::Database::LoadBalancing::Session.current)
-          .to receive(:performed_write?)
-          .and_return(true)
-
-        expect(described_class).to receive(:stick).with(:user, 42)
-
-        described_class.stick_if_necessary(:user, 42)
-      end
+      described_class.stick_if_necessary(:user, 42)
     end
   end
 
@@ -155,35 +140,22 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
   end
 
   RSpec.shared_examples 'sticking' do
-    context 'when sticking is disabled' do
-      it 'does not perform any sticking', :aggregate_failures do
-        expect(described_class).not_to receive(:set_write_location_for)
-        expect(Gitlab::Database::LoadBalancing::Session.current).not_to receive(:use_primary!)
+    before do
+      lb = double(:lb, primary_write_location: 'foo')
 
-        described_class.bulk_stick(:user, ids)
-      end
+      allow(described_class).to receive(:load_balancer).and_return(lb)
     end
 
-    context 'when sticking is enabled' do
-      before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:configured?).and_return(true)
-
-        lb = double(:lb, primary_write_location: 'foo')
-
-        allow(described_class).to receive(:load_balancer).and_return(lb)
+    it 'sticks an entity to the primary', :aggregate_failures do
+      ids.each do |id|
+        expect(described_class).to receive(:set_write_location_for)
+                                      .with(:user, id, 'foo')
       end
 
-      it 'sticks an entity to the primary', :aggregate_failures do
-        ids.each do |id|
-          expect(described_class).to receive(:set_write_location_for)
-                                       .with(:user, id, 'foo')
-        end
+      expect(Gitlab::Database::LoadBalancing::Session.current)
+        .to receive(:use_primary!)
 
-        expect(Gitlab::Database::LoadBalancing::Session.current)
-          .to receive(:use_primary!)
-
-        subject
-      end
+      subject
     end
   end
 
@@ -202,63 +174,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
   end
 
   describe '.mark_primary_write_location' do
-    context 'when enabled' do
-      before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-        allow(Gitlab::Database::LoadBalancing).to receive(:configured?).and_return(true)
-      end
+    it 'updates the write location with the load balancer' do
+      lb = double(:lb, primary_write_location: 'foo')
 
-      it 'updates the write location with the load balancer' do
-        lb = double(:lb, primary_write_location: 'foo')
+      allow(described_class).to receive(:load_balancer).and_return(lb)
 
-        allow(described_class).to receive(:load_balancer).and_return(lb)
+      expect(described_class).to receive(:set_write_location_for)
+        .with(:user, 42, 'foo')
 
-        expect(described_class).to receive(:set_write_location_for)
-          .with(:user, 42, 'foo')
-
-        described_class.mark_primary_write_location(:user, 42)
-      end
-    end
-
-    context 'when load balancing is configured but not enabled' do
-      before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
-        allow(Gitlab::Database::LoadBalancing).to receive(:configured?).and_return(true)
-      end
-
-      it 'updates the write location with the main ActiveRecord connection' do
-        allow(described_class).to receive(:load_balancer).and_return(nil)
-        expect(ActiveRecord::Base).to receive(:connection).and_call_original
-        expect(described_class).to receive(:set_write_location_for)
-          .with(:user, 42, anything)
-
-        described_class.mark_primary_write_location(:user, 42)
-      end
-
-      context 'when write location is nil' do
-        before do
-          allow(Gitlab::Database.main).to receive(:get_write_location).and_return(nil)
-        end
-
-        it 'does not update the write location' do
-          expect(described_class).not_to receive(:set_write_location_for)
-
-          described_class.mark_primary_write_location(:user, 42)
-        end
-      end
-    end
-
-    context 'when load balancing is disabled' do
-      before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
-        allow(Gitlab::Database::LoadBalancing).to receive(:configured?).and_return(false)
-      end
-
-      it 'updates the write location with the main ActiveRecord connection' do
-        expect(described_class).not_to receive(:set_write_location_for)
-
-        described_class.mark_primary_write_location(:user, 42)
-      end
+      described_class.mark_primary_write_location(:user, 42)
     end
   end
 

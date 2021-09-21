@@ -22,8 +22,6 @@ module Gitlab
 
         # Sticks to the primary if a write was performed.
         def self.stick_if_necessary(namespace, id)
-          return unless LoadBalancing.enable?
-
           stick(namespace, id) if Session.current.performed_write?
         end
 
@@ -75,15 +73,11 @@ module Gitlab
         # Starts sticking to the primary for the given namespace and id, using
         # the latest WAL pointer from the primary.
         def self.stick(namespace, id)
-          return unless LoadBalancing.enable?
-
           mark_primary_write_location(namespace, id)
           Session.current.use_primary!
         end
 
         def self.bulk_stick(namespace, ids)
-          return unless LoadBalancing.enable?
-
           with_primary_write_location do |location|
             ids.each do |id|
               set_write_location_for(namespace, id, location)
@@ -94,17 +88,7 @@ module Gitlab
         end
 
         def self.with_primary_write_location
-          return unless LoadBalancing.configured?
-
-          # Load balancing could be enabled for the Web application server,
-          # but it's not activated for Sidekiq. We should update Redis with
-          # the write location just in case load balancing is being used.
-          location =
-            if LoadBalancing.enable?
-              load_balancer.primary_write_location
-            else
-              Gitlab::Database.main.get_write_location(ActiveRecord::Base.connection)
-            end
+          location = load_balancer.primary_write_location
 
           return if location.blank?
 

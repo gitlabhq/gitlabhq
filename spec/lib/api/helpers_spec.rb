@@ -32,10 +32,6 @@ RSpec.describe API::Helpers do
       helper
     end
 
-    before do
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-    end
-
     it 'handles sticking when a user could be found' do
       allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
 

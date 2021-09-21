@@ -31,33 +31,20 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
       expect(matcher.match?).to be false
     end
 
-    context 'with load balancing disabled', :request_store, :redis do
-      before do
-        expect(::Gitlab::Database::LoadBalancing).to receive(:enable?).at_least(:once).and_return(false)
-        expect(::Gitlab::Database::LoadBalancing::Sticking).not_to receive(:unstick_or_continue_sticking)
-        expect(::Gitlab::Database::LoadBalancing::Sticking).not_to receive(:select_valid_replicas)
-      end
-
-      it 'does not attempt to stick to primary' do
-        expect(subject.match?).to be true
-      end
-
-      it 'increments no counters' do
-        expect { subject.match? }
-          .to change { total_counter.get }.by(0)
-          .and change { stale_counter.get }.by(0)
-      end
-    end
-
-    context 'with load balancing enabled', :db_load_balancing do
+    context 'with load balancing enabled' do
       let(:session) { ::Gitlab::Database::LoadBalancing::Session.current }
       let(:all_caught_up) { true }
 
       before do
+        Gitlab::Database::LoadBalancing::Session.clear_session
         allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?).and_return(all_caught_up)
 
         expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_valid_host).with(:project, project.id).and_call_original
         allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_caught_up_replicas).with(:project, project.id).and_return(all_caught_up)
+      end
+
+      after do
+        Gitlab::Database::LoadBalancing::Session.clear_session
       end
 
       shared_examples 'secondary that has caught up to a primary' do

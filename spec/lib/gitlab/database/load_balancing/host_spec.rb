@@ -172,6 +172,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host do
 
         expect(host).not_to be_online
       end
+
+      it 'returns false when ActiveRecord::ConnectionNotEstablished is raised' do
+        allow(host)
+          .to receive(:check_replica_status?)
+          .and_raise(ActiveRecord::ConnectionNotEstablished)
+
+        expect(host).not_to be_online
+      end
     end
   end
 

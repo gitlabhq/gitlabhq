@@ -70,6 +70,10 @@ class ApplicationController < ActionController::Base
   # concerns due to caching private data.
   DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store"
 
+  def self.endpoint_id_for_action(action_name)
+    "#{self.name}##{action_name}"
+  end
+
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
     render "errors/encoding", layout: "errors", status: :internal_server_error
@@ -457,7 +461,7 @@ class ApplicationController < ActionController::Base
       user: -> { context_user },
       project: -> { @project if @project&.persisted? },
       namespace: -> { @group if @group&.persisted? },
-      caller_id: caller_id,
+      caller_id: self.class.endpoint_id_for_action(action_name),
       remote_ip: request.ip,
       feature_category: feature_category
     )
@@ -541,10 +545,6 @@ class ApplicationController < ActionController::Base
   # `auth_user` again would also trigger the Warden callbacks again
   def context_user
     auth_user if strong_memoized?(:auth_user)
-  end
-
-  def caller_id
-    "#{self.class.name}##{action_name}"
   end
 
   def feature_category

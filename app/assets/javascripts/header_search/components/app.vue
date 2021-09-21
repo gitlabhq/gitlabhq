@@ -3,6 +3,7 @@ import { GlSearchBoxByType, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import HeaderSearchAutocompleteItems from './header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from './header_search_default_items.vue';
 import HeaderSearchScopedItems from './header_search_scoped_items.vue';
 
@@ -16,6 +17,7 @@ export default {
     GlSearchBoxByType,
     HeaderSearchDefaultItems,
     HeaderSearchScopedItems,
+    HeaderSearchAutocompleteItems,
   },
   data() {
     return {
@@ -41,7 +43,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setSearch']),
+    ...mapActions(['setSearch', 'fetchAutocompleteOptions']),
     openDropdown() {
       this.showDropdown = true;
     },
@@ -50,6 +52,13 @@ export default {
     },
     submitSearch() {
       return visitUrl(this.searchQuery);
+    },
+    getAutocompleteOptions(searchTerm) {
+      if (!searchTerm) {
+        return;
+      }
+
+      this.fetchAutocompleteOptions();
     },
   },
 };
@@ -64,18 +73,20 @@ export default {
       :placeholder="$options.i18n.searchPlaceholder"
       @focus="openDropdown"
       @click="openDropdown"
+      @input="getAutocompleteOptions"
       @keydown.enter="submitSearch"
       @keydown.esc="closeDropdown"
     />
     <div
       v-if="showSearchDropdown"
       data-testid="header-search-dropdown-menu"
-      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-left-0 gl-z-index-1 gl-w-full gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0"
+      class="header-search-dropdown-menu gl-absolute gl-w-full gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0"
     >
       <div class="header-search-dropdown-content gl-overflow-y-auto gl-py-2">
         <header-search-default-items v-if="showDefaultItems" />
         <template v-else>
           <header-search-scoped-items />
+          <header-search-autocomplete-items />
         </template>
       </div>
     </div>
