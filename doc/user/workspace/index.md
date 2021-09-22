@@ -11,15 +11,10 @@ Workspace will be above the [top-level namespaces](../group/index.md#namespaces)
 - Defining and applying settings to all of your groups, subgroups, and projects.
 - Aggregating data from all your groups, subgroups, and projects.
 
-The functionality in the [Admin Area](../admin_area/index.md) of self-managed installations will be split up and go to:
-
-1. Groups (available in the Workspace, Top-level group namespaces, and Sub-groups)
-1. Hardware Controls (for functionality that does not apply to groups)
-
 Our goal is to reach feature parity between SaaS and Self-Managed installations, with all [Admin Area settings](/ee/user/admin_area/settings/) moving to either:
 
-- Workspace (contains features relevant to both GitLab-managed and self-managed installations) with a dedicated Settings menu available within the left navigation bar.
-- Hardware controls (only contains features relative to Self-Managed installations, with one per installation).
+1. Groups (available in the Workspace, Top-level group namespaces, and Sub-groups)
+1. Hardware Controls (for functionality that does not apply to Groups, Hardware Controls are only applicable to Self-managed Installations, there is one Hardware Controls section per installation)
 
 NOTE:
 Workspace is currently in development.

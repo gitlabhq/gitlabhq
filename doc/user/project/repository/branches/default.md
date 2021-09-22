@@ -11,8 +11,9 @@ When you create a new [project](../../index.md), GitLab creates a default branch
 in the repository. A default branch has special configuration options not shared
 by other branches:
 
+- It cannot be deleted.
 - It's [initially protected](../../protected_branches.md#protected-branches) against
-  accidental deletion and forced pushes.
+  forced pushes.
 - When a merge request uses an
   [issue closing pattern](../../issues/managing_issues.md#closing-issues-automatically)
   to close an issue, the work is merged into this branch.
@@ -97,7 +98,7 @@ Ensure they understand the scope of this change includes references to the old
 branch name in related code and scripts.
 
 When changing the default branch name for an existing repository, you should preserve
-the history of your default branch by renaming it, instead of deleting it. This example
+the history of your default branch by renaming it, instead of creating a new branch. This example
 renames a Git repository's (`example`) default branch.
 
 1. On your local command line, navigate to your `example` repository, and ensure

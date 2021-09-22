@@ -290,6 +290,10 @@ RSpec.describe Resolvers::IssuesResolver do
           expect(resolve_issues(not: { assignee_id: [assignee.id] })).to contain_exactly(issue1)
         end
 
+        it 'returns issues without the specified issue_type' do
+          expect(resolve_issues(not: { types: ['issue'] })).to contain_exactly(issue1)
+        end
+
         context 'when filtering by negated author' do
           let_it_be(:issue_by_reporter) { create(:issue, author: reporter, project: project, state: :opened) }
 
@@ -524,6 +528,12 @@ RSpec.describe Resolvers::IssuesResolver do
         result = resolve(described_class, obj: group, ctx: { current_user: current_user })
 
         expect(result).to contain_exactly(issue1, issue2, issue3)
+      end
+
+      it 'returns issues without the specified issue_type' do
+        result = resolve(described_class, obj: group, ctx: { current_user: current_user }, args: { not: { types: ['issue'] } })
+
+        expect(result).to contain_exactly(issue1)
       end
     end
   end

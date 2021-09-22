@@ -51,7 +51,7 @@ module Ci
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
-    has_many :groups, through: :runner_namespaces
+    has_many :groups, through: :runner_namespaces, disable_joins: true
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
 

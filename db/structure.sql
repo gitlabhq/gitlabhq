@@ -26809,6 +26809,8 @@ CREATE INDEX index_vulnerability_occurrences_deduplication ON vulnerability_occu
 
 CREATE INDEX index_vulnerability_occurrences_for_issue_links_migration ON vulnerability_occurrences USING btree (project_id, report_type, encode(project_fingerprint, 'hex'::text));
 
+CREATE INDEX index_vulnerability_occurrences_on_location_image ON vulnerability_occurrences USING gin (((location -> 'image'::text))) WHERE (report_type = ANY (ARRAY[2, 7]));
+
 CREATE INDEX index_vulnerability_occurrences_on_primary_identifier_id ON vulnerability_occurrences USING btree (primary_identifier_id);
 
 CREATE INDEX index_vulnerability_occurrences_on_project_fingerprint ON vulnerability_occurrences USING btree (project_fingerprint);

@@ -5,6 +5,20 @@ require 'spec_helper'
 RSpec.describe Ci::Runner do
   it_behaves_like 'having unique enum values'
 
+  describe 'groups association' do
+    # Due to other assoctions such as projects this whole spec is allowed to
+    # generate cross-database queries. So we have this temporary spec to
+    # validate that at least groups association does not generate cross-DB
+    # queries.
+    it 'does not create a cross-database query' do
+      runner = create(:ci_runner, :group)
+
+      with_cross_joins_prevented do
+        expect(runner.groups.count).to eq(1)
+      end
+    end
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }

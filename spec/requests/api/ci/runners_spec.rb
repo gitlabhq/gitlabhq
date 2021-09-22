@@ -291,6 +291,16 @@ RSpec.describe API::Ci::Runners do
       end
     end
 
+    context 'when the runner is a group runner' do
+      it "returns the runner's details" do
+        get api("/runners/#{group_runner_a.id}", admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['description']).to eq(group_runner_a.description)
+        expect(json_response['groups'].first['id']).to eq(group.id)
+      end
+    end
+
     context "runner project's administrative user" do
       context 'when runner is not shared' do
         it "returns runner's details" do
