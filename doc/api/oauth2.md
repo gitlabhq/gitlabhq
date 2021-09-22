@@ -412,6 +412,16 @@ prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doo
 
 Don't rely on these fields as they are slated for removal in a later release.
 
+## Revoke a token
+
+To revoke a token, use the `revoke` endpoint. The API returns a 200 response code and an empty
+JSON hash to indicate success. 
+
+```ruby
+parameters = 'client_id=APP_ID&client_secret=APP_SECRET&token=TOKEN'
+RestClient.post 'https://gitlab.example.com/oauth/revoke', parameters
+```
+
 ## OAuth 2.0 tokens and GitLab registries
 
 Standard OAuth 2.0 tokens support different degrees of access to GitLab

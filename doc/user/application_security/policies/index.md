@@ -255,6 +255,10 @@ The policy editor currently only supports the YAML mode. The Rule mode is tracke
 
 The YAML file with Scan Execution Policies consists of an array of objects matching Scan Execution Policy Schema nested under the `scan_execution_policy` key. You can configure a maximum of 5 policies under the `scan_execution_policy` key.
 
+When you save a new policy, GitLab validates its contents against [this JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/security_orchestration_policy.json).
+If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
+the following sections and tables provide an alternative.
+
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `scan_execution_policy` | `array` of Scan Execution Policy |  | List of scan execution policies (maximum 5) |
@@ -290,6 +294,8 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `clusters` | `object` | | The cluster where the given policy will enforce running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that will be scanned. |
 
 #### `cluster` schema
+
+Use this schema to define `clusters` objects in the [`schedule` rule type](#schedule-rule-type).
 
 | Field        | Type                | Possible values          | Description |
 |--------------|---------------------|--------------------------|-------------|
@@ -329,7 +335,10 @@ Note the following:
   They will use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
   Cluster with name provided in `clusters` object must be created and configured for the project. To be able to successfully perform the `container_scanning`/`cluster_image_scanning` scans for the cluster you must follow instructions for the [Cluster Image Scanning feature](../cluster_image_scanning/index.md#prerequisites).
 
-Here's an example:
+### Example security policies project
+
+You can use this example in a `.gitlab/security-policies/policy.yml`, as described in
+[Security policies project](#security-policies-project).
 
 ```yaml
 ---
@@ -397,6 +406,24 @@ In this example:
 - Secret detection and container scanning scans run for every pipeline executed on the `main` branch.
 - Cluster Image Scanning scan runs every 24h. The scan runs on the `production-cluster` cluster and fetches vulnerabilities
   from the container with the name `database` configured for deployment with the name `production-application` in the `production-namespace` namespace.
+
+### Example for scan execution policy editor
+
+You can use this example in the YAML mode of the [Scan Execution Policy editor](#scan-execution-policy-editor).
+It corresponds to a single object from the previous example.
+
+```yaml
+name: Enforce Secret Detection and Container Scanning in every default branch pipeline
+description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+enabled: true
+rules:
+  - type: pipeline
+    branches:
+      - main
+actions:
+  - scan: secret_detection
+  - scan: container_scanning
+```
 
 ## Roadmap
 

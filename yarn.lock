@@ -1467,10 +1467,10 @@
     dom-accessibility-api "^0.5.1"
     pretty-format "^26.4.2"
 
-"@tiptap/core@^2.0.0-beta.108":
-  version "2.0.0-beta.108"
-  resolved "https://registry.yarnpkg.com/@tiptap/core/-/core-2.0.0-beta.108.tgz#fdab0b549c6915d2e1710ecc915d219857c21eef"
-  integrity sha512-cUMAkiCHVQk7EYyge+ChFDLBl9SktVOrFogHnjUJxQw+r1iesXf8A6u8bqi/TCMoWQetyP7ELpscMpxNaIE/rg==
+"@tiptap/core@^2.0.0-beta.110":
+  version "2.0.0-beta.110"
+  resolved "https://registry.yarnpkg.com/@tiptap/core/-/core-2.0.0-beta.110.tgz#a03413056f484b875c85b26aa2eff8b3022e014f"
+  integrity sha512-QWfgDxommAzv1Ed9vA1KAAvBTkdWkkZmNiQIlqlyhe/5M1YffkMfy1+P7KOA+lxN9Ft5TERGa0+Fg9mK3VX2QQ==
   dependencies:
     "@types/prosemirror-commands" "^1.0.4"
     "@types/prosemirror-inputrules" "^1.0.4"
@@ -1484,7 +1484,7 @@
     prosemirror-inputrules "^1.1.3"
     prosemirror-keymap "^1.1.3"
     prosemirror-model "^1.14.3"
-    prosemirror-schema-list "^1.1.5"
+    prosemirror-schema-list "^1.1.6"
     prosemirror-state "^1.3.4"
     prosemirror-transform "^1.3.2"
     prosemirror-view "^1.20.1"
@@ -1563,13 +1563,13 @@
     prosemirror-view "^1.20.1"
     tippy.js "^6.3.1"
 
-"@tiptap/extension-gapcursor@^2.0.0-beta.19":
-  version "2.0.0-beta.19"
-  resolved "https://registry.yarnpkg.com/@tiptap/extension-gapcursor/-/extension-gapcursor-2.0.0-beta.19.tgz#6d826c240496b1a77808999d51b8917adb372cc5"
-  integrity sha512-GZYMR+Z45bn87CMuOHyxzTJOFoCv58mNakIBdSGX+8A+ExBFeZr/qLqxDxN3wz+LRqy7pREe5K3UxJxpsYnCzA==
+"@tiptap/extension-gapcursor@^2.0.0-beta.20":
+  version "2.0.0-beta.20"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-gapcursor/-/extension-gapcursor-2.0.0-beta.20.tgz#77df6b0c4adca016e2d1a2c90e94841f812aa717"
+  integrity sha512-E1qSQZa8bucttGHU74la+MZzilh3pjK3amdguJUUh1biowmAjtzYQo+wJP8KGBiXyyQaiUZj6kMgXqOcnbjX4Q==
   dependencies:
     "@types/prosemirror-gapcursor" "^1.0.4"
-    prosemirror-gapcursor "^1.1.5"
+    prosemirror-gapcursor "^1.2.0"
 
 "@tiptap/extension-hard-break@^2.0.0-beta.16":
   version "2.0.0-beta.16"
@@ -9574,10 +9574,10 @@ prosemirror-dropcursor@^1.3.2, prosemirror-dropcursor@^1.3.5:
     prosemirror-transform "^1.1.0"
     prosemirror-view "^1.1.0"
 
-prosemirror-gapcursor@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/prosemirror-gapcursor/-/prosemirror-gapcursor-1.1.5.tgz#0c37fd6cbb1d7c46358c2e7397f8da9a8b5c6246"
-  integrity sha512-SjbUZq5pgsBDuV3hu8GqgIpZR5eZvGLM+gPQTqjVVYSMUCfKW3EGXTEYaLHEl1bGduwqNC95O3bZflgtAb4L6w==
+prosemirror-gapcursor@^1.1.5, prosemirror-gapcursor@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-gapcursor/-/prosemirror-gapcursor-1.2.0.tgz#28fb60bf3d9baf1f920907d2c3e613137204e8f3"
+  integrity sha512-yCLy5+0rVqLir/KcHFathQj4Rf8aRHi80FmEfKtM0JmyzvwdomslLzDZ/pX4oFhFKDgjl/WBBBFNqDyNifWg7g==
   dependencies:
     prosemirror-keymap "^1.0.0"
     prosemirror-model "^1.0.0"
@@ -9631,7 +9631,7 @@ prosemirror-schema-basic@^1.1.2:
   dependencies:
     prosemirror-model "^1.2.0"
 
-prosemirror-schema-list@^1.1.4, prosemirror-schema-list@^1.1.5, prosemirror-schema-list@^1.1.6:
+prosemirror-schema-list@^1.1.4, prosemirror-schema-list@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/prosemirror-schema-list/-/prosemirror-schema-list-1.1.6.tgz#c3e13fe2f74750e4a53ff88d798dc0c4ccca6707"
   integrity sha512-aFGEdaCWmJzouZ8DwedmvSsL50JpRkqhQ6tcpThwJONVVmCgI36LJHtoQ4VGZbusMavaBhXXr33zyD2IVsTlkw==

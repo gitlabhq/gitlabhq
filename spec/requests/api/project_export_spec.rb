@@ -457,4 +457,143 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
       end
     end
   end
+
+  describe 'export relations' do
+    let(:relation) { 'labels' }
+    let(:download_path) { "/projects/#{project.id}/export_relations/download?relation=#{relation}" }
+    let(:path) { "/projects/#{project.id}/export_relations" }
+
+    let_it_be(:status_path) { "/projects/#{project.id}/export_relations/status" }
+
+    context 'when user is a maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      describe 'POST /projects/:id/export_relations' do
+        it 'accepts the request' do
+          post api(path, user)
+
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
+
+        context 'when response is not success' do
+          it 'returns api error' do
+            allow_next_instance_of(BulkImports::ExportService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'error', http_status: :error))
+            end
+
+            post api(path, user)
+
+            expect(response).to have_gitlab_http_status(:error)
+          end
+        end
+      end
+
+      describe 'GET /projects/:id/export_relations/download' do
+        let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels') }
+        let_it_be(:upload) { create(:bulk_import_export_upload, export: export) }
+
+        context 'when export file exists' do
+          it 'downloads exported project relation archive' do
+            upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+
+            get api(download_path, user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.header['Content-Disposition']).to eq("attachment; filename=\"labels.ndjson.gz\"; filename*=UTF-8''labels.ndjson.gz")
+          end
+        end
+
+        context 'when relation is not portable' do
+          let(:relation) { ::BulkImports::FileTransfer::ProjectConfig.new(project).skipped_relations.first }
+
+          it_behaves_like '400 response' do
+            let(:request) { get api(download_path, user) }
+          end
+        end
+
+        context 'when export file does not exist' do
+          it 'returns 404' do
+            allow(upload).to receive(:export_file).and_return(nil)
+
+            get api(download_path, user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      describe 'GET /projects/:id/export_relations/status' do
+        it 'returns a list of relation export statuses' do
+          create(:bulk_import_export, :started, project: project, relation: 'labels')
+          create(:bulk_import_export, :finished, project: project, relation: 'milestones')
+          create(:bulk_import_export, :failed, project: project, relation: 'project_badges')
+
+          get api(status_path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('relation')).to contain_exactly('labels', 'milestones', 'project_badges')
+          expect(json_response.pluck('status')).to contain_exactly(-1, 0, 1)
+        end
+      end
+
+      context 'with bulk_import FF disabled' do
+        before do
+          stub_feature_flags(bulk_import: false)
+        end
+
+        describe 'POST /projects/:id/export_relations' do
+          it_behaves_like '404 response' do
+            let(:request) { post api(path, user) }
+          end
+        end
+
+        describe 'GET /projects/:id/export_relations/download' do
+          let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels') }
+          let_it_be(:upload) { create(:bulk_import_export_upload, export: export) }
+
+          before do
+            upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+          end
+
+          it_behaves_like '404 response' do
+            let(:request) { post api(path, user) }
+          end
+        end
+
+        describe 'GET /projects/:id/export_relations/status' do
+          it_behaves_like '404 response' do
+            let(:request) { get api(status_path, user) }
+          end
+        end
+      end
+    end
+
+    context 'when user is a developer' do
+      let_it_be(:developer) { create(:user) }
+
+      before do
+        project.add_developer(developer)
+      end
+
+      describe 'POST /projects/:id/export_relations' do
+        it_behaves_like '403 response' do
+          let(:request) { post api(path, developer) }
+        end
+      end
+
+      describe 'GET /projects/:id/export_relations/download' do
+        it_behaves_like '403 response' do
+          let(:request) { get api(download_path, developer) }
+        end
+      end
+
+      describe 'GET /projects/:id/export_relations/status' do
+        it_behaves_like '403 response' do
+          let(:request) { get api(status_path, developer) }
+        end
+      end
+    end
+  end
 end

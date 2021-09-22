@@ -9,57 +9,13 @@ module QA
     describe 'Maven Repository with Gradle' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
+      include_context 'packages registry qa scenario'
 
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { 'maven_gradle' }
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
       let(:package_version) { '1.3.7' }
-
-      let(:personal_access_token) { Runtime::Env.personal_access_token }
-
-      let(:package_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'maven-with-gradle-project'
-          project.initialize_with_readme = true
-          project.visibility = :private
-        end
-      end
-
-      let(:client_project) do
-        Resource::Project.fabricate_via_api! do |client_project|
-          client_project.name = 'gradle_client'
-          client_project.initialize_with_readme = true
-          client_project.group = package_project.group
-        end
-      end
-
-      let(:package) do
-        Resource::Package.init do |package|
-          package.name = package_name
-          package.project = package_project
-        end
-      end
-
-      let(:runner) do
-        Resource::Runner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{package_project.group.name}"]
-          runner.executor = :docker
-          runner.token = package_project.group.runners_token
-        end
-      end
-
-      let(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
-      end
-
-      let(:project_deploy_token) do
-        Resource::DeployToken.fabricate_via_browser_ui! do |deploy_token|
-          deploy_token.name = 'maven-with-gradle-deploy-token'
-          deploy_token.project = package_project
-        end
-      end
+      let(:package_type) { 'maven_gradle' }
 
       let(:package_gitlab_ci_file) do
         {
@@ -129,18 +85,6 @@ module QA
                   - "runner-for-#{client_project.group.name}"
               YAML
         }
-      end
-
-      before do
-        Flow::Login.sign_in_unless_signed_in
-        runner
-      end
-
-      after do
-        runner.remove_via_api!
-        package.remove_via_api!
-        package_project.remove_via_api!
-        client_project.remove_via_api!
       end
 
       where(:authentication_token_type, :maven_header_name) do

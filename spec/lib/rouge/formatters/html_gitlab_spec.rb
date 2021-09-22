@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Rouge::Formatters::HTMLGitlab do
   describe '#format' do
-    subject { described_class.format(tokens, options) }
+    subject { described_class.format(tokens, **options) }
 
     let(:lang) { 'ruby' }
     let(:lexer) { Rouge::Lexer.find_fancy(lang) }

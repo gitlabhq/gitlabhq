@@ -10,3 +10,4 @@ Grape::Validations.register_validator(:check_assignees_count, ::API::Validations
 Grape::Validations.register_validator(:untrusted_regexp, ::API::Validations::Validators::UntrustedRegexp)
 Grape::Validations.register_validator(:email_or_email_list, ::API::Validations::Validators::EmailOrEmailList)
 Grape::Validations.register_validator(:iteration_id, ::API::Validations::Validators::IntegerOrCustomValue)
+Grape::Validations.register_validator(:project_portable, ::API::Validations::Validators::ProjectPortable)

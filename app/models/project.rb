@@ -233,6 +233,7 @@ class Project < ApplicationRecord
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :export_jobs, class_name: 'ProjectExportJob'
+  has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
   has_one :project_repository, inverse_of: :project
   has_one :tracing_setting, class_name: 'ProjectTracingSetting'
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'

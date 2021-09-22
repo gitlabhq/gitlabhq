@@ -7,9 +7,11 @@ type: reference, api
 
 # Repository files API **(FREE)**
 
-**CRUD for repository files**
+You can fetch, create, update, and delete files in your repository with this API.
+You can also [configure rate limits](../user/admin_area/settings/files_api_rate_limits.md)
+for this API.
 
-**Create, read, update, and delete repository files using this API**
+## Available scopes for personal access tokens
 
 The different scopes available using [personal access tokens](../user/profile/personal_access_tokens.md) are depicted
 in the following table.
@@ -18,8 +20,6 @@ in the following table.
 | ----- | ----------- |
 | `read_repository` | Allows read-access to the repository files. |
 | `api` | Allows read-write access to the repository files. |
-
-> `read_repository` scope was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23534) in GitLab 11.6.
 
 ## Get file from repository
 

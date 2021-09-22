@@ -88,6 +88,20 @@ requests per user. For more information, read
 
 - **Default rate limit**: Disabled by default.
 
+### Files API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68561) in GitLab 14.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the `files_api_throttling` flag](../administration/feature_flags.md). On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+The feature is not ready for production use.
+
+This setting limits the request rate on the Packages API per user or IP address. For more information, read
+[Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md).
+
+- **Default rate limit**: Disabled by default.
+
 ### Import/Export
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35728) in GitLab 13.2.

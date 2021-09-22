@@ -471,6 +471,15 @@ Do not use **roles** and **permissions** interchangeably. Each user is assigned 
 
 Use lowercase for **runners**. These are the agents that run CI/CD jobs. See also [GitLab Runner](#gitlab-runner) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
 
+## (s)
+
+Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
+
+Do: Select the jobs you want.
+Do not: Select the job(s) you want.
+
+If you can select multiples of something, then write the word as plural.
+
 ## sanity check
 
 Do not use **sanity check**. Use **check for completeness** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))

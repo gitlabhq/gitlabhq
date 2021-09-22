@@ -35,6 +35,7 @@ These are rate limits you can set in the Admin Area of your instance:
 - [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md)
 - [Package registry rate limits](../user/admin_area/settings/package_registry_rate_limits.md)
 - [Git LFS rate limits](../user/admin_area/settings/git_lfs_rate_limits.md)
+- [Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md)
 
 ## Non-configurable limits
 
