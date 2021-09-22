@@ -308,7 +308,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
   end
 
   describe '#user_squash' do
-    let(:squash_id) { '1' }
     let(:start_sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     let(:end_sha) { '54cec5282aa9f21856362fe321c800c236a61615' }
     let(:commit_message) { 'Squash message' }
@@ -321,7 +320,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       Gitaly::UserSquashRequest.new(
         repository: repository.gitaly_repository,
         user: gitaly_user,
-        squash_id: squash_id.to_s,
         start_sha: start_sha,
         end_sha: end_sha,
         author: gitaly_user,
@@ -334,7 +332,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
     let(:response) { Gitaly::UserSquashResponse.new(squash_sha: squash_sha) }
 
     subject do
-      client.user_squash(user, squash_id, start_sha, end_sha, user, commit_message, time)
+      client.user_squash(user, start_sha, end_sha, user, commit_message, time)
     end
 
     it 'sends a user_squash message and returns the squash sha' do

@@ -1054,10 +1054,10 @@ class Repository
   end
 
   def squash(user, merge_request, message)
-    raw.squash(user, merge_request.id, start_sha: merge_request.diff_start_sha,
-                                       end_sha: merge_request.diff_head_sha,
-                                       author: merge_request.author,
-                                       message: message)
+    raw.squash(user, start_sha: merge_request.diff_start_sha,
+                     end_sha: merge_request.diff_head_sha,
+                     author: merge_request.author,
+                     message: message)
   end
 
   def submodule_links

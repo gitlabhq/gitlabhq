@@ -347,7 +347,7 @@
   :tags: []
 - :name: cronjob:namespaces_in_product_marketing_emails
   :worker_name: Namespaces::InProductMarketingEmailsWorker
-  :feature_category: :subgroups
+  :feature_category: :experimentation_activation
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -2314,7 +2314,7 @@
   :tags: []
 - :name: namespaces_onboarding_issue_created
   :worker_name: Namespaces::OnboardingIssueCreatedWorker
-  :feature_category: :issue_tracking
+  :feature_category: :onboarding
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -2323,7 +2323,7 @@
   :tags: []
 - :name: namespaces_onboarding_pipeline_created
   :worker_name: Namespaces::OnboardingPipelineCreatedWorker
-  :feature_category: :subgroups
+  :feature_category: :onboarding
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -2332,7 +2332,7 @@
   :tags: []
 - :name: namespaces_onboarding_progress
   :worker_name: Namespaces::OnboardingProgressWorker
-  :feature_category: :product_analytics
+  :feature_category: :onboarding
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :cpu
@@ -2341,7 +2341,7 @@
   :tags: []
 - :name: namespaces_onboarding_user_added
   :worker_name: Namespaces::OnboardingUserAddedWorker
-  :feature_category: :users
+  :feature_category: :onboarding
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown

@@ -2238,7 +2238,6 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#squash' do
-    let(:squash_id) { '1' }
     let(:branch_name) { 'fix' }
     let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
     let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
@@ -2252,7 +2251,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         message: 'Squash commit message'
       }
 
-      repository.squash(user, squash_id, opts)
+      repository.squash(user, opts)
     end
 
     # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234

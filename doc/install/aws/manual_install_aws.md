@@ -7,15 +7,29 @@ type: howto
 
 {::options parse_block_html="true" /}
 
-# Installing GitLab on Amazon Web Services (AWS) (DEPRECATED) **(FREE SELF)**
+# Installing a GitLab POC on Amazon Web Services (AWS) **(FREE SELF)**
 
 This page offers a walkthrough of a common configuration for GitLab on AWS using the official GitLab Linux package. You should customize it to accommodate your needs.
 
 NOTE:
-For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Omnibus Installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more.
+For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Omnibus Installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more information.
+
+## Getting started for production-grade GitLab
 
 NOTE:
-The [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit/-/tree/master) is GitLabs internal effort to create a multi-cloud, multi-GitLab toolkit to provision GitLab. It can be used to deploy Omnibus GitLab on AWS. GET is developed by GitLab developers and is open to community contributions.
+This document is an installation guide for a proof of concept instance. It is not a reference architecture and it does not result in a highly available configuration.
+
+Following this guide exactly results in a proof of concept instance that roughly equates to a **scaled down** version of a **two availability zone implementation** of the **Non-HA** [Omnibus 2000 User Reference Architecture](../../administration/reference_architectures/2k_users.md). The 2K reference architecture is not HA because it is primarily intended to provide some scaling while keeping costs and complexity low. The [3000 User Reference Architecture](../../administration/reference_architectures/3k_users.md) is the smallest size that is GitLab HA. It has additional service roles to achieve HA, most notably it uses Gitaly Cluster to achieve HA for Git repository storage and specifies triple redundancy.
+
+GitLab maintains and tests two main types of Reference Architectures. The **Omnibus architectures** are implemented on instance compute while **Cloud Native Hybrid architectures** maximize the use of a Kubernetes cluster. Cloud Native Hybrid reference architecture specifications are addendum sections to the Reference Architecture size pages that start by describing the Omnibus architecture. For example, the 3000 User Cloud Native Reference Architecture is in the subsection titled [Cloud Native Hybrid reference architecture with Helm Charts (alternative)](../../administration/reference_architectures/3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) in the 3000 User Reference Architecture page.
+
+### Getting started for production-grade Omnibus GitLab
+
+The Infrastructure as Code tooling [GitLab Environment Tool (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit/-/tree/master) is the best place to start for building Omnibus GitLab on AWS and most especially if you are targeting an HA setup. While it does not automate everything, it does complete complex setups like Gitaly Cluster for you. GET is open source so anyone can build on top of it and contribute improvements to it.
+
+### Getting started for production-grade Cloud Native Hybrid GitLab
+
+For the Cloud Native Hybrid architectures there are two Infrastructure as Code options which are compared in GitLab Cloud Native Hybrid on AWS EKS implementation pattern in the section [Available Infrastructure as Code for GitLab Cloud Native Hybrid](gitlab_hybrid_on_aws.md#available-infrastructure-as-code-for-gitlab-cloud-native-hybrid). It compares the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit/-/tree/master) to the AWS Quick Start for GitLab Cloud Native Hybrid on EKS which was codeveloped by GitLab and AWS. GET and the AWS Quick Start are both open source so anyone can build on top of them and contribute improvements to them.
 
 ## Introduction
 
@@ -517,7 +531,7 @@ gitlab=# \q
    ```ruby
    # Disable the built-in Postgres
     postgresql['enable'] = false
-
+   
    # Fill in the connection details
    gitlab_rails['db_adapter'] = "postgresql"
    gitlab_rails['db_encoding'] = "unicode"
@@ -533,7 +547,7 @@ gitlab=# \q
    ```ruby
    # Disable the built-in Redis
    redis['enable'] = false
-
+   
    # Fill in the connection details
    gitlab_rails['redis_host'] = "<redis-endpoint>"
    gitlab_rails['redis_port'] = 6379

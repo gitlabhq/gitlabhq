@@ -336,7 +336,7 @@ The response represents only direct memberships. Inherited memberships are not i
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
-This API endpoint requires permission to admin memberships for the group.
+This API endpoint requires permission to administer memberships for the group.
 
 This API endpoint takes [pagination](index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
 

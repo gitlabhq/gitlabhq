@@ -87,7 +87,7 @@ Implementation patterns may also provide specialized implementations beyond the 
 
 For example:
 
-- Small, self-contained GitLab instances for per-person admin training, perhaps on Kubernetes so that a deployment cluster is self-contained as well.
+- Small, self-contained GitLab instances for per-person administration training, perhaps on Kubernetes so that a deployment cluster is self-contained as well.
 - GitLab Runner implementation patterns, including using platform-specific PaaS.
 
 ## Intended audiences and contributors

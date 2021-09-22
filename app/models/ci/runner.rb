@@ -280,7 +280,9 @@ module Ci
     end
 
     def belongs_to_more_than_one_project?
-      self.projects.limit(2).count(:all) > 1
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        self.projects.limit(2).count(:all) > 1
+      end
     end
 
     def assigned_to_group?
@@ -309,7 +311,9 @@ module Ci
     end
 
     def only_for?(project)
-      projects == [project]
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        projects == [project]
+      end
     end
 
     def short_sha
@@ -444,14 +448,18 @@ module Ci
     end
 
     def any_project
-      unless projects.any?
-        errors.add(:runner, 'needs to be assigned to at least one project')
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        unless projects.any?
+          errors.add(:runner, 'needs to be assigned to at least one project')
+        end
       end
     end
 
     def exactly_one_group
-      unless groups.one?
-        errors.add(:runner, 'needs to be assigned to exactly one group')
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+        unless groups.one?
+          errors.add(:runner, 'needs to be assigned to exactly one group')
+        end
       end
     end
 

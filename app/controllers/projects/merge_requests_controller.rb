@@ -192,15 +192,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-    render json: {
-      pipelines: PipelineSerializer
-        .new(project: @project, current_user: @current_user)
-        .with_pagination(request, response)
-        .represent(@pipelines),
-      count: {
-        all: @pipelines.count
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+      render json: {
+        pipelines: PipelineSerializer
+          .new(project: @project, current_user: @current_user)
+          .with_pagination(request, response)
+          .represent(@pipelines),
+        count: {
+            all: @pipelines.count
+          }
       }
-    }
+    end
   end
 
   def sast_reports

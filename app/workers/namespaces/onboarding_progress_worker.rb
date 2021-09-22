@@ -8,7 +8,7 @@ module Namespaces
 
     sidekiq_options retry: 3
 
-    feature_category :product_analytics
+    feature_category :onboarding
     worker_resource_boundary :cpu
     urgency :low
 

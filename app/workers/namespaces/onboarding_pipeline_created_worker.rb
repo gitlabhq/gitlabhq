@@ -8,7 +8,7 @@ module Namespaces
 
     sidekiq_options retry: 3
 
-    feature_category :subgroups
+    feature_category :onboarding
     urgency :low
 
     deduplicate :until_executing

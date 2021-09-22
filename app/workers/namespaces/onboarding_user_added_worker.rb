@@ -8,7 +8,7 @@ module Namespaces
 
     sidekiq_options retry: 3
 
-    feature_category :users
+    feature_category :onboarding
     urgency :low
 
     idempotent!

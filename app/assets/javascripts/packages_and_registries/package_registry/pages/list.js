@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import PackagesListApp from '../components/list/packages_list_app.vue';
+import PackagesListApp from '../components/list/app.vue';
 
 Vue.use(Translate);
 
@@ -9,6 +9,9 @@ export default () => {
 
   return new Vue({
     el,
+    provide: {
+      ...el.dataset,
+    },
     render(createElement) {
       return createElement(PackagesListApp);
     },

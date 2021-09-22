@@ -117,7 +117,7 @@ the minimum number of characters a user must have in their password using the Gi
 You can specify an inclusive or exclusive list of email domains which can be used for user sign up.
 
 These restrictions are only applied during sign up from an external user. An administrator can add a
-user through the admin panel with a disallowed domain. Also, note that the users can change their
+user through the administrator panel with a disallowed domain. Also, note that the users can change their
 email addresses to disallowed domains after sign up.
 
 ### Allowlist email domains

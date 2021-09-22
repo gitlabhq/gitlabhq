@@ -1,4 +1,5 @@
 import { isScopedLabel, scopedLabelKey } from '~/lib/utils/common_utils';
+import { SCOPED_LABEL_DELIMITER } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import { DropdownVariant } from '../constants';
 import * as types from './mutation_types';
 
@@ -66,10 +67,10 @@ export default {
     }
 
     if (isScopedLabel(candidateLabel)) {
-      const scopedBase = scopedLabelKey(candidateLabel);
-      const currentActiveScopedLabel = state.labels.find(({ title }) => {
-        return title.startsWith(scopedBase) && title !== '' && title !== candidateLabel.title;
-      });
+      const scopedKeyWithDelimiter = `${scopedLabelKey(candidateLabel)}${SCOPED_LABEL_DELIMITER}`;
+      const currentActiveScopedLabel = state.labels.find(
+        ({ title }) => title.startsWith(scopedKeyWithDelimiter) && title !== candidateLabel.title,
+      );
 
       if (currentActiveScopedLabel) {
         currentActiveScopedLabel.set = false;

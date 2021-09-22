@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`packages_list_app renders 1`] = `
+<div>
+  <package-title-stub
+    count="0"
+    helpurl="packageHelpUrl"
+  />
+</div>
+`;

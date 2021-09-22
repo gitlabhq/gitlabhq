@@ -10,8 +10,10 @@ class Groups::RunnersController < Groups::ApplicationController
   feature_category :runner
 
   def index
-    finder = Ci::RunnersFinder.new(current_user: current_user, params: { group: @group })
-    @group_runners_limited_count = finder.execute.except(:limit, :offset).page.total_count_with_limit(:all, limit: 1000)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433') do
+      finder = Ci::RunnersFinder.new(current_user: current_user, params: { group: @group })
+      @group_runners_limited_count = finder.execute.except(:limit, :offset).page.total_count_with_limit(:all, limit: 1000)
+    end
   end
 
   def runner_list_group_view_vue_ui_enabled
@@ -61,9 +63,11 @@ class Groups::RunnersController < Groups::ApplicationController
   private
 
   def runner
-    @runner ||= Ci::RunnersFinder.new(current_user: current_user, params: { group: @group }).execute
-                                                                                            .except(:limit, :offset)
-                                                                                            .find(params[:id])
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433') do
+      @runner ||= Ci::RunnersFinder.new(current_user: current_user, params: { group: @group }).execute
+        .except(:limit, :offset)
+        .find(params[:id])
+    end
   end
 
   def runner_params

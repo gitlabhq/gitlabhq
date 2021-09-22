@@ -259,11 +259,10 @@ module Gitlab
         request_enum.close
       end
 
-      def user_squash(user, squash_id, start_sha, end_sha, author, message, time = Time.now.utc)
+      def user_squash(user, start_sha, end_sha, author, message, time = Time.now.utc)
         request = Gitaly::UserSquashRequest.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          squash_id: squash_id.to_s,
           start_sha: start_sha,
           end_sha: end_sha,
           author: Gitlab::Git::User.from_gitlab(author).to_gitaly,

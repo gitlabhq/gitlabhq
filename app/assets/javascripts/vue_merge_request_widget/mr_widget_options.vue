@@ -38,7 +38,7 @@ import ReadyToMergeState from './components/states/ready_to_merge.vue';
 import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
-// import ExtensionsContainer from './components/extensions/container';
+import ExtensionsContainer from './components/extensions/container';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
@@ -52,7 +52,7 @@ export default {
   },
   components: {
     Loading,
-    // ExtensionsContainer,
+    ExtensionsContainer,
     'mr-widget-header': WidgetHeader,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
@@ -496,7 +496,7 @@ export default {
           </template>
         </mr-widget-alert-message>
       </div>
-      <!-- <extensions-container :mr="mr" /> -->
+      <extensions-container :mr="mr" />
       <grouped-codequality-reports-app
         v-if="shouldRenderCodeQuality"
         :head-blob-path="mr.headBlobPath"

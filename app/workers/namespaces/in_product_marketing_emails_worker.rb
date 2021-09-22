@@ -8,7 +8,7 @@ module Namespaces
 
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
-    feature_category :subgroups
+    feature_category :experimentation_activation
     urgency :low
 
     def perform
