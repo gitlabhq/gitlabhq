@@ -472,9 +472,9 @@ exchanged but no validation of the LDAP server's SSL certificate is performed.
 
 Not implemented by `Net::LDAP`.
 
-You should disable anonymous LDAP authentication and enable simple or SASL
-authentication. The TLS client authentication setting in your LDAP server cannot
-be mandatory and clients cannot be authenticated with the TLS protocol.
+You should disable anonymous LDAP authentication and enable simple or Simple Authentication
+and Security Layer (SASL) authentication. The TLS client authentication setting in your LDAP server
+cannot be mandatory and clients cannot be authenticated with the TLS protocol.
 
 ## Multiple LDAP servers **(PREMIUM SELF)**
 

@@ -10,7 +10,7 @@ type: tutorial
 GitLab currently doesn't have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).
 
-The SSH keys can be useful when:
+Use SSH keys when:
 
 1. You want to checkout internal submodules
 1. You want to download private packages using your package manager (for example, Bundler)
@@ -45,9 +45,9 @@ check the [visibility of your pipelines](../pipelines/settings.md#change-which-u
 
 When your CI/CD jobs run inside Docker containers (meaning the environment is
 contained) and you want to deploy your code in a private server, you need a way
-to access it. This is where an SSH key pair comes in handy.
+to access it. In this case, you can use an SSH key pair.
 
-1. You first need to create an SSH key pair. For more information, follow
+1. You first must create an SSH key pair. For more information, follow
    the instructions to [generate an SSH key](../../ssh/index.md#generate-an-ssh-key-pair).
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
@@ -101,7 +101,7 @@ to access it. This is where an SSH key pair comes in handy.
 
 1. As a final step, add the _public_ key from the one you created in the first
    step to the services that you want to have an access to from within the build
-   environment. If you are accessing a private GitLab repository you need to add
+   environment. If you are accessing a private GitLab repository you must add
    it as a [deploy key](../../user/project/deploy_keys/index.md).
 
 That's it! You can now have access to private servers or repositories in your
@@ -130,7 +130,7 @@ on, and use that key for all projects that are run on this machine.
 
 1. As a final step, add the _public_ key from the one you created earlier to the
    services that you want to have an access to from within the build environment.
-   If you are accessing a private GitLab repository you need to add it as a
+   If you are accessing a private GitLab repository you must add it as a
    [deploy key](../../user/project/deploy_keys/index.md).
 
 After generating the key, try to sign in to the remote server to accept the
@@ -163,8 +163,8 @@ ssh-keyscan 1.2.3.4
 Create a new [CI/CD variable](../variables/index.md) with
 `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 
-If you need to connect to multiple servers, all the server host keys
-need to be collected in the **Value** of the variable, one key per line.
+If you must connect to multiple servers, all the server host keys
+must be collected in the **Value** of the variable, one key per line.
 
 NOTE:
 By using a variable instead of `ssh-keyscan` directly inside
@@ -175,7 +175,7 @@ so there's something wrong with the server or the network.
 
 Now that the `SSH_KNOWN_HOSTS` variable is created, in addition to the
 [content of `.gitlab-ci.yml`](#ssh-keys-when-using-the-docker-executor)
-above, here's what more you need to add:
+above, you must add:
 
 ```yaml
 before_script:
@@ -209,5 +209,5 @@ We have set up an [Example SSH Project](https://gitlab.com/gitlab-examples/ssh-p
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/index.md).
 
-Want to hack on it? Simply fork it, commit and push your changes. Within a few
+Want to hack on it? Fork it, commit, and push your changes. In a few
 moments the changes is picked by a public runner and the job starts.

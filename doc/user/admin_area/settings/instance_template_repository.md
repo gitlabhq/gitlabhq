@@ -31,6 +31,8 @@ After you add templates, you can use them for the entire instance.
 They are available in the [Web Editor's dropdown](../../project/repository/web_editor.md#template-dropdowns)
 and through the [API settings](../../../api/settings.md).
 
+## Supported file types and locations
+
 Templates must be added to a specific subdirectory in the repository,
 corresponding to the kind of template. The following types of custom templates
 are supported:

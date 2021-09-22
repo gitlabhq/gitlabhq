@@ -90,7 +90,7 @@ module Ci
 
       def runner_projects_relation
         if ::Feature.enabled?(:ci_pending_builds_project_runners_decoupling, runner, default_enabled: :yaml)
-          runner.runner_projects.select(:project_id)
+          runner.runner_projects.select('"ci_runner_projects"."project_id"::bigint')
         else
           runner.projects.without_deleted.with_builds_enabled
         end

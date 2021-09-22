@@ -7,6 +7,8 @@ module Types
       authorize :read_runner
       present_using ::Ci::RunnerPresenter
 
+      expose_permissions Types::PermissionTypes::Ci::Runner
+
       JOB_COUNT_LIMIT = 1000
 
       alias_method :runner, :object

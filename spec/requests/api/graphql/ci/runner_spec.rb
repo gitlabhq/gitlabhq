@@ -61,7 +61,12 @@ RSpec.describe 'Query.runner(id)' do
         'ipAddress' => runner.ip_address,
         'runnerType' => runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
         'jobCount' => 0,
-        'projectCount' => nil
+        'projectCount' => nil,
+        'userPermissions' => {
+          'readRunner' => true,
+          'updateRunner' => true,
+          'deleteRunner' => true
+        }
       )
       expect(runner_data['tagList']).to match_array runner.tag_list
     end

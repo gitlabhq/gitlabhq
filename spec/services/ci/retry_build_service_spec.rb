@@ -283,6 +283,10 @@ RSpec.describe Ci::RetryBuildService do
       end
     end
 
+    it 'raises an error when an unexpected class is passed' do
+      expect { service.reprocess!(create(:ci_build).present) }.to raise_error(TypeError)
+    end
+
     context 'when user has ability to execute build' do
       before do
         stub_not_protect_default_branch

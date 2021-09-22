@@ -1129,14 +1129,14 @@ GitLab backup script to be too slow. If your GitLab instance has a lot of forked
 projects, the regular backup task also duplicates the Git data for all of them.
 In these cases, consider using file system snapshots as part of your backup strategy.
 
-Example: Amazon EBS
+Example: Amazon Elastic Block Store (EBS)
 
 > A GitLab server using Omnibus GitLab hosted on Amazon AWS.
 > An EBS drive containing an ext4 file system is mounted at `/var/opt/gitlab`.
 > In this case you could make an application backup by taking an EBS snapshot.
 > The backup includes all repositories, uploads and PostgreSQL data.
 
-Example: LVM snapshots + rsync
+Example: Logical Volume Manager (LVM) snapshots + rsync
 
 > A GitLab server using Omnibus GitLab, with an LVM logical volume mounted at `/var/opt/gitlab`.
 > Replicating the `/var/opt/gitlab` directory using rsync would not be reliable because too many files would change while rsync is running.

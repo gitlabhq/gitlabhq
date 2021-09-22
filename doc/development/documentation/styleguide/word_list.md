@@ -416,6 +416,13 @@ Do not use **note that** because it's wordy.
 - Do: You can change the settings.
 - Do not: Note that you can change the settings.
 
+## once
+
+The word **once** means **one time**. Don't use it to mean **after** or **when**.
+
+- Do: When the process is complete...
+- Do not: Once the process is complete...
+
 ## Owner
 
 When writing about the Owner role:
@@ -522,6 +529,13 @@ You can use **single sign-on**.
 ## simply, simple
 
 Do not use **simply** or **simple**. If the user doesn't find the process to be simple, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
+
+## since
+
+The word **since** indicates a timeframe. For example, **Since 1984, Bon Jovi has existed**. Don't use **since** to mean **because**.
+
+- Do: Because you have the Developer role, you can delete the widget.
+- Do not: Since you have the Developer role, you can delete the widget.
 
 ## slashes
 

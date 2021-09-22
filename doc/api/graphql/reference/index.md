@@ -3904,6 +3904,8 @@ Input type: `RunnersRegistrationTokenResetInput`
 
 ### `Mutation.scanExecutionPolicyCommit`
 
+Commits the `policy_yaml` content to the assigned security policy project for the given project(`project_path`).
+
 Input type: `ScanExecutionPolicyCommitInput`
 
 #### Arguments
@@ -3925,6 +3927,8 @@ Input type: `ScanExecutionPolicyCommitInput`
 
 ### `Mutation.securityPolicyProjectAssign`
 
+Assigns the specified project(`security_policy_project_id`) as security policy project for the given project(`project_path`). If the project already has a security policy project, this reassigns the project's security policy project with the given `security_policy_project_id`.
+
 Input type: `SecurityPolicyProjectAssignInput`
 
 #### Arguments
@@ -3943,6 +3947,8 @@ Input type: `SecurityPolicyProjectAssignInput`
 | <a id="mutationsecuritypolicyprojectassignerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.securityPolicyProjectCreate`
+
+Creates and assigns a security policy project for the given project(`project_path`).
 
 Input type: `SecurityPolicyProjectCreateInput`
 
@@ -8407,6 +8413,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnerstatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
+| <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
 ### `CiStage`
@@ -13675,6 +13682,16 @@ Counts of requirements by their state.
 | ---- | ---- | ----------- |
 | <a id="runnerarchitecturedownloadlocation"></a>`downloadLocation` | [`String!`](#string) | Download location for the runner for the platform architecture. |
 | <a id="runnerarchitecturename"></a>`name` | [`String!`](#string) | Name of the runner platform architecture. |
+
+### `RunnerPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="runnerpermissionsdeleterunner"></a>`deleteRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_runner` on this resource. |
+| <a id="runnerpermissionsreadrunner"></a>`readRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `read_runner` on this resource. |
+| <a id="runnerpermissionsupdaterunner"></a>`updateRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `update_runner` on this resource. |
 
 ### `RunnerPlatform`
 

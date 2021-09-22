@@ -32,6 +32,11 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def reprocess!(build)
+      # Cloning a build requires a strict type check to ensure
+      # the attributes being used for the clone are taken straight
+      # from the model and not overridden by other abstractions.
+      raise TypeError unless build.instance_of?(Ci::Build)
+
       check_access!(build)
 
       new_build = clone_build(build)

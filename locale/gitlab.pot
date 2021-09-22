@@ -694,6 +694,9 @@ msgstr ""
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
+msgid "%{lessThan} 1 hour"
+msgstr ""
+
 msgid "%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA) that issues digital certificates to enable HTTPS (SSL/TLS) for sites."
 msgstr ""
 
@@ -1052,9 +1055,6 @@ msgid "%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notif
 msgstr ""
 
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
-msgstr ""
-
-msgid "&lt; 1 hour"
 msgstr ""
 
 msgid "'%{data}' at %{location} does not match format: %{format}"
@@ -9516,6 +9516,9 @@ msgstr ""
 msgid "Create commit"
 msgstr ""
 
+msgid "Create common files more quickly, and standardize their format."
+msgstr ""
+
 msgid "Create confidential merge request"
 msgstr ""
 
@@ -16827,6 +16830,9 @@ msgid "How do I set up this service?"
 msgstr ""
 
 msgid "How do I use a web terminal?"
+msgstr ""
+
+msgid "How do I use file templates?"
 msgstr ""
 
 msgid "How it works"
@@ -30385,10 +30391,10 @@ msgstr ""
 msgid "Select a repository"
 msgstr ""
 
-msgid "Select a role"
+msgid "Select a repository containing templates for common files."
 msgstr ""
 
-msgid "Select a shared template repository for all projects on this instance."
+msgid "Select a role"
 msgstr ""
 
 msgid "Select a template repository"
@@ -30791,9 +30797,6 @@ msgid "Set a default description template to be used for new issues. %{link_star
 msgstr ""
 
 msgid "Set a password on your account to pull or push via %{protocol}."
-msgstr ""
-
-msgid "Set a template repository for projects in this group"
 msgstr ""
 
 msgid "Set access permissions for this token."
@@ -33110,7 +33113,7 @@ msgstr ""
 msgid "Template to append to all Service Desk issues"
 msgstr ""
 
-msgid "TemplateRepository|Select a repository to make its templates available to all projects. %{link_start}What should the repository contain?%{link_end} "
+msgid "TemplateRepository|Create common files more quickly, and standardize their format."
 msgstr ""
 
 msgid "Templates"
@@ -38016,6 +38019,9 @@ msgid "What is time tracking?"
 msgstr ""
 
 msgid "What is your job title? (optional)"
+msgstr ""
+
+msgid "What templates can I create?"
 msgstr ""
 
 msgid "What will you use this group for?"
