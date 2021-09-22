@@ -155,7 +155,7 @@ may need to set the `production -> elasticsearch -> indexer_path` setting in you
 For GitLab instances with more than 50GB repository data you can follow the instructions for [Indexing large
 instances](#indexing-large-instances) below.
 
-To enable Advanced Search, you must have admin access to GitLab:
+To enable Advanced Search, you must have administrator access to GitLab:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Advanced Search**.

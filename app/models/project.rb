@@ -159,7 +159,7 @@ class Project < ApplicationRecord
   # Relations
   belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
-  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
+  belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'namespace_id'
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
@@ -852,7 +852,7 @@ class Project < ApplicationRecord
     end
 
     def group_ids
-      joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
+      joins(:namespace).where(namespaces: { type: Group.sti_name }).select(:namespace_id)
     end
 
     # Returns ids of projects with issuables available for given user

@@ -5,7 +5,7 @@ class CustomerRelations::Organization < ApplicationRecord
 
   self.table_name = "customer_relations_organizations"
 
-  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'group_id'
+  belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'group_id'
 
   strip_attributes! :name
 

@@ -77,24 +77,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION trigger_542d6c2ad72e() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."id_convert_to_bigint" := NEW."id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_8487d4de3e7b() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."build_id_convert_to_bigint" := NEW."build_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_91dc388a5fe6() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -11385,8 +11367,6 @@ CREATE SEQUENCE ci_builds_id_seq
 ALTER SEQUENCE ci_builds_id_seq OWNED BY ci_builds.id;
 
 CREATE TABLE ci_builds_metadata (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
-    build_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer NOT NULL,
     timeout integer,
     timeout_source integer DEFAULT 1 NOT NULL,
@@ -27356,10 +27336,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
 
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
-
-CREATE TRIGGER trigger_542d6c2ad72e BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_542d6c2ad72e();
-
-CREATE TRIGGER trigger_8487d4de3e7b BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_8487d4de3e7b();
 
 CREATE TRIGGER trigger_91dc388a5fe6 BEFORE INSERT OR UPDATE ON dep_ci_build_trace_sections FOR EACH ROW EXECUTE FUNCTION trigger_91dc388a5fe6();
 

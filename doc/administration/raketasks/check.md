@@ -105,7 +105,7 @@ Optionally, specific project IDs can be checksummed by setting an environment
 variable `CHECKSUM_PROJECT_IDS` with a list of comma-separated integers, for example:
 
 ```shell
-CHECKSUM_PROJECT_IDS="1,3" sudo gitlab-rake gitlab:git:checksum_projects
+sudo CHECKSUM_PROJECT_IDS="1,3" gitlab-rake gitlab:git:checksum_projects
 ```
 
 ## Uploaded files integrity

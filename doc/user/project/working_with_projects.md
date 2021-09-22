@@ -187,6 +187,12 @@ You can view your new project at `https://gitlab.example.com/namespace/myproject
 Your project's visibility is set to **Private** by default, but you can change it
 in your [project's settings](../../public_access/public_access.md#change-project-visibility)).
 
+This feature does not work for project paths that have previously been in use and
+[renamed](settings/index.md#renaming-a-repository). A redirect exists over the previous project path
+that causes push attempts to redirect requests to the renamed project location, instead of creating
+a new project. To create a new project, use the [Web UI](#create-a-project) or the
+[Projects API](../../api/projects.md#create-project).
+
 ## Fork a project
 
 A fork is a copy of an original repository that you put in another namespace

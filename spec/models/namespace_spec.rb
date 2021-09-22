@@ -7,6 +7,10 @@ RSpec.describe Namespace do
   include GitHelpers
   include ReloadHelpers
 
+  let_it_be(:group_sti_name) { Group.sti_name }
+  let_it_be(:project_sti_name) { Namespaces::ProjectNamespace.sti_name }
+  let_it_be(:user_sti_name) { Namespaces::UserNamespace.sti_name }
+
   let!(:namespace) { create(:namespace, :with_namespace_settings) }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:repository_storage) { 'default' }
@@ -38,20 +42,22 @@ RSpec.describe Namespace do
     context 'validating the parent of a namespace' do
       using RSpec::Parameterized::TableSyntax
 
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:parent_type, :child_type, :error) do
-        nil         | 'User'      | nil
-        nil         | 'Group'     | nil
-        nil         | 'Project'   | 'must be set for a project namespace'
-        'Project'   | 'User'      | 'project namespace cannot be the parent of another namespace'
-        'Project'   | 'Group'     | 'project namespace cannot be the parent of another namespace'
-        'Project'   | 'Project'   | 'project namespace cannot be the parent of another namespace'
-        'Group'     | 'User'      | 'cannot not be used for user namespace'
-        'Group'     | 'Group'     | nil
-        'Group'     | 'Project'   | nil
-        'User'      | 'User'      | 'cannot not be used for user namespace'
-        'User'      | 'Group'     | 'user namespace cannot be the parent of another namespace'
-        'User'      | 'Project'   | nil
+        nil                      | ref(:user_sti_name)      | nil
+        nil                      | ref(:group_sti_name)     | nil
+        nil                      | ref(:project_sti_name)   | 'must be set for a project namespace'
+        ref(:project_sti_name)   | ref(:user_sti_name)      | 'project namespace cannot be the parent of another namespace'
+        ref(:project_sti_name)   | ref(:group_sti_name)     | 'project namespace cannot be the parent of another namespace'
+        ref(:project_sti_name)   | ref(:project_sti_name)   | 'project namespace cannot be the parent of another namespace'
+        ref(:group_sti_name)     | ref(:user_sti_name)      | 'cannot not be used for user namespace'
+        ref(:group_sti_name)     | ref(:group_sti_name)     | nil
+        ref(:group_sti_name)     | ref(:project_sti_name)   | nil
+        ref(:user_sti_name)      | ref(:user_sti_name)      | 'cannot not be used for user namespace'
+        ref(:user_sti_name)      | ref(:group_sti_name)     | 'user namespace cannot be the parent of another namespace'
+        ref(:user_sti_name)      | ref(:project_sti_name)   | nil
       end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       with_them do
         it 'validates namespace parent' do
@@ -170,7 +176,7 @@ RSpec.describe Namespace do
     let(:namespace) { Namespace.find(create(:namespace, type: namespace_type, parent: parent).id) }
 
     context 'creating a Group' do
-      let(:namespace_type) { 'Group' }
+      let(:namespace_type) { group_sti_name }
 
       it 'is valid' do
         expect(namespace).to be_a(Group)
@@ -180,7 +186,7 @@ RSpec.describe Namespace do
     end
 
     context 'creating a ProjectNamespace' do
-      let(:namespace_type) { 'Project' }
+      let(:namespace_type) { project_sti_name }
       let(:parent) { create(:group) }
 
       it 'is valid' do
@@ -191,7 +197,7 @@ RSpec.describe Namespace do
     end
 
     context 'creating a UserNamespace' do
-      let(:namespace_type) { 'User' }
+      let(:namespace_type) { user_sti_name }
 
       it 'is valid' do
         # TODO: We create a normal Namespace until

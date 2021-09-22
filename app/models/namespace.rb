@@ -138,11 +138,11 @@ class Namespace < ApplicationRecord
   class << self
     def sti_class_for(type_name)
       case type_name
-      when 'Group'
+      when Group.sti_name
         Group
-      when 'Project'
+      when Namespaces::ProjectNamespace.sti_name
         Namespaces::ProjectNamespace
-      when 'User'
+      when Namespaces::UserNamespace.sti_name
         # TODO: We create a normal Namespace until
         #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68894 is ready
         Namespace

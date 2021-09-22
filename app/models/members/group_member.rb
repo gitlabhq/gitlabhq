@@ -43,7 +43,7 @@ class GroupMember < Member
 
   # Because source_type is `Namespace`...
   def real_source_type
-    'Group'
+    Group.sti_name
   end
 
   def notifiable_options

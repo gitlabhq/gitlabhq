@@ -9,7 +9,7 @@ module Packages
 
       mount_file_store_uploader Packages::Composer::CacheUploader
 
-      belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
+      belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'namespace_id'
       belongs_to :namespace
 
       validates :namespace, presence: true

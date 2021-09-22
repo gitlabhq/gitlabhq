@@ -42,7 +42,7 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
 
 - Is a required field in the SAML response.
 - Must be unique to each user.
-- Must be a persistent value that will never change, such as a randomly generated unique user ID.
+- Must be a persistent value that never changes, such as a randomly generated unique user ID.
 - Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
 - Should not be an email address or username. We strongly recommend against these as it's hard to
   guarantee it doesn't ever change, for example, when a person's name changes. Email addresses are
@@ -131,7 +131,7 @@ When SCIM updates, the user's access is immediately revoked.
 
 ## Providers
 
-The SAML standard means that a wide range of identity providers will work with GitLab. Your identity provider may have relevant documentation. It may be generic SAML documentation, or specifically targeted for GitLab.
+The SAML standard means that you can use a wide range of identity providers with GitLab. Your identity provider might have relevant documentation. It can be generic SAML documentation or specifically targeted for GitLab.
 
 When [configuring your identity provider](#configuring-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
@@ -480,7 +480,7 @@ If you receive a `404` during setup when using "verify configuration", make sure
 [SHA-1 generated fingerprint](../../../integration/saml.md#notes-on-configuring-your-identity-provider).
 
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](#configuring-your-identity-provider), they may see a 404.
-As outlined in the [user access section](#linking-saml-to-your-existing-gitlabcom-account), a group Owner will need to provide the URL to users.
+As outlined in the [user access section](#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
 ### Message: "SAML authentication failed: Extern UID has already been taken"
 
@@ -502,13 +502,13 @@ Here are possible causes and solutions:
 
 | Cause                                                                                                                                    | Solution                                                                 |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user will need to [link their account](#user-access-and-management). |
+| When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user needs to [link their account](#user-access-and-management). |
 
 ### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
 
 Getting both of these errors at the same time suggests the NameID capitalization provided by the identity provider didn't exactly match the previous value for that user.
 
-This can be prevented by configuring the [NameID](#nameid) to return a consistent value. Fixing this for an individual user involves [unlinking SAML in the GitLab account](#unlinking-accounts), although this will cause group membership and to-dos to be lost.
+This can be prevented by configuring the [NameID](#nameid) to return a consistent value. Fixing this for an individual user involves [unlinking SAML in the GitLab account](#unlinking-accounts), although this causes group membership and to-do items to be lost.
 
 ### Message: "Request to link SAML account must be authorized"
 
@@ -541,7 +541,7 @@ Otherwise, to change the SAML app used for sign in, users need to [unlink the cu
 
 Many SAML terms can vary between providers. It is possible that the information you are looking for is listed under another name.
 
-For more information, start with your identity provider's documentation. Look for their options and examples to see how they configure SAML. This can provide hints on what you'll need to configure GitLab to work with these providers.
+For more information, start with your identity provider's documentation. Look for their options and examples to see how they configure SAML. This can provide hints on what you need to configure GitLab to work with these providers.
 
 It can also help to look at our [more detailed docs for self-managed GitLab](../../../integration/saml.md).
 SAML configuration for GitLab.com is mostly the same as for self-managed instances.

@@ -6,15 +6,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Workspace
 
-Workspace will be above the [top-level namespaces](../group/index.md#namespaces) for you to manage everything you can do as a GitLab administrator, including:
+Workspace will be above the [top-level namespaces](../group/index.md#namespaces) for you to manage
+everything you do as a GitLab administrator, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.
 - Aggregating data from all your groups, subgroups, and projects.
 
-Our goal is to reach feature parity between SaaS and Self-Managed installations, with all [Admin Area settings](/ee/user/admin_area/settings/) moving to either:
+Our goal is to reach feature parity between SaaS and self-managed installations, with all
+[Admin Area settings](/ee/user/admin_area/settings/) moving to either:
 
-1. Groups (available in the Workspace, Top-level group namespaces, and Sub-groups)
-1. Hardware Controls (for functionality that does not apply to Groups, Hardware Controls are only applicable to Self-managed Installations, there is one Hardware Controls section per installation)
+- Groups. Available in the Workspace, top-level group namespaces, and sub-groups.
+- Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only
+  applicable to self-managed installations. There is one Hardware Controls section per installation.
 
 NOTE:
 Workspace is currently in development.

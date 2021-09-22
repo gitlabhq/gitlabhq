@@ -5,7 +5,7 @@ class CustomEmoji < ApplicationRecord
 
   belongs_to :namespace, inverse_of: :custom_emoji
 
-  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
+  belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'namespace_id'
   belongs_to :creator, class_name: "User", inverse_of: :created_custom_emoji
 
   # For now only external emoji are supported. See https://gitlab.com/gitlab-org/gitlab/-/issues/230467

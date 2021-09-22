@@ -81,7 +81,7 @@ Prerequisite:
 
 You can restrict the use of visibility levels for users when they create a project or a snippet.
 This is useful to prevent users from publicly exposing their repositories by accident. The
-restricted visibility settings do not apply to admin users.
+restricted visibility settings do not apply to administrators.
 
 For details, see [Restricted visibility levels](../user/admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels).
 

@@ -1,4 +1,3 @@
-import { merge } from 'lodash';
 import { s__ } from '~/locale';
 
 /**
@@ -21,8 +20,15 @@ const defaultFeedbackMap = {
   },
 };
 
-const getFeedbackForElement = (feedbackMap, el) =>
-  Object.values(feedbackMap).find((f) => f.isInvalid(el))?.message || el.validationMessage;
+const getFeedbackForElement = (feedbackMap, el) => {
+  const field = Object.values(feedbackMap).find((f) => f.isInvalid(el));
+  let elMessage = null;
+  if (field) {
+    elMessage = el.getAttribute('validation-message');
+  }
+
+  return field?.message || elMessage || el.validationMessage;
+};
 
 const focusFirstInvalidInput = (e) => {
   const { target: formEl } = e;
@@ -68,6 +74,7 @@ const createValidator = (context, feedbackMap) => ({ el, reportInvalidInput = fa
 
 /**
  * Takes an object that allows to add or change custom feedback messages.
+ * See possibilities here: https://developer.mozilla.org/en-US/docs/Web/API/ValidityState
  *
  * The passed in object will be merged with the built-in feedback
  * so it is possible to override a built-in message.
@@ -75,7 +82,7 @@ const createValidator = (context, feedbackMap) => ({ el, reportInvalidInput = fa
  * @example
  * validate({
  *   tooLong: {
- *     check: el => el.validity.tooLong === true,
+ *     isInvalid: el => el.validity.tooLong === true,
  *     message: 'Your custom feedback'
  *   }
  * })
@@ -91,7 +98,7 @@ const createValidator = (context, feedbackMap) => ({ el, reportInvalidInput = fa
  * @returns {{ inserted: function, update: function }} validateDirective
  */
 export default function initValidation(customFeedbackMap = {}) {
-  const feedbackMap = merge(defaultFeedbackMap, customFeedbackMap);
+  const feedbackMap = { ...defaultFeedbackMap, ...customFeedbackMap };
   const elDataMap = new WeakMap();
 
   return {

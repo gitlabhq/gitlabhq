@@ -32,7 +32,7 @@ sudo gitlab-rake "gitlab:password:reset[johndoe]"
 
 NOTE:
 To reset the default admin password, run this Rake task with the username
-`root`, which is the default username of that admin account.
+`root`, which is the default username of that administrator account.
 
 ## Rails console
 
@@ -110,7 +110,7 @@ password.
 
 If the username was changed to something else and has been forgotten, one
 possible way is to reset the password using Rails console with user ID `1` (in
-almost all the cases, the first user is the default admin account).
+almost all the cases, the first user is the default administrator account).
 
 <!-- ## Troubleshooting
 

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :group, class: 'Group', parent: :namespace do
     sequence(:name) { |n| "group#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    type { 'Group' }
+    type { Group.sti_name }
     owner { nil }
     project_creation_level { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
 
