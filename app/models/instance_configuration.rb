@@ -98,6 +98,11 @@ class InstanceConfiguration
         requests_per_period: application_settings[:throttle_authenticated_packages_api_requests_per_period],
         period_in_seconds: application_settings[:throttle_authenticated_packages_api_period_in_seconds]
       },
+      authenticated_git_lfs_api: {
+        enabled: application_settings[:throttle_authenticated_git_lfs_enabled],
+        requests_per_period: application_settings[:throttle_authenticated_git_lfs_requests_per_period],
+        period_in_seconds: application_settings[:throttle_authenticated_git_lfs_period_in_seconds]
+      },
       issue_creation: application_setting_limit_per_minute(:issues_create_limit),
       note_creation: application_setting_limit_per_minute(:notes_create_limit),
       project_export: application_setting_limit_per_minute(:project_export_limit),

@@ -39,8 +39,14 @@
 
       .committer
         - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
-        - commit_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
-        - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
+        - commit_authored_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
+        - if commit.different_committer? && commit.committer
+          - commit_committer_link = commit_committer_link(commit)
+          - commit_committer_timeago = time_ago_with_tooltip(commit.committed_date, placement: 'bottom')
+          - commit_committer_avatar = commit_committer_avatar(commit.committer, size: 18, has_tooltip: false)
+          - commit_text =  _('%{commit_author_link} authored %{commit_authored_timeago} and %{commit_committer_avatar} %{commit_committer_link} committed %{commit_committer_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago, commit_committer_avatar: commit_committer_avatar, commit_committer_link: commit_committer_link, commit_committer_timeago: commit_committer_timeago }
+        - else
+          - commit_text =  _('%{commit_author_link} authored %{commit_authored_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago }
         #{ commit_text.html_safe }
       = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 

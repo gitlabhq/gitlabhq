@@ -34,7 +34,7 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:relative_url`   | The test requires a GitLab instance to be installed under a [relative URL](../../../install/relative_url.md). |
 | `:reliable`       | The test has been [promoted to a reliable test](https://about.gitlab.com/handbook/engineering/quality/guidelines/reliable-tests/#promoting-an-existing-test-to-reliable) meaning it passes consistently in all pipelines, including merge requests. |
 | `:repository_storage` |  The test requires a GitLab instance to be configured to use multiple [repository storage paths](../../../administration/repository_storage_paths.md). Paired with the `:orchestrated` tag. |
-| `:requires_admin` | The test requires an admin account. Tests with the tag are excluded when run against Canary and Production environments. |
+| `:requires_admin` | The test requires an administrator account. Tests with the tag are excluded when run against Canary and Production environments. |
 | `:requires_git_protocol_v2`   | The test requires that Git protocol version 2 is enabled on the server. It's assumed to be enabled by default but if not the test can be skipped by setting `QA_CAN_TEST_GIT_PROTOCOL_V2` to `false`. |
 | `:requires_praefect`   | The test requires that the GitLab instance uses [Gitaly Cluster](../../../administration/gitaly/praefect.md) (a.k.a. Praefect) as the repository storage . It's assumed to be used by default but if not the test can be skipped by setting `QA_CAN_TEST_PRAEFECT` to `false`. |
 | `:runner`         | The test depends on and sets up a GitLab Runner instance, typically to run a pipeline. |

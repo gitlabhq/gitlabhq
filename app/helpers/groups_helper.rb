@@ -178,7 +178,7 @@ module GroupsHelper
   end
 
   def default_help
-    s_("GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually.")
+    s_("GroupSettings|This setting is applied to all subgroups unless overridden by a group owner. Groups that have already been added to the project lose access.")
   end
 
   def ancestor_locked_but_you_can_override(group)

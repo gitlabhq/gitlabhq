@@ -247,7 +247,7 @@ have been corrupted, you should reinstall the omnibus package.
 
 Sometimes you need to know if your GitLab installation can connect to a TCP
 service on another machine (for example a PostgreSQL or web server)
-in order to troubleshoot proxy issues.
+to troubleshoot proxy issues.
 A Rake task is included to help you with this.
 
 **Omnibus Installation**
@@ -334,13 +334,13 @@ This is an experimental feature that isn't enabled by default. It requires Postg
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy levels of index bloat over time.
 
-In order to rebuild the two indexes with the highest estimated bloat, use the following Rake task:
+To rebuild the two indexes with the highest estimated bloat, use the following Rake task:
 
 ```shell
 sudo gitlab-rake gitlab:db:reindex
 ```
 
-In order to target a specific index, use the following Rake task:
+To target a specific index, use the following Rake task:
 
 ```shell
 sudo gitlab-rake gitlab:db:reindex['public.a_specific_index']
@@ -352,7 +352,7 @@ The following index types are not supported:
 1. Partitioned indexes
 1. Expression indexes
 
-Optionally, this Rake task sends annotations to a Grafana (4.6 or later) endpoint. Use the following custom environment variables in order to enable annotations:
+Optionally, this Rake task sends annotations to a Grafana (4.6 or later) endpoint. Use the following custom environment variables to enable annotations:
 
 1. `GRAFANA_API_URL` - Grafana's base URL, for example `http://some-host:3000`.
 1. `GRAFANA_API_KEY` - Grafana API key with at least `Editor role`.

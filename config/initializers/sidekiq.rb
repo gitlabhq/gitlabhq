@@ -38,11 +38,11 @@ Sidekiq.configure_server do |config|
 
   config.redis = queues_config_hash
 
-  config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator({
+  config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator(
     metrics: Settings.monitoring.sidekiq_exporter,
     arguments_logger: SidekiqLogArguments.enabled? && !enable_json_logs,
     memory_killer: enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer
-  }))
+  ))
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 

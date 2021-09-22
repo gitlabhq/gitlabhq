@@ -465,7 +465,10 @@ msgstr ""
 msgid "%{code_open}Protected:%{code_close} Only exposed to protected branches or tags."
 msgstr ""
 
-msgid "%{commit_author_link} authored %{commit_timeago}"
+msgid "%{commit_author_link} authored %{commit_authored_timeago}"
+msgstr ""
+
+msgid "%{commit_author_link} authored %{commit_authored_timeago} and %{commit_committer_avatar} %{commit_committer_link} committed %{commit_committer_timeago}"
 msgstr ""
 
 msgid "%{completedCount} completed weight"
@@ -4769,6 +4772,9 @@ msgid "Authenticated Git LFS rate limit period in seconds"
 msgstr ""
 
 msgid "Authenticated Git LFS request rate limit"
+msgstr ""
+
+msgid "Authenticated Git LFS requests"
 msgstr ""
 
 msgid "Authenticated web rate limit period in seconds"
@@ -16393,10 +16399,10 @@ msgstr ""
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
 msgstr ""
 
-msgid "GroupSettings|This setting is only available on the top-level group and it applies to all subgroups. Groups that have already been shared with a group outside %{group} will still be shared, and this access will have to be revoked manually."
+msgid "GroupSettings|This setting is applied to all subgroups unless overridden by a group owner. Groups that have already been added to the project lose access."
 msgstr ""
 
-msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgid "GroupSettings|This setting is only available on the top-level group and it applies to all subgroups. Groups that have already been shared with a group outside %{group} will still be shared, and this access will have to be revoked manually."
 msgstr ""
 
 msgid "GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects."

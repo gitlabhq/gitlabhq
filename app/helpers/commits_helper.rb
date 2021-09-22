@@ -17,6 +17,15 @@ module CommitsHelper
     commit_person_link(commit, options.merge(source: :committer))
   end
 
+  def commit_committer_avatar(committer, options = {})
+    user_avatar(options.merge({
+      user: committer,
+      user_name: committer.name,
+      user_email: committer.email,
+      css_class: 'd-none d-sm-inline-block float-none gl-mr-0! gl-vertical-align-text-bottom'
+    }))
+  end
+
   def commit_to_html(commit, ref, project)
     render 'projects/commits/commit.html',
       commit: commit,

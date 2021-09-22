@@ -33,17 +33,20 @@ export default {
     issueName() {
       return `${this.severityLabel} - ${this.issue.name}`;
     },
+    issueSeverity() {
+      return this.issue.severity.toLowerCase();
+    },
     isStatusSuccess() {
       return this.status === STATUS_SUCCESS;
     },
     severityClass() {
-      return SEVERITY_CLASSES[this.issue.severity] || SEVERITY_CLASSES.unknown;
+      return SEVERITY_CLASSES[this.issueSeverity] || SEVERITY_CLASSES.unknown;
     },
     severityIcon() {
-      return SEVERITY_ICONS[this.issue.severity] || SEVERITY_ICONS.unknown;
+      return SEVERITY_ICONS[this.issueSeverity] || SEVERITY_ICONS.unknown;
     },
     severityLabel() {
-      return this.$options.severityText[this.issue.severity] || this.$options.severityText.unknown;
+      return this.$options.severityText[this.issueSeverity] || this.$options.severityText.unknown;
     },
   },
   severityText: {
