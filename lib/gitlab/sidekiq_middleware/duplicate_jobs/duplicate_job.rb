@@ -155,7 +155,7 @@ module Gitlab
         end
 
         def pg_wal_lsn_diff(connection_name)
-          Gitlab::Database::DATABASES[connection_name].pg_wal_lsn_diff(job_wal_locations[connection_name], existing_wal_locations[connection_name])
+          Gitlab::Database.databases[connection_name].pg_wal_lsn_diff(job_wal_locations[connection_name], existing_wal_locations[connection_name])
         end
 
         def strategy

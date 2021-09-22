@@ -26,7 +26,7 @@ As GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
 mentioned above, we recommend running these scripts under the supervision of a
-Support Engineer, who can also verify that they will continue to work as they
+Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
 
 ## Find specific methods for an object
@@ -185,7 +185,7 @@ Project.update_all(visibility_level: 0)
 
 ```ruby
 #
-# This section will list all the projects which are pending deletion
+# This section lists all the projects which are pending deletion
 #
 projects = Project.where(pending_delete: true)
 projects.each do |p|
@@ -195,7 +195,7 @@ projects.each do |p|
 end
 
 #
-# Assign a user (the root user will do)
+# Assign a user (the root user does)
 #
 user = User.find_by_username('root')
 
@@ -255,7 +255,7 @@ namespace = Namespace.find_by_full_path("<new_namespace>")
 ### For Removing webhooks that is getting timeout due to large webhook logs
 
 ```ruby
-# ID will be the webhook_id
+# ID is the webhook_id
 hook=WebHook.find(ID)
 
 WebHooks::DestroyService.new(current_user).execute(hook)
@@ -397,7 +397,7 @@ projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
 ### Recreate
 
 WARNING:
-This is a destructive operation, the Wiki will be empty.
+This is a destructive operation, the Wiki becomes empty.
 
 A Projects Wiki can be recreated by this command:
 
@@ -474,13 +474,13 @@ Projects::ImportExport::ExportService.new(project, user).execute
 
 If the project you wish to export is available at `https://gitlab.example.com/baltig/pipeline-templates`, the value to use for `PROJECT_PATH` would be `baltig/pipeline-templates`.
 
-If this all runs successfully, you will see output like the following before being returned to the Rails console prompt:
+If this all runs successfully, you see an output like the following before being returned to the Rails console prompt:
 
 ```ruby
 => nil
 ```
 
-The exported project will be located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
+The exported project is located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
 ## Repository
 
@@ -490,10 +490,10 @@ If it seems that a commit has gone "missing", search the sequence of pushes to a
 [This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
 describes how you can end up in this state without a force push.
 
-If you look at the output from the sample code below for the target branch, you will
+If you look at the output from the sample code below for the target branch, you
 see a discontinuity in the from/to commits as you step through the output. Each new
 push should be "from" the "to" SHA of the previous push. When this discontinuity happens,
-you will see two pushes with the same "from" SHA:
+you see two pushes with the same "from" SHA:
 
 ```ruby
 p = Project.find_with_namespace('u/p')
@@ -556,7 +556,7 @@ end
 
 ```ruby
 u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
-u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user will recieve confirmation e-mail
+u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user receives confirmation e-mail
 u.save!
 ```
 
@@ -610,7 +610,7 @@ identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
 ```ruby
 users = User.where('id NOT IN (select distinct(user_id) from project_authorizations)')
 
-# How many users will be removed?
+# How many users are removed?
 users.count
 
 # If that count looks sane:
@@ -1071,7 +1071,7 @@ encrypted credentials to allow manual reentry:
 If `User OTP Secret Bad count:` is detected. For each user listed disable/enable
 two-factor authentication.
 
-The following script will search in some of the tables for encrypted tokens that are
+The following script searches in some of the tables for encrypted tokens that are
 causing decryption errors, and update or reset as needed:
 
 ```shell
@@ -1133,7 +1133,7 @@ Geo::ProjectRegistry.sync_failed('repository')
 
 ### Resync repositories
 
-#### Queue up all repositories for resync. Sidekiq will handle each sync
+#### Queue up all repositories for resync. Sidekiq handles each sync
 
 ```ruby
 Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
@@ -1180,10 +1180,10 @@ registry.replicator.send(:download)
 
 #### Verify package files on the secondary manually
 
-This will iterate over all package files on the secondary, looking at the
+This iterates over all package files on the secondary, looking at the
 `verification_checksum` stored in the database (which came from the primary)
 and then calculate this value on the secondary to check if they match. This
-won't change anything in the UI:
+does not change anything in the UI:
 
 ```ruby
 # Run on secondary
@@ -1245,7 +1245,7 @@ Gitlab::UsageData.to_json
 
 ### Generate a fresh new Service Ping
 
-This will also refresh the cached Service Ping displayed in the admin area
+This also refreshes the cached Service Ping displayed in the Admin Area
 
 ```ruby
 Gitlab::UsageData.to_json(force_refresh: true)
@@ -1299,7 +1299,7 @@ Open the rails console (`gitlab rails c`) and run the following command to see a
 ApplicationSetting.last.attributes
 ```
 
-Among other attributes, in the output you will notice that all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), like: `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, `elasticsearch_pause_indexing`, and so on.
+Among other attributes, the output contains all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), such as `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, and `elasticsearch_pause_indexing`.
 
 #### Setting attributes
 

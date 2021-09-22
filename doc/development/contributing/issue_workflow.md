@@ -151,7 +151,7 @@ From the handbook's
 page:
 
 > Categories are high-level capabilities that may be a standalone product at
-another company. e.g. Portfolio Management.
+another company, such as Portfolio Management, for example.
 
 It's highly recommended to add a category label, as it's used by our triage
 automation to
@@ -182,7 +182,7 @@ From the handbook's
 [Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
 page:
 
-> Features: Small, discrete functionalities. e.g. Issue weights. Some common
+> Features: Small, discrete functionalities, for example Issue weights. Some common
 features are listed within parentheses to facilitate finding responsible PMs by keyword.
 
 It's highly recommended to add a feature label if no category label applies, as

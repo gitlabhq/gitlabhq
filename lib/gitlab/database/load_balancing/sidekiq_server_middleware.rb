@@ -92,7 +92,7 @@ module Gitlab
         def all_databases_has_replica_caught_up?(wal_locations)
           wal_locations.all? do |_config_name, location|
             # Once we add support for multiple databases to our load balancer, we would use something like this:
-            # Gitlab::Database::DATABASES[config_name].load_balancer.select_up_to_date_host(location)
+            # Gitlab::Database.databases[config_name].load_balancer.select_up_to_date_host(location)
             load_balancer.select_up_to_date_host(location)
           end
         end
@@ -101,7 +101,7 @@ module Gitlab
           # Once we add support for multiple databases to our load balancer, we would use something like this:
           # connection.load_balancer.primary_write_location
           #
-          # Gitlab::Database::DATABASES.values.each do |connection|
+          # Gitlab::Database.databases.values.each do |connection|
           #   connection.load_balancer.release_host
           # end
           load_balancer.release_host

@@ -31349,6 +31349,9 @@ msgstr ""
 msgid "Site profile not found for given parameters"
 msgstr ""
 
+msgid "Sites"
+msgstr ""
+
 msgid "Size"
 msgstr ""
 

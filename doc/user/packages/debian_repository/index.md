@@ -138,7 +138,7 @@ To install a package:
 
 1. Configure the repository:
 
-    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt config:
+    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt configuration:
 
     ```shell
     echo 'machine gitlab.example.com login <username> password <your_access_token>' \

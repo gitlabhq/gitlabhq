@@ -31,7 +31,7 @@ module Gitlab
 
         def set_data_consistency_locations!(job)
           # Once we add support for multiple databases to our load balancer, we would use something like this:
-          #   job['wal_locations'] = Gitlab::Database::DATABASES.transform_values do |connection|
+          #   job['wal_locations'] = Gitlab::Database.databases.transform_values do |connection|
           #      connection.load_balancer.primary_write_location
           #   end
           #

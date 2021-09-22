@@ -389,7 +389,8 @@ Be aware that:
   be charged for less than one year because your subscription was previously
   created with the extra CI minutes.
 - After the extra CI minutes have been assigned to a Group, they can't be transferred
-  to a different Group.
+  to a different Group by themselves, but they will transfer along with a subscription when
+  changing the linked namespace for the subscription.
 - If you have used more minutes than your default quota, these minutes will
   be deducted from your Additional Minutes quota immediately after your purchase of additional
   minutes.

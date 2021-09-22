@@ -913,8 +913,8 @@ these steps:
 
 ### Troubleshoot as a GitLab server admin
 
-Troubleshooting the GitLab Container Registry, most of the times, requires
-administrator access to the GitLab server.
+Troubleshooting the GitLab Container Registry, most of the times, requires 
+you to log in to GitLab server with the Administrator role.
 
 [Read how to troubleshoot the Container Registry](../../../administration/packages/container_registry.md#troubleshooting).
 

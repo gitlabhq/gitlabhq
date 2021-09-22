@@ -105,7 +105,7 @@ helm install my-release project-1/mychart
 - `<project_id>`: the project ID (like `42`).
 - `<channel>`: the name of the channel (like `stable`).
 
-If the repo has previously been added, you may need to run:
+If the repository has previously been added, you may need to run:
 
 ```shell
 helm repo update

@@ -516,7 +516,7 @@ RSpec.describe API::Issues do
     end
 
     context 'when using the issue ID instead of iid' do
-      it 'returns 404 when trying to move an issue' do
+      it 'returns 404 when trying to move an issue', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
         post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
           params: { to_project_id: target_project.id }
 
@@ -608,7 +608,7 @@ RSpec.describe API::Issues do
     end
 
     context 'when using the issue ID instead of iid' do
-      it 'returns 404' do
+      it 'returns 404', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
         post api("/projects/#{project.id}/issues/#{issue.id}/clone", user),
           params: { to_project_id: valid_target_project.id }
 
@@ -683,7 +683,7 @@ RSpec.describe API::Issues do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns 404 if the issue ID is used instead of the iid' do
+    it 'returns 404 if the issue ID is used instead of the iid', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
       post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -716,7 +716,7 @@ RSpec.describe API::Issues do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns 404 if using the issue ID instead of iid' do
+    it 'returns 404 if using the issue ID instead of iid', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
       post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
