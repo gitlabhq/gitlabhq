@@ -59,7 +59,7 @@ Legend:
 - `Alternative` - If it is possible to configure the component to use different type of communication. The type is listed with default port used in that case.
 - `Connection port` - Port on which the component communicates.
 
-GitLab also expects a filesystem to be ready for the storage of Git repositories
+GitLab also expects a file system to be ready for the storage of Git repositories
 and various other files.
 
 Note that if you are using NFS (Network File System), files will be carried

@@ -430,7 +430,7 @@ their resync may take a long time and cause significant load on your Geo nodes,
 storage and network systems.
 
 If you get the error `Synchronization failed - Error syncing repository` along with the following log messages, this indicates that the expected `geo` remote is not present in the `.git/config` file
-of a repository on the secondary Geo node's filesystem:
+of a repository on the secondary Geo node's file system:
 
 ```json
 {
@@ -803,7 +803,7 @@ get_ctl_options': invalid option: --skip-preflight-checks (OptionParser::Invalid
 get_ctl_options': invalid option: --force (OptionParser::InvalidOption)
 ```
 
-This can happen with XFS or filesystems that list files in lexical order, because the
+This can happen with XFS or file systems that list files in lexical order, because the
 load order of the Omnibus command files can be different than expected, and a global function would get redefined.
 More details can be found in [the related issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6076).
 

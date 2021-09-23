@@ -116,6 +116,7 @@ exceptions:
   - PEM
   - PEP
   - PGP
+  - PKCS
   - PHP
   - PNG
   - POSIX

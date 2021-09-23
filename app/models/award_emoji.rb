@@ -66,5 +66,3 @@ class AwardEmoji < ApplicationRecord
     awardable.try(:update_upvotes_count) if upvote?
   end
 end
-
-AwardEmoji.prepend_mod_with('AwardEmoji')

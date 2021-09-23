@@ -1918,20 +1918,6 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def lazy_upvotes_count
-    BatchLoader.for(id).batch(default_value: 0) do |ids, loader|
-      counts = AwardEmoji
-        .where(awardable_id: ids)
-        .upvotes
-        .group(:awardable_id)
-        .count
-
-      counts.each do |id, count|
-        loader.call(id, count)
-      end
-    end
-  end
-
   private
 
   def set_draft_status

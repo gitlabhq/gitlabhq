@@ -794,3 +794,22 @@ If a user sees a 404 when they would normally expect access, and the problem is 
 
 In viewing the log entries, compare the `remote.ip` with the list of
 [allowed IPs](#restrict-group-access-by-ip-address) for the group.
+
+### Validation errors on namespaces and groups
+
+[GitLab 14.4 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70365) performs
+the following checks when creating or updating namespaces or groups:
+
+- Namespaces must not have parents.
+- Group parents must be groups and not namespaces.
+
+You can disable the validation if GitLab shows the following errors:
+
+- `A user namespace cannot have a parent`.
+- `A group cannot have a user namespace as its parent`.
+
+To disable the validation,
+[disable the `validate_namespace_parent_type` flag](../../administration/feature_flags.md).
+
+In the unlikely event that you had to disable this feature flag to prevent errors,
+[contact Support](https://about.gitlab.com/support/) so that we can improve this validation.

@@ -129,6 +129,29 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
   end
 
+  describe 'when it raises exception' do
+    context 'calls error tracking' do
+      before do
+        controller.request.path = '/dashboard/issues'
+        controller.request.query_string = 'assignee_username=root'
+        allow(Rails.application.routes).to receive(:recognize_path).and_return({
+          controller: 'dashboard',
+          action: 'issues'
+        })
+      end
+
+      it 'sends error to sentry and returns nil' do
+        allow(helper).to receive(:mask_params).with(anything).and_raise(ActionController::RoutingError, 'Some routing error')
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          ActionController::RoutingError,
+          url: '/dashboard/issues?assignee_username=root').and_call_original
+
+        expect(helper.masked_page_url).to be_nil
+      end
+    end
+  end
+
   describe 'when feature flag is disabled' do
     before do
       stub_feature_flags(mask_page_urls: false)

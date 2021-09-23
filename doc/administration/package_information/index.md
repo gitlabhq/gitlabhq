@@ -39,7 +39,7 @@ libraries are located in `/opt/gitlab/version-manifest.txt`.
 
 If you don't have the package installed, you can always check the Omnibus GitLab
 [source repository](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master), specifically the
-[config directory](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/config).
+[configuration directory](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/config).
 
 For example, if you examine the `8-6-stable` branch, you can conclude that
 8.6 packages were running [Ruby 2.1.8](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8-6-stable/config/projects/gitlab.rb#L48).

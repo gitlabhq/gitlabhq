@@ -6,7 +6,8 @@ module Routing
       return unless Feature.enabled?(:mask_page_urls, type: :ops)
 
       mask_params(Rails.application.routes.recognize_path(request.original_fullpath))
-    rescue ActionController::RoutingError, URI::InvalidURIError
+    rescue ActionController::RoutingError, URI::InvalidURIError => e
+      Gitlab::ErrorTracking.track_exception(e, url: request.original_fullpath)
       nil
     end
 

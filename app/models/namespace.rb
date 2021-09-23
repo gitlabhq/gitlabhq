@@ -77,7 +77,7 @@ class Namespace < ApplicationRecord
 
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
-  validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type) }
+  validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type, default_enabled: :yaml) }
   validate :nesting_level_allowed
   validate :changing_shared_runners_enabled_is_allowed
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed
