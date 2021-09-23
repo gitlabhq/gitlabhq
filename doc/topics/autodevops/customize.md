@@ -715,7 +715,7 @@ The banner can be disabled for:
     Feature.enable(:auto_devops_banner_disabled)
     ```
 
-  - Through the REST API with an admin access token:
+  - Through the REST API with an administrator access token:
 
     ```shell
     curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" "https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled"

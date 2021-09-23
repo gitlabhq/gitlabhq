@@ -434,7 +434,7 @@ mentioned in the [permissions table above](#project-members-permissions) (they
 are unable to browse the project's repository, for example).
 
 NOTE:
-To prevent a guest user from creating projects, as an admin, you can edit the
+To prevent a guest user from creating projects, as an administrator, you can edit the
 user's profile to mark the user as [external](#external-users).
 Beware though that even if a user is external, if they already have Reporter or
 higher permissions in any project or group, they are **not** counted as a
@@ -519,7 +519,7 @@ In GitLab 11.0, the Master role was renamed to Maintainer.
 This table shows granted privileges for jobs triggered by specific types of
 users:
 
-| Action                                      | Guest, Reporter | Developer   |Maintainer| Admin   |
+| Action                                      | Guest, Reporter | Developer   |Maintainer| Administrator   |
 |---------------------------------------------|-----------------|-------------|----------|---------|
 | Run CI job                                  |                 | ✓           | ✓        | ✓       |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓       |
@@ -555,7 +555,7 @@ for more information.
 
 ## LDAP users permissions
 
-In GitLab 8.15 and later, LDAP user permissions can now be manually overridden by an admin user.
+In GitLab 8.15 and later, LDAP user permissions can now be manually overridden by an administrator.
 Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases

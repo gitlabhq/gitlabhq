@@ -86,7 +86,7 @@ Example response:
 ## List all runners **(FREE SELF)**
 
 Get a list of all runners in the GitLab instance (specific and shared). Access
-is restricted to users with `admin` privileges.
+is restricted to users with the administrator role.
 
 ```plaintext
 GET /runners/all

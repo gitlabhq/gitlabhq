@@ -136,9 +136,9 @@ pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_cla
 
 ## Dealing with running CI/CD pipelines and jobs
 
-If you upgrade your GitLab instance while the GitLab Runner is processing jobs, the trace updates will fail. Once GitLab is back online, then the trace updates should self-heal. However, depending on the error, the GitLab Runner will either retry or eventually terminate job handling.
+If you upgrade your GitLab instance while the GitLab Runner is processing jobs, the trace updates fail. When GitLab is back online, the trace updates should self-heal. However, depending on the error, the GitLab Runner either retries or eventually terminates job handling.
 
-As for the artifacts, the GitLab Runner will attempt to upload them three times, after which the job will eventually fail.
+As for the artifacts, the GitLab Runner attempts to upload them three times, after which the job eventually fails.
 
 To address the above two scenario's, it is advised to do the following prior to upgrading:
 
@@ -206,7 +206,7 @@ upgrade paths.
 Upgrading the *major* version requires more attention.
 Backward-incompatible changes and migrations are reserved for major versions.
 Follow the directions carefully as we
-cannot guarantee that upgrading between major versions will be seamless.
+cannot guarantee that upgrading between major versions is seamless.
 
 It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
 
@@ -402,7 +402,7 @@ Git 2.31.x and later is required. We recommend you use the
 ### 13.9.0
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
-that will prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3 when following the zero-downtime steps. It is necessary
+that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2, and 13.9.3 when following the zero-downtime steps. It is necessary
 to perform the following additional steps for the zero-downtime upgrade:
 
 1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
@@ -423,7 +423,7 @@ to perform the following additional steps for the zero-downtime upgrade:
    ```
 
 If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
-encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you will
+encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you
 see the following error:
 
 ```shell

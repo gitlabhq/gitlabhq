@@ -10,13 +10,13 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323423) in GitLab 13.12.
 
 WARNING:
-This product is an early access and is considered a [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta) feature.
+This product is in an early-access stage and is considered a [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta) feature.
 
 GitLab DAST's new browser-based crawler is a crawl engine built by GitLab to test Single Page Applications (SPAs) and traditional web applications.
 Due to the reliance of modern web applications on JavaScript, handling SPAs or applications that are dependent on JavaScript is paramount to ensuring proper coverage of an application for Dynamic Application Security Testing (DAST).
 
-The browser-based crawler works by loading the target application into a specially-instrumented Chromium browser. A snapshot of the page is taken prior to a search to find any actions that a user might perform,
-such as clicking on a link or filling in a form. For each action found, the crawler will execute it, take a new snapshot and determine what in the page changed from the previous snapshot.
+The browser-based crawler works by loading the target application into a specially-instrumented Chromium browser. A snapshot of the page is taken before a search to find any actions that a user might perform,
+such as clicking on a link or filling in a form. For each action found, the crawler executes it, takes a new snapshot, and determines what in the page changed from the previous snapshot.
 Crawling continues by taking more snapshots and finding subsequent actions.
 
 The benefit of crawling by following user actions in a browser is that the crawler can interact with the target application much like a real user would, identifying complex flows that traditional web crawlers don't understand. This results in better coverage of the website.
@@ -57,17 +57,17 @@ The browser-based crawler can be configured using CI/CD variables.
 | `DAST_BROWSER_IGNORED_HOSTS`                 | List of strings | `site.com,another.com`            | Hostnames included in this variable are accessed but not reported against. |
 | `DAST_BROWSER_MAX_ACTIONS`                   | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, clicking a link, or filling a form.  |
 | `DAST_BROWSER_MAX_DEPTH`                     | number          | `10`                              | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three. |
-| `DAST_BROWSER_NUMBER_OF_BROWSERS`            | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but will likely produce little benefit after five to seven instances. |
+| `DAST_BROWSER_NUMBER_OF_BROWSERS`            | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com, we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but are likely to produce little benefit after five to seven instances. |
 | `DAST_BROWSER_COOKIES`                       | dictionary      | `abtesting_group:3,region:locked` | A cookie name and value to be added to every request. |
 | `DAST_BROWSER_LOG`                           | List of strings | `brows:debug,auth:debug`          | A list of modules and their intended log level. |
-| `DAST_BROWSER_NAVIGATION_TIMEOUT`            | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `15s`   | The maximum amount of time to wait for a browser to navigate from one page to another |
-| `DAST_BROWSER_ACTION_TIMEOUT`                | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to complete an action |
-| `DAST_BROWSER_STABILITY_TIMEOUT`             | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis |
-| `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`  | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes |
-| `DAST_BROWSER_ACTION_STABILITY_TIMEOUT`      | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `800ms` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after completing an action |
-| `DAST_BROWSER_SEARCH_ELEMENT_TIMEOUT`        | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `3s`    | The maximum amount of time to allow the browser to search for new elements or navigations |
-| `DAST_BROWSER_EXTRACT_ELEMENT_TIMEOUT`       | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `5s`    | The maximum amount of time to allow the browser to extract newly found elements or navigations |
-| `DAST_BROWSER_ELEMENT_TIMEOUT`               | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `600ms` | The maximum amount of time to wait for an element before determining it is ready for analysis |
+| `DAST_BROWSER_NAVIGATION_TIMEOUT`            | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `15s`   | The maximum amount of time to wait for a browser to navigate from one page to another. |
+| `DAST_BROWSER_ACTION_TIMEOUT`                | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to complete an action. |
+| `DAST_BROWSER_STABILITY_TIMEOUT`             | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis. |
+| `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`  | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. |
+| `DAST_BROWSER_ACTION_STABILITY_TIMEOUT`      | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `800ms` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after completing an action. |
+| `DAST_BROWSER_SEARCH_ELEMENT_TIMEOUT`        | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `3s`    | The maximum amount of time to allow the browser to search for new elements or navigations. |
+| `DAST_BROWSER_EXTRACT_ELEMENT_TIMEOUT`       | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `5s`    | The maximum amount of time to allow the browser to extract newly found elements or navigations. |
+| `DAST_BROWSER_ELEMENT_TIMEOUT`               | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `600ms` | The maximum amount of time to wait for an element before determining it is ready for analysis. |
 
 The [DAST variables](index.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
 `DAST_AUTH_URL`, `DAST_USERNAME`, `DAST_PASSWORD`, `DAST_USERNAME_FIELD`, `DAST_PASSWORD_FIELD`, `DAST_FIRST_SUBMIT_FIELD`, `DAST_SUBMIT_FIELD`, `DAST_EXCLUDE_URLS`, `DAST_AUTH_VERIFICATION_URL`, `DAST_BROWSER_AUTH_VERIFICATION_SELECTOR`, `DAST_BROWSER_AUTH_VERIFICATION_LOGIN_FORM`, `DAST_BROWSER_AUTH_REPORT`,
@@ -80,27 +80,27 @@ While the browser-based crawler crawls modern web applications efficiently, vuln
 The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP.
 When running a full scan, active vulnerability checks executed by DAST/ZAP do not use a browser. This difference in how vulnerabilities are checked can cause issues that require certain features of the target website to be disabled to ensure the scan works as intended.
 
-For example, for a target website that contains forms with Anti-CSRF tokens, a passive scan will scan as intended because the browser displays pages/forms as if a user is viewing the page.
-However, active vulnerability checks run in a full scan will not be able to submit forms containing Anti-CSRF tokens. In such cases we recommend you disable Anti-CSRF tokens when running a full scan.
+For example, for a target website that contains forms with Anti-CSRF tokens, a passive scan works as intended because the browser displays pages and forms as if a user is viewing the page.
+However, active vulnerability checks that run in a full scan cannot submit forms containing Anti-CSRF tokens. In such cases, we recommend you disable Anti-CSRF tokens when running a full scan.
 
 ## Managing scan time
 
-It is expected that running the browser-based crawler will result in better coverage for many web applications, when compared to the normal GitLab DAST solution.
+It is expected that running the browser-based crawler results in better coverage for many web applications, when compared to the normal GitLab DAST solution.
 This can come at a cost of increased scan time.
 
 You can manage the trade-off between coverage and scan time with the following measures:
 
 - Limit the number of actions executed by the browser with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
 - Limit the page depth that the browser-based crawler will check coverage on with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
-- Vertically scaling the runner and using a higher number of browsers with [variable](#available-cicd-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
+- Vertically scale the runner and use a higher number of browsers with [variable](#available-cicd-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
 
 ## Timeouts
 
 Due to poor network conditions or heavy application load, the default timeouts may not be applicable to your application.
 
-Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://golang.org/pkg/time/#ParseDuration) which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
+Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://golang.org/pkg/time/#ParseDuration), which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
 
-Navigations, or the act of loading a new page, usually require the most amount of time as they are
+Navigations, or the act of loading a new page, usually require the most amount of time because they are
 loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_BROWSER_NAVIGATION_TIMEOUT` may not be sufficient.
 
 Stability timeouts, such as those configurable with `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT`, and `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` can also be configured. Stability timeouts determine when browser-based scans consider
@@ -110,11 +110,11 @@ a page fully loaded. Browser-based scans consider a page loaded when:
 1. There are no open or outstanding requests that are deemed important, such as JavaScript and CSS. Media files are usually deemed unimportant.
 1. Depending on whether the browser executed a navigation, was forcibly transitioned, or action:
   
-   - There are no new Document Object Model (DOM) modification events after the `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT` or `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` durations
+   - There are no new Document Object Model (DOM) modification events after the `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT`, or `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` durations.
 
-After these events have occurred, browser-based scans consider the page loaded and ready and attempt the next action.
+After these events have occurred, browser-based scans consider the page loaded and ready, and attempt the next action.
 
-If your application experiences latency or returns many navigation failures, consider adjusting the timeout values such in this example:
+If your application experiences latency or returns many navigation failures, consider adjusting the timeout values such as in this example:
 
 ```yaml
 include:
@@ -132,7 +132,7 @@ dast:
 ```
 
 NOTE:
-Adjusting these values may impact scan time as they adjust how long each browser waits for various activities to complete.
+Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
 
 ## Debugging scans using logging
 
@@ -168,7 +168,7 @@ The modules that can be configured for logging are as follows:
 | Log module | Component overview |
 | ---------- | ----------- |
 | `AUTH`     | Used for creating an authenticated scan. |
-| `BROWS`    | Used for querying the state/page of the browser. |
+| `BROWS`    | Used for querying the state or page of the browser. |
 | `BPOOL`    | The set of browsers that are leased out for crawling. |
 | `CRAWL`    | Used for the core crawler algorithm. |
 | `DATAB`    | Used for persisting data to the internal database. |

@@ -472,6 +472,26 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
         expect(duplicate_job).to be_idempotent
       end
     end
+
+    context 'when worker class is utilizing load balancing capabilities' do
+      before do
+        allow(AuthorizedProjectsWorker).to receive(:utilizes_load_balancing_capabilities?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(duplicate_job).to be_idempotent
+      end
+
+      context 'when preserve_latest_wal_locations_for_idempotent_jobs feature flag is disabled' do
+        before do
+          stub_feature_flags(preserve_latest_wal_locations_for_idempotent_jobs: false)
+        end
+
+        it 'returns false' do
+          expect(duplicate_job).not_to be_idempotent
+        end
+      end
+    end
   end
 
   def existing_wal_location_key(idempotency_key, config_name)

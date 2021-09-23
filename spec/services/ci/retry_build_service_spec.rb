@@ -48,7 +48,7 @@ RSpec.describe Ci::RetryBuildService do
        job_artifacts_network_referee job_artifacts_dotenv
        job_artifacts_cobertura needs job_artifacts_accessibility
        job_artifacts_requirements job_artifacts_coverage_fuzzing
-       job_artifacts_api_fuzzing].freeze
+       job_artifacts_api_fuzzing terraform_state_versions].freeze
 
   ignore_accessors =
     %i[type lock_version target_url base_tags trace_sections
@@ -88,6 +88,7 @@ RSpec.describe Ci::RetryBuildService do
 
       create(:ci_job_variable, job: build)
       create(:ci_build_need, build: build)
+      create(:terraform_state_version, build: build)
     end
 
     describe 'clone accessors' do

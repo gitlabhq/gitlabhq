@@ -974,15 +974,15 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.11.0":
-  version "32.11.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.11.0.tgz#8c4a1724c1733a243f96e4a4813ae7f348502ba6"
-  integrity sha512-EqP5Ub/IWEi5ErX0txx5vsd6hF7d7dOT5GqaRX6rVaLsUhWLYQZ8ld2yEl5Hx7FLki1t3uag17KII5FcvRTDLg==
+"@gitlab/ui@32.11.1":
+  version "32.11.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.11.1.tgz#05b1587cb3df06abdebe9f06d744c5f18c90a0bb"
+  integrity sha512-LzqEA2aiaqN39qwqNw039Hv9abFsYZJu0RpXikx6/OKCYwVRvynja7oRMwkB2Q+xLOb7YfOoQweWUk1jo6hElw==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.18.1"
     copy-to-clipboard "^3.0.8"
-    dompurify "^2.3.2"
+    dompurify "^2.3.3"
     echarts "^4.9.0"
     highlight.js "^10.6.0"
     js-beautify "^1.8.8"
@@ -4333,10 +4333,10 @@ date-now@^0.1.4:
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
   integrity sha1-6vQ5/U1ISK105cx9vvIAZyueNFs=
 
-dateformat@^4.5.1:
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-4.5.1.tgz#c20e7a9ca77d147906b6dc2261a8be0a5bd2173c"
-  integrity sha512-OD0TZ+B7yP7ZgpJf5K2DIbj3FZvFvxgFUuaqA/V5zTjAtAAXZ1E8bktHxmAGs4x5b7PflqA9LeQ84Og7wYtF7Q==
+dateformat@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-5.0.1.tgz#60a27a2deb339f888ba4532f533e25ac73ca3d19"
+  integrity sha512-DrcKxOW2am3mtqoJwBTK3OlWcF0QSk1p8diEWwpu3Mf//VdURD7XVaeOV738JvcaBiFfm9o2fisoMhiJH0aYxg==
 
 de-indent@^1.0.2:
   version "1.0.2"
@@ -4675,7 +4675,7 @@ dompurify@2.3.0:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.0.tgz#07bb39515e491588e5756b1d3e8375b5964814e2"
   integrity sha512-VV5C6Kr53YVHGOBKO/F86OYX6/iLTw2yVSI721gKetxpHCK/V5TaLEf9ODjRgl1KLSWRMY6cUhAbv/c+IUnwQw==
 
-dompurify@^2.3.2, dompurify@^2.3.3:
+dompurify@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.3.tgz#c1af3eb88be47324432964d8abc75cf4b98d634c"
   integrity sha512-dqnqRkPMAjOZE0FogZ+ceJNM2dZ3V/yNOuFB7+39qpO93hHhfRpHw3heYQC7DPK9FqbQTfBKUJhiSfz4MvXYwg==

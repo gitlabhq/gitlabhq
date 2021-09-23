@@ -41,6 +41,7 @@ exceptions:
   - DNS
   - DOM
   - DSA
+  - DSL
   - DVCS
   - ECDSA
   - ECS

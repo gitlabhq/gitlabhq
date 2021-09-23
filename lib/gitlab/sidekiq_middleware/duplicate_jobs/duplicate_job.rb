@@ -140,6 +140,7 @@ module Gitlab
         def idempotent?
           return false unless worker_klass
           return false unless worker_klass.respond_to?(:idempotent?)
+          return false unless preserve_wal_location? || !worker_klass.utilizes_load_balancing_capabilities?
 
           worker_klass.idempotent?
         end

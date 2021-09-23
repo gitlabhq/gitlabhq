@@ -50,7 +50,7 @@ and check if their values are what you expect.
 ## GitLab CI/CD documentation
 
 The [complete `.gitlab-ci.yml` reference](yaml/index.md) contains a full list of
-every keyword you may need to use to configure your pipelines.
+every keyword you can use to configure your pipelines.
 
 You can also look at a large number of pipeline configuration [examples](examples/index.md)
 and [templates](examples/index.md#cicd-templates).
@@ -76,7 +76,7 @@ if you are using that type:
 
 ### Troubleshooting Guides for CI/CD features
 
-There are troubleshooting guides available for some CI/CD features and related topics:
+Troubleshooting guides are available for some CI/CD features and related topics:
 
 - [Container Registry](../user/packages/container_registry/index.md#troubleshooting-the-gitlab-container-registry)
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/)
@@ -118,7 +118,7 @@ Two pipelines can run when pushing a commit to a branch that has an open merge r
 associated with it. Usually one pipeline is a merge request pipeline, and the other
 is a branch pipeline.
 
-This is usually caused by the `rules` configuration, and there are several ways to
+This situation is usually caused by the `rules` configuration, and there are several ways to
 [prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines).
 
 #### A job is not in the pipeline
@@ -168,7 +168,7 @@ a branch to its remote repository. To illustrate the problem, suppose you've had
 1. A new pipeline starts running on the `example` branch again, however,
    the previous pipeline (2) fails because of `fatal: reference is not a tree:` error.
 
-This is because the previous pipeline cannot find a checkout-SHA (which is associated with the pipeline record)
+This occurs because the previous pipeline cannot find a checkout-SHA (which is associated with the pipeline record)
 from the `example` branch that the commit history has already been overwritten by the force-push.
 Similarly, [Pipelines for merged results](pipelines/pipelines_for_merged_results.md)
 might have failed intermittently due to [the same reason](pipelines/pipelines_for_merged_results.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
@@ -199,6 +199,7 @@ latest commit yet. This might be because:
 - You are not using CI/CD pipelines in your project.
 - You are using CI/CD pipelines in your project, but your configuration prevented a pipeline from running on the source branch for your merge request.
 - The latest pipeline was deleted (this is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214323)).
+- The source branch of the merge request is on a private fork.
 
 After the pipeline is created, the message updates with the pipeline status.
 

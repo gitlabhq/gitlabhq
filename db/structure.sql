@@ -86,16 +86,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_aebe8b822ad3() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."id_convert_to_bigint" := NEW."id";
-  NEW."taggable_id_convert_to_bigint" := NEW."taggable_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE TABLE audit_events (
     id bigint NOT NULL,
     author_id integer NOT NULL,
@@ -19415,9 +19405,7 @@ CREATE SEQUENCE system_note_metadata_id_seq
 ALTER SEQUENCE system_note_metadata_id_seq OWNED BY system_note_metadata.id;
 
 CREATE TABLE taggings (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     tag_id integer,
-    taggable_id_convert_to_bigint integer,
     taggable_type character varying,
     tagger_id integer,
     tagger_type character varying,
@@ -27344,8 +27332,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 
 CREATE TRIGGER trigger_91dc388a5fe6 BEFORE INSERT OR UPDATE ON dep_ci_build_trace_sections FOR EACH ROW EXECUTE FUNCTION trigger_91dc388a5fe6();
 
-CREATE TRIGGER trigger_aebe8b822ad3 BEFORE INSERT OR UPDATE ON taggings FOR EACH ROW EXECUTE FUNCTION trigger_aebe8b822ad3();
-
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
@@ -27384,9 +27370,6 @@ ALTER TABLE ONLY service_desk_settings
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY terraform_state_versions
-    ADD CONSTRAINT fk_04b91e4a9f FOREIGN KEY (ci_build_id) REFERENCES ci_builds(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_05f1e72feb FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
