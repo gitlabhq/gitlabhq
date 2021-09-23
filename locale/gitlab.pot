@@ -24145,6 +24145,9 @@ msgstr ""
 msgid "PackageRegistry|Install package version"
 msgstr ""
 
+msgid "PackageRegistry|Instance-level"
+msgstr ""
+
 msgid "PackageRegistry|Invalid Package: failed metadata extraction"
 msgstr ""
 
@@ -24188,6 +24191,9 @@ msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, bu
 msgstr ""
 
 msgid "PackageRegistry|Pip Command"
+msgstr ""
+
+msgid "PackageRegistry|Project-level"
 msgstr ""
 
 msgid "PackageRegistry|Publish and share packages for a variety of common package managers. %{docLinkStart}More information%{docLinkEnd}"
@@ -39909,7 +39915,7 @@ msgstr ""
 msgid "encrypted: needs to be a :required, :optional or :migrating!"
 msgstr ""
 
-msgid "ending with a file extension is not allowed."
+msgid "ending with a reserved file extension is not allowed."
 msgstr ""
 
 msgid "entries cannot be larger than 255 characters"

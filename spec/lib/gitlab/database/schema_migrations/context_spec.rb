@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
       end
     end
 
-    context 'multiple databases' do
+    context 'multiple databases', :reestablished_active_record_base do
       let(:connection_class) do
         Class.new(::ApplicationRecord) do
           self.abstract_class = true
@@ -33,8 +33,6 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
           end
         end
       end
-
-      let(:configuration_overrides) { {} }
 
       before do
         connection_class.establish_connection(

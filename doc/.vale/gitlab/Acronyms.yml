@@ -17,6 +17,7 @@ exceptions:
   - AJAX
   - ANSI
   - API
+  - APM
   - ARM
   - ARN
   - ASCII
@@ -24,6 +25,7 @@ exceptions:
   - BSD
   - CAS
   - CDN
+  - CIDR
   - CLI
   - CNA
   - CNAME

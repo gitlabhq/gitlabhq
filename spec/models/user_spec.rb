@@ -401,7 +401,7 @@ RSpec.describe User do
           user = build(:user, username: "test.#{type}")
 
           expect(user).not_to be_valid
-          expect(user.errors.full_messages).to include('Username ending with a file extension is not allowed.')
+          expect(user.errors.full_messages).to include('Username ending with a reserved file extension is not allowed.')
           expect(build(:user, username: "test#{type}")).to be_valid
         end
       end

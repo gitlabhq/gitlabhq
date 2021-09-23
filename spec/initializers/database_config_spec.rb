@@ -2,17 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Database config initializer' do
+RSpec.describe 'Database config initializer', :reestablished_active_record_base do
   subject do
     load Rails.root.join('config/initializers/database_config.rb')
-  end
-
-  around do |example|
-    original_config = ActiveRecord::Base.connection_db_config
-
-    example.run
-
-    ActiveRecord::Base.establish_connection(original_config)
   end
 
   before do

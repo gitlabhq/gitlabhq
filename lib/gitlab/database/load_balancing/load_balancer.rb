@@ -235,7 +235,7 @@ module Gitlab
             @configuration.model.connection_specification_name,
             role: ActiveRecord::Base.writing_role,
             shard: ActiveRecord::Base.default_shard
-          )
+          ) || raise(::ActiveRecord::ConnectionNotEstablished)
         end
 
         private

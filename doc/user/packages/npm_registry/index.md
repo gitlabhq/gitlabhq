@@ -370,13 +370,26 @@ in a JavaScript project. You can install a package from the scope of a project o
 
 If multiple packages have the same name and version, when you install a package, the most recently-published package is retrieved.
 
-1. Set the URL for scoped packages by running:
+1. Set the URL for scoped packages.
+
+   For [instance-level endpoints](#use-the-gitlab-endpoint-for-npm-packages) run:
 
    ```shell
    npm config set @foo:registry https://gitlab.example.com/api/v4/packages/npm/
    ```
 
-   Replace `@foo` with your scope.
+   - Replace `@foo` with your scope.
+   - Replace `gitlab.example.com` with your domain name.
+  
+   For [project-level endpoints](#use-the-gitlab-endpoint-for-npm-packages) run:
+
+   ```shell
+   npm config set @foo:registry https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/
+   ```
+
+   - Replace `@foo` with your scope.
+   - Replace `gitlab.example.com` with your domain name.
+   - Replace `<your_project_id>` with your project ID, found on the project's home page.
 
 1. Ensure [authentication](#authenticate-to-the-package-registry) is configured.
 

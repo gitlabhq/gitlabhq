@@ -2098,7 +2098,7 @@ class User < ApplicationRecord
   def check_username_format
     return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(".#{type}") }
 
-    errors.add(:username, _('ending with a file extension is not allowed.'))
+    errors.add(:username, _('ending with a reserved file extension is not allowed.'))
   end
 
   def groups_with_developer_maintainer_project_access

@@ -91,10 +91,6 @@ the pipeline runs, Helmfile tries to either install or update your apps accordin
 cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile tries try to uninstall this app
 from your cluster. [Read more](https://github.com/roboll/helmfile) about how Helmfile works.
 
-Furthermore, each app has an `applications/{app}/values.yaml` file (`applicaton/{app}/values.yaml.gotmpl` in case of GitLab Runner). This is the
-place where you can define default values for your app's Helm chart. Some apps already have defaults
-pre-defined by GitLab.
-
 ### Built-in applications
 
 The [built-in supported applications](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/tree/master/applications) are:
@@ -110,3 +106,9 @@ The [built-in supported applications](https://gitlab.com/gitlab-org/project-temp
 - [Prometheus](../infrastructure/clusters/manage/management_project_applications/prometheus.md)
 - [Sentry](../infrastructure/clusters/manage/management_project_applications/sentry.md)
 - [Vault](../infrastructure/clusters/manage/management_project_applications/vault.md)
+
+#### How to customize your applications
+
+Each app has an `applications/{app}/values.yaml` file (`applicaton/{app}/values.yaml.gotmpl` in case of GitLab Runner). This is the
+place where you can define default values for your app's Helm chart. Some apps already have defaults
+pre-defined by GitLab.

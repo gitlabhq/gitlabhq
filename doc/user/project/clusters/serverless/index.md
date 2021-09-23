@@ -282,7 +282,7 @@ Explanation of the fields used above:
 |-----------|-------------|
 | `name` | Indicates which provider is used to execute the `serverless.yml` file. In this case, the TriggerMesh middleware. |
 | `envs` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are the variable contents. You may replace this with your own variables. |
-| `secrets` | Includes the contents of the Kubernetes secret as environment variables accessible to be passed as part of function execution for **all** functions in the file. The secrets are expected in INI format. |
+| `secrets` | Includes the contents of the Kubernetes secret as environment variables accessible to be passed as part of function execution for **all** functions in the file. The secrets are expected in `INI` format. |
 
 ### `functions`
 
@@ -296,7 +296,7 @@ subsequent lines contain the function attributes.
 | `runtime` (optional)| The runtime to be used to execute the function. This can be a runtime alias (see [Runtime aliases](#runtime-aliases)), or it can be a full URL to a custom runtime repository. When the runtime is not specified, we assume that `Dockerfile` is present in the function directory specified by `source`. |
 | `description` | A short description of the function. |
 | `envs` | Sets an environment variable for the specific function only. |
-| `secrets` | Includes the contents of the Kubernetes secret as environment variables accessible to be passed as part of function execution for the specific function only. The secrets are expected in INI format. |
+| `secrets` | Includes the contents of the Kubernetes secret as environment variables accessible to be passed as part of function execution for the specific function only. The secrets are expected in `INI` format. |
 
 ### Deployment
 

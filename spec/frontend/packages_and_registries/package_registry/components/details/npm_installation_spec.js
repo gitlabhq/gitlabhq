@@ -1,3 +1,4 @@
+import { GlFormRadioGroup } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -12,6 +13,8 @@ import {
   PACKAGE_TYPE_NPM,
   NPM_PACKAGE_MANAGER,
   YARN_PACKAGE_MANAGER,
+  PROJECT_PACKAGE_ENDPOINT_TYPE,
+  INSTANCE_PACKAGE_ENDPOINT_TYPE,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -25,12 +28,14 @@ describe('NpmInstallation', () => {
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findEndPointTypeSector = () => wrapper.findComponent(GlFormRadioGroup);
 
   function createComponent({ data = {} } = {}) {
     wrapper = shallowMountExtended(NpmInstallation, {
       provide: {
         npmHelpPath: 'npmHelpPath',
         npmPath: 'npmPath',
+        npmProjectPath: 'npmProjectPath',
       },
       propsData: {
         packageEntity,
@@ -51,6 +56,19 @@ describe('NpmInstallation', () => {
 
   it('renders all the messages', () => {
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  describe('endpoint type selector', () => {
+    it('has the endpoint type selector', () => {
+      expect(findEndPointTypeSector().exists()).toBe(true);
+      expect(findEndPointTypeSector().vm.$attrs.checked).toBe(INSTANCE_PACKAGE_ENDPOINT_TYPE);
+      expect(findEndPointTypeSector().props()).toMatchObject({
+        options: [
+          { value: INSTANCE_PACKAGE_ENDPOINT_TYPE, text: 'Instance-level' },
+          { value: PROJECT_PACKAGE_ENDPOINT_TYPE, text: 'Project-level' },
+        ],
+      });
+    });
   });
 
   describe('install command switch', () => {
@@ -96,6 +114,28 @@ describe('NpmInstallation', () => {
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
     });
+
+    it('renders the correct setup command for different endpoint types', async () => {
+      findEndPointTypeSector().vm.$emit('change', PROJECT_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
+
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
+        instruction: `echo @gitlab-org:registry=npmProjectPath/ >> .npmrc`,
+        multiline: false,
+        trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
+      });
+
+      findEndPointTypeSector().vm.$emit('change', INSTANCE_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
+
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
+        instruction: `echo @gitlab-org:registry=npmPath/ >> .npmrc`,
+        multiline: false,
+        trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
+      });
+    });
   });
 
   describe('yarn', () => {
@@ -112,6 +152,28 @@ describe('NpmInstallation', () => {
     });
 
     it('renders the correct registry command', () => {
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
+        instruction: 'echo \\"@gitlab-org:registry\\" \\"npmPath/\\" >> .yarnrc',
+        multiline: false,
+        trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
+      });
+    });
+
+    it('renders the correct setup command for different endpoint types', async () => {
+      findEndPointTypeSector().vm.$emit('change', PROJECT_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
+
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
+        instruction: `echo \\"@gitlab-org:registry\\" \\"npmProjectPath/\\" >> .yarnrc`,
+        multiline: false,
+        trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
+      });
+
+      findEndPointTypeSector().vm.$emit('change', INSTANCE_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
+
       expect(findCodeInstructions().at(1).props()).toMatchObject({
         instruction: 'echo \\"@gitlab-org:registry\\" \\"npmPath/\\" >> .yarnrc',
         multiline: false,
