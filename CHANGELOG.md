@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.11 (2021-09-23)
+
+### Fixed (1 change)
+
+- [Fix Elastic::MigrationWorker current_migration](gitlab-org/gitlab@0b72aace30bff0fda7a114862ec1e389ddaa5ead) ([merge request](gitlab-org/gitlab!71101)) **GitLab Enterprise Edition**
+
 ## 14.0.10 (2021-09-02)
 
 No changes.
