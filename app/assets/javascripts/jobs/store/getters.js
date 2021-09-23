@@ -21,11 +21,12 @@ export const shouldRenderTriggeredLabel = (state) => isString(state.job.started)
 export const hasEnvironment = (state) => !isEmpty(state.job.deployment_status);
 
 /**
- * Checks if it the job has trace.
+ * Checks if it the job has a log.
  * Used to check if it should render the job log or the empty state
  * @returns {Boolean}
  */
-export const hasTrace = (state) =>
+export const hasJobLog = (state) =>
+  // update has_trace once BE compeletes trace re-naming in #340626
   state.job.has_trace || (!isEmpty(state.job.status) && state.job.status.group === 'running');
 
 export const emptyStateIllustration = (state) => state?.job?.status?.illustration || {};
@@ -43,7 +44,7 @@ export const shouldRenderSharedRunnerLimitWarning = (state) =>
   !isEmpty(state.job.runners.quota) &&
   state.job.runners.quota.used >= state.job.runners.quota.limit;
 
-export const isScrollingDown = (state) => isScrolledToBottom() && !state.isTraceComplete;
+export const isScrollingDown = (state) => isScrolledToBottom() && !state.isJobLogComplete;
 
 export const hasRunnersForProject = (state) =>
   state?.job?.runners?.available && !state?.job?.runners?.online;

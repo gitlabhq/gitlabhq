@@ -1,7 +1,7 @@
 import {
   logLinesParser,
   logLinesParserLegacy,
-  updateIncrementalTrace,
+  updateIncrementalJobLog,
   parseHeaderLine,
   parseLine,
   addDurationToHeader,
@@ -487,11 +487,11 @@ describe('Jobs Store Utils', () => {
     });
   });
 
-  describe('updateIncrementalTrace', () => {
+  describe('updateIncrementalJobLog', () => {
     describe('without repeated section', () => {
       it('concats and parses both arrays', () => {
         const oldLog = logLinesParserLegacy(originalTrace);
-        const result = updateIncrementalTrace(regularIncremental, oldLog);
+        const result = updateIncrementalJobLog(regularIncremental, oldLog);
 
         expect(result).toEqual([
           {
@@ -519,7 +519,7 @@ describe('Jobs Store Utils', () => {
     describe('with regular line repeated offset', () => {
       it('updates the last line and formats with the incremental part', () => {
         const oldLog = logLinesParserLegacy(originalTrace);
-        const result = updateIncrementalTrace(regularIncrementalRepeated, oldLog);
+        const result = updateIncrementalJobLog(regularIncrementalRepeated, oldLog);
 
         expect(result).toEqual([
           {
@@ -538,7 +538,7 @@ describe('Jobs Store Utils', () => {
     describe('with header line repeated', () => {
       it('updates the header line and formats with the incremental part', () => {
         const oldLog = logLinesParserLegacy(headerTrace);
-        const result = updateIncrementalTrace(headerTraceIncremental, oldLog);
+        const result = updateIncrementalJobLog(headerTraceIncremental, oldLog);
 
         expect(result).toEqual([
           {
@@ -564,7 +564,7 @@ describe('Jobs Store Utils', () => {
     describe('with collapsible line repeated', () => {
       it('updates the collapsible line and formats with the incremental part', () => {
         const oldLog = logLinesParserLegacy(collapsibleTrace);
-        const result = updateIncrementalTrace(collapsibleTraceIncremental, oldLog);
+        const result = updateIncrementalJobLog(collapsibleTraceIncremental, oldLog);
 
         expect(result).toEqual([
           {

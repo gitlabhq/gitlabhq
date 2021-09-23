@@ -17,7 +17,7 @@ export default {
       type: Object,
       required: true,
     },
-    traceEndpoint: {
+    jobLogEndpoint: {
       type: String,
       required: true,
     },
@@ -42,7 +42,7 @@ export default {
     <log-line-header
       :line="section.line"
       :duration="badgeDuration"
-      :path="traceEndpoint"
+      :path="jobLogEndpoint"
       :is-closed="section.isClosed"
       @toggleLine="handleOnClickCollapsibleLine(section)"
     />
@@ -53,10 +53,10 @@ export default {
             v-if="line.isHeader"
             :key="line.line.offset"
             :section="line"
-            :trace-endpoint="traceEndpoint"
+            :job-log-endpoint="jobLogEndpoint"
             @onClickCollapsibleLine="handleOnClickCollapsibleLine"
           />
-          <log-line v-else :key="line.offset" :line="line" :path="traceEndpoint" />
+          <log-line v-else :key="line.offset" :line="line" :path="jobLogEndpoint" />
         </template>
       </template>
       <template v-else>
@@ -64,7 +64,7 @@ export default {
           v-for="line in section.lines"
           :key="line.offset"
           :line="line"
-          :path="traceEndpoint"
+          :path="jobLogEndpoint"
         />
       </template>
     </template>

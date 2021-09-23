@@ -131,17 +131,17 @@ export const logLinesParserLegacy = (lines = [], accumulator = []) =>
     [...accumulator],
   );
 
-export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLines = []) => {
-  let currentLineCount = previousTraceState?.prevLineCount ?? 0;
-  let currentHeader = previousTraceState?.currentHeader;
-  let isPreviousLineHeader = previousTraceState?.isPreviousLineHeader ?? false;
+export const logLinesParser = (lines = [], previousJobLogState = {}, prevParsedLines = []) => {
+  let currentLineCount = previousJobLogState?.prevLineCount ?? 0;
+  let currentHeader = previousJobLogState?.currentHeader;
+  let isPreviousLineHeader = previousJobLogState?.isPreviousLineHeader ?? false;
   const parsedLines = prevParsedLines.length > 0 ? prevParsedLines : [];
-  const sectionsQueue = previousTraceState?.sectionsQueue ?? [];
+  const sectionsQueue = previousJobLogState?.sectionsQueue ?? [];
 
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     // First run we can use the current index, later runs we have to retrieve the last number of lines
-    currentLineCount = previousTraceState?.prevLineCount ? currentLineCount + 1 : i + 1;
+    currentLineCount = previousJobLogState?.prevLineCount ? currentLineCount + 1 : i + 1;
 
     if (line.section_header && !isPreviousLineHeader) {
       // If there's no previous line header that means we're at the root of the log
@@ -198,7 +198,7 @@ export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLi
 
   return {
     parsedLines,
-    auxiliaryPartialTraceHelpers: {
+    auxiliaryPartialJobLogHelpers: {
       isPreviousLineHeader,
       currentHeader,
       sectionsQueue,
@@ -241,7 +241,7 @@ export const findOffsetAndRemove = (newLog = [], oldParsed = []) => {
 };
 
 /**
- * When the trace is not complete, backend may send the last received line
+ * When the job log is not complete, backend may send the last received line
  * in the new response.
  *
  * We need to check if that is the case by looking for the offset property
@@ -250,7 +250,7 @@ export const findOffsetAndRemove = (newLog = [], oldParsed = []) => {
  * @param array oldLog
  * @param array newLog
  */
-export const updateIncrementalTrace = (newLog = [], oldParsed = []) => {
+export const updateIncrementalJobLog = (newLog = [], oldParsed = []) => {
   const parsedLog = findOffsetAndRemove(newLog, oldParsed);
 
   return logLinesParserLegacy(newLog, parsedLog);

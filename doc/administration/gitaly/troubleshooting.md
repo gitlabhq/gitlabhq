@@ -243,7 +243,7 @@ To mirror-push branches and tags only, and avoid attempting to mirror-push prote
 git push origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
 ```
 
-Any other namespaces that the admin wants to push can be included there as well via additional patterns.
+Any other namespaces that the administrator wants to push can be included there as well via additional patterns.
 
 ### Command line tools cannot connect to Gitaly
 

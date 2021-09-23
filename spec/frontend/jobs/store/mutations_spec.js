@@ -45,39 +45,39 @@ describe('Jobs Store Mutations', () => {
     });
   });
 
-  describe('RECEIVE_TRACE_SUCCESS', () => {
-    describe('when trace has state', () => {
-      it('sets traceState', () => {
+  describe('RECEIVE_JOB_LOG_SUCCESS', () => {
+    describe('when job log has state', () => {
+      it('sets jobLogState', () => {
         const stateLog =
           'eyJvZmZzZXQiOjczNDQ1MSwibl9vcGVuX3RhZ3MiOjAsImZnX2NvbG9yIjpudWxsLCJiZ19jb2xvciI6bnVsbCwic3R5bGVfbWFzayI6MH0=';
-        mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+        mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
           state: stateLog,
         });
 
-        expect(stateCopy.traceState).toEqual(stateLog);
+        expect(stateCopy.jobLogState).toEqual(stateLog);
       });
     });
 
-    describe('when traceSize is smaller than the total size', () => {
-      it('sets isTraceSizeVisible to true', () => {
-        mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, { total: 51184600, size: 1231 });
+    describe('when jobLogSize is smaller than the total size', () => {
+      it('sets isJobLogSizeVisible to true', () => {
+        mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, { total: 51184600, size: 1231 });
 
-        expect(stateCopy.isTraceSizeVisible).toEqual(true);
+        expect(stateCopy.isJobLogSizeVisible).toEqual(true);
       });
     });
 
-    describe('when traceSize is bigger than the total size', () => {
-      it('sets isTraceSizeVisible to false', () => {
-        const copy = { ...stateCopy, traceSize: 5118460, size: 2321312 };
+    describe('when jobLogSize is bigger than the total size', () => {
+      it('sets isJobLogSizeVisible to false', () => {
+        const copy = { ...stateCopy, jobLogSize: 5118460, size: 2321312 };
 
-        mutations[types.RECEIVE_TRACE_SUCCESS](copy, { total: 511846 });
+        mutations[types.RECEIVE_JOB_LOG_SUCCESS](copy, { total: 511846 });
 
-        expect(copy.isTraceSizeVisible).toEqual(false);
+        expect(copy.isJobLogSizeVisible).toEqual(false);
       });
     });
 
-    it('sets trace, trace size and isTraceComplete', () => {
-      mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+    it('sets job log size and isJobLogComplete', () => {
+      mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
         append: true,
         html,
         size: 511846,
@@ -85,15 +85,15 @@ describe('Jobs Store Mutations', () => {
         lines: [],
       });
 
-      expect(stateCopy.traceSize).toEqual(511846);
-      expect(stateCopy.isTraceComplete).toEqual(true);
+      expect(stateCopy.jobLogSize).toEqual(511846);
+      expect(stateCopy.isJobLogComplete).toEqual(true);
     });
 
     describe('with new job log', () => {
       describe('log.lines', () => {
         describe('when append is true', () => {
           it('sets the parsed log ', () => {
-            mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: true,
               size: 511846,
               complete: true,
@@ -105,7 +105,7 @@ describe('Jobs Store Mutations', () => {
               ],
             });
 
-            expect(stateCopy.trace).toEqual([
+            expect(stateCopy.jobLog).toEqual([
               {
                 offset: 1,
                 content: [{ text: 'Running with gitlab-runner 11.12.1 (5a147c92)' }],
@@ -117,7 +117,7 @@ describe('Jobs Store Mutations', () => {
 
         describe('when it is defined', () => {
           it('sets the parsed log ', () => {
-            mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: false,
               size: 511846,
               complete: true,
@@ -126,7 +126,7 @@ describe('Jobs Store Mutations', () => {
               ],
             });
 
-            expect(stateCopy.trace).toEqual([
+            expect(stateCopy.jobLog).toEqual([
               {
                 offset: 0,
                 content: [{ text: 'Running with gitlab-runner 11.11.1 (5a147c92)' }],
@@ -138,7 +138,7 @@ describe('Jobs Store Mutations', () => {
 
         describe('when it is null', () => {
           it('sets the default value', () => {
-            mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: true,
               html,
               size: 511846,
@@ -146,30 +146,30 @@ describe('Jobs Store Mutations', () => {
               lines: null,
             });
 
-            expect(stateCopy.trace).toEqual([]);
+            expect(stateCopy.jobLog).toEqual([]);
           });
         });
       });
     });
   });
 
-  describe('SET_TRACE_TIMEOUT', () => {
-    it('sets the traceTimeout id', () => {
+  describe('SET_JOB_LOG_TIMEOUT', () => {
+    it('sets the jobLogTimeout id', () => {
       const id = 7;
 
-      expect(stateCopy.traceTimeout).not.toEqual(id);
+      expect(stateCopy.jobLogTimeout).not.toEqual(id);
 
-      mutations[types.SET_TRACE_TIMEOUT](stateCopy, id);
+      mutations[types.SET_JOB_LOG_TIMEOUT](stateCopy, id);
 
-      expect(stateCopy.traceTimeout).toEqual(id);
+      expect(stateCopy.jobLogTimeout).toEqual(id);
     });
   });
 
-  describe('STOP_POLLING_TRACE', () => {
-    it('sets isTraceComplete to true', () => {
-      mutations[types.STOP_POLLING_TRACE](stateCopy);
+  describe('STOP_POLLING_JOB_LOG', () => {
+    it('sets isJobLogComplete to true', () => {
+      mutations[types.STOP_POLLING_JOB_LOG](stateCopy);
 
-      expect(stateCopy.isTraceComplete).toEqual(true);
+      expect(stateCopy.isJobLogComplete).toEqual(true);
     });
   });
 
@@ -296,12 +296,12 @@ describe('Job Store mutations, feature flag ON', () => {
     window.gon = origGon;
   });
 
-  describe('RECEIVE_TRACE_SUCCESS', () => {
+  describe('RECEIVE_JOB_LOG_SUCCESS', () => {
     describe('with new job log', () => {
       describe('log.lines', () => {
         describe('when append is true', () => {
           it('sets the parsed log ', () => {
-            mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: true,
               size: 511846,
               complete: true,
@@ -313,7 +313,7 @@ describe('Job Store mutations, feature flag ON', () => {
               ],
             });
 
-            expect(stateCopy.trace).toEqual([
+            expect(stateCopy.jobLog).toEqual([
               {
                 offset: 1,
                 content: [{ text: 'Running with gitlab-runner 11.12.1 (5a147c92)' }],
@@ -325,7 +325,7 @@ describe('Job Store mutations, feature flag ON', () => {
 
         describe('when lines are defined', () => {
           it('sets the parsed log ', () => {
-            mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: false,
               size: 511846,
               complete: true,
@@ -334,7 +334,7 @@ describe('Job Store mutations, feature flag ON', () => {
               ],
             });
 
-            expect(stateCopy.trace).toEqual([
+            expect(stateCopy.jobLog).toEqual([
               {
                 offset: 0,
                 content: [{ text: 'Running with gitlab-runner 11.11.1 (5a147c92)' }],
@@ -346,7 +346,7 @@ describe('Job Store mutations, feature flag ON', () => {
 
         describe('when lines are null', () => {
           it('sets the default value', () => {
-            mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
               append: true,
               html,
               size: 511846,
@@ -354,7 +354,7 @@ describe('Job Store mutations, feature flag ON', () => {
               lines: null,
             });
 
-            expect(stateCopy.trace).toEqual([]);
+            expect(stateCopy.jobLog).toEqual([]);
           });
         });
       });

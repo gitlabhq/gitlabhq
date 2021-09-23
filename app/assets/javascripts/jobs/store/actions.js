@@ -18,16 +18,16 @@ import * as types from './mutation_types';
 
 export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
   dispatch('setJobEndpoint', endpoint);
-  dispatch('setTraceOptions', {
+  dispatch('setJobLogOptions', {
     logState,
     pagePath,
   });
 
-  return Promise.all([dispatch('fetchJob'), dispatch('fetchTrace')]);
+  return Promise.all([dispatch('fetchJob'), dispatch('fetchJobLog')]);
 };
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
-export const setTraceOptions = ({ commit }, options) => commit(types.SET_TRACE_OPTIONS, options);
+export const setJobLogOptions = ({ commit }, options) => commit(types.SET_JOB_LOG_OPTIONS, options);
 
 export const hideSidebar = ({ commit }) => commit(types.HIDE_SIDEBAR);
 export const showSidebar = ({ commit }) => commit(types.SHOW_SIDEBAR);
@@ -107,7 +107,7 @@ export const receiveJobError = ({ commit }) => {
 };
 
 /**
- * Job's Trace
+ * Job Log
  */
 export const scrollTop = ({ dispatch }) => {
   scrollUp();
@@ -156,59 +156,62 @@ export const toggleScrollAnimation = ({ commit }, toggle) =>
  * Responsible to handle automatic scroll
  */
 export const toggleScrollisInBottom = ({ commit }, toggle) => {
-  commit(types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_TRACE, toggle);
+  commit(types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_JOB_LOG, toggle);
 };
 
-export const requestTrace = ({ commit }) => commit(types.REQUEST_TRACE);
+export const requestJobLog = ({ commit }) => commit(types.REQUEST_JOB_LOG);
 
-export const fetchTrace = ({ dispatch, state }) =>
+export const fetchJobLog = ({ dispatch, state }) =>
+  // update trace endpoint once BE compeletes trace re-naming in #340626
   axios
-    .get(`${state.traceEndpoint}/trace.json`, {
-      params: { state: state.traceState },
+    .get(`${state.jobLogEndpoint}/trace.json`, {
+      params: { state: state.jobLogState },
     })
     .then(({ data }) => {
       dispatch('toggleScrollisInBottom', isScrolledToBottom());
-      dispatch('receiveTraceSuccess', data);
+      dispatch('receiveJobLogSuccess', data);
 
       if (data.complete) {
-        dispatch('stopPollingTrace');
-      } else if (!state.traceTimeout) {
-        dispatch('startPollingTrace');
+        dispatch('stopPollingJobLog');
+      } else if (!state.jobLogTimeout) {
+        dispatch('startPollingJobLog');
       }
     })
     .catch((e) => {
       if (e.response.status === httpStatusCodes.FORBIDDEN) {
-        dispatch('receiveTraceUnauthorizedError');
+        dispatch('receiveJobLogUnauthorizedError');
       } else {
         reportToSentry('job_actions', e);
-        dispatch('receiveTraceError');
+        dispatch('receiveJobLogError');
       }
     });
 
-export const startPollingTrace = ({ dispatch, commit }) => {
-  const traceTimeout = setTimeout(() => {
-    commit(types.SET_TRACE_TIMEOUT, 0);
-    dispatch('fetchTrace');
+export const startPollingJobLog = ({ dispatch, commit }) => {
+  const jobLogTimeout = setTimeout(() => {
+    commit(types.SET_JOB_LOG_TIMEOUT, 0);
+    dispatch('fetchJobLog');
   }, 4000);
 
-  commit(types.SET_TRACE_TIMEOUT, traceTimeout);
+  commit(types.SET_JOB_LOG_TIMEOUT, jobLogTimeout);
 };
 
-export const stopPollingTrace = ({ state, commit }) => {
-  clearTimeout(state.traceTimeout);
-  commit(types.SET_TRACE_TIMEOUT, 0);
-  commit(types.STOP_POLLING_TRACE);
+export const stopPollingJobLog = ({ state, commit }) => {
+  clearTimeout(state.jobLogTimeout);
+  commit(types.SET_JOB_LOG_TIMEOUT, 0);
+  commit(types.STOP_POLLING_JOB_LOG);
 };
 
-export const receiveTraceSuccess = ({ commit }, log) => commit(types.RECEIVE_TRACE_SUCCESS, log);
-export const receiveTraceError = ({ dispatch }) => {
-  dispatch('stopPollingTrace');
+export const receiveJobLogSuccess = ({ commit }, log) => commit(types.RECEIVE_JOB_LOG_SUCCESS, log);
+
+export const receiveJobLogError = ({ dispatch }) => {
+  dispatch('stopPollingJobLog');
   createFlash({
     message: __('An error occurred while fetching the job log.'),
   });
 };
-export const receiveTraceUnauthorizedError = ({ dispatch }) => {
-  dispatch('stopPollingTrace');
+
+export const receiveJobLogUnauthorizedError = ({ dispatch }) => {
+  dispatch('stopPollingJobLog');
   createFlash({
     message: __('The current user is not authorized to access the job log.'),
   });
@@ -248,6 +251,7 @@ export const fetchJobsForStage = ({ dispatch }, stage = {}) => {
 };
 export const receiveJobsForStageSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_JOBS_FOR_STAGE_SUCCESS, data);
+
 export const receiveJobsForStageError = ({ commit }) => {
   commit(types.RECEIVE_JOBS_FOR_STAGE_ERROR);
   createFlash({

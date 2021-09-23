@@ -102,13 +102,13 @@ describe('Job Store Getters', () => {
     });
   });
 
-  describe('hasTrace', () => {
+  describe('hasJobLog', () => {
     describe('when has_trace is true', () => {
       it('returns true', () => {
         localState.job.has_trace = true;
         localState.job.status = {};
 
-        expect(getters.hasTrace(localState)).toEqual(true);
+        expect(getters.hasJobLog(localState)).toEqual(true);
       });
     });
 
@@ -117,7 +117,7 @@ describe('Job Store Getters', () => {
         localState.job.has_trace = false;
         localState.job.status = { group: 'running' };
 
-        expect(getters.hasTrace(localState)).toEqual(true);
+        expect(getters.hasJobLog(localState)).toEqual(true);
       });
     });
 
@@ -126,7 +126,7 @@ describe('Job Store Getters', () => {
         localState.job.has_trace = false;
         localState.job.status = { group: 'pending' };
 
-        expect(getters.hasTrace(localState)).toEqual(false);
+        expect(getters.hasJobLog(localState)).toEqual(false);
       });
     });
   });

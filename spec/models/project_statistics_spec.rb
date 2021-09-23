@@ -294,15 +294,17 @@ RSpec.describe ProjectStatistics do
   describe '#update_lfs_objects_size' do
     let!(:lfs_object1) { create(:lfs_object, size: 23.megabytes) }
     let!(:lfs_object2) { create(:lfs_object, size: 34.megabytes) }
+    let!(:lfs_object3) { create(:lfs_object, size: 34.megabytes) }
     let!(:lfs_objects_project1) { create(:lfs_objects_project, project: project, lfs_object: lfs_object1) }
     let!(:lfs_objects_project2) { create(:lfs_objects_project, project: project, lfs_object: lfs_object2) }
+    let!(:lfs_objects_project3) { create(:lfs_objects_project, project: project, lfs_object: lfs_object3) }
 
     before do
       statistics.update_lfs_objects_size
     end
 
     it "stores the size of related LFS objects" do
-      expect(statistics.lfs_objects_size).to eq 57.megabytes
+      expect(statistics.lfs_objects_size).to eq 91.megabytes
     end
   end
 

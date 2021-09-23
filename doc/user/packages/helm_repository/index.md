@@ -31,6 +31,10 @@ To authenticate to the Helm repository, you need either:
 
 ## Publish a package
 
+WARNING:
+The `helm-push` command is broken in Helm 3.7. For more information, see the [open issue](https://github.com/chartmuseum/helm-push/issues/109)
+in the Chart Museum project.
+
 NOTE:
 You can publish Helm charts with duplicate names or versions. If duplicates exist, GitLab always
 returns the chart with the latest version.
@@ -123,3 +127,15 @@ Check the [Sidekiq log](../../../administration/logs.md#sidekiqlog)
 for any related errors. If you see `Validation failed: Version is invalid`, it means that the
 version in your `Chart.yaml` file does not follow [Helm Chart versioning specifications](https://helm.sh/docs/topics/charts/#charts-and-versioning).
 To fix the error, use the correct version syntax and upload the chart again.
+
+### `helm push` results in an error
+
+The `helm push` plugin is not yet supported in Helm 3.7. If you try to push a chart using
+`helm push`, it produces the following error:
+
+```plaintext
+Error: this feature has been marked as experimental and is not enabled by default. Please set HELM_EXPERIMENTAL_OCI=1 in your environment to use this feature
+```
+
+To continue to use the plugin, you can push an image using [curl](#use-cicd-to-publish-a-helm-package)
+or downgrade your version of Helm.

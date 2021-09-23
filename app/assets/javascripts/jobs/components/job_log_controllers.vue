@@ -44,7 +44,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    isTraceSizeVisible: {
+    isJobLogSizeVisible: {
       type: Boolean,
       required: true,
     },
@@ -73,7 +73,7 @@ export default {
       class="truncated-info gl-display-none gl-sm-display-block gl-float-left"
       data-testid="log-truncated-info"
     >
-      <template v-if="isTraceSizeVisible">
+      <template v-if="isJobLogSizeVisible">
         {{ jobLogSize }}
         <gl-link
           v-if="rawPath"

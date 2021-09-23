@@ -19593,6 +19593,10 @@ CREATE TABLE topics (
     name text NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    avatar text,
+    description text,
+    CONSTRAINT check_26753fb43a CHECK ((char_length(avatar) <= 255)),
+    CONSTRAINT check_5d1a07c8c8 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_7a90d4c757 CHECK ((char_length(name) <= 255))
 );
 

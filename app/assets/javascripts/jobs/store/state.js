@@ -1,6 +1,6 @@
 export default () => ({
   jobEndpoint: null,
-  traceEndpoint: null,
+  jobLogEndpoint: null,
 
   // sidebar
   isSidebarOpen: true,
@@ -14,16 +14,16 @@ export default () => ({
   isScrollTopDisabled: true,
 
   // Used to check if we should keep the automatic scroll
-  isScrolledToBottomBeforeReceivingTrace: true,
+  isScrolledToBottomBeforeReceivingJobLog: true,
 
-  trace: [],
-  isTraceComplete: false,
-  traceSize: 0,
-  isTraceSizeVisible: false,
-  traceTimeout: 0,
+  jobLog: [],
+  isJobLogComplete: false,
+  jobLogSize: 0,
+  isJobLogSizeVisible: false,
+  jobLogTimeout: 0,
 
-  // used as a query parameter to fetch the trace
-  traceState: null,
+  // used as a query parameter to fetch the job log
+  jobLogState: null,
 
   // sidebar dropdown & list of jobs
   isLoadingJobs: false,
@@ -32,5 +32,5 @@ export default () => ({
   jobs: [],
 
   // to parse partial logs
-  auxiliaryPartialTraceHelpers: {},
+  auxiliaryPartialJobLogHelpers: {},
 });

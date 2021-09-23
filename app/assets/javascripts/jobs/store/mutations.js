@@ -1,16 +1,16 @@
 import Vue from 'vue';
 import { INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF } from '../constants';
 import * as types from './mutation_types';
-import { logLinesParser, logLinesParserLegacy, updateIncrementalTrace } from './utils';
+import { logLinesParser, logLinesParserLegacy, updateIncrementalJobLog } from './utils';
 
 export default {
   [types.SET_JOB_ENDPOINT](state, endpoint) {
     state.jobEndpoint = endpoint;
   },
 
-  [types.SET_TRACE_OPTIONS](state, options = {}) {
-    state.traceEndpoint = options.pagePath;
-    state.traceState = options.logState;
+  [types.SET_JOB_LOG_OPTIONS](state, options = {}) {
+    state.jobLogEndpoint = options.pagePath;
+    state.jobLogState = options.logState;
   },
 
   [types.HIDE_SIDEBAR](state) {
@@ -20,11 +20,11 @@ export default {
     state.isSidebarOpen = true;
   },
 
-  [types.RECEIVE_TRACE_SUCCESS](state, log = {}) {
+  [types.RECEIVE_JOB_LOG_SUCCESS](state, log = {}) {
     const infinitelyCollapsibleSectionsFlag =
       gon.features?.[INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF];
     if (log.state) {
-      state.traceState = log.state;
+      state.jobLogState = log.state;
     }
 
     if (log.append) {
@@ -32,52 +32,52 @@ export default {
         if (log.lines) {
           const parsedResult = logLinesParser(
             log.lines,
-            state.auxiliaryPartialTraceHelpers,
-            state.trace,
+            state.auxiliaryPartialJobLogHelpers,
+            state.jobLog,
           );
-          state.trace = parsedResult.parsedLines;
-          state.auxiliaryPartialTraceHelpers = parsedResult.auxiliaryPartialTraceHelpers;
+          state.jobLog = parsedResult.parsedLines;
+          state.auxiliaryPartialJobLogHelpers = parsedResult.auxiliaryPartialJobLogHelpers;
         }
       } else {
-        state.trace = log.lines ? updateIncrementalTrace(log.lines, state.trace) : state.trace;
+        state.jobLog = log.lines ? updateIncrementalJobLog(log.lines, state.jobLog) : state.jobLog;
       }
 
-      state.traceSize += log.size;
+      state.jobLogSize += log.size;
     } else {
-      // When the job still does not have a trace
-      // the trace response will not have a defined
+      // When the job still does not have a log
+      // the job log response will not have a defined
       // html or size. We keep the old value otherwise these
       // will be set to `null`
 
       if (infinitelyCollapsibleSectionsFlag) {
         const parsedResult = logLinesParser(log.lines);
-        state.trace = parsedResult.parsedLines;
-        state.auxiliaryPartialTraceHelpers = parsedResult.auxiliaryPartialTraceHelpers;
+        state.jobLog = parsedResult.parsedLines;
+        state.auxiliaryPartialJobLogHelpers = parsedResult.auxiliaryPartialJobLogHelpers;
       } else {
-        state.trace = log.lines ? logLinesParserLegacy(log.lines) : state.trace;
+        state.jobLog = log.lines ? logLinesParserLegacy(log.lines) : state.jobLog;
       }
 
-      state.traceSize = log.size || state.traceSize;
+      state.jobLogSize = log.size || state.jobLogSize;
     }
 
-    if (state.traceSize < log.total) {
-      state.isTraceSizeVisible = true;
+    if (state.jobLogSize < log.total) {
+      state.isJobLogSizeVisible = true;
     } else {
-      state.isTraceSizeVisible = false;
+      state.isJobLogSizeVisible = false;
     }
 
-    state.isTraceComplete = log.complete || state.isTraceComplete;
+    state.isJobLogComplete = log.complete || state.isJobLogComplete;
   },
 
-  [types.SET_TRACE_TIMEOUT](state, id) {
-    state.traceTimeout = id;
+  [types.SET_JOB_LOG_TIMEOUT](state, id) {
+    state.jobLogTimeout = id;
   },
 
   /**
    * Will remove loading animation
    */
-  [types.STOP_POLLING_TRACE](state) {
-    state.isTraceComplete = true;
+  [types.STOP_POLLING_JOB_LOG](state) {
+    state.isJobLogComplete = true;
   },
 
   /**
@@ -137,8 +137,8 @@ export default {
     state.isScrollingDown = toggle;
   },
 
-  [types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_TRACE](state, toggle) {
-    state.isScrolledToBottomBeforeReceivingTrace = toggle;
+  [types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_JOB_LOG](state, toggle) {
+    state.isScrolledToBottomBeforeReceivingJobLog = toggle;
   },
 
   [types.REQUEST_JOBS_FOR_STAGE](state, stage = {}) {

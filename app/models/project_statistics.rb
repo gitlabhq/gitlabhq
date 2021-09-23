@@ -70,7 +70,7 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_lfs_objects_size
-    self.lfs_objects_size = project.lfs_objects.sum(:size)
+    self.lfs_objects_size = LfsObject.joins(:lfs_objects_projects).where(lfs_objects_projects: { project_id: project.id }).sum(:size)
   end
 
   def update_uploads_size

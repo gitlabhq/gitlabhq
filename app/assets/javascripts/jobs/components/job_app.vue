@@ -80,13 +80,13 @@ export default {
       'isLoading',
       'job',
       'isSidebarOpen',
-      'trace',
-      'isTraceComplete',
-      'traceSize',
-      'isTraceSizeVisible',
+      'jobLog',
+      'isJobLogComplete',
+      'jobLogSize',
+      'isJobLogSizeVisible',
       'isScrollBottomDisabled',
       'isScrollTopDisabled',
-      'isScrolledToBottomBeforeReceivingTrace',
+      'isScrolledToBottomBeforeReceivingJobLog',
       'hasError',
       'selectedStage',
     ]),
@@ -97,7 +97,7 @@ export default {
       'shouldRenderTriggeredLabel',
       'hasEnvironment',
       'shouldRenderSharedRunnerLimitWarning',
-      'hasTrace',
+      'hasJobLog',
       'emptyStateIllustration',
       'isScrollingDown',
       'emptyStateAction',
@@ -155,7 +155,7 @@ export default {
     this.updateSidebar();
   },
   beforeDestroy() {
-    this.stopPollingTrace();
+    this.stopPollingJobLog();
     this.stopPolling();
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('scroll', this.updateScroll);
@@ -168,7 +168,7 @@ export default {
       'toggleSidebar',
       'scrollBottom',
       'scrollTop',
-      'stopPollingTrace',
+      'stopPollingJobLog',
       'stopPolling',
       'toggleScrollButtons',
       'toggleScrollAnimation',
@@ -270,7 +270,7 @@ export default {
         <div
           v-if="job.archived"
           class="gl-mt-3 gl-py-2 gl-px-3 gl-align-items-center gl-z-index-1 gl-m-auto archived-job"
-          :class="{ 'sticky-top gl-border-bottom-0': hasTrace }"
+          :class="{ 'sticky-top gl-border-bottom-0': hasJobLog }"
           data-testid="archived-job"
         >
           <gl-icon name="lock" class="gl-vertical-align-bottom" />
@@ -278,7 +278,7 @@ export default {
         </div>
         <!-- job log -->
         <div
-          v-if="hasTrace"
+          v-if="hasJobLog"
           class="build-trace-container gl-relative"
           :class="{ 'gl-mt-3': !job.archived }"
         >
@@ -289,22 +289,22 @@ export default {
               'has-archived-block': job.archived,
             }"
             :erase-path="job.erase_path"
-            :size="traceSize"
+            :size="jobLogSize"
             :raw-path="job.raw_path"
             :is-scroll-bottom-disabled="isScrollBottomDisabled"
             :is-scroll-top-disabled="isScrollTopDisabled"
-            :is-trace-size-visible="isTraceSizeVisible"
+            :is-job-log-size-visible="isJobLogSizeVisible"
             :is-scrolling-down="isScrollingDown"
             @scrollJobLogTop="scrollTop"
             @scrollJobLogBottom="scrollBottom"
           />
-          <log :trace="trace" :is-complete="isTraceComplete" />
+          <log :job-log="jobLog" :is-complete="isJobLogComplete" />
         </div>
         <!-- EO job log -->
 
         <!-- empty state -->
         <empty-state
-          v-if="!hasTrace"
+          v-if="!hasJobLog"
           :illustration-path="emptyStateIllustration.image"
           :illustration-size-class="emptyStateIllustration.size"
           :title="emptyStateTitle"

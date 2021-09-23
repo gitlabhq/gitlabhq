@@ -31,7 +31,7 @@ export default () => ({
   },
 
   /**
-   * Logs including trace
+   * Jobs with logs
    */
   logs: {
     lines: [],
