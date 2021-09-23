@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, quarantine: {
-    only: { job: 'object_storage' },
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341209',
-    type: :investigating
-  } do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'Helm Registry' do
       include Runtime::Fixtures
       include_context 'packages registry qa scenario'

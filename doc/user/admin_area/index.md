@@ -24,7 +24,7 @@ The Admin Area is made up of the following sections:
 
 | Section                                        | Description |
 |:-----------------------------------------------|:------------|
-| **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
+| **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-area-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
 | **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events). |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users. |
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events. |
@@ -41,7 +41,7 @@ The Admin Area is made up of the following sections:
 | **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md). |
 | **{settings}** Settings                        | Modify the [settings](settings/index.md) for your GitLab instance. |
 
-## Admin Dashboard
+## Admin Area dashboard
 
 The Dashboard provides statistics and system information about the GitLab instance.
 
@@ -151,7 +151,7 @@ you must provide the complete email address.
 
 #### User impersonation
 
-An administrator can "impersonate" any other user, including other administrator users.
+An administrator can "impersonate" any other user, including other administrators.
 This allows the administrator to "see what the user sees," and take actions on behalf of the user.
 You can impersonate a user in the following ways:
 
@@ -369,7 +369,7 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-Since GitLab 13.0, **Log** view has been removed from the admin dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+Since GitLab 13.0, **Log** view has been removed from the Admin Area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
 
 For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 

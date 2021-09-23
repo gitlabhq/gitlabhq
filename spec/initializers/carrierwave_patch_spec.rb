@@ -81,19 +81,32 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
     end
 
     describe '#authenticated_url' do
+      let(:expire_at) { 24.hours.from_now }
+      let(:options) { { expire_at: expire_at } }
+
       it 'has an authenticated URL' do
-        expect(subject.authenticated_url).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+        expect(subject.authenticated_url(options)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
       end
 
       context 'with custom expire_at' do
         it 'properly sets expires param' do
-          expire_at = 24.hours.from_now
-
           expect_next_instance_of(Fog::Storage::AzureRM::File) do |file|
-            expect(file).to receive(:url).with(expire_at).and_call_original
+            expect(file).to receive(:url).with(expire_at, options).and_call_original
           end
 
-          expect(subject.authenticated_url(expire_at: expire_at)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+          expect(subject.authenticated_url(options)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+        end
+      end
+
+      context 'with content_disposition option' do
+        let(:options) { { expire_at: expire_at, content_disposition: 'attachment' } }
+
+        it 'passes options' do
+          expect_next_instance_of(Fog::Storage::AzureRM::File) do |file|
+            expect(file).to receive(:url).with(expire_at, options).and_call_original
+          end
+
+          expect(subject.authenticated_url(options)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
         end
       end
     end

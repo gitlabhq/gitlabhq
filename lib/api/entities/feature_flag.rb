@@ -9,7 +9,9 @@ module API
       expose :version
       expose :created_at
       expose :updated_at
-      expose :scopes, using: FeatureFlag::LegacyScope
+      expose :scopes do |_ff|
+        []
+      end
       expose :strategies, using: FeatureFlag::Strategy
     end
   end

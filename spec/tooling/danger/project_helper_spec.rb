@@ -93,6 +93,9 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/spec/foo'     | [:backend]
       'ee/spec/foo/bar' | [:backend]
 
+      'spec/migrations/foo'    | [:database]
+      'ee/spec/migrations/foo' | [:database]
+
       'spec/features/foo'                            | [:test]
       'ee/spec/features/foo'                         | [:test]
       'spec/support/shared_examples/features/foo'    | [:test]

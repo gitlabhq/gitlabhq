@@ -178,7 +178,7 @@ RSpec.describe Namespace do
     context 'creating a Group' do
       let(:namespace_type) { group_sti_name }
 
-      it 'is valid' do
+      it 'is the correct type of namespace' do
         expect(namespace).to be_a(Group)
         expect(namespace.kind).to eq('group')
         expect(namespace.group_namespace?).to be_truthy
@@ -189,7 +189,7 @@ RSpec.describe Namespace do
       let(:namespace_type) { project_sti_name }
       let(:parent) { create(:group) }
 
-      it 'is valid' do
+      it 'is the correct type of namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
         expect(namespace.kind).to eq('project')
         expect(namespace.project_namespace?).to be_truthy
@@ -199,10 +199,8 @@ RSpec.describe Namespace do
     context 'creating a UserNamespace' do
       let(:namespace_type) { user_sti_name }
 
-      it 'is valid' do
-        # TODO: We create a normal Namespace until
-        #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68894 is ready
-        expect(Namespace.find(namespace.id)).to be_a(Namespace)
+      it 'is the correct type of namespace' do
+        expect(Namespace.find(namespace.id)).to be_a(Namespaces::UserNamespace)
         expect(namespace.kind).to eq('user')
         expect(namespace.user_namespace?).to be_truthy
       end
@@ -211,7 +209,7 @@ RSpec.describe Namespace do
     context 'creating a default Namespace' do
       let(:namespace_type) { nil }
 
-      it 'is valid' do
+      it 'is the correct type of namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespace)
         expect(namespace.kind).to eq('user')
         expect(namespace.user_namespace?).to be_truthy
@@ -221,7 +219,7 @@ RSpec.describe Namespace do
     context 'creating an unknown Namespace type' do
       let(:namespace_type) { 'One' }
 
-      it 'defaults to a Namespace' do
+      it 'creates a default Namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespace)
         expect(namespace.kind).to eq('user')
         expect(namespace.user_namespace?).to be_truthy

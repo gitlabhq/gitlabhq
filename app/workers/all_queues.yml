@@ -1474,6 +1474,15 @@
   :weight: 3
   :idempotent:
   :tags: []
+- :name: pipeline_default:ci_create_downstream_pipeline
+  :worker_name: Ci::CreateDownstreamPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 3
+  :idempotent:
+  :tags: []
 - :name: pipeline_default:ci_drop_pipeline
   :worker_name: Ci::DropPipelineWorker
   :feature_category: :continuous_integration

@@ -73,21 +73,61 @@ RSpec.describe Ci::Bridge do
   describe 'state machine transitions' do
     context 'when bridge points towards downstream' do
       %i[created manual].each do |status|
-        it "schedules downstream pipeline creation when the status is #{status}" do
-          bridge.status = status
+        context 'when the create_cross_project_pipeline_worker_rename feature is enabled' do
+          before do
+            stub_feature_flags(create_cross_project_pipeline_worker_rename: true)
+          end
 
-          bridge.enqueue!
+          it "schedules downstream pipeline creation when the status is #{status}" do
+            bridge.status = status
 
-          expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
+            bridge.enqueue!
+
+            expect(::Ci::CreateDownstreamPipelineWorker.jobs.last['args']).to eq([bridge.id])
+          end
+        end
+
+        context 'when the create_cross_project_pipeline_worker_rename feature is not enabled' do
+          before do
+            stub_feature_flags(create_cross_project_pipeline_worker_rename: false)
+          end
+
+          it "schedules downstream pipeline creation when the status is #{status}" do
+            bridge.status = status
+
+            bridge.enqueue!
+
+            expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
+          end
         end
       end
 
-      it "schedules downstream pipeline creation when the status is waiting for resource" do
-        bridge.status = :waiting_for_resource
+      context 'when the create_cross_project_pipeline_worker_rename feature is enabled' do
+        before do
+          stub_feature_flags(create_cross_project_pipeline_worker_rename: true)
+        end
 
-        bridge.enqueue_waiting_for_resource!
+        it "schedules downstream pipeline creation when the status is waiting for resource" do
+          bridge.status = :waiting_for_resource
 
-        expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
+          bridge.enqueue_waiting_for_resource!
+
+          expect(::Ci::CreateDownstreamPipelineWorker.jobs.last['args']).to eq([bridge.id])
+        end
+      end
+
+      context 'when the create_cross_project_pipeline_worker_rename feature is not enabled' do
+        before do
+          stub_feature_flags(create_cross_project_pipeline_worker_rename: false)
+        end
+
+        it "schedules downstream pipeline creation when the status is waiting for resource" do
+          bridge.status = :waiting_for_resource
+
+          bridge.enqueue_waiting_for_resource!
+
+          expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
+        end
       end
 
       it 'raises error when the status is failed' do

@@ -41,7 +41,7 @@ describe('IDE jobs detail view', () => {
     });
 
     it('scrolls to bottom', () => {
-      expect(vm.$refs.buildTrace.scrollTo).toHaveBeenCalled();
+      expect(vm.$refs.buildJobLog.scrollTo).toHaveBeenCalled();
     });
 
     it('renders job output', () => {
@@ -125,15 +125,15 @@ describe('IDE jobs detail view', () => {
     beforeEach(() => {
       vm = vm.$mount();
 
-      jest.spyOn(vm.$refs.buildTrace, 'scrollTo').mockImplementation();
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollTo').mockImplementation();
     });
 
     it('scrolls build trace to bottom', () => {
-      jest.spyOn(vm.$refs.buildTrace, 'scrollHeight', 'get').mockReturnValue(1000);
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollHeight', 'get').mockReturnValue(1000);
 
       vm.scrollDown();
 
-      expect(vm.$refs.buildTrace.scrollTo).toHaveBeenCalledWith(0, 1000);
+      expect(vm.$refs.buildJobLog.scrollTo).toHaveBeenCalledWith(0, 1000);
     });
   });
 
@@ -141,26 +141,26 @@ describe('IDE jobs detail view', () => {
     beforeEach(() => {
       vm = vm.$mount();
 
-      jest.spyOn(vm.$refs.buildTrace, 'scrollTo').mockImplementation();
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollTo').mockImplementation();
     });
 
     it('scrolls build trace to top', () => {
       vm.scrollUp();
 
-      expect(vm.$refs.buildTrace.scrollTo).toHaveBeenCalledWith(0, 0);
+      expect(vm.$refs.buildJobLog.scrollTo).toHaveBeenCalledWith(0, 0);
     });
   });
 
   describe('scrollBuildLog', () => {
     beforeEach(() => {
       vm = vm.$mount();
-      jest.spyOn(vm.$refs.buildTrace, 'scrollTo').mockImplementation();
-      jest.spyOn(vm.$refs.buildTrace, 'offsetHeight', 'get').mockReturnValue(100);
-      jest.spyOn(vm.$refs.buildTrace, 'scrollHeight', 'get').mockReturnValue(200);
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollTo').mockImplementation();
+      jest.spyOn(vm.$refs.buildJobLog, 'offsetHeight', 'get').mockReturnValue(100);
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollHeight', 'get').mockReturnValue(200);
     });
 
     it('sets scrollPos to bottom when at the bottom', () => {
-      jest.spyOn(vm.$refs.buildTrace, 'scrollTop', 'get').mockReturnValue(100);
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollTop', 'get').mockReturnValue(100);
 
       vm.scrollBuildLog();
 
@@ -168,7 +168,7 @@ describe('IDE jobs detail view', () => {
     });
 
     it('sets scrollPos to top when at the top', () => {
-      jest.spyOn(vm.$refs.buildTrace, 'scrollTop', 'get').mockReturnValue(0);
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollTop', 'get').mockReturnValue(0);
       vm.scrollPos = 1;
 
       vm.scrollBuildLog();
@@ -177,7 +177,7 @@ describe('IDE jobs detail view', () => {
     });
 
     it('resets scrollPos when not at top or bottom', () => {
-      jest.spyOn(vm.$refs.buildTrace, 'scrollTop', 'get').mockReturnValue(10);
+      jest.spyOn(vm.$refs.buildJobLog, 'scrollTop', 'get').mockReturnValue(10);
 
       vm.scrollBuildLog();
 

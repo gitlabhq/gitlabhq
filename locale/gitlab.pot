@@ -4276,6 +4276,9 @@ msgstr ""
 msgid "ApprovalSettings|This setting is configured at the instance level and can only be changed by an administrator."
 msgstr ""
 
+msgid "ApprovalSettings|This setting is configured in %{groupName} and can only be changed by an administrator or group owner."
+msgstr ""
+
 msgid "ApprovalStatusTooltip|Adheres to separation of duties"
 msgstr ""
 
@@ -6546,6 +6549,9 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
+msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage per pack"
+msgstr ""
+
 msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 minutes"
 msgstr ""
 
@@ -6564,6 +6570,9 @@ msgid "Checkout|%{name}'s CI minutes"
 msgstr ""
 
 msgid "Checkout|%{name}'s GitLab subscription"
+msgstr ""
+
+msgid "Checkout|%{name}'s storage subscription"
 msgstr ""
 
 msgid "Checkout|%{quantity} GB of storage"
@@ -6728,6 +6737,9 @@ msgid "Checkout|You'll create your new group after checkout"
 msgstr ""
 
 msgid "Checkout|Your organization"
+msgstr ""
+
+msgid "Checkout|Your storage subscription has the same term as your main subscription, and the price is prorated accordingly."
 msgstr ""
 
 msgid "Checkout|Your subscription will be applied to this group"
@@ -16670,6 +16682,21 @@ msgid "Hello, %{name}!"
 msgstr ""
 
 msgid "Hello, %{username}!"
+msgstr ""
+
+msgid "HelloMessage|%{handshake_emoji} Contribute to GitLab: %{contribute_link}"
+msgstr ""
+
+msgid "HelloMessage|%{magnifier_emoji} Create a new GitLab issue: %{new_issue_link}"
+msgstr ""
+
+msgid "HelloMessage|%{rocket_emoji} We like your curiosity! Help us improve GitLab by joining the team: %{jobs_page_link}"
+msgstr ""
+
+msgid "HelloMessage|Does this page need fixes or improvements? Open an issue or contribute a merge request to help make GitLab more lovable. At GitLab, everyone can contribute!"
+msgstr ""
+
+msgid "HelloMessage|Welcome to GitLab!"
 msgstr ""
 
 msgid "Help"

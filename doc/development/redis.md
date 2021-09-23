@@ -6,11 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Redis guidelines
 
+## Redis instances
+
 GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 
 - Caching (mostly via `Rails.cache`).
 - As a job processing queue with [Sidekiq](sidekiq_style_guide.md).
 - To manage the shared application state.
+- To store CI trace chunks.
 - As a Pub/Sub queue backend for ActionCable.
 
 In most environments (including the GDK), all of these point to the same
@@ -28,6 +31,8 @@ more often than it is read.
 
 If [Geo](geo.md) is enabled, each Geo node gets its own, independent Redis
 database.
+
+We have [development documentation on adding a new Redis instance](redis/new_redis_instance.md).
 
 ## Key naming
 

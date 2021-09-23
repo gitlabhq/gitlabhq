@@ -24,8 +24,8 @@ class FeatureFlagEntity < Grape::Entity
     project_feature_flag_path(feature_flag.project, feature_flag)
   end
 
-  expose :scopes, with: FeatureFlagScopeEntity do |feature_flag|
-    feature_flag.scopes.sort_by(&:id)
+  expose :scopes do |_ff|
+    []
   end
 
   expose :strategies, with: FeatureFlags::StrategyEntity do |feature_flag|

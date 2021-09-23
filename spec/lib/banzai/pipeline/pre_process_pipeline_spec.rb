@@ -20,7 +20,7 @@ RSpec.describe Banzai::Pipeline::PreProcessPipeline do
     aggregate_failures do
       expect(result[:output]).not_to include "\xEF\xBB\xBF"
       expect(result[:output]).not_to include '---'
-      expect(result[:output]).to include "```yaml\nfoo: :foo_symbol\n"
+      expect(result[:output]).to include "```yaml:frontmatter\nfoo: :foo_symbol\n"
       expect(result[:output]).to include "> blockquote\n"
     end
   end

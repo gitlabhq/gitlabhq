@@ -2542,71 +2542,79 @@ RSpec.describe User do
   end
 
   describe '.find_by_full_path' do
-    let!(:user) { create(:user) }
+    using RSpec::Parameterized::TableSyntax
 
-    context 'with a route matching the given path' do
-      let!(:route) { user.namespace.route }
+    # TODO: this `where/when` can be removed in issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
+    #       At that point we only need to check `user_namespace`
+    where(namespace_type: [:namespace, :user_namespace])
 
-      it 'returns the user' do
-        expect(described_class.find_by_full_path(route.path)).to eq(user)
-      end
+    with_them do
+      let!(:user) { create(:user, namespace: create(namespace_type)) }
 
-      it 'is case-insensitive' do
-        expect(described_class.find_by_full_path(route.path.upcase)).to eq(user)
-        expect(described_class.find_by_full_path(route.path.downcase)).to eq(user)
-      end
-    end
+      context 'with a route matching the given path' do
+        let!(:route) { user.namespace.route }
 
-    context 'with a redirect route matching the given path' do
-      let!(:redirect_route) { user.namespace.redirect_routes.create!(path: 'foo') }
-
-      context 'without the follow_redirects option' do
-        it 'returns nil' do
-          expect(described_class.find_by_full_path(redirect_route.path)).to eq(nil)
-        end
-      end
-
-      context 'with the follow_redirects option set to true' do
         it 'returns the user' do
-          expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to eq(user)
+          expect(described_class.find_by_full_path(route.path)).to eq(user)
         end
 
         it 'is case-insensitive' do
-          expect(described_class.find_by_full_path(redirect_route.path.upcase, follow_redirects: true)).to eq(user)
-          expect(described_class.find_by_full_path(redirect_route.path.downcase, follow_redirects: true)).to eq(user)
-        end
-      end
-    end
-
-    context 'without a route or a redirect route matching the given path' do
-      context 'without the follow_redirects option' do
-        it 'returns nil' do
-          expect(described_class.find_by_full_path('unknown')).to eq(nil)
-        end
-      end
-      context 'with the follow_redirects option set to true' do
-        it 'returns nil' do
-          expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)
-        end
-      end
-    end
-
-    context 'with a group route matching the given path' do
-      let!(:group) { create(:group, path: 'group_path') }
-
-      context 'when the group namespace has an owner_id (legacy data)' do
-        before do
-          group.update!(owner_id: user.id)
-        end
-
-        it 'returns nil' do
-          expect(described_class.find_by_full_path('group_path')).to eq(nil)
+          expect(described_class.find_by_full_path(route.path.upcase)).to eq(user)
+          expect(described_class.find_by_full_path(route.path.downcase)).to eq(user)
         end
       end
 
-      context 'when the group namespace does not have an owner_id' do
-        it 'returns nil' do
-          expect(described_class.find_by_full_path('group_path')).to eq(nil)
+      context 'with a redirect route matching the given path' do
+        let!(:redirect_route) { user.namespace.redirect_routes.create!(path: 'foo') }
+
+        context 'without the follow_redirects option' do
+          it 'returns nil' do
+            expect(described_class.find_by_full_path(redirect_route.path)).to eq(nil)
+          end
+        end
+
+        context 'with the follow_redirects option set to true' do
+          it 'returns the user' do
+            expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to eq(user)
+          end
+
+          it 'is case-insensitive' do
+            expect(described_class.find_by_full_path(redirect_route.path.upcase, follow_redirects: true)).to eq(user)
+            expect(described_class.find_by_full_path(redirect_route.path.downcase, follow_redirects: true)).to eq(user)
+          end
+        end
+      end
+
+      context 'without a route or a redirect route matching the given path' do
+        context 'without the follow_redirects option' do
+          it 'returns nil' do
+            expect(described_class.find_by_full_path('unknown')).to eq(nil)
+          end
+        end
+        context 'with the follow_redirects option set to true' do
+          it 'returns nil' do
+            expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)
+          end
+        end
+      end
+
+      context 'with a group route matching the given path' do
+        let!(:group) { create(:group, path: 'group_path') }
+
+        context 'when the group namespace has an owner_id (legacy data)' do
+          before do
+            group.update!(owner_id: user.id)
+          end
+
+          it 'returns nil' do
+            expect(described_class.find_by_full_path('group_path')).to eq(nil)
+          end
+        end
+
+        context 'when the group namespace does not have an owner_id' do
+          it 'returns nil' do
+            expect(described_class.find_by_full_path('group_path')).to eq(nil)
+          end
         end
       end
     end

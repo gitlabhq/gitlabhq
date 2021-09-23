@@ -9,12 +9,32 @@ describe('~/lib/logger/hello', () => {
   });
 
   describe('logHello', () => {
-    it('console logs a friendly hello message', () => {
-      expect(consoleLogSpy).not.toHaveBeenCalled();
+    describe('when on dot_com', () => {
+      beforeEach(() => {
+        gon.dot_com = true;
+      });
 
-      logHello();
+      it('console logs a friendly hello message including the careers page', () => {
+        expect(consoleLogSpy).not.toHaveBeenCalled();
 
-      expect(consoleLogSpy.mock.calls).toMatchSnapshot();
+        logHello();
+
+        expect(consoleLogSpy.mock.calls).toMatchSnapshot();
+      });
+    });
+
+    describe('when on self managed', () => {
+      beforeEach(() => {
+        gon.dot_com = false;
+      });
+
+      it('console logs a friendly hello message without including the careers page', () => {
+        expect(consoleLogSpy).not.toHaveBeenCalled();
+
+        logHello();
+
+        expect(consoleLogSpy.mock.calls).toMatchSnapshot();
+      });
     });
   });
 });

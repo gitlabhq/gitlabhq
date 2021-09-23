@@ -39,7 +39,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
 
     aggregate_failures do
       expect(output).not_to include '---'
-      expect(output).to include "```yaml\nfoo: :foo_symbol\n"
+      expect(output).to include "```yaml:frontmatter\nfoo: :foo_symbol\n"
     end
   end
 
@@ -59,7 +59,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
 
     aggregate_failures do
       expect(output).not_to include '+++'
-      expect(output).to include "```toml\nfoo = :foo_symbol\n"
+      expect(output).to include "```toml:frontmatter\nfoo = :foo_symbol\n"
     end
   end
 
@@ -81,7 +81,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
 
     aggregate_failures do
       expect(output).not_to include ';;;'
-      expect(output).to include "```json\n{\n  \"foo\": \":foo_symbol\",\n"
+      expect(output).to include "```json:frontmatter\n{\n  \"foo\": \":foo_symbol\",\n"
     end
   end
 
@@ -101,7 +101,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
 
     aggregate_failures do
       expect(output).not_to include '---arbitrary'
-      expect(output).to include "```arbitrary\nfoo = :foo_symbol\n"
+      expect(output).to include "```arbitrary:frontmatter\nfoo = :foo_symbol\n"
     end
   end
 
@@ -130,7 +130,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
 
       aggregate_failures do
         expect(output).to eq <<~MD
-          ```yaml
+          ```yaml:frontmatter
           foo: :foo_symbol
           bar: :bar_symbol
           ```
