@@ -277,15 +277,15 @@ RSpec.describe Ci::RetryBuildService do
     end
   end
 
-  describe '#reprocess' do
+  describe '#clone!' do
     let(:new_build) do
       travel_to(1.second.from_now) do
-        service.reprocess!(build)
+        service.clone!(build)
       end
     end
 
     it 'raises an error when an unexpected class is passed' do
-      expect { service.reprocess!(create(:ci_build).present) }.to raise_error(TypeError)
+      expect { service.clone!(create(:ci_build).present) }.to raise_error(TypeError)
     end
 
     context 'when user has ability to execute build' do
@@ -343,7 +343,7 @@ RSpec.describe Ci::RetryBuildService do
       let(:user) { reporter }
 
       it 'raises an error' do
-        expect { service.reprocess!(build) }
+        expect { service.clone!(build) }
           .to raise_error Gitlab::Access::AccessDeniedError
       end
     end

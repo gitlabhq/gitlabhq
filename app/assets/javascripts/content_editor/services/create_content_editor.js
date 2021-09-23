@@ -16,6 +16,7 @@ import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
+import Frontmatter from '../extensions/frontmatter';
 import Gapcursor from '../extensions/gapcursor';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
@@ -43,6 +44,7 @@ import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
 import Video from '../extensions/video';
+import WordBreak from '../extensions/word_break';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
@@ -85,6 +87,7 @@ export const createContentEditor = ({
     Emoji,
     Figure,
     FigureCaption,
+    Frontmatter,
     Gapcursor,
     HardBreak,
     Heading,
@@ -112,6 +115,7 @@ export const createContentEditor = ({
     TaskList,
     Text,
     Video,
+    WordBreak,
   ];
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];

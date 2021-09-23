@@ -142,7 +142,7 @@ Nanoc layout), which is displayed at the top of the page if defined.
 The `type` metadata parameter is deprecated but still exists in documentation
 pages. You can safely remove the `type` metadata parameter and its values.
 
-## Move or rename a page
+## Move, rename, or delete a page
 
 See [redirects](redirects.md).
 

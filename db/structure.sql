@@ -11506,9 +11506,7 @@ CREATE SEQUENCE ci_instance_variables_id_seq
 ALTER SEQUENCE ci_instance_variables_id_seq OWNED BY ci_instance_variables.id;
 
 CREATE TABLE ci_job_artifacts (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer NOT NULL,
-    job_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     file_type integer NOT NULL,
     size bigint,
     created_at timestamp with time zone NOT NULL,
@@ -13705,7 +13703,6 @@ CREATE SEQUENCE error_tracking_errors_id_seq
 ALTER SEQUENCE error_tracking_errors_id_seq OWNED BY error_tracking_errors.id;
 
 CREATE TABLE events (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer,
     author_id integer NOT NULL,
     target_id integer,

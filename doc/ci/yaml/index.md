@@ -454,7 +454,8 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the `ci_include_rules` flag](../../administration/feature_flags.md). On GitLab.com, this feature is available.
 
 You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
-You can only use `rules:if` in `include` with [certain variables](#variables-with-include).
+You can only use [`if` rules](#rulesif) in `include`, and only with [certain variables](#variables-with-include).
+`rules` keywords such as `changes` and `exists` are not supported.
 
 ```yaml
 include:
@@ -1178,6 +1179,7 @@ job:
   all rules. You can't mix `when` at the job-level with `when` in rules.
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
+  - You can use `rules:if` with `include` to [conditionally include other configuration files](#rules-with-include).
 
 **Related topics**:
 

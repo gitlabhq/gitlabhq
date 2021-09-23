@@ -61,6 +61,7 @@ module Gitlab
     def self.databases
       @databases ||= database_base_models
         .transform_values { |connection_class| Connection.new(connection_class) }
+        .with_indifferent_access
         .freeze
     end
 

@@ -1,14 +1,13 @@
-import { sprintf, n__, __ } from '../../../../locale';
+import { __ } from '../../../../locale';
 import { COMMIT_TO_NEW_BRANCH } from './constants';
 
 const BRANCH_SUFFIX_COUNT = 5;
 const createTranslatedTextForFiles = (files, text) => {
   if (!files.length) return null;
 
-  return sprintf(n__('%{text} %{files}', '%{text} %{files} files', files.length), {
-    files: files.reduce((acc, val) => acc.concat(val.path), []).join(', '),
-    text,
-  });
+  const filesPart = files.reduce((acc, val) => acc.concat(val.path), []).join(', ');
+
+  return `${text} ${filesPart}`;
 };
 
 export const discardDraftButtonDisabled = (state) =>

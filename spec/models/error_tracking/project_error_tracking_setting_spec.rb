@@ -79,6 +79,46 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
+  describe 'Callbacks' do
+    describe 'after_save :create_client_key!' do
+      subject { build(:project_error_tracking_setting, :integrated, project: project) }
+
+      context 'no client key yet' do
+        it 'creates a new client key' do
+          expect { subject.save! }.to change { ErrorTracking::ClientKey.count }.by(1)
+        end
+
+        context 'sentry backend' do
+          before do
+            subject.integrated = false
+          end
+
+          it 'does not create a new client key' do
+            expect { subject.save! }.not_to change { ErrorTracking::ClientKey.count }
+          end
+        end
+
+        context 'feature disabled' do
+          before do
+            subject.enabled = false
+          end
+
+          it 'does not create a new client key' do
+            expect { subject.save! }.not_to change { ErrorTracking::ClientKey.count }
+          end
+        end
+      end
+
+      context 'client key already exists' do
+        let!(:client_key) { create(:error_tracking_client_key, project: project) }
+
+        it 'does not create a new client key' do
+          expect { subject.save! }.not_to change { ErrorTracking::ClientKey.count }
+        end
+      end
+    end
+  end
+
   describe '.extract_sentry_external_url' do
     subject { described_class.extract_sentry_external_url(sentry_url) }
 
@@ -493,5 +533,11 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
       it { expect(subject.sentry_enabled).to eq(sentry_enabled) }
     end
+  end
+
+  describe '#gitlab_dsn' do
+    let!(:client_key) { create(:error_tracking_client_key, project: project) }
+
+    it { expect(subject.gitlab_dsn).to eq(client_key.sentry_dsn) }
   end
 end

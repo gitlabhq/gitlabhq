@@ -5,15 +5,15 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab as an OAuth 2.0 provider **(FREE)**
+# OAuth 2.0 identity provider API **(FREE)**
 
-This document covers using the [OAuth2](https://oauth.net/2/) protocol to allow
-other services to access GitLab resources on user's behalf.
+GitLab provides an API to allow third-party services to access GitLab resources on a user's behalf
+with the [OAuth2](https://oauth.net/2/) protocol.
 
-If you want GitLab to be an OAuth authentication service provider to sign into
-other services, see the [OAuth2 authentication service provider](../integration/oauth_provider.md)
-documentation. This functionality is based on the
-[doorkeeper Ruby gem](https://github.com/doorkeeper-gem/doorkeeper).
+To configure GitLab for this, see
+[Configure GitLab as an OAuth 2.0 authentication identity provider](../integration/oauth_provider.md).
+
+This functionality is based on the [doorkeeper Ruby gem](https://github.com/doorkeeper-gem/doorkeeper).
 
 ## Supported OAuth 2.0 flows
 
@@ -25,7 +25,7 @@ GitLab supports the following authorization flows:
 - **Authorization code:** Secure and common flow. Recommended option for secure
   server-side apps.
 - **Implicit grant:** Originally designed for user-agent only apps, such as
-  single page web apps running on GitLab Pages).
+  single page web apps running on GitLab Pages.
   The [Internet Engineering Task Force (IETF)](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-09#section-2.1.2)
   recommends against Implicit grant flow.
 - **Resource owner password credentials:** To be used **only** for securely

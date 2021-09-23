@@ -15,6 +15,7 @@ import Division from '../extensions/division';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
+import Frontmatter from '../extensions/frontmatter';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import HorizontalRule from '../extensions/horizontal_rule';
@@ -39,6 +40,7 @@ import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
 import Video from '../extensions/video';
+import WordBreak from '../extensions/word_break';
 import {
   isPlainURL,
   renderHardBreak,
@@ -136,6 +138,20 @@ const defaultSerializerConfig = {
 
       state.write(`:${name}:`);
     },
+    [Frontmatter.name]: (state, node) => {
+      const { language } = node.attrs;
+      const syntax = {
+        toml: '+++',
+        json: ';;;',
+        yaml: '---',
+      }[language];
+
+      state.write(`${syntax}\n`);
+      state.text(node.textContent, false);
+      state.ensureNewLine();
+      state.write(syntax);
+      state.closeBlock(node);
+    },
     [Figure.name]: renderHTMLNode('figure'),
     [FigureCaption.name]: renderHTMLNode('figcaption'),
     [HardBreak.name]: renderHardBreak,
@@ -166,6 +182,7 @@ const defaultSerializerConfig = {
     },
     [Text.name]: defaultMarkdownSerializer.nodes.text,
     [Video.name]: renderPlayable,
+    [WordBreak.name]: (state) => state.write('<wbr>'),
   },
 };
 

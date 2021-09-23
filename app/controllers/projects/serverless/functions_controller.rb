@@ -5,7 +5,7 @@ module Projects
     class FunctionsController < Projects::ApplicationController
       before_action :authorize_read_cluster!
 
-      feature_category :serverless
+      feature_category :not_owned
 
       def index
         respond_to do |format|

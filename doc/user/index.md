@@ -13,10 +13,10 @@ Welcome to GitLab! We're glad to have you here!
 As a GitLab user you have access to all the features
 your [subscription](https://about.gitlab.com/pricing/)
 includes, except [GitLab administrator](../administration/index.md)
-settings, unless you have admin privileges to install, configure,
+settings, unless you have administrator privileges to install, configure,
 and upgrade your GitLab instance.
 
-Admin privileges for [GitLab.com](https://gitlab.com/) are restricted to the GitLab team.
+Administrator privileges for [GitLab.com](https://gitlab.com/) are restricted to the GitLab team.
 
 For more information on configuring GitLab self-managed instances, see the [Administrator documentation](../administration/index.md).
 
@@ -78,7 +78,7 @@ There are several types of users in GitLab:
 
 - Regular users and GitLab.com users. <!-- Note: further description TBA -->
 - [Groups](group/index.md) of users.
-- GitLab [admin area](admin_area/index.md) user.
+- GitLab [administrator area](admin_area/index.md) user.
 - [GitLab Administrator](../administration/index.md) with full access to
   self-managed instances' features and settings.
 - [Internal users](../development/internal_users.md).

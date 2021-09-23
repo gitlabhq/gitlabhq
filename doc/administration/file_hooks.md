@@ -67,7 +67,7 @@ message is logged to:
 - `log/file_hook.log` in a source installation.
 
 NOTE:
-Before 14.0 release, the file name was `plugin.log`
+Before 14.0 release, the filename was `plugin.log`
 
 ## Creating file hooks
 

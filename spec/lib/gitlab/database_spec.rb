@@ -15,6 +15,13 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.databases' do
+    it 'stores connections as a HashWithIndifferentAccess' do
+      expect(described_class.databases.has_key?('main')).to be true
+      expect(described_class.databases.has_key?(:main)).to be true
+    end
+  end
+
   describe '.default_pool_size' do
     before do
       allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)

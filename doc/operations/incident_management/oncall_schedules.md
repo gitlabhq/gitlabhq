@@ -31,7 +31,7 @@ To create an on-call schedule:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Monitor > On-call Schedules**.
 1. Select **Add a schedule**.
-1. Enter the schedule's name and description and select a timezone.
+1. Enter the schedule's name and description and select a time zone.
 1. Select **Add schedule**.
 
 You now have an empty schedule with no rotations. This renders as an empty state, prompting you to

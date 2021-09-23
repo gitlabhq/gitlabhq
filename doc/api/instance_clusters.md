@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Instance-level Kubernetes clusters allow you to connect a Kubernetes cluster to the GitLab instance, which enables you to use the same cluster across multiple projects. [More information](../user/instance/clusters/index.md)
 
 NOTE:
-Users need administrator access to use these endpoints.
+Users need the Administrator role to use these endpoints.
 
 ## List instance clusters
 

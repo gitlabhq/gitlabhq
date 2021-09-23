@@ -169,7 +169,7 @@ of GitLab Support or other GitLab engineers.
   operations to manage partitioned tables.
 
 - You should not modify the GitLab schema (for example, adding triggers or modifying tables).
-  Database migrations are tested against the schema definition in the GitLab code base. GitLab
+  Database migrations are tested against the schema definition in the GitLab codebase. GitLab
   version upgrades may fail if the schema is modified.
 
 ## Puma settings

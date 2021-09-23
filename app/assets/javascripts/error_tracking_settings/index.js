@@ -13,6 +13,7 @@ export default () => {
       token,
       listProjectsEndpoint,
       operationsSettingsEndpoint,
+      gitlabDsn,
     },
   } = formContainerEl;
 
@@ -29,6 +30,7 @@ export default () => {
           initialToken: token,
           listProjectsEndpoint,
           operationsSettingsEndpoint,
+          gitlabDsn,
         },
       });
     },

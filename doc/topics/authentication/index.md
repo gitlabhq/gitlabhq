@@ -43,7 +43,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 - [Personal access tokens](../../api/index.md#personalproject-access-tokens)
 - [Project access tokens](../../api/index.md#personalproject-access-tokens)
 - [Impersonation tokens](../../api/index.md#impersonation-tokens)
-- [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth-20-provider)
+- [OAuth 2.0 identity provider API](../../api/oauth2.md)
 
 ## Third-party resources
 

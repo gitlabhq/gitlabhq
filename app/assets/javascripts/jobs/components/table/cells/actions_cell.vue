@@ -136,7 +136,13 @@ export default {
 <template>
   <gl-button-group>
     <template v-if="canReadJob">
-      <gl-button v-if="isActive" icon="cancel" :title="$options.CANCEL" @click="cancelJob()" />
+      <gl-button
+        v-if="isActive"
+        data-testid="cancel-button"
+        icon="cancel"
+        :title="$options.CANCEL"
+        @click="cancelJob()"
+      />
       <template v-else-if="isScheduled">
         <gl-button icon="planning" disabled data-testid="countdown">
           <gl-countdown :end-date-string="scheduledAt" />

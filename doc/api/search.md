@@ -1161,7 +1161,7 @@ Blobs searches are performed on both filenames and contents. Search results:
   times in the content.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=installation&ref=feature"
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=keyword%20filename:*.py
 ```
 
 Example response:
@@ -1175,7 +1175,7 @@ Example response:
     "path": "README.md",
     "filename": "README.md",
     "id": null,
-    "ref": "feature",
+    "ref": "master",
     "startline": 46,
     "project_id": 6
   }

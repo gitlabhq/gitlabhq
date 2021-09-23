@@ -4,7 +4,7 @@ class Admin::Serverless::DomainsController < Admin::ApplicationController
   before_action :check_feature_flag
   before_action :domain, only: [:update, :verify, :destroy]
 
-  feature_category :serverless
+  feature_category :not_owned
 
   def index
     @domain = PagesDomain.instance_serverless.first_or_initialize

@@ -1,6 +1,14 @@
 <script>
-import { GlButton, GlFormGroup, GlFormCheckbox, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormCheckbox,
+  GlFormRadioGroup,
+  GlFormRadio,
+  GlFormInputGroup,
+} from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ErrorTrackingForm from './error_tracking_form.vue';
 import ProjectDropdown from './project_dropdown.vue';
 
@@ -12,7 +20,9 @@ export default {
     GlFormGroup,
     GlFormRadioGroup,
     GlFormRadio,
+    GlFormInputGroup,
     ProjectDropdown,
+    ClipboardButton,
   },
   props: {
     initialApiHost: {
@@ -46,6 +56,11 @@ export default {
       type: String,
       required: true,
     },
+    gitlabDsn: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     ...mapGetters([
@@ -63,6 +78,9 @@ export default {
       'settingsLoading',
       'token',
     ]),
+    showGitlabDsnSetting() {
+      return this.integrated && this.enabled && this.gitlabDsn;
+    },
   },
   created() {
     this.setInitialState({
@@ -118,6 +136,17 @@ export default {
           </template>
         </gl-form-radio>
       </gl-form-radio-group>
+    </gl-form-group>
+    <gl-form-group
+      v-if="showGitlabDsnSetting"
+      :label="__('Paste this DSN into your Sentry SDK')"
+      data-testid="gitlab-dsn-setting-form"
+    >
+      <gl-form-input-group readonly :value="gitlabDsn">
+        <template #append>
+          <clipboard-button :text="gitlabDsn" :title="__('Copy')" />
+        </template>
+      </gl-form-input-group>
     </gl-form-group>
     <div v-if="!integrated" class="js-sentry-setting-form" data-testid="sentry-setting-form">
       <error-tracking-form />

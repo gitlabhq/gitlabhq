@@ -534,15 +534,24 @@ affecting version `2.50.3-2+deb9u1` of Debian package `glib2.0`:
     },
     "version": "2.50.3-2+deb9u1",
     "operating_system": "debian:9",
-    "image": "index.docker.io/library/nginx:1.18"
+    "image": "index.docker.io/library/nginx:1.18",
+    "kubernetes_resource": {
+        "namespace": "production",
+        "kind": "Deployment",
+        "name": "nginx-ingress",
+        "container": "nginx",
+        "agent_id": "1"
+    }
 }
 ```
 
-The affected package is found when scanning the image of the pod `index.docker.io/library/nginx:1.18`.
+The affected package is found when scanning a deployment using the `index.docker.io/library/nginx:1.18` image.
 
 The location fingerprint of a Cluster Image Scanning vulnerability combines the
-`operating_system` and the package `name`, so these attributes are mandatory. The `image` is also
-mandatory. All other attributes are optional.
+`namespace`, `kind`, `name`, and `container` fields from the `kubernetes_resource`,
+as well as the package `name`, so these fields are required. The `image` field is also mandatory.
+The `cluster_id` and `agent_id` are mutually exclusive, and one of them must be present.
+All other fields are optional.
 
 #### SAST
 

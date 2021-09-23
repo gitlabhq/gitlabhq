@@ -968,11 +968,6 @@ msgstr ""
 msgid "%{template_project_id} is unknown or invalid"
 msgstr ""
 
-msgid "%{text} %{files}"
-msgid_plural "%{text} %{files} files"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%{text} is available"
 msgstr ""
 
@@ -24460,6 +24455,9 @@ msgstr ""
 msgid "Paste project path (i.e. gitlab-org/gitlab)"
 msgstr ""
 
+msgid "Paste this DSN into your Sentry SDK"
+msgstr ""
+
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_ed25519.pub' or '~/.ssh/id_rsa.pub' and begins with 'ssh-ed25519' or 'ssh-rsa'. Do not paste your private SSH key, as that can compromise your identity."
 msgstr ""
 
@@ -39996,6 +39994,9 @@ msgid "from %d job"
 msgid_plural "from %d jobs"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "frontmatter"
+msgstr ""
 
 msgid "group"
 msgstr ""

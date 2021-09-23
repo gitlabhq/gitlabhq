@@ -32,7 +32,7 @@ they all live on their own. A few more problems with this approach:
 - Features are coupled to their container. In practice it is not straight
   forward to decouple a feature from its container. The degree of coupling
   varies across features.
-- Naive duplication of features will result in a more complex and fragile code base.
+- Naive duplication of features will result in a more complex and fragile codebase.
 - Generalizing solutions across groups and projects may degrade system performance.
 - The range of features span across many teams, and these changes will need to
   manage development interference.

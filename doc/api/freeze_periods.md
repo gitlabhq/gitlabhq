@@ -94,7 +94,7 @@ POST /projects/:id/freeze_periods
 | `id`               | integer or string  | yes                         | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                              |
 | `freeze_start`     | string          | yes                         | Start of the Freeze Period in [cron](https://crontab.guru/) format.                                                              |
 | `freeze_end`       | string          | yes                         | End of the Freeze Period in [cron](https://crontab.guru/) format.                                                                |
-| `cron_timezone`    | string          | no                          | The timezone for the cron fields, defaults to UTC if not provided.                                                               |
+| `cron_timezone`    | string          | no                          | The time zone for the cron fields, defaults to UTC if not provided.                                                               |
 
 Example request:
 
@@ -131,7 +131,7 @@ PUT /projects/:id/freeze_periods/:freeze_period_id
 | `freeze_period_id`    | integer or string          | yes      | The database ID of the Freeze Period.                                                              |
 | `freeze_start`     | string          | no                         | Start of the Freeze Period in [cron](https://crontab.guru/) format.                                                              |
 | `freeze_end`       | string          | no                         | End of the Freeze Period in [cron](https://crontab.guru/) format.                                                                |
-| `cron_timezone`    | string          | no                          | The timezone for the cron fields.                                                               |
+| `cron_timezone`    | string          | no                          | The time zone for the cron fields.                                                               |
 
 Example request:
 

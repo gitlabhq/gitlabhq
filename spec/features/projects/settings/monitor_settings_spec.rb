@@ -175,6 +175,12 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
           wait_for_requests
 
           assert_text('Your changes have been saved')
+
+          within '.js-error-tracking-settings' do
+            click_button('Expand')
+          end
+
+          expect(page).to have_content('Paste this DSN into your Sentry SDK')
         end
       end
     end

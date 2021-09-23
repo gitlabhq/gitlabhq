@@ -116,7 +116,7 @@ module Gitlab
       def record_apdex_if_needed(elapsed)
         return unless Gitlab::Metrics::RailsSlis.request_apdex_counters_enabled?
 
-        Gitlab::Metrics::Sli[:rails_request_apdex].increment(
+        Gitlab::Metrics::RailsSlis.request_apdex.increment(
           labels: labels_from_context,
           # hardcoded 1s here will be replaced by a per-endpoint value.
           # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1223

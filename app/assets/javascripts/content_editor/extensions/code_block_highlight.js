@@ -11,7 +11,8 @@ export default CodeBlockLowlight.extend({
         parseHTML: (element) => extractLanguage(element),
       },
       class: {
-        default: 'code highlight js-syntax-highlight',
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        default: 'code highlight',
       },
     };
   },

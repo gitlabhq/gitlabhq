@@ -219,3 +219,22 @@
     # Sit amit
 
     ### I don't know
+- name: word_break
+  markdown: Fernstraßen<wbr>bau<wbr>privat<wbr>finanzierungs<wbr>gesetz
+- name: frontmatter_yaml
+  markdown: |-
+    ---
+    title: Page title
+    ---
+- name: frontmatter_toml
+  markdown: |-
+    +++
+    title = "Page title"
+    +++
+- name: frontmatter_json
+  markdown: |-
+    ;;;
+    {
+      "title": "Page title"
+    }
+    ;;;
