@@ -476,11 +476,10 @@ args: {
 #### Set a username
 
 By default, the email in the SAML response is used to automatically generate the
-user's GitLab username. If you'd like to set another attribute as the username,
-assign it to the `nickname` OmniAuth `info` hash attribute.
+user's GitLab username. 
 
-For example, if you want to set the `username` attribute in your SAML Response to the username
-in GitLab, use the following setting:
+If you'd like to set another attribute as the username, assign it to the `nickname` OmniAuth `info`
+hash attribute, and add the following setting to your configuration file:
 
 ```yaml
 args: {
@@ -492,6 +491,8 @@ args: {
         attribute_statements: { nickname: ['username'] }
 }
 ```
+
+This also sets the `username` attribute in your SAML Response to the username in GitLab.
 
 ### `allowed_clock_drift`
 

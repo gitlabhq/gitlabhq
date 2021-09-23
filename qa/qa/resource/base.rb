@@ -100,7 +100,9 @@ module QA
           attr_writer(name)
 
           define_method(name) do
-            instance_variable_get("@#{name}") || instance_variable_set("@#{name}", populate_attribute(name, block))
+            return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
+
+            instance_variable_set("@#{name}", attribute_value(name, block))
           end
         end
 
@@ -121,9 +123,7 @@ module QA
         return self unless api_resource
 
         all_attributes.each do |attribute_name|
-          api_value = api_resource[attribute_name]
-
-          instance_variable_set("@#{attribute_name}", api_value) if api_value
+          instance_variable_set("@#{attribute_name}", api_resource[attribute_name]) if api_resource.key?(attribute_name)
         end
 
         self
@@ -160,20 +160,17 @@ module QA
 
       private
 
-      def populate_attribute(name, block)
-        value = attribute_value(name, block)
-
-        raise NoValueError, "No value was computed for #{name} of #{self.class.name}." unless value
-
-        value
-      end
-
       def attribute_value(name, block)
-        api_value = api_resource&.dig(name)
+        no_api_value = !api_resource&.key?(name)
+        raise NoValueError, "No value was computed for #{name} of #{self.class.name}." if no_api_value && !block
 
-        log_having_both_api_result_and_block(name, api_value) if api_value && block
+        unless no_api_value
+          api_value = api_resource[name]
+          log_having_both_api_result_and_block(name, api_value) if block
+          return api_value
+        end
 
-        api_value || (block && instance_exec(&block))
+        instance_exec(&block)
       end
 
       # Get all defined attributes across all parents

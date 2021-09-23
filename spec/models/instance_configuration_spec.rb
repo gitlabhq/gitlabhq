@@ -31,6 +31,23 @@ RSpec.describe InstanceConfiguration do
           expect(result.size).to eq(InstanceConfiguration::SSH_ALGORITHMS.size)
         end
 
+        it 'includes all algorithms' do
+          stub_pub_file(pub_file)
+
+          result = subject.settings[:ssh_algorithms_hashes]
+
+          expect(result.map { |a| a[:name] }).to match_array(%w(DSA ECDSA ED25519 RSA))
+        end
+
+        it 'does not include disabled algorithm' do
+          Gitlab::CurrentSettings.current_application_settings.update!(dsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
+          stub_pub_file(pub_file)
+
+          result = subject.settings[:ssh_algorithms_hashes]
+
+          expect(result.map { |a| a[:name] }).to match_array(%w(ECDSA ED25519 RSA))
+        end
+
         def pub_file(exist: true)
           path = exist ? 'spec/fixtures/ssh_host_example_key.pub' : 'spec/fixtures/ssh_host_example_key.pub.random'
 

@@ -22,7 +22,12 @@ class InstanceConfiguration
   private
 
   def ssh_algorithms_hashes
-    SSH_ALGORITHMS.map { |algo| ssh_algorithm_hashes(algo) }.compact
+    SSH_ALGORITHMS.select { |algo| ssh_algorithm_enabled?(algo) }.map { |algo| ssh_algorithm_hashes(algo) }.compact
+  end
+
+  def ssh_algorithm_enabled?(algorithm)
+    algorithm_key_restriction = application_settings["#{algorithm.downcase}_key_restriction"]
+    algorithm_key_restriction.nil? || algorithm_key_restriction != ApplicationSetting::FORBIDDEN_KEY_VALUE
   end
 
   def host

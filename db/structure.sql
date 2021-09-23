@@ -10347,6 +10347,7 @@ CREATE TABLE application_settings (
     sidekiq_job_limiter_mode smallint DEFAULT 1 NOT NULL,
     sidekiq_job_limiter_compression_threshold_bytes integer DEFAULT 100000 NOT NULL,
     sidekiq_job_limiter_limit_bytes integer DEFAULT 0 NOT NULL,
+    suggest_pipeline_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
