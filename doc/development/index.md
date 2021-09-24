@@ -173,6 +173,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Windows Development on GCP](windows.md)
 - [FIPS compliance](fips_compliance.md)
 - [`Gemfile` guidelines](gemfile.md)
+- [Ruby upgrade guidelines](ruby_upgrade.md)
 
 ### Things to be aware of
 
