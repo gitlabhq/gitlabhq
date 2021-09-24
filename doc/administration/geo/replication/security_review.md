@@ -26,7 +26,7 @@ from [owasp.org](https://owasp.org/).
 
 - Geo streams almost all data held by a GitLab instance between sites. This
   includes full database replication, most files (user-uploaded attachments,
-  etc) and repository + wiki data. In a typical configuration, this will
+  and so on) and repository + wiki data. In a typical configuration, this will
   happen across the public Internet, and be TLS-encrypted.
 - PostgreSQL replication is TLS-encrypted.
 - See also: [only TLSv1.2 should be supported](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/2948)

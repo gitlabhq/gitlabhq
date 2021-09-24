@@ -11992,7 +11992,6 @@ CREATE TABLE ci_sources_pipelines (
     project_id integer,
     pipeline_id integer,
     source_project_id integer,
-    source_job_id_convert_to_bigint integer,
     source_pipeline_id integer,
     source_job_id bigint
 );
@@ -24438,6 +24437,8 @@ CREATE INDEX index_ci_builds_on_project_id_and_name_and_ref ON ci_builds USING b
 CREATE INDEX index_ci_builds_on_project_id_for_successfull_pages_deploy ON ci_builds USING btree (project_id) WHERE (((type)::text = 'GenericCommitStatus'::text) AND ((stage)::text = 'deploy'::text) AND ((name)::text = 'pages:deploy'::text) AND ((status)::text = 'success'::text));
 
 CREATE INDEX index_ci_builds_on_queued_at ON ci_builds USING btree (queued_at);
+
+CREATE INDEX index_ci_builds_on_resource_group_and_status_and_commit_id ON ci_builds USING btree (resource_group_id, status, commit_id) WHERE (resource_group_id IS NOT NULL);
 
 CREATE INDEX index_ci_builds_on_runner_id_and_id_desc ON ci_builds USING btree (runner_id, id DESC);
 
