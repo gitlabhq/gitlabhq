@@ -1339,7 +1339,7 @@ decrypt those columns, preventing access to the following items:
 - [Custom Pages domains](../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../operations/error_tracking.md)
 - [Runner authentication](../ci/runners/index.md)
-- [Project mirroring](../user/project/repository/repository_mirroring.md)
+- [Project mirroring](../user/project/repository/mirror/index.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
 In cases like CI/CD variables and runner authentication, you can experience

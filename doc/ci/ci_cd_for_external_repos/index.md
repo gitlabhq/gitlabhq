@@ -18,7 +18,7 @@ GitLab CI/CD can be used with:
 Instead of moving your entire project to GitLab, you can connect your
 external repository to get the benefits of GitLab CI/CD.
 
-Connecting an external repository sets up [repository mirroring](../../user/project/repository/repository_mirroring.md)
+Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/index.md)
 and create a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
 [can be re-enabled later](../../user/project/settings/index.md#sharing-and-permissions).

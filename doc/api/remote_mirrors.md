@@ -7,7 +7,7 @@ type: reference, api
 
 # Project remote mirrors API **(FREE)**
 
-[Push mirrors](../user/project/repository/repository_mirroring.md#push-to-a-remote-repository)
+[Push mirrors](../user/project/repository/mirror/push.md)
 defined on a project's repository settings are called "remote mirrors", and the
 state of these mirrors can be queried and modified via the remote mirror API
 outlined below.

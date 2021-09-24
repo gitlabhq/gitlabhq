@@ -292,7 +292,7 @@ For more details, see [SSH key restrictions](../../../security/ssh_keys_restrict
 ## Enable project mirroring
 
 This option is enabled by default. By disabling it, both
-[pull and push mirroring](../../project/repository/repository_mirroring.md) no longer
+[pull mirroring](../../project/repository/mirror/pull.md) and [push mirroring](../../project/repository/mirror/push.md) no longer
 work in every repository. They can only be re-enabled by an administrator user on a per-project basis.
 
 ![Mirror settings](img/mirror_settings.png)

@@ -162,7 +162,7 @@ your GitHub repositories are listed.
 
 ## Mirror a repository and share pipeline status
 
-Depending on your GitLab tier, [repository mirroring](../repository/repository_mirroring.md) can be set up to keep
+Depending on your GitLab tier, [repository mirroring](../repository/mirror/index.md) can be set up to keep
 your imported repository in sync with its GitHub copy.
 
 Additionally, you can configure GitLab to send pipeline status updates back GitHub with the

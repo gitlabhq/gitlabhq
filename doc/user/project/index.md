@@ -31,7 +31,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
   from changing history or pushing code without review.
   - [Protected tags](protected_tags.md): Control who has
   permission to create tags and prevent accidental updates or deletions.
-  - [Repository mirroring](repository/repository_mirroring.md)
+  - [Repository mirroring](repository/mirror/index.md)
   - [Signing commits](repository/gpg_signed_commits/index.md): Use GNU Privacy Guard (GPG) to sign your commits.
   - [Deploy tokens](deploy_tokens/index.md): Manage access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)
