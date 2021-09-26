@@ -66,7 +66,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
       admin.update!(time_display_relative: false)
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      expect(active_impersonation_tokens).to have_text(personal_access_token.expires_at.strftime('%b %d'))
+      expect(active_impersonation_tokens).to have_text(personal_access_token.expires_at.strftime('%b %-d'))
     end
   end
 

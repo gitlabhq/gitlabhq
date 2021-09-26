@@ -165,7 +165,7 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
       it 'shows absolute times for expires_at' do
         visit project_settings_access_tokens_path(project)
 
-        expect(active_project_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %d'))
+        expect(active_project_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %-d'))
       end
     end
   end
