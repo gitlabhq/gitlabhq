@@ -26508,8 +26508,6 @@ CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadat
 
 CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 
-CREATE INDEX index_taggings_on_taggable_id_and_taggable_type ON taggings USING btree (taggable_id, taggable_type);
-
 CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON taggings USING btree (taggable_id, taggable_type, context);
 
 CREATE UNIQUE INDEX index_tags_on_name ON tags USING btree (name);

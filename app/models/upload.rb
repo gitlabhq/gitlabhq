@@ -67,7 +67,7 @@ class Upload < ApplicationRecord
     self.checksum = nil
     return unless needs_checksum?
 
-    self.checksum = self.class.hexdigest(absolute_path)
+    self.checksum = self.class.sha256_hexdigest(absolute_path)
   end
 
   # Initialize the associated Uploader class with current model

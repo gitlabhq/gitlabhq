@@ -1,4 +1,5 @@
 import { s__ } from '~/locale';
+import { stateToComponentMap as classStateMap, stateKey } from './stores/state_maps';
 
 export const SUCCESS = 'success';
 export const WARNING = 'warning';
@@ -52,3 +53,42 @@ export const MERGE_ACTIVE_STATUS_PHRASES = [
     emoji: 'heart_eyes',
   },
 ];
+
+const STATE_MACHINE = {
+  states: {
+    IDLE: 'IDLE',
+    MERGING: 'MERGING',
+  },
+  transitions: {
+    MERGE: 'start-merge',
+    MERGE_FAILURE: 'merge-failed',
+    MERGED: 'merge-done',
+  },
+};
+const { states, transitions } = STATE_MACHINE;
+
+STATE_MACHINE.definition = {
+  initial: states.IDLE,
+  states: {
+    [states.IDLE]: {
+      on: {
+        [transitions.MERGE]: states.MERGING,
+      },
+    },
+    [states.MERGING]: {
+      on: {
+        [transitions.MERGED]: states.IDLE,
+        [transitions.MERGE_FAILURE]: states.IDLE,
+      },
+    },
+  },
+};
+
+export const stateToTransitionMap = {
+  [stateKey.merging]: transitions.MERGE,
+  [stateKey.merged]: transitions.MERGED,
+};
+export const stateToComponentMap = {
+  [states.MERGING]: classStateMap[stateKey.merging],
+};
+export { STATE_MACHINE };

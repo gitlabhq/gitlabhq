@@ -261,7 +261,7 @@ module Gitlab
             project: job.project,
             file_type: :trace,
             file: stream,
-            file_sha256: self.class.hexdigest(path))
+            file_sha256: self.class.sha256_hexdigest(path))
 
           trace_metadata.track_archival!(trace_artifact.id)
         end

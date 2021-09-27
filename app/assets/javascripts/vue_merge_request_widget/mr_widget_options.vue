@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
-import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
+import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import createFlash from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import notify from '~/lib/utils/notify';
@@ -39,6 +39,7 @@ import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
 import ExtensionsContainer from './components/extensions/container';
+import { STATE_MACHINE, stateToComponentMap } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
@@ -124,7 +125,9 @@ export default {
       mr: store,
       state: store && store.state,
       service: store && this.createService(store),
+      machineState: store?.machineValue || STATE_MACHINE.definition.initial,
       loading: true,
+      recomputeComponentName: 0,
     };
   },
   computed: {
@@ -139,7 +142,7 @@ export default {
       return this.mr.state !== 'nothingToMerge';
     },
     componentName() {
-      return stateMaps.stateToComponentMap[this.mr.state];
+      return stateToComponentMap[this.machineState] || classState[this.mr.state];
     },
     hasPipelineMustSucceedConflict() {
       return !this.mr.hasCI && this.mr.onlyAllowMergeIfPipelineSucceeds;
@@ -206,6 +209,11 @@ export default {
     },
   },
   watch: {
+    'mr.machineValue': {
+      handler(newValue) {
+        this.machineState = newValue;
+      },
+    },
     state(newVal, oldVal) {
       if (newVal !== oldVal && this.shouldRenderMergedPipeline) {
         // init polling
@@ -246,6 +254,8 @@ export default {
       } else {
         this.mr = new MRWidgetStore({ ...window.gl.mrWidgetData, ...data });
       }
+
+      this.machineState = this.mr.machineValue;
 
       if (!this.state) {
         this.state = this.mr.state;

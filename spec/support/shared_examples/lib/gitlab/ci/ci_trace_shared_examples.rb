@@ -497,7 +497,7 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(File.exist?(src_path)).to be_falsy
         expect(src_checksum)
-          .to eq(described_class.hexdigest(build.job_artifacts_trace.file.path))
+          .to eq(described_class.sha256_hexdigest(build.job_artifacts_trace.file.path))
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
@@ -523,7 +523,7 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(build.old_trace).to be_nil
         expect(src_checksum)
-          .to eq(described_class.hexdigest(build.job_artifacts_trace.file.path))
+          .to eq(described_class.sha256_hexdigest(build.job_artifacts_trace.file.path))
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
@@ -861,7 +861,7 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(Ci::BuildTraceChunk.where(build: build)).not_to be_exist
         expect(src_checksum)
-          .to eq(described_class.hexdigest(build.job_artifacts_trace.file.path))
+          .to eq(described_class.sha256_hexdigest(build.job_artifacts_trace.file.path))
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end

@@ -36,7 +36,7 @@ RSpec.describe 'Merge requests > User merges immediately', :js do
         Sidekiq::Testing.fake! do
           click_button 'Merge immediately'
 
-          expect(find('.accept-merge-request.btn-confirm')).to have_content('Merge in progress')
+          expect(find('.media-body h4')).to have_content('Merging!')
 
           wait_for_requests
         end

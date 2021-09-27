@@ -2915,7 +2915,13 @@ msgstr ""
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
+msgid "Akismet"
+msgstr ""
+
 msgid "Akismet API Key"
+msgstr ""
+
+msgid "Akismet helps prevent the creation of spam issues in public projects."
 msgstr ""
 
 msgid "AlertManagement|Acknowledged"
@@ -8533,6 +8539,9 @@ msgstr ""
 msgid "Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories."
 msgstr ""
 
+msgid "Configure CAPTCHAs, IP address limits, and other anti-spam measures."
+msgstr ""
+
 msgid "Configure Dependency Scanning in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings) to customize Dependency Scanning settings."
 msgstr ""
 
@@ -12629,10 +12638,7 @@ msgstr ""
 msgid "Enable reCAPTCHA"
 msgstr ""
 
-msgid "Enable reCAPTCHA for login"
-msgstr ""
-
-msgid "Enable reCAPTCHA, Invisible Captcha, Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
+msgid "Enable reCAPTCHA for login."
 msgstr ""
 
 msgid "Enable repository checks"
@@ -16706,10 +16712,10 @@ msgstr ""
 msgid "Helps prevent bots from creating accounts."
 msgstr ""
 
-msgid "Helps prevent bots from creating issues"
+msgid "Helps prevent bots from creating issues."
 msgstr ""
 
-msgid "Helps prevent malicious users hide their activity"
+msgid "Helps prevent malicious users hide their activity."
 msgstr ""
 
 msgid "Helps reduce request volume (for example, from crawlers or abusive bots)"
@@ -16833,6 +16839,12 @@ msgstr ""
 msgid "Housekeeping, export, path, transfer, remove, archive."
 msgstr ""
 
+msgid "How do I configure Akismet?"
+msgstr ""
+
+msgid "How do I configure it?"
+msgstr ""
+
 msgid "How do I configure runners?"
 msgstr ""
 
@@ -16866,7 +16878,7 @@ msgstr ""
 msgid "How many days need to pass between marking entity for deletion and actual removing it."
 msgstr ""
 
-msgid "How many seconds an IP will be counted towards the limit"
+msgid "How many seconds an IP counts toward the IP address limit."
 msgstr ""
 
 msgid "How the job limiter handles jobs exceeding the thresholds specified below. The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and raises an exception if the compressed size exceeds the limit."
@@ -16956,13 +16968,16 @@ msgstr ""
 msgid "IP Address"
 msgstr ""
 
-msgid "IP expiration time"
+msgid "IP address expiration time"
+msgstr ""
+
+msgid "IP address restrictions"
+msgstr ""
+
+msgid "IP addresses per user"
 msgstr ""
 
 msgid "IP subnet restriction only allowed for top-level groups"
-msgstr ""
-
-msgid "IPs per user"
 msgstr ""
 
 msgid "Identifier"
@@ -18453,6 +18468,12 @@ msgid "Invalid yaml"
 msgstr ""
 
 msgid "Investigate vulnerability: %{title}"
+msgstr ""
+
+msgid "Invisible Captcha"
+msgstr ""
+
+msgid "Invisible Captcha helps prevent the creation of spam accounts. It adds a honeypot field and time-sensitive form submission to the account signup form."
 msgstr ""
 
 msgid "Invitation"
@@ -20155,10 +20176,10 @@ msgstr ""
 msgid "LicenseCompliance|Acceptable license to be used in the project"
 msgstr ""
 
-msgid "LicenseCompliance|Add a license"
+msgid "LicenseCompliance|Add license and related policy"
 msgstr ""
 
-msgid "LicenseCompliance|Add license and related policy"
+msgid "LicenseCompliance|Add license policy"
 msgstr ""
 
 msgid "LicenseCompliance|Allow"
@@ -20314,7 +20335,7 @@ msgstr ""
 msgid "Limit namespaces and projects that can be indexed"
 msgstr ""
 
-msgid "Limit sign in from multiple ips"
+msgid "Limit sign in from multiple IP addresses"
 msgstr ""
 
 msgid "Limit the number of concurrent operations this secondary site can run in the background."
@@ -20958,7 +20979,7 @@ msgstr ""
 msgid "Maximum number of projects."
 msgstr ""
 
-msgid "Maximum number of unique IPs per user"
+msgid "Maximum number of unique IP addresses per user."
 msgstr ""
 
 msgid "Maximum page reached"
@@ -23736,6 +23757,9 @@ msgid "Only project members will be imported. Group members will be skipped."
 msgstr ""
 
 msgid "Only projects created under a Ultimate license are available in Security Dashboards."
+msgstr ""
+
+msgid "Only reCAPTCHA v2 is supported:"
 msgstr ""
 
 msgid "Only verified users with an email address in any of these domains can be added to the group."
@@ -27780,6 +27804,9 @@ msgid "Read more about project permissions %{help_link_open}here%{help_link_clos
 msgstr ""
 
 msgid "Read more about related issues"
+msgstr ""
+
+msgid "Read their documentation."
 msgstr ""
 
 msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
@@ -31965,7 +31992,10 @@ msgstr ""
 msgid "SourcegraphPreferences|Uses a custom %{linkStart}Sourcegraph instance%{linkEnd}."
 msgstr ""
 
-msgid "Spam Check API Key"
+msgid "Spam Check"
+msgstr ""
+
+msgid "Spam Check API key"
 msgstr ""
 
 msgid "Spam Logs"
@@ -33508,7 +33538,7 @@ msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "The API key used by GitLab for accessing the Spam Check service endpoint"
+msgid "The API key used by GitLab for accessing the Spam Check service endpoint."
 msgstr ""
 
 msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."
@@ -40764,10 +40794,16 @@ msgstr ""
 msgid "quick actions"
 msgstr ""
 
-msgid "reCAPTCHA Private Key"
+msgid "reCAPTCHA"
 msgstr ""
 
-msgid "reCAPTCHA Site Key"
+msgid "reCAPTCHA helps prevent credential stuffing."
+msgstr ""
+
+msgid "reCAPTCHA private key"
+msgstr ""
+
+msgid "reCAPTCHA site key"
 msgstr ""
 
 msgid "recent activity"

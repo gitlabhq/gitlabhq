@@ -2608,17 +2608,29 @@ RSpec.describe Group do
   end
 
   describe '.ids_with_disabled_email' do
-    let!(:parent_1) { create(:group, emails_disabled: true) }
-    let!(:child_1) { create(:group, parent: parent_1) }
+    let_it_be(:parent_1) { create(:group, emails_disabled: true) }
+    let_it_be(:child_1) { create(:group, parent: parent_1) }
 
-    let!(:parent_2) { create(:group, emails_disabled: false) }
-    let!(:child_2) { create(:group, parent: parent_2) }
+    let_it_be(:parent_2) { create(:group, emails_disabled: false) }
+    let_it_be(:child_2) { create(:group, parent: parent_2) }
 
-    let!(:other_group) { create(:group, emails_disabled: false) }
+    let_it_be(:other_group) { create(:group, emails_disabled: false) }
 
-    subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
+    shared_examples 'returns namespaces with disabled email' do
+      subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
 
-    it { is_expected.to eq(Set.new([child_1.id])) }
+      it { is_expected.to eq(Set.new([child_1.id])) }
+    end
+
+    it_behaves_like 'returns namespaces with disabled email'
+
+    context 'when feature flag :linear_group_ancestor_scopes is disabled' do
+      before do
+        stub_feature_flags(linear_group_ancestor_scopes: false)
+      end
+
+      it_behaves_like 'returns namespaces with disabled email'
+    end
   end
 
   describe '.timelogs' do

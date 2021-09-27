@@ -49,7 +49,7 @@ class LfsObject < ApplicationRecord
   end
 
   def self.calculate_oid(path)
-    self.hexdigest(path)
+    self.sha256_hexdigest(path)
   end
 end
 

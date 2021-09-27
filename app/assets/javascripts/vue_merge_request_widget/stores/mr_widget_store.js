@@ -1,10 +1,20 @@
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { statusBoxState } from '~/issuable/components/status_box.vue';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
-import { MTWPS_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWPS_MERGE_STRATEGY } from '../constants';
+import { machine } from '~/lib/utils/finite_state_machine';
+import {
+  MTWPS_MERGE_STRATEGY,
+  MT_MERGE_STRATEGY,
+  MWPS_MERGE_STRATEGY,
+  STATE_MACHINE,
+  stateToTransitionMap,
+} from '../constants';
 import { stateKey } from './state_maps';
 
 const { format } = getTimeago();
+
+const { states } = STATE_MACHINE;
+const { IDLE } = states;
 
 export default class MergeRequestStore {
   constructor(data) {
@@ -15,6 +25,9 @@ export default class MergeRequestStore {
     this.apiApprovePath = data.api_approve_path;
     this.apiUnapprovePath = data.api_unapprove_path;
     this.hasApprovalsAvailable = data.has_approvals_available;
+
+    this.stateMachine = machine(STATE_MACHINE.definition);
+    this.machineValue = this.stateMachine.value;
 
     this.setPaths(data);
 
@@ -215,10 +228,7 @@ export default class MergeRequestStore {
   setState() {
     if (this.mergeOngoing) {
       this.state = 'merging';
-      return;
-    }
-
-    if (this.isOpen) {
+    } else if (this.isOpen) {
       this.state = getStateKey.call(this);
     } else {
       switch (this.mergeRequestState) {
@@ -232,6 +242,8 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
+
+    this.translateStateToMachine();
   }
 
   setPaths(data) {
@@ -355,5 +367,33 @@ export default class MergeRequestStore {
       this.hasMergeableDiscussionsState ||
       (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed)
     );
+  }
+
+  // Because the state machine doesn't yet handle every state and transition,
+  //    some use-cases will need to force a state that can't be reached by
+  //    a known transition. This is undesirable long-term (as it subverts
+  //    the intent of a state machine), but is necessary until the machine
+  //    can handle all possible combinations. (unsafeForce)
+  transitionStateMachine({ transition, state, unsafeForce = false } = {}) {
+    if (unsafeForce && state) {
+      this.stateMachine.value = state;
+    } else {
+      this.stateMachine.send(transition);
+    }
+
+    this.machineValue = this.stateMachine.value;
+  }
+  translateStateToMachine() {
+    const transition = stateToTransitionMap[this.state];
+    let transitionOptions = {
+      state: IDLE,
+      unsafeForce: true,
+    };
+
+    if (transition) {
+      transitionOptions = { transition };
+    }
+
+    this.transitionStateMachine(transitionOptions);
   }
 }

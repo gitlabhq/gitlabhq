@@ -1089,6 +1089,12 @@ entry.
 - [Add helpful text to URL group validation and limit text](gitlab-org/gitlab@59a5a6266cb0d5434596170ffa36e4e74b8d2c2c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65369)) **GitLab Enterprise Edition**
 - [Refactor external storage admin area configuration UI and docs](gitlab-org/gitlab@497ba4fc8f4ec1d234c9f5f1ec5c69712b8c7cb3) ([merge request](gitlab-org/gitlab!66219))
 
+## 14.1.6 (2021-09-27)
+
+### Fixed (1 change)
+
+- [Fix Elastic::MigrationWorker current_migration (2nd attempt)](gitlab-org/gitlab@f07c7a5f173a2fc053247664f21c03d29df543a4) ([merge request](gitlab-org/gitlab!71187)) **GitLab Enterprise Edition**
+
 ## 14.1.5 (2021-09-02)
 
 ### Fixed (1 change)

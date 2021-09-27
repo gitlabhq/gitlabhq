@@ -2589,7 +2589,6 @@ Rails/IncludeUrlHelper:
     - 'app/models/integrations/youtrack.rb'
     - 'app/presenters/alert_management/alert_presenter.rb'
     - 'app/presenters/ci/pipeline_presenter.rb'
-    - 'app/presenters/clusters/cluster_presenter.rb'
     - 'app/presenters/environment_presenter.rb'
     - 'app/presenters/gitlab/blame_presenter.rb'
     - 'app/presenters/group_clusterable_presenter.rb'

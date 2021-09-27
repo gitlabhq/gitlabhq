@@ -104,7 +104,7 @@ In Omnibus GitLab, find the logs in `/var/log/gitlab/gitlab-kas/`.
 See also the [user documentation](../../user/clusters/agent/index.md#troubleshooting)
 for troubleshooting problems with individual agents.
 
-### KAS logs - GitOps: failed to get project info
+### KAS logs - GitOps: failed to get project information
 
 If you get the following error message:
 

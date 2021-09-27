@@ -45,6 +45,8 @@ const createTestMr = (customConfig) => {
     preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY,
     availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
     mergeImmediatelyDocsPath: 'path/to/merge/immediately/docs',
+    transitionStateMachine: () => eventHub.$emit('StateMachineValueChanged', { value: 'value' }),
+    translateStateToMachine: () => this.transitionStateMachine(),
   };
 
   Object.assign(mr, customConfig.mr);

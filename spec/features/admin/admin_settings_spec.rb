@@ -450,14 +450,14 @@ RSpec.describe 'Admin updates settings' do
         visit reporting_admin_application_settings_path
 
         page.within('.as-spam') do
-          fill_in 'reCAPTCHA Site Key', with: 'key'
-          fill_in 'reCAPTCHA Private Key', with: 'key'
+          fill_in 'reCAPTCHA site key', with: 'key'
+          fill_in 'reCAPTCHA private key', with: 'key'
           check 'Enable reCAPTCHA'
           check 'Enable reCAPTCHA for login'
-          fill_in 'IPs per user', with: 15
+          fill_in 'IP addresses per user', with: 15
           check 'Enable Spam Check via external API endpoint'
           fill_in 'URL of the external Spam Check endpoint', with: 'grpc://www.example.com/spamcheck'
-          fill_in 'Spam Check API Key', with: 'SPAM_CHECK_API_KEY'
+          fill_in 'Spam Check API key', with: 'SPAM_CHECK_API_KEY'
           click_button 'Save changes'
         end
 

@@ -3,23 +3,10 @@
 module Clusters
   class ClusterPresenter < Gitlab::View::Presenter::Delegated
     include ::Gitlab::Utils::StrongMemoize
-    include ActionView::Helpers::SanitizeHelper
-    include ActionView::Helpers::UrlHelper
-    include IconsHelper
 
     delegator_override_with ::Gitlab::Utils::StrongMemoize # TODO: Remove `::Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
 
     presents ::Clusters::Cluster, as: :cluster
-
-    # We do not want to show the group path for clusters belonging to the
-    # clusterable, only for the ancestor clusters.
-    def item_link(clusterable_presenter, *html_options)
-      if cluster.group_type? && clusterable != clusterable_presenter.subject
-        contracted_group_name(cluster.group) + ' / ' + link_to_cluster
-      else
-        link_to_cluster(*html_options)
-      end
-    end
 
     def provider_label
       if aws?
@@ -39,16 +26,6 @@ module Clusters
 
     def can_read_cluster?
       can?(current_user, :read_cluster, cluster)
-    end
-
-    def cluster_type_description
-      if cluster.project_type?
-        s_("ClusterIntegration|Project cluster")
-      elsif cluster.group_type?
-        s_("ClusterIntegration|Group cluster")
-      elsif cluster.instance_type?
-        s_("ClusterIntegration|Instance cluster")
-      end
     end
 
     def show_path(params: {})
@@ -109,7 +86,7 @@ module Clusters
     private
 
     def image_path(path)
-      ActionController::Base.helpers.image_path(path)
+      ApplicationController.helpers.image_path(path)
     end
 
     # currently log explorer is only available in the scope of the project
@@ -128,20 +105,6 @@ module Clusters
       elsif cluster.project_type?
         cluster.project
       end
-    end
-
-    def contracted_group_name(group)
-      sanitize(group.full_name)
-        .sub(%r{\/.*\/}, "/ #{contracted_icon} /")
-        .html_safe
-    end
-
-    def contracted_icon
-      sprite_icon('ellipsis_h', size: 12, css_class: 'vertical-align-middle')
-    end
-
-    def link_to_cluster(html_options: {})
-      link_to_if(can_read_cluster?, cluster.name, show_path, html_options)
     end
   end
 end

@@ -1,4 +1,4 @@
-const stateToComponentMap = {
+export const stateToComponentMap = {
   merged: 'mr-widget-merged',
   closed: 'mr-widget-closed',
   merging: 'mr-widget-merging',
@@ -21,7 +21,7 @@ const stateToComponentMap = {
   mergeChecksFailed: 'mergeChecksFailed',
 };
 
-const statesToShowHelpWidget = [
+export const statesToShowHelpWidget = [
   'merging',
   'conflicts',
   'workInProgress',
@@ -50,11 +50,7 @@ export const stateKey = {
   notAllowedToMerge: 'notAllowedToMerge',
   readyToMerge: 'readyToMerge',
   rebase: 'rebase',
+  merging: 'merging',
   merged: 'merged',
   mergeChecksFailed: 'mergeChecksFailed',
-};
-
-export default {
-  stateToComponentMap,
-  statesToShowHelpWidget,
 };

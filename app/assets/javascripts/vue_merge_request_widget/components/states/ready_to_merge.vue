@@ -29,6 +29,7 @@ import {
   WARNING,
   MT_MERGE_STRATEGY,
   PIPELINE_FAILED_STATE,
+  STATE_MACHINE,
 } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -46,6 +47,9 @@ const PIPELINE_SUCCESS_STATE = 'success';
 const MERGE_FAILED_STATUS = 'failed';
 const MERGE_SUCCESS_STATUS = 'success';
 const MERGE_HOOK_VALIDATION_ERROR_STATUS = 'hook_validation_error';
+
+const { transitions } = STATE_MACHINE;
+const { MERGE, MERGED, MERGE_FAILURE } = transitions;
 
 export default {
   name: 'ReadyToMerge',
@@ -361,6 +365,7 @@ export default {
       }
 
       this.isMakingRequest = true;
+      this.mr.transitionStateMachine({ transition: MERGE });
       this.service
         .merge(options)
         .then((res) => res.data)
@@ -375,6 +380,7 @@ export default {
             this.initiateMergePolling();
           } else if (hasError) {
             eventHub.$emit('FailedToMerge', data.merge_error);
+            this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           }
 
           if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -383,6 +389,7 @@ export default {
         })
         .catch(() => {
           this.isMakingRequest = false;
+          this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           createFlash({
             message: __('Something went wrong. Please try again.'),
           });
@@ -417,6 +424,7 @@ export default {
             eventHub.$emit('FetchActionsContent');
             MergeRequest.hideCloseButton();
             MergeRequest.decreaseCounter();
+            this.mr.transitionStateMachine({ transition: MERGED });
             stopPolling();
 
             refreshUserMergeRequestCounts();
@@ -428,6 +436,7 @@ export default {
             }
           } else if (data.merge_error) {
             eventHub.$emit('FailedToMerge', data.merge_error);
+            this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
             stopPolling();
           } else {
             // MR is not merged yet, continue polling until the state becomes 'merged'
@@ -438,6 +447,7 @@ export default {
           createFlash({
             message: __('Something went wrong while merging this merge request. Please try again.'),
           });
+          this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           stopPolling();
         });
     },

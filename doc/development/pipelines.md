@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Pipelines for the GitLab project
 
-Pipelines for [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) and [`gitlab-org/gitlab-foss`](https://gitlab.com/gitlab-org/gitlab-foss) (as well as the
-`dev` instance's mirrors) are configured in the usual
+Pipelines for [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) (as well as the `dev` instance's) is configured in the usual
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml)
 which itself includes files under
 [`.gitlab/ci/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab/ci)
@@ -17,29 +16,159 @@ We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/#dogfo
 GitLab [CI/CD features and best-practices](../ci/yaml/index.md)
 as much as possible.
 
-## Overview
+## Minimal test jobs before a merge request is approved
 
-Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/index.md#workflow)
-feature of the GitLab CI/CD.
+**To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a minimal set of RSpec & Jest tests that are related to the merge request changes.**
 
-Pipelines are always created for the following scenarios:
+After a merge request has been approved, the pipeline would contain the full RSpec & Jest tests. This will ensure that all tests
+have been run before a merge request is merged.
 
-- `main` branch, including on schedules, pushes, merges, and so on.
-- Merge requests.
-- Tags.
-- Stable, `auto-deploy`, and security branches.
+### RSpec minimal jobs
 
-Pipeline creation is also affected by the following CI/CD variables:
+#### Determining related RSpec test files in a merge request
 
-- If `$FORCE_GITLAB_CI` is set, pipelines are created.
-- If `$GITLAB_INTERNAL` is not set, pipelines are not created.
+To identify the minimal set of tests needed, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
 
-No pipeline is created in any other cases (for example, when pushing a branch with no
-MR for it).
+- dynamic mapping from test coverage tracing (generated via the [Crystalball gem](https://github.com/toptal/crystalball))
+  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L15))
+- static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
+  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L12))
 
-The source of truth for these workflow rules is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
-### Pipelines for Merge Requests
+In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current merge request.
+
+#### Exceptional cases
+
+In addition, there are a few circumstances where we would always run the full RSpec tests:
+
+- when the `pipeline:run-all-rspec` label is set on the merge request
+- when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
+- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+
+### Jest minimal jobs
+
+#### Determining related Jest test files in a merge request
+
+To identify the minimal set of tests needed, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
+In this mode, `jest` would resolve all the dependencies of related to the changed files, which include test files that have these files in the dependency chain.
+
+#### Exceptional cases
+
+In addition, there are a few circumstances where we would always run the full Jest tests:
+
+- when the `pipeline:run-all-rspec` label is set on the merge request
+- when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
+- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
+- when any vendored JavaScript file is changed (i.e. `vendor/assets/javascripts/**/*`)
+- when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
+
+## Fail-fast job in merge request pipelines
+
+To provide faster feedback when a merge request breaks existing tests, we are experimenting with a
+fail-fast mechanism.
+
+An `rspec fail-fast` job is added in parallel to all other `rspec` jobs in a merge
+request pipeline. This job runs the tests that are directly related to the changes
+in the merge request.
+
+If any of these tests fail, the `rspec fail-fast` job fails, triggering a
+`fail-pipeline-early` job to run. The `fail-pipeline-early` job:
+
+- Cancels the currently running pipeline and all in-progress jobs.
+- Sets pipeline to have status `failed`.
+
+For example:
+
+```mermaid
+graph LR
+    subgraph "prepare stage";
+        A["detect-tests"]
+    end
+
+    subgraph "test stage";
+        B["jest"];
+        C["rspec migration"];
+        D["rspec unit"];
+        E["rspec integration"];
+        F["rspec system"];
+        G["rspec fail-fast"];
+    end
+
+    subgraph "post-test stage";
+        Z["fail-pipeline-early"];
+    end
+
+    A --"artifact: list of test files"--> G
+    G --"on failure"--> Z
+```
+
+The `rspec fail-fast` is a no-op if there are more than 10 test files related to the
+merge request. This prevents `rspec fail-fast` duration from exceeding the average
+`rspec` job duration and defeating its purpose.
+
+This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
+
+## Test jobs
+
+Consult [GitLab tests in the Continuous Integration (CI) context](testing_guide/ci.md)
+for more information.
+
+We have dedicated jobs for each [testing level](testing_guide/testing_levels.md) and each job runs depending on the
+changes made in your merge request.
+If you want to force all the RSpec jobs to run regardless of your changes, you can add the `pipeline:run-all-rspec` label to the merge request.
+
+> Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
+
+## Review app jobs
+
+Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more information.
+
+## As-if-FOSS jobs
+
+The `* as-if-foss` jobs run the GitLab test suite "as-if-FOSS", meaning as if the jobs would run in the context
+of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
+
+- when the `pipeline:run-as-if-foss` label is set on the merge request
+- when the merge request is created in the `gitlab-org/security/gitlab` project
+- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+
+The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
+set and get their EE-specific folders removed before the tests start running.
+
+The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
+the `gitlab-org/gitlab-foss` project.
+
+## PostgreSQL versions testing
+
+Our test suite runs against PG12 as GitLab.com runs on PG12 and
+[Omnibus defaults to PG12 for new installs and upgrades](../administration/package_information/postgresql_versions.md).
+
+We do run our test suite against PG11 and PG13 on nightly scheduled pipelines.
+
+We also run our test suite against PG11 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg11` job).
+
+### Current versions testing
+
+| Where? | PostgreSQL version |
+| ------ | ------------------ |
+| MRs    | 12, 11 for DB library changes |
+| `main` (non-scheduled pipelines) | 12, 11 for DB library changes |
+| 2-hourly scheduled pipelines | 12, 11 for DB library changes |
+| `nightly` scheduled pipelines | 12, 11, 13 |
+
+### Long-term plan
+
+We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administration/package_information/postgresql_versions.md):
+
+| PostgreSQL version | 14.1 (July 2021)       | 14.2 (August 2021)     | 14.3 (September 2021)  | 14.4 (October 2021)    | 14.5 (November 2021)   | 14.6 (December 2021)   |
+| -------------------| ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
+| PG12               | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
+| PG11               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
+| PG13               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
+
+## Pipelines types for merge requests
 
 In general, pipelines for an MR fall into one or more of the following types,
 depending on the changes made in the MR:
@@ -53,7 +182,7 @@ We use the [`rules:`](../ci/yaml/index.md#rules) and [`needs:`](../ci/yaml/index
 to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
 have a pipelines that include jobs from multiple types (for example, a combination of docs-only and code-only pipelines).
 
-#### Documentation only MR pipeline
+### Documentation only MR pipeline
 
 [Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/250546928):
 
@@ -71,7 +200,7 @@ graph LR
    end
 ```
 
-#### Code-only MR pipeline
+### Code-only MR pipeline
 
 [Reference pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/136295694)
 
@@ -173,7 +302,7 @@ graph RL;
   end
 ```
 
-#### Frontend-only MR pipeline
+### Frontend-only MR pipeline
 
 [Reference pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/134661039):
 
@@ -299,7 +428,7 @@ graph RL;
   end
 ```
 
-#### QA-only MR pipeline
+### QA-only MR pipeline
 
 [Reference pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/134645109):
 
@@ -358,151 +487,196 @@ graph RL;
   end
 ```
 
-### Fail-fast pipeline in Merge Requests
+## CI configuration internals
 
-To provide faster feedback when a Merge Request breaks existing tests, we are experimenting with a
-fail-fast mechanism.
+### Workflow rules
 
-An `rspec fail-fast` job is added in parallel to all other `rspec` jobs in a Merge
-Request pipeline. This job runs the tests that are directly related to the changes
-in the Merge Request.
+Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/index.md#workflow)
+feature of the GitLab CI/CD.
 
-If any of these tests fail, the `rspec fail-fast` job fails, triggering a
-`fail-pipeline-early` job to run. The `fail-pipeline-early` job:
+Pipelines are always created for the following scenarios:
 
-- Cancels the currently running pipeline and all in-progress jobs.
-- Sets pipeline to have status `failed`.
+- `main` branch, including on schedules, pushes, merges, and so on.
+- Merge requests.
+- Tags.
+- Stable, `auto-deploy`, and security branches.
 
-For example:
+Pipeline creation is also affected by the following CI/CD variables:
 
-```mermaid
-graph LR
-    subgraph "prepare stage";
-        A["detect-tests"]
-    end
+- If `$FORCE_GITLAB_CI` is set, pipelines are created.
+- If `$GITLAB_INTERNAL` is not set, pipelines are not created.
 
-    subgraph "test stage";
-        B["jest"];
-        C["rspec migration"];
-        D["rspec unit"];
-        E["rspec integration"];
-        F["rspec system"];
-        G["rspec fail-fast"];
-    end
+No pipeline is created in any other cases (for example, when pushing a branch with no
+MR for it).
 
-    subgraph "post-test stage";
-        Z["fail-pipeline-early"];
-    end
+The source of truth for these workflow rules is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
-    A --"artifact: list of test files"--> G
-    G --"on failure"--> Z
+### Default image
+
+The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+
+<!-- vale gitlab.Spelling = NO -->
+
+It includes Ruby, Go, Git, Git LFS, Chrome, Node, Yarn, PostgreSQL, and Graphics Magick.
+
+<!-- vale gitlab.Spelling = YES -->
+
+The images used in our pipelines are configured in the
+[`gitlab-org/gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images)
+project, which is push-mirrored to [`gitlab/gitlab-build-images`](https://dev.gitlab.org/gitlab/gitlab-build-images)
+for redundancy.
+
+The current version of the build images can be found in the
+["Used by GitLab section"](https://gitlab.com/gitlab-org/gitlab-build-images/blob/master/.gitlab-ci.yml).
+
+### Default variables
+
+In addition to the [predefined CI/CD variables](../ci/variables/predefined_variables.md),
+each pipeline includes default variables defined in
+[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+
+### Stages
+
+The current stages are:
+
+- `sync`: This stage is used to synchronize changes from [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) to
+  [`gitlab-org/gitlab-foss`](https://gitlab.com/gitlab-org/gitlab-foss).
+- `prepare`: This stage includes jobs that prepare artifacts that are needed by
+  jobs in subsequent stages.
+- `build-images`: This stage includes jobs that prepare Docker images
+  that are needed by jobs in subsequent stages or downstream pipelines.
+- `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
+- `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
+- `post-test`: This stage includes jobs that build reports or gather data from
+  the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
+- `review-prepare`: This stage includes a job that build the CNG images that are
+  later used by the (Helm) Review App deployment (see
+  [Review Apps](testing_guide/review_apps.md) for details).
+- `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
+- `dast`: This stage includes jobs that run a DAST full scan against the Review App
+that is deployed in stage `review`.
+- `qa`: This stage includes jobs that perform QA tasks against the Review App
+  that is deployed in stage `review`.
+- `post-qa`: This stage includes jobs that build reports or gather data from
+  the `qa` stage's jobs (for example, Review App performance report).
+- `pages`: This stage includes a job that deploys the various reports as
+  GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
+  and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
+  [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
+- `notify`: This stage includes jobs that notify various failures to Slack.
+
+### Dependency Proxy
+
+Some of the jobs are using images from Docker Hub, where we also use
+`${GITLAB_DEPENDENCY_PROXY}` as a prefix to the image path, so that we pull
+images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
+
+`${GITLAB_DEPENDENCY_PROXY}` is a group CI/CD variable defined in
+[`gitlab-org`](https://gitlab.com/gitlab-org) as
+`${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`. This means when we use an image
+defined as:
+
+```yaml
+image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
 ```
 
-A Merge Request author may choose to opt-out of the fail fast mechanism by doing one of the following:
+Projects in the `gitlab-org` group pull from the Dependency Proxy, while
+forks that reside on any other personal namespaces or groups fall back to
+Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
 
-- Adding the `pipeline:skip-rspec-fail-fast` label to the merge request
-- Starting the `dont-interrupt-me` job found in the `sync` stage of a Merge Request pipeline.
+### Common job definitions
 
-The `rspec fail-fast` is a no-op if there are more than 10 test files related to the
-Merge Request. This prevents `rspec fail-fast` duration from exceeding the average
-`rspec` job duration and defeating its purpose.
+Most of the jobs [extend from a few CI definitions](../ci/yaml/index.md#extends)
+defined in [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml)
+that are scoped to a single [configuration keyword](../ci/yaml/index.md#job-keywords).
 
-This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
+| Job definitions  | Description |
+|------------------|-------------|
+| `.default-retry` | Allows a job to [retry](../ci/yaml/index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
+| `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (for example, tests). |
+| `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
+| `.rails-cache` | Allows a job to use a default `cache` definition suitable for Ruby/Rails tasks. |
+| `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
+| `.coverage-cache` | Allows a job to use a default `cache` definition suitable for coverage tasks. |
+| `.qa-cache` | Allows a job to use a default `cache` definition suitable for QA tasks. |
+| `.yarn-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that do a `yarn install`. |
+| `.assets-compile-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that compile assets. |
+| `.use-pg11` | Allows a job to run the `postgres` 11 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
+| `.use-pg11-ee` | Same as `.use-pg11` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
+| `.use-pg12` | Allows a job to use the `postgres` 12 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
+| `.use-pg12-ee` | Same as `.use-pg12` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
+| `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
+| `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
+| `.use-docker-in-docker` | Allows a job to use Docker in Docker. |
 
-NOTE:
-This experiment is only enabled when the CI/CD variable `RSPEC_FAIL_FAST_ENABLED=true` is set.
+### `rules`, `if:` conditions and `changes:` patterns
 
-#### Determining related test files in a Merge Request
+We're using the [`rules` keyword](../ci/yaml/index.md#rules) extensively.
 
-The test files related to the Merge Request are determined using the [`test_file_finder`](https://gitlab.com/gitlab-org/ci-cd/test_file_finder) gem.
-We are using a custom mapping between source file to test files, maintained in the `tests.yml` file.
+All `rules` definitions are defined in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml),
+then included in individual jobs via [`extends`](../ci/yaml/index.md#extends).
 
-### RSpec minimal jobs
+The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
+which are also defined in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml)
+and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#anchors)
 
-Before a merge request is approved, the pipeline will run a minimal set of RSpec tests that are related to the merge request changes.
-This is to reduce the pipeline cost and shorten the job duration.
+#### `if:` conditions
 
-To identify the minimal set of tests needed, we use [Crystalball gem](https://github.com/toptal/crystalball) to create a test mapping.
-The test mapping contains a map of each source files to a list of test files which is dependent of the source file.
-This mapping is currently generated using a combination of test coverage tracing and a static mapping.
-In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current Merge Request.
+<!-- vale gitlab.Substitutions = NO -->
 
-After a merge request has been approved, the pipeline would contain the full RSpec tests. This will ensure that all tests
-have been run before a merge request is merged.
+| `if:` conditions | Description | Notes |
+|------------------|-------------|-------|
+| `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success|manual`), or **not** create a job for forks (by using `when: never`). |
+| `if-not-ee`                                                  | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
+| `if-not-foss`                                                | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
+| `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
+| `if-master-refs`                                             | Matches if the current branch is `master` or `main`. | |
+| `if-master-push`                                             | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
+| `if-master-schedule-2-hourly`                                | Matches if the current branch is `master` or `main` and pipeline runs on a 2-hourly schedule. | |
+| `if-master-schedule-nightly`                                 | Matches if the current branch is `master` or `main` and pipeline runs on a nightly schedule. | |
+| `if-auto-deploy-branches`                                    | Matches if the current branch is an auto-deploy one. | |
+| `if-master-or-tag`                                           | Matches if the pipeline is for the `master` or `main` branch or for a tag. | |
+| `if-merge-request`                                           | Matches if the pipeline is for a merge request. | |
+| `if-merge-request-title-as-if-foss`                          | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-as-if-foss" | |
+| `if-merge-request-title-update-caches`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:update-cache". | |
+| `if-merge-request-title-run-all-rspec`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-all-rspec". | |
+| `if-security-merge-request`                                  | Matches if the pipeline is for a security merge request. | |
+| `if-security-schedule`                                       | Matches if the pipeline is for a security scheduled pipeline. | |
+| `if-nightly-master-schedule`                                 | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |
+| `if-dot-com-gitlab-org-schedule`                             | Limits jobs creation to scheduled pipelines for the `gitlab-org` group on GitLab.com. | |
+| `if-dot-com-gitlab-org-master`                               | Limits jobs creation to the `master` or `main` branch for the `gitlab-org` group on GitLab.com. | |
+| `if-dot-com-gitlab-org-merge-request`                        | Limits jobs creation to merge requests for the `gitlab-org` group on GitLab.com. | |
+| `if-dot-com-gitlab-org-and-security-tag`                     | Limits job creation to tags for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
+| `if-dot-com-gitlab-org-and-security-merge-request`           | Limit jobs creation to merge requests for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
+| `if-dot-com-gitlab-org-and-security-tag`                     | Limit jobs creation to tags for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
+| `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
+| `if-cache-credentials-schedule`                              | Limits jobs to scheduled pipelines with the `$CI_REPO_CACHE_CREDENTIALS` variable set. | |
+| `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
 
-### Jest minimal jobs
+<!-- vale gitlab.Substitutions = YES -->
 
-Before a merge request is approved, the pipeline will run a minimal set of Jest tests that are related to the merge request changes.
-This is to reduce the pipeline cost and shorten the job duration.
+#### `changes:` patterns
 
-To identify the minimal set of tests needed, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
-In this mode, `jest` would resolve all the dependencies of related to the changed files, which include test files that have these files in the dependency chain.
-
-After a merge request has been approved, the pipeline would contain the full Jest tests. This will ensure that all tests
-have been run before a merge request is merged.
-
-In addition, there are a few circumstances where we would always run the full Jest tests:
-
-- when `package.json`, `yarn.lock`, `jest` config changes
-- when vendored JavaScript is changed
-- when `.graphql` files are changed
-
-### PostgreSQL versions testing
-
-Our test suite runs against PG12 as GitLab.com runs on PG12 and
-[Omnibus defaults to PG12 for new installs and upgrades](../administration/package_information/postgresql_versions.md),
-Our test suite is currently running against PG11, since GitLab.com still runs on PG11.
-
-We do run our test suite against PG11 on nightly scheduled pipelines as well as upon specific
-database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg11` job).
-
-#### Current versions testing
-
-| Where? | PostgreSQL version |
-| ------ | ------------------ |
-| MRs    | 12, 11 for DB library changes |
-| `main` (non-scheduled pipelines) | 12, 11 for DB library changes |
-| 2-hourly scheduled pipelines | 12, 11 for DB library changes |
-| `nightly` scheduled pipelines | 12, 11 |
-
-#### Long-term plan
-
-We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administration/package_information/postgresql_versions.md):
-
-| PostgreSQL version | 13.11 (April 2021)     | 13.12 (May 2021)       | 14.0 (June 2021?)      |
-| -------------------| ---------------------- | ---------------------- | ---------------------- |
-| PG12               | `nightly`              | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
-| PG11               | MRs/`2-hour`/`nightly` | `nightly`              | `nightly`              |
-
-### Test jobs
-
-Consult [GitLab tests in the Continuous Integration (CI) context](testing_guide/ci.md)
-for more information.
-
-We have dedicated jobs for each [testing level](testing_guide/testing_levels.md) and each job runs depending on the
-changes made in your merge request.
-If you want to force all the RSpec jobs to run regardless of your changes, you can add the `pipeline:run-all-rspec` label to the merge request.
-
-> Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
-
-### Review app jobs
-
-Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more information.
-
-### As-if-FOSS jobs
-
-The `* as-if-foss` jobs allows the GitLab test suite "as-if-FOSS", meaning as if the jobs would run in the context
-of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
-
-- `gitlab-org/security/gitlab` merge requests.
-- Merge requests with the `pipeline:run-as-if-foss` label
-- Merge requests that changes the CI configuration.
-
-The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
-set and get their EE-specific folders removed before the tests start running.
-
-The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
-the `gitlab-org/gitlab-foss` project.
+| `changes:` patterns          | Description                                                              |
+|------------------------------|--------------------------------------------------------------------------|
+| `ci-patterns`                | Only create job for CI configuration-related changes.                    |
+| `ci-build-images-patterns`   | Only create job for CI configuration-related changes related to the `build-images` stage. |
+| `ci-review-patterns`         | Only create job for CI configuration-related changes related to the `review` stage. |
+| `ci-qa-patterns`             | Only create job for CI configuration-related changes related to the `qa` stage. |
+| `yaml-lint-patterns`         | Only create job for YAML-related changes.                                |
+| `docs-patterns`              | Only create job for docs-related changes.                                |
+| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (that is, `package.json`, and `yarn.lock`). changes. |
+| `frontend-patterns`          | Only create job for frontend-related changes.                           |
+| `backend-patterns`           | Only create job for backend-related changes.                           |
+| `db-patterns`                | Only create job for DB-related changes. |
+| `backstage-patterns`         | Only create job for backstage-related changes (that is, Danger, fixtures, RuboCop, specs). |
+| `code-patterns`              | Only create job for code-related changes.                                |
+| `qa-patterns`                | Only create job for QA-related changes.                                  |
+| `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |
+| `code-qa-patterns`           | Combination of `code-patterns` and `qa-patterns`.                        |
+| `code-backstage-qa-patterns` | Combination of `code-patterns`, `backstage-patterns`, and `qa-patterns`. |
 
 ## Performance
 
@@ -611,177 +785,6 @@ GitLab Team Member, find credentials in the
 
 Note that this bucket should be located in the same continent as the
 runner, or [you can incur network egress charges](https://cloud.google.com/storage/pricing).
-
-## CI configuration internals
-
-### Stages
-
-The current stages are:
-
-- `sync`: This stage is used to synchronize changes from [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) to
-  [`gitlab-org/gitlab-foss`](https://gitlab.com/gitlab-org/gitlab-foss).
-- `prepare`: This stage includes jobs that prepare artifacts that are needed by
-  jobs in subsequent stages.
-- `build-images`: This stage includes jobs that prepare Docker images
-  that are needed by jobs in subsequent stages or downstream pipelines.
-- `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
-- `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
-- `post-test`: This stage includes jobs that build reports or gather data from
-  the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
-- `review-prepare`: This stage includes a job that build the CNG images that are
-  later used by the (Helm) Review App deployment (see
-  [Review Apps](testing_guide/review_apps.md) for details).
-- `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
-- `dast`: This stage includes jobs that run a DAST full scan against the Review App
-that is deployed in stage `review`.
-- `qa`: This stage includes jobs that perform QA tasks against the Review App
-  that is deployed in stage `review`.
-- `post-qa`: This stage includes jobs that build reports or gather data from
-  the `qa` stage's jobs (for example, Review App performance report).
-- `pages`: This stage includes a job that deploys the various reports as
-  GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
-  and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
-  [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
-- `notify`: This stage includes jobs that notify various failures to Slack.
-
-### Default image
-
-The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
-
-<!-- vale gitlab.Spelling = NO -->
-
-It includes Ruby, Go, Git, Git LFS, Chrome, Node, Yarn, PostgreSQL, and Graphics Magick.
-
-<!-- vale gitlab.Spelling = YES -->
-
-The images used in our pipelines are configured in the
-[`gitlab-org/gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images)
-project, which is push-mirrored to [`gitlab/gitlab-build-images`](https://dev.gitlab.org/gitlab/gitlab-build-images)
-for redundancy.
-
-The current version of the build images can be found in the
-["Used by GitLab section"](https://gitlab.com/gitlab-org/gitlab-build-images/blob/master/.gitlab-ci.yml).
-
-### Dependency Proxy
-
-Some of the jobs are using images from Docker Hub, where we also use
-`${GITLAB_DEPENDENCY_PROXY}` as a prefix to the image path, so that we pull
-images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
-
-`${GITLAB_DEPENDENCY_PROXY}` is a group CI/CD variable defined in
-[`gitlab-org`](https://gitlab.com/gitlab-org) as
-`${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`. This means when we use an image
-defined as:
-
-```yaml
-image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
-```
-
-Projects in the `gitlab-org` group pull from the Dependency Proxy, while
-forks that reside on any other personal namespaces or groups fall back to
-Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
-
-### Default variables
-
-In addition to the [predefined CI/CD variables](../ci/variables/predefined_variables.md),
-each pipeline includes default variables defined in
-[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
-
-### Common job definitions
-
-Most of the jobs [extend from a few CI definitions](../ci/yaml/index.md#extends)
-defined in [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml)
-that are scoped to a single [configuration keyword](../ci/yaml/index.md#job-keywords).
-
-| Job definitions  | Description |
-|------------------|-------------|
-| `.default-retry` | Allows a job to [retry](../ci/yaml/index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
-| `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (for example, tests). |
-| `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
-| `.rails-cache` | Allows a job to use a default `cache` definition suitable for Ruby/Rails tasks. |
-| `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
-| `.coverage-cache` | Allows a job to use a default `cache` definition suitable for coverage tasks. |
-| `.qa-cache` | Allows a job to use a default `cache` definition suitable for QA tasks. |
-| `.yarn-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that do a `yarn install`. |
-| `.assets-compile-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that compile assets. |
-| `.use-pg11` | Allows a job to run the `postgres` 11 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
-| `.use-pg11-ee` | Same as `.use-pg11` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
-| `.use-pg12` | Allows a job to use the `postgres` 12 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
-| `.use-pg12-ee` | Same as `.use-pg12` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
-| `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
-| `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
-| `.use-docker-in-docker` | Allows a job to use Docker in Docker. |
-
-### `rules`, `if:` conditions and `changes:` patterns
-
-We're using the [`rules` keyword](../ci/yaml/index.md#rules) extensively.
-
-All `rules` definitions are defined in
-[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml),
-then included in individual jobs via [`extends`](../ci/yaml/index.md#extends).
-
-The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
-which are also defined in
-[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml)
-and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#anchors)
-
-#### `if:` conditions
-
-<!-- vale gitlab.Substitutions = NO -->
-
-| `if:` conditions | Description | Notes |
-|------------------|-------------|-------|
-| `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success|manual`), or **not** create a job for forks (by using `when: never`). |
-| `if-not-ee`                                                  | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
-| `if-not-foss`                                                | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
-| `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
-| `if-master-refs`                                             | Matches if the current branch is `master` or `main`. | |
-| `if-master-push`                                             | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
-| `if-master-schedule-2-hourly`                                | Matches if the current branch is `master` or `main` and pipeline runs on a 2-hourly schedule. | |
-| `if-master-schedule-nightly`                                 | Matches if the current branch is `master` or `main` and pipeline runs on a nightly schedule. | |
-| `if-auto-deploy-branches`                                    | Matches if the current branch is an auto-deploy one. | |
-| `if-master-or-tag`                                           | Matches if the pipeline is for the `master` or `main` branch or for a tag. | |
-| `if-merge-request`                                           | Matches if the pipeline is for a merge request. | |
-| `if-merge-request-title-as-if-foss`                          | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-as-if-foss" | |
-| `if-merge-request-title-update-caches`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:update-cache". | |
-| `if-merge-request-title-run-all-rspec`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-all-rspec". | |
-| `if-security-merge-request`                                  | Matches if the pipeline is for a security merge request. | |
-| `if-security-schedule`                                       | Matches if the pipeline is for a security scheduled pipeline. | |
-| `if-nightly-master-schedule`                                 | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |
-| `if-dot-com-gitlab-org-schedule`                             | Limits jobs creation to scheduled pipelines for the `gitlab-org` group on GitLab.com. | |
-| `if-dot-com-gitlab-org-master`                               | Limits jobs creation to the `master` or `main` branch for the `gitlab-org` group on GitLab.com. | |
-| `if-dot-com-gitlab-org-merge-request`                        | Limits jobs creation to merge requests for the `gitlab-org` group on GitLab.com. | |
-| `if-dot-com-gitlab-org-and-security-tag`                     | Limits job creation to tags for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
-| `if-dot-com-gitlab-org-and-security-merge-request`           | Limit jobs creation to merge requests for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
-| `if-dot-com-gitlab-org-and-security-tag`                     | Limit jobs creation to tags for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
-| `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
-| `if-cache-credentials-schedule`                              | Limits jobs to scheduled pipelines with the `$CI_REPO_CACHE_CREDENTIALS` variable set. | |
-| `if-rspec-fail-fast-disabled`                                | Limits jobs to pipelines with `$RSPEC_FAIL_FAST_ENABLED` CI/CD variable not set to `"true"`. | |
-| `if-rspec-fail-fast-skipped`                                 | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:skip-rspec-fail-fast". | |
-| `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
-
-<!-- vale gitlab.Substitutions = YES -->
-
-#### `changes:` patterns
-
-| `changes:` patterns          | Description                                                              |
-|------------------------------|--------------------------------------------------------------------------|
-| `ci-patterns`                | Only create job for CI configuration-related changes.                    |
-| `ci-build-images-patterns`   | Only create job for CI configuration-related changes related to the `build-images` stage. |
-| `ci-review-patterns`         | Only create job for CI configuration-related changes related to the `review` stage. |
-| `ci-qa-patterns`             | Only create job for CI configuration-related changes related to the `qa` stage. |
-| `yaml-lint-patterns`         | Only create job for YAML-related changes.                                |
-| `docs-patterns`              | Only create job for docs-related changes.                                |
-| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (that is, `package.json`, and `yarn.lock`). changes. |
-| `frontend-patterns`          | Only create job for frontend-related changes.                           |
-| `backend-patterns`           | Only create job for backend-related changes.                           |
-| `db-patterns`                | Only create job for DB-related changes. |
-| `backstage-patterns`         | Only create job for backstage-related changes (that is, Danger, fixtures, RuboCop, specs). |
-| `code-patterns`              | Only create job for code-related changes.                                |
-| `qa-patterns`                | Only create job for QA-related changes.                                  |
-| `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |
-| `code-qa-patterns`           | Combination of `code-patterns` and `qa-patterns`.                        |
-| `code-backstage-qa-patterns` | Combination of `code-patterns`, `backstage-patterns`, and `qa-patterns`. |
 
 ---
 
