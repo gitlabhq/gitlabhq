@@ -41,7 +41,7 @@ RSpec.shared_examples 'a deploy token in settings' do
       visit page_path
 
       within('.deploy-tokens') do
-        expect(page).to have_content(deploy_token.expires_at.strftime('%b %d'))
+        expect(page).to have_content(deploy_token.expires_at.strftime('%b %-d'))
       end
     end
   end
