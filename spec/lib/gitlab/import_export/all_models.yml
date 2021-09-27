@@ -324,7 +324,6 @@ integrations:
 - jira_tracker_data
 - zentao_tracker_data
 - issue_tracker_data
-- open_project_tracker_data
 hooks:
 - project
 - web_hook_logs

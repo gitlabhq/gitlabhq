@@ -4,7 +4,7 @@ module API
   # This API is responsible for collecting error tracking information
   # from sentry client. It allows us to use GitLab as an alternative to
   # sentry backend. For more details see https://gitlab.com/gitlab-org/gitlab/-/issues/329596.
-  class ErrorTrackingCollector < ::API::Base
+  class ErrorTracking::Collector < ::API::Base
     feature_category :error_tracking
 
     content_type :envelope, 'application/x-sentry-envelope'

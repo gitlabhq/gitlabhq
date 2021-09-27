@@ -18,12 +18,4 @@ FactoryBot.define do
   factory :issue_tracker_data, class: 'Integrations::IssueTrackerData' do
     integration
   end
-
-  factory :open_project_tracker_data, class: 'Integrations::OpenProjectTrackerData' do
-    integration factory: :open_project_service
-    url { 'http://openproject.example.com' }
-    token { 'supersecret' }
-    project_identifier_code { 'PRJ-1' }
-    closed_status_id { '15' }
-  end
 end

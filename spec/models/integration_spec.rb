@@ -14,7 +14,6 @@ RSpec.describe Integration do
     it { is_expected.to have_one(:service_hook).inverse_of(:integration).with_foreign_key(:service_id) }
     it { is_expected.to have_one(:issue_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:service_id).class_name('Integrations::IssueTrackerData') }
     it { is_expected.to have_one(:jira_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:service_id).class_name('Integrations::JiraTrackerData') }
-    it { is_expected.to have_one(:open_project_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:service_id).class_name('Integrations::OpenProjectTrackerData') }
   end
 
   describe 'validations' do

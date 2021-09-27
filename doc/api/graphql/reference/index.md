@@ -12189,6 +12189,7 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pipelineconfigsource"></a>`configSource` | [`PipelineConfigSourceEnum`](#pipelineconfigsourceenum) | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE). |
 | <a id="pipelinecoverage"></a>`coverage` | [`Float`](#float) | Coverage percentage. |
 | <a id="pipelinecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the pipeline's creation. |
+| <a id="pipelinedastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | DAST profile associated with the pipeline. Returns `null`if `dast_view_scans` feature flag is disabled. |
 | <a id="pipelinedetailedstatus"></a>`detailedStatus` | [`DetailedStatus!`](#detailedstatus) | Detailed status of the pipeline. |
 | <a id="pipelinedownstream"></a>`downstream` | [`PipelineConnection`](#pipelineconnection) | Pipelines this pipeline will trigger. (see [Connections](#connections)) |
 | <a id="pipelineduration"></a>`duration` | [`Int`](#int) | Duration of the pipeline in seconds. |

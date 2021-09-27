@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ErrorTrackingClientKeys < ::API::Base
+  class ErrorTracking::ClientKeys < ::API::Base
     before { authenticate! }
 
     feature_category :error_tracking

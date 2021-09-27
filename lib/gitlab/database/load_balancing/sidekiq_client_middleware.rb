@@ -35,12 +35,12 @@ module Gitlab
           #      connection.load_balancer.primary_write_location
           #   end
           #
-          job['wal_locations'] = { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
+          job['wal_locations'] = { ::Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
         end
 
         def wal_location
           strong_memoize(:wal_location) do
-            if Session.current.use_primary?
+            if ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
               load_balancer.primary_write_location
             else
               load_balancer.host.database_replica_location
@@ -49,7 +49,7 @@ module Gitlab
         end
 
         def load_balancer
-          LoadBalancing.proxy.load_balancer
+          ::Gitlab::Database::LoadBalancing.proxy.load_balancer
         end
       end
     end

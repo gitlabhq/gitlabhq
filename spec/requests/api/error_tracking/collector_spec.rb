@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ErrorTrackingCollector do
+RSpec.describe API::ErrorTracking::Collector do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:setting) { create(:project_error_tracking_setting, :integrated, project: project) }
   let_it_be(:client_key) { create(:error_tracking_client_key, project: project) }

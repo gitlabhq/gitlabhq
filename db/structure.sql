@@ -18446,7 +18446,6 @@ ALTER SEQUENCE protected_tags_id_seq OWNED BY protected_tags.id;
 
 CREATE TABLE push_event_payloads (
     commit_count bigint NOT NULL,
-    event_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     action smallint NOT NULL,
     ref_type smallint NOT NULL,
     commit_from bytea,

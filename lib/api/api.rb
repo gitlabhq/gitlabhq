@@ -171,9 +171,9 @@ module API
       mount ::API::DeployTokens
       mount ::API::Deployments
       mount ::API::Environments
-      mount ::API::ErrorTracking
-      mount ::API::ErrorTrackingClientKeys
-      mount ::API::ErrorTrackingCollector
+      mount ::API::ErrorTracking::ClientKeys
+      mount ::API::ErrorTracking::Collector
+      mount ::API::ErrorTracking::ProjectSettings
       mount ::API::Events
       mount ::API::FeatureFlags
       mount ::API::FeatureFlagsUserLists
