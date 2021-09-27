@@ -15,8 +15,8 @@ Get list of a project's variables.
 GET /projects/:id/variables
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
+| Attribute | Type           | required | Description                                                                                                                                   |
+| --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
@@ -26,14 +26,20 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```json
 [
     {
-        "key": "TEST_VARIABLE_1",
         "variable_type": "env_var",
-        "value": "TEST_1"
+        "key": "TEST_VARIABLE_1",
+        "value": "TEST_1",
+        "protected": false,
+        "masked": true,
+        "environment_scope": "*"
     },
     {
-        "key": "TEST_VARIABLE_2",
         "variable_type": "env_var",
-        "value": "TEST_2"
+        "key": "TEST_VARIABLE_2",
+        "value": "TEST_2",
+        "protected": false,
+        "masked": false,
+        "environment_scope": "*"
     }
 ]
 ```
@@ -46,11 +52,11 @@ Get the details of a project's specific variable.
 GET /projects/:id/variables/:key
 ```
 
-| Attribute | Type    | required | Description           |
-|-----------|---------|----------|-----------------------|
-| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user   |
-| `key`     | string  | yes      | The `key` of a variable |
-| `filter`  | hash    | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
+| Attribute | Type           | required | Description                                                                                                                                   |
+| --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `key`     | string         | yes      | The `key` of a variable                                                                                                                       |
+| `filter`  | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/TEST_VARIABLE_1"
@@ -62,7 +68,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "variable_type": "env_var",
     "value": "TEST_1",
     "protected": false,
-    "masked": true
+    "masked": true,
+    "environment_scope": "*"
 }
 ```
 
@@ -74,15 +81,15 @@ Create a new variable.
 POST /projects/:id/variables
 ```
 
-| Attribute           | Type    | required | Description           |
-|---------------------|---------|----------|-----------------------|
-| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user   |
-| `key`               | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
-| `value`             | string  | yes      | The `value` of a variable |
-| `variable_type`     | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
-| `protected`         | boolean | no       | Whether the variable is protected. Default: `false` |
-| `masked`            | boolean | no       | Whether the variable is masked. Default: `false` |
-| `environment_scope` | string  | no       | The `environment_scope` of the variable. Default: `*` |
+| Attribute           | Type           | required | Description                                                                                                                                   |
+| ------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `key`               | string         | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed                                 |
+| `value`             | string         | yes      | The `value` of a variable                                                                                                                     |
+| `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
+| `protected`         | boolean        | no       | Whether the variable is protected. Default: `false`                                                                                           |
+| `masked`            | boolean        | no       | Whether the variable is masked. Default: `false`                                                                                              |
+| `environment_scope` | string         | no       | The `environment_scope` of the variable. Default: `*`                                                                                         |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -91,10 +98,10 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ```json
 {
+    "variable_type": "env_var",
     "key": "NEW_VARIABLE",
     "value": "new value",
     "protected": false,
-    "variable_type": "env_var",
     "masked": false,
     "environment_scope": "*"
 }
@@ -108,16 +115,16 @@ Update a project's variable.
 PUT /projects/:id/variables/:key
 ```
 
-| Attribute           | Type    | required | Description             |
-|---------------------|---------|----------|-------------------------|
-| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user     |
-| `key`               | string  | yes      | The `key` of a variable   |
-| `value`             | string  | yes      | The `value` of a variable |
-| `variable_type`     | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
-| `protected`         | boolean | no       | Whether the variable is protected |
-| `masked`            | boolean | no       | Whether the variable is masked |
-| `environment_scope` | string  | no       | The `environment_scope` of the variable |
-| `filter`            | hash    | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
+| Attribute           | Type           | required | Description                                                                                                                                   |
+| ------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `key`               | string         | yes      | The `key` of a variable                                                                                                                       |
+| `value`             | string         | yes      | The `value` of a variable                                                                                                                     |
+| `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
+| `protected`         | boolean        | no       | Whether the variable is protected                                                                                                             |
+| `masked`            | boolean        | no       | Whether the variable is masked                                                                                                                |
+| `environment_scope` | string         | no       | The `environment_scope` of the variable                                                                                                       |
+| `filter`            | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -126,9 +133,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ```json
 {
+    "variable_type": "env_var",
     "key": "NEW_VARIABLE",
     "value": "updated value",
-    "variable_type": "env_var",
     "protected": true,
     "masked": false,
     "environment_scope": "*"
@@ -143,11 +150,11 @@ Remove a project's variable.
 DELETE /projects/:id/variables/:key
 ```
 
-| Attribute | Type    | required | Description             |
-|-----------|---------|----------|-------------------------|
-| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user     |
-| `key`     | string  | yes      | The `key` of a variable |
-| `filter`  | hash    | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
+| Attribute | Type           | required | Description                                                                                                                                   |
+| --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `key`     | string         | yes      | The `key` of a variable                                                                                                                       |
+| `filter`  | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1"

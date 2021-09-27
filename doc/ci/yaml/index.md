@@ -747,9 +747,9 @@ Use `before_script` to define an array of commands that should run before each j
 ```yaml
 job:
   before_script:
-    - echo "Execute this command before any `script:` commands."
+    - echo "Execute this command before any 'script:' commands."
   script:
-    - echo "This command executes after the job's `before_script` commands."
+    - echo "This command executes after the job's 'before_script' commands."
 ```
 
 **Additional details**:

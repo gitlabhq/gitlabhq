@@ -62,6 +62,7 @@ exceptions:
   - GDK
   - GDPR
   - GET
+  - GID
   - GIF
   - GKE
   - GNU
@@ -173,6 +174,7 @@ exceptions:
   - TOML
   - TTL
   - UDP
+  - UID
   - UNIX
   - URI
   - URL

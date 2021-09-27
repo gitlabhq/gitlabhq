@@ -132,7 +132,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>View [wiki](project/wiki/index.md) pages                                               | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Create [snippets](snippets.md)                                                         |          | ✓        | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Manage labels                                                                          |          | ✓        | ✓         | ✓          | ✓     |
-| [Projects](project/index.md):<br>View project statistics                                                                |          | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>View [project traffic statistics](../api/project_statistics.md)                        |          | ✓        | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Create, edit, delete [milestones](project/milestones/index.md).                        |          |          | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Create, edit, delete [releases](project/releases/index.md)                             |          |          | ✓ (*13*)  | ✓ (*13*)   | ✓ (*13*) |
 | [Projects](project/index.md):<br>Create, edit [wiki](project/wiki/index.md) pages                                       |          |          | ✓         | ✓          | ✓     |
