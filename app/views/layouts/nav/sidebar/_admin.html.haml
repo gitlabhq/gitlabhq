@@ -1,7 +1,7 @@
 %aside.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), 'aria-label': _('Admin navigation') }
   .nav-sidebar-inner-scroll
     .context-header
-      = link_to admin_root_path, title: _('Admin Overview') do
+      = link_to admin_root_path, title: _('Admin Overview'), class: 'has-tooltip', data: { container: 'body', placement: 'right' } do
         %span{ class: ['avatar-container', 'settings-avatar', 'rect-avatar', 's32'] }
           = sprite_icon('admin', size: 18)
         %span.sidebar-context-title

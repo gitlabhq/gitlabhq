@@ -118,7 +118,7 @@ pages:
     paths:
       - public
   only:
-    - master
+    - main
 ```
 
 ### `.gitlab-ci.yml` for a static site generator
@@ -133,7 +133,7 @@ the `pages` job with the [`only` parameter](../../../ci/yaml/index.md#only--exce
 whenever a new commit is pushed to a branch used specifically for your
 pages.
 
-That way, you can have your project's code in the `master` branch and use an
+That way, you can have your project's code in the `main` branch and use an
 orphan branch (let's name it `pages`) to host your static generator site.
 
 You can create a new empty branch like this:
@@ -163,7 +163,7 @@ pages:
     - pages
 ```
 
-See an example that has different files in the [`master` branch](https://gitlab.com/pages/jekyll-branched/tree/master)
+See an example that has different files in the [`main` branch](https://gitlab.com/pages/jekyll-branched/tree/main)
 and the source files for Jekyll are in a [`pages` branch](https://gitlab.com/pages/jekyll-branched/tree/pages) which
 also includes `.gitlab-ci.yml`.
 

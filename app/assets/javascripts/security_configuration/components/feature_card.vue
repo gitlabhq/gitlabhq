@@ -128,6 +128,7 @@ export default {
         variant="confirm"
         category="primary"
         class="gl-mt-5"
+        :data-qa-selector="`${feature.type}_mr_button`"
       />
 
       <gl-button

@@ -69,7 +69,7 @@ staging:
     - gem install dpl
     - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
-    - master
+    - main
 ```
 
 The first line `apt-get update -yq` updates the list of available packages,
@@ -81,7 +81,7 @@ The above example is valid for all Debian-compatible systems.
 It's pretty common in the development workflow to have staging (development) and
 production environments
 
-Let's consider the following example: we would like to deploy the `master`
+Let's consider the following example: we would like to deploy the `main`
 branch to `staging` and all tags to the `production` environment.
 The final `.gitlab-ci.yml` for that setup would look like this:
 
@@ -92,7 +92,7 @@ staging:
     - gem install dpl
     - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
-    - master
+    - main
 
 production:
   stage: deploy
@@ -105,7 +105,7 @@ production:
 
 We created two deploy jobs that are executed on different events:
 
-- `staging`: Executed for all commits pushed to the `master` branch
+- `staging`: Executed for all commits pushed to the `main` branch
 - `production`: Executed for all pushed tags
 
 We also use two secure variables:

@@ -12,4 +12,10 @@ RSpec.describe Sidebars::Projects::Menus::ScopeMenu do
 
     specify { is_expected.to match(hash_including(class: 'shortcuts-project rspec-project-link')) }
   end
+
+  describe '#extra_nav_link_html_options' do
+    subject { described_class.new(context).extra_nav_link_html_options }
+
+    specify { is_expected.to match(hash_including(class: 'context-header has-tooltip', title: context.project.name)) }
+  end
 end

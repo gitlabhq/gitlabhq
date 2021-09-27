@@ -20,6 +20,13 @@ module QA
           element :file_name_content
         end
 
+        def has_secure_description?(scanner_name)
+          scanner_url_name = scanner_name.downcase.tr('_', '-')
+          "Configure #{scanner_name} in `.gitlab-ci.yml` using the GitLab managed template. You can " \
+            "[add variable overrides](https://docs.gitlab.com/ee/user/application_security/#{scanner_url_name}/#customizing-the-#{scanner_url_name}-settings) " \
+            "to customize #{scanner_name} settings."
+        end
+
         def create_merge_request
           click_element(:issuable_create_button, Page::MergeRequest::Show)
         end

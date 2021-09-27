@@ -271,18 +271,6 @@ RSpec.describe ApplicationSettingsHelper do
         expect(pending_user_count).to eq 1
       end
     end
-
-    context 'when the new_user_signups_cap is not present' do
-      let(:user_cap) { nil }
-
-      it { is_expected.to eq 0 }
-
-      it 'does not query users unnecessarily' do
-        expect(User).not_to receive(:blocked_pending_approval)
-
-        pending_user_count
-      end
-    end
   end
 
   describe '#sidekiq_job_limiter_modes_for_select' do

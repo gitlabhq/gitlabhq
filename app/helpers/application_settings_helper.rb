@@ -477,8 +477,6 @@ module ApplicationSettingsHelper
   end
 
   def pending_user_count
-    return 0 if Gitlab::CurrentSettings.new_user_signups_cap.blank?
-
     User.blocked_pending_approval.count
   end
 end
