@@ -7106,6 +7106,9 @@ msgstr ""
 msgid "CloneIssue|Cannot clone issue to target project as it is pending deletion."
 msgstr ""
 
+msgid "CloneIssue|Cannot clone issues of '%{issue_type}' type."
+msgstr ""
+
 msgid "Cloned this issue to %{path_to_project}."
 msgstr ""
 
@@ -22166,6 +22169,9 @@ msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
 msgstr ""
 
 msgid "MoveIssue|Cannot move issue to project it originates from!"
+msgstr ""
+
+msgid "MoveIssue|Cannot move issues of '%{issue_type}' type."
 msgstr ""
 
 msgid "Moved issue to %{label} column in the board."

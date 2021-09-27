@@ -6,6 +6,8 @@ module Types
       graphql_name 'Package'
       description 'Represents a package in the Package Registry. Note that this type is in beta and susceptible to changes'
 
+      connection_type_class(Types::CountableConnectionType)
+
       authorize :read_package
 
       field :id, ::Types::GlobalIDType[::Packages::Package], null: false,

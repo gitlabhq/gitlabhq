@@ -17,9 +17,11 @@ RSpec.shared_examples 'group and project packages query' do
   let(:package_names) { graphql_data_at(resource_type, :packages, :nodes, :name) }
   let(:target_shas) { graphql_data_at(resource_type, :packages, :nodes, :metadata, :target_sha) }
   let(:packages) { graphql_data_at(resource_type, :packages, :nodes) }
+  let(:packages_count) { graphql_data_at(resource_type, :packages, :count) }
 
   let(:fields) do
     <<~QUERY
+    count
     nodes {
       #{all_graphql_fields_for('packages'.classify, excluded: ['project'])}
       metadata { #{query_graphql_fragment('ComposerMetadata')} }
@@ -54,6 +56,10 @@ RSpec.shared_examples 'group and project packages query' do
 
     it 'deals with metadata' do
       expect(target_shas).to contain_exactly(composer_metadatum.target_sha)
+    end
+
+    it 'returns the count of the packages' do
+      expect(packages_count).to eq(4)
     end
   end
 

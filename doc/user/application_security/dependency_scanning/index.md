@@ -82,6 +82,7 @@ table.supported-languages tr td:last-child {
 }
 
 table.supported-languages ul {
+    font-size: 1em;
     list-style-type: none;
     padding-left: 0px;
     margin-bottom: 0px;

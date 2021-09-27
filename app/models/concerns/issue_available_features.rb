@@ -12,7 +12,8 @@ module IssueAvailableFeatures
       {
         assignee: %w(issue incident),
         confidentiality: %w(issue incident),
-        time_tracking: %w(issue incident)
+        time_tracking: %w(issue incident),
+        move_and_clone: %w(issue incident)
       }.with_indifferent_access
     end
   end

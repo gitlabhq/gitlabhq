@@ -51,3 +51,14 @@ The following Rake tasks are available for use with GitLab:
 | [User management](user_management.md)                 | Perform user management tasks. |
 | [Webhooks administration](web_hooks.md)               | Maintain project webhooks. |
 | [X.509 signatures](x509_signatures.md)                | Update X.509 commit signatures, which can be useful if the certificate store changed. |
+
+To list all available Rake tasks:
+
+```shell
+# Omnibus GitLab
+sudo gitlab-rake -vT
+
+# Installations from source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake -vT RAILS_ENV=production
+```

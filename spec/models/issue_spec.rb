@@ -1505,6 +1505,26 @@ RSpec.describe Issue do
     end
   end
 
+  describe '#supports_move_and_clone?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:issue) { create(:incident, project: project) }
+
+    where(:issue_type, :supports_move_and_clone) do
+      :issue | true
+      :incident | true
+    end
+
+    with_them do
+      before do
+        issue.update!(issue_type: issue_type)
+      end
+
+      it do
+        expect(issue.supports_move_and_clone?).to eq(supports_move_and_clone)
+      end
+    end
+  end
+
   describe '#email_participants_emails' do
     let_it_be(:issue) { create(:issue) }
 

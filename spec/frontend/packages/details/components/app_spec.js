@@ -5,28 +5,19 @@ import Vuex from 'vuex';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import stubChildren from 'helpers/stub_children';
 
-import AdditionalMetadata from '~/packages/details/components/additional_metadata.vue';
 import PackagesApp from '~/packages/details/components/app.vue';
-import DependencyRow from '~/packages/details/components/dependency_row.vue';
-import InstallationCommands from '~/packages/details/components/installation_commands.vue';
 import PackageFiles from '~/packages/details/components/package_files.vue';
 import PackageHistory from '~/packages/details/components/package_history.vue';
-import PackageTitle from '~/packages/details/components/package_title.vue';
 import * as getters from '~/packages/details/store/getters';
 import PackageListRow from '~/packages/shared/components/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { TrackingActions } from '~/packages/shared/constants';
 import * as SharedUtils from '~/packages/shared/utils';
+import TerraformTitle from '~/packages_and_registries/infrastructure_registry/components/details_title.vue';
+import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/components/terraform_installation.vue';
 import Tracking from '~/tracking';
 
-import {
-  composerPackage,
-  conanPackage,
-  mavenPackage,
-  mavenFiles,
-  npmPackage,
-  nugetPackage,
-} from '../../mock_data';
+import { mavenPackage, mavenFiles, npmPackage } from '../../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -73,7 +64,7 @@ describe('PackagesApp', () => {
       store,
       stubs: {
         ...stubChildren(PackagesApp),
-        PackageTitle: false,
+        TerraformTitle: false,
         TitleArea: false,
         GlButton: false,
         GlModal: false,
@@ -84,23 +75,18 @@ describe('PackagesApp', () => {
     });
   }
 
-  const packageTitle = () => wrapper.find(PackageTitle);
-  const emptyState = () => wrapper.find(GlEmptyState);
+  const packageTitle = () => wrapper.findComponent(TerraformTitle);
+  const emptyState = () => wrapper.findComponent(GlEmptyState);
   const deleteButton = () => wrapper.find('.js-delete-button');
   const findDeleteModal = () => wrapper.find({ ref: 'deleteModal' });
   const findDeleteFileModal = () => wrapper.find({ ref: 'deleteFileModal' });
   const versionsTab = () => wrapper.find('.js-versions-tab > a');
-  const packagesLoader = () => wrapper.find(PackagesListLoader);
-  const packagesVersionRows = () => wrapper.findAll(PackageListRow);
+  const packagesLoader = () => wrapper.findComponent(PackagesListLoader);
+  const packagesVersionRows = () => wrapper.findAllComponents(PackageListRow);
   const noVersionsMessage = () => wrapper.find('[data-testid="no-versions-message"]');
-  const dependenciesTab = () => wrapper.find('.js-dependencies-tab > a');
-  const dependenciesCountBadge = () => wrapper.find('[data-testid="dependencies-badge"]');
-  const noDependenciesMessage = () => wrapper.find('[data-testid="no-dependencies-message"]');
-  const dependencyRows = () => wrapper.findAll(DependencyRow);
-  const findPackageHistory = () => wrapper.find(PackageHistory);
-  const findAdditionalMetadata = () => wrapper.find(AdditionalMetadata);
-  const findInstallationCommands = () => wrapper.find(InstallationCommands);
-  const findPackageFiles = () => wrapper.find(PackageFiles);
+  const findPackageHistory = () => wrapper.findComponent(PackageHistory);
+  const findTerraformInstallation = () => wrapper.findComponent(TerraformInstallation);
+  const findPackageFiles = () => wrapper.findComponent(PackageFiles);
 
   afterEach(() => {
     wrapper.destroy();
@@ -129,21 +115,10 @@ describe('PackagesApp', () => {
     expect(findPackageHistory().props('projectName')).toEqual(wrapper.vm.projectName);
   });
 
-  it('additional metadata has the right props', () => {
+  it('terraform installation exists', () => {
     createComponent();
-    expect(findAdditionalMetadata().exists()).toBe(true);
-    expect(findAdditionalMetadata().props('packageEntity')).toEqual(wrapper.vm.packageEntity);
-  });
 
-  it('installation commands has the right props', () => {
-    createComponent();
-    expect(findInstallationCommands().exists()).toBe(true);
-    expect(findInstallationCommands().props('packageEntity')).toEqual(wrapper.vm.packageEntity);
-  });
-
-  it('hides the files table if package type is COMPOSER', () => {
-    createComponent({ packageEntity: composerPackage });
-    expect(findPackageFiles().exists()).toBe(false);
+    expect(findTerraformInstallation().exists()).toBe(true);
   });
 
   describe('deleting packages', () => {
@@ -195,45 +170,6 @@ describe('PackagesApp', () => {
       createComponent();
 
       expect(noVersionsMessage().exists()).toBe(true);
-    });
-  });
-
-  describe('dependency links', () => {
-    it('does not show the dependency links for a non nuget package', () => {
-      createComponent();
-
-      expect(dependenciesTab().exists()).toBe(false);
-    });
-
-    it('shows the dependencies tab with 0 count when a nuget package with no dependencies', () => {
-      createComponent({
-        packageEntity: {
-          ...nugetPackage,
-          dependency_links: [],
-        },
-      });
-
-      return wrapper.vm.$nextTick(() => {
-        const dependenciesBadge = dependenciesCountBadge();
-
-        expect(dependenciesTab().exists()).toBe(true);
-        expect(dependenciesBadge.exists()).toBe(true);
-        expect(dependenciesBadge.text()).toBe('0');
-        expect(noDependenciesMessage().exists()).toBe(true);
-      });
-    });
-
-    it('renders the correct number of dependency rows for a nuget package', () => {
-      createComponent({ packageEntity: nugetPackage });
-
-      return wrapper.vm.$nextTick(() => {
-        const dependenciesBadge = dependenciesCountBadge();
-
-        expect(dependenciesTab().exists()).toBe(true);
-        expect(dependenciesBadge.exists()).toBe(true);
-        expect(dependenciesBadge.text()).toBe(nugetPackage.dependency_links.length.toString());
-        expect(dependencyRows()).toHaveLength(nugetPackage.dependency_links.length);
-      });
     });
   });
 
@@ -305,9 +241,9 @@ describe('PackagesApp', () => {
       });
 
       it('tracking category calls packageTypeToTrackCategory', () => {
-        createComponent({ packageEntity: conanPackage });
+        createComponent({ packageEntity: npmPackage });
         expect(wrapper.vm.tracking.category).toBe(category);
-        expect(utilSpy).toHaveBeenCalledWith('conan');
+        expect(utilSpy).toHaveBeenCalledWith('npm');
       });
 
       it(`delete button on delete modal call event with ${TrackingActions.DELETE_PACKAGE}`, () => {
@@ -371,7 +307,7 @@ describe('PackagesApp', () => {
       });
 
       it(`file download link call event with ${TrackingActions.PULL_PACKAGE}`, () => {
-        createComponent({ packageEntity: conanPackage });
+        createComponent({ packageEntity: npmPackage });
 
         findPackageFiles().vm.$emit('download-file');
         expect(eventSpy).toHaveBeenCalledWith(

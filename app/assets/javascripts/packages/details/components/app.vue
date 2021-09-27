@@ -1,6 +1,5 @@
 <script>
 import {
-  GlBadge,
   GlButton,
   GlModal,
   GlModalDirective,
@@ -14,36 +13,30 @@ import { mapActions, mapState } from 'vuex';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
+import TerraformTitle from '~/packages_and_registries/infrastructure_registry/components/details_title.vue';
+import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/components/terraform_installation.vue';
 import Tracking from '~/tracking';
 import PackageListRow from '../../shared/components/package_list_row.vue';
 import PackagesListLoader from '../../shared/components/packages_list_loader.vue';
-import { PackageType, TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '../../shared/constants';
+import { TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '../../shared/constants';
 import { packageTypeToTrackCategory } from '../../shared/utils';
-import AdditionalMetadata from './additional_metadata.vue';
-import DependencyRow from './dependency_row.vue';
-import InstallationCommands from './installation_commands.vue';
 import PackageFiles from './package_files.vue';
 import PackageHistory from './package_history.vue';
 
 export default {
   name: 'PackagesApp',
   components: {
-    GlBadge,
     GlButton,
     GlEmptyState,
     GlModal,
     GlTab,
     GlTabs,
     GlSprintf,
-    PackageTitle: () => import('./package_title.vue'),
-    TerraformTitle: () =>
-      import('~/packages_and_registries/infrastructure_registry/components/details_title.vue'),
+    TerraformTitle,
     PackagesListLoader,
     PackageListRow,
-    DependencyRow,
     PackageHistory,
-    AdditionalMetadata,
-    InstallationCommands,
+    TerraformInstallation,
     PackageFiles,
   },
   directives: {
@@ -51,12 +44,6 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: {
-    titleComponent: {
-      default: 'PackageTitle',
-      from: 'titleComponent',
-    },
-  },
   trackingActions: { ...TrackingActions },
   data() {
     return {
@@ -86,15 +73,6 @@ export default {
     },
     hasVersions() {
       return this.packageEntity.versions?.length > 0;
-    },
-    packageDependencies() {
-      return this.packageEntity.dependency_links || [];
-    },
-    showDependencies() {
-      return this.packageEntity.package_type === PackageType.NUGET;
-    },
-    showFiles() {
-      return this.packageEntity?.package_type !== PackageType.COMPOSER;
     },
   },
   methods: {
@@ -167,7 +145,7 @@ export default {
   />
 
   <div v-else class="packages-app">
-    <component :is="titleComponent">
+    <terraform-title>
       <template #delete-button>
         <gl-button
           v-if="canDelete"
@@ -180,50 +158,21 @@ export default {
           {{ __('Delete') }}
         </gl-button>
       </template>
-    </component>
+    </terraform-title>
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
         <div data-qa-selector="package_information_content">
           <package-history :package-entity="packageEntity" :project-name="projectName" />
-
-          <installation-commands
-            :package-entity="packageEntity"
-            :npm-path="npmPath"
-            :npm-help-path="npmHelpPath"
-          />
-
-          <additional-metadata :package-entity="packageEntity" />
+          <terraform-installation />
         </div>
 
         <package-files
-          v-if="showFiles"
           :package-files="packageFiles"
           :can-delete="canDelete"
           @download-file="track($options.trackingActions.PULL_PACKAGE)"
           @delete-file="handleFileDelete"
         />
-      </gl-tab>
-
-      <gl-tab v-if="showDependencies" title-item-class="js-dependencies-tab">
-        <template #title>
-          <span>{{ __('Dependencies') }}</span>
-          <gl-badge size="sm" data-testid="dependencies-badge">{{
-            packageDependencies.length
-          }}</gl-badge>
-        </template>
-
-        <template v-if="packageDependencies.length > 0">
-          <dependency-row
-            v-for="(dep, index) in packageDependencies"
-            :key="index"
-            :dependency="dep"
-          />
-        </template>
-
-        <p v-else class="gl-mt-3" data-testid="no-dependencies-message">
-          {{ s__('PackageRegistry|This NuGet package has no dependencies.') }}
-        </p>
       </gl-tab>
 
       <gl-tab
@@ -254,7 +203,6 @@ export default {
 
     <gl-modal
       ref="deleteModal"
-      class="js-delete-modal"
       modal-id="delete-modal"
       :action-primary="$options.modal.packageDeletePrimaryAction"
       :action-cancel="$options.modal.cancelAction"

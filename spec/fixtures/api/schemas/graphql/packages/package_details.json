@@ -50,6 +50,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "count": { "type": "integer" },
         "pageInfo": { "type": "object" },
         "edges": { "type": "array" },
         "nodes": { "type": "array" }
@@ -72,6 +73,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "count": { "type": "integer" },
         "pageInfo": { "type": "object" },
         "edges": { "type": "array" },
         "nodes": { "type": "array" }
@@ -91,6 +93,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "count": { "type": "integer" },
         "pageInfo": { "type": "object" },
         "edges": { "type": "array" },
         "nodes": { "type": "array" }
@@ -106,6 +109,7 @@
       "properties": {
         "pageInfo": { "type": "object" },
         "edges": { "type": "array" },
+        "count": { "type": "integer" },
         "nodes": {
           "type": "array",
           "items": {

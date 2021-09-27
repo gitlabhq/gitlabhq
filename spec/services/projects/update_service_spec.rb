@@ -374,7 +374,7 @@ RSpec.describe Projects::UpdateService do
 
         expect(result).to eq({
           status: :error,
-          message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
+          message: "Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'."
         })
       end
     end

@@ -111,9 +111,9 @@ public folder (for example `/tmp/`) fixes the issue.
 ##### `Name can contain only letters, digits, emojis ...`
 
 ```plaintext
-Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter,
-digit, emoji or '_'. and Path can contain only letters, digits, '_', '-' and '.'. Cannot start
-with '-', end in '.git' or end in '.atom'
+Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. It must start with a letter,
+digit, emoji, or '_', and Path can contain only letters, digits, '_', '-', or '.'. It cannot start
+with '-', end in '.git', or end in '.atom'.
 ```
 
 The project name specified in `project_path` is not valid for one of the specified reasons.

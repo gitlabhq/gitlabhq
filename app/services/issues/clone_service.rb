@@ -8,13 +8,7 @@ module Issues
       @target_project = target_project
       @with_notes = with_notes
 
-      unless issue.can_clone?(current_user, target_project)
-        raise CloneError, s_('CloneIssue|Cannot clone issue due to insufficient permissions!')
-      end
-
-      if target_project.pending_delete?
-        raise CloneError, s_('CloneIssue|Cannot clone issue to target project as it is pending deletion.')
-      end
+      verify_can_clone_issue!(issue, target_project)
 
       super(issue, target_project)
 
@@ -29,6 +23,20 @@ module Issues
 
     attr_reader :target_project
     attr_reader :with_notes
+
+    def verify_can_clone_issue!(issue, target_project)
+      unless issue.supports_move_and_clone?
+        raise CloneError, s_('CloneIssue|Cannot clone issues of \'%{issue_type}\' type.') % { issue_type: issue.issue_type }
+      end
+
+      unless issue.can_clone?(current_user, target_project)
+        raise CloneError, s_('CloneIssue|Cannot clone issue due to insufficient permissions!')
+      end
+
+      if target_project.pending_delete?
+        raise CloneError, s_('CloneIssue|Cannot clone issue to target project as it is pending deletion.')
+      end
+    end
 
     def update_new_entity
       # we don't call `super` because we want to be able to decide whether or not to copy all comments over.

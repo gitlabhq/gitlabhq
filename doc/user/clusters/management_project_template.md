@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 With a [cluster management project](management_project.md) you can manage
 your cluster's deployment and applications through a repository in GitLab.
 
-The Custer Management project template provides you a baseline to get
+The Cluster Management project template provides you a baseline to get
 started and flexibility to customize your project to your cluster's needs.
 For instance, you can:
 

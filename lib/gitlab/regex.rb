@@ -220,12 +220,12 @@ module Gitlab
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}
       # hence the Ruby warning.
       # https://gitlab.com/gitlab-org/gitlab/merge_requests/23165#not-easy-fixable
-      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_\. ]*\z/.freeze
+      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{002B}\u{00A9}-\u{1f9ff}_\. ]*\z/.freeze
     end
 
     def project_name_regex_message
-      "can contain only letters, digits, emojis, '_', '.', dash, space. " \
-      "It must start with letter, digit, emoji or '_'."
+      "can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. " \
+      "It must start with a letter, digit, emoji, or '_'."
     end
 
     def group_name_regex
