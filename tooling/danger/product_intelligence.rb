@@ -30,7 +30,7 @@ module Tooling
       ].freeze
 
       def missing_labels
-        return [] unless helper.ci?
+        return [] if !helper.ci? || helper.mr_has_labels?('growth experiment')
 
         labels = []
         labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')

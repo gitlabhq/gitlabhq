@@ -59,6 +59,14 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
 
       it { is_expected.to be_empty }
     end
+
+    context 'with growth experiment label' do
+      before do
+        allow(fake_helper).to receive(:mr_has_labels?).with('growth experiment').and_return(true)
+      end
+
+      it { is_expected.to be_empty }
+    end
   end
 
   describe '#matching_changed_files' do

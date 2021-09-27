@@ -60,7 +60,7 @@ module BulkImports
 
         def relative_resource_url(context)
           strong_memoize(:relative_resource_url) do
-            resource = context.portable.class.name.downcase.pluralize
+            resource = context.entity.pluralized_name
             encoded_full_path = context.entity.encoded_source_full_path
 
             EXPORT_DOWNLOAD_URL_PATH % { resource: resource, full_path: encoded_full_path, relation: relation }

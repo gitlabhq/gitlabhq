@@ -10,8 +10,6 @@ module BulkImports
     worker_has_external_dependencies!
     feature_category :importers
 
-    GROUP_EXPORTED_URL_PATH = "/groups/%s/export_relations"
-
     def perform(entity_id)
       entity = BulkImports::Entity.find(entity_id)
 
@@ -21,8 +19,7 @@ module BulkImports
     private
 
     def request_export(entity)
-      http_client(entity.bulk_import.configuration)
-        .post(GROUP_EXPORTED_URL_PATH % entity.encoded_source_full_path)
+      http_client(entity.bulk_import.configuration).post(entity.export_relations_url_path)
     end
 
     def http_client(configuration)

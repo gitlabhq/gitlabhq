@@ -134,13 +134,9 @@ You must use the GitLab API to enable it.
 
     ![Error Tracking Settings](img/error_tracking_setting_v14_3.png)
 
-1. Create a client key (DSN) to use with Sentry SDK in your application. Make sure to save the
-   response, as it contains a DSN:
+1. Select **Save changes**. After page reload you should see a text field with the DSN string. Copy it.
 
-   ```shell
-   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-       "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/client_keys"
-   ```
+    ![Error Tracking Settings DSN](img/error_tracking_setting_dsn_v14_4.png)
 
 1. Take the DSN from the previous step and configure your Sentry SDK with it. Errors are now
    reported to the GitLab collector and are visible in the [GitLab UI](#error-tracking-list).

@@ -24,7 +24,7 @@ module BulkImports
             stage: 1
           },
           labels: {
-            pipeline: BulkImports::Groups::Pipelines::LabelsPipeline,
+            pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
             stage: 1
           },
           milestones: {

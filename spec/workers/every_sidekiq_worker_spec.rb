@@ -257,6 +257,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Geo::Scheduler::SchedulerWorker' => 3,
         'Geo::Scheduler::Secondary::SchedulerWorker' => 3,
         'Geo::VerificationBatchWorker' => 0,
+        'Geo::VerificationStateBackfillWorker' => false,
         'Geo::VerificationTimeoutWorker' => false,
         'Geo::VerificationWorker' => 3,
         'GeoRepositoryDestroyWorker' => 3,

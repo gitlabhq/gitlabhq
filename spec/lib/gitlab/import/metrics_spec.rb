@@ -2,20 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::Metrics do
+RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
   let(:importer) { :test_importer }
-  let(:project) { create(:project) }
+  let(:project) { double(:project, created_at: Time.current) }
   let(:histogram) { double(:histogram) }
   let(:counter) { double(:counter) }
 
   subject { described_class.new(importer, project) }
 
-  describe '#report_import_time' do
+  before do
+    allow(Gitlab::Metrics).to receive(:counter) { counter }
+    allow(counter).to receive(:increment)
+  end
+
+  describe '#track_finished_import' do
     before do
-      allow(Gitlab::Metrics).to receive(:counter) { counter }
       allow(Gitlab::Metrics).to receive(:histogram) { histogram }
-      allow(counter).to receive(:increment)
-      allow(counter).to receive(:observe)
     end
 
     it 'emits importer metrics' do
@@ -35,6 +37,28 @@ RSpec.describe Gitlab::Import::Metrics do
       expect(histogram).to receive(:observe).with({ importer: :test_importer }, anything)
 
       subject.track_finished_import
+    end
+  end
+
+  describe '#issues_counter' do
+    it 'creates a counter for issues' do
+      expect(Gitlab::Metrics).to receive(:counter).with(
+        :test_importer_imported_issues_total,
+        'The number of imported issues'
+      )
+
+      subject.issues_counter
+    end
+  end
+
+  describe '#merge_requests_counter' do
+    it 'creates a counter for issues' do
+      expect(Gitlab::Metrics).to receive(:counter).with(
+        :test_importer_imported_merge_requests_total,
+        'The number of imported merge (pull) requests'
+      )
+
+      subject.merge_requests_counter
     end
   end
 end

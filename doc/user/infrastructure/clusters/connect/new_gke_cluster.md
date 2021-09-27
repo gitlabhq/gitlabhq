@@ -26,25 +26,46 @@ You can then modify the project files according to your needs.
 **Steps:**
 
 1. [Import the example project](#import-the-example-project).
-1. [Add your GCP credentials to GitLab](#add-your-gcp-credentials-to-gitlab).
+1. [Create your GCP and GitLab credentials](#create-your-gcp-and-gitlab-credentials).
 1. [Configure your project](#configure-your-project).
 1. [Deploy your cluster](#deploy-your-cluster).
 
 ## Import the example project
 
+To create a new group-level cluster from GitLab using Infrastructure as Code, it is necessary
+to create a project to manage the cluster from. In this tutorial, we import a pre-configured
+sample project to help you get started.
+
 Start by [importing the example project by URL](../../../project/import/repo_by_url.md). Use `https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke.git` as URL.
 
-## Add your GCP credentials to GitLab
+This project provides you with the following resources:
 
-After importing the project, you need to set up [CI environment variables](../../../../ci/variables/index.md) to associate your cluster on GCP to your group in GitLab.
+- A [cluster on Google Cloud Platform (GCP)](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke/-/blob/master/gke.tf)
+with defaults for name, location, node count, and Kubernetes version.
+- A [`gitlab-admin` K8s service account](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke/-/blob/master/gitlab-admin.tf) with `cluster-admin` privileges.
+- The new group-level cluster connected to GitLab.
+- Pre-configures Terraform files:
 
-We advise that you [set environment variables through the GitLab UI](../../../../ci/variables/index.md#add-a-cicd-variable-to-a-project)
-so that your credentials are not exposed through the code. To do so, follow the steps below.
+   ```plaintext
+   ├── backend.tf         # State file Location Configuration
+   ├── gke.tf             # Google GKE Configuration
+   ├── gitlab-admin.tf    # Adding kubernetes service account
+   └── group_cluster.tf   # Registering kubernetes cluster to GitLab `apps` Group
+   ```
 
-### Prepare your credentials on GCP
+## Create your GCP and GitLab credentials
 
-1. Create a [GCP service account](https://cloud.google.com/docs/authentication/getting-started) to authenticate GCP with GitLab. It needs the following roles: `Computer Network Viewer`, `Kubernetes Engine Admin`, and `Service Account User`.
-1. Download the JSON file with the service account key.
+To set up your project to communicate to GCP and the GitLab API:
+
+1. Create a [GitLab personal access token](../../../profile/personal_access_tokens.md) with
+   `api` scope. The Terraform script uses it to connect the cluster to your GitLab group. Take note of the generated token. You will
+   need it when you [configure your project](#configure-your-project).
+1. To authenticate GCP with GitLab, create a [GCP service account](https://cloud.google.com/docs/authentication/getting-started)
+with following roles: `Compute Network Viewer`, `Kubernetes Engine Admin`, `Service Account User`, and `Service Account Admin`. Both User and Admin
+service accounts are necessary. The User role impersonates the [default service account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account)
+when [creating the node pool](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/using_gke_with_terraform#node-pool-management).
+The Admin role creates a service account in the `kube-system` namespace.
+1. Download the JSON file with the service account key you created in the previous step.
 1. On your computer, encode the JSON file to `base64` (replace `/path/to/sa-key.json` to the path to your key):
 
    ```shell
@@ -53,36 +74,38 @@ so that your credentials are not exposed through the code. To do so, follow the 
 
 1. Use the output of this command as the `BASE64_GOOGLE_CREDENTIALS` environment variable in the next step.
 
-### Add your credentials to GitLab as environment variables
-
-1. On GitLab, from your project's sidebar, go to **Settings > CI/CD** and expand **Variables**.
-1. Add your `GITLAB_TOKEN` ([personal access token](../../../profile/personal_access_tokens.md)).
-1. Add the variable `BASE64_GOOGLE_CREDENTIALS` from the previous step.
-
 ## Configure your project
 
-After authenticating with GCP, replace the project's defaults from the example
-project with your own. To do so, edit the files as described below.
+**Required configuration:**
 
-Edit `gke.tf`:
+Use CI/CD environment variables to configure your project as detailed below.
 
-1. **(Required)** Replace the GCP `project` with a unique project name.
-1. **(Optional)** Choose the `name` of your cluster.
-1. **(Optional)** Choose the `region` and `zone` that you would like to deploy your cluster to.
-1. Push the changes to your project's default branch.
+**Required configuration:**
 
-Edit `group_cluster.tf`:
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Variables**.
+1. Set the variable `TF_VAR_gitlab_token` to the GitLab personal access token you just created.
+1. Set the variable `BASE64_GOOGLE_CREDENTIALS` to the `base64` encoded JSON file you just created.
+1. Set the variable `TF_VAR_gcp_project` to your GCP's `project` name.
+1. Set the variable `TF_VAR_gitlab_group` to the name of the group you want to connect your cluster to. If your group's URL is `https://gitlab.example.com/my-example-group`, `my-example-group` is your group's name.
 
-1. **(Required)**: Replace the `full_path` with the path to your group.
-1. **(Optional)**: Choose your cluster base domain through `domain`.
-1. **(Optional)**: Choose your environment through `environment_scope`.
-1. Push the changes to your project's default branch.
+**Optional configuration:**
+
+The file [`variables.tf`](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke/-/blob/master/variables.tf)
+contains other variables that you can override according to your needs:
+
+- `TF_VAR_gcp_region`: Set your cluster's region.
+- `TF_VAR_cluster_name`: Set your cluster's name.
+- `TF_VAR_machine_type`: Set the machine type for the Kubernetes nodes.
+- `TF_VAR_cluster_description`: Set a description for the cluster. We recommend setting this to `$CI_PROJECT_URL` to create a reference to your GitLab project on your GCP cluster detail page. This way you know which project was responsible for provisioning the cluster you see on the GCP dashboard.
+- `TF_VAR_base_domain`: Set to the base domain to provision resources under.
+- `TF_VAR_environment_scope`: Set to the environment scope for your cluster.
 
 Refer to the [GitLab Terraform provider](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs) and the [Google Terraform provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference) documentation for further resource options.
 
 ## Deploy your cluster
 
-After adjusting the files in the previous step, manually trigger the deployment of your cluster. In GitLab:
+After configuring your project, manually trigger the deployment of your cluster. In GitLab:
 
 1. From your project's sidebar, go to **CI/CD > Pipelines**.
 1. Select the dropdown icon (**{angle-down}**) next to the play icon (**{play}**).

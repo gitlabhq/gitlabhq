@@ -19,13 +19,6 @@ module Gitlab
         projects_counter.increment
       end
 
-      def projects_counter
-        @projects_counter ||= Gitlab::Metrics.counter(
-          :"#{importer}_imported_projects_total",
-          'The number of imported projects'
-        )
-      end
-
       def issues_counter
         @issues_counter ||= Gitlab::Metrics.counter(
           :"#{importer}_imported_issues_total",
@@ -48,6 +41,13 @@ module Gitlab
           'Total time spent importing projects, in seconds',
           {},
           IMPORT_DURATION_BUCKETS
+        )
+      end
+
+      def projects_counter
+        @projects_counter ||= Gitlab::Metrics.counter(
+          :"#{importer}_imported_projects_total",
+          'The number of imported projects'
         )
       end
     end

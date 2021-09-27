@@ -57,58 +57,58 @@ RSpec.describe JiraConnect::EventsController do
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+  end
 
-    describe '#uninstalled' do
-      let!(:installation) { create(:jira_connect_installation) }
-      let(:qsh) { Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/uninstalled', 'POST', 'https://gitlab.test') }
+  describe '#uninstalled' do
+    let!(:installation) { create(:jira_connect_installation) }
+    let(:qsh) { Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/uninstalled', 'POST', 'https://gitlab.test') }
 
-      before do
-        request.headers['Authorization'] = "JWT #{auth_token}"
+    before do
+      request.headers['Authorization'] = "JWT #{auth_token}"
+    end
+
+    subject(:post_uninstalled) { post :uninstalled }
+
+    context 'when JWT is invalid' do
+      let(:auth_token) { 'invalid_token' }
+
+      it 'returns 403' do
+        post_uninstalled
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
-      subject(:post_uninstalled) { post :uninstalled }
+      it 'does not delete the installation' do
+        expect { post_uninstalled }.not_to change { JiraConnectInstallation.count }
+      end
+    end
 
-      context 'when JWT is invalid' do
-        let(:auth_token) { 'invalid_token' }
-
-        it 'returns 403' do
-          post_uninstalled
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        it 'does not delete the installation' do
-          expect { post_uninstalled }.not_to change { JiraConnectInstallation.count }
-        end
+    context 'when JWT is valid' do
+      let(:auth_token) do
+        Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret)
       end
 
-      context 'when JWT is valid' do
-        let(:auth_token) do
-          Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret)
+      let(:jira_base_path) { '/-/jira_connect' }
+      let(:jira_event_path) { '/-/jira_connect/events/uninstalled' }
+
+      it 'calls the DestroyService and returns ok in case of success' do
+        expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
+          expect(destroy_service).to receive(:execute).and_return(true)
         end
 
-        let(:jira_base_path) { '/-/jira_connect' }
-        let(:jira_event_path) { '/-/jira_connect/events/uninstalled' }
+        post_uninstalled
 
-        it 'calls the DestroyService and returns ok in case of success' do
-          expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
-            expect(destroy_service).to receive(:execute).and_return(true)
-          end
+        expect(response).to have_gitlab_http_status(:ok)
+      end
 
-          post_uninstalled
-
-          expect(response).to have_gitlab_http_status(:ok)
+      it 'calls the DestroyService and returns unprocessable_entity in case of failure' do
+        expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
+          expect(destroy_service).to receive(:execute).and_return(false)
         end
 
-        it 'calls the DestroyService and returns unprocessable_entity in case of failure' do
-          expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
-            expect(destroy_service).to receive(:execute).and_return(false)
-          end
+        post_uninstalled
 
-          post_uninstalled
-
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        end
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
   end

@@ -10,14 +10,13 @@ Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/deve
 
 MSG
 
-# exit if not matching files
+# exit if not matching files or if no product intelligence labels
 matching_changed_files = product_intelligence.matching_changed_files
-return unless matching_changed_files.any?
+labels = product_intelligence.missing_labels
+
+return if matching_changed_files.empty? || labels.empty?
 
 warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
-
-labels = product_intelligence.missing_labels
-return unless labels.any?
 
 gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
                                     gitlab.mr_json['iid'],

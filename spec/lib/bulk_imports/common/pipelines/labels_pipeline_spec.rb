@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
+RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }

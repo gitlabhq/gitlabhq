@@ -6,7 +6,8 @@ RSpec.describe BulkImports::Projects::Stage do
   let(:pipelines) do
     [
       [0, BulkImports::Projects::Pipelines::ProjectPipeline],
-      [1, BulkImports::Common::Pipelines::EntityFinisher]
+      [1, BulkImports::Common::Pipelines::LabelsPipeline],
+      [2, BulkImports::Common::Pipelines::EntityFinisher]
     ]
   end
 

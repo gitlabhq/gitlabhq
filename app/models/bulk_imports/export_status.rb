@@ -41,7 +41,7 @@ module BulkImports
     end
 
     def status_endpoint
-      "/groups/#{entity.encoded_source_full_path}/export_relations/status"
+      File.join(entity.export_relations_url_path, 'status')
     end
   end
 end
