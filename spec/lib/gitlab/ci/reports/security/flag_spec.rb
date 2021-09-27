@@ -18,9 +18,9 @@ RSpec.describe Gitlab::Ci::Reports::Security::Flag do
       end
     end
 
-    describe '#to_hash' do
+    describe '#to_h' do
       it 'returns expected hash' do
-        expect(security_flag.to_hash).to eq(
+        expect(security_flag.to_h).to eq(
           {
             flag_type: :false_positive,
             origin: 'post analyzer X',
