@@ -301,7 +301,7 @@ An alternative to `File` type variables is to:
 
 ```shell
 # Read certificate stored in $KUBE_CA_PEM variable and save it in a new file
-echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
+cat "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
 # Pass the newly created file to kubectl
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
 ```

@@ -1069,6 +1069,14 @@ For Omnibus GitLab installations, Praefect logs are in `/var/log/gitlab/praefect
 
 GitLab also tracks [Prometheus metrics for Praefect](gitaly/#monitor-gitaly-cluster).
 
+## Backup log
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63832) in GitLab 14.1.
+
+For Omnibus installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
+
+This log is populated when a [GitLab backup is created](../raketasks/backup_restore.md#back-up-gitlab). You can use this log to understand how the backup process performed.
+
 ## Performance bar stats
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.

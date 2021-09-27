@@ -89,7 +89,6 @@ variables:
   REVIEW_APPS_GCP_REGION: "us-central1"
 
   BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
-  RSPEC_FAIL_FAST_ENABLED: "true"  # Set it to "false" to disable RSpec fail-fast
   SIMPLECOV: "true"
 
   # For the default QA image, we use $CI_COMMIT_SHA as tag since it's always available and we override it for specific workflow.rules (see above)

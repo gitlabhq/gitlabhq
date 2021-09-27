@@ -91,13 +91,6 @@
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
-
-.if-rspec-fail-fast-disabled: &if-rspec-fail-fast-disabled
-  if: '$RSPEC_FAIL_FAST_ENABLED != "true"'
-
-.if-rspec-fail-fast-skipped: &if-rspec-fail-fast-skipped
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-rspec-fail-fast/'
-
 # For Security merge requests, the gitlab-release-tools-bot triggers a new
 # pipeline for the "Pipelines for merged results" feature. If the pipeline
 # fails, we notify release managers.
@@ -1091,10 +1084,6 @@
 
 .rails:rules:rspec fail-fast:
   rules:
-    - <<: *if-rspec-fail-fast-disabled
-      when: never
-    - <<: *if-rspec-fail-fast-skipped
-      when: never
     - <<: *if-not-ee
       when: never
     - <<: *if-security-merge-request
@@ -1104,10 +1093,6 @@
 
 .rails:rules:fail-pipeline-early:
   rules:
-    - <<: *if-rspec-fail-fast-disabled
-      when: never
-    - <<: *if-rspec-fail-fast-skipped
-      when: never
     - <<: *if-not-ee
       when: never
     - <<: *if-security-merge-request

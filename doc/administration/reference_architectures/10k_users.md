@@ -22,10 +22,8 @@ full list of reference architectures, see
 | PostgreSQL<sup>1</sup>                              | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge` | `D8s v3`  |
 | PgBouncer<sup>1</sup>                               | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Internal load balancing node<sup>3</sup>            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Redis - Cache<sup>2</sup>                           | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
-| Redis - Queues / Shared State<sup>2</sup>           | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
-| Redis Sentinel - Cache<sup>2</sup>                  | 3           | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  | `c5.large`   | `A1 v2`   |
-| Redis Sentinel - Queues / Shared State<sup>2</sup>  | 3           | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  | `c5.large`   | `A1 v2`   |
+| Redis/Sentinel - Cache<sup>2</sup>                  | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis/Sentinel - Persistent<sup>2</sup>             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
 | Gitaly                                              | 3           | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
 | Praefect                                            | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Praefect PostgreSQL<sup>1</sup>                     | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
@@ -33,7 +31,7 @@ full list of reference architectures, see
 | GitLab Rails                                        | 3           | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge` | `F32s v2` |
 | Monitoring node                                     | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
 | Object storage<sup>4</sup>                          | n/a         | n/a                     | n/a              | n/a          | n/a       |
-| NFS server (optional, not recommended)              | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| NFS server (non-Gitaly)                             | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -82,11 +80,6 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  collections "**Redis Persistent Sentinel** x3" as redis_persistent_sentinel #FF6347
-  collections "**Redis Cache Sentinel** x3"as redis_cache_sentinel #FF6347
-
-  redis_persistent <.[#FF6347]- redis_persistent_sentinel
-  redis_cache <.[#FF6347]- redis_cache_sentinel
 }
 
 cloud "**Object Storage**" as object_storage #white
@@ -137,8 +130,7 @@ our [Sysbench](https://github.com/akopytov/sysbench)-based
 
 Due to better performance and availability, for data objects (such as LFS,
 uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
-is recommended instead of using NFS. Using an object storage service also
-doesn't require you to provision and maintain a node.
+is recommended.
 
 It's also worth noting that at this time [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
 that to achieve full High Availability a third-party PostgreSQL database solution will be required.
@@ -169,10 +161,8 @@ To set up GitLab and its components to accommodate up to 10,000 users:
    used for shared data objects.
 1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
    more advanced code search across your entire GitLab instance.
-1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
-   to have shared disk storage service as an alternative to Gitaly or object
-   storage. You can skip this step if you're not using GitLab Pages (which
-   requires NFS).
+1. [Configure NFS](#configure-nfs)
+   to have shared disk storage service for certain GitLab operations (non Gitaly or Object Storage).
 
 The servers start on the same 10.6.0.0/24 private network range, and can
 connect to each other freely on these addresses.
@@ -193,15 +183,9 @@ The following list includes descriptions of each server and its assigned IP:
 - `10.6.0.51`: Redis - Cache Primary
 - `10.6.0.52`: Redis - Cache Replica 1
 - `10.6.0.53`: Redis - Cache Replica 2
-- `10.6.0.71`: Sentinel - Cache 1
-- `10.6.0.72`: Sentinel - Cache 2
-- `10.6.0.73`: Sentinel - Cache 3
-- `10.6.0.61`: Redis - Queues Primary
-- `10.6.0.62`: Redis - Queues Replica 1
-- `10.6.0.63`: Redis - Queues Replica 2
-- `10.6.0.81`: Sentinel - Queues 1
-- `10.6.0.82`: Sentinel - Queues 2
-- `10.6.0.83`: Sentinel - Queues 3
+- `10.6.0.61`: Redis - Persistent Primary
+- `10.6.0.62`: Redis - Persistent Replica 1
+- `10.6.0.63`: Redis - Persistent Replica 2
 - `10.6.0.91`: Gitaly 1
 - `10.6.0.92`: Gitaly 2
 - `10.6.0.93`: Gitaly 3
@@ -792,15 +776,9 @@ to be used with GitLab. The following IPs will be used as an example:
 - `10.6.0.51`: Redis - Cache Primary
 - `10.6.0.52`: Redis - Cache Replica 1
 - `10.6.0.53`: Redis - Cache Replica 2
-- `10.6.0.71`: Sentinel - Cache 1
-- `10.6.0.72`: Sentinel - Cache 2
-- `10.6.0.73`: Sentinel - Cache 3
-- `10.6.0.61`: Redis - Queues Primary
-- `10.6.0.62`: Redis - Queues Replica 1
-- `10.6.0.63`: Redis - Queues Replica 2
-- `10.6.0.81`: Sentinel - Queues 1
-- `10.6.0.82`: Sentinel - Queues 2
-- `10.6.0.83`: Sentinel - Queues 3
+- `10.6.0.61`: Redis - Persistent Primary
+- `10.6.0.62`: Redis - Persistent Replica 1
+- `10.6.0.63`: Redis - Persistent Replica 2
 
 ### Providing your own Redis instance
 
@@ -812,7 +790,7 @@ optional count argument to SPOP, which is required for [Merge Trains](../../ci/p
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary later when configuring the [GitLab application servers](#configure-gitlab-rails).
 
-### Configure the Redis and Sentinel Cache cluster
+### Configure the Redis Cache cluster
 
 This is the section where we install and set up the new Redis Cache instances.
 
@@ -830,8 +808,12 @@ a node and change its status from primary to replica (and vice versa).
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_master_role' and enable Consul agent
-   roles(['redis_master_role', 'consul_role'])
+   # Specify server roles as 'redis_master_role' with sentinel and the Consul agent
+   roles ['redis_sentinel_role', 'redis_master_role', 'consul_role']
+
+   # Set IP bind address and Quorum number for Redis Sentinel service
+   sentinel['bind'] = '0.0.0.0'
+   sentinel['quorum'] = 2
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -843,8 +825,19 @@ a node and change its status from primary to replica (and vice versa).
    # machines to connect to it.
    redis['port'] = 6379
 
-   # Set up password authentication for Redis (use the same password in all nodes).
+   ## Port of primary Redis server for Sentinel, uncomment to change to non default. Defaults
+   ## to `6379`.
+   #redis['master_port'] = 6379
+
+   # Set up password authentication for Redis and replicas (use the same password in all nodes).
    redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
+   redis['master_password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
+
+   ## Must be the same in every Redis node
+   redis['master_name'] = 'gitlab-redis-cache'
+
+   ## The IP of this primary Redis node.
+   redis['master_ip'] = '10.6.0.51'
 
    # Set the Redis Cache instance as an LRU
    # 90% of available RAM in MB
@@ -878,10 +871,6 @@ a node and change its status from primary to replica (and vice versa).
 
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-You can specify multiple roles, like sentinel and Redis, as:
-`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
-[roles](https://docs.gitlab.com/omnibus/roles/).
-
 #### Configure the replica Redis Cache nodes
 
 1. SSH in to the **replica** Redis server.
@@ -889,11 +878,15 @@ You can specify multiple roles, like sentinel and Redis, as:
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
    on the page, and to select the correct Omnibus GitLab package, with the same version
    and type (Community or Enterprise editions) as your current install.
-1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
+1. Edit `/etc/gitlab/gitlab.rb` and add same contents as the primary node in the previous section replacing `redis_master_node` with `redis_replica_node`:
 
    ```ruby
-   # Specify server role as 'redis_replica_role' and enable Consul agent
-   roles(['redis_replica_role', 'consul_role'])
+   # Specify server roles as 'redis_sentinel_role' and 'redis_replica_role'
+   roles ['redis_sentinel_role', 'redis_replica_role', 'consul_role']
+
+   # Set IP bind address and Quorum number for Redis Sentinel service
+   sentinel['bind'] = '0.0.0.0'
+   sentinel['quorum'] = 2
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -905,15 +898,19 @@ You can specify multiple roles, like sentinel and Redis, as:
    # machines to connect to it.
    redis['port'] = 6379
 
-   # The same password for Redis authentication you set up for the primary node.
-   redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
-
-   # The IP of the primary Redis node.
-   redis['master_ip'] = '10.6.0.51'
-
-   # Port of primary Redis server, uncomment to change to non default. Defaults
-   # to `6379`.
+   ## Port of primary Redis server for Sentinel, uncomment to change to non default. Defaults
+   ## to `6379`.
    #redis['master_port'] = 6379
+
+   # Set up password authentication for Redis and replicas (use the same password in all nodes).
+   redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
+   redis['master_password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
+
+   ## Must be the same in every Redis node
+   redis['master_name'] = 'gitlab-redis-cache'
+
+   ## The IP of the primary Redis node.
+   redis['master_ip'] = '10.6.0.51'
 
    # Set the Redis Cache instance as an LRU
    # 90% of available RAM in MB
@@ -949,15 +946,6 @@ You can specify multiple roles, like sentinel and Redis, as:
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
 
-You can specify multiple roles, like sentinel and Redis, as:
-`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
-[roles](https://docs.gitlab.com/omnibus/roles/).
-
-These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
-a failover, as the nodes will be managed by the [Sentinels](#configure-the-sentinel-cache-nodes), and even after a
-`gitlab-ctl reconfigure`, they will get their configuration restored by
-the same Sentinels.
-
 Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
 are supported and can be added if needed.
 
@@ -967,133 +955,15 @@ are supported and can be added if needed.
   </a>
 </div>
 
-#### Configure the Sentinel Cache nodes
+### Configure the Redis Persistent cluster
 
-Now that the Redis servers are all set up, let's configure the Sentinel
-servers. The following IPs will be used as an example:
-
-- `10.6.0.71`: Sentinel - Cache 1
-- `10.6.0.72`: Sentinel - Cache 2
-- `10.6.0.73`: Sentinel - Cache 3
-
-NOTE:
-If you're using an external Redis Sentinel instance, be sure to exclude the
-`requirepass` parameter from the Sentinel configuration. This parameter causes
-clients to report `NOAUTH Authentication required.`.
-[Redis Sentinel 3.2.x doesn't support password authentication](https://github.com/antirez/redis/issues/3279).
-
-To configure the Sentinel Cache server:
-
-1. SSH in to the server that will host Consul/Sentinel.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus GitLab package, with the same version
-   and type (Community or Enterprise editions) as your current install.
-1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
-
-   ```ruby
-   roles(['redis_sentinel_role', 'consul_role'])
-
-   ## Must be the same in every sentinel node
-   redis['master_name'] = 'gitlab-redis-cache'
-
-   ## The same password for Redis authentication you set up for the primary node.
-   redis['master_password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
-
-   ## The IP of the primary Redis node.
-   redis['master_ip'] = '10.6.0.51'
-
-   ## Define a port so Redis can listen for TCP requests which will allow other
-   ## machines to connect to it.
-   redis['port'] = 6379
-
-   ## Port of primary Redis server, uncomment to change to non default. Defaults
-   ## to `6379`.
-   #redis['master_port'] = 6379
-
-   ## Configure Sentinel's IP
-   sentinel['bind'] = '10.6.0.71'
-
-   ## Port that Sentinel listens on, uncomment to change to non default. Defaults
-   ## to `26379`.
-   #sentinel['port'] = 26379
-
-   ## Quorum must reflect the amount of voting sentinels it take to start a failover.
-   ## Value must NOT be greater then the amount of sentinels.
-   ##
-   ## The quorum can be used to tune Sentinel in two ways:
-   ## 1. If a the quorum is set to a value smaller than the majority of Sentinels
-   ##    we deploy, we are basically making Sentinel more sensible to primary failures,
-   ##    triggering a failover as soon as even just a minority of Sentinels is no longer
-   ##    able to talk with the primary.
-   ## 1. If a quorum is set to a value greater than the majority of Sentinels, we are
-   ##    making Sentinel able to failover only when there are a very large number (larger
-   ##    than majority) of well connected Sentinels which agree about the primary being down.s
-   sentinel['quorum'] = 2
-
-   ## Consider unresponsive server down after x amount of ms.
-   #sentinel['down_after_milliseconds'] = 10000
-
-   ## Specifies the failover timeout in milliseconds. It is used in many ways:
-   ##
-   ## - The time needed to re-start a failover after a previous failover was
-   ##   already tried against the same primary by a given Sentinel, is two
-   ##   times the failover timeout.
-   ##
-   ## - The time needed for a replica replicating to a wrong primary according
-   ##   to a Sentinel current configuration, to be forced to replicate
-   ##   with the right primary, is exactly the failover timeout (counting since
-   ##   the moment a Sentinel detected the misconfiguration).
-   ##
-   ## - The time needed to cancel a failover that is already in progress but
-   ##   did not produced any configuration change (REPLICAOF NO ONE yet not
-   ##   acknowledged by the promoted replica).
-   ##
-   ## - The maximum time a failover in progress waits for all the replica to be
-   ##   reconfigured as replicas of the new primary. However even after this time
-   ##   the replicas will be reconfigured by the Sentinels anyway, but not with
-   ##   the exact parallel-syncs progression as specified.
-   #sentinel['failover_timeout'] = 60000
-
-   ## Enable service discovery for Prometheus
-   consul['monitoring_service_discovery'] =  true
-
-   ## The IPs of the Consul server nodes
-   ## You can also use FQDNs and intermix them with IPs
-   consul['configuration'] = {
-      retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13),
-   }
-
-   # Set the network addresses that the exporters will listen on
-   node_exporter['listen_address'] = '0.0.0.0:9100'
-   redis_exporter['listen_address'] = '0.0.0.0:9121'
-
-   # Prevent database migrations from running on upgrade automatically
-   gitlab_rails['auto_migrate'] = false
-   ```
-
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
-
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Go through the steps again for all the other Consul/Sentinel nodes, and
-   make sure you set up the correct IPs.
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-### Configure the Redis and Sentinel Queues cluster
-
-This is the section where we install and set up the new Redis Queues instances.
+This is the section where we install and set up the new Redis Persistent instances.
 
 Both the primary and replica Redis nodes need the same password defined in
 `redis['password']`. At any time during a failover, the Sentinels can reconfigure
 a node and change its status from primary to replica (and vice versa).
 
-#### Configure the primary Redis Queues node
+#### Configure the primary Redis Persistent node
 
 1. SSH in to the **Primary** Redis server.
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
@@ -1103,8 +973,12 @@ a node and change its status from primary to replica (and vice versa).
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_master_role' and enable Consul agent
-   roles(['redis_master_role', 'consul_role'])
+   # Specify server roles as 'redis_master_role' with Sentinel and the Consul agent
+   roles ['redis_sentinel_role', 'redis_master_role', 'consul_role']
+
+   # Set IP bind address and Quorum number for Redis Sentinel service
+   sentinel['bind'] = '0.0.0.0'
+   sentinel['quorum'] = 2
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -1116,8 +990,19 @@ a node and change its status from primary to replica (and vice versa).
    # machines to connect to it.
    redis['port'] = 6379
 
-   # Set up password authentication for Redis (use the same password in all nodes).
-   redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
+   ## Port of primary Redis server for Sentinel, uncomment to change to non default. Defaults
+   ## to `6379`.
+   #redis['master_port'] = 6379
+
+   # Set up password authentication for Redis and replicas (use the same password in all nodes).
+   redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
+   redis['master_password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
+
+   ## Must be the same in every Redis node
+   redis['master_name'] = 'gitlab-redis-persistent'
+
+   ## The IP of this primary Redis node.
+   redis['master_ip'] = '10.6.0.61'
 
    ## Enable service discovery for Prometheus
    consul['monitoring_service_discovery'] =  true
@@ -1141,13 +1026,9 @@ a node and change its status from primary to replica (and vice versa).
 
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-You can specify multiple roles, like sentinel and Redis, as:
-`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
-[roles](https://docs.gitlab.com/omnibus/roles/).
+#### Configure the replica Redis Persistent nodes
 
-#### Configure the replica Redis Queues nodes
-
-1. SSH in to the **replica** Redis Queue server.
+1. SSH in to the **replica** Redis Persistent server.
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
    on the page, and to select the correct Omnibus GitLab package, with the same version
@@ -1155,8 +1036,12 @@ You can specify multiple roles, like sentinel and Redis, as:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_replica_role' and enable Consul agent
-   roles(['redis_replica_role', 'consul_role'])
+   # Specify server roles as 'redis_sentinel_role' and 'redis_replica_role'
+   roles ['redis_sentinel_role', 'redis_replica_role', 'consul_role']
+
+   # Set IP bind address and Quorum number for Redis Sentinel service
+   sentinel['bind'] = '0.0.0.0'
+   sentinel['quorum'] = 2
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -1168,15 +1053,19 @@ You can specify multiple roles, like sentinel and Redis, as:
    # machines to connect to it.
    redis['port'] = 6379
 
+   ## Port of primary Redis server for Sentinel, uncomment to change to non default. Defaults
+   ## to `6379`.
+   #redis['master_port'] = 6379
+
    # The same password for Redis authentication you set up for the primary node.
    redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
+   redis['master_password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
+
+   ## Must be the same in every Redis node
+   redis['master_name'] = 'gitlab-redis-persistent'
 
    # The IP of the primary Redis node.
    redis['master_ip'] = '10.6.0.61'
-
-   # Port of primary Redis server, uncomment to change to non default. Defaults
-   # to `6379`.
-   #redis['master_port'] = 6379
 
    ## Enable service discovery for Prometheus
    consul['monitoring_service_discovery'] =  true
@@ -1202,135 +1091,8 @@ You can specify multiple roles, like sentinel and Redis, as:
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
 
-You can specify multiple roles, like sentinel and Redis, as:
-`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
-[roles](https://docs.gitlab.com/omnibus/roles/).
-
-These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
-a failover, as the nodes will be managed by the [Sentinels](#configure-the-sentinel-queues-nodes), and even after a
-`gitlab-ctl reconfigure`, they will get their configuration restored by
-the same Sentinels.
-
 Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
 are supported and can be added if needed.
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-#### Configure the Sentinel Queues nodes
-
-Now that the Redis servers are all set up, let's configure the Sentinel
-servers. The following IPs will be used as an example:
-
-- `10.6.0.81`: Sentinel - Queues 1
-- `10.6.0.82`: Sentinel - Queues 2
-- `10.6.0.83`: Sentinel - Queues 3
-
-NOTE:
-If you're using an external Redis Sentinel instance, be sure to exclude the
-`requirepass` parameter from the Sentinel configuration. This parameter causes
-clients to report `NOAUTH Authentication required.`.
-[Redis Sentinel 3.2.x doesn't support password authentication](https://github.com/antirez/redis/issues/3279).
-
-To configure the Sentinel Queues server:
-
-1. SSH in to the server that will host Sentinel.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus GitLab package, with the same version
-   and type (Community or Enterprise editions) as your current install.
-1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
-
-   ```ruby
-   roles(['redis_sentinel_role', 'consul_role'])
-
-   ## Must be the same in every sentinel node
-   redis['master_name'] = 'gitlab-redis-persistent'
-
-   ## The same password for Redis authentication you set up for the primary node.
-   redis['master_password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
-
-   ## The IP of the primary Redis node.
-   redis['master_ip'] = '10.6.0.61'
-
-   ## Define a port so Redis can listen for TCP requests which will allow other
-   ## machines to connect to it.
-   redis['port'] = 6379
-
-   ## Port of primary Redis server, uncomment to change to non default. Defaults
-   ## to `6379`.
-   #redis['master_port'] = 6379
-
-   ## Configure Sentinel's IP
-   sentinel['bind'] = '10.6.0.81'
-
-   ## Port that Sentinel listens on, uncomment to change to non default. Defaults
-   ## to `26379`.
-   #sentinel['port'] = 26379
-
-   ## Quorum must reflect the amount of voting sentinels it take to start a failover.
-   ## Value must NOT be greater then the amount of sentinels.
-   ##
-   ## The quorum can be used to tune Sentinel in two ways:
-   ## 1. If a the quorum is set to a value smaller than the majority of Sentinels
-   ##    we deploy, we are basically making Sentinel more sensible to primary failures,
-   ##    triggering a failover as soon as even just a minority of Sentinels is no longer
-   ##    able to talk with the primary.
-   ## 1. If a quorum is set to a value greater than the majority of Sentinels, we are
-   ##    making Sentinel able to failover only when there are a very large number (larger
-   ##    than majority) of well connected Sentinels which agree about the primary being down.s
-   sentinel['quorum'] = 2
-
-   ## Consider unresponsive server down after x amount of ms.
-   #sentinel['down_after_milliseconds'] = 10000
-
-   ## Specifies the failover timeout in milliseconds. It is used in many ways:
-   ##
-   ## - The time needed to re-start a failover after a previous failover was
-   ##   already tried against the same primary by a given Sentinel, is two
-   ##   times the failover timeout.
-   ##
-   ## - The time needed for a replica replicating to a wrong primary according
-   ##   to a Sentinel current configuration, to be forced to replicate
-   ##   with the right primary, is exactly the failover timeout (counting since
-   ##   the moment a Sentinel detected the misconfiguration).
-   ##
-   ## - The time needed to cancel a failover that is already in progress but
-   ##   did not produced any configuration change (REPLICAOF NO ONE yet not
-   ##   acknowledged by the promoted replica).
-   ##
-   ## - The maximum time a failover in progress waits for all the replica to be
-   ##   reconfigured as replicas of the new primary. However even after this time
-   ##   the replicas will be reconfigured by the Sentinels anyway, but not with
-   ##   the exact parallel-syncs progression as specified.
-   #sentinel['failover_timeout'] = 60000
-
-   ## Enable service discovery for Prometheus
-   consul['monitoring_service_discovery'] =  true
-
-   ## The IPs of the Consul server nodes
-   ## You can also use FQDNs and intermix them with IPs
-   consul['configuration'] = {
-      retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13),
-   }
-
-   # Set the network addresses that the exporters will listen on
-   node_exporter['listen_address'] = '0.0.0.0:9100'
-   redis_exporter['listen_address'] = '0.0.0.0:9121'
-
-   # Prevent database migrations from running on upgrade automatically
-   gitlab_rails['auto_migrate'] = false
-   ```
-
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
-
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Go through the steps again for all the other Sentinel nodes, and
-   make sure you set up the correct IPs.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -1857,30 +1619,30 @@ To configure the Sidekiq nodes, on each one:
    gitlab_rails['redis_cache_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER>@gitlab-redis-cache'
 
    gitlab_rails['redis_cache_sentinels'] = [
-     {host: '10.6.0.71', port: 26379},
-     {host: '10.6.0.72', port: 26379},
-     {host: '10.6.0.73', port: 26379},
+     {host: '10.6.0.51', port: 26379},
+     {host: '10.6.0.52', port: 26379},
+     {host: '10.6.0.53', port: 26379},
    ]
 
-   ## Second cluster that will host the queues, shared state, and actioncable
+   ## Second cluster that will host the persistent queues, shared state, and actioncable
    gitlab_rails['redis_queues_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
    gitlab_rails['redis_shared_state_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
    gitlab_rails['redis_actioncable_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
 
    gitlab_rails['redis_queues_sentinels'] = [
-     {host: '10.6.0.81', port: 26379},
-     {host: '10.6.0.82', port: 26379},
-     {host: '10.6.0.83', port: 26379},
+     {host: '10.6.0.61', port: 26379},
+     {host: '10.6.0.62', port: 26379},
+     {host: '10.6.0.63', port: 26379},
    ]
    gitlab_rails['redis_shared_state_sentinels'] = [
-     {host: '10.6.0.81', port: 26379},
-     {host: '10.6.0.82', port: 26379},
-     {host: '10.6.0.83', port: 26379},
+     {host: '10.6.0.61', port: 26379},
+     {host: '10.6.0.62', port: 26379},
+     {host: '10.6.0.63', port: 26379},
    ]
    gitlab_rails['redis_actioncable_sentinels'] = [
-     {host: '10.6.0.81', port: 26379},
-     {host: '10.6.0.82', port: 26379},
-     {host: '10.6.0.83', port: 26379},
+     {host: '10.6.0.61', port: 26379},
+     {host: '10.6.0.62', port: 26379},
+     {host: '10.6.0.63', port: 26379},
    ]
 
    # Gitaly Cluster
@@ -2032,30 +1794,30 @@ On each node perform the following:
    gitlab_rails['redis_cache_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER>@gitlab-redis-cache'
 
    gitlab_rails['redis_cache_sentinels'] = [
-     {host: '10.6.0.71', port: 26379},
-     {host: '10.6.0.72', port: 26379},
-     {host: '10.6.0.73', port: 26379},
+     {host: '10.6.0.51', port: 26379},
+     {host: '10.6.0.52', port: 26379},
+     {host: '10.6.0.53', port: 26379},
    ]
 
-   ## Second cluster that will host the queues, shared state, and actionable
+   ## Second cluster that will host the persistent queues, shared state, and actionable
    gitlab_rails['redis_queues_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
    gitlab_rails['redis_shared_state_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
    gitlab_rails['redis_actioncable_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
 
    gitlab_rails['redis_queues_sentinels'] = [
-     {host: '10.6.0.81', port: 26379},
-     {host: '10.6.0.82', port: 26379},
-     {host: '10.6.0.83', port: 26379},
+     {host: '10.6.0.61', port: 26379},
+     {host: '10.6.0.62', port: 26379},
+     {host: '10.6.0.63', port: 26379},
    ]
    gitlab_rails['redis_shared_state_sentinels'] = [
-     {host: '10.6.0.81', port: 26379},
-     {host: '10.6.0.82', port: 26379},
-     {host: '10.6.0.83', port: 26379},
+     {host: '10.6.0.61', port: 26379},
+     {host: '10.6.0.62', port: 26379},
+     {host: '10.6.0.63', port: 26379},
    ]
    gitlab_rails['redis_actioncable_sentinels'] = [
-     {host: '10.6.0.81', port: 26379},
-     {host: '10.6.0.82', port: 26379},
-     {host: '10.6.0.83', port: 26379},
+     {host: '10.6.0.61', port: 26379},
+     {host: '10.6.0.62', port: 26379},
+     {host: '10.6.0.63', port: 26379},
    ]
 
    # Set the network addresses that the exporters used for monitoring will listen on
@@ -2127,7 +1889,7 @@ On each node perform the following:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-1. If you're [using NFS](#configure-nfs-optional):
+1. If you're [using NFS](#configure-nfs):
    1. If necessary, install the NFS client utility packages using the following
       commands:
 
@@ -2271,7 +2033,7 @@ To configure the Monitoring node:
 ## Configure the object storage
 
 GitLab supports using an object storage service for holding numerous types of data.
-It's recommended over [NFS](#configure-nfs-optional) and in general it's better
+It's recommended over [NFS](#configure-nfs) and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
 and scalable.
 
@@ -2341,7 +2103,7 @@ cluster alongside your instance, read how to
   </a>
 </div>
 
-## Configure NFS (optional)
+## Configure NFS
 
 [Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
 are recommended over NFS wherever possible for improved performance. If you intend
@@ -2415,10 +2177,8 @@ services where applicable):
 | PostgreSQL<sup>1</sup>                              | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  |
 | PgBouncer<sup>1</sup>                               | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Internal load balancing node<sup>3</sup>            | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Redis - Cache<sup>2</sup>                           | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis - Queues / Shared State<sup>2</sup>           | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis Sentinel - Cache<sup>2</sup>                  | 3     | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  |
-| Redis Sentinel - Queues / Shared State<sup>2</sup>  | 3     | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  |
+| Redis/Sentinel - Cache<sup>2</sup>                  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Redis/Sentinel - Persistent<sup>2</sup>             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
 | Gitaly                                              | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` |
 | Praefect                                            | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Praefect PostgreSQL<sup>1</sup>                     | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
@@ -2474,11 +2234,6 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  collections "**Redis Persistent Sentinel** x3" as redis_persistent_sentinel #FF6347
-  collections "**Redis Cache Sentinel** x3"as redis_cache_sentinel #FF6347
-
-  redis_persistent <.[#FF6347]- redis_persistent_sentinel
-  redis_cache <.[#FF6347]- redis_cache_sentinel
 }
 
 cloud "**Object Storage**" as object_storage #white
