@@ -10462,7 +10462,8 @@ CREATE TABLE approval_project_rules (
     rule_type smallint DEFAULT 0 NOT NULL,
     scanners text[],
     vulnerabilities_allowed smallint DEFAULT 0 NOT NULL,
-    severity_levels text[] DEFAULT '{}'::text[] NOT NULL
+    severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
+    report_type smallint
 );
 
 CREATE TABLE approval_project_rules_groups (
@@ -24242,6 +24243,8 @@ CREATE INDEX index_approval_project_rules_on_project_id ON approval_project_rule
 CREATE INDEX index_approval_project_rules_on_rule_type ON approval_project_rules USING btree (rule_type);
 
 CREATE INDEX index_approval_project_rules_protected_branches_pb_id ON approval_project_rules_protected_branches USING btree (protected_branch_id);
+
+CREATE INDEX index_approval_project_rules_report_type ON approval_project_rules USING btree (report_type);
 
 CREATE UNIQUE INDEX index_approval_project_rules_users_1 ON approval_project_rules_users USING btree (approval_project_rule_id, user_id);
 
