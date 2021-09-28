@@ -216,6 +216,20 @@ of your GitLab instance (`.gitlab-ci.yml` if not set):
 
 It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
+## Enable or disable the pipeline suggestion banner
+
+By default, a banner displays in merge requests with no pipeline suggesting a
+walkthrough on how to add one.
+
+![Suggest pipeline banner](img/suggest_pipeline_banner.png)
+
+To enable or disable the banner:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Select or clear the **Enable pipeline suggestion banner** checkbox.
+1. Select **Save changes**.
+
 ## Required pipeline configuration **(PREMIUM SELF)**
 
 WARNING:

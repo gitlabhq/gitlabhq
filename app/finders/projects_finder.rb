@@ -182,8 +182,8 @@ class ProjectsFinder < UnionFinder
   def by_topics(items)
     return items unless params[:topic].present?
 
-    topics = params[:topic].instance_of?(String) ? params[:topic].strip.split(/\s*,\s*/) : params[:topic]
-    topics.each do |topic|
+    topics = params[:topic].instance_of?(String) ? params[:topic].split(',') : params[:topic]
+    topics.map(&:strip).uniq.reject(&:empty?).each do |topic|
       items = items.with_topic(topic)
     end
 

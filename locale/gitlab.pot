@@ -2396,7 +2396,13 @@ msgstr ""
 msgid "AdminSettings|Disable public access to Pages sites"
 msgstr ""
 
+msgid "AdminSettings|Display a banner on merge requests in projects with no pipelines to initiate steps to add a .gitlab-ci.yml file."
+msgstr ""
+
 msgid "AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Enable pipeline suggestion banner"
 msgstr ""
 
 msgid "AdminSettings|Enable shared runners for new projects"

@@ -355,10 +355,7 @@ container_repositories:
 - name
 project:
 - external_status_checks
-- taggings
 - base_tags
-- topic_taggings
-- topics_acts_as_taggable
 - project_topics
 - topics
 - chat_services

@@ -7240,35 +7240,6 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
       end
     end
-
-    context 'during ExtractProjectTopicsIntoSeparateTable migration' do
-      before do
-        topic_a = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicA')
-        topic_b = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicB')
-
-        project.reload.topics_acts_as_taggable = [topic_a, topic_b]
-        project.save!
-        project.reload
-      end
-
-      it 'topic_list returns correct string array' do
-        expect(project.topic_list).to eq(%w[topicA topicB topic1 topic2 topic3])
-      end
-
-      it 'topics returns correct topic records' do
-        expect(project.topics.map(&:class)).to eq([ActsAsTaggableOn::Tag, ActsAsTaggableOn::Tag, Projects::Topic, Projects::Topic, Projects::Topic])
-        expect(project.topics.map(&:name)).to eq(%w[topicA topicB topic1 topic2 topic3])
-      end
-
-      it 'topic_list= sets new topics and removes old topics' do
-        project.topic_list = 'new-topic1, new-topic2'
-        project.save!
-        project.reload
-
-        expect(project.topics.map(&:class)).to eq([Projects::Topic, Projects::Topic])
-        expect(project.topics.map(&:name)).to eq(%w[new-topic1 new-topic2])
-      end
-    end
   end
 
   shared_examples 'all_runners' do

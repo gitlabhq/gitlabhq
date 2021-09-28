@@ -2,7 +2,6 @@
 
 class GroupClusterablePresenter < ClusterablePresenter
   extend ::Gitlab::Utils::Override
-  include ActionView::Helpers::UrlHelper
 
   presents ::Group
 
@@ -33,7 +32,7 @@ class GroupClusterablePresenter < ClusterablePresenter
 
   override :learn_more_link
   def learn_more_link
-    link_to(s_('ClusterIntegration|Learn more about group Kubernetes clusters'), help_page_path('user/group/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
+    ApplicationController.helpers.link_to(s_('ClusterIntegration|Learn more about group Kubernetes clusters'), help_page_path('user/group/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   end
 
   def metrics_dashboard_path(cluster)

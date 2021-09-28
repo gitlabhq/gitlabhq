@@ -14731,8 +14731,10 @@ Represents a vulnerability.
 | <a id="vulnerabilityhassolutions"></a>`hasSolutions` | [`Boolean`](#boolean) | Indicates whether there is a solution available for this vulnerability. |
 | <a id="vulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="vulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
+| <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
+| <a id="vulnerabilitymessage"></a>`message` | [`String`](#string) | Short text description of the vulnerability. This may include the finding's specific information. |
 | <a id="vulnerabilitynotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
@@ -14977,6 +14979,17 @@ Represents an issue link of a vulnerability.
 | <a id="vulnerabilityissuelinkid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="vulnerabilityissuelinkissue"></a>`issue` | [`Issue!`](#issue) | Issue attached to issue link. |
 | <a id="vulnerabilityissuelinklinktype"></a>`linkType` | [`VulnerabilityIssueLinkType!`](#vulnerabilityissuelinktype) | Type of the issue link. |
+
+### `VulnerabilityLink`
+
+Represents a link related to a vulnerability.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitylinkname"></a>`name` | [`String`](#string) | Name of the link. |
+| <a id="vulnerabilitylinkurl"></a>`url` | [`String!`](#string) | URL of the link. |
 
 ### `VulnerabilityLocationContainerScanning`
 

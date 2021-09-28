@@ -400,7 +400,8 @@ module ApplicationSettingsHelper
       :user_deactivation_emails_enabled,
       :sidekiq_job_limiter_mode,
       :sidekiq_job_limiter_compression_threshold_bytes,
-      :sidekiq_job_limiter_limit_bytes
+      :sidekiq_job_limiter_limit_bytes,
+      :suggest_pipeline_enabled
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end

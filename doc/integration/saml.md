@@ -247,7 +247,7 @@ The name of the attribute can be anything you like, but it must contain the grou
 to which a user belongs. To tell GitLab where to find these groups, you need
 to add a `groups_attribute:` element to your SAML settings.
 
-### Required groups **(FREE SELF)**
+### Required groups
 
 Your IdP passes Group information to the SP (GitLab) in the SAML Response.
 To use this response, configure GitLab to identify:
@@ -274,7 +274,7 @@ Example:
   } }
 ```
 
-### External groups **(FREE SELF)**
+### External groups
 
 SAML login supports the automatic identification of a user as an
 [external user](../user/permissions.md#external-users). This is based on the user's group
@@ -294,7 +294,7 @@ membership in the SAML identity provider.
   } }
 ```
 
-### Administrator groups **(FREE SELF)**
+### Administrator groups
 
 The requirements are the same as the previous settings:
 

@@ -32,22 +32,11 @@ request specs (and/or feature specs). Please add request specs under
 See https://gitlab.com/groups/gitlab-org/-/epics/5076 for information.
 MSG
 
-MATCH_WITH_ARRAY_REGEX = /(?<exp_word>match|eq)(?<rest>[( ]?\[)/.freeze
-
-SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
-```suggestion
-%<suggested_line>s
-
-If order of the result is not important, please consider using `match_array` to avoid flakiness.
-```
-SUGGEST_COMMENT
-
-all_changed_files = helper.all_changed_files
-has_app_changes = all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
-has_ee_app_changes = all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?migrate)/}).any?
-spec_changes = all_changed_files.grep(%r{\Aspec/})
+has_app_changes = helper.all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+has_ee_app_changes = helper.all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+spec_changes = helper.all_changed_files.grep(%r{\Aspec/})
 has_spec_changes = spec_changes.any?
-has_ee_spec_changes = all_changed_files.grep(%r{\Aee/spec/}).any?
+has_ee_spec_changes = helper.all_changed_files.grep(%r{\Aee/spec/}).any?
 new_specs_needed = (gitlab.mr_labels & NO_SPECS_LABELS).empty?
 
 if (has_app_changes || has_ee_app_changes) && !(has_spec_changes || has_ee_spec_changes) && new_specs_needed
@@ -60,22 +49,6 @@ if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_ch
 end
 
 # Forbidding a new file addition under `/spec/controllers` or `/ee/spec/controllers`
-if project_helper.changes.added.files.grep(%r{^(ee/)?spec/controllers/}).any?
+if git.added_files.grep(%r{^(ee/)?spec/controllers/}).any?
   warn CONTROLLER_SPEC_DEPRECATION_MESSAGE
 end
-
-def check_for_match_with_array!
-  (project_helper.changes.added.files + project_helper.changes.modified.files + project_helper.changes.renamed_after.files).grep(%r{\A(ee/)?spec/}).each do |filename|
-    added_lines = helper.changed_lines(filename).grep(/\A\+ /)
-    next unless added_lines.any? { |line| line =~ MATCH_WITH_ARRAY_REGEX }
-
-    spec_file_lines = File.read(filename).lines(chomp: true)
-
-    added_lines.each do |added_line|
-      mr_line = spec_file_lines.find_index(added_line.delete_prefix('+'))
-      markdown(format(SUGGEST_MR_COMMENT, suggested_line: spec_file_lines[mr_line].gsub(MATCH_WITH_ARRAY_REGEX, 'match_array\k<rest>')), file: filename, line: mr_line.succ)
-    end
-  end
-end
-
-check_for_match_with_array!

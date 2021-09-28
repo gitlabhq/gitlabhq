@@ -178,22 +178,6 @@ h1 {
 .dropdown {
   position: relative;
 }
-.dropdown-menu-toggle {
-  white-space: nowrap;
-}
-.dropdown-menu-toggle::after {
-  display: inline-block;
-  margin-left: 0.255em;
-  vertical-align: 0.255em;
-  content: "";
-  border-top: 0.3em solid;
-  border-right: 0.3em solid transparent;
-  border-bottom: 0;
-  border-left: 0.3em solid transparent;
-}
-.dropdown-menu-toggle:empty::after {
-  margin-left: 0;
-}
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -446,9 +430,6 @@ a {
 .hide {
   display: none;
 }
-.dropdown-menu-toggle::after {
-  display: none;
-}
 .badge:not(.gl-badge) {
   padding: 4px 5px;
   font-size: 12px;
@@ -528,7 +509,7 @@ body {
   border-radius: 0.25rem;
   white-space: nowrap;
 }
-.no-outline.dropdown-menu-toggle {
+.dropdown-menu-toggle.no-outline {
   outline: 0;
 }
 .dropdown-menu-toggle.dropdown-menu-toggle {

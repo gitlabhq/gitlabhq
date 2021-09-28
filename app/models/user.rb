@@ -455,7 +455,7 @@ class User < ApplicationRecord
   def preferred_language
     read_attribute('preferred_language') ||
       I18n.default_locale.to_s.presence_in(Gitlab::I18n.available_locales) ||
-      'en'
+      default_preferred_language
   end
 
   def active_for_authentication?
@@ -2003,6 +2003,11 @@ class User < ApplicationRecord
   end
 
   private
+
+  # To enable JiHu repository to modify the default language options
+  def default_preferred_language
+    'en'
+  end
 
   def notification_email_verified
     return if notification_email.blank? || temp_oauth_email?

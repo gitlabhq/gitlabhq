@@ -343,8 +343,9 @@ RSpec.describe User do
 
         it 'falls back to english when I18n.default_locale is not an available language' do
           I18n.default_locale = :kl
+          default_preferred_language = user.send(:default_preferred_language)
 
-          expect(user.preferred_language).to eq 'en'
+          expect(user.preferred_language).to eq default_preferred_language
         end
       end
     end

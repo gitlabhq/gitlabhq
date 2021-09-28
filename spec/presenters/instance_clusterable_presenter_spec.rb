@@ -32,4 +32,10 @@ RSpec.describe InstanceClusterablePresenter do
 
     it { is_expected.to eq(metrics_dashboard_admin_cluster_path(cluster)) }
   end
+
+  describe '#learn_more_link' do
+    subject { presenter.learn_more_link }
+
+    it { is_expected.to include('user/instance/clusters/index') }
+  end
 end

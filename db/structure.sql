@@ -26916,8 +26916,6 @@ CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_root_namespaces ON na
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 
-CREATE INDEX tmp_index_taggings_on_id_where_taggable_type_project ON taggings USING btree (id) WHERE ((taggable_type)::text = 'Project'::text);
-
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_components_on_distribution_id_and_name ON packages_debian_group_components USING btree (distribution_id, name);

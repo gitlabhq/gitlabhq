@@ -14,7 +14,8 @@ Even though Git is very resilient and tries to prevent data integrity issues,
 there are times when things go wrong. The following Rake tasks intend to
 help GitLab administrators diagnose problem repositories so they can be fixed.
 
-There are 3 things that are checked to determine integrity.
+These Rake tasks use three different methods to determine the integrity of Git
+repositories.
 
 1. Git repository file system check ([`git fsck`](https://git-scm.com/docs/git-fsck)).
    This step verifies the connectivity and validity of objects in the repository.
@@ -37,7 +38,7 @@ exactly which repositories are causing the trouble.
 ### Check project code repositories
 
 This task loops through the project code repositories and runs the integrity check
-described previously. If a project uses a pool repository, that will also be checked.
+described previously. If a project uses a pool repository, that is also checked.
 Other types of Git repositories [are not checked](https://gitlab.com/gitlab-org/gitaly/-/issues/3643).
 
 **Omnibus Installation**
@@ -67,7 +68,7 @@ source repository.
 This task loops through all repositories on the GitLab server and outputs
 checksums in the format `<PROJECT ID>,<CHECKSUM>`.
 
-- If a repository doesn't exist, the project ID will have a blank checksum.
+- If a repository doesn't exist, the project ID is a blank checksum.
 - If a repository exists but is empty, the output checksum is `0000000000000000000000000000000000000000`.
 - Projects which don't exist are skipped.
 
@@ -85,9 +86,9 @@ sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=productio
 
 For example, if:
 
-- Project with ID#2 doesn't exist, it will be skipped.
-- Project with ID#4 doesn't have a repository, its checksum will be blank.
-- Project with ID#5 has an empty repository, its checksum will be `0000000000000000000000000000000000000000`.
+- Project with ID#2 doesn't exist, it is skipped.
+- Project with ID#4 doesn't have a repository, its checksum is blank.
+- Project with ID#5 has an empty repository, its checksum is `0000000000000000000000000000000000000000`.
 
 The output would then look something like:
 
@@ -115,7 +116,7 @@ These integrity checks can detect missing files. Additionally, for locally
 stored files, checksums are generated and stored in the database upon upload,
 and these checks verify them against current files.
 
-Currently, integrity checks are supported for the following types of file:
+Integrity checks are supported for the following types of file:
 
 - CI artifacts (Available from version 10.7.0)
 - LFS objects (Available from version 10.6.0)

@@ -314,12 +314,14 @@ RSpec.describe 'Admin updates settings' do
           check 'Default to Auto DevOps pipeline for all projects'
           fill_in 'application_setting_auto_devops_domain', with: 'domain.com'
           uncheck 'Keep the latest artifacts for all jobs in the latest successful pipelines'
+          uncheck 'Enable pipeline suggestion banner'
           click_button 'Save changes'
         end
 
         expect(current_settings.auto_devops_enabled?).to be true
         expect(current_settings.auto_devops_domain).to eq('domain.com')
         expect(current_settings.keep_latest_artifact).to be false
+        expect(current_settings.suggest_pipeline_enabled).to be false
         expect(page).to have_content "Application settings saved successfully"
       end
 

@@ -23,10 +23,7 @@ replication and failover requires:
 
 - A minimum of three database nodes.
 - A minimum of three `Consul` server nodes.
-- A minimum of one `pgbouncer` service node, but it's recommended to have one
-  per database node.
-  - An internal load balancer (TCP) is required when there is more than one
-    `pgbouncer` service node.
+- A minimum of one `pgbouncer` service node, but it's recommended to have one per database node. An internal load balancer (TCP) is required when there is more than one `pgbouncer` service node.
 
 ![PostgreSQL HA Architecture](img/pg_ha_architecture.png)
 
@@ -35,40 +32,31 @@ sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
 NOTE:
-As of GitLab 13.3, PostgreSQL 12 is shipped with Omnibus GitLab. Clustering for PostgreSQL 12 is only supported with
+As of GitLab 13.3, PostgreSQL 12 is shipped with Omnibus GitLab. Clustering for PostgreSQL 12 is supported only with
 Patroni. See the [Patroni](#patroni) section for further details. Starting with GitLab 14.0, only PostgreSQL 12 is
-shipped with Omnibus GitLab and thus Patroni becomes mandatory for replication and failover.
+shipped with Omnibus GitLab, and thus Patroni becomes mandatory for replication and failover.
 
 ### Database node
 
 Each database node runs three services:
 
-`PostgreSQL` - The database itself.
-
-`Patroni` - Communicates with other Patroni services in the cluster and handles
-failover when issues with the leader server occurs. The failover procedure
-consists of:
-
-- Selecting a new leader for the cluster.
-- Promoting the new node to leader.
-- Instructing remaining servers to follow the new leader node.
-
-`Consul` agent - To communicate with Consul cluster which stores the current Patroni state. The agent monitors the status of each node in the database cluster and tracks its health in a service definition on the Consul cluster.
+- `PostgreSQL`: The database itself.
+- `Patroni`: Communicates with other Patroni services in the cluster and handles failover when issues with the leader server occurs. The failover procedure consists of:
+  - Selecting a new leader for the cluster.
+  - Promoting the new node to leader.
+  - Instructing remaining servers to follow the new leader node.
+- `Consul` agent: To communicate with Consul cluster which stores the current Patroni state. The agent monitors the status of each node in the database cluster and tracks its health in a service definition on the Consul cluster.
 
 ### Consul server node
 
-The Consul server node runs the Consul server service. These nodes must have reached the quorum and elected a leader _before_ Patroni cluster bootstrap otherwise database nodes wait until such Consul leader is elected.
+The Consul server node runs the Consul server service. These nodes must have reached the quorum and elected a leader _before_ Patroni cluster bootstrap; otherwise, database nodes wait until such Consul leader is elected.
 
 ### PgBouncer node
 
 Each PgBouncer node runs two services:
 
-`PgBouncer` - The database connection pooler itself.
-
-`Consul` agent - Watches the status of the PostgreSQL service definition on the
-Consul cluster. If that status changes, Consul runs a script which updates the
-PgBouncer configuration to point to the new PostgreSQL leader node and reloads
-the PgBouncer service.
+- `PgBouncer`: The database connection pooler itself.
+- `Consul` agent: Watches the status of the PostgreSQL service definition on the Consul cluster. If that status changes, Consul runs a script which updates the PgBouncer configuration to point to the new PostgreSQL leader node and reloads the PgBouncer service.
 
 ### Connection flow
 
@@ -106,8 +94,7 @@ When using default setup, minimum configuration requires:
 
 - `CONSUL_USERNAME`. The default user for Omnibus GitLab is `gitlab-consul`
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
-- `CONSUL_PASSWORD_HASH`. This is a hash generated out of Consul username/password pair.
-   Can be generated with:
+- `CONSUL_PASSWORD_HASH`. This is a hash generated out of Consul username/password pair. It can be generated with:
 
    ```shell
    sudo gitlab-ctl pg-password-md5 CONSUL_USERNAME
@@ -118,8 +105,7 @@ When using default setup, minimum configuration requires:
 Few notes on the service itself:
 
 - The service runs under a system account, by default `gitlab-consul`.
-  - If you are using a different username, you have to specify it through the
-    `CONSUL_USERNAME` variable.
+- If you are using a different username, you have to specify it through the `CONSUL_USERNAME` variable.
 - Passwords are stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
@@ -129,10 +115,8 @@ Few notes on the service itself:
 
 When configuring PostgreSQL, we do the following:
 
-- Set `max_replication_slots` to double the number of database nodes.
-  Patroni uses one extra slot per node when initiating the replication.
-- Set `max_wal_senders` to one more than the allocated number of replication slots in the cluster.
-  This prevents replication from using up all of the available database connections.
+- Set `max_replication_slots` to double the number of database nodes. Patroni uses one extra slot per node when initiating the replication.
+- Set `max_wal_senders` to one more than the allocated number of replication slots in the cluster. This prevents replication from using up all of the available database connections.
 
 In this document we are assuming 3 database nodes, which makes this configuration:
 
@@ -151,7 +135,7 @@ You need the following password information for the application's database user:
 - `POSTGRESQL_USERNAME`. The default user for Omnibus GitLab is `gitlab`
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
 - `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
-  Can be generated with:
+  It can be generated with:
 
   ```shell
   sudo gitlab-ctl pg-password-md5 POSTGRESQL_USERNAME
@@ -170,8 +154,7 @@ When using a default setup, the minimum configuration requires:
 
 - `PGBOUNCER_USERNAME`. The default user for Omnibus GitLab is `pgbouncer`
 - `PGBOUNCER_PASSWORD`. This is a password for PgBouncer service.
-- `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of PgBouncer username/password pair.
-  Can be generated with:
+- `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of PgBouncer username/password pair. It can be generated with:
 
   ```shell
   sudo gitlab-ctl pg-password-md5 PGBOUNCER_USERNAME
@@ -181,8 +164,7 @@ When using a default setup, the minimum configuration requires:
 
 Few things to remember about the service itself:
 
-- The service runs as the same system account as the database
-  - In the package, this is by default `gitlab-psql`
+- The service runs as the same system account as the database. In the package, this is by default `gitlab-psql`
 - If you use a non-default user account for PgBouncer service (by default `pgbouncer`), you need to specify this username.
 - Passwords are stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed, and in plain text
@@ -206,7 +188,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 You must enable Patroni explicitly to be able to use it (with `patroni['enable'] = true`).
 
-Any PostgreSQL configuration item that controls replication, for example `wal_level`, `max_wal_senders`, etc, are strictly
+Any PostgreSQL configuration item that controls replication, for example `wal_level`, `max_wal_senders`, or others are strictly
 controlled by Patroni. These configurations override the original settings that you make with the `postgresql[...]` configuration key.
 Hence, they are all separated and placed under `patroni['postgresql'][...]`. This behavior is limited to replication.
 Patroni honours any other PostgreSQL configuration that was made with the `postgresql[...]` configuration key. For example,
@@ -215,7 +197,7 @@ configuration key.
 
 NOTE:
 The configuration of a Patroni node is very similar to a repmgr but shorter. When Patroni is enabled, first you can ignore
-any replication setting of PostgreSQL (it is overwritten anyway). Then you can remove any `repmgr[...]` or
+any replication setting of PostgreSQL (which is overwritten). Then, you can remove any `repmgr[...]` or
 repmgr-specific configuration as well. Especially, make sure that you remove `postgresql['shared_preload_libraries'] = 'repmgr_funcs'`.
 
 Here is an example:
@@ -282,7 +264,7 @@ on each node for the changes to take effect.
 
 Generally, when Consul cluster is ready, the first node that [reconfigures](../restart_gitlab.md#omnibus-gitlab-reconfigure)
 becomes the leader. You do not need to sequence the nodes reconfiguration. You can run them in parallel or in any order.
-If you choose an arbitrary order you do not have any predetermined leader.
+If you choose an arbitrary order, you do not have any predetermined leader.
 
 #### Enable Monitoring
 
@@ -296,7 +278,7 @@ If you enable Monitoring, it must be enabled on **all** database servers.
    # Enable service discovery for Prometheus
    consul['monitoring_service_discovery'] = true
 
-   # Set the network addresses that the exporters will listen on
+   # Set the network addresses that the exporters must listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    postgres_exporter['listen_address'] = '0.0.0.0:9187'
    ```
@@ -340,9 +322,9 @@ patroni['tls_ca_file'] = '/path/to/ca.pem'
 When TLS is enabled, mutual authentication of the API server and client is possible for all endpoints, the extent of which depends on
 the `patroni['tls_client_mode']` attribute:
 
-- `none` (default): the API will not check for any client certificates.
-- `optional`: client certificates are required for all [unsafe](https://patroni.readthedocs.io/en/latest/security.html#protecting-the-rest-api) API calls.
-- `required`: client certificates are required for all API calls.
+- `none` (default): The API does not check for any client certificates.
+- `optional`: Client certificates are required for all [unsafe](https://patroni.readthedocs.io/en/latest/security.html#protecting-the-rest-api) API calls.
+- `required`: Client certificates are required for all API calls.
 
 The client certificates are verified against the CA certificate that is specified with the `patroni['tls_ca_file']` attribute. Therefore,
 this attribute is required for mutual TLS authentication. You also need to specify PEM-formatted client certificate and private key files.
@@ -450,9 +432,9 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
 
 #### Configure the internal load balancer
 
-If you're running more than one PgBouncer node as recommended, then you need to set up a TCP internal load balancer to serve each correctly. This can be accomplished with any reputable TCP load balancer.
+If you're running more than one PgBouncer node as recommended, you must set up a TCP internal load balancer to serve each correctly. This can be accomplished with any reputable TCP load balancer.
 
-As an example here's how you could do it with [HAProxy](https://www.haproxy.org/):
+As an example, here's how you could do it with [HAProxy](https://www.haproxy.org/):
 
 ```plaintext
 global
@@ -554,7 +536,7 @@ Here is a list and description of each machine and the assigned IP:
 - `10.6.0.33`: PostgreSQL 3
 - `10.6.0.41`: GitLab application
 
-All passwords are set to `toomanysecrets`, please do not use this password or derived hashes and the `external_url` for GitLab is `http://gitlab.example.com`.
+All passwords are set to `toomanysecrets`. Please do not use this password or derived hashes and the `external_url` for GitLab is `http://gitlab.example.com`.
 
 After the initial configuration, if a failover occurs, the PostgresSQL leader node changes to one of the available secondaries until it is failed back.
 
@@ -675,7 +657,7 @@ This example uses 3 PostgreSQL servers, and 1 application node (with PgBouncer s
 It differs from the [recommended setup](#example-recommended-setup) by moving the Consul servers into the same servers we use for PostgreSQL.
 The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#manual-failover-procedure-for-patroni) procedures in addition to [Consul outage recovery](../consul.md#outage-recovery) on the same set of machines.
 
-In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
+In this example, we start with all servers on the same 10.6.0.0/16 private network range; they can connect to each freely other on those addresses.
 
 Here is a list and description of each machine and the assigned IP:
 
@@ -684,7 +666,7 @@ Here is a list and description of each machine and the assigned IP:
 - `10.6.0.23`: PostgreSQL 3
 - `10.6.0.31`: GitLab application
 
-All passwords are set to `toomanysecrets`, please do not use this password or derived hashes.
+All passwords are set to `toomanysecrets`. Please do not use this password or derived hashes.
 
 The `external_url` for GitLab is `http://gitlab.example.com`
 
@@ -787,7 +769,7 @@ Patroni is an opinionated solution for PostgreSQL high-availability. It takes th
 The fundamental [architecture](#example-recommended-setup-manual-steps) (mentioned above) does not change for Patroni.
 You do not need any special consideration for Patroni while provisioning your database nodes. Patroni heavily relies on Consul to store the state of the cluster and elect a leader. Any failure in Consul cluster and its leader election propagates to the Patroni cluster as well.
 
-Patroni monitors the cluster and handles any failover. When the primary node fails it works with Consul to notify PgBouncer. On failure, Patroni handles the transitioning of the old primary to a replica and rejoins it to the cluster automatically.
+Patroni monitors the cluster and handles any failover. When the primary node fails, it works with Consul to notify PgBouncer. On failure, Patroni handles the transitioning of the old primary to a replica and rejoins it to the cluster automatically.
 
 With Patroni, the connection flow is slightly different. Patroni on each node connects to Consul agent to join the cluster. Only after this point it decides if the node is the primary or a replica. Based on this decision, it configures and starts PostgreSQL which it communicates with directly over a Unix socket. This means that if the Consul cluster is not functional or does not have a leader, Patroni and by extension PostgreSQL does not start. Patroni also exposes a REST API which can be accessed via its [default port](../package_information/defaults.md)
 on each node.
@@ -918,7 +900,7 @@ patroni['remove_data_directory_on_diverged_timelines'] = false
 |-|-|
 |`use_pg_rewind`|Try running `pg_rewind` on the former cluster leader before it rejoins the database cluster.|
 |`remove_data_directory_on_rewind_failure`|If `pg_rewind` fails, remove the local PostgreSQL data directory and re-replicate from the current cluster leader.|
-|`remove_data_directory_on_diverged_timelines`|If `pg_rewind` cannot be used and the former leader's timeline has diverged from the current one, then delete the local data directory and re-replicate from the current cluster leader.|
+|`remove_data_directory_on_diverged_timelines`|If `pg_rewind` cannot be used and the former leader's timeline has diverged from the current one, delete the local data directory and re-replicate from the current cluster leader.|
 
 ### Database authorization for Patroni
 
@@ -936,7 +918,7 @@ You can use `gitlab-ctl patroni members` to check the status of the cluster memb
 is the primary or a replica.
 
 When Patroni is enabled, it exclusively controls PostgreSQL's startup,
-shutdown, and restart. This means, to shut down PostgreSQL on a certain node you must shutdown Patroni on the same node with:
+shutdown, and restart. This means, to shut down PostgreSQL on a certain node, you must shutdown Patroni on the same node with:
 
 ```shell
 sudo gitlab-ctl stop patroni
@@ -974,7 +956,7 @@ When a Geo secondary site is replicating from a primary site that uses `Patroni`
 sudo gitlab-ctl replicate-geo-database --host=<new_leader_ip> --replication-slot=<slot_name>
 ```
 
-Otherwise, the replication will not happen, even if the original node gets re-added as a follower node. This re-syncs your secondary site database and may take a long time depending on the amount of data to sync. You may also need to run `gitlab-ctl reconfigure` if replication is still not working after re-syncing.
+Otherwise, the replication does not happen, even if the original node gets re-added as a follower node. This re-syncs your secondary site database and may take a long time depending on the amount of data to sync. You may also need to run `gitlab-ctl reconfigure` if replication is still not working after re-syncing.
 
 ### Recovering the Patroni cluster
 
@@ -1097,7 +1079,7 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    sudo gitlab-ctl pg-upgrade -V 12
    ```
 
-1. Check the status of the leader and cluster. You can only proceed if you have a healthy leader:
+1. Check the status of the leader and cluster. You can proceed only if you have a healthy leader:
 
    ```shell
    gitlab-ctl patroni check-leader
@@ -1192,7 +1174,7 @@ If replication is not occurring, it may be necessary to reinitialize a replica.
 WARNING:
 This is a destructive process and may lead the cluster into a bad state. Make sure that you have a healthy backup before running this process.
 
-As a last resort, if your Patroni cluster is in an unknown/bad state and no node can start, you can
+As a last resort, if your Patroni cluster is in an unknown or bad state and no node can start, you can
 reset the Patroni state in Consul completely, resulting in a reinitialized Patroni cluster when
 the first Patroni node starts.
 

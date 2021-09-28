@@ -84,4 +84,10 @@ RSpec.describe ProjectClusterablePresenter do
 
     it { is_expected.to eq(metrics_dashboard_project_cluster_path(project, cluster)) }
   end
+
+  describe '#learn_more_link' do
+    subject { presenter.learn_more_link }
+
+    it { is_expected.to include('user/project/clusters/index') }
+  end
 end

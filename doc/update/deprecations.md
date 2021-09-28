@@ -6,6 +6,8 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 # Deprecated feature removal schedule
 
+<!-- vale off -->
+
 <!--
 This page is automatically generated from the YAML files in `/data/deprecations` by the rake task
 located at `lib/tasks/gitlab/docs/compile_deprecations.rake`.
@@ -24,11 +26,11 @@ With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](htt
 
 Gitaly Cluster offers tremendous benefits for our customers such as:
 
-- [Variable replication factors](../administration/gitaly/index.md#replication-factor).
-- [Strong consistency](../administration/gitaly/index.md#strong-consistency).
-- [Distributed read capabilities](../administration/gitaly/index.md#distributed-reads).
+- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
+- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
+- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
 
-We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster).
+We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
 
 Announced: 2021-06-22
 
@@ -46,7 +48,7 @@ Announced: 2021-09-22
 
 ### Audit events for repository push events
 
-Audit events for [repository events](../administration/audit_events.md#repository-push) are now deprecated and will be removed in GitLab 15.0.
+Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#repository-push) are now deprecated and will be removed in GitLab 15.0.
 
 These events have always been disabled by default and had to be manually enabled with a
 feature flag. Enabling them can cause too many events to be generated which can
@@ -58,7 +60,7 @@ Announced: 2021-09-02
 
 The `omniauth-kerberos` gem will be removed in our next major release, GitLab 15.0.
 
-This gem has not been maintained and has very little usage. We therefore plan to remove support for this authentication method and recommend using the Kerberos [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) integration instead. You can follow the [upgrade instructions](../integration/kerberos.md#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins) to upgrade from the `omniauth-kerberos` integration to the supported one.
+This gem has not been maintained and has very little usage. We therefore plan to remove support for this authentication method and recommend using the Kerberos [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) integration instead. You can follow the [upgrade instructions](https://docs.gitlab.com/ee/integration/kerberos.html#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins) to upgrade from the `omniauth-kerberos` integration to the supported one.
 
 Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.
 
@@ -66,7 +68,7 @@ Announced: 2021-09-22
 
 ### GitLab Serverless
 
-[GitLab Serverless](../user/project/clusters/serverless/index.md) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
+[GitLab Serverless](https://docs.gitlab.com/ee/user/project/clusters/serverless/) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
 
 We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
 

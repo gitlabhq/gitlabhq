@@ -76,6 +76,7 @@
 }
 
 .dropdown-toggle,
+.dropdown-menu-toggle,
 .confidential-merge-request-fork-group .dropdown-toggle {
   padding: 6px 8px 6px 10px;
   background-color: $white;
@@ -131,7 +132,6 @@
 
 // This is double classed to solve a specificity issue with the gitlab ui buttons
 .dropdown-menu-toggle.dropdown-menu-toggle {
-  @extend .dropdown-toggle;
   justify-content: flex-start;
   overflow: hidden;
   padding-right: 25px;
