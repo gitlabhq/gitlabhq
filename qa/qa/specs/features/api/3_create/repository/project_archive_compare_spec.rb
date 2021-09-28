@@ -46,10 +46,9 @@ module QA
 
       def create_project(user, api_client, project_name)
         project = Resource::Project.fabricate_via_api! do |project|
-          project.personal_namespace = true
+          project.personal_namespace = user.username
           project.add_name_uuid = false
           project.name = project_name
-          project.path_with_namespace = "#{user.username}/#{project_name}"
           project.api_client = api_client
         end
 

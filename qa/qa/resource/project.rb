@@ -12,13 +12,13 @@ module QA
                     :auto_devops_enabled,
                     :github_personal_access_token,
                     :github_repository_path,
-                    :gitlab_repository_path
+                    :gitlab_repository_path,
+                    :personal_namespace
 
       attributes :id,
                  :name,
                  :add_name_uuid,
                  :description,
-                 :personal_namespace,
                  :runners_token,
                  :visibility,
                  :template_name,
@@ -31,13 +31,15 @@ module QA
       end
 
       attribute :path_with_namespace do
-        "#{group.full_path}/#{name}"
+        "#{personal_namespace || group.full_path}/#{name}"
       end
 
       alias_method :full_path, :path_with_namespace
 
       def sandbox_path
-        group.respond_to?('sandbox') ? "#{group.sandbox.path}/" : ''
+        return '' if personal_namespace || !group.respond_to?('sandbox')
+
+        "#{group.sandbox.path}/"
       end
 
       attribute :repository_ssh_location do
@@ -50,12 +52,12 @@ module QA
 
       def initialize
         @add_name_uuid = true
-        @personal_namespace = false
         @description = 'My awesome project'
         @initialize_with_readme = false
         @auto_devops_enabled = false
         @visibility = :public
         @template_name = nil
+        @personal_namespace = nil
         @import = false
 
         self.name = "the_awesome_project"
@@ -68,7 +70,7 @@ module QA
       def fabricate!
         return if @import
 
-        if @personal_namespace
+        if personal_namespace
           Page::Dashboard::Projects.perform(&:click_new_project_button)
         else
           group.visit!

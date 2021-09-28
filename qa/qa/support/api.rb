@@ -8,63 +8,93 @@ module QA
       HTTP_STATUS_NO_CONTENT = 204
       HTTP_STATUS_ACCEPTED = 202
       HTTP_STATUS_NOT_FOUND = 404
+      HTTP_STATUS_TOO_MANY_REQUESTS = 429
       HTTP_STATUS_SERVER_ERROR = 500
 
       def post(url, payload, args = {})
-        default_args = {
-          method: :post,
-          url: url,
-          payload: payload,
-          verify_ssl: false
-        }
+        with_retry_on_too_many_requests do
+          default_args = {
+            method: :post,
+            url: url,
+            payload: payload,
+            verify_ssl: false
+          }
 
-        RestClient::Request.execute(
-          default_args.merge(args)
-        )
-      rescue RestClient::ExceptionWithResponse => e
-        return_response_or_raise(e)
+          RestClient::Request.execute(
+            default_args.merge(args)
+          )
+        rescue RestClient::ExceptionWithResponse => e
+          return_response_or_raise(e)
+        end
       end
 
       def get(url, args = {})
-        default_args = {
-          method: :get,
-          url: url,
-          verify_ssl: false
-        }
+        with_retry_on_too_many_requests do
+          default_args = {
+            method: :get,
+            url: url,
+            verify_ssl: false
+          }
 
-        RestClient::Request.execute(
-          default_args.merge(args)
-        )
-      rescue RestClient::ExceptionWithResponse => e
-        return_response_or_raise(e)
+          RestClient::Request.execute(
+            default_args.merge(args)
+          )
+        rescue RestClient::ExceptionWithResponse => e
+          return_response_or_raise(e)
+        end
       end
 
       def put(url, payload = nil)
-        RestClient::Request.execute(
-          method: :put,
-          url: url,
-          payload: payload,
-          verify_ssl: false)
-      rescue RestClient::ExceptionWithResponse => e
-        return_response_or_raise(e)
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(
+            method: :put,
+            url: url,
+            payload: payload,
+            verify_ssl: false)
+        rescue RestClient::ExceptionWithResponse => e
+          return_response_or_raise(e)
+        end
       end
 
       def delete(url)
-        RestClient::Request.execute(
-          method: :delete,
-          url: url,
-          verify_ssl: false)
-      rescue RestClient::ExceptionWithResponse => e
-        return_response_or_raise(e)
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(
+            method: :delete,
+            url: url,
+            verify_ssl: false)
+        rescue RestClient::ExceptionWithResponse => e
+          return_response_or_raise(e)
+        end
       end
 
       def head(url)
-        RestClient::Request.execute(
-          method: :head,
-          url: url,
-          verify_ssl: false)
-      rescue RestClient::ExceptionWithResponse => e
-        return_response_or_raise(e)
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(
+            method: :head,
+            url: url,
+            verify_ssl: false)
+        rescue RestClient::ExceptionWithResponse => e
+          return_response_or_raise(e)
+        end
+      end
+
+      def with_retry_on_too_many_requests
+        response = nil
+
+        Support::Retrier.retry_until do
+          response = yield
+
+          if response.code == HTTP_STATUS_TOO_MANY_REQUESTS
+            wait_seconds = response.headers[:retry_after].to_i
+            QA::Runtime::Logger.debug("Received 429 - Too many requests. Waiting for #{wait_seconds} seconds.")
+
+            sleep wait_seconds
+          end
+
+          response.code != HTTP_STATUS_TOO_MANY_REQUESTS
+        end
+
+        response
       end
 
       def parse_body(response)

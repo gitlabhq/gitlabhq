@@ -39,7 +39,7 @@ module QA
           Resource::Project.fabricate_via_browser_ui! do |project|
             project.name = project_name
             project.description = 'create awesome project test'
-            project.personal_namespace = true
+            project.personal_namespace = Runtime::User.username
           end
         end
 
