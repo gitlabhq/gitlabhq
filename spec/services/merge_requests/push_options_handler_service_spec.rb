@@ -701,7 +701,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 
-    it 'records an error' do
+    it 'records an error', :sidekiq_inline do
       Members::DestroyService.new(user1).execute(ProjectMember.find_by!(user_id: user1.id))
 
       service.execute

@@ -26,7 +26,9 @@ module AuthorizedProjectUpdate
     private
 
     def lock_key(project)
-      "#{self.class.name.underscore}/projects/#{project.id}"
+      # The self.class.name.underscore value is hardcoded here as the prefix, so that the same
+      # lock_key for this superclass will be used by the ProjectRecalculatePerUserWorker subclass.
+      "authorized_project_update/project_recalculate_worker/projects/#{project.id}"
     end
   end
 end

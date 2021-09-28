@@ -47,7 +47,7 @@ RSpec.describe Notes::QuickActionsService do
         let(:note_text) { "/relate #{other_issue.to_reference}" }
         let(:note) { create(:note_on_issue, noteable: issue, project: project, note: note_text) }
 
-        context 'user cannot relate issues' do
+        context 'user cannot relate issues', :sidekiq_inline do
           before do
             project.team.find_member(maintainer.id).destroy!
             project.update!(visibility: Gitlab::VisibilityLevel::PUBLIC)

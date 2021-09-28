@@ -19764,6 +19764,7 @@ CREATE TABLE user_details (
     provisioned_by_group_id bigint,
     pronouns text,
     pronunciation text,
+    registration_objective smallint,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_b132136b01 CHECK ((char_length(other_role) <= 100)),
     CONSTRAINT check_eeeaf8d4f0 CHECK ((char_length(pronouns) <= 50)),

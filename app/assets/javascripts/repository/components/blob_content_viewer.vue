@@ -42,9 +42,6 @@ export default {
         this.switchViewer(
           this.hasRichViewer && !window.location.hash ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER,
         );
-        if (this.hasRichViewer && !this.blobViewer) {
-          this.loadLegacyViewer();
-        }
       },
       error() {
         this.displayError();
@@ -69,6 +66,7 @@ export default {
   data() {
     return {
       legacyRichViewer: null,
+      legacySimpleViewer: null,
       isBinary: false,
       isLoadingLegacyViewer: false,
       activeViewerType: SIMPLE_BLOB_VIEWER,
@@ -115,7 +113,7 @@ export default {
       return isLoggedIn();
     },
     isLoading() {
-      return this.$apollo.queries.project.loading || this.isLoadingLegacyViewer;
+      return this.$apollo.queries.project.loading;
     },
     isBinaryFileType() {
       return this.isBinary || this.blobInfo.simpleViewer?.fileType !== 'text';
@@ -153,22 +151,41 @@ export default {
     },
   },
   methods: {
-    loadLegacyViewer() {
+    loadLegacyViewer(type) {
+      if (this.legacyViewerLoaded(type)) {
+        return;
+      }
+
       this.isLoadingLegacyViewer = true;
       axios
-        .get(`${this.blobInfo.webPath}?format=json&viewer=rich`)
+        .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
         .then(({ data: { html, binary } }) => {
-          this.legacyRichViewer = html;
+          if (type === 'simple') {
+            this.legacySimpleViewer = html;
+          } else {
+            this.legacyRichViewer = html;
+          }
+
           this.isBinary = binary;
           this.isLoadingLegacyViewer = false;
         })
         .catch(() => this.displayError());
+    },
+    legacyViewerLoaded(type) {
+      return (
+        (type === SIMPLE_BLOB_VIEWER && this.legacySimpleViewer) ||
+        (type === RICH_BLOB_VIEWER && this.legacyRichViewer)
+      );
     },
     displayError() {
       createFlash({ message: __('An error occurred while loading the file. Please try again.') });
     },
     switchViewer(newViewer) {
       this.activeViewerType = newViewer || SIMPLE_BLOB_VIEWER;
+
+      if (!this.blobViewer) {
+        this.loadLegacyViewer(this.activeViewerType);
+      }
     },
   },
 };
@@ -210,10 +227,11 @@ export default {
         v-if="!blobViewer"
         :rich-viewer="legacyRichViewer"
         :blob="blobInfo"
-        :content="blobInfo.rawTextBlob"
+        :content="legacySimpleViewer"
         :is-raw-content="true"
         :active-viewer="viewer"
-        :loading="false"
+        :hide-line-numbers="true"
+        :loading="isLoadingLegacyViewer"
       />
       <component :is="blobViewer" v-else v-bind="viewerProps" class="blob-viewer" />
     </div>

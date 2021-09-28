@@ -1,0 +1,8 @@
+---
+name: refactor_text_viewer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70909
+rollout_issue_url:
+milestone: '14.4'
+type: development
+group: 'group::source code'
+default_enabled: false

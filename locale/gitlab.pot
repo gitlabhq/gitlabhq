@@ -7273,9 +7273,6 @@ msgstr ""
 msgid "ClusterAgents|Last contact"
 msgstr ""
 
-msgid "ClusterAgents|Last used"
-msgstr ""
-
 msgid "ClusterAgents|Learn how to create an agent access token"
 msgstr ""
 

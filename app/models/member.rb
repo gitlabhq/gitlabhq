@@ -178,7 +178,13 @@ class Member < ApplicationRecord
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
   after_save :log_invitation_token_cleanup
 
-  after_commit :refresh_member_authorized_projects, unless: :importing?
+  after_commit on: [:create, :update], unless: :importing? do
+    refresh_member_authorized_projects(blocking: true)
+  end
+
+  after_commit on: [:destroy], unless: :importing? do
+    refresh_member_authorized_projects(blocking: Feature.disabled?(:member_destroy_async_auth_refresh, type: :ops))
+  end
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
@@ -395,8 +401,8 @@ class Member < ApplicationRecord
   # transaction has been committed, resulting in the job either throwing an
   # error or not doing any meaningful work.
   # rubocop: disable CodeReuse/ServiceClass
-  def refresh_member_authorized_projects
-    UserProjectAccessChangedService.new(user_id).execute
+  def refresh_member_authorized_projects(blocking:)
+    UserProjectAccessChangedService.new(user_id).execute(blocking: blocking)
   end
   # rubocop: enable CodeReuse/ServiceClass
 

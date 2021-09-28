@@ -17,7 +17,7 @@ RSpec.describe MergeRequests::AssignIssuesService do
     expect(service.assignable_issues.map(&:id)).to include(issue.id)
   end
 
-  it 'ignores issues the user cannot update assignee on' do
+  it 'ignores issues the user cannot update assignee on', :sidekiq_inline do
     project.team.truncate
 
     expect(service.assignable_issues).to be_empty

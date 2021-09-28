@@ -379,6 +379,18 @@ Some [known database inconsistency issues](#known-issues) exist in Gitaly Cluste
 remain on your current service for now. We can adjust the date for
 [NFS support removal](#nfs-deprecation-notice) if this applies to you.
 
+### Migrate off Gitaly Cluster
+
+If you have repositories stored on a Gitaly Cluster, but you'd like to migrate
+them back to direct Gitaly storage:
+
+1. Create and configure a new
+   [Gitaly server](configure_gitaly.md#run-gitaly-on-its-own-server).
+1. [Move the repositories](../operations/moving_repositories.md#move-repositories)
+   to the newly created storage. There are different possibilities to move them
+   by shard or by group, this gives you the opportunity to spread them over
+   multiple Gitaly servers.
+
 ## Monitor Gitaly and Gitaly Cluster
 
 You can use the available logs and [Prometheus metrics](../monitoring/prometheus/index.md) to

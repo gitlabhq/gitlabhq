@@ -159,8 +159,13 @@ describe('Blob content viewer component', () => {
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
 
+  beforeEach(() => {
+    gon.features = { refactorTextViewer: true };
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    mockAxios.reset();
   });
 
   it('renders a GlLoadingIcon component', () => {
@@ -183,13 +188,22 @@ describe('Blob content viewer component', () => {
 
     it('renders a BlobContent component', () => {
       expect(findBlobContent().props('loading')).toEqual(false);
-      expect(findBlobContent().props('content')).toEqual('raw content');
       expect(findBlobContent().props('isRawContent')).toBe(true);
       expect(findBlobContent().props('activeViewer')).toEqual({
         fileType: 'text',
         tooLarge: false,
         type: 'simple',
         renderError: null,
+      });
+    });
+
+    describe('legacy viewers', () => {
+      it('loads a legacy viewer when a viewer component is not available', async () => {
+        createComponentWithApollo({ blobs: { ...simpleMockData, fileType: 'unknown' } });
+        await waitForPromises();
+
+        expect(mockAxios.history.get).toHaveLength(1);
+        expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=simple');
       });
     });
   });
@@ -210,7 +224,6 @@ describe('Blob content viewer component', () => {
 
     it('renders a BlobContent component', () => {
       expect(findBlobContent().props('loading')).toEqual(false);
-      expect(findBlobContent().props('content')).toEqual('raw content');
       expect(findBlobContent().props('isRawContent')).toBe(true);
       expect(findBlobContent().props('activeViewer')).toEqual({
         fileType: 'markup',
@@ -241,18 +254,12 @@ describe('Blob content viewer component', () => {
   });
 
   describe('legacy viewers', () => {
-    it('does not load a legacy viewer when a rich viewer is not available', async () => {
-      createComponentWithApollo({ blobs: simpleMockData });
-      await waitForPromises();
-
-      expect(mockAxios.history.get).toHaveLength(0);
-    });
-
-    it('loads a legacy viewer when a rich viewer is available', async () => {
-      createComponentWithApollo({ blobs: richMockData });
+    it('loads a legacy viewer when a viewer component is not available', async () => {
+      createComponentWithApollo({ blobs: { ...richMockData, fileType: 'unknown' } });
       await waitForPromises();
 
       expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=rich');
     });
   });
 

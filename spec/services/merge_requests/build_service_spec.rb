@@ -440,7 +440,7 @@ RSpec.describe MergeRequests::BuildService do
           expect(merge_request.title).to eq('Closes #1234 Second commit')
         end
 
-        it 'adds the remaining lines of the first multi-line commit message as the description' do
+        it 'adds the remaining lines of the first multi-line commit message as the description', :sidekiq_inline do
           expect(merge_request.description).to eq('Create the app')
         end
       end

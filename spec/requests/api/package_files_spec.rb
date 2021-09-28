@@ -38,7 +38,7 @@ RSpec.describe API::PackageFiles do
           expect(response).to have_gitlab_http_status(:not_found)
         end
 
-        it 'returns 404 for a user without access to the project' do
+        it 'returns 404 for a user without access to the project', :sidekiq_inline do
           project.team.truncate
 
           get api(url, user)

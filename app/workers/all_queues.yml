@@ -30,6 +30,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: authorized_project_update:authorized_project_update_project_recalculate_per_user
+  :worker_name: AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_from_replica
   :worker_name: AuthorizedProjectUpdate::UserRefreshFromReplicaWorker
   :feature_category: :authentication_and_authorization

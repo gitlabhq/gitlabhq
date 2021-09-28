@@ -27,6 +27,11 @@ export default {
       required: false,
       default: '',
     },
+    hideLineNumbers: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   mounted() {
     eventHub.$emit(SNIPPET_MEASURE_BLOBS_CONTENT);

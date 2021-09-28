@@ -239,7 +239,7 @@ RSpec.describe Projects::BranchesController do
         end
       end
 
-      context 'without issue feature access' do
+      context 'without issue feature access', :sidekiq_inline do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
           project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)

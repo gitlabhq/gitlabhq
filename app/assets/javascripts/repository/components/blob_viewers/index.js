@@ -3,7 +3,9 @@ export const loadViewer = (type) => {
     case 'empty':
       return () => import(/* webpackChunkName: 'blob_empty_viewer' */ './empty_viewer.vue');
     case 'text':
-      return () => import(/* webpackChunkName: 'blob_text_viewer' */ './text_viewer.vue');
+      return gon.features.refactorTextViewer
+        ? () => import(/* webpackChunkName: 'blob_text_viewer' */ './text_viewer.vue')
+        : null;
     case 'download':
       return () => import(/* webpackChunkName: 'blob_download_viewer' */ './download_viewer.vue');
     case 'image':

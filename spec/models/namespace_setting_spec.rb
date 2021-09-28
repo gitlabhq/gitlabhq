@@ -11,6 +11,8 @@ RSpec.describe NamespaceSetting, type: :model do
     it { is_expected.to belong_to(:namespace) }
   end
 
+  it { is_expected.to define_enum_for(:jobs_to_be_done).with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other]).with_suffix }
+
   describe "validations" do
     describe "#default_branch_name_content" do
       let_it_be(:group) { create(:group) }

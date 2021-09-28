@@ -79,6 +79,9 @@ RSpec.describe User do
 
     it { is_expected.to delegate_method(:bio).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bio=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:registration_objective).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:registration_objective=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -123,7 +126,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:callouts).class_name('UserCallout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
 
-    describe "#user_detail" do
+    describe '#user_detail' do
       it 'does not persist `user_detail` by default' do
         expect(create(:user).user_detail).not_to be_persisted
       end
@@ -160,25 +163,25 @@ RSpec.describe User do
       end
     end
 
-    describe "#abuse_report" do
+    describe '#abuse_report' do
       let(:current_user) { create(:user) }
       let(:other_user) { create(:user) }
 
       it { is_expected.to have_one(:abuse_report) }
 
-      it "refers to the abuse report whose user_id is the current user" do
+      it 'refers to the abuse report whose user_id is the current user' do
         abuse_report = create(:abuse_report, reporter: other_user, user: current_user)
 
         expect(current_user.abuse_report).to eq(abuse_report)
       end
 
-      it "does not refer to the abuse report whose reporter_id is the current user" do
+      it 'does not refer to the abuse report whose reporter_id is the current user' do
         create(:abuse_report, reporter: current_user, user: other_user)
 
         expect(current_user.abuse_report).to be_nil
       end
 
-      it "does not update the user_id of an abuse report when the user is updated" do
+      it 'does not update the user_id of an abuse report when the user is updated' do
         abuse_report = create(:abuse_report, reporter: current_user, user: other_user)
 
         current_user.block
@@ -716,7 +719,7 @@ RSpec.describe User do
     end
   end
 
-  describe "scopes" do
+  describe 'scopes' do
     context 'blocked users' do
       let_it_be(:active_user) { create(:user) }
       let_it_be(:blocked_user) { create(:user, :blocked) }
@@ -754,8 +757,8 @@ RSpec.describe User do
       end
     end
 
-    describe ".with_two_factor" do
-      it "returns users with 2fa enabled via OTP" do
+    describe '.with_two_factor' do
+      it 'returns users with 2fa enabled via OTP' do
         user_with_2fa = create(:user, :two_factor_via_otp)
         user_without_2fa = create(:user)
         users_with_two_factor = described_class.with_two_factor.pluck(:id)
@@ -764,8 +767,8 @@ RSpec.describe User do
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
       end
 
-      shared_examples "returns the right users" do |trait|
-        it "returns users with 2fa enabled via hardware token" do
+      shared_examples 'returns the right users' do |trait|
+        it 'returns users with 2fa enabled via hardware token' do
           user_with_2fa = create(:user, trait)
           user_without_2fa = create(:user)
           users_with_two_factor = described_class.with_two_factor.pluck(:id)
@@ -774,7 +777,7 @@ RSpec.describe User do
           expect(users_with_two_factor).not_to include(user_without_2fa.id)
         end
 
-        it "returns users with 2fa enabled via OTP and hardware token" do
+        it 'returns users with 2fa enabled via OTP and hardware token' do
           user_with_2fa = create(:user, :two_factor_via_otp, trait)
           user_without_2fa = create(:user)
           users_with_two_factor = described_class.with_two_factor.pluck(:id)
@@ -792,17 +795,17 @@ RSpec.describe User do
         end
       end
 
-      describe "and U2F" do
+      describe 'and U2F' do
         it_behaves_like "returns the right users", :two_factor_via_u2f
       end
 
-      describe "and WebAuthn" do
+      describe 'and WebAuthn' do
         it_behaves_like "returns the right users", :two_factor_via_webauthn
       end
     end
 
-    describe ".without_two_factor" do
-      it "excludes users with 2fa enabled via OTP" do
+    describe '.without_two_factor' do
+      it 'excludes users with 2fa enabled via OTP' do
         user_with_2fa = create(:user, :two_factor_via_otp)
         user_without_2fa = create(:user)
         users_without_two_factor = described_class.without_two_factor.pluck(:id)
@@ -811,8 +814,8 @@ RSpec.describe User do
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
       end
 
-      describe "and u2f" do
-        it "excludes users with 2fa enabled via U2F" do
+      describe 'and u2f' do
+        it 'excludes users with 2fa enabled via U2F' do
           user_with_2fa = create(:user, :two_factor_via_u2f)
           user_without_2fa = create(:user)
           users_without_two_factor = described_class.without_two_factor.pluck(:id)
@@ -821,7 +824,7 @@ RSpec.describe User do
           expect(users_without_two_factor).not_to include(user_with_2fa.id)
         end
 
-        it "excludes users with 2fa enabled via OTP and U2F" do
+        it 'excludes users with 2fa enabled via OTP and U2F' do
           user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
           user_without_2fa = create(:user)
           users_without_two_factor = described_class.without_two_factor.pluck(:id)
@@ -831,8 +834,8 @@ RSpec.describe User do
         end
       end
 
-      describe "and webauthn" do
-        it "excludes users with 2fa enabled via WebAuthn" do
+      describe 'and webauthn' do
+        it 'excludes users with 2fa enabled via WebAuthn' do
           user_with_2fa = create(:user, :two_factor_via_webauthn)
           user_without_2fa = create(:user)
           users_without_two_factor = described_class.without_two_factor.pluck(:id)
@@ -841,7 +844,7 @@ RSpec.describe User do
           expect(users_without_two_factor).not_to include(user_with_2fa.id)
         end
 
-        it "excludes users with 2fa enabled via OTP and WebAuthn" do
+        it 'excludes users with 2fa enabled via OTP and WebAuthn' do
           user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_webauthn)
           user_without_2fa = create(:user)
           users_without_two_factor = described_class.without_two_factor.pluck(:id)
@@ -1074,7 +1077,7 @@ RSpec.describe User do
     end
   end
 
-  describe "Respond to" do
+  describe 'Respond to' do
     it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:external?) }
@@ -1096,7 +1099,7 @@ RSpec.describe User do
       let(:user)          { create(:user) }
       let(:external_user) { create(:user, external: true) }
 
-      it "sets other properties as well" do
+      it 'sets other properties as well' do
         expect(external_user.can_create_team).to be_falsey
         expect(external_user.can_create_group).to be_falsey
         expect(external_user.projects_limit).to be 0
@@ -1515,7 +1518,7 @@ RSpec.describe User do
   end
 
   describe '#generate_password' do
-    it "does not generate password by default" do
+    it 'does not generate password by default' do
       user = create(:user, password: 'abcdefghe')
 
       expect(user.password).to eq('abcdefghe')
@@ -1883,14 +1886,14 @@ RSpec.describe User do
   describe 'deactivating a user' do
     let(:user) { create(:user, name: 'John Smith') }
 
-    context "an active user" do
-      it "can be deactivated" do
+    context 'an active user' do
+      it 'can be deactivated' do
         user.deactivate
 
         expect(user.deactivated?).to be_truthy
       end
 
-      context "when user deactivation emails are disabled" do
+      context 'when user deactivation emails are disabled' do
         before do
           stub_application_setting(user_deactivation_emails_enabled: false)
         end
@@ -1901,7 +1904,7 @@ RSpec.describe User do
         end
       end
 
-      context "when user deactivation emails are enabled" do
+      context 'when user deactivation emails are enabled' do
         it 'sends deactivated user an email' do
           expect_next_instance_of(NotificationService) do |notification|
             allow(notification).to receive(:user_deactivated).with(user.name, user.notification_email_or_default)
@@ -1912,12 +1915,12 @@ RSpec.describe User do
       end
     end
 
-    context "a user who is blocked" do
+    context 'a user who is blocked' do
       before do
         user.block
       end
 
-      it "cannot be deactivated" do
+      it 'cannot be deactivated' do
         user.deactivate
 
         expect(user.reload.deactivated?).to be_falsy
@@ -2084,7 +2087,7 @@ RSpec.describe User do
     describe 'with defaults' do
       let(:user) { described_class.new }
 
-      it "applies defaults to user" do
+      it 'applies defaults to user' do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
@@ -2096,7 +2099,7 @@ RSpec.describe User do
     describe 'with default overrides' do
       let(:user) { described_class.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
 
-      it "applies defaults to user" do
+      it 'applies defaults to user' do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
@@ -2115,7 +2118,7 @@ RSpec.describe User do
         stub_application_setting(user_default_external: true)
       end
 
-      it "creates external user by default" do
+      it 'creates external user by default' do
         user = create(:user)
 
         expect(user.external).to be_truthy
@@ -2124,7 +2127,7 @@ RSpec.describe User do
       end
 
       describe 'with default overrides' do
-        it "creates a non-external user" do
+        it 'creates a non-external user' do
           user = create(:user, external: false)
 
           expect(user.external).to be_falsey
@@ -2140,7 +2143,7 @@ RSpec.describe User do
       }
 
       protocol_and_expectation.each do |protocol, expected|
-        it "has correct require_ssh_key?" do
+        it 'has correct require_ssh_key?' do
           stub_application_setting(enabled_git_access_protocol: protocol)
           user = build(:user)
 
@@ -2624,7 +2627,7 @@ RSpec.describe User do
   describe 'all_ssh_keys' do
     it { is_expected.to have_many(:keys).dependent(:destroy) }
 
-    it "has all ssh keys" do
+    it 'has all ssh keys' do
       user = create :user
       key = create :key, key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD33bWLBxu48Sev9Fert1yzEO4WGcWglWF7K/AwblIUFselOt/QdOL9DSjpQGxLagO1s9wl53STIO8qGS4Ms0EJZyIXOEFMjFJ5xmjSy+S37By4sG7SsltQEHMxtbtFOaW5LV2wCrX+rUsRNqLMamZjgjcPO0/EgGCXIGMAYW4O7cwGZdXWYIhQ1Vwy+CsVMDdPkPgBXqK7nR/ey8KMs8ho5fMNgB5hBw/AL9fNGhRw3QTD6Q12Nkhl4VZES2EsZqlpNnJttnPdp847DUsT6yuLRlfiQfz5Cn9ysHFdXObMN5VYIiPFwHeYCZp1X2S4fDZooRE8uOLTfxWHPXwrhqSH", user_id: user.id
 
@@ -2660,10 +2663,10 @@ RSpec.describe User do
     end
   end
 
-  describe "#clear_avatar_caches" do
+  describe '#clear_avatar_caches' do
     let(:user) { create(:user) }
 
-    it "clears the avatar cache when saving" do
+    it 'clears the avatar cache when saving' do
       allow(user).to receive(:avatar_changed?).and_return(true)
 
       expect(Gitlab::AvatarCache).to receive(:delete_by_email).with(*user.verified_emails)
@@ -3189,7 +3192,7 @@ RSpec.describe User do
     end
   end
 
-  describe "#last_active_at" do
+  describe '#last_active_at' do
     let(:last_activity_on) { 5.days.ago.to_date }
     let(:current_sign_in_at) { 8.days.ago }
 
@@ -3227,7 +3230,7 @@ RSpec.describe User do
     end
   end
 
-  describe "#can_be_deactivated?" do
+  describe '#can_be_deactivated?' do
     let(:activity) { {} }
     let(:user) { create(:user, name: 'John Smith', **activity) }
     let(:day_within_minium_inactive_days_threshold) { User::MINIMUM_INACTIVE_DAYS.pred.days.ago }
@@ -3245,7 +3248,7 @@ RSpec.describe User do
       end
     end
 
-    context "a user who is not active" do
+    context 'a user who is not active' do
       before do
         user.block
       end
@@ -3286,7 +3289,7 @@ RSpec.describe User do
     end
   end
 
-  describe "#contributed_projects" do
+  describe '#contributed_projects' do
     subject { create(:user) }
 
     let!(:project1) { create(:project) }
@@ -3301,11 +3304,11 @@ RSpec.describe User do
       project2.add_maintainer(subject)
     end
 
-    it "includes IDs for projects the user has pushed to" do
+    it 'includes IDs for projects the user has pushed to' do
       expect(subject.contributed_projects).to include(project1)
     end
 
-    it "includes IDs for projects the user has had merge requests merged into" do
+    it 'includes IDs for projects the user has had merge requests merged into' do
       expect(subject.contributed_projects).to include(project3)
     end
 
@@ -3399,7 +3402,7 @@ RSpec.describe User do
     end
   end
 
-  describe "#recent_push" do
+  describe '#recent_push' do
     let(:user) { build(:user) }
     let(:project) { build(:project) }
     let(:event) { build(:push_event) }
@@ -3563,7 +3566,7 @@ RSpec.describe User do
       expect(user.authorized_projects).to include(project)
     end
 
-    it "includes personal projects user has been given access to" do
+    it 'includes personal projects user has been given access to' do
       user1   = create(:user)
       user2   = create(:user)
       project = create(:project, :private, namespace: user1.namespace)
@@ -3573,7 +3576,7 @@ RSpec.describe User do
       expect(user2.authorized_projects).to include(project)
     end
 
-    it "includes projects of groups user has been added to" do
+    it 'includes projects of groups user has been added to' do
       group   = create(:group)
       project = create(:project, group: group)
       user    = create(:user)
@@ -3583,7 +3586,7 @@ RSpec.describe User do
       expect(user.authorized_projects).to include(project)
     end
 
-    it "does not include projects of groups user has been removed from" do
+    it 'does not include projects of groups user has been removed from', :sidekiq_inline do
       group   = create(:group)
       project = create(:project, group: group)
       user    = create(:user)
@@ -3608,7 +3611,7 @@ RSpec.describe User do
       expect(user.authorized_projects).to include(project)
     end
 
-    it "does not include destroyed projects user had access to" do
+    it 'does not include destroyed projects user had access to' do
       user1   = create(:user)
       user2   = create(:user)
       project = create(:project, :private, namespace: user1.namespace)
@@ -3622,7 +3625,7 @@ RSpec.describe User do
       expect(user2.authorized_projects).not_to include(project)
     end
 
-    it "does not include projects of destroyed groups user had access to" do
+    it 'does not include projects of destroyed groups user had access to' do
       group   = create(:group)
       project = create(:project, namespace: group)
       user    = create(:user)
@@ -4175,7 +4178,7 @@ RSpec.describe User do
       expect(user.admin).to be true
     end
 
-    it "accepts string values in addition to symbols" do
+    it 'accepts string values in addition to symbols' do
       user.access_level = 'admin'
 
       expect(user.access_level).to eq(:admin)
@@ -4256,7 +4259,7 @@ RSpec.describe User do
       expect(ghost.user_type).to eq 'ghost'
     end
 
-    it "does not create a second ghost user if one is already present" do
+    it 'does not create a second ghost user if one is already present' do
       expect do
         described_class.ghost
         described_class.ghost
@@ -4265,7 +4268,7 @@ RSpec.describe User do
     end
 
     context "when a regular user exists with the username 'ghost'" do
-      it "creates a ghost user with a non-conflicting username" do
+      it 'creates a ghost user with a non-conflicting username' do
         create(:user, username: 'ghost')
         ghost = described_class.ghost
 
@@ -4275,7 +4278,7 @@ RSpec.describe User do
     end
 
     context "when a regular user exists with the email 'ghost@example.com'" do
-      it "creates a ghost user with a non-conflicting email" do
+      it 'creates a ghost user with a non-conflicting email' do
         create(:user, email: 'ghost@example.com')
         ghost = described_class.ghost
 
@@ -4755,7 +4758,7 @@ RSpec.describe User do
       it { is_expected.to be true }
     end
 
-    context 'when email and username aren\'t changed' do
+    context "when email and username aren't changed" do
       before do
         user.name = 'new_name'
       end
@@ -5066,26 +5069,26 @@ RSpec.describe User do
 
     subject { user.required_terms_not_accepted? }
 
-    context "when terms are not enforced" do
+    context 'when terms are not enforced' do
       it { is_expected.to be_falsey }
     end
 
-    context "when terms are enforced" do
+    context 'when terms are enforced' do
       before do
         enforce_terms
       end
 
-      it "is not accepted by the user" do
+      it 'is not accepted by the user' do
         expect(subject).to be_truthy
       end
 
-      it "is accepted by the user" do
+      it 'is accepted by the user' do
         accept_terms(user)
 
         expect(subject).to be_falsey
       end
 
-      it "auto accepts the term for project bots" do
+      it 'auto accepts the term for project bots' do
         expect(project_bot.required_terms_not_accepted?).to be_falsey
       end
     end

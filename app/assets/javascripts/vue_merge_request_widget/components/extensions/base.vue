@@ -140,9 +140,7 @@ export default {
           <div
             class="gl-mt-2 gl-mb-2 align-content-around align-items-start flex-wrap align-self-center d-flex"
           >
-            <div class="gl-mr-4">
-              {{ data.text }}
-            </div>
+            <div v-safe-html="data.text" class="gl-mr-4"></div>
             <div v-if="data.link">
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
             </div>

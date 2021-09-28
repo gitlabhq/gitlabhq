@@ -25,7 +25,7 @@ module Backup
       args += ['-parallel', @parallel.to_s] if @parallel
       args += ['-parallel-storage', @parallel_storage.to_s] if @parallel_storage
 
-      @stdin, stdout, @thread = Open3.popen2(ENV, bin_path, command, '-path', backup_repos_path, *args)
+      @stdin, stdout, @thread = Open3.popen2(build_env, bin_path, command, '-path', backup_repos_path, *args)
 
       @out_reader = Thread.new do
         IO.copy_stream(stdout, @progress)
@@ -62,6 +62,13 @@ module Backup
     end
 
     private
+
+    def build_env
+      {
+        'SSL_CERT_FILE' => OpenSSL::X509::DEFAULT_CERT_FILE,
+        'SSL_CERT_DIR'  => OpenSSL::X509::DEFAULT_CERT_DIR
+      }.merge(ENV)
+    end
 
     def started?
       @thread.present?

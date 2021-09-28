@@ -8,8 +8,6 @@ export default {
   name: 'SimpleViewer',
   components: {
     GlIcon,
-    SourceEditor: () =>
-      import(/* webpackChunkName: 'SourceEditor' */ '~/vue_shared/components/source_editor.vue'),
   },
   mixins: [ViewerMixin, glFeatureFlagsMixin()],
   inject: ['blobHash'],
@@ -21,9 +19,6 @@ export default {
   computed: {
     lineNumbers() {
       return this.content.split('\n').length;
-    },
-    refactorBlobViewerEnabled() {
-      return this.glFeatures.refactorBlobViewer;
     },
   },
   mounted() {
@@ -52,14 +47,8 @@ export default {
 </script>
 <template>
   <div>
-    <source-editor
-      v-if="isRawContent && refactorBlobViewerEnabled"
-      :value="content"
-      :file-name="fileName"
-      :editor-options="{ readOnly: true }"
-    />
-    <div v-else class="file-content code js-syntax-highlight" :class="$options.userColorScheme">
-      <div class="line-numbers">
+    <div class="file-content code js-syntax-highlight" :class="$options.userColorScheme">
+      <div v-if="!hideLineNumbers" class="line-numbers">
         <a
           v-for="line in lineNumbers"
           :id="`L${line}`"

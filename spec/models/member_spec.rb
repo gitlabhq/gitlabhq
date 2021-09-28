@@ -7,11 +7,11 @@ RSpec.describe Member do
 
   using RSpec::Parameterized::TableSyntax
 
-  describe "Associations" do
+  describe 'Associations' do
     it { is_expected.to belong_to(:user) }
   end
 
-  describe "Validation" do
+  describe 'Validation' do
     subject { described_class.new(access_level: Member::GUEST) }
 
     it { is_expected.to validate_presence_of(:user) }
@@ -28,7 +28,7 @@ RSpec.describe Member do
       subject { build(:project_member) }
     end
 
-    context "when an invite email is provided" do
+    context 'when an invite email is provided' do
       let_it_be(:project) { create(:project) }
 
       let(:member) { build(:project_member, source: project, invite_email: "user@example.com", user: nil) }
@@ -37,29 +37,29 @@ RSpec.describe Member do
         expect(member).to be_valid
       end
 
-      it "requires a valid invite email" do
+      it 'requires a valid invite email' do
         member.invite_email = "nope"
 
         expect(member).not_to be_valid
       end
 
-      it "requires a unique invite email scoped to this source" do
+      it 'requires a unique invite email scoped to this source' do
         create(:project_member, source: member.source, invite_email: member.invite_email)
 
         expect(member).not_to be_valid
       end
     end
 
-    context "when an invite email is not provided" do
+    context 'when an invite email is not provided' do
       let(:member) { build(:project_member) }
 
-      it "requires a user" do
+      it 'requires a user' do
         member.user = nil
 
         expect(member).not_to be_valid
       end
 
-      it "is valid otherwise" do
+      it 'is valid otherwise' do
         expect(member).to be_valid
       end
     end
@@ -107,13 +107,13 @@ RSpec.describe Member do
       end
     end
 
-    context "when a child member inherits its access level" do
+    context 'when a child member inherits its access level' do
       let(:user) { create(:user) }
       let(:member) { create(:group_member, :developer, user: user) }
       let(:child_group) { create(:group, parent: member.group) }
       let(:child_member) { build(:group_member, group: child_group, user: user) }
 
-      it "requires a higher level" do
+      it 'requires a higher level' do
         child_member.access_level = GroupMember::REPORTER
 
         child_member.validate
@@ -123,7 +123,7 @@ RSpec.describe Member do
 
       # Membership in a subgroup confers certain access rights, such as being
       # able to merge or push code to protected branches.
-      it "is valid with an equal level" do
+      it 'is valid with an equal level' do
         child_member.access_level = GroupMember::DEVELOPER
 
         child_member.validate
@@ -131,7 +131,7 @@ RSpec.describe Member do
         expect(child_member).to be_valid
       end
 
-      it "is valid with a higher level" do
+      it 'is valid with a higher level' do
         child_member.access_level = GroupMember::MAINTAINER
 
         child_member.validate
@@ -538,7 +538,7 @@ RSpec.describe Member do
     end
   end
 
-  describe "Delegate methods" do
+  describe 'Delegate methods' do
     it { is_expected.to respond_to(:user_name) }
     it { is_expected.to respond_to(:user_email) }
   end
@@ -608,29 +608,29 @@ RSpec.describe Member do
     end
   end
 
-  describe "#accept_invite!" do
+  describe '#accept_invite!' do
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
     let(:user) { create(:user) }
 
-    it "resets the invite token" do
+    it 'resets the invite token' do
       member.accept_invite!(user)
 
       expect(member.invite_token).to be_nil
     end
 
-    it "sets the invite accepted timestamp" do
+    it 'sets the invite accepted timestamp' do
       member.accept_invite!(user)
 
       expect(member.invite_accepted_at).not_to be_nil
     end
 
-    it "sets the user" do
+    it 'sets the user' do
       member.accept_invite!(user)
 
       expect(member.user).to eq(user)
     end
 
-    it "calls #after_accept_invite" do
+    it 'calls #after_accept_invite' do
       expect(member).to receive(:after_accept_invite)
 
       member.accept_invite!(user)
@@ -657,26 +657,26 @@ RSpec.describe Member do
     end
   end
 
-  describe "#decline_invite!" do
+  describe '#decline_invite!' do
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
 
-    it "destroys the member" do
+    it 'destroys the member' do
       member.decline_invite!
 
       expect(member).to be_destroyed
     end
 
-    it "calls #after_decline_invite" do
+    it 'calls #after_decline_invite' do
       expect(member).to receive(:after_decline_invite)
 
       member.decline_invite!
     end
   end
 
-  describe "#generate_invite_token" do
+  describe '#generate_invite_token' do
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
 
-    it "sets the invite token" do
+    it 'sets the invite token' do
       expect { member.generate_invite_token }.to change { member.invite_token }
     end
   end
@@ -684,12 +684,12 @@ RSpec.describe Member do
   describe 'generate invite token on create' do
     let!(:member) { build(:project_member, invite_email: "user@example.com") }
 
-    it "sets the invite token" do
+    it 'sets the invite token' do
       expect { member.save! }.to change { member.invite_token }.to(kind_of(String))
     end
 
     context 'when invite was already accepted' do
-      it "does not set invite token" do
+      it 'does not set invite token' do
         member.invite_accepted_at = 1.day.ago
 
         expect { member.save! }.not_to change { member.invite_token }.from(nil)
@@ -744,7 +744,7 @@ RSpec.describe Member do
     end
   end
 
-  describe "#invite_to_unknown_user?" do
+  describe '#invite_to_unknown_user?' do
     subject { member.invite_to_unknown_user? }
 
     let(:member) { create(:project_member, invite_email: "user@example.com", invite_token: '1234', user: user) }
@@ -762,7 +762,7 @@ RSpec.describe Member do
     end
   end
 
-  describe "destroying a record", :delete do
+  describe 'destroying a record', :delete, :sidekiq_inline do
     it "refreshes user's authorized projects" do
       project = create(:project, :private)
       user    = create(:user)

@@ -41,6 +41,11 @@ export default {
       type: Object,
       required: true,
     },
+    hideLineNumbers: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     viewer() {
@@ -80,6 +85,7 @@ export default {
         :is-raw-content="isRawContent"
         :file-name="blob.name"
         :type="activeViewer.fileType"
+        :hide-line-numbers="hideLineNumbers"
         data-qa-selector="file_content"
       />
     </template>

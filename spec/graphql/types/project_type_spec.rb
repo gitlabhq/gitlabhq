@@ -187,7 +187,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       expect(analyzer['enabled']).to eq(true)
     end
 
-    context "with guest user" do
+    context 'with guest user' do
       before do
         project.add_guest(user)
       end
@@ -195,7 +195,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       context 'when project is private' do
         let(:project) { create(:project, :private, :repository) }
 
-        it "returns no configuration" do
+        it 'returns no configuration' do
           secure_analyzers_prefix = subject.dig('data', 'project', 'sastCiConfiguration')
           expect(secure_analyzers_prefix).to be_nil
         end
@@ -215,7 +215,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       end
     end
 
-    context "with non-member user" do
+    context 'with non-member user', :sidekiq_inline do
       before do
         project.team.truncate
       end
@@ -223,7 +223,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       context 'when project is private' do
         let(:project) { create(:project, :private, :repository) }
 
-        it "returns no configuration" do
+        it 'returns no configuration' do
           secure_analyzers_prefix = subject.dig('data', 'project', 'sastCiConfiguration')
           expect(secure_analyzers_prefix).to be_nil
         end
@@ -241,7 +241,7 @@ RSpec.describe GitlabSchema.types['Project'] do
         end
 
         context 'when repository is accessible only by team members' do
-          it "returns no configuration" do
+          it 'returns no configuration' do
             project.project_feature.update!(
               merge_requests_access_level: ProjectFeature::DISABLED,
               builds_access_level: ProjectFeature::DISABLED,

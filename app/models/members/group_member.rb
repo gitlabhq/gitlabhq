@@ -50,8 +50,10 @@ class GroupMember < Member
     { group: group }
   end
 
+  private
+
   override :refresh_member_authorized_projects
-  def refresh_member_authorized_projects
+  def refresh_member_authorized_projects(blocking:)
     # Here, `destroyed_by_association` will be present if the
     # GroupMember is being destroyed due to the `dependent: :destroy`
     # callback on Group. In this case, there is no need to refresh the
@@ -62,8 +64,6 @@ class GroupMember < Member
 
     super
   end
-
-  private
 
   def access_level_inclusion
     return if access_level.in?(Gitlab::Access.all_values)

@@ -3155,7 +3155,7 @@ RSpec.describe NotificationService, :mailer do
             notification.pipeline_finished(pipeline)
           end
 
-          it 'does not send emails' do
+          it 'does not send emails', :sidekiq_inline do
             should_not_email_anyone
           end
         end
