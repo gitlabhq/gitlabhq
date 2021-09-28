@@ -21,13 +21,15 @@ RSpec.describe 'Projects > Show > User uploads files' do
       wait_for_requests
     end
 
-    include_examples 'it uploads and commits a new text file'
+    [true, false].each do |value|
+      include_examples 'it uploads and commits a new text file', drop: value
 
-    include_examples 'it uploads and commits a new image file'
+      include_examples 'it uploads and commits a new image file', drop: value
 
-    include_examples 'it uploads and commits a new pdf file'
+      include_examples 'it uploads and commits a new pdf file', drop: value
 
-    include_examples 'it uploads a file to a sub-directory'
+      include_examples 'it uploads a file to a sub-directory', drop: value
+    end
   end
 
   context 'when a user does not have write access' do
@@ -37,7 +39,9 @@ RSpec.describe 'Projects > Show > User uploads files' do
       visit(project_path(project2))
     end
 
-    include_examples 'it uploads and commits a new file to a forked project'
+    [true, false].each do |value|
+      include_examples 'it uploads and commits a new file to a forked project', drop: value
+    end
   end
 
   context 'when in the empty_repo_upload experiment' do
@@ -50,13 +54,17 @@ RSpec.describe 'Projects > Show > User uploads files' do
     context 'with an empty repo' do
       let(:project) { create(:project, :empty_repo, creator: user) }
 
-      include_examples 'uploads and commits a new text file via "upload file" button'
+      [true, false].each do |value|
+        include_examples 'uploads and commits a new text file via "upload file" button', drop: value
+      end
     end
 
     context 'with a nonempty repo' do
       let(:project) { create(:project, :repository, creator: user) }
 
-      include_examples 'uploads and commits a new text file via "upload file" button'
+      [true, false].each do |value|
+        include_examples 'uploads and commits a new text file via "upload file" button', drop: value
+      end
     end
   end
 end

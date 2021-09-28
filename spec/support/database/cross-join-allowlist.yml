@@ -9,7 +9,6 @@
 - "./ee/spec/finders/ee/namespaces/projects_finder_spec.rb"
 - "./ee/spec/finders/security/findings_finder_spec.rb"
 - "./ee/spec/graphql/ee/resolvers/namespace_projects_resolver_spec.rb"
-- "./ee/spec/lib/analytics/devops_adoption/snapshot_calculator_spec.rb"
 - "./ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb"
 - "./ee/spec/lib/ee/gitlab/background_migration/migrate_security_scans_spec.rb"
 - "./ee/spec/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids_spec.rb"

@@ -191,6 +191,8 @@ The possible names are:
 - `throttle_authenticated_git_lfs`
 - `throttle_unauthenticated_files_api`
 - `throttle_authenticated_files_api`
+- `throttle_unauthenticated_deprecated_api`
+- `throttle_authenticated_deprecated_api`
 
 For example, to try out throttles for all authenticated requests to
 non-protected paths can be done by setting

@@ -93,7 +93,6 @@ module QA
         end
 
         view 'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue' do
-          element :apply_suggestions_batch_button
           element :add_suggestion_batch_button
         end
 
@@ -351,10 +350,6 @@ module QA
 
         def add_suggestion_to_batch
           all_elements(:add_suggestion_batch_button, minimum: 1).first.click
-        end
-
-        def apply_suggestions_batch
-          all_elements(:apply_suggestions_batch_button, minimum: 1).first.click
         end
 
         def cherry_pick!

@@ -787,7 +787,7 @@ module API
             use :pagination
             optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) impersonation_tokens'
           end
-          get feature_category :authentication_and_authorization do
+          get feature_category: :authentication_and_authorization do
             present paginate(finder(declared_params(include_missing: false)).execute), with: Entities::ImpersonationToken
           end
 

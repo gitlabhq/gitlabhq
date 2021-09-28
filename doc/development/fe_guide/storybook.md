@@ -33,7 +33,7 @@ Stories can be added for any Vue component in the `gitlab` repository.
 To add a story:
 
 1. Create a new `.stories.js` file in the same directory as the Vue component.
-   The file name should have the same prefix as the Vue component.
+   The filename should have the same prefix as the Vue component.
 
     ```txt
     vue_shared/

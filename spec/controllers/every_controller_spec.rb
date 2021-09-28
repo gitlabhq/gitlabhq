@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-
 RSpec.describe "Every controller" do
   context "feature categories" do
     let_it_be(:feature_categories) do
@@ -65,9 +64,6 @@ RSpec.describe "Every controller" do
   end
 
   def actions_defined_in_feature_category_config(controller)
-    controller.send(:class_attributes)[:feature_category_config]
-      .values
-      .flatten
-      .map(&:to_s)
+    controller.send(:class_attributes)[:endpoint_attributes_config].defined_actions
   end
 end

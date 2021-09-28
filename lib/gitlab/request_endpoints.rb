@@ -21,7 +21,7 @@ module Gitlab
           next if route_info[:controller].blank? || route_info[:action].blank?
 
           controller = constantize_controller(route_info[:controller])
-          next unless controller&.include?(::Gitlab::WithFeatureCategory)
+          next unless controller&.include?(::Gitlab::EndpointAttributes)
           next if controller == ApplicationController
           next if controller == Devise::UnlocksController
 

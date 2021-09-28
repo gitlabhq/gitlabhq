@@ -2,11 +2,15 @@
 
 module API
   class Base < Grape::API::Instance # rubocop:disable API/Base
-    include ::Gitlab::WithFeatureCategory
+    include ::Gitlab::EndpointAttributes
 
     class << self
       def feature_category_for_app(app)
         feature_category_for_action(path_for_app(app))
+      end
+
+      def target_duration_for_app(app)
+        target_duration_for_action(path_for_app(app))
       end
 
       def path_for_app(app)
@@ -18,8 +22,13 @@ module API
       end
 
       def route(methods, paths = ['/'], route_options = {}, &block)
+        actions = Array(paths).map { |path| normalize_path(namespace, path) }
         if category = route_options.delete(:feature_category)
-          feature_category(category, Array(paths).map { |path| normalize_path(namespace, path) })
+          feature_category(category, actions)
+        end
+
+        if target = route_options.delete(:target_duration)
+          target_duration(target, actions)
         end
 
         super

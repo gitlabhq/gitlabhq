@@ -720,7 +720,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `geo_longitude`            | **{dotted-circle}** | string    | An approximate longitude                                                                                                         |
 | `geo_region`               | **{dotted-circle}** | string    | Region of IP origin                                                                                                              |
 | `geo_region_name`          | **{dotted-circle}** | string    | Region of IP origin                                                                                                              |
-| `geo_timezone`             | **{dotted-circle}** | string    | Timezone of IP origin                                                                                                            |
+| `geo_timezone`             | **{dotted-circle}** | string    | Time zone of IP origin                                                                                                            |
 | `geo_zipcode`              | **{dotted-circle}** | string    | Zip (postal) code of IP origin                                                                                                   |
 | `ip_domain`                | **{dotted-circle}** | string    | Second level domain name associated with the visitor's IP address                                                                |
 | `ip_isp`                   | **{dotted-circle}** | string    | Visitor's ISP                                                                                                                    |
@@ -738,7 +738,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `os_family`                | **{dotted-circle}** | string    | Operating system family                                                                                                          |
 | `os_manufacturer`          | **{dotted-circle}** | string    | Manufacturers of operating system                                                                                                |
 | `os_name`                  | **{dotted-circle}** | string    | Name of operating system                                                                                                         |
-| `os_timezone`              | **{dotted-circle}** | string    | Client operating system timezone                                                                                                 |
+| `os_timezone`              | **{dotted-circle}** | string    | Client operating system time zone                                                                                                 |
 | `page_referrer`            | **{dotted-circle}** | string    | Referrer URL                                                                                                                     |
 | `page_title`               | **{dotted-circle}** | string    | Page title                                                                                                                       |
 | `page_url`                 | **{dotted-circle}** | string    | Page URL                                                                                                                         |

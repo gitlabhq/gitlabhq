@@ -6,7 +6,7 @@ RSpec.describe Gitlab::RequestEndpoints do
     it 'selects all feature API classes' do
       api_classes = described_class.all_api_endpoints.map { |route| route.app.options[:for] }
 
-      expect(api_classes).to all(include(Gitlab::WithFeatureCategory))
+      expect(api_classes).to all(include(Gitlab::EndpointAttributes))
     end
   end
 
@@ -16,7 +16,7 @@ RSpec.describe Gitlab::RequestEndpoints do
       controller_classes = all_controller_actions.map(&:first)
       all_actions = all_controller_actions.map(&:last)
 
-      expect(controller_classes).to all(include(Gitlab::WithFeatureCategory))
+      expect(controller_classes).to all(include(Gitlab::EndpointAttributes))
       expect(controller_classes).not_to include(ApplicationController, Devise::UnlocksController)
       expect(all_actions).to all(be_a(String))
     end

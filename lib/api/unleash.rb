@@ -30,7 +30,7 @@ module API
           end
 
           desc 'Get a list of features'
-          get 'client/features' do
+          get 'client/features', target_duration: :fast do
             present :version, 1
             present :features, feature_flags, with: ::API::Entities::UnleashFeature
           end

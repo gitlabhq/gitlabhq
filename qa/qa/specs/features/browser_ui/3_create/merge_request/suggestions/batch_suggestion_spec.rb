@@ -50,7 +50,7 @@ module QA
         Page::MergeRequest::Show.perform do |merge_request|
           merge_request.click_diffs_tab
           4.times { merge_request.add_suggestion_to_batch }
-          merge_request.apply_suggestions_batch
+          merge_request.apply_suggestion_with_message("Custom commit message")
 
           expect(merge_request).to have_css('.badge-success', text: "Applied", count: 4)
         end

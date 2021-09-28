@@ -79,7 +79,7 @@ module Gitlab
           if !health_endpoint && ::Gitlab::Metrics.record_duration_for_status?(status)
             self.class.http_request_duration_seconds.observe({ method: method }, elapsed)
 
-            record_apdex_if_needed(elapsed)
+            record_apdex_if_needed(env, elapsed)
           end
 
           [status, headers, body]
@@ -113,14 +113,12 @@ module Gitlab
         ::Gitlab::ApplicationContext.current_context_attribute(:caller_id)
       end
 
-      def record_apdex_if_needed(elapsed)
+      def record_apdex_if_needed(env, elapsed)
         return unless Gitlab::Metrics::RailsSlis.request_apdex_counters_enabled?
 
         Gitlab::Metrics::RailsSlis.request_apdex.increment(
           labels: labels_from_context,
-          # hardcoded 1s here will be replaced by a per-endpoint value.
-          # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1223
-          success: elapsed < 1
+          success: satisfactory?(env, elapsed)
         )
       end
 
@@ -129,6 +127,19 @@ module Gitlab
           feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT,
           endpoint_id: endpoint_id.presence || ENDPOINT_MISSING
         }
+      end
+
+      def satisfactory?(env, elapsed)
+        target =
+          if env['api.endpoint'].present?
+            env['api.endpoint'].options[:for].try(:target_duration_for_app, env['api.endpoint'])
+          elsif env['action_controller.instance'].present? && env['action_controller.instance'].respond_to?(:target_duration)
+            env['action_controller.instance'].target_duration
+          end
+
+        target ||= Gitlab::EndpointAttributes::DEFAULT_TARGET_DURATION
+
+        elapsed < target.duration
       end
     end
   end

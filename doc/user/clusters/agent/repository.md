@@ -173,8 +173,8 @@ An Agent can only authorize groups in the same group hierarchy as the Agent's co
 
 To authorize a group:
 
-1. Edit your `.config.yaml` file under the `.gitlab/agents/<agent name>` directory.
-1. Add the `ci_access` attribute.
+1. Edit your `config.yaml` file under the `.gitlab/agents/<agent name>` directory.
+1. Add the `ci_access` root attribute.
 1. Add the `groups` attribute into `ci_access`.
 1. Add the group `id` into `groups`, identifying the authorized group through its path.
 

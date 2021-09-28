@@ -4110,6 +4110,11 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
+msgid "Apply %d suggestion"
+msgid_plural "Apply %d suggestions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Apply a label"
 msgstr ""
 
@@ -4117,9 +4122,6 @@ msgid "Apply a template"
 msgstr ""
 
 msgid "Apply suggestion"
-msgstr ""
-
-msgid "Apply suggestions"
 msgstr ""
 
 msgid "Apply template"
@@ -8608,6 +8610,9 @@ msgstr ""
 msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
 msgstr ""
 
+msgid "Configure specific limits for deprecated API requests that supersede the general user and IP rate limits."
+msgstr ""
+
 msgid "Configure the %{link} integration."
 msgstr ""
 
@@ -11416,6 +11421,9 @@ msgid "Deployment|skipped"
 msgstr ""
 
 msgid "Deployment|success"
+msgstr ""
+
+msgid "Deprecated API rate limits"
 msgstr ""
 
 msgid "Deprioritize label"
@@ -18215,6 +18223,9 @@ msgstr ""
 msgid "Integrations|Create new issue in Jira"
 msgstr ""
 
+msgid "Integrations|Create new issue in ZenTao"
+msgstr ""
+
 msgid "Integrations|Default settings are inherited from the group level."
 msgstr ""
 
@@ -18308,6 +18319,9 @@ msgstr ""
 msgid "Integrations|Search Jira issues"
 msgstr ""
 
+msgid "Integrations|Search ZenTao issues"
+msgstr ""
+
 msgid "Integrations|Send notifications about project events to Unify Circuit."
 msgstr ""
 
@@ -18351,6 +18365,9 @@ msgid "Integrations|You should now see GitLab.com activity inside your Jira Clou
 msgstr ""
 
 msgid "Integrations|You've activated every integration 🎉"
+msgstr ""
+
+msgid "Integrations|ZenTao issues display here when you create issues in your project in ZenTao."
 msgstr ""
 
 msgid "Interactive mode"
@@ -38133,6 +38150,9 @@ msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{
 msgstr ""
 
 msgid "When:"
+msgstr ""
+
+msgid "Which API requests are affected?"
 msgstr ""
 
 msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."

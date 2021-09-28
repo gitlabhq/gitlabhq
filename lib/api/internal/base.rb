@@ -164,7 +164,7 @@ module API
         #
         # Check whether an SSH key is known to GitLab
         #
-        get '/authorized_keys', feature_category: :source_code_management do
+        get '/authorized_keys', feature_category: :source_code_management, target_duration: :very_fast do
           fingerprint = Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint_sha256
 
           key = Key.find_by_fingerprint_sha256(fingerprint)

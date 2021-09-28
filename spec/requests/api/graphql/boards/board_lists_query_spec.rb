@@ -92,9 +92,9 @@ RSpec.describe 'get board lists' do
 
           context 'when ascending' do
             it_behaves_like 'sorted paginated query' do
-              let(:sort_param)       { }
-              let(:first_param)      { 2 }
-              let(:expected_results) { lists.map { |list| global_id_of(list) } }
+              let(:sort_param) { }
+              let(:first_param) { 2 }
+              let(:all_records) { lists.map { |list| global_id_of(list) } }
             end
           end
         end

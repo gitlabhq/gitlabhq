@@ -1,6 +1,67 @@
 # frozen_string_literal: true
 
 module TabHelper
+  # Navigation tabs helper
+
+  # Create a <gl-tabs> container
+  #
+  # Returns a `ul` element with classes that correspond to
+  # the <gl-tabs/> component. Can be populated by
+  # gl_tab_link_to elements.
+  #
+  # See more at: https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-tabs-tab--default
+  def gl_tabs_nav(html_options = {}, &block)
+    gl_tabs_classes = %w[nav gl-tabs-nav]
+
+    html_options = html_options.merge(
+      class: [*html_options[:class], gl_tabs_classes].join(' '),
+      role: 'tablist'
+    )
+
+    content = capture(&block) if block_given?
+    content_tag(:ul, content, html_options)
+  end
+
+  # Create a <gl-tab> link
+  #
+  # When a tab is active it gets highlighted to indicate this is currently viewed tab.
+  # Internally `current_page?` is called to determine if this is the current tab.
+  #
+  # Usage is the same as "link_to", with the following additional options:
+  #
+  # html_options - The html_options hash (default: {})
+  #   :item_active - Overrides the default state focing the "active" css classes (optional).
+  #
+  def gl_tab_link_to(name = nil, options = {}, html_options = {}, &block)
+    tab_class = 'nav-item'
+    link_classes = %w[nav-link gl-tab-nav-item]
+    active_link_classes = %w[active gl-tab-nav-item-active gl-tab-nav-item-active-indigo]
+
+    if block_given?
+      # Shift params to skip the omitted "name" param
+      html_options = options
+      options = name
+    end
+
+    html_options = html_options.merge(
+      class: [*html_options[:class], link_classes].join(' ')
+    )
+
+    if gl_tab_link_to_active?(options, html_options)
+      html_options[:class] = [*html_options[:class], active_link_classes].join(' ')
+    end
+
+    html_options = html_options.except(:item_active)
+
+    content_tag(:li, class: tab_class, role: 'presentation') do
+      if block_given?
+        link_to(options, html_options, &block)
+      else
+        link_to(name, options, html_options)
+      end
+    end
+  end
+
   # Navigation link helper
   #
   # Returns an `li` element with an 'active' class if the supplied
@@ -147,5 +208,13 @@ module TabHelper
     else
       current_controller?(*controller) || current_action?(*action)
     end
+  end
+
+  def gl_tab_link_to_active?(options, html_options)
+    if html_options.has_key?(:item_active)
+      return html_options[:item_active]
+    end
+
+    current_page?(options)
   end
 end

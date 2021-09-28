@@ -106,10 +106,10 @@ RSpec.describe 'getting projects' do
 
     context 'when sorting by similarity' do
       it_behaves_like 'sorted paginated query' do
-        let(:node_path)        { %w[name] }
-        let(:sort_param)       { :SIMILARITY }
-        let(:first_param)      { 2 }
-        let(:expected_results) { [project_3.name, project_2.name, project_4.name] }
+        let(:node_path) { %w[name] }
+        let(:sort_param) { :SIMILARITY }
+        let(:first_param) { 2 }
+        let(:all_records) { [project_3.name, project_2.name, project_4.name] }
       end
     end
   end

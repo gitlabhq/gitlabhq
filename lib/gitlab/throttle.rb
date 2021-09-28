@@ -7,7 +7,7 @@ module Gitlab
     # Each of these settings follows the same pattern of specifying separate
     # authenticated and unauthenticated rates via settings. New throttles should
     # ideally be regular as well.
-    REGULAR_THROTTLES = [:api, :packages_api, :files_api].freeze
+    REGULAR_THROTTLES = [:api, :packages_api, :files_api, :deprecated_api].freeze
 
     def self.settings
       Gitlab::CurrentSettings.current_application_settings

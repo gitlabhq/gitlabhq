@@ -646,6 +646,13 @@ RSpec.describe 'Admin updates settings' do
 
         include_examples 'regular throttle rate limit settings'
       end
+
+      context 'Deprecated API rate limits' do
+        let(:selector) { 'as-deprecated-limits' }
+        let(:fragment) { :deprecated_api }
+
+        include_examples 'regular throttle rate limit settings'
+      end
     end
 
     context 'Preferences page' do

@@ -283,3 +283,14 @@ export const suggestionsCount = (state, getters) =>
 
 export const hasDrafts = (state, getters, rootState, rootGetters) =>
   Boolean(rootGetters['batchComments/hasDrafts']);
+
+export const getSuggestionsFilePaths = (state) => () =>
+  state.batchSuggestionsInfo.reduce((acc, suggestion) => {
+    const discussion = state.discussions.find((d) => d.id === suggestion.discussionId);
+
+    if (acc.indexOf(discussion?.diff_file?.file_path) === -1) {
+      acc.push(discussion.diff_file.file_path);
+    }
+
+    return acc;
+  }, []);

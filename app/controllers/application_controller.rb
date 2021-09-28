@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   include Impersonation
   include Gitlab::Logging::CloudflareHelper
   include Gitlab::Utils::StrongMemoize
-  include ::Gitlab::WithFeatureCategory
+  include ::Gitlab::EndpointAttributes
   include FlocOptOut
 
   before_action :authenticate_user!, except: [:route_not_found]
@@ -133,6 +133,14 @@ class ApplicationController < ActionController::Base
         response.headers['X-GitLab-Custom-Error'] = '1'
       end
     end
+  end
+
+  def feature_category
+    self.class.feature_category_for_action(action_name).to_s
+  end
+
+  def target_duration
+    self.class.target_duration_for_action(action_name)
   end
 
   protected
@@ -545,10 +553,6 @@ class ApplicationController < ActionController::Base
   # `auth_user` again would also trigger the Warden callbacks again
   def context_user
     auth_user if strong_memoized?(:auth_user)
-  end
-
-  def feature_category
-    self.class.feature_category_for_action(action_name).to_s
   end
 
   def required_signup_info

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'it uploads and commits a new text file' do
+RSpec.shared_examples 'it uploads and commits a new text file' do |drop: false|
   it 'uploads and commits a new text file', :js do
     find('.add-to-tree').click
 
@@ -10,7 +10,11 @@ RSpec.shared_examples 'it uploads and commits a new text file' do
       wait_for_requests
     end
 
-    attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+    if drop
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+    else
+      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+    end
 
     page.within('#modal-upload-blob') do
       fill_in(:commit_message, with: 'New commit message')
@@ -32,7 +36,7 @@ RSpec.shared_examples 'it uploads and commits a new text file' do
   end
 end
 
-RSpec.shared_examples 'it uploads and commits a new image file' do
+RSpec.shared_examples 'it uploads and commits a new image file' do |drop: false|
   it 'uploads and commits a new image file', :js do
     find('.add-to-tree').click
 
@@ -42,7 +46,11 @@ RSpec.shared_examples 'it uploads and commits a new image file' do
       wait_for_requests
     end
 
-    attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg'), make_visible: true)
+    if drop
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg'))
+    else
+      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg'), make_visible: true)
+    end
 
     page.within('#modal-upload-blob') do
       fill_in(:commit_message, with: 'New commit message')
@@ -58,7 +66,7 @@ RSpec.shared_examples 'it uploads and commits a new image file' do
   end
 end
 
-RSpec.shared_examples 'it uploads and commits a new pdf file' do
+RSpec.shared_examples 'it uploads and commits a new pdf file' do |drop: false|
   it 'uploads and commits a new pdf file', :js do
     find('.add-to-tree').click
 
@@ -68,7 +76,11 @@ RSpec.shared_examples 'it uploads and commits a new pdf file' do
       wait_for_requests
     end
 
-    attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'git-cheat-sheet.pdf'), make_visible: true)
+    if drop
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'git-cheat-sheet.pdf'))
+    else
+      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'git-cheat-sheet.pdf'), make_visible: true)
+    end
 
     page.within('#modal-upload-blob') do
       fill_in(:commit_message, with: 'New commit message')
@@ -84,7 +96,7 @@ RSpec.shared_examples 'it uploads and commits a new pdf file' do
   end
 end
 
-RSpec.shared_examples 'it uploads and commits a new file to a forked project' do
+RSpec.shared_examples 'it uploads and commits a new file to a forked project' do |drop: false|
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
@@ -100,7 +112,12 @@ RSpec.shared_examples 'it uploads and commits a new file to a forked project' do
 
     find('.add-to-tree').click
     click_link('Upload file')
-    attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+
+    if drop
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+    else
+      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+    end
 
     page.within('#modal-upload-blob') do
       fill_in(:commit_message, with: 'New commit message')
@@ -123,7 +140,7 @@ RSpec.shared_examples 'it uploads and commits a new file to a forked project' do
   end
 end
 
-RSpec.shared_examples 'it uploads a file to a sub-directory' do
+RSpec.shared_examples 'it uploads a file to a sub-directory' do |drop: false|
   it 'uploads a file to a sub-directory', :js do
     click_link 'files'
 
@@ -133,7 +150,12 @@ RSpec.shared_examples 'it uploads a file to a sub-directory' do
 
     find('.add-to-tree').click
     click_link('Upload file')
-    attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+
+    if drop
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+    else
+      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+    end
 
     page.within('#modal-upload-blob') do
       fill_in(:commit_message, with: 'New commit message')
@@ -150,11 +172,15 @@ RSpec.shared_examples 'it uploads a file to a sub-directory' do
   end
 end
 
-RSpec.shared_examples 'uploads and commits a new text file via "upload file" button' do
+RSpec.shared_examples 'uploads and commits a new text file via "upload file" button' do |drop: false|
   it 'uploads and commits a new text file via "upload file" button', :js do
     find('[data-testid="upload-file-button"]').click
 
-    attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+    if drop
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+    else
+      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+    end
 
     page.within('#details-modal-upload-blob') do
       fill_in(:commit_message, with: 'New commit message')

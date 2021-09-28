@@ -322,17 +322,17 @@ RSpec.describe 'Query.project(fullPath).releases()' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :RELEASED_AT_ASC }
-          let(:first_param)      { 2 }
-          let(:expected_results) { [release1.tag, release2.tag, release3.tag, release4.tag, release5.tag] }
+          let(:sort_param) { :RELEASED_AT_ASC }
+          let(:first_param) { 2 }
+          let(:all_records) { [release1.tag, release2.tag, release3.tag, release4.tag, release5.tag] }
         end
       end
 
       context 'when descending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :RELEASED_AT_DESC }
-          let(:first_param)      { 2 }
-          let(:expected_results) { [release5.tag, release4.tag, release3.tag, release2.tag, release1.tag] }
+          let(:sort_param) { :RELEASED_AT_DESC }
+          let(:first_param) { 2 }
+          let(:all_records) { [release5.tag, release4.tag, release3.tag, release2.tag, release1.tag] }
         end
       end
     end
@@ -346,17 +346,17 @@ RSpec.describe 'Query.project(fullPath).releases()' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :CREATED_ASC }
-          let(:first_param)      { 2 }
-          let(:expected_results) { [release1.tag, release2.tag, release3.tag, release4.tag, release5.tag] }
+          let(:sort_param) { :CREATED_ASC }
+          let(:first_param) { 2 }
+          let(:all_records) { [release1.tag, release2.tag, release3.tag, release4.tag, release5.tag] }
         end
       end
 
       context 'when descending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :CREATED_DESC }
-          let(:first_param)      { 2 }
-          let(:expected_results) { [release5.tag, release4.tag, release3.tag, release2.tag, release1.tag] }
+          let(:sort_param) { :CREATED_DESC }
+          let(:first_param) { 2 }
+          let(:all_records) { [release5.tag, release4.tag, release3.tag, release2.tag, release1.tag] }
         end
       end
     end

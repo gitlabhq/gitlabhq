@@ -102,6 +102,15 @@ This setting limits the request rate on the Packages API per user or IP address.
 
 - **Default rate limit**: Disabled by default.
 
+### Deprecated API endpoints
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
+
+This setting limits the request rate on deprecated API endpoints per user or IP address. For more information, read
+[Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md).
+
+- **Default rate limit**: Disabled by default.
+
 ### Import/Export
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35728) in GitLab 13.2.

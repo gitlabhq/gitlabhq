@@ -479,6 +479,8 @@ class ApplicationSetting < ApplicationRecord
     validates :throttle_unauthenticated_packages_api_period_in_seconds
     validates :throttle_unauthenticated_files_api_requests_per_period
     validates :throttle_unauthenticated_files_api_period_in_seconds
+    validates :throttle_unauthenticated_deprecated_api_requests_per_period
+    validates :throttle_unauthenticated_deprecated_api_period_in_seconds
     validates :throttle_authenticated_api_requests_per_period
     validates :throttle_authenticated_api_period_in_seconds
     validates :throttle_authenticated_git_lfs_requests_per_period
@@ -489,6 +491,8 @@ class ApplicationSetting < ApplicationRecord
     validates :throttle_authenticated_packages_api_period_in_seconds
     validates :throttle_authenticated_files_api_requests_per_period
     validates :throttle_authenticated_files_api_period_in_seconds
+    validates :throttle_authenticated_deprecated_api_requests_per_period
+    validates :throttle_authenticated_deprecated_api_period_in_seconds
     validates :throttle_protected_paths_requests_per_period
     validates :throttle_protected_paths_period_in_seconds
   end

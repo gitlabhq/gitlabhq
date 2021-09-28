@@ -51,7 +51,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getDiscussion', 'suggestionsCount']),
+    ...mapGetters(['getDiscussion', 'suggestionsCount', 'getSuggestionsFilePaths']),
     ...mapGetters('diffs', ['suggestionCommitMessage']),
     discussion() {
       if (!this.note.isDraft) return {};
@@ -74,9 +74,10 @@ export default {
       // Please see this issue comment for why these
       //  are hard-coded to 1:
       //  https://gitlab.com/gitlab-org/gitlab/-/issues/291027#note_468308022
-      const suggestionsCount = 1;
-      const filesCount = 1;
-      const filePaths = this.file ? [this.file.file_path] : [];
+      const suggestionsCount = this.batchSuggestionsInfo.length || 1;
+      const batchFilePaths = this.getSuggestionsFilePaths();
+      const filePaths = batchFilePaths.length ? batchFilePaths : [this.file.file_path];
+      const filesCount = filePaths.length;
       const suggestion = this.suggestionCommitMessage({
         file_paths: filePaths.join(', '),
         suggestions_count: suggestionsCount,
@@ -131,8 +132,8 @@ export default {
         message,
       }).then(callback);
     },
-    applySuggestionBatch({ flashContainer }) {
-      return this.submitSuggestionBatch({ flashContainer });
+    applySuggestionBatch({ message, flashContainer }) {
+      return this.submitSuggestionBatch({ message, flashContainer });
     },
     addSuggestionToBatch(suggestionId) {
       const { discussion_id: discussionId, id: noteId } = this.note;

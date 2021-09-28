@@ -77,7 +77,7 @@ describe('Suggestion Diff component', () => {
   it.each`
     event                | childArgs         | args
     ${'apply'}           | ${['test-event']} | ${[{ callback: 'test-event', suggestionId }]}
-    ${'applyBatch'}      | ${[]}             | ${[]}
+    ${'applyBatch'}      | ${['test-event']} | ${['test-event']}
     ${'addToBatch'}      | ${[]}             | ${[suggestionId]}
     ${'removeFromBatch'} | ${[]}             | ${[suggestionId]}
   `('emits $event event on sugestion diff header $event', ({ event, childArgs, args }) => {

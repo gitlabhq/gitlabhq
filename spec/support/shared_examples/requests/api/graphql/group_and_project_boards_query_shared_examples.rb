@@ -62,9 +62,10 @@ RSpec.shared_examples 'group and project boards query' do
 
         context 'when ascending' do
           it_behaves_like 'sorted paginated query' do
-            let(:sort_param)       { }
-            let(:first_param)      { 2 }
-            let(:expected_results) do
+            let(:sort_param) { }
+            let(:first_param) { 2 }
+
+            let(:all_records) do
               if board_parent.multiple_issue_boards_available?
                 boards.map { |board| global_id_of(board) }
               else

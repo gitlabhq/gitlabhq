@@ -1,5 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton } from '@gitlab/ui';
+import { __, n__ } from '~/locale';
 
 export default {
   components: { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton },
@@ -13,11 +14,25 @@ export default {
       type: String,
       required: true,
     },
+    batchSuggestionsCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
       message: null,
     };
+  },
+  computed: {
+    dropdownText() {
+      if (this.batchSuggestionsCount <= 1) {
+        return __('Apply suggestion');
+      }
+
+      return n__('Apply %d suggestion', 'Apply %d suggestions', this.batchSuggestionsCount);
+    },
   },
   methods: {
     onApply() {
@@ -29,10 +44,11 @@ export default {
 
 <template>
   <gl-dropdown
-    :text="__('Apply suggestion')"
+    :text="dropdownText"
     :disabled="disabled"
     boundary="window"
     right
+    lazy
     menu-class="gl-w-full!"
     data-qa-selector="apply_suggestion_dropdown"
     @shown="$refs.commitMessage.$el.focus()"

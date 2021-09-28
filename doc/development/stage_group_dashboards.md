@@ -120,7 +120,7 @@ Inside a stage group dashboard, there are some notable components. Let's take th
 
 ![Default time filter](img/stage_group_dashboards_time_filter.png)
 
-- By default, all the times are in UTC timezone. [We use UTC when communicating in Engineering](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+- By default, all the times are in UTC time zone. [We use UTC when communicating in Engineering](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 - All metrics recorded in the GitLab production system have [1-year retention](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus/-/blob/31526b03fef823e2f9b3cda7c75dcd28a12418a3/attributes/prometheus.rb#L40).
 - Alternatively, you can zoom in or filter the time range directly on a graph. See the [Grafana Time Range Controls](https://grafana.com/docs/grafana/latest/dashboards/time-range-controls/) documentation for more information.
 

@@ -33,16 +33,11 @@
         - if can_force_email_confirmation?(@user)
           %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: confirm_user_data(@user) }
             = _('Confirm user')
-%ul.nav-links.nav.nav-tabs
-  = nav_link(path: 'users#show') do
-    = link_to _("Account"), admin_user_path(@user)
-  = nav_link(path: 'users#projects') do
-    = link_to _("Groups and projects"), projects_admin_user_path(@user)
-  = nav_link(path: 'users#keys') do
-    = link_to _("SSH keys"), keys_admin_user_path(@user)
-  = nav_link(controller: :identities) do
-    = link_to _("Identities"), admin_user_identities_path(@user)
+= gl_tabs_nav do
+  = gl_tab_link_to _("Account"), admin_user_path(@user)
+  = gl_tab_link_to _("Groups and projects"), projects_admin_user_path(@user)
+  = gl_tab_link_to _("SSH keys"), keys_admin_user_path(@user)
+  = gl_tab_link_to _("Identities"), admin_user_identities_path(@user)
   - if impersonation_enabled?
-    = nav_link(controller: :impersonation_tokens) do
-      = link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user)
+    = gl_tab_link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user)
 .gl-mb-3

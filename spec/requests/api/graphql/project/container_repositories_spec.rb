@@ -190,7 +190,7 @@ RSpec.describe 'getting container repositories in a project' do
         it_behaves_like 'sorted paginated query' do
           let(:sort_param) { :NAME_ASC }
           let(:first_param) { 2 }
-          let(:expected_results) { [container_repository2.name, container_repository1.name, container_repository4.name, container_repository3.name, container_repository5.name] }
+          let(:all_records) { [container_repository2.name, container_repository1.name, container_repository4.name, container_repository3.name, container_repository5.name] }
         end
       end
 
@@ -198,7 +198,7 @@ RSpec.describe 'getting container repositories in a project' do
         it_behaves_like 'sorted paginated query' do
           let(:sort_param) { :NAME_DESC }
           let(:first_param) { 2 }
-          let(:expected_results) { [container_repository5.name, container_repository3.name, container_repository4.name, container_repository1.name, container_repository2.name] }
+          let(:all_records) { [container_repository5.name, container_repository3.name, container_repository4.name, container_repository1.name, container_repository2.name] }
         end
       end
     end

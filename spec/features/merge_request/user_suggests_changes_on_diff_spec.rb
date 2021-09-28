@@ -159,7 +159,12 @@ RSpec.describe 'User comments on a diff', :js do
           wait_for_requests
 
           expect(page).to have_content('Remove from batch')
-          expect(page).to have_content("Apply suggestions #{index + 1}")
+
+          if index < 1
+            expect(page).to have_content("Apply suggestion")
+          else
+            expect(page).to have_content("Apply #{index + 1} suggestions")
+          end
         end
       end
 
@@ -167,13 +172,12 @@ RSpec.describe 'User comments on a diff', :js do
         click_button('Remove from batch')
         wait_for_requests
 
-        expect(page).to have_content('Apply suggestion')
         expect(page).to have_content('Add suggestion to batch')
       end
 
       page.within("[id='#{files[1][:hash]}']") do
         expect(page).to have_content('Remove from batch')
-        expect(page).to have_content('Apply suggestions 1')
+        expect(page).to have_content('Apply suggestion')
       end
     end
 
