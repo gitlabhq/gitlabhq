@@ -41,13 +41,15 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       let!(:pending_state) { create(:ci_build_pending_state, build: build) }
 
       it 'deletes build related records' do
-        expect { destroy_project(project, user, {}) }.to change { Ci::Build.count }.by(-1)
+        expect { destroy_project(project, user, {}) }
+          .to  change { Ci::Build.count }.by(-1)
           .and change { Ci::BuildTraceChunk.count }.by(-1)
           .and change { Ci::JobArtifact.count }.by(-2)
           .and change { Ci::JobVariable.count }.by(-1)
           .and change { Ci::BuildPendingState.count }.by(-1)
           .and change { Ci::BuildReportResult.count }.by(-1)
           .and change { Ci::BuildRunnerSession.count }.by(-1)
+          .and change { Ci::Pipeline.count }.by(-1)
       end
 
       it 'avoids N+1 queries', skip: 'skipped until fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/24644' do

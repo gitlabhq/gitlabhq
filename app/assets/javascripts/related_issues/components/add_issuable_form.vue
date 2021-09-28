@@ -74,6 +74,16 @@ export default {
       required: false,
       default: false,
     },
+    autoCompleteEpics: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    autoCompleteIssues: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -177,7 +187,7 @@ export default {
       :path-id-separator="pathIdSeparator"
       :input-value="inputValue"
       :auto-complete-sources="transformedAutocompleteSources"
-      :auto-complete-options="{ issues: true, epics: true }"
+      :auto-complete-options="{ issues: autoCompleteIssues, epics: autoCompleteEpics }"
       :issuable-type="issuableType"
       @pendingIssuableRemoveRequest="onPendingIssuableRemoveRequest"
       @formCancel="onFormCancel"
