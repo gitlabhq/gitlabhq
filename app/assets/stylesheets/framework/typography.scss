@@ -160,8 +160,6 @@
   }
 
   table:not(.code) {
-    @extend .table;
-    @extend .table-bordered;
     margin: 16px 0;
     color: $gl-text-color;
     border: 0;
@@ -172,9 +170,11 @@
     tbody {
       background-color: $white;
 
-      td {
-        border-color: $gray-100;
-      }
+    }
+
+    td,
+    th {
+      border: 1px solid $border-color;
     }
 
     tr {

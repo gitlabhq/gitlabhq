@@ -49,6 +49,7 @@ exceptions:
   - ECS
   - EFS
   - EKS
+  - ELB
   - EOL
   - EXIF
   - FAQ
@@ -98,6 +99,7 @@ exceptions:
   - LESS
   - LFS
   - LRU
+  - LTM
   - LTS
   - MIME
   - MIT
@@ -119,6 +121,7 @@ exceptions:
   - PEM
   - PEP
   - PGP
+  - PID
   - PKCS
   - PHP
   - PNG
@@ -129,6 +132,7 @@ exceptions:
   - RAM
   - RBAC
   - RDP
+  - RDS
   - REST
   - RFC
   - RHEL
@@ -140,6 +144,7 @@ exceptions:
   - RVM
   - SAAS
   - SAML
+  - SAN
   - SAST
   - SATA
   - SCIM
@@ -173,6 +178,7 @@ exceptions:
   - TODO
   - TOML
   - TTL
+  - UID
   - UDP
   - UID
   - UNIX

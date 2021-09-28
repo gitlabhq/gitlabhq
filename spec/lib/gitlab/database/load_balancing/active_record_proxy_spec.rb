@@ -16,5 +16,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::ActiveRecordProxy do
 
       expect(dummy.new.connection).to eq(proxy)
     end
+
+    it 'returns a connection when no proxy is present' do
+      allow(Gitlab::Database::LoadBalancing).to receive(:proxy).and_return(nil)
+
+      expect(ActiveRecord::Base.connection)
+        .to eq(ActiveRecord::Base.retrieve_connection)
+    end
   end
 end

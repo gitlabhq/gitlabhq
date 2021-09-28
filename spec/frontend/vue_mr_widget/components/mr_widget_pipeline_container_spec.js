@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import ArtifactsApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
 import DeploymentList from '~/vue_merge_request_widget/components/deployment/deployment_list.vue';
@@ -12,12 +13,14 @@ describe('MrWidgetPipelineContainer', () => {
   let mock;
 
   const factory = (props = {}) => {
-    wrapper = mount(MrWidgetPipelineContainer, {
-      propsData: {
-        mr: { ...mockStore },
-        ...props,
-      },
-    });
+    wrapper = extendedWrapper(
+      mount(MrWidgetPipelineContainer, {
+        propsData: {
+          mr: { ...mockStore },
+          ...props,
+        },
+      }),
+    );
   };
 
   beforeEach(() => {
@@ -30,6 +33,7 @@ describe('MrWidgetPipelineContainer', () => {
   });
 
   const findDeploymentList = () => wrapper.findComponent(DeploymentList);
+  const findCIErrorMessage = () => wrapper.findByTestId('ci-error-message');
 
   describe('when pre merge', () => {
     beforeEach(() => {
@@ -69,15 +73,21 @@ describe('MrWidgetPipelineContainer', () => {
     beforeEach(() => {
       factory({
         isPostMerge: true,
+        mr: {
+          ...mockStore,
+          pipeline: {},
+          ciStatus: undefined,
+        },
       });
     });
 
     it('renders pipeline', () => {
       expect(wrapper.find(MrWidgetPipeline).exists()).toBe(true);
+      expect(findCIErrorMessage().exists()).toBe(false);
       expect(wrapper.find(MrWidgetPipeline).props()).toMatchObject({
         pipeline: mockStore.mergePipeline,
         pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
-        ciStatus: mockStore.ciStatus,
+        ciStatus: mockStore.mergePipeline.details.status.text,
         hasCi: mockStore.hasCI,
         sourceBranch: mockStore.targetBranch,
         sourceBranchLink: mockStore.targetBranch,
@@ -92,7 +102,6 @@ describe('MrWidgetPipelineContainer', () => {
           targetBranch: 'Foo<script>alert("XSS")</script>',
         },
       });
-
       expect(wrapper.find(MrWidgetPipeline).props().sourceBranchLink).toBe('Foo');
     });
 

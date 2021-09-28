@@ -847,7 +847,7 @@ Investigate further if:
 - `reply_time` is not current.
 
 The `lsn` fields relate to which write-ahead-log segments have been replicated.
-Run the following on the leader to find out the current LSN:
+Run the following on the leader to find out the current Log Sequence Number (LSN):
 
 ```shell
 echo 'SELECT pg_current_wal_lsn();' | gitlab-psql
@@ -1248,7 +1248,7 @@ To fix the problem, ensure the loopback interface is included in the CIDR addres
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Check that [all the replicas are synchronized](#check-replication-status)
 
-### Errors in Patroni logs: the requested start point is ahead of the WAL flush position
+### Errors in Patroni logs: the requested start point is ahead of the Write Ahead Log (WAL) flush position
 
 This error indicates that the database is not replicating:
 

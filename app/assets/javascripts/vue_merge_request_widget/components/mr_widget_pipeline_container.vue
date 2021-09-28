@@ -88,6 +88,9 @@ export default {
 
       return this.mr.preferredAutoMergeStrategy;
     },
+    ciStatus() {
+      return this.isPostMerge ? this.mr?.mergePipeline?.details?.status?.text : this.mr.ciStatus;
+    },
   },
 };
 </script>
@@ -97,7 +100,7 @@ export default {
       :pipeline="pipeline"
       :pipeline-coverage-delta="mr.pipelineCoverageDelta"
       :builds-with-coverage="mr.buildsWithCoverage"
-      :ci-status="mr.ciStatus"
+      :ci-status="ciStatus"
       :has-ci="mr.hasCI"
       :pipeline-must-succeed="mr.onlyAllowMergeIfPipelineSucceeds"
       :source-branch="branch"

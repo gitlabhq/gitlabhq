@@ -23,6 +23,7 @@ table {
     @include gl-text-gray-500;
   }
 
+  .md &:not(.code),
   &.table {
     margin-bottom: $gl-padding;
 
