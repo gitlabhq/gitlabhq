@@ -1,3 +1,4 @@
+import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 import { fetchDiffData } from '../../utils';
 import * as types from './mutation_types';
 
@@ -14,7 +15,7 @@ export const receiveDiffError = ({ commit }, response) =>
 export const fetchDiff = ({ state, rootState, dispatch }) => {
   dispatch('requestDiff');
 
-  return fetchDiffData(rootState, state.paths.diffEndpoint, 'sast')
+  return fetchDiffData(rootState, state.paths.diffEndpoint, REPORT_TYPE_SAST)
     .then((data) => {
       dispatch('receiveDiffSuccess', data);
     })

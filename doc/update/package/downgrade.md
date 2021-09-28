@@ -12,7 +12,7 @@ of a package.
 WARNING:
 You must at least have a database backup created under the version you are
 downgrading to. Ideally, you should have a
-[full backup archive](../../raketasks/backup_restore.md#back-up-gitlab)
+[full backup archive](../../raketasks/backup_restore.md)
 on hand.
 
 The example below demonstrates the downgrade procedure when downgrading between minor

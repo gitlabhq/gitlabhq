@@ -76,16 +76,21 @@ module ErrorTracking
         filter_opts = {
           status: opts[:issue_status],
           sort: opts[:sort],
-          limit: opts[:limit]
+          limit: opts[:limit],
+          cursor: opts[:cursor]
         }
 
         errors = ErrorTracking::ErrorsFinder.new(current_user, project, filter_opts).execute
+
+        pagination = {}
+        pagination[:next] = { cursor: errors.cursor_for_next_page } if errors.has_next_page?
+        pagination[:previous] = { cursor: errors.cursor_for_previous_page } if errors.has_previous_page?
 
         # We use the same response format as project_error_tracking_setting
         # method below for compatibility with existing code.
         {
           issues: errors.map(&:to_sentry_error),
-          pagination: {}
+          pagination: pagination
         }
       else
         project_error_tracking_setting.list_sentry_issues(**opts)

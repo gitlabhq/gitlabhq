@@ -38770,6 +38770,9 @@ msgstr ""
 msgid "You can’t %{tag_start}edit%{tag_end} files directly in this project. Fork this project and submit a merge request with your changes."
 msgstr ""
 
+msgid "You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."
+msgstr ""
+
 msgid "You could not create a new trigger."
 msgstr ""
 

@@ -75,7 +75,7 @@ Create a backup of GitLab and all its data (database, repos, uploads, builds,
 artifacts, LFS objects, registry, pages). This is vital for making it possible
 to roll back GitLab to a working state if there's a problem with the upgrade:
 
-- Create a [GitLab backup](../raketasks/backup_restore.md#back-up-gitlab).
+- Create a [GitLab backup](../raketasks/backup_restore.md).
   Make sure to follow the instructions based on your installation method.
   Don't forget to back up the [secrets and configuration files](../raketasks/backup_restore.md#storing-configuration-files).
 - Alternatively, create a snapshot of your instance. If this is a multi-node

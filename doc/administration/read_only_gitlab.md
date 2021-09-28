@@ -66,7 +66,7 @@ sudo gitlab-ctl start puma
 If you want to allow users to use the GitLab UI, then you'll need to ensure that
 the database is read-only:
 
-1. Take a [GitLab backup](../raketasks/backup_restore.md#back-up-gitlab)
+1. Take a [GitLab backup](../raketasks/backup_restore.md)
    in case things don't go as expected.
 1. Enter PostgreSQL on the console as an administrator user:
 

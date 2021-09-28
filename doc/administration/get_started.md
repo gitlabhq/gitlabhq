@@ -128,7 +128,7 @@ The routine differs, depending on whether you deployed with Omnibus or the Helm 
 
 When you backing up an Omnibus (single node) GitLab server, you can use a single Rake task.
 
-Learn about [backing up Omnibus or Helm variations](../raketasks/backup_restore.md#back-up-gitlab).
+Learn about [backing up Omnibus or Helm variations](../raketasks/backup_restore.md).
 This process backs up your entire instance, but does not back up the configuration files. Ensure those are backed up separately.
 Keep your configuration files and backup archives in a separate location to ensure the encryption keys are not kept with the encrypted data.
 

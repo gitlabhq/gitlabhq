@@ -25031,13 +25031,13 @@ CREATE UNIQUE INDEX index_escalation_rules_on_all_attributes ON incident_managem
 
 CREATE INDEX index_escalation_rules_on_user ON incident_management_escalation_rules USING btree (user_id);
 
-CREATE INDEX index_et_errors_on_project_id_and_status_and_events_count ON error_tracking_errors USING btree (project_id, status, events_count);
-
-CREATE INDEX index_et_errors_on_project_id_and_status_and_first_seen_at ON error_tracking_errors USING btree (project_id, status, first_seen_at);
-
 CREATE INDEX index_et_errors_on_project_id_and_status_and_id ON error_tracking_errors USING btree (project_id, status, id);
 
-CREATE INDEX index_et_errors_on_project_id_and_status_and_last_seen_at ON error_tracking_errors USING btree (project_id, status, last_seen_at);
+CREATE INDEX index_et_errors_on_project_id_and_status_events_count_id_desc ON error_tracking_errors USING btree (project_id, status, events_count DESC, id DESC);
+
+CREATE INDEX index_et_errors_on_project_id_and_status_first_seen_at_id_desc ON error_tracking_errors USING btree (project_id, status, first_seen_at DESC, id DESC);
+
+CREATE INDEX index_et_errors_on_project_id_and_status_last_seen_at_id_desc ON error_tracking_errors USING btree (project_id, status, last_seen_at DESC, id DESC);
 
 CREATE INDEX index_events_on_action ON events USING btree (action);
 

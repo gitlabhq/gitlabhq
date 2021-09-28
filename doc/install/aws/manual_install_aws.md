@@ -748,7 +748,7 @@ Read more on configuring an
 
 ## Backup and restore
 
-GitLab provides [a tool to back up](../../raketasks/backup_restore.md#back-up-gitlab)
+GitLab provides [a tool to back up](../../raketasks/backup_restore.md)
 and restore its Git data, database, attachments, LFS objects, and so on.
 
 Some important things to know:

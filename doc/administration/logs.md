@@ -1075,7 +1075,7 @@ GitLab also tracks [Prometheus metrics for Praefect](gitaly/#monitor-gitaly-clus
 
 For Omnibus installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
-This log is populated when a [GitLab backup is created](../raketasks/backup_restore.md#back-up-gitlab). You can use this log to understand how the backup process performed.
+This log is populated when a [GitLab backup is created](../raketasks/backup_restore.md). You can use this log to understand how the backup process performed.
 
 ## Performance bar stats
 
