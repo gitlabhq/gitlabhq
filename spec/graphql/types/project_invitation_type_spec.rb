@@ -7,7 +7,7 @@ RSpec.describe Types::ProjectInvitationType do
 
   specify { expect(described_class.graphql_name).to eq('ProjectInvitation') }
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_project) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_project) }
 
   it 'has the expected fields' do
     expected_fields = %w[

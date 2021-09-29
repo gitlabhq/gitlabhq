@@ -49,37 +49,6 @@ RSpec.describe API::Users do
       end
     end
 
-    describe 'GET /users/:id' do
-      context 'when unauthenticated' do
-        it 'does not contain the note of the user' do
-          get api("/users/#{user.id}")
-
-          expect(json_response).not_to have_key('note')
-        end
-      end
-
-      context 'when authenticated' do
-        context 'as an admin' do
-          it 'contains the note of the user' do
-            get api("/users/#{user.id}", admin)
-
-            expect(json_response).to have_key('note')
-            expect(json_response['note']).to eq(user.note)
-            expect(json_response).to have_key('sign_in_count')
-          end
-        end
-
-        context 'as a regular user' do
-          it 'does not contain the note of the user' do
-            get api("/users/#{user.id}", user)
-
-            expect(json_response).not_to have_key('note')
-            expect(json_response).not_to have_key('sign_in_count')
-          end
-        end
-      end
-    end
-
     describe "PUT /users/:id" do
       context 'when user is an admin' do
         it "updates note of the user" do
@@ -523,6 +492,8 @@ RSpec.describe API::Users do
   end
 
   describe "GET /users/:id" do
+    let_it_be(:user2, reload: true) { create(:user, username: 'another_user') }
+
     it "returns a user by id" do
       get api("/users/#{user.id}", user)
 
@@ -560,6 +531,64 @@ RSpec.describe API::Users do
       expect(json_response.keys).not_to include 'trial'
     end
 
+    it 'returns a 404 if the target user is present but inaccessible' do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).with(user, :read_user, user2).and_return(false)
+
+      get api("/users/#{user2.id}", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns the `created_at` field for public users' do
+      get api("/users/#{user2.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).to include('created_at')
+    end
+
+    it 'does not return the `created_at` field for private users' do
+      get api("/users/#{private_user.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include('created_at')
+    end
+
+    it 'returns the `followers` field for public users' do
+      get api("/users/#{user2.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).to include('followers')
+    end
+
+    it 'does not return the `followers` field for private users' do
+      get api("/users/#{private_user.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include('followers')
+    end
+
+    it 'returns the `following` field for public users' do
+      get api("/users/#{user2.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).to include('following')
+    end
+
+    it 'does not return the `following` field for private users' do
+      get api("/users/#{private_user.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include('following')
+    end
+
+    it 'does not contain the note of the user' do
+      get api("/users/#{user.id}", user)
+
+      expect(json_response).not_to have_key('note')
+      expect(json_response).not_to have_key('sign_in_count')
+    end
+
     context 'when job title is present' do
       let(:job_title) { 'Fullstack Engineer' }
 
@@ -576,6 +605,14 @@ RSpec.describe API::Users do
     end
 
     context 'when authenticated as admin' do
+      it 'contains the note of the user' do
+        get api("/users/#{user.id}", admin)
+
+        expect(json_response).to have_key('note')
+        expect(json_response['note']).to eq(user.note)
+        expect(json_response).to have_key('sign_in_count')
+      end
+
       it 'includes the `is_admin` field' do
         get api("/users/#{user.id}", admin)
 
@@ -636,62 +673,10 @@ RSpec.describe API::Users do
     end
 
     context 'for an anonymous user' do
-      it "returns a user by id" do
+      it 'returns 403' do
         get api("/users/#{user.id}")
 
-        expect(response).to match_response_schema('public_api/v4/user/basic')
-        expect(json_response['username']).to eq(user.username)
-      end
-
-      it "returns a 404 if the target user is present but inaccessible" do
-        allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?).with(nil, :read_user, user).and_return(false)
-
-        get api("/users/#{user.id}")
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it "returns the `created_at` field for public users" do
-        get api("/users/#{user.id}")
-
-        expect(response).to match_response_schema('public_api/v4/user/basic')
-        expect(json_response.keys).to include 'created_at'
-      end
-
-      it "does not return the `created_at` field for private users" do
-        get api("/users/#{private_user.id}")
-
-        expect(response).to match_response_schema('public_api/v4/user/basic')
-        expect(json_response.keys).not_to include 'created_at'
-      end
-
-      it "returns the `followers` field for public users" do
-        get api("/users/#{user.id}")
-
-        expect(response).to match_response_schema('public_api/v4/user/basic')
-        expect(json_response.keys).to include 'followers'
-      end
-
-      it "does not return the `followers` field for private users" do
-        get api("/users/#{private_user.id}")
-
-        expect(response).to match_response_schema('public_api/v4/user/basic')
-        expect(json_response.keys).not_to include 'followers'
-      end
-
-      it "returns the `following` field for public users" do
-        get api("/users/#{user.id}")
-
-        expect(response).to match_response_schema('public_api/v4/user/basic')
-        expect(json_response.keys).to include 'following'
-      end
-
-      it "does not return the `following` field for private users" do
-        get api("/users/#{private_user.id}")
-
-        expect(response).to match_response_schema('public_api/v4/user/basic')
-        expect(json_response.keys).not_to include 'following'
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -784,6 +769,14 @@ RSpec.describe API::Users do
   describe 'GET /users/:id/followers' do
     let(:follower) { create(:user) }
 
+    context 'for an anonymous user' do
+      it 'returns 403' do
+        get api("/users/#{user.id}")
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'user has followers' do
       it 'lists followers' do
         follower.follow(user)
@@ -818,6 +811,14 @@ RSpec.describe API::Users do
 
   describe 'GET /users/:id/following' do
     let(:followee) { create(:user) }
+
+    context 'for an anonymous user' do
+      it 'returns 403' do
+        get api("/users/#{user.id}")
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
 
     context 'user has followers' do
       it 'lists following user' do

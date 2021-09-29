@@ -7,7 +7,7 @@ RSpec.describe Types::GroupInvitationType do
 
   specify { expect(described_class.graphql_name).to eq('GroupInvitation') }
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_group) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_group) }
 
   it 'has the expected fields' do
     expected_fields = %w[
