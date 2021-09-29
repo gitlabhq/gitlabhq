@@ -38602,6 +38602,9 @@ msgstr ""
 msgid "Your commit email is used for web based operations, such as edits and merges."
 msgstr ""
 
+msgid "Your current password is required to register a two-factor authenticator app."
+msgstr ""
+
 msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
 msgstr ""
 

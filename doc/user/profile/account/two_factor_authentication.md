@@ -64,6 +64,7 @@ To enable 2FA:
 1. **In GitLab:**
    1. Enter the six-digit pin number from the entry on your device into the **Pin
       code** field.
+   1. Enter your current password.
    1. Select **Submit**.
 
 If the pin you entered was correct, a message displays indicating that
@@ -354,7 +355,8 @@ If you ever need to disable 2FA:
 1. Sign in to your GitLab account.
 1. Go to your [**User settings**](../index.md#access-your-user-settings).
 1. Go to **Account**.
-1. Click **Disable**, under **Two-Factor Authentication**.
+1. Select **Manage two-factor authentication**.
+1. Under **Two-Factor Authentication**, enter your current password and select **Disable**.
 
 This clears all your two-factor authentication registrations, including mobile
 applications and U2F / WebAuthn devices.
@@ -449,7 +451,7 @@ To regenerate 2FA recovery codes, you need access to a desktop browser:
 1. Go to your [**User settings**](../index.md#access-your-user-settings).
 1. Select **Account > Two-Factor Authentication (2FA)**.
 1. If you've already configured 2FA, click **Manage two-factor authentication**.
-1. In the **Register Two-Factor Authenticator** pane, click **Regenerate recovery codes**.
+1. In the **Register Two-Factor Authenticator** pane, enter your current password and select **Regenerate recovery codes**.
 
 NOTE:
 If you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
