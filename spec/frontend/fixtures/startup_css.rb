@@ -18,6 +18,10 @@ RSpec.describe 'Startup CSS fixtures', type: :controller do
     let(:project) { create(:project, :public, :repository, description: 'Code and stuff', creator: user) }
 
     before do
+      # We want vNext badge to be included and com/canary don't remove/hide any other elements.
+      # This is why we're turning com and canary on by default for now.
+      allow(Gitlab).to receive(:com?).and_return(true)
+      allow(Gitlab).to receive(:canary?).and_return(true)
       sign_in(user)
     end
 

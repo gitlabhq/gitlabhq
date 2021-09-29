@@ -6,6 +6,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:subproject) { create(:project, group: subgroup) }
   let_it_be(:issue) { create(:issue, project: project) }
 
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -56,16 +57,16 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'with controller for groups with subgroups and project' do
-      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}/project:#{project.id}"}
+      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}/project:#{subproject.id}"}
 
       before do
         allow(helper).to receive(:group).and_return(subgroup)
-        allow(helper.project).to receive(:namespace).and_return(subgroup)
+        allow(helper).to receive(:project).and_return(subproject)
         allow(Rails.application.routes).to receive(:recognize_path).and_return({
           controller: 'projects',
           action: 'show',
           namespace_id: subgroup.name,
-          id: project.name
+          id: subproject.name
         })
       end
 

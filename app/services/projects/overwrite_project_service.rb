@@ -3,7 +3,7 @@
 module Projects
   class OverwriteProjectService < BaseService
     def execute(source_project)
-      return unless source_project && source_project.namespace == @project.namespace
+      return unless source_project && source_project.namespace_id == @project.namespace_id
 
       start_time = ::Gitlab::Metrics::System.monotonic_time
 
@@ -40,7 +40,7 @@ module Projects
       duration = ::Gitlab::Metrics::System.monotonic_time - start_time
 
       Gitlab::AppJsonLogger.info(class: self.class.name,
-                                 namespace_id: source_project.namespace.id,
+                                 namespace_id: source_project.namespace_id,
                                  project_id: source_project.id,
                                  duration_s: duration.to_f,
                                  error: exception.class.name)

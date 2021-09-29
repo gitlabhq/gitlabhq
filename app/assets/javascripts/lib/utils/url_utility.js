@@ -1,3 +1,5 @@
+export const DASH_SCOPE = '-';
+
 const PATH_SEPARATOR = '/';
 const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
 const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);

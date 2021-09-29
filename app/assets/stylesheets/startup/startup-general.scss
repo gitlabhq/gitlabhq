@@ -295,6 +295,9 @@ h1 {
   padding-left: 0.6em;
   border-radius: 10rem;
 }
+.bg-transparent {
+  background-color: transparent !important;
+}
 .rounded-circle {
   border-radius: 50% !important;
 }
@@ -338,6 +341,20 @@ h1 {
 }
 .m-auto {
   margin: auto !important;
+}
+.gl-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.gl-button .gl-badge {
+  top: 0;
 }
 .gl-form-input,
 .gl-form-input.form-control {
@@ -835,6 +852,12 @@ input {
 .title-container .badge.badge-pill:not(.merge-request-badge).todos-count,
 .navbar-nav .badge.badge-pill:not(.merge-request-badge).todos-count {
   background-color: var(--blue-400, #428fdc);
+}
+.title-container .canary-badge .badge,
+.navbar-nav .canary-badge .badge {
+  font-size: 12px;
+  line-height: 16px;
+  padding: 0 0.5rem;
 }
 @media (max-width: 575.98px) {
   .navbar-gitlab .container-fluid {
@@ -1591,8 +1614,17 @@ svg.s16 {
   white-space: nowrap;
   width: 1px;
 }
+.gl-bg-green-500 {
+  background-color: #108548;
+}
 .gl-border-none\! {
   border-style: none !important;
+}
+.gl-rounded-pill {
+  border-radius: 0.75rem;
+}
+.gl-text-white {
+  color: #fff;
 }
 .gl-display-none {
   display: none;
@@ -1611,6 +1643,10 @@ svg.s16 {
 }
 .gl-pr-2 {
   padding-right: 0.25rem;
+}
+.gl-py-1 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
 }
 .gl-ml-3 {
   margin-left: 0.5rem;

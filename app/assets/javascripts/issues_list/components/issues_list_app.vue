@@ -82,6 +82,7 @@ import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import searchUsersQuery from '../queries/search_users.query.graphql';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
+import NewIssueDropdown from './new_issue_dropdown.vue';
 
 export default {
   i18n,
@@ -96,6 +97,7 @@ export default {
     IssuableByEmail,
     IssuableList,
     IssueCardTimeInfo,
+    NewIssueDropdown,
     BlockingIssuesCount: () => import('ee_component/issues/components/blocking_issues_count.vue'),
   },
   directives: {
@@ -124,6 +126,9 @@ export default {
       default: '',
     },
     hasAnyIssues: {
+      default: false,
+    },
+    hasAnyProjects: {
       default: false,
     },
     hasBlockedIssuesFeature: {
@@ -252,6 +257,9 @@ export default {
     },
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
+    },
+    showNewIssueDropdown() {
+      return !this.isProject && this.hasAnyProjects;
     },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
@@ -662,6 +670,7 @@ export default {
         <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
+        <new-issue-dropdown v-if="showNewIssueDropdown" />
       </template>
 
       <template #timeframe="{ issuable = {} }">
@@ -765,6 +774,7 @@ export default {
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="currentTabCount"
         />
+        <new-issue-dropdown v-if="showNewIssueDropdown" />
       </template>
     </gl-empty-state>
     <hr />

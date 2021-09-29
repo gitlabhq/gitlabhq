@@ -28,7 +28,7 @@ module Routing
                     when 'groups'
                       "/namespace:#{group.id}"
                     when 'projects'
-                      "/namespace:#{project.namespace.id}/project:#{project.id}"
+                      "/namespace:#{project.namespace_id}/project:#{project.id}"
                     when 'root'
                       ''
                     else
@@ -44,7 +44,7 @@ module Routing
       masked_url = "#{request.protocol}#{request.host_with_port}"
 
       if request_params.has_key?(:project_id)
-        masked_url += "/namespace:#{project.namespace.id}/project:#{project.id}/-/#{namespace_type}"
+        masked_url += "/namespace:#{project.namespace_id}/project:#{project.id}/-/#{namespace_type}"
       end
 
       if request_params.has_key?(:id)

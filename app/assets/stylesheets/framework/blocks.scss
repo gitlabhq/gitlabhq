@@ -322,7 +322,7 @@
     display: inline-block;
   }
 
-  .btn {
+  .btn:not(.split-content-button):not(.dropdown-toggle-split) {
     margin: $gl-padding-8 $gl-padding-4;
 
     @include media-breakpoint-down(xs) {

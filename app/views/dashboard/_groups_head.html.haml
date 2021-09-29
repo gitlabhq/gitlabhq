@@ -6,13 +6,9 @@
       = link_to _("New group"), new_group_path, class: "gl-button btn btn-confirm", data: { testid: "new-group-button" }
 
 .top-area
-  %ul.nav-links.mobile-separator.nav.nav-tabs
-    = nav_link(page: dashboard_groups_path) do
-      = link_to dashboard_groups_path, title: _("Your groups") do
-        Your groups
-    = nav_link(page: explore_groups_path) do
-      = link_to explore_groups_path, title: _("Explore public groups") do
-        Explore public groups
+  = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
+    = gl_tab_link_to _("Your groups"), dashboard_groups_path
+    = gl_tab_link_to _("Explore public groups"), explore_groups_path
   .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'

@@ -7,7 +7,7 @@ module Gitlab
         grouped_items = issuables.group_by do |issuable|
           if issuable.project.id == project.id
             :project_ref
-          elsif issuable.project.namespace.id == project.namespace.id
+          elsif issuable.project.namespace_id == project.namespace_id
             :namespace_ref
           else
             :full_ref

@@ -277,7 +277,8 @@
               "type": "string",
               "format": "uri-reference",
               "pattern": "\\.ya?ml$"
-            }
+            },
+            "rules": { "$ref": "#/definitions/rules" }
           },
           "required": ["local"]
         },
@@ -491,7 +492,7 @@
     },
     "rules": {
       "type": "array",
-      "description": "rules allows for an array of individual rule objects to be evaluated in order, until one matches and dynamically provides attributes to the job.",
+      "description": "Rules allows for an array of individual rule objects to be evaluated in order, until one matches and dynamically provides attributes to the job.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -625,17 +626,26 @@
       ]
     },
     "cache": {
-      "oneOf": [
-        {
-          "$ref": "#/definitions/cache_entry"
-        },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/cache_entry"
-          }
+      "properties": {
+        "when": {
+          "description": "Defines when to save the cache, based on the status of the job.",
+          "default": "on_success",
+          "oneOf": [
+            {
+              "enum": ["on_success"],
+              "description": "Save the cache only when the job succeeds."
+            },
+            {
+              "enum": ["on_failure"],
+              "description": "Save the cache only when the job fails. "
+            },
+            {
+              "enum": ["always"],
+              "description": "Always save the cache. "
+            }
+          ]
         }
-      ]
+      }
     },
     "cache_entry": {
       "type": "object",
@@ -1320,6 +1330,29 @@
                               }
                             },
                             "required": ["artifact", "job"]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "project": {
+                                "description": "Path to another private project under the same GitLab instance, like `group/project` or `group/sub-group/project`.",
+                                "type": "string",
+                                "pattern": "\\S/\\S"
+                              },
+                              "ref": {
+                                "description": "Branch/Tag/Commit hash for the target project.",
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "file": {
+                                "description": "Relative path from repository root (`/`) to the pipeline configuration YAML file.",
+                                "type": "string",
+                                "format": "uri-reference",
+                                "pattern": "\\.ya?ml$"
+                              }
+                            },
+                            "required": ["project", "file"]
                           }
                         ]
                       }

@@ -238,9 +238,10 @@ module IssuesHelper
     )
   end
 
-  def group_issues_list_data(group, current_user, issues)
+  def group_issues_list_data(group, current_user, issues, projects)
     common_issues_list_data(group, current_user).merge(
-      has_any_issues: issues.to_a.any?.to_s
+      has_any_issues: issues.to_a.any?.to_s,
+      has_any_projects: any_projects?(projects).to_s
     )
   end
 
