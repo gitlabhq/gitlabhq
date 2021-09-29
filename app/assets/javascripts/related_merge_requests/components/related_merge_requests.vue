@@ -81,13 +81,13 @@ export default {
             {{ __('Related merge requests') }}
           </span>
           <div v-if="totalCount" class="d-inline-flex lh-100 align-middle">
-            <div class="mr-count-badge gl-display-inline-flex">
-              <div class="mr-count-badge-count">
-                <svg class="s16 mr-1 text-secondary">
-                  <gl-icon name="merge-request" class="mr-1 text-secondary" />
-                </svg>
-                <span class="js-items-count">{{ totalCount }}</span>
-              </div>
+            <div
+              class="mr-count-badge gl-display-inline-flex gl-align-items-center gl-py-2 gl-px-3"
+            >
+              <svg class="s16 mr-1 text-secondary">
+                <gl-icon name="merge-request" class="mr-1 text-secondary" />
+              </svg>
+              <span class="js-items-count">{{ totalCount }}</span>
             </div>
           </div>
         </div>

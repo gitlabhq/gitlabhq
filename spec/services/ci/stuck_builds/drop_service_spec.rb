@@ -17,48 +17,6 @@ RSpec.describe Ci::StuckBuilds::DropService do
     job.update!(job_attributes)
   end
 
-  shared_examples 'job is dropped' do
-    it 'changes status' do
-      expect(service).to receive(:drop).exactly(3).times.and_call_original
-      expect(service).to receive(:drop_stuck).exactly(:once).and_call_original
-
-      service.execute
-      job.reload
-
-      expect(job).to be_failed
-      expect(job).to be_stuck_or_timeout_failure
-    end
-
-    context 'when job have data integrity problem' do
-      it "does drop the job and logs the reason" do
-        job.update_columns(yaml_variables: '[{"key" => "value"}]')
-
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                                          .with(anything, a_hash_including(build_id: job.id))
-                                          .once
-                                          .and_call_original
-
-        service.execute
-        job.reload
-
-        expect(job).to be_failed
-        expect(job).to be_data_integrity_failure
-      end
-    end
-  end
-
-  shared_examples 'job is unchanged' do
-    it 'does not change status' do
-      expect(service).to receive(:drop).exactly(3).times.and_call_original
-      expect(service).to receive(:drop_stuck).exactly(:once).and_call_original
-
-      service.execute
-      job.reload
-
-      expect(job.status).to eq(status)
-    end
-  end
-
   context 'when job is pending' do
     let(:status) { 'pending' }
 
@@ -195,7 +153,7 @@ RSpec.describe Ci::StuckBuilds::DropService do
     context 'when job was updated_at more than an hour ago' do
       let(:updated_at) { 2.hours.ago }
 
-      it_behaves_like 'job is dropped'
+      it_behaves_like 'job is unchanged'
     end
 
     context 'when job was updated in less than 1 hour ago' do
@@ -238,7 +196,7 @@ RSpec.describe Ci::StuckBuilds::DropService do
       job.project.update!(pending_delete: true)
     end
 
-    it_behaves_like 'job is dropped'
+    it_behaves_like 'job is unchanged'
   end
 
   describe 'drop stale scheduled builds' do

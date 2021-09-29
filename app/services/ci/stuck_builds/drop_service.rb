@@ -5,7 +5,6 @@ module Ci
     class DropService
       include DropHelpers
 
-      BUILD_RUNNING_OUTDATED_TIMEOUT = 1.hour
       BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
       BUILD_SCHEDULED_OUTDATED_TIMEOUT = 1.hour
       BUILD_PENDING_STUCK_TIMEOUT = 1.hour
@@ -13,8 +12,6 @@ module Ci
 
       def execute
         Gitlab::AppLogger.info "#{self.class}: Cleaning stuck builds"
-
-        drop(running_timed_out_builds, failure_reason: :stuck_or_timeout_failure)
 
         drop(
           pending_builds(BUILD_PENDING_OUTDATED_TIMEOUT.ago),
@@ -48,13 +45,6 @@ module Ci
         Ci::Build.where(status: :scheduled).where( # rubocop: disable CodeReuse/ActiveRecord
           'ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?',
           BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago
-        )
-      end
-
-      def running_timed_out_builds
-        Ci::Build.running.where( # rubocop: disable CodeReuse/ActiveRecord
-          'ci_builds.updated_at < ?',
-          BUILD_RUNNING_OUTDATED_TIMEOUT.ago
         )
       end
     end

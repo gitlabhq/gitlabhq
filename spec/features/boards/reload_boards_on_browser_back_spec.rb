@@ -16,7 +16,7 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js do
       visit project_board_path(project, board)
       wait_for_requests
 
-      page.within(first('.board .issue-count-badge-count')) do
+      page.within(first('.board [data-testid="issue-count-badge"]')) do
         expect(page).to have_content('0')
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js do
       page.go_back
       wait_for_requests
 
-      page.within(first('.board .issue-count-badge-count')) do
+      page.within(first('.board [data-testid="issue-count-badge"]')) do
         expect(page).to have_content('1')
       end
 

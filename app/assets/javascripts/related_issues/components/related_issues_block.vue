@@ -162,7 +162,6 @@ export default {
               icon="plus"
               :aria-label="__('Add a related issue')"
               :class="qaClass"
-              class="js-issue-count-badge-add-button"
               @click="$emit('toggleAddRelatedIssuesForm', $event)"
             />
           </div>

@@ -10,7 +10,7 @@ type: reference, howto
 Coverage-guided fuzzing sends random inputs to an instrumented version of your application in an
 effort to cause unexpected behavior. Such behavior indicates a bug that you should address.
 GitLab allows you to add coverage-guided fuzz testing to your pipelines. This helps you discover
-bugs and potential security issues that other QA processes may miss. 
+bugs and potential security issues that other QA processes may miss.
 
 We recommend that you use fuzz testing in addition to the other security scanners in [GitLab Secure](../index.md)
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
@@ -248,6 +248,8 @@ which shows an overview of all the security vulnerabilities in your groups, proj
 Clicking the vulnerability opens a modal that provides additional information about the
 vulnerability:
 
+<!-- vale gitlab.Acronyms = NO -->
+
 - Status: The vulnerability's status. As with any type of vulnerability, a coverage fuzzing
   vulnerability can be Detected, Confirmed, Dismissed, or Resolved.
 - Project: The project in which the vulnerability exists.
@@ -261,3 +263,5 @@ vulnerability:
 - Scanner: The scanner that detected the vulnerability (for example, Coverage Fuzzing).
 - Scanner Provider: The engine that did the scan. For Coverage Fuzzing, this can be any of the
   engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
+
+<!-- vale gitlab.Acronyms = YES -->

@@ -17,6 +17,8 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'
 
   def perform
+    Ci::StuckBuilds::DropRunningWorker.perform_in(20.minutes)
+
     return unless try_obtain_lease
 
     Ci::StuckBuilds::DropService.new.execute

@@ -68,7 +68,7 @@ RSpec.describe 'Issue Boards new issue', :js do
 
       wait_for_requests
 
-      page.within(first('.board .issue-count-badge-count')) do
+      page.within(first('.board [data-testid="issue-count-badge"]')) do
         expect(page).to have_content('1')
       end
 

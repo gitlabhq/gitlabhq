@@ -58,8 +58,8 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1806',
         issue_1: 'https://gitlab.com/gitlab-org/gitlab/-/issues/331252',
         issue_2: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333678',
-        # mostly impacts testing as it makes small groups import slower
-        issue_3: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332351'
+        issue_3: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332351',
+        except: { job: 'instance-image-slow-network' }
       ) do
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(imported_group.path, imported_group.sandbox.path)

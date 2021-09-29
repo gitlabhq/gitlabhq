@@ -27,12 +27,16 @@ analysis are available in the [security dashboards](../security_dashboard/index.
 
 The results are sorted by the priority of the vulnerability:
 
+<!-- vale gitlab.SubstitutionWarning = NO -->
+
 1. Critical
 1. High
 1. Medium
 1. Low
 1. Info
 1. Unknown
+
+<!-- vale gitlab.SubstitutionWarning = YES -->
 
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST

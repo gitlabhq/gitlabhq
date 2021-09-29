@@ -41,13 +41,13 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+        expect(page).not_to have_button 'Add a related issue'
       end
     end
 
     context 'when logged in but not a member' do
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       it 'shows widget when internal project' do
@@ -57,7 +57,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+        expect(page).not_to have_button 'Add a related issue'
       end
 
       it 'does not show widget when private project' do
@@ -76,7 +76,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+        expect(page).not_to have_button 'Add a related issue'
       end
 
       it 'shows widget on their own public issue' do
@@ -86,13 +86,13 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+        expect(page).not_to have_button 'Add a related issue'
       end
     end
 
     context 'when logged in and a guest' do
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       it 'shows widget when internal project' do
@@ -103,7 +103,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+        expect(page).not_to have_button 'Add a related issue'
       end
 
       it 'shows widget when private project' do
@@ -114,7 +114,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+        expect(page).not_to have_button 'Add a related issue'
       end
 
       it 'shows widget when public project' do
@@ -125,13 +125,13 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+        expect(page).not_to have_button 'Add a related issue'
       end
     end
 
     context 'when logged in and a reporter' do
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       it 'shows widget when internal project' do
@@ -142,7 +142,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).to have_selector('.js-issue-count-badge-add-button')
+        expect(page).to have_button 'Add a related issue'
       end
 
       it 'shows widget when private project' do
@@ -153,7 +153,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).to have_selector('.js-issue-count-badge-add-button')
+        expect(page).to have_button 'Add a related issue'
       end
 
       it 'shows widget when public project' do
@@ -164,7 +164,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).to have_selector('.js-issue-count-badge-add-button')
+        expect(page).to have_button 'Add a related issue'
       end
 
       it 'shows widget on their own public issue' do
@@ -175,7 +175,7 @@ RSpec.describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).to have_selector('.js-issue-count-badge-add-button')
+        expect(page).to have_button 'Add a related issue'
       end
     end
   end
@@ -186,7 +186,7 @@ RSpec.describe 'Related issues', :js do
 
     before do
       project.add_guest(user)
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'visiting some issue someone else created' do
@@ -216,7 +216,7 @@ RSpec.describe 'Related issues', :js do
     before do
       project.add_maintainer(user)
       project_b.add_maintainer(user)
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'without existing related issues' do
@@ -230,7 +230,7 @@ RSpec.describe 'Related issues', :js do
       end
 
       it 'add related issue' do
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set "#{issue_b.to_reference(project)} "
         find('.js-add-issuable-form-add-button').click
 
@@ -247,7 +247,7 @@ RSpec.describe 'Related issues', :js do
       end
 
       it 'add cross-project related issue' do
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set "#{issue_project_b_a.to_reference(project)} "
         find('.js-add-issuable-form-add-button').click
 
@@ -261,7 +261,7 @@ RSpec.describe 'Related issues', :js do
       end
 
       it 'pressing enter should submit the form' do
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set "#{issue_project_b_a.to_reference(project)} "
         find('.js-add-issuable-form-input').native.send_key(:enter)
 
@@ -275,7 +275,7 @@ RSpec.describe 'Related issues', :js do
       end
 
       it 'disallows duplicate entries' do
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set 'duplicate duplicate duplicate'
 
         items = all('.js-add-issuable-form-token-list-item')
@@ -288,7 +288,7 @@ RSpec.describe 'Related issues', :js do
 
       it 'allows us to remove pending issues' do
         # Tests against https://gitlab.com/gitlab-org/gitlab/issues/11625
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set 'issue1 issue2 issue3 '
 
         items = all('.js-add-issuable-form-token-list-item')
@@ -351,7 +351,7 @@ RSpec.describe 'Related issues', :js do
       end
 
       it 'add related issue' do
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set "##{issue_d.iid} "
         find('.js-add-issuable-form-add-button').click
 
@@ -367,7 +367,7 @@ RSpec.describe 'Related issues', :js do
       end
 
       it 'add invalid related issue' do
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set "#9999999 "
         find('.js-add-issuable-form-add-button').click
 
@@ -382,7 +382,7 @@ RSpec.describe 'Related issues', :js do
       end
 
       it 'add unauthorized related issue' do
-        find('.js-issue-count-badge-add-button').click
+        click_button 'Add a related issue'
         find('.js-add-issuable-form-input').set "#{issue_project_unauthorized_a.to_reference(project)} "
         find('.js-add-issuable-form-add-button').click
 

@@ -53,6 +53,8 @@ immediately identify which alerts you should prioritize investigating:
 
 Alerts contain one of the following icons:
 
+<!-- vale gitlab.SubstitutionWarning = NO -->
+
 | Severity | Icon                    | Color (hexadecimal) |
 |----------|-------------------------|---------------------|
 | Critical | **{severity-critical}** | `#8b2615`           |
@@ -61,6 +63,8 @@ Alerts contain one of the following icons:
 | Low      | **{severity-low}**      | `#fdbc60`           |
 | Info     | **{severity-info}**     | `#418cd8`           |
 | Unknown  | **{severity-unknown}**  | `#bababa`           |
+
+<!-- vale gitlab.SubstitutionWarning = YES -->
 
 ## Alert details page
 
