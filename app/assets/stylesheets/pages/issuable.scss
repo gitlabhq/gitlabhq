@@ -673,40 +673,40 @@
     .issuable-info-container {
       flex: 1;
       display: flex;
+    }
 
-      .issuable-main-info {
-        flex: 1 auto;
-        margin-right: 10px;
-        min-width: 0;
+    .issuable-main-info {
+      flex: 1 auto;
+      margin-right: 10px;
+      min-width: 0;
 
-        .issue-weight-icon,
-        .issue-estimate-icon {
-          vertical-align: sub;
-        }
+      .issue-weight-icon,
+      .issue-estimate-icon {
+        vertical-align: sub;
+      }
+    }
+
+    .issuable-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex: 1 0 auto;
+
+      .controls {
+        margin-bottom: 2px;
+        line-height: 20px;
+        padding: 0;
       }
 
+      .issue-updated-at {
+        line-height: 20px;
+      }
+    }
+
+    @include media-breakpoint-down(xs) {
       .issuable-meta {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        flex: 1 0 auto;
-
-        .controls {
-          margin-bottom: 2px;
-          line-height: 20px;
-          padding: 0;
-        }
-
-        .issue-updated-at {
-          line-height: 20px;
-        }
-      }
-
-      @include media-breakpoint-down(xs) {
-        .issuable-meta {
-          .controls li {
-            margin-right: 0;
-          }
+        .controls li {
+          margin-right: 0;
         }
       }
     }

@@ -488,27 +488,29 @@ The exported project is located within a `.tar.gz` file in `/var/opt/gitlab/gitl
 
 If it seems that a commit has gone "missing", search the sequence of pushes to a repository.
 [This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
-describes how you can end up in this state without a force push.
+describes how you can end up in this state without a force push. Another cause can be a misconfigured [server hook](../server_hooks.md) that changes a HEAD ref via a `git reset` operation.
 
 If you look at the output from the sample code below for the target branch, you
-see a discontinuity in the from/to commits as you step through the output. Each new
-push should be "from" the "to" SHA of the previous push. When this discontinuity happens,
-you see two pushes with the same "from" SHA:
+see a discontinuity in the from/to commits as you step through the output. The `commit_from` of each new push should equal the `commit_to` of the previous push. A break in that sequence indicates one or more commits have been "lost" from the repository history.
 
-```ruby
-p = Project.find_with_namespace('u/p')
-p.events.pushed_action.last(100).each do |e|
-  printf "%-20.20s %8s...%8s (%s)\n", e.data[:ref], e.data[:before], e.data[:after], e.author.try(:username)
-end
-```
-
-GitLab 9.5 and above:
+The following example checks the last 100 pushes and prints the `commit_from` and `commit_to` entries:
 
 ```ruby
 p = Project.find_by_full_path('u/p')
 p.events.pushed_action.last(100).each do |e|
-  printf "%-20.20s %8s...%8s (%s)\n", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
+  printf "%-20.20s %8s...%8s (%s)
+", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
 end
+```
+
+Example output showing break in sequence at line 4:
+
+```plaintext
+master               f21b07713251e04575908149bdc8ac1f105aabc3...6bc56c1f46244792222f6c85b11606933af171de (root)
+master               6bc56c1f46244792222f6c85b11606933af171de...132da6064f5d3453d445fd7cb452b148705bdc1b (root)
+master               132da6064f5d3453d445fd7cb452b148705bdc1b...a62e1e693150a2e46ace0ce696cd4a52856dfa65 (root)
+master               58b07b719a4b0039fec810efa52f479ba1b84756...f05321a5b5728bd8a89b7bf530aa44043c951dce (root)
+master               f05321a5b5728bd8a89b7bf530aa44043c951dce...7d02e575fd790e76a3284ee435368279a5eb3773 (root)
 ```
 
 ## Mirrors

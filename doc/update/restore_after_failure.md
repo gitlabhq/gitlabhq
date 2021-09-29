@@ -31,9 +31,7 @@ attempts. This is because some tables may have been added during the failed
 upgrade. If these tables are still present after you restore from the
 older backup it can lead to migration failures on future upgrades.
 
-Starting in GitLab 8.6 we drop all tables prior to importing the backup to
-prevent this problem. If you've restored a backup to a version prior to 8.6 you
-may have to manually correct the problem next time you upgrade.
+We drop all tables prior to importing the backup to prevent this problem.
 
 Example error:
 
@@ -52,38 +50,16 @@ Copy the version from the error. In this case the version number is
 WARNING:
 Use the following steps only if you are certain you must do them.
 
-### GitLab 8.6+
+1. Pass the version to a database Rake task to manually mark the migration as
+   complete.
 
-Pass the version to a database Rake task to manually mark the migration as
-complete.
+   ```shell
+   # Source install
+   sudo -u git -H bundle exec rake gitlab:db:mark_migration_complete[20151103134857] RAILS_ENV=production
 
-```shell
-# Source install
-sudo -u git -H bundle exec rake gitlab:db:mark_migration_complete[20151103134857] RAILS_ENV=production
+   # Omnibus install
+   sudo gitlab-rake gitlab:db:mark_migration_complete[20151103134857]
+   ```
 
-# Omnibus install
-sudo gitlab-rake gitlab:db:mark_migration_complete[20151103134857]
-```
-
-After the migration is successfully marked, run the Rake `db:migrate` task again.
-Repeat this process until all failed migrations are complete.
-
-### GitLab < 8.6
-
-```shell
-# Source install
-sudo -u git -H bundle exec rails console -e production
-
-# Omnibus install
-sudo gitlab-rails console
-```
-
-At the Rails console, type the following commands:
-
-```ruby
-ActiveRecord::Base.connection.execute("INSERT INTO schema_migrations (version) VALUES('20151103134857')")
-exit
-```
-
-After the migration is successfully marked, run the Rake `db:migrate` task again.
-Repeat this process until all failed migrations are complete.
+1. After the migration is successfully marked, run the Rake `db:migrate` task again.
+1. Repeat this process until all failed migrations are complete.

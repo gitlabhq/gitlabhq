@@ -77,7 +77,7 @@ export default {
 };
 </script>
 <template>
-  <div class="issue-assignees">
+  <div>
     <user-avatar-link
       v-for="assignee in assigneesToShow"
       :key="assignee.id"
@@ -97,10 +97,9 @@ export default {
     </user-avatar-link>
     <span
       v-if="numHiddenAssignees > 0"
-      v-gl-tooltip
+      v-gl-tooltip.bottom
       :title="assigneesCounterTooltip"
       class="avatar-counter"
-      data-placement="bottom"
       data-qa-selector="avatar_counter_content"
       >{{ assigneeCounterLabel }}</span
     >

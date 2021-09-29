@@ -19,6 +19,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_widget_how_to_merge_modal.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import notesEventHub from '../../notes/event_hub';
 import {
@@ -79,6 +80,7 @@ export default {
     MrWidgetHowToMergeModal,
     GlAlert,
   },
+  mixins: [glFeatureFlagsMixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
@@ -252,6 +254,10 @@ export default {
       return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
     isLimitedContainer() {
+      if (this.glFeatures.mrChangesFluidLayout) {
+        return false;
+      }
+
       return !this.renderFileTree && !this.isParallelView && !this.isFluidLayout;
     },
     isFullChangeset() {
@@ -386,6 +392,8 @@ export default {
     diffsApp.instrument();
   },
   created() {
+    this.mergeRequestContainers = document.querySelectorAll('.merge-request-container');
+
     this.adjustView();
     this.subscribeToEvents();
 
@@ -512,6 +520,13 @@ export default {
         });
       } else {
         this.removeEventListeners();
+      }
+
+      if (!this.isFluidLayout && this.glFeatures.mrChangesFluidLayout) {
+        this.mergeRequestContainers.forEach((el) => {
+          el.classList.toggle('limit-container-width', !this.shouldShow);
+          el.classList.toggle('container-limited', !this.shouldShow);
+        });
       }
     },
     setEventListeners() {

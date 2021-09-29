@@ -347,7 +347,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 ```
 
 The included template creates dependency scanning jobs in your CI/CD
@@ -381,7 +381,7 @@ For example:
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   SECURE_LOG_LEVEL: error
@@ -403,7 +403,7 @@ the `gemnasium` analyzer:
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   variables:
@@ -414,7 +414,7 @@ To override the `dependencies: []` attribute, add an override job as above, targ
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   dependencies: ["build"]
@@ -713,7 +713,7 @@ value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of t
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
@@ -868,7 +868,7 @@ to the supported `requirements.txt` as follows.
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 stages:
   - test

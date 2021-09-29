@@ -47,7 +47,7 @@ In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
-  template: Dependency-Scanning.gitlab-ci.yml
+  template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: my-docker-registry/gl-images
@@ -64,7 +64,7 @@ In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
-  template: Dependency-Scanning.gitlab-ci.yml
+  template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   DS_EXCLUDED_ANALYZERS: "bundler-audit, gemnasium"
@@ -77,7 +77,7 @@ In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
-  template: Dependency-Scanning.gitlab-ci.yml
+  template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   DS_EXCLUDED_ANALYZERS: "gemnasium, gemnasium-maven, gemnasium-python, bundler-audit, retire.js"

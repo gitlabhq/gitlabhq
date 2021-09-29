@@ -72,6 +72,7 @@ RSpec.describe Gitlab::Chat::Command do
 
       expect(vars['CHAT_INPUT']).to eq('foo')
       expect(vars['CHAT_CHANNEL']).to eq('123')
+      expect(vars['CHAT_USER_ID']).to eq(chat_name.chat_id)
     end
   end
 end

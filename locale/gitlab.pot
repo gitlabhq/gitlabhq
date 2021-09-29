@@ -39900,6 +39900,9 @@ msgstr ""
 msgid "created %{timeAgo}"
 msgstr ""
 
+msgid "created %{timeAgo} by %{author}"
+msgstr ""
+
 msgid "created by"
 msgstr ""
 
