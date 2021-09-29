@@ -933,17 +933,28 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     end
 
     context 'authenticated with lfs token' do
-      it 'request is authenticated by token in basic auth' do
-        lfs_token = Gitlab::LfsToken.new(user)
-        encoded_login = ["#{user.username}:#{lfs_token.token}"].pack('m0')
+      let(:lfs_url) { '/namespace/repo.git/info/lfs/objects/batch' }
+      let(:lfs_token) { Gitlab::LfsToken.new(user) }
+      let(:encoded_login) { ["#{user.username}:#{lfs_token.token}"].pack('m0') }
+      let(:headers) { { 'AUTHORIZATION' => "Basic #{encoded_login}" } }
 
+      it 'request is authenticated by token in basic auth' do
         expect_authenticated_request
 
-        get url, headers: { 'AUTHORIZATION' => "Basic #{encoded_login}" }
+        get lfs_url, headers: headers
+      end
+
+      it 'request is not authenticated with API URL' do
+        expect_unauthenticated_request
+
+        get url, headers: headers
       end
     end
 
     context 'authenticated with regular login' do
+      let(:encoded_login) { ["#{user.username}:#{user.password}"].pack('m0') }
+      let(:headers) { { 'AUTHORIZATION' => "Basic #{encoded_login}" } }
+
       it 'request is authenticated after login' do
         login_as(user)
 
@@ -952,12 +963,30 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         get url
       end
 
-      it 'request is authenticated by credentials in basic auth' do
-        encoded_login = ["#{user.username}:#{user.password}"].pack('m0')
+      it 'request is not authenticated by credentials in basic auth' do
+        expect_unauthenticated_request
 
-        expect_authenticated_request
+        get url, headers: headers
+      end
 
-        get url, headers: { 'AUTHORIZATION' => "Basic #{encoded_login}" }
+      context 'with POST git-upload-pack' do
+        it 'request is authenticated by credentials in basic auth' do
+          expect(::Gitlab::Workhorse).to receive(:verify_api_request!)
+
+          expect_authenticated_request
+
+          post '/namespace/repo.git/git-upload-pack', headers: headers
+        end
+      end
+
+      context 'with GET info/refs' do
+        it 'request is authenticated by credentials in basic auth' do
+          expect(::Gitlab::Workhorse).to receive(:verify_api_request!)
+
+          expect_authenticated_request
+
+          get '/namespace/repo.git/info/refs?service=git-upload-pack', headers: headers
+        end
       end
     end
   end
