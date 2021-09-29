@@ -111,7 +111,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 
 ## GitLab CI/CD examples
 
-See the [CI/CD examples](examples/README.md) page for example project code and tutorials for
+See the [CI/CD examples](examples/index.md) page for example project code and tutorials for
 using GitLab CI/CD with various:
 
 - App frameworks

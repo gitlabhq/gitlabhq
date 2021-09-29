@@ -1,3 +1,5 @@
+import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
+
 export default {
   name: 'WidgetTestExtension',
   props: ['targetProjectFullPath'],
@@ -6,7 +8,7 @@ export default {
       return `Test extension summary count: ${count} & ${targetProjectFullPath}`;
     },
     statusIcon({ count }) {
-      return count > 0 ? 'warning' : 'success';
+      return count > 0 ? EXTENSION_ICONS.warning : EXTENSION_ICONS.success;
     },
   },
   methods: {

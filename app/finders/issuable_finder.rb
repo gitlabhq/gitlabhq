@@ -194,8 +194,7 @@ class IssuableFinder
   def use_cte_for_search?
     strong_memoize(:use_cte_for_search) do
       next false unless search
-      # Only simple unsorted & simple sorts can use CTE
-      next false if params[:sort].present? && !params[:sort].in?(klass.simple_sorts.keys)
+      next false unless default_or_simple_sort?
 
       attempt_group_search_optimizations? || attempt_project_search_optimizations?
     end
@@ -242,6 +241,10 @@ class IssuableFinder
 
   def init_collection
     klass.all
+  end
+
+  def default_or_simple_sort?
+    params[:sort].blank? || params[:sort].to_s.in?(klass.simple_sorts.keys)
   end
 
   def attempt_group_search_optimizations?

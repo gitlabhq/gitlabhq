@@ -9,7 +9,7 @@ type: index
 # GitLab CI/CD Examples **(FREE)**
 
 This page contains links to a variety of examples that can help you understand how to
-implement [GitLab CI/CD](../README.md) for your specific use case.
+implement [GitLab CI/CD](../index.md) for your specific use case.
 
 Examples are available in several forms. As a collection of:
 

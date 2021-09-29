@@ -165,7 +165,7 @@ To push a new project:
    As project creation permissions can have many factors, contact your
    GitLab administrator if you're unsure.
 
-1. If you want to push using SSH, ensure you have [created a SSH key](../../ssh/README.md) and
+1. If you want to push using SSH, ensure you have [created a SSH key](../../ssh/index.md) and
    [added it to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
 1. Push with one of the following methods. Replace `gitlab.example.com` with the
    domain name of the machine that hosts your Git repository, `namespace` with the name of

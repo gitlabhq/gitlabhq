@@ -33,7 +33,7 @@ to write such end-to-end tests, and how to set up GitLab CI/CD to automatically 
 against your new code, on a branch-by-branch basis. For the scope of this article, we will walk you
 through the process of setting up GitLab CI/CD for end-to-end testing JavaScript-based applications
 with WebdriverIO, but the general strategy should carry over to other languages.
-We assume you are familiar with GitLab, [GitLab CI/CD](../../README.md), [Review Apps](../../review_apps/index.md), and running your app locally, e.g., on `localhost:8000`.
+We assume you are familiar with GitLab, [GitLab CI/CD](../../index.md), [Review Apps](../../review_apps/index.md), and running your app locally, e.g., on `localhost:8000`.
 
 ## What to test
 

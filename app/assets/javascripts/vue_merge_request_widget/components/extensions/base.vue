@@ -46,6 +46,8 @@ export default {
       return true;
     },
     statusIconName() {
+      if (this.isLoadingSummary) return null;
+
       return this.statusIcon(this.collapsedData);
     },
   },

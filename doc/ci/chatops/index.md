@@ -18,7 +18,7 @@ posted back to the channel can significantly augment your team's workflow.
 
 ## How GitLab ChatOps works
 
-GitLab ChatOps is built upon [GitLab CI/CD](../README.md) and
+GitLab ChatOps is built upon [GitLab CI/CD](../index.md) and
 [Slack Slash Commands](../../user/project/integrations/slack_slash_commands.md).
 ChatOps provides a `run` action for [slash commands](../../integration/slash_commands.md)
 with the following arguments:

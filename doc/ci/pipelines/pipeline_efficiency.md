@@ -7,7 +7,7 @@ type: reference
 
 # Pipeline efficiency **(FREE)**
 
-[CI/CD Pipelines](index.md) are the fundamental building blocks for [GitLab CI/CD](../README.md).
+[CI/CD Pipelines](index.md) are the fundamental building blocks for [GitLab CI/CD](../index.md).
 Making pipelines more efficient helps you save developer time, which:
 
 - Speeds up your DevOps processes

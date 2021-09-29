@@ -1199,6 +1199,14 @@ RSpec.describe IssuesFinder do
       end
     end
 
+    context 'when a non-simple sort is given' do
+      let(:params) { { search: 'foo', attempt_project_search_optimizations: true, sort: 'popularity' } }
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
     context 'when all conditions are met' do
       context "uses group search optimization" do
         let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
@@ -1211,6 +1219,24 @@ RSpec.describe IssuesFinder do
 
       context "uses project search optimization" do
         let(:params) { { search: 'foo', attempt_project_search_optimizations: true } }
+
+        it 'returns true' do
+          expect(finder.use_cte_for_search?).to be_truthy
+          expect(finder.execute.to_sql).to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+        end
+      end
+
+      context 'with simple sort' do
+        let(:params) { { search: 'foo', attempt_project_search_optimizations: true, sort: 'updated_desc' } }
+
+        it 'returns true' do
+          expect(finder.use_cte_for_search?).to be_truthy
+          expect(finder.execute.to_sql).to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+        end
+      end
+
+      context 'with simple sort as a symbol' do
+        let(:params) { { search: 'foo', attempt_project_search_optimizations: true, sort: :updated_desc } }
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy

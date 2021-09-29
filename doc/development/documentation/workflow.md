@@ -99,7 +99,7 @@ The process involves the following:
 - Primary Reviewer. Review by a [code reviewer](https://about.gitlab.com/handbook/engineering/projects/)
   or other appropriate colleague to confirm accuracy, clarity, and completeness. This can be skipped
   for minor fixes without substantive content changes.
-- Technical Writer (Optional). If not completed for a merge request prior to merging, must be scheduled
+- Technical Writer (Optional). If not completed for a merge request before merging, must be scheduled
   post-merge. Schedule post-merge reviews only if an urgent merge is required. To request a:
   - Pre-merge review, assign the Technical Writer listed for the applicable
     [DevOps stage group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
@@ -111,7 +111,7 @@ The process involves the following:
   - Ensure the appropriate labels are applied, including any required to pick a merge request into
     a release.
   - Ensure that, if there has not been a Technical Writer review completed or scheduled, they
-    [create the required issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review), assign to the Technical Writer of the given stage group,
+    [create the required issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review), assign it to the Technical Writer of the given stage group,
     and link it from the merge request.
 
 The process is reflected in the **Documentation**
@@ -130,10 +130,10 @@ immediately after merge by the developer or maintainer. For this,
 create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review)
 and link to it from the merged merge request that introduced the documentation change.
 
-Circumstances where a regular pre-merge Technical Writer review might be skipped include:
+Circumstances, where a regular pre-merge Technical Writer review might be skipped, include:
 
-- There is a short amount of time left before the milestone release. If there are less than three days
-  remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
+- There is a short amount of time left before the milestone release. If less than three 
+ days are remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
   completed as soon as possible.
 - The size of the change is small and you have a high degree of confidence
   that early users of the feature (for example, GitLab.com users) can easily
@@ -156,15 +156,15 @@ Remember:
 
 Ensure the following if skipping an initial Technical Writer review:
 
-- That [product badges](styleguide/index.md#product-tier-badges) are applied.
-- That the GitLab [version](styleguide/index.md#gitlab-versions) that
-  introduced the feature has been included.
-- That changes to headings don't affect in-app hyperlinks.
+- [Product badges](styleguide/index.md#product-tier-badges) are applied.
+- The GitLab [version](styleguide/index.md#gitlab-versions) that
+  introduced the feature is included.
+- Changes to headings don't affect in-app hyperlinks.
 - Specific [user permissions](../../user/permissions.md) are documented.
-- That new documents are linked from higher-level indexes, for discoverability.
-- Style guide is followed:
+- New documents are linked from higher-level indexes, for discoverability.
+- The style guide is followed:
   - For [directories and files](styleguide/index.md#work-with-directories-and-files).
   - For [images](styleguide/index.md#images).
 
 Merge requests that change the location of documentation must always be reviewed by a Technical
-Writer prior to merging.
+Writer before merging.

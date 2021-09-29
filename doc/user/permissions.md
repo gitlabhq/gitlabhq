@@ -59,21 +59,21 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>View [threats list](application_security/threat_monitoring/index.md#threat-monitoring) **(ULTIMATE)**    |    |    | ✓   | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md) **(FREE SAAS)**                        |    |    |     | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md) **(ULTIMATE)**        |    |    |     |     | ✓   |
-| [CI/CD](../ci/README.md):<br>Download and browse job artifacts                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View a job log                                                                             | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View list of jobs                                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View [environments](../ci/environments/index.md)                                           |          | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Cancel and retry jobs                                                                      |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Create new [environments](../ci/environments/index.md)                                     |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Run CI/CD pipeline against a protected branch                                              |          |          | ✓ (*5*)   | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Stop [environments](../ci/environments/index.md)                                           |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View a job with [debug logging](../ci/variables/index.md#debug-logging)                    |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Manage CI/CD variables                                                                     |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Manage job triggers                                                                        |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Manage runners                                                                             |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
+| [CI/CD](../ci/index.md):<br>Download and browse job artifacts                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View a job log                                                                             | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View list of jobs                                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View [environments](../ci/environments/index.md)                                           |          | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Cancel and retry jobs                                                                      |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Create new [environments](../ci/environments/index.md)                                     |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Run CI/CD pipeline against a protected branch                                              |          |          | ✓ (*5*)   | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Stop [environments](../ci/environments/index.md)                                           |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View a job with [debug logging](../ci/variables/index.md#debug-logging)                    |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Manage CI/CD variables                                                                     |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Manage job triggers                                                                        |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Manage runners                                                                             |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
 | [Clusters](project/clusters/index.md):<br>View pod logs                                                                 |          |          | ✓         | ✓          | ✓     |
 | [Clusters](project/clusters/index.md):<br>Manage clusters                                                               |          |          |           | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete cleanup policies                    |          |          | ✓         | ✓          | ✓     |

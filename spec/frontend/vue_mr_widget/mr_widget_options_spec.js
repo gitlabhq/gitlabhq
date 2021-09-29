@@ -10,7 +10,10 @@ import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
 import SmartInterval from '~/smart_interval';
-import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
+import {
+  registerExtension,
+  registeredExtensions,
+} from '~/vue_merge_request_widget/components/extensions';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
@@ -886,20 +889,22 @@ describe('MrWidgetOptions', () => {
 
   describe('mock extension', () => {
     beforeEach(() => {
+      registerExtension(testExtension);
+
       createComponent();
     });
 
-    it('renders collapsed data', async () => {
-      registerExtension(testExtension);
+    afterEach(() => {
+      registeredExtensions.extensions = [];
+    });
 
+    it('renders collapsed data', async () => {
       await waitForPromises();
 
       expect(wrapper.text()).toContain('Test extension summary count: 1');
     });
 
     it('renders full data', async () => {
-      registerExtension(testExtension);
-
       await waitForPromises();
 
       wrapper
