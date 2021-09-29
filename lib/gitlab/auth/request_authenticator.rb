@@ -35,11 +35,29 @@ module Gitlab
           find_user_from_static_object_token(request_format) ||
           find_user_from_basic_auth_job ||
           find_user_from_job_token ||
-          find_user_from_lfs_token ||
-          find_user_from_personal_access_token ||
-          find_user_from_basic_auth_password
+          find_user_from_personal_access_token_for_api_or_git ||
+          find_user_for_git_or_lfs_request
       rescue Gitlab::Auth::AuthenticationError
         nil
+      end
+
+      # To prevent Rack Attack from incorrectly rate limiting
+      # authenticated Git activity, we need to authenticate the user
+      # from other means (e.g. HTTP Basic Authentication) only if the
+      # request originated from a Git or Git LFS
+      # request. Repositories::GitHttpClientController or
+      # Repositories::LfsApiController normally does the authentication,
+      # but Rack Attack runs before those controllers.
+      def find_user_for_git_or_lfs_request
+        return unless git_or_lfs_request?
+
+        find_user_from_lfs_token || find_user_from_basic_auth_password
+      end
+
+      def find_user_from_personal_access_token_for_api_or_git
+        return unless api_request? || git_or_lfs_request?
+
+        find_user_from_personal_access_token
       end
 
       def valid_access_token?(scopes: [])

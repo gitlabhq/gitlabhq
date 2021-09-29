@@ -34,13 +34,13 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def import
-    @projects = current_user.authorized_projects.order_id_desc
+    @projects = Project.visible_to_user_and_access_level(current_user, Gitlab::Access::MAINTAINER).order_id_desc
   end
 
   def apply_import
     source_project = Project.find(params[:source_project_id])
 
-    if can?(current_user, :read_project_member, source_project)
+    if can?(current_user, :admin_project_member, source_project)
       status = @project.team.import(source_project, current_user)
       notice = status ? "Successfully imported" : "Import failed"
     else
