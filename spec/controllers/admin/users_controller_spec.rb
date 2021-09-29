@@ -809,5 +809,20 @@ RSpec.describe Admin::UsersController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when impersonating an admin and attempting to impersonate again' do
+      let(:admin2) { create(:admin) }
+
+      before do
+        post :impersonate, params: { id: admin2.username }
+      end
+
+      it 'does not allow double impersonation', :aggregate_failures do
+        post :impersonate, params: { id: user.username }
+
+        expect(flash[:alert]).to eq(_('You are already impersonating another user'))
+        expect(warden.user).to eq(admin2)
+      end
+    end
   end
 end

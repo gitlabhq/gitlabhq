@@ -37284,6 +37284,9 @@ msgstr ""
 msgid "You are already a member of this %{member_source}."
 msgstr ""
 
+msgid "You are already impersonating another user"
+msgstr ""
+
 msgid "You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 

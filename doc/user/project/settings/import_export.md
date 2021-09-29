@@ -137,6 +137,7 @@ The following items are **not** exported:
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers
+- Repository size limits
 
 NOTE:
 For more details on the specific data persisted in a project export, see the

@@ -546,7 +546,6 @@ Project:
 - disable_overriding_approvers_per_merge_request
 - merge_requests_ff_only_enabled
 - issues_template
-- repository_size_limit
 - sync_time
 - service_desk_enabled
 - last_repository_updated_at
