@@ -259,7 +259,7 @@ GET /users?with_custom_attributes=true
 
 ## Single user
 
-Get a single user. This endpoint can be accessed without authentication.
+Get a single user.
 
 ### For user
 
@@ -806,7 +806,7 @@ Example response:
 
 ### Followers and following
 
-Get the followers of a user. This endpoint can be accessed without authentication.
+Get the followers of a user.
 
 ```plaintext
 GET /users/:id/followers
