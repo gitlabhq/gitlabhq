@@ -89,6 +89,10 @@ module API
           Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path, upload_allowed: allowed })
         end
       end
+
+      def check_import_by_url_is_enabled
+        forbidden! unless Gitlab::CurrentSettings.import_sources&.include?('git')
+      end
     end
 
     helpers do
@@ -261,6 +265,7 @@ module API
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
         filter_attributes_using_license!(attrs)
+        check_import_by_url_is_enabled if params[:import_url].present?
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?

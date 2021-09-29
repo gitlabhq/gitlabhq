@@ -19,6 +19,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create, :resolve]
   before_action :repository, except: [:index, :new, :create, :resolve]
+  before_action :verify_git_import_enabled, only: [:create]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
   before_action :authorize_download_code!, only: [:refs]
@@ -492,6 +493,10 @@ class ProjectsController < Projects::ApplicationController
     params[:id] = project.to_param
 
     url_for(safe_params)
+  end
+
+  def verify_git_import_enabled
+    render_404 if project_params[:import_url] && !git_import_enabled?
   end
 
   def project_export_enabled

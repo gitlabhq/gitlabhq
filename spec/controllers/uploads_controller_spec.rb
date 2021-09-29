@@ -666,6 +666,6 @@ RSpec.describe UploadsController do
   def post_authorize(verified: true)
     request.headers.merge!(workhorse_internal_api_request_header) if verified
 
-    post :authorize, params: { model: 'personal_snippet', id: model.id }, format: :json
+    post :authorize, params: params, format: :json
   end
 end

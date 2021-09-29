@@ -408,6 +408,47 @@ RSpec.describe ProjectsController do
     end
   end
 
+  describe 'POST create' do
+    let!(:params) do
+      {
+        path: 'foo',
+        description: 'bar',
+        import_url: project.http_url_to_repo,
+        namespace_id: user.namespace.id
+      }
+    end
+
+    subject { post :create, params: { project: params } }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when import by url is disabled' do
+      before do
+        stub_application_setting(import_sources: [])
+      end
+
+      it 'does not create project and reports an error' do
+        expect { subject }.not_to change { Project.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when import by url is enabled' do
+      before do
+        stub_application_setting(import_sources: ['git'])
+      end
+
+      it 'creates project' do
+        expect { subject }.to change { Project.count }
+
+        expect(response).to have_gitlab_http_status(:redirect)
+      end
+    end
+  end
+
   describe 'GET edit' do
     it 'allows an admin user to access the page', :enable_admin_mode do
       sign_in(create(:user, :admin))
