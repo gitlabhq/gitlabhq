@@ -11,6 +11,9 @@ This API is in an alpha stage and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.
 
+> - Introduced in GitLab 12.1.
+> - Pagination introduced in 14.4.
+
 Every call to this endpoint requires authentication. To perform this call, user should be authorized to read repository.
 To see vulnerabilities in response, user should be authorized to read
 [Project Security Dashboard](../user/application_security/security_dashboard/index.md#project-security-dashboard).
@@ -60,3 +63,10 @@ Example response:
     }
 ]
 ```
+
+## Dependencies pagination
+
+By default, `GET` requests return 20 results at a time because the API results
+are paginated.
+
+Read more on [pagination](index.md#pagination).
