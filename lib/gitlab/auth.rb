@@ -172,7 +172,11 @@ module Gitlab
         user = find_with_user_password(login, password)
         return unless user
 
-        raise Gitlab::Auth::MissingPersonalAccessTokenError if user.two_factor_enabled?
+        verifier = TwoFactorAuthVerifier.new(user)
+
+        if user.two_factor_enabled? || verifier.two_factor_authentication_enforced?
+          raise Gitlab::Auth::MissingPersonalAccessTokenError
+        end
 
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end

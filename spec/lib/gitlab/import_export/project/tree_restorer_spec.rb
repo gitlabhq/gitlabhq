@@ -445,8 +445,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
             expect(@project.merge_requests.size).to eq(9)
           end
 
-          it 'only restores valid triggers' do
-            expect(@project.triggers.size).to eq(1)
+          it 'does not restore triggers' do
+            expect(@project.triggers.size).to eq(0)
           end
 
           it 'has the correct number of pipelines and statuses' do

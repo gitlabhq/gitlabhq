@@ -133,6 +133,7 @@ The following items are **not** exported:
 - Build traces and artifacts
 - Container registry images
 - CI/CD variables
+- Pipeline triggers
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers

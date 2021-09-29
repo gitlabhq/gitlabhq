@@ -400,15 +400,6 @@ Ci::Variable:
 - encrypted_value
 - encrypted_value_salt
 - encrypted_value_iv
-Ci::Trigger:
-- id
-- token
-- project_id
-- created_at
-- updated_at
-- owner_id
-- description
-- ref
 Ci::PipelineSchedule:
 - id
 - description

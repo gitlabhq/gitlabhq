@@ -88,7 +88,6 @@ tree:
       - :external_pull_request
       - :merge_request
     - :auto_devops
-    - :triggers
     - :pipeline_schedules
     - :container_expiration_policy
     - protected_branches:

@@ -450,6 +450,16 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     end
   end
 
+  context 'when project has project bots' do
+    let!(:project_bot) { create(:user, :project_bot).tap { |user| project.add_maintainer(user) } }
+
+    it 'deletes bot user as well' do
+      expect do
+        destroy_project(project, user)
+      end.to change { User.find_by(id: project_bot.id) }.to(nil)
+    end
+  end
+
   context 'error while destroying', :sidekiq_inline do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:builds) { create_list(:ci_build, 2, :artifacts, pipeline: pipeline) }
