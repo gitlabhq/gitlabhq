@@ -20,7 +20,7 @@ module Impersonation
   protected
 
   def check_impersonation_availability
-    return unless impersonation_in_progress?
+    return unless session[:impersonator_id]
 
     unless Gitlab.config.gitlab.impersonation_enabled
       stop_impersonation
@@ -36,10 +36,6 @@ module Impersonation
     clear_access_token_session_keys!
 
     current_user
-  end
-
-  def impersonation_in_progress?
-    session[:impersonator_id].present?
   end
 
   def log_impersonation_event
