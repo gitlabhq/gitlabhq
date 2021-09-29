@@ -23,9 +23,10 @@ RSpec.describe Gitlab::StringRegexMarker do
     context 'with multiple occurrences' do
       let(:raw)  { %{a <b> <c> d} }
       let(:rich) { %{a &lt;b&gt; &lt;c&gt; d}.html_safe }
+      let(:regexp) { /<[a-z]>/ }
 
       subject do
-        described_class.new(raw, rich).mark(/<[a-z]>/) do |text, left:, right:, mode:|
+        described_class.new(raw, rich).mark(regexp) do |text, left:, right:, mode:|
           %{<strong>#{text}</strong>}.html_safe
         end
       end
@@ -33,6 +34,15 @@ RSpec.describe Gitlab::StringRegexMarker do
       it 'marks the matches' do
         expect(subject).to eq(%{a <strong>&lt;b&gt;</strong> <strong>&lt;c&gt;</strong> d})
         expect(subject).to be_html_safe
+      end
+
+      context 'with a Gitlab::UntrustedRegexp' do
+        let(:regexp) { Gitlab::UntrustedRegexp.new('<[a-z]>') }
+
+        it 'marks the matches' do
+          expect(subject).to eq(%{a <strong>&lt;b&gt;</strong> <strong>&lt;c&gt;</strong> d})
+          expect(subject).to be_html_safe
+        end
       end
     end
   end
