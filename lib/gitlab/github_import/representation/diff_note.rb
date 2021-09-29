@@ -11,7 +11,7 @@ module Gitlab
 
         expose_attribute :noteable_type, :noteable_id, :commit_id, :file_path,
                          :diff_hunk, :author, :note, :created_at, :updated_at,
-                         :github_id, :original_commit_id
+                         :original_commit_id, :note_id
 
         NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i.freeze
 
@@ -40,7 +40,7 @@ module Gitlab
             note: note.body,
             created_at: note.created_at,
             updated_at: note.updated_at,
-            github_id: note.id
+            note_id: note.id
           }
 
           new(hash)
@@ -80,6 +80,14 @@ module Gitlab
             a_mode: '100644',
             b_mode: '100644',
             new_file: false
+          }
+        end
+
+        def github_identifiers
+          {
+            note_id: note_id,
+            noteable_id: noteable_id,
+            noteable_type: noteable_type
           }
         end
       end

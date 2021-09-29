@@ -181,4 +181,17 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
       expect(object.truncated_title).to eq('foo')
     end
   end
+
+  describe '#github_identifiers' do
+    it 'returns a hash with needed identifiers' do
+      github_identifiers = {
+        iid: 42,
+        issuable_type: 'MergeRequest'
+      }
+      other_attributes = { pull_request: true, something_else: '_something_else_' }
+      issue = described_class.new(github_identifiers.merge(other_attributes))
+
+      expect(issue.github_identifiers).to eq(github_identifiers)
+    end
+  end
 end

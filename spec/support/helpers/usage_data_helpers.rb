@@ -112,6 +112,7 @@ module UsageDataHelpers
       projects_with_expiration_policy_enabled_with_older_than_set_to_7d
       projects_with_expiration_policy_enabled_with_older_than_set_to_14d
       projects_with_expiration_policy_enabled_with_older_than_set_to_30d
+      projects_with_expiration_policy_enabled_with_older_than_set_to_60d
       projects_with_expiration_policy_enabled_with_older_than_set_to_90d
       projects_with_expiration_policy_enabled_with_cadence_set_to_1d
       projects_with_expiration_policy_enabled_with_cadence_set_to_7d

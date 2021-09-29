@@ -653,7 +653,6 @@
 .rails:rules:decomposed-databases:
   rules:
     - <<: *if-merge-request-run-decomposed
-      allow_failure: true
 
 .rails:rules:ee-and-foss-migration:
   rules:

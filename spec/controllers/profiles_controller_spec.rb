@@ -3,7 +3,8 @@
 require('spec_helper')
 
 RSpec.describe ProfilesController, :request_store do
-  let(:user) { create(:user) }
+  let(:password) { 'longsecret987!' }
+  let(:user) { create(:user, password: password) }
 
   describe 'POST update' do
     it 'does not update password' do
@@ -23,7 +24,7 @@ RSpec.describe ProfilesController, :request_store do
       sign_in(user)
 
       put :update,
-          params: { user: { email: "john@gmail.com", name: "John" } }
+          params: { user: { email: "john@gmail.com", name: "John", validation_password: password } }
 
       user.reload
 

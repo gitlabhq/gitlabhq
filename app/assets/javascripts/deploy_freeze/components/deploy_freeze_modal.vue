@@ -25,7 +25,7 @@ export default {
     lazy: true,
   },
   translations: {
-    cronPlaceholder: __('* * * * *'),
+    cronPlaceholder: '* * * * *',
     cronSyntaxInstructions: __(
       'Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}',
     ),

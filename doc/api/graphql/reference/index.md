@@ -15460,6 +15460,7 @@ Conan file types.
 | <a id="containerexpirationpolicyolderthanenumfourteen_days"></a>`FOURTEEN_DAYS` | 14 days until tags are automatically removed. |
 | <a id="containerexpirationpolicyolderthanenumninety_days"></a>`NINETY_DAYS` | 90 days until tags are automatically removed. |
 | <a id="containerexpirationpolicyolderthanenumseven_days"></a>`SEVEN_DAYS` | 7 days until tags are automatically removed. |
+| <a id="containerexpirationpolicyolderthanenumsixty_days"></a>`SIXTY_DAYS` | 60 days until tags are automatically removed. |
 | <a id="containerexpirationpolicyolderthanenumthirty_days"></a>`THIRTY_DAYS` | 30 days until tags are automatically removed. |
 
 ### `ContainerRepositoryCleanupStatus`

@@ -40,6 +40,7 @@ RSpec.describe ContainerExpirationPoliciesHelper do
         { key: '7d', label: '7 days until tags are automatically removed' },
         { key: '14d', label: '14 days until tags are automatically removed' },
         { key: '30d', label: '30 days until tags are automatically removed' },
+        { key: '60d', label: '60 days until tags are automatically removed' },
         { key: '90d', label: '90 days until tags are automatically removed', default: true }
       ]
 

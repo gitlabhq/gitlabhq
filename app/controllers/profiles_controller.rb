@@ -18,7 +18,7 @@ class ProfilesController < Profiles::ApplicationController
 
   def update
     respond_to do |format|
-      result = Users::UpdateService.new(current_user, user_params.merge(user: @user)).execute
+      result = Users::UpdateService.new(current_user, user_params.merge(user: @user)).execute(check_password: true)
 
       if result[:status] == :success
         message = s_("Profiles|Profile was successfully updated")
@@ -129,6 +129,7 @@ class ProfilesController < Profiles::ApplicationController
       :job_title,
       :pronouns,
       :pronunciation,
+      :validation_password,
       status: [:emoji, :message, :availability]
     ]
   end

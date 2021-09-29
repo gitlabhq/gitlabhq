@@ -16,9 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid " %{name},  confirm your email address now! "
-msgstr ""
-
 msgid " %{start} to %{end}"
 msgstr ""
 
@@ -1133,9 +1130,6 @@ msgid "(revoked)"
 msgstr ""
 
 msgid "(we need your current password to confirm your changes)"
-msgstr ""
-
-msgid "* * * * *"
 msgstr ""
 
 msgid "+ %{amount} more"
@@ -3587,6 +3581,9 @@ msgstr ""
 msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
+msgid "An error occurred while fetching Markdown preview"
+msgstr ""
+
 msgid "An error occurred while fetching ancestors"
 msgstr ""
 
@@ -3615,9 +3612,6 @@ msgid "An error occurred while fetching issues."
 msgstr ""
 
 msgid "An error occurred while fetching label colors."
-msgstr ""
-
-msgid "An error occurred while fetching markdown preview"
 msgstr ""
 
 msgid "An error occurred while fetching participants"
@@ -7345,9 +7339,6 @@ msgstr ""
 msgid "ClusterAgents|You will need to create a token to connect to your agent"
 msgstr ""
 
-msgid "ClusterAgent|This feature is only available for premium plans"
-msgstr ""
-
 msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
 msgstr ""
 
@@ -9999,7 +9990,7 @@ msgstr ""
 msgid "Custom notification events"
 msgstr ""
 
-msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notificationLinkStart} notification emails%{notificationLinkEnd}."
+msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notificationLinkStart}notification emails%{notificationLinkEnd}."
 msgstr ""
 
 msgid "Custom project templates"
@@ -10198,10 +10189,10 @@ msgid_plural "CycleAnalytics|Showing %{subjectFilterText} and %{selectedLabelsCo
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "CycleAnalytics|Showing data for group '%{groupName}' and %{selectedProjectCount} projects from %{startDate} to %{endDate}"
+msgid "CycleAnalytics|Showing data for group '%{groupName}' and %{selectedProjectCount} projects from %{createdAfter} to %{createdBefore}"
 msgstr ""
 
-msgid "CycleAnalytics|Showing data for group '%{groupName}' from %{startDate} to %{endDate}"
+msgid "CycleAnalytics|Showing data for group '%{groupName}' from %{createdAfter} to %{createdBefore}"
 msgstr ""
 
 msgid "CycleAnalytics|Stages"
@@ -13366,7 +13357,7 @@ msgstr ""
 msgid "Error parsing CSV file. Please make sure it has"
 msgstr ""
 
-msgid "Error rendering markdown preview"
+msgid "Error rendering Markdown preview"
 msgstr ""
 
 msgid "Error saving label update."
@@ -17606,7 +17597,7 @@ msgstr ""
 msgid "InProductMarketing|Start a GitLab Ultimate trial today in less than one minute, no credit card required."
 msgstr ""
 
-msgid "InProductMarketing|Start a free trial of GitLab Ultimate – no CC required"
+msgid "InProductMarketing|Start a free trial of GitLab Ultimate – no credit card required"
 msgstr ""
 
 msgid "InProductMarketing|Start a trial"
@@ -24487,6 +24478,18 @@ msgstr ""
 msgid "Password was successfully updated. Please sign in again."
 msgstr ""
 
+msgid "PasswordPrompt|Confirm password"
+msgstr ""
+
+msgid "PasswordPrompt|Confirm password to continue"
+msgstr ""
+
+msgid "PasswordPrompt|Password is required"
+msgstr ""
+
+msgid "PasswordPrompt|Please enter your password to confirm"
+msgstr ""
+
 msgid "Passwords should be unique and not used for any other sites or services."
 msgstr ""
 
@@ -24862,6 +24865,48 @@ msgstr ""
 msgid "PipelineSchedules|Variables"
 msgstr ""
 
+msgid "PipelineSource|API"
+msgstr ""
+
+msgid "PipelineSource|Chat"
+msgstr ""
+
+msgid "PipelineSource|External"
+msgstr ""
+
+msgid "PipelineSource|External Pull Request"
+msgstr ""
+
+msgid "PipelineSource|Merge Request"
+msgstr ""
+
+msgid "PipelineSource|On-Demand DAST Scan"
+msgstr ""
+
+msgid "PipelineSource|On-Demand DAST Validation"
+msgstr ""
+
+msgid "PipelineSource|Parent Pipeline"
+msgstr ""
+
+msgid "PipelineSource|Pipeline"
+msgstr ""
+
+msgid "PipelineSource|Push"
+msgstr ""
+
+msgid "PipelineSource|Schedule"
+msgstr ""
+
+msgid "PipelineSource|Trigger"
+msgstr ""
+
+msgid "PipelineSource|Web"
+msgstr ""
+
+msgid "PipelineSource|Web IDE"
+msgstr ""
+
 msgid "PipelineStatusTooltip|Pipeline: %{ciStatus}"
 msgstr ""
 
@@ -25162,49 +25207,7 @@ msgstr ""
 msgid "Pipeline|Source"
 msgstr ""
 
-msgid "Pipeline|Source|API"
-msgstr ""
-
-msgid "Pipeline|Source|Chat"
-msgstr ""
-
-msgid "Pipeline|Source|External"
-msgstr ""
-
-msgid "Pipeline|Source|External Pull Request"
-msgstr ""
-
-msgid "Pipeline|Source|Merge Request"
-msgstr ""
-
-msgid "Pipeline|Source|On-Demand DAST Scan"
-msgstr ""
-
-msgid "Pipeline|Source|On-Demand DAST Validation"
-msgstr ""
-
-msgid "Pipeline|Source|Parent Pipeline"
-msgstr ""
-
-msgid "Pipeline|Source|Pipeline"
-msgstr ""
-
-msgid "Pipeline|Source|Push"
-msgstr ""
-
-msgid "Pipeline|Source|Schedule"
-msgstr ""
-
 msgid "Pipeline|Source|Security Policy"
-msgstr ""
-
-msgid "Pipeline|Source|Trigger"
-msgstr ""
-
-msgid "Pipeline|Source|Web"
-msgstr ""
-
-msgid "Pipeline|Source|Web IDE"
 msgstr ""
 
 msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default."
@@ -25931,6 +25934,9 @@ msgid "Profiles|Enter how your name is pronounced to help people address you cor
 msgstr ""
 
 msgid "Profiles|Enter your name, so people you know can recognize you"
+msgstr ""
+
+msgid "Profiles|Enter your password to confirm the email change"
 msgstr ""
 
 msgid "Profiles|Enter your pronouns to let people know how to refer to you"
@@ -29748,16 +29754,16 @@ msgstr ""
 msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
-msgid "SearchResults|Showing %{count} %{scope} for%{term_element}"
+msgid "SearchResults|Showing %{count} %{scope} for %{term_element}"
 msgstr ""
 
-msgid "SearchResults|Showing %{count} %{scope} for%{term_element} in your personal and project snippets"
+msgid "SearchResults|Showing %{count} %{scope} for %{term_element} in your personal and project snippets"
 msgstr ""
 
-msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for%{term_element}"
+msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for %{term_element}"
 msgstr ""
 
-msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for%{term_element} in your personal and project snippets"
+msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for %{term_element} in your personal and project snippets"
 msgstr ""
 
 msgid "SearchResults|code result"
@@ -31272,6 +31278,9 @@ msgid "Showing all epics"
 msgstr ""
 
 msgid "Showing all issues"
+msgstr ""
+
+msgid "Showing data for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
 msgstr ""
 
 msgid "Showing data for workflow items created in this date range. Date range cannot exceed %{maxDateRange} days."
@@ -35150,7 +35159,7 @@ msgstr ""
 msgid "TimeTrackingEstimated|Est"
 msgstr ""
 
-msgid "TimeTracking|%{startTag}Spent: %{endTag}%{timeSpentHumanReadable}"
+msgid "TimeTracking|%{spentStart}Spent: %{spentEnd}"
 msgstr ""
 
 msgid "TimeTracking|Estimated:"
@@ -35388,6 +35397,9 @@ msgstr ""
 msgid "To connect an SVN repository, check out %{svn_link}."
 msgstr ""
 
+msgid "To continue using GitLab Enterprise Edition, upload the %{codeOpen}.gitlab-license%{codeClose} file or enter the license key you have received from GitLab Inc."
+msgstr ""
+
 msgid "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select %{strongStart}Resend confirmation email.%{strongEnd}"
 msgstr ""
 
@@ -35491,6 +35503,9 @@ msgid "To set up this integration:"
 msgstr ""
 
 msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
+msgstr ""
+
+msgid "To start using GitLab Enterprise Edition, upload the %{codeOpen}.gitlab-license%{codeClose} file or enter the license key you have received from GitLab Inc."
 msgstr ""
 
 msgid "To unsubscribe from this issue, please paste the following link into your browser:"

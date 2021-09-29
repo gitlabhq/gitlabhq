@@ -5,34 +5,102 @@ group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Implement design & UI elements
+# Design and user interface changes
 
-For guidance on UX implementation at GitLab, please refer to our [Design System](https://design.gitlab.com/).
+Follow these guidelines when contributing or reviewing design and user interface
+(UI) changes. Refer to our [code review guide](../code_review.md) for broader
+advice and best practices for code review in general.
 
-The UX team uses labels to manage their workflow.
+The basis for most of these guidelines is [Pajamas](https://design.gitlab.com/),
+GitLab design system. We encourage you to [contribute to Pajamas](https://design.gitlab.com/get-started/contribute)
+with additions and improvements.
 
-The `~UX` label on an issue is a signal to the UX team that it will need UX attention.
-To better understand the priority by which UX tackles issues, see the [UX section](https://about.gitlab.com/handbook/engineering/ux/) of the handbook.
+## Merge request reviews
 
-Once an issue has been worked on and is ready for development, a UXer removes the `~UX` label and applies the `~"UX ready"` label to that issue.
+As a merge request (MR) author, you must include _Before_ and _After_
+screenshots (or videos) of your changes in the description, as explained in our
+[MR workflow](merge_request_workflow.md). These screenshots/videos are very helpful
+for all reviewers and can speed up the review process, especially if the changes
+are small.
 
-There is a special type label called `~"product discovery"` intended for UX (user experience),
-PM (product manager), FE (frontend), and BE (backend). It represents a discovery issue to discuss the problem and
-potential solutions. The final output for this issue could be a doc of
-requirements, a design artifact, or even a prototype. The solution will be
-developed in a subsequent milestone.
+## Checklist
 
-`~"product discovery"` issues are like any other issue and should contain a milestone label, `~Deliverable` or `~Stretch`, when scheduled in the current milestone.
+Check these aspects both when _designing_ and _reviewing_ UI changes.
 
-The initial issue should be about the problem we are solving. If a separate [product discovery issue](https://about.gitlab.com/handbook/engineering/ux/ux-department-workflow/#how-we-use-labels)
-is needed for additional research and design work, it will be created by a PM or UX person.
-Assign the `~UX`, `~"product discovery"` and `~Deliverable` labels, add a milestone and
-use a title that makes it clear that the scheduled issue is product discovery
-(for example, `Product discovery for XYZ`).
+### Writing
 
-In order to complete a product discovery issue in a release, you must complete the following:
+- Follow [Pajamas](https://design.gitlab.com/content/punctuation/) as the primary
+  guidelines for UI text and [documentation style guide](../documentation/styleguide/index.md)
+  as the secondary.
+- Use clear and consistent [terminology](https://design.gitlab.com/content/terminology).
+- Check grammar and spelling.
+- Consider help content and follow its [guidelines](https://design.gitlab.com/usability/helping-users).
+- Request review from the [appropriate Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers),
+  indicating any specific files or lines they should review, and how to preview
+  or understand the location/context of the text from the user's perspective.
 
-1. UXer removes the `~UX` label, adds the `~"UX ready"` label.
-1. Modify the issue description in the product discovery issue to contain the final design. If it makes sense, the original information indicating the need for the design can be moved to a lower "Original Information" section.
-1. Copy the design to the description of the delivery issue for which the product discovery issue was created. Do not simply refer to the product discovery issue as a separate source of truth.
-1. In some cases, a product discovery issue also identifies future enhancements that will not go into the issue that originated the product discovery issue. For these items, create new issues containing the designs to ensure they are not lost. Put the issues in the backlog if they are agreed upon as good ideas. Otherwise leave them for triage.
+### Patterns
+
+- Consider similar patterns used in the product and justify in the issue when diverging
+  from them.
+- Use appropriate [components](https://design.gitlab.com/components/overview)
+  and [data visualizations](https://design.gitlab.com/data-visualization/overview).
+
+### States
+
+- Account for all applicable states ([error](https://design.gitlab.com/content/error-messages),
+  rest, loading, focus, hover, selected, disabled).
+- Account for states dependent on data size ([empty](https://design.gitlab.com/regions/empty-states),
+  some data, and lots of data).
+- Account for states dependent on user role, user preferences, and subscription.
+- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion).
+
+### Visual design
+
+- Use recommended [colors](https://design.gitlab.com/product-foundations/colors)
+  and [typography](https://design.gitlab.com/product-foundations/type-fundamentals).
+- Follow [layout guidelines](https://design.gitlab.com/layout/grid).
+- Use existing [icons](http://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](http://gitlab-org.gitlab.io/gitlab-svgs/illustrations)
+  or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography)
+  and [illustration](https://design.gitlab.com/product-foundations/illustration)
+  guidelines.
+- _Optionally_ consider [dark mode](../../user/profile/preferences.md#dark-mode). [^1]
+
+ [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha). The [UX Foundations team](https://about.gitlab.com/direction/ecosystem/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+
+### Responsive
+
+- Account for resizing, collapsing, moving, or wrapping of elements across
+  all breakpoints (even if larger viewports are prioritized).
+- Provide the same information and actions in all breakpoints.
+
+### Accessibility
+
+- Conform to level AA of the World Wide Web Consortium (W3C) [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/),
+  according to our [statement of compliance](https://design.gitlab.com/accessibility/a11y).
+- Follow accessibility [best practices](https://design.gitlab.com/accessibility/best-practices)
+  and [checklist](../fe_guide/accessibility.md#quick-checklist).
+
+### Handoff
+
+- Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#Copy_links)
+  link or [GitLab Designs feature](../../user/project/issues/design_management.md#the-design-management-section).
+  See [when you should use each tool](https://about.gitlab.com/handbook/engineering/ux/product-designer/#deliver).
+- Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
+- Document animations and transitions.
+- Document responsive behaviors.
+- Document non-evident behaviors (for example, field is auto-focused).
+- Document accessibility behaviors (for example, using [accessibility annotations in Figma](https://www.figma.com/file/g7QtDbfxF3pCdWiyskIr0X/Accessibility-bluelines)).
+- Contribute new icons or illustrations to the [GitLab SVGs](https://gitlab.com/gitlab-org/gitlab-svgs)
+  project.
+
+### Follow-ups
+
+- Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contribute#contribute-an-issue)
+  for additions or enhancements to the design system.
+- Create issues with the [`~UX debt`](issue_workflow.md#technical-and-ux-debt)
+  label for intentional deviations from the agreed-upon UX requirements due to
+  time or feasibility challenges, linking back to the corresponding issue(s) or
+  MR(s).
+- Create issues for [feature additions or enhancements](issue_workflow.md#feature-proposals)
+  outside the agreed-upon UX requirements to avoid scope creep.

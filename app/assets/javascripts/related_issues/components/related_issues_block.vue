@@ -123,7 +123,7 @@ export default {
 </script>
 
 <template>
-  <div id="related-issues" class="related-issues-block">
+  <div id="related-issues" class="related-issues-block gl-mt-5">
     <div class="card card-slim gl-overflow-hidden">
       <div
         :class="{ 'panel-empty-heading border-bottom-0': !hasBody }"

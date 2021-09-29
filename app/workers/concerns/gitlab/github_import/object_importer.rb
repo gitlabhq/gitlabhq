@@ -26,8 +26,7 @@ module Gitlab
         object = representation_class.from_json_hash(hash)
 
         # To better express in the logs what object is being imported.
-        self.github_id = object.attributes.fetch(:github_id)
-
+        self.github_identifiers = object.github_identifiers
         info(project.id, message: 'starting importer')
 
         importer_class.new(object, project, client).execute
@@ -35,10 +34,10 @@ module Gitlab
         Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
 
         info(project.id, message: 'importer finished')
-      rescue KeyError => e
+      rescue NoMethodError => e
         # This exception will be more useful in development when a new
         # Representation is created but the developer forgot to add a
-        # `:github_id` field.
+        # `:github_identifiers` field.
         Gitlab::Import::ImportFailureService.track(
           project_id: project.id,
           error_source: importer_class.name,
@@ -72,7 +71,7 @@ module Gitlab
 
       private
 
-      attr_accessor :github_id
+      attr_accessor :github_identifiers
 
       def info(project_id, extra = {})
         Logger.info(log_attributes(project_id, extra))
@@ -82,7 +81,7 @@ module Gitlab
         extra.merge(
           project_id: project_id,
           importer: importer_class.name,
-          github_id: github_id
+          github_identifiers: github_identifiers
         )
       end
     end

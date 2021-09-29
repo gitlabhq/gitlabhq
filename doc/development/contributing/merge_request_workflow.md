@@ -18,8 +18,8 @@ in order to ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled, it is best to first create
 an issue (if there isn't one already) and leave a comment asking for it
-to be marked as `Accepting Merge Requests`. Please include screenshots or
-wireframes of the proposed feature if it will also change the UI.
+to be marked as `Accepting merge requests`. See the [feature proposals](issue_workflow.md#feature-proposals)
+section.
 
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
 [GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests),

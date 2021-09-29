@@ -45,6 +45,7 @@ export default () => {
   new Vue({
     el,
     name: 'CycleAnalytics',
+    apolloProvider: {},
     store,
     render: (createElement) =>
       createElement(CycleAnalytics, {

@@ -432,9 +432,9 @@ RSpec.describe Namespace do
   end
 
   describe '.search' do
-    let_it_be(:first_group) { build(:group, name: 'my first namespace', path: 'old-path').tap(&:save!) }
-    let_it_be(:parent_group) { build(:group, name: 'my parent namespace', path: 'parent-path').tap(&:save!) }
-    let_it_be(:second_group) { build(:group, name: 'my second namespace', path: 'new-path', parent: parent_group).tap(&:save!) }
+    let_it_be(:first_group) { create(:group, name: 'my first namespace', path: 'old-path') }
+    let_it_be(:parent_group) { create(:group, name: 'my parent namespace', path: 'parent-path') }
+    let_it_be(:second_group) { create(:group, name: 'my second namespace', path: 'new-path', parent: parent_group) }
     let_it_be(:project_with_same_path) { create(:project, id: second_group.id, path: first_group.path) }
 
     it 'returns namespaces with a matching name' do

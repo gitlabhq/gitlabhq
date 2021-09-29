@@ -298,6 +298,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        resources :cluster_agents, only: [:show], param: :name
+
         concerns :clusterable
 
         namespace :serverless do

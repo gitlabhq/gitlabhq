@@ -5,15 +5,18 @@ module Users
     include NewUserNotifier
     attr_reader :user, :identity_params
 
+    ATTRS_REQUIRING_PASSWORD_CHECK = %w[email].freeze
+
     def initialize(current_user, params = {})
       @current_user = current_user
+      @validation_password = params.delete(:validation_password)
       @user = params.delete(:user)
       @status_params = params.delete(:status)
       @identity_params = params.slice(*identity_attributes)
       @params = params.dup
     end
 
-    def execute(validate: true, &block)
+    def execute(validate: true, check_password: false, &block)
       yield(@user) if block_given?
 
       user_exists = @user.persisted?
@@ -21,6 +24,11 @@ module Users
 
       discard_read_only_attributes
       assign_attributes
+
+      if check_password && require_password_check? && !@user.valid_password?(@validation_password)
+        return error(s_("Profiles|Invalid password"))
+      end
+
       assign_identity
       build_canonical_email
 
@@ -32,8 +40,8 @@ module Users
       end
     end
 
-    def execute!(*args, &block)
-      result = execute(*args, &block)
+    def execute!(*args, **kargs, &block)
+      result = execute(*args, **kargs, &block)
 
       raise ActiveRecord::RecordInvalid, @user unless result[:status] == :success
 
@@ -41,6 +49,14 @@ module Users
     end
 
     private
+
+    def require_password_check?
+      return false unless @user.persisted?
+      return false if @user.password_automatically_set?
+
+      changes = @user.changed
+      ATTRS_REQUIRING_PASSWORD_CHECK.any? { |param| changes.include?(param) }
+    end
 
     def build_canonical_email
       return unless @user.email_changed?

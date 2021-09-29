@@ -16,8 +16,7 @@ module Gitlab
           new(
             oid: lfs_object.oid,
             link: lfs_object.link,
-            size: lfs_object.size,
-            github_id: lfs_object.oid
+            size: lfs_object.size
           )
         end
 
@@ -30,6 +29,12 @@ module Gitlab
         #              Hash must be Symbols.
         def initialize(attributes)
           @attributes = attributes
+        end
+
+        def github_identifiers
+          {
+            oid: oid
+          }
         end
       end
     end

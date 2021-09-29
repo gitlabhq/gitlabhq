@@ -32,7 +32,10 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
     ])
   end
 
+  let(:iterator_params) { nil }
   let(:scope) { project.issues.reorder(custom_reorder) }
+
+  subject(:iterator) { described_class.new(**iterator_params) }
 
   shared_examples 'iterator examples' do
     describe '.each_batch' do
@@ -54,6 +57,30 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
         iterator.each_batch(of: 2) { |relation| count += relation.count(:all) }
 
         expect(count).to eq(9)
+      end
+
+      it 'continues after the cursor' do
+        loaded_records = []
+        cursor = nil
+
+        # stopping the iterator after the first batch and storing the cursor
+        iterator.each_batch(of: 2) do |relation| # rubocop: disable Lint/UnreachableLoop
+          loaded_records.concat(relation.to_a)
+          record = loaded_records.last
+
+          cursor = custom_reorder.cursor_attributes_for_node(record)
+          break
+        end
+
+        expect(loaded_records).to eq(project.issues.order(custom_reorder).take(2))
+
+        # continuing the iteration
+        new_iterator = described_class.new(**iterator_params.merge(cursor: cursor))
+        new_iterator.each_batch(of: 2) do |relation|
+          loaded_records.concat(relation.to_a)
+        end
+
+        expect(loaded_records).to eq(project.issues.order(custom_reorder))
       end
 
       it 'allows updating of the yielded relations' do
@@ -131,13 +158,13 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
   end
 
   context 'when use_union_optimization is used' do
-    subject(:iterator) { described_class.new(scope: scope, use_union_optimization: true) }
+    let(:iterator_params) { { scope: scope, use_union_optimization: true } }
 
     include_examples 'iterator examples'
   end
 
   context 'when use_union_optimization is not used' do
-    subject(:iterator) { described_class.new(scope: scope, use_union_optimization: false) }
+    let(:iterator_params) { { scope: scope, use_union_optimization: false } }
 
     include_examples 'iterator examples'
   end

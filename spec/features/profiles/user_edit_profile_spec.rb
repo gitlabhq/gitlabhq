@@ -19,6 +19,17 @@ RSpec.describe 'User edit profile' do
     wait_for_requests if respond_to?(:wait_for_requests)
   end
 
+  def update_user_email
+    fill_in 'user_email', with: 'new-email@example.com'
+    click_button 'Update profile settings'
+  end
+
+  def confirm_password(password)
+    fill_in 'password-confirmation', with: password
+    click_button 'Confirm password'
+    wait_for_requests if respond_to?(:wait_for_requests)
+  end
+
   def visit_user
     visit user_path(user)
     wait_for_requests
@@ -88,16 +99,42 @@ RSpec.describe 'User edit profile' do
     expect(page).to have_content('Website url is not a valid URL')
   end
 
-  describe 'when I change my email' do
+  describe 'when I change my email', :js do
     before do
       user.send_reset_password_instructions
+    end
+
+    it 'will prompt to confirm my password' do
+      expect(user.reset_password_token?).to be true
+
+      update_user_email
+
+      expect(page).to have_selector('[data-testid="password-prompt-modal"]')
+    end
+
+    context 'when prompted to confirm password' do
+      before do
+        update_user_email
+      end
+
+      it 'with the correct password successfully updates' do
+        confirm_password(user.password)
+
+        expect(page).to have_text("Profile was successfully updated")
+      end
+
+      it 'with the incorrect password fails to update' do
+        confirm_password("Fake password")
+
+        expect(page).to have_text("Invalid password")
+      end
     end
 
     it 'clears the reset password token' do
       expect(user.reset_password_token?).to be true
 
-      fill_in 'user_email', with: 'new-email@example.com'
-      submit_settings
+      update_user_email
+      confirm_password(user.password)
 
       user.reload
       expect(user.confirmation_token).not_to be_nil

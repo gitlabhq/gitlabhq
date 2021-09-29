@@ -2,51 +2,51 @@ import { s__ } from '~/locale';
 
 export const PIPELINE_SOURCES = [
   {
-    text: s__('Pipeline|Source|Push'),
+    text: s__('PipelineSource|Push'),
     value: 'push',
   },
   {
-    text: s__('Pipeline|Source|Web'),
+    text: s__('PipelineSource|Web'),
     value: 'web',
   },
   {
-    text: s__('Pipeline|Source|Trigger'),
+    text: s__('PipelineSource|Trigger'),
     value: 'trigger',
   },
   {
-    text: s__('Pipeline|Source|Schedule'),
+    text: s__('PipelineSource|Schedule'),
     value: 'schedule',
   },
   {
-    text: s__('Pipeline|Source|API'),
+    text: s__('PipelineSource|API'),
     value: 'api',
   },
   {
-    text: s__('Pipeline|Source|External'),
+    text: s__('PipelineSource|External'),
     value: 'external',
   },
   {
-    text: s__('Pipeline|Source|Pipeline'),
+    text: s__('PipelineSource|Pipeline'),
     value: 'pipeline',
   },
   {
-    text: s__('Pipeline|Source|Chat'),
+    text: s__('PipelineSource|Chat'),
     value: 'chat',
   },
   {
-    text: s__('Pipeline|Source|Web IDE'),
+    text: s__('PipelineSource|Web IDE'),
     value: 'webide',
   },
   {
-    text: s__('Pipeline|Source|Merge Request'),
+    text: s__('PipelineSource|Merge Request'),
     value: 'merge_request_event',
   },
   {
-    text: s__('Pipeline|Source|External Pull Request'),
+    text: s__('PipelineSource|External Pull Request'),
     value: 'external_pull_request_event',
   },
   {
-    text: s__('Pipeline|Source|Parent Pipeline'),
+    text: s__('PipelineSource|Parent Pipeline'),
     value: 'parent_pipeline',
   },
 ];

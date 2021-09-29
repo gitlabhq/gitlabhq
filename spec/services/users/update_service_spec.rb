@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Users::UpdateService do
-  let(:user) { create(:user) }
+  let(:password) { 'longsecret987!' }
+  let(:user) { create(:user, password: password, password_confirmation: password) }
 
   describe '#execute' do
     it 'updates time preferences' do
@@ -18,7 +19,7 @@ RSpec.describe Users::UpdateService do
     it 'returns an error result when record cannot be updated' do
       result = {}
       expect do
-        result = update_user(user, { email: 'invalid' })
+        result = update_user(user, { email: 'invalid', validation_password: password })
       end.not_to change { user.reload.email }
       expect(result[:status]).to eq(:error)
       expect(result[:message]).to eq('Email is invalid')
@@ -65,7 +66,7 @@ RSpec.describe Users::UpdateService do
     context 'updating canonical email' do
       context 'if email was changed' do
         subject do
-          update_user(user, email: 'user+extrastuff@example.com')
+          update_user(user, email: 'user+extrastuff@example.com', validation_password: password)
         end
 
         it 'calls canonicalize_email' do
@@ -75,15 +76,68 @@ RSpec.describe Users::UpdateService do
 
           subject
         end
+
+        context 'when check_password is true' do
+          def update_user(user, opts)
+            described_class.new(user, opts.merge(user: user)).execute(check_password: true)
+          end
+
+          it 'returns error if no password confirmation was passed', :aggregate_failures do
+            result = {}
+
+            expect do
+              result = update_user(user, { email: 'example@example.com' })
+            end.not_to change { user.reload.unconfirmed_email }
+            expect(result[:status]).to eq(:error)
+            expect(result[:message]).to eq('Invalid password')
+          end
+
+          it 'returns error if wrong password confirmation was passed', :aggregate_failures do
+            result = {}
+
+            expect do
+              result = update_user(user, { email: 'example@example.com', validation_password: 'wrongpassword' })
+            end.not_to change { user.reload.unconfirmed_email }
+            expect(result[:status]).to eq(:error)
+            expect(result[:message]).to eq('Invalid password')
+          end
+
+          it 'does not require password if it was automatically set', :aggregate_failures do
+            user.update!(password_automatically_set: true)
+            result = {}
+
+            expect do
+              result = update_user(user, { email: 'example@example.com' })
+            end.to change { user.reload.unconfirmed_email }
+            expect(result[:status]).to eq(:success)
+          end
+
+          it 'does not require a password if the attribute changed does not require it' do
+            result = {}
+
+            expect do
+              result = update_user(user, { job_title: 'supreme leader of the universe' })
+            end.to change { user.reload.job_title }
+            expect(result[:status]).to eq(:success)
+          end
+        end
+      end
+
+      context 'when check_password is left to false' do
+        it 'does not require a password check', :aggregate_failures do
+          result = {}
+          expect do
+            result = update_user(user, { email: 'example@example.com' })
+          end.to change { user.reload.unconfirmed_email }
+          expect(result[:status]).to eq(:success)
+        end
       end
 
       context 'if email was NOT changed' do
-        subject do
-          update_user(user, job_title: 'supreme leader of the universe')
-        end
-
         it 'skips update canonicalize email service call' do
-          expect { subject }.not_to change { user.user_canonical_email }
+          expect do
+            update_user(user, job_title: 'supreme leader of the universe')
+          end.not_to change { user.user_canonical_email }
         end
       end
     end
@@ -106,7 +160,7 @@ RSpec.describe Users::UpdateService do
 
     it 'raises an error when record cannot be updated' do
       expect do
-        update_user(user, email: 'invalid')
+        update_user(user, email: 'invalid', validation_password: password)
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 

@@ -1040,3 +1040,17 @@ $tabs-holder-z-index: 250;
     margin-bottom: 1px;
   }
 }
+
+.mr-widget-extension-icon::before {
+  @include gl-content-empty;
+  @include gl-absolute;
+  @include gl-left-0;
+  @include gl-top-0;
+  @include gl-opacity-3;
+  @include gl-border-solid;
+  @include gl-border-4;
+  @include gl-rounded-full;
+
+  width: 24px;
+  height: 24px;
+}

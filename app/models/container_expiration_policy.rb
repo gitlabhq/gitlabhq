@@ -74,6 +74,7 @@ class ContainerExpirationPolicy < ApplicationRecord
       '7d': _('%{days} days until tags are automatically removed') % { days: 7 },
       '14d': _('%{days} days until tags are automatically removed') % { days: 14 },
       '30d': _('%{days} days until tags are automatically removed') % { days: 30 },
+      '60d': _('%{days} days until tags are automatically removed') % { days: 60 },
       '90d': _('%{days} days until tags are automatically removed') % { days: 90 }
     }
   end

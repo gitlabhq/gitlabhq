@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ObjectImporter do
+RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
   let(:worker) do
     Class.new do
       def self.name
@@ -26,9 +26,15 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
   let(:importer_class) { double(:importer_class, name: 'klass_name') }
   let(:importer_instance) { double(:importer_instance) }
   let(:client) { double(:client) }
+  let(:github_identifiers) do
+    {
+      some_id: 1,
+      some_type: '_some_type_'
+    }
+  end
 
-  before do
-    stub_const('MockRepresantation', Class.new do
+  let(:representation_class) do
+    Class.new do
       include Gitlab::GithubImport::Representation::ToHash
       include Gitlab::GithubImport::Representation::ExposeAttribute
 
@@ -41,7 +47,20 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       def initialize(attributes)
         @attributes = attributes
       end
-    end)
+
+      def github_identifiers
+        {
+          some_id: 1,
+          some_type: '_some_type_'
+        }
+      end
+    end
+  end
+
+  let(:stubbed_representation) { representation_class }
+
+  before do
+    stub_const('MockRepresantation', stubbed_representation)
   end
 
   describe '#import', :clean_gitlab_redis_cache do
@@ -64,7 +83,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          github_id: 1,
+          github_identifiers: github_identifiers,
           message: 'starting importer',
           project_id: project.id,
           importer: 'klass_name'
@@ -73,7 +92,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          github_id: 1,
+          github_identifiers: github_identifiers,
           message: 'importer finished',
           project_id: project.id,
           importer: 'klass_name'
@@ -101,7 +120,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          github_id: 1,
+          github_identifiers: github_identifiers,
           message: 'starting importer',
           project_id: project.id,
           importer: 'klass_name'
@@ -125,21 +144,25 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       expect(project.import_failures.last.exception_message).to eq('some error')
     end
 
-    it 'logs error when representation does not have a github_id' do
-      expect(importer_class).not_to receive(:new)
+    context 'without github_identifiers defined' do
+      let(:stubbed_representation) { representation_class.instance_eval { undef_method :github_identifiers } }
 
-      expect(Gitlab::Import::ImportFailureService)
-        .to receive(:track)
-        .with(
-          project_id: project.id,
-          exception: a_kind_of(KeyError),
-          error_source: 'klass_name',
-          fail_import: true
-        )
-        .and_call_original
+      it 'logs error when representation does not have a github_id' do
+        expect(importer_class).not_to receive(:new)
 
-      expect { worker.import(project, client, { 'number' => 10 }) }
-        .to raise_error(KeyError, 'key not found: :github_id')
+        expect(Gitlab::Import::ImportFailureService)
+          .to receive(:track)
+          .with(
+            project_id: project.id,
+            exception: a_kind_of(NoMethodError),
+            error_source: 'klass_name',
+            fail_import: true
+          )
+          .and_call_original
+
+        expect { worker.import(project, client, { 'number' => 10 }) }
+          .to raise_error(NoMethodError, /^undefined method `github_identifiers/)
+      end
     end
   end
 end

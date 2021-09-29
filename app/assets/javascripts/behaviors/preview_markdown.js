@@ -81,7 +81,7 @@ MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {
     })
     .catch(() =>
       createFlash({
-        message: __('An error occurred while fetching markdown preview'),
+        message: __('An error occurred while fetching Markdown preview'),
       }),
     );
 };

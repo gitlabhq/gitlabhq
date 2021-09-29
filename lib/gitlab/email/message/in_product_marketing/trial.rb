@@ -15,7 +15,7 @@ module Gitlab
 
           def tagline
             [
-              s_('InProductMarketing|Start a free trial of GitLab Ultimate – no CC required'),
+              s_('InProductMarketing|Start a free trial of GitLab Ultimate – no credit card required'),
               s_('InProductMarketing|Improve app security with a 30-day trial'),
               s_('InProductMarketing|Start with a GitLab Ultimate free trial')
             ][series]

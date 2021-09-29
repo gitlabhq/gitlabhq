@@ -5,7 +5,7 @@
 - availability = availability_values
 - custom_emoji = show_status_emoji?(@user.status)
 
-= bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user gl-mt-3 js-quick-submit gl-show-field-errors' }, authenticity_token: true do |f|
+= bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
   = form_errors(@user)
 
   .row.js-search-settings-section
@@ -124,8 +124,10 @@
       .help-block
         = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
   %hr
-  = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3'
+  = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3 js-password-prompt-btn'
   = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
+
+#password-prompt-modal
 
 .modal.modal-profile-crop{ data: { cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css') } }
   .modal-dialog

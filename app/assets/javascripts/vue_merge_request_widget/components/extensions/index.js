@@ -1,12 +1,13 @@
+import Vue from 'vue';
 import ExtensionBase from './base.vue';
 
 // Holds all the currently registered extensions
-export const extensions = [];
+export const registeredExtensions = Vue.observable({ extensions: [] });
 
 export const registerExtension = (extension) => {
   // Pushes into the extenions array a dynamically created Vue component
   // that gets exteneded from `base.vue`
-  extensions.push({
+  registeredExtensions.extensions.push({
     extends: ExtensionBase,
     name: extension.name,
     props: extension.props,

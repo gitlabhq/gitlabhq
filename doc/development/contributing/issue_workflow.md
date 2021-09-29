@@ -342,19 +342,22 @@ To create a feature proposal, open an issue on the
 [issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
 In order to help track the feature proposals, we have created a
-[`feature`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=feature) label. For the time being, users that are not members
-of the project cannot add labels. You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
-members to add the label ~feature to the issue or add the following
+[`feature`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=feature) label.
+For the time being, users that are not members of the project cannot add labels.
+You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
+members to add the label `~feature` to the issue or add the following
 code snippet right after your description in a new line: `~feature`.
 
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) provided on the issue tracker.
+Please submit feature proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) provided on the issue tracker.
 
-For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
-be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
-need to ask one of the [core team](https://about.gitlab.com/community/core-team/) members to add the label, if you do not have permissions to do it by yourself.
+For changes to the user interface (UI), follow our [design and UI guidelines](design.md),
+and include a visual example (screenshot, wireframe, or mockup). Such issues should
+be given the `~UX"` label for the Product Design team to provide input and guidance.
+You may need to ask one of the [core team](https://about.gitlab.com/community/core-team/)
+members to add the label, if you do not have permissions to do it by yourself.
 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.

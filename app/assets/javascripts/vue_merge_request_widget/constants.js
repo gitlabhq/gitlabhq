@@ -91,4 +91,19 @@ export const stateToTransitionMap = {
 export const stateToComponentMap = {
   [states.MERGING]: classStateMap[stateKey.merging],
 };
+
+export const EXTENSION_ICONS = {
+  failed: 'status-failed',
+  warning: 'status-alert',
+  success: 'status-success',
+  neutral: 'status-neutral',
+};
+
+export const EXTENSION_ICON_CLASS = {
+  [EXTENSION_ICONS.failed]: 'gl-text-red-500',
+  [EXTENSION_ICONS.warning]: 'gl-text-orange-500',
+  [EXTENSION_ICONS.success]: 'gl-text-green-500',
+  [EXTENSION_ICONS.neutral]: 'gl-text-gray-400',
+};
+
 export { STATE_MACHINE };

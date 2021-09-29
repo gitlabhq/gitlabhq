@@ -1,11 +1,12 @@
 /* eslint-disable */
+import { EXTENSION_ICONS } from '../constants';
 import issuesCollapsedQuery from './issues_collapsed.query.graphql';
 import issuesQuery from './issues.query.graphql';
 
 export default {
   // Give the extension a name
   // Make it easier to track in Vue dev tools
-  name: 'WidgetIssues',
+  name: 'Issues',
   // Add an array of props
   // These then get mapped to values stored in the MR Widget store
   props: ['targetProjectFullPath'],
@@ -14,12 +15,12 @@ export default {
     // Small summary text to be displayed in the collapsed state
     // Receives the collapsed data as an argument
     summary(count) {
-      return `<strong>${count}</strong> open issue`;
+      return 'Summary text';
     },
     // Status icon to be used next to the summary text
     // Receives the collapsed data as an argument
     statusIcon(count) {
-      return count > 0 ? 'warning' : 'success';
+      return EXTENSION_ICONS.warning;
     },
   },
   methods: {

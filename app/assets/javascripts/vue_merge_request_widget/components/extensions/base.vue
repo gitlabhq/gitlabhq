@@ -1,7 +1,8 @@
 <script>
 import { GlButton, GlLoadingIcon, GlIcon, GlLink, GlBadge, GlSafeHtmlDirective } from '@gitlab/ui';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
-import StatusIcon from '../mr_widget_status_icon.vue';
+import { EXTENSION_ICON_CLASS } from '../../constants';
+import StatusIcon from './status_icon.vue';
 
 export const LOADING_STATES = {
   collapsedLoading: 'collapsedLoading',
@@ -45,14 +46,6 @@ export default {
       return true;
     },
     statusIconName() {
-      if (this.isLoadingSummary) {
-        return 'loading';
-      }
-
-      if (this.loadingState === LOADING_STATES.collapsedError) {
-        return 'warning';
-      }
-
       return this.statusIcon(this.collapsedData);
     },
   },
@@ -96,13 +89,18 @@ export default {
         });
     },
   },
+  EXTENSION_ICON_CLASS,
 };
 </script>
 
 <template>
-  <section class="media-section mr-widget-border-top">
+  <section class="media-section mr-widget-border-top" data-testid="widget-extension">
     <div class="media gl-p-5">
-      <status-icon :status="statusIconName" class="align-self-center" />
+      <status-icon
+        :name="$options.name"
+        :is-loading="isLoadingSummary"
+        :icon-name="statusIconName"
+      />
       <div class="media-body d-flex flex-align-self-center align-items-center">
         <div class="code-text">
           <template v-if="isLoadingSummary">
@@ -114,13 +112,18 @@ export default {
           v-if="isCollapsible"
           size="small"
           class="float-right align-self-center"
+          data-testid="toggle-button"
           @click="toggleCollapsed"
         >
           {{ isCollapsed ? __('Expand') : __('Collapse') }}
         </gl-button>
       </div>
     </div>
-    <div v-if="!isCollapsed" class="mr-widget-grouped-section">
+    <div
+      v-if="!isCollapsed"
+      class="mr-widget-grouped-section"
+      data-testid="widget-extension-collapsed-section"
+    >
       <div v-if="isLoadingExpanded" class="report-block-container">
         <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
       </div>

@@ -100,6 +100,12 @@ Array [
     "variable": 30,
   },
   Object {
+    "default": false,
+    "key": "SIXTY_DAYS",
+    "label": "60 days",
+    "variable": 60,
+  },
+  Object {
     "default": true,
     "key": "NINETY_DAYS",
     "label": "90 days",

@@ -1,13 +1,16 @@
+import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
 import SmartInterval from '~/smart_interval';
+import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
@@ -15,6 +18,7 @@ import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
+import testExtension from './test_extension';
 
 jest.mock('~/smart_interval');
 
@@ -877,6 +881,48 @@ describe('MrWidgetOptions', () => {
 
         expect(findSuggestPipeline().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('mock extension', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders collapsed data', async () => {
+      registerExtension(testExtension);
+
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('Test extension summary count: 1');
+    });
+
+    it('renders full data', async () => {
+      registerExtension(testExtension);
+
+      await waitForPromises();
+
+      wrapper
+        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
+        .trigger('click');
+
+      await Vue.nextTick();
+
+      const collapsedSection = wrapper.find('[data-testid="widget-extension-collapsed-section"]');
+      expect(collapsedSection.exists()).toBe(true);
+      expect(collapsedSection.text()).toContain('Hello world');
+
+      // Renders icon in the row
+      expect(collapsedSection.find(GlIcon).exists()).toBe(true);
+      expect(collapsedSection.find(GlIcon).props('name')).toBe('status_failed_borderless');
+
+      // Renders badge in the row
+      expect(collapsedSection.find(GlBadge).exists()).toBe(true);
+      expect(collapsedSection.find(GlBadge).text()).toBe('Closed');
+
+      // Renders a link in the row
+      expect(collapsedSection.find(GlLink).exists()).toBe(true);
+      expect(collapsedSection.find(GlLink).text()).toBe('GitLab.com');
     });
   });
 });

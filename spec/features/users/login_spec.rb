@@ -874,7 +874,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when the user does not have an email configured' do
+    context 'when the user does not have an email configured', :js do
       let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml', email: 'temp-email-for-oauth-user@gitlab.localhost') }
 
       before do
