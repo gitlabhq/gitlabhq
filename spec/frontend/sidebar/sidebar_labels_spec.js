@@ -110,10 +110,9 @@ describe('sidebar labels', () => {
           mutation: updateIssueLabelsMutation,
           variables: {
             input: {
-              addLabelIds: [40],
               iid: defaultProps.iid,
               projectPath: defaultProps.projectPath,
-              removeLabelIds: [26, 55],
+              labelIds: [toLabelGid(29), toLabelGid(28), toLabelGid(27), toLabelGid(40)],
             },
           },
         };

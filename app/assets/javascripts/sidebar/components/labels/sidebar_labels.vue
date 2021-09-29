@@ -53,30 +53,32 @@ export default {
     handleDropdownClose() {
       $(this.$el).trigger('hidden.gl.dropdown');
     },
-    getUpdateVariables(dropdownLabels) {
-      const currentLabelIds = this.selectedLabels.map((label) => label.id);
-      const dropdownLabelIds = dropdownLabels.map((label) => label.id);
-      const userAddedLabelIds = this.glFeatures.labelsWidget
-        ? difference(dropdownLabelIds, currentLabelIds)
-        : dropdownLabels.filter((label) => label.set).map((label) => label.id);
-      const userRemovedLabelIds = this.glFeatures.labelsWidget
-        ? difference(currentLabelIds, dropdownLabelIds)
-        : dropdownLabels.filter((label) => !label.set).map((label) => label.id);
+    getUpdateVariables(labels) {
+      let labelIds = [];
 
-      const labelIds = difference(union(currentLabelIds, userAddedLabelIds), userRemovedLabelIds);
+      if (this.glFeatures.labelsWidget) {
+        labelIds = labels.map(({ id }) => toLabelGid(id));
+      } else {
+        const currentLabelIds = this.selectedLabels.map((label) => label.id);
+        const userAddedLabelIds = labels.filter((label) => label.set).map((label) => label.id);
+        const userRemovedLabelIds = labels.filter((label) => !label.set).map((label) => label.id);
+
+        labelIds = difference(union(currentLabelIds, userAddedLabelIds), userRemovedLabelIds).map(
+          toLabelGid,
+        );
+      }
 
       switch (this.issuableType) {
         case IssuableType.Issue:
           return {
-            addLabelIds: userAddedLabelIds,
             iid: this.iid,
             projectPath: this.projectPath,
-            removeLabelIds: userRemovedLabelIds,
+            labelIds,
           };
         case IssuableType.MergeRequest:
           return {
             iid: this.iid,
-            labelIds: labelIds.map(toLabelGid),
+            labelIds,
             operationMode: MutationOperationMode.Replace,
             projectPath: this.projectPath,
           };
@@ -152,8 +154,8 @@ export default {
     :labels-select-in-progress="isLabelsSelectInProgress"
     :selected-labels="selectedLabels"
     :variant="$options.variant"
+    :issuable-type="issuableType"
     data-qa-selector="labels_block"
-    @onDropdownClose="handleDropdownClose"
     @onLabelRemove="handleLabelRemove"
     @updateSelectedLabels="handleUpdateSelectedLabels"
   >

@@ -241,6 +241,7 @@ function mountMilestoneSelect() {
 
 export function mountSidebarLabels() {
   const el = document.querySelector('.js-sidebar-labels');
+  const { fullPath } = getSidebarOptions();
 
   if (!el) {
     return false;
@@ -251,6 +252,7 @@ export function mountSidebarLabels() {
     apolloProvider,
     provide: {
       ...el.dataset,
+      fullPath,
       allowLabelCreate: parseBoolean(el.dataset.allowLabelCreate),
       allowLabelEdit: parseBoolean(el.dataset.canEdit),
       allowScopedLabels: parseBoolean(el.dataset.allowScopedLabels),

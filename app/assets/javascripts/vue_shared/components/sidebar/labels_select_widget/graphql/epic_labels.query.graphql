@@ -1,0 +1,15 @@
+query epicLabels($fullPath: ID!, $iid: ID) {
+  workspace: group(fullPath: $fullPath) {
+    issuable: epic(iid: $iid) {
+      id
+      labels {
+        nodes {
+          id
+          title
+          color
+          description
+        }
+      }
+    }
+  }
+}

@@ -50,7 +50,7 @@ module Gitlab
           def cta_link
             case format
             when :html
-              link_to cta_text, group_email_campaigns_url(group, track: track, series: series), target: '_blank', rel: 'noopener noreferrer'
+              ActionController::Base.helpers.link_to cta_text, group_email_campaigns_url(group, track: track, series: series), target: '_blank', rel: 'noopener noreferrer'
             else
               [cta_text, group_email_campaigns_url(group, track: track, series: series)].join(' >> ')
             end
@@ -89,7 +89,7 @@ module Gitlab
             case format
             when :html
               links.map do |text, link|
-                link_to(text, link)
+                ActionController::Base.helpers.link_to(text, link)
               end
             else
               '| ' + links.map do |text, link|

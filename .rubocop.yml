@@ -28,7 +28,6 @@ AllCops:
     - 'node_modules/**/*'
     - 'db/fixtures/**/*'
     - 'db/schema.rb'
-    - 'ee/db/geo/schema.rb'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'

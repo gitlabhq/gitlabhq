@@ -1,12 +1,18 @@
 <script>
-import { GlDropdownForm, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlDropdownForm,
+  GlDropdownItem,
+  GlLoadingIcon,
+  GlSearchBoxByType,
+  GlIntersectionObserver,
+} from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
-import projectLabelsQuery from './graphql/project_labels.query.graphql';
+import { labelsQueries } from '~/sidebar/constants';
 import LabelItem from './label_item.vue';
 
 export default {
@@ -15,9 +21,13 @@ export default {
     GlDropdownItem,
     GlLoadingIcon,
     GlSearchBoxByType,
+    GlIntersectionObserver,
     LabelItem,
   },
-  inject: ['projectPath'],
+  inject: ['fullPath'],
+  model: {
+    prop: 'localSelectedLabels',
+  },
   props: {
     selectedLabels: {
       type: Array,
@@ -27,20 +37,29 @@ export default {
       type: Boolean,
       required: true,
     },
+    issuableType: {
+      type: String,
+      required: true,
+    },
+    localSelectedLabels: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
       searchKey: '',
       labels: [],
-      localSelectedLabels: [...this.selectedLabels],
     };
   },
   apollo: {
     labels: {
-      query: projectLabelsQuery,
+      query() {
+        return labelsQueries[this.issuableType].workspaceQuery;
+      },
       variables() {
         return {
-          fullPath: this.projectPath,
+          fullPath: this.fullPath,
           searchTerm: this.searchKey,
         };
       },
@@ -50,8 +69,8 @@ export default {
       update: (data) => data.workspace?.labels?.nodes || [],
       async result() {
         if (this.$refs.searchInput) {
-          await this.$nextTick();
-          this.$refs.searchInput.focusInput();
+          await this.$nextTick;
+          this.focusInputField();
         }
       },
       error() {
@@ -82,7 +101,6 @@ export default {
     this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   beforeDestroy() {
-    this.$emit('setLabels', this.localSelectedLabels);
     this.debouncedSearchKeyUpdate.cancel();
   },
   methods: {
@@ -109,16 +127,19 @@ export default {
       }
     },
     updateSelectedLabels(label) {
+      let labels;
       if (this.isLabelSelected(label)) {
-        this.localSelectedLabels = this.localSelectedLabels.filter(
-          ({ id }) => id !== getIdFromGraphQLId(label.id),
-        );
+        labels = this.localSelectedLabels.filter(({ id }) => id !== getIdFromGraphQLId(label.id));
       } else {
-        this.localSelectedLabels.push({
-          ...label,
-          id: getIdFromGraphQLId(label.id),
-        });
+        labels = [
+          ...this.localSelectedLabels,
+          {
+            ...label,
+            id: getIdFromGraphQLId(label.id),
+          },
+        ];
       }
+      this.$emit('input', labels);
     },
     handleLabelClick(label) {
       this.updateSelectedLabels(label);
@@ -129,46 +150,51 @@ export default {
     setSearchKey(value) {
       this.searchKey = value;
     },
+    focusInputField() {
+      this.$refs.searchInput.focusInput();
+    },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown-form class="labels-select-contents-list js-labels-list">
-    <gl-search-box-by-type
-      ref="searchInput"
-      :value="searchKey"
-      :disabled="labelsFetchInProgress"
-      data-qa-selector="dropdown_input_field"
-      data-testid="dropdown-input-field"
-      @input="debouncedSearchKeyUpdate"
-    />
-    <div ref="labelsListContainer" data-testid="dropdown-content">
-      <gl-loading-icon
-        v-if="labelsFetchInProgress"
-        class="labels-fetch-loading gl-align-items-center gl-w-full gl-h-full"
-        size="md"
+  <gl-intersection-observer @appear="focusInputField">
+    <gl-dropdown-form class="labels-select-contents-list js-labels-list">
+      <gl-search-box-by-type
+        ref="searchInput"
+        :value="searchKey"
+        :disabled="labelsFetchInProgress"
+        data-qa-selector="dropdown_input_field"
+        data-testid="dropdown-input-field"
+        @input="debouncedSearchKeyUpdate"
       />
-      <template v-else>
-        <gl-dropdown-item
-          v-for="label in visibleLabels"
-          :key="label.id"
-          :is-checked="isLabelSelected(label)"
-          :is-check-centered="true"
-          :is-check-item="true"
-          data-testid="labels-list"
-          @click.native.capture.stop="handleLabelClick(label)"
-        >
-          <label-item :label="label" />
-        </gl-dropdown-item>
-        <gl-dropdown-item
-          v-show="showNoMatchingResultsMessage"
-          class="gl-p-3 gl-text-center"
-          data-testid="no-results"
-        >
-          {{ __('No matching results') }}
-        </gl-dropdown-item>
-      </template>
-    </div>
-  </gl-dropdown-form>
+      <div ref="labelsListContainer" data-testid="dropdown-content">
+        <gl-loading-icon
+          v-if="labelsFetchInProgress"
+          class="labels-fetch-loading gl-align-items-center gl-w-full gl-h-full gl-mb-3"
+          size="md"
+        />
+        <template v-else>
+          <gl-dropdown-item
+            v-for="label in visibleLabels"
+            :key="label.id"
+            :is-checked="isLabelSelected(label)"
+            :is-check-centered="true"
+            :is-check-item="true"
+            data-testid="labels-list"
+            @click.native.capture.stop="handleLabelClick(label)"
+          >
+            <label-item :label="label" />
+          </gl-dropdown-item>
+          <gl-dropdown-item
+            v-show="showNoMatchingResultsMessage"
+            class="gl-p-3 gl-text-center"
+            data-testid="no-results"
+          >
+            {{ __('No matching results') }}
+          </gl-dropdown-item>
+        </template>
+      </div>
+    </gl-dropdown-form>
+  </gl-intersection-observer>
 </template>

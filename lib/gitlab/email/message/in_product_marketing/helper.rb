@@ -7,7 +7,6 @@ module Gitlab
         module Helper
           include ActionView::Context
           include ActionView::Helpers::TagHelper
-          include ActionView::Helpers::UrlHelper
 
           private
 
@@ -32,7 +31,7 @@ module Gitlab
           def link(text, link)
             case format
             when :html
-              link_to text, link
+              ActionController::Base.helpers.link_to text, link
             else
               "#{text} (#{link})"
             end

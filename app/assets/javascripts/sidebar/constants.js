@@ -31,6 +31,10 @@ import updateIssueSubscriptionMutation from '~/sidebar/queries/update_issue_subs
 import mergeRequestMilestoneMutation from '~/sidebar/queries/update_merge_request_milestone.mutation.graphql';
 import updateMergeRequestSubscriptionMutation from '~/sidebar/queries/update_merge_request_subscription.mutation.graphql';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
+import epicLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_labels.query.graphql';
+import groupLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/group_labels.query.graphql';
+import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
+import projectLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
 import getAlertAssignees from '~/vue_shared/components/sidebar/queries/get_alert_assignees.query.graphql';
 import getIssueAssignees from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
 import issueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
@@ -102,6 +106,17 @@ export const referenceQueries = {
   },
   [IssuableType.Epic]: {
     query: epicReferenceQuery,
+  },
+};
+
+export const labelsQueries = {
+  [IssuableType.Issue]: {
+    issuableQuery: issueLabelsQuery,
+    workspaceQuery: projectLabelsQuery,
+  },
+  [IssuableType.Epic]: {
+    issuableQuery: epicLabelsQuery,
+    workspaceQuery: groupLabelsQuery,
   },
 };
 

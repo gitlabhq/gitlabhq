@@ -1,6 +1,5 @@
-import { GlDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-
+import { nextTick } from 'vue';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
@@ -8,10 +7,25 @@ import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_s
 
 import { mockLabels } from './mock_data';
 
+const showDropdown = jest.fn();
+
+const GlDropdownStub = {
+  template: `
+    <div data-testid="dropdown">
+      <slot name="header"></slot>
+      <slot></slot>
+      <slot name="footer"></slot>
+    </div>
+  `,
+  methods: {
+    show: showDropdown,
+  },
+};
+
 describe('DropdownContent', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, injected = {} } = {}) => {
+  const createComponent = ({ props = {}, injected = {}, data = {} } = {}) => {
     wrapper = shallowMount(DropdownContents, {
       propsData: {
         labelsCreateTitle: 'test',
@@ -22,7 +36,13 @@ describe('DropdownContent', () => {
         footerManageLabelTitle: 'manage',
         dropdownButtonText: 'Labels',
         variant: 'sidebar',
+        issuableType: 'issue',
         ...props,
+      },
+      data() {
+        return {
+          ...data,
+        };
       },
       provide: {
         allowLabelCreate: true,
@@ -30,30 +50,62 @@ describe('DropdownContent', () => {
         ...injected,
       },
       stubs: {
-        GlDropdown,
+        GlDropdown: GlDropdownStub,
       },
     });
   };
-
-  beforeEach(() => {
-    createComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
+  const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
+  const findLabelsView = () => wrapper.findComponent(DropdownContentsLabelsView);
+  const findDropdown = () => wrapper.findComponent(GlDropdownStub);
+
   const findDropdownFooter = () => wrapper.find('[data-testid="dropdown-footer"]');
+  const findDropdownHeader = () => wrapper.find('[data-testid="dropdown-header"]');
   const findCreateLabelButton = () => wrapper.find('[data-testid="create-label-button"]');
   const findGoBackButton = () => wrapper.find('[data-testid="go-back-button"]');
 
+  it('calls dropdown `show` method on component mount', () => {
+    createComponent();
+
+    expect(showDropdown).toHaveBeenCalled();
+  });
+
+  it('emits `setLabels` event on dropdown hide', () => {
+    createComponent();
+    findDropdown().vm.$emit('hide');
+
+    expect(wrapper.emitted('setLabels')).toEqual([[mockLabels]]);
+  });
+
+  it('does not render header on standalone variant', () => {
+    createComponent({ props: { variant: DropdownVariant.Standalone } });
+
+    expect(findDropdownHeader().exists()).toBe(false);
+  });
+
+  it('renders header on embedded variant', () => {
+    createComponent({ props: { variant: DropdownVariant.Embedded } });
+
+    expect(findDropdownHeader().exists()).toBe(true);
+  });
+
+  it('renders header on sidebar variant', () => {
+    createComponent();
+
+    expect(findDropdownHeader().exists()).toBe(true);
+  });
+
   describe('Create view', () => {
     beforeEach(() => {
-      wrapper.vm.toggleDropdownContentsCreateView();
+      createComponent({ data: { showDropdownContentsCreateView: true } });
     });
 
     it('renders create view when `showDropdownContentsCreateView` prop is `true`', () => {
-      expect(wrapper.findComponent(DropdownContentsCreateView).exists()).toBe(true);
+      expect(findCreateView().exists()).toBe(true);
     });
 
     it('does not render footer', () => {
@@ -67,11 +119,31 @@ describe('DropdownContent', () => {
     it('renders go back button', () => {
       expect(findGoBackButton().exists()).toBe(true);
     });
+
+    it('changes the view to Labels view on back button click', async () => {
+      findGoBackButton().vm.$emit('click', new MouseEvent('click'));
+      await nextTick();
+
+      expect(findCreateView().exists()).toBe(false);
+      expect(findLabelsView().exists()).toBe(true);
+    });
+
+    it('changes the view to Labels view on `hideCreateView` event', async () => {
+      findCreateView().vm.$emit('hideCreateView');
+      await nextTick();
+
+      expect(findCreateView().exists()).toBe(false);
+      expect(findLabelsView().exists()).toBe(true);
+    });
   });
 
   describe('Labels view', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('renders labels view when `showDropdownContentsCreateView` when `showDropdownContentsCreateView` prop is `false`', () => {
-      expect(wrapper.findComponent(DropdownContentsLabelsView).exists()).toBe(true);
+      expect(findLabelsView().exists()).toBe(true);
     });
 
     it('renders footer on sidebar dropdown', () => {
@@ -109,19 +181,12 @@ describe('DropdownContent', () => {
         expect(findCreateLabelButton().exists()).toBe(true);
       });
 
-      it('triggers `toggleDropdownContent` method on create label button click', () => {
-        jest.spyOn(wrapper.vm, 'toggleDropdownContent').mockImplementation(() => {});
+      it('changes the view to Create on create label button click', async () => {
         findCreateLabelButton().trigger('click');
 
-        expect(wrapper.vm.toggleDropdownContent).toHaveBeenCalled();
+        await nextTick();
+        expect(findLabelsView().exists()).toBe(false);
       });
-    });
-  });
-
-  describe('template', () => {
-    it('renders component container element with classes `gl-w-full gl-mt-2` and no styles', () => {
-      expect(wrapper.attributes('class')).toContain('gl-w-full gl-mt-2');
-      expect(wrapper.attributes('style')).toBeUndefined();
     });
   });
 });
