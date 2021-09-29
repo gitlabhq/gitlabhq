@@ -796,6 +796,14 @@ RSpec.describe Admin::UsersController do
 
         expect(flash[:alert]).to eq("You are now impersonating #{user.username}")
       end
+
+      it 'clears token session keys' do
+        session[:github_access_token] = SecureRandom.hex(8)
+
+        post :impersonate, params: { id: user.username }
+
+        expect(session[:github_access_token]).to be_nil
+      end
     end
 
     context "when impersonation is disabled" do

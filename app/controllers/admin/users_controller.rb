@@ -48,6 +48,7 @@ class Admin::UsersController < Admin::ApplicationController
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
+      clear_access_token_session_keys!
 
       log_impersonation_event
 
