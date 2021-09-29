@@ -86,6 +86,15 @@ RSpec.describe Gitlab::LegacyGithubImport::Client do
       it 'builds a endpoint with the given options' do
         expect(client.api.api_endpoint).to eq 'https://try.gitea.io/api/v3/'
       end
+
+      context 'and hostname' do
+        subject(:client) { described_class.new(token, host: 'https://167.99.148.217/', api_version: 'v1', hostname: 'try.gitea.io') }
+
+        it 'builds a endpoint with the given options' do
+          expect(client.api.connection_options.dig(:headers, :host)).to eq 'try.gitea.io'
+          expect(client.api.api_endpoint).to eq 'https://167.99.148.217/api/v1/'
+        end
+      end
     end
   end
 

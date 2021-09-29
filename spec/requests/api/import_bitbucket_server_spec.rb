@@ -28,6 +28,20 @@ RSpec.describe API::ImportBitbucketServer do
         Grape::Endpoint.before_each nil
       end
 
+      it 'rejects requests when Bitbucket Server Importer is disabled' do
+        stub_application_setting(import_sources: nil)
+
+        post api("/import/bitbucket_server", user), params: {
+          bitbucket_server_url: base_uri,
+          bitbucket_server_username: user,
+          personal_access_token: token,
+          bitbucket_server_project: project_key,
+          bitbucket_server_repo: repo_slug
+        }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
       it 'returns 201 response when the project is imported successfully' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
           .to receive(:new).with(project_key, repo_slug, anything, repo_slug, user.namespace, user, anything)

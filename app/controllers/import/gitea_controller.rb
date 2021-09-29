@@ -66,11 +66,13 @@ class Import::GiteaController < Import::GithubController
 
   override :client_options
   def client_options
-    { host: provider_url, api_version: 'v1' }
+    verified_url, provider_hostname = verify_blocked_uri
+
+    { host: verified_url.scheme == 'https' ? provider_url : verified_url.to_s, api_version: 'v1', hostname: provider_hostname }
   end
 
   def verify_blocked_uri
-    Gitlab::UrlBlocker.validate!(
+    @verified_url_and_hostname ||= Gitlab::UrlBlocker.validate!(
       provider_url,
       allow_localhost: allow_local_requests?,
       allow_local_network: allow_local_requests?,
