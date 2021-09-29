@@ -117,6 +117,7 @@ module Projects
       trash_relation_repositories!
       trash_project_repositories!
       destroy_web_hooks!
+      destroy_project_bots!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -148,6 +149,16 @@ module Projects
         end
       end
     end
+
+    # The project can have multiple project bots with personal access tokens generated.
+    # We need to remove them when a project is deleted
+    # rubocop: disable CodeReuse/ActiveRecord
+    def destroy_project_bots!
+      project.members.includes(:user).references(:user).merge(User.project_bot).each do |member|
+        Users::DestroyService.new(current_user).execute(member.user, skip_authorization: true)
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def remove_registry_tags
       return true unless Gitlab.config.registry.enabled
