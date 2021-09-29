@@ -117,7 +117,7 @@ export const createCommitPayload = ({
       action: commitActionForFile(f),
       file_path: f.path,
       previous_path: f.prevPath || undefined,
-      content: f.prevPath && !f.changed ? null : content || undefined,
+      content: content || undefined,
       encoding: isBlob ? 'base64' : 'text',
       last_commit_id: newBranch || f.deleted || f.prevPath ? undefined : f.lastCommitSha,
     };

@@ -233,7 +233,7 @@ RSpec.describe 'getting an issue list for a project' do
           let(:all_records) do
             [
               relative_issue5.iid, relative_issue3.iid, relative_issue1.iid,
-              relative_issue4.iid, relative_issue2.iid
+              relative_issue2.iid, relative_issue4.iid
             ]
           end
         end

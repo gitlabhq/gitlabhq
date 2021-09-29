@@ -222,17 +222,15 @@ RSpec.describe Issue do
     end
   end
 
-  describe '#order_by_position_and_priority' do
+  describe '#order_by_relative_position' do
     let(:project) { reusable_project }
-    let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
-    let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
-    let!(:issue1) { create(:labeled_issue, project: project, labels: [p1]) }
-    let!(:issue2) { create(:labeled_issue, project: project, labels: [p2]) }
+    let!(:issue1) { create(:issue, project: project) }
+    let!(:issue2) { create(:issue, project: project) }
     let!(:issue3) { create(:issue, project: project, relative_position: -200) }
     let!(:issue4) { create(:issue, project: project, relative_position: -100) }
 
     it 'returns ordered list' do
-      expect(project.issues.order_by_position_and_priority)
+      expect(project.issues.order_by_relative_position)
         .to match [issue3, issue4, issue1, issue2]
     end
   end

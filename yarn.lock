@@ -974,10 +974,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.11.1":
-  version "32.11.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.11.1.tgz#05b1587cb3df06abdebe9f06d744c5f18c90a0bb"
-  integrity sha512-LzqEA2aiaqN39qwqNw039Hv9abFsYZJu0RpXikx6/OKCYwVRvynja7oRMwkB2Q+xLOb7YfOoQweWUk1jo6hElw==
+"@gitlab/ui@32.11.2":
+  version "32.11.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.11.2.tgz#c18456543700b84ec473eccf9871a75d416984cb"
+  integrity sha512-taJ7aLAt8xG2NB9Rwgve9u+BGn788wgsEe6wjx4crEEWJ3EemXr/zmTe6kzSgo+n/zjZfFBRLl0vjUWCj5ylSQ==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.18.1"
@@ -3819,10 +3819,10 @@ core-js-pure@^3.0.0:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.6.5.tgz#c79e75f5e38dbc85a662d91eea52b8256d53b813"
   integrity sha512-lacdXOimsiD0QyNf9BC/mxivNJ/ybBGJXQFKzRekp1WTHoVUWsUHEn+2T8GJAzzIhyOuXA+gOxCVN3l+5PLPUA==
 
-core-js@^3.18.0:
-  version "3.18.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.18.0.tgz#9af3f4a6df9ba3428a3fb1b171f1503b3f40cc49"
-  integrity sha512-WJeQqq6jOYgVgg4NrXKL0KLQhi0CT4ZOCvFL+3CQ5o7I6J8HkT5wd53EadMfqTDp1so/MT1J+w2ujhWcCJtN7w==
+core-js@^3.18.1:
+  version "3.18.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.18.1.tgz#289d4be2ce0085d40fc1244c0b1a54c00454622f"
+  integrity sha512-vJlUi/7YdlCZeL6fXvWNaLUPh/id12WXj3MbkMw5uOyF0PfWPBNOCNbs53YqgrvtujLNlt9JQpruyIKkUZ+PKA==
 
 core-js@~2.3.0:
   version "2.3.0"

@@ -7,8 +7,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Requirements Management **(ULTIMATE)**
 
+NOTE:
+In 14.4, Requirements was moved under **Issues**.
+
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2703) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 > - The ability to add and edit a requirement's long description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/224622) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.5.
+> - [Moved under Issues](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70748) in 14.4
 
 With requirements, you can set criteria to check your products against. They can be based on users,
 stakeholders, system, software, or anything else you find important to capture.
@@ -38,7 +42,7 @@ Users with Reporter or higher [permissions](../../permissions.md) can create req
 
 To create a requirement:
 
-1. In a project, go to **Requirements**.
+1. In a project, go to **Issues > Requirements**.
 1. Select **New requirement**.
 1. Enter a title and description and select **Create requirement**.
 
@@ -107,7 +111,7 @@ You can search for a requirement from the requirements list page based on the fo
 
 To search for a requirement:
 
-1. In a project, go to  **Requirements > List**.
+1. In a project, go to **Issues > Requirements > List**.
 1. Select the **Search or filter results** field. A dropdown menu appears.
 1. Select the requirement author or status from the dropdown or enter plain text to search by requirement title.
 1. Press <kbd>Enter</kbd> on your keyboard to filter the list.
@@ -222,7 +226,7 @@ Before you import your file:
 
 To import requirements:
 
-1. In a project, go to **Requirements**.
+1. In a project, go to **Issues > Requirements**.
    - If the project already has existing requirements, select the import icon (**{import}**) in the
      top right.
    - For a project without any requirements, select **Import CSV** in the middle of the page.
@@ -281,7 +285,7 @@ Users with Reporter or higher [permissions](../../permissions.md) can export req
 
 To export requirements:
 
-1. In a project, go to **Requirements**.
+1. In a project, go to **Issues > Requirements**.
 1. In the top right, select the **Export as CSV** icon (**{export}**).
 
    A confirmation modal appears.

@@ -63,6 +63,7 @@
 - "./spec/lib/api/entities/package_spec.rb"
 - "./spec/lib/gitlab/background_migration/migrate_legacy_artifacts_spec.rb"
 - "./spec/mailers/emails/pipelines_spec.rb"
+- "./spec/migrations/20210907211557_finalize_ci_builds_bigint_conversion_spec.rb"
 - "./spec/migrations/cleanup_legacy_artifact_migration_spec.rb"
 - "./spec/migrations/migrate_protected_attribute_to_pending_builds_spec.rb"
 - "./spec/migrations/re_schedule_latest_pipeline_id_population_with_all_security_related_artifact_types_spec.rb"

@@ -116,7 +116,7 @@ RSpec.describe Boards::IssuesController do
 
         it 'does not query issues table more than once' do
           recorder = ActiveRecord::QueryRecorder.new { list_issues(user: user, board: board, list: list1) }
-          query_count = recorder.occurrences.select { |query,| query.start_with?('SELECT issues.*') }.each_value.first
+          query_count = recorder.occurrences.select { |query,| query.match?(/FROM "?issues"?/) }.each_value.first
 
           expect(query_count).to eq(1)
         end

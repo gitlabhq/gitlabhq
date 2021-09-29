@@ -27,7 +27,7 @@ RSpec.describe IssuePlacementWorker do
       it 'places all issues created at most 5 minutes before this one at the end, most recent last' do
         expect { run_worker }.not_to change { irrelevant.reset.relative_position }
 
-        expect(project.issues.order_relative_position_asc)
+        expect(project.issues.order_by_relative_position)
           .to eq([issue_e, issue_b, issue_a, issue, issue_c, issue_f, issue_d])
         expect(project.issues.where(relative_position: nil)).not_to exist
       end

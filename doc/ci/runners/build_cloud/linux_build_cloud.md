@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Build Cloud runners for Linux
+# Build Cloud runners for Linux **(FREE)**
 
 GitLab Build Cloud runners for Linux run in autoscale mode and are powered by Google Cloud Platform.
 
@@ -21,7 +21,7 @@ The `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners are dedicated 
 
 Jobs handled by the shared runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
 **time out after 3 hours**, regardless of the timeout configured in a
-project. Check the issues [4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
+project. Check the issues [#4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [#4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
 
 Below are the runners' settings.
 

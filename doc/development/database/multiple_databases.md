@@ -6,16 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Multiple Databases
 
-In order to scale GitLab, the GitLab application database
-will be [decomposed into multiple
-databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
+To scale GitLab, the we are
+[decomposing the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 
-## CI Database
+## CI/CD Database
 
-Support for configuring the GitLab Rails application to use a distinct
-database for CI tables was added in [GitLab
-14.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289). This
-feature is still under development, and is not ready for production use.
+> Support for configuring the GitLab Rails application to use a distinct
+database for CI/CD tables was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289)
+in GitLab 14.1. This feature is still under development, and is not ready for production use.
 
 By default, GitLab is configured to use only one main database. To
 opt-in to use a main database, and CI database, modify the
@@ -92,8 +90,8 @@ test: &test
 
 ### Migrations
 
-Any migrations that affect `Ci::CiDatabaseRecord` models
-and their tables must be placed in two directories for now:
+Place any migrations that affect `Ci::CiDatabaseRecord` models
+and their tables in two directories:
 
 - `db/migrate`
 - `db/ci_migrate`

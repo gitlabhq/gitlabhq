@@ -94,7 +94,7 @@ describe('Multi-file store utils', () => {
           {
             action: commitActionTypes.move,
             file_path: 'renamedFile',
-            content: null,
+            content: undefined,
             encoding: 'text',
             last_commit_id: undefined,
             previous_path: 'prevPath',

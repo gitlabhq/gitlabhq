@@ -22,7 +22,7 @@ module Boards
       def order(items)
         return items.order_closed_date_desc if list&.closed?
 
-        items.order_by_position_and_priority(with_cte: params[:search].present?)
+        items.order_by_relative_position
       end
 
       def finder

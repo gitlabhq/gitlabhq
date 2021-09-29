@@ -338,7 +338,7 @@ RSpec.describe Resolvers::IssuesResolver do
           let_it_be(:relative_issue4) { create(:issue, project: project, relative_position: nil) }
 
           it 'sorts issues ascending' do
-            expect(resolve_issues(sort: :relative_position_asc).to_a).to eq [relative_issue3, relative_issue1, relative_issue4, relative_issue2]
+            expect(resolve_issues(sort: :relative_position_asc).to_a).to eq [relative_issue3, relative_issue1, relative_issue2, relative_issue4]
           end
         end
 

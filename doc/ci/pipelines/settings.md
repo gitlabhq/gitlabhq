@@ -358,6 +358,29 @@ in your `README.md`:
 ![coverage](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage)
 ```
 
+#### Test coverage report badge colors and limits
+
+The default colors and limits for the badge are as follows:
+
+- 95 up to and including 100% - good (`#4c1`)
+- 90 up to 95% - acceptable (`#a3c51c`)
+- 75 up to 90% - medium (`#dfb317`)
+- 0 up to 75% - low (`#e05d44`)
+- no coverage - unknown (`#9f9f9f`)
+
+NOTE:
+*Up to* means up to, but not including, the upper bound.
+
+You can overwrite the limits by using the following additional parameters ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28317) in GitLab 14.4):
+
+- `min_good` (default 95, can use any value between 3 and 100)
+- `min_acceptable` (default 90, can use any value between 2 and min_good-1)
+- `min_medium` (default 75, can use any value between 1 and min_acceptable-1)
+
+If an invalid boundary is set, GitLab automatically adjusts it to be valid. For example,
+if `min_good` is set `80`, and `min_acceptable` is set to `85` (too high), GitLab automatically
+sets `min_acceptable` to `79` (`min_good` - `1`).
+
 ### Badge styles
 
 Pipeline badges can be rendered in different styles by adding the `style=style_name` parameter to the URL. Two styles are available:

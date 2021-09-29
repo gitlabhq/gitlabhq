@@ -24045,9 +24045,7 @@ CREATE INDEX idx_issues_on_project_id_and_created_at_and_id_and_state_id ON issu
 
 CREATE INDEX idx_issues_on_project_id_and_due_date_and_id_and_state_id ON issues USING btree (project_id, due_date, id, state_id) WHERE (due_date IS NOT NULL);
 
-CREATE INDEX idx_issues_on_project_id_and_rel_asc_and_id ON issues USING btree (project_id, relative_position, id);
-
-CREATE INDEX idx_issues_on_project_id_and_rel_position_and_state_id_and_id ON issues USING btree (project_id, relative_position, state_id, id DESC);
+CREATE INDEX idx_issues_on_project_id_and_rel_position_and_id_and_state_id ON issues USING btree (project_id, relative_position, id, state_id);
 
 CREATE INDEX idx_issues_on_project_id_and_updated_at_and_id_and_state_id ON issues USING btree (project_id, updated_at, id, state_id);
 

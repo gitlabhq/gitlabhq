@@ -15,7 +15,10 @@ module Gitlab::Ci
           @job = opts[:job]
           @customization = {
             key_width: opts[:key_width].to_i,
-            key_text: opts[:key_text]
+            key_text: opts[:key_text],
+            min_good: opts[:min_good].to_i,
+            min_acceptable: opts[:min_acceptable].to_i,
+            min_medium: opts[:min_medium].to_i
           }
         end
 

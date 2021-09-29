@@ -5,8 +5,6 @@ module Banzai
     module References
       # HTML filter that replaces milestone references with links.
       class MilestoneReferenceFilter < AbstractReferenceFilter
-        include Gitlab::Utils::StrongMemoize
-
         self.reference_type = :milestone
         self.object_class   = Milestone
 
@@ -63,21 +61,15 @@ module Banzai
         end
 
         def valid_context?(parent)
-          strong_memoize(:valid_context) do
-            group_context?(parent) || project_context?(parent)
-          end
+          group_context?(parent) || project_context?(parent)
         end
 
         def group_context?(parent)
-          strong_memoize(:group_context) do
-            parent.is_a?(Group)
-          end
+          parent.is_a?(Group)
         end
 
         def project_context?(parent)
-          strong_memoize(:project_context) do
-            parent.is_a?(Project)
-          end
+          parent.is_a?(Project)
         end
 
         def references_in(text, pattern = Milestone.reference_pattern)

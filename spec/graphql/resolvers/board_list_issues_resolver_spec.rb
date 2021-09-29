@@ -35,7 +35,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
         # by relative_position and then ID
         result = resolve_board_list_issues
 
-        expect(result.map(&:id)).to eq [issue3.id, issue1.id, issue2.id, issue4.id]
+        expect(result.map(&:id)).to eq [issue1.id, issue3.id, issue2.id, issue4.id]
         expect(result.map(&:relative_position)).not_to include(nil)
       end
 

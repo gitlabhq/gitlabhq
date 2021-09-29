@@ -67,7 +67,7 @@ function createComponent({
     provide: {
       portalName: 'fake target',
       alignSuggestions: jest.fn(),
-      suggestionsListClass: 'custom-class',
+      suggestionsListClass: () => 'custom-class',
     },
     stubs,
     slots,

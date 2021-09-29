@@ -8,6 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18997) in GitLab 14.1.
 
+WARNING:
+The Helm chart registry for GitLab is under development and isn't ready for production use due to
+limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6366) details the remaining 
+work and timelines to make it production ready. 
+
 Publish Helm packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 

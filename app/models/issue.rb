@@ -107,8 +107,6 @@ class Issue < ApplicationRecord
   scope :order_due_date_asc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
   scope :order_due_date_desc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC')) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
-  scope :order_relative_position_asc, -> { reorder(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) }
-  scope :order_relative_position_desc, -> { reorder(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')) }
   scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
@@ -267,8 +265,8 @@ class Issue < ApplicationRecord
         'due_date' => -> { order_due_date_asc.with_order_id_desc },
         'due_date_asc' => -> { order_due_date_asc.with_order_id_desc },
         'due_date_desc' => -> { order_due_date_desc.with_order_id_desc },
-        'relative_position' => -> { order_relative_position_asc.with_order_id_desc },
-        'relative_position_asc' => -> { order_relative_position_asc.with_order_id_desc }
+        'relative_position' => -> { order_by_relative_position },
+        'relative_position_asc' => -> { order_by_relative_position }
       }
     )
   end
@@ -278,7 +276,7 @@ class Issue < ApplicationRecord
     when 'closest_future_date', 'closest_future_date_asc' then order_closest_future_date
     when 'due_date', 'due_date_asc'                       then order_due_date_asc.with_order_id_desc
     when 'due_date_desc'                                  then order_due_date_desc.with_order_id_desc
-    when 'relative_position', 'relative_position_asc'     then order_relative_position_asc.with_order_id_desc
+    when 'relative_position', 'relative_position_asc'     then order_by_relative_position
     when 'severity_asc'                                   then order_severity_asc.with_order_id_desc
     when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
     else
@@ -286,13 +284,8 @@ class Issue < ApplicationRecord
     end
   end
 
-  # `with_cte` argument allows sorting when using CTE queries and prevents
-  # errors in postgres when using CTE search optimisation
-  def self.order_by_position_and_priority(with_cte: false)
-    order = Gitlab::Pagination::Keyset::Order.build([column_order_relative_position, column_order_highest_priority, column_order_id_desc])
-
-    order_labels_priority(with_cte: with_cte)
-      .reorder(order)
+  def self.order_by_relative_position
+    reorder(Gitlab::Pagination::Keyset::Order.build([column_order_relative_position, column_order_id_asc]))
   end
 
   def self.column_order_relative_position
@@ -304,25 +297,6 @@ class Issue < ApplicationRecord
       order_direction: :asc,
       nullable: :nulls_last,
       distinct: false
-    )
-  end
-
-  def self.column_order_highest_priority
-    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-      attribute_name: 'highest_priority',
-      column_expression: Arel.sql('highest_priorities.label_priority'),
-      order_expression: Gitlab::Database.nulls_last_order('highest_priorities.label_priority', 'ASC'),
-      reversed_order_expression: Gitlab::Database.nulls_last_order('highest_priorities.label_priority', 'DESC'),
-      order_direction: :asc,
-      nullable: :nulls_last,
-      distinct: false
-    )
-  end
-
-  def self.column_order_id_desc
-    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-      attribute_name: 'id',
-      order_expression: arel_table[:id].desc
     )
   end
 

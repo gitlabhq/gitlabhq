@@ -437,6 +437,19 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter do
         expect(reference_filter(act, context).to_html).to eq exp
       end
     end
+
+    context 'when referencing both project and group milestones' do
+      let(:milestone) { create(:milestone, project: project) }
+      let(:group_milestone) { create(:milestone, title: 'group_milestone', group: group) }
+
+      it 'links to valid references' do
+        links = reference_filter("See #{milestone.to_reference(full: true)} and #{group_milestone.to_reference}", context).css('a')
+
+        expect(links.length).to eq(2)
+        expect(links[0].attr('href')).to eq(urls.milestone_url(milestone))
+        expect(links[1].attr('href')).to eq(urls.milestone_url(group_milestone))
+      end
+    end
   end
 
   context 'when milestone is open' do

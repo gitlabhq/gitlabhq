@@ -5,8 +5,6 @@ module Ci
     include BulkInsertSafe
     include IgnorableColumns
 
-    ignore_columns :build_id_convert_to_bigint, remove_with: '14.1', remove_after: '2021-07-22'
-
     belongs_to :build, class_name: "Ci::Processable", foreign_key: :build_id, inverse_of: :needs
 
     validates :build, presence: true

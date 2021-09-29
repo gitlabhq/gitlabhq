@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
 
             iterator.each_batch(of: 2) { |rel| positions.concat(rel.pluck(:relative_position, :id)) }
 
-            expect(positions).to eq(project.issues.order_relative_position_asc.order(id: :asc).pluck(:relative_position, :id))
+            expect(positions).to eq(project.issues.reorder(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')).order(id: :asc).pluck(:relative_position, :id))
           end
         end
 
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
 
             iterator.each_batch(of: 2) { |rel| positions.concat(rel.pluck(:relative_position, :id)) }
 
-            expect(positions).to eq(project.issues.order_relative_position_desc.order(id: :desc).pluck(:relative_position, :id))
+            expect(positions).to eq(project.issues.reorder(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')).order(id: :desc).pluck(:relative_position, :id))
           end
         end
 

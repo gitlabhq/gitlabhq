@@ -37,7 +37,7 @@ function createComponent(options = {}) {
     provide: {
       portalName: 'fake target',
       alignSuggestions: function fakeAlignSuggestions() {},
-      suggestionsListClass: 'custom-class',
+      suggestionsListClass: () => 'custom-class',
     },
     stubs,
   });

@@ -24,7 +24,10 @@ class Projects::BadgesController < Projects::ApplicationController
       .new(project, params[:ref], opts: {
         job: params[:job],
         key_text: params[:key_text],
-        key_width: params[:key_width]
+        key_width: params[:key_width],
+        min_good: params[:min_good],
+        min_acceptable: params[:min_acceptable],
+        min_medium: params[:min_medium]
       })
 
     render_badge coverage_report
