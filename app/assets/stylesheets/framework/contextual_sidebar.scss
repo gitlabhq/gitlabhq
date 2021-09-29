@@ -140,7 +140,7 @@
       @include gl-border-none;
 
       .avatar.s32 {
-        @extend .rect-avatar.s32;
+        border-radius: $border-radius-default;
         box-shadow: $avatar-box-shadow;
       }
     }

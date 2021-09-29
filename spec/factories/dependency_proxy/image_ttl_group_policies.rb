@@ -6,5 +6,9 @@ FactoryBot.define do
 
     enabled { true }
     ttl { 90 }
+
+    trait :disabled do
+      enabled { false }
+    end
   end
 end

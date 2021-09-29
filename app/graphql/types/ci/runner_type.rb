@@ -3,6 +3,7 @@
 module Types
   module Ci
     class RunnerType < BaseObject
+      edge_type_class(RunnerWebUrlEdge)
       graphql_name 'CiRunner'
       authorize :read_runner
       present_using ::Ci::RunnerPresenter
@@ -48,10 +49,16 @@ module Types
             description: 'Number of projects that the runner is associated with.'
       field :job_count, GraphQL::Types::Int, null: true,
             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
+      field :admin_url, GraphQL::Types::String, null: true,
+            description: 'Admin URL of the runner. Only available for adminstrators.'
 
       def job_count
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
         runner.builds.limit(JOB_COUNT_LIMIT + 1).count
+      end
+
+      def admin_url
+        Gitlab::Routing.url_helpers.admin_runner_url(runner) if can_admin_runners?
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -70,6 +77,12 @@ module Types
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      private
+
+      def can_admin_runners?
+        context[:current_user]&.can_admin_all_resources?
+      end
     end
   end
 end

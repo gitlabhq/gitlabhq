@@ -18,6 +18,7 @@ module Gitlab
     module Group
       module Settings
         autoload :Billing, 'gitlab/page/group/settings/billing'
+        autoload :UsageQuotas, 'gitlab/page/group/settings/usage_quotas'
       end
     end
   end

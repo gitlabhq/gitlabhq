@@ -10344,7 +10344,9 @@ CREATE TABLE application_settings (
     throttle_authenticated_deprecated_api_requests_per_period integer DEFAULT 3600 NOT NULL,
     throttle_authenticated_deprecated_api_period_in_seconds integer DEFAULT 3600 NOT NULL,
     throttle_authenticated_deprecated_api_enabled boolean DEFAULT false NOT NULL,
+    dependency_proxy_ttl_group_policy_worker_capacity smallint DEFAULT 2 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
+    CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
     CONSTRAINT app_settings_yaml_max_depth_positive CHECK ((max_yaml_depth > 0)),
@@ -24835,11 +24837,19 @@ CREATE INDEX index_dep_ci_build_trace_sections_on_project_id ON dep_ci_build_tra
 
 CREATE INDEX index_dep_ci_build_trace_sections_on_section_name_id ON dep_ci_build_trace_sections USING btree (section_name_id);
 
+CREATE UNIQUE INDEX index_dep_prox_manifests_on_group_id_file_name_and_status ON dependency_proxy_manifests USING btree (group_id, file_name, status);
+
 CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON dependency_proxy_blobs USING btree (group_id, file_name);
+
+CREATE INDEX index_dependency_proxy_blobs_on_group_id_status_and_id ON dependency_proxy_blobs USING btree (group_id, status, id);
+
+CREATE INDEX index_dependency_proxy_blobs_on_status ON dependency_proxy_blobs USING btree (status);
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON dependency_proxy_group_settings USING btree (group_id);
 
-CREATE UNIQUE INDEX index_dependency_proxy_manifests_on_group_id_and_file_name ON dependency_proxy_manifests USING btree (group_id, file_name);
+CREATE INDEX index_dependency_proxy_manifests_on_group_id_status_and_id ON dependency_proxy_manifests USING btree (group_id, status, id);
+
+CREATE INDEX index_dependency_proxy_manifests_on_status ON dependency_proxy_manifests USING btree (status);
 
 CREATE INDEX index_deploy_key_id_on_protected_branch_push_access_levels ON protected_branch_push_access_levels USING btree (deploy_key_id);
 

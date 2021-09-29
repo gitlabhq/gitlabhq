@@ -18,6 +18,8 @@ many organizations.
 > - **Supported users (approximate):** 1,000
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+> - **Cloud Native Hybrid:** No. For a cloud native hybrid environment, you
+>  can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
 > - **Test requests per second (RPS) rates:** API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
 > - **[Latest 1k weekly performance testing results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)**
 
@@ -58,3 +60,12 @@ Elasticsearch cluster design and requirements are dependent on your specific
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, read how to
 [choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+
+## Cloud Native Hybrid reference architecture with Helm Charts
+
+Cloud Native Hybrid Reference Architecture is an alternative approach where select _stateless_
+components are deployed in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/),
+and _stateful_ components are deployed in compute VMs with Omnibus.
+
+The [2k GitLab Cloud Native Hybrid](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (non HA) and [3k GitLab Cloud Native Hybrid](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (HA) reference architectures are the smallest we recommend in Kubernetes.
+For environments that need to serve less users, you can lower the node specs. Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).

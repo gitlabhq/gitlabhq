@@ -13,11 +13,16 @@ module DependencyProxy
 
     def execute
       @manifest = @group.dependency_proxy_manifests
+                        .active
                         .find_or_initialize_by_file_name_or_digest(file_name: @file_name, digest: @tag)
 
       head_result = DependencyProxy::HeadManifestService.new(@image, @tag, @token).execute
 
-      return success(manifest: @manifest, from_cache: true) if cached_manifest_matches?(head_result)
+      if cached_manifest_matches?(head_result)
+        @manifest.touch
+
+        return success(manifest: @manifest, from_cache: true)
+      end
 
       pull_new_manifest
       respond(from_cache: false)
@@ -46,6 +51,9 @@ module DependencyProxy
 
     def respond(from_cache: true)
       if @manifest.persisted?
+        # Technical debt: change to read_at https://gitlab.com/gitlab-org/gitlab/-/issues/341536
+        @manifest.touch if from_cache
+
         success(manifest: @manifest, from_cache: from_cache)
       else
         error('Failed to download the manifest from the external registry', 503)

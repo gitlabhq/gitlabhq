@@ -313,6 +313,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :terraform, only: [:index]
 
+        resources :google_cloud, only: [:index]
+
         resources :environments, except: [:destroy] do
           member do
             post :stop

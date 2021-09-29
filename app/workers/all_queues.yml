@@ -264,6 +264,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:dependency_proxy_image_ttl_group_policy
+  :worker_name: DependencyProxy::ImageTtlGroupPolicyWorker
+  :feature_category: :dependency_proxy
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:environments_auto_delete_cron
   :worker_name: Environments::AutoDeleteCronWorker
   :feature_category: :continuous_delivery
@@ -644,6 +653,24 @@
   :tags: []
 - :name: dependency_proxy:purge_dependency_proxy_cache
   :worker_name: PurgeDependencyProxyCacheWorker
+  :feature_category: :dependency_proxy
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: dependency_proxy_blob:dependency_proxy_cleanup_blob
+  :worker_name: DependencyProxy::CleanupBlobWorker
+  :feature_category: :dependency_proxy
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
+  :worker_name: DependencyProxy::CleanupManifestWorker
   :feature_category: :dependency_proxy
   :has_external_dependencies:
   :urgency: :low

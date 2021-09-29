@@ -438,6 +438,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
     enable :update_runners_registration_token
+    enable :manage_project_google_cloud
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

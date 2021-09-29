@@ -8,4 +8,6 @@ class DependencyProxy::ImageTtlGroupPolicy < ApplicationRecord
   validates :group, presence: true
   validates :enabled, inclusion: { in: [true, false] }
   validates :ttl, numericality: { greater_than: 0 }, allow_nil: true
+
+  scope :enabled, -> { where(enabled: true) }
 end

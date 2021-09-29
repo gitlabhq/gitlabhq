@@ -14,7 +14,7 @@ module Types
       end
 
       def merge_request_interaction(parent:)
-        merge_request = closest_parent(::Types::MergeRequestType, parent)
+        merge_request = closest_parent([::Types::MergeRequestType], parent)
         return unless merge_request
 
         Users::MergeRequestInteraction.new(user: object, merge_request: merge_request)

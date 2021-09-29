@@ -12,7 +12,7 @@ module DependencyProxy
     def execute
       from_cache = true
       file_name = @blob_sha.sub('sha256:', '') + '.gz'
-      blob = @group.dependency_proxy_blobs.find_or_build(file_name)
+      blob = @group.dependency_proxy_blobs.active.find_or_build(file_name)
 
       unless blob.persisted?
         from_cache = false
@@ -30,6 +30,8 @@ module DependencyProxy
         blob.save!
       end
 
+      # Technical debt: change to read_at https://gitlab.com/gitlab-org/gitlab/-/issues/341536
+      blob.touch if from_cache
       success(blob: blob, from_cache: from_cache)
     end
 

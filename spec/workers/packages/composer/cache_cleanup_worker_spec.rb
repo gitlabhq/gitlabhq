@@ -18,12 +18,8 @@ RSpec.describe Packages::Composer::CacheCleanupWorker, type: :worker do
       cache_file4.update_columns(namespace_id: nil)
     end
 
-    it 'deletes expired packages' do
-      expect { subject }.to change { Packages::Composer::CacheFile.count }.by(-2)
-      expect { cache_file1.reload }.not_to raise_error ActiveRecord::RecordNotFound
-      expect { cache_file2.reload }.not_to raise_error ActiveRecord::RecordNotFound
-      expect { cache_file3.reload }.to raise_error ActiveRecord::RecordNotFound
-      expect { cache_file4.reload }.to raise_error ActiveRecord::RecordNotFound
+    it 'does nothing' do
+      expect { subject }.not_to change { Packages::Composer::CacheFile.count }
     end
   end
 end

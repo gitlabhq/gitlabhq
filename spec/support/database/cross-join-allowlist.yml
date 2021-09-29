@@ -85,6 +85,7 @@
 - "./spec/requests/api/ci/runner/runners_post_spec.rb"
 - "./spec/requests/api/ci/runners_spec.rb"
 - "./spec/requests/api/commit_statuses_spec.rb"
+- "./spec/requests/api/graphql/ci/runner_spec.rb"
 - "./spec/requests/api/graphql/group_query_spec.rb"
 - "./spec/requests/api/graphql/merge_request/merge_request_spec.rb"
 - "./spec/requests/api/graphql/mutations/merge_requests/create_spec.rb"
