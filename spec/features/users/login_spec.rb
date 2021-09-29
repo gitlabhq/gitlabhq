@@ -807,6 +807,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
           expect(current_path).to eq(profile_two_factor_auth_path)
 
           fill_in 'pin_code', with: user.reload.current_otp
+          fill_in 'current_password', with: user.password
 
           click_button 'Register with two-factor app'
           click_button 'Copy codes'
