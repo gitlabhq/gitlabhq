@@ -3,7 +3,7 @@
 module Types
   class GroupInvitationType < BaseObject
     expose_permissions Types::PermissionTypes::Group
-    authorize :read_group
+    authorize :admin_group
 
     implements InvitationInterface
 
