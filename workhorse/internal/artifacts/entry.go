@@ -14,6 +14,7 @@ import (
 	"syscall"
 
 	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/mask"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
@@ -35,7 +36,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 
 	log.WithContextFields(r.Context(), log.Fields{
 		"entry":   params.Entry,
-		"archive": params.Archive,
+		"archive": mask.URL(params.Archive),
 		"path":    r.URL.Path,
 	}).Print("SendEntry: sending")
 

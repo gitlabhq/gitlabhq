@@ -323,6 +323,16 @@ RSpec.shared_examples 'handle uploads authorize' do
       end
     end
 
+    context 'when id is not passed as a param' do
+      let(:params) { super().without(:id) }
+
+      it 'returns 404 status' do
+        post_authorize
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when a user can upload a file' do
       before do
         sign_in(user)
