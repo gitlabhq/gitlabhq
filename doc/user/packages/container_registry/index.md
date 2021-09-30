@@ -714,15 +714,6 @@ Check the regex patterns to ensure they are valid.
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy. You can test them with the [regex101 regex tester](https://regex101.com/).
 View some common [regex pattern examples](#regex-pattern-examples).
 
-## Use the Container Registry to store Helm Charts
-
-With the launch of [Helm v3](https://helm.sh/docs/topics/registries/),
-you can use the Container Registry to store Helm Charts. However, due to the way metadata is passed
-and stored by Docker, it is not possible for GitLab to parse this data and meet performance standards.
-[This epic](https://gitlab.com/groups/gitlab-org/-/epics/2313) updates the architecture of the Container Registry to support Helm Charts.
-
-[Read more about the above challenges](https://gitlab.com/gitlab-org/gitlab/-/issues/38047#note_298842890).
-
 ## Limitations
 
 - Moving or renaming existing Container Registry repositories is not supported
