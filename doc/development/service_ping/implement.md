@@ -340,6 +340,9 @@ WARNING:
 HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount), data from
 used HLL implementation is "approximated with a standard error of 0.81%".
 
+NOTE:
+ A user's consent for usage_stats (`User.single_user&.requires_usage_stats_consent?`) is not checked during the data tracking stage due to performance reasons. Keys corresponding to those counters are present in Redis even if `usage_stats_consent` is still required. However, no metric is collected from Redis and reported back to GitLab as long as `usage_stats_consent` is required.
+
 With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
 
 Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PFCOUNT](https://redis.io/commands/pfcount).

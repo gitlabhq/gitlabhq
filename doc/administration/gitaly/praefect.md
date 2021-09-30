@@ -1309,12 +1309,7 @@ To minimize data loss in GitLab 13.0 to 14.0, Gitaly Cluster:
 new primary. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).
 > - Removed in GitLab 14.1. Instead, repositories [become unavailable](#unavailable-repositories).
 
-In GitLab 13.0 to 14.0, when Gitaly Cluster switches to a new primary, repositories enter
-read-only mode if they are out of date. This can happen after failing over to an outdated
-secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
-with the unreplicated writes on other nodes.
-
-When Gitaly Cluster switches to a new primary In GitLab 13.0 to 14.0, repositories enter
+When Gitaly Cluster switches to a new primary in GitLab 13.0 to 14.0, repositories enter
 read-only mode if they are out of date. This can happen after failing over to an outdated
 secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
 with the unreplicated writes on other nodes.

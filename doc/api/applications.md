@@ -34,14 +34,14 @@ Parameters:
 |:---------------|:--------|:---------|:---------------------------------|
 | `name`         | string  | yes      | Name of the application.         |
 | `redirect_uri` | string  | yes      | Redirect URI of the application. |
-| `scopes`       | string  | yes      | Scopes of the application.       |
+| `scopes`       | string  | yes      | Scopes of the application. You can specify multiple scopes by separating each scope using a space. |
 | `confidential` | boolean | no       | The application is used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential. Defaults to `true` if not supplied |
 
 Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=" \
+     --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=api read_user email" \
      "https://gitlab.example.com/api/v4/applications"
 ```
 

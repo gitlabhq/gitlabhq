@@ -534,8 +534,8 @@ users:
 | Push container images to other projects     |                 |             |          |         |
 | Push source and LFS                         |                 |             |          |         |
 
-1. Only if the user is not an external one
-1. Only if the user is a member of the project
+1. Only if the triggering user is not an external one
+1. Only if the triggering user is a member of the project
 
 ## Running pipelines on protected branches
 
