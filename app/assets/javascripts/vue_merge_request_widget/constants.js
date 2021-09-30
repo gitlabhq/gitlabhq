@@ -93,17 +93,30 @@ export const stateToComponentMap = {
 };
 
 export const EXTENSION_ICONS = {
+  failed: 'failed',
+  warning: 'warning',
+  success: 'success',
+  neutral: 'neutral',
+  error: 'error',
+  notice: 'notice',
+};
+
+export const EXTENSION_ICON_NAMES = {
   failed: 'status-failed',
   warning: 'status-alert',
   success: 'status-success',
   neutral: 'status-neutral',
+  error: 'status-alert',
+  notice: 'status-alert',
 };
 
 export const EXTENSION_ICON_CLASS = {
-  [EXTENSION_ICONS.failed]: 'gl-text-red-500',
-  [EXTENSION_ICONS.warning]: 'gl-text-orange-500',
-  [EXTENSION_ICONS.success]: 'gl-text-green-500',
-  [EXTENSION_ICONS.neutral]: 'gl-text-gray-400',
+  failed: 'gl-text-red-500',
+  warning: 'gl-text-orange-500',
+  success: 'gl-text-green-500',
+  neutral: 'gl-text-gray-400',
+  error: 'gl-text-red-500',
+  notice: 'gl-text-gray-500',
 };
 
 export { STATE_MACHINE };

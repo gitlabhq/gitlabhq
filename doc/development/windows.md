@@ -33,7 +33,7 @@ tags:
   - windows-1809
 ```
 
-A list of software preinstalled on the Windows images is available at: [Preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
+A list of software preinstalled on the Windows images is available at: [Preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/main/cookbooks/preinstalled-software/README.md).
 
 ## GCP Windows image for development
 
@@ -57,7 +57,7 @@ Build a Google Cloud image with the above shared runners repository by doing the
    1. Clone the repository <https://github.com/rgl/packer-provisioner-windows-update> and `cd` into the cloned directory.
    1. Run the command `go build -o packer-provisioner-windows-update` (requires `go` to be installed).
    1. Verify `packer-provisioner-windows-update` is in the `PATH` environment variable.
-1. Add all [required environment variables](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/master/packer.json#L2-10)
+1. Add all [required environment variables](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/packer.json#L2-10)
    in the `packer.json` file to your environment (perhaps use [`direnv`](https://direnv.net/)).
 1. Build the image by running the command: `packer build packer.json`.
 

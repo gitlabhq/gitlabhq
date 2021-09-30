@@ -252,7 +252,7 @@ graph RL;
     2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
   end
 
-  2_2-2["rspec-all frontend_fixture (7 minutes)"];
+  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (7 minutes)"];
   class 2_2-2 criticalPath;
   click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
   2_2-4["memory-on-boot (3.5 minutes)"];
@@ -284,7 +284,7 @@ graph RL;
   3_1-1["jest (14.5 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  subgraph "Needs `rspec-all frontend_fixture`";
+  subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
     3_1-1 --> 2_2-2;
   end
 
@@ -355,7 +355,7 @@ graph RL;
     2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
   end
 
-  2_2-2["rspec-all frontend_fixture (7 minutes)"];
+  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (7 minutes)"];
   class 2_2-2 criticalPath;
   click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
   2_2-4["memory-on-boot (3.5 minutes)"];
@@ -395,7 +395,7 @@ graph RL;
   3_1-1["jest (14.5 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  subgraph "Needs `rspec-all frontend_fixture`";
+  subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
     3_1-1 --> 2_2-2;
   end
 

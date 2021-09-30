@@ -446,10 +446,10 @@ List the artifacts for a single project, sorted by artifact size. The output inc
 - on-disk location of the artifact
 
 ```ruby
-p = Project.find_by_id(:project ID)
+p = Project.find_by_id(<project_id>)
 arts = Ci::JobArtifact.where(project: p)
 
-list = arts.order('sort DESC').limit(50).each do |art|
+list = arts.order(size: :desc).limit(50).each do |art|
     puts "Job ID: #{art.job_id} - Size: #{art.size}b - Type: #{art.file_type} - Created: #{art.created_at} - File loc: #{art.file}"
 end
 ```

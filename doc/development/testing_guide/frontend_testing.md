@@ -146,7 +146,7 @@ it('does not display a dropdown if no metricTypes exist', () => {
 });
 ```
 
-Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries. A rule of thumb here is: if you are checking a `wrapper.vm` property, you should probably stop and rethink the test to check the rendered template instead.
+Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries. A suggestion here is: if you are checking a `wrapper.vm` property, you should probably stop and rethink the test to check the rendered template instead.
 
 Some more examples can be found in the [Frontend unit tests section](testing_levels.md#frontend-unit-tests)
 

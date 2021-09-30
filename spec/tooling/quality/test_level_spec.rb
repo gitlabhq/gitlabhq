@@ -63,14 +63,7 @@ RSpec.describe Quality::TestLevel do
     context 'with a prefix' do
       it 'returns a pattern' do
         expect(described_class.new('ee/').pattern(:system))
-          .to eq("{ee/}spec/{features}{,/**/}*_spec.rb")
-      end
-    end
-
-    context 'with several prefixes' do
-      it 'returns a pattern' do
-        expect(described_class.new(['', 'ee/', 'jh/']).pattern(:system))
-          .to eq("{,ee/,jh/}spec/{features}{,/**/}*_spec.rb")
+          .to eq("ee/spec/{features}{,/**/}*_spec.rb")
       end
     end
 
@@ -145,14 +138,7 @@ RSpec.describe Quality::TestLevel do
     context 'with a prefix' do
       it 'returns a regexp' do
         expect(described_class.new('ee/').regexp(:system))
-          .to eq(%r{(ee/)spec/(features)})
-      end
-    end
-
-    context 'with several prefixes' do
-      it 'returns a regexp' do
-        expect(described_class.new(['', 'ee/', 'jh/']).regexp(:system))
-          .to eq(%r{(|ee/|jh/)spec/(features)})
+          .to eq(%r{ee/spec/(features)})
       end
     end
 

@@ -45,10 +45,7 @@ export default {
             // Icon to get rendered on the side of each row
             icon: {
               // Required: Name maps to an icon in GitLabs SVG
-              name:
-                issue.state === 'closed' ? 'status_failed_borderless' : 'status_success_borderless',
-              // Optional: An extra class to be added to the icon for additional styling
-              class: issue.state === 'closed' ? 'text-danger' : 'text-success',
+              name: issue.state === 'closed' ? EXTENSION_ICONS.error : EXTENSION_ICONS.success,
             },
             // Badges get rendered next to the text on each row
             badge: issue.state === 'closed' && {

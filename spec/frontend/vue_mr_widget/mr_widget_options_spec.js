@@ -919,7 +919,7 @@ describe('MrWidgetOptions', () => {
 
       // Renders icon in the row
       expect(collapsedSection.find(GlIcon).exists()).toBe(true);
-      expect(collapsedSection.find(GlIcon).props('name')).toBe('status_failed_borderless');
+      expect(collapsedSection.find(GlIcon).props('name')).toBe('status-failed');
 
       // Renders badge in the row
       expect(collapsedSection.find(GlBadge).exists()).toBe(true);

@@ -60,20 +60,20 @@ module Quality
       system: ['features']
     }.freeze
 
-    attr_reader :prefixes
+    attr_reader :prefix
 
-    def initialize(prefixes = nil)
-      @prefixes = Array(prefixes)
+    def initialize(prefix = nil)
+      @prefix = prefix
       @patterns = {}
       @regexps = {}
     end
 
     def pattern(level)
-      @patterns[level] ||= "#{prefixes_for_pattern}spec/#{folders_pattern(level)}{,/**/}*#{suffix(level)}"
+      @patterns[level] ||= "#{prefix}spec/#{folders_pattern(level)}{,/**/}*#{suffix(level)}"
     end
 
     def regexp(level)
-      @regexps[level] ||= Regexp.new("#{prefixes_for_regex}spec/#{folders_regex(level)}").freeze
+      @regexps[level] ||= Regexp.new("#{prefix}spec/#{folders_regex(level)}").freeze
     end
 
     def level_for(file_path)
@@ -101,20 +101,6 @@ module Quality
     end
 
     private
-
-    def prefixes_for_pattern
-      return '' if prefixes.empty?
-
-      "{#{prefixes.join(',')}}"
-    end
-
-    def prefixes_for_regex
-      return '' if prefixes.empty?
-
-      regex_prefix = prefixes.map(&Regexp.method(:escape)).join('|')
-
-      "(#{regex_prefix})"
-    end
 
     def suffix(level)
       case level

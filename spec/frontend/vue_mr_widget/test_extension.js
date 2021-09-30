@@ -21,8 +21,7 @@ export default {
           id: 1,
           text: 'Hello world',
           icon: {
-            name: 'status_failed_borderless',
-            class: 'text-danger',
+            name: EXTENSION_ICONS.failed,
           },
           badge: {
             text: 'Closed',

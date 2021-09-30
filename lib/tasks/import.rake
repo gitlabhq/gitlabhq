@@ -46,21 +46,14 @@ class GithubImport
   def import!
     @project.import_state.force_start
 
-    import_success = false
-
     timings = Benchmark.measure do
-      import_success = Gitlab::GithubImport::SequentialImporter
+      Gitlab::GithubImport::SequentialImporter
         .new(@project, token: @options[:token])
         .execute
     end
 
-    if import_success
-      @project.after_import
-      puts "Import finished. Timings: #{timings}".color(:green)
-    else
-      puts "Import was not successful. Errors were as follows:"
-      puts @project.import_state.last_error
-    end
+    @project.after_import
+    puts "Import finished. Timings: #{timings}".color(:green)
   end
 
   def new_project

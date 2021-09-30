@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLoadingIcon, GlIcon, GlLink, GlBadge, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlLink, GlBadge, GlSafeHtmlDirective } from '@gitlab/ui';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import { EXTENSION_ICON_CLASS } from '../../constants';
 import StatusIcon from './status_icon.vue';
@@ -14,7 +14,6 @@ export default {
   components: {
     GlButton,
     GlLoadingIcon,
-    GlIcon,
     GlLink,
     GlBadge,
     SmartVirtualList,
@@ -139,9 +138,7 @@ export default {
         class="report-block-container"
       >
         <li v-for="data in fullData" :key="data.id" class="d-flex align-items-center">
-          <div v-if="data.icon" :class="data.icon.class" class="d-flex">
-            <gl-icon :name="data.icon.name" :size="24" />
-          </div>
+          <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" />
           <div
             class="gl-mt-2 gl-mb-2 align-content-around align-items-start flex-wrap align-self-center d-flex"
           >
