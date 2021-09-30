@@ -83,7 +83,7 @@ Checking Geo ... Finished
 #### Sync status Rake task
 
 Current sync information can be found manually by running this Rake task on any
-**secondary** app node:
+node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** site:
 
 ```shell
 sudo gitlab-rake geo:status
@@ -922,6 +922,14 @@ To resolve this issue:
 
 If using a load balancer, ensure that the load balancer's URL is set as the `external_url` in the
 `/etc/gitlab/gitlab.rb` of the nodes behind the load balancer.
+
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+In GitLab 13.9 through GitLab 14.3, when [GitLab Maintenance Mode](../../maintenance_mode/index.md) is enabled, the status of Geo secondary sites will stop getting updated. After 10 minutes, the status will become `Unhealthy`.
+
+Geo secondary sites will continue to replicate and verify data, and the secondary sites should still be usable. You can use the [Sync status Rake task](#sync-status-rake-task) to determine the actual status of a secondary site during Maintenance Mode.
+
+This bug was [fixed in GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/292983).
 
 ### GitLab Pages return 404 errors after promoting
 

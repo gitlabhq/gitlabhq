@@ -12,6 +12,10 @@ end
 namespace :import do
   resources :available_namespaces, only: [:index], controller: :available_namespaces
 
+  namespace :url do
+    post :validate
+  end
+
   resource :github, only: [:create, :new], controller: :github do
     post :personal_access_token
     get :status

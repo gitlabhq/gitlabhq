@@ -65,13 +65,6 @@ module Gitlab
           Gitlab::Metrics.counter(name, comment)
         end
 
-        def self.legacy_update_jobs_counter
-          name = :ci_legacy_update_jobs_as_retried_total
-          comment = 'Counter of occurrences when jobs were not being set as retried before update_retried'
-
-          Gitlab::Metrics.counter(name, comment)
-        end
-
         def self.pipeline_failure_reason_counter
           name = :gitlab_ci_pipeline_failure_reasons
           comment = 'Counter of pipeline failure reasons'

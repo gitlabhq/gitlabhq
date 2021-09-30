@@ -6760,6 +6760,9 @@ msgstr ""
 msgid "Checkout|Zip code"
 msgstr ""
 
+msgid "Checkout|a storage subscription"
+msgstr ""
+
 msgid "Checkout|company or team"
 msgstr ""
 
@@ -9510,9 +9513,6 @@ msgstr ""
 msgid "Create a Mattermost team for this group"
 msgstr ""
 
-msgid "Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies."
-msgstr ""
-
 msgid "Create a local proxy for storing frequently used upstream images. %{link_start}Learn more%{link_end} about dependency proxies."
 msgstr ""
 
@@ -11158,6 +11158,12 @@ msgid "Dependency proxy feature is limited to public groups for now."
 msgstr ""
 
 msgid "Dependency proxy image prefix"
+msgstr ""
+
+msgid "DependencyProxy|Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies."
+msgstr ""
+
+msgid "DependencyProxy|Dependency Proxy"
 msgstr ""
 
 msgid "DependencyProxy|Toggle Dependency Proxy"
@@ -17327,7 +17333,7 @@ msgstr[1] ""
 msgid "Importing..."
 msgstr ""
 
-msgid "Import|A repository URL usually ends in a .git suffix, although this is not required. Double check to make sure your repository URL is correct."
+msgid "Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials."
 msgstr ""
 
 msgid "Improve customer support with Service Desk"

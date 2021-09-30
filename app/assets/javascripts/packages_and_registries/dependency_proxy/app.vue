@@ -1,9 +1,12 @@
 <script>
 import { GlAlert, GlFormGroup, GlFormInputGroup, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import {
+  DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
+  DEPENDENCY_PROXY_DOCS_PATH,
+} from '~/packages_and_registries/settings/group/constants';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
@@ -19,9 +22,6 @@ export default {
   },
   inject: ['groupPath', 'dependencyProxyAvailable'],
   i18n: {
-    subTitle: __(
-      'Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies.',
-    ),
     proxyNotAvailableText: __('Dependency proxy feature is limited to public groups for now.'),
     proxyImagePrefix: __('Dependency proxy image prefix'),
     copyImagePrefixText: __('Copy prefix'),
@@ -47,8 +47,8 @@ export default {
     infoMessages() {
       return [
         {
-          text: this.$options.i18n.subTitle,
-          link: helpPagePath('user/packages/dependency_proxy/index'),
+          text: DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
+          link: DEPENDENCY_PROXY_DOCS_PATH,
         },
       ];
     },

@@ -89,17 +89,25 @@ module Issuables
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_label_ids(label_names)
-      group_labels = Label
-        .where(project_id: nil)
-        .where(title: label_names)
-        .where(group_id: root_namespace.self_and_descendant_ids)
+      find_label_ids_uncached(label_names)
+    end
+    # Avoid repeating label queries times when the finder is instantiated multiple times during the request.
+    request_cache(:find_label_ids) { root_namespace.id }
 
-      project_labels = Label
-        .where(group_id: nil)
-        .where(title: label_names)
-        .where(project_id: Project.select(:id).where(namespace_id: root_namespace.self_and_descendant_ids))
+    # This returns an array of label IDs per label name. It is possible for a label name
+    # to have multiple IDs because we allow labels with the same name if they are on a different
+    # project or group.
+    #
+    # For example, if we pass in `['bug', 'feature']`, this will return something like:
+    # `[ [1, 2], [3] ]`
+    #
+    # rubocop: disable CodeReuse/ActiveRecord
+    def find_label_ids_uncached(label_names)
+      return [] if label_names.empty?
+
+      group_labels = group_labels_for_root_namespace.where(title: label_names)
+      project_labels = project_labels_for_root_namespace.where(title: label_names)
 
       Label
         .from_union([group_labels, project_labels], remove_duplicates: false)
@@ -109,8 +117,18 @@ module Issuables
         .values
         .map { |labels| labels.map(&:last) }
     end
-    # Avoid repeating label queries times when the finder is instantiated multiple times during the request.
-    request_cache(:find_label_ids) { root_namespace.id }
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def group_labels_for_root_namespace
+      Label.where(project_id: nil).where(group_id: root_namespace.self_and_descendant_ids)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def project_labels_for_root_namespace
+      Label.where(group_id: nil).where(project_id: Project.select(:id).where(namespace_id: root_namespace.self_and_descendant_ids))
+    end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -153,3 +171,5 @@ module Issuables
     end
   end
 end
+
+Issuables::LabelFilter.prepend_mod

@@ -12,14 +12,47 @@ RSpec.describe Banzai::Filter::References::ReferenceCache do
 
   let(:filter_class) { Banzai::Filter::References::IssueReferenceFilter }
   let(:filter)       { filter_class.new(doc, project: project) }
-  let(:cache)        { described_class.new(filter, { project: project }) }
+  let(:cache)        { described_class.new(filter, { project: project }, result) }
+  let(:result)       { {} }
 
   describe '#load_references_per_parent' do
+    subject { cache.load_references_per_parent(filter.nodes) }
+
     it 'loads references grouped per parent paths' do
-      cache.load_references_per_parent(filter.nodes)
+      expect(doc).to receive(:to_html).and_call_original
+
+      subject
 
       expect(cache.references_per_parent).to eq({ project.full_path => [issue1.iid, issue2.iid].to_set,
                                                   project2.full_path => [issue3.iid].to_set })
+    end
+
+    context 'when rendered_html is memoized' do
+      let(:result) { { rendered_html: 'html' } }
+
+      it 'reuses memoized rendered HTML when available' do
+        expect(doc).not_to receive(:to_html)
+
+        subject
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(reference_cache_memoization: false)
+        end
+
+        it 'ignores memoized rendered HTML' do
+          expect(doc).to receive(:to_html).and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context 'when result is not available' do
+      let(:result) { nil }
+
+      it { expect { subject }.not_to raise_error }
     end
   end
 
@@ -47,7 +80,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache do
     it 'does not have an N+1 query problem with cross projects' do
       doc_single = Nokogiri::HTML.fragment("#1")
       filter_single = filter_class.new(doc_single, project: project)
-      cache_single = described_class.new(filter_single, { project: project })
+      cache_single = described_class.new(filter_single, { project: project }, {})
 
       control_count = ActiveRecord::QueryRecorder.new do
         cache_single.load_references_per_parent(filter_single.nodes)

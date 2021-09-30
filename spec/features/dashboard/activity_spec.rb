@@ -13,19 +13,19 @@ RSpec.describe 'Dashboard > Activity' do
     it 'shows Your Projects' do
       visit activity_dashboard_path
 
-      expect(find('.top-area .nav-tabs li.active')).to have_content('Your projects')
+      expect(find('[data-testid="dashboard-activity-tabs"] a.active')).to have_content('Your projects')
     end
 
     it 'shows Starred Projects' do
       visit activity_dashboard_path(filter: 'starred')
 
-      expect(find('.top-area .nav-tabs li.active')).to have_content('Starred projects')
+      expect(find('[data-testid="dashboard-activity-tabs"] a.active')).to have_content('Starred projects')
     end
 
     it 'shows Followed Projects' do
       visit activity_dashboard_path(filter: 'followed')
 
-      expect(find('.top-area .nav-tabs li.active')).to have_content('Followed users')
+      expect(find('[data-testid="dashboard-activity-tabs"] a.active')).to have_content('Followed users')
     end
   end
 

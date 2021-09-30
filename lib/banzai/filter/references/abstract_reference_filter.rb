@@ -11,7 +11,7 @@ module Banzai
         def initialize(doc, context = nil, result = nil)
           super
 
-          @reference_cache = ReferenceCache.new(self, context)
+          @reference_cache = ReferenceCache.new(self, context, result)
         end
 
         # REFERENCE_PLACEHOLDER is used for re-escaping HTML text except found

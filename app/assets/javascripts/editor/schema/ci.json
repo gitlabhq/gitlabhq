@@ -852,10 +852,6 @@
           "description": "Retry if there is a runner system failure (for example, job setup failed)."
         },
         {
-          "const": "missing_dependency_failure",
-          "description": "Retry if a dependency is missing."
-        },
-        {
           "const": "runner_unsupported",
           "description": "Retry if the runner is unsupported."
         },

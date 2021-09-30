@@ -1221,32 +1221,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
                                     %w(test success),
                                     %w(deploy running)])
           end
-
-          context 'when commit status is retried' do
-            let!(:old_commit_status) do
-              create(:commit_status, pipeline: pipeline,
-                                     stage: 'build',
-                                     name: 'mac',
-                                     stage_idx: 0,
-                                     status: 'success')
-            end
-
-            context 'when FF ci_remove_update_retried_from_process_pipeline is disabled' do
-              before do
-                stub_feature_flags(ci_remove_update_retried_from_process_pipeline: false)
-
-                Ci::ProcessPipelineService
-                  .new(pipeline)
-                  .execute
-              end
-
-              it 'ignores the previous state' do
-                expect(statuses).to eq([%w(build success),
-                                        %w(test success),
-                                        %w(deploy running)])
-              end
-            end
-          end
         end
 
         context 'when there is a stage with warnings' do

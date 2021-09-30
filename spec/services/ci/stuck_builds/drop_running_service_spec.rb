@@ -17,20 +17,47 @@ RSpec.describe Ci::StuckBuilds::DropRunningService do
     job.update!(job_attributes)
   end
 
-  context 'when job is running' do
-    let(:status) { 'running' }
+  around do |example|
+    freeze_time { example.run }
+  end
 
-    context 'when job was updated_at more than an hour ago' do
-      let(:updated_at) { 2.hours.ago }
+  shared_examples 'running builds' do
+    context 'when job is running' do
+      let(:status) { 'running' }
+      let(:outdated_time) { described_class::BUILD_RUNNING_OUTDATED_TIMEOUT.ago - 30.minutes }
+      let(:fresh_time) { described_class::BUILD_RUNNING_OUTDATED_TIMEOUT.ago + 30.minutes }
 
-      it_behaves_like 'job is dropped'
+      context 'when job is outdated' do
+        let(:created_at) { outdated_time }
+        let(:updated_at) { outdated_time }
+
+        it_behaves_like 'job is dropped'
+      end
+
+      context 'when job is fresh' do
+        let(:created_at) { fresh_time }
+        let(:updated_at) { fresh_time }
+
+        it_behaves_like 'job is unchanged'
+      end
+
+      context 'when job freshly updated' do
+        let(:created_at) { outdated_time }
+        let(:updated_at) { fresh_time }
+
+        it_behaves_like 'job is unchanged'
+      end
+    end
+  end
+
+  include_examples 'running builds'
+
+  context 'when ci_new_query_for_running_stuck_jobs flag is disabled' do
+    before do
+      stub_feature_flags(ci_new_query_for_running_stuck_jobs: false)
     end
 
-    context 'when job was updated in less than 1 hour ago' do
-      let(:updated_at) { 30.minutes.ago }
-
-      it_behaves_like 'job is unchanged'
-    end
+    include_examples 'running builds'
   end
 
   %w(success skipped failed canceled scheduled pending).each do |status|
@@ -50,16 +77,5 @@ RSpec.describe Ci::StuckBuilds::DropRunningService do
         it_behaves_like 'job is unchanged'
       end
     end
-  end
-
-  context 'for deleted project' do
-    let(:status) { 'running' }
-    let(:updated_at) { 2.days.ago }
-
-    before do
-      job.project.update!(pending_delete: true)
-    end
-
-    it_behaves_like 'job is dropped'
   end
 end

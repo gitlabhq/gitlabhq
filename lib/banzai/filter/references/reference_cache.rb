@@ -7,9 +7,10 @@ module Banzai
         include Gitlab::Utils::StrongMemoize
         include RequestStoreReferenceCache
 
-        def initialize(filter, context)
+        def initialize(filter, context, result)
           @filter = filter
           @context = context
+          @result = result || {}
         end
 
         def load_reference_cache(nodes)
@@ -166,7 +167,7 @@ module Banzai
 
         private
 
-        attr_accessor :filter, :context
+        attr_accessor :filter, :context, :result
 
         delegate :project, :group, :parent, :parent_type, to: :filter
 
@@ -184,7 +185,11 @@ module Banzai
         end
 
         def prepare_doc_for_scan(doc)
-          html = doc.to_html
+          html = if Feature.enabled?(:reference_cache_memoization, project, default_enabled: :yaml)
+                   result[:rendered_html] ||= doc.to_html
+                 else
+                   doc.to_html
+                 end
 
           filter.requires_unescaping? ? unescape_html_entities(html) : html
         end

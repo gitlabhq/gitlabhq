@@ -1,12 +1,15 @@
+export const packageSettings = () => ({
+  mavenDuplicatesAllowed: true,
+  mavenDuplicateExceptionRegex: '',
+  genericDuplicatesAllowed: true,
+  genericDuplicateExceptionRegex: '',
+});
+
 export const groupPackageSettingsMock = {
   data: {
     group: {
-      packageSettings: {
-        mavenDuplicatesAllowed: true,
-        mavenDuplicateExceptionRegex: '',
-        genericDuplicatesAllowed: true,
-        genericDuplicateExceptionRegex: '',
-      },
+      fullPath: 'foo_group_path',
+      packageSettings: packageSettings(),
     },
   },
 };

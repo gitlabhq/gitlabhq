@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry do
       "default for scheduler failure" | 1 | {} | :scheduler_failure | true
       "quota is exceeded" | 0 | { max: 2 } | :ci_quota_exceeded | false
       "no matching runner" | 0 | { max: 2 } | :no_matching_runner | false
+      "missing dependencies" | 0 | { max: 2 } | :missing_dependency_failure | false
     end
 
     with_them do

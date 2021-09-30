@@ -101,6 +101,27 @@ module FilteredSearchHelpers
     end
   end
 
+  # Same as `expect_tokens` but works with GlFilteredSearch
+  def expect_vue_tokens(tokens)
+    page.within '.gl-search-box-by-click .gl-filtered-search-scrollable' do
+      token_elements = page.all(:css, '.gl-filtered-search-token')
+
+      tokens.each_with_index do |token, index|
+        el = token_elements[index]
+
+        expect(el.find('.gl-filtered-search-token-type')).to have_content(token[:name])
+        expect(el.find('.gl-filtered-search-token-operator')).to have_content(token[:operator]) if token[:operator].present?
+        expect(el.find('.gl-filtered-search-token-data')).to have_content(token[:value]) if token[:value].present?
+
+        # gl-emoji content is blank when the emoji unicode is not supported
+        if token[:emoji_name].present?
+          selector = %(gl-emoji[data-name="#{token[:emoji_name]}"])
+          expect(el.find('.gl-filtered-search-token-data-content')).to have_css(selector)
+        end
+      end
+    end
+  end
+
   def create_token(token_name, token_value = nil, symbol = nil, token_operator = '=')
     { name: token_name, operator: token_operator, value: "#{symbol}#{token_value}" }
   end

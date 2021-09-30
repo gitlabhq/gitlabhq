@@ -180,6 +180,19 @@ For example:
 1. GitLab automatically removes the `priority::low` label, as an issue should not
    have two priority labels at the same time.
 
+### Filter by scoped labels
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12285) in GitLab 14.4.
+
+To filter issue, merge request, or epic lists for ones with labels that belong to a given scope, enter
+`<scope>::*` in the searched label name.
+
+For example, filtering by the `platform::*` label returns issues that have `platform::iOS`,
+`platform::Android`, or `platform::Linux` labels.
+
+NOTE:
+This is not available on the [issues or merge requests dashboard pages](../search/index.md#issues-and-merge-requests).
+
 ### Workflows with scoped labels
 
 Suppose you wanted a custom field in issues to track the operating system platform

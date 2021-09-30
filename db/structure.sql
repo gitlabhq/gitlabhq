@@ -25451,17 +25451,17 @@ CREATE INDEX index_label_priorities_on_priority ON label_priorities USING btree 
 
 CREATE UNIQUE INDEX index_label_priorities_on_project_id_and_label_id ON label_priorities USING btree (project_id, label_id);
 
-CREATE UNIQUE INDEX index_labels_on_group_id_and_project_id_and_title ON labels USING btree (group_id, project_id, title);
+CREATE INDEX index_labels_on_group_id ON labels USING btree (group_id);
 
-CREATE UNIQUE INDEX index_labels_on_group_id_and_title_unique ON labels USING btree (group_id, title) WHERE (project_id IS NULL);
+CREATE UNIQUE INDEX index_labels_on_group_id_and_title_varchar_unique ON labels USING btree (group_id, title varchar_pattern_ops) WHERE (project_id IS NULL);
 
 CREATE INDEX index_labels_on_project_id ON labels USING btree (project_id);
 
-CREATE UNIQUE INDEX index_labels_on_project_id_and_title_unique ON labels USING btree (project_id, title) WHERE (group_id IS NULL);
+CREATE UNIQUE INDEX index_labels_on_project_id_and_title_varchar_unique ON labels USING btree (project_id, title varchar_pattern_ops) WHERE (group_id IS NULL);
 
 CREATE INDEX index_labels_on_template ON labels USING btree (template) WHERE template;
 
-CREATE INDEX index_labels_on_title ON labels USING btree (title);
+CREATE INDEX index_labels_on_title_varchar ON labels USING btree (title varchar_pattern_ops);
 
 CREATE INDEX index_labels_on_type_and_project_id ON labels USING btree (type, project_id);
 

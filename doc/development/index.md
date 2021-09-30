@@ -334,6 +334,7 @@ See [database guidelines](database/index.md).
 - [Features inside `.gitlab/`](features_inside_dot_gitlab.md)
 - [Dashboards for stage groups](stage_group_dashboards.md)
 - [Preventing transient bugs](transient/prevention-patterns.md)
+- [GitLab Application SLIs](application_slis/index.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

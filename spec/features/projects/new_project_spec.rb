@@ -296,12 +296,16 @@ RSpec.describe 'New project', :js do
           expect(git_import_instructions).to have_content 'Git repository URL'
         end
 
-        it 'reports error if repo URL does not end with .git' do
+        it 'reports error if repo URL is not a valid Git repository' do
+          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(status: 200, body: "not-a-git-repo")
+
           fill_in 'project_import_url', with: 'http://foo/bar'
           # simulate blur event
           find('body').click
 
-          expect(page).to have_text('A repository URL usually ends in a .git suffix')
+          wait_for_requests
+
+          expect(page).to have_text('There is not a valid Git repository at this URL')
         end
 
         it 'keeps "Import project" tab open after form validation error' do

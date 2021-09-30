@@ -23,8 +23,15 @@ export const ERROR_UPDATING_SETTINGS = s__(
   'PackageRegistry|An error occurred while saving the settings',
 );
 
+export const DEPENDENCY_PROXY_HEADER = s__('DependencyProxy|Dependency Proxy');
+export const DEPENDENCY_PROXY_SETTINGS_DESCRIPTION = s__(
+  'DependencyProxy|Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies.',
+);
+
 // Parameters
 
 export const PACKAGES_DOCS_PATH = helpPagePath('user/packages');
 export const MAVEN_DUPLICATES_ALLOWED = 'mavenDuplicatesAllowed';
 export const MAVEN_DUPLICATE_EXCEPTION_REGEX = 'mavenDuplicateExceptionRegex';
+
+export const DEPENDENCY_PROXY_DOCS_PATH = helpPagePath('user/packages/dependency_proxy/index');
