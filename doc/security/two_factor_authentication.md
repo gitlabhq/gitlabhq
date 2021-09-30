@@ -50,7 +50,7 @@ To enforce 2FA only for certain groups:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
-1. Select the **Require all users in this group to setup two-factor authentication** option.
+1. Select the **Require all users in this group to set up two-factor authentication** option.
 
 You can also specify a grace period in the **Time before enforced** option.
 

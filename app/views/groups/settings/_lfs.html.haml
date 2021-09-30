@@ -3,10 +3,10 @@
 
 %h5= _('Large File Storage')
 
-%p= s_('Check the %{docs_link_start}documentation%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
+%p= s_('%{docs_link_start}What is Large File Storage?%{docs_link_end}').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
 
 .form-group.gl-mb-3
   = f.gitlab_ui_checkbox_component :lfs_enabled,
       _('Allow projects within this group to use Git LFS'),
-      help_text: _('This setting can be overridden in each project.'),
+      help_text: _('Can be overridden in each project.'),
       checkbox_options: { checked: @group.lfs_enabled?, data: { qa_selector: 'lfs_checkbox' } }

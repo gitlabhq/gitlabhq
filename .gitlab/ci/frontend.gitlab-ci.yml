@@ -115,6 +115,8 @@ update-storybook-yarn-cache:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   variables:
     WEBPACK_VENDOR_DLL: "true"
+    GITLAB_NO_AR_DB_PREPEND_LOAD_BALANCING: "true"
+    GITLAB_USE_PREPARED_STATEMENTS: "true"
   script:
     - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-spawn"

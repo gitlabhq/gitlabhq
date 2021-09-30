@@ -146,7 +146,7 @@ RSpec.describe GroupsHelper do
 
       let(:possible_help_texts) do
         {
-          default_help: "This setting is applied to all subgroups unless overridden by a group owner",
+          default_help: "Applied to all subgroups unless overridden by a group owner.",
           ancestor_locked_but_you_can_override: %r{This setting is applied on <a .+>.+</a>\. You can override the setting or .+},
           ancestor_locked_so_ask_the_owner: /This setting is applied on .+\. To share projects in this group with another group, ask the owner to override the setting or remove the share with group lock from .+/,
           ancestor_locked_and_has_been_overridden: /This setting is applied on .+ and has been overridden on this subgroup/

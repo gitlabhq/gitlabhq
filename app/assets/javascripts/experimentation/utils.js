@@ -1,5 +1,5 @@
 // This file only applies to use of experiments through https://gitlab.com/gitlab-org/gitlab-experiment
-import { get, pick } from 'lodash';
+import { get } from 'lodash';
 import { DEFAULT_VARIANT, CANDIDATE_VARIANT, TRACKING_CONTEXT_SCHEMA } from './constants';
 
 function getExperimentsData() {
@@ -12,12 +12,6 @@ function convertExperimentDataToExperimentContext(experimentData) {
 
 export function getExperimentData(experimentName) {
   return getExperimentsData()[experimentName];
-}
-
-export function getExperimentContexts(...experimentNames) {
-  return Object.values(pick(getExperimentsData(), experimentNames)).map(
-    convertExperimentDataToExperimentContext,
-  );
 }
 
 export function getAllExperimentContexts() {

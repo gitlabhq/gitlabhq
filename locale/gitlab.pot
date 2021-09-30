@@ -562,6 +562,12 @@ msgstr ""
 msgid "%{docs_link_start}Learn about visibility levels.%{docs_link_end}"
 msgstr ""
 
+msgid "%{docs_link_start}What is Large File Storage?%{docs_link_end}"
+msgstr ""
+
+msgid "%{docs_link_start}What is two-factor authentication?%{docs_link_end}"
+msgstr ""
+
 msgid "%{due_date} (Past due)"
 msgstr ""
 
@@ -689,6 +695,9 @@ msgid "%{labelStart}Unmodified response:%{labelEnd} %{headers}"
 msgstr ""
 
 msgid "%{label_for_message} unavailable"
+msgstr ""
+
+msgid "%{learn_more_link}."
 msgstr ""
 
 msgid "%{lessThan} 1 hour"
@@ -1332,6 +1341,9 @@ msgid "10-19 contributions"
 msgstr ""
 
 msgid "1000+"
+msgstr ""
+
+msgid "192.168.0.0/24"
 msgstr ""
 
 msgid "1st contribution!"
@@ -2906,9 +2918,6 @@ msgstr ""
 msgid "Advanced export options"
 msgstr ""
 
-msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
-msgstr ""
-
 msgid "After a successful password update you will be redirected to login screen."
 msgstr ""
 
@@ -3480,9 +3489,6 @@ msgid "Amazon Web Services Logo"
 msgstr ""
 
 msgid "Amazon authentication is not %{link_start}correctly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
-msgstr ""
-
-msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
 msgstr ""
 
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
@@ -6138,6 +6144,9 @@ msgstr ""
 msgid "Can be manually deployed to"
 msgstr ""
 
+msgid "Can be overridden in each project."
+msgstr ""
+
 msgid "Can create groups:"
 msgstr ""
 
@@ -6529,9 +6538,6 @@ msgid "Check feature availability on namespace plan"
 msgstr ""
 
 msgid "Check out, review, and merge locally"
-msgstr ""
-
-msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
 msgstr ""
 
 msgid "Check the current instance configuration "
@@ -8599,6 +8605,9 @@ msgid "Configure Tracing"
 msgstr ""
 
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
+msgstr ""
+
+msgid "Configure advanced permissions, Large File Storage, and two-factor authentication settings."
 msgstr ""
 
 msgid "Configure approvals by authors and committers on all projects."
@@ -12796,9 +12805,6 @@ msgstr ""
 msgid "Enter Admin Mode"
 msgstr ""
 
-msgid "Enter IP address range"
-msgstr ""
-
 msgid "Enter a number"
 msgstr ""
 
@@ -12809,9 +12815,6 @@ msgid "Enter an integer number number between 0 and 100"
 msgstr ""
 
 msgid "Enter at least three characters to search"
-msgstr ""
-
-msgid "Enter domain"
 msgstr ""
 
 msgid "Enter in your Bitbucket Server URL and personal access token below"
@@ -13726,9 +13729,6 @@ msgid "Evidence collection"
 msgstr ""
 
 msgid "Exactly one of %{attributes} is required"
-msgstr ""
-
-msgid "Example: %{ip_address}. %{read_more_link}."
 msgstr ""
 
 msgid "Example: @sub\\.company\\.com$"
@@ -16357,7 +16357,13 @@ msgstr ""
 msgid "GroupSettings|Allow project access token creation"
 msgstr ""
 
+msgid "GroupSettings|Applied to all subgroups unless overridden by a group owner. Groups already added to the project lose access."
+msgstr ""
+
 msgid "GroupSettings|Auto DevOps pipeline was updated for the group"
+msgstr ""
+
+msgid "GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually."
 msgstr ""
 
 msgid "GroupSettings|Badges"
@@ -16411,6 +16417,9 @@ msgstr ""
 msgid "GroupSettings|New runners registration token has been generated!"
 msgstr ""
 
+msgid "GroupSettings|Overrides user notification preferences for all members of the group, subgroups, and projects."
+msgstr ""
+
 msgid "GroupSettings|Pipeline settings was updated for the group"
 msgstr ""
 
@@ -16423,10 +16432,13 @@ msgstr ""
 msgid "GroupSettings|Prevent forking setting was not saved"
 msgstr ""
 
-msgid "GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups."
+msgid "GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups"
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Prevents group members from being notified if the group is mentioned."
 msgstr ""
 
 msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. Inherited by subgroups."
@@ -16463,21 +16475,6 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share proj
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
-msgstr ""
-
-msgid "GroupSettings|This setting is applied to all subgroups unless overridden by a group owner. Groups that have already been added to the project lose access."
-msgstr ""
-
-msgid "GroupSettings|This setting is only available on the top-level group and it applies to all subgroups. Groups that have already been shared with a group outside %{group} will still be shared, and this access will have to be revoked manually."
-msgstr ""
-
-msgid "GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects."
-msgstr ""
-
-msgid "GroupSettings|This setting will prevent group members from being notified if the group is mentioned."
-msgstr ""
-
-msgid "GroupSettings|This setting will prevent group members from forking projects outside of the group."
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
@@ -23824,6 +23821,9 @@ msgstr ""
 msgid "Only reCAPTCHA v2 is supported:"
 msgstr ""
 
+msgid "Only users from the specified IP address ranges are able to reach this group, including all subgroups, projects, and Git repositories."
+msgstr ""
+
 msgid "Only verified users with an email address in any of these domains can be added to the group."
 msgstr ""
 
@@ -28810,9 +28810,6 @@ msgstr ""
 msgid "Require all users in this group to set up two-factor authentication"
 msgstr ""
 
-msgid "Require all users in this group to setup two-factor authentication"
-msgstr ""
-
 msgid "Required approvals (%{approvals_given} given)"
 msgstr ""
 
@@ -31613,7 +31610,7 @@ msgstr ""
 msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
-msgid "Some common domains are not allowed. %{read_more_link}."
+msgid "Some common domains are not allowed. %{learn_more_link}."
 msgstr ""
 
 msgid "Some of the designs you tried uploading did not change:"
@@ -34682,9 +34679,6 @@ msgstr ""
 msgid "This group is linked to a subscription"
 msgstr ""
 
-msgid "This group, including all subgroups, projects and git repositories, will be reachable from only the specified IP address ranges."
-msgstr ""
-
 msgid "This group, its subgroups and projects has been scheduled for removal on %{date}."
 msgstr ""
 
@@ -35139,6 +35133,9 @@ msgid "Thursday"
 msgstr ""
 
 msgid "Time"
+msgstr ""
+
+msgid "Time (in hours) that users are allowed to skip forced configuration of two-factor authentication."
 msgstr ""
 
 msgid "Time Spent"
@@ -40081,6 +40078,9 @@ msgid "error"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} overwrites the total estimated time."
+msgstr ""
+
+msgid "example.com"
 msgstr ""
 
 msgid "exceeds the limit of %{bytes} bytes"
