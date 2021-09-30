@@ -37284,6 +37284,9 @@ msgstr ""
 msgid "You are already a member of this %{member_source}."
 msgstr ""
 
+msgid "You are already impersonating another user"
+msgstr ""
+
 msgid "You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 
@@ -37969,6 +37972,9 @@ msgid "Your comment will be discarded."
 msgstr ""
 
 msgid "Your commit email is used for web based operations, such as edits and merges."
+msgstr ""
+
+msgid "Your current password is required to register a two-factor authenticator app."
 msgstr ""
 
 msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."

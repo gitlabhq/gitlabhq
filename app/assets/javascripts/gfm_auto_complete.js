@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '~/lib/utils/jquery_at_who';
-import { escape, sortBy, template } from 'lodash';
+import { escape as lodashEscape, sortBy, template } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __, sprintf } from '~/locale';
@@ -11,8 +11,21 @@ import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
 import glRegexp from './lib/utils/regexp';
 
-function sanitize(str) {
-  return str.replace(/<(?:.|\n)*?>/gm, '');
+/**
+ * Escapes user input before we pass it to at.js, which
+ * renders it as HTML in the autocomplete dropdown.
+ *
+ * at.js allows you to reference data using `${}` syntax
+ * (e.g. ${search}) which it replaces with the actual data
+ * before rendering it in the autocomplete dropdown.
+ * To prevent user input from executing this `${}` syntax,
+ * we also need to escape the $ character.
+ *
+ * @param string user input
+ * @return {string} escaped user input
+ */
+function escape(string) {
+  return lodashEscape(string).replace(/\$/g, '&dollar;');
 }
 
 function createMemberSearchString(member) {
@@ -44,8 +57,8 @@ export function membersBeforeSave(members) {
     return {
       username: member.username,
       avatarTag: autoCompleteAvatar.length === 1 ? txtAvatar : imgAvatar,
-      title: sanitize(title),
-      search: sanitize(createMemberSearchString(member)),
+      title,
+      search: createMemberSearchString(member),
       icon: avatarIcon,
       availability: member?.availability,
     };
@@ -366,7 +379,7 @@ class GfmAutoComplete {
             }
             return {
               id: i.iid,
-              title: sanitize(i.title),
+              title: i.title,
               reference: i.reference,
               search: `${i.iid} ${i.title}`,
             };
@@ -404,7 +417,7 @@ class GfmAutoComplete {
 
             return {
               id: m.iid,
-              title: sanitize(m.title),
+              title: m.title,
               search: m.title,
               expired,
               dueDate,
@@ -456,7 +469,7 @@ class GfmAutoComplete {
             }
             return {
               id: m.iid,
-              title: sanitize(m.title),
+              title: m.title,
               reference: m.reference,
               search: `${m.iid} ${m.title}`,
             };
@@ -492,7 +505,7 @@ class GfmAutoComplete {
         beforeSave(merges) {
           if (GfmAutoComplete.isLoading(merges)) return merges;
           return $.map(merges, (m) => ({
-            title: sanitize(m.title),
+            title: m.title,
             color: m.color,
             search: m.title,
             set: m.set,
@@ -586,7 +599,7 @@ class GfmAutoComplete {
             }
             return {
               id: m.id,
-              title: sanitize(m.title),
+              title: m.title,
               search: `${m.id} ${m.title}`,
             };
           });

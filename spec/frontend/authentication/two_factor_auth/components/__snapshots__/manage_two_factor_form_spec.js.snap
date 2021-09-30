@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ManageTwoFactorForm Disable button renders the component correctly 1`] = `
+VueWrapper {
+  "_emitted": Object {},
+  "_emittedByOrder": Array [],
+  "isFunctionalComponent": undefined,
+}
+`;
+
+exports[`ManageTwoFactorForm Disable button renders the component correctly 2`] = `
+<form
+  action="#"
+  class="gl-display-inline-block"
+  method="post"
+>
+  <input
+    data-testid="test-2fa-method-field"
+    name="_method"
+    type="hidden"
+  />
+   
+  <input
+    name="authenticity_token"
+    type="hidden"
+  />
+   
+  <div
+    class="form-group gl-form-group"
+    id="__BVID__15"
+    role="group"
+  >
+    <label
+      class="d-block col-form-label"
+      for="current-password"
+      id="__BVID__15__BV_label_"
+    >
+      Current password
+    </label>
+    <div
+      class="bv-no-focus-ring"
+    >
+      <input
+        aria-required="true"
+        class="gl-form-input form-control"
+        data-qa-selector="current_password_field"
+        id="current-password"
+        name="current_password"
+        required="required"
+        type="password"
+      />
+      <!---->
+      <!---->
+      <!---->
+    </div>
+  </div>
+   
+  <button
+    class="btn btn-danger gl-mr-3 gl-display-inline-block btn-danger btn-md gl-button"
+    data-confirm="Are you sure? This will invalidate your registered applications and U2F devices."
+    data-form-action="2fa_auth_path"
+    data-form-method="2fa_auth_method"
+    data-testid="test-2fa-disable-button"
+    type="submit"
+  >
+    <!---->
+     
+    <!---->
+      
+    <span
+      class="gl-button-text"
+    >
+      
+    Disable two-factor authentication
+  
+    </span>
+  </button>
+   
+  <button
+    class="btn gl-display-inline-block btn-default btn-md gl-button"
+    data-form-action="2fa_codes_path"
+    data-form-method="2fa_codes_method"
+    data-testid="test-2fa-regenerate-codes-button"
+    type="submit"
+  >
+    <!---->
+     
+    <!---->
+      
+    <span
+      class="gl-button-text"
+    >
+      
+    Regenerate recovery codes
+  
+    </span>
+  </button>
+</form>
+`;

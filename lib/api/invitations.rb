@@ -45,6 +45,8 @@ module API
           source = find_source(source_type, params[:id])
           query = params[:query]
 
+          authorize_admin_source!(source_type, source)
+
           invitations = paginate(retrieve_member_invitations(source, query))
 
           present_member_invitations invitations

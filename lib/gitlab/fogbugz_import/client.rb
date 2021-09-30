@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'fogbugz'
-
 module Gitlab
   module FogbugzImport
     class Client

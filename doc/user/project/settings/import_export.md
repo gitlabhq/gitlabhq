@@ -133,9 +133,11 @@ The following items are **not** exported:
 - Build traces and artifacts
 - Container registry images
 - CI/CD variables
+- Pipeline triggers
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers
+- Repository size limits
 
 NOTE:
 For more details on the specific data persisted in a project export, see the

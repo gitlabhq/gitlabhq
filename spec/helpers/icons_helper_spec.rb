@@ -35,22 +35,22 @@ RSpec.describe IconsHelper do
 
     it 'returns svg icon html with DEFAULT_ICON_SIZE' do
       expect(sprite_icon(icon_name).to_s)
-        .to eq "<svg class=\"s#{IconsHelper::DEFAULT_ICON_SIZE}\" data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s#{IconsHelper::DEFAULT_ICON_SIZE}\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html without size class' do
       expect(sprite_icon(icon_name, size: nil).to_s)
-        .to eq "<svg data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+        .to eq "<svg data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes' do
       expect(sprite_icon(icon_name, size: 72).to_s)
-        .to eq "<svg class=\"s72\" data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes + additional class' do
       expect(sprite_icon(icon_name, size: 72, css_class: 'icon-danger').to_s)
-        .to eq "<svg class=\"s72 icon-danger\" data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72 icon-danger\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     describe 'non existing icon' do

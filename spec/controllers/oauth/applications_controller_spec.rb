@@ -98,6 +98,19 @@ RSpec.describe Oauth::ApplicationsController do
     end
 
     describe 'POST #create' do
+      let(:oauth_params) do
+        {
+          doorkeeper_application: {
+            name: 'foo',
+            redirect_uri: redirect_uri,
+            scopes: scopes
+          }
+        }
+      end
+
+      let(:redirect_uri) { 'http://example.org' }
+      let(:scopes) { ['api'] }
+
       subject { post :create, params: oauth_params }
 
       it 'creates an application' do
@@ -116,38 +129,42 @@ RSpec.describe Oauth::ApplicationsController do
         expect(response).to redirect_to(profile_path)
       end
 
-      context 'redirect_uri' do
+      context 'when redirect_uri is invalid' do
+        let(:redirect_uri) { 'javascript://alert()' }
+
         render_views
 
         it 'shows an error for a forbidden URI' do
-          invalid_uri_params = {
-            doorkeeper_application: {
-              name: 'foo',
-              redirect_uri: 'javascript://alert()',
-              scopes: ['api']
-            }
-          }
-
-          post :create, params: invalid_uri_params
+          subject
 
           expect(response.body).to include 'Redirect URI is forbidden by the server'
+          expect(response).to render_template('doorkeeper/applications/index')
         end
       end
 
       context 'when scopes are not present' do
+        let(:scopes) { [] }
+
         render_views
 
         it 'shows an error for blank scopes' do
-          invalid_uri_params = {
-            doorkeeper_application: {
-              name: 'foo',
-              redirect_uri: 'http://example.org'
-            }
-          }
-
-          post :create, params: invalid_uri_params
+          subject
 
           expect(response.body).to include 'Scopes can&#39;t be blank'
+          expect(response).to render_template('doorkeeper/applications/index')
+        end
+      end
+
+      context 'when scopes are invalid' do
+        let(:scopes) { %w(api foo) }
+
+        render_views
+
+        it 'shows an error for invalid scopes' do
+          subject
+
+          expect(response.body).to include 'Scopes doesn&#39;t match configured on the server.'
+          expect(response).to render_template('doorkeeper/applications/index')
         end
       end
 
@@ -184,15 +201,5 @@ RSpec.describe Oauth::ApplicationsController do
 
   def disable_user_oauth
     allow(Gitlab::CurrentSettings.current_application_settings).to receive(:user_oauth_applications?).and_return(false)
-  end
-
-  def oauth_params
-    {
-      doorkeeper_application: {
-        name: 'foo',
-        redirect_uri: 'http://example.org',
-        scopes: ['api']
-      }
-    }
   end
 end

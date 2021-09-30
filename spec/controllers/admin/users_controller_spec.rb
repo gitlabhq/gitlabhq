@@ -796,6 +796,14 @@ RSpec.describe Admin::UsersController do
 
         expect(flash[:alert]).to eq("You are now impersonating #{user.username}")
       end
+
+      it 'clears token session keys' do
+        session[:github_access_token] = SecureRandom.hex(8)
+
+        post :impersonate, params: { id: user.username }
+
+        expect(session[:github_access_token]).to be_nil
+      end
     end
 
     context "when impersonation is disabled" do
@@ -807,6 +815,21 @@ RSpec.describe Admin::UsersController do
         post :impersonate, params: { id: user.username }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when impersonating an admin and attempting to impersonate again' do
+      let(:admin2) { create(:admin) }
+
+      before do
+        post :impersonate, params: { id: admin2.username }
+      end
+
+      it 'does not allow double impersonation', :aggregate_failures do
+        post :impersonate, params: { id: user.username }
+
+        expect(flash[:alert]).to eq(_('You are already impersonating another user'))
+        expect(warden.user).to eq(admin2)
       end
     end
   end

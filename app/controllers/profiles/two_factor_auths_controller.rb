@@ -2,6 +2,9 @@
 
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_two_factor_requirement
+
+  before_action :validate_current_password, only: [:create, :codes, :destroy]
+
   before_action do
     push_frontend_feature_flag(:webauthn)
   end
@@ -128,6 +131,14 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   private
+
+  def validate_current_password
+    return if current_user.valid_password?(params[:current_password])
+
+    current_user.increment_failed_attempts!
+
+    redirect_to profile_two_factor_auth_path, alert: _('You must provide a valid current password')
+  end
 
   def build_qr_code
     uri = current_user.otp_provisioning_uri(account_string, issuer: issuer_host)

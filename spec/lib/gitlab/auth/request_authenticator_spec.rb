@@ -81,32 +81,72 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
       expect(subject.find_sessionless_user(:api)).to eq job_token_user
     end
 
-    it 'returns lfs_token user if no job_token user found' do
-      allow_any_instance_of(described_class)
-        .to receive(:find_user_from_lfs_token)
-        .and_return(lfs_token_user)
-
-      expect(subject.find_sessionless_user(:api)).to eq lfs_token_user
-    end
-
-    it 'returns basic_auth_access_token user if no lfs_token user found' do
+    it 'returns nil even if basic_auth_access_token is available' do
       allow_any_instance_of(described_class)
         .to receive(:find_user_from_personal_access_token)
         .and_return(basic_auth_access_token_user)
 
-      expect(subject.find_sessionless_user(:api)).to eq basic_auth_access_token_user
+      expect(subject.find_sessionless_user(:api)).to be_nil
     end
 
-    it 'returns basic_auth_access_password user if no basic_auth_access_token user found' do
+    it 'returns nil even if find_user_from_lfs_token is available' do
       allow_any_instance_of(described_class)
-        .to receive(:find_user_from_basic_auth_password)
-        .and_return(basic_auth_password_user)
+        .to receive(:find_user_from_lfs_token)
+        .and_return(lfs_token_user)
 
-      expect(subject.find_sessionless_user(:api)).to eq basic_auth_password_user
+      expect(subject.find_sessionless_user(:api)).to be_nil
     end
 
     it 'returns nil if no user found' do
-      expect(subject.find_sessionless_user(:api)).to be_blank
+      expect(subject.find_sessionless_user(:api)).to be_nil
+    end
+
+    context 'in an API request' do
+      before do
+        env['SCRIPT_NAME'] = '/api/v4/projects'
+      end
+
+      it 'returns basic_auth_access_token user if no job_token_user found' do
+        allow_any_instance_of(described_class)
+          .to receive(:find_user_from_personal_access_token)
+          .and_return(basic_auth_access_token_user)
+
+        expect(subject.find_sessionless_user(:api)).to eq basic_auth_access_token_user
+      end
+    end
+
+    context 'in a Git request' do
+      before do
+        env['SCRIPT_NAME'] = '/group/project.git/info/refs'
+      end
+
+      it 'returns lfs_token user if no job_token user found' do
+        allow_any_instance_of(described_class)
+          .to receive(:find_user_from_lfs_token)
+          .and_return(lfs_token_user)
+
+        expect(subject.find_sessionless_user(nil)).to eq lfs_token_user
+      end
+
+      it 'returns basic_auth_access_token user if no lfs_token user found' do
+        allow_any_instance_of(described_class)
+          .to receive(:find_user_from_personal_access_token)
+          .and_return(basic_auth_access_token_user)
+
+        expect(subject.find_sessionless_user(nil)).to eq basic_auth_access_token_user
+      end
+
+      it 'returns basic_auth_access_password user if no basic_auth_access_token user found' do
+        allow_any_instance_of(described_class)
+          .to receive(:find_user_from_basic_auth_password)
+          .and_return(basic_auth_password_user)
+
+        expect(subject.find_sessionless_user(nil)).to eq basic_auth_password_user
+      end
+
+      it 'returns nil if no user found' do
+        expect(subject.find_sessionless_user(nil)).to be_blank
+      end
     end
 
     it 'rescue Gitlab::Auth::AuthenticationError exceptions' do

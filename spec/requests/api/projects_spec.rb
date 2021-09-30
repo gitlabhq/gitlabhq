@@ -1052,6 +1052,16 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
+    it 'disallows creating a project with an import_url when git import source is disabled' do
+      stub_application_setting(import_sources: nil)
+
+      project_params = { import_url: 'http://example.com', path: 'path-project-Foo', name: 'Foo Project' }
+      expect { post api('/projects', user), params: project_params }
+        .not_to change {  Project.count }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
     it 'sets a project as public' do
       project = attributes_for(:project, visibility: 'public')
 

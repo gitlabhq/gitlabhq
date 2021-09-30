@@ -48,6 +48,11 @@ Doorkeeper.configure do
   # Issue access tokens with refresh token (disabled by default)
   use_refresh_token
 
+  # Forbids creating/updating applications with arbitrary scopes that are
+  # not in configuration, i.e. `default_scopes` or `optional_scopes`.
+  # (disabled by default)
+  enforce_configured_scopes
+
   # Forces the usage of the HTTPS protocol in non-native redirect uris (enabled
   # by default in non-development environments). OAuth2 delegates security in
   # communication to the HTTPS protocol so it is wise to keep this enabled.
