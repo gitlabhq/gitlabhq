@@ -2285,6 +2285,9 @@ msgstr ""
 msgid "AdminArea|Features"
 msgstr ""
 
+msgid "AdminArea|Get security updates from GitLab and stay up to date"
+msgstr ""
+
 msgid "AdminArea|Groups"
 msgstr ""
 
@@ -2322,6 +2325,12 @@ msgid "AdminArea|Projects"
 msgstr ""
 
 msgid "AdminArea|Reporter"
+msgstr ""
+
+msgid "AdminArea|Sign up for the GitLab Security Newsletter to get notified for security updates."
+msgstr ""
+
+msgid "AdminArea|Sign up for the GitLab newsletter"
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -38575,6 +38584,9 @@ msgstr ""
 msgid "You are already a member of this %{member_source}."
 msgstr ""
 
+msgid "You are already impersonating another user"
+msgstr ""
+
 msgid "You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 
@@ -39287,6 +39299,9 @@ msgid "Your comment will be discarded."
 msgstr ""
 
 msgid "Your commit email is used for web based operations, such as edits and merges."
+msgstr ""
+
+msgid "Your current password is required to register a two-factor authenticator app."
 msgstr ""
 
 msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."

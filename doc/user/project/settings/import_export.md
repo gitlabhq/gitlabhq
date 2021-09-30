@@ -135,9 +135,11 @@ The following items are **not** exported:
 - Build traces and artifacts
 - Container registry images
 - CI/CD variables
+- Pipeline triggers
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers
+- Repository size limits
 
 These content rules also apply to creating projects from templates on the
 [group](../../group/custom_project_templates.md)
@@ -261,7 +263,7 @@ reduce the repository size for another import attempt.
     git gc --prune=now --aggressive
 
     # Prepare recreating an importable file
-    git bundle create ../project.bundle smaller-tmp-main
+    git bundle create ../project.bundle <default-branch-name>
     cd ..
     mv project/ ../"$EXPORT"-project
     cd ..

@@ -22,4 +22,9 @@ module RedisHelpers
   def redis_trace_chunks_cleanup!
     Gitlab::Redis::TraceChunks.with(&:flushdb)
   end
+
+  # Usage: rate limiting state (for Rack::Attack)
+  def redis_rate_limiting_cleanup!
+    Gitlab::Redis::RateLimiting.with(&:flushdb)
+  end
 end

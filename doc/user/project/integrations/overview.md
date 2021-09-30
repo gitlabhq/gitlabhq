@@ -32,7 +32,7 @@ Click on the service links to see further configuration instructions and details
 | [Bugzilla](bugzilla.md)                                   | Use Bugzilla as the issue tracker.                                                           | **{dotted-circle}** No |
 | Buildkite                                                 | Run CI/CD pipelines with Buildkite.                                                          | **{check-circle}** Yes |
 | Campfire                                                  | Connect to chat.                                                                             | **{dotted-circle}** No |
-| [Confluence Workspace](../../../api/services.md#confluence-service) | Replace the link to the internal wiki with a link to a Confluence Cloud Workspace. | **{dotted-circle}** No |
+| [Confluence Workspace](../../../api/integrations.md#confluence-integration) | Replace the link to the internal wiki with a link to a Confluence Cloud Workspace. | **{dotted-circle}** No |
 | [Custom issue tracker](custom_issue_tracker.md)           | Use a custom issue tracker.                                                                  | **{dotted-circle}** No |
 | [Datadog](../../../integration/datadog.md)                | Trace your GitLab pipelines with Datadog.                                                    | **{check-circle}** Yes |
 | [Discord Notifications](discord_notifications.md)         | Send notifications about project events to a Discord channel.                                | **{dotted-circle}** No |
@@ -40,7 +40,7 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md)                       | Send commits and diff of each push by email.                                                 | **{dotted-circle}** No |
 | [EWM](ewm.md)                                             | Use IBM Engineering Workflow Management as the issue tracker.                                | **{dotted-circle}** No |
 | [External wiki](../wiki/index.md#link-an-external-wiki)   | Link an external wiki.                                          | **{dotted-circle}** No |
-| [Flowdock](../../../api/services.md#flowdock)             | Send notifications from GitLab to Flowdock flows. | **{dotted-circle}** No |
+| [Flowdock](../../../api/integrations.md#flowdock)             | Send notifications from GitLab to Flowdock flows. | **{dotted-circle}** No |
 | [GitHub](github.md)                                       | Obtain statuses for commits and pull requests.                                               | **{dotted-circle}** No |
 | [Google Chat](hangouts_chat.md)                           | Send notifications from your GitLab project to a room in Google Chat.| **{dotted-circle}** No |
 | [irker (IRC gateway)](irker.md)                           | Send IRC messages.                                                                           | **{dotted-circle}** No |

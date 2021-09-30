@@ -2,7 +2,7 @@
 
 module API
   module Helpers
-    # Helpers module for API::Services
+    # Helpers module for API::Integrations
     #
     # The data structures inside this model are returned using class methods,
     # allowing EE to extend them where necessary.

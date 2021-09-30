@@ -92,6 +92,14 @@ RSpec.describe Admin::ImpersonationsController do
 
                 expect(warden.user).to eq(impersonator)
               end
+
+              it 'clears token session keys' do
+                session[:bitbucket_token] = SecureRandom.hex(8)
+
+                delete :destroy
+
+                expect(session[:bitbucket_token]).to be_nil
+              end
             end
 
             # base case

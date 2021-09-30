@@ -4,6 +4,7 @@
 - billable_users_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: billable_users_url }
 
 = render_if_exists 'shared/qrtly_reconciliation_alert'
+= render 'admin/dashboard/security_newsletter_callout'
 
 - if @notices
   - @notices.each do |notice|

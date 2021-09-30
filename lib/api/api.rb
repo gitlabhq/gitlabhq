@@ -260,7 +260,7 @@ module API
       mount ::API::ResourceAccessTokens
       mount ::API::RubygemPackages
       mount ::API::Search
-      mount ::API::Services
+      mount ::API::Integrations
       mount ::API::Settings
       mount ::API::SidekiqMetrics
       mount ::API::SnippetRepositoryStorageMoves

@@ -43,33 +43,49 @@ repository storage is either:
   - Read requests are distributed between multiple Gitaly nodes, which can improve performance.
   - Write requests are broadcast to repository replicas.
 
-WARNING:
-Engineering support for NFS for Git repositories is deprecated. Read the
-[deprecation notice](#nfs-deprecation-notice).
+## Guidance regarding Gitaly Cluster
 
-## Recommendations
+Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please review existing technical limitations and considerations prior to deploying Gitaly Cluster.
 
-The following table provides recommendations based on your requirements. Users means concurrent
-users actively performing simultaneous Git operations.
+- [Known issues](#known-issues)
+- [Snapshot limitations](#snapshot-backup-and-recovery-limitations).
 
-| User scaling                                                           | Reference architecture to use                                   | GitLab instance configuration                | Gitaly configuration            | Git repository storage             | Instances dedicated to Gitaly services |
-|:-----------------------------------------------------------------------|:----------------------------------------------------------------|:---------------------------------------------|:--------------------------------|:-----------------------------------|:---------------------------------------|
-| Up to 1000 users                                                       | [1K](../reference_architectures/1k_users.md)                    | Single instance for all of GitLab            | Already integrated as a service | Local disk                         | 0                                      |
-| Up to 2999 users                                                       | [2K](../reference_architectures/2k_users.md)                    | Horizontally-scaled GitLab instance (non-HA) | Single Gitaly server            | Local disk of Gitaly instance      | 1                                      |
-| 3000 users and over                                                    | [3K](../reference_architectures/3k_users.md)                    | Horizontally-scaled GitLab instance with HA  | Gitaly Cluster                  | Local disk of each Gitaly instance | 8                                      |
-| RTO/RPO requirements for AZ failure tolerance regardless of user scale | [3K (with downscaling)](../reference_architectures/3k_users.md) | Custom (1)                                   | Gitaly Cluster                  | Local disk of each Gitaly instance | 8                                      |
+Please also review the [configuration guidance](configure_gitaly.md) and [Repository storage options](../repository_storage_paths.md) to make sure that Gitaly Cluster is the best set-up for you. Finally, refer to the following guidance:
 
-1. If you need AZ failure tolerance for user scaling lower than 3K, please contact Customer Success
-   to discuss your RTO and RPO needs and what options exist to meet those objectives.
+- If you have not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the
+  service you are using. NFS is supported in 14.x releases.
+- If you have not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options - a sharded Gitaly instance or Gitaly Cluster.
+- If you have migrated to Gitaly Cluster and the limitations and tradeoffs are not suitable for your environment, your options are:
+  1. [Migrate off Gitaly Cluster](#migrate-off-gitaly-cluster) back to your NFS solution
+  1. [Migrate off Gitaly Cluster](#migrate-off-gitaly-cluster) to NFS solution or to a sharded Gitaly instance.
 
-GitLab [reference architectures](../reference_architectures/index.md) provide guidance for what
-Gitaly configuration is recommended at each scale. The Gitaly configuration is noted by the
-architecture diagrams and the table of required resources.
+Reach out to your Technical Account Manager or customer support if you have any questions.
 
-WARNING:
-Some [known database inconsistency issues](#known-issues) exist in Gitaly Cluster. We recommend you
-remain on your current service for now. We can adjust the date for
-[NFS support removal](#nfs-deprecation-notice) if this applies to you.
+### Known issues
+
+The following table outlines current known issues impacting the use of Gitaly Cluster. For
+the current status of these issues, please refer to the referenced issues and epics.
+
+| Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
+|:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
+| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. Work is in-progress to update Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485), which is expected to resolve the issue.                                                                                                                                                                                                                                          | No known solution at this time. |
+| Database inconsistencies due to repository access outside of Gitaly Cluster's control | Operations that write to the repository storage that do not go through normal Gitaly Cluster methods can cause database inconsistencies. These can include (but are not limited to) snapshot restoration for cluster node disks, node upgrades which modify files under Git control, or any other disk operation that may touch repository storage external to GitLab. The Gitaly team is actively working to provide manual commands to [reconcile the Praefect database with the repository storage](https://gitlab.com/groups/gitlab-org/-/epics/6723).  | Don't directly change repositories on any Gitaly Cluster node at this time. |
+| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting live upgrade assistance](https://about.gitlab.com/support/scheduling-live-upgrade-assistance.html) so your upgrade plan can be reviewed by support. |
+| Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind will result in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you need to restore from backup, it's best to snapshot all Gitaly Cluster nodes at the same time and take a database dump of the Praefect database. |
+
+### Snapshot backup and recovery limitations
+
+Gitaly Cluster does not support snapshot backups because these can cause issues where the Praefect
+database becomes out of sync with the disk storage. Because of how Praefect rebuilds the replication
+metadata of Gitaly disk information during a restore, we recommend using the
+[official backup and restore Rake tasks](../../raketasks/backup_restore.md). If you are unable to use this method, please contact customer support for restoration help.
+
+To track progress on work on a solution for manually re-synchronizing the Praefect database with
+disk storage, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6575).
+
+### What to do if you are on Gitaly Cluster experiencing an issue or limitation
+
+Please contact customer support for immediate help in restoration or recovery.
 
 ## Gitaly
 
@@ -188,26 +204,6 @@ WARNING:
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
 RPO and RTO discussed above.
 
-### Known issues
-
-The following table outlines current known issues impacting the use of Gitaly Cluster. For
-the current status of these issues, please refer to the referenced issues and epics.
-
-| Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-|:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Gitaly Cluster + Geo can cause database inconsistencies                               | There are some conditions during Geo replication that can cause database inconsistencies with Gitaly Cluster. These have been identified and are being resolved by updating Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485).                                                                                                                                                                                                                                          |
-| Database inconsistencies due to repository access outside of Gitaly Cluster's control | Operations that write to the repository storage that do not go through normal Gitaly Cluster methods can cause database inconsistencies. These can include (but are not limited to) snapshot restoration for cluster node disks, node upgrades which modify files under Git control, or any other disk operation that may touch repository storage external to GitLab. The Gitaly team is actively working to provide manual commands to [reconcile the Praefect database with the repository storage](https://gitlab.com/groups/gitlab-org/-/epics/6723).  |
-
-### Snapshot backup and recovery limitations
-
-Gitaly Cluster does not support snapshot backups because these can cause issues where the Praefect
-database becomes out of sync with the disk storage. Because of how Praefect rebuilds the replication
-metadata of Gitaly disk information during a restore, we recommend using the
-[official backup and restore Rake tasks](../../raketasks/backup_restore.md).
-
-To track progress on work on a solution for manually re-synchronizing the Praefect database with
-disk storage, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6575).
-
 ### Virtual storage
 
 Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
@@ -236,9 +232,7 @@ As with normal Gitaly storages, virtual storages can be sharded.
 
 ### Moving beyond NFS
 
-WARNING:
-Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
-unavailable from GitLab 15.0. No further enhancements are planned for this feature.
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting GitLab 15.0. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for more details.
 
 [Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
 is not well suited to Git workloads which are CPU and IOPS sensitive.
@@ -359,13 +353,9 @@ For configuration information, see [Configure replication factor](praefect.md#co
 
 For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
 
-## Migrate to Gitaly Cluster
+## Migrating to Gitaly Cluster
 
-We recommend you migrate to Gitaly Cluster if your [requirements recommend](#recommendations) Gitaly
-Cluster.
-
-Whether migrating to Gitaly Cluster because of [NFS support deprecation](index.md#nfs-deprecation-notice)
-or to move from single Gitaly nodes, the basic process involves:
+Please see [current guidance on Gitaly Cluster](#guidance-regarding-gitaly-cluster). The basic process for migrating to Gitaly Cluster involves:
 
 1. Create the required storage. Refer to
    [repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
@@ -376,8 +366,7 @@ or to move from single Gitaly nodes, the basic process involves:
 
 WARNING:
 Some [known database inconsistency issues](#known-issues) exist in Gitaly Cluster. We recommend you
-remain on your current service for now. We can adjust the date for
-[NFS support removal](#nfs-deprecation-notice) if this applies to you.
+remain on your current service for now.
 
 ### Migrate off Gitaly Cluster
 
@@ -631,20 +620,4 @@ The second facet presents the only real solution. For this, we developed
 ## NFS deprecation notice
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
-unavailable from GitLab 15.0. No further enhancements are planned for this feature.
-
-Additional information:
-
-- [Recommended NFS mount options and known issues with Gitaly and NFS](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
-- [GitLab statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs).
-
-GitLab recommends:
-
-- Creating a [Gitaly Cluster](#gitaly-cluster) as soon as possible.
-- [Moving your repositories](#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
-  Cluster.
-
-We welcome your feedback on this process. You can:
-
-- Raise a support ticket.
-- [Comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).
+unavailable from GitLab 15.0. For further information, please see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.

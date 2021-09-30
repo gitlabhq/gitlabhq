@@ -3,33 +3,50 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier do
-  let(:user) { create(:user) }
+  using RSpec::Parameterized::TableSyntax
 
-  subject { described_class.new(user) }
+  subject(:verifier) { described_class.new(user) }
+
+  let(:user) { build_stubbed(:user, otp_grace_period_started_at: Time.zone.now) }
+
+  describe '#two_factor_authentication_enforced?' do
+    subject { verifier.two_factor_authentication_enforced? }
+
+    where(:instance_level_enabled, :group_level_enabled, :grace_period_expired, :should_be_enforced) do
+      false | false | true  | false
+      true  | false | false | false
+      true  | false | true  | true
+      false | true  | false | false
+      false | true  | true  | true
+    end
+
+    with_them do
+      before do
+        stub_application_setting(require_two_factor_authentication: instance_level_enabled)
+        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
+        stub_application_setting(two_factor_grace_period: grace_period_expired ? 0 : 1.month.in_hours)
+      end
+
+      it { is_expected.to eq(should_be_enforced) }
+    end
+  end
 
   describe '#two_factor_authentication_required?' do
-    describe 'when it is required on application level' do
-      it 'returns true' do
-        stub_application_setting require_two_factor_authentication: true
+    subject { verifier.two_factor_authentication_required? }
 
-        expect(subject.two_factor_authentication_required?).to be_truthy
-      end
+    where(:instance_level_enabled, :group_level_enabled, :should_be_required) do
+      true  | false | true
+      false | true  | true
+      false | false | false
     end
 
-    describe 'when it is required on group level' do
-      it 'returns true' do
-        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(true)
-
-        expect(subject.two_factor_authentication_required?).to be_truthy
+    with_them do
+      before do
+        stub_application_setting(require_two_factor_authentication: instance_level_enabled)
+        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
       end
-    end
 
-    describe 'when it is not required' do
-      it 'returns false when not required on group level' do
-        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(false)
-
-        expect(subject.two_factor_authentication_required?).to be_falsey
-      end
+      it { is_expected.to eq(should_be_required) }
     end
   end
 
@@ -85,25 +102,21 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier do
   end
 
   describe '#two_factor_grace_period_expired?' do
-    before do
-      allow(user).to receive(:otp_grace_period_started_at).and_return(4.hours.ago)
-    end
-
     it 'returns true if the grace period has expired' do
-      allow(subject).to receive(:two_factor_grace_period).and_return(2)
+      stub_application_setting two_factor_grace_period: 0
 
       expect(subject.two_factor_grace_period_expired?).to be_truthy
     end
 
     it 'returns false if the grace period has not expired' do
-      allow(subject).to receive(:two_factor_grace_period).and_return(6)
+      stub_application_setting two_factor_grace_period: 1.month.in_hours
 
       expect(subject.two_factor_grace_period_expired?).to be_falsey
     end
 
     context 'when otp_grace_period_started_at is nil' do
       it 'returns false' do
-        allow(user).to receive(:otp_grace_period_started_at).and_return(nil)
+        user.otp_grace_period_started_at = nil
 
         expect(subject.two_factor_grace_period_expired?).to be_falsey
       end

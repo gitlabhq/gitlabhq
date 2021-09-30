@@ -41,7 +41,7 @@ GEM
     capybara-screenshot (1.0.23)
       capybara (>= 1.0, < 4)
       launchy
-    chemlab (0.8.1)
+    chemlab (0.9.1)
       colorize (~> 0.8)
       i18n (~> 1.8)
       rake (>= 12, < 14)
@@ -244,7 +244,7 @@ DEPENDENCIES
   allure-rspec (~> 2.14.5)
   capybara (~> 3.35.0)
   capybara-screenshot (~> 1.0.23)
-  chemlab (~> 0.8)
+  chemlab (~> 0.9)
   chemlab-library-www-gitlab-com (~> 0.1)
   deprecation_toolkit (~> 1.5.1)
   faker (~> 2.19, >= 2.19.0)

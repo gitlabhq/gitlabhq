@@ -186,4 +186,20 @@ RSpec.describe BulkImports::NdjsonPipeline do
       end
     end
   end
+
+  describe '#relation_factory' do
+    context 'when portable is group' do
+      it 'returns group relation factory' do
+        expect(subject.relation_factory).to eq(Gitlab::ImportExport::Group::RelationFactory)
+      end
+    end
+
+    context 'when portable is project' do
+      subject { NdjsonPipelineClass.new(project, user) }
+
+      it 'returns project relation factory' do
+        expect(subject.relation_factory).to eq(Gitlab::ImportExport::Project::RelationFactory)
+      end
+    end
+  end
 end

@@ -38,4 +38,12 @@ RSpec.configure do |config|
 
     redis_trace_chunks_cleanup!
   end
+
+  config.around(:each, :clean_gitlab_redis_rate_limiting) do |example|
+    redis_rate_limiting_cleanup!
+
+    example.run
+
+    redis_rate_limiting_cleanup!
+  end
 end

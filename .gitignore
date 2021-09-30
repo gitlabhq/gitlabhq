@@ -40,10 +40,7 @@ eslint-report.html
 /config/initializers/smtp_settings.rb
 /config/initializers/relative_url.rb
 /config/resque.yml
-/config/redis.cache.yml
-/config/redis.queues.yml
-/config/redis.shared_state.yml
-/config/redis.trace_chunks.yml
+/config/redis.*.yml
 /config/unicorn.rb
 /config/puma.rb
 /config/secrets.yml

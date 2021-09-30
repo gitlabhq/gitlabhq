@@ -1,0 +1,14 @@
+- return unless show_security_newsletter_user_callout?
+
+= render 'shared/global_alert',
+  title: s_('AdminArea|Get security updates from GitLab and stay up to date'),
+  variant: :tip,
+  alert_class: 'js-security-newsletter-callout',
+  is_contained: true,
+  alert_data: { feature_id: UserCalloutsHelper::SECURITY_NEWSLETTER_CALLOUT, dismiss_endpoint: user_callouts_path, defer_links: 'true' },
+  close_button_data: { testid: 'close-security-newsletter-callout' } do
+  .gl-alert-body
+    = s_('AdminArea|Sign up for the GitLab Security Newsletter to get notified for security updates.')
+  .gl-alert-actions
+    = link_to 'https://about.gitlab.com/company/preference-center/', target: '_blank', rel: 'noreferrer noopener', class: 'deferred-link gl-alert-action btn-confirm btn-md gl-button' do
+      = s_('AdminArea|Sign up for the GitLab newsletter')

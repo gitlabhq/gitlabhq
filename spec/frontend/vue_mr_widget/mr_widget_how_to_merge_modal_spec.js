@@ -8,11 +8,9 @@ describe('MRWidgetHowToMerge', () => {
   function mountComponent({ data = {}, props = {} } = {}) {
     wrapper = shallowMount(MrWidgetHowToMergeModal, {
       data() {
-        return { ...data };
+        return data;
       },
-      propsData: {
-        ...props,
-      },
+      propsData: props,
       stubs: {},
     });
   }
@@ -56,5 +54,17 @@ describe('MRWidgetHowToMerge', () => {
   it('should render different instructions based on if the merge is based off a fork', () => {
     mountComponent({ props: { isFork: true } });
     expect(findInstructionsFields().at(0).text()).toContain('FETCH_HEAD');
+  });
+
+  it('escapes the target branch name shell-secure', () => {
+    mountComponent({ props: { targetBranch: '";echo$IFS"you_shouldnt_run_this' } });
+
+    expect(findInstructionsFields().at(1).text()).toContain('\'";echo$IFS"you_shouldnt_run_this\'');
+  });
+
+  it('escapes the source branch name shell-secure', () => {
+    mountComponent({ props: { sourceBranch: 'branch-of-$USER' } });
+
+    expect(findInstructionsFields().at(0).text()).toContain("'branch-of-$USER'");
   });
 });

@@ -293,4 +293,37 @@ RSpec.describe UserCalloutsHelper do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '.show_security_newsletter_user_callout?' do
+    let_it_be(:admin) { create(:user, :admin) }
+
+    subject { helper.show_security_newsletter_user_callout? }
+
+    context 'when `current_user` is not an admin' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:user_dismissed?).with(described_class::SECURITY_NEWSLETTER_CALLOUT) { false }
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user has dismissed callout' do
+      before do
+        allow(helper).to receive(:current_user).and_return(admin)
+        allow(helper).to receive(:user_dismissed?).with(described_class::SECURITY_NEWSLETTER_CALLOUT) { true }
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when `current_user` is an admin and user has not dismissed callout' do
+      before do
+        allow(helper).to receive(:current_user).and_return(admin)
+        allow(helper).to receive(:user_dismissed?).with(described_class::SECURITY_NEWSLETTER_CALLOUT) { false }
+      end
+
+      it { is_expected.to be true }
+    end
+  end
 end

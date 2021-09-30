@@ -624,9 +624,9 @@ RSpec.describe Projects::ProjectMembersController do
       end
     end
 
-    context 'when user can access source project members' do
+    context 'when user can admin source project members' do
       before do
-        another_project.add_guest(user)
+        another_project.add_maintainer(user)
       end
 
       include_context 'import applied'
@@ -640,7 +640,11 @@ RSpec.describe Projects::ProjectMembersController do
       end
     end
 
-    context 'when user is not member of a source project' do
+    context "when user can't admin source project members" do
+      before do
+        another_project.add_developer(user)
+      end
+
       include_context 'import applied'
 
       it 'does not import team members' do

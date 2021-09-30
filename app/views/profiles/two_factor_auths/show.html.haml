@@ -17,13 +17,7 @@
           = _("You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication.")
         %p
           = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
-        %div
-          = link_to _('Disable two-factor authentication'), profile_two_factor_auth_path,
-                method: :delete,
-                data: { confirm: webauthn_enabled ? _('Are you sure? This will invalidate your registered applications and U2F / WebAuthn devices.') : _('Are you sure? This will invalidate your registered applications and U2F devices.') },
-                class: 'gl-button btn btn-danger gl-mr-3'
-          = form_tag codes_profile_two_factor_auth_path, {style: 'display: inline-block', method: :post} do |f|
-            = submit_tag _('Regenerate recovery codes'), class: 'gl-button btn btn-default'
+        .js-manage-two-factor-form{ data: { webauthn_enabled: webauthn_enabled, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
 
       - else
         %p
@@ -53,6 +47,11 @@
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }
+          .form-group
+            = label_tag :current_password, _('Current password'), class: 'label-bold'
+            = password_field_tag :current_password, nil, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
+            %p.form-text.text-muted
+              = _('Your current password is required to register a two-factor authenticator app.')
           .gl-mt-3
             = submit_tag _('Register with two-factor app'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'register_2fa_app_button' }
 

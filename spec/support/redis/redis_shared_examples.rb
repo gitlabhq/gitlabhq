@@ -327,6 +327,12 @@ RSpec.shared_examples "redis_shared_examples" do
 
       expect(subject.send(:fetch_config)).to eq false
     end
+
+    it 'has a value for the legacy default URL' do
+      allow(subject).to receive(:fetch_config) { false }
+
+      expect(subject.send(:raw_config_hash)).to include(url: a_string_matching(%r{\Aredis://localhost:638[012]\Z}))
+    end
   end
 
   def clear_raw_config

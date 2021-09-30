@@ -37,6 +37,7 @@ excluded_attributes:
     - :trial_ends_on
     - :shared_runners_minute_limit
     - :extra_shared_runners_minutes_limit
+    - :repository_size_limit
   epics:
     - :state_id
 

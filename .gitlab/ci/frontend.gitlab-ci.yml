@@ -366,6 +366,11 @@ compile-storybook:
   extends:
     - .compile-storybook-base
     - .frontend:rules:default-frontend-jobs
+  needs:
+    - job: "rspec frontend_fixture"
+    - job: "rspec-ee frontend_fixture"
+      optional: true
+    - job: "graphql-schema-dump"
   artifacts:
     name: storybook
     expire_in: 31d
@@ -378,3 +383,6 @@ compile-storybook as-if-foss:
     - .compile-storybook-base
     - .as-if-foss
     - .frontend:rules:default-frontend-jobs-as-if-foss
+  needs:
+    - job: "graphql-schema-dump"
+    - job: "rspec frontend_fixture as-if-foss"

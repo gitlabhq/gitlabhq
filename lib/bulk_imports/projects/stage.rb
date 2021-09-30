@@ -15,9 +15,13 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
             stage: 1
           },
+          issues: {
+            pipeline: BulkImports::Projects::Pipelines::IssuesPipeline,
+            stage: 2
+          },
           finisher: {
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
-            stage: 2
+            stage: 3
           }
         }
       end

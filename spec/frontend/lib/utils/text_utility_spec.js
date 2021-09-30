@@ -363,4 +363,25 @@ describe('text_utility', () => {
       expect(textUtils.insertFinalNewline(input, '\r\n')).toBe(output);
     });
   });
+
+  describe('escapeShellString', () => {
+    it.each`
+      character | input                              | output
+      ${'"'}    | ${'";echo "you_shouldnt_run_this'} | ${'\'";echo "you_shouldnt_run_this\''}
+      ${'$'}    | ${'$IFS'}                          | ${"'$IFS'"}
+      ${'\\'}   | ${'evil-branch-name\\'}            | ${"'evil-branch-name\\'"}
+      ${'!'}    | ${'!event'}                        | ${"'!event'"}
+    `(
+      'should not escape the $character character but wrap in single-quotes',
+      ({ input, output }) => {
+        expect(textUtils.escapeShellString(input)).toBe(output);
+      },
+    );
+
+    it("should escape the ' character and wrap in single-quotes", () => {
+      expect(textUtils.escapeShellString("fix-'bug-behavior'")).toBe(
+        "'fix-'\\''bug-behavior'\\'''",
+      );
+    });
+  });
 });
