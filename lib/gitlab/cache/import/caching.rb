@@ -84,8 +84,10 @@ module Gitlab
           key = cache_key_for(raw_key)
 
           Redis::Cache.with do |redis|
-            redis.incr(key)
+            value = redis.incr(key)
             redis.expire(key, timeout)
+
+            value
           end
         end
 

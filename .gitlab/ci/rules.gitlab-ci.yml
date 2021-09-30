@@ -37,19 +37,19 @@
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'
 
-.if-merge-request-title-as-if-foss: &if-merge-request-title-as-if-foss
+.if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
-.if-merge-request-title-update-caches: &if-merge-request-title-update-caches
+.if-merge-request-labels-update-caches: &if-merge-request-labels-update-caches
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
 
-.if-merge-request-title-run-all-rspec: &if-merge-request-title-run-all-rspec
+.if-merge-request-labels-run-all-rspec: &if-merge-request-labels-run-all-rspec
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
 
-.if-merge-request-title-run-all-jest: &if-merge-request-title-run-all-jest
+.if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
 
-.if-merge-request-run-decomposed: &if-merge-request-run-decomposed
+.if-merge-request-labels-run-decomposed: &if-merge-request-labels-run-decomposed
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-decomposed/'
 
 .if-security-merge-request: &if-security-merge-request
@@ -368,11 +368,11 @@
   rules:
     - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-security-schedule
-    - <<: *if-merge-request-title-update-caches
+    - <<: *if-merge-request-labels-update-caches
 
 .shared:rules:update-gitaly-binaries-cache:
   rules:
-    - <<: *if-merge-request-title-update-caches
+    - <<: *if-merge-request-labels-update-caches
     - changes: *gitaly-patterns
 
 ######################
@@ -481,14 +481,14 @@
 .frontend:rules:compile-test-assets:
   rules:
     - changes: *code-backstage-qa-patterns
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .frontend:rules:compile-test-assets-as-if-foss:
   rules:
     - <<: *if-not-ee
       when: never
     - changes: *code-backstage-qa-patterns
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .frontend:rules:default-frontend-jobs:
   rules:
@@ -501,8 +501,8 @@
       when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-title-as-if-foss
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-as-if-foss
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *startup-css-patterns
     - <<: *if-merge-request
@@ -510,7 +510,7 @@
 
 .frontend:rules:jest:
   rules:
-    - <<: *if-merge-request-title-run-all-jest
+    - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-default-refs
       changes: *core-frontend-patterns
     - <<: *if-merge-request
@@ -530,7 +530,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-jest
+    - <<: *if-merge-request-labels-run-all-jest
       when: never
     - <<: *if-default-refs
       changes: *core-frontend-patterns
@@ -548,7 +548,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       when: never
     - <<: *if-merge-request
       changes: *frontend-patterns
@@ -618,8 +618,8 @@
       when: never
     - <<: *if-security-merge-request
       changes: *code-qa-patterns
-    - <<: *if-merge-request-title-as-if-foss
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-as-if-foss
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -645,11 +645,11 @@
 ###############
 .rails:rules:decomposed-databases:
   rules:
-    - <<: *if-merge-request-run-decomposed
+    - <<: *if-merge-request-labels-run-decomposed
 
 .rails:rules:ee-and-foss-migration:
   rules:
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-merge-request
@@ -666,7 +666,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -679,7 +679,7 @@
   rules:
     - <<: *if-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:db:gitlabcom-database-testing:
   rules:
@@ -691,7 +691,7 @@
 
 .rails:rules:ee-and-foss-unit:
   rules:
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -706,7 +706,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -716,7 +716,7 @@
 
 .rails:rules:ee-and-foss-integration:
   rules:
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -731,7 +731,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -741,7 +741,7 @@
 
 .rails:rules:ee-and-foss-system:
   rules:
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -756,7 +756,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -766,7 +766,7 @@
 
 .rails:rules:ee-and-foss-fast_spec_helper:
   rules:
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -781,7 +781,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -792,13 +792,13 @@
 .rails:rules:code-backstage-qa:
   rules:
     - changes: *code-backstage-qa-patterns
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:ee-only-migration:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-merge-request
@@ -817,7 +817,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -830,7 +830,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -847,7 +847,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -859,7 +859,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -876,7 +876,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -888,7 +888,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -905,7 +905,7 @@
       when: never
     - <<: *if-automated-merge-request
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -917,12 +917,12 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *db-patterns
     - <<: *if-automated-merge-request
       changes: *db-patterns
@@ -943,7 +943,7 @@
     - <<: *if-security-merge-request
       changes: *db-patterns
       when: never
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *db-patterns
       when: never
 
@@ -951,7 +951,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -960,7 +960,7 @@
       when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
 .rails:rules:as-if-foss-unit:minimal:
@@ -976,14 +976,14 @@
       when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
 .rails:rules:as-if-foss-integration:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -992,7 +992,7 @@
       when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
 .rails:rules:as-if-foss-integration:minimal:
@@ -1008,14 +1008,14 @@
       when: never
     - <<: *if-security-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
 .rails:rules:as-if-foss-system:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
     - <<: *if-automated-merge-request
@@ -1024,7 +1024,7 @@
       when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
 .rails:rules:as-if-foss-system:minimal:
@@ -1040,19 +1040,19 @@
       when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
 .rails:rules:ee-and-foss-db-library-code:
   rules:
     - changes: *db-library-patterns
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:ee-mr-and-default-branch-only:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *code-backstage-patterns
     - <<: *if-default-branch-refs
@@ -1061,13 +1061,13 @@
 .rails:rules:detect-tests:
   rules:
     - changes: *code-backstage-patterns
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:rspec-foss-impact:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
@@ -1099,7 +1099,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-default-branch-schedule-nightly
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:rspec-coverage:
   rules:
@@ -1109,7 +1109,7 @@
       changes: *code-backstage-patterns
       when: always
     - <<: *if-default-branch-schedule-2-hourly
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
       when: always
 
 .rails:rules:default-branch-schedule-nightly--code-backstage:
@@ -1144,7 +1144,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-qa-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-qa-patterns
@@ -1159,7 +1159,7 @@
   rules:
     - <<: *if-merge-request
       changes: ["vendor/gems/mail-smtp_pool/**/*"]
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 ##################
 # Releases rules #
@@ -1504,7 +1504,7 @@
   rules:
     - changes: *code-backstage-patterns
       when: on_success
-    - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-rspec
 
 .test-metadata:rules:update-tests-metadata:
   rules:

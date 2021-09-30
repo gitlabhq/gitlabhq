@@ -18,6 +18,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:quarantined) { 'false' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
   let(:influx_write_api) { instance_double('InfluxDB2::WriteApi', write: nil) }
+  let(:stage) { '1_manage' }
+  let(:file_path) { "./qa/specs/features/#{stage}/subfolder/some_spec.rb" }
 
   let(:influx_client_args) do
     {
@@ -34,14 +36,15 @@ describe QA::Support::Formatters::TestStatsFormatter do
       time: DateTime.strptime(ci_timestamp).to_time,
       tags: {
         name: 'stats export spec',
-        file_path: './spec/support/formatters/test_stats_formatter_spec.rb',
+        file_path: file_path.gsub('./qa/specs/features', ''),
         status: :passed,
         reliable: reliable,
         quarantined: quarantined,
         retried: "false",
         job_name: "test-job",
         merge_request: "false",
-        run_type: run_type
+        run_type: run_type,
+        stage: stage
       },
       fields: {
         id: './spec/support/formatters/test_stats_formatter_spec.rb[1:1]',
@@ -57,7 +60,9 @@ describe QA::Support::Formatters::TestStatsFormatter do
   def run_spec(&spec)
     spec ||= -> { it('spec') {} }
 
-    describe_successfully('stats export', &spec)
+    describe_successfully('stats export', &spec).tap do |example_group|
+      example_group.examples.each { |ex| ex.metadata[:file_path] = file_path }
+    end
     send_stop_notification
   end
 

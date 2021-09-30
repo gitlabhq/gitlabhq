@@ -39,7 +39,7 @@ Snowplow is an enterprise-grade marketing and Product Intelligence platform whic
 
 - [Understanding the structure of Snowplow data](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/)
 - [Our Iglu schema registry](https://gitlab.com/gitlab-org/iglu)
-- [List of events used in our codebase (Event Dictionary)](dictionary.md)
+- [List of events used in our codebase (Event Dictionary)](https://metrics.gitlab.com/snowplow.html)
 
 ## Enable Snowplow tracking
 

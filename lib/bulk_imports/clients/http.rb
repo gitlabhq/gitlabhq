@@ -113,11 +113,11 @@ module BulkImports
       def with_error_handling
         response = yield
 
-        raise(::BulkImports::Error, "Error #{response.code}") unless response.success?
+        raise ::BulkImports::NetworkError.new(response: response) unless response.success?
 
         response
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
-        raise(::BulkImports::Error, e)
+        raise ::BulkImports::NetworkError, e
       end
 
       def api_url

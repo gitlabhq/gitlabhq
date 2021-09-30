@@ -32,7 +32,7 @@ RSpec.describe BulkImports::Clients::HTTP do
         it 'raises BulkImports::Error' do
           allow(Gitlab::HTTP).to receive(method).and_raise(Errno::ECONNREFUSED)
 
-          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::Error)
+          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::NetworkError)
         end
       end
 
@@ -42,7 +42,7 @@ RSpec.describe BulkImports::Clients::HTTP do
 
           allow(Gitlab::HTTP).to receive(method).and_return(response_double)
 
-          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::Error)
+          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::NetworkError)
         end
       end
     end
@@ -180,7 +180,11 @@ RSpec.describe BulkImports::Clients::HTTP do
     let(:version) { '13.0.0' }
 
     it 'raises an error' do
-      expect { subject.get(resource) }.to raise_error(::BulkImports::Error, "Unsupported GitLab Version. Minimum Supported Gitlab Version #{BulkImport::MINIMUM_GITLAB_MAJOR_VERSION}.")
+      expect { subject.get(resource) }
+        .to raise_error(
+          ::BulkImports::Error,
+          "Unsupported GitLab Version. Minimum Supported Gitlab Version #{BulkImport::MINIMUM_GITLAB_MAJOR_VERSION}."
+        )
     end
   end
 

@@ -1,6 +1,7 @@
 <script>
 import katex from 'katex';
 import marked from 'marked';
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { sanitize } from '~/lib/dompurify';
 import { hasContent, markdownConfig } from '~/lib/utils/text_utility';
 import Prompt from './prompt.vue';
@@ -138,6 +139,9 @@ export default {
   components: {
     prompt: Prompt,
   },
+  directives: {
+    SafeHtml,
+  },
   inject: ['relativeRawPath'],
   props: {
     cell: {
@@ -150,16 +154,17 @@ export default {
       renderer.attachments = this.cell.attachments;
       renderer.relativeRawPath = this.relativeRawPath;
 
-      return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), markdownConfig);
+      return marked(this.cell.source.join('').replace(/\\/g, '\\\\'));
     },
   },
+  markdownConfig,
 };
 </script>
 
 <template>
   <div class="cell text-cell">
     <prompt />
-    <div class="markdown" v-html="markdown /* eslint-disable-line vue/no-v-html */"></div>
+    <div v-safe-html:[$options.markdownConfig]="markdown" class="markdown"></div>
   </div>
 </template>
 
