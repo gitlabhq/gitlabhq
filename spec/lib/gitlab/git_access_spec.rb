@@ -435,17 +435,19 @@ RSpec.describe Gitlab::GitAccess do
 
     it 'disallows users with expired password to pull' do
       project.add_maintainer(user)
-      user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
+      user.update!(password_expires_at: 2.minutes.ago)
 
       expect { pull_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
     end
 
-    it 'allows ldap users with expired password to pull' do
-      project.add_maintainer(user)
-      user.update!(password_expires_at: 2.minutes.ago)
-      allow(user).to receive(:ldap_user?).and_return(true)
+    context 'with an ldap user' do
+      let(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
 
-      expect { pull_access_check }.not_to raise_error
+      it 'allows ldap users with expired password to pull' do
+        project.add_maintainer(user)
+
+        expect { pull_access_check }.not_to raise_error
+      end
     end
 
     context 'when the project repository does not exist' do
@@ -987,24 +989,23 @@ RSpec.describe Gitlab::GitAccess do
       end
 
       it 'disallows users with expired password to push' do
-        user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
+        user.update!(password_expires_at: 2.minutes.ago)
 
         expect { push_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
       end
 
-      it 'allows ldap users with expired password to push' do
-        user.update!(password_expires_at: 2.minutes.ago)
-        allow(user).to receive(:ldap_user?).and_return(true)
+      context 'with an ldap user' do
+        let(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
 
-        expect { push_access_check }.not_to raise_error
-      end
+        it 'allows ldap users with expired password to push' do
+          expect { push_access_check }.not_to raise_error
+        end
 
-      it 'disallows blocked ldap users with expired password to push' do
-        user.block
-        user.update!(password_expires_at: 2.minutes.ago)
-        allow(user).to receive(:ldap_user?).and_return(true)
+        it 'disallows blocked ldap users with expired password to push' do
+          user.block
 
-        expect { push_access_check }.to raise_forbidden("Your account has been blocked.")
+          expect { push_access_check }.to raise_forbidden("Your account has been blocked.")
+        end
       end
 
       it 'cleans up the files' do

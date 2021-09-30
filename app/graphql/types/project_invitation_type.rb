@@ -9,7 +9,7 @@ module Types
 
     implements InvitationInterface
 
-    authorize :read_project
+    authorize :admin_project
 
     field :project, Types::ProjectType, null: true,
           description: 'Project ID for the project of the invitation.'

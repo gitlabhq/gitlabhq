@@ -47,6 +47,8 @@ class Profiles::PasswordsController < Profiles::ApplicationController
     password_attributes[:password_automatically_set] = false
 
     unless @user.password_automatically_set || @user.valid_password?(user_params[:current_password])
+      handle_invalid_current_password_attempt!
+
       redirect_to edit_profile_password_path, alert: _('You must provide a valid current password')
       return
     end
@@ -83,6 +85,12 @@ class Profiles::PasswordsController < Profiles::ApplicationController
 
   def authorize_change_password!
     render_404 unless @user.allow_password_authentication?
+  end
+
+  def handle_invalid_current_password_attempt!
+    Gitlab::AppLogger.info(message: 'Invalid current password when attempting to update user password', username: @user.username, ip: request.remote_ip)
+
+    @user.increment_failed_attempts!
   end
 
   def user_params

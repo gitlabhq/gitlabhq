@@ -10,6 +10,27 @@ RSpec.describe Profiles::TwoFactorAuthsController do
     allow(subject).to receive(:current_user).and_return(user)
   end
 
+  shared_examples 'user must enter a valid current password' do
+    let(:current_password) { '123' }
+
+    it 'requires the current password', :aggregate_failures do
+      go
+
+      expect(response).to redirect_to(profile_two_factor_auth_path)
+      expect(flash[:alert]).to eq(_('You must provide a valid current password'))
+    end
+
+    context 'when the user is on the last sign in attempt' do
+      it do
+        user.update!(failed_attempts: User.maximum_attempts.pred)
+
+        go
+
+        expect(user.reload).to be_access_locked
+      end
+    end
+  end
+
   describe 'GET show' do
     let(:user) { create(:user) }
 
@@ -39,9 +60,10 @@ RSpec.describe Profiles::TwoFactorAuthsController do
   describe 'POST create' do
     let(:user) { create(:user) }
     let(:pin)  { 'pin-code' }
+    let(:current_password) { user.password }
 
     def go
-      post :create, params: { pin_code: pin }
+      post :create, params: { pin_code: pin, current_password: current_password }
     end
 
     context 'with valid pin' do
@@ -105,20 +127,24 @@ RSpec.describe Profiles::TwoFactorAuthsController do
         expect(response).to render_template(:show)
       end
     end
+
+    it_behaves_like 'user must enter a valid current password'
   end
 
   describe 'POST codes' do
     let(:user) { create(:user, :two_factor) }
 
+    let(:current_password) { user.password }
+
     it 'presents plaintext codes for the user to save' do
       expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
 
-      post :codes
+      post :codes, params: { current_password: current_password }
       expect(assigns[:codes]).to match_array %w(a b c)
     end
 
     it 'persists the generated codes' do
-      post :codes
+      post :codes, params: { current_password: current_password }
 
       user.reload
       expect(user.otp_backup_codes).not_to be_empty
@@ -127,12 +153,18 @@ RSpec.describe Profiles::TwoFactorAuthsController do
     it 'dismisses the `ACCOUNT_RECOVERY_REGULAR_CHECK` callout' do
       expect(controller.helpers).to receive(:dismiss_account_recovery_regular_check)
 
-      post :codes
+      post :codes, params: { current_password: current_password }
+    end
+
+    it_behaves_like 'user must enter a valid current password' do
+      let(:go) { post :codes, params: { current_password: current_password } }
     end
   end
 
   describe 'DELETE destroy' do
-    subject { delete :destroy }
+    subject { delete :destroy, params: { current_password: current_password } }
+
+    let(:current_password) { user.password }
 
     context 'for a user that has 2FA enabled' do
       let(:user) { create(:user, :two_factor) }
@@ -154,6 +186,10 @@ RSpec.describe Profiles::TwoFactorAuthsController do
 
         expect(flash[:notice])
           .to eq _('Two-factor authentication has been disabled successfully!')
+      end
+
+      it_behaves_like 'user must enter a valid current password' do
+        let(:go) { delete :destroy, params: { current_password: current_password } }
       end
     end
 

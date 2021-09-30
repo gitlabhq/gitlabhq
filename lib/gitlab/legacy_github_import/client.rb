@@ -8,9 +8,10 @@ module Gitlab
 
       attr_reader :access_token, :host, :api_version, :wait_for_rate_limit_reset
 
-      def initialize(access_token, host: nil, api_version: 'v3', wait_for_rate_limit_reset: true)
+      def initialize(access_token, host: nil, api_version: 'v3', wait_for_rate_limit_reset: true, hostname: nil)
         @access_token = access_token
         @host = host.to_s.sub(%r{/+\z}, '')
+        @hostname = hostname
         @api_version = api_version
         @users = {}
         @wait_for_rate_limit_reset = wait_for_rate_limit_reset
@@ -28,7 +29,8 @@ module Gitlab
           # If there is no config, we're connecting to github.com and we
           # should verify ssl.
           connection_options: {
-            ssl: { verify: config ? config['verify_ssl'] : true }
+            ssl: { verify: config ? config['verify_ssl'] : true },
+            headers: { host: @hostname }.compact
           }
         )
       end

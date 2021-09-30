@@ -1,3 +1,5 @@
+import { escape } from 'lodash';
+import UsersSelect from '~/users_select/index';
 import {
   createInputsModelExpectation,
   createUnassignedExpectation,
@@ -89,6 +91,20 @@ describe('~/users_select/index', () => {
 
       it('shows users', () => {
         expect(findDropdownItemsModel()).toEqual(expectation);
+      });
+    });
+
+    describe('renderApprovalRules', () => {
+      const ruleNames = ['simple-name', '"\'<>&', '"><script>alert(1)<script>'];
+
+      it.each(ruleNames)('escapes rule name correctly for %s', (name) => {
+        const escapedName = escape(name);
+
+        expect(
+          UsersSelect.prototype.renderApprovalRules('reviewer', [{ name }]),
+        ).toMatchInterpolatedText(
+          `<div class="gl-display-flex gl-font-sm"> <span class="gl-text-truncate" title="${escapedName}">${escapedName}</span> </div>`,
+        );
       });
     });
   });

@@ -26,14 +26,17 @@ module Banzai
       # Pattern to match a standard markdown link
       #
       # Rubular: http://rubular.com/r/2EXEQ49rg5
-      LINK_OR_IMAGE_PATTERN = %r{
-        (?<preview_operator>!)?
-        \[(?<text>.+?)\]
-        \(
-          (?<new_link>.+?)
-          (?<title>\ ".+?")?
-        \)
-      }x.freeze
+      #
+      # This pattern is vulnerable to malicious inputs, so use Gitlab::UntrustedRegexp
+      # to place bounds on execution time
+      LINK_OR_IMAGE_PATTERN = Gitlab::UntrustedRegexp.new(
+        '(?P<preview_operator>!)?' \
+        '\[(?P<text>.+?)\]' \
+        '\(' \
+          '(?P<new_link>.+?)' \
+          '(?P<title>\ ".+?")?' \
+        '\)'
+      )
 
       # Text matching LINK_OR_IMAGE_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
@@ -48,7 +51,7 @@ module Banzai
         doc.xpath(TEXT_QUERY).each do |node|
           content = node.to_html
 
-          next unless content.match(LINK_OR_IMAGE_PATTERN)
+          next unless LINK_OR_IMAGE_PATTERN.match(content)
 
           html = spaced_link_filter(content)
 

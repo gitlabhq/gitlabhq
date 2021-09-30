@@ -847,7 +847,7 @@ UsersSelect.prototype.renderApprovalRules = function (elsClassName, approvalRule
   const [rule] = approvalRules;
   const countText = sprintf(__('(+%{count}&nbsp;rules)'), { count });
   const renderApprovalRulesCount = count > 1 ? `<span class="ml-1">${countText}</span>` : '';
-  const ruleName = rule.rule_type === 'code_owner' ? __('Code Owner') : rule.name;
+  const ruleName = rule.rule_type === 'code_owner' ? __('Code Owner') : escape(rule.name);
 
   return `<div class="gl-display-flex gl-font-sm">
     <span class="gl-text-truncate" title="${ruleName}">${ruleName}</span>

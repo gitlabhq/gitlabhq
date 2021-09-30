@@ -63,6 +63,16 @@ RSpec.describe Banzai::Filter::SpacedLinkFilter do
     end
   end
 
+  it 'does not process malicious input' do
+    Timeout.timeout(10) do
+      doc = filter('[ (](' * 60_000)
+
+      found_links = doc.css('a')
+
+      expect(found_links.size).to eq(0)
+    end
+  end
+
   it 'converts multiple URLs' do
     link1 = '[first](slug one)'
     link2 = '[second](http://example.com/slug two)'

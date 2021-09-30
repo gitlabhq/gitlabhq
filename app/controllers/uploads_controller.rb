@@ -36,14 +36,10 @@ class UploadsController < ApplicationController
   end
 
   def find_model
-    return unless params[:id]
-
     upload_model_class.find(params[:id])
   end
 
   def authorize_access!
-    return unless model
-
     authorized =
       case model
       when Note
@@ -68,8 +64,6 @@ class UploadsController < ApplicationController
   end
 
   def authorize_create_access!
-    return unless model
-
     authorized =
       case model
       when User

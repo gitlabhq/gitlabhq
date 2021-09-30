@@ -5366,43 +5366,11 @@ RSpec.describe User do
   end
 
   describe '#password_expired_if_applicable?' do
-    let(:user) { build(:user, password_expires_at: password_expires_at, password_automatically_set: set_automatically?) }
+    let(:user) { build(:user, password_expires_at: password_expires_at) }
 
     subject { user.password_expired_if_applicable? }
 
-    context 'when user is not ldap user' do
-      context 'when user has password set automatically' do
-        let(:set_automatically?) { true }
-
-        context 'when password_expires_at is not set' do
-          let(:password_expires_at) {}
-
-          it 'returns false' do
-            is_expected.to be_falsey
-          end
-        end
-
-        context 'when password_expires_at is in the past' do
-          let(:password_expires_at) { 1.minute.ago }
-
-          it 'returns true' do
-            is_expected.to be_truthy
-          end
-        end
-
-        context 'when password_expires_at is in the future' do
-          let(:password_expires_at) { 1.minute.from_now }
-
-          it 'returns false' do
-            is_expected.to be_falsey
-          end
-        end
-      end
-    end
-
-    context 'when user has password not set automatically' do
-      let(:set_automatically?) { false }
-
+    shared_examples 'password expired not applicable' do
       context 'when password_expires_at is not set' do
         let(:password_expires_at) {}
 
@@ -5428,64 +5396,52 @@ RSpec.describe User do
       end
     end
 
-    context 'when user is ldap user' do
-      let(:user) { build(:user, password_expires_at: password_expires_at) }
+    context 'with a regular user' do
+      context 'when password_expires_at is not set' do
+        let(:password_expires_at) {}
 
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'when password_expires_at is in the past' do
+        let(:password_expires_at) { 1.minute.ago }
+
+        it 'returns true' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context 'when password_expires_at is in the future' do
+        let(:password_expires_at) { 1.minute.from_now }
+
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+      end
+    end
+
+    context 'when user is a bot' do
       before do
-        allow(user).to receive(:ldap_user?).and_return(true)
+        allow(user).to receive(:bot?).and_return(true)
       end
 
-      context 'when password_expires_at is not set' do
-        let(:password_expires_at) {}
-
-        it 'returns false' do
-          is_expected.to be_falsey
-        end
-      end
-
-      context 'when password_expires_at is in the past' do
-        let(:password_expires_at) { 1.minute.ago }
-
-        it 'returns false' do
-          is_expected.to be_falsey
-        end
-      end
-
-      context 'when password_expires_at is in the future' do
-        let(:password_expires_at) { 1.minute.from_now }
-
-        it 'returns false' do
-          is_expected.to be_falsey
-        end
-      end
+      it_behaves_like 'password expired not applicable'
     end
 
-    context 'when user is a project bot' do
-      let(:user) { build(:user, :project_bot, password_expires_at: password_expires_at) }
+    context 'when password_automatically_set is true' do
+      let(:user) { create(:omniauth_user, provider: 'ldap')}
 
-      context 'when password_expires_at is not set' do
-        let(:password_expires_at) {}
+      it_behaves_like 'password expired not applicable'
+    end
 
-        it 'returns false' do
-          is_expected.to be_falsey
-        end
+    context 'when allow_password_authentication is false' do
+      before do
+        allow(user).to receive(:allow_password_authentication?).and_return(false)
       end
 
-      context 'when password_expires_at is in the past' do
-        let(:password_expires_at) { 1.minute.ago }
-
-        it 'returns false' do
-          is_expected.to be_falsey
-        end
-      end
-
-      context 'when password_expires_at is in the future' do
-        let(:password_expires_at) { 1.minute.from_now }
-
-        it 'returns false' do
-          is_expected.to be_falsey
-        end
-      end
+      it_behaves_like 'password expired not applicable'
     end
   end
 
