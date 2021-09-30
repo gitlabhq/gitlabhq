@@ -88,7 +88,6 @@ tree:
       - :external_pull_request
       - :merge_request
     - :auto_devops
-    - :triggers
     - :pipeline_schedules
     - :container_expiration_policy
     - protected_branches:
@@ -211,6 +210,7 @@ excluded_attributes:
     - :show_default_award_emojis
     - :services
     - :exported_protected_branches
+    - :repository_size_limit
   namespaces:
     - :runners_token
     - :runners_token_encrypted

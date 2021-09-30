@@ -574,6 +574,15 @@ describe('GfmAutoComplete', () => {
         }),
       ).toBe('<li><small>grp/proj#5</small> Some Issue</li>');
     });
+
+    it('escapes title in the template as it is user input', () => {
+      expect(
+        GfmAutoComplete.Issues.templateFunction({
+          id: 5,
+          title: '${search}<script>oh no $', // eslint-disable-line no-template-curly-in-string
+        }),
+      ).toBe('<li><small>5</small> &dollar;{search}&lt;script&gt;oh no &dollar;</li>');
+    });
   });
 
   describe('GfmAutoComplete.Members', () => {
@@ -608,16 +617,18 @@ describe('GfmAutoComplete', () => {
         ).toBe('<li>IMG my-group <small></small> <i class="icon"/></li>');
       });
 
-      it('should add escaped title if title is set', () => {
+      it('escapes title in the template as it is user input', () => {
         expect(
           GfmAutoComplete.Members.templateFunction({
             avatarTag: 'IMG',
             username: 'my-group',
-            title: 'MyGroup+',
+            title: '${search}<script>oh no $', // eslint-disable-line no-template-curly-in-string
             icon: '<i class="icon"/>',
             availabilityStatus: '',
           }),
-        ).toBe('<li>IMG my-group <small>MyGroup+</small> <i class="icon"/></li>');
+        ).toBe(
+          '<li>IMG my-group <small>&dollar;{search}&lt;script&gt;oh no &dollar;</small> <i class="icon"/></li>',
+        );
       });
 
       it('should add user availability status if availabilityStatus is set', () => {
@@ -782,6 +793,15 @@ describe('GfmAutoComplete', () => {
         ${'/unlabel ~'} | ${assignedLabels}
       `('$input shows $output.length labels', expectLabels);
     });
+
+    it('escapes title in the template as it is user input', () => {
+      const color = '#123456';
+      const title = '${search}<script>oh no $'; // eslint-disable-line no-template-curly-in-string
+
+      expect(GfmAutoComplete.Labels.templateFunction(color, title)).toBe(
+        '<li><span class="dropdown-label-box" style="background: #123456"></span> &dollar;{search}&lt;script&gt;oh no &dollar;</li>',
+      );
+    });
   });
 
   describe('emoji', () => {
@@ -827,6 +847,17 @@ describe('GfmAutoComplete', () => {
 
         expect(actual).toBe(expected);
       });
+    });
+  });
+
+  describe('milestones', () => {
+    it('escapes title in the template as it is user input', () => {
+      const expired = false;
+      const title = '${search}<script>oh no $'; // eslint-disable-line no-template-curly-in-string
+
+      expect(GfmAutoComplete.Milestones.templateFunction(title, expired)).toBe(
+        '<li>&dollar;{search}&lt;script&gt;oh no &dollar;</li>',
+      );
     });
   });
 });

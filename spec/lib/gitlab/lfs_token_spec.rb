@@ -126,7 +126,7 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
         end
 
         context 'when the user password is expired' do
-          let(:actor) { create(:user, password_expires_at: 1.minute.ago, password_automatically_set: true) }
+          let(:actor) { create(:user, password_expires_at: 1.minute.ago) }
 
           it 'returns false' do
             expect(lfs_token.token_valid?(lfs_token.token)).to be false
@@ -135,12 +135,12 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
       end
 
       context 'when the actor is an ldap user' do
-        before do
-          allow(actor).to receive(:ldap_user?).and_return(true)
-        end
+        let(:actor) { create(:omniauth_user, provider: 'ldap') }
 
         context 'when the user is blocked' do
-          let(:actor) { create(:user, :blocked) }
+          before do
+            actor.block!
+          end
 
           it 'returns false' do
             expect(lfs_token.token_valid?(lfs_token.token)).to be false
@@ -148,7 +148,9 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
         end
 
         context 'when the user password is expired' do
-          let(:actor) { create(:user, password_expires_at: 1.minute.ago) }
+          before do
+            actor.update!(password_expires_at: 1.minute.ago)
+          end
 
           it 'returns true' do
             expect(lfs_token.token_valid?(lfs_token.token)).to be true

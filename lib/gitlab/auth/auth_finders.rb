@@ -342,6 +342,10 @@ module Gitlab
         Gitlab::PathRegex.repository_git_lfs_route_regex.match?(current_request.path)
       end
 
+      def git_or_lfs_request?
+        git_request? || git_lfs_request?
+      end
+
       def archive_request?
         current_request.path.include?('/-/archive/')
       end

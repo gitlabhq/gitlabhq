@@ -140,7 +140,10 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ":id", feature_category: :users do
+        forbidden!('Not authorized!') unless current_user
+
         user = User.find_by(id: params[:id])
+
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         opts = { with: current_user&.admin? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
@@ -156,6 +159,7 @@ module API
       end
       get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users do
         user = find_user(params[:user_id])
+
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         present user.status || {}, with: Entities::UserStatus
@@ -203,6 +207,8 @@ module API
         use :pagination
       end
       get ':id/following', feature_category: :users do
+        forbidden!('Not authorized!') unless current_user
+
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
 
@@ -217,6 +223,8 @@ module API
         use :pagination
       end
       get ':id/followers', feature_category: :users do
+        forbidden!('Not authorized!') unless current_user
+
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
 

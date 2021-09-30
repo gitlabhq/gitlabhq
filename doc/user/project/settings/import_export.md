@@ -135,9 +135,11 @@ The following items are **not** exported:
 - Build traces and artifacts
 - Container registry images
 - CI/CD variables
+- Pipeline triggers
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers
+- Repository size limits
 
 NOTE:
 For more details on the specific data persisted in a project export, see the
@@ -255,13 +257,13 @@ reduce the repository size for another import attempt.
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
 
-    # Prepare recreating an importable file 
+    # Prepare recreating an importable file
     git bundle create ../project.bundle smaller-tmp-main
     cd ..
     mv project/ ../"$EXPORT"-project
     cd ..
 
-    # Recreate an importable file 
+    # Recreate an importable file
     tar -czf "$EXPORT"-smaller.tar.gz --directory="$EXPORT"/ .
     ```
 

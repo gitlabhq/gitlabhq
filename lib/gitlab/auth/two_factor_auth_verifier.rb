@@ -9,6 +9,10 @@ module Gitlab
         @current_user = current_user
       end
 
+      def two_factor_authentication_enforced?
+        two_factor_authentication_required? && two_factor_grace_period_expired?
+      end
+
       def two_factor_authentication_required?
         Gitlab::CurrentSettings.require_two_factor_authentication? ||
           current_user&.require_two_factor_authentication_from_group?

@@ -259,22 +259,32 @@ RSpec.describe API::Invitations do
         let(:route) { get invitations_url(source, stranger) }
       end
 
-      %i[maintainer developer access_requester stranger].each do |type|
+      context "when authenticated as a maintainer" do
+        it 'returns 200' do
+          get invitations_url(source, maintainer)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(0)
+        end
+      end
+
+      %i[developer access_requester stranger].each do |type|
         context "when authenticated as a #{type}" do
-          it 'returns 200' do
+          it 'returns 403' do
             user = public_send(type)
 
             get invitations_url(source, user)
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an Array
-            expect(json_response.size).to eq(0)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
       end
 
       it 'avoids N+1 queries' do
+        invite_member_by_email(source, source_type, email, maintainer)
+
         # Establish baseline
         get invitations_url(source, maintainer)
 
@@ -282,7 +292,7 @@ RSpec.describe API::Invitations do
           get invitations_url(source, maintainer)
         end
 
-        invite_member_by_email(source, source_type, email, maintainer)
+        invite_member_by_email(source, source_type, email2, maintainer)
 
         expect do
           get invitations_url(source, maintainer)
@@ -290,7 +300,7 @@ RSpec.describe API::Invitations do
       end
 
       it 'does not find confirmed members' do
-        get invitations_url(source, developer)
+        get invitations_url(source, maintainer)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -300,10 +310,10 @@ RSpec.describe API::Invitations do
       end
 
       it 'finds all members with no query string specified' do
-        invite_member_by_email(source, source_type, email, developer)
-        invite_member_by_email(source, source_type, email2, developer)
+        invite_member_by_email(source, source_type, email, maintainer)
+        invite_member_by_email(source, source_type, email2, maintainer)
 
-        get invitations_url(source, developer), params: { query: '' }
+        get invitations_url(source, maintainer), params: { query: '' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -314,17 +324,17 @@ RSpec.describe API::Invitations do
       end
 
       it 'finds the invitation by invite_email with query string' do
-        invite_member_by_email(source, source_type, email, developer)
-        invite_member_by_email(source, source_type, email2, developer)
+        invite_member_by_email(source, source_type, email, maintainer)
+        invite_member_by_email(source, source_type, email2, maintainer)
 
-        get invitations_url(source, developer), params: { query: email }
+        get invitations_url(source, maintainer), params: { query: email }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
         expect(json_response.first['invite_email']).to eq(email)
-        expect(json_response.first['created_by_name']).to eq(developer.name)
+        expect(json_response.first['created_by_name']).to eq(maintainer.name)
         expect(json_response.first['user_name']).to eq(nil)
       end
     end
