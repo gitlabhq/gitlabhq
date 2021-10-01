@@ -1,19 +1,12 @@
 - page_title _('Branches')
 - add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
 
-.top-area.adjust
-  %ul.nav-links.issues-state-filters.nav.nav-tabs
-    %li{ class: active_when(@mode == 'overview') }>
-      = link_to s_('Branches|Overview'), project_branches_path(@project), title: s_('Branches|Show overview of the branches')
-
-    %li{ class: active_when(@mode == 'active') }>
-      = link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), title: s_('Branches|Show active branches')
-
-    %li{ class: active_when(@mode == 'stale') }>
-      = link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), title: s_('Branches|Show stale branches')
-
-    %li{ class: active_when(!%w[overview active stale].include?(@mode)) }>
-      = link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), title: s_('Branches|Show all branches')
+.top-area.gl-border-0
+  = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-b-0' }) do
+    = gl_tab_link_to s_('Branches|Overview'), project_branches_path(@project), { item_active: @mode == 'overview', title: s_('Branches|Show overview of the branches') }
+    = gl_tab_link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), { title: s_('Branches|Show active branches') }
+    = gl_tab_link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), { title: s_('Branches|Show stale branches') }
+    = gl_tab_link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), { item_active: !%w[overview active stale].include?(@mode), title: s_('Branches|Show all branches') }
 
   .nav-controls
     #js-branches-sort-dropdown{ data: { project_branches_filtered_path: project_branches_path(@project, state: 'all'), sort_options: branches_sort_options_hash.to_json, mode: @mode } }

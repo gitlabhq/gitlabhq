@@ -126,7 +126,14 @@ MaxStartups 100:30:200
 `100:30:200` means up to 100 SSH sessions are allowed without restriction,
 after which 30% of connections are dropped until reaching an absolute maximum of 200.
 
-Once configured, restart the SSH daemon for the change to take effect.
+After you modify the value of `MaxStartups`, check for any errors in the configuration.
+
+```shell
+sudo sshd -t -f /etc/ssh/sshd_config
+```
+
+If the configuration check runs without errors, it should be safe to restart the
+SSH daemon for the change to take effect.
 
 ```shell
 # Debian/Ubuntu

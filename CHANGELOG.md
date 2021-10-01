@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.3.2 (2021-10-01)
+
+### Fixed (1 change)
+
+- [Update GitLab Shell to v13.21.1](gitlab-org/gitlab@9e9e41f2ae9bdb89355c0f9cef486950bbaf361c) ([merge request](gitlab-org/gitlab!71513))
+
+### Changed (1 change)
+
+- [Remove `async_filtering` feature flag](gitlab-org/gitlab@c4277c1fed0de3d86694390641612bfcde30cc92) ([merge request](gitlab-org/gitlab!71513))
+
 ## 14.3.1 (2021-09-30)
 
 ### Security (29 changes)

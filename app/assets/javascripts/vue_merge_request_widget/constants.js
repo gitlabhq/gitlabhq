@@ -99,6 +99,12 @@ export const EXTENSION_ICONS = {
   neutral: 'neutral',
   error: 'error',
   notice: 'notice',
+  severityCritical: 'severityCritical',
+  severityHigh: 'severityHigh',
+  severityMedium: 'severityMedium',
+  severityLow: 'severityLow',
+  severityInfo: 'severityInfo',
+  severityUnknown: 'severityUnknown',
 };
 
 export const EXTENSION_ICON_NAMES = {
@@ -108,6 +114,12 @@ export const EXTENSION_ICON_NAMES = {
   neutral: 'status-neutral',
   error: 'status-alert',
   notice: 'status-alert',
+  severityCritical: 'severity-critical',
+  severityHigh: 'severity-high',
+  severityMedium: 'severity-medium',
+  severityLow: 'severity-low',
+  severityInfo: 'severity-info',
+  severityUnknown: 'severity-unknown',
 };
 
 export const EXTENSION_ICON_CLASS = {
@@ -117,6 +129,12 @@ export const EXTENSION_ICON_CLASS = {
   neutral: 'gl-text-gray-400',
   error: 'gl-text-red-500',
   notice: 'gl-text-gray-500',
+  severityCritical: 'gl-text-red-800',
+  severityHigh: 'gl-text-red-600',
+  severityMedium: 'gl-text-orange-400',
+  severityLow: 'gl-text-orange-300',
+  severityInfo: 'gl-text-blue-400',
+  severityUnknown: 'gl-text-gray-400',
 };
 
 export { STATE_MACHINE };
