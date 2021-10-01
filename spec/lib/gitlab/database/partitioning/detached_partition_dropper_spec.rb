@@ -84,6 +84,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
         before do
           stub_feature_flags(drop_detached_partitions: false)
         end
+
         it 'does not drop the partition' do
           subject.perform
 
@@ -162,8 +163,8 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
       context 'when the first drop returns an error' do
         it 'still drops the second partition' do
-          expect(subject).to receive(:drop_one).ordered.and_raise('injected error')
-          expect(subject).to receive(:drop_one).ordered.and_call_original
+          expect(subject).to receive(:drop_detached_partition).ordered.and_raise('injected error')
+          expect(subject).to receive(:drop_detached_partition).ordered.and_call_original
 
           subject.perform
 

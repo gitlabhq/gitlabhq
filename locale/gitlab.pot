@@ -22373,6 +22373,15 @@ msgstr ""
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines. To learn more about reducing storage capacity please visit our docs."
 msgstr ""
 
+msgid "NamespaceUserCap|Pending users must be reviewed and approved by a group owner. Learn more about %{user_caps_link_start}User Caps%{link_end} and %{users_pending_approval_link_start}Users Pending Approval%{link_end}."
+msgstr ""
+
+msgid "NamespaceUserCap|View pending user approvals"
+msgstr ""
+
+msgid "NamespaceUserCap|Your group has reached its billable member limit"
+msgstr ""
+
 msgid "Namespaces"
 msgstr ""
 
@@ -22490,9 +22499,6 @@ msgstr ""
 msgid "NetworkPolicies|IP/subnet"
 msgstr ""
 
-msgid "NetworkPolicies|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
-msgstr ""
-
 msgid "NetworkPolicies|Invalid or empty policy"
 msgstr ""
 
@@ -22517,16 +22523,10 @@ msgstr ""
 msgid "NetworkPolicies|New policy"
 msgstr ""
 
-msgid "NetworkPolicies|No policies detected"
-msgstr ""
-
 msgid "NetworkPolicies|None selected"
 msgstr ""
 
 msgid "NetworkPolicies|Please %{installLinkStart}install%{installLinkEnd} and %{configureLinkStart}configure a Kubernetes Agent for this project%{configureLinkEnd} to enable alerts."
-msgstr ""
-
-msgid "NetworkPolicies|Policies are a specification of how groups of pods are allowed to communicate with each other's network endpoints."
 msgstr ""
 
 msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
@@ -35069,9 +35069,6 @@ msgstr ""
 msgid "ThreatMonitoring|Packet Activity"
 msgstr ""
 
-msgid "ThreatMonitoring|Policies"
-msgstr ""
-
 msgid "ThreatMonitoring|Requests"
 msgstr ""
 
@@ -40528,6 +40525,9 @@ msgstr ""
 msgid "mrWidget|Failed to load deployment statistics"
 msgstr ""
 
+msgid "mrWidget|Hide %{widget} details"
+msgstr ""
+
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
 msgstr ""
 
@@ -40648,6 +40648,9 @@ msgid "mrWidget|Set by %{merge_author} to be merged automatically when the pipel
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to start a merge train when the pipeline succeeds"
+msgstr ""
+
+msgid "mrWidget|Show %{widget} details"
 msgstr ""
 
 msgid "mrWidget|The changes were merged into"

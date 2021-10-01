@@ -7,36 +7,8 @@
   opacity: 1;
 }
 
-.check-all-holder {
-  line-height: 36px;
-  float: left;
-  margin-right: 15px;
-}
-
-form.edit-issue {
-  margin: 0;
-}
-
-ul.related-merge-requests > li {
-  display: flex;
-  align-items: center;
-
-  .merge-request-id {
-    flex-shrink: 0;
-  }
-
-  .merge-request-info {
-    margin-left: 5px;
-  }
-
-  gl-emoji {
-    font-size: 1em;
-  }
-}
-
-.related-branches-title {
-  font-size: 16px;
-  font-weight: $gl-font-weight-bold;
+ul.related-merge-requests > li gl-emoji {
+  font-size: 1em;
 }
 
 .merge-request-status {
@@ -92,32 +64,9 @@ ul.related-merge-requests > li {
   }
 }
 
-.issues-footer {
-  padding-top: $gl-padding;
-  padding-bottom: 37px;
-}
-
-.issues-nav-controls,
-.new-branch-col {
-  font-size: 0;
-}
-
 .issues-nav-controls {
   .btn-group:empty {
     display: none;
-  }
-}
-
-.email-modal-input-group {
-  margin-bottom: 10px;
-
-  .form-control {
-    background-color: $white;
-  }
-
-  .btn {
-    background-color: $gray-light;
-    border: 1px solid $border-gray-normal;
   }
 }
 

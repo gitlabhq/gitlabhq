@@ -14,6 +14,10 @@ module Gitlab
       def self.sync_partitions(models_to_sync = registered_models)
         MultiDatabasePartitionManager.new(models_to_sync).sync_partitions
       end
+
+      def self.drop_detached_partitions
+        MultiDatabasePartitionDropper.new.drop_detached_partitions
+      end
     end
   end
 end

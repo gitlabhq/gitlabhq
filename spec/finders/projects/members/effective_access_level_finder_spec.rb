@@ -194,6 +194,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
   context 'for a project that is shared with other group(s)' do
     let_it_be(:shared_with_group) { create(:group) }
     let_it_be(:user_from_shared_with_group) { create(:user) }
+    let_it_be(:project) { create(:project, group: create(:group)) }
 
     before do
       create(:project_group_link, :developer, project: project, group: shared_with_group)
@@ -211,9 +212,24 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
       )
     end
 
-    context 'when the group containing the project has forbidden group shares for any of its projects' do
-      let_it_be(:project) { create(:project, group: create(:group)) }
+    context 'even when the `lock_memberships_to_ldap` setting has been turned ON' do
+      before do
+        stub_application_setting(lock_memberships_to_ldap: true)
+      end
 
+      it 'includes the least among the specified access levels' do
+        expect(subject).to(
+          include(
+            hash_including(
+              'user_id' => user_from_shared_with_group.id,
+              'access_level' => Gitlab::Access::DEVELOPER
+            )
+          )
+        )
+      end
+    end
+
+    context 'when the group containing the project has forbidden group shares for any of its projects' do
       before do
         project.namespace.update!(share_with_group_lock: true)
       end

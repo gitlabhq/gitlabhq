@@ -201,7 +201,7 @@ module QA
 
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
-          wait_until(sleep_interval: 5, reload: false) do
+          wait_until(max_duration: 120, sleep_interval: 5, reload: true) do
             has_element?(:merge_request_pipeline_info_content, text: text, wait: 15 )
           end
         end

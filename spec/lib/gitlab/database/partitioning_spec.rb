@@ -33,4 +33,16 @@ RSpec.describe Gitlab::Database::Partitioning do
       end
     end
   end
+
+  describe '.drop_detached_partitions' do
+    let(:partition_dropper_class) { described_class::MultiDatabasePartitionDropper }
+
+    it 'delegates to the partition dropper' do
+      expect_next_instance_of(partition_dropper_class) do |partition_dropper|
+        expect(partition_dropper).to receive(:drop_detached_partitions)
+      end
+
+      described_class.drop_detached_partitions
+    end
+  end
 end

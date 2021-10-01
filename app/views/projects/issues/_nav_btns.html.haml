@@ -5,7 +5,7 @@
 - can_edit = can?(current_user, :admin_project, @project)
 - notification_email = @current_user.present? ? @current_user.notification_email_or_default : nil
 
-.nav-controls.issues-nav-controls
+.nav-controls.issues-nav-controls.gl-font-size-0
   - if show_feed_buttons
     = render 'shared/issuable/feed_buttons'
 
@@ -18,4 +18,3 @@
                                                   issue: { milestone_id: finder.milestones.first.try(:id) }),
                                                   class: "gl-button btn btn-confirm",
                                                   id: "new_issue_link"
-

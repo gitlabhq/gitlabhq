@@ -87,6 +87,7 @@ export default {
       <table
         :aria-label="tableCaption"
         class="table tree-table"
+        :class="{ 'gl-table-layout-fixed': !showParentRow }"
         aria-live="polite"
         data-qa-selector="file_tree_table"
       >
@@ -120,7 +121,9 @@ export default {
           <template v-if="isLoading">
             <tr v-for="i in 5" :key="i" aria-hidden="true">
               <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
-              <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
+              <td class="gl-display-none gl-sm-display-block">
+                <gl-skeleton-loading :lines="1" class="h-auto" />
+              </td>
               <td><gl-skeleton-loading :lines="1" class="ml-auto h-auto w-50" /></td>
             </tr>
           </template>

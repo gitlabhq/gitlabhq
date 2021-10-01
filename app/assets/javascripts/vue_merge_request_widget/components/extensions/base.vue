@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlLoadingIcon, GlLink, GlBadge, GlSafeHtmlDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLoadingIcon,
+  GlLink,
+  GlBadge,
+  GlSafeHtmlDirective,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import { EXTENSION_ICON_CLASS } from '../../constants';
 import StatusIcon from './status_icon.vue';
@@ -21,6 +29,7 @@ export default {
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
+    GlTooltip: GlTooltipDirective,
   },
   data() {
     return {
@@ -43,6 +52,14 @@ export default {
       }
 
       return true;
+    },
+    collapseButtonLabel() {
+      return sprintf(
+        this.isCollapsed
+          ? s__('mrWidget|Show %{widget} details')
+          : s__('mrWidget|Hide %{widget} details'),
+        { widget: this.$options.name },
+      );
     },
     statusIconName() {
       if (this.isLoadingSummary) return null;
@@ -102,22 +119,28 @@ export default {
         :is-loading="isLoadingSummary"
         :icon-name="statusIconName"
       />
-      <div class="media-body d-flex flex-align-self-center align-items-center">
+      <div class="media-body gl-display-flex gl-align-self-center gl-align-items-center">
         <div class="code-text">
           <template v-if="isLoadingSummary">
             {{ __('Loading...') }}
           </template>
           <div v-else v-safe-html="summary(collapsedData)"></div>
         </div>
-        <gl-button
-          v-if="isCollapsible"
-          size="small"
-          class="float-right align-self-center"
-          data-testid="toggle-button"
-          @click="toggleCollapsed"
+        <div
+          class="gl-float-right gl-align-self-center gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3"
         >
-          {{ isCollapsed ? __('Expand') : __('Collapse') }}
-        </gl-button>
+          <gl-button
+            v-if="isCollapsible"
+            v-gl-tooltip
+            :title="collapseButtonLabel"
+            :aria-expanded="`${!isCollapsed}`"
+            :aria-label="collapseButtonLabel"
+            :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
+            category="tertiary"
+            data-testid="toggle-button"
+            @click="toggleCollapsed"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -137,11 +160,9 @@ export default {
         wclass="report-block-list"
         class="report-block-container"
       >
-        <li v-for="data in fullData" :key="data.id" class="d-flex align-items-center">
+        <li v-for="data in fullData" :key="data.id" class="gl-display-flex gl-align-items-center">
           <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" />
-          <div
-            class="gl-mt-2 gl-mb-2 align-content-around align-items-start flex-wrap align-self-center d-flex"
-          >
+          <div class="gl-mt-2 gl-mb-2 gl-flex-wrap gl-align-self-center gl-display-flex">
             <div v-safe-html="data.text" class="gl-mr-4"></div>
             <div v-if="data.link">
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>

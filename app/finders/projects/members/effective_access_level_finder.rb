@@ -99,7 +99,7 @@ module Projects
       end
 
       def include_membership_from_project_group_shares?
-        project.allowed_to_share_with_group? && project.project_group_links.any?
+        !project.namespace.share_with_group_lock && project.project_group_links.any?
       end
 
       # methods for `select` options
