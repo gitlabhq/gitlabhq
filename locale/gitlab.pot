@@ -1213,9 +1213,6 @@ msgstr ""
 msgid "0 bytes"
 msgstr ""
 
-msgid "0 for unlimited, only effective with remote storage enabled."
-msgstr ""
-
 msgid "0t1DgySidms"
 msgstr ""
 
@@ -3414,6 +3411,9 @@ msgid "Allow this key to push to this repository"
 msgstr ""
 
 msgid "Allow this secondary node to replicate content on Object Storage"
+msgstr ""
+
+msgid "Allow use of licensed EE features"
 msgstr ""
 
 msgid "Allow users to dismiss the broadcast message"
@@ -10782,7 +10782,7 @@ msgstr ""
 msgid "Days to merge"
 msgstr ""
 
-msgid "Deactivate dormant users after 90 days of inactivity. Users can return to active status by signing in to their account. While inactive, a user is not counted as an active user in the instance."
+msgid "Deactivate dormant users after 90 days of inactivity"
 msgstr ""
 
 msgid "Dear Administrator,"
@@ -12755,9 +12755,6 @@ msgid "Enabled OAuth authentication sources"
 msgstr ""
 
 msgid "Enabled sources for code import during project creation. OmniAuth must be configured for GitHub"
-msgstr ""
-
-msgid "Enabling this will only make licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public."
 msgstr ""
 
 msgid "Encountered an error while rendering: %{err}"
@@ -15542,9 +15539,6 @@ msgid "GitLab metadata URL"
 msgstr ""
 
 msgid "GitLab project export"
-msgstr ""
-
-msgid "GitLab restart is required to apply changes."
 msgstr ""
 
 msgid "GitLab single sign-on URL"
@@ -20184,9 +20178,6 @@ msgstr ""
 msgid "Leave Admin Mode"
 msgstr ""
 
-msgid "Leave blank for no limit. Once set, existing personal access tokens may be revoked."
-msgstr ""
-
 msgid "Leave edit mode? All unsaved changes will be lost."
 msgstr ""
 
@@ -20323,6 +20314,9 @@ msgid "LicenseManagement|Denied"
 msgstr ""
 
 msgid "LicenseManagement|Uncategorized"
+msgstr ""
+
+msgid "Licensed Enterprise Edition features can be used if the project namespace's plan includes the feature, or if the project is public."
 msgstr ""
 
 msgid "Licensed Features"
@@ -20891,9 +20885,6 @@ msgstr ""
 msgid "Max 100,000 events"
 msgstr ""
 
-msgid "Max 20 characters"
-msgstr ""
-
 msgid "Max authenticated Git LFS requests per period per user"
 msgstr ""
 
@@ -20907,6 +20898,9 @@ msgid "Max session time"
 msgstr ""
 
 msgid "MaxBuilds"
+msgstr ""
+
+msgid "Maximum 20 characters"
 msgstr ""
 
 msgid "Maximum Conan package file size in bytes"
@@ -22825,7 +22819,7 @@ msgstr ""
 msgid "Newest first"
 msgstr ""
 
-msgid "Newly registered users will by default be external"
+msgid "Newly-registered users are external by default"
 msgstr ""
 
 msgid "Next"
@@ -23801,6 +23795,9 @@ msgid "Only active projects show up in the search and on the dashboard."
 msgstr ""
 
 msgid "Only admins can delete project"
+msgstr ""
+
+msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
 msgstr ""
 
 msgid "Only include features new to your current subscription tier."
@@ -28976,6 +28973,9 @@ msgstr ""
 msgid "Response text"
 msgstr ""
 
+msgid "Restart GitLab to apply changes."
+msgstr ""
+
 msgid "Restart Terminal"
 msgstr ""
 
@@ -32102,7 +32102,7 @@ msgstr ""
 msgid "Specified URL cannot be used: \"%{reason}\""
 msgstr ""
 
-msgid "Specify an e-mail address regex pattern to identify default internal users."
+msgid "Specify an email address regex pattern to identify default internal users."
 msgstr ""
 
 msgid "Speed up your pipelines with Needs relationships"
@@ -37226,6 +37226,9 @@ msgstr ""
 msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
 msgstr ""
 
+msgid "Users can reactivate their account by signing in."
+msgstr ""
+
 msgid "Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki."
 msgstr ""
 
@@ -38199,6 +38202,9 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong."
+msgstr ""
+
+msgid "When enabled, existing personal access tokens may be revoked. Leave blank for no limit."
 msgstr ""
 
 msgid "When inactive, an external authentication provider must be used."

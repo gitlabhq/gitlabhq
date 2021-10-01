@@ -259,6 +259,7 @@
 
   .dropdown-menu-toggle {
     border-color: var(--ide-btn-default-border, $gray-darkest);
+    background-color: var(--ide-input-background, transparent);
 
     &:hover,
     &:focus {
