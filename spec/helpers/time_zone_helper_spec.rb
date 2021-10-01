@@ -76,6 +76,18 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
       travel_to Time.find_zone(timezone).local(2021, 7, 20, 15, 30, 45)
     end
 
+    context 'when timezone is `nil`' do
+      it 'returns `nil`' do
+        expect(helper.local_time(nil)).to eq(nil)
+      end
+    end
+
+    context 'when timezone is blank' do
+      it 'returns `nil`' do
+        expect(helper.local_time('')).to eq(nil)
+      end
+    end
+
     context 'when a valid timezone is passed' do
       it 'returns local time' do
         expect(helper.local_time(timezone)).to eq('3:30 PM')

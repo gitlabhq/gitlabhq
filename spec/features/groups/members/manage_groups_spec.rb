@@ -63,6 +63,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
   context 'when group link exists' do
     let_it_be(:shared_with_group) { create(:group) }
     let_it_be(:shared_group) { create(:group) }
+    let_it_be(:expiration_date) { 5.days.from_now.to_date }
 
     let(:additional_link_attrs) { {} }
 
@@ -115,29 +116,29 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       click_groups_tab
 
       page.within first_row do
-        fill_in 'Expiration date', with: 5.days.from_now.to_date
+        fill_in 'Expiration date', with: expiration_date
         find_field('Expiration date').native.send_keys :enter
 
         wait_for_requests
 
-        expect(page).to have_content(/in \d days/)
+        expect(page).to have_field('Expiration date', with: expiration_date)
       end
     end
 
     context 'when expiry date is set' do
-      let(:additional_link_attrs) { { expires_at: 5.days.from_now.to_date } }
+      let(:additional_link_attrs) { { expires_at: expiration_date } }
 
       it 'clears expiry date' do
         click_groups_tab
 
         page.within first_row do
-          expect(page).to have_content(/in \d days/)
+          expect(page).to have_field('Expiration date', with: expiration_date)
 
           find('[data-testid="clear-button"]').click
 
           wait_for_requests
 
-          expect(page).to have_content('No expiration set')
+          expect(page).to have_field('Expiration date', with: '')
         end
       end
     end

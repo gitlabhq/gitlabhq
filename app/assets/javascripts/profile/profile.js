@@ -21,6 +21,7 @@ export default class Profile {
       $inputEl: this.$inputEl,
       $dropdownEl: $('.js-timezone-dropdown'),
       displayFormat: (selectedItem) => formatTimezone(selectedItem),
+      allowEmpty: true,
     });
   }
 

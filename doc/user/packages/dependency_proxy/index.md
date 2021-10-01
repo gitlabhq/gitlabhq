@@ -171,8 +171,51 @@ from the GitLab server.
 Blobs are kept forever on the GitLab server, and there is no hard limit on how much data can be
 stored.
 
+### Using the API to clear the cache
+
 To reclaim disk space used by image blobs that are no longer needed, use
-the [Dependency Proxy API](../../../api/dependency_proxy.md).
+the [Dependency Proxy API](../../../api/dependency_proxy.md) to clear the entire
+cache.
+
+### Cleanup policies
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294187) in GitLab Free 14.4.
+
+The cleanup policy is a scheduled job you can use to clear cached images that are no longer used,
+freeing up additional storage space. The policies use time-to-live (TTL) logic:
+
+- The number of days is configured.
+- All cached dependency proxy files that have not been pulled in that many days are deleted.
+
+Use the [GraphQL API](../../../api/graphql/reference/index.md#mutationupdatedependencyproxyimagettlgrouppolicy)
+to enable and configure cleanup policies:
+
+```graphql
+mutation {
+  updateDependencyProxyImageTtlGroupPolicy(input:
+    {
+      groupPath: "<your-full-group-path>",
+      enabled: true,
+      ttl: 90
+    }
+  ) {
+    dependencyProxyImageTtlPolicy {
+      enabled
+      ttl
+    }
+    errors
+  }
+}
+```
+
+See the [Getting started with GraphQL](../../../api/graphql/getting_started.md)
+guide to learn how to make GraphQL queries. Support for enabling and configuring cleanup policies in
+the UI is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340777).
+
+When the policy is initially enabled, the default TTL setting is 90 days. Once enabled, stale
+dependency proxy files are queued for deletion each day. Deletion may not occur right away due to
+processing time. If the image is pulled after the cached files are marked as expired, the expired
+files are ignored and new files are downloaded and cached from the external registry.
 
 ## Docker Hub rate limits and the Dependency Proxy
 

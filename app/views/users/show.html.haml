@@ -84,10 +84,12 @@
                 = sprite_icon('location', css_class: 'fgray')
                 %span{ itemprop: 'addressLocality' }
                   = @user.location
-            = render 'middle_dot_divider', stacking: true do
-              = sprite_icon('clock', css_class: 'fgray')
-              %span
-                = local_time(@user.timezone)
+            - user_local_time = local_time(@user.timezone)
+            - unless user_local_time.nil?
+              = render 'middle_dot_divider', stacking: true, data: { testid: 'user-local-time' } do
+                = sprite_icon('clock', css_class: 'fgray')
+                %span
+                  = user_local_time
             - unless work_information(@user).blank?
               = render 'middle_dot_divider', stacking: true do
                 = sprite_icon('work', css_class: 'fgray')

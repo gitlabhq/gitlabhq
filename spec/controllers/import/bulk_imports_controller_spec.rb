@@ -199,9 +199,9 @@ RSpec.describe Import::BulkImportsController do
           session[:bulk_import_gitlab_url] = instance_url
         end
 
-        it 'executes BulkImportService' do
+        it 'executes BulkImpors::CreatetService' do
           expect_next_instance_of(
-            BulkImportService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
+            ::BulkImports::CreateService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
             allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
           end
 
@@ -214,7 +214,7 @@ RSpec.describe Import::BulkImportsController do
         it 'returns error when validation fails' do
           error_response = ServiceResponse.error(message: 'Record invalid', http_status: :unprocessable_entity)
           expect_next_instance_of(
-            BulkImportService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
+            ::BulkImports::CreateService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
             allow(service).to receive(:execute).and_return(error_response)
           end
 

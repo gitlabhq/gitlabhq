@@ -21212,9 +21212,6 @@ msgstr ""
 msgid "Members|Expiration date updated successfully."
 msgstr ""
 
-msgid "Members|Expired"
-msgstr ""
-
 msgid "Members|Filter members"
 msgstr ""
 
@@ -21228,9 +21225,6 @@ msgid "Members|Leave \"%{source}\""
 msgstr ""
 
 msgid "Members|Membership"
-msgstr ""
-
-msgid "Members|No expiration set"
 msgstr ""
 
 msgid "Members|Remove \"%{groupName}\""
@@ -21252,9 +21246,6 @@ msgid "Members|Search groups"
 msgstr ""
 
 msgid "Members|Search invited"
-msgstr ""
-
-msgid "Members|in %{time}"
 msgstr ""
 
 msgid "Member|Deny access"

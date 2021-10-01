@@ -561,14 +561,11 @@ RSpec.describe 'User edit profile' do
 
         page.find("a", text: "Nuku'alofa").click
 
-        tz = page.find('.user-time-preferences #user_timezone', visible: false)
-
-        expect(tz.value).to eq('Pacific/Tongatapu')
+        expect(page).to have_field(:user_timezone, with: 'Pacific/Tongatapu', type: :hidden)
       end
 
-      it 'timezone defaults to servers default' do
-        timezone_name = Time.zone.tzinfo.name
-        expect(page.find('.user-time-preferences #user_timezone', visible: false).value).to eq(timezone_name)
+      it 'timezone defaults to empty' do
+        expect(page).to have_field(:user_timezone, with: '', type: :hidden)
       end
     end
   end

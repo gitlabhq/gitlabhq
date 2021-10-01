@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImportService do
+RSpec.describe BulkImports::CreateService do
   let(:user) { create(:user) }
   let(:credentials) { { url: 'http://gitlab.example', access_token: 'token' } }
   let(:params) do

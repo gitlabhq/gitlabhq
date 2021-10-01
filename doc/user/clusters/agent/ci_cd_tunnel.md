@@ -10,6 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - The pre-configured `KUBECONFIG` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
 > - The ability to authorize groups was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
+WARNING:
+The CI/CD Tunnel is not supported for GitLab self-managed instances installed via Omnibus. We
+plan to [add support for Omnibus](https://gitlab.com/gitlab-org/gitlab/-/issues/324272) in the future.
+
 The CI/CD Tunnel enables users to access Kubernetes clusters from GitLab CI/CD jobs even if there is no network
 connectivity between GitLab Runner and a cluster. GitLab Runner does not have to be running in the same cluster.
 

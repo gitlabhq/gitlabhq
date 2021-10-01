@@ -9,6 +9,8 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
 
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:three_days_from_now) { 3.days.from_now.to_date }
+  let_it_be(:five_days_from_now) { 5.days.from_now.to_date }
 
   let(:new_member) { create(:user) }
 
@@ -22,39 +24,39 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
   it 'expiration date is displayed in the members list' do
     visit project_project_members_path(project)
 
-    invite_member(new_member.name, role: 'Guest', expires_at: 5.days.from_now.to_date)
+    invite_member(new_member.name, role: 'Guest', expires_at: five_days_from_now)
 
     page.within find_member_row(new_member) do
-      expect(page).to have_content(/in \d days/)
+      expect(page).to have_field('Expiration date', with: five_days_from_now)
     end
   end
 
   it 'changes expiration date' do
-    project.team.add_users([new_member.id], :developer, expires_at: 3.days.from_now.to_date)
+    project.team.add_users([new_member.id], :developer, expires_at: three_days_from_now)
     visit project_project_members_path(project)
 
     page.within find_member_row(new_member) do
-      fill_in 'Expiration date', with: 5.days.from_now.to_date
+      fill_in 'Expiration date', with: five_days_from_now
       find_field('Expiration date').native.send_keys :enter
 
       wait_for_requests
 
-      expect(page).to have_content(/in \d days/)
+      expect(page).to have_field('Expiration date', with: five_days_from_now)
     end
   end
 
   it 'clears expiration date' do
-    project.team.add_users([new_member.id], :developer, expires_at: 5.days.from_now.to_date)
+    project.team.add_users([new_member.id], :developer, expires_at: five_days_from_now)
     visit project_project_members_path(project)
 
     page.within find_member_row(new_member) do
-      expect(page).to have_content(/in \d days/)
+      expect(page).to have_field('Expiration date', with: five_days_from_now)
 
       find('[data-testid="clear-button"]').click
 
       wait_for_requests
 
-      expect(page).to have_content('No expiration set')
+      expect(page).to have_field('Expiration date', with: '')
     end
   end
 

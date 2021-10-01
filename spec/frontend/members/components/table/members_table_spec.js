@@ -10,7 +10,6 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
-import ExpiresAt from '~/members/components/table/expires_at.vue';
 import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
@@ -68,7 +67,6 @@ describe('MembersTable', () => {
       stubs: [
         'member-avatar',
         'member-source',
-        'expires-at',
         'created-at',
         'member-action-buttons',
         'role-dropdown',
@@ -119,7 +117,6 @@ describe('MembersTable', () => {
       ${'granted'}    | ${'Access granted'} | ${memberMock}      | ${CreatedAt}
       ${'invited'}    | ${'Invited'}        | ${invite}          | ${CreatedAt}
       ${'requested'}  | ${'Requested'}      | ${accessRequest}   | ${CreatedAt}
-      ${'expires'}    | ${'Access expires'} | ${memberMock}      | ${ExpiresAt}
       ${'maxRole'}    | ${'Max role'}       | ${memberCanUpdate} | ${RoleDropdown}
       ${'expiration'} | ${'Expiration'}     | ${memberMock}      | ${ExpirationDatepicker}
     `('renders the $label field', ({ field, label, member, expectedComponent }) => {

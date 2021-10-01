@@ -38,12 +38,6 @@ export const FIELDS = [
     tdClass: 'col-meta',
   },
   {
-    key: 'expires',
-    label: __('Access expires'),
-    thClass: 'col-meta',
-    tdClass: 'col-meta',
-  },
-  {
     key: 'maxRole',
     label: __('Max role'),
     thClass: 'col-max-role',

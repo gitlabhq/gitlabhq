@@ -81,6 +81,7 @@ RSpec.describe 'User page' do
 
     context 'timezone' do
       let_it_be(:timezone) { 'America/Los_Angeles' }
+      let_it_be(:local_time_selector) { '[data-testid="user-local-time"]' }
 
       before do
         travel_to Time.find_zone(timezone).local(2021, 7, 20, 15, 30, 45)
@@ -92,7 +93,19 @@ RSpec.describe 'User page' do
         it 'shows local time' do
           subject
 
-          expect(page).to have_content('3:30 PM')
+          within local_time_selector do
+            expect(page).to have_content('3:30 PM')
+          end
+        end
+      end
+
+      context 'when timezone is not set' do
+        let_it_be(:user) { create(:user, timezone: nil) }
+
+        it 'does not show local time' do
+          subject
+
+          expect(page).not_to have_selector(local_time_selector)
         end
       end
 
@@ -102,7 +115,9 @@ RSpec.describe 'User page' do
         it 'shows local time using the configured default timezone (UTC in this case)' do
           subject
 
-          expect(page).to have_content('10:30 PM')
+          within local_time_selector do
+            expect(page).to have_content('10:30 PM')
+          end
         end
       end
     end

@@ -23,7 +23,6 @@ class UserPreference < ApplicationRecord
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
 
   default_value_for :tab_width, value: Gitlab::TabWidth::DEFAULT, allows_nil: false
-  default_value_for :timezone, value: Time.zone.tzinfo.name, allows_nil: false
   default_value_for :time_display_relative, value: true, allows_nil: false
   default_value_for :time_format_in_24h, value: false, allows_nil: false
   default_value_for :render_whitespace_in_code, value: false, allows_nil: false

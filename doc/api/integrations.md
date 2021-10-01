@@ -726,8 +726,6 @@ GET /projects/:id/integrations/github
 
 ## Hangouts Chat
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20290) in GitLab 11.2.
-
 Google Workspace team collaboration tool.
 
 ### Create/Edit Hangouts Chat integration
@@ -737,9 +735,6 @@ Set Hangouts Chat integration for a project.
 ```plaintext
 PUT /projects/:id/integrations/hangouts-chat
 ```
-
-NOTE:
-Specific event parameters (for example, `push_events` flag) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 
@@ -831,10 +826,6 @@ GET /projects/:id/integrations/jira
 ### Create/Edit Jira integration
 
 Set Jira integration for a project.
-
-> Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
-> `project_url` are replaced by `url`. If you are using an
-> older version, [follow this documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/8-13-stable-ee/doc/api/services.md#jira).
 
 ```plaintext
 PUT /projects/:id/integrations/jira
@@ -1198,9 +1189,6 @@ Set Slack integration for a project.
 PUT /projects/:id/integrations/slack
 ```
 
-NOTE:
-Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
-
 Parameters:
 
 | Parameter | Type | Required | Description |
@@ -1307,9 +1295,6 @@ Set Mattermost notifications integration for a project.
 ```plaintext
 PUT /projects/:id/integrations/mattermost
 ```
-
-NOTE:
-Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435) in GitLab 10.4.
 
 Parameters:
 

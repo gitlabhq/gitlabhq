@@ -10,7 +10,6 @@ import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import RemoveMemberModal from '../modals/remove_member_modal.vue';
 import CreatedAt from './created_at.vue';
 import ExpirationDatepicker from './expiration_datepicker.vue';
-import ExpiresAt from './expires_at.vue';
 import MemberActionButtons from './member_action_buttons.vue';
 import MemberAvatar from './member_avatar.vue';
 import MemberSource from './member_source.vue';
@@ -24,7 +23,6 @@ export default {
     GlPagination,
     MemberAvatar,
     CreatedAt,
-    ExpiresAt,
     MembersTableCell,
     MemberSource,
     MemberActionButtons,
@@ -180,10 +178,6 @@ export default {
 
       <template #cell(requested)="{ item: { createdAt } }">
         <created-at :date="createdAt" />
-      </template>
-
-      <template #cell(expires)="{ item: { expiresAt } }">
-        <expires-at :date="expiresAt" />
       </template>
 
       <template #cell(maxRole)="{ item: member }">
