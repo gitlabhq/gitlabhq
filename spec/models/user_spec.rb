@@ -494,6 +494,8 @@ RSpec.describe User do
     end
 
     describe 'email' do
+      let(:expected_error) { _('is not allowed for sign-up. Check with your administrator.') }
+
       context 'when no signup domains allowed' do
         before do
           stub_application_setting(domain_allowlist: [])
@@ -537,7 +539,7 @@ RSpec.describe User do
         it 'rejects example@test.com' do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
-          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
+          expect(user.errors.messages[:email].first).to eq(expected_error)
         end
       end
 
@@ -554,13 +556,13 @@ RSpec.describe User do
         it 'rejects info@test.example.com' do
           user = build(:user, email: "info@test.example.com")
           expect(user).to be_invalid
-          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
+          expect(user.errors.messages[:email].first).to eq(expected_error)
         end
 
         it 'rejects example@test.com' do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
-          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
+          expect(user.errors.messages[:email].first).to eq(expected_error)
         end
 
         it 'accepts example@test.com when added by another user' do
@@ -598,7 +600,7 @@ RSpec.describe User do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
-            expect(user.errors.messages[:email].first).to eq(_('is not from an allowed domain.'))
+            expect(user.errors.messages[:email].first).to eq(expected_error)
           end
 
           it 'accepts info@example.com when added by another user' do
@@ -632,7 +634,7 @@ RSpec.describe User do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
-            expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
+            expect(user.errors.messages[:email].first).to eq(expected_error)
           end
         end
       end
@@ -673,7 +675,7 @@ RSpec.describe User do
             user = build(:user, email: 'info@gitlab.com')
 
             expect(user).not_to be_valid
-            expect(user.errors.messages[:email].first).to eq(_('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
+            expect(user.errors.messages[:email].first).to eq(expected_error)
           end
 
           it 'does accept a valid email address' do

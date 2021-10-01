@@ -156,19 +156,15 @@ module Projects
       user_ids = @old_namespace.user_ids_for_project_authorizations |
         @new_namespace.user_ids_for_project_authorizations
 
-      if Feature.enabled?(:specialized_worker_for_project_transfer_auth_recalculation)
-        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
+      AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
 
-        # Until we compare the inconsistency rates of the new specialized worker and
-        # the old approach, we still run AuthorizedProjectsWorker
-        # but with some delay and lower urgency as a safety net.
-        UserProjectAccessChangedService.new(user_ids).execute(
-          blocking: false,
-          priority: UserProjectAccessChangedService::LOW_PRIORITY
-        )
-      else
-        UserProjectAccessChangedService.new(user_ids).execute
-      end
+      # Until we compare the inconsistency rates of the new specialized worker and
+      # the old approach, we still run AuthorizedProjectsWorker
+      # but with some delay and lower urgency as a safety net.
+      UserProjectAccessChangedService.new(user_ids).execute(
+        blocking: false,
+        priority: UserProjectAccessChangedService::LOW_PRIORITY
+      )
     end
 
     def rollback_side_effects

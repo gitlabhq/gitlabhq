@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Feature Flags **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433) in GitLab 11.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
 
 With Feature Flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
@@ -312,7 +312,7 @@ Unleash currently [offers many SDKs for various languages and frameworks](https:
 For API content, see:
 
 - [Feature Flags API](../api/feature_flags.md)
-- [Feature Flag Specs API](../api/feature_flag_specs.md) (Deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369).)
+- [Feature Flag Specs API](../api/feature_flag_specs.md) (Deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/213369) in GitLab 14.0.)
 - [Feature Flag User Lists API](../api/feature_flag_user_lists.md)
 - [Legacy Feature Flags API](../api/feature_flags_legacy.md)
 

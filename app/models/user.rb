@@ -2102,6 +2102,10 @@ class User < ApplicationRecord
     errors.add(:email, error) if error
   end
 
+  def signup_email_invalid_message
+    _('is not allowed for sign-up.')
+  end
+
   def check_username_format
     return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(".#{type}") }
 

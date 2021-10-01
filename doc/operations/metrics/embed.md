@@ -96,8 +96,8 @@ a chart corresponding to the query can be included if these requirements are met
 
 ## Embedding cluster health charts
 
-> - [Introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/40997>) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
-> - [Moved](<https://gitlab.com/gitlab-org/gitlab/-/issues/208224>) to GitLab core in 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/40997) in GitLab 12.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) from GitLab Ultimate to GitLab Free in 13.2.
 
 [Cluster Health Metrics](../../user/project/clusters/index.md#visualizing-cluster-health)
 can also be embedded in [GitLab-flavored Markdown](../../user/markdown.md).

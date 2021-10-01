@@ -36,7 +36,7 @@ Are your alerts too noisy? Alerts configured on GitLab metrics can configured
 and fine-tuned in GitLab immediately following a fire-fight.
 
 - [Manage alerts and incidents](incident_management/index.md) in GitLab.
-- [Configure alerts for metrics](metrics/alerts.md#set-up-alerts-for-prometheus-metrics) in GitLab.
+- [Configure alerts for metrics](metrics/alerts.md) in GitLab.
 - Create a [status page](incident_management/status_page.md)
   to communicate efficiently to your users during an incident.
 
@@ -96,4 +96,4 @@ an environment.
 - Deploy to different [environments](../ci/environments/index.md).
 - Connect your project to a [Kubernetes cluster](../user/project/clusters/index.md).
 - See how your application is used and analyze events with [Product Analytics](product_analytics.md).
-- Create, toggle, and remove [Feature Flags](feature_flags.md). **(PREMIUM)**
+- Create, toggle, and remove [Feature Flags](feature_flags.md).

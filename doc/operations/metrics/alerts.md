@@ -61,7 +61,7 @@ Prometheus server to use the
 
 ## Trigger actions from alerts **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in GitLab 11.11.
 
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
@@ -83,7 +83,7 @@ values extracted from the [`alerts` field in webhook payload](https://prometheus
   - `full_query`: Alert query extracted from the payload's `generatorURL` field
   - Optional list of attached annotations extracted from `annotations/*`
 - Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from the payload's `annotations/gitlab_incident_markdown` field.
-- Alert Severity (introduced in GitLab version [13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871):
+- Alert Severity ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab version 13.9):
   Extracted from the alert payload field `labels/severity`. Maps case-insensitive
   value to [Alert's severity](../incident_management/alerts.md#alert-severity):
   - **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`, or any value not in this list
@@ -107,7 +107,7 @@ of the project.
 
 ### Recovery alerts
 
-> - [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it automatically closes the associated issue.
+> [From GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it automatically closes the associated issue.
 
 The alert in GitLab will be automatically resolved when Prometheus
 sends a payload with the field `status` set to `resolved`.

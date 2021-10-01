@@ -448,6 +448,14 @@ class Member < ApplicationRecord
     errors.add(:user, error) if error
   end
 
+  def signup_email_invalid_message
+    if source_type == 'Project'
+      _("is not allowed for this project.")
+    else
+      _("is not allowed for this group.")
+    end
+  end
+
   def update_highest_role?
     return unless user_id.present?
 

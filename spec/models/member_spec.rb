@@ -65,6 +65,8 @@ RSpec.describe Member do
     end
 
     context 'with admin signup restrictions' do
+      let(:expected_message) { _('is not allowed for this group. Check with your administrator.') }
+
       context 'when allowed domains for signup is enabled' do
         before do
           stub_application_setting(domain_allowlist: ['example.com'])
@@ -74,7 +76,7 @@ RSpec.describe Member do
           member = build(:group_member, :invited, invite_email: 'info@gitlab.com')
 
           expect(member).not_to be_valid
-          expect(member.errors.messages[:user].first).to eq(_('domain is not authorized for sign-up.'))
+          expect(member.errors.messages[:user].first).to eq(expected_message)
         end
       end
 
@@ -88,7 +90,7 @@ RSpec.describe Member do
           member = build(:group_member, :invited, invite_email: 'denylist@example.org')
 
           expect(member).not_to be_valid
-          expect(member.errors.messages[:user].first).to eq(_('is not from an allowed domain.'))
+          expect(member.errors.messages[:user].first).to eq(expected_message)
         end
       end
 
@@ -102,7 +104,7 @@ RSpec.describe Member do
           member = build(:group_member, :invited, invite_email: 'info@gitlab.com')
 
           expect(member).not_to be_valid
-          expect(member.errors.messages[:user].first).to eq(_('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
+          expect(member.errors.messages[:user].first).to eq(expected_message)
         end
       end
     end

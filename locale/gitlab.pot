@@ -6546,6 +6546,9 @@ msgstr ""
 msgid "Check the elasticsearch.log file to debug why the migration was halted and make any changes before retrying the migration. When you fix the cause of the failure, click \"Retry migration\", and the migration will be scheduled to be retried in the background."
 msgstr ""
 
+msgid "Check with your administrator."
+msgstr ""
+
 msgid "Check your Docker images for known vulnerabilities."
 msgstr ""
 
@@ -7202,9 +7205,6 @@ msgid "Cloud Functions description and apps that are suitable for this deploymen
 msgstr ""
 
 msgid "Cloud Run description and apps that are suitable for this deployment target"
-msgstr ""
-
-msgid "Cloud licenses can not be removed."
 msgstr ""
 
 msgid "Cluster"
@@ -15823,7 +15823,19 @@ msgstr ""
 msgid "Go to snippets"
 msgstr ""
 
+msgid "Go to the 'Admin area &gt; Sign-up restrictions', and check 'Allowed domains for sign-ups'."
+msgstr ""
+
+msgid "Go to the 'Admin area &gt; Sign-up restrictions', and check 'Email restrictions for sign-ups'."
+msgstr ""
+
+msgid "Go to the 'Admin area &gt; Sign-up restrictions', and check the 'Domain denylist'."
+msgstr ""
+
 msgid "Go to the activity feed"
+msgstr ""
+
+msgid "Go to the group’s 'Settings &gt; General' page, and check 'Restrict membership by email domain'."
 msgstr ""
 
 msgid "Go to the milestone list"
@@ -40028,9 +40040,6 @@ msgstr ""
 msgid "does not have a supported extension. Only %{extension_list} are supported"
 msgstr ""
 
-msgid "domain is not authorized for sign-up."
-msgstr ""
-
 msgid "download it"
 msgstr ""
 
@@ -40047,11 +40056,6 @@ msgstr ""
 
 msgid "email '%{email}' is not a verified email."
 msgstr ""
-
-msgid "email does not match the allowed domain of %{email_domains}"
-msgid_plural "email does not match the allowed domains: %{email_domains}"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "enabled"
 msgstr ""
@@ -40266,16 +40270,19 @@ msgstr ""
 msgid "is not a valid X509 certificate."
 msgstr ""
 
+msgid "is not allowed for sign-up."
+msgstr ""
+
+msgid "is not allowed for this group."
+msgstr ""
+
+msgid "is not allowed for this project."
+msgstr ""
+
 msgid "is not allowed since the group is not top-level group."
 msgstr ""
 
-msgid "is not allowed. Try again with a different email address, or contact your GitLab admin."
-msgstr ""
-
 msgid "is not allowed. We do not currently support project-level iterations"
-msgstr ""
-
-msgid "is not from an allowed domain."
 msgstr ""
 
 msgid "is not in the group enforcing Group Managed Account"

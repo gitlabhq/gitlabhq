@@ -50,7 +50,7 @@ type upstream struct {
 	geoLocalRoutes        []routeEntry
 	geoProxyCableRoute    routeEntry
 	geoProxyRoute         routeEntry
-	geoProxyTestChannel   chan struct{}
+	geoProxyPollSleep     func(time.Duration)
 	accessLogger          *logrus.Logger
 	enableGeoProxyFeature bool
 	mu                    sync.RWMutex
@@ -67,6 +67,9 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 		// Kind of a feature flag. See https://gitlab.com/groups/gitlab-org/-/epics/5914#note_564974130
 		enableGeoProxyFeature: os.Getenv("GEO_SECONDARY_PROXY") == "1",
 		geoProxyBackend:       &url.URL{},
+	}
+	if up.geoProxyPollSleep == nil {
+		up.geoProxyPollSleep = time.Sleep
 	}
 	if up.Backend == nil {
 		up.Backend = DefaultBackend
@@ -205,13 +208,7 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 func (u *upstream) pollGeoProxyAPI() {
 	for {
 		u.callGeoProxyAPI()
-
-		// Notify tests when callGeoProxyAPI() finishes
-		if u.geoProxyTestChannel != nil {
-			u.geoProxyTestChannel <- struct{}{}
-		}
-
-		time.Sleep(geoProxyApiPollingInterval)
+		u.geoProxyPollSleep(geoProxyApiPollingInterval)
 	}
 }
 
@@ -234,6 +231,11 @@ func (u *upstream) updateGeoProxyFields(geoProxyURL *url.URL) {
 	defer u.mu.Unlock()
 
 	u.geoProxyBackend = geoProxyURL
+
+	if u.geoProxyBackend.String() == "" {
+		return
+	}
+
 	geoProxyRoundTripper := roundtripper.NewBackendRoundTripper(u.geoProxyBackend, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
 	geoProxyUpstream := proxypkg.NewProxy(u.geoProxyBackend, u.Version, geoProxyRoundTripper)
 	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
