@@ -79,25 +79,6 @@ module API
               gitaly_repository: gitaly_repository(project)
             }
           end
-
-          desc 'Gets project info' do
-            detail 'Retrieves project info (if authorized)'
-          end
-          route_setting :authentication, cluster_agent_token_allowed: true
-          get '/project_info' do
-            project = find_project(params[:id])
-
-            unless Guest.can?(:download_code, project) || agent.has_access_to?(project)
-              not_found!
-            end
-
-            status 200
-            {
-              project_id: project.id,
-              gitaly_info: gitaly_info(project),
-              gitaly_repository: gitaly_repository(project)
-            }
-          end
         end
 
         namespace 'kubernetes/agent_configuration' do
