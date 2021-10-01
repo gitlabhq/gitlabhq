@@ -98,7 +98,7 @@ profile and log output to S3.
 
 ## Speedscope flamegraphs
 
-You can generate a flamegraph for a particular URL by adding the `performance_bar=flamegraph` parameter to the request.
+You can generate a flamegraph for a particular URL by selecting the flamegraph button in the performance bar or by adding the `performance_bar=flamegraph` parameter to the request.
 
 ![Speedscope](img/speedscope_v13_12.png)
 

@@ -1,6 +1,7 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 import { s__ } from '~/locale';
 import AddRequest from './add_request.vue';
@@ -123,6 +124,9 @@ export default {
       const fileName = this.requests[0].truncatedUrl;
       return `${fileName}_perf_bar_${Date.now()}.json`;
     },
+    flamegraphPath() {
+      return mergeUrlParams({ performance_bar: 'flamegraph' }, window.location.href);
+    },
   },
   mounted() {
     this.currentRequest = this.requestId;
@@ -173,6 +177,11 @@ export default {
       <div v-if="currentRequest.details" id="peek-download" class="view">
         <a class="gl-text-blue-200" :download="downloadName" :href="downloadPath">{{
           s__('PerformanceBar|Download')
+        }}</a>
+      </div>
+      <div v-if="currentRequest.details" id="peek-flamegraph" class="view">
+        <a class="gl-text-blue-200" :href="flamegraphPath">{{
+          s__('PerformanceBar|Flamegraph')
         }}</a>
       </div>
       <a v-if="statsUrl" class="gl-text-blue-200 view" :href="statsUrl">{{

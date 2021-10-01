@@ -45,6 +45,8 @@ following headers, in this order:
 
 1. `To` header
 1. `References` header
+1. `Delivered-To` header
+1. `Envelope-To` header
 
 If it finds a reply key, it leaves your reply as a comment on
 the entity the notification was about (issue, merge request, commit...).

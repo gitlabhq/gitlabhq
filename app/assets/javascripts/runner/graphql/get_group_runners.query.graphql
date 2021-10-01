@@ -24,8 +24,11 @@ query getGroupRunners(
       search: $search
       sort: $sort
     ) {
-      nodes {
-        ...RunnerNode
+      edges {
+        webUrl
+        node {
+          ...RunnerNode
+        }
       }
       pageInfo {
         ...PageInfo

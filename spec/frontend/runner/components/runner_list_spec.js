@@ -1,4 +1,4 @@
-import { GlLink, GlTable, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTable, GlSkeletonLoader } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -67,11 +67,11 @@ describe('RunnerList', () => {
     // Badges
     expect(findCell({ fieldKey: 'type' }).text()).toMatchInterpolatedText('specific paused');
 
-    // Runner identifier
-    expect(findCell({ fieldKey: 'name' }).text()).toContain(
+    // Runner summary
+    expect(findCell({ fieldKey: 'summary' }).text()).toContain(
       `#${getIdFromGraphQLId(id)} (${shortSha})`,
     );
-    expect(findCell({ fieldKey: 'name' }).text()).toContain(description);
+    expect(findCell({ fieldKey: 'summary' }).text()).toContain(description);
 
     // Other fields
     expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
@@ -136,12 +136,11 @@ describe('RunnerList', () => {
     });
   });
 
-  it('Links to the runner page', () => {
-    const { id } = mockRunners[0];
+  it('Shows runner identifier', () => {
+    const { id, shortSha } = mockRunners[0];
+    const numericId = getIdFromGraphQLId(id);
 
-    expect(findCell({ fieldKey: 'name' }).find(GlLink).attributes('href')).toBe(
-      `/admin/runners/${getIdFromGraphQLId(id)}`,
-    );
+    expect(findCell({ fieldKey: 'summary' }).text()).toContain(`#${numericId} (${shortSha})`);
   });
 
   describe('When data is loading', () => {

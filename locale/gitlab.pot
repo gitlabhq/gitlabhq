@@ -24646,6 +24646,9 @@ msgstr ""
 msgid "PerformanceBar|First Contentful Paint"
 msgstr ""
 
+msgid "PerformanceBar|Flamegraph"
+msgstr ""
+
 msgid "PerformanceBar|Frontend resources"
 msgstr ""
 
@@ -29562,7 +29565,7 @@ msgstr ""
 msgid "Save pipeline schedule"
 msgstr ""
 
-msgid "Save space and find images in the container Registry. remove unneeded tags and keep only the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
+msgid "Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
 msgstr ""
 
 msgid "Saving"
@@ -30250,6 +30253,9 @@ msgstr ""
 msgid "SecurityReports|Create issue"
 msgstr ""
 
+msgid "SecurityReports|Development vulnerabilities"
+msgstr ""
+
 msgid "SecurityReports|Dismiss vulnerability"
 msgstr ""
 
@@ -30389,6 +30395,9 @@ msgid "SecurityReports|Status"
 msgstr ""
 
 msgid "SecurityReports|Take survey"
+msgstr ""
+
+msgid "SecurityReports|The Vulnerability Report shows the results of the lastest successful pipeline on your project's default branch, as well as vulnerabilities from your latest container scan. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "SecurityReports|The security reports below contain one or more vulnerability findings that could not be parsed and were not recorded. Download the artifacts in the job output to investigate. Ensure any security report created conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
@@ -33664,9 +33673,6 @@ msgid "The URL should start with http:// or https://"
 msgstr ""
 
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
-msgstr ""
-
-msgid "The Vulnerability Report shows the results of the last successful pipeline run on the default branch."
 msgstr ""
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."

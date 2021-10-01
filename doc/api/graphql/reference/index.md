@@ -4276,6 +4276,26 @@ Input type: `UpdateDependencyProxyImageTtlGroupPolicyInput`
 | <a id="mutationupdatedependencyproxyimagettlgrouppolicydependencyproxyimagettlpolicy"></a>`dependencyProxyImageTtlPolicy` | [`DependencyProxyImageTtlGroupPolicy`](#dependencyproxyimagettlgrouppolicy) | Group image TTL policy after mutation. |
 | <a id="mutationupdatedependencyproxyimagettlgrouppolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.updateDependencyProxySettings`
+
+Input type: `UpdateDependencyProxySettingsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatedependencyproxysettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatedependencyproxysettingsenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the policy is enabled or disabled. |
+| <a id="mutationupdatedependencyproxysettingsgrouppath"></a>`groupPath` | [`ID!`](#id) | Group path for the group dependency proxy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatedependencyproxysettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatedependencyproxysettingsdependencyproxysetting"></a>`dependencyProxySetting` | [`DependencyProxySetting`](#dependencyproxysetting) | Group dependency proxy settings after mutation. |
+| <a id="mutationupdatedependencyproxysettingserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.updateEpic`
 
 Input type: `UpdateEpicInput`

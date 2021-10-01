@@ -21,13 +21,13 @@ module Atlassian
 
         def type
           case environment.name
-          when /prod/i
-            'production'
-          when /test/i
-            'testing'
-          when /staging/i
+          when /\A(.*[^a-z0-9])?(staging|stage|stg|preprod|pre-prod|model|internal)([^a-z0-9].*)?\z/i
             'staging'
-          when /(dev|review)/i
+          when /\A(.*[^a-z0-9])?(prod|production|prd|live)([^a-z0-9].*)?\z/i
+            'production'
+          when /\A(.*[^a-z0-9])?(test|testing|tests|tst|integration|integ|intg|int|acceptance|accept|acpt|qa|qc|control|quality)([^a-z0-9].*)?\z/i
+            'testing'
+          when /\A(.*[^a-z0-9])?(dev|review|development)([^a-z0-9].*)?\z/i
             'development'
           else
             'unmapped'

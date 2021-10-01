@@ -25,6 +25,7 @@ query getRunners(
   ) {
     nodes {
       ...RunnerNode
+      adminUrl
     }
     pageInfo {
       ...PageInfo

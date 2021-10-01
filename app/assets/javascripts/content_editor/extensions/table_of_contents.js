@@ -1,4 +1,5 @@
-import { Node, nodeInputRule } from '@tiptap/core';
+import { Node } from '@tiptap/core';
+import { InputRule } from 'prosemirror-inputrules';
 import { s__ } from '~/locale';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
@@ -32,6 +33,19 @@ export default Node.create({
   },
 
   addInputRules() {
-    return inputRuleRegExps.map((regex) => nodeInputRule(regex, this.type));
+    const { type } = this;
+
+    return inputRuleRegExps.map(
+      (regex) =>
+        new InputRule(regex, (state, match, start, end) => {
+          const { tr } = state;
+
+          if (match) {
+            tr.replaceWith(start - 1, end, type.create());
+          }
+
+          return tr;
+        }),
+    );
   },
 });

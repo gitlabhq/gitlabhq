@@ -8,11 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab 13.9.
 > - The **Memory** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330736) in GitLab 14.0.
+> - The **Flamegraph** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30275) in GitLab 14.4.
 
 You can display the performance bar to see statistics for the performance of a GitLab UI page.
 For example:
 
-![Performance bar](img/performance_bar_v14_0.png)
+![Performance bar](img/performance_bar_v14_4.png)
 
 ## Available information
 
@@ -64,6 +65,7 @@ From left to right, the performance bar displays:
   can be added by its full URL (authenticated as the current user), or by the value of
   its `X-Request-Id` header.
 - **Download**: a link to download the raw JSON used to generate the Performance Bar reports.
+- **Flamegraph**: a link to generate a [flamegraph](../../../development/profiling.md#speedscope-flamegraphs) of the current URL.
 - **Request Selector**: a select box displayed on the right-hand side of the
   Performance Bar which enables you to view these metrics for any requests made while
   the current page was open. Only the first two requests per unique URL are captured.

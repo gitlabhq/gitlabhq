@@ -46,12 +46,22 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity do
     using RSpec::Parameterized::TableSyntax
 
     where(:env_name, :env_type) do
+      'PRODUCTION'     | 'production'
       'prod'           | 'production'
+      'prod-east-2'    | 'production'
+      'us-prod-east'   | 'production'
+      'fe-production'  | 'production'
       'test'           | 'testing'
+      'qa-env-2'       | 'testing'
       'staging'        | 'staging'
+      'pre-prod'       | 'staging'
+      'blue-kit-stage' | 'staging'
+      'pre-prod'       | 'staging'
       'dev'            | 'development'
       'review/app'     | 'development'
       'something-else' | 'unmapped'
+      'store-produce'  | 'unmapped'
+      'unproductive'   | 'unmapped'
     end
 
     with_them do

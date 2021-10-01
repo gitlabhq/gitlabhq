@@ -304,12 +304,12 @@ GET /projects/:id/integrations/campfire
 
 Datadog system monitoring.
 
-### Create/Edit Datadog service
+### Create/Edit Datadog integration
 
-Set Datadog service for a project.
+Set Datadog integration for a project.
 
 ```plaintext
-PUT /projects/:id/services/datadog
+PUT /projects/:id/integrations/datadog
 ```
 
 Parameters:
@@ -322,20 +322,20 @@ Parameters:
 | `datadog_service` | string | false | Name of this GitLab instance that all data will be tagged with |
 | `datadog_env`     | string | false | The environment tag that traces will be tagged with |
 
-### Delete Datadog service
+### Delete Datadog integration
 
-Delete Datadog service for a project.
+Delete Datadog integration for a project.
 
 ```plaintext
-DELETE /projects/:id/services/datadog
+DELETE /projects/:id/integrations/datadog
 ```
 
-### Get Datadog service settings
+### Get Datadog integration settings
 
-Get Datadog service settings for a project.
+Get Datadog integration settings for a project.
 
 ```plaintext
-GET /projects/:id/services/datadog
+GET /projects/:id/integrations/datadog
 ```
 
 ## Unify Circuit
@@ -549,12 +549,12 @@ GET /projects/:id/integrations/emails-on-push
 
 Use IBM Engineering Workflow Management (EWM) as a project's issue tracker.
 
-### Create/Edit EWM service
+### Create/Edit EWM integration
 
-Set EWM service for a project.
+Set EWM integration for a project.
 
 ```plaintext
-PUT /projects/:id/services/ewm
+PUT /projects/:id/integrations/ewm
 ```
 
 Parameters:
@@ -565,20 +565,20 @@ Parameters:
 | `project_url`   | string | true | The URL to the project in EWM |
 | `issues_url`    | string | true | The URL to view an issue in EWM. Must contain `:id` |
 
-### Delete EWM service
+### Delete EWM integration
 
-Delete EWM service for a project.
+Delete EWM integration for a project.
 
 ```plaintext
-DELETE /projects/:id/services/ewm
+DELETE /projects/:id/integrations/ewm
 ```
 
-### Get EWM service settings
+### Get EWM integration settings
 
-Get EWM service settings for a project.
+Get EWM integration settings for a project.
 
 ```plaintext
-GET /projects/:id/services/ewm
+GET /projects/:id/integrations/ewm
 ```
 
 ## Confluence integration

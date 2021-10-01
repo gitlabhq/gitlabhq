@@ -51,7 +51,13 @@ module Gitlab
 
           # Workaround to fully load the instance methods in the target class.
           # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69823#note_678887402
-          target_classes.map(&:new) rescue nil
+          begin
+            target_classes.map(&:new)
+          rescue ArgumentError
+            # Some models might raise ArgumentError here, but it's fine in this case,
+            # because this is enough to force ActiveRecord to generate the methods we
+            # need to verify, so it's safe to ignore it.
+          end
 
           (delegator_class.instance_methods - allowlist).each do |method_name|
             target_classes.each do |target_class|

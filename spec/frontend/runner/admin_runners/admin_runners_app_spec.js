@@ -1,3 +1,4 @@
+import { GlLink } from '@gitlab/ui';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -5,6 +6,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
@@ -96,6 +98,20 @@ describe('AdminRunnersApp', () => {
 
   it('shows the runners list', () => {
     expect(findRunnerList().props('runners')).toEqual(runnersData.data.runners.nodes);
+  });
+
+  it('runner item links to the runner admin page', async () => {
+    createComponent({ mountFn: mount });
+
+    await waitForPromises();
+
+    const { id, shortSha } = runnersData.data.runners.nodes[0];
+    const numericId = getIdFromGraphQLId(id);
+
+    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+
+    expect(runnerLink.text()).toBe(`#${numericId} (${shortSha})`);
+    expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${numericId}`);
   });
 
   it('requests the runners with no filters', () => {

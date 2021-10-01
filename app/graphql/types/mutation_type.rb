@@ -42,6 +42,7 @@ module Types
     mount_mutation Mutations::CustomerRelations::Organizations::Update
     mount_mutation Mutations::Discussions::ToggleResolve
     mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
+    mount_mutation Mutations::DependencyProxy::GroupSettings::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees

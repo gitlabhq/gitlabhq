@@ -1,13 +1,17 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { formatNumber, sprintf, s__ } from '~/locale';
+
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerManualSetupHelp from '../components/runner_manual_setup_help.vue';
+import RunnerName from '../components/runner_name.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeHelp from '../components/runner_type_help.vue';
+
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { typeTokenConfig } from '../components/search_tokens/type_token_config';
 import {
@@ -27,9 +31,11 @@ import { captureException } from '../sentry_utils';
 export default {
   name: 'GroupRunnersApp',
   components: {
+    GlLink,
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerManualSetupHelp,
+    RunnerName,
     RunnerTypeHelp,
     RunnerPagination,
   },
@@ -51,6 +57,7 @@ export default {
     return {
       search: fromUrlQueryToSearch(),
       runners: {
+        webUrls: [],
         items: [],
         pageInfo: {},
       },
@@ -68,8 +75,10 @@ export default {
       },
       update(data) {
         const { runners } = data?.group || {};
+
         return {
-          items: runners?.nodes || [],
+          webUrls: runners?.edges.map(({ webUrl }) => webUrl) || [],
+          items: runners?.edges.map(({ node }) => node) || [],
           pageInfo: runners?.pageInfo || {},
         };
       },
@@ -163,7 +172,13 @@ export default {
       {{ __('No runners found') }}
     </div>
     <template v-else>
-      <runner-list :runners="runners.items" :loading="runnersLoading" />
+      <runner-list :runners="runners.items" :loading="runnersLoading">
+        <template #runner-name="{ runner, index }">
+          <gl-link :href="runners.webUrls[index]">
+            <runner-name :runner="runner" />
+          </gl-link>
+        </template>
+      </runner-list>
       <runner-pagination v-model="search.pagination" :page-info="runners.pageInfo" />
     </template>
   </div>

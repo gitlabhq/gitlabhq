@@ -117,7 +117,7 @@ export default {
     <p>
       <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}')">
         <template #username>
-          <code>{{ username }}</code>
+          <code class="gl-white-space-pre-wrap">{{ username }}</code>
         </template>
       </gl-sprintf>
     </p>

@@ -1,12 +1,11 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import RunnerName from '../runner_name.vue';
 
 export default {
   components: {
-    GlLink,
     TooltipOnTruncate,
+    RunnerName,
   },
   props: {
     runner: {
@@ -15,18 +14,8 @@ export default {
     },
   },
   computed: {
-    runnerNumericalId() {
-      return getIdFromGraphQLId(this.runner.id);
-    },
-    runnerUrl() {
-      // TODO implement using webUrl from the API
-      return `${gon.gitlab_url || ''}/admin/runners/${this.runnerNumericalId}`;
-    },
     description() {
       return this.runner.description;
-    },
-    shortSha() {
-      return this.runner.shortSha;
     },
   },
 };
@@ -34,7 +23,9 @@ export default {
 
 <template>
   <div>
-    <gl-link :href="runnerUrl"> #{{ runnerNumericalId }} ({{ shortSha }})</gl-link>
+    <slot :runner="runner" name="runner-name">
+      <runner-name :runner="runner" />
+    </slot>
     <tooltip-on-truncate class="gl-display-block" :title="description" truncate-target="child">
       <div class="gl-text-truncate">
         {{ description }}

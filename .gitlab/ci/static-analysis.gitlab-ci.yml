@@ -35,6 +35,17 @@ static-analysis:
     paths:
       - tmp/feature_flags/
 
+static-analysis-with-database:
+  extends:
+    - .static-analysis-base
+    - .static-analysis:rules:ee-and-foss
+    - .use-pg12
+  stage: test
+  script:
+    - bundle exec rake lint:static_verification_with_database
+  variables:
+    SETUP_DB: "true"
+
 static-analysis as-if-foss:
   extends:
     - static-analysis
