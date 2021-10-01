@@ -22,9 +22,10 @@ module Database
     CrossJoinAcrossUnsupportedTablesError = Class.new(StandardError)
 
     ALLOW_THREAD_KEY = :allow_cross_joins_across_databases
+    ALLOW_ANNOTATE_KEY = ALLOW_THREAD_KEY.to_s.freeze
 
     def self.validate_cross_joins!(sql)
-      return if Thread.current[ALLOW_THREAD_KEY]
+      return if Thread.current[ALLOW_THREAD_KEY] || sql.include?(ALLOW_ANNOTATE_KEY)
 
       # Allow spec/support/database_cleaner.rb queries to disable/enable triggers for many tables
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/339396
@@ -75,11 +76,20 @@ module Database
         Thread.current[ALLOW_THREAD_KEY] = old_value
       end
     end
+
+    module ActiveRecordRelationMixin
+      def allow_cross_joins_across_databases(url:)
+        super.annotate(ALLOW_ANNOTATE_KEY)
+      end
+    end
   end
 end
 
 Gitlab::Database.singleton_class.prepend(
   Database::PreventCrossJoins::GitlabDatabaseMixin)
+
+ActiveRecord::Relation.prepend(
+  Database::PreventCrossJoins::ActiveRecordRelationMixin)
 
 ALLOW_LIST = Set.new(YAML.load_file(File.join(__dir__, 'cross-join-allowlist.yml'))).freeze
 

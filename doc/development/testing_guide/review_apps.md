@@ -9,6 +9,97 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Review Apps are automatically deployed by [the
 pipeline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6665).
 
+## When are Review Apps automatically deployed?
+
+A Review App is automatically deployed for:
+
+- for merge requests with CI config changes
+- for merge requests with frontend changes
+- for merge requests with QA changes
+- for scheduled pipelines
+
+## QA runs on Review Apps
+
+On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage (which comes after the
+`review` stage), the `review-qa-smoke` job is automatically started and it runs
+the QA smoke suite.
+
+You can also manually start the `review-qa-all`: it runs the full QA suite.
+
+After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
+the `allure-report-qa-smoke` and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
+
+## Performance Metrics
+
+On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage, the
+`review-performance` job is automatically started: this job does basic
+browser performance testing using a
+[Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
+
+## How to
+
+### Get access to the GCP Review Apps cluster
+
+You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/-/issues/new)
+for the `gcp-review-apps-dev` GCP group and role.
+
+This grants you the following permissions for:
+
+- [Retrieving pod logs](#dig-into-a-pods-logs). Granted by [Viewer (`roles/viewer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
+- [Running a Rails console](#run-a-rails-console). Granted by [Kubernetes Engine Developer (`roles/container.pods.exec`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
+
+### Log into my Review App
+
+For GitLab Team Members only. If you want to sign in to the review app, review
+the GitLab handbook information for the [shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
+
+- The default username is `root`.
+- The password can be found in the 1Password login item named `GitLab EE Review App`.
+
+### Enable a feature flag for my Review App
+
+1. Open your Review App and log in as documented above.
+1. Create a personal access token.
+1. Enable the feature flag using the [Feature flag API](../../api/features.md).
+
+### Find my Review App slug
+
+1. Open the `review-deploy` job.
+1. Look for `** Deploying review-*`.
+1. For instance for `** Deploying review-1234-abc-defg... **`,
+   your Review App slug would be `review-1234-abc-defg` in this case.
+
+### Run a Rails console
+
+1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.exec` permission first.
+1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
+   e.g. `review-qa-raise-e-12chm0`.
+1. Find and open the `task-runner` Deployment, e.g. `review-qa-raise-e-12chm0-task-runner`.
+1. Click on the Pod in the "Managed pods" section, e.g. `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`.
+1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
+1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
+   default command or
+   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
+     - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
+       with your Pod's name.
+
+### Dig into a Pod's logs
+
+1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.getLogs` permission first.
+1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
+   e.g. `review-qa-raise-e-12chm0`.
+1. Find and open the `migrations` Deployment, e.g.
+   `review-qa-raise-e-12chm0-migrations.1`.
+1. Click on the Pod in the "Managed pods" section, e.g.
+   `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
+1. Click on the `Container logs` link.
+
+Alternatively, you could use the [Logs Explorer](https://console.cloud.google.com/logs/query;query=?project=gitlab-review-apps) which provides more utility to search logs. An example query for a pod name is as follows:
+
+```shell
+resource.labels.pod_name:"review-qa-raise-e-12chm0-migrations"
+```
+
 ## How does it work?
 
 ### CI/CD architecture diagram
@@ -126,24 +217,6 @@ The `review-gcp-cleanup` job that automatically runs in scheduled pipelines
 (and is manual in merge request) removes any dangling GCP network resources
 that were not removed along with the Kubernetes resources.
 
-## QA runs
-
-On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage (which comes after the
-`review` stage), the `review-qa-smoke` job is automatically started and it runs
-the QA smoke suite.
-
-You can also manually start the `review-qa-all`: it runs the full QA suite.
-
-After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
-the `allure-report-qa-smoke` and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
-
-## Performance Metrics
-
-On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage, the
-`review-performance` job is automatically started: this job does basic
-browser performance testing using a
-[Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
-
 ## Cluster configuration
 
 The cluster is configured via Terraform in the [`engineering-productivity-infrastructure`](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure) project.
@@ -156,64 +229,6 @@ due to this [known issue on GitLab Runner Kubernetes executor](https://gitlab.co
 The Helm version used is defined in the
 [`registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14` image](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.gitlab-helm3-kubectl1.14#L7)
 used by the `review-deploy` and `review-stop` jobs.
-
-## How to
-
-### Get access to the GCP Review Apps cluster
-
-You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/-/issues/new)
-for the `gcp-review-apps-dev` GCP group and role.
-
-This grants you the following permissions for:
-
-- [Retrieving pod logs](#dig-into-a-pods-logs). Granted by [Viewer (`roles/viewer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
-- [Running a Rails console](#run-a-rails-console). Granted by [Kubernetes Engine Developer (`roles/container.pods.exec`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
-
-### Log into my Review App
-
-For GitLab Team Members only. If you want to sign in to the review app, review
-the GitLab handbook information for the [shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
-
-- The default username is `root`.
-- The password can be found in the 1Password login item named `GitLab EE Review App`.
-
-### Enable a feature flag for my Review App
-
-1. Open your Review App and log in as documented above.
-1. Create a personal access token.
-1. Enable the feature flag using the [Feature flag API](../../api/features.md).
-
-### Find my Review App slug
-
-1. Open the `review-deploy` job.
-1. Look for `** Deploying review-*`.
-1. For instance for `** Deploying review-1234-abc-defg... **`,
-   your Review App slug would be `review-1234-abc-defg` in this case.
-
-### Run a Rails console
-
-1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.exec` permission first.
-1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
-   e.g. `review-qa-raise-e-12chm0`.
-1. Find and open the `task-runner` Deployment, e.g. `review-qa-raise-e-12chm0-task-runner`.
-1. Click on the Pod in the "Managed pods" section, e.g. `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`.
-1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
-1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
-   default command or
-   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
-     - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
-       with your Pod's name.
-
-### Dig into a Pod's logs
-
-1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.getLogs` permission first.
-1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
-   e.g. `review-qa-raise-e-12chm0`.
-1. Find and open the `migrations` Deployment, e.g.
-   `review-qa-raise-e-12chm0-migrations.1`.
-1. Click on the Pod in the "Managed pods" section, e.g.
-   `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
-1. Click on the `Container logs` link.
 
 ## Diagnosing unhealthy Review App releases
 

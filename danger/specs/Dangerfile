@@ -32,11 +32,12 @@ request specs (and/or feature specs). Please add request specs under
 See https://gitlab.com/groups/gitlab-org/-/epics/5076 for information.
 MSG
 
-has_app_changes = helper.all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
-has_ee_app_changes = helper.all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?migrate)/}).any?
-spec_changes = helper.all_changed_files.grep(%r{\Aspec/})
+all_changed_files = helper.all_changed_files
+has_app_changes = all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+has_ee_app_changes = all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+spec_changes = specs.changed_specs_files(ee: :exclude)
 has_spec_changes = spec_changes.any?
-has_ee_spec_changes = helper.all_changed_files.grep(%r{\Aee/spec/}).any?
+has_ee_spec_changes = specs.changed_specs_files(ee: :only).any?
 new_specs_needed = (gitlab.mr_labels & NO_SPECS_LABELS).empty?
 
 if (has_app_changes || has_ee_app_changes) && !(has_spec_changes || has_ee_spec_changes) && new_specs_needed
@@ -49,6 +50,10 @@ if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_ch
 end
 
 # Forbidding a new file addition under `/spec/controllers` or `/ee/spec/controllers`
-if git.added_files.grep(%r{^(ee/)?spec/controllers/}).any?
+if project_helper.changes.added.files.grep(%r{^(ee/)?spec/controllers/}).any?
   warn CONTROLLER_SPEC_DEPRECATION_MESSAGE
+end
+
+specs.changed_specs_files.each do |filename|
+  specs.add_suggestions_for_match_with_array(filename)
 end

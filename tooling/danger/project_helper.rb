@@ -175,7 +175,15 @@ module Tooling
         ee? ? 'gitlab' : 'gitlab-foss'
       end
 
+      def file_lines(filename)
+        read_file(filename).lines(chomp: true)
+      end
+
       private
+
+      def read_file(filename)
+        File.read(filename)
+      end
 
       def ee?
         # Support former project name for `dev` and support local Danger run

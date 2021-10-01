@@ -392,7 +392,8 @@ You can see a real example of using this method for fixing a cross-join in
 #### Allowlist for existing cross-joins
 
 A cross-join across databases can be explicitly allowed by wrapping the code in the
-`::Gitlab::Database.allow_cross_joins_across_databases` helper method.
+`::Gitlab::Database.allow_cross_joins_across_databases` helper method. Alternative
+way is to mark a given relation as `relation.allow_cross_joins_across_databases`.
 
 This method should only be used:
 
@@ -403,8 +404,19 @@ This method should only be used:
 The `allow_cross_joins_across_databases` helper method can be used as follows:
 
 ```ruby
+# Scope the block executing a object from database
 ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336590') do
   subject.perform(1, 4)
+end
+```
+
+```ruby
+# Mark a relation as allowed to cross-join databases
+def find_actual_head_pipeline
+  all_pipelines
+    .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891')
+    .for_sha_or_source_sha(diff_head_sha)
+    .first
 end
 ```
 
