@@ -1357,6 +1357,17 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
+    [
+      "WIP ", "(WIP)",
+      "draft", "Draft"
+    ].each do |draft_prefix|
+      it "doesn't detect '#{draft_prefix}' at the start of the title as a draft" do
+        subject.title = "#{draft_prefix}#{subject.title}"
+
+        expect(subject.work_in_progress?).to eq false
+      end
+    end
+
     it "detects merge request title just saying 'wip'" do
       subject.title = "wip"
 

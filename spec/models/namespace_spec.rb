@@ -133,39 +133,77 @@ RSpec.describe Namespace do
       end
 
       context 'top-level group' do
-        let(:group) { build(:group, path: 'tree') }
+        let(:group) { build(:namespace, path: 'tree') }
 
         it { expect(group).to be_valid }
       end
     end
 
+    describe 'path validator' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:parent) { create(:namespace) }
+
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      where(:namespace_type, :path, :valid) do
+        ref(:project_sti_name)   | 'j'     | true
+        ref(:project_sti_name)   | 'path.' | true
+        ref(:project_sti_name)   | 'blob'  | false
+        ref(:group_sti_name)     | 'j'     | false
+        ref(:group_sti_name)     | 'path.' | false
+        ref(:group_sti_name)     | 'blob'  | true
+        ref(:user_sti_name)      | 'j'     | false
+        ref(:user_sti_name)      | 'path.' | false
+        ref(:user_sti_name)      | 'blob'  | true
+      end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
+
+      with_them do
+        it 'validates namespace path' do
+          parent_namespace = parent if namespace_type == Namespaces::ProjectNamespace.sti_name
+          namespace = build(:namespace, type: namespace_type, parent: parent_namespace, path: path)
+
+          expect(namespace.valid?).to be(valid)
+        end
+      end
+    end
+
     describe '1 char path length' do
-      it 'does not allow to create one' do
-        namespace = build(:namespace, path: 'j')
+      context 'with user namespace' do
+        let(:namespace) { build(:namespace) }
 
-        expect(namespace).not_to be_valid
-        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+        it 'does not allow to update path to single char' do
+          namespace.save!
+
+          namespace.path = 'j'
+
+          expect(namespace).not_to be_valid
+          expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+        end
+
+        it 'allows updating other attributes for existing record' do
+          namespace.save!
+          namespace.update_attribute(:path, 'j')
+          namespace.reload
+
+          expect(namespace.path).to eq('j')
+
+          namespace.update(name: 'something new')
+
+          expect(namespace).to be_valid
+          expect(namespace.name).to eq('something new')
+        end
       end
 
-      it 'does not allow to update one' do
-        namespace = create(:namespace)
-        namespace.update(path: 'j')
+      context 'with project namespace' do
+        let(:namespace) { build(:project_namespace) }
 
-        expect(namespace).not_to be_valid
-        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
-      end
+        it 'allows to update path to single char' do
+          namespace = create(:project_namespace)
+          namespace.update(path: 'j')
 
-      it 'allows updating other attributes for existing record' do
-        namespace = build(:namespace, path: 'j', owner: create(:user))
-        namespace.save(validate: false)
-        namespace.reload
-
-        expect(namespace.path).to eq('j')
-
-        namespace.update(name: 'something new')
-
-        expect(namespace).to be_valid
-        expect(namespace.name).to eq('something new')
+          expect(namespace).to be_valid
+        end
       end
     end
   end

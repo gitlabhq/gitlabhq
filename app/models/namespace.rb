@@ -63,17 +63,27 @@ class Namespace < ApplicationRecord
     length: { maximum: 255 }
 
   validates :description, length: { maximum: 255 }
+
   validates :path,
     presence: true,
-    length: { maximum: URL_MAX_LENGTH },
-    namespace_path: true
+    length: { maximum: URL_MAX_LENGTH }
+
+  validates :path, namespace_path: true, if: ->(n) { !n.project_namespace? }
+  # Project path validator is used for project namespaces for now to assure
+  # compatibility with project paths
+  # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/341764
+  validates :path, project_path: true, if: ->(n) { n.project_namespace? }
 
   # Introduce minimal path length of 2 characters.
   # Allow change of other attributes without forcing users to
   # rename their user or group. At the same time prevent changing
   # the path without complying with new 2 chars requirement.
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/225214
-  validates :path, length: { minimum: 2 }, if: :path_changed?
+  #
+  # For ProjectNamespace we don't check minimal path length to keep
+  # compatibility with existing project restrictions.
+  # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/341764
+  validates :path, length: { minimum: 2 }, if: :enforce_minimum_path_length?
 
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
@@ -574,6 +584,10 @@ class Namespace < ApplicationRecord
       project.set_full_path
       project.track_project_repository
     end
+  end
+
+  def enforce_minimum_path_length?
+    path_changed? && !project_namespace?
   end
 end
 
