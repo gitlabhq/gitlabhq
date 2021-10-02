@@ -25,8 +25,8 @@ full list of reference architectures, see
 | Internal load balancing node<sup>3</sup>            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Redis/Sentinel - Cache<sup>2</sup>                  | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
 | Redis/Sentinel - Persistent<sup>2</sup>             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
-| Gitaly                                              | 3           | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
-| Praefect                                            | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Gitaly<sup>5</sup>                                  | 3           | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
+| Praefect<sup>5</sup>                                | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Praefect PostgreSQL<sup>1</sup>                     | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Sidekiq                                             | 4           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
 | GitLab Rails                                        | 3           | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge` | `F32s v2` |
@@ -40,6 +40,7 @@ full list of reference architectures, see
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -1105,6 +1106,10 @@ are supported and can be added if needed.
 
 [Gitaly Cluster](../gitaly/praefect.md) is a GitLab provided and recommended fault tolerant solution for storing Git repositories.
 In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being designated the primary, and failover occurs automatically if the primary node goes down.
+
+NOTE:
+Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster).
+For implementations with Gitaly Sharded, the same Gitaly specs should be used. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
 
 The recommended cluster setup includes the following components:
 
@@ -2180,8 +2185,8 @@ services where applicable):
 | Internal load balancing node<sup>3</sup>            | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Redis/Sentinel - Cache<sup>2</sup>                  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
 | Redis/Sentinel - Persistent<sup>2</sup>             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Gitaly                                              | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` |
-| Praefect                                            | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Gitaly<sup>5</sup>                                  | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` |
+| Praefect<sup>5</sup>                                | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Praefect PostgreSQL<sup>1</sup>                     | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Object storage<sup>4</sup>                          | n/a   | n/a                     | n/a              |
 
@@ -2191,6 +2196,7 @@ services where applicable):
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Project and group visibility
+# Project and group visibility **(FREE)**
 
-GitLab allows [Owners](../user/permissions.md) to set a project's or group's visibility as:
+GitLab allows users with the Owner [role](../user/permissions.md) to set a project's or group's visibility as:
 
 - **Public**
 - **Internal**
@@ -24,7 +24,7 @@ Public projects can be cloned **without any** authentication over HTTPS.
 
 They are listed in the public access directory (`/public`) for all users.
 
-**Any signed-in user** has the [Guest role](../user/permissions.md) on the repository.
+**Any signed-in user** has the Guest [role](../user/permissions.md) on the repository.
 
 NOTE:
 By default, `/public` is visible to unauthenticated users. However, if the
@@ -39,7 +39,7 @@ Internal projects can be cloned by any signed-in user except
 They are also listed in the public access directory (`/public`), but only for signed-in users.
 
 Any signed-in users except [external users](../user/permissions.md#external-users) have the
-[Guest role](../user/permissions.md) on the repository.
+Guest [role](../user/permissions.md) on the repository.
 
 NOTE:
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
@@ -57,7 +57,7 @@ They appear in the public access directory (`/public`) for project members only.
 
 Prerequisite:
 
-- You must have the Owner role for a project.
+- You must have the Owner [role](../user/permissions.md) for a project.
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
@@ -69,7 +69,7 @@ Prerequisite:
 
 Prerequisite:
 
-- You must have the Owner role for a group.
+- You must have the Owner [role](../user/permissions.md) for a group.
 
 1. On the top bar, select **Menu > Groups** and find your project.
 1. On the left sidebar, select **Settings > General**.
@@ -77,7 +77,7 @@ Prerequisite:
 1. Under **Visibility level** select either **Private**, **Internal**, or **Public**.
 1. Select **Save changes**.
 
-## Restrict use of public or internal projects
+## Restrict use of public or internal projects **(FREE SELF)**
 
 You can restrict the use of visibility levels for users when they create a project or a snippet.
 This is useful to prevent users from publicly exposing their repositories by accident. The

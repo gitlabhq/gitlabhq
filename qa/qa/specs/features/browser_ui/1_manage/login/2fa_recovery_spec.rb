@@ -78,6 +78,7 @@ module QA
             @otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
 
             two_fa_auth.set_pin_code(@otp.fresh_otp)
+            two_fa_auth.set_current_password(user.password)
             two_fa_auth.click_register_2fa_app_button
 
             recovery_code = two_fa_auth.recovery_codes.sample
