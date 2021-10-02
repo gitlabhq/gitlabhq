@@ -132,8 +132,8 @@ requirement for it, we effectively only care about the "key ID" being
 correct. Once that's extracted GitLab enforces its own ACLs for
 that user (for example, what projects the user can access).
 
-So it's OK to e.g. be overly generous in what you accept, since if the
-user e.g. has no access to GitLab at all it just errors out with a
+It's therefore fine to be overly generous in what you accept. For example, if the user has no access
+to GitLab, an error is produced with a message about an invalid user.
 message about this being an invalid user.
 
 ## Interaction with the `authorized_keys` file

@@ -10,11 +10,10 @@ Alerts are a critical entity in your incident management workflow. They represen
 
 ## Alert List
 
-Users with at least Developer [permissions](../../user/permissions.md) can
+Users with at least the Developer [role](../../user/permissions.md) can
 access the Alert list at **Monitor > Alerts** in your project's
 sidebar. The Alert list displays alerts sorted by start time, but
 you can change the sort order by clicking the headers in the Alert list.
-([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.)
 
 The alert list displays the following information:
 
@@ -69,7 +68,7 @@ Alerts contain one of the following icons:
 ## Alert details page
 
 Navigate to the Alert details view by visiting the [Alert list](alerts.md)
-and selecting an alert from the list. You need least Developer [permissions](../../user/permissions.md)
+and selecting an alert from the list. You need at least the Developer [role](../../user/permissions.md)
 to access alerts.
 
 NOTE:
@@ -112,7 +111,7 @@ To view the metrics for an alert:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201846) in GitLab Ultimate 12.8.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to GitLab Free 12.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) from GitLab Ultimate to GitLab Free in 12.9.
 
 Viewing logs from a metrics panel can be useful if you're triaging an
 application incident and need to [explore logs](../metrics/dashboards/index.md#chart-context-menu)

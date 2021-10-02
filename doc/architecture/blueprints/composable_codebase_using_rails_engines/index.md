@@ -495,8 +495,8 @@ Pros:
 Cons:
 
 - It is harder to implement GraphQL subscriptions as in case of Sidekiq as we need another way to pass subscriptions
-- `api_v4` paths can be used in some services that are used by Sidekiq (e.g. `api_v4_projects_path`)
-- url_helpers paths are used in models and services, that could be used by Sidekiq (e.g. `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18))
+- `api_v4` paths can be used in some services that are used by Sidekiq (for example `api_v4_projects_path`)
+- url_helpers paths are used in models and services, that could be used by Sidekiq (for example `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18))
 
 #### Example: GraphQL
 
@@ -529,8 +529,8 @@ Grape::API is another example that only needs to run only in a web server contex
 
 Potential challenges with Grape API:
 
-- Currently there are some API::API dependencies in the models (e.g. `API::Helpers::Version` dependency in [project model](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project.rb#L2019) or API::API dependency in GeoNode model for [`geo_retrieve_url`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo_node.rb#L183))
-- `api_v4` paths are used in helpers, presenters, and views (e.g. `api_v4_projects_path` in [PackagesHelper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/packages_helper.rb#L17))
+- Currently there are some API::API dependencies in the models (for example `API::Helpers::Version` dependency in [project model](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project.rb#L2019) or API::API dependency in GeoNode model for [`geo_retrieve_url`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo_node.rb#L183))
+- `api_v4` paths are used in helpers, presenters, and views (for example `api_v4_projects_path` in [PackagesHelper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/packages_helper.rb#L17))
 
 #### Example: Controllers
 
@@ -544,7 +544,7 @@ Controllers, Serializers, some presenters and some of the Grape:Entities are als
 Potential challenges with moving Controllers:
 
 - We needed to extend `Gitlab::Patch::DrawRoute` in order to support `engines/web_engine/config/routes` and `engines/web_engine/ee/config/routes` in case when `web_engine` is loaded. Here is potential [solution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720#note_506957398).
-- `Gitlab::Routing.url_helpers` paths are used in models and services, that could be used by Sidekiq (e.g. `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18)))
+- `Gitlab::Routing.url_helpers` paths are used in models and services, that could be used by Sidekiq (for example `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18)))
 
 ### Packwerk
 
