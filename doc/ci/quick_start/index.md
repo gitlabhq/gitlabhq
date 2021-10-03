@@ -152,7 +152,7 @@ The pipeline starts when the commit is committed.
   - Use the [`rules`](../yaml/index.md#rules) keyword to specify when to run or skip jobs.
     The `only` and `except` legacy keywords are still supported, but can't be used
     with `rules` in the same job.
-  - Keep information across jobs and stages persistent in a pipeline with [`cache`](../yaml/index.md#cache))
+  - Keep information across jobs and stages persistent in a pipeline with [`cache`](../yaml/index.md#cache)
     and [`artifacts`](../yaml/index.md#artifacts). These keywords are ways to store
     dependencies and job output, even when using ephemeral runners for each job.
 - For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` reference topic](../yaml/index.md).
