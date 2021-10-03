@@ -29,28 +29,10 @@ RSpec.describe Ci::PlayBridgeService, '#execute' do
       expect(bridge.reload.user).to eq(user)
     end
 
-    context 'when the create_cross_project_pipeline_worker_rename feature is enabled' do
-      before do
-        stub_feature_flags(create_cross_project_pipeline_worker_rename: true)
-      end
+    it 'enqueues Ci::CreateDownstreamPipelineWorker' do
+      expect(::Ci::CreateDownstreamPipelineWorker).to receive(:perform_async).with(bridge.id)
 
-      it 'enqueues Ci::CreateDownstreamPipelineWorker' do
-        expect(::Ci::CreateDownstreamPipelineWorker).to receive(:perform_async).with(bridge.id)
-
-        execute_service
-      end
-    end
-
-    context 'when the create_cross_project_pipeline_worker_rename feature is not enabled' do
-      before do
-        stub_feature_flags(create_cross_project_pipeline_worker_rename: false)
-      end
-
-      it 'enqueues Ci::CreateCrossProjectPipelineWorker' do
-        expect(::Ci::CreateCrossProjectPipelineWorker).to receive(:perform_async).with(bridge.id)
-
-        execute_service
-      end
+      execute_service
     end
 
     context 'when a subsequent job is skipped' do

@@ -1,8 +1,0 @@
----
-name: create_cross_project_pipeline_worker_rename
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70816
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/341410
-milestone: '14.4'
-type: development
-group: group::pipeline authoring
-default_enabled: false
