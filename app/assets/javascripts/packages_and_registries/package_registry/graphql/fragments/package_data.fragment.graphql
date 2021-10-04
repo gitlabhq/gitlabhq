@@ -1,0 +1,4 @@
+fragment PackageData on Package {
+  id
+  name
+}

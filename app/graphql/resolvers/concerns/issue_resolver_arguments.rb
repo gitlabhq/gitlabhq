@@ -60,6 +60,10 @@ module IssueResolverArguments
     argument :my_reaction_emoji, GraphQL::Types::String,
              required: false,
              description: 'Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported.'
+    argument :confidential,
+             GraphQL::Types::Boolean,
+             required: false,
+             description: 'Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues.'
     argument :not, Types::Issues::NegatedIssueFilterInputType,
              description: 'Negated arguments.',
              prepare: ->(negated_args, ctx) { negated_args.to_h },

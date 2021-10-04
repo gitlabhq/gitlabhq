@@ -64,6 +64,33 @@ RSpec.describe Projects::TransferService do
       expect(transfer_result).to be_truthy
       expect(project.namespace).to eq(group)
     end
+
+    context 'when project has an associated project namespace' do
+      let!(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'keeps project namespace in sync with project' do
+        transfer_result = execute_transfer
+
+        expect(transfer_result).to be_truthy
+
+        project_namespace_in_sync(group)
+      end
+
+      context 'when project is transferred to a deeper nested group' do
+        let(:parent_group) { create(:group) }
+        let(:sub_group) { create(:group, parent: parent_group) }
+        let(:sub_sub_group) { create(:group, parent: sub_group) }
+        let(:group) { sub_sub_group }
+
+        it 'keeps project namespace in sync with project' do
+          transfer_result = execute_transfer
+
+          expect(transfer_result).to be_truthy
+
+          project_namespace_in_sync(sub_sub_group)
+        end
+      end
+    end
   end
 
   context 'when transfer succeeds' do
@@ -243,6 +270,16 @@ RSpec.describe Projects::TransferService do
         expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
       end
     end
+
+    context 'when project has an associated project namespace' do
+      let!(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'keeps project namespace in sync with project' do
+        attempt_project_transfer
+
+        project_namespace_in_sync(user.namespace)
+      end
+    end
   end
 
   context 'namespace -> no namespace' do
@@ -254,6 +291,18 @@ RSpec.describe Projects::TransferService do
       expect(transfer_result).to eq false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.'
+    end
+
+    context 'when project has an associated project namespace' do
+      let!(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'keeps project namespace in sync with project' do
+        transfer_result = execute_transfer
+
+        expect(transfer_result).to be false
+
+        project_namespace_in_sync(user.namespace)
+      end
     end
   end
 
@@ -654,5 +703,14 @@ RSpec.describe Projects::TransferService do
 
   def rugged_config
     rugged_repo(project.repository).config
+  end
+
+  def project_namespace_in_sync(group)
+    project.reload
+    expect(project.namespace).to eq(group)
+    expect(project.project_namespace.visibility_level).to eq(project.visibility_level)
+    expect(project.project_namespace.path).to eq(project.path)
+    expect(project.project_namespace.parent).to eq(project.namespace)
+    expect(project.project_namespace.traversal_ids).to eq([*project.namespace.traversal_ids, project.project_namespace.id])
   end
 end

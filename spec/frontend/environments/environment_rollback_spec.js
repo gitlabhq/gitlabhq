@@ -1,5 +1,5 @@
-import { GlButton } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { GlDropdownItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import RollbackComponent from '~/environments/components/environment_rollback.vue';
 import eventHub from '~/environments/event_hub';
 
@@ -7,7 +7,7 @@ describe('Rollback Component', () => {
   const retryUrl = 'https://gitlab.com/retry';
 
   it('Should render Re-deploy label when isLastDeployment is true', () => {
-    const wrapper = mount(RollbackComponent, {
+    const wrapper = shallowMount(RollbackComponent, {
       propsData: {
         retryUrl,
         isLastDeployment: true,
@@ -15,11 +15,11 @@ describe('Rollback Component', () => {
       },
     });
 
-    expect(wrapper.element).toHaveSpriteIcon('repeat');
+    expect(wrapper.text()).toBe('Re-deploy to environment');
   });
 
   it('Should render Rollback label when isLastDeployment is false', () => {
-    const wrapper = mount(RollbackComponent, {
+    const wrapper = shallowMount(RollbackComponent, {
       propsData: {
         retryUrl,
         isLastDeployment: false,
@@ -27,7 +27,7 @@ describe('Rollback Component', () => {
       },
     });
 
-    expect(wrapper.element).toHaveSpriteIcon('redo');
+    expect(wrapper.text()).toBe('Rollback environment');
   });
 
   it('should emit a "rollback" event on button click', () => {
@@ -40,7 +40,7 @@ describe('Rollback Component', () => {
         },
       },
     });
-    const button = wrapper.find(GlButton);
+    const button = wrapper.find(GlDropdownItem);
 
     button.vm.$emit('click');
 

@@ -3,6 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Groups::TransferService do
+  shared_examples 'project namespace path is in sync with project path' do
+    it 'keeps project and project namespace attributes in sync' do
+      projects_with_project_namespace.each do |project|
+        project.reload
+
+        expect(project.full_path).to eq("#{group_full_path}/#{project.path}")
+        expect(project.project_namespace.full_path).to eq(project.full_path)
+        expect(project.project_namespace.parent).to eq(project.namespace)
+        expect(project.project_namespace.visibility_level).to eq(project.visibility_level)
+      end
+    end
+  end
+
   let_it_be(:user) { create(:user) }
   let_it_be(:new_parent_group) { create(:group, :public) }
 
@@ -169,6 +182,18 @@ RSpec.describe Groups::TransferService do
             expect(project.full_path).to eq("#{group.path}/#{project.path}")
           end
         end
+
+        context 'when projects have project namespaces' do
+          let_it_be(:project1) { create(:project, :private, namespace: group) }
+          let_it_be(:project_namespace1) { create(:project_namespace, project: project1) }
+          let_it_be(:project2) { create(:project, :private, namespace: group) }
+          let_it_be(:project_namespace2) { create(:project_namespace, project: project2) }
+
+          it_behaves_like 'project namespace path is in sync with project path' do
+            let(:group_full_path) { "#{group.path}" }
+            let(:projects_with_project_namespace) { [project1, project2] }
+          end
+        end
       end
     end
 
@@ -222,10 +247,10 @@ RSpec.describe Groups::TransferService do
 
       context 'when the parent group has a project with the same path' do
         let_it_be_with_reload(:group) { create(:group, :public, :nested, path: 'foo') }
+        let_it_be(:membership) { create(:group_member, :owner, group: new_parent_group, user: user) }
+        let_it_be(:project) { create(:project, path: 'foo', namespace: new_parent_group) }
 
         before do
-          create(:group_member, :owner, group: new_parent_group, user: user)
-          create(:project, path: 'foo', namespace: new_parent_group)
           group.update_attribute(:path, 'foo')
         end
 
@@ -236,6 +261,19 @@ RSpec.describe Groups::TransferService do
         it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
           expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
+        end
+
+        context 'when projects have project namespaces' do
+          let!(:project_namespace) { create(:project_namespace, project: project) }
+
+          before do
+            transfer_service.execute(new_parent_group)
+          end
+
+          it_behaves_like 'project namespace path is in sync with project path' do
+            let(:group_full_path) { "#{new_parent_group.full_path}" }
+            let(:projects_with_project_namespace) { [project] }
+          end
         end
       end
 
@@ -407,6 +445,8 @@ RSpec.describe Groups::TransferService do
       context 'when transferring a group with project descendants' do
         let!(:project1) { create(:project, :repository, :private, namespace: group) }
         let!(:project2) { create(:project, :repository, :internal, namespace: group) }
+        let!(:project_namespace1) { create(:project_namespace, project: project1) }
+        let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
         before do
           TestEnv.clean_test_path
@@ -432,17 +472,29 @@ RSpec.describe Groups::TransferService do
             expect(project1.private?).to be_truthy
             expect(project2.internal?).to be_truthy
           end
+
+          it_behaves_like 'project namespace path is in sync with project path' do
+            let(:group_full_path) { "#{new_parent_group.path}/#{group.path}" }
+            let(:projects_with_project_namespace) { [project1, project2] }
+          end
         end
 
         context 'when the new parent has a lower visibility than the projects' do
           let!(:project1) { create(:project, :repository, :public, namespace: group) }
           let!(:project2) { create(:project, :repository, :public, namespace: group) }
-          let(:new_parent_group) { create(:group, :private) }
+          let!(:new_parent_group) { create(:group, :private) }
+          let!(:project_namespace1) { create(:project_namespace, project: project1) }
+          let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
           it 'updates projects visibility to match the new parent' do
             group.projects.each do |project|
               expect(project.private?).to be_truthy
             end
+          end
+
+          it_behaves_like 'project namespace path is in sync with project path' do
+            let(:group_full_path) { "#{new_parent_group.path}/#{group.path}" }
+            let(:projects_with_project_namespace) { [project1, project2] }
           end
         end
       end
@@ -452,6 +504,8 @@ RSpec.describe Groups::TransferService do
         let!(:project2) { create(:project, :repository, :internal, namespace: group) }
         let!(:subgroup1) { create(:group, :private, parent: group) }
         let!(:subgroup2) { create(:group, :internal, parent: group) }
+        let!(:project_namespace1) { create(:project_namespace, project: project1) }
+        let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
         before do
           TestEnv.clean_test_path
@@ -479,6 +533,11 @@ RSpec.describe Groups::TransferService do
           expect(subgroup2.redirect_routes.count).to eq(1)
           expect(project1.redirect_routes.count).to eq(1)
           expect(project2.redirect_routes.count).to eq(1)
+        end
+
+        it_behaves_like 'project namespace path is in sync with project path' do
+          let(:group_full_path) { "#{new_parent_group.path}/#{group.path}" }
+          let(:projects_with_project_namespace) { [project1, project2] }
         end
       end
 

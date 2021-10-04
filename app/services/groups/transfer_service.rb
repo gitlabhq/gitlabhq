@@ -140,6 +140,10 @@ module Groups
       # these records again.
       @updated_project_ids = projects_to_update.pluck(:id)
 
+      Namespaces::ProjectNamespace
+        .where(id: projects_to_update.select(:project_namespace_id))
+        .update_all(visibility_level: @new_parent_group.visibility_level)
+
       projects_to_update
         .update_all(visibility_level: @new_parent_group.visibility_level)
     end

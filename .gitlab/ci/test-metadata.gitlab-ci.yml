@@ -29,8 +29,7 @@ update-tests-metadata:
     - retrieve-tests-metadata
     - setup-test-env
     - rspec migration pg12
-    - rspec frontend_fixture
-    - rspec-ee frontend_fixture
+    - rspec-all frontend_fixture
     - rspec unit pg12
     - rspec integration pg12
     - rspec system pg12

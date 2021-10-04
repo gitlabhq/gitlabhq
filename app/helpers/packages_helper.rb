@@ -41,6 +41,7 @@ module PackagesHelper
   def packages_list_data(type, resource)
     {
       resource_id: resource.id,
+      full_path: resource.full_path,
       page_type: type,
       empty_list_help_url: help_page_path('user/packages/package_registry/index'),
       empty_list_illustration: image_path('illustrations/no-packages.svg'),

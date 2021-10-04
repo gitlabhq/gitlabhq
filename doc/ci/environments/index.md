@@ -35,7 +35,7 @@ To view a list of environments and deployments:
 1. On the left sidebar, select **Deployments > Environments**.
    The environments are displayed.
 
-   ![Environments list](img/environments_list.png)
+   ![Environments list](img/environments_list_v14_3.png)
 
 1. To view a list of deployments for an environment, select the environment name,
    for example, `staging`.
@@ -646,9 +646,9 @@ Web terminals:
 - Are available to project Maintainers and Owners only.
 - Must [be enabled](../../administration/integration/terminal.md).
 
-In the UI, you can view the Web terminal by selecting a **Terminal** button:
+In the UI, you can view the Web terminal by selecting **Terminal** from the actions menu:
 
-![Terminal button on environment index](img/environments_terminal_button_on_index_v13_10.png)
+![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
 
 You can also access the terminal button from the page for a specific environment:
 
@@ -815,4 +815,42 @@ To ensure the `action: stop` can always run when needed, you can:
       name: review/$CI_COMMIT_REF_SLUG
       action: stop
     when: manual
+  ```
+
+### A deployment job failed with "This job could not be executed because it would create an environment with an invalid parameter" error
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
+
+FLAG:
+On self-managed GitLab, by default this bug fix is not available. To make it available per project or for your entire instance, ask an administrator to [enable the `surface_environment_creation_failure` flag](../../administration/feature_flags.md). On GitLab.com, this bug fix is not available, but will be rolled out shortly.
+
+If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
+such as a [Review App](../review_apps/index.md), you might encounter this error
+because the dynamically generated parameter is invalid for the system.
+
+For example, if you have the following in your `.gitlab-ci.yml`:
+
+```yaml
+review:
+  script: deploy review app
+  environment: review/$CI_COMMIT_REF_NAME
+```
+
+When you create a new merge request with a branch name `bug-fix!`,
+the `review` job tries to create an environment with `review/bug-fix!`.
+However, the `!` is an invalid character for environments, so the
+deployment job fails since it was about to run without an environment.
+
+To fix this, you can:
+
+- Re-create your feature branch without the invalid characters,
+  such as `bug-fix`.
+- Replace the `CI_COMMIT_REF_NAME`
+  [predefined variable](../variables/predefined_variables.md) with
+  `CI_COMMIT_REF_SLUG` which strips any invalid characters:
+
+  ```yaml
+  review:
+    script: deploy review app
+    environment: review/$CI_COMMIT_REF_SLUG
   ```

@@ -249,3 +249,27 @@ export const packageDestroyFileMutationError = () => ({
     },
   ],
 });
+
+export const packagesListQuery = (type = 'group') => ({
+  data: {
+    [type]: {
+      packages: {
+        count: 2,
+        nodes: [
+          {
+            __typename: 'Package',
+            id: 'gid://gitlab/Packages::Package/247',
+            name: 'version_test1',
+          },
+          {
+            __typename: 'Package',
+            id: 'gid://gitlab/Packages::Package/246',
+            name: 'version_test1',
+          },
+        ],
+        __typename: 'PackageConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+});

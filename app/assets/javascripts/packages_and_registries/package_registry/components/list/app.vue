@@ -10,10 +10,14 @@ import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
-import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
+import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
+import {
+  PROJECT_RESOURCE_TYPE,
+  GROUP_RESOURCE_TYPE,
+  LIST_QUERY_DEBOUNCE_TIME,
+} from '~/packages_and_registries/package_registry/constants';
 import PackageTitle from './package_title.vue';
-// import PackageSearch from './package_search.vue';
+import PackageSearch from './package_search.vue';
 // import PackageList from './packages_list.vue';
 
 export default {
@@ -23,28 +27,53 @@ export default {
     // GlSprintf,
     // PackageList,
     PackageTitle,
-    // PackageSearch,
+    PackageSearch,
   },
-  inject: ['packageHelpUrl', 'emptyListIllustration', 'emptyListHelpUrl'],
+  inject: [
+    'packageHelpUrl',
+    'emptyListIllustration',
+    'emptyListHelpUrl',
+    'isGroupPage',
+    'fullPath',
+  ],
   data() {
     return {
-      filter: [],
-      sorting: {
-        sort: 'desc',
-        orderBy: 'created_at',
-      },
-      selectedType: '',
-      pagination: {},
+      packages: {},
+      sort: '',
+      filters: {},
     };
   },
-  computed: {
-    packagesCount() {
-      return 0;
+  apollo: {
+    packages: {
+      query: getPackagesQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data[this.graphqlResource].packages;
+      },
+      debounce: LIST_QUERY_DEBOUNCE_TIME,
     },
-    emptySearch() {
-      return (
-        this.filter.filter((f) => f.type !== FILTERED_SEARCH_TERM || f.value?.data).length === 0
-      );
+  },
+  computed: {
+    queryVariables() {
+      return {
+        isGroupPage: this.isGroupPage,
+        fullPath: this.fullPath,
+        sort: this.isGroupPage ? undefined : this.sort,
+        groupSort: this.isGroupPage ? this.sort : undefined,
+        packageName: this.filters?.packageName,
+        packageType: this.filters?.packageType,
+      };
+    },
+    graphqlResource() {
+      return this.isGroupPage ? GROUP_RESOURCE_TYPE : PROJECT_RESOURCE_TYPE;
+    },
+    packagesCount() {
+      return this.packages?.count;
+    },
+    hasFilters() {
+      return this.filters.packageName && this.filters.packageType;
     },
     emptyStateTitle() {
       return this.emptySearch
@@ -53,19 +82,9 @@ export default {
     },
   },
   mounted() {
-    const queryParams = getQueryParams(window.document.location.search);
-    const { sorting, filters } = extractFilterAndSorting(queryParams);
-    this.sorting = { ...sorting };
-    this.filter = [...filters];
     this.checkDeleteAlert();
   },
   methods: {
-    onPageChanged(page) {
-      return this.requestPackagesList({ page });
-    },
-    onPackageDeleteRequest(item) {
-      return this.requestDeletePackage(item);
-    },
     checkDeleteAlert() {
       const urlParams = new URLSearchParams(window.location.search);
       const showAlert = urlParams.get(SHOW_DELETE_SUCCESS_ALERT);
@@ -75,6 +94,10 @@ export default {
         const cleanUrl = window.location.href.split('?')[0];
         historyReplaceState(cleanUrl);
       }
+    },
+    handleSearchUpdate({ sort, filters }) {
+      this.sort = sort;
+      this.filters = { ...filters };
     },
   },
   i18n: {
@@ -91,13 +114,13 @@ export default {
 <template>
   <div>
     <package-title :help-url="packageHelpUrl" :count="packagesCount" />
-    <!-- <package-search @update="requestPackagesList" />
+    <package-search @update="handleSearchUpdate" />
 
-    <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
+    <!-- <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
       <template #empty-state>
         <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
           <template #description>
-            <gl-sprintf v-if="!emptySearch" :message="$options.i18n.widenFilters" />
+            <gl-sprintf v-if="hasFilters" :message="$options.i18n.widenFilters" />
             <gl-sprintf v-else :message="$options.i18n.noResultsText">
               <template #noPackagesLink="{ content }">
                 <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>

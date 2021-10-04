@@ -130,23 +130,19 @@ update-storybook-yarn-cache:
       - tmp/tests/frontend/
       - knapsack/
 
-rspec frontend_fixture:
+# In gitlab-foss, generates FOSS fixtures. In gitlab, generates FOSS & EE fixtures.
+# That way, we don't need to have two separate jobs.
+rspec-all frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs
-  parallel: 2
+  parallel: 5
 
 rspec frontend_fixture as-if-foss:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
-
-rspec-ee frontend_fixture:
-  extends:
-    - .frontend-fixtures-base
-    - .frontend:rules:default-frontend-jobs-ee
-  parallel: 3
 
 graphql-schema-dump:
   variables:
@@ -198,9 +194,7 @@ jest:
     - .frontend:rules:jest
   needs:
     - job: "detect-tests"
-    - job: "rspec frontend_fixture"
-    - job: "rspec-ee frontend_fixture"
-      optional: true
+    - job: "rspec-all frontend_fixture"
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -227,9 +221,7 @@ jest-integration:
   script:
     - run_timed_command "yarn jest:integration --ci"
   needs:
-    - job: "rspec frontend_fixture"
-    - job: "rspec-ee frontend_fixture"
-      optional: true
+    - job: "rspec-all frontend_fixture"
     - job: "graphql-schema-dump"
 
 jest-as-if-foss:
@@ -343,9 +335,7 @@ startup-css-check:
     - .frontend:rules:default-frontend-jobs
   needs:
     - job: "compile-test-assets"
-    - job: "rspec frontend_fixture"
-    - job: "rspec-ee frontend_fixture"
-      optional: true
+    - job: "rspec-all frontend_fixture"
 
 startup-css-check as-if-foss:
   extends:
@@ -369,9 +359,7 @@ compile-storybook:
     - .compile-storybook-base
     - .frontend:rules:default-frontend-jobs
   needs:
-    - job: "rspec frontend_fixture"
-    - job: "rspec-ee frontend_fixture"
-      optional: true
+    - job: "rspec-all frontend_fixture"
     - job: "graphql-schema-dump"
   artifacts:
     name: storybook

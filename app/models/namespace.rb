@@ -105,7 +105,7 @@ class Namespace < ApplicationRecord
 
   # Legacy Storage specific hooks
 
-  after_update :move_dir, if: :saved_change_to_path_or_parent?
+  after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
   after_commit :expire_child_caches, on: :update, if: -> {

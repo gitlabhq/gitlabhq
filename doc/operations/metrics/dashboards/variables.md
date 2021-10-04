@@ -8,7 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Query variables
 
-Variables can be specified using double curly braces, such as `"{{ci_environment_slug}}"` ([added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20793) in GitLab 12.7).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20793) in GitLab 12.7.
+
+Variables can be specified using double curly braces, such as `"{{ci_environment_slug}}"`.
 
 Support for the `"%{ci_environment_slug}"` format was
 [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31581) in GitLab 13.0.
@@ -66,5 +68,5 @@ avg(sum(container_memory_usage_bytes{container_name!="{{pod}}"}) by (job)) witho
 The URL for this query would be:
 
 ```plaintext
-http://gitlab.com/<user>/<project>/-/environments/<environment_id>/metrics?dashboard=.gitlab%2Fdashboards%2Fcustom.yml&pod=POD
+https://gitlab.com/<user>/<project>/-/environments/<environment_id>/metrics?dashboard=.gitlab%2Fdashboards%2Fcustom.yml&pod=POD
 ```

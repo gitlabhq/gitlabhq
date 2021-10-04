@@ -27,6 +27,7 @@ module Enums
           no_matching_runner: 18, # not used anymore, but cannot be deleted because of old data
           trace_size_exceeded: 19,
           builds_disabled: 20,
+          environment_creation_failure: 21,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
           invalid_bridge_trigger: 1_003,

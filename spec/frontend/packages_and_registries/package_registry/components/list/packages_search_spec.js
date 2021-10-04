@@ -1,113 +1,61 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
+import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { sortableFields } from '~/packages/list/utils';
 import component from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import PackageTypeToken from '~/packages_and_registries/package_registry/components/list/tokens/package_type_token.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+jest.mock('~/packages_and_registries/shared/utils');
+
+useMockLocationHelper();
 
 describe('Package Search', () => {
   let wrapper;
-  let store;
+
+  const defaultQueryParamsMock = {
+    filters: ['foo'],
+    sorting: { sort: 'desc' },
+  };
 
   const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
   const findUrlSync = () => wrapper.findComponent(UrlSync);
 
-  const createStore = (isGroupPage) => {
-    const state = {
-      config: {
-        isGroupPage,
-      },
-      sorting: {
-        orderBy: 'version',
-        sort: 'desc',
-      },
-      filter: [],
-    };
-    store = new Vuex.Store({
-      state,
-    });
-    store.dispatch = jest.fn();
-  };
-
   const mountComponent = (isGroupPage = false) => {
-    createStore(isGroupPage);
-
-    wrapper = shallowMount(component, {
-      localVue,
-      store,
+    wrapper = shallowMountExtended(component, {
+      provide() {
+        return {
+          isGroupPage,
+        };
+      },
       stubs: {
         UrlSync,
       },
     });
   };
 
+  beforeEach(() => {
+    extractFilterAndSorting.mockReturnValue(defaultQueryParamsMock);
+  });
+
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  it('has a registry search component', () => {
+  it('has a registry search component', async () => {
     mountComponent();
+
+    await nextTick();
 
     expect(findRegistrySearch().exists()).toBe(true);
-    expect(findRegistrySearch().props()).toMatchObject({
-      filter: store.state.filter,
-      sorting: store.state.sorting,
-      tokens: expect.arrayContaining([
-        expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
-      ]),
-      sortableFields: sortableFields(),
-    });
   });
 
-  it.each`
-    isGroupPage | page
-    ${false}    | ${'project'}
-    ${true}     | ${'group'}
-  `('in a $page page binds the right props', ({ isGroupPage }) => {
-    mountComponent(isGroupPage);
-
-    expect(findRegistrySearch().props()).toMatchObject({
-      filter: store.state.filter,
-      sorting: store.state.sorting,
-      tokens: expect.arrayContaining([
-        expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
-      ]),
-      sortableFields: sortableFields(isGroupPage),
-    });
-  });
-
-  it('on sorting:changed emits update event and calls vuex setSorting', () => {
-    const payload = { sort: 'foo' };
-
+  it('registry search is mounted after mount', async () => {
     mountComponent();
 
-    findRegistrySearch().vm.$emit('sorting:changed', payload);
-
-    expect(store.dispatch).toHaveBeenCalledWith('setSorting', payload);
-    expect(wrapper.emitted('update')).toEqual([[]]);
-  });
-
-  it('on filter:changed calls vuex setFilter', () => {
-    const payload = ['foo'];
-
-    mountComponent();
-
-    findRegistrySearch().vm.$emit('filter:changed', payload);
-
-    expect(store.dispatch).toHaveBeenCalledWith('setFilter', payload);
-  });
-
-  it('on filter:submit emits update event', () => {
-    mountComponent();
-
-    findRegistrySearch().vm.$emit('filter:submit');
-
-    expect(wrapper.emitted('update')).toEqual([[]]);
+    expect(findRegistrySearch().exists()).toBe(false);
   });
 
   it('has a UrlSync component', () => {
@@ -116,13 +64,102 @@ describe('Package Search', () => {
     expect(findUrlSync().exists()).toBe(true);
   });
 
-  it('on query:changed calls updateQuery from UrlSync', () => {
+  it.each`
+    isGroupPage | page
+    ${false}    | ${'project'}
+    ${true}     | ${'group'}
+  `('in a $page page binds the right props', async ({ isGroupPage }) => {
+    mountComponent(isGroupPage);
+
+    await nextTick();
+
+    expect(findRegistrySearch().props()).toMatchObject({
+      tokens: expect.arrayContaining([
+        expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
+      ]),
+      sortableFields: sortableFields(isGroupPage),
+    });
+  });
+
+  it('on sorting:changed emits update event and update internal sort', async () => {
+    const payload = { sort: 'foo' };
+
+    mountComponent();
+
+    await nextTick();
+
+    findRegistrySearch().vm.$emit('sorting:changed', payload);
+
+    await nextTick();
+
+    expect(findRegistrySearch().props('sorting')).toEqual({ sort: 'foo', orderBy: 'name' });
+
+    // there is always a first call on mounted that emits up default values
+    expect(wrapper.emitted('update')[1]).toEqual([
+      {
+        filters: {
+          packageName: '',
+          packageType: undefined,
+        },
+        sort: 'NAME_FOO',
+      },
+    ]);
+  });
+
+  it('on filter:changed updates the filters', async () => {
+    const payload = ['foo'];
+
+    mountComponent();
+
+    await nextTick();
+
+    findRegistrySearch().vm.$emit('filter:changed', payload);
+
+    await nextTick();
+
+    expect(findRegistrySearch().props('filter')).toEqual(['foo']);
+  });
+
+  it('on filter:submit emits update event', async () => {
+    mountComponent();
+
+    await nextTick();
+
+    findRegistrySearch().vm.$emit('filter:submit');
+
+    expect(wrapper.emitted('update')[1]).toEqual([
+      {
+        filters: {
+          packageName: '',
+          packageType: undefined,
+        },
+        sort: 'NAME_DESC',
+      },
+    ]);
+  });
+
+  it('on query:changed calls updateQuery from UrlSync', async () => {
     jest.spyOn(UrlSync.methods, 'updateQuery').mockImplementation(() => {});
 
     mountComponent();
 
+    await nextTick();
+
     findRegistrySearch().vm.$emit('query:changed');
 
     expect(UrlSync.methods.updateQuery).toHaveBeenCalled();
+  });
+
+  it('sets the component sorting and filtering based on the querystring', async () => {
+    mountComponent();
+
+    await nextTick();
+
+    expect(getQueryParams).toHaveBeenCalled();
+
+    expect(findRegistrySearch().props()).toMatchObject({
+      filter: defaultQueryParamsMock.filters,
+      sorting: defaultQueryParamsMock.sorting,
+    });
   });
 });

@@ -11,6 +11,8 @@ RSpec.describe 'getting an issue list for a project' do
   let_it_be(:issue_b, reload: true) { create(:issue, :with_alert, project: project) }
   let_it_be(:issues, reload: true) { [issue_a, issue_b] }
 
+  let(:issue_a_gid) { issue_a.to_global_id.to_s }
+  let(:issue_b_gid) { issue_b.to_global_id.to_s }
   let(:issues_data) { graphql_data['project']['issues']['edges'] }
   let(:issue_filter_params) { {} }
 
@@ -66,9 +68,6 @@ RSpec.describe 'getting an issue list for a project' do
 
     let_it_be(:upvote_award) { create(:award_emoji, :upvote, user: current_user, awardable: issue_a) }
 
-    let(:issue_a_gid) { issue_a.to_global_id.to_s }
-    let(:issue_b_gid) { issue_b.to_global_id.to_s }
-
     where(:value, :gids) do
       'thumbsup'   | lazy { [issue_a_gid] }
       'ANY'        | lazy { [issue_a_gid] }
@@ -84,7 +83,7 @@ RSpec.describe 'getting an issue list for a project' do
       it 'returns correctly filtered issues' do
         post_graphql(query, current_user: current_user)
 
-        expect(graphql_dig_at(issues_data, :node, :id)).to eq(gids)
+        expect(issues_ids).to eq(gids)
       end
     end
   end
@@ -149,6 +148,8 @@ RSpec.describe 'getting an issue list for a project' do
       create(:issue, :confidential, project: project)
     end
 
+    let(:confidential_issue_gid) { confidential_issue.to_global_id.to_s }
+
     context 'when the user cannot see confidential issues' do
       it 'returns issues without confidential issues' do
         post_graphql(query, current_user: current_user)
@@ -159,12 +160,34 @@ RSpec.describe 'getting an issue list for a project' do
           expect(issue.dig('node', 'confidential')).to eq(false)
         end
       end
+
+      context 'filtering for confidential issues' do
+        let(:issue_filter_params) { { confidential: true } }
+
+        it 'returns no issues' do
+          post_graphql(query, current_user: current_user)
+
+          expect(issues_data.size).to eq(0)
+        end
+      end
+
+      context 'filtering for non-confidential issues' do
+        let(:issue_filter_params) { { confidential: false } }
+
+        it 'returns correctly filtered issues' do
+          post_graphql(query, current_user: current_user)
+
+          expect(issues_ids).to contain_exactly(issue_a_gid, issue_b_gid)
+        end
+      end
     end
 
     context 'when the user can see confidential issues' do
-      it 'returns issues with confidential issues' do
+      before do
         project.add_developer(current_user)
+      end
 
+      it 'returns issues with confidential issues' do
         post_graphql(query, current_user: current_user)
 
         expect(issues_data.size).to eq(3)
@@ -174,6 +197,26 @@ RSpec.describe 'getting an issue list for a project' do
         end
 
         expect(confidentials).to eq([true, false, false])
+      end
+
+      context 'filtering for confidential issues' do
+        let(:issue_filter_params) { { confidential: true } }
+
+        it 'returns correctly filtered issues' do
+          post_graphql(query, current_user: current_user)
+
+          expect(issues_ids).to contain_exactly(confidential_issue_gid)
+        end
+      end
+
+      context 'filtering for non-confidential issues' do
+        let(:issue_filter_params) { { confidential: false } }
+
+        it 'returns correctly filtered issues' do
+          post_graphql(query, current_user: current_user)
+
+          expect(issues_ids).to contain_exactly(issue_a_gid, issue_b_gid)
+        end
       end
     end
   end
@@ -525,5 +568,9 @@ RSpec.describe 'getting an issue list for a project' do
 
       include_examples 'N+1 query check'
     end
+  end
+
+  def issues_ids
+    graphql_dig_at(issues_data, :node, :id)
   end
 end

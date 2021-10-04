@@ -28,7 +28,12 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     ci_quota_exceeded: 'No more CI minutes available',
     no_matching_runner: 'No matching runner available',
     trace_size_exceeded: 'The job log size limit was reached',
-    builds_disabled: 'The CI/CD is disabled for this project'
+    builds_disabled: 'The CI/CD is disabled for this project',
+    environment_creation_failure: 'This job could not be executed because it would create an environment with an invalid parameter.'
+  }.freeze
+
+  TROUBLESHOOTING_DOC = {
+    environment_creation_failure: { path: 'ci/environments/index', anchor: 'a-deployment-job-failed-with-this-job-could-not-be-executed-because-it-would-create-an-environment-with-an-invalid-parameter-error' }
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES
@@ -40,7 +45,19 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def callout_failure_message
-    self.class.callout_failure_messages.fetch(failure_reason.to_sym)
+    message = self.class.callout_failure_messages.fetch(failure_reason.to_sym)
+
+    if doc = TROUBLESHOOTING_DOC[failure_reason.to_sym]
+      message += " #{help_page_link(doc[:path], doc[:anchor])}"
+    end
+
+    message
+  end
+
+  private
+
+  def help_page_link(path, anchor)
+    ActionController::Base.helpers.link_to('How do I fix it?', help_page_path(path, anchor: anchor))
   end
 end
 

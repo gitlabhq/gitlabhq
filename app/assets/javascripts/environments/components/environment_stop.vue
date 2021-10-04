@@ -23,15 +23,14 @@ export default {
       required: true,
     },
   },
+  i18n: {
+    title: s__('Environments|Stop environment'),
+    stop: s__('Environments|Stop'),
+  },
   data() {
     return {
       isLoading: false,
     };
-  },
-  computed: {
-    title() {
-      return s__('Environments|Stop environment');
-    },
   },
   mounted() {
     eventHub.$on('stopEnvironment', this.onStopEnvironment);
@@ -58,11 +57,13 @@ export default {
     v-gl-tooltip="{ id: $options.stopEnvironmentTooltipId }"
     v-gl-modal-directive="'stop-environment-modal'"
     :loading="isLoading"
-    :title="title"
-    :aria-label="title"
+    :title="$options.i18n.title"
+    :aria-label="$options.i18n.title"
     icon="stop"
-    category="primary"
+    category="secondary"
     variant="danger"
     @click="onClick"
-  />
+  >
+    {{ $options.i18n.stop }}
+  </gl-button>
 </template>

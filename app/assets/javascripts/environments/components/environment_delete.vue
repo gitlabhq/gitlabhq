@@ -4,17 +4,15 @@
  * Used in the environments table.
  */
 
-import { GlTooltipDirective, GlButton, GlModalDirective } from '@gitlab/ui';
-import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { GlDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
   components: {
-    GlButton,
+    GlDropdownItem,
   },
   directives: {
-    GlTooltip: GlTooltipDirective,
     GlModalDirective,
   },
   props: {
@@ -28,10 +26,8 @@ export default {
       isLoading: false,
     };
   },
-  computed: {
-    title() {
-      return s__('Environments|Delete environment');
-    },
+  i18n: {
+    title: s__('Environments|Delete environment'),
   },
   mounted() {
     eventHub.$on('deleteEnvironment', this.onDeleteEnvironment);
@@ -41,7 +37,6 @@ export default {
   },
   methods: {
     onClick() {
-      this.$root.$emit(BV_HIDE_TOOLTIP, this.$options.deleteEnvironmentTooltipId);
       eventHub.$emit('requestDeleteEnvironment', this.environment);
     },
     onDeleteEnvironment(environment) {
@@ -50,20 +45,15 @@ export default {
       }
     },
   },
-  deleteEnvironmentTooltipId: 'delete-environment-button-tooltip',
 };
 </script>
 <template>
-  <gl-button
-    v-gl-tooltip="{ id: $options.deleteEnvironmentTooltipId }"
-    v-gl-modal-directive="'delete-environment-modal'"
+  <gl-dropdown-item
+    v-gl-modal-directive.delete-environment-modal
     :loading="isLoading"
-    :title="title"
-    :aria-label="title"
-    class="gl-display-none gl-md-display-block"
     variant="danger"
-    category="primary"
-    icon="remove"
     @click="onClick"
-  />
+  >
+    {{ $options.i18n.title }}
+  </gl-dropdown-item>
 </template>

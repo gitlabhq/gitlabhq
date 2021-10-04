@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 
 import { shallowMount } from '@vue/test-utils';
 import DeleteComponent from '~/environments/components/environment_delete.vue';
@@ -15,7 +15,7 @@ describe('External URL Component', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findDropdownItem = () => wrapper.find(GlDropdownItem);
 
   beforeEach(() => {
     jest.spyOn(window, 'confirm');
@@ -23,14 +23,15 @@ describe('External URL Component', () => {
     createWrapper();
   });
 
-  it('should render a button to delete the environment', () => {
-    expect(findButton().exists()).toBe(true);
-    expect(wrapper.attributes('title')).toEqual('Delete environment');
+  it('should render a dropdown item to delete the environment', () => {
+    expect(findDropdownItem().exists()).toBe(true);
+    expect(wrapper.text()).toEqual('Delete environment');
+    expect(findDropdownItem().attributes('variant')).toBe('danger');
   });
 
   it('emits requestDeleteEnvironment in the event hub when button is clicked', () => {
     jest.spyOn(eventHub, '$emit');
-    findButton().vm.$emit('click');
+    findDropdownItem().vm.$emit('click');
     expect(eventHub.$emit).toHaveBeenCalledWith('requestDeleteEnvironment', wrapper.vm.environment);
   });
 });

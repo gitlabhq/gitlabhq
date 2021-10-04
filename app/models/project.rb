@@ -98,6 +98,7 @@ class Project < ApplicationRecord
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
   before_save :ensure_runners_token
+  before_save :ensure_project_namespace_in_sync
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
@@ -146,7 +147,7 @@ class Project < ApplicationRecord
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -2882,6 +2883,15 @@ class Project < ApplicationRecord
 
   def online_runners_with_tags
     @online_runners_with_tags ||= active_runners.with_tags.online
+  end
+
+  def ensure_project_namespace_in_sync
+    if changes.keys & [:name, :path, :namespace_id, :visibility_level] && project_namespace.present?
+      project_namespace.name = name
+      project_namespace.path = path
+      project_namespace.parent = namespace
+      project_namespace.visibility_level = visibility_level
+    end
   end
 end
 

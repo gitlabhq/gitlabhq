@@ -274,6 +274,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
       expect { lb.retry_with_backoff { raise } }.to raise_error(RuntimeError)
     end
+
+    it 'skips retries when only the primary is used' do
+      allow(lb).to receive(:primary_only?).and_return(true)
+
+      expect(lb).not_to receive(:sleep)
+
+      expect { lb.retry_with_backoff { raise } }.to raise_error(RuntimeError)
+    end
   end
 
   describe '#connection_error?' do
@@ -281,6 +289,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       error = ActiveRecord::ConnectionNotEstablished.new
 
       expect(lb.connection_error?(error)).to eq(true)
+    end
+
+    it 'returns false for a missing database error' do
+      error = ActiveRecord::NoDatabaseError.new
+
+      expect(lb.connection_error?(error)).to eq(false)
     end
 
     it 'returns true for a wrapped connection error' do

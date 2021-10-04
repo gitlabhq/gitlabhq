@@ -89,3 +89,7 @@ export const YARN_PACKAGE_MANAGER = 'yarn';
 
 export const PROJECT_PACKAGE_ENDPOINT_TYPE = 'project';
 export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
+
+export const PROJECT_RESOURCE_TYPE = 'project';
+export const GROUP_RESOURCE_TYPE = 'group';
+export const LIST_QUERY_DEBOUNCE_TIME = 50;

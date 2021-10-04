@@ -1,6 +1,6 @@
-import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MonitoringComponent from '~/environments/components/environment_monitoring.vue';
+import { __ } from '~/locale';
 
 describe('Monitoring Component', () => {
   let wrapper;
@@ -8,31 +8,19 @@ describe('Monitoring Component', () => {
   const monitoringUrl = 'https://gitlab.com';
 
   const createWrapper = () => {
-    wrapper = shallowMount(MonitoringComponent, {
+    wrapper = mountExtended(MonitoringComponent, {
       propsData: {
         monitoringUrl,
       },
     });
   };
 
-  const findButtons = () => wrapper.findAll(GlButton);
-  const findButtonsByIcon = (icon) =>
-    findButtons().filter((button) => button.props('icon') === icon);
-
   beforeEach(() => {
     createWrapper();
   });
 
-  describe('computed', () => {
-    it('title', () => {
-      expect(wrapper.vm.title).toBe('Monitoring');
-    });
-  });
-
   it('should render a link to environment monitoring page', () => {
-    expect(wrapper.attributes('href')).toEqual(monitoringUrl);
-    expect(findButtonsByIcon('chart').length).toBe(1);
-    expect(wrapper.attributes('title')).toBe('Monitoring');
-    expect(wrapper.attributes('aria-label')).toBe('Monitoring');
+    const link = wrapper.findByRole('menuitem', { name: __('Monitoring') });
+    expect(link.attributes('href')).toEqual(monitoringUrl);
   });
 });
