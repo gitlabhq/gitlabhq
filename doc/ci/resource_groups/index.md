@@ -155,14 +155,53 @@ See the [API documentation](../../api/resource_groups.md).
 
 Read more how you can use GitLab for [safe deployments](../environments/deployment_safety.md).
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Avoid dead locks in pipeline configurations
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+Since [`oldest_first` process mode](#process-modes) enforces the jobs to be executed in a pipeline order,
+there is a case that it doesn't work well with the other CI features.
+
+For example, when you run [a child pipeline](../pipelines/parent_child_pipelines.md)
+that requires the same resource group with the parent pipeline,
+a dead lock could happen. Here is an example of a _bad_ setup:
+
+```yaml
+# BAD
+test:
+  stage: test
+  trigger:
+    include: child-pipeline-requires-production-resource-group.yml
+    strategy: depend
+
+deploy:
+  stage: deploy
+  script: echo
+  resource_group: production
+```
+
+In a parent pipeline, it runs the `test` job that subsequently runs a child pipeline,
+and the [`strategy: depend` option](../yaml/index.md#linking-pipelines-with-triggerstrategy) makes the `test` job wait until the child pipeline has finished.
+The parent pipeline runs the `deploy` job in the next stage, that requires a resource from the `production` resource group.
+If the process mode is `oldest_first`, it executes the jobs from the oldest pipelines, meaning the `deploy` job is going to be executed next.
+
+However, a child pipeline also requires a resource from the `production` resource group.
+Since the child pipeline is newer than the parent pipeline, the child pipeline
+waits until the `deploy` job is finished, something that will never happen.
+
+In this case, you should specify the `resource_group` keyword in the parent pipeline configuration instead:
+
+```yaml
+# GOOD
+test:
+  stage: test
+  trigger:
+    include: child-pipeline.yml
+    strategy: depend
+  resource_group: production # Specify the resource group in the parent pipeline
+
+deploy:
+  stage: deploy
+  script: echo
+  resource_group: production
+```

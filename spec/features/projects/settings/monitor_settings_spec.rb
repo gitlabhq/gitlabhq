@@ -97,7 +97,9 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
 
           within '.js-error-tracking-settings' do
             click_button('Expand')
+            choose('cloud-hosted Sentry')
           end
+
           expect(page).to have_content('Sentry API URL')
           expect(page.body).to include('Error Tracking')
           expect(page).to have_button('Connect')
@@ -140,8 +142,10 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
 
           within '.js-error-tracking-settings' do
             click_button('Expand')
+            choose('cloud-hosted Sentry')
+            check('Active')
           end
-          check('Active')
+
           fill_in('error-tracking-api-host', with: 'http://sentry.example.com')
           fill_in('error-tracking-token', with: 'token')
 

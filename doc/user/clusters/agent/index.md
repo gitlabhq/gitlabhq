@@ -15,7 +15,7 @@ The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/
 is an active in-cluster component for solving GitLab and Kubernetes integration
 tasks in a secure and cloud-native way. It enables:
 
-- Integrating GitLab with a Kubernetes cluster behind a firewall or NAT
+- GitLab integration with a Kubernetes cluster behind a firewall or NAT
   (network address translation).
 - Pull-based GitOps deployments.
 - [Inventory object](../../infrastructure/clusters/deploy/inventory_object.md) to keep track of objects applied to your cluster.
@@ -28,7 +28,7 @@ and [our development documentation](https://gitlab.com/gitlab-org/cluster-integr
 
 ## GitLab Agent GitOps workflow
 
-The GitLab Agent uses multiple GitLab projects to provide a flexible workflow
+The GitLab Agent, herein _Agent_, uses multiple GitLab projects to provide a flexible workflow
 that can suit various needs. This diagram shows these repositories and the main
 actors involved in a deployment:
 
@@ -54,10 +54,10 @@ There are several components that work in concert for the Agent to accomplish Gi
 
 - A properly-configured Kubernetes cluster where the Agent is running.
 - A configuration repository that contains a `config.yaml` file, which tells the
-  Agent which repositories to synchronize with the cluster.
+  Agent the repositories to synchronize with the cluster.
 - A manifest repository that contains manifest files. Any changes to manifest files are applied to the cluster.
 
-You can use the same GitLab project or separate projects for configuration and manifest files, as follows:
+You can use the same GitLab project or projects for configuration and manifest files, as follows:
 
 - Single GitLab project (recommended): when you use a single repository to hold both the manifest and the configuration files, these projects can be either private or public, as you prefer.
 - Two GitLab projects: when you opt to use two different GitLab projects, one for manifest files, and another for configuration files, the manifests project must be public, while the configuration project can be either private or public. Our backlog contains issues for adding support for
@@ -73,8 +73,8 @@ The setup process involves a few steps to enable GitOps deployments:
 1. [Set up the Kubernetes Agent Server](#set-up-the-kubernetes-agent-server) for your GitLab instance.
 1. [Define a configuration repository](#define-a-configuration-repository).
 1. [Create an Agent record in GitLab](#create-an-agent-record-in-gitlab).
-1. [Generate and copy a Secret token used to connect to the Agent](#create-the-kubernetes-secret).
 1. [Install the Agent into the cluster](#install-the-agent-into-the-cluster).
+1. [Generate and copy a Secret token used to connect to the Agent](#create-the-kubernetes-secret).
 1. [Create manifest files](#create-manifest-files).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walking-through video](https://www.youtube.com/watch?v=XuBpKtsgGkE) with this process.
@@ -200,7 +200,7 @@ For more advanced configurations, we recommend to use [the `kpt` based installat
 
 Otherwise, follow the manual installation steps described below.
 
-##### Create the Kubernetes secret
+### Create the Kubernetes secret
 
 After generating the token, you must apply it to the Kubernetes cluster.
 
@@ -256,7 +256,7 @@ NAMESPACE                NAME                                          READY   S
 gitlab-kubernetes-agent  gitlab-kubernetes-agent-77689f7dcb-5skqk      1/1     Running   0          51s
 ```
 
-##### Example `resources.yml` file
+#### Example `resources.yml` file
 
 ```yaml
 ---
@@ -403,7 +403,7 @@ The following example projects can help you get started with the Kubernetes Agen
 - [Configuration repository](https://gitlab.com/gitlab-org/configure/examples/kubernetes-agent)
 - This basic GitOps example deploys NGINX: [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
 
-### Deploying GitLab Runner with the Agent
+### GitLab Runner Deployment with the Agent
 
 You can use the Kubernetes Agent to
 [deploy GitLab Runner in a Kubernetes cluster](https://docs.gitlab.com/runner/install/kubernetes-agent.html).

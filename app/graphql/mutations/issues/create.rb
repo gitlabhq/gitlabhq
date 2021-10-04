@@ -71,7 +71,7 @@ module Mutations
 
       def resolve(project_path:, **attributes)
         project = authorized_find!(project_path)
-        params = build_create_issue_params(attributes.merge(author_id: current_user.id), project)
+        params = build_create_issue_params(attributes.merge(author_id: current_user.id))
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
         issue = ::Issues::CreateService.new(project: project, current_user: current_user, params: params, spam_params: spam_params).execute
@@ -88,8 +88,7 @@ module Mutations
 
       private
 
-      # _project argument is unused here, but it is necessary on the EE version of the method
-      def build_create_issue_params(params, _project)
+      def build_create_issue_params(params)
         params[:milestone_id] &&= params[:milestone_id]&.model_id
         params[:assignee_ids] &&= params[:assignee_ids].map { |assignee_id| assignee_id&.model_id }
         params[:label_ids] &&= params[:label_ids].map { |label_id| label_id&.model_id }

@@ -16180,8 +16180,7 @@ CREATE TABLE namespaces (
     push_rule_id bigint,
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
-    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
-    delayed_project_removal boolean DEFAULT false NOT NULL
+    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL
 );
 
 CREATE SEQUENCE namespaces_id_seq
@@ -17829,7 +17828,7 @@ CREATE TABLE project_error_tracking_settings (
     encrypted_token_iv character varying,
     project_name character varying,
     organization_name character varying,
-    integrated boolean DEFAULT false NOT NULL
+    integrated boolean DEFAULT true NOT NULL
 );
 
 CREATE TABLE project_export_jobs (
@@ -26922,8 +26921,6 @@ CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, t
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
 CREATE INDEX tmp_idx_deduplicate_vulnerability_occurrences ON vulnerability_occurrences USING btree (project_id, report_type, location_fingerprint, primary_identifier_id, id);
-
-CREATE INDEX tmp_idx_on_namespaces_delayed_project_removal ON namespaces USING btree (id) WHERE (delayed_project_removal = true);
 
 CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_child_namespaces ON namespaces USING btree (id) WHERE ((parent_id IS NOT NULL) AND (traversal_ids = '{}'::integer[]));
 

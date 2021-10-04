@@ -22544,9 +22544,6 @@ msgstr ""
 msgid "NetworkPolicies|Network traffic"
 msgstr ""
 
-msgid "NetworkPolicies|New policy"
-msgstr ""
-
 msgid "NetworkPolicies|None selected"
 msgstr ""
 
@@ -22557,9 +22554,6 @@ msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
 msgstr ""
 
 msgid "NetworkPolicies|Policy definition"
-msgstr ""
-
-msgid "NetworkPolicies|Policy editor"
 msgstr ""
 
 msgid "NetworkPolicies|Rule"
@@ -31262,6 +31256,9 @@ msgid "Show Pipeline ID"
 msgstr ""
 
 msgid "Show Pipeline IID"
+msgstr ""
+
+msgid "Show all %{issuable_type}."
 msgstr ""
 
 msgid "Show all activity"

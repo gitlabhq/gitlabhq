@@ -119,6 +119,11 @@ GitLab from source respectively.
 Ensure you choose a port different than the one that Registry listens to (`5000` by default),
 otherwise conflicts occur.
 
+NOTE:
+Host and container firewall rules must be configured to allow traffic in through the port listed
+under the `registry_external_url` line, rather than the port listed under
+`gitlab_rails['registry_port']` (default `5000`).
+
 **Omnibus GitLab installations**
 
 1. Your `/etc/gitlab/gitlab.rb` should contain the Registry URL as well as the

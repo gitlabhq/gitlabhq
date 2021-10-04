@@ -294,10 +294,10 @@ RSpec.describe Projects::Operations::UpdateService do
         end
 
         context 'without setting' do
-          it 'does not create a setting' do
-            expect(result[:status]).to eq(:error)
-
-            expect(project.reload.error_tracking_setting).to be_nil
+          it 'creates setting with default values' do
+            expect(result[:status]).to eq(:success)
+            expect(project.error_tracking_setting.enabled).to be_truthy
+            expect(project.error_tracking_setting.integrated).to be_truthy
           end
         end
       end

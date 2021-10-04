@@ -648,7 +648,11 @@ For self-managed instances, those settings can be updated in the [Rails console]
   ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
   ```
 
-Alternatively, once the limits are [enabled](#enable-or-disable-cleanup-policy-limits), they are available in the [admin area](../../admin_area/index.md) **Settings > CI/CD > Container Registry**.
+Alternatively, once the limits are [enabled](#enable-or-disable-cleanup-policy-limits),
+they are available in the [administrator area](../../admin_area/index.md):
+
+1. On the top bar, select **Menu > Admin**.
+1. Go to **Settings > CI/CD > Container Registry**.
 
 #### Enable or disable cleanup policy limits
 
@@ -902,7 +906,7 @@ these steps:
    while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
    ```
 
-### Troubleshoot as a GitLab server admin
+### Troubleshoot as a GitLab server administrator
 
 Troubleshooting the GitLab Container Registry, most of the times, requires 
 you to log in to GitLab server with the Administrator role.

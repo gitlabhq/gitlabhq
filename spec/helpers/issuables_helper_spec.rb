@@ -133,13 +133,13 @@ RSpec.describe IssuablesHelper do
 
         it 'returns navigation with badges' do
           expect(helper.issuables_state_counter_text(:issues, :opened, true))
-            .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">42</span>')
+            .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">42</span>')
           expect(helper.issuables_state_counter_text(:issues, :closed, true))
-            .to eq('<span>Closed</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">42</span>')
+            .to eq('<span>Closed</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">42</span>')
           expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
-            .to eq('<span>Merged</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">42</span>')
+            .to eq('<span>Merged</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">42</span>')
           expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
-            .to eq('<span>All</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">42</span>')
+            .to eq('<span>All</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">42</span>')
         end
       end
 
@@ -176,7 +176,7 @@ RSpec.describe IssuablesHelper do
 
           it 'returns complete count' do
             expect(helper.issuables_state_counter_text(:issues, :opened, true))
-              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">1,100</span>')
+              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">1,100</span>')
           end
         end
 
@@ -187,7 +187,7 @@ RSpec.describe IssuablesHelper do
 
           it 'returns truncated count' do
             expect(helper.issuables_state_counter_text(:issues, :opened, true))
-              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm">1.1k</span>')
+              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">1.1k</span>')
           end
         end
       end

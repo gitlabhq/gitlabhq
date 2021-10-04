@@ -2,7 +2,7 @@
 
 ActiveRecord::Base.singleton_class.attr_accessor :load_balancing_proxy
 
-Gitlab::Database.main.disable_prepared_statements unless ENV['GITLAB_USE_PREPARED_STATEMENTS'] == 'true'
+Gitlab::Database.main.disable_prepared_statements
 
 Gitlab::Application.configure do |config|
   config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)
@@ -11,7 +11,7 @@ end
 # This hijacks the "connection" method to ensure both
 # `ActiveRecord::Base.connection` and all models use the same load
 # balancing proxy.
-ActiveRecord::Base.singleton_class.prepend(Gitlab::Database::LoadBalancing::ActiveRecordProxy) unless ENV['GITLAB_NO_AR_DB_PREPEND_LOAD_BALANCING'] == 'true'
+ActiveRecord::Base.singleton_class.prepend(Gitlab::Database::LoadBalancing::ActiveRecordProxy)
 
 # The load balancer needs to be configured immediately, and re-configured after
 # forking. This ensures queries that run before forking use the load balancer,

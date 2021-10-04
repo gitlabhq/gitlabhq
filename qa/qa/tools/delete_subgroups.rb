@@ -20,16 +20,10 @@ module QA
       end
 
       def run
-        $stdout.puts 'Running...'
+        $stdout.puts 'Fetching subgroups for deletion...'
 
-        # Fetch group's id
-        group_id = fetch_group_id
-
-        sub_groups_head_response = head Runtime::API::Request.new(@api_client, "/groups/#{group_id}/subgroups", per_page: "100").url
-        total_sub_group_pages = sub_groups_head_response.headers[:x_total_pages]
-
-        sub_group_ids = fetch_subgroup_ids(group_id, total_sub_group_pages)
-        $stdout.puts "Number of Sub Groups not already marked for deletion: #{sub_group_ids.length}"
+        sub_group_ids = fetch_subgroup_ids
+        $stdout.puts "\nNumber of Sub Groups not already marked for deletion: #{sub_group_ids.length}"
 
         delete_subgroups(sub_group_ids) unless sub_group_ids.empty?
         $stdout.puts "\nDone"
@@ -52,12 +46,20 @@ module QA
         JSON.parse(group_search_response.body)["id"]
       end
 
-      def fetch_subgroup_ids(group_id, group_pages)
+      def fetch_subgroup_ids
+        group_id = fetch_group_id
         sub_groups_ids = []
+        page_no = '1'
 
-        group_pages.to_i.times do |page_no|
-          sub_groups_response = get Runtime::API::Request.new(@api_client, "/groups/#{group_id}/subgroups", page: (page_no + 1).to_s, per_page: "100").url
-          sub_groups_ids.concat(JSON.parse(sub_groups_response.body).reject { |subgroup| !subgroup["marked_for_deletion_on"].nil? }.map { |subgroup| subgroup["id"] })
+        # When we reach the last page, the x-next-page header is a blank string
+        while page_no.present?
+          $stdout.print '.'
+
+          sub_groups_response = get Runtime::API::Request.new(@api_client, "/groups/#{group_id}/subgroups", page: page_no, per_page: '100').url
+          sub_groups_ids.concat(JSON.parse(sub_groups_response.body)
+            .reject { |subgroup| !subgroup["marked_for_deletion_on"].nil? }.map { |subgroup| subgroup['id'] })
+
+          page_no = sub_groups_response.headers[:x_next_page].to_s
         end
 
         sub_groups_ids.uniq

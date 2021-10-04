@@ -147,10 +147,17 @@ RSpec.describe Ci::Processable do
         end
 
         it 'releases a resource when build finished' do
-          expect(build.resource_group).to receive(:release_resource_from).with(build).and_call_original
+          expect(build.resource_group).to receive(:release_resource_from).with(build).and_return(true).and_call_original
           expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async).with(build.resource_group_id)
 
           build.enqueue_waiting_for_resource!
+          build.success!
+        end
+
+        it 're-checks the resource group even if the processable does not retain a resource' do
+          expect(build.resource_group).to receive(:release_resource_from).with(build).and_return(false).and_call_original
+          expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async).with(build.resource_group_id)
+
           build.success!
         end
 

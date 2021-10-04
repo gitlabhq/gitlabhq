@@ -11,39 +11,39 @@
 /doc/.markdownlint @marcel.amirault @eread @aqualls @cnorris
 /doc/ @gl-docsteam
 /doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
-/doc/administration/geo/ @axil
+/doc/administration/geo/ @marcel.amirault
 /doc/administration/gitaly/ @eread
 /doc/administration/lfs/ @aqualls
 /doc/administration/monitoring/ @ngaskill
-/doc/administration/operations/ @axil @eread @marcia
+/doc/administration/operations/ @marcel.amirault @eread @marcia
 /doc/administration/packages/ @ngaskill
-/doc/administration/pages/ @axil @kpaizee
+/doc/administration/pages/ @rdickenson @kpaizee
 /doc/administration/postgresql/ @marcia
-/doc/administration/raketasks/ @axil @eread
-/doc/administration/redis/ @axil
-/doc/administration/reference_architectures/ @axil
+/doc/administration/raketasks/ @marcel.amirault @eread
+/doc/administration/redis/ @marcel.amirault
+/doc/administration/reference_architectures/ @marcel.amirault
 /doc/administration/snippets/ @aqualls
-/doc/administration/troubleshooting @axil @marcia @eread
+/doc/administration/troubleshooting @marcel.amirault @marcia @eread
 /doc/api/graphql/ @msedlakjakubowski @kpaizee
 /doc/api/graphql/reference/ @kpaizee
 /doc/api/group_activity_analytics.md @msedlakjakubowski
 /doc/ci/ @marcel.amirault @sselhorn
-/doc/ci/environments/ @axil
+/doc/ci/environments/ @rdickenson
 /doc/ci/services/ @sselhorn
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/development/ @marcia
-/doc/development/documentation/ @cnorris
+/doc/development/documentation/ @cnorris @dianalogan
 /doc/development/i18n/ @ngaskill
 /doc/development/value_stream_analytics.md @msedlakjakubowski
 /doc/gitlab-basics/ @aqualls
-/doc/install/ @axil
-/doc/operations/ @ngaskill @axil
+/doc/install/ @marcel.amirault
+/doc/operations/ @ngaskill @rdickenson
 /doc/push_rules/ @aqualls
 /doc/ssh/ @eread
 /doc/subscriptions/ @sselhorn
 /doc/topics/autodevops/ @marcia
 /doc/topics/git/ @aqualls
-/doc/update/ @axil @marcia
+/doc/update/ @marcel.amirault @marcia
 /doc/user/analytics/ @msedlakjakubowski @ngaskill
 /doc/user/application_security/ @rdickenson
 /doc/user/application_security/container_scanning/ @ngaskill
@@ -62,13 +62,13 @@
 /doc/user/packages/infrastructure_registry/ @marcia
 /doc/user/packages/terraform_module_registry/ @marcia
 /doc/user/profile/ @msedlakjakubowski @eread
-/doc/user/project/ @aqualls @axil @eread @msedlakjakubowski @ngaskill
+/doc/user/project/ @aqualls @rdickenson @eread @msedlakjakubowski @ngaskill
 /doc/user/project/clusters/ @marcia
 /doc/user/project/import/ @ngaskill @msedlakjakubowski
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/merge_requests/ @aqualls @eread
 /doc/user/project/milestones/ @msedlakjakubowski
-/doc/user/project/pages/ @axil
+/doc/user/project/pages/ @rdickenson
 /doc/user/project/repository/ @aqualls
 /doc/user/project/settings/ @aqualls @eread
 /doc/user/project/static_site_editor/index.md @aqualls
