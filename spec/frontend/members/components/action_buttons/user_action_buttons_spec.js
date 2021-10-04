@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import LeaveButton from '~/members/components/action_buttons/leave_button.vue';
 import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
 import UserActionButtons from '~/members/components/action_buttons/user_action_buttons.vue';
+import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import { member, orphanedMember } from '../../mock_data';
 
 describe('UserActionButtons', () => {
@@ -45,9 +46,9 @@ describe('UserActionButtons', () => {
         isAccessRequest: false,
         isInvite: false,
         icon: 'remove',
-        oncallSchedules: {
+        userDeletionObstacles: {
           name: member.user.name,
-          schedules: member.user.oncallSchedules,
+          obstacles: parseUserDeletionObstacles(member.user),
         },
       });
     });

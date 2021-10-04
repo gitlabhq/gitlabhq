@@ -88,7 +88,7 @@ The keywords available for use in trigger jobs are:
 - [`only` and `except`](../yaml/index.md#only--except)
 - [`when`](../yaml/index.md#when) (only with a value of `on_success`, `on_failure`, or `always`)
 - [`extends`](../yaml/index.md#extends)
-- [`needs`](../yaml/index.md#needs)
+- [`needs`](../yaml/index.md#needs), but not [cross project artifact downloads with `needs`](../yaml/index.md#cross-project-artifact-downloads-with-needs)
 
 #### Specify a downstream pipeline branch
 

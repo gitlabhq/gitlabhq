@@ -45,7 +45,7 @@ describe('RemoveMemberButton', () => {
         title: 'Remove member',
         isAccessRequest: true,
         isInvite: true,
-        oncallSchedules: { name: 'user', schedules: [] },
+        userDeletionObstacles: { name: 'user', obstacles: [] },
         ...propsData,
       },
       directives: {

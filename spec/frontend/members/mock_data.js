@@ -23,6 +23,7 @@ export const member = {
     blocked: false,
     twoFactorEnabled: false,
     oncallSchedules: [{ name: 'schedule 1' }],
+    escalationPolicies: [{ name: 'policy 1' }],
   },
   id: 238,
   createdAt: '2020-07-17T16:22:46.923Z',
@@ -63,7 +64,7 @@ export const modalData = {
   memberPath: '/groups/foo-bar/-/group_members/1',
   memberType: 'GroupMember',
   message: 'Are you sure you want to remove John Smith?',
-  oncallSchedules: { name: 'user', schedules: [] },
+  userDeletionObstacles: { name: 'user', obstacles: [] },
 };
 
 const { user, ...memberNoUser } = member;

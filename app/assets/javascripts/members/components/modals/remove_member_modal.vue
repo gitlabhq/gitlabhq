@@ -3,7 +3,7 @@ import { GlFormCheckbox, GlModal } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { s__, __ } from '~/locale';
-import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
+import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 
 export default {
   actionCancel: {
@@ -13,7 +13,7 @@ export default {
   components: {
     GlFormCheckbox,
     GlModal,
-    OncallSchedulesList,
+    UserDeletionObstaclesList,
   },
   inject: ['namespace'],
   computed: {
@@ -33,8 +33,8 @@ export default {
       message(state) {
         return state[this.namespace].removeMemberModalData.message;
       },
-      oncallSchedules(state) {
-        return state[this.namespace].removeMemberModalData.oncallSchedules ?? {};
+      userDeletionObstacles(state) {
+        return state[this.namespace].removeMemberModalData.userDeletionObstacles ?? {};
       },
       removeMemberModalVisible(state) {
         return state[this.namespace].removeMemberModalVisible;
@@ -60,11 +60,11 @@ export default {
         },
       };
     },
-    showUnassignIssuablesCheckbox() {
+    hasWorkspaceAccess() {
       return !this.isAccessRequest && !this.isInvite;
     },
-    isPartOfOncallSchedules() {
-      return !this.isAccessRequest && this.oncallSchedules.schedules?.length;
+    hasObstaclesToUserDeletion() {
+      return this.hasWorkspaceAccess && this.userDeletionObstacles.obstacles?.length;
     },
   },
   methods: {
@@ -95,10 +95,10 @@ export default {
     <form ref="form" :action="memberPath" method="post">
       <p>{{ message }}</p>
 
-      <oncall-schedules-list
-        v-if="isPartOfOncallSchedules"
-        :schedules="oncallSchedules.schedules"
-        :user-name="oncallSchedules.name"
+      <user-deletion-obstacles-list
+        v-if="hasObstaclesToUserDeletion"
+        :obstacles="userDeletionObstacles.obstacles"
+        :user-name="userDeletionObstacles.name"
       />
 
       <input ref="method" type="hidden" name="_method" value="delete" />
@@ -106,7 +106,7 @@ export default {
       <gl-form-checkbox v-if="isGroupMember" name="remove_sub_memberships">
         {{ __('Also remove direct user membership from subgroups and projects') }}
       </gl-form-checkbox>
-      <gl-form-checkbox v-if="showUnassignIssuablesCheckbox" name="unassign_issuables">
+      <gl-form-checkbox v-if="hasWorkspaceAccess" name="unassign_issuables">
         {{ __('Also unassign this user from related issues and merge requests') }}
       </gl-form-checkbox>
     </form>

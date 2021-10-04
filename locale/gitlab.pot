@@ -13558,6 +13558,9 @@ msgstr ""
 msgid "EscalationPolicies|Escalation policies"
 msgstr ""
 
+msgid "EscalationPolicies|Escalation policy %{obstacle} in Project %{project}"
+msgstr ""
+
 msgid "EscalationPolicies|Escalation rules"
 msgstr ""
 
@@ -23570,7 +23573,7 @@ msgstr ""
 msgid "OnCallSchedules|For this rotation, on-call will be:"
 msgstr ""
 
-msgid "OnCallSchedules|On-call schedule %{schedule} in Project %{project}"
+msgid "OnCallSchedules|On-call schedule %{obstacle} in Project %{project}"
 msgstr ""
 
 msgid "OnCallSchedules|On-call schedules"

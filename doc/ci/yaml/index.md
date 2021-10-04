@@ -1703,6 +1703,8 @@ same group or namespace, you can omit them from the `project:` keyword. For exam
 
 The user running the pipeline must have at least `reporter` access to the group or project, or the group/project must have public visibility.
 
+You cannot use cross project artifact downloads in the same job as [`trigger`](#trigger).
+
 ##### Artifact downloads between pipelines in the same project
 
 Use `needs` to download artifacts from different pipelines in the current project.

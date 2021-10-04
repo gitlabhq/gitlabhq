@@ -1,5 +1,6 @@
 <script>
 import { s__, sprintf } from '~/locale';
+import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import ActionButtonGroup from './action_button_group.vue';
 import LeaveButton from './leave_button.vue';
 import RemoveMemberButton from './remove_member_button.vue';
@@ -49,9 +50,11 @@ export default {
         },
       );
     },
-    oncallScheduleUserData() {
-      const { user: { name, oncallSchedules: schedules } = {} } = this.member;
-      return { name, schedules };
+    userDeletionObstaclesUserData() {
+      return {
+        name: this.member.user?.name,
+        obstacles: parseUserDeletionObstacles(this.member.user),
+      };
     },
   },
 };
@@ -65,7 +68,7 @@ export default {
         v-else
         :member-id="member.id"
         :member-type="member.type"
-        :oncall-schedules="oncallScheduleUserData"
+        :user-deletion-obstacles="userDeletionObstaclesUserData"
         :message="message"
         :title="s__('Member|Remove member')"
       />

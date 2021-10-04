@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { isString } from 'lodash';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -8,6 +8,7 @@ import ProjectAvatar from '~/vue_shared/components/deprecated_project_avatar/def
 export default {
   name: 'ProjectListItem',
   components: { GlIcon, ProjectAvatar, GlButton },
+  directives: { SafeHtml },
   props: {
     project: {
       type: Object,
@@ -58,9 +59,9 @@ export default {
         <span v-if="truncatedNamespace" class="text-secondary">/&nbsp;</span>
       </div>
       <div
+        v-safe-html="highlightedProjectName"
         :title="project.name"
         class="js-project-name text-truncate"
-        v-html="highlightedProjectName /* eslint-disable-line vue/no-v-html */"
       ></div>
     </div>
   </gl-button>

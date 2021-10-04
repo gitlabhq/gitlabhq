@@ -14,7 +14,7 @@ export default {
       type: Object,
       required: true,
     },
-    oncallSchedules: {
+    userDeletionObstacles: {
       type: Array,
       required: false,
       default: () => [],
@@ -29,7 +29,7 @@ export default {
     :username="username"
     :paths="paths"
     :delete-path="paths.delete"
-    :oncall-schedules="oncallSchedules"
+    :user-deletion-obstacles="userDeletionObstacles"
   >
     <slot></slot>
   </shared-delete-action>

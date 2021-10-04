@@ -1,6 +1,16 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
+import { OBSTACLE_TYPES } from './constants';
+
+const OBSTACLE_TEXT = {
+  [OBSTACLE_TYPES.oncallSchedules]: s__(
+    'OnCallSchedules|On-call schedule %{obstacle} in Project %{project}',
+  ),
+  [OBSTACLE_TYPES.escalationPolicies]: s__(
+    'EscalationPolicies|Escalation policy %{obstacle} in Project %{project}',
+  ),
+};
 
 export default {
   components: {
@@ -8,7 +18,7 @@ export default {
     GlLink,
   },
   props: {
-    schedules: {
+    obstacles: {
       type: Array,
       required: true,
     },
@@ -45,6 +55,15 @@ export default {
           );
     },
   },
+  methods: {
+    textForObstacle(obstacle) {
+      return OBSTACLE_TEXT[obstacle.type];
+    },
+    urlForObstacle(obstacle) {
+      // Fallback to scheduleUrl for backwards compatibility
+      return obstacle.url || obstacle.scheduleUrl;
+    },
+  },
 };
 </script>
 
@@ -52,17 +71,15 @@ export default {
   <div>
     <p data-testid="title">{{ title }}</p>
 
-    <ul data-testid="schedules-list">
-      <li v-for="(schedule, index) in schedules" :key="`${schedule.name}-${index}`">
-        <gl-sprintf
-          :message="s__('OnCallSchedules|On-call schedule %{schedule} in Project %{project}')"
-        >
-          <template #schedule>
-            <gl-link :href="schedule.scheduleUrl" target="_blank">{{ schedule.name }}</gl-link>
+    <ul data-testid="obstacles-list">
+      <li v-for="(obstacle, index) in obstacles" :key="`${obstacle.name}-${index}`">
+        <gl-sprintf :message="textForObstacle(obstacle)">
+          <template #obstacle>
+            <gl-link :href="urlForObstacle(obstacle)" target="_blank">{{ obstacle.name }}</gl-link>
           </template>
           <template #project>
-            <gl-link :href="schedule.projectUrl" target="_blank">{{
-              schedule.projectName
+            <gl-link :href="obstacle.projectUrl" target="_blank">{{
+              obstacle.projectName
             }}</gl-link>
           </template>
         </gl-sprintf>

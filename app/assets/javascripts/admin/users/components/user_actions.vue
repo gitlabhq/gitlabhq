@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { convertArrayToCamelCase } from '~/lib/utils/common_utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import { I18N_USER_ACTIONS } from '../constants';
 import { generateUserPaths } from '../utils';
 import Actions from './actions';
@@ -71,6 +72,9 @@ export default {
         icon: 'pencil-square',
         href: this.userPaths.edit,
       };
+    },
+    obstaclesForUserDeletion() {
+      return parseUserDeletionObstacles(this.user);
     },
   },
   methods: {
@@ -141,7 +145,7 @@ export default {
             :key="action"
             :paths="userPaths"
             :username="user.name"
-            :oncall-schedules="user.oncallSchedules"
+            :user-deletion-obstacles="obstaclesForUserDeletion"
             :data-testid="`delete-${action}`"
           >
             {{ $options.i18n[action] }}
