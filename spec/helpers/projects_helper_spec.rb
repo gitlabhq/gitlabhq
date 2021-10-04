@@ -904,6 +904,14 @@ RSpec.describe ProjectsHelper do
 
         it { is_expected.to be_falsey }
       end
+
+      context 'the :show_terraform_banner feature flag is disabled' do
+        before do
+          stub_feature_flags(show_terraform_banner: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
     end
   end
 

@@ -124,9 +124,6 @@ export default {
       const fileName = this.requests[0].truncatedUrl;
       return `${fileName}_perf_bar_${Date.now()}.json`;
     },
-    flamegraphPath() {
-      return mergeUrlParams({ performance_bar: 'flamegraph' }, window.location.href);
-    },
   },
   mounted() {
     this.currentRequest = this.requestId;
@@ -134,6 +131,12 @@ export default {
   methods: {
     changeCurrentRequest(newRequestId) {
       this.currentRequest = newRequestId;
+    },
+    flamegraphPath(mode) {
+      return mergeUrlParams(
+        { performance_bar: 'flamegraph', stackprof_mode: mode },
+        window.location.href,
+      );
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -180,8 +183,17 @@ export default {
         }}</a>
       </div>
       <div v-if="currentRequest.details" id="peek-flamegraph" class="view">
-        <a class="gl-text-blue-200" :href="flamegraphPath">{{
-          s__('PerformanceBar|Flamegraph')
+        <span class="gl-text-white-200">{{ s__('PerformanceBar|Flamegraph with mode:') }}</span>
+        <a class="gl-text-blue-200" :href="flamegraphPath('wall')">{{
+          s__('PerformanceBar|wall')
+        }}</a>
+        /
+        <a class="gl-text-blue-200" :href="flamegraphPath('cpu')">{{
+          s__('PerformanceBar|cpu')
+        }}</a>
+        /
+        <a class="gl-text-blue-200" :href="flamegraphPath('object')">{{
+          s__('PerformanceBar|object')
         }}</a>
       </div>
       <a v-if="statsUrl" class="gl-text-blue-200 view" :href="statsUrl">{{

@@ -1,0 +1,8 @@
+---
+name: show_terraform_banner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71462
+rollout_issue_url: 
+milestone: '14.4'
+type: ops
+group: group::configure
+default_enabled: true

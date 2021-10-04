@@ -76,7 +76,7 @@ To enable or disable Service Ping and version check:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
-1. Select or clear the **Enable version check** and **Enable service ping** checkboxes.
+1. Select or clear the **Enable version check** and **Enable Service Ping** checkboxes.
 1. Select **Save changes**.
 
 <!-- ## Troubleshooting

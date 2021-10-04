@@ -110,7 +110,7 @@ To disable Service Ping in the GitLab UI:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
-1. Clear the **Enable service ping** checkbox.
+1. Clear the **Enable Service Ping** checkbox.
 1. Select **Save changes**.
 
 ### Disable Service Ping using the configuration file
@@ -554,5 +554,5 @@ To work around this bug, you have two options:
   1. In GitLab, on the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
-  1. Clear the **Enable service ping** checkbox.
+  1. Clear the **Enable Service Ping** checkbox.
   1. Select **Save Changes**.

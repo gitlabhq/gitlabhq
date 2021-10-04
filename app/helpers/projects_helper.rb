@@ -351,7 +351,7 @@ module ProjectsHelper
   end
 
   def show_terraform_banner?(project)
-    project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+    Feature.enabled?(:show_terraform_banner, type: :ops, default_enabled: true) && project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
   end
 
   def project_permissions_panel_data(project)

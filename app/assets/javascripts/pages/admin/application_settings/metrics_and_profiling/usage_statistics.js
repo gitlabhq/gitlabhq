@@ -1,7 +1,7 @@
 import { __ } from '~/locale';
 
 export const HELPER_TEXT_SERVICE_PING_DISABLED = __(
-  'To enable Registration Features, make sure "Enable service ping" is checked.',
+  'To enable Registration Features, first enable Service Ping.',
 );
 
 export const HELPER_TEXT_SERVICE_PING_ENABLED = __(

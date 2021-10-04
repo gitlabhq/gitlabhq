@@ -10,21 +10,21 @@
         = f.label :version_check_enabled, class: 'form-check-label' do
           = _("Enable version check")
         .form-text.text-muted
-          = _("GitLab will inform you if a new version is available.")
-          = _("%{link_start}Learn more%{link_end} about what information is shared with GitLab Inc.").html_safe % { link_start: "<a href='#{help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")}'>".html_safe, link_end: '</a>'.html_safe }
+          = _("GitLab informs you if a new version is available.")
+          = _("%{link_start}What information does GitLab Inc. collect?%{link_end}").html_safe % { link_start: "<a href='#{help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")}'>".html_safe, link_end: '</a>'.html_safe }
     .form-group
       - can_be_configured = @application_setting.usage_ping_can_be_configured?
       .form-check
         = f.check_box :usage_ping_enabled, disabled: !can_be_configured, class: 'form-check-input'
         = f.label :usage_ping_enabled, class: 'form-check-label' do
-          = _('Enable service ping')
+          = _('Enable Service Ping')
         .form-text.text-muted
           - if can_be_configured
-            %p.mb-2= _('To help improve GitLab and its user experience, GitLab will periodically collect usage information.')
+            %p.mb-2= _('To help improve GitLab and its user experience, GitLab periodically collects usage information.')
 
-            - service_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'service-ping')
+            - service_ping_path = help_page_path('development/service_ping/index.md')
             - service_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: service_ping_path }
-            %p.mb-2= s_('%{service_ping_link_start}Learn more%{service_ping_link_end} about what information is shared with GitLab Inc.').html_safe % { service_ping_link_start: service_ping_link_start, service_ping_link_end: '</a>'.html_safe }
+            %p.mb-2= s_('%{service_ping_link_start}What information is shared with GitLab Inc.?%{service_ping_link_end}').html_safe % { service_ping_link_start: service_ping_link_start, service_ping_link_end: '</a>'.html_safe }
 
             %button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
               .gl-spinner.js-spinner.gl-display-none.gl-mr-2
@@ -46,7 +46,7 @@
           - if usage_ping_enabled
             %p.gl-mb-3.text-muted{ id: 'service_ping_features_helper_text' }= _('You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service.')
           - else
-            %p.gl-mb-3.text-muted{ id: 'service_ping_features_helper_text' }= _('To enable Registration Features, make sure "Enable service ping" is checked.')
+            %p.gl-mb-3.text-muted{ id: 'service_ping_features_helper_text' }= _('To enable Registration Features, first enable Service Ping.')
 
           %p.gl-mb-3.text-muted= _('Registration Features include:')
         .form-text
@@ -61,7 +61,7 @@
             %li
               = _('Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}.').html_safe % { link_start: email_from_gitlab_link, link_end: link_end }
             %li
-              = _('Limit project size at a global, group and project level. %{link_start}Learn more%{link_end}.').html_safe % { link_start: repo_size_limit_link, link_end: link_end }
+              = _('Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}.').html_safe % { link_start: repo_size_limit_link, link_end: link_end }
             %li
               = _('Restrict group access by IP address. %{link_start}Learn more%{link_end}.').html_safe % { link_start: restrict_ip_link, link_end: link_end }
 

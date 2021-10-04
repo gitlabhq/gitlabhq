@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Middleware::Speedscope do
           allow(env).to receive(:[]).with('warden').and_return(double('Warden', user: create(:admin)))
         end
 
-        it 'runs StackProf and returns a flamegraph' do
+        it 'returns a flamegraph' do
           expect(StackProf).to receive(:run).and_call_original
 
           status, headers, body = middleware.call(env)
@@ -54,6 +54,56 @@ RSpec.describe Gitlab::Middleware::Speedscope do
           expect(status).to eq(200)
           expect(headers).to eq({ 'Content-Type' => 'text/html' })
           expect(body.first).to include('speedscope-iframe')
+        end
+
+        context 'when the stackprof_mode parameter is set and valid' do
+          let(:env) { Rack::MockRequest.env_for('/', params: { 'performance_bar' => 'flamegraph', 'stackprof_mode' => 'cpu' }) }
+
+          it 'runs StackProf in the mode specified in the stackprof_mode parameter' do
+            expect(StackProf).to receive(:run).with(hash_including(mode: :cpu))
+
+            middleware.call(env)
+          end
+        end
+
+        context 'when the stackprof_mode parameter is not set' do
+          let(:env) { Rack::MockRequest.env_for('/', params: { 'performance_bar' => 'flamegraph' }) }
+
+          it 'runs StackProf in wall mode' do
+            expect(StackProf).to receive(:run).with(hash_including(mode: :wall))
+
+            middleware.call(env)
+          end
+        end
+
+        context 'when the stackprof_mode parameter is invalid' do
+          let(:env) { Rack::MockRequest.env_for('/', params: { 'performance_bar' => 'flamegraph', 'stackprof_mode' => 'invalid' }) }
+
+          it 'runs StackProf in wall mode' do
+            expect(StackProf).to receive(:run).with(hash_including(mode: :wall))
+
+            middleware.call(env)
+          end
+        end
+
+        context 'when the stackprof_mode parameter is set to object mode' do
+          let(:env) { Rack::MockRequest.env_for('/', params: { 'performance_bar' => 'flamegraph', 'stackprof_mode' => 'object' }) }
+
+          it 'runs StackProf with an interval of 100' do
+            expect(StackProf).to receive(:run).with(hash_including(interval: 100))
+
+            middleware.call(env)
+          end
+        end
+
+        context 'when the stackprof_mode parameter is not set to object mode' do
+          let(:env) { Rack::MockRequest.env_for('/', params: { 'performance_bar' => 'flamegraph', 'stackprof_mode' => 'wall' }) }
+
+          it 'runs StackProf with an interval of 10_100' do
+            expect(StackProf).to receive(:run).with(hash_including(interval: 10_100))
+
+            middleware.call(env)
+          end
         end
       end
     end

@@ -88,14 +88,16 @@ RSpec.describe Ci::BuildTraceMetadata do
   describe '#track_archival!' do
     let(:trace_artifact) { create(:ci_job_artifact) }
     let(:metadata) { create(:ci_build_trace_metadata) }
+    let(:checksum) { SecureRandom.hex }
 
     it 'stores the artifact id and timestamp' do
       expect(metadata.trace_artifact_id).to be_nil
 
-      metadata.track_archival!(trace_artifact.id)
+      metadata.track_archival!(trace_artifact.id, checksum)
       metadata.reload
 
       expect(metadata.trace_artifact_id).to eq(trace_artifact.id)
+      expect(metadata.checksum).to eq(checksum)
       expect(metadata.archived_at).to be_like_time(Time.current)
     end
   end

@@ -37,8 +37,10 @@ module Ci
       increment!(:archival_attempts, touch: :last_archival_attempt_at)
     end
 
-    def track_archival!(trace_artifact_id)
-      update!(trace_artifact_id: trace_artifact_id, archived_at: Time.current)
+    def track_archival!(trace_artifact_id, checksum)
+      update!(trace_artifact_id: trace_artifact_id,
+        checksum: checksum,
+        archived_at: Time.current)
     end
 
     def archival_attempts_message

@@ -236,35 +236,7 @@ module Gitlab
       end
 
       def archive_stream!(stream)
-        clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
-          create_build_trace!(job, clone_path)
-        end
-      end
-
-      def clone_file!(src_stream, temp_dir)
-        FileUtils.mkdir_p(temp_dir)
-        Dir.mktmpdir("tmp-trace-#{job.id}", temp_dir) do |dir_path|
-          temp_path = File.join(dir_path, "job.log")
-          FileUtils.touch(temp_path)
-          size = IO.copy_stream(src_stream, temp_path)
-          raise ArchiveError, 'Failed to copy stream' unless size == src_stream.size
-
-          yield(temp_path)
-        end
-      end
-
-      def create_build_trace!(job, path)
-        File.open(path) do |stream|
-          # TODO: Set `file_format: :raw` after we've cleaned up legacy traces migration
-          # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20307
-          trace_artifact = job.create_job_artifacts_trace!(
-            project: job.project,
-            file_type: :trace,
-            file: stream,
-            file_sha256: self.class.sha256_hexdigest(path))
-
-          trace_metadata.track_archival!(trace_artifact.id)
-        end
+        ::Gitlab::Ci::Trace::Archive.new(job, trace_metadata).execute!(stream)
       end
 
       def trace_metadata
