@@ -29941,9 +29941,6 @@ msgstr ""
 msgid "SecurityApprovals|A merge request approval is required when the license compliance report contains a denied license."
 msgstr ""
 
-msgid "SecurityApprovals|Configurable if security scanners are enabled. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
 msgid "SecurityApprovals|Coverage-Check"
 msgstr ""
 
@@ -29956,9 +29953,6 @@ msgstr ""
 msgid "SecurityApprovals|Learn more about Vulnerability-Check"
 msgstr ""
 
-msgid "SecurityApprovals|License Scanning must be enabled. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "SecurityApprovals|License-Check"
 msgstr ""
 
@@ -29969,9 +29963,6 @@ msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{lin
 msgstr ""
 
 msgid "SecurityApprovals|Requires approval for vulnerabilities. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "SecurityApprovals|Test coverage must be enabled. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "SecurityApprovals|Vulnerability-Check"

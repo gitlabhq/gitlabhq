@@ -112,9 +112,14 @@ class User < ApplicationRecord
   #
 
   # Namespace for personal projects
-  # TODO: change to `type: Namespaces::UserNamespace.sti_name` when
-  #       working on issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-  has_one :namespace, -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  # TODO: change to `:namespace, -> { where(type: Namespaces::UserNamespace.sti_name}, class_name: 'Namespaces::UserNamespace'...`
+  #       when working on issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
+  has_one :namespace,
+          -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) },
+          dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
+          foreign_key: :owner_id,
+          inverse_of: :owner,
+          autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -1437,7 +1442,10 @@ class User < ApplicationRecord
       namespace.path = username if username_changed?
       namespace.name = name if name_changed?
     else
-      namespace = build_namespace(path: username, name: name)
+      # TODO: we should no longer need the `type` parameter once we can make the
+      #       the `has_one :namespace` association use the correct class.
+      #       issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
+      namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
       namespace.build_namespace_settings
     end
   end

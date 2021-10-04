@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
+RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_gitlab_redis_queues do
   let(:middleware) { described_class.new }
 
   let(:load_balancer) { Gitlab::Database::LoadBalancing.proxy.load_balancer }
@@ -157,18 +157,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
               process_job(job)
             end.to raise_error(Sidekiq::JobRetry::Skip)
 
-            expect(job['error_class']).to eq('Gitlab::Database::LoadBalancing::SidekiqServerMiddleware::JobReplicaNotUpToDate')
+            job_for_retry = Sidekiq::RetrySet.new.first
+            expect(job_for_retry['error_class']).to eq('Gitlab::Database::LoadBalancing::SidekiqServerMiddleware::JobReplicaNotUpToDate')
           end
 
           include_examples 'load balancing strategy', 'retry'
         end
 
         context 'when job is retried' do
-          before do
-            expect do
-              process_job(job)
-            end.to raise_error(Sidekiq::JobRetry::Skip)
-          end
+          let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'database_replica_location' => '0/D525E3A8', 'retry_count' => 0 } }
 
           context 'and replica still lagging behind' do
             include_examples 'stick to the primary', 'primary'
@@ -199,7 +196,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
   end
 
   def process_job(job)
-    Sidekiq::JobRetry.new.local(worker_class, job, 'default') do
+    Sidekiq::JobRetry.new.local(worker_class, job.to_json, 'default') do
       worker_class.process_job(job)
     end
   end

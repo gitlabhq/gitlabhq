@@ -29,11 +29,9 @@ module JavaScriptFixturesHelpers
   #
   # directory_name - directory of the fixtures (relative to .fixture_root_path)
   #
+  # TODO: Make sure this isn't called anymore.
   def clean_frontend_fixtures(directory_name)
-    full_directory_name = File.expand_path(directory_name, fixture_root_path)
-    Dir[File.expand_path('*.{html,json,md}', full_directory_name)].each do |file_name|
-      FileUtils.rm(file_name)
-    end
+    # We don't really need to cleanup fixtures, as this can be a problem when FOSS & EE fixtures try to generate files in the same folder.
   end
 
   def remove_repository(project)

@@ -10,7 +10,7 @@ module Ci
     include CronjobQueue
     # rubocop:enable Scalability/CronWorkerContext
 
-    feature_category :continuous_integration
+    feature_category :code_testing
     idempotent!
 
     def perform

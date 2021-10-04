@@ -83,7 +83,10 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :is_dismissed_suggest_pipeline do |_merge_request|
-    current_user && current_user.dismissed_callout?(feature_name: SUGGEST_PIPELINE)
+    next true unless current_user
+    next true unless Gitlab::CurrentSettings.suggest_pipeline_enabled?
+
+    current_user.dismissed_callout?(feature_name: SUGGEST_PIPELINE)
   end
 
   expose :human_access do |merge_request|

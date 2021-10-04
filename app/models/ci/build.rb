@@ -194,7 +194,6 @@ module Ci
     add_authentication_token_field :token, encrypted: :required
 
     before_save :ensure_token
-    before_destroy { unscoped_project }
 
     after_save :stick_build_if_status_changed
 
@@ -1154,10 +1153,6 @@ module Ci
 
     def update_erased!(user = nil)
       self.update(erased_by: user, erased_at: Time.current, artifacts_expire_at: nil)
-    end
-
-    def unscoped_project
-      @unscoped_project ||= Project.unscoped.find_by(id: project_id)
     end
 
     def environment_url

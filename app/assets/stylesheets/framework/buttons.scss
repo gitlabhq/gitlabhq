@@ -247,13 +247,6 @@
   }
 }
 
-.btn-terminal {
-  svg {
-    height: 14px;
-    width: $default-icon-size;
-  }
-}
-
 .btn-lg {
   padding: 12px 20px;
 }
@@ -279,12 +272,6 @@
   &.btn {
     padding: 6px 0;
   }
-}
-
-.btn-align-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .btn-group {
@@ -344,16 +331,6 @@
 
   &:hover {
     text-decoration: none;
-  }
-}
-
-.btn-static {
-  background-color: $gray-light !important;
-  border: 1px solid $border-gray-normal;
-  cursor: default;
-
-  &:active {
-    box-shadow: inset 0 0 0 $white;
   }
 }
 

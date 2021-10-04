@@ -57,7 +57,7 @@ RSpec.describe Ci::StuckBuilds::DropRunningWorker do
           expect_to_cancel_exclusive_lease(worker_lease_key, worker_lease_uuid)
 
           allow_next_instance_of(Ci::StuckBuilds::DropRunningService) do |service|
-            allow(service).to receive(:execute) do
+            expect(service).to receive(:execute) do
               raise 'The query timed out'
             end
           end

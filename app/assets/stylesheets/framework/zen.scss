@@ -40,15 +40,6 @@
   border: 0;
 }
 
-.zen-control-full {
-  color: $gl-text-color-secondary;
-
-  &:hover {
-    color: $blue-600;
-    text-decoration: none;
-  }
-}
-
 .zen-control-leave {
   display: none;
   color: $gl-text-color;

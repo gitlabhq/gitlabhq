@@ -378,7 +378,7 @@ RSpec.describe User do
       end
 
       context 'when username is changed' do
-        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:namespace)) }
+        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:user_namespace)) }
 
         it 'validates move_dir is allowed for the namespace' do
           expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
@@ -3855,7 +3855,7 @@ RSpec.describe User do
     end
 
     context 'with runner in a personal project' do
-      let!(:namespace) { create(:namespace, owner: user) }
+      let!(:namespace) { create(:user_namespace, owner: user) }
       let!(:project) { create(:project, namespace: namespace) }
       let!(:runner) { create(:ci_runner, :project, projects: [project]) }
 
@@ -3923,7 +3923,7 @@ RSpec.describe User do
     end
 
     context 'with personal project runner in an owned group in an owned namespace and a group runner in that group' do
-      let!(:namespace) { create(:namespace, owner: user) }
+      let!(:namespace) { create(:user_namespace, owner: user) }
       let!(:group) { create(:group) }
       let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
       let!(:project) { create(:project, namespace: namespace, group: group) }
@@ -3937,7 +3937,7 @@ RSpec.describe User do
     end
 
     context 'with personal project runner in an owned namespace, an owned group, a subgroup and a group runner in that subgroup' do
-      let!(:namespace) { create(:namespace, owner: user) }
+      let!(:namespace) { create(:user_namespace, owner: user) }
       let!(:group) { create(:group) }
       let!(:subgroup) { create(:group, parent: group) }
       let!(:group_runner) { create(:ci_runner, :group, groups: [subgroup]) }
@@ -4619,6 +4619,7 @@ RSpec.describe User do
         user.save!
 
         expect(user.namespace).not_to be_nil
+        expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
       end
 
       it 'creates the namespace setting' do

@@ -5,7 +5,7 @@ require 'active_record/log_subscriber'
 
 module Gitlab
   module SidekiqLogging
-    class StructuredLogger
+    class StructuredLogger < Sidekiq::JobLogger
       include LogsJobs
 
       def call(job, queue)

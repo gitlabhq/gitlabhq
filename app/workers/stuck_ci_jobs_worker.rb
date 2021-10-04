@@ -21,9 +21,11 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
 
     return unless try_obtain_lease
 
-    Ci::StuckBuilds::DropService.new.execute
-
-    remove_lease
+    begin
+      Ci::StuckBuilds::DropService.new.execute
+    ensure
+      remove_lease
+    end
   end
 
   private

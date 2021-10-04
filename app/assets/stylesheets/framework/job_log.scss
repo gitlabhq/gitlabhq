@@ -42,10 +42,6 @@
   }
 }
 
-.log-duration-badge {
-  background: $gray-300;
-}
-
 .loader-animation {
   @include build-loader-animation;
 }

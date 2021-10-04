@@ -4,7 +4,7 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   before_action :authorize_read_build_report_results!
   before_action :validate_param_type!
 
-  feature_category :continuous_integration
+  feature_category :code_testing
 
   def index
     respond_to do |format|

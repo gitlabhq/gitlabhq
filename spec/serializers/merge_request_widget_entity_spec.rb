@@ -283,28 +283,6 @@ RSpec.describe MergeRequestWidgetEntity do
     it 'provides a valid value for suggest pipeline feature id' do
       expect(subject[:suggest_pipeline_feature_id]).to eq described_class::SUGGEST_PIPELINE
     end
-
-    it 'provides a valid value for if it is dismissed' do
-      expect(subject[:is_dismissed_suggest_pipeline]).to be(false)
-    end
-
-    context 'when the suggest pipeline has been dismissed' do
-      before do
-        create(:user_callout, user: user, feature_name: described_class::SUGGEST_PIPELINE)
-      end
-
-      it 'indicates suggest pipeline has been dismissed' do
-        expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
-      end
-    end
-
-    context 'when user is not logged in' do
-      let(:request) { double('request', current_user: nil, project: project) }
-
-      it 'returns a blank is dismissed value' do
-        expect(subject[:is_dismissed_suggest_pipeline]).to be_nil
-      end
-    end
   end
 
   it 'has human access' do
@@ -392,6 +370,48 @@ RSpec.describe MergeRequestWidgetEntity do
 
       it 'exposes gitpod_enabled as true' do
         expect(subject[:gitpod_enabled]).to be(true)
+      end
+    end
+  end
+
+  describe 'is_dismissed_suggest_pipeline' do
+    context 'when user is logged in' do
+      context 'when the suggest pipeline feature is enabled' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:suggest_pipeline_enabled?).and_return(true)
+        end
+
+        it 'is false' do
+          expect(subject[:is_dismissed_suggest_pipeline]).to be(false)
+        end
+
+        context 'when suggest pipeline has been dismissed' do
+          before do
+            create(:user_callout, user: user, feature_name: described_class::SUGGEST_PIPELINE)
+          end
+
+          it 'is true' do
+            expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
+          end
+        end
+      end
+
+      context 'when the suggest pipeline feature is disabled' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:suggest_pipeline_enabled?).and_return(false)
+        end
+
+        it 'is true' do
+          expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
+        end
+      end
+    end
+
+    context 'when user is not logged in' do
+      let(:request) { double('request', current_user: nil, project: project) }
+
+      it 'is true' do
+        expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
       end
     end
   end

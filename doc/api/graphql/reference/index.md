@@ -1267,6 +1267,9 @@ Input type: `CreateIssueInput`
 | <a id="mutationcreateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of an epic to associate the issue with. |
 | <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Desired health status. |
 | <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | IID (internal ID) of a project issue. Only admins and project owners can modify. |
+| <a id="mutationcreateissueiterationcadenceid"></a>`iterationCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global iteration cadence ID. Required when `iterationWildcardId` is provided. |
+| <a id="mutationcreateissueiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Global iteration ID. Mutually exlusive argument with `iterationWildcardId`. |
+| <a id="mutationcreateissueiterationwildcardid"></a>`iterationWildcardId` | [`IssueCreationIterationWildcardId`](#issuecreationiterationwildcardid) | Iteration wildcard ID. Supported values are: `CURRENT`. Mutually exclusive argument with `iterationId`. iterationCadenceId also required when this argument is provided. |
 | <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the issue. |
 | <a id="mutationcreateissuelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationcreateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
@@ -15807,6 +15810,14 @@ State of a GitLab issue or merge request.
 | <a id="issuablestateclosed"></a>`closed` | In closed state. |
 | <a id="issuablestatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="issuablestateopened"></a>`opened` | In open state. |
+
+### `IssueCreationIterationWildcardId`
+
+Iteration ID wildcard values for issue creation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="issuecreationiterationwildcardidcurrent"></a>`CURRENT` | Current iteration. |
 
 ### `IssueSort`
 

@@ -398,15 +398,6 @@ from the chart itself.
 
 The chart data is limited to the last 500 items.
 
-### Disabling chart
-
-This chart is enabled by default. If you have a self-managed instance, an
-administrator can open a Rails console and disable it with the following command:
-
-```ruby
-Feature.disable(:cycle_analytics_scatterplot_enabled)
-```
-
 ## Type of work - Tasks by type chart
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.

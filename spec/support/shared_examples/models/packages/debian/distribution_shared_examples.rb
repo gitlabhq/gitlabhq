@@ -193,42 +193,6 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
     end
   end
 
-  describe '#needs_update?' do
-    subject { distribution.needs_update? }
-
-    context 'with new distribution' do
-      let(:distribution) { create(factory, container: distribution_with_suite.container) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'with file' do
-      context 'without valid_time_duration_seconds' do
-        let(:distribution) { create(factory, :with_file, container: distribution_with_suite.container) }
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'with valid_time_duration_seconds' do
-        let(:distribution) { create(factory, :with_file, container: distribution_with_suite.container, valid_time_duration_seconds: 2.days.to_i) }
-
-        context 'when not yet expired' do
-          it { is_expected.to be_falsey }
-        end
-
-        context 'when expired' do
-          it do
-            distribution
-
-            travel_to(4.days.from_now) do
-              is_expected.to be_truthy
-            end
-          end
-        end
-      end
-    end
-  end
-
   if container == :project
     describe 'project distribution specifics' do
       describe 'relationships' do

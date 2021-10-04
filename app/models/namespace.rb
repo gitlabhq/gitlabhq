@@ -44,6 +44,8 @@ class Namespace < ApplicationRecord
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
+  # TODO: can this be moved into the UserNamespace class?
+  #       evaluate in issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"

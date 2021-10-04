@@ -70,30 +70,44 @@ RSpec.describe Gitlab::Kas do
       stub_config(gitlab_kas: { external_url: external_url })
     end
 
+    let(:external_url) { 'xyz' }
+
     subject { described_class.tunnel_url }
 
-    context 'external_url uses wss://' do
-      let(:external_url) { 'wss://kas.gitlab.example.com' }
+    context 'with a gitlab_kas.external_k8s_proxy_url setting' do
+      let(:external_k8s_proxy_url) { 'abc' }
 
-      it { is_expected.to eq('https://kas.gitlab.example.com/k8s-proxy') }
+      before do
+        stub_config(gitlab_kas: { external_k8s_proxy_url: external_k8s_proxy_url })
+      end
+
+      it { is_expected.to eq(external_k8s_proxy_url) }
     end
 
-    context 'external_url uses ws://' do
-      let(:external_url) { 'ws://kas.gitlab.example.com' }
+    context 'without a gitlab_kas.external_k8s_proxy_url setting' do
+      context 'external_url uses wss://' do
+        let(:external_url) { 'wss://kas.gitlab.example.com' }
 
-      it { is_expected.to eq('http://kas.gitlab.example.com/k8s-proxy') }
-    end
+        it { is_expected.to eq('https://kas.gitlab.example.com/k8s-proxy') }
+      end
 
-    context 'external_url uses grpcs://' do
-      let(:external_url) { 'grpcs://kas.gitlab.example.com' }
+      context 'external_url uses ws://' do
+        let(:external_url) { 'ws://kas.gitlab.example.com' }
 
-      it { is_expected.to eq('https://kas.gitlab.example.com/k8s-proxy') }
-    end
+        it { is_expected.to eq('http://kas.gitlab.example.com/k8s-proxy') }
+      end
 
-    context 'external_url uses grpc://' do
-      let(:external_url) { 'grpc://kas.gitlab.example.com' }
+      context 'external_url uses grpcs://' do
+        let(:external_url) { 'grpcs://kas.gitlab.example.com' }
 
-      it { is_expected.to eq('http://kas.gitlab.example.com/k8s-proxy') }
+        it { is_expected.to eq('https://kas.gitlab.example.com/k8s-proxy') }
+      end
+
+      context 'external_url uses grpc://' do
+        let(:external_url) { 'grpc://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('http://kas.gitlab.example.com/k8s-proxy') }
+      end
     end
   end
 

@@ -151,9 +151,9 @@ export default {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
     shouldSuggestPipelines() {
-      return (
-        !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath && !this.mr.isDismissedSuggestPipeline
-      );
+      const { hasCI, mergeRequestAddCiConfigPath, isDismissedSuggestPipeline } = this.mr;
+
+      return !hasCI && mergeRequestAddCiConfigPath && !isDismissedSuggestPipeline;
     },
     shouldRenderCodeQuality() {
       return this.mr?.codequalityReportsPath;

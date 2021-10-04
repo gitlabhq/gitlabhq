@@ -17,8 +17,11 @@ module Ci
 
       def running_timed_out_builds
         if Feature.enabled?(:ci_new_query_for_running_stuck_jobs, default_enabled: :yaml)
-          running_builds = Ci::Build.running.created_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago).order(created_at: :asc, project_id: :asc) # rubocop: disable CodeReuse/ActiveRecord
-          Ci::Build.id_in(running_builds).updated_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)
+          Ci::Build
+            .running
+            .created_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)
+            .updated_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)
+            .order(created_at: :asc, project_id: :asc) # rubocop:disable CodeReuse/ActiveRecord
         else
           Ci::Build.running.updated_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)
         end

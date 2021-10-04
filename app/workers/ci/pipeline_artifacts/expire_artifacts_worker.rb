@@ -14,7 +14,7 @@ module Ci
 
       deduplicate :until_executed, including_scheduled: true
       idempotent!
-      feature_category :continuous_integration
+      feature_category :build_artifacts
 
       def perform
         service = ::Ci::PipelineArtifacts::DestroyAllExpiredService.new

@@ -96,17 +96,7 @@ module Packages
           architectures.pluck(:name).sort
         end
 
-        def needs_update?
-          !file.exists? || time_duration_expired?
-        end
-
         private
-
-        def time_duration_expired?
-          return false unless valid_time_duration_seconds.present?
-
-          updated_at + valid_time_duration_seconds.seconds + 6.hours < Time.current
-        end
 
         def unique_codename_and_suite
           errors.add(:codename, _('has already been taken as Suite')) if codename_exists_as_suite?

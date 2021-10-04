@@ -41,6 +41,10 @@ module Gitlab
       end
 
       def tunnel_url
+        configured = Gitlab.config.gitlab_kas['external_k8s_proxy_url']
+        return configured if configured.present?
+
+        # Legacy code path. Will be removed when all distributions provide a sane default here
         uri = URI.join(external_url, K8S_PROXY_PATH)
         uri.scheme = uri.scheme.in?(%w(grpcs wss)) ? 'https' : 'http'
         uri.to_s

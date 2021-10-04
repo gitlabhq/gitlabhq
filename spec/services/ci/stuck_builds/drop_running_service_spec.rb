@@ -4,18 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Ci::StuckBuilds::DropRunningService do
   let!(:runner) { create :ci_runner }
-  let!(:job) { create :ci_build, runner: runner }
-  let(:created_at) { }
-  let(:updated_at) { }
+  let!(:job) { create(:ci_build, runner: runner, created_at: created_at, updated_at: updated_at, status: status) }
 
   subject(:service) { described_class.new }
-
-  before do
-    job_attributes = { status: status }
-    job_attributes[:created_at] = created_at if created_at
-    job_attributes[:updated_at] = updated_at if updated_at
-    job.update!(job_attributes)
-  end
 
   around do |example|
     freeze_time { example.run }
@@ -52,7 +43,7 @@ RSpec.describe Ci::StuckBuilds::DropRunningService do
 
   include_examples 'running builds'
 
-  context 'when ci_new_query_for_running_stuck_jobs flag is disabled' do
+  context 'when new query flag is disabled' do
     before do
       stub_feature_flags(ci_new_query_for_running_stuck_jobs: false)
     end

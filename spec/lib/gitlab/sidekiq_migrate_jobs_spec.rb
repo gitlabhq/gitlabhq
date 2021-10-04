@@ -65,7 +65,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
                 expect(item).to include('queue' => 'post_receive', 'args' => [i])
               end
 
-              expect(score).to eq(i.succ.hours.from_now.to_i)
+              expect(score).to be_within(schedule_jitter).of(i.succ.hours.from_now.to_i)
             end
           end
         end
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
                 expect(item).to include('queue' => 'another_queue', 'args' => [i])
               end
 
-              expect(score).to eq(i.succ.hours.from_now.to_i)
+              expect(score).to be_within(schedule_jitter).of(i.succ.hours.from_now.to_i)
             end
           end
         end
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
 
             set_after.each.with_index do |(item, score), i|
               expect(item).to include('queue' => 'new_queue', 'args' => [i])
-              expect(score).to eq(i.succ.hours.from_now.to_i)
+              expect(score).to be_within(schedule_jitter).of(i.succ.hours.from_now.to_i)
             end
           end
         end
@@ -173,6 +173,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
 
     context 'scheduled jobs' do
       let(:set_name) { 'schedule' }
+      let(:schedule_jitter) { 0 }
 
       def create_jobs(include_post_receive: true)
         AuthorizedProjectsWorker.perform_in(1.hour, 0)
@@ -186,12 +187,14 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
 
     context 'retried jobs' do
       let(:set_name) { 'retry' }
+      # Account for Sidekiq retry jitter
+      # https://github.com/mperham/sidekiq/blob/3575ccb44c688dd08bfbfd937696260b12c622fb/lib/sidekiq/job_retry.rb#L217
+      let(:schedule_jitter) { 10 }
 
       # Try to mimic as closely as possible what Sidekiq will actually
       # do to retry a job.
       def retry_in(klass, time, args)
-        # In Sidekiq 6, this argument will become a JSON string
-        message = { 'class' => klass, 'args' => [args], 'retry' => true }
+        message = { 'class' => klass.name, 'args' => [args], 'retry' => true }.to_json
 
         allow(klass).to receive(:sidekiq_retry_in_block).and_return(proc { time })
 

@@ -27,8 +27,13 @@ use_sidekiq_daemon_memory_killer = ENV.fetch("SIDEKIQ_DAEMON_MEMORY_KILLER", 1).
 use_sidekiq_legacy_memory_killer = !use_sidekiq_daemon_memory_killer
 
 Sidekiq.configure_server do |config|
+  config.options[:strict] = false
+  config.options[:queues] = Gitlab::SidekiqConfig.expand_queues(config.options[:queues])
+
+  Sidekiq.logger.info "Listening on queues #{config.options[:queues].uniq.sort}"
+
   if enable_json_logs
-    Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new
+    config.log_formatter = Gitlab::SidekiqLogging::JSONFormatter.new
     config.options[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
 
     # Remove the default-provided handler. The exception is logged inside

@@ -16,21 +16,6 @@
   transition: padding $sidebar-transition-duration;
 }
 
-.nav-header-btn {
-  padding: 10px $gl-sidebar-padding;
-  color: inherit;
-  transition-duration: 0.3s;
-  position: absolute;
-  top: 0;
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    color: $white;
-    text-decoration: none;
-  }
-}
-
 .right-sidebar-collapsed {
   padding-right: 0;
 

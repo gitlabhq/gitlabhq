@@ -36,7 +36,6 @@ RSpec.describe Packages::Debian::ProcessChangesService do
           .to not_change { Packages::Package.count }
           .and not_change { Packages::PackageFile.count }
           .and not_change { incoming.package_files.count }
-          .and not_change { distribution.reload.needs_update? }
           .and raise_error(Packages::Debian::ExtractChangesMetadataService::ExtractionError, 'is not a changes file')
       end
     end
@@ -54,7 +53,6 @@ RSpec.describe Packages::Debian::ProcessChangesService do
           .to not_change { Packages::Package.count }
           .and not_change { Packages::PackageFile.count }
           .and not_change { incoming.package_files.count }
-          .and not_change { distribution.reload.needs_update? }
           .and raise_error(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
       end
     end

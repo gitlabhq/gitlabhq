@@ -7,7 +7,7 @@ class ExpireBuildInstanceArtifactsWorker # rubocop:disable Scalability/Idempoten
 
   sidekiq_options retry: 3
 
-  feature_category :continuous_integration
+  feature_category :build_artifacts
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

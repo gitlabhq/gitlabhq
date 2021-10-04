@@ -55,6 +55,20 @@ RSpec.describe StuckCiJobsWorker do
 
         worker.perform
       end
+
+      context 'when the DropService fails' do
+        it 'ensures cancellation of the exclusive lease' do
+          expect_to_cancel_exclusive_lease(worker_lease_key, worker_lease_uuid)
+
+          allow_next_instance_of(Ci::StuckBuilds::DropService) do |service|
+            expect(service).to receive(:execute) do
+              raise 'The query timed out'
+            end
+          end
+
+          expect { worker.perform }.to raise_error(/The query timed out/)
+        end
+      end
     end
   end
 end

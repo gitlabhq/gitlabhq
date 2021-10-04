@@ -6,9 +6,10 @@ RSpec.describe 'Merge request > User sees suggest pipeline', :js do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }
+  let(:suggest_pipeline_enabled) { true }
 
   before do
-    stub_application_setting(auto_devops_enabled: false)
+    stub_application_setting(suggest_pipeline_enabled: suggest_pipeline_enabled, auto_devops_enabled: false)
     project.add_maintainer(user)
     sign_in(user)
     visit project_merge_request_path(project, merge_request)
@@ -65,5 +66,13 @@ RSpec.describe 'Merge request > User sees suggest pipeline', :js do
 
     # nudge 4
     expect(page).to have_content("That's it, well done!")
+  end
+
+  context 'when feature setting is disabled' do
+    let(:suggest_pipeline_enabled) { false }
+
+    it 'does not show the suggest pipeline widget' do
+      expect(page).not_to have_content('Are you adding technical debt or code vulnerabilities?')
+    end
   end
 end
