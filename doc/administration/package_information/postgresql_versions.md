@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# PostgreSQL versions shipped with Omnibus GitLab
+# PostgreSQL versions shipped with Omnibus GitLab **(FREE SELF)**
 
 NOTE:
 This table lists only GitLab versions where a significant change happened in the

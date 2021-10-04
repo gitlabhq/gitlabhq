@@ -1691,9 +1691,6 @@ msgstr ""
 msgid "Abuse reports notification email"
 msgstr ""
 
-msgid "Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area."
-msgstr ""
-
 msgid "Accept invitation"
 msgstr ""
 
@@ -27925,6 +27922,9 @@ msgstr ""
 msgid "Receive any notifications from GitLab."
 msgstr ""
 
+msgid "Receive notification of abuse reports by email."
+msgstr ""
+
 msgid "Receive notifications about your own activity"
 msgstr ""
 
@@ -30986,9 +30986,6 @@ msgid "Set milestone"
 msgstr ""
 
 msgid "Set new password"
-msgstr ""
-
-msgid "Set notification email for abuse reports."
 msgstr ""
 
 msgid "Set parent epic to an epic"

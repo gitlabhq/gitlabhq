@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Package Signatures
+# Package Signatures **(FREE SELF)**
 
 As of the release of GitLab 9.5 on August 22, 2017, GitLab provides signed Omnibus GitLab packages for RPM and DEB based distributions. This means that all packages provided on <https://packages.gitlab.com> are signed, starting with `9.5.0`, and all future versions of supported branches (for example `9.3.x` and `9.4.x` after August 22, 2017). Any package version prior to August 22, 2017, will not be signed. Please pass the appropriate argument to your package manager. (Example: `yum --nogpgcheck`)
 
