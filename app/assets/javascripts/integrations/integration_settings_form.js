@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { delay } from 'lodash';
 import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -8,13 +7,13 @@ import eventHub from './edit/event_hub';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
-    this.$form = $(formSelector);
+    this.$form = document.querySelector(formSelector);
     this.formActive = false;
 
     this.vue = null;
 
     // Form Metadata
-    this.testEndPoint = this.$form.data('testUrl');
+    this.testEndPoint = this.$form.dataset.testUrl;
   }
 
   init() {
@@ -34,8 +33,7 @@ export default class IntegrationSettingsForm {
       this.saveIntegration();
     });
     eventHub.$on('getJiraIssueTypes', () => {
-      // eslint-disable-next-line no-jquery/no-serialize
-      this.getJiraIssueTypes(this.$form.serialize());
+      this.getJiraIssueTypes(new FormData(this.$form));
     });
 
     eventHub.$emit('formInitialized');
@@ -47,11 +45,11 @@ export default class IntegrationSettingsForm {
     // 2) If this service can be saved
     // If both conditions are true, we override form submission
     // and save the service using provided configuration.
-    const formValid = this.$form.get(0).checkValidity() || this.formActive === false;
+    const formValid = this.$form.checkValidity() || this.formActive === false;
 
     if (formValid) {
       delay(() => {
-        this.$form.trigger('submit');
+        this.$form.submit();
       }, 100);
     } else {
       eventHub.$emit('validateForm');
@@ -65,9 +63,8 @@ export default class IntegrationSettingsForm {
     // 2) If this service can be tested
     // If both conditions are true, we override form submission
     // and test the service using provided configuration.
-    if (this.$form.get(0).checkValidity()) {
-      // eslint-disable-next-line no-jquery/no-serialize
-      this.testSettings(this.$form.serialize());
+    if (this.$form.checkValidity()) {
+      this.testSettings(new FormData(this.$form));
     } else {
       eventHub.$emit('validateForm');
       this.vue.$store.dispatch('setIsTesting', false);
@@ -79,9 +76,9 @@ export default class IntegrationSettingsForm {
    */
   toggleServiceState() {
     if (this.formActive) {
-      this.$form.removeAttr('novalidate');
-    } else if (!this.$form.attr('novalidate')) {
-      this.$form.attr('novalidate', 'novalidate');
+      this.$form.removeAttribute('novalidate');
+    } else if (!this.$form.getAttribute('novalidate')) {
+      this.$form.setAttribute('novalidate', 'novalidate');
     }
   }
 

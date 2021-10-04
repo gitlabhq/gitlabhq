@@ -206,26 +206,50 @@ describe('BaseToken', () => {
     describe('events', () => {
       let wrapperWithNoStubs;
 
-      beforeEach(() => {
-        wrapperWithNoStubs = createComponent({
-          stubs: { Portal: true },
-        });
-      });
-
       afterEach(() => {
         wrapperWithNoStubs.destroy();
       });
 
-      it('emits `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
-        jest.useFakeTimers();
+      describe('when activeToken has been selected', () => {
+        beforeEach(() => {
+          wrapperWithNoStubs = createComponent({
+            props: {
+              ...mockProps,
+              getActiveTokenValue: () => ({ title: '' }),
+              suggestionsLoading: true,
+            },
+            stubs: { Portal: true },
+          });
+        });
+        it('does not emit `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
+          jest.useFakeTimers();
 
-        wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: 'foo' });
-        await wrapperWithNoStubs.vm.$nextTick();
+          wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: 'foo' });
+          await wrapperWithNoStubs.vm.$nextTick();
 
-        jest.runAllTimers();
+          jest.runAllTimers();
 
-        expect(wrapperWithNoStubs.emitted('fetch-suggestions')).toBeTruthy();
-        expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+          expect(wrapperWithNoStubs.emitted('fetch-suggestions')).toEqual([['']]);
+        });
+      });
+
+      describe('when activeToken has not been selected', () => {
+        beforeEach(() => {
+          wrapperWithNoStubs = createComponent({
+            stubs: { Portal: true },
+          });
+        });
+        it('emits `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
+          jest.useFakeTimers();
+
+          wrapperWithNoStubs.find(GlFilteredSearchToken).vm.$emit('input', { data: 'foo' });
+          await wrapperWithNoStubs.vm.$nextTick();
+
+          jest.runAllTimers();
+
+          expect(wrapperWithNoStubs.emitted('fetch-suggestions')).toBeTruthy();
+          expect(wrapperWithNoStubs.emitted('fetch-suggestions')[2]).toEqual(['foo']);
+        });
       });
     });
   });

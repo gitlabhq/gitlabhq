@@ -23,7 +23,7 @@ describe('IntegrationSettingsForm', () => {
     it('should initialize form element refs on class object', () => {
       // Form Reference
       expect(integrationSettingsForm.$form).toBeDefined();
-      expect(integrationSettingsForm.$form.prop('nodeName')).toEqual('FORM');
+      expect(integrationSettingsForm.$form.nodeName).toBe('FORM');
       expect(integrationSettingsForm.formActive).toBeDefined();
     });
 
@@ -43,14 +43,14 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.formActive = true;
       integrationSettingsForm.toggleServiceState();
 
-      expect(integrationSettingsForm.$form.attr('novalidate')).not.toBeDefined();
+      expect(integrationSettingsForm.$form.getAttribute('novalidate')).toBe(null);
     });
 
     it('should set `novalidate` attribute to form when called with `false`', () => {
       integrationSettingsForm.formActive = false;
       integrationSettingsForm.toggleServiceState();
 
-      expect(integrationSettingsForm.$form.attr('novalidate')).toBeDefined();
+      expect(integrationSettingsForm.$form.getAttribute('novalidate')).toBeDefined();
     });
   });
 
@@ -67,8 +67,7 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm = new IntegrationSettingsForm('.js-integration-settings-form');
       integrationSettingsForm.init();
 
-      // eslint-disable-next-line no-jquery/no-serialize
-      formData = integrationSettingsForm.$form.serialize();
+      formData = new FormData(integrationSettingsForm.$form);
     });
 
     afterEach(() => {
@@ -145,8 +144,7 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm = new IntegrationSettingsForm('.js-integration-settings-form');
       integrationSettingsForm.init();
 
-      // eslint-disable-next-line no-jquery/no-serialize
-      formData = integrationSettingsForm.$form.serialize();
+      formData = new FormData(integrationSettingsForm.$form);
     });
 
     afterEach(() => {

@@ -75,13 +75,13 @@ class FinalizeTagginsBigintConversion < ActiveRecord::Migration[6.1]
 
       # Rename the index on the `bigint` column to match the new column name
       # (we already hold an exclusive lock, so no need to use DROP INDEX CONCURRENTLY here)
-      execute 'DROP INDEX index_taggings_on_taggable_id_and_taggable_type'
+      execute 'DROP INDEX IF EXISTS index_taggings_on_taggable_id_and_taggable_type'
       rename_index TABLE_NAME, 'i_taggings_on_taggable_id_convert_to_bigint_and_taggable_type', 'index_taggings_on_taggable_id_and_taggable_type'
-      execute 'DROP INDEX index_taggings_on_taggable_id_and_taggable_type_and_context'
+      execute 'DROP INDEX IF EXISTS index_taggings_on_taggable_id_and_taggable_type_and_context'
       rename_index TABLE_NAME, 'i_taggings_on_taggable_bigint_and_taggable_type_and_context', 'index_taggings_on_taggable_id_and_taggable_type_and_context'
-      execute 'DROP INDEX taggings_idx'
+      execute 'DROP INDEX IF EXISTS taggings_idx'
       rename_index TABLE_NAME, 'taggings_idx_tmp', 'taggings_idx'
-      execute 'DROP INDEX tmp_index_taggings_on_id_where_taggable_type_project'
+      execute 'DROP INDEX IF EXISTS tmp_index_taggings_on_id_where_taggable_type_project'
       rename_index TABLE_NAME, 'tmp_index_taggings_on_id_bigint_where_taggable_type_project', 'tmp_index_taggings_on_id_where_taggable_type_project'
     end
   end

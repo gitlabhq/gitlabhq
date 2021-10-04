@@ -148,7 +148,8 @@ export default {
   methods: {
     handleInput: debounce(function debouncedSearch({ data }) {
       this.searchKey = data;
-      if (!this.suggestionsLoading) {
+
+      if (!this.suggestionsLoading && !this.activeTokenValue) {
         this.$emit('fetch-suggestions', data);
       }
     }, DEBOUNCE_DELAY),
