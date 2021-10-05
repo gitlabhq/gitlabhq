@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Namespace::TraversalHierarchy, type: :model do
-  let_it_be(:root, reload: true) { create(:group, :with_hierarchy) }
+  let!(:root) { create(:group, :with_hierarchy) }
 
   describe '.for_namespace' do
     let(:hierarchy) { described_class.for_namespace(group) }
@@ -62,7 +62,12 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model do
 
     it { expect(hierarchy.incorrect_traversal_ids).to be_empty }
 
-    it_behaves_like 'hierarchy with traversal_ids'
+    it_behaves_like 'hierarchy with traversal_ids' do
+      before do
+        subject
+      end
+    end
+
     it_behaves_like 'locked row' do
       let(:recorded_queries) { ActiveRecord::QueryRecorder.new }
       let(:row) { root }

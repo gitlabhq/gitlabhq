@@ -305,7 +305,7 @@ RSpec.describe SearchController do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        expect(response.headers['Cache-Control']).to eq('no-store')
+        expect(response.headers['Cache-Control']).to eq('private, no-store')
       end
     end
 

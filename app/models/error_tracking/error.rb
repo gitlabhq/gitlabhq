@@ -7,6 +7,14 @@ class ErrorTracking::Error < ApplicationRecord
 
   has_many :events, class_name: 'ErrorTracking::ErrorEvent'
 
+  has_one :first_event,
+    -> { order(id: :asc) },
+    class_name: 'ErrorTracking::ErrorEvent'
+
+  has_one :last_event,
+    -> { order(id: :desc) },
+    class_name: 'ErrorTracking::ErrorEvent'
+
   scope :for_status, -> (status) { where(status: status) }
 
   validates :project, presence: true
@@ -90,7 +98,10 @@ class ErrorTracking::Error < ApplicationRecord
       status: status,
       tags: { level: nil, logger: nil },
       external_url: external_url,
-      external_base_url: external_base_url
+      external_base_url: external_base_url,
+      integrated: true,
+      first_release_version: first_event&.release,
+      last_release_version: last_event&.release
     )
   end
 
@@ -106,6 +117,6 @@ class ErrorTracking::Error < ApplicationRecord
 
   # For compatibility with sentry integration
   def external_base_url
-    Gitlab::Routing.url_helpers.root_url
+    Gitlab::Routing.url_helpers.project_url(project)
   end
 end

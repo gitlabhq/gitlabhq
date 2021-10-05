@@ -41,6 +41,15 @@ module WorkhorseHelper
     head :ok
   end
 
+  def send_dependency(token, url, filename)
+    headers.store(*Gitlab::Workhorse.send_dependency(token, url))
+    headers['Content-Disposition'] =
+      ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: filename)
+    headers['Content-Type'] = 'application/gzip'
+
+    head :ok
+  end
+
   def set_workhorse_internal_api_content_type
     headers['Content-Type'] = Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
   end

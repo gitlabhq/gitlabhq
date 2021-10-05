@@ -15,7 +15,19 @@ module Gitlab
 
           context_for_args = worker_class.context_for_arguments(job['args'])
 
-          wrap_in_optional_context(context_for_args, &block)
+          wrap_in_optional_context(context_for_args) do
+            # This should be inside the context for the arguments so
+            # that we don't override the feature category on the worker
+            # with the one from the caller.
+            #
+            # We do not want to set anything explicitly in the context
+            # when the feature category is 'not_owned'.
+            if worker_class.feature_category_not_owned?
+              yield
+            else
+              Gitlab::ApplicationContext.with_context(feature_category: worker_class.get_feature_category.to_s, &block)
+            end
+          end
         end
       end
     end

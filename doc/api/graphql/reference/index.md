@@ -13901,6 +13901,7 @@ A Sentry error.
 | <a id="sentrydetailederrorgitlabcommitpath"></a>`gitlabCommitPath` | [`String`](#string) | Path to the GitLab page for the GitLab commit attributed to the error. |
 | <a id="sentrydetailederrorgitlabissuepath"></a>`gitlabIssuePath` | [`String`](#string) | URL of GitLab Issue. |
 | <a id="sentrydetailederrorid"></a>`id` | [`ID!`](#id) | ID (global ID) of the error. |
+| <a id="sentrydetailederrorintegrated"></a>`integrated` | [`Boolean`](#boolean) | Error tracking backend. |
 | <a id="sentrydetailederrorlastreleaselastcommit"></a>`lastReleaseLastCommit` | [`String`](#string) | Commit the error was last seen. |
 | <a id="sentrydetailederrorlastreleaseshortversion"></a>`lastReleaseShortVersion` | [`String`](#string) | Release short version the error was last seen. |
 | <a id="sentrydetailederrorlastreleaseversion"></a>`lastReleaseVersion` | [`String`](#string) | Release version the error was last seen. |

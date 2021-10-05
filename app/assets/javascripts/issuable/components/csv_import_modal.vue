@@ -1,23 +1,28 @@
 <script>
-import { GlModal, GlSprintf, GlFormGroup, GlButton } from '@gitlab/ui';
+import { GlModal, GlFormGroup } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
-import { ISSUABLE_TYPE } from '../constants';
+import { __, sprintf } from '~/locale';
 
 export default {
-  name: 'CsvImportModal',
+  i18n: {
+    maximumFileSizeText: __('The maximum file size allowed is %{size}.'),
+    importIssuesText: __('Import issues'),
+    uploadCsvFileText: __('Upload CSV file'),
+    mainText: __(
+      "Your issues will be imported in the background. Once finished, you'll get a confirmation email.",
+    ),
+    helpText: __(
+      'It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected.',
+    ),
+  },
+  actionPrimary: {
+    text: __('Import issues'),
+  },
   components: {
     GlModal,
-    GlSprintf,
     GlFormGroup,
-    GlButton,
   },
   inject: {
-    issuableType: {
-      default: '',
-    },
-    exportCsvPath: {
-      default: '',
-    },
     importCsvIssuesPath: {
       default: '',
     },
@@ -31,11 +36,10 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      issuableName: this.issuableType === ISSUABLE_TYPE.issues ? 'issues' : 'merge requests',
-    };
+  computed: {
+    maxFileSizeText() {
+      return sprintf(this.$options.i18n.maximumFileSizeText, { size: this.maxAttachmentSize });
+    },
   },
   methods: {
     submitForm() {
@@ -47,34 +51,22 @@ export default {
 </script>
 
 <template>
-  <gl-modal :modal-id="modalId" :title="__('Import issues')">
+  <gl-modal
+    :modal-id="modalId"
+    :title="$options.i18n.importIssuesText"
+    :action-primary="$options.actionPrimary"
+    @primary="submitForm"
+  >
     <form ref="form" :action="importCsvIssuesPath" enctype="multipart/form-data" method="post">
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-      <p>
-        {{
-          __(
-            "Your issues will be imported in the background. Once finished, you'll get a confirmation email.",
-          )
-        }}
-      </p>
-      <gl-form-group :label="__('Upload CSV file')" label-for="file">
+      <p>{{ $options.i18n.mainText }}</p>
+      <gl-form-group :label="$options.i18n.uploadCsvFileText" label-for="file">
         <input id="file" type="file" name="file" accept=".csv,text/csv" />
       </gl-form-group>
       <p class="text-secondary">
-        {{
-          __(
-            'It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected.',
-          )
-        }}
-        <gl-sprintf :message="__('The maximum file size allowed is %{size}.')"
-          ><template #size>{{ maxAttachmentSize }}</template></gl-sprintf
-        >
+        {{ $options.i18n.helpText }}
+        {{ maxFileSizeText }}
       </p>
     </form>
-    <template #modal-footer>
-      <gl-button category="primary" variant="confirm" @click="submitForm">{{
-        __('Import issues')
-      }}</gl-button>
-    </template>
   </gl-modal>
 </template>

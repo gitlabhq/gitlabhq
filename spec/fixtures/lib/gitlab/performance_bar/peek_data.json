@@ -64,9 +64,54 @@
       "warnings": []
     },
     "gitaly": {
-      "duration": "0ms",
-      "calls": 0,
-      "details": [],
+      "duration": "30ms",
+      "calls": 2,
+      "details": [
+        {
+          "start": 6301.575665897,
+          "feature": "commit_service#get_tree_entries",
+          "duration": 23.709,
+          "request": "{:repository=>\n  {:storage_name=>\"nfs-file-cny01\",\n   :relative_path=>\n    \"@hashed/a6/80/a68072e80f075e89bc74a300101a9e71e8363bdb542182580162553462480a52.git\",\n   :git_object_directory=>\"\",\n   :git_alternate_object_directories=>[],\n   :gl_repository=>\"project-278964\",\n   :gl_project_path=>\"gitlab-org/gitlab\"},\n :revision=>\"master\",\n :path=>\".\",\n :sort=>:TREES_FIRST,\n :pagination_params=>{:page_token=>\"\", :limit=>100}}\n",
+          "rpc": "get_tree_entries",
+          "backtrace": [
+            "lib/gitlab/gitaly_client/call.rb:48:in `block in instrument_stream'",
+            "lib/gitlab/gitaly_client/commit_service.rb:128:in `each'",
+            "lib/gitlab/gitaly_client/commit_service.rb:128:in `each'",
+            "lib/gitlab/gitaly_client/commit_service.rb:128:in `flat_map'",
+            "lib/gitlab/gitaly_client/commit_service.rb:128:in `tree_entries'",
+            "lib/gitlab/git/tree.rb:26:in `block in tree_entries'",
+            "lib/gitlab/git/wraps_gitaly_errors.rb:7:in `wrapped_gitaly_errors'",
+            "lib/gitlab/git/tree.rb:25:in `tree_entries'",
+            "lib/gitlab/git/rugged_impl/tree.rb:29:in `tree_entries'",
+            "lib/gitlab/git/tree.rb:21:in `where'",
+            "app/models/tree.rb:17:in `initialize'",
+            "app/models/repository.rb:681:in `new'",
+            "app/models/repository.rb:681:in `tree'",
+            "app/graphql/resolvers/paginated_tree_resolver.rb:35:in `resolve'",
+            "lib/gitlab/graphql/present/field_extension.rb:18:in `resolve'",
+            "lib/gitlab/graphql/extensions/externally_paginated_array_extension.rb:7:in `resolve'",
+            "lib/gitlab/graphql/generic_tracing.rb:40:in `with_labkit_tracing'",
+            "lib/gitlab/graphql/generic_tracing.rb:30:in `platform_trace'",
+            "lib/gitlab/graphql/generic_tracing.rb:40:in `with_labkit_tracing'",
+            "lib/gitlab/graphql/generic_tracing.rb:30:in `platform_trace'",
+            "lib/gitlab/graphql/generic_tracing.rb:40:in `with_labkit_tracing'",
+            "lib/gitlab/graphql/generic_tracing.rb:30:in `platform_trace'",
+            "app/graphql/gitlab_schema.rb:40:in `multiplex'",
+            "app/controllers/graphql_controller.rb:110:in `execute_multiplex'",
+            "app/controllers/graphql_controller.rb:41:in `execute'",
+            "ee/lib/gitlab/ip_address_state.rb:10:in `with'",
+            "ee/app/controllers/ee/application_controller.rb:44:in `set_current_ip_address'",
+            "app/controllers/application_controller.rb:497:in `set_current_admin'",
+            "lib/gitlab/session.rb:11:in `with_session'",
+            "app/controllers/application_controller.rb:488:in `set_session_storage'",
+            "app/controllers/application_controller.rb:482:in `set_locale'",
+            "app/controllers/application_controller.rb:476:in `set_current_context'",
+            "ee/lib/omni_auth/strategies/group_saml.rb:41:in `other_phase'",
+            "lib/gitlab/jira/middleware.rb:19:in `call'"
+          ],
+          "warnings": []
+        }
+      ],
       "warnings": []
     },
     "redis": {

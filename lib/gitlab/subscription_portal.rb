@@ -38,6 +38,26 @@ module Gitlab
       "#{self.subscriptions_url}/plans"
     end
 
+    def self.subscriptions_gitlab_plans_url
+      "#{self.subscriptions_url}/gitlab_plans"
+    end
+
+    def self.subscriptions_instance_review_url
+      "#{self.subscriptions_url}/instance_review"
+    end
+
+    def self.add_extra_seats_url(group_id)
+      "#{self.subscriptions_url}/gitlab/namespaces/#{group_id}/extra_seats"
+    end
+
+    def self.upgrade_subscription_url(group_id, plan_id)
+      "#{self.subscriptions_url}/gitlab/namespaces/#{group_id}/upgrade/#{plan_id}"
+    end
+
+    def self.renew_subscription_url(group_id)
+      "#{self.subscriptions_url}/gitlab/namespaces/#{group_id}/renew"
+    end
+
     def self.subscription_portal_admin_email
       ENV.fetch('SUBSCRIPTION_PORTAL_ADMIN_EMAIL', 'gl_com_api@gitlab.com')
     end

@@ -355,8 +355,6 @@ class Note < ApplicationRecord
   end
 
   def noteable_author?(noteable)
-    return false unless ::Feature.enabled?(:show_author_on_note, project)
-
     noteable.author == self.author
   end
 

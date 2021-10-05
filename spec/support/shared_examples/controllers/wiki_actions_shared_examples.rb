@@ -299,7 +299,7 @@ RSpec.shared_examples 'wiki controller actions' do
           expect(response.headers['Content-Disposition']).to match(/^inline/)
           expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq('true')
           expect(response.cache_control[:public]).to be(false)
-          expect(response.headers['Cache-Control']).to eq('no-store')
+          expect(response.headers['Cache-Control']).to eq('private, no-store')
         end
       end
     end

@@ -23,6 +23,7 @@ query errorDetails($fullPath: ID!, $errorId: ID!) {
         gitlabCommit
         gitlabCommitPath
         gitlabIssuePath
+        integrated
       }
     }
   }

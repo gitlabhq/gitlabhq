@@ -92,7 +92,7 @@ module API
 
         projects, options = with_custom_attributes(projects, options)
 
-        present options[:with].prepare_relation(projects), options
+        present options[:with].prepare_relation(projects, options), options
       end
 
       def present_groups(params, groups)

@@ -16,7 +16,7 @@ module API
           options: { only_owned: true, limit: projects_limit }
         ).execute
 
-        Entities::Project.prepare_relation(projects)
+        Entities::Project.prepare_relation(projects, options)
       end
 
       expose :shared_projects, using: Entities::Project do |group, options|
@@ -26,7 +26,7 @@ module API
           options: { only_shared: true, limit: projects_limit }
         ).execute
 
-        Entities::Project.prepare_relation(projects)
+        Entities::Project.prepare_relation(projects, options)
       end
 
       def projects_limit

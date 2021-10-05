@@ -3,14 +3,30 @@
 RSpec::Matchers.define_negated_matcher :be_nullable, :be_non_null
 
 RSpec::Matchers.define :require_graphql_authorizations do |*expected|
-  match do |klass|
-    permissions = if klass.respond_to?(:required_permissions)
-                    klass.required_permissions
-                  else
-                    [klass.to_graphql.metadata[:authorize]]
-                  end
+  def permissions_for(klass)
+    if klass.respond_to?(:required_permissions)
+      klass.required_permissions
+    else
+      [klass.to_graphql.metadata[:authorize]]
+    end
+  end
 
-    expect(permissions).to eq(expected)
+  match do |klass|
+    actual = permissions_for(klass)
+
+    expect(actual).to match_array(expected)
+  end
+
+  failure_message do |klass|
+    actual = permissions_for(klass)
+    missing = actual - expected
+    extra = expected - actual
+
+    message = []
+    message << "is missing permissions: #{missing.inspect}" if missing.any?
+    message << "contained unexpected permissions: #{extra.inspect}" if extra.any?
+
+    message.join("\n")
   end
 end
 

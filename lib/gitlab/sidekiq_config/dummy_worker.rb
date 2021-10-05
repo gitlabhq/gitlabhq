@@ -32,6 +32,10 @@ module Gitlab
         Gitlab::ApplicationContext.current_context_attribute('meta.feature_category') || :not_owned
       end
 
+      def feature_category_not_owned?
+        true
+      end
+
       def get_worker_context
         nil
       end

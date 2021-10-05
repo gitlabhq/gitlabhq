@@ -934,3 +934,101 @@ func TestHealthChecksUnreachable(t *testing.T) {
 		})
 	}
 }
+
+func TestDependencyProxyInjector(t *testing.T) {
+	token := "token"
+	bodyLength := 4096 * 12
+	expectedBody := strings.Repeat("p", bodyLength)
+
+	testCases := []struct {
+		desc            string
+		contentLength   int
+		readSize        int
+		finalizeHandler func(*testing.T, http.ResponseWriter)
+	}{
+		{
+			desc:          "the uploading successfully finalized",
+			contentLength: bodyLength,
+			readSize:      bodyLength,
+			finalizeHandler: func(t *testing.T, w http.ResponseWriter) {
+				w.WriteHeader(200)
+			},
+		}, {
+			desc:          "the uploading failed",
+			contentLength: bodyLength,
+			readSize:      bodyLength,
+			finalizeHandler: func(t *testing.T, w http.ResponseWriter) {
+				w.WriteHeader(500)
+			},
+		}, {
+			desc:          "the origin resource server returns partial response",
+			contentLength: bodyLength + 1000,
+			readSize:      bodyLength,
+			finalizeHandler: func(t *testing.T, _ http.ResponseWriter) {
+				t.Fatal("partial file must not be saved")
+			},
+		}, {
+			desc:          "a user does not read the whole file",
+			contentLength: bodyLength,
+			readSize:      bodyLength - 1000,
+			finalizeHandler: func(t *testing.T, _ http.ResponseWriter) {
+				t.Fatal("partial file must not be saved")
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			originResource := "/origin_resource"
+
+			originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				require.Equal(t, originResource, r.URL.String())
+
+				w.Header().Set("Content-Length", strconv.Itoa(tc.contentLength))
+
+				_, err := io.WriteString(w, expectedBody)
+				require.NoError(t, err)
+			}))
+			defer originResourceServer.Close()
+
+			originResourceUrl := originResourceServer.URL + originResource
+
+			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+				switch r.URL.String() {
+				case "/base":
+					params := `{"Url": "` + originResourceUrl + `", "Token": "` + token + `"}`
+					w.Header().Set("Gitlab-Workhorse-Send-Data", `send-dependency:`+base64.URLEncoding.EncodeToString([]byte(params)))
+				case "/base/upload/authorize":
+					w.Header().Set("Content-Type", api.ResponseContentType)
+					_, err := fmt.Fprintf(w, `{"TempPath":"%s"}`, scratchDir)
+					require.NoError(t, err)
+				case "/base/upload":
+					tc.finalizeHandler(t, w)
+				default:
+					t.Fatalf("unexpected request: %s", r.URL)
+				}
+			})
+			defer ts.Close()
+
+			ws := startWorkhorseServer(ts.URL)
+			defer ws.Close()
+
+			req, err := http.NewRequest("GET", ws.URL+"/base", nil)
+			require.NoError(t, err)
+
+			resp, err := http.DefaultClient.Do(req)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+
+			body := make([]byte, tc.readSize)
+			_, err = io.ReadFull(resp.Body, body)
+			require.NoError(t, err)
+
+			require.NoError(t, resp.Body.Close()) // Client closes connection
+			ws.Close()                            // Wait for server handler to return
+
+			require.Equal(t, 200, resp.StatusCode, "status code")
+			require.Equal(t, expectedBody[0:tc.readSize], string(body), "response body")
+		})
+	}
+}

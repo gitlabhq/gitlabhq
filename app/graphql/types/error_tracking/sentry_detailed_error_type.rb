@@ -13,6 +13,9 @@ module Types
       field :id, GraphQL::Types::ID,
             null: false,
             description: 'ID (global ID) of the error.'
+      field :integrated, GraphQL::Types::Boolean,
+            null: true,
+            description: 'Error tracking backend.'
       field :sentry_id, GraphQL::Types::String,
             method: :id,
             null: false,

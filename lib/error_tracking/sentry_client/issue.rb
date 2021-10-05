@@ -167,7 +167,8 @@ module ErrorTracking
           first_release_version: issue.dig('firstRelease', 'version'),
           last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
           last_release_short_version: issue.dig('lastRelease', 'shortVersion'),
-          last_release_version: issue.dig('lastRelease', 'version')
+          last_release_version: issue.dig('lastRelease', 'version'),
+          integrated: false
         })
       end
 

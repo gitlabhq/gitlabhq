@@ -173,14 +173,6 @@ RSpec.describe Projects::UpdatePagesService do
 
         include_examples 'successfully deploys'
 
-        context 'when pages_smart_check_outdated_sha feature flag is disabled' do
-          before do
-            stub_feature_flags(pages_smart_check_outdated_sha: false)
-          end
-
-          include_examples 'fails with outdated reference message'
-        end
-
         context 'when old deployment present' do
           before do
             old_build = create(:ci_build, pipeline: old_pipeline, ref: 'HEAD')
@@ -189,14 +181,6 @@ RSpec.describe Projects::UpdatePagesService do
           end
 
           include_examples 'successfully deploys'
-
-          context 'when pages_smart_check_outdated_sha feature flag is disabled' do
-            before do
-              stub_feature_flags(pages_smart_check_outdated_sha: false)
-            end
-
-            include_examples 'fails with outdated reference message'
-          end
         end
 
         context 'when newer deployment present' do

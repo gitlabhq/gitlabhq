@@ -11,6 +11,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
       include ApplicationWorker
 
+      feature_category :issue_tracking
+
       def self.job_for_args(args)
         jobs.find { |job| job['args'] == args }
       end
@@ -20,8 +22,31 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
     end
   end
 
+  let(:not_owned_worker_class) do
+    Class.new(worker_class) do
+      def self.name
+        'TestNotOwnedWithContextWorker'
+      end
+
+      feature_category_not_owned!
+    end
+  end
+
+  let(:mailer_class) do
+    Class.new(ApplicationMailer) do
+      def self.name
+        'TestMailer'
+      end
+
+      def test_mail
+      end
+    end
+  end
+
   before do
     stub_const(worker_class.name, worker_class)
+    stub_const(not_owned_worker_class.name, not_owned_worker_class)
+    stub_const(mailer_class.name, mailer_class)
   end
 
   describe "#call" do
@@ -40,6 +65,76 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
       expect(job1['meta.user']).to eq(user_per_job['job1'].username)
       expect(job2['meta.user']).to eq(user_per_job['job2'].username)
+    end
+
+    context 'when the feature category is set in the context_proc' do
+      it 'takes the feature category from the worker, not the caller' do
+        TestWithContextWorker.bulk_perform_async_with_contexts(
+          %w(job1 job2),
+          arguments_proc: -> (name) { [name, 1, 2, 3] },
+          context_proc: -> (_) { { feature_category: 'code_review' } }
+        )
+
+        job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
+        job2 = TestWithContextWorker.job_for_args(['job2', 1, 2, 3])
+
+        expect(job1['meta.feature_category']).to eq('issue_tracking')
+        expect(job2['meta.feature_category']).to eq('issue_tracking')
+      end
+
+      it 'takes the feature category from the caller if the worker is not owned' do
+        TestNotOwnedWithContextWorker.bulk_perform_async_with_contexts(
+          %w(job1 job2),
+          arguments_proc: -> (name) { [name, 1, 2, 3] },
+          context_proc: -> (_) { { feature_category: 'code_review' } }
+        )
+
+        job1 = TestNotOwnedWithContextWorker.job_for_args(['job1', 1, 2, 3])
+        job2 = TestNotOwnedWithContextWorker.job_for_args(['job2', 1, 2, 3])
+
+        expect(job1['meta.feature_category']).to eq('code_review')
+        expect(job2['meta.feature_category']).to eq('code_review')
+      end
+
+      it 'does not set any explicit feature category for mailers', :sidekiq_mailers do
+        expect(Gitlab::ApplicationContext).not_to receive(:with_context)
+
+        TestMailer.test_mail.deliver_later
+      end
+    end
+
+    context 'when the feature category is already set in the surrounding block' do
+      it 'takes the feature category from the worker, not the caller' do
+        Gitlab::ApplicationContext.with_context(feature_category: 'authentication_and_authorization') do
+          TestWithContextWorker.bulk_perform_async_with_contexts(
+            %w(job1 job2),
+            arguments_proc: -> (name) { [name, 1, 2, 3] },
+            context_proc: -> (_) { {} }
+          )
+        end
+
+        job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
+        job2 = TestWithContextWorker.job_for_args(['job2', 1, 2, 3])
+
+        expect(job1['meta.feature_category']).to eq('issue_tracking')
+        expect(job2['meta.feature_category']).to eq('issue_tracking')
+      end
+
+      it 'takes the feature category from the caller if the worker is not owned' do
+        Gitlab::ApplicationContext.with_context(feature_category: 'authentication_and_authorization') do
+          TestNotOwnedWithContextWorker.bulk_perform_async_with_contexts(
+            %w(job1 job2),
+            arguments_proc: -> (name) { [name, 1, 2, 3] },
+            context_proc: -> (_) { {} }
+          )
+        end
+
+        job1 = TestNotOwnedWithContextWorker.job_for_args(['job1', 1, 2, 3])
+        job2 = TestNotOwnedWithContextWorker.job_for_args(['job2', 1, 2, 3])
+
+        expect(job1['meta.feature_category']).to eq('authentication_and_authorization')
+        expect(job2['meta.feature_category']).to eq('authentication_and_authorization')
+      end
     end
   end
 end

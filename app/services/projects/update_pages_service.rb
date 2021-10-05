@@ -136,13 +136,11 @@ module Projects
     def validate_outdated_sha!
       return if latest?
 
-      if Feature.enabled?(:pages_smart_check_outdated_sha, project, default_enabled: :yaml)
-        # use pipeline_id in case the build is retried
-        last_deployed_pipeline_id = project.pages_metadatum&.pages_deployment&.ci_build&.pipeline_id
+      # use pipeline_id in case the build is retried
+      last_deployed_pipeline_id = project.pages_metadatum&.pages_deployment&.ci_build&.pipeline_id
 
-        return unless last_deployed_pipeline_id
-        return if last_deployed_pipeline_id <= build.pipeline_id
-      end
+      return unless last_deployed_pipeline_id
+      return if last_deployed_pipeline_id <= build.pipeline_id
 
       raise InvalidStateError, 'build SHA is outdated for this ref'
     end

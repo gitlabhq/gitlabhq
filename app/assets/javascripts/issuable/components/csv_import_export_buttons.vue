@@ -15,6 +15,8 @@ import CsvImportModal from './csv_import_modal.vue';
 export default {
   i18n: {
     exportAsCsvButtonText: __('Export as CSV'),
+    importCsvText: __('Import CSV'),
+    importFromJiraText: __('Import from Jira'),
     importIssuesText: __('Import issues'),
   },
   name: 'CsvImportExportButtons',
@@ -101,13 +103,16 @@ export default {
         :text-sr-only="!showLabel"
         :icon="importButtonIcon"
       >
-        <gl-dropdown-item v-gl-modal="importModalId">{{ __('Import CSV') }}</gl-dropdown-item>
+        <gl-dropdown-item v-gl-modal="importModalId">
+          {{ $options.i18n.importCsvText }}
+        </gl-dropdown-item>
         <gl-dropdown-item
           v-if="canEdit"
           :href="projectImportJiraPath"
           data-qa-selector="import_from_jira_link"
-          >{{ __('Import from Jira') }}</gl-dropdown-item
         >
+          {{ $options.i18n.importFromJiraText }}
+        </gl-dropdown-item>
       </gl-dropdown>
     </gl-button-group>
     <csv-export-modal

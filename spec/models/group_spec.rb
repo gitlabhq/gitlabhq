@@ -2756,6 +2756,10 @@ RSpec.describe Group do
     it 'removes the protocol' do
       expect(group.dependency_proxy_image_prefix).not_to include('http')
     end
+
+    it 'does not include /groups' do
+      expect(group.dependency_proxy_image_prefix).not_to include('/groups')
+    end
   end
 
   describe '#dependency_proxy_image_ttl_policy' do
