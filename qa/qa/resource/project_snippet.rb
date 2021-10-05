@@ -30,6 +30,8 @@ module QA
 
           new_snippet.click_create_snippet_button
         end
+
+        @id = Page::Project::Snippet::Show.perform(&:snippet_id)
       end
 
       def api_get_path

@@ -79,6 +79,11 @@ module QA
             element :default_actions_container
             element :copy_contents_button
           end
+
+          base.view 'app/views/layouts/nav/_breadcrumbs.html.haml' do
+            element :breadcrumb_links_content
+            element :breadcrumb_sub_title_content
+          end
         end
 
         def has_snippet_title?(snippet_title)
@@ -247,6 +252,12 @@ module QA
 
           unless has_element?(:note_author_content)
             raise ElementNotFound, "Comment did not appear as expected"
+          end
+        end
+
+        def snippet_id
+          within_element(:breadcrumb_links_content) do
+            find_element(:breadcrumb_sub_title_content).text.delete_prefix('$')
           end
         end
       end

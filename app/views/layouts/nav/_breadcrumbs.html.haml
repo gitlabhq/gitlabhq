@@ -19,7 +19,7 @@
         = render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :after
         - unless @skip_current_level_breadcrumb
           %li
-            %h2.breadcrumbs-sub-title
+            %h2.breadcrumbs-sub-title{ data: { qa_selector: 'breadcrumb_sub_title_content' } }
               = link_to @breadcrumb_title, breadcrumb_title_link
     %script{ type: 'application/ld+json' }
       :plain

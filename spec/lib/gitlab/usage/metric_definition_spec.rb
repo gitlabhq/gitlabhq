@@ -49,6 +49,37 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     expect { described_class.definitions }.not_to raise_error
   end
 
+  describe '#with_instrumentation_class' do
+    let(:metric_status) { 'active' }
+    let(:all_definitions) do
+      metrics_definitions = [
+        { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', status: 'data_available' },
+        { key_path: 'metric2', instrumentation_class: 'RedisHLLMetric', status: 'implemented' },
+        { key_path: 'metric3', instrumentation_class: 'RedisHLLMetric', status: 'deprecated' },
+        { key_path: 'metric4', instrumentation_class: 'RedisHLLMetric', status: metric_status },
+        { key_path: 'metric5', status: 'active' },
+        { key_path: 'metric_missing_status' }
+      ]
+      metrics_definitions.map { |definition| described_class.new(definition[:key_path], definition.symbolize_keys) }
+    end
+
+    before do
+      allow(described_class).to receive(:all).and_return(all_definitions)
+    end
+
+    it 'includes definitions with instrumentation_class' do
+      expect(described_class.with_instrumentation_class.count).to eq(4)
+    end
+
+    context 'with removed metric' do
+      let(:metric_status) { 'removed' }
+
+      it 'excludes removed definitions' do
+        expect(described_class.with_instrumentation_class.count).to eq(3)
+      end
+    end
+  end
+
   describe '#key' do
     subject { definition.key }
 

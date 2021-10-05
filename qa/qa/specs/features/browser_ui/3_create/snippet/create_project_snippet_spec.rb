@@ -3,9 +3,7 @@
 module QA
   RSpec.describe 'Create' do # to be converted to a smoke test once proved to be stable
     describe 'Project snippet creation' do
-      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1358' do
-        Flow::Login.sign_in
-
+      let(:snippet) do
         Resource::ProjectSnippet.fabricate_via_browser_ui! do |snippet|
           snippet.title = 'Project snippet'
           snippet.description = ' '
@@ -13,6 +11,18 @@ module QA
           snippet.file_name = 'markdown_file.md'
           snippet.file_content = "### Snippet heading\n\n[Gitlab link](https://gitlab.com/)"
         end
+      end
+
+      before do
+        Flow::Login.sign_in
+      end
+
+      after do
+        snippet.remove_via_api!
+      end
+
+      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1358' do
+        snippet.visit!
 
         Page::Dashboard::Snippet::Show.perform do |snippet|
           expect(snippet).to have_snippet_title('Project snippet')

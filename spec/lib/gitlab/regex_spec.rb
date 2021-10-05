@@ -653,13 +653,23 @@ RSpec.describe Gitlab::Regex do
 
     it { is_expected.to match('release') }
     it { is_expected.to match('my-repo') }
-    it { is_expected.to match('my-repo42') }
+    it { is_expected.to match('My-Re_po') }
+    it { is_expected.to match('my_repo42') }
+    it { is_expected.to match('1.2.3') }
+    it { is_expected.to match('v1.2.3-beta-12') }
 
     # Do not allow empty
     it { is_expected.not_to match('') }
 
     # Do not allow Unicode
     it { is_expected.not_to match('hé') }
+
+    it { is_expected.not_to match('.1.23') }
+    it { is_expected.not_to match('1..23') }
+    it { is_expected.not_to match('1.2.3.') }
+    it { is_expected.not_to match('1..2.3.') }
+    it { is_expected.not_to match('1/../2.3.') }
+    it { is_expected.not_to match('1/..%2F2.3.') }
   end
 
   describe '.helm_package_regex' do

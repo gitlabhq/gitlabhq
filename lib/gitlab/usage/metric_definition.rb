@@ -6,6 +6,7 @@ module Gitlab
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema.json')
       BASE_REPO_PATH = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master'
       SKIP_VALIDATION_STATUSES = %w[deprecated removed].to_set.freeze
+      AVAILABLE_STATUSES = %w[active data_available implemented deprecated].freeze
 
       InvalidError = Class.new(RuntimeError)
 
@@ -59,6 +60,10 @@ module Gitlab
         attributes[:data_category]&.downcase!
       end
 
+      def available?
+        AVAILABLE_STATUSES.include?(attributes[:status])
+      end
+
       alias_method :to_dictionary, :to_h
 
       class << self
@@ -76,7 +81,7 @@ module Gitlab
         end
 
         def with_instrumentation_class
-          all.select { |definition| definition.attributes[:instrumentation_class].present? }
+          all.select { |definition| definition.attributes[:instrumentation_class].present? && definition.available? }
         end
 
         def schemer

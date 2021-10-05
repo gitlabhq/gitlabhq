@@ -540,10 +540,6 @@ all [custom variables](../../../ci/variables/index.md#custom-cicd-variables) are
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 
-WARNING:
-Variables having names starting with these prefixes are **not** propagated to the SAST Docker container and/or
-analyzer containers: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`, `OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
-
 ### Experimental features
 
 You can receive early access to experimental features. Experimental features might be added,
