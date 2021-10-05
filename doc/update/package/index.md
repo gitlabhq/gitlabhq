@@ -4,57 +4,37 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Upgrade GitLab using the GitLab Package **(FREE SELF)**
+# Upgrade GitLab by using the GitLab package **(FREE SELF)**
 
-This section describes how to upgrade GitLab to a new version using the
+You can upgrade GitLab to a new version by using the
 GitLab package.
 
-We recommend performing upgrades between major and minor releases no more than once per
-week, to allow time for background migrations to finish. Decrease the time required to
-complete these migrations by increasing the number of
-[Sidekiq workers](../../administration/operations/extra_sidekiq_processes.md)
-that can process jobs in the `background_migration` queue.
+## Prerequisites
 
-If you don't follow the steps in [zero downtime upgrades](../zero_downtime.md),
-your GitLab application will not be available to users while an upgrade is in progress.
-They either see a "Deploy in progress" message or a "502" error in their web browser.
-
-Prerequisites:
-
-- [Supported upgrade paths](../index.md#upgrade-paths)
-  has suggestions on when to upgrade. Upgrade paths are enforced for version upgrades by
-  default. This restricts performing direct upgrades that skip major versions (for
-  example 10.3 to 12.7 in one jump) that **can break GitLab
-  installations** due to multiple reasons like deprecated or removed configuration
-  settings, upgrade of internal tools and libraries, and so on.
-- If you are upgrading from a non-Package installation to a GitLab Package installation, see
-  [Upgrading from a non-Package installation to a GitLab Package installation](https://docs.gitlab.com/omnibus/convert_to_omnibus.html).
-- It's important to ensure that any
+- Decide when to upgrade by viewing the [supported upgrade paths](../index.md#upgrade-paths).
+  You can't directly skip major versions (for example, go from 10.3 to 12.7 in one step).
+- If you are upgrading from a non-package installation to a GitLab package installation, see
+  [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/convert_to_omnibus.html).
+- Ensure that any
   [background migrations](../index.md#checking-for-background-migrations-before-upgrading)
-  have been fully completed before upgrading to a new major version. Upgrading
-  before background migrations have finished may lead to data corruption.
+  are fully completed. Upgrading
+  before background migrations have finished can lead to data corruption.
+  We recommend performing upgrades between major and minor releases no more than once per
+  week, to allow time for background migrations to finish.
 - Gitaly servers must be upgraded to the newer version prior to upgrading the application server.
   This prevents the gRPC client on the application server from sending RPCs that the old Gitaly version
   does not support.
 
-You can upgrade the GitLab Package using one of the following methods:
+## Downtime
 
-- [Using the official repositories](#upgrade-using-the-official-repositories).
-- [Using a manually-downloaded package](#upgrade-using-a-manually-downloaded-package).
-
-Both automatically back up the GitLab database before installing a newer
-GitLab version. You may skip this automatic database backup by creating an empty file
-at `/etc/gitlab/skip-auto-backup`:
-
-```shell
-sudo touch /etc/gitlab/skip-auto-backup
-```
-
-For safety reasons, you should maintain an up-to-date backup on your own if you plan to use this flag.
+- For single node installations, GitLab is not available to users while an
+  upgrade is in progress. The user's web browser shows a `Deploy in progress` message or a `502` error.
+- For multi-node installations, see how to perform
+  [zero downtime upgrades](../zero_downtime.md).
 
 ## Version-specific changes
 
-Updating to major versions might need some manual intervention. For more information,
+Upgrading versions might need some manual intervention. For more information,
 check the version your are upgrading to:
 
 - [GitLab 14](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
@@ -62,45 +42,61 @@ check the version your are upgrading to:
 - [GitLab 12](https://docs.gitlab.com/omnibus/update/gitlab_12_changes.html)
 - [GitLab 11](https://docs.gitlab.com/omnibus/update/gitlab_11_changes.html)
 
+## Back up before upgrading
+
+The GitLab database is backed up before installing a newer GitLab version. You
+may skip this automatic database backup by creating an empty file
+at `/etc/gitlab/skip-auto-backup`:
+
+```shell
+sudo touch /etc/gitlab/skip-auto-backup
+```
+
+Nevertheless, it is highly recommended to maintain a full up-to-date
+[backup](../../raketasks/backup_restore.md) on your own.
+
 ## Upgrade using the official repositories
 
 All GitLab packages are posted to the GitLab [package server](https://packages.gitlab.com/gitlab/).
 Five repositories are maintained:
 
-- [GitLab EE](https://packages.gitlab.com/gitlab/gitlab-ee): for official
-  [Enterprise Edition](https://about.gitlab.com/pricing/) releases.
-- [GitLab CE](https://packages.gitlab.com/gitlab/gitlab-ce): for official Community Edition releases.
-- [Unstable](https://packages.gitlab.com/gitlab/unstable): for release candidates and other unstable versions.
-- [Nighty Builds](https://packages.gitlab.com/gitlab/nightly-builds): for nightly builds.
-- [Raspberry Pi](https://packages.gitlab.com/gitlab/raspberry-pi2): for official Community Edition releases built for [Raspberry Pi](https://www.raspberrypi.org) packages.
+- [`gitlab/gitlab-ee`](https://packages.gitlab.com/gitlab/gitlab-ee): The full
+  GitLab package that contains all the Community Edition features plus the
+  [Enterprise Edition](https://about.gitlab.com/pricing/) ones.
+- [`gitlab/gitlab-ce`](https://packages.gitlab.com/gitlab/gitlab-ce): A stripped
+  down package that contains only the Community Edition features.
+- [`gitlab/unstable`](https://packages.gitlab.com/gitlab/unstable): Release candidates and other unstable versions.
+- [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds): Nightly builds.
+- [`gitlab/raspberry-pi2`](https://packages.gitlab.com/gitlab/raspberry-pi2): Official Community Edition releases built for [Raspberry Pi](https://www.raspberrypi.org) packages.
 
-If you have installed Omnibus GitLab [Community Edition](https://about.gitlab.com/install/?version=ce)
+If you have installed GitLab [Community Edition](https://about.gitlab.com/install/?version=ce)
 or [Enterprise Edition](https://about.gitlab.com/install/), then the
 official GitLab repository should have already been set up for you.
 
-To upgrade to the newest GitLab version, run:
+### Upgrade to the latest version using the official repositories
 
-- For GitLab [Enterprise Edition](https://about.gitlab.com/pricing/):
+If you upgrade GitLab regularly, for example once a month, you can upgrade to
+the latest version by using your package manager.
 
-  ```shell
-  # Debian/Ubuntu
-  sudo apt-get update
-  sudo apt-get install gitlab-ee
+To upgrade to the latest GitLab version:
 
-  # Centos/RHEL
-  sudo yum install gitlab-ee
-  ```
+```shell
+# Ubuntu/Debian
+sudo apt update && sudo apt install gitlab-ee
 
-- For GitLab Community Edition:
+# RHEL/CentOS 6 and 7
+sudo yum install gitlab-ee
 
-  ```shell
-  # Debian/Ubuntu
-  sudo apt-get update
-  sudo apt-get install gitlab-ce
+# RHEL/CentOS 8
+sudo dnf install gitlab-ee
 
-  # Centos/RHEL
-  sudo yum install gitlab-ce
-  ```
+# SUSE
+sudo zypper install gitlab-ee
+```
+
+NOTE:
+For the GitLab Community Edition, replace `gitlab-ee` with
+`gitlab-ce`.
 
 ### Upgrade to a specific version using the official repositories
 
@@ -113,29 +109,42 @@ versions, so you must specify the specific GitLab package with each upgrade.
 To specify the intended GitLab version number in your package manager's install
 or upgrade command:
 
-1. First, identify the GitLab version number in your package manager:
+1. Identify the version number of the installed package:
 
    ```shell
    # Ubuntu/Debian
    sudo apt-cache madison gitlab-ee
+
    # RHEL/CentOS 6 and 7
    yum --showduplicates list gitlab-ee
+
    # RHEL/CentOS 8
-   dnf search gitlab-ee*
+   dnf --showduplicates list gitlab-ee
+
+   # SUSE
+   zypper search -s gitlab-ee
    ```
 
-1. Then install the specific GitLab package:
+1. Install the specific `gitlab-ee` package by using one of the following commands
+   and replacing `<version>` with the version you found in the previous step:
 
    ```shell
    # Ubuntu/Debian
-   sudo apt install gitlab-ee=12.0.12-ee.0
+   sudo apt install gitlab-ee=<version>
+
    # RHEL/CentOS 6 and 7
-   yum install gitlab-ee-12.0.12-ee.0.el7
+   yum install gitlab-ee-<version>
+
    # RHEL/CentOS 8
-   dnf install gitlab-ee-12.0.12-ee.0.el8
+   dnf install gitlab-ee-<version>
+
    # SUSE
-   zypper install gitlab-ee=12.0.12-ee.0
+   zypper install gitlab-ee=<version>
    ```
+
+NOTE:
+For the GitLab Community Edition, replace `gitlab-ee` with
+`gitlab-ce`.
 
 ## Upgrade using a manually-downloaded package
 
@@ -150,34 +159,30 @@ install GitLab for the first time or update it.
 To download and install GitLab:
 
 1. Visit the [official repository](#upgrade-using-the-official-repositories) of your package.
-1. Browse to the repository for the type of package you would like to see the
-   list of packages that are available. Multiple packages exist for a
-   single version, one for each supported distribution type. Next to the filename
-   is a label indicating the distribution, as the file names may be the same.
-1. Find the package version you wish to install and click on it.
-1. Click the **Download** button in the upper right corner to download the package.
-1. After the GitLab package is downloaded, install it using the following commands:
+1. Filter the list by searching for the version you want to install (for example 14.1.6).
+   Multiple packages may exist for a single version, one for each supported distribution
+   and architecture. Next to the filename is a label indicating the distribution,
+   as the filenames may be the same.
+1. Find the package version you wish to install, and select the filename from the list.
+1. Select **Download** in the upper right corner to download the package.
+1. After the package is downloaded, install it by using one of the
+   following commands and replacing `<package_name>` with the package name
+   you downloaded:
 
-   - For GitLab [Enterprise Edition](https://about.gitlab.com/pricing/):
+   ```shell
+   # Debian/Ubuntu
+   dpkg -i <package_name>
 
-     ```shell
-     # Debian/Ubuntu
-     dpkg -i gitlab-ee-<version>.deb
+   # CentOS/RHEL
+   rpm -Uvh <package_name>
 
-     # CentOS/RHEL
-     rpm -Uvh gitlab-ee-<version>.rpm
-     ```
+   # SUSE
+   zypper install <package_name>
+   ```
 
-   - For GitLab Community Edition:
-
-     ```shell
-     # GitLab Community Edition
-     # Debian/Ubuntu
-     dpkg -i gitlab-ce-<version>.deb
-
-     # CentOS/RHEL
-     rpm -Uvh gitlab-ce-<version>.rpm
-     ```
+NOTE:
+For the GitLab Community Edition, replace `gitlab-ee` with
+`gitlab-ce`.
 
 ## Troubleshooting
 
@@ -237,8 +242,8 @@ To avoid this issue, either:
 
 ### 500 error when accessing Project > Settings > Repository
 
-When GitLab is migrated from CE > EE > CE, and then back to EE, you
-might get the following error when viewing a project's repository settings:
+This error occurs when GitLab is converted from CE > EE > CE, and then back to EE.
+When viewing a project's repository settings, you can view this error in the logs:
 
 ```shell
 Processing by Projects::Settings::RepositoryController#show as HTML

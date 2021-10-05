@@ -79,6 +79,10 @@ See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
 Certain major/minor releases may require different migrations to be
 finished before you update to the newer version.
 
+Decrease the time required to complete these migrations by increasing the number of
+[Sidekiq workers](../administration/operations/extra_sidekiq_processes.md)
+that can process jobs in the `background_migration` queue.
+
 **For GitLab 14.0 and newer**
 
 To check the status of [batched background migrations](../user/admin_area/monitoring/background_migrations.md):

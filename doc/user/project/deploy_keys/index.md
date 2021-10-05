@@ -185,10 +185,13 @@ deploy keys**.
 
 ### Deploy key cannot push to a protected branch
 
-If the owner of this deploy key doesn't have access to a [protected
-branch](../protected_branches.md), then this deploy key doesn't have access to
-the branch either. In addition to this, choosing the **No one** value in
-[the "Allowed to push" section](../protected_branches.md#configure-a-protected-branch)
-means that no users **and** no services using deploy keys can push to that selected branch.
+There are a few scenarios where a deploy key will fail to push to a [protected
+branch](../protected_branches.md).
 
-Refer to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30769) for more information.
+- The owner associated to a deploy key does not have access to the protected branch.
+- The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
+- **No one** is selected in [the "Allowed to push" section](../protected_branches.md#configure-a-protected-branch) of the protected branch.
+
+All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch. 
+
+We recommend you create a service account, and associate a deploy key to the service account, for projects using deploy keys.
