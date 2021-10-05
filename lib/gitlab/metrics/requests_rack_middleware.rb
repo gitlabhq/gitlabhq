@@ -132,12 +132,12 @@ module Gitlab
       def satisfactory?(env, elapsed)
         target =
           if env['api.endpoint'].present?
-            env['api.endpoint'].options[:for].try(:target_duration_for_app, env['api.endpoint'])
-          elsif env['action_controller.instance'].present? && env['action_controller.instance'].respond_to?(:target_duration)
-            env['action_controller.instance'].target_duration
+            env['api.endpoint'].options[:for].try(:urgency_for_app, env['api.endpoint'])
+          elsif env['action_controller.instance'].present? && env['action_controller.instance'].respond_to?(:urgency)
+            env['action_controller.instance'].urgency
           end
 
-        target ||= Gitlab::EndpointAttributes::DEFAULT_TARGET_DURATION
+        target ||= Gitlab::EndpointAttributes::DEFAULT_URGENCY
 
         elapsed < target.duration
       end

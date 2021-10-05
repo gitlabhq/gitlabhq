@@ -163,30 +163,30 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
       end
 
       context 'SLI satisfactory' do
-        where(:target, :duration, :success) do
+        where(:request_urgency_name, :duration, :success) do
           [
-            [:very_fast, 0.1,  true],
-            [:very_fast, 0.25, false],
-            [:very_fast, 0.3,  false],
-            [:fast,      0.3,  true],
-            [:fast,      0.5,  false],
-            [:fast,      0.6,  false],
-            [:medium,    0.6,  true],
-            [:medium,    1.0,  false],
-            [:medium,    1.2,  false],
-            [:slow,      4.5,  true],
-            [:slow,      5.0,  false],
-            [:slow,      6,    false]
+            [:high, 0.1, true],
+            [:high, 0.25, false],
+            [:high, 0.3, false],
+            [:medium, 0.3, true],
+            [:medium, 0.5, false],
+            [:medium, 0.6, false],
+            [:default, 0.6, true],
+            [:default, 1.0, false],
+            [:default, 1.2, false],
+            [:low, 4.5, true],
+            [:low, 5.0, false],
+            [:low, 6, false]
           ]
         end
 
         with_them do
           context 'Grape API handler having expected duration setup' do
             let(:api_handler) do
-              target_duration = target # target is a DSL provided by Rspec, it's invisible to the inner block
+              request_urgency = request_urgency_name
               Class.new(::API::Base) do
                 feature_category :hello_world, ['/projects/:id/archive']
-                target_duration target_duration, ['/projects/:id/archive']
+                urgency request_urgency, ['/projects/:id/archive']
               end
             end
 
@@ -215,10 +215,10 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
           context 'Rails controller having expected duration setup' do
             let(:controller) do
-              target_duration = target # target is a DSL provided by Rspec, it's invisible to the inner block
+              request_urgency = request_urgency_name
               Class.new(ApplicationController) do
                 feature_category :hello_world, [:index, :show]
-                target_duration target_duration, [:index, :show]
+                urgency request_urgency, [:index, :show]
               end
             end
 

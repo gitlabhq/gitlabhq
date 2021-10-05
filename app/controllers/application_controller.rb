@@ -139,8 +139,8 @@ class ApplicationController < ActionController::Base
     self.class.feature_category_for_action(action_name).to_s
   end
 
-  def target_duration
-    self.class.target_duration_for_action(action_name)
+  def urgency
+    self.class.urgency_for_action(action_name)
   end
 
   protected

@@ -9,8 +9,8 @@ module API
         feature_category_for_action(path_for_app(app))
       end
 
-      def target_duration_for_app(app)
-        target_duration_for_action(path_for_app(app))
+      def urgency_for_app(app)
+        urgency_for_action(path_for_app(app))
       end
 
       def path_for_app(app)
@@ -27,8 +27,8 @@ module API
           feature_category(category, actions)
         end
 
-        if target = route_options.delete(:target_duration)
-          target_duration(target, actions)
+        if target = route_options.delete(:urgency)
+          urgency(target, actions)
         end
 
         super

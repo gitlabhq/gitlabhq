@@ -5,7 +5,7 @@ module Gitlab
     extend ActiveSupport::Concern
     include Gitlab::ClassAttributes
 
-    DEFAULT_TARGET_DURATION = Config::TARGET_DURATIONS.fetch(:medium)
+    DEFAULT_URGENCY = Config::REQUEST_URGENCIES.fetch(:default)
 
     class_methods do
       def feature_category(category, actions = [])
@@ -17,13 +17,13 @@ module Gitlab
         category || superclass_feature_category_for_action(action)
       end
 
-      def target_duration(duration, actions = [])
-        endpoint_attributes.set(actions, target_duration: duration)
+      def urgency(urgency_name, actions = [])
+        endpoint_attributes.set(actions, urgency: urgency_name)
       end
 
-      def target_duration_for_action(action)
-        duration = endpoint_attributes.attribute_for_action(action, :target_duration)
-        duration || superclass_target_duration_for_action(action) || DEFAULT_TARGET_DURATION
+      def urgency_for_action(action)
+        urgency = endpoint_attributes.attribute_for_action(action, :urgency)
+        urgency || superclass_urgency_for_action(action) || DEFAULT_URGENCY
       end
 
       private
@@ -38,10 +38,10 @@ module Gitlab
         superclass.feature_category_for_action(action)
       end
 
-      def superclass_target_duration_for_action(action)
-        return unless superclass.respond_to?(:target_duration_for_action)
+      def superclass_urgency_for_action(action)
+        return unless superclass.respond_to?(:urgency_for_action)
 
-        superclass.target_duration_for_action(action)
+        superclass.urgency_for_action(action)
       end
     end
   end

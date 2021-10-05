@@ -19733,7 +19733,12 @@ ALTER SEQUENCE user_canonical_emails_id_seq OWNED BY user_canonical_emails.id;
 
 CREATE TABLE user_credit_card_validations (
     user_id bigint NOT NULL,
-    credit_card_validated_at timestamp with time zone NOT NULL
+    credit_card_validated_at timestamp with time zone NOT NULL,
+    expiration_date date,
+    last_digits smallint,
+    holder_name text,
+    CONSTRAINT check_3eea080c91 CHECK (((last_digits >= 0) AND (last_digits <= 9999))),
+    CONSTRAINT check_eafe45d88b CHECK ((char_length(holder_name) <= 26))
 );
 
 CREATE TABLE user_custom_attributes (
@@ -26629,6 +26634,8 @@ CREATE INDEX index_user_canonical_emails_on_canonical_email ON user_canonical_em
 CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id ON user_canonical_emails USING btree (user_id);
 
 CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id_and_canonical_email ON user_canonical_emails USING btree (user_id, canonical_email);
+
+CREATE INDEX index_user_credit_card_validations_meta_data_full_match ON user_credit_card_validations USING btree (holder_name, expiration_date, last_digits, credit_card_validated_at);
 
 CREATE INDEX index_user_custom_attributes_on_key_and_value ON user_custom_attributes USING btree (key, value);
 

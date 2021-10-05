@@ -15,6 +15,7 @@ export default () => {
     environmentsEndpoint,
     projectId,
     featureFlagIssuesEndpoint,
+    searchPath,
   } = el.dataset;
 
   return new Vue({
@@ -26,6 +27,7 @@ export default () => {
       environmentsEndpoint,
       projectId,
       featureFlagIssuesEndpoint,
+      searchPath,
     },
     render(createElement) {
       return createElement(EditFeatureFlag);

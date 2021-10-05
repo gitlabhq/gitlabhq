@@ -26,7 +26,8 @@ regular controller endpoints. It consists of these counters:
 
 1. `gitlab_sli:rails_request_apdex:success_total`: This counter gets
    incremented for every successful request that performed faster than
-   the [defined target duration](#adjusting-request-target-duration).
+   the [defined target duration depending on the endpoint's
+   urgency](#adjusting-request-urgency).
 
 Both these counters are labeled with:
 
@@ -52,15 +53,19 @@ For example: for the web-service, we want at least 99.8% of requests
 to be faster than their target duration.
 
 These are the targets we use for alerting and service montoring. So
-durations should be set keeping those into account.
+durations should be set keeping those into account. So we would not
+cause alerts. But the goal would be to set the urgency to a target
+that users would be satisfied with.
 
 Both successful measurements and unsuccessful ones have an impact on the
 error budget for stage groups.
 
-## Adjusting request target duration
+## Adjusting request urgency
 
 Not all endpoints perform the same type of work, so it is possible to
-define different durations for different endpoints.
+define different urgencies for different endpoints. An endpoint with a
+lower urgency can have a longer request duration than endpoints that
+are high urgency.
 
 Long-running requests are more expensive for our
 infrastructure: while one request is being served, the thread remains
@@ -71,9 +76,9 @@ process. The request is in fact a noisy neighbor for other requests
 handled by the worker. This is why the upper bound for a target
 duration is capped at 5 seconds.
 
-## Increasing the target duration (setting a slower target)
+## Decreasing the urgency (setting a higher target duration)
 
-Increasing the target duration on an existing endpoint can be done on
+Increasing the urgency on an existing endpoint can be done on
 a case-by-case basis. Please take the following into account:
 
 1. Apdex is about perceived performance, if a user is actively waiting
@@ -84,10 +89,10 @@ a case-by-case basis. Please take the following into account:
    A product manager can help to identify how an endpoint is used.
 
 1. The workload for some endpoints can sometimes differ greatly
-   depending on the parameters specified by the caller. The target
-   duration needs to accomodate that. In some cases, it might be
-   interesting to define a separate [application
-   SLI](index.md#defining-a-new-sli) for what the endpoint is doing.
+   depending on the parameters specified by the caller. The urgency
+   needs to accomodate that. In some cases, it might be interesting to
+   define a separate [application SLI](index.md#defining-a-new-sli)
+   for what the endpoint is doing.
 
    When the endpoints in certain cases turn into no-ops, making them
    very fast, we should ignore these fast requests when setting the
@@ -99,11 +104,12 @@ a case-by-case basis. Please take the following into account:
 1. Consider the dependent resources consumed by the endpoint. If the endpoint
    loads a lot of data from Gitaly or the database and this is causing
    it to not perform satisfactory. It could be better to optimize the
-   way the data is loaded rather than increasing the target duration.
+   way the data is loaded rather than increasing the target duration
+   by lowering the urgency.
 
-   In cases like this, it might be appropriate to temporarily increase
-   the duration to make the endpoint meet SLO, if this is bearable for
-   the infrastructure. In such cases, please link an issue from a code
+   In cases like this, it might be appropriate to temporarily decrease
+   urgency to make the endpoint meet SLO, if this is bearable for the
+   infrastructure. In such cases, please link an issue from a code
    comment.
 
    If the endpoint consumes a lot of CPU time, we should also consider
@@ -117,20 +123,19 @@ a case-by-case basis. Please take the following into account:
    view. We cannot scale up the fleet fast enough to accomodate for
    the incoming slow requests alongside the regular traffic.
 
-When increasing the target duration for an existing endpoint, please
-involve a [Scalability team
-member](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/#team-members)
+When lowering the urgency for an existing endpoint, please involve a
+[Scalability team member](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/#team-members)
 in the review. We can use request rates and durations available in the
 logs to come up with a recommendation. Picking a threshold can be done
-using the same process as for [decreasing a target
-duration](#decreasing-a-target-duration-setting-a-faster-target), picking a duration that is
-higher than the SLO for the service.
+using the same process as for [increasing
+urgency](#increasing-urgency-setting-a-lower-target-duration), picking
+a duration that is higher than the SLO for the service.
 
 We shouldn't set the longest durations on endpoints in the merge
 requests that introduces them, since we don't yet have data to support
 the decision.
 
-## Decreasing a target duration (setting a faster target)
+## Increasing urgency (setting a lower target duration)
 
 When decreasing the target duration, we need to make sure the endpoint
 still meets SLO for the fleet that handles the request. You can use the
@@ -158,62 +163,61 @@ Since decreasing a threshold too much could result in alerts for the
 apdex degradation, please also involve a Scalability team member in
 the merge reqeust.
 
-## How to adjust the target duration
+## How to adjust the urgency
 
-The target duration can be specified similar to how endpoints [get a
-feature category](../feature_categorization/index.md).
+The urgency can be specified similar to how endpoints [get a feature
+category](../feature_categorization/index.md).
 
-For endpoints that don't have a specific target, the default of 1s
-(medium) will be used.
+For endpoints that don't have a specific target, the default urgency (1s duration) will be used.
 
 The following configurations are available:
 
-| Name       | Duration in seconds | Notes                                         |
-|------------|---------------------|-----------------------------------------------|
-| :very_fast | 0.25s               |                                               |
-| :fast      | 0.5s                |                                               |
-| :medium    | 1s                  | This is the default when nothing is specified |
-| :slow      | 5s                  |                                               |
+| Urgency  | Duration in seconds | Notes                                         |
+|----------|---------------------|-----------------------------------------------|
+| :high    | 0.25s               |                                               |
+| :medium  | 0.5s                |                                               |
+| :default | 1s                  | This is the default when nothing is specified |
+| :low     | 5s                  |                                               |
 
 ### Rails controller
 
-A duration can be specified for all actions in a controller like this:
+An urgency can be specified for all actions in a controller like this:
 
 ```ruby
 class Boards::ListsController < ApplicationController
-  target_duration :fast
+  urgency :high
 end
 ```
 
-To specify the duration also for certain actions in a controller, they
+To specify the urgency also for certain actions in a controller, they
 can be specified like this:
 
 ```ruby
 class Boards::ListsController < ApplicationController
-  target_duration :fast, [:index, :show]
+  urgency :high, [:index, :show]
 end
 ```
 
 ### Grape endpoints
 
-To specify the duration for an entire API class, this can be done as
+To specify the urgency for an entire API class, this can be done as
 follows:
 
 ```ruby
 module API
   class Issues < ::API::Base
-    target_duration :slow
+    urgency :low
   end
 end
 ```
 
-To specify the duration also for certain actions in a API class, they
+To specify the urgency also for certain actions in a API class, they
 can be specified like this:
 
 ```ruby
 module API
   class Issues < ::API::Base
-      target_duration :fast, [
+      urgency :medium, [
         '/groups/:id/issues',
         '/groups/:id/issues_statistics'
       ]
@@ -221,10 +225,10 @@ module API
 end
 ```
 
-Or, we can specify a custom duration per endpoint:
+Or, we can specify the urgency per endpoint:
 
 ```ruby
-get 'client/features', target_duration: :fast do
+get 'client/features', urgency: :low do
   # endpoint logic
 end
 ```

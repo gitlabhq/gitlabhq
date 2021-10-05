@@ -11,8 +11,15 @@ module FeatureFlagsHelper
     project.feature_flags_client_token
   end
 
-  def feature_flag_issues_links_endpoint(_project, _feature_flag, _user)
-    ''
+  def edit_feature_flag_data
+    {
+      endpoint: project_feature_flag_path(@project, @feature_flag),
+      project_id: @project.id,
+      feature_flags_path: project_feature_flags_path(@project),
+      environments_endpoint: search_project_environments_path(@project, format: :json),
+      strategy_type_docs_page_path: help_page_path('operations/feature_flags', anchor: 'feature-flag-strategies'),
+      environments_scope_docs_path: help_page_path('ci/environments/index.md', anchor: 'scope-environments-with-specs')
+    }
   end
 end
 

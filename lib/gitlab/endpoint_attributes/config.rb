@@ -3,14 +3,14 @@
 module Gitlab
   module EndpointAttributes
     class Config
-      Duration = Struct.new(:name, :duration)
-      TARGET_DURATIONS = [
-        Duration.new(:very_fast, 0.25),
-        Duration.new(:fast, 0.5),
-        Duration.new(:medium, 1),
-        Duration.new(:slow, 5)
+      RequestUrgency = Struct.new(:name, :duration)
+      REQUEST_URGENCIES = [
+        RequestUrgency.new(:high, 0.25),
+        RequestUrgency.new(:medium, 0.5),
+        RequestUrgency.new(:default, 1),
+        RequestUrgency.new(:low, 5)
       ].index_by(&:name).freeze
-      SUPPORTED_ATTRIBUTES = %i[feature_category target_duration].freeze
+      SUPPORTED_ATTRIBUTES = %i[feature_category urgency].freeze
 
       def initialize
         @default_attributes = {}
@@ -38,8 +38,8 @@ module Gitlab
 
       def attribute_for_action(action, attribute_name)
         value = @action_attributes.dig(action.to_s, attribute_name) || @default_attributes[attribute_name]
-        # Translate target duration to a representative struct
-        value = TARGET_DURATIONS[value] if attribute_name == :target_duration
+        # Translate urgency to a representative struct
+        value = REQUEST_URGENCIES[value] if attribute_name == :urgency
         value
       end
 
@@ -49,8 +49,8 @@ module Gitlab
         unsupported_attributes = (attributes.keys - SUPPORTED_ATTRIBUTES).present?
         raise ArgumentError, "Attributes not supported: #{unsupported_attributes.join(", ")}" if unsupported_attributes
 
-        if attributes[:target_duration].present? && !TARGET_DURATIONS.key?(attributes[:target_duration])
-          raise ArgumentError, "Target duration not supported: #{attributes[:target_duration]}"
+        if attributes[:urgency].present? && !REQUEST_URGENCIES.key?(attributes[:urgency])
+          raise ArgumentError, "Urgency not supported: #{attributes[:urgency]}"
         end
       end
 

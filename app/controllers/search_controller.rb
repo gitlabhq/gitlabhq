@@ -23,7 +23,7 @@ class SearchController < ApplicationController
   layout 'search'
 
   feature_category :global_search
-  target_duration :very_fast, [:opensearch]
+  urgency :high, [:opensearch]
 
   def show
     @project = search_service.project

@@ -18,7 +18,7 @@ RSpec.describe ::API::Base do
     let(:api_handler) do
       Class.new(described_class) do
         feature_category :foo
-        target_duration :fast
+        urgency :medium
 
         namespace '/test' do
           get 'hello' do
@@ -34,9 +34,9 @@ RSpec.describe ::API::Base do
       expect(api_handler.feature_category_for_app(app_hi)).to eq(:foo)
     end
 
-    it 'sets target duration for a particular route', :aggregate_failures do
-      expect(api_handler.target_duration_for_app(app_hello)).to be_a_target_duration(:fast)
-      expect(api_handler.target_duration_for_app(app_hi)).to be_a_target_duration(:fast)
+    it 'sets request urgency for a particular route', :aggregate_failures do
+      expect(api_handler.urgency_for_app(app_hello)).to be_request_urgency(:medium)
+      expect(api_handler.urgency_for_app(app_hi)).to be_request_urgency(:medium)
     end
   end
 
@@ -44,9 +44,9 @@ RSpec.describe ::API::Base do
     let(:api_handler) do
       Class.new(described_class) do
         namespace '/test' do
-          get 'hello', feature_category: :foo, target_duration: :slow do
+          get 'hello', feature_category: :foo, urgency: :low do
           end
-          post 'hi', feature_category: :bar, target_duration: :fast do
+          post 'hi', feature_category: :bar, urgency: :medium do
           end
         end
       end
@@ -57,9 +57,9 @@ RSpec.describe ::API::Base do
       expect(api_handler.feature_category_for_app(app_hi)).to eq(:bar)
     end
 
-    it 'sets target duration for a particular route', :aggregate_failures do
-      expect(api_handler.target_duration_for_app(app_hello)).to be_a_target_duration(:slow)
-      expect(api_handler.target_duration_for_app(app_hi)).to be_a_target_duration(:fast)
+    it 'sets request urgency for a particular route', :aggregate_failures do
+      expect(api_handler.urgency_for_app(app_hello)).to be_request_urgency(:low)
+      expect(api_handler.urgency_for_app(app_hi)).to be_request_urgency(:medium)
     end
   end
 
@@ -67,12 +67,12 @@ RSpec.describe ::API::Base do
     let(:api_handler) do
       Class.new(described_class) do
         feature_category :foo, ['/test/hello']
-        target_duration :slow, ['/test/hello']
+        urgency :low, ['/test/hello']
 
         namespace '/test' do
           get 'hello' do
           end
-          post 'hi', feature_category: :bar, target_duration: :fast do
+          post 'hi', feature_category: :bar, urgency: :medium do
           end
         end
       end
@@ -84,8 +84,8 @@ RSpec.describe ::API::Base do
     end
 
     it 'sets target duration for a particular route', :aggregate_failures do
-      expect(api_handler.target_duration_for_app(app_hello)).to be_a_target_duration(:slow)
-      expect(api_handler.target_duration_for_app(app_hi)).to be_a_target_duration(:fast)
+      expect(api_handler.urgency_for_app(app_hello)).to be_request_urgency(:low)
+      expect(api_handler.urgency_for_app(app_hi)).to be_request_urgency(:medium)
     end
   end
 end

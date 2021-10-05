@@ -348,6 +348,7 @@ export default {
               id="note_note"
               ref="textarea"
               v-model="updatedNoteBody"
+              :disabled="isSubmitting"
               :data-supports-quick-actions="!isEditing && !glFeatures.tributeAutocomplete"
               name="note[note]"
               class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
