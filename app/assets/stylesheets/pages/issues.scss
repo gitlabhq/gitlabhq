@@ -1,3 +1,51 @@
+.issue-token-link {
+  &[href] {
+    color: $blue-600;
+  }
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: none;
+  }
+}
+
+.issue-token-reference {
+  margin-right: 1px;
+  background-color: $gray-lighter;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
+
+  .issue-token:hover &,
+  .issue-token-link:focus > & {
+    background-color: $gray-normal;
+    color: $blue-800;
+    text-decoration: none;
+  }
+}
+
+.issue-token-title {
+  background-color: $gray-normal;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve;
+
+  .issue-token:hover &,
+  .issue-token-link:focus > & {
+    background-color: $border-gray-normal;
+  }
+}
+
+.issue-token-remove-button {
+  background-color: $gray-normal;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve;
+
+  &:hover,
+  &:focus,
+  .issue-token:hover &,
+  .issue-token-link:focus + & {
+    background-color: $border-gray-normal;
+    outline: none;
+  }
+}
+
 .issue-realtime-pre-pulse {
   opacity: 0;
 }

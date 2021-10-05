@@ -22,7 +22,7 @@ RSpec.describe Ci::StuckBuilds::DropRunningService do
         let(:created_at) { outdated_time }
         let(:updated_at) { outdated_time }
 
-        it_behaves_like 'job is dropped'
+        it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
       end
 
       context 'when job is fresh' do

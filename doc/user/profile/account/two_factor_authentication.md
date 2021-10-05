@@ -35,7 +35,8 @@ still access your account if you lose your U2F / WebAuthn device.
 
 ## Enabling 2FA
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35102) in GitLab 14.3, account email confirmation required.
+> - Account email confirmation requirement [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35102) in GitLab 14.3. [Deployed behind the `ensure_verified_primary_email_for_2fa` flag](../../../administration/feature_flags.md), enabled by default.
+> - Account email confirmation requirement generally available and [feature flag `ensure_verified_primary_email_for_2fa` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340151) in GitLab 14.4.
 
 There are multiple ways to enable two-factor authentication (2FA):
 
@@ -43,11 +44,6 @@ There are multiple ways to enable two-factor authentication (2FA):
 - Using a U2F / WebAuthn device.
 
 In GitLab 14.3 and later, your account email must be confirmed to enable two-factor authentication.
-
-FLAG:
-On self-managed GitLab, account email confirmation requirement is enabled. To disable this
-restriction, ask an administrator to
-[disable the `ensure_verified_primary_email_for_2fa` flag](../../../administration/feature_flags.md).
 
 ### One-time password
 

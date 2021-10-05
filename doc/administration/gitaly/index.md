@@ -21,11 +21,11 @@ storage and retrieval. Gitaly can be:
 Gitaly implements a client-server architecture:
 
 - A Gitaly server is any node that runs Gitaly itself.
-- A Gitaly client is any node that runs a process that makes requests of the Gitaly server. These
-  include, but are not limited to:
-  - [GitLab Rails application](https://gitlab.com/gitlab-org/gitlab).
-  - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell).
-  - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
+- A Gitaly client is any node that runs a process that makes requests of the Gitaly server. Gitaly clients are also known as _Gitaly consumers_ and include:
+  - [GitLab Rails application](https://gitlab.com/gitlab-org/gitlab)
+  - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell)
+  - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse)
+  - [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
 
 Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
 using Gitaly.

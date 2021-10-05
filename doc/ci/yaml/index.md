@@ -3342,17 +3342,21 @@ to select a specific site profile and scanner profile.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3515) in GitLab 11.5, you can control which failures to retry on.
 
-Use `retry` to configure how many times a job is retried in
-case of a failure.
+Use `retry` to configure how many times a job is retried if it fails.
+If not defined, defaults to `0` and jobs do not retry.
 
-When a job fails, the job is processed again,
-until the limit specified by the `retry` keyword is reached.
+When a job fails, the job is processed up to two more times, until it succeeds or
+reaches the maximum number of retries.
 
-If `retry` is set to `2`, and a job succeeds in a second run (first retry), it is not retried.
-The `retry` value must be a positive integer, from `0` to `2`
-(two retries maximum, three runs in total).
+By default, all failure types cause the job to be retried. Use [`retry:when`](#retrywhen)
+to select which failures to retry on.
 
-The following example retries all failure cases:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**: `0` (default), `1`, or `2`.
+
+**Example of `retry`**:
 
 ```yaml
 test:
@@ -3360,38 +3364,16 @@ test:
   retry: 2
 ```
 
-By default, a job is retried on all failure cases. To have better control
-over which failures to retry, `retry` can be a hash with the following keys:
+#### `retry:when`
 
-- `max`: The maximum number of retries.
-- `when`: The failure cases to retry.
+Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
+`retry:max` is the maximum number of retries, like [`retry`](#retry), and can be
+`0`, `1`, or `2`.
 
-To retry only runner system failures at maximum two times:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
 
-```yaml
-test:
-  script: rspec
-  retry:
-    max: 2
-    when: runner_system_failure
-```
-
-If there is another failure, other than a runner system failure, the job
-is not retried.
-
-To retry on multiple failure cases, `when` can also be an array of failures:
-
-```yaml
-test:
-  script: rspec
-  retry:
-    max: 2
-    when:
-      - runner_system_failure
-      - stuck_or_timeout_failure
-```
-
-Possible values for `when` are:
+**Possible inputs**: A single failure type, or an array of one or more failure types:
 
 <!--
   If you change any of the values below, make sure to update the `RETRY_WHEN_IN_DOCUMENTATION`
@@ -3415,7 +3397,34 @@ Possible values for `when` are:
 - `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
 - `data_integrity_failure`: Retry if there is a structural integrity problem detected.
 
-You can specify the number of [retry attempts for certain stages of job execution](../runners/configure_runners.md#job-stages-attempts) using variables.
+**Example of `retry:when`** (single failure type):
+
+```yaml
+test:
+  script: rspec
+  retry:
+    max: 2
+    when: runner_system_failure
+```
+
+If there is a failure other than a runner system failure, the job is not retried.
+
+**Example of `retry:when`** (array of failure types):
+
+```yaml
+test:
+  script: rspec
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+```
+
+**Related topics**:
+
+You can specify the number of [retry attempts for certain stages of job execution](../runners/configure_runners.md#job-stages-attempts)
+using variables.
 
 ### `timeout`
 

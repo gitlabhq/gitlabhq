@@ -33,9 +33,8 @@ which generates a commit in the merge request authored by the user that suggeste
 
    ![Apply suggestions](img/apply_suggestion_v13_9.png)
 
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9,
-   you can opt to add a custom commit message to describe your change. If you don't
-   specify it, the default commit message is used. It is not supported for [batch suggestions](#batch-suggestions).
+1. Optionally specify a custom commit message for individual suggestions (GitLab 13.9 and later) to
+   describe your change. If you don't specify it, the default commit message is used.
 
    ![Custom commit](img/custom_commit_v13_9.png)
 
@@ -118,6 +117,7 @@ introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) behind a feature flag, disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) in GitLab 13.11.
+> - Custom commit messages for batch suggestions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) in GitLab 14.4.
 
 You can apply multiple suggestions at once to reduce the number of commits added
 to your branch to address your reviewers' requests.
@@ -134,7 +134,10 @@ to your branch to address your reviewers' requests.
 
    ![A code change suggestion displayed, with the button to remove that suggestion from its batch highlighted.](img/remove_suggestion_from_batch_v13_1.jpg "Remove a suggestion from a batch")
 
-1. Having added all the suggestions to your liking, when ready, select **Apply suggestions**:
+1. Having added all the suggestions to your liking, when ready, select **Apply suggestions**. You
+   can optionally specify a custom commit message for [batch suggestions](#batch-suggestions)
+   (GitLab 14.4 and later) to describe your change. If you don't specify it, the default commit
+   message is used.
 
    ![A code change suggestion displayed, with the button to apply the batch of suggestions highlighted.](img/apply_batch_of_suggestions_v13_1.jpg "Apply a batch of suggestions")
 

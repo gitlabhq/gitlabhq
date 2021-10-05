@@ -33,13 +33,13 @@ RSpec.describe Ci::StuckBuilds::DropService do
         context 'when created_at is the same as updated_at' do
           let(:created_at) { 1.5.days.ago }
 
-          it_behaves_like 'job is dropped'
+          it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
         end
 
         context 'when created_at is before updated_at' do
           let(:created_at) { 3.days.ago }
 
-          it_behaves_like 'job is dropped'
+          it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
         end
 
         context 'when created_at is outside lookback window' do
@@ -107,13 +107,13 @@ RSpec.describe Ci::StuckBuilds::DropService do
         context 'when created_at is the same as updated_at' do
           let(:created_at) { 1.5.hours.ago }
 
-          it_behaves_like 'job is dropped'
+          it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
         end
 
         context 'when created_at is before updated_at' do
           let(:created_at) { 3.days.ago }
 
-          it_behaves_like 'job is dropped'
+          it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
         end
 
         context 'when created_at is outside lookback window' do
@@ -197,46 +197,5 @@ RSpec.describe Ci::StuckBuilds::DropService do
     end
 
     it_behaves_like 'job is unchanged'
-  end
-
-  describe 'drop stale scheduled builds' do
-    let(:status) { 'scheduled' }
-    let(:updated_at) { }
-
-    context 'when scheduled at 2 hours ago but it is not executed yet' do
-      let!(:job) { create(:ci_build, :scheduled, scheduled_at: 2.hours.ago) }
-
-      it 'drops the stale scheduled build' do
-        expect(Ci::Build.scheduled.count).to eq(1)
-        expect(job).to be_scheduled
-
-        service.execute
-        job.reload
-
-        expect(Ci::Build.scheduled.count).to eq(0)
-        expect(job).to be_failed
-        expect(job).to be_stale_schedule
-      end
-    end
-
-    context 'when scheduled at 30 minutes ago but it is not executed yet' do
-      let!(:job) { create(:ci_build, :scheduled, scheduled_at: 30.minutes.ago) }
-
-      it 'does not drop the stale scheduled build yet' do
-        expect(Ci::Build.scheduled.count).to eq(1)
-        expect(job).to be_scheduled
-
-        service.execute
-
-        expect(Ci::Build.scheduled.count).to eq(1)
-        expect(job).to be_scheduled
-      end
-    end
-
-    context 'when there are no stale scheduled builds' do
-      it 'does not drop the stale scheduled build yet' do
-        expect { service.execute }.not_to raise_error
-      end
-    end
   end
 end

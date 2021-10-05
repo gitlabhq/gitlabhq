@@ -110,7 +110,7 @@ However, users are not prompted to sign in through SSO on each visit. GitLab che
 has authenticated through SSO. If it's been more than 1 day since the last sign-in, GitLab
 prompts the user to sign in again through SSO.
 
-We intend to add a similar SSO requirement for [API activity](https://gitlab.com/gitlab-org/gitlab/-/issues/9152).
+We intend to add a similar SSO requirement for [API activity](https://gitlab.com/gitlab-org/gitlab/-/issues/297389).
 
 SSO has the following effects when enabled:
 

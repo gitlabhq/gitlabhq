@@ -1031,9 +1031,9 @@ Example metrics persistence:
 class UsageData
   def count_secure_pipelines(time_period)
     ...
-    relation = ::Security::Scan.latest_successful_by_build.by_scan_types(scan_type).where(security_scans: time_period)
+    relation = ::Security::Scan.by_scan_types(scan_type).where(time_period)
 
-    pipelines_with_secure_jobs['dependency_scanning_pipeline'] = estimate_batch_distinct_count(relation, :commit_id, batch_size: 1000, start: start_id, finish: finish_id) do |result|
+    pipelines_with_secure_jobs['dependency_scanning_pipeline'] = estimate_batch_distinct_count(relation, :pipeline_id, batch_size: 1000, start: start_id, finish: finish_id) do |result|
       ::Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll
         .save_aggregated_metrics(metric_name: 'dependency_scanning_pipeline', recorded_at_timestamp: recorded_at, time_period: time_period, data: result)
     end

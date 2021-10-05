@@ -6,7 +6,6 @@ module Ci
       include DropHelpers
 
       BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
-      BUILD_SCHEDULED_OUTDATED_TIMEOUT = 1.hour
       BUILD_PENDING_STUCK_TIMEOUT = 1.hour
       BUILD_LOOKBACK = 5.days
 
@@ -17,8 +16,6 @@ module Ci
           pending_builds(BUILD_PENDING_OUTDATED_TIMEOUT.ago),
           failure_reason: :stuck_or_timeout_failure
         )
-
-        drop(scheduled_timed_out_builds, failure_reason: :stale_schedule)
 
         drop_stuck(
           pending_builds(BUILD_PENDING_STUCK_TIMEOUT.ago),
@@ -40,13 +37,6 @@ module Ci
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
-
-      def scheduled_timed_out_builds
-        Ci::Build.where(status: :scheduled).where( # rubocop: disable CodeReuse/ActiveRecord
-          'ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?',
-          BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago
-        )
-      end
     end
   end
 end

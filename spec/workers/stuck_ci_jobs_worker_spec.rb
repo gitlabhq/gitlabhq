@@ -22,6 +22,12 @@ RSpec.describe StuckCiJobsWorker do
       worker.perform
     end
 
+    it 'enqueues a Ci::StuckBuilds::DropScheduledWorker job' do
+      expect(Ci::StuckBuilds::DropScheduledWorker).to receive(:perform_in).with(40.minutes).exactly(:once)
+
+      worker.perform
+    end
+
     it 'executes an instance of Ci::StuckBuilds::DropService' do
       expect_next_instance_of(Ci::StuckBuilds::DropService) do |service|
         expect(service).to receive(:execute).exactly(:once)
