@@ -112,6 +112,7 @@ module.exports = (path, options = {}) => {
     cacheDirectory: '<rootDir>/tmp/cache/jest',
     modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
     reporters,
+    resolver: './jest_resolver.js',
     setupFilesAfterEnv: [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'],
     restoreMocks: true,
     transform: {

@@ -197,7 +197,7 @@ export default {
     <p v-if="hasError" class="gl-field-error">
       {{ addRelatedErrorMessage }}
     </p>
-    <div class="add-issuable-form-actions clearfix">
+    <div class="gl-mt-5 gl-clearfix">
       <gl-button
         ref="addButton"
         category="primary"

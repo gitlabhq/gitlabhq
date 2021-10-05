@@ -1,9 +1,7 @@
 import { buildSchema, graphql } from 'graphql';
 import { memoize } from 'lodash';
 
-// The graphql schema is dynamically generated in CI
-// during the `graphql-schema-dump` job.
-// eslint-disable-next-line global-require, import/no-unresolved
+// eslint-disable-next-line global-require
 const getGraphqlSchema = () => require('../../../../tmp/tests/graphql/gitlab_schema.graphql');
 
 const graphqlResolvers = {

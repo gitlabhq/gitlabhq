@@ -783,20 +783,25 @@ often using fixtures to validate correct integration with the backend code.
 
 ### Use fixtures
 
-Jest uses `spec/frontend/__helpers__/fixtures.js` to import fixtures in tests.
-
-The following are examples of tests that work for Jest:
+To import a JSON fixture, `import` it using the `test_fixtures` alias. 
 
 ```javascript
+import responseBody from 'test_fixtures/some/fixture.json' // loads spec/frontend/fixtures/some/fixture.json
+
 it('makes a request', () => {
-  const responseBody = getJSONFixture('some/fixture.json'); // loads spec/frontend/fixtures/some/fixture.json
   axiosMock.onGet(endpoint).reply(200, responseBody);
 
   myButton.click();
 
   // ...
 });
+```
 
+For other fixtures, Jest uses `spec/frontend/__helpers__/fixtures.js` to import them in tests.
+
+The following are examples of tests that work for Jest:
+
+```javascript
 it('uses some HTML element', () => {
   loadFixtures('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
 
@@ -860,7 +865,7 @@ end
 This will create a new fixture located at
 `tmp/tests/frontend/fixtures-ee/graphql/releases/graphql/queries/all_releases.query.graphql.json`.
 
-You can import the JSON fixture in a Jest test using the `getJSONFixture` method
+You can import the JSON fixture in a Jest test using the `test_fixtures` alias
 [as described below](#use-fixtures).
 
 ## Data-driven tests

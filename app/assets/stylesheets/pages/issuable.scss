@@ -220,21 +220,12 @@
   }
 
   .cross-project-reference {
-    color: inherit;
-
     span {
-      white-space: nowrap;
       width: 85%;
-      overflow: hidden;
-      position: relative;
-      display: inline-block;
-      text-overflow: ellipsis;
     }
 
     button {
-      float: right;
       padding: 1px 5px;
-      background-color: $gray-light;
     }
   }
 
@@ -563,26 +554,9 @@
   }
 }
 
-.participants-list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.user-list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .participants-author {
-  display: inline-block;
-  padding: 0 $gl-padding-8 $gl-padding-8 0;
-
   &:nth-of-type(7n) {
     padding-right: 0;
-  }
-
-  .author-link {
-    display: block;
   }
 
   .avatar.avatar-inline {
@@ -591,7 +565,6 @@
 }
 
 .user-item {
-  display: inline-block;
   padding: 5px;
   flex-basis: 20%;
 
@@ -803,10 +776,6 @@
   }
 }
 
-.add-issuable-form-actions {
-  margin-top: $gl-padding;
-}
-
 .time-tracker {
   .sidebar-collapsed-icon {
     > .stopwatch-svg {
@@ -839,18 +808,7 @@
   }
 
   .compare-display-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 5px;
-
-    .compare-display {
-      font-size: 13px;
-      color: $compare-display-color;
-
-      .compare-value {
-        color: $gl-text-color;
-      }
-    }
+    font-size: 13px;
   }
 
   .time-tracking-help-state {
