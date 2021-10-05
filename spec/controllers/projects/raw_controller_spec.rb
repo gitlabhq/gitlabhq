@@ -84,7 +84,7 @@ RSpec.describe Projects::RawController do
       include_examples 'single Gitaly request'
     end
 
-    context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
+    context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_rate_limiting do
       let(:file_path) { 'master/README.md' }
 
       before do

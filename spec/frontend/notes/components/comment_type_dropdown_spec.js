@@ -47,8 +47,18 @@ describe('CommentTypeDropdown component', () => {
   it('Should emit `change` event when clicking on an alternate dropdown option', () => {
     mountComponent({ props: { noteType: constants.DISCUSSION } });
 
-    findCommentDropdownOption().vm.$emit('click');
-    findDiscussionDropdownOption().vm.$emit('click');
+    const event = {
+      type: 'click',
+      stopPropagation: jest.fn(),
+      preventDefault: jest.fn(),
+    };
+
+    findCommentDropdownOption().vm.$emit('click', event);
+    findDiscussionDropdownOption().vm.$emit('click', event);
+
+    // ensure the native events don't trigger anything
+    expect(event.stopPropagation).toHaveBeenCalledTimes(2);
+    expect(event.preventDefault).toHaveBeenCalledTimes(2);
 
     expect(wrapper.emitted('change')[0]).toEqual([constants.COMMENT]);
     expect(wrapper.emitted('change').length).toEqual(1);

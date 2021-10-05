@@ -76,11 +76,14 @@ version. The range of supported versions is based on the evaluation of:
 GitLab supports the following Kubernetes versions, and you can upgrade your
 Kubernetes version to any supported version at any time:
 
+- 1.20 (support ends on July 22, 2022)
 - 1.19 (support ends on February 22, 2022)
 - 1.18 (support ends on November 22, 2021)
 - 1.17 (support ends on September 22, 2021)
 
-Some GitLab features may support versions outside the range provided here.
+[Adding support to other versions of Kubernetes is managed under this epic](https://gitlab.com/groups/gitlab-org/-/epics/4827).
+
+Some GitLab features may support versions outside the range provided here. 
 
 ## Cluster levels
 

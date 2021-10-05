@@ -2,9 +2,10 @@
 
 module Gitlab
   module RackAttack
-    # This class is a proxy for all Redis calls made by RackAttack. All the
-    # calls are instrumented, then redirected to ::Rails.cache. This class
-    # instruments the standard interfaces of ActiveRecord::Cache defined in
+    # This class is a proxy for all Redis calls made by RackAttack. All
+    # the calls are instrumented, then redirected to the underlying
+    # store (in `.store). This class instruments the standard interfaces
+    # of ActiveRecord::Cache defined in
     # https://github.com/rails/rails/blob/v6.0.3.1/activesupport/lib/active_support/cache.rb#L315
     #
     # For more information, please see
@@ -14,7 +15,18 @@ module Gitlab
 
       delegate :silence!, :mute, to: :@upstream_store
 
-      def initialize(upstream_store: ::Rails.cache, notifier: ActiveSupport::Notifications)
+      # Clean up in https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1249
+      def self.store
+        if ENV['USE_RATE_LIMITING_STORE_FOR_RACK_ATTACK'] == '1'
+          Gitlab::AuthLogger.info(message: 'Rack::Attack using rate limiting store')
+          ::Gitlab::Redis::RateLimiting.cache_store
+        else
+          Gitlab::AuthLogger.info(message: 'Rack::Attack using cache store')
+          ::Rails.cache
+        end
+      end
+
+      def initialize(upstream_store: self.class.store, notifier: ActiveSupport::Notifications)
         @upstream_store = upstream_store
         @notifier = notifier
       end

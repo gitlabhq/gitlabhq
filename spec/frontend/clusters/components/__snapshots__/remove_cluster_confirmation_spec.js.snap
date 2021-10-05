@@ -33,7 +33,7 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
       <span
         class="sr-only"
       >
-        Toggle Dropdown
+        Toggle dropdown
       </span>
     </button>
     <ul

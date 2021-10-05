@@ -392,7 +392,7 @@ RSpec.describe WebHookService do
         end
       end
 
-      context 'when the hook is throttled (via Redis)', :clean_gitlab_redis_cache do
+      context 'when the hook is throttled (via Redis)', :clean_gitlab_redis_rate_limiting do
         before do
           # Set a high interval to avoid intermittent failures in CI
           allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits).and_return(

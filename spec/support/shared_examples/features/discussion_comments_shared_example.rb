@@ -3,9 +3,9 @@
 RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name|
   let(:form_selector) { '.js-main-target-form' }
   let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
-  let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle" }
+  let(:toggle_selector) { "#{dropdown_selector} .gl-dropdown-toggle" }
   let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
-  let(:submit_selector) { "#{form_selector} .js-comment-submit-button" }
+  let(:submit_selector) { "#{form_selector} .js-comment-submit-button > button:first-child" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry:not(.being-posted)' }
   let(:comment) { 'My comment' }
@@ -43,13 +43,11 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
 
       expect(items.first).to have_content 'Comment'
       expect(items.first).to have_content "Add a general comment to this #{resource_name}."
-      expect(items.first).to have_selector '[data-testid="check-icon"]'
-      expect(items.first['class']).to match 'droplab-item-selected'
+      expect(items.first).to have_selector '[data-testid="dropdown-item-checkbox"]'
 
       expect(items.last).to have_content 'Start thread'
       expect(items.last).to have_content "Discuss a specific suggestion or question#{' that needs to be resolved' if resource_name == 'merge request'}."
-      expect(items.last).not_to have_selector '[data-testid="check-icon"]'
-      expect(items.last['class']).not_to match 'droplab-item-selected'
+      expect(items.last).not_to have_selector '[data-testid="dropdown-item-checkbox"]'
     end
 
     it 'closes the menu when clicking the toggle or body' do
@@ -75,14 +73,14 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
         expect(find(dropdown_selector)).to have_content 'Comment'
 
         find(toggle_selector).click
-        execute_script("document.querySelector('#{menu_selector} .divider').click()")
+        execute_script("document.querySelector('#{menu_selector} .dropdown-divider').click()")
       else
         execute_script("document.querySelector('#{menu_selector}').click()")
 
         expect(page).to have_selector menu_selector
         expect(find(dropdown_selector)).to have_content 'Comment'
 
-        execute_script("document.querySelector('#{menu_selector} .divider').click()")
+        execute_script("document.querySelector('#{menu_selector} .dropdown-divider').click()")
 
         expect(page).to have_selector menu_selector
       end
@@ -97,7 +95,7 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
       end
 
       it 'updates the submit button text and closes the dropdown' do
-        expect(find(submit_selector).value).to eq 'Start thread'
+        expect(find(submit_selector).text).to eq 'Start thread'
 
         expect(page).not_to have_selector menu_selector
       end
@@ -137,12 +135,10 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
           items = all("#{menu_selector} li")
 
           expect(items.first).to have_content 'Comment'
-          expect(items.first).not_to have_selector '[data-testid="check-icon"]'
-          expect(items.first['class']).not_to match 'droplab-item-selected'
+          expect(items.first).not_to have_selector '[data-testid="dropdown-item-checkbox"]'
 
           expect(items.last).to have_content 'Start thread'
-          expect(items.last).to have_selector '[data-testid="check-icon"]'
-          expect(items.last['class']).to match 'droplab-item-selected'
+          expect(items.last).to have_selector '[data-testid="dropdown-item-checkbox"]'
         end
 
         describe 'when selecting "Comment"' do
@@ -153,7 +149,7 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
           it 'updates the submit button text and closes the dropdown' do
             button = find(submit_selector)
 
-            expect(button.value).to eq 'Comment'
+            expect(button.text).to eq 'Comment'
 
             expect(page).not_to have_selector menu_selector
           end
@@ -166,12 +162,10 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
 
             aggregate_failures do
               expect(items.first).to have_content 'Comment'
-              expect(items.first).to have_selector '[data-testid="check-icon"]'
-              expect(items.first['class']).to match 'droplab-item-selected'
+              expect(items.first).to have_selector '[data-testid="dropdown-item-checkbox"]'
 
               expect(items.last).to have_content 'Start thread'
-              expect(items.last).not_to have_selector '[data-testid="check-icon"]'
-              expect(items.last['class']).not_to match 'droplab-item-selected'
+              expect(items.last).not_to have_selector '[data-testid="dropdown-item-checkbox"]'
             end
           end
         end

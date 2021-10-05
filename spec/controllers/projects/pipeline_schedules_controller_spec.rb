@@ -397,7 +397,7 @@ RSpec.describe Projects::PipelineSchedulesController do
     end
   end
 
-  describe 'POST #play', :clean_gitlab_redis_cache do
+  describe 'POST #play', :clean_gitlab_redis_rate_limiting do
     let(:ref) { 'master' }
 
     before do

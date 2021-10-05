@@ -73,7 +73,7 @@ module Gitlab
         value = 0
         interval_value = interval || interval(key)
 
-        Gitlab::Redis::Cache.with do |redis|
+        cache_store.with do |redis|
           cache_key = action_key(key, scope)
           value     = redis.incr(cache_key)
           redis.expire(cache_key, interval_value) if value == 1
@@ -108,6 +108,14 @@ module Gitlab
       end
 
       private
+
+      def cache_store
+        if ::Feature.enabled?(:use_rate_limiting_store_for_application_rate_limiter, default_enabled: :yaml)
+          ::Gitlab::Redis::RateLimiting
+        else
+          ::Gitlab::Redis::Cache
+        end
+      end
 
       def threshold(key)
         value = rate_limit_value_by_key(key, :threshold)

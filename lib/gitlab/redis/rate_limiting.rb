@@ -7,6 +7,10 @@ module Gitlab
       def self.config_fallback
         Cache
       end
+
+      def self.cache_store
+        @cache_store ||= ActiveSupport::Cache::RedisCacheStore.new(redis: pool, namespace: Cache::CACHE_NAMESPACE)
+      end
     end
   end
 end

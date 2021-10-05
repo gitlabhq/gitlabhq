@@ -914,13 +914,13 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.14.0":
-  version "32.14.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.14.0.tgz#91b9346490077c1e6db808256bb0da7a092fd82a"
-  integrity sha512-GnxTqoyZdAMse8IBvLJ7l8HPDHiJhuUO0h7rnVjDdrU4uHGCmDLBRUXE9cjtI4e0AM2UTkvBv+BhswJ2kUCELw==
+"@gitlab/ui@32.15.0":
+  version "32.15.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.15.0.tgz#292518f1c52ef22d73cfded9d6f9f6d48a47efee"
+  integrity sha512-n7SwTA5Je+s/66cTXBhRdlxiJILGA+mXX6aevUFXzFvTn4a4yVb1wx4mmaMA/EB3vUxb8+u/z61CYZ4pd5JIbw==
   dependencies:
     "@babel/standalone" "^7.0.0"
-    bootstrap-vue "2.18.1"
+    bootstrap-vue "2.19.0"
     copy-to-clipboard "^3.0.8"
     dompurify "^2.3.3"
     echarts "^4.9.0"
@@ -2749,10 +2749,10 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bootstrap-vue@2.18.1:
-  version "2.18.1"
-  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.18.1.tgz#4378d26b713d4255b45b42b3f852f6fa0a11d400"
-  integrity sha512-oYKAhEnNuCxtF4gxsdLzijhQpFk7UYPvzhwZvUbnPbZ1eWu2dsc3+fRkY9PMowt5OJRtuVb7ov3lpsI2fraYsA==
+bootstrap-vue@2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.19.0.tgz#5019df48251e552a5c34da57fc97dabebd53b02f"
+  integrity sha512-IjAXUSrRU5Qu9x3uwUcoj6LtysKbCVeWoJOsODyI/WokStUr95M+tTIajXUjIrB/Nsk0fS+RNvZnm2sWeNFrhg==
   dependencies:
     "@nuxt/opencollective" "^0.3.2"
     bootstrap ">=4.5.3 <5.0.0"

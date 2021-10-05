@@ -24,14 +24,14 @@ More useful links:
 
 Snowplow is an enterprise-grade marketing and Product Intelligence platform which helps track the way users engage with our website and application.
 
-[Snowplow](https://snowplowanalytics.com) consists of the following loosely-coupled sub-systems:
+[Snowplow](https://snowplowanalytics.com) consists of several loosely-coupled sub-systems:
 
-- **Trackers** fire Snowplow events. Snowplow has 12 trackers, covering web, mobile, desktop, server, and IoT.
-- **Collectors** receive Snowplow events from trackers. We have three different event collectors, synchronizing events either to Amazon S3, Apache Kafka, or Amazon Kinesis.
-- **Enrich** cleans up the raw Snowplow events, enriches them and puts them into storage. We have an Hadoop-based enrichment process, and a Kinesis-based or Kafka-based process.
+- **Trackers** fire Snowplow events. Snowplow has twelve trackers that cover web, mobile, desktop, server, and IoT.
+- **Collectors** receive Snowplow events from trackers. We have three different event collectors that synchronize events to Amazon S3, Apache Kafka, or Amazon Kinesis.
+- **Enrich** cleans up raw Snowplow events, enriches them, and puts them into storage. There is a Hadoop-based enrichment process, and a Kinesis-based or Kafka-based process.
 - **Storage** is where the Snowplow events live. We store the Snowplow events in a flat file structure on S3, and in the Redshift and PostgreSQL databases.
-- **Data modeling** is where event-level data is joined with other data sets and aggregated into smaller data sets, and business logic is applied. This produces a clean set of tables which make it easier to perform analysis on the data. We have data models for Redshift and Looker.
-- **Analytics** are performed on the Snowplow events or on the aggregate tables.
+- **Data modeling** is where event-level data joins other data sets and aggregates into smaller data sets, and business logic is applied. This produces a clean set of tables for data analysis. We have data models for Redshift and Looker.
+- **Analytics** are performed on Snowplow events or on aggregate tables.
 
 ![snowplow_flow](../img/snowplow_flow.png)
 
@@ -101,15 +101,16 @@ sequenceDiagram
 
 ## Structured event taxonomy
 
-When adding new click events, we should add them in a way that's internally consistent. If we don't, it is difficult to perform analysis across features because each feature captures events differently.
+Click events must be consistent. If each feature captures events differently, it can be difficult
+to perform analysis.
 
-The current method provides several attributes that are sent on each click event. Please try to follow these guidelines when specifying events to capture:
+Each click event provides attributes that describe the event.
 
-| attribute | type    | required | description |
+| Attribute | Type    | Required | Description |
 | --------- | ------- | -------- | ----------- |
-| category  | text    | true     | The page or backend area of the application. Unless infeasible, please use the Rails page attribute by default in the frontend, and namespace + class name on the backend. |
-| action    | text    | true     | The action the user is taking, or aspect that's being instrumented. The first word should always describe the action or aspect: clicks should be `click`, activations should be `activate`, creations should be `create`, etc. Use underscores to describe what was acted on; for example, activating a form field would be `activate_form_input`. An interface action like clicking on a dropdown would be `click_dropdown`, while a behavior like creating a project record from the backend would be `create_project` |
-| label     | text    | false    | The specific element or object to act on. This can be one of the following: the label of the element (for example, a tab labeled 'Create from template' for `create_from_template`), a unique identifier if no text is available (for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar), or the name or title attribute of a record being created. |
+| category  | text    | true     | The page or backend section of the application. Unless infeasible, use the Rails page attribute by default in the frontend, and namespace + class name on the backend. |
+| action    | text    | true     | The action the user takes, or aspect that's being instrumented. The first word must describe the action or aspect. For example, clicks must be `click`, activations must be `activate`, creations must be `create`. Use underscores to describe what was acted on. For example, activating a form field is `activate_form_input`, an interface action like clicking on a dropdown is `click_dropdown`, a behavior like creating a project record from the backend is `create_project`. |
+| label     | text    | false    | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created. |
 | property  | text    | false    | Any additional property of the element, or object being acted on. |
 | value     | decimal | false    | Describes a numeric value or something directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. |
 
@@ -154,29 +155,31 @@ LIMIT 20
 
 ### Web-specific parameters
 
-Snowplow JS adds many [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
+Snowplow JS adds [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
 
-## Implement Snowplow JS (Frontend) tracking
+## Snowplow JavaScript frontend tracking
 
-GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/) for tracking custom events. The simplest way to use it is to add `data-` attributes to clickable elements and dropdowns. There is also a Vue mixin (exposing a `track` method), and the static method `Tracking.event`. Each of these requires at minimum a `category` and an `action`. You can provide additional [Structured event taxonomy](#structured-event-taxonomy) properties along with an `extra` object that accepts key-value pairs.
+GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/) to track custom events. For the recommended implementation type, see [Usage recommendations](#usage-recommendations).
 
-| field      | type   | default value              | description                                                                                                                                                                                                    |
+Tracking implementations must have an `action` and a `category`. You can provide additional [structured event taxonomy](#structured-event-taxonomy) categories with an `extra` object that accepts key-value pairs.
+
+| Field      | Type   | Default value              | Description                                                                                                                                                                                                    |
 |:-----------|:-------|:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `category` | string | `document.body.dataset.page` | Page or subsection of a page that events are being captured within.                                                                                                                                            |
-| `action`   | string | generic                  | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
-| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value`, `context` (as described in our [Structured event taxonomy](#structured-event-taxonomy)), and `extra` (key-value pairs object). |
+| `category` | string | `document.body.dataset.page` | Page or subsection of a page in which events are captured.                                                                                                                                            |
+| `action`   | string | generic                  | Action the user is taking. Clicks must be `click` and activations must be `activate`. For example, focusing a form field is `activate_form_input`, and clicking a button is `click_button`. |
+| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value`, `context` as described in [Structured event taxonomy](#structured-event-taxonomy), and `extra` (key-value pairs object). |
 
 ### Usage recommendations
 
-- Use [data attributes](#tracking-with-data-attributes) on HTML elements that emits either the `click`, `show.bs.dropdown`, or `hide.bs.dropdown` events.
-- Use the [Vue mixin](#tracking-within-vue-components) when tracking custom events, or if the supported events for data attributes are not propagating.
-- Use the [Tracking class directly](#tracking-in-raw-javascript) when tracking on raw JS files.
+- Use [data attributes](#implement-data-attribute-tracking) on HTML elements that emit `click`, `show.bs.dropdown`, or `hide.bs.dropdown` events.
+- Use the [Vue mixin](#implement-vue-component-tracking) for tracking custom events, or if the supported events for data attributes are not propagating. 
+- Use the [tracking class](#implement-raw-javascript-tracking) when tracking raw JavaScript files.
 
-### Tracking with data attributes
+### Implement data attribute tracking
 
-When working in HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-action` attribute automatically have event tracking bound on clicks. You can provide extra data as a valid JSON string using `data-track-extra`.
+To implement tracking for HAML or Vue templates, add a [`data-track` attribute](#data-track-attributes) to the element.
 
-Below is an example of `data-track-*` attributes assigned to a button:
+The following example shows `data-track-*` attributes assigned to a button:
 
 ```haml
 %button.btn{ data: { track: { action: "click_button", label: "template_preview", property: "my-template" } } }
@@ -191,18 +194,20 @@ Below is an example of `data-track-*` attributes assigned to a button:
 />
 ```
 
-Event listeners are bound at the document level to handle click events on or within elements with these data attributes. This allows them to be properly handled on re-rendering and changes to the DOM. Note that because of the way these events are bound, click events should not be stopped from propagating up the DOM tree. If click events are being stopped from propagating, you must implement your own listeners and follow the instructions in [Tracking within Vue components](#tracking-within-vue-components) or [Tracking in raw JavaScript](#tracking-in-raw-javascript).
+#### `data-track` attributes
 
-Below is a list of supported `data-track-*` attributes:
-
-| attribute             | required | description |
+| Attribute             | Required | Description |
 |:----------------------|:---------|:------------|
-| `data-track-action`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field would be `activate_form_input` and clicking a button would be `click_button`. Replaces `data-track-event`, which was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290962) in GitLab 13.11. |
-| `data-track-label`    | false    | The `label` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
-| `data-track-property` | false    | The `property` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
-| `data-track-value`    | false    | The `value` as described in our [Structured event taxonomy](#structured-event-taxonomy). If omitted, this is the element's `value` property or `undefined`. For checkboxes, the default value is the element's checked attribute or `0` when unchecked. |
+| `data-track-action`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field is `activate_form_input` and clicking a button is `click_button`. Replaces `data-track-event`, which was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290962) in GitLab 13.11. |
+| `data-track-label`    | false    | The `label` as described in [structured event taxonomy](#structured-event-taxonomy). |
+| `data-track-property` | false    | The `property` as described in [structured event taxonomy](#structured-event-taxonomy). |
+| `data-track-value`    | false    | The `value` as described in [structured event taxonomy](#structured-event-taxonomy). If omitted, this is the element's `value` property or `undefined`. For checkboxes, the default value is the element's checked attribute or `0` when unchecked. |
 | `data-track-extra` | false    | A key-value pairs object passed as a valid JSON string. This is added to the `extra` property in our [`gitlab_standard`](#gitlab_standard) schema. |
 | `data-track-context`  | false    | The `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
+
+#### Event listeners
+
+Event listeners are bound at the document level to handle click events in elements with data attributes. This allows them to be handled on re-rendering and changes to the DOM. Because of the way these events are bound, click events should not stop from propagating up the DOM tree. If click events are stopped from propagating, you must implement listeners and follow the instructions in [Implement Vue component tracking](#implement-vue-component-tracking) or [Implement raw JavaScript tracking](#implement-raw-javascript-tracking).
 
 #### Available helpers
 
@@ -228,36 +233,96 @@ Be careful, as this behavior can be confused with the `ActionView` helper method
 = link_to explore_groups_path, title: _("Explore"), data: { track_label: "explore_groups", track_action: "click_button" }
 ```
 
-### Tracking within Vue components
+### Implement Vue component tracking
 
-There's a tracking Vue mixin that can be used in components if more complex tracking is required. To use it, first import the `Tracking` library and request a mixin.
+For custom event tracking, use a Vue `mixin` in components. Vue `mixin` exposes the `Tracking.event` static method and the `track` method called from components or templates. You can specify tracking options in `data` or `computed`. These options override any defaults and allow the values to be dynamic from props or based on state. 
 
-```javascript
-import Tracking from '~/tracking';
-const trackingMixin = Tracking.mixin({ label: 'right_sidebar' });
-```
+Default options are passed when an event is tracked from the component. If you don't specify an option, the default `document.body.dataset.page` is used. The default options are: 
 
-You can provide default options that are passed along whenever an event is tracked from within your component. For example, if all events in a component should be tracked with a given `label`, you can provide one at this time. Available defaults are `category`, `label`, `property`, and `value`. If no category is specified, `document.body.dataset.page` is used as the default.
+- `category`
+- `label`
+- `property` 
+- `value`
 
-You can then use the mixin normally in your component with the `mixin` Vue declaration. The mixin also provides the ability to specify tracking options in `data` or `computed`. These override any defaults and allow the values to be dynamic from props, or based on state.
+To implement Vue component tracking:
 
-```javascript
-export default {
-  mixins: [trackingMixin],
-  // ...[component implementation]...
-  data() {
-    return {
-      expanded: false,
-      tracking: {
-        label: 'left_sidebar',
+1. Import the `Tracking` library and request a `mixin`:
+
+    ```javascript
+    import Tracking from '~/tracking';
+    const trackingMixin = Tracking.mixin;
+    ```
+
+1. Provide categories to track the event from the component. For example, to track all events in a component with a label, use the `label` category:
+
+    ```javascript
+    import Tracking from '~/tracking';
+    const trackingMixin = Tracking.mixin({ label: 'right_sidebar' });
+    ```
+
+1. In the component, declare the Vue `mixin`.
+
+    ```javascript
+    export default {
+      mixins: [trackingMixin],
+      // ...[component implementation]...
+      data() {
+        return {
+          expanded: false,
+          tracking: {
+            label: 'left_sidebar',
+          },
+        };
       },
     };
-  },
-};
-```
+    ```
 
-The mixin provides a `track` method that can be called from within the template,
-or from component methods. An example of the whole implementation might look like this:
+1. To receive event data as a tracking object or computed property: 
+   - Declare it in the `data` function. Use a `tracking` object when default event properties are dynamic or provided at runtime:
+
+      ```javascript
+      export default {
+        name: 'RightSidebar',
+        mixins: [Tracking.mixin()],
+        data() {
+          return {
+            tracking: {
+              label: 'right_sidebar',
+              // category: '',
+              // property: '',
+              // value: '',
+              // experiment: '',
+              // extra: {},
+            },
+          };
+        },
+      };
+      ```
+
+   - Declare it in the event data in the `track` function. This object merges with any previously provided options:
+
+      ```javascript
+      this.track('click_button', {
+        label: 'right_sidebar',
+      });
+      ```
+
+1. Optional. Use the `track` method in a template:
+
+    ```html
+    <template>
+      <div>
+        <button data-testid="toggle" @click="toggle">Toggle</button>
+
+        <div v-if="expanded">
+          <p>Hello world!</p>
+          <button @click="track('click_action')">Track another event</button>
+        </div>
+      </div>
+    </template>
+    ```
+
+#### Implementation example
 
 ```javascript
 export default {
@@ -276,53 +341,6 @@ export default {
     }
   }
 };
-```
-
-The event data can be provided with a `tracking` object, declared in the `data` function,
-or as a `computed property`. A `tracking` object is convenient when the default
-event properties are dynamic or provided at runtime.
-
-```javascript
-export default {
-  name: 'RightSidebar',
-  mixins: [Tracking.mixin()],
-  data() {
-    return {
-      tracking: {
-        label: 'right_sidebar',
-        // category: '',
-        // property: '',
-        // value: '',
-        // experiment: '',
-        // extra: {},
-      },
-    };
-  },
-};
-```
-
-The event data can be provided directly in the `track` function as well.
-This object merges with any previously provided options.
-
-```javascript
-this.track('click_button', {
-  label: 'right_sidebar',
-});
-```
-
-Lastly, if needed within the template, you can use the `track` method directly as well.
-
-```html
-<template>
-  <div>
-    <button data-testid="toggle" @click="toggle">Toggle</button>
-
-    <div v-if="expanded">
-      <p>Hello world!</p>
-      <button @click="track('click_action')">Track another event</button>
-    </div>
-  </div>
-</template>
 ```
 
 #### Testing example
@@ -352,9 +370,11 @@ describe('RightSidebar.vue', () => {
 });
 ```
 
-### Tracking in raw JavaScript
+### Implement raw JavaScript tracking
 
-Custom event tracking and instrumentation can be added by directly calling the `Tracking.event` static function. The following example demonstrates tracking a click on a button by calling `Tracking.event` manually.
+To call custom event tracking and instrumentation directly from the JavaScript file, call the `Tracking.event` static function. 
+
+The following example demonstrates tracking a click on a button by manually calling `Tracking.event`.
 
 ```javascript
 import Tracking from '~/tracking';

@@ -6,46 +6,70 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Webhooks **(FREE)**
 
-Project webhooks allow you to trigger a percent-encoded URL if, for example, new code is pushed or
-a new issue is created. You can configure webhooks to listen for specific events
-like pushes, issues or merge requests. GitLab sends a POST request with data
-to the webhook URL.
+[Webhooks](https://en.wikipedia.org/wiki/Webhook) are custom HTTP callbacks
+that you define. They are usually triggered by an
+event, such as pushing code to a repository or posting a comment on a blog.
+When the event occurs, the source app makes an HTTP request to the URI
+configured for the webhook. The action to take may be anything. For example,
+you can use webhooks to:
 
-You usually need to set up your own [webhook receiver](#example-webhook-receiver)
+- Trigger continuous integration (CI) jobs, update external issue trackers,
+  update a backup mirror, or deploy to your production server.
+- Send a notification to
+  [Slack](https://api.slack.com/incoming-webhooks) every time a job fails.
+- [Integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
+  every time an issue is created for a specific project or group in GitLab.
+- [Automatically assign labels to merge requests](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
+
+You can configure webhook settings in GitLab for a [project](#project-webhooks-in-gitlab)
+or a [group](#group-webhooks).
+Usually, you set up your own [webhook receiver](#example-webhook-receiver)
 to receive information from GitLab and send it to another app, according to your requirements.
-We already have a [built-in receiver](slack.md)
-for sending [Slack](https://api.slack.com/incoming-webhooks) notifications _per project_.
+We have a [built-in receiver](slack.md)
+for sending [Slack](https://api.slack.com/incoming-webhooks) notifications per project.
 
-## Overview
+GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks),
+including:
 
-[Webhooks](https://en.wikipedia.org/wiki/Webhook) are "_user-defined HTTP
-callbacks_". They are usually triggered by some
-event, such as pushing code to a repository or a comment being posted to a blog.
-When that event occurs, the source app makes an HTTP request to the URI
-configured for the webhook. The action taken may be anything.
-Common uses are to trigger builds with continuous integration systems or to
-notify bug tracking systems.
-
-Webhooks can be used to update an external issue tracker, trigger CI jobs,
-update a backup mirror, or even deploy to your production server.
-
-Webhooks are available:
-
-- Per project, at a project's **Settings > Webhooks** menu. **(FREE)**
-- Additionally per group, at a group's **Settings > Webhooks** menu. **(PREMIUM)**
-
-GitLab.com enforces various [webhook limits](../../../user/gitlab_com/index.md#webhooks), including:
-
-- The maximum number of webhooks and their size, both per project, and per group.
+- The maximum number of webhooks and their size, both per project and per group.
 - The number of webhook calls per minute.
 
-## Possible uses for webhooks
+## Project webhooks in GitLab
 
-- You can set up a webhook in GitLab to send a notification to
-  [Slack](https://api.slack.com/incoming-webhooks) every time a job fails.
-- You can [integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
-  every time an issue is created for a specific project or group within GitLab
-- You can use them to [automatically assign labels to merge requests](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
+You can configure your project to trigger a percent-encoded webhook URL
+when an event occurs. For example, when new code is pushed or
+a new issue is created. You can configure a webhook to listen for specific [events](#events).
+GitLab sends a POST request with data to the webhook URL.
+
+### Validate payloads by using a secret token
+
+You can specify a secret token to validate received payloads.
+The token is sent with the hook request in the
+`X-Gitlab-Token` HTTP header. Your webhook endpoint can check the token to verify
+that the request is legitimate.
+
+### Verify an SSL certificate
+
+By default, the SSL certificate of the webhook endpoint is verified based on
+an internal list of Certificate Authorities. This means the certificate cannot
+be self-signed.
+
+You can turn off SSL verification in the [webhook settings](#configure-a-webhook)
+in your GitLab projects.
+
+### Filter push events by branch
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20338) in GitLab 11.3.
+
+Push events can be filtered by branch using a branch name or wildcard pattern
+to limit which push events are sent to your webhook endpoint. By default,
+all push events are sent to your webhook endpoint. You can configure branch filtering
+in the [webhook settings](#configure-a-webhook) in your project.
+
+## Group webhooks **(PREMIUM)**
+
+You can configure a webhook for a group to ensure all projects in the group
+receive the same webhook settings.
 
 ## Webhook endpoint tips
 
@@ -62,27 +86,17 @@ GitLab webhooks, keep in mind the following:
   you are writing a low-level hook this is important to remember.
 - GitLab ignores the HTTP status code returned by your endpoint.
 
-## Secret token
+## Configure a webhook
 
-If you specify a secret token, it is sent with the hook request in the
-`X-Gitlab-Token` HTTP header. Your webhook endpoint can check that to verify
-that the request is legitimate.
+You can configure a webhook for a group or a project.
 
-## SSL verification
-
-By default, the SSL certificate of the webhook endpoint is verified based on
-an internal list of Certificate Authorities. This means the certificate cannot
-be self-signed.
-
-You can turn this off in the webhook settings in your GitLab projects.
-
-## Branch filtering
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20338) in GitLab 11.3.
-
-Push events can be filtered by branch using a branch name or wildcard pattern
-to limit which push events are sent to your webhook endpoint. By default the
-field is blank causing all push events to be sent to your webhook endpoint.
+1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
+1. In **URL**, enter the URL of the webhook endpoint.
+   The URL must be percentage-encoded, if necessary.
+1. In **Secret token**, enter the [secret token](#validate-payloads-by-using-a-secret-token) to validate payloads.
+1. In the **Trigger** section, select the [events](#events) to trigger the webhook.
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](#verify-an-ssl-certificate).
+1. Select **Add webhook**.
 
 ## Events
 

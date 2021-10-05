@@ -35,6 +35,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           <b-form-input-stub
             class="gl-form-input"
             debounce="0"
+            formatter="[Function]"
             readonly="true"
             type="text"
             value="ssh://foo.bar"
@@ -78,6 +79,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           <b-form-input-stub
             class="gl-form-input"
             debounce="0"
+            formatter="[Function]"
             readonly="true"
             type="text"
             value="http://foo.bar"

@@ -1,10 +1,16 @@
 <script>
-import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlLoadingIcon,
+  GlTooltipDirective,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserNameWithStatus from '../../sidebar/components/assignees/user_name_with_status.vue';
 
 export default {
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   components: {
     timeAgoTooltip,
     GitlabTeamMemberBadge: () =>
@@ -14,6 +20,7 @@ export default {
     UserNameWithStatus,
   },
   directives: {
+    SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
   props: {
@@ -165,10 +172,10 @@ export default {
       <span
         v-if="authorStatus"
         ref="authorStatus"
+        v-safe-html:[$options.safeHtmlConfig]="authorStatus"
         v-on="
           authorStatusHasTooltip ? { mouseenter: removeEmojiTitle, mouseleave: addEmojiTitle } : {}
         "
-        v-html="authorStatus /* eslint-disable-line vue/no-v-html */"
       ></span>
       <span class="text-nowrap author-username">
         <a

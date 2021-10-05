@@ -1,31 +1,4 @@
 - noteable_name = @note.noteable.human_class_name
 
-.float-left.btn-group.gl-sm-mr-3.droplab-dropdown.comment-type-dropdown.js-comment-type-dropdown
+.js-comment-type-dropdown.float-left.gl-sm-mr-3{ data: { noteable_name: noteable_name } }
   %input.btn.gl-button.btn-confirm.js-comment-button.js-comment-submit-button{ type: 'submit', value: _('Comment'), data: { qa_selector: 'comment_button' } }
-
-  - if @note.can_be_discussion_note?
-    = button_tag type: 'button', class: 'gl-button btn dropdown-toggle btn-confirm js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => _('Open comment type dropdown') do
-      = sprite_icon('chevron-down')
-
-    %ul#resolvable-comment-menu.dropdown-menu.dropdown-open-top{ data: { dropdown: true } }
-      %li#comment.droplab-item-selected{ data: { value: '', 'submit-text' => _('Comment'), 'close-text' => _("Comment & close %{noteable_name}") % { noteable_name: noteable_name }, 'reopen-text' => _("Comment & reopen %{noteable_name}") % { noteable_name: noteable_name } } }
-        %button.btn.gl-button.btn-default-tertiary
-          = sprite_icon('check', css_class: 'icon')
-          .description
-            %strong= _("Comment")
-            %p
-              = _("Add a general comment to this %{noteable_name}.") % { noteable_name: noteable_name }
-
-      %li.divider.droplab-item-ignore
-
-      %li#discussion{ data: { value: 'DiscussionNote', 'submit-text' => _('Start thread'), 'close-text' => _("Start thread & close %{noteable_name}") % { noteable_name: noteable_name }, 'reopen-text' => _("Start thread & reopen %{noteable_name}") % { noteable_name: noteable_name } } }
-        %button.btn.gl-button.btn-default-tertiary
-          = sprite_icon('check', css_class: 'icon')
-          .description
-            %strong= _("Start thread")
-            %p
-              = succeed '.' do
-                - if @note.noteable.supports_resolvable_notes?
-                  = _('Discuss a specific suggestion or question that needs to be resolved')
-                - else
-                  = _('Discuss a specific suggestion or question')

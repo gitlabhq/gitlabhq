@@ -77,19 +77,6 @@ RSpec.describe Ci::Pipelines::AddJobService do
         expect(execute).to be_success
         expect(execute.payload[:job]).to eq(job)
       end
-
-      context 'when the FF ci_pipeline_add_job_with_lock is disabled' do
-        before do
-          stub_feature_flags(ci_pipeline_add_job_with_lock: false)
-        end
-
-        it 'does not use exclusive lock' do
-          expect(Gitlab::ExclusiveLease).not_to receive(:new).with(lock_key, timeout: lock_timeout)
-
-          expect(execute).to be_success
-          expect(execute.payload[:job]).to eq(job)
-        end
-      end
     end
   end
 end

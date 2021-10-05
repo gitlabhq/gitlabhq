@@ -1384,12 +1384,12 @@ RSpec.describe ProjectsController do
         end
       end
 
-      context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
+      context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_rate_limiting do
         include_examples 'rate limits project export endpoint'
       end
     end
 
-    describe '#download_export', :clean_gitlab_redis_cache do
+    describe '#download_export', :clean_gitlab_redis_rate_limiting do
       let(:action) { :download_export }
 
       context 'object storage enabled' do
@@ -1424,7 +1424,7 @@ RSpec.describe ProjectsController do
           end
         end
 
-        context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
+        context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_rate_limiting do
           before do
             allow(Gitlab::ApplicationRateLimiter)
               .to receive(:increment)
@@ -1496,7 +1496,7 @@ RSpec.describe ProjectsController do
         end
       end
 
-      context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
+      context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_rate_limiting do
         include_examples 'rate limits project export endpoint'
       end
     end

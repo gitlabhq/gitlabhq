@@ -96,7 +96,11 @@ export default {
     data-track-action="click_button"
     @click="$emit('click')"
   >
-    <gl-dropdown-item is-check-item :is-checked="isNoteTypeComment" @click="setNoteTypeToComment">
+    <gl-dropdown-item
+      is-check-item
+      :is-checked="isNoteTypeComment"
+      @click.stop.prevent="setNoteTypeToComment"
+    >
       <strong>{{ $options.i18n.submitButton.comment }}</strong>
       <p class="gl-m-0">{{ commentDescription }}</p>
     </gl-dropdown-item>
@@ -105,7 +109,7 @@ export default {
       is-check-item
       :is-checked="isNoteTypeDiscussion"
       data-qa-selector="discussion_menu_item"
-      @click="setNoteTypeToDiscussion"
+      @click.stop.prevent="setNoteTypeToDiscussion"
     >
       <strong>{{ $options.i18n.submitButton.startThread }}</strong>
       <p class="gl-m-0">{{ startDiscussionDescription }}</p>

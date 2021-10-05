@@ -125,6 +125,7 @@ You can publish a Composer package to the Package Registry as part of your CI/CD
    deploy:
      stage: deploy
      script:
+       - apk add curl
        - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
    ```
 

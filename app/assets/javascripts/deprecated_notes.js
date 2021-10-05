@@ -19,9 +19,10 @@ import Vue from 'vue';
 import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
+import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
+import * as constants from '~/notes/constants';
 import Autosave from './autosave';
 import loadAwardsHandler from './awards_handler';
-import CommentTypeToggle from './comment_type_toggle';
 import createFlash from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import GLForm from './gl_form';
@@ -128,7 +129,13 @@ export default class Notes {
     this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
     this.$wrapperEl.on('click', '.note-edit-cancel', this.cancelEdit);
     // Reopen and close actions for Issue/MR combined with note form submit
-    this.$wrapperEl.on('click', '.js-comment-submit-button', this.postComment);
+    this.$wrapperEl.on(
+      'click',
+      // this oddly written selector needs to match the old style (input with class) as
+      // well as the new DOM styling from the Vue-based note form
+      'input.js-comment-submit-button, .js-comment-submit-button > button:first-child',
+      this.postComment,
+    );
     this.$wrapperEl.on('click', '.js-comment-save-button', this.updateComment);
     this.$wrapperEl.on('keyup input', '.js-note-text', this.updateTargetButtons);
     // resolve a discussion
@@ -201,23 +208,39 @@ export default class Notes {
   }
 
   static initCommentTypeToggle(form) {
-    const dropdownTrigger = form.querySelector('.js-comment-type-dropdown .dropdown-toggle');
-    const dropdownList = form.querySelector('.js-comment-type-dropdown .dropdown-menu');
+    const el = form.querySelector('.js-comment-type-dropdown');
+    const { noteableName } = el.dataset;
     const noteTypeInput = form.querySelector('#note_type');
-    const submitButton = form.querySelector('.js-comment-type-dropdown .js-comment-submit-button');
-    const closeButton = form.querySelector('.js-note-target-close');
-    const reopenButton = form.querySelector('.js-note-target-reopen');
+    const formHasContent = form.querySelector('.js-note-text').value.trim().length > 0;
 
-    const commentTypeToggle = new CommentTypeToggle({
-      dropdownTrigger,
-      dropdownList,
-      noteTypeInput,
-      submitButton,
-      closeButton,
-      reopenButton,
+    form.commentTypeComponent = new Vue({
+      el,
+      data() {
+        return {
+          noteType: constants.COMMENT,
+          disabled: !formHasContent,
+        };
+      },
+      render(createElement) {
+        return createElement(CommentTypeDropdown, {
+          props: {
+            noteType: this.noteType,
+            noteableDisplayName: noteableName,
+            disabled: this.disabled,
+          },
+          on: {
+            change: (arg) => {
+              this.noteType = arg;
+              if (this.noteType === constants.DISCUSSION) {
+                noteTypeInput.value = constants.DISCUSSION_NOTE;
+              } else {
+                noteTypeInput.value = '';
+              }
+            },
+          },
+        });
+      },
     });
-
-    commentTypeToggle.initDroplab();
   }
 
   keydownNoteText(e) {
@@ -1107,6 +1130,7 @@ export default class Notes {
     const form = textarea.parents('form');
     const reopenbtn = form.find('.js-note-target-reopen');
     const closebtn = form.find('.js-note-target-close');
+    const commentTypeComponent = form.get(0)?.commentTypeComponent;
 
     if (textarea.val().trim().length > 0) {
       reopentext = reopenbtn.attr('data-alternative-text');
@@ -1123,6 +1147,9 @@ export default class Notes {
       if (closebtn.is(':not(.btn-comment-and-close)')) {
         closebtn.addClass('btn-comment-and-close');
       }
+      if (commentTypeComponent) {
+        commentTypeComponent.disabled = false;
+      }
     } else {
       reopentext = reopenbtn.data('originalText');
       closetext = closebtn.data('originalText');
@@ -1137,6 +1164,9 @@ export default class Notes {
       }
       if (closebtn.is('.btn-comment-and-close')) {
         closebtn.removeClass('btn-comment-and-close');
+      }
+      if (commentTypeComponent) {
+        commentTypeComponent.disabled = true;
       }
     }
   }
@@ -1308,9 +1338,6 @@ export default class Notes {
   }
 
   cleanForm($form) {
-    // Remove JS classes that are not needed here
-    $form.find('.js-comment-type-dropdown').removeClass('btn-group');
-
     // Remove dropdown
     $form.find('.dropdown-menu').remove();
 
@@ -1505,6 +1532,8 @@ export default class Notes {
     const $submitBtn = $(e.target);
     $submitBtn.prop('disabled', true);
     let $form = $submitBtn.parents('form');
+    const commentTypeComponent = $form.get(0)?.commentTypeComponent;
+    if (commentTypeComponent) commentTypeComponent.disabled = true;
     const $closeBtn = $form.find('.js-note-target-close');
     const isDiscussionNote =
       $submitBtn.parent().find('li.droplab-item-selected').attr('id') === 'discussion';
@@ -1584,6 +1613,8 @@ export default class Notes {
         const note = res.data;
 
         $submitBtn.prop('disabled', false);
+        if (commentTypeComponent) commentTypeComponent.disabled = false;
+
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1662,6 +1693,8 @@ export default class Notes {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
         $submitBtn.prop('disabled', false);
+        if (commentTypeComponent) commentTypeComponent.disabled = false;
+
         const blurEvent = new CustomEvent('blur.imageDiff', {
           detail: e,
         });
