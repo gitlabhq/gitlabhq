@@ -4,6 +4,13 @@ import toast from '~/vue_shared/plugins/global_toast';
 import axios from '../lib/utils/axios_utils';
 import initForm from './edit';
 import eventHub from './edit/event_hub';
+import {
+  TEST_INTEGRATION_EVENT,
+  SAVE_INTEGRATION_EVENT,
+  GET_JIRA_ISSUE_TYPES_EVENT,
+  TOGGLE_INTEGRATION_EVENT,
+  VALIDATE_INTEGRATION_FORM_EVENT,
+} from './constants';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
@@ -22,21 +29,19 @@ export default class IntegrationSettingsForm {
       document.querySelector('.js-vue-integration-settings'),
       document.querySelector('.js-vue-default-integration-settings'),
     );
-    eventHub.$on('toggle', (active) => {
+    eventHub.$on(TOGGLE_INTEGRATION_EVENT, (active) => {
       this.formActive = active;
       this.toggleServiceState();
     });
-    eventHub.$on('testIntegration', () => {
+    eventHub.$on(TEST_INTEGRATION_EVENT, () => {
       this.testIntegration();
     });
-    eventHub.$on('saveIntegration', () => {
+    eventHub.$on(SAVE_INTEGRATION_EVENT, () => {
       this.saveIntegration();
     });
-    eventHub.$on('getJiraIssueTypes', () => {
+    eventHub.$on(GET_JIRA_ISSUE_TYPES_EVENT, () => {
       this.getJiraIssueTypes(new FormData(this.$form));
     });
-
-    eventHub.$emit('formInitialized');
   }
 
   saveIntegration() {
@@ -52,7 +57,7 @@ export default class IntegrationSettingsForm {
         this.$form.submit();
       }, 100);
     } else {
-      eventHub.$emit('validateForm');
+      eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
       this.vue.$store.dispatch('setIsSaving', false);
     }
   }
@@ -66,7 +71,7 @@ export default class IntegrationSettingsForm {
     if (this.$form.checkValidity()) {
       this.testSettings(new FormData(this.$form));
     } else {
-      eventHub.$emit('validateForm');
+      eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
       this.vue.$store.dispatch('setIsTesting', false);
     }
   }
@@ -106,7 +111,7 @@ export default class IntegrationSettingsForm {
           },
         }) => {
           if (error || !issuetypes?.length) {
-            eventHub.$emit('validateForm');
+            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
             throw new Error(message);
           }
 

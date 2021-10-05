@@ -1,6 +1,7 @@
 <script>
 import { GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
+import { TOGGLE_INTEGRATION_EVENT } from '~/integrations/constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -26,7 +27,7 @@ export default {
   },
   methods: {
     onChange(e) {
-      eventHub.$emit('toggle', e);
+      eventHub.$emit(TOGGLE_INTEGRATION_EVENT, e);
     },
   },
 };

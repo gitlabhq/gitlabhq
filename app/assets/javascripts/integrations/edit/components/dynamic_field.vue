@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { mapGetters } from 'vuex';
+import { VALIDATE_INTEGRATION_FORM_EVENT } from '~/integrations/constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -121,10 +122,10 @@ export default {
     if (this.isNonEmptyPassword) {
       this.model = null;
     }
-    eventHub.$on('validateForm', this.validateForm);
+    eventHub.$on(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
   },
   beforeDestroy() {
-    eventHub.$off('validateForm', this.validateForm);
+    eventHub.$off(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
   },
   methods: {
     validateForm() {
