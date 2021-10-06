@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Settings > For a forked project', :js do
   let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
 
-  let(:user) { project.owner}
+  let(:user) { project.owner }
 
   before do
     sign_in(user)
@@ -16,7 +16,8 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
       visit project_path(project)
       wait_for_requests
 
-      expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Monitor"]', text: 'Monitor', visible: false)
+      expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Monitor"]',
+                                    text: 'Monitor', visible: :hidden)
     end
   end
 
@@ -42,7 +43,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         expect(find_field(send_email)).to be_checked
       end
 
-      it 'updates form values', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333665' do
+      it 'updates form values' do
         check(create_issue)
         uncheck(send_email)
         click_on('No template selected')
@@ -52,10 +53,8 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         click_settings_tab
 
         expect(find_field(create_issue)).to be_checked
-        expect(page).to have_selector(:id, 'alert-integration-settings-issue-template', text: 'bug')
-
-        click_settings_tab
         expect(find_field(send_email)).not_to be_checked
+        expect(page).to have_selector(:id, 'alert-integration-settings-issue-template', text: 'bug')
       end
 
       def click_settings_tab
@@ -68,13 +67,15 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         page.within '[data-testid="alert-integration-settings"]' do
           click_button 'Save changes'
         end
+
+        wait_for_all_requests
       end
     end
 
-    context 'error tracking settings form' do
+    describe 'error tracking settings form' do
       let(:sentry_list_projects_url) { 'http://sentry.example.com/api/0/projects/' }
 
-      context 'success path' do
+      context 'when project dropdown is loaded' do
         let(:projects_sample_response) do
           Gitlab::Utils.deep_indifferent_access(
             Gitlab::Json.parse(fixture_file('sentry/list_projects_sample_response.json'))
@@ -123,7 +124,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         end
       end
 
-      context 'project dropdown fails to load' do
+      context 'when project dropdown fails to load' do
         before do
           WebMock.stub_request(:get, sentry_list_projects_url)
           .to_return(
@@ -155,7 +156,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         end
       end
 
-      context 'integrated error tracking backend' do
+      context 'with integrated error tracking backend' do
         it 'successfully fills and submits the form' do
           visit project_settings_operations_path(project)
 
@@ -189,7 +190,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
       end
     end
 
-    context 'grafana integration settings form' do
+    describe 'grafana integration settings form' do
       it 'successfully fills and completes the form' do
         visit project_settings_operations_path(project)
 

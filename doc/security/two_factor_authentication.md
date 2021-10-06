@@ -44,7 +44,7 @@ Gitlab::CurrentSettings.update!('require_two_factor_authentication': false)
 
 ## Enforce 2FA for all users in a group **(FREE)**
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) GitLab 12.0, 2FA settings for a group are also applied to subgroups.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.
 
 To enforce 2FA only for certain groups:
 

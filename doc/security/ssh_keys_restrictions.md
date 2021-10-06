@@ -27,7 +27,7 @@ the minimum key length for each technology:
    ![SSH keys restriction admin settings](img/ssh_keys_restrictions_settings.png)
 
 If a restriction is imposed on any key type, users cannot upload new SSH keys that don't meet the
-requirement. Any existing keys that don't meet it are disabled but not removed and users cannot to
+requirement. Any existing keys that don't meet it are disabled but not removed and users cannot
 pull or push code using them.
 
 An icon is visible to the user of a restricted key in the SSH keys section of their profile:

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# System hooks
+# System hooks **(FREE SELF)**
 
 Your GitLab instance can perform HTTP POST requests on the following events:
 

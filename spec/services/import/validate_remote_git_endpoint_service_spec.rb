@@ -46,6 +46,14 @@ RSpec.describe Import::ValidateRemoteGitEndpointService do
         expect(result.message).to eq(error_message)
       end
 
+      it 'reports error when invalid URL is provided' do
+        result = described_class.new(url: 1).execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
+        expect(result.message).to eq('1 is not a valid URL')
+      end
+
       it 'reports error when required header is missing' do
         stub_full_request(endpoint_url, method: :get).to_return(valid_response.merge({ headers: nil }))
 

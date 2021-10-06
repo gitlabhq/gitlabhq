@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# How to reset user password
+# How to reset user password **(FREE SELF)**
 
 There are a few ways to reset the password of a user.
 
