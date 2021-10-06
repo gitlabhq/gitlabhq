@@ -647,7 +647,7 @@ module Gitlab
       # Omitted because of encrypted properties: `projects_jira_cloud_active`, `projects_jira_server_active`
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_plan(time_period)
-        time_frame = time_period.present? ? '28d' : 'none'
+        time_frame = metric_time_period(time_period)
         {
           issues: add_metric('CountUsersCreatingIssuesMetric', time_frame: time_frame),
           notes: distinct_count(::Note.where(time_period), :author_id),
@@ -665,11 +665,13 @@ module Gitlab
       # Omitted because no user, creator or author associated: `environments`, `feature_flags`, `in_review_folder`, `pages_domains`
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_release(time_period)
+        time_frame = metric_time_period(time_period)
         {
           deployments: distinct_count(::Deployment.where(time_period), :user_id),
           failed_deployments: distinct_count(::Deployment.failed.where(time_period), :user_id),
           releases: distinct_count(::Release.where(time_period), :author_id),
-          successful_deployments: distinct_count(::Deployment.success.where(time_period), :user_id)
+          successful_deployments: distinct_count(::Deployment.success.where(time_period), :user_id),
+          releases_with_milestones: add_metric('CountUsersAssociatingMilestonesToReleasesMetric', time_frame: time_frame)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -754,6 +756,10 @@ module Gitlab
       end
 
       private
+
+      def metric_time_period(time_period)
+        time_period.present? ? '28d' : 'none'
+      end
 
       def gitaly_apdex
         with_prometheus_client(verify: false, fallback: FALLBACK) do |client|

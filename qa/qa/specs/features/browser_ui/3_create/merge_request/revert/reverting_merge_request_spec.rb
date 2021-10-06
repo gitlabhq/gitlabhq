@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', quarantine: {
-    only: { job: 'large-setup' },
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338324',
-    type: :stale
-  } do
+  RSpec.describe 'Create' do
     describe 'Merged merge request' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

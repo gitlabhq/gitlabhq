@@ -4,21 +4,21 @@ module Gitlab
   module Database
     module Migrations
       class Instrumentation
-        RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
         STATS_FILENAME = 'migration-stats.json'
 
         attr_reader :observations
 
-        def initialize(observer_classes = ::Gitlab::Database::Migrations::Observers.all_observers)
+        def initialize(result_dir:, observer_classes: ::Gitlab::Database::Migrations::Observers.all_observers)
           @observer_classes = observer_classes
           @observations = []
+          @result_dir = result_dir
         end
 
         def observe(version:, name:, &block)
           observation = Observation.new(version, name)
           observation.success = true
 
-          observers = observer_classes.map { |c| c.new(observation) }
+          observers = observer_classes.map { |c| c.new(observation, @result_dir) }
 
           exception = nil
 

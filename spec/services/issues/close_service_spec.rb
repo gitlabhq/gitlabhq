@@ -22,6 +22,18 @@ RSpec.describe Issues::CloseService do
   describe '#execute' do
     let(:service) { described_class.new(project: project, current_user: user) }
 
+    context 'when skip_authorization is true' do
+      it 'does close the issue even if user is not authorized' do
+        non_authorized_user = create(:user)
+
+        service = described_class.new(project: project, current_user: non_authorized_user)
+
+        expect do
+          service.execute(issue, skip_authorization: true)
+        end.to change { issue.reload.state }.from('opened').to('closed')
+      end
+    end
+
     it 'checks if the user is authorized to update the issue' do
       expect(service).to receive(:can?).with(user, :update_issue, issue)
         .and_call_original

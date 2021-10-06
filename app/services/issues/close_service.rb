@@ -3,8 +3,8 @@
 module Issues
   class CloseService < Issues::BaseService
     # Closes the supplied issue if the current user is able to do so.
-    def execute(issue, commit: nil, notifications: true, system_note: true)
-      return issue unless can?(current_user, :update_issue, issue) || issue.is_a?(ExternalIssue)
+    def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false)
+      return issue unless can_close?(issue, skip_authorization: skip_authorization)
 
       close_issue(issue,
                   closed_via: commit,
@@ -24,7 +24,7 @@ module Issues
         return issue
       end
 
-      if project.issues_enabled? && issue.close(current_user)
+      if perform_close(issue)
         event_service.close_issue(issue, current_user)
         create_note(issue, closed_via) if system_note
 
@@ -50,6 +50,15 @@ module Issues
     end
 
     private
+
+    # Overridden on EE
+    def perform_close(issue)
+      issue.close(current_user)
+    end
+
+    def can_close?(issue, skip_authorization: false)
+      skip_authorization || can?(current_user, :update_issue, issue) || issue.is_a?(ExternalIssue)
+    end
 
     def perform_incident_management_actions(issue)
       resolve_alert(issue)

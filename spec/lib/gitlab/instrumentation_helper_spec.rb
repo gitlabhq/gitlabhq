@@ -149,8 +149,8 @@ RSpec.describe Gitlab::InstrumentationHelper do
     end
   end
 
-  describe '.queue_duration_for_job' do
-    where(:enqueued_at, :created_at, :time_now, :expected_duration) do
+  describe 'duration calculations' do
+    where(:end_time, :start_time, :time_now, :expected_duration) do
       "2019-06-01T00:00:00.000+0000" | nil                            | "2019-06-01T02:00:00.000+0000" | 2.hours.to_f
       "2019-06-01T02:00:00.000+0000" | nil                            | "2019-06-01T02:00:00.001+0000" | 0.001
       "2019-06-01T02:00:00.000+0000" | "2019-05-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | 1
@@ -164,15 +164,29 @@ RSpec.describe Gitlab::InstrumentationHelper do
       0                              | nil                            | "2019-10-23T12:13:16.000+0200" | nil
       -1                             | nil                            | "2019-10-23T12:13:16.000+0200" | nil
       "2019-06-01T02:00:00.000+0000" | nil                            | "2019-06-01T00:00:00.000+0000" | 0
-      Time.at(1571999233)            | nil                            | "2019-10-25T12:29:16.000+0200" | 123
+      Time.at(1571999233).utc        | nil                            | "2019-10-25T12:29:16.000+0200" | 123
     end
 
-    with_them do
-      let(:job) { { 'enqueued_at' => enqueued_at, 'created_at' => created_at } }
+    describe '.queue_duration_for_job' do
+      with_them do
+        let(:job) { { 'enqueued_at' => end_time, 'created_at' => start_time } }
 
-      it "returns the correct duration" do
-        Timecop.freeze(Time.iso8601(time_now)) do
-          expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
+        it "returns the correct duration" do
+          travel_to(Time.iso8601(time_now)) do
+            expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
+          end
+        end
+      end
+    end
+
+    describe '.enqueue_latency_for_scheduled_job' do
+      with_them do
+        let(:job) { { 'enqueued_at' => end_time, 'scheduled_at' => start_time } }
+
+        it "returns the correct duration" do
+          travel_to(Time.iso8601(time_now)) do
+            expect(described_class.enqueue_latency_for_scheduled_job(job)).to eq(expected_duration)
+          end
         end
       end
     end

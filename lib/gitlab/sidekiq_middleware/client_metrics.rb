@@ -16,7 +16,12 @@ module Gitlab
         worker_class = worker_class.to_s.safe_constantize
 
         labels = create_labels(worker_class, queue, job)
-        labels[:scheduling] = job.key?('at') ? 'delayed' : 'immediate'
+        if job.key?('at')
+          labels[:scheduling] = 'delayed'
+          job[:scheduled_at] = job['at']
+        else
+          labels[:scheduling] = 'immediate'
+        end
 
         @metrics.fetch(ENQUEUED).increment(labels, 1)
 

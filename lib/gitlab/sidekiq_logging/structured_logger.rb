@@ -55,6 +55,9 @@ module Gitlab
         scheduling_latency_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(payload)
         payload['scheduling_latency_s'] = scheduling_latency_s if scheduling_latency_s
 
+        enqueue_latency_s = ::Gitlab::InstrumentationHelper.enqueue_latency_for_scheduled_job(payload)
+        payload['enqueue_latency_s'] = enqueue_latency_s if enqueue_latency_s
+
         payload
       end
 

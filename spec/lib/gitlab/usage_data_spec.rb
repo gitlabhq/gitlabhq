@@ -469,7 +469,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       for_defined_days_back do
         user = create(:user)
         create(:deployment, :failed, user: user)
-        create(:release, author: user)
+        release = create(:release, author: user)
+        create(:milestone, project: release.project, releases: [release])
         create(:deployment, :success, user: user)
       end
 
@@ -477,13 +478,15 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         deployments: 2,
         failed_deployments: 2,
         releases: 2,
-        successful_deployments: 2
+        successful_deployments: 2,
+        releases_with_milestones: 2
       )
       expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(
         deployments: 1,
         failed_deployments: 1,
         releases: 1,
-        successful_deployments: 1
+        successful_deployments: 1,
+        releases_with_milestones: 1
       )
     end
   end

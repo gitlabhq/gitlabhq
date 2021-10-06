@@ -25683,6 +25683,8 @@ CREATE INDEX index_namespaces_id_parent_id_is_not_null ON namespaces USING btree
 
 CREATE INDEX index_namespaces_id_parent_id_is_null ON namespaces USING btree (id) WHERE (parent_id IS NULL);
 
+CREATE UNIQUE INDEX index_namespaces_name_parent_id_type ON namespaces USING btree (name, parent_id, type);
+
 CREATE INDEX index_namespaces_on_created_at ON namespaces USING btree (created_at);
 
 CREATE INDEX index_namespaces_on_custom_project_templates_group_id_and_type ON namespaces USING btree (custom_project_templates_group_id, type) WHERE (custom_project_templates_group_id IS NOT NULL);
@@ -25692,8 +25694,6 @@ CREATE INDEX index_namespaces_on_file_template_project_id ON namespaces USING bt
 CREATE INDEX index_namespaces_on_ldap_sync_last_successful_update_at ON namespaces USING btree (ldap_sync_last_successful_update_at);
 
 CREATE INDEX index_namespaces_on_ldap_sync_last_update_at ON namespaces USING btree (ldap_sync_last_update_at);
-
-CREATE UNIQUE INDEX index_namespaces_on_name_and_parent_id ON namespaces USING btree (name, parent_id);
 
 CREATE INDEX index_namespaces_on_name_trigram ON namespaces USING gin (name gin_trgm_ops);
 
@@ -26262,6 +26262,8 @@ CREATE UNIQUE INDEX index_release_links_on_release_id_and_name ON release_links 
 CREATE UNIQUE INDEX index_release_links_on_release_id_and_url ON release_links USING btree (release_id, url);
 
 CREATE INDEX index_releases_on_author_id ON releases USING btree (author_id);
+
+CREATE INDEX index_releases_on_author_id_id_created_at ON releases USING btree (author_id, id, created_at);
 
 CREATE INDEX index_releases_on_project_id_and_tag ON releases USING btree (project_id, tag);
 

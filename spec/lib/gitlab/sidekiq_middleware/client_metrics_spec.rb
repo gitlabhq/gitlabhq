@@ -62,6 +62,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ClientMetrics do
 
         Sidekiq::Testing.inline! { TestWorker.perform_in(1.second) }
       end
+
+      it 'sets the scheduled_at field' do
+        job = { 'at' => Time.current }
+
+        subject.call('TestWorker', job, 'queue', nil) do
+          expect(job[:scheduled_at]).to eq(job['at'])
+        end
+      end
     end
 
     context 'when the worker class cannot be found' do
