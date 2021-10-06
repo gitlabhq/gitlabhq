@@ -264,8 +264,6 @@ module API
         when 'md5'
           ''
         else
-          track_package_event('push_package', :maven, user: current_user, project: user_project, namespace: user_project.namespace) if jar_file?(format)
-
           file_params = {
             file:      params[:file],
             size:      params['file.size'],
@@ -276,6 +274,7 @@ module API
           }
 
           ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
+          track_package_event('push_package', :maven, user: current_user, project: user_project, namespace: user_project.namespace) if jar_file?(format)
         end
       end
     end

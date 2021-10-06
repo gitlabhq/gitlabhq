@@ -101,11 +101,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
         user = create(:user)
-        cluster = create(:cluster, user: user)
-        create(:clusters_applications_cert_manager, :installed, cluster: cluster)
-        create(:clusters_applications_helm, :installed, cluster: cluster)
-        create(:clusters_applications_ingress, :installed, cluster: cluster)
-        create(:clusters_applications_knative, :installed, cluster: cluster)
+        create(:cluster, user: user)
         create(:cluster, :disabled, user: user)
         create(:cluster_provider_gcp, :created)
         create(:cluster_provider_aws, :created)
@@ -118,10 +114,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       expect(described_class.usage_activity_by_stage_configure({})).to include(
-        clusters_applications_cert_managers: 2,
-        clusters_applications_helm: 2,
-        clusters_applications_ingress: 2,
-        clusters_applications_knative: 2,
         clusters_management_project: 2,
         clusters_disabled: 4,
         clusters_enabled: 12,
@@ -136,10 +128,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         project_clusters_enabled: 10
       )
       expect(described_class.usage_activity_by_stage_configure(described_class.monthly_time_range_db_params)).to include(
-        clusters_applications_cert_managers: 1,
-        clusters_applications_helm: 1,
-        clusters_applications_ingress: 1,
-        clusters_applications_knative: 1,
         clusters_management_project: 1,
         clusters_disabled: 2,
         clusters_enabled: 6,
@@ -392,7 +380,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         user = create(:user, dashboard: 'operations')
         cluster = create(:cluster, user: user)
         project = create(:project, creator: user)
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
         create(:project_tracing_setting)
         create(:project_error_tracking_setting)
         create(:incident)
@@ -402,7 +390,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       expect(described_class.usage_activity_by_stage_monitor({})).to include(
         clusters: 2,
-        clusters_applications_prometheus: 2,
+        clusters_integrations_prometheus: 2,
         operations_dashboard_default_dashboard: 2,
         projects_with_tracing_enabled: 2,
         projects_with_error_tracking_enabled: 2,
@@ -414,7 +402,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       data_28_days = described_class.usage_activity_by_stage_monitor(described_class.monthly_time_range_db_params)
       expect(data_28_days).to include(
         clusters: 1,
-        clusters_applications_prometheus: 1,
+        clusters_integrations_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
         projects_with_tracing_enabled: 1,
         projects_with_error_tracking_enabled: 1,
@@ -502,7 +490,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:ci_pipeline, :repository_source, user: user)
         create(:ci_pipeline_schedule, owner: user)
         create(:ci_trigger, owner: user)
-        create(:clusters_applications_runner, :installed)
       end
 
       expect(described_class.usage_activity_by_stage_verify({})).to include(
@@ -513,8 +500,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         ci_pipeline_config_repository: 2,
         ci_pipeline_schedules: 2,
         ci_pipelines: 2,
-        ci_triggers: 2,
-        clusters_applications_runner: 2
+        ci_triggers: 2
       )
       expect(described_class.usage_activity_by_stage_verify(described_class.monthly_time_range_db_params)).to include(
         ci_builds: 1,
@@ -524,8 +510,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         ci_pipeline_config_repository: 1,
         ci_pipeline_schedules: 1,
         ci_pipelines: 1,
-        ci_triggers: 1,
-        clusters_applications_runner: 1
+        ci_triggers: 1
       )
     end
   end
@@ -607,17 +592,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:clusters_platforms_eks]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
-      expect(count_data[:clusters_applications_helm]).to eq(1)
-      expect(count_data[:clusters_applications_ingress]).to eq(1)
-      expect(count_data[:clusters_applications_cert_managers]).to eq(1)
-      expect(count_data[:clusters_applications_crossplane]).to eq(1)
-      expect(count_data[:clusters_applications_prometheus]).to eq(1)
-      expect(count_data[:clusters_applications_runner]).to eq(1)
-      expect(count_data[:clusters_applications_knative]).to eq(1)
-      expect(count_data[:clusters_applications_elastic_stack]).to eq(1)
+      expect(count_data[:clusters_integrations_elastic_stack]).to eq(1)
+      expect(count_data[:clusters_integrations_prometheus]).to eq(1)
       expect(count_data[:grafana_integrated_projects]).to eq(2)
-      expect(count_data[:clusters_applications_jupyter]).to eq(1)
-      expect(count_data[:clusters_applications_cilium]).to eq(1)
       expect(count_data[:clusters_management_project]).to eq(1)
       expect(count_data[:kubernetes_agents]).to eq(2)
       expect(count_data[:kubernetes_agents_with_token]).to eq(1)

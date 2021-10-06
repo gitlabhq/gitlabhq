@@ -11,6 +11,7 @@ import { sprintf, s__ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import { EXTENSION_ICON_CLASS } from '../../constants';
 import StatusIcon from './status_icon.vue';
+import Actions from './actions.vue';
 
 export const LOADING_STATES = {
   collapsedLoading: 'collapsedLoading',
@@ -26,6 +27,7 @@ export default {
     GlBadge,
     SmartVirtualList,
     StatusIcon,
+    Actions,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -65,6 +67,9 @@ export default {
       if (this.isLoadingSummary) return null;
 
       return this.statusIcon(this.collapsedData);
+    },
+    tertiaryActionsButtons() {
+      return this.tertiaryButtons ? this.tertiaryButtons() : undefined;
     },
   },
   watch: {
@@ -119,13 +124,16 @@ export default {
         :is-loading="isLoadingSummary"
         :icon-name="statusIconName"
       />
-      <div class="media-body gl-display-flex gl-align-self-center gl-align-items-center">
-        <div class="code-text">
+      <div
+        class="media-body gl-display-flex gl-align-self-center gl-align-items-center gl-flex-direction-row!"
+      >
+        <div class="gl-flex-grow-1">
           <template v-if="isLoadingSummary">
             {{ __('Loading...') }}
           </template>
           <div v-else v-safe-html="summary(collapsedData)"></div>
         </div>
+        <actions :widget="$options.name" :tertiary-buttons="tertiaryActionsButtons" />
         <div
           class="gl-float-right gl-align-self-center gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3"
         >
@@ -138,6 +146,7 @@ export default {
             :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             data-testid="toggle-button"
+            size="small"
             @click="toggleCollapsed"
           />
         </div>

@@ -1658,6 +1658,10 @@ class MergeRequest < ApplicationRecord
     service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(identifier), actual_head_pipeline)
   end
 
+  def recent_diff_head_shas(limit = 100)
+    merge_request_diffs.recent(limit).pluck(:head_commit_sha)
+  end
+
   def all_commits
     MergeRequestDiffCommit
       .where(merge_request_diff: merge_request_diffs.recent)

@@ -88,17 +88,9 @@ FactoryBot.define do
       create(:cluster, :group, :disabled)
       create(:cluster, :instance, :disabled)
 
-      # Applications
-      create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_cert_manager, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_crossplane, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_elastic_stack, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_jupyter, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_cilium, :installed, cluster: gcp_cluster)
+      # Cluster Integrations
+      create(:clusters_integrations_prometheus, cluster: gcp_cluster)
+      create(:clusters_integrations_elastic_stack, cluster: gcp_cluster)
 
       create(:grafana_integration, project: projects[0], enabled: true)
       create(:grafana_integration, project: projects[1], enabled: true)

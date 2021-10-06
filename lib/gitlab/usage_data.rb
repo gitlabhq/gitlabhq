@@ -123,17 +123,9 @@ module Gitlab
             clusters_platforms_eks: count(::Clusters::Cluster.aws_installed.enabled),
             clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
-            clusters_applications_helm: count(::Clusters::Applications::Helm.available),
-            clusters_applications_ingress: count(::Clusters::Applications::Ingress.available),
-            clusters_applications_cert_managers: count(::Clusters::Applications::CertManager.available),
-            clusters_applications_crossplane: count(::Clusters::Applications::Crossplane.available),
-            clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.available),
-            clusters_applications_runner: count(::Clusters::Applications::Runner.available),
-            clusters_applications_knative: count(::Clusters::Applications::Knative.available),
-            clusters_applications_elastic_stack: count(::Clusters::Applications::ElasticStack.available),
-            clusters_applications_jupyter: count(::Clusters::Applications::Jupyter.available),
-            clusters_applications_cilium: count(::Clusters::Applications::Cilium.available),
             clusters_management_project: count(::Clusters::Cluster.with_management_project),
+            clusters_integrations_elastic_stack: count(::Clusters::Integrations::ElasticStack.enabled),
+            clusters_integrations_prometheus: count(::Clusters::Integrations::Prometheus.enabled),
             kubernetes_agents: count(::Clusters::Agent),
             kubernetes_agents_with_token: distinct_count(::Clusters::AgentToken, :agent_id),
             in_review_folder: count(::Environment.in_review_folder),
@@ -523,10 +515,6 @@ module Gitlab
       # rubocop: disable UsageData/LargeTable
       def usage_activity_by_stage_configure(time_period)
         {
-          clusters_applications_cert_managers: cluster_applications_user_distinct_count(::Clusters::Applications::CertManager, time_period),
-          clusters_applications_helm: cluster_applications_user_distinct_count(::Clusters::Applications::Helm, time_period),
-          clusters_applications_ingress: cluster_applications_user_distinct_count(::Clusters::Applications::Ingress, time_period),
-          clusters_applications_knative: cluster_applications_user_distinct_count(::Clusters::Applications::Knative, time_period),
           clusters_management_project: clusters_user_distinct_count(::Clusters::Cluster.with_management_project, time_period),
           clusters_disabled: clusters_user_distinct_count(::Clusters::Cluster.disabled, time_period),
           clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled, time_period),
@@ -621,7 +609,7 @@ module Gitlab
 
         {
           clusters: distinct_count(::Clusters::Cluster.where(time_period), :user_id),
-          clusters_applications_prometheus: cluster_applications_user_distinct_count(::Clusters::Applications::Prometheus, time_period),
+          clusters_integrations_prometheus: cluster_integrations_user_distinct_count(::Clusters::Integrations::Prometheus, time_period),
           operations_dashboard_default_dashboard: count(::User.active.with_dashboard('operations').where(time_period),
                                                         start: minimum_id(User),
                                                         finish: maximum_id(User)),
@@ -687,8 +675,7 @@ module Gitlab
           ci_pipeline_config_repository: distinct_count(::Ci::Pipeline.repository_source.where(time_period), :user_id, start: minimum_id(User), finish: maximum_id(User)),
           ci_pipeline_schedules: distinct_count(::Ci::PipelineSchedule.where(time_period), :owner_id),
           ci_pipelines: distinct_count(::Ci::Pipeline.where(time_period), :user_id, start: minimum_id(User), finish: maximum_id(User)),
-          ci_triggers: distinct_count(::Ci::Trigger.where(time_period), :owner_id),
-          clusters_applications_runner: cluster_applications_user_distinct_count(::Clusters::Applications::Runner, time_period)
+          ci_triggers: distinct_count(::Ci::Trigger.where(time_period), :owner_id)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -873,8 +860,8 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def cluster_applications_user_distinct_count(applications, time_period)
-        distinct_count(applications.where(time_period).available.joins(:cluster), 'clusters.user_id')
+      def cluster_integrations_user_distinct_count(integrations, time_period)
+        distinct_count(integrations.where(time_period).enabled.joins(:cluster), 'clusters.user_id')
       end
 
       def clusters_user_distinct_count(clusters, time_period)

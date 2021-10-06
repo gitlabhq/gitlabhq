@@ -798,8 +798,6 @@ RSpec.describe API::MavenPackages do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name' do
-    include_context 'workhorse headers'
-
     let(:send_rewritten_field) { true }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.jar') }
 
@@ -833,6 +831,8 @@ RSpec.describe API::MavenPackages do
     context 'when params from workhorse are correct' do
       let(:params) { { file: file_upload } }
 
+      subject { upload_file_with_token(params: params) }
+
       context 'file size is too large' do
         it 'rejects the request' do
           allow_next_instance_of(UploadedFile) do |uploaded_file|
@@ -851,18 +851,20 @@ RSpec.describe API::MavenPackages do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      context 'without workhorse header' do
-        let(:workhorse_headers) { {} }
-
-        subject { upload_file_with_token(params: params) }
-
-        it_behaves_like 'package workhorse uploads'
-      end
+      it_behaves_like 'package workhorse uploads'
 
       context 'event tracking' do
-        subject { upload_file_with_token(params: params) }
-
         it_behaves_like 'a package tracking event', described_class.name, 'push_package'
+
+        context 'when the package file fails to be created' do
+          before do
+            allow_next_instance_of(::Packages::CreatePackageFileService) do |create_package_file_service|
+              allow(create_package_file_service).to receive(:execute).and_raise(StandardError)
+            end
+          end
+
+          it_behaves_like 'not a package tracking event'
+        end
       end
 
       it 'creates package and stores package file' do

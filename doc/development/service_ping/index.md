@@ -68,9 +68,9 @@ We use the following terminology to describe the Service Ping components:
 
 Starting with GitLab version 14.1, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data via [Service Ping](#what-is-service-ping). Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
 
-The paid feature available in this offering is [Email from GitLab](../../tools/email.md).
-Administrators can use this [Premium](https://about.gitlab.com/pricing/premium/) feature to streamline
-their workflow by emailing all or some instance users directly from the Admin Area.
+##### Features available in 14.1 and later
+
+1. [Email from GitLab](../../tools/email.md).
 
 NOTE:
 Registration is not yet required for participation, but will be added in a future milestone.

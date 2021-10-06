@@ -81,7 +81,7 @@ module QA
       def with_retry_on_too_many_requests
         response = nil
 
-        Support::Retrier.retry_until do
+        Support::Retrier.retry_until(log: false) do
           response = yield
 
           if response.code == HTTP_STATUS_TOO_MANY_REQUESTS

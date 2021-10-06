@@ -21,6 +21,8 @@ module Clusters
 
       default_value_for(:alert_manager_token) { SecureRandom.hex }
 
+      scope :enabled, -> { where(enabled: true) }
+
       after_destroy do
         run_after_commit do
           deactivate_project_integrations

@@ -14,6 +14,8 @@ module Clusters
       validates :cluster, presence: true
       validates :enabled, inclusion: { in: [true, false] }
 
+      scope :enabled, -> { where(enabled: true) }
+
       def available?
         enabled
       end

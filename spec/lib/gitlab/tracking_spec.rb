@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Tracking do
         other_context = double(:context)
 
         project = build_stubbed(:project)
-        user = double(:user)
+        user = build_stubbed(:user)
 
         expect(Gitlab::Tracking::StandardContext)
           .to receive(:new)

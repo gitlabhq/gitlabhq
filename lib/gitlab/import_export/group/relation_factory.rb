@@ -36,6 +36,10 @@ module Gitlab
 
           @relation_hash['group_id'] = @importable.id
         end
+
+        def use_attributes_permitter?
+          false
+        end
       end
     end
   end

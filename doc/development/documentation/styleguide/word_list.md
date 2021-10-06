@@ -60,6 +60,11 @@ in the handbook when writing about Alpha features.
 
 Instead of **and/or**, use **or** or rewrite the sentence to spell out both options.
 
+## and so on
+
+Do not use **and so on**. Instead, be more specific. For details, see
+[the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
+
 ## area
 
 Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-admin-area).
@@ -213,7 +218,8 @@ Use lowercase for **epic board**.
 
 ## etc.
 
-Try to avoid **etc.**. Be as specific as you can. Do not use **and so on** as a replacement.
+Try to avoid **etc.**. Be as specific as you can. Do not use
+[**and so on**](#and-so-on) as a replacement.
 
 - Do: You can update objects, like merge requests and issues.
 - Do not: You can update objects, like merge requests, issues, etc.

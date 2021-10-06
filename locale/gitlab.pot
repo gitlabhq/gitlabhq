@@ -1055,6 +1055,9 @@ msgstr ""
 msgid "%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{link_end} in preference to a webhook."
 msgstr ""
 
+msgid "%{widget} options"
+msgstr ""
+
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
 msgstr ""
 
@@ -5965,9 +5968,6 @@ msgstr ""
 msgid "CI configuration validated, including all configuration added with the %{codeStart}includes%{codeEnd} keyword. %{link}"
 msgstr ""
 
-msgid "CI minutes"
-msgstr ""
-
 msgid "CI settings"
 msgstr ""
 
@@ -6637,6 +6637,9 @@ msgstr ""
 msgid "Checkout|CI minute packs are only used after you've used your subscription's monthly quota. The additional minutes will roll over month to month and are valid for one year."
 msgstr ""
 
+msgid "Checkout|CI minutes"
+msgstr ""
+
 msgid "Checkout|Checkout"
 msgstr ""
 
@@ -6782,6 +6785,9 @@ msgid "Checkout|company or team"
 msgstr ""
 
 msgid "Checkout|minutes"
+msgstr ""
+
+msgid "Checkout|x %{quantity} %{units} per pack"
 msgstr ""
 
 msgid "Checkout|x %{quantity} %{units} per pack ="

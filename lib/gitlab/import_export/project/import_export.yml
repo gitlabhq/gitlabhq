@@ -131,7 +131,6 @@ included_attributes:
     - :link_url
     - :name
     - :project_id
-    - :type
     - :updated_at
   pipeline_schedules:
     - :active
@@ -155,6 +154,77 @@ included_attributes:
     - :enabled
     - :project_id
     - :updated_at
+  boards:
+    - :project_id
+    - :created_at
+    - :updated_at
+    - :group_id
+    - :weight
+    - :name
+    - :hide_backlog_list
+    - :hide_closed_list
+  lists:
+    - :list_type
+    - :position
+    - :created_at
+    - :updated_at
+    - :user_id
+    - :max_issue_count
+    - :max_issue_weight
+    - :limit_metric
+  custom_attributes:
+    - :created_at
+    - :updated_at
+    - :project_id
+    - :key
+    - :value
+  label:
+    - :title
+    - :color
+    - :project_id
+    - :group_id
+    - :created_at
+    - :updated_at
+    - :template
+    - :description
+    - :priority
+  labels:
+    - :title
+    - :color
+    - :project_id
+    - :group_id
+    - :created_at
+    - :updated_at
+    - :template
+    - :description
+    - :priority
+  priorities:
+    - :project_id
+    - :priority
+    - :created_at
+    - :updated_at
+  milestone:
+    - :iid
+    - :title
+    - :project_id
+    - :group_id
+    - :description
+    - :due_date
+    - :created_at
+    - :updated_at
+    - :start_date
+    - :state
+  milestones:
+    - :iid
+    - :title
+    - :project_id
+    - :group_id
+    - :description
+    - :due_date
+    - :created_at
+    - :updated_at
+    - :start_date
+    - :state
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -498,6 +568,10 @@ ee:
         - :deploy_access_levels
       - :security_setting
       - :push_rule
+      - boards:
+        - :milestone
+        - lists:
+          - :milestone
 
   included_attributes:
     issuable_sla:

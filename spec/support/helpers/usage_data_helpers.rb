@@ -54,15 +54,8 @@ module UsageDataHelpers
       clusters_platforms_eks
       clusters_platforms_gke
       clusters_platforms_user
-      clusters_applications_helm
-      clusters_applications_ingress
-      clusters_applications_cert_managers
-      clusters_applications_prometheus
-      clusters_applications_crossplane
-      clusters_applications_runner
-      clusters_applications_knative
-      clusters_applications_elastic_stack
-      clusters_applications_jupyter
+      clusters_integrations_elastic_stack
+      clusters_integrations_prometheus
       clusters_management_project
       in_review_folder
       grafana_integrated_projects

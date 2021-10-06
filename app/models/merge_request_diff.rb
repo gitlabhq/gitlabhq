@@ -66,7 +66,7 @@ class MergeRequestDiff < ApplicationRecord
     joins(:merge_request).where(merge_requests: { target_project_id: project_id })
   end
 
-  scope :recent, -> { order(id: :desc).limit(100) }
+  scope :recent, -> (limit = 100) { order(id: :desc).limit(limit) }
 
   scope :files_in_database, -> do
     where(stored_externally: [false, nil]).where(arel_table[:files_count].gt(0))

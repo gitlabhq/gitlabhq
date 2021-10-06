@@ -18,6 +18,7 @@ import cancelJobMutation from '../graphql/mutations/job_cancel.mutation.graphql'
 import playJobMutation from '../graphql/mutations/job_play.mutation.graphql';
 import retryJobMutation from '../graphql/mutations/job_retry.mutation.graphql';
 import unscheduleJobMutation from '../graphql/mutations/job_unschedule.mutation.graphql';
+import { reportMessageToSentry } from '../../../utils';
 
 export default {
   ACTIONS_DOWNLOAD_ARTIFACTS,
@@ -34,6 +35,7 @@ export default {
   jobPlay: 'jobPlay',
   jobUnschedule: 'jobUnschedule',
   playJobModalId: 'play-job-modal',
+  name: 'JobActionsCell',
   components: {
     GlButton,
     GlButtonGroup,
@@ -99,15 +101,17 @@ export default {
           variables: { id: this.job.id },
         });
         if (errors.length > 0) {
-          this.reportFailure();
+          reportMessageToSentry(this.$options.name, errors.join(', '), {});
+          this.showToastMessage();
         } else {
           eventHub.$emit('jobActionPerformed');
         }
-      } catch {
-        this.reportFailure();
+      } catch (failure) {
+        reportMessageToSentry(this.$options.name, failure, {});
+        this.showToastMessage();
       }
     },
-    reportFailure() {
+    showToastMessage() {
       const toastProps = {
         text: this.$options.GENERIC_ERROR,
         variant: 'danger',
