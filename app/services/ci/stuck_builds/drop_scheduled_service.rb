@@ -16,10 +16,7 @@ module Ci
       private
 
       def scheduled_timed_out_builds
-        Ci::Build.where(status: :scheduled).where( # rubocop: disable CodeReuse/ActiveRecord
-          'ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?',
-          BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago
-        )
+        Ci::Build.scheduled.scheduled_at_before(BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago)
       end
     end
   end

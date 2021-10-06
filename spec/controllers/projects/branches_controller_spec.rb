@@ -656,6 +656,26 @@ RSpec.describe Projects::BranchesController do
         )
       end
     end
+
+    context 'when gitaly is not available' do
+      before do
+        allow_next_instance_of(Gitlab::GitalyClient::RefService) do |ref_service|
+          allow(ref_service).to receive(:local_branches).and_raise(GRPC::DeadlineExceeded)
+        end
+
+        get :index, format: :html, params: {
+           namespace_id: project.namespace, project_id: project
+        }
+      end
+
+      it 'returns with a status 200' do
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'sets gitaly_unavailable variable' do
+        expect(assigns[:gitaly_unavailable]).to be_truthy
+      end
+    end
   end
 
   describe 'GET diverging_commit_counts' do

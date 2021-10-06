@@ -86,6 +86,12 @@ RSpec.describe Projects::ImportService do
       end
 
       context 'with a Github repository' do
+        it 'tracks the start of import' do
+          expect(Gitlab::GithubImport::ParallelImporter).to receive(:track_start_import)
+
+          subject.execute
+        end
+
         it 'succeeds if repository import was scheduled' do
           expect_any_instance_of(Gitlab::GithubImport::ParallelImporter)
             .to receive(:execute)

@@ -65,6 +65,10 @@ For more details on the specific data persisted in a group export, see the
 
 ## Export a group
 
+WARNING:
+This feature will be [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619)
+in GitLab 14.6 and replaced by [GitLab Migration](../import/).
+
 Users with the [Owner role](../../permissions.md) for a group can export the
 contents of that group:
 

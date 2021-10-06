@@ -1367,7 +1367,7 @@ Do not use words to describe the icon:
 
 ## Alert boxes
 
-Use alert boxes to call attention to information.
+Use alert boxes to call attention to information. Use them sparingly, and never have an alert box immediately follow another alert box.
 
 Alert boxes are generated when one of these words is followed by a line break:
 

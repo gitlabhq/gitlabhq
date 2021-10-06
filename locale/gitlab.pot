@@ -5761,6 +5761,9 @@ msgstr ""
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
 msgstr ""
 
+msgid "Branches|Unable to load branches"
+msgstr ""
+
 msgid "Branches|Yes, delete branch"
 msgstr ""
 

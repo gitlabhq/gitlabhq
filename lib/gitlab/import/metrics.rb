@@ -3,20 +3,35 @@
 module Gitlab
   module Import
     class Metrics
+      include Gitlab::Utils::UsageData
+
       IMPORT_DURATION_BUCKETS = [0.5, 1, 3, 5, 10, 60, 120, 240, 360, 720, 1440].freeze
 
-      attr_reader :importer
+      attr_reader :importer, :duration
 
       def initialize(importer, project)
         @importer = importer
         @project = project
       end
 
-      def track_finished_import
-        duration = Time.zone.now - @project.created_at
+      def track_start_import
+        return unless project.github_import?
 
-        duration_histogram.observe({ importer: importer }, duration)
+        track_usage_event(:github_import_project_start, project.id)
+      end
+
+      def track_finished_import
+        @duration = Time.zone.now - project.created_at
+
+        observe_histogram
         projects_counter.increment
+        track_finish_metric
+      end
+
+      def track_failed_import
+        return unless project.github_import?
+
+        track_usage_event(:github_import_project_failure, project.id)
       end
 
       def issues_counter
@@ -35,6 +50,8 @@ module Gitlab
 
       private
 
+      attr_reader :project
+
       def duration_histogram
         @duration_histogram ||= Gitlab::Metrics.histogram(
           :"#{importer}_total_duration_seconds",
@@ -49,6 +66,20 @@ module Gitlab
           :"#{importer}_imported_projects_total",
           'The number of imported projects'
         )
+      end
+
+      def observe_histogram
+        if project.github_import?
+          duration_histogram.observe({ project: project.full_path }, duration)
+        else
+          duration_histogram.observe({ importer: importer }, duration)
+        end
+      end
+
+      def track_finish_metric
+        return unless project.github_import?
+
+        track_usage_event(:github_import_project_success, project.id)
       end
     end
   end

@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.importer.github_import_project_success_monthly
+description: The number of github projects that were successful monthly
+product_section: dev
+product_stage: devops
+product_group: group::import
+product_category:
+value_type: number
+status: active
+milestone: "14.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70012
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - github_import_project_success
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

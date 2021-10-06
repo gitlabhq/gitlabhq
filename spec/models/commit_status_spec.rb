@@ -123,6 +123,16 @@ RSpec.describe CommitStatus do
     end
   end
 
+  describe '.scheduled_at_before' do
+    let!(:never_scheduled) { create(:commit_status) }
+    let!(:stale_scheduled) { create(:commit_status, scheduled_at: 1.day.ago) }
+    let!(:fresh_scheduled) { create(:commit_status, scheduled_at: 1.minute.ago) }
+
+    subject { CommitStatus.scheduled_at_before(1.hour.ago) }
+
+    it { is_expected.to contain_exactly(stale_scheduled) }
+  end
+
   describe '#processed' do
     subject { commit_status.processed }
 

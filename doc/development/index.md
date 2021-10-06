@@ -190,6 +190,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Issuable-like Rails models](issuable-like-models.md)
 - [Issue types vs first-class types](issue_types.md)
 - [DeclarativePolicy framework](policies.md)
+- [Rails update guidelines](rails_update.md)
 
 ### Debugging
 

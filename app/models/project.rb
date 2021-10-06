@@ -1178,7 +1178,7 @@ class Project < ApplicationRecord
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import? || jira_import? || bare_repository_import?
+    external_import? || forked? || gitlab_project_import? || jira_import? || bare_repository_import? || gitlab_project_migration?
   end
 
   def external_import?
@@ -1199,6 +1199,10 @@ class Project < ApplicationRecord
 
   def gitlab_project_import?
     import_type == 'gitlab_project'
+  end
+
+  def gitlab_project_migration?
+    import_type == 'gitlab_project_migration'
   end
 
   def gitea_import?

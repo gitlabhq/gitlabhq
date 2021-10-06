@@ -35,9 +35,33 @@ Do not use **above** when referring to versions of the product. Use [**later**](
 - Do not: In GitLab 14.4 and above...
 - Do not: In GitLab 14.4 and higher...
 
-## admin, admin area
+## access level
 
-Use **administration**, **administrator**, **administer**, or **Admin Area** instead. ([Vale](../testing.md#vale) rule: [`Admin.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Admin.yml))
+Access levels are different than [roles](#roles) or [permissions](#permissions).
+When you create a user, you choose an access level: **Regular**, **Auditor**, or **Admin**.
+
+Capitalize these words when you refer to the UI. Otherwise use lowercase.
+
+## administrator
+
+Use **administrator** instead of **admin** when talking about a user's access level.
+Use lowercase unless you are referring to the **Admin** access level you select in the UI.
+
+To view the administrator access type, in the GitLab UI, go to the Admin Area and select
+**Users**. Then select **New user**.
+
+![admin access level](img/admin_access_level.png)
+
+An **administrator** is not a [role](#roles) or [permission](#permissions).
+
+- Do: To do this thing, you must be an administrator.
+- Do: To do this thing, you must have the administrator access level.
+- Do not: To do this thing, you must have the Admin role.
+
+## Admin Area
+
+Use title case **Admin Area** to refer to the area of the UI that you access when you select **Menu > Admin**.
+This area of the UI says **Admin Area** at the top of the page and on the menu.
 
 ## allow, enable
 
@@ -67,7 +91,7 @@ Do not use **and so on**. Instead, be more specific. For details, see
 
 ## area
 
-Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-admin-area).
+Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
 
 ## below
 
@@ -450,7 +474,9 @@ Do not use **Owner permissions**. A user who is assigned the Owner role has a se
 
 ## permissions
 
-Do not use **roles** and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+
+Permissions are not the same as [**access levels**](#access-level).
 
 ## please
 
@@ -486,7 +512,9 @@ Use title case for **Repository Mirroring**.
 
 ## roles
 
-Do not use **roles** and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+
+Roles are not the same as [**access levels**](#access-level).
 
 ## runner, runners
 

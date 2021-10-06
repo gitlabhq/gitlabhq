@@ -1,0 +1,39 @@
+#!/bin/bash
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+GITLAB_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Because this script is intended to be run with `git bisect run`,
+# we are returning `-1` status code to alert `git bisect` of failures.
+#
+# See: https://git-scm.com/docs/git-bisect#_bisect_run
+#
+abort_bisect () {
+  exit -1
+}
+
+if [ $# -eq 0 ]; then
+  echo "No arguments supplied. Please provide spec file(s) as first argument(s)"
+  abort_bisect
+fi
+
+[[ -z "${RAILS_FOLDER}" ]] && { echo >&2 "RAILS_FOLDER env variable is not set"; abort_bisect; }
+
+if ! grep -q -E "gem 'rails'.+RAILS_VERSION.+RAILS_FOLDER" $GITLAB_DIR/Gemfile; then
+  echo "Gemfile is not modified"
+  echo "Please alter the gem 'rails' line in Gemfile with:"
+  echo "gem 'rails', ENV['RAILS_VERSION'], path: ENV['RAILS_FOLDER']"
+  abort_bisect
+fi
+
+export RAILS_VERSION=$(cat $RAILS_FOLDER/RAILS_VERSION)
+
+cd $GITLAB_DIR && \
+echo "Updating dependencies... this could take a while." && \
+bundle update rails --quiet
+
+test $? -eq 0 || { echo >&2 "bundle update has failed"; abort_bisect; }
+
+# Stop spring if it's installed
+command -v spring >/dev/null 2>&1 && spring stop
+
+bin/rspec $@

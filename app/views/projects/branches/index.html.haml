@@ -31,7 +31,10 @@
     %h5
       = s_('Branches|Protected branches can be managed in %{project_settings_link}.').html_safe % { project_settings_link: project_settings_link }
 
-- if @mode == 'overview' && (@active_branches.any? || @stale_branches.any?)
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Branches|Unable to load branches')
+
+- elsif @mode == 'overview' && (@active_branches.any? || @stale_branches.any?)
   = render "projects/branches/panel", branches: @active_branches, state: 'active', panel_title: s_('Branches|Active branches'), show_more_text: s_('Branches|Show more active branches'), project: @project, overview_max_branches: @overview_max_branches
   = render "projects/branches/panel", branches: @stale_branches, state: 'stale', panel_title: s_('Branches|Stale branches'), show_more_text: s_('Branches|Show more stale branches'), project: @project, overview_max_branches: @overview_max_branches
 

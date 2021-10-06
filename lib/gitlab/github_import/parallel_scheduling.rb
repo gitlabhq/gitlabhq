@@ -53,7 +53,8 @@ module Gitlab
           project_id: project.id,
           error_source: self.class.name,
           exception: e,
-          fail_import: abort_on_failure
+          fail_import: abort_on_failure,
+          metrics: true
         )
 
         raise(e)

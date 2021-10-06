@@ -33,6 +33,17 @@ module Gitlab
           counter.increment
 
           ImportBaseDataWorker.perform_async(project.id)
+
+        rescue StandardError => e
+          Gitlab::Import::ImportFailureService.track(
+            project_id: project.id,
+            error_source: self.class.name,
+            exception: e,
+            fail_import: abort_on_failure,
+            metrics: true
+          )
+
+          raise(e)
         end
 
         def counter

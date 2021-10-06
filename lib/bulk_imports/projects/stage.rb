@@ -7,21 +7,25 @@ module BulkImports
 
       def config
         @config ||= {
-          group: {
+          project: {
             pipeline: BulkImports::Projects::Pipelines::ProjectPipeline,
             stage: 0
           },
+          repository: {
+            pipeline: BulkImports::Projects::Pipelines::RepositoryPipeline,
+            stage: 1
+          },
           labels: {
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
-            stage: 1
+            stage: 2
           },
           issues: {
             pipeline: BulkImports::Projects::Pipelines::IssuesPipeline,
-            stage: 2
+            stage: 3
           },
           finisher: {
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
-            stage: 3
+            stage: 4
           }
         }
       end

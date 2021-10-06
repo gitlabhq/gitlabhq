@@ -15,6 +15,10 @@ module Gitlab
         true
       end
 
+      def self.track_start_import(project)
+        Gitlab::Import::Metrics.new(:github_importer, project).track_start_import
+      end
+
       # This is a workaround for a Ruby 2.3.7 bug. rspec-mocks cannot restore
       # the visibility of prepended modules. See
       # https://github.com/rspec/rspec-mocks/issues/1231 for more details.

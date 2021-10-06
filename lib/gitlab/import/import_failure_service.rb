@@ -8,14 +8,15 @@ module Gitlab
         import_state: nil,
         project_id: nil,
         error_source: nil,
-        fail_import: false
+        fail_import: false,
+        metrics: false
       )
         new(
           exception: exception,
           import_state: import_state,
           project_id: project_id,
           error_source: error_source
-        ).execute(fail_import: fail_import)
+        ).execute(fail_import: fail_import, metrics: metrics)
       end
 
       def initialize(exception:, import_state: nil, project_id: nil, error_source: nil)
@@ -35,10 +36,11 @@ module Gitlab
         @error_source = error_source
       end
 
-      def execute(fail_import:)
+      def execute(fail_import:, metrics:)
         track_exception
         persist_failure
 
+        track_metrics if metrics
         import_state.mark_as_failed(exception.message) if fail_import
       end
 
@@ -70,6 +72,10 @@ module Gitlab
           exception_message: exception.message.truncate(255),
           correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
         )
+      end
+
+      def track_metrics
+        Gitlab::Import::Metrics.new("#{project.import_type}_importer", project).track_failed_import
       end
     end
   end

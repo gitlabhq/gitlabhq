@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
   let(:importer) { :test_importer }
-  let(:project) { double(:project, created_at: Time.current) }
+  let(:project) { build(:project, id: non_existing_record_id, created_at: Time.current) }
   let(:histogram) { double(:histogram) }
   let(:counter) { double(:counter) }
 
@@ -13,6 +13,51 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
   before do
     allow(Gitlab::Metrics).to receive(:counter) { counter }
     allow(counter).to receive(:increment)
+    allow(histogram).to receive(:observe)
+  end
+
+  describe '#track_start_import' do
+    context 'when project is not a github import' do
+      it 'does not emit importer metrics' do
+        expect(subject).not_to receive(:track_usage_event)
+
+        subject.track_start_import
+      end
+    end
+
+    context 'when project is a github import' do
+      before do
+        project.import_type = 'github'
+      end
+
+      it 'emits importer metrics' do
+        expect(subject).to receive(:track_usage_event).with(:github_import_project_start, project.id)
+
+        subject.track_start_import
+      end
+    end
+  end
+
+  describe '#track_failed_import' do
+    context 'when project is not a github import' do
+      it 'does not emit importer metrics' do
+        expect(subject).not_to receive(:track_usage_event)
+
+        subject.track_failed_import
+      end
+    end
+
+    context 'when project is a github import' do
+      before do
+        project.import_type = 'github'
+      end
+
+      it 'emits importer metrics' do
+        expect(subject).to receive(:track_usage_event).with(:github_import_project_failure, project.id)
+
+        subject.track_failed_import
+      end
+    end
   end
 
   describe '#track_finished_import' do
@@ -34,9 +79,34 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
       )
 
       expect(counter).to receive(:increment)
-      expect(histogram).to receive(:observe).with({ importer: :test_importer }, anything)
 
       subject.track_finished_import
+
+      expect(subject.duration).not_to be_nil
+    end
+
+    context 'when project is not a github import' do
+      it 'does not emit importer metrics' do
+        expect(subject).not_to receive(:track_usage_event)
+
+        subject.track_finished_import
+
+        expect(histogram).to have_received(:observe).with({ importer: :test_importer }, anything)
+      end
+    end
+
+    context 'when project is a github import' do
+      before do
+        project.import_type = 'github'
+      end
+
+      it 'emits importer metrics' do
+        expect(subject).to receive(:track_usage_event).with(:github_import_project_success, project.id)
+
+        subject.track_finished_import
+
+        expect(histogram).to have_received(:observe).with({ project: project.full_path }, anything)
+      end
     end
   end
 
