@@ -7,7 +7,7 @@
     = _('GitLab Pages')
 
   %p
-    - link_to_gitlab_pages = link_to(_('GitLab Pages'), gitlab_pages[:url], target: '_blank')
+    - link_to_gitlab_pages = link_to(_('GitLab Pages'), gitlab_pages[:url], target: '_blank', rel: 'noopener noreferrer')
     = _('Below are the settings for %{link_to_gitlab_pages}.').html_safe % { link_to_gitlab_pages: link_to_gitlab_pages }
   .table-responsive
     %table

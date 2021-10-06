@@ -6,13 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Policies **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5329) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10. Deployed behind a feature flag, disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5329) in GitLab Ultimate 13.10 with a [feature flag](../../../administration/feature_flags.md) named `security_orchestration_policies_configuration`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 14.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the `security_orchestration_policies_configuration` flag](../../../administration/feature_flags.md).
-On GitLab.com, this feature is available.
+> - [Feature flag `security_orchestration_policies_configuration` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4.
 
 Policies in GitLab provide security teams a way to require scans of their choice to be run
 whenever a project pipeline runs according to the configuration specified. Security teams can

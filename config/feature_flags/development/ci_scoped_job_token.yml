@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332272
 milestone: '14.0'
 type: development
 group: group::pipeline execution
-default_enabled: false
+default_enabled: true

@@ -194,7 +194,7 @@ class AutomatedCleanup
 
   def delete_stopped_environments(environment_type:, checked_environments:, last_updated_threshold:)
     gitlab.environments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc', states: 'stopped', search: ENVIRONMENT_PREFIX[environment_type]).auto_paginate do |environment|
-      next if skip_environment?(environment: environment, checked_environments: checked_environments, last_updated_threshold: delete_threshold, environment_type: environment_type)
+      next if skip_environment?(environment: environment, checked_environments: checked_environments, last_updated_threshold: last_updated_threshold, environment_type: environment_type)
 
       yield environment if delete_environment(environment)
 

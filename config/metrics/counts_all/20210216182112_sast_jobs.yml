@@ -7,7 +7,8 @@ product_stage: secure
 product_group: group::static analysis
 product_category: static_application_security_testing
 value_type: number
-status: active
+status: broken
+repair_issue_url: tbd
 time_frame: all
 data_source: database
 distribution:

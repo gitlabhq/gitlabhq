@@ -29,6 +29,12 @@ Try to avoid using **above** when referring to an example or table in a document
 
 - In the previous example, the dog had fleas.
 
+Do not use **above** when referring to versions of the product. Use [**later**](#later) instead.
+
+- Do: In GitLab 14.4 and later...
+- Do not: In GitLab 14.4 and above...
+- Do not: In GitLab 14.4 and higher...
+
 ## admin, admin area
 
 Use **administration**, **administrator**, **administer**, or **Admin Area** instead. ([Vale](../testing.md#vale) rule: [`Admin.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Admin.yml))
@@ -150,8 +156,8 @@ When writing about the Developer role:
 - Do not use the phrase, **if you are a developer** to mean someone who is assigned the Developer
   role. Instead, write it out. For example, **if you are assigned the Developer role**.
 - To describe a situation where the Developer role is the minimum required:
-  - Avoid: the Developer role or higher
-  - Use instead: at least the Developer role
+  - Do: at least the Developer role
+  - Do not: the Developer role or higher
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
@@ -220,8 +226,8 @@ Use **expand** instead of **open** when you are talking about expanding or colla
 
 Use **box** instead of **field** or **text box**.
 
-- Avoid: In the **Variable name** field, enter `my text`.
-- Use instead: In the **Variable name** box, enter `my text`.
+- Do: In the **Variable name** box, enter `my text`.
+- Do not: In the **Variable name** field, enter `my text`.
 
 ## foo
 
@@ -265,8 +271,8 @@ When writing about the Guest role:
 - Do not use the phrase, **if you are a guest** to mean someone who is assigned the Guest
   role. Instead, write it out. For example, **if you are assigned the Guest role**.
 - To describe a situation where the Guest role is the minimum required:
-  - Avoid: the Guest role or higher
-  - Use instead: at least the Guest role
+  - Do: at least the Guest role
+  - Do not: the Guest role or higher
 
 Do not use **Guest permissions**. A user who is assigned the Guest role has a set of associated permissions.
 
@@ -282,15 +288,16 @@ Do not use **high availability** or **HA**. Instead, direct readers to the GitLa
 
 Do not use **higher** when talking about version numbers.
 
-- Do: In GitLab 14.1 and later.
-- Do not: In GitLab 14.1 and higher.
+- Do: In GitLab 14.4 and later...
+- Do not: In GitLab 14.4 and higher...
+- Do not: In GitLab 14.4 and above...
 
 ## hit
 
 Don't use **hit** to mean **press**.
 
-- Avoid: Hit the **ENTER** button.
-- Use instead: Press **ENTER**.
+- Do: Press **ENTER**.
+- Do not: Hit the **ENTER** button.
 
 ## I
 
@@ -326,8 +333,9 @@ If you want to use **CI** with the word **job**, use **CI/CD job** rather than *
 
 Use **later** when talking about version numbers.
 
-- Avoid: In GitLab 14.1 and higher.
-- Use instead: In GitLab 14.1 and later.
+- Do: In GitLab 14.1 and later...
+- Do not: In GitLab 14.1 and higher...
+- Do not: In GitLab 14.1 and above...
 
 ## list
 
@@ -354,8 +362,8 @@ When writing about the Maintainer role:
 - Do not use the phrase, **if you are a maintainer** to mean someone who is assigned the Maintainer
   role. Instead, write it out. For example, **if you are assigned the Maintainer role**.
 - To describe a situation where the Maintainer role is the minimum required:
-  - Avoid: the Maintainer role or higher
-  - Use instead: at least the Maintainer role
+  - Do: at least the Maintainer role
+  - Do not: the Maintainer role or higher
 
 Do not use **Maintainer permissions**. A user who is assigned the Maintainer role has a set of associated permissions.
 
@@ -461,8 +469,8 @@ When writing about the Reporter role:
 - Do not use the phrase, **if you are a reporter** to mean someone who is assigned the Reporter
   role. Instead, write it out. For example, **if you are assigned the Reporter role**.
 - To describe a situation where the Reporter role is the minimum required:
-  - Avoid: the Reporter role or higher
-  - Use instead: at least the Reporter role
+  - Do: at least the Reporter role
+  - Do not: the Reporter role or higher
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
 

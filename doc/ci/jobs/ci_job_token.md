@@ -59,20 +59,20 @@ tries to steal tokens from other jobs.
 
 ## Limit GitLab CI/CD job token access
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ci-job-token-scope-limit). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1. [Deployed behind the `:ci_scoped_job_token` feature flag](../../user/feature_flags.md), disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.4.
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the `ci_scoped_job_token` flag](../../administration/feature_flags.md).
+On GitLab.com, this feature is available.
 
 You can limit the access scope of a project's CI/CD job token to increase the
 job token's security. A job token might give extra permissions that aren't necessary
-to access specific private resources. Limiting the job token access scope reduces the risk of a leaked
-token being used to access private data that the user associated to the job can access.
+to access specific private resources.
+If a job token is leaked it could potentially be used to access data that is private
+to the job token's user. By limiting the job token access scope, private data cannot
+be accessed unless projects are explicitly authorized.
 
 Control the job token access scope with an allowlist of other projects authorized
 to be accessed by authenticating with the current project's job token. By default
@@ -86,7 +86,7 @@ setting at all times, and configure the allowlist for cross-project access if ne
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
 to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
-If project `B` is public or internal, it doesn't need to be added to the allowlist.
+If project `B` is public or internal, it's not required to be added to the allowlist.
 The job token scope is only for controlling access to private projects.
 
 ### Configure the job token scope limit
@@ -98,30 +98,8 @@ The job token scope is only for controlling access to private projects.
 1. (Optional) Add existing projects to the token's access scope. The user adding a
    project must have the [maintainer role](../../user/permissions.md) in both projects.
 
-If the job token scope limit is disabled, the token can potentially be used to authenticate
-API requests to all projects accessible to the user that triggered the job.
-
 There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
 the feature with more strategic control of the access permissions.
-
-### Enable or disable CI job token scope limit **(FREE SELF)**
-
-The GitLab CI/CD job token access scope limit is under development and not ready for production
-use. It is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_scoped_job_token)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_scoped_job_token)
-```
 
 ## Trigger a multi-project pipeline by using a CI job token
 
