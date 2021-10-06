@@ -321,7 +321,7 @@ downstream projects. On self-managed instances, an administrator can change this
 When you configure GitLab CI/CD for your project, you can visualize the stages of your
 [jobs](index.md#configure-a-pipeline) on a [pipeline graph](index.md#visualize-pipelines).
 
-![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
+![Multi-project pipeline graph](img/multi_project_pipeline_graph_v14_3.png)
 
 In the merge request, on the **Pipelines** tab, multi-project pipeline mini-graphs are displayed.
 They expand and are shown adjacent to each other when hovering (or tapping on touchscreen devices).

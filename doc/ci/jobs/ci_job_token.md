@@ -23,8 +23,8 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Release creation](../../api/releases/index.md#create-a-release).
 - [Terraform plan](../../user/infrastructure/index.md).
 
-The token has the same permissions to access the API as the user that triggers the
-pipeline. Therefore, this user must be assigned to [a role that has the required privileges](../../user/permissions.md#gitlab-cicd-permissions).
+The token has the same permissions to access the API as the user that executes the
+job. Therefore, this user must be assigned to [a role that has the required privileges](../../user/permissions.md#gitlab-cicd-permissions).
 
 The token is valid only while the pipeline job runs. After the job finishes, you can't
 use the token anymore.
@@ -89,7 +89,7 @@ to make an API request to a private project `B`, then `B` must be added to the a
 If project `B` is public or internal, it doesn't need to be added to the allowlist.
 The job token scope is only for controlling access to private projects.
 
-To enable and configure the job token scope limit:
+### Configure the job token scope limit
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -162,3 +162,50 @@ build_submodule:
 ```
 
 Read more about the [jobs artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).
+
+## Troubleshooting
+
+CI job token failures are usually shown as responses like `404 Not Found` or similar:
+
+- Unauthorized Git clone:
+
+  ```plaintext
+  $ git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/fabiopitino/test2.git
+
+  Cloning into 'test2'...
+  remote: The project you were looking for could not be found or you don't have permission to view it.
+  fatal: repository 'https://gitlab-ci-token:[MASKED]@gitlab.com/<namespace>/<project>.git/' not found
+  ```
+
+- Unauthorized package download:
+
+  ```plaintext
+  $ wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/1234/packages/generic/my_package/0.0.1/file.txt
+
+  --2021-09-23 11:00:13--  https://gitlab.com/api/v4/projects/1234/packages/generic/my_package/0.0.1/file.txt
+  Resolving gitlab.com (gitlab.com)... 172.65.251.78, 2606:4700:90:0:f22e:fbec:5bed:a9b9
+  Connecting to gitlab.com (gitlab.com)|172.65.251.78|:443... connected.
+  HTTP request sent, awaiting response... 404 Not Found
+  2021-09-23 11:00:13 ERROR 404: Not Found.
+  ```
+
+- Unauthorized API request:
+
+  ```plaintext
+  $ curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
+
+  < HTTP/2 404
+  < date: Thu, 23 Sep 2021 11:00:12 GMT
+  {"message":"404 Not Found"}
+  < content-type: application/json
+  ```
+
+While troubleshooting CI/CD job token authentication issues, be aware that:
+
+- When the [CI/CD job token limit](#limit-gitlab-cicd-job-token-access) is enabled,
+  and the job token is being used to access a different project:
+  - The user that executes the job must be a member of the project that is being accessed.
+  - The user must have the [permissions](../../user/permissions.md) to perform the action.
+  - The target project must be [allowlisted for the job token scope limit](#configure-the-job-token-scope-limit).
+- The CI job token becomes invalid if the job is no longer running, has been erased,
+  or if the project is in the process of being deleted.

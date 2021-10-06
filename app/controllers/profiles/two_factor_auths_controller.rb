@@ -3,7 +3,9 @@
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_two_factor_requirement
   before_action :ensure_verified_primary_email, only: [:show, :create]
-  before_action :validate_current_password, only: [:create, :codes, :destroy]
+  before_action :validate_current_password, only: [:create, :codes, :destroy], if: :current_password_required?
+
+  helper_method :current_password_required?
 
   before_action do
     push_frontend_feature_flag(:webauthn)
@@ -142,6 +144,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     current_user.increment_failed_attempts!
 
     redirect_to profile_two_factor_auth_path, alert: _('You must provide a valid current password')
+  end
+
+  def current_password_required?
+    !current_user.password_automatically_set?
   end
 
   def build_qr_code

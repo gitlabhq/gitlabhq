@@ -1,9 +1,17 @@
 import { within } from '@testing-library/dom';
+import { GlForm } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ManageTwoFactorForm, {
   i18n,
 } from '~/authentication/two_factor_auth/components/manage_two_factor_form.vue';
+
+const defaultProvide = {
+  profileTwoFactorAuthPath: '2fa_auth_path',
+  profileTwoFactorAuthMethod: '2fa_auth_method',
+  codesProfileTwoFactorAuthPath: '2fa_codes_path',
+  codesProfileTwoFactorAuthMethod: '2fa_codes_method',
+};
 
 describe('ManageTwoFactorForm', () => {
   let wrapper;
@@ -12,11 +20,9 @@ describe('ManageTwoFactorForm', () => {
     wrapper = extendedWrapper(
       mount(ManageTwoFactorForm, {
         provide: {
-          webauthnEnabled: options?.webauthnEnabled || false,
-          profileTwoFactorAuthPath: '2fa_auth_path',
-          profileTwoFactorAuthMethod: '2fa_auth_method',
-          codesProfileTwoFactorAuthPath: '2fa_codes_path',
-          codesProfileTwoFactorAuthMethod: '2fa_codes_method',
+          ...defaultProvide,
+          webauthnEnabled: options?.webauthnEnabled ?? false,
+          isCurrentPasswordRequired: options?.currentPasswordRequired ?? true,
         },
       }),
     );
@@ -25,6 +31,11 @@ describe('ManageTwoFactorForm', () => {
   const queryByText = (text, options) => within(wrapper.element).queryByText(text, options);
   const queryByLabelText = (text, options) =>
     within(wrapper.element).queryByLabelText(text, options);
+
+  const findForm = () => wrapper.findComponent(GlForm);
+  const findMethodInput = () => wrapper.findByTestId('test-2fa-method-field');
+  const findDisableButton = () => wrapper.findByTestId('test-2fa-disable-button');
+  const findRegenerateCodesButton = () => wrapper.findByTestId('test-2fa-regenerate-codes-button');
 
   beforeEach(() => {
     createComponent();
@@ -36,16 +47,30 @@ describe('ManageTwoFactorForm', () => {
     });
   });
 
+  describe('when current password is not required', () => {
+    beforeEach(() => {
+      createComponent({
+        currentPasswordRequired: false,
+      });
+    });
+
+    it('does not render the current password field', () => {
+      expect(queryByLabelText(i18n.currentPassword)).toBe(null);
+    });
+  });
+
   describe('Disable button', () => {
-    it('renders the component correctly', () => {
-      expect(wrapper).toMatchSnapshot();
-      expect(wrapper.element).toMatchSnapshot();
+    it('renders the component with correct attributes', () => {
+      expect(findDisableButton().exists()).toBe(true);
+      expect(findDisableButton().attributes()).toMatchObject({
+        'data-confirm': i18n.confirm,
+        'data-form-action': defaultProvide.profileTwoFactorAuthPath,
+        'data-form-method': defaultProvide.profileTwoFactorAuthMethod,
+      });
     });
 
     it('has the right confirm text', () => {
-      expect(wrapper.findByTestId('test-2fa-disable-button').element.dataset.confirm).toEqual(
-        i18n.confirm,
-      );
+      expect(findDisableButton().attributes('data-confirm')).toBe(i18n.confirm);
     });
 
     describe('when webauthnEnabled', () => {
@@ -56,23 +81,19 @@ describe('ManageTwoFactorForm', () => {
       });
 
       it('has the right confirm text', () => {
-        expect(wrapper.findByTestId('test-2fa-disable-button').element.dataset.confirm).toEqual(
-          i18n.confirmWebAuthn,
-        );
+        expect(findDisableButton().attributes('data-confirm')).toBe(i18n.confirmWebAuthn);
       });
     });
 
     it('modifies the form action and method when submitted through the button', async () => {
-      const form = wrapper.find('form');
-      const disableButton = wrapper.findByTestId('test-2fa-disable-button').element;
-      const methodInput = wrapper.findByTestId('test-2fa-method-field').element;
+      const form = findForm();
+      const disableButton = findDisableButton().element;
+      const methodInput = findMethodInput();
 
-      form.trigger('submit', { submitter: disableButton });
+      await form.vm.$emit('submit', { submitter: disableButton });
 
-      await wrapper.vm.$nextTick();
-
-      expect(form.element.getAttribute('action')).toEqual('2fa_auth_path');
-      expect(methodInput.getAttribute('value')).toEqual('2fa_auth_method');
+      expect(form.attributes('action')).toBe(defaultProvide.profileTwoFactorAuthPath);
+      expect(methodInput.attributes('value')).toBe(defaultProvide.profileTwoFactorAuthMethod);
     });
   });
 
@@ -82,17 +103,14 @@ describe('ManageTwoFactorForm', () => {
     });
 
     it('modifies the form action and method when submitted through the button', async () => {
-      const form = wrapper.find('form');
-      const regenerateCodesButton = wrapper.findByTestId('test-2fa-regenerate-codes-button')
-        .element;
-      const methodInput = wrapper.findByTestId('test-2fa-method-field').element;
+      const form = findForm();
+      const regenerateCodesButton = findRegenerateCodesButton().element;
+      const methodInput = findMethodInput();
 
-      form.trigger('submit', { submitter: regenerateCodesButton });
+      await form.vm.$emit('submit', { submitter: regenerateCodesButton });
 
-      await wrapper.vm.$nextTick();
-
-      expect(form.element.getAttribute('action')).toEqual('2fa_codes_path');
-      expect(methodInput.getAttribute('value')).toEqual('2fa_codes_method');
+      expect(form.attributes('action')).toBe(defaultProvide.codesProfileTwoFactorAuthPath);
+      expect(methodInput.attributes('value')).toBe(defaultProvide.codesProfileTwoFactorAuthMethod);
     });
   });
 });

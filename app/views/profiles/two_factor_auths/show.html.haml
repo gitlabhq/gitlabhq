@@ -17,7 +17,7 @@
           = _("You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication.")
         %p
           = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
-        .js-manage-two-factor-form{ data: { webauthn_enabled: webauthn_enabled, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
+        .js-manage-two-factor-form{ data: { webauthn_enabled: webauthn_enabled, current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
 
       - else
         %p
@@ -47,11 +47,12 @@
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }
-          .form-group
-            = label_tag :current_password, _('Current password'), class: 'label-bold'
-            = password_field_tag :current_password, nil, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
-            %p.form-text.text-muted
-              = _('Your current password is required to register a two-factor authenticator app.')
+          - if current_password_required?
+            .form-group
+              = label_tag :current_password, _('Current password'), class: 'label-bold'
+              = password_field_tag :current_password, nil, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
+              %p.form-text.text-muted
+                = _('Your current password is required to register a two-factor authenticator app.')
           .gl-mt-3
             = submit_tag _('Register with two-factor app'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'register_2fa_app_button' }
 

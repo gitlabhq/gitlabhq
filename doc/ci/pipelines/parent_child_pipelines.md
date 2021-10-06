@@ -23,7 +23,7 @@ Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The
 to choose to start sub-pipelines (or not) is a powerful ability, especially if the
 YAML is dynamically generated.
 
-![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v12_6.png)
+![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v14_3.png)
 
 Similarly to [multi-project pipelines](multi_project_pipelines.md), a pipeline can trigger a
 set of concurrently running child pipelines, but within the same project:

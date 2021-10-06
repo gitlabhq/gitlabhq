@@ -93,6 +93,8 @@ variables:
 
   # For the default QA image, we use $CI_COMMIT_SHA as tag since it's always available and we override it for specific workflow.rules (see above)
   QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
+  # Default latest tag for particular branch
+  QA_IMAGE_BRANCH: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
 
   # Preparing custom clone path to reduce space used by all random forks
   # on GitLab.com's Shared Runners. Our main forks - especially the security
