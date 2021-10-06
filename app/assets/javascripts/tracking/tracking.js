@@ -177,9 +177,12 @@ export default class Tracking {
     }
 
     const referrers = getReferrersCache();
-    const pageLinks = Object.seal({ url: '', referrer: '', originalUrl: window.location.href });
+    const pageLinks = Object.seal({
+      url: pageUrl,
+      referrer: '',
+      originalUrl: window.location.href,
+    });
 
-    pageLinks.url = `${pageUrl}${window.location.hash}`;
     window.snowplow('setCustomUrl', pageLinks.url);
 
     if (document.referrer) {

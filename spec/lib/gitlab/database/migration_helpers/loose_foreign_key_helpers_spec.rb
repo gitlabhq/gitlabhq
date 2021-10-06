@@ -19,6 +19,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers do
     end
   end
 
+  after(:all) do
+    migration.drop_table :loose_fk_test_table
+  end
+
   before do
     3.times { model.create! }
   end
@@ -45,8 +49,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers do
       expect(LooseForeignKeys::DeletedRecord.count).to eq(1)
       deleted_record = LooseForeignKeys::DeletedRecord.all.first
 
-      expect(deleted_record.deleted_table_primary_key_value).to eq(record_to_be_deleted.id)
-      expect(deleted_record.deleted_table_name).to eq('loose_fk_test_table')
+      expect(deleted_record.primary_key_value).to eq(record_to_be_deleted.id)
+      expect(deleted_record.fully_qualified_table_name).to eq('public.loose_fk_test_table')
+      expect(deleted_record.partition).to eq(1)
     end
 
     it 'stores multiple record deletions' do

@@ -39,6 +39,7 @@
 /doc/install/ @marcel.amirault
 /doc/operations/ @ngaskill @rdickenson
 /doc/push_rules/ @aqualls
+/doc/security/ @eread
 /doc/ssh/ @eread
 /doc/subscriptions/ @sselhorn
 /doc/topics/autodevops/ @marcia

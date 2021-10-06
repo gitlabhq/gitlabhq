@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import PackagesApp from '~/packages/details/components/app.vue';
-import createStore from '~/packages/details/store';
+import PackagesApp from '~/packages_and_registries/infrastructure_registry/details/components/app.vue';
+import createStore from '~/packages_and_registries/infrastructure_registry/details/store';
 import Translate from '~/vue_shared/translate';
 
 Vue.use(Translate);

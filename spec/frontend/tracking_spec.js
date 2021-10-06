@@ -332,14 +332,13 @@ describe('Tracking', () => {
       });
     });
 
-    it('appends the hash/fragment to the pseudonymized URL', () => {
-      const hash = 'first-heading';
+    it('does not appends the hash/fragment to the pseudonymized URL', () => {
       window.gl.snowplowPseudonymizedPageUrl = TEST_HOST;
-      window.location.hash = hash;
+      window.location.hash = 'first-heading';
 
       Tracking.setAnonymousUrls();
 
-      expect(snowplowSpy).toHaveBeenCalledWith('setCustomUrl', `${TEST_HOST}#${hash}`);
+      expect(snowplowSpy).toHaveBeenCalledWith('setCustomUrl', TEST_HOST);
     });
 
     it('does not set the referrer URL by default', () => {

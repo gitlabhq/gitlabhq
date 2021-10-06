@@ -3,10 +3,10 @@ import { GlLink, GlTable, GlDropdownItem, GlDropdown, GlIcon, GlButton } from '@
 import { last } from 'lodash';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
-import FileSha from '~/packages/details/components/file_sha.vue';
 import Tracking from '~/tracking';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import FileSha from './file_sha.vue';
 
 export default {
   name: 'PackageFiles',

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import FileSha from '~/packages/details/components/file_sha.vue';
+import FileSha from '~/packages_and_registries/infrastructure_registry/details/components/file_sha.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 

@@ -27,8 +27,8 @@ CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records() RETURNS trigger
     AS $$
 BEGIN
   INSERT INTO loose_foreign_keys_deleted_records
-  (deleted_table_name, deleted_table_primary_key_value)
-  SELECT TG_TABLE_NAME, old_table.id FROM old_table
+  (partition, fully_qualified_table_name, primary_key_value)
+  SELECT 1, TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table
   ON CONFLICT DO NOTHING;
 
   RETURN NULL;
@@ -127,14 +127,6 @@ CREATE TABLE incident_management_pending_issue_escalations (
     updated_at timestamp with time zone NOT NULL
 )
 PARTITION BY RANGE (process_at);
-
-CREATE TABLE loose_foreign_keys_deleted_records (
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    deleted_table_name text NOT NULL,
-    deleted_table_primary_key_value bigint NOT NULL,
-    CONSTRAINT check_7229f9527e CHECK ((char_length(deleted_table_name) <= 63))
-)
-PARTITION BY RANGE (created_at);
 
 CREATE TABLE web_hook_logs (
     id bigint NOT NULL,
@@ -944,6 +936,37 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone
 );
 ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31 FOR VALUES WITH (modulus 32, remainder 31);
+
+CREATE TABLE loose_foreign_keys_deleted_records (
+    id bigint NOT NULL,
+    partition bigint NOT NULL,
+    primary_key_value bigint NOT NULL,
+    status smallint DEFAULT 1 NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    fully_qualified_table_name text NOT NULL,
+    CONSTRAINT check_1a541f3235 CHECK ((char_length(fully_qualified_table_name) <= 150))
+)
+PARTITION BY LIST (partition);
+
+CREATE SEQUENCE loose_foreign_keys_deleted_records_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE loose_foreign_keys_deleted_records_id_seq OWNED BY loose_foreign_keys_deleted_records.id;
+
+CREATE TABLE gitlab_partitions_static.loose_foreign_keys_deleted_records_1 (
+    id bigint DEFAULT nextval('loose_foreign_keys_deleted_records_id_seq'::regclass) NOT NULL,
+    partition bigint NOT NULL,
+    primary_key_value bigint NOT NULL,
+    status smallint DEFAULT 1 NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    fully_qualified_table_name text NOT NULL,
+    CONSTRAINT check_1a541f3235 CHECK ((char_length(fully_qualified_table_name) <= 150))
+);
+ALTER TABLE ONLY loose_foreign_keys_deleted_records ATTACH PARTITION gitlab_partitions_static.loose_foreign_keys_deleted_records_1 FOR VALUES IN ('1');
 
 CREATE TABLE product_analytics_events_experimental (
     id bigint NOT NULL,
@@ -10604,6 +10627,24 @@ CREATE SEQUENCE atlassian_identities_user_id_seq
 
 ALTER SEQUENCE atlassian_identities_user_id_seq OWNED BY atlassian_identities.user_id;
 
+CREATE TABLE audit_events_external_audit_event_destinations (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    destination_url text NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_2feafb9daf CHECK ((char_length(destination_url) <= 255))
+);
+
+CREATE SEQUENCE audit_events_external_audit_event_destinations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_external_audit_event_destinations_id_seq OWNED BY audit_events_external_audit_event_destinations.id;
+
 CREATE SEQUENCE audit_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -17389,7 +17430,8 @@ CREATE TABLE plan_limits (
     ci_max_artifact_size_cluster_image_scanning integer DEFAULT 0 NOT NULL,
     ci_jobs_trace_size_limit integer DEFAULT 100 NOT NULL,
     pages_file_entries integer DEFAULT 200000 NOT NULL,
-    dast_profile_schedules integer DEFAULT 1 NOT NULL
+    dast_profile_schedules integer DEFAULT 1 NOT NULL,
+    external_audit_event_destinations integer DEFAULT 5 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -20951,6 +20993,8 @@ ALTER TABLE ONLY atlassian_identities ALTER COLUMN user_id SET DEFAULT nextval('
 
 ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_external_audit_event_destinations_id_seq'::regclass);
+
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
 
 ALTER TABLE ONLY award_emoji ALTER COLUMN id SET DEFAULT nextval('award_emoji_id_seq'::regclass);
@@ -21404,6 +21448,8 @@ ALTER TABLE ONLY licenses ALTER COLUMN id SET DEFAULT nextval('licenses_id_seq':
 ALTER TABLE ONLY list_user_preferences ALTER COLUMN id SET DEFAULT nextval('list_user_preferences_id_seq'::regclass);
 
 ALTER TABLE ONLY lists ALTER COLUMN id SET DEFAULT nextval('lists_id_seq'::regclass);
+
+ALTER TABLE ONLY loose_foreign_keys_deleted_records ALTER COLUMN id SET DEFAULT nextval('loose_foreign_keys_deleted_records_id_seq'::regclass);
 
 ALTER TABLE ONLY members ALTER COLUMN id SET DEFAULT nextval('members_id_seq'::regclass);
 
@@ -22027,6 +22073,12 @@ ALTER TABLE ONLY gitlab_partitions_static.analytics_cycle_analytics_merge_reques
 ALTER TABLE ONLY gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31
     ADD CONSTRAINT analytics_cycle_analytics_merge_request_stage_events_31_pkey PRIMARY KEY (stage_event_hash_id, merge_request_id);
 
+ALTER TABLE ONLY loose_foreign_keys_deleted_records
+    ADD CONSTRAINT loose_foreign_keys_deleted_records_pkey PRIMARY KEY (partition, id);
+
+ALTER TABLE ONLY gitlab_partitions_static.loose_foreign_keys_deleted_records_1
+    ADD CONSTRAINT loose_foreign_keys_deleted_records_1_pkey PRIMARY KEY (partition, id);
+
 ALTER TABLE ONLY product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_pkey PRIMARY KEY (id, project_id);
 
@@ -22323,6 +22375,9 @@ ALTER TABLE ONLY ar_internal_metadata
 
 ALTER TABLE ONLY atlassian_identities
     ADD CONSTRAINT atlassian_identities_pkey PRIMARY KEY (user_id);
+
+ALTER TABLE ONLY audit_events_external_audit_event_destinations
+    ADD CONSTRAINT audit_events_external_audit_event_destinations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);
@@ -23094,9 +23149,6 @@ ALTER TABLE ONLY list_user_preferences
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT lists_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY loose_foreign_keys_deleted_records
-    ADD CONSTRAINT loose_foreign_keys_deleted_records_pkey PRIMARY KEY (created_at, deleted_table_name, deleted_table_primary_key_value);
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT members_pkey PRIMARY KEY (id);
@@ -25115,6 +25167,8 @@ CREATE UNIQUE INDEX index_experiments_on_name ON experiments USING btree (name);
 
 CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON personal_access_tokens USING btree (id, expires_at) WHERE ((impersonation = false) AND (revoked = false) AND (expire_notification_delivered = false));
 
+CREATE UNIQUE INDEX index_external_audit_event_destinations_on_namespace_id ON audit_events_external_audit_event_destinations USING btree (namespace_id, destination_url);
+
 CREATE UNIQUE INDEX index_external_pull_requests_on_project_and_branches ON external_pull_requests USING btree (project_id, source_branch, target_branch);
 
 CREATE UNIQUE INDEX index_feature_flag_scopes_on_flag_id_and_environment_scope ON operations_feature_flag_scopes USING btree (feature_flag_id, environment_scope);
@@ -27121,6 +27175,8 @@ ALTER INDEX analytics_cycle_analytics_merge_request_stage_events_pkey ATTACH PAR
 
 ALTER INDEX analytics_cycle_analytics_merge_request_stage_events_pkey ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31_pkey;
 
+ALTER INDEX loose_foreign_keys_deleted_records_pkey ATTACH PARTITION gitlab_partitions_static.loose_foreign_keys_deleted_records_1_pkey;
+
 ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx10;
 
 ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx11;
@@ -28320,6 +28376,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 
 ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT fk_rails_0bbbfeaf9d FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_external_audit_event_destinations
+    ADD CONSTRAINT fk_rails_0bc80a4edc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT fk_rails_0c716e079b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

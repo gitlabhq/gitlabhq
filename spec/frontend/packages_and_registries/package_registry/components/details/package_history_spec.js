@@ -5,7 +5,7 @@ import {
   packageData,
   packagePipelines,
 } from 'jest/packages_and_registries/package_registry/mock_data';
-import { HISTORY_PIPELINES_LIMIT } from '~/packages/details/constants';
+import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';
 import component from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';

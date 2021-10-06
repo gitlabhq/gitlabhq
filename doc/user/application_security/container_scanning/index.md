@@ -420,6 +420,39 @@ The above template works for a GitLab Docker registry running on a local install
 you're using a non-GitLab Docker registry, you must change the `$CI_REGISTRY` value and the
 `docker login` credentials to match your local registry's details.
 
+#### Scan images in external private registries
+
+To scan an image in an external private registry, you must configure access credentials so the
+container scanning analyzer can authenticate itself before attempting to access the image to scan.
+
+If you use the GitLab [Container Registry](../../packages/container_registry/),
+the `DOCKER_USER` and `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables)
+are set automatically and you can skip this configuration.
+
+This example shows the configuration needed to scan images in a private [Google Container Registry](https://cloud.google.com/container-registry/):
+
+```yaml
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    DOCKER_USER: _json_key
+    DOCKER_PASSWORD: "$GCP_CREDENTIALS"
+    DOCKER_IMAGE: "gcr.io/path-to-you-registry/image:tag"
+```
+
+Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/#add-a-cicd-variable-to-a-project)
+for `GCP_CREDENTIALS` containing the JSON key, as described in the
+[Google Cloud Platform Container Registry documentation](https://cloud.google.com/container-registry/docs/advanced-authentication#json-key).
+Also:
+
+- The value of the variable may not fit the masking requirements for the **Mask variable** option,
+  so the value could be exposed in the job logs.
+- Scans may not run in unprotected feature branches if you select the **Protect variable** option.
+- Consider creating credentials with read-only permissions and rotating them regularly if the
+  options aren't selected.
+
 ## Running the standalone container scanning tool
 
 It's possible to run the [GitLab container scanning tool](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)

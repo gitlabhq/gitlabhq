@@ -5,19 +5,19 @@ import Vuex from 'vuex';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import stubChildren from 'helpers/stub_children';
 
-import PackagesApp from '~/packages/details/components/app.vue';
-import PackageFiles from '~/packages/details/components/package_files.vue';
-import PackageHistory from '~/packages/details/components/package_history.vue';
-import * as getters from '~/packages/details/store/getters';
+import PackagesApp from '~/packages_and_registries/infrastructure_registry/details/components/app.vue';
+import PackageFiles from '~/packages_and_registries/infrastructure_registry/details/components/package_files.vue';
+import PackageHistory from '~/packages_and_registries/infrastructure_registry/details/components/package_history.vue';
+import * as getters from '~/packages_and_registries/infrastructure_registry/details/store/getters';
 import PackageListRow from '~/packages/shared/components/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { TrackingActions } from '~/packages/shared/constants';
 import * as SharedUtils from '~/packages/shared/utils';
-import TerraformTitle from '~/packages_and_registries/infrastructure_registry/components/details_title.vue';
-import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/components/terraform_installation.vue';
+import TerraformTitle from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
+import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import Tracking from '~/tracking';
 
-import { mavenPackage, mavenFiles, npmPackage } from '../../mock_data';
+import { mavenPackage, mavenFiles, npmPackage } from 'jest/packages/mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

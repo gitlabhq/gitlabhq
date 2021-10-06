@@ -1,9 +1,9 @@
-import { packagePipeline } from '~/packages/details/store/getters';
+import { packagePipeline } from '~/packages_and_registries/infrastructure_registry/details/store/getters';
 import {
   npmPackage,
   mockPipelineInfo,
   mavenPackage as packageWithoutBuildInfo,
-} from '../../mock_data';
+} from 'jest/packages/mock_data';
 
 describe('Getters PackageDetails Store', () => {
   let state;

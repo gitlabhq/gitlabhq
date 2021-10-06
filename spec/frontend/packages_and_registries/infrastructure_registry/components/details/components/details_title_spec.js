@@ -1,7 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { terraformModule, mavenFiles, npmPackage } from 'jest/packages/mock_data';
-import component from '~/packages_and_registries/infrastructure_registry/components/details_title.vue';
+import component from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 const localVue = createLocalVue();

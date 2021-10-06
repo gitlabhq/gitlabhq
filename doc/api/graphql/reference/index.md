@@ -1271,6 +1271,9 @@ Input type: `CreateIssueInput`
 | <a id="mutationcreateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of an epic to associate the issue with. |
 | <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Desired health status. |
 | <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | IID (internal ID) of a project issue. Only admins and project owners can modify. |
+| <a id="mutationcreateissueiterationcadenceid"></a>`iterationCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global iteration cadence ID. Required when `iterationWildcardId` is provided. |
+| <a id="mutationcreateissueiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Global iteration ID. Mutually exlusive argument with `iterationWildcardId`. |
+| <a id="mutationcreateissueiterationwildcardid"></a>`iterationWildcardId` | [`IssueCreationIterationWildcardId`](#issuecreationiterationwildcardid) | Iteration wildcard ID. Supported values are: `CURRENT`. Mutually exclusive argument with `iterationId`. iterationCadenceId also required when this argument is provided. |
 | <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the issue. |
 | <a id="mutationcreateissuelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationcreateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
@@ -2436,6 +2439,64 @@ Input type: `ExportRequirementsInput`
 | ---- | ---- | ----------- |
 | <a id="mutationexportrequirementsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationexportrequirementserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.externalAuditEventDestinationCreate`
+
+Input type: `ExternalAuditEventDestinationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationexternalauditeventdestinationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationexternalauditeventdestinationcreatedestinationurl"></a>`destinationUrl` | [`String!`](#string) | Destination URL. |
+| <a id="mutationexternalauditeventdestinationcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationexternalauditeventdestinationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationexternalauditeventdestinationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationexternalauditeventdestinationcreateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`ExternalAuditEventDestination`](#externalauditeventdestination) | Destination created. |
+
+### `Mutation.externalAuditEventDestinationDestroy`
+
+Input type: `ExternalAuditEventDestinationDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationexternalauditeventdestinationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationexternalauditeventdestinationdestroyid"></a>`id` | [`AuditEventsExternalAuditEventDestinationID!`](#auditeventsexternalauditeventdestinationid) | ID of external audit event destination to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationexternalauditeventdestinationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationexternalauditeventdestinationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.externalAuditEventDestinationUpdate`
+
+Input type: `ExternalAuditEventDestinationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationexternalauditeventdestinationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationexternalauditeventdestinationupdatedestinationurl"></a>`destinationUrl` | [`String`](#string) | Destination URL to change. |
+| <a id="mutationexternalauditeventdestinationupdateid"></a>`id` | [`AuditEventsExternalAuditEventDestinationID!`](#auditeventsexternalauditeventdestinationid) | ID of external audit event destination to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationexternalauditeventdestinationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationexternalauditeventdestinationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationexternalauditeventdestinationupdateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`ExternalAuditEventDestination`](#externalauditeventdestination) | Updated destination. |
 
 ### `Mutation.gitlabSubscriptionActivate`
 
@@ -5946,6 +6007,29 @@ The edge type for [`Event`](#event).
 | ---- | ---- | ----------- |
 | <a id="eventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="eventedgenode"></a>`node` | [`Event`](#event) | The item at the end of the edge. |
+
+#### `ExternalAuditEventDestinationConnection`
+
+The connection type for [`ExternalAuditEventDestination`](#externalauditeventdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="externalauditeventdestinationconnectionedges"></a>`edges` | [`[ExternalAuditEventDestinationEdge]`](#externalauditeventdestinationedge) | A list of edges. |
+| <a id="externalauditeventdestinationconnectionnodes"></a>`nodes` | [`[ExternalAuditEventDestination]`](#externalauditeventdestination) | A list of nodes. |
+| <a id="externalauditeventdestinationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ExternalAuditEventDestinationEdge`
+
+The edge type for [`ExternalAuditEventDestination`](#externalauditeventdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="externalauditeventdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="externalauditeventdestinationedgenode"></a>`node` | [`ExternalAuditEventDestination`](#externalauditeventdestination) | The item at the end of the edge. |
 
 #### `GroupConnection`
 
@@ -9841,6 +9925,18 @@ Representing an event.
 | <a id="eventid"></a>`id` | [`ID!`](#id) | ID of the event. |
 | <a id="eventupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this event was updated. |
 
+### `ExternalAuditEventDestination`
+
+Represents an external resource to send audit events to.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="externalauditeventdestinationdestinationurl"></a>`destinationUrl` | [`String!`](#string) | External destination to send audit events to. |
+| <a id="externalauditeventdestinationgroup"></a>`group` | [`Group!`](#group) | Group the destination belongs to. |
+| <a id="externalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+
 ### `ExternalIssue`
 
 Represents an external issue.
@@ -10066,6 +10162,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
+| <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. Available only when feature flag `ff_external_audit_events_namespace` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
@@ -15820,6 +15917,14 @@ State of a GitLab issue or merge request.
 | <a id="issuablestatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="issuablestateopened"></a>`opened` | In open state. |
 
+### `IssueCreationIterationWildcardId`
+
+Iteration ID wildcard values for issue creation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="issuecreationiterationwildcardidcurrent"></a>`CURRENT` | Current iteration. |
+
 ### `IssueSort`
 
 Values for sorting issues.
@@ -16716,6 +16821,12 @@ An example `AlertManagementHttpIntegrationID` is: `"gid://gitlab/AlertManagement
 A `AnalyticsDevopsAdoptionEnabledNamespaceID` is a global ID. It is encoded as a string.
 
 An example `AnalyticsDevopsAdoptionEnabledNamespaceID` is: `"gid://gitlab/Analytics::DevopsAdoption::EnabledNamespace/1"`.
+
+### `AuditEventsExternalAuditEventDestinationID`
+
+A `AuditEventsExternalAuditEventDestinationID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsExternalAuditEventDestinationID` is: `"gid://gitlab/AuditEvents::ExternalAuditEventDestination/1"`.
 
 ### `AwardableID`
 

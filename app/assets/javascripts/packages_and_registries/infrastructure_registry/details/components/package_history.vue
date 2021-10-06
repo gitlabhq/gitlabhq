@@ -4,7 +4,7 @@ import { GlLink, GlSprintf } from '@gitlab/ui';
 import { first } from 'lodash';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, n__ } from '~/locale';
-import { HISTORY_PIPELINES_LIMIT } from '~/packages/details/constants';
+import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 

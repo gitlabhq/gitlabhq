@@ -1,19 +1,19 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import createFlash from '~/flash';
-import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages/details/constants';
+import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages_and_registries/infrastructure_registry/details/constants';
 import {
   fetchPackageVersions,
   deletePackage,
   deletePackageFile,
-} from '~/packages/details/store/actions';
-import * as types from '~/packages/details/store/mutation_types';
+} from '~/packages_and_registries/infrastructure_registry/details/store/actions';
+import * as types from '~/packages_and_registries/infrastructure_registry/details/store/mutation_types';
 import {
   DELETE_PACKAGE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
 } from '~/packages/shared/constants';
-import { npmPackage as packageEntity } from '../../mock_data';
+import { npmPackage as packageEntity } from '../../../../../packages/mock_data';
 
 jest.mock('~/flash.js');
 jest.mock('~/api.js');

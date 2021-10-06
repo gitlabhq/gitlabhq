@@ -11,6 +11,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       directives: {
         base_uri: 'http://example.com',
         child_src: "'self' https://child.example.com",
+        connect_src: "'self' ws://example.com",
         default_src: "'self' https://other.example.com",
         script_src: "'self'  https://script.exammple.com ",
         worker_src: "data:  https://worker.example.com",
@@ -52,6 +53,28 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       expect(directives['child_src']).to eq(directives['frame_src'])
     end
 
+    context 'adds all websocket origins to support Safari' do
+      it 'with insecure domain' do
+        stub_config_setting(host: 'example.com', https: false)
+        expect(directives['connect_src']).to eq("'self' ws://example.com")
+      end
+
+      it 'with secure domain' do
+        stub_config_setting(host: 'example.com', https: true)
+        expect(directives['connect_src']).to eq("'self' wss://example.com")
+      end
+
+      it 'with custom port' do
+        stub_config_setting(host: 'example.com', port: '1234')
+        expect(directives['connect_src']).to eq("'self' ws://example.com:1234")
+      end
+
+      it 'with custom port and secure domain' do
+        stub_config_setting(host: 'example.com', https: true, port: '1234')
+        expect(directives['connect_src']).to eq("'self' wss://example.com:1234")
+      end
+    end
+
     context 'when CDN host is defined' do
       before do
         stub_config_setting(cdn_host: 'https://example.com')
@@ -67,10 +90,11 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
     context 'when sentry is configured' do
       before do
         stub_sentry_settings
+        stub_config_setting(host: 'example.com')
       end
 
       it 'adds sentry path to CSP without user' do
-        expect(directives['connect_src']).to eq("'self' dummy://example.com/43")
+        expect(directives['connect_src']).to eq("'self' ws://example.com dummy://example.com/43")
       end
     end
 
@@ -113,6 +137,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
       expect(policy.directives['base-uri']).to eq([csp_config[:directives][:base_uri]])
       expect(policy.directives['default-src']).to eq(expected_config(:default_src))
+      expect(policy.directives['connect-src']).to eq(expected_config(:connect_src))
       expect(policy.directives['child-src']).to eq(expected_config(:child_src))
       expect(policy.directives['worker-src']).to eq(expected_config(:worker_src))
       expect(policy.directives['report-uri']).to eq(expected_config(:report_uri))

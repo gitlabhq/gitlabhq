@@ -92,6 +92,16 @@ To check the status of [batched background migrations](../user/admin_area/monito
 
    ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
 
+The status of batched background migrations can also be queried directly in the database.
+
+1. Log into a `psql` prompt according to the directions for your instance's installation method
+(for example, `sudo gitlab-psql` for Omnibus installations).
+1. Run the following query in the `psql` session to see details on incomplete batched background migrations:
+
+   ```sql
+   select job_class_name, table_name, column_name, job_arguments from batched_background_migrations where status <> 3;
+   ```
+
 **For Omnibus installations**
 
 You can also run:

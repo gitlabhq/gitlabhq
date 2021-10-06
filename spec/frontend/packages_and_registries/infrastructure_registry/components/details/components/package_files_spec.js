@@ -2,11 +2,11 @@ import { GlDropdown, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue/';
 import stubChildren from 'helpers/stub_children';
-import component from '~/packages/details/components/package_files.vue';
+import component from '~/packages_and_registries/infrastructure_registry/details/components/package_files.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import { npmFiles, mavenFiles } from '../../mock_data';
+import { npmFiles, mavenFiles } from 'jest/packages/mock_data';
 
 describe('Package Files', () => {
   let wrapper;

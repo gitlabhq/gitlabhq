@@ -1,6 +1,6 @@
-import * as types from '~/packages/details/store/mutation_types';
-import mutations from '~/packages/details/store/mutations';
-import { npmPackage as packageEntity } from '../../mock_data';
+import * as types from '~/packages_and_registries/infrastructure_registry/details/store/mutation_types';
+import mutations from '~/packages_and_registries/infrastructure_registry/details/store/mutations';
+import { npmPackage as packageEntity } from 'jest/packages/mock_data';
 
 describe('Mutations package details Store', () => {
   let mockState;

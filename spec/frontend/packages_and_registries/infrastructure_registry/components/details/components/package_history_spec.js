@@ -1,12 +1,12 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
-import component from '~/packages/details/components/package_history.vue';
-import { HISTORY_PIPELINES_LIMIT } from '~/packages/details/constants';
+import component from '~/packages_and_registries/infrastructure_registry/details/components/package_history.vue';
+import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import { mavenPackage, mockPipelineInfo } from '../../mock_data';
+import { mavenPackage, mockPipelineInfo } from 'jest/packages/mock_data';
 
 describe('Package History', () => {
   let wrapper;
