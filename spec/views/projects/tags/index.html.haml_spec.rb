@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/tags/index.html.haml' do
-  let(:project)  { create(:project, :repository) }
-  let(:tags)     { TagsFinder.new(project.repository, {}).execute }
-  let(:git_tag)  { project.repository.tags.last }
-  let(:release)  { create(:release, project: project, sha: git_tag.target_commit.sha) }
+  let_it_be(:project)  { create(:project, :repository) }
+  let_it_be(:tags)     { project.repository.tags }
+  let_it_be(:git_tag)  { project.repository.tags.last }
+  let_it_be(:release)  { create(:release, project: project, sha: git_tag.target_commit.sha) }
+
   let(:pipeline) { create(:ci_pipeline, :success, project: project, ref: git_tag.name, sha: release.sha) }
 
   before do
@@ -84,6 +85,19 @@ RSpec.describe 'projects/tags/index.html.haml' do
       render
 
       expect(page.all('.tags .content-list li')).not_to have_css 'svg.s24'
+    end
+  end
+
+  context 'when Gitaly is unavailable' do
+    it 'renders an error' do
+      assign(:tags_loading_error, GRPC::Unavailable.new)
+
+      content = render
+
+      expect(content).to include("Unable to load tags")
+      expect(content).to include(
+        "The git server, Gitaly, is not available at this time. Please contact your administrator."
+      )
     end
   end
 end

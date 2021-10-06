@@ -107,9 +107,6 @@ export default {
     onAutoCompleteToggled(isOpen) {
       this.isAutoCompleteOpen = isOpen;
     },
-    onInputWrapperClick() {
-      this.$refs.input.focus();
-    },
     onInput() {
       const { value } = this.$refs.input;
       const caretPos = this.$refs.input.selectionStart;
@@ -185,26 +182,23 @@ export default {
   <div
     ref="issuableFormWrapper"
     :class="{ focus: isInputFocused }"
-    class="add-issuable-form-input-wrapper form-control gl-field-error-outline"
+    class="add-issuable-form-input-wrapper form-control gl-field-error-outline gl-h-auto gl-p-3 gl-pb-2"
     role="button"
     @click="onIssuableFormWrapperClick"
   >
-    <ul class="add-issuable-form-input-token-list">
-      <!--
-          We need to ensure this key changes any time the pendingReferences array is updated
-          else two consecutive pending ref strings in an array with the same name will collide
-          and cause odd behavior when one is removed.
-        -->
+    <ul
+      class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-list-style-none gl-m-0 gl-p-0"
+    >
       <li
         v-for="(reference, index) in references"
-        :key="`related-issues-token-${reference}`"
-        class="js-add-issuable-form-token-list-item add-issuable-form-token-list-item"
+        :key="reference"
+        class="gl-max-w-full gl-mb-2 gl-mr-2"
       >
         <issue-token
           :id-key="index"
           :display-reference="reference.text || reference"
-          :can-remove="true"
-          :is-condensed="true"
+          can-remove
+          is-condensed
           :path-id-separator="pathIdSeparator"
           event-namespace="pendingIssuable"
           @pendingIssuableRemoveRequest="
@@ -214,14 +208,15 @@ export default {
           "
         />
       </li>
-      <li class="add-issuable-form-input-list-item">
+      <li class="gl-mb-2 gl-flex-grow-1">
         <input
           :id="inputId"
           ref="input"
           :value="inputValue"
           :placeholder="inputPlaceholder"
+          :aria-label="inputPlaceholder"
           type="text"
-          class="js-add-issuable-form-input add-issuable-form-input"
+          class="gl-w-full gl-border-none gl-outline-0"
           data-qa-selector="add_issue_field"
           autocomplete="off"
           @input="onInput"

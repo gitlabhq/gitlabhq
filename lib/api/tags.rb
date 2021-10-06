@@ -24,7 +24,7 @@ module API
         use :pagination
       end
       get ':id/repository/tags', feature_category: :source_code_management do
-        tags = ::TagsFinder.new(user_project.repository,
+        tags, _ = ::TagsFinder.new(user_project.repository,
                                 sort: "#{params[:order_by]}_#{params[:sort]}",
                                 search: params[:search]).execute
 

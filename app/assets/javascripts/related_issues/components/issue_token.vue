@@ -111,7 +111,6 @@ export default {
       :disabled="removeDisabled"
       data-testid="removeBtn"
       type="button"
-      class="js-issue-token-remove-button"
       @click="onRemoveRequest"
     >
       <gl-icon name="close" />

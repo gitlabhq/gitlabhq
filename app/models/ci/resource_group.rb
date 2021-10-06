@@ -32,7 +32,7 @@ module Ci
     end
 
     def upcoming_processables
-      if unordered? || Feature.disabled?(:ci_resource_group_process_modes, project, default_enabled: :yaml)
+      if unordered?
         processables.waiting_for_resource
       elsif oldest_first?
         processables.waiting_for_resource_or_upcoming

@@ -1,17 +1,35 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
-import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../constants';
+import {
+  INSTANCE_TYPE,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  I18N_INSTANCE_RUNNER_DESCRIPTION,
+  I18N_GROUP_RUNNER_DESCRIPTION,
+  I18N_PROJECT_RUNNER_DESCRIPTION,
+  I18N_LOCKED_RUNNER_DESCRIPTION,
+  I18N_PAUSED_RUNNER_DESCRIPTION,
+} from '../constants';
 import RunnerTypeBadge from './runner_type_badge.vue';
+import RunnerStateLockedBadge from './runner_state_locked_badge.vue';
+import RunnerStatePausedBadge from './runner_state_paused_badge.vue';
 
 export default {
   components: {
-    GlBadge,
     RunnerTypeBadge,
+    RunnerStateLockedBadge,
+    RunnerStatePausedBadge,
   },
   runnerTypes: {
     INSTANCE_TYPE,
     GROUP_TYPE,
     PROJECT_TYPE,
+  },
+  i18n: {
+    I18N_INSTANCE_RUNNER_DESCRIPTION,
+    I18N_GROUP_RUNNER_DESCRIPTION,
+    I18N_PROJECT_RUNNER_DESCRIPTION,
+    I18N_LOCKED_RUNNER_DESCRIPTION,
+    I18N_PAUSED_RUNNER_DESCRIPTION,
   },
 };
 </script>
@@ -32,27 +50,23 @@ export default {
       <ul>
         <li>
           <runner-type-badge :type="$options.runnerTypes.INSTANCE_TYPE" size="sm" />
-          - {{ __('Runs jobs from all unassigned projects.') }}
+          - {{ $options.i18n.I18N_INSTANCE_RUNNER_DESCRIPTION }}
         </li>
         <li>
           <runner-type-badge :type="$options.runnerTypes.GROUP_TYPE" size="sm" />
-          - {{ __('Runs jobs from all unassigned projects in its group.') }}
+          - {{ $options.i18n.I18N_GROUP_RUNNER_DESCRIPTION }}
         </li>
         <li>
           <runner-type-badge :type="$options.runnerTypes.PROJECT_TYPE" size="sm" />
-          - {{ __('Runs jobs from assigned projects.') }}
+          - {{ $options.i18n.I18N_PROJECT_RUNNER_DESCRIPTION }}
         </li>
         <li>
-          <gl-badge variant="warning" size="sm">
-            {{ s__('Runners|locked') }}
-          </gl-badge>
-          - {{ __('Cannot be assigned to other projects.') }}
+          <runner-state-locked-badge size="sm" />
+          - {{ $options.i18n.I18N_LOCKED_RUNNER_DESCRIPTION }}
         </li>
         <li>
-          <gl-badge variant="danger" size="sm">
-            {{ s__('Runners|paused') }}
-          </gl-badge>
-          - {{ __('Not available to run jobs.') }}
+          <runner-state-paused-badge size="sm" />
+          - {{ $options.i18n.I18N_PAUSED_RUNNER_DESCRIPTION }}
         </li>
       </ul>
     </div>

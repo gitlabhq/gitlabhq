@@ -358,6 +358,46 @@ module QA
         parse_body(response)
       end
 
+      # Object comparison
+      #
+      # @param [QA::Resource::Project] other
+      # @return [Boolean]
+      def ==(other)
+        other.is_a?(Project) && comparable_project == other.comparable_project
+      end
+
+      # Override inspect for a better rspec failure diff output
+      #
+      # @return [String]
+      def inspect
+        JSON.pretty_generate(comparable_project)
+      end
+
+      protected
+
+      # Return subset of fields for comparing projects
+      #
+      # @return [Hash]
+      def comparable_project
+        reload! if api_response.nil?
+
+        api_resource.slice(
+          :name,
+          :path,
+          :description,
+          :tag_list,
+          :archived,
+          :issues_enabled,
+          :merge_request_enabled,
+          :wiki_enabled,
+          :jobs_enabled,
+          :snippets_enabled,
+          :shared_runners_enabled,
+          :request_access_enabled,
+          :avatar_url
+        )
+      end
+
       private
 
       def transform_api_resource(api_resource)

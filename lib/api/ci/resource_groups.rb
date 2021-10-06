@@ -32,7 +32,6 @@ module API
                                   values: ::Ci::ResourceGroup.process_modes.keys
         end
         put ':id/resource_groups/:key' do
-          not_found! unless ::Feature.enabled?(:ci_resource_group_process_modes, user_project, default_enabled: :yaml)
           authorize! :update_resource_group, resource_group
 
           if resource_group.update(declared_params(include_missing: false))

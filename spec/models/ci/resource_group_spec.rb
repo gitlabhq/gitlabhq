@@ -117,14 +117,6 @@ RSpec.describe Ci::ResourceGroup do
         expect(subject[3]).to eq(build_2_waiting_for_resource)
         expect(subject[4..5]).to contain_exactly(build_2_created, build_2_scheduled)
       end
-
-      context 'when ci_resource_group_process_modes feature flag is disabled' do
-        it 'returns correct jobs in an indeterministic order' do
-          stub_feature_flags(ci_resource_group_process_modes: false)
-
-          expect(subject).to contain_exactly(build_1_waiting_for_resource, build_2_waiting_for_resource)
-        end
-      end
     end
 
     context 'when process mode is newest_first' do
@@ -135,14 +127,6 @@ RSpec.describe Ci::ResourceGroup do
         expect(subject[1..2]).to contain_exactly(build_2_created, build_2_scheduled)
         expect(subject[3]).to eq(build_1_waiting_for_resource)
         expect(subject[4..5]).to contain_exactly(build_1_created, build_1_scheduled)
-      end
-
-      context 'when ci_resource_group_process_modes feature flag is disabled' do
-        it 'returns correct jobs in an indeterministic order' do
-          stub_feature_flags(ci_resource_group_process_modes: false)
-
-          expect(subject).to contain_exactly(build_1_waiting_for_resource, build_2_waiting_for_resource)
-        end
       end
     end
 

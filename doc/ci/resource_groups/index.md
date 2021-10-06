@@ -66,13 +66,9 @@ Only one resource can be attached to a resource group.
 
 ## Process modes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202186) in GitLab 14.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the `ci_resource_group_process_modes` flag](../../administration/feature_flags.md).
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202186) in GitLab 14.3.
+> - [Feature flag `ci_resource_group_process_modes`](https://gitlab.com/gitlab-org/gitlab/-/issues/340380) removed in GitLab 14.4.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/202186) in GitLab 14.4.
 
 You can choose a process mode to strategically control the job concurrency for your deployment preferences.
 The following modes are supported:

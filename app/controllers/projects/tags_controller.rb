@@ -18,17 +18,21 @@ class Projects::TagsController < Projects::ApplicationController
     params[:sort] = params[:sort].presence || sort_value_recently_updated
 
     @sort = params[:sort]
-    @tags = TagsFinder.new(@repository, params).execute
-    @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
+    @tags, @tags_loading_error = TagsFinder.new(@repository, params).execute
+
+    @tags = Kaminari.paginate_array(@tags).page(params[:page])
     tag_names = @tags.map(&:name)
     @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
+
     @releases = project.releases.where(tag: tag_names)
     @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
 
     respond_to do |format|
-      format.html
-      format.atom { render layout: 'xml.atom' }
+      status = @tags_loading_error ? :service_unavailable : :ok
+
+      format.html { render status: status }
+      format.atom { render layout: 'xml.atom', status: status }
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

@@ -284,9 +284,9 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if find_tags && @repository.tag_count.nonzero?
-      tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
+      tags, _ = TagsFinder.new(@repository, params).execute
 
-      options['Tags'] = tags
+      options['Tags'] = tags.take(100).map(&:name)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox

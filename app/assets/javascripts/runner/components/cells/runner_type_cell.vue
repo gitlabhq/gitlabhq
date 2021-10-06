@@ -1,11 +1,18 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import RunnerTypeBadge from '../runner_type_badge.vue';
+import RunnerStateLockedBadge from '../runner_state_locked_badge.vue';
+import RunnerStatePausedBadge from '../runner_state_paused_badge.vue';
+import { I18N_LOCKED_RUNNER_DESCRIPTION, I18N_PAUSED_RUNNER_DESCRIPTION } from '../../constants';
 
 export default {
   components: {
-    GlBadge,
     RunnerTypeBadge,
+    RunnerStateLockedBadge,
+    RunnerStatePausedBadge,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     runner: {
@@ -24,19 +31,17 @@ export default {
       return !this.runner.active;
     },
   },
+  i18n: {
+    I18N_LOCKED_RUNNER_DESCRIPTION,
+    I18N_PAUSED_RUNNER_DESCRIPTION,
+  },
 };
 </script>
 
 <template>
   <div>
     <runner-type-badge :type="runnerType" size="sm" />
-
-    <gl-badge v-if="locked" variant="warning" size="sm">
-      {{ s__('Runners|locked') }}
-    </gl-badge>
-
-    <gl-badge v-if="paused" variant="danger" size="sm">
-      {{ s__('Runners|paused') }}
-    </gl-badge>
+    <runner-state-locked-badge v-if="locked" size="sm" />
+    <runner-state-paused-badge v-if="paused" size="sm" />
   </div>
 </template>

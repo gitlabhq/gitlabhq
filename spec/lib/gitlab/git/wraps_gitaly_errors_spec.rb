@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Git::WrapsGitalyErrors do
     mapping = {
       GRPC::NotFound => Gitlab::Git::Repository::NoRepository,
       GRPC::InvalidArgument => ArgumentError,
+      GRPC::DeadlineExceeded => Gitlab::Git::CommandTimedOut,
       GRPC::BadStatus => Gitlab::Git::CommandError
     }
 

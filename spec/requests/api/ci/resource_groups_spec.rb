@@ -62,18 +62,6 @@ RSpec.describe API::Ci::ResourceGroups do
       expect(json_response['process_mode']).to eq('oldest_first')
     end
 
-    context 'when ci_resource_group_process_modes feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_resource_group_process_modes: false)
-      end
-
-      it 'returns not found' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'with invalid parameter' do
       let(:params) { { process_mode: :unknown } }
 

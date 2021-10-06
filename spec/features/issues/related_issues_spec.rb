@@ -231,8 +231,8 @@ RSpec.describe 'Related issues', :js do
 
       it 'add related issue' do
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set "#{issue_b.to_reference(project)} "
-        find('.js-add-issuable-form-add-button').click
+        fill_in 'Paste issue link', with: "#{issue_b.to_reference(project)} "
+        click_button 'Add'
 
         wait_for_requests
 
@@ -248,8 +248,8 @@ RSpec.describe 'Related issues', :js do
 
       it 'add cross-project related issue' do
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set "#{issue_project_b_a.to_reference(project)} "
-        find('.js-add-issuable-form-add-button').click
+        fill_in 'Paste issue link', with: "#{issue_project_b_a.to_reference(project)} "
+        click_button 'Add'
 
         wait_for_requests
 
@@ -262,8 +262,8 @@ RSpec.describe 'Related issues', :js do
 
       it 'pressing enter should submit the form' do
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set "#{issue_project_b_a.to_reference(project)} "
-        find('.js-add-issuable-form-input').native.send_key(:enter)
+        fill_in 'Paste issue link', with: "#{issue_project_b_a.to_reference(project)} "
+        find_field('Paste issue link').native.send_key(:enter)
 
         wait_for_requests
 
@@ -276,9 +276,9 @@ RSpec.describe 'Related issues', :js do
 
       it 'disallows duplicate entries' do
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set 'duplicate duplicate duplicate'
+        fill_in 'Paste issue link', with: 'duplicate duplicate duplicate'
 
-        items = all('.js-add-issuable-form-token-list-item')
+        items = all('.issue-token')
         expect(items.count).to eq(1)
         expect(items[0].text).to eq('duplicate')
 
@@ -289,28 +289,34 @@ RSpec.describe 'Related issues', :js do
       it 'allows us to remove pending issues' do
         # Tests against https://gitlab.com/gitlab-org/gitlab/issues/11625
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set 'issue1 issue2 issue3 '
+        fill_in 'Paste issue link', with: 'issue1 issue2 issue3 '
 
-        items = all('.js-add-issuable-form-token-list-item')
+        items = all('.issue-token')
         expect(items.count).to eq(3)
         expect(items[0].text).to eq('issue1')
         expect(items[1].text).to eq('issue2')
         expect(items[2].text).to eq('issue3')
 
         # Remove pending issues left to right to make sure none get stuck
-        items[0].find('.js-issue-token-remove-button').click
-        items = all('.js-add-issuable-form-token-list-item')
+        within items[0] do
+          click_button 'Remove'
+        end
+        items = all('.issue-token')
         expect(items.count).to eq(2)
         expect(items[0].text).to eq('issue2')
         expect(items[1].text).to eq('issue3')
 
-        items[0].find('.js-issue-token-remove-button').click
-        items = all('.js-add-issuable-form-token-list-item')
+        within items[0] do
+          click_button 'Remove'
+        end
+        items = all('.issue-token')
         expect(items.count).to eq(1)
         expect(items[0].text).to eq('issue3')
 
-        items[0].find('.js-issue-token-remove-button').click
-        items = all('.js-add-issuable-form-token-list-item')
+        within items[0] do
+          click_button 'Remove'
+        end
+        items = all('.issue-token')
         expect(items.count).to eq(0)
       end
     end
@@ -352,8 +358,8 @@ RSpec.describe 'Related issues', :js do
 
       it 'add related issue' do
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set "##{issue_d.iid} "
-        find('.js-add-issuable-form-add-button').click
+        fill_in 'Paste issue link', with: "##{issue_d.iid} "
+        click_button 'Add'
 
         wait_for_requests
 
@@ -368,8 +374,8 @@ RSpec.describe 'Related issues', :js do
 
       it 'add invalid related issue' do
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set "#9999999 "
-        find('.js-add-issuable-form-add-button').click
+        fill_in 'Paste issue link', with: '#9999999 '
+        click_button 'Add'
 
         wait_for_requests
 
@@ -383,8 +389,8 @@ RSpec.describe 'Related issues', :js do
 
       it 'add unauthorized related issue' do
         click_button 'Add a related issue'
-        find('.js-add-issuable-form-input').set "#{issue_project_unauthorized_a.to_reference(project)} "
-        find('.js-add-issuable-form-add-button').click
+        fill_in 'Paste issue link', with: "#{issue_project_unauthorized_a.to_reference(project)} "
+        click_button 'Add'
 
         wait_for_requests
 

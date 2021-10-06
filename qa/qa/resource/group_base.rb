@@ -14,6 +14,22 @@ module QA
                  :name,
                  :full_path
 
+      # Get group projects
+      #
+      # @return [Array<QA::Resource::Project>]
+      def projects
+        parse_body(api_get_from("#{api_get_path}/projects")).map do |project|
+          Project.init do |resource|
+            resource.api_client = api_client
+            resource.group = self
+            resource.id = project[:id]
+            resource.name = project[:name]
+            resource.description = project[:description]
+            resource.path_with_namespace = project[:path_with_namespace]
+          end
+        end
+      end
+
       # Get group labels
       #
       # @return [Array<QA::Resource::GroupLabel>]

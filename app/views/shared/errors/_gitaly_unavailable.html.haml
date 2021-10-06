@@ -1,0 +1,8 @@
+.gl-alert.gl-alert-danger.gl-mb-5.gl-mt-5
+  .gl-alert-container
+    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .gl-alert-content
+      .gl-alert-title
+        = reason
+      .gl-alert-body
+        = s_('The git server, Gitaly, is not available at this time. Please contact your administrator.')

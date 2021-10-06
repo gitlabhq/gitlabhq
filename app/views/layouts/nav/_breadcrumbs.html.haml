@@ -21,6 +21,7 @@
           %li
             %h2.breadcrumbs-sub-title{ data: { qa_selector: 'breadcrumb_sub_title_content' } }
               = link_to @breadcrumb_title, breadcrumb_title_link
+    -# haml-lint:disable InlineJavaScript
     %script{ type: 'application/ld+json' }
       :plain
         #{schema_breadcrumb_json}

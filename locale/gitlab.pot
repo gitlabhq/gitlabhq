@@ -6252,9 +6252,6 @@ msgstr ""
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr ""
 
-msgid "Cannot be assigned to other projects."
-msgstr ""
-
 msgid "Cannot be merged automatically"
 msgstr ""
 
@@ -23169,9 +23166,6 @@ msgstr ""
 msgid "Not available for protected branches"
 msgstr ""
 
-msgid "Not available to run jobs."
-msgstr ""
-
 msgid "Not confidential"
 msgstr ""
 
@@ -29214,6 +29208,15 @@ msgstr ""
 msgid "Runners|Are you sure you want to delete this runner?"
 msgstr ""
 
+msgid "Runners|Associated with one or more projects"
+msgstr ""
+
+msgid "Runners|Available to all projects"
+msgstr ""
+
+msgid "Runners|Available to all projects and subgroups in the group"
+msgstr ""
+
 msgid "Runners|Can run untagged jobs"
 msgstr ""
 
@@ -29272,6 +29275,9 @@ msgid "Runners|New registration token generated!"
 msgstr ""
 
 msgid "Runners|New runner, has not connected yet"
+msgstr ""
+
+msgid "Runners|Not available to run jobs"
 msgstr ""
 
 msgid "Runners|Not connected"
@@ -29397,6 +29403,9 @@ msgstr ""
 msgid "Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared runner."
 msgstr ""
 
+msgid "Runners|You cannot assign to other projects"
+msgstr ""
+
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
 msgstr ""
 
@@ -29425,15 +29434,6 @@ msgid "Running"
 msgstr ""
 
 msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
-msgstr ""
-
-msgid "Runs jobs from all unassigned projects in its group."
-msgstr ""
-
-msgid "Runs jobs from all unassigned projects."
-msgstr ""
-
-msgid "Runs jobs from assigned projects."
 msgstr ""
 
 msgid "SAML"
@@ -33197,6 +33197,9 @@ msgstr ""
 msgid "TagsPage|This tag has no release notes."
 msgstr ""
 
+msgid "TagsPage|Unable to load tags"
+msgstr ""
+
 msgid "TagsPage|Use git tag command to add a new one:"
 msgstr ""
 
@@ -33777,6 +33780,9 @@ msgid "The form contains the following errors:"
 msgstr ""
 
 msgid "The form contains the following warning:"
+msgstr ""
+
+msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr ""
 
 msgid "The global settings require you to enable Two-Factor Authentication for your account."
@@ -39774,6 +39780,11 @@ msgstr ""
 
 msgid "ciReport|Investigate this vulnerability by creating an issue"
 msgstr ""
+
+msgid "ciReport|Load performance test metrics detected %{strongStart}%{changesFound}%{strongEnd} change"
+msgid_plural "ciReport|Load performance test metrics detected %{strongStart}%{changesFound}%{strongEnd} changes"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ciReport|Load performance test metrics: "
 msgstr ""

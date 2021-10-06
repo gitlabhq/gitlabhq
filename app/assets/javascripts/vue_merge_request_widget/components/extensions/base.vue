@@ -160,7 +160,12 @@ export default {
         wclass="report-block-list"
         class="report-block-container"
       >
-        <li v-for="data in fullData" :key="data.id" class="gl-display-flex gl-align-items-center">
+        <li
+          v-for="data in fullData"
+          :key="data.id"
+          class="gl-display-flex gl-align-items-center"
+          data-testid="extension-list-item"
+        >
           <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" />
           <div class="gl-mt-2 gl-mb-2 gl-flex-wrap gl-align-self-center gl-display-flex">
             <div v-safe-html="data.text" class="gl-mr-4"></div>
