@@ -168,7 +168,7 @@ RSpec.describe Issues::CloseService do
       context 'updating `metrics.first_mentioned_in_commit_at`' do
         context 'when `metrics.first_mentioned_in_commit_at` is not set' do
           it 'uses the first commit authored timestamp' do
-            expected = closing_merge_request.commits.first.authored_date
+            expected = closing_merge_request.commits.take(100).last.authored_date
 
             close_issue
 

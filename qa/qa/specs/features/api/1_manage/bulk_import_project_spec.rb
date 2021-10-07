@@ -61,7 +61,10 @@ module QA
       end
 
       context 'with project' do
-        it 'successfully imports project' do
+        it(
+          'successfully imports project',
+          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2297'
+        ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
           imported_projects = imported_group.reload!.projects

@@ -117,7 +117,7 @@ export default {
 </script>
 
 <template>
-  <section class="media-section mr-widget-border-top" data-testid="widget-extension">
+  <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
       <status-icon
         :name="$options.name"

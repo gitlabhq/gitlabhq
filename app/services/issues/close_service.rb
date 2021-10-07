@@ -91,11 +91,11 @@ module Issues
       end
     end
 
-    def store_first_mentioned_in_commit_at(issue, merge_request)
+    def store_first_mentioned_in_commit_at(issue, merge_request, max_commit_lookup: 100)
       metrics = issue.metrics
       return if metrics.nil? || metrics.first_mentioned_in_commit_at
 
-      first_commit_timestamp = merge_request.commits(limit: 1).first.try(:authored_date)
+      first_commit_timestamp = merge_request.commits(limit: max_commit_lookup).last.try(:authored_date)
       return unless first_commit_timestamp
 
       metrics.update!(first_mentioned_in_commit_at: first_commit_timestamp)

@@ -6180,4 +6180,14 @@ RSpec.describe User do
       it_behaves_like 'groups_with_developer_maintainer_project_access examples'
     end
   end
+
+  describe '.get_ids_by_username' do
+    let(:user_name) { 'user_name' }
+    let!(:user) { create(:user, username: user_name) }
+    let(:user_id) { user.id }
+
+    it 'returns the id of each record matching username' do
+      expect(described_class.get_ids_by_username([user_name])).to match_array([user_id])
+    end
+  end
 end

@@ -308,4 +308,15 @@ RSpec.describe ProtectedBranch do
       expect(described_class.by_name('')).to be_empty
     end
   end
+
+  describe '.get_ids_by_name' do
+    let(:branch_name) { 'branch_name' }
+    let!(:protected_branch) { create(:protected_branch, name: branch_name) }
+    let(:branch_id) { protected_branch.id }
+
+    it 'returns the id for each protected branch matching name' do
+      expect(described_class.get_ids_by_name([branch_name]))
+        .to match_array([branch_id])
+    end
+  end
 end

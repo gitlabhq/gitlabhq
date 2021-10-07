@@ -9,7 +9,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
   let_it_be(:project, reload: true) { create(:project, :private) }
 
   let(:repository) { create(:container_repository, :root, project: project) }
-  let(:service) { described_class.new(project, user, params) }
+  let(:service) { described_class.new(repository, user, params) }
   let(:tags) { %w[latest A Ba Bb C D E] }
 
   before do
@@ -39,7 +39,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
   end
 
   describe '#execute' do
-    subject { service.execute(repository) }
+    subject { service.execute }
 
     shared_examples 'reading and removing tags' do |caching_enabled: true|
       context 'when no params are specified' do

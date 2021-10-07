@@ -10,6 +10,8 @@ class ProtectedBranch < ApplicationRecord
   scope :allowing_force_push,
         -> { where(allow_force_push: true) }
 
+  scope :get_ids_by_name, -> (name) { where(name: name).pluck(:id) }
+
   protected_ref_access_levels :merge, :push
 
   def self.protected_ref_accessible_to?(ref, user, project:, action:, protected_refs: nil)

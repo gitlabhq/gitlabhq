@@ -4,6 +4,7 @@ module Ci
   module StuckBuilds
     class DropRunningWorker
       include ApplicationWorker
+      include ExclusiveLeaseGuard
 
       idempotent!
 
@@ -17,26 +18,16 @@ module Ci
 
       feature_category :continuous_integration
 
-      EXCLUSIVE_LEASE_KEY = 'ci_stuck_builds_drop_running_worker_lease'
-
       def perform
-        return unless try_obtain_lease
-
-        begin
+        try_obtain_lease do
           Ci::StuckBuilds::DropRunningService.new.execute
-        ensure
-          remove_lease
         end
       end
 
       private
 
-      def try_obtain_lease
-        @uuid = Gitlab::ExclusiveLease.new(EXCLUSIVE_LEASE_KEY, timeout: 30.minutes).try_obtain
-      end
-
-      def remove_lease
-        Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
+      def lease_timeout
+        30.minutes
       end
     end
   end

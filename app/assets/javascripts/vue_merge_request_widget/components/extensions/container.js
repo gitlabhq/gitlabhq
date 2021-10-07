@@ -1,3 +1,4 @@
+import { __ } from '~/locale';
 import { registeredExtensions } from './index';
 
 export default {
@@ -12,23 +13,42 @@ export default {
 
     if (extensions.length === 0) return null;
 
-    return h('div', {}, [
-      ...extensions.map((extension) =>
+    return h(
+      'div',
+      {
+        attrs: {
+          role: 'region',
+          'aria-label': __('Merge request reports'),
+        },
+      },
+      [
         h(
-          { ...extension },
+          'ul',
           {
-            props: {
-              ...extension.props.reduce(
-                (acc, key) => ({
-                  ...acc,
-                  [key]: this.mr[key],
-                }),
-                {},
-              ),
-            },
+            class: 'gl-p-0 gl-m-0 gl-list-style-none',
           },
+          [
+            ...extensions.map((extension, index) =>
+              h('li', { attrs: { class: index > 0 && 'mr-widget-border-top' } }, [
+                h(
+                  { ...extension },
+                  {
+                    props: {
+                      ...extension.props.reduce(
+                        (acc, key) => ({
+                          ...acc,
+                          [key]: this.mr[key],
+                        }),
+                        {},
+                      ),
+                    },
+                  },
+                ),
+              ]),
+            ),
+          ],
         ),
-      ),
-    ]);
+      ],
+    );
   },
 };

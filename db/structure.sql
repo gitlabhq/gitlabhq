@@ -25448,6 +25448,8 @@ CREATE UNIQUE INDEX index_issue_links_on_source_id_and_target_id ON issue_links 
 
 CREATE INDEX index_issue_links_on_target_id ON issue_links USING btree (target_id);
 
+CREATE INDEX index_issue_metrics_first_mentioned_in_commit ON issue_metrics USING btree (issue_id) WHERE (date_part('year'::text, first_mentioned_in_commit_at) > (2019)::double precision);
+
 CREATE INDEX index_issue_metrics_on_issue_id_and_timestamps ON issue_metrics USING btree (issue_id, first_mentioned_in_commit_at, first_associated_with_milestone_at, first_added_to_board_at);
 
 CREATE INDEX index_issue_on_project_id_state_id_and_blocking_issues_count ON issues USING btree (project_id, state_id, blocking_issues_count);
