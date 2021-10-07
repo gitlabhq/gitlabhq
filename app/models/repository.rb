@@ -732,7 +732,7 @@ class Repository
   end
 
   def tags_sorted_by(value)
-    return raw_repository.tags(sort_by: value) if Feature.enabled?(:gitaly_tags_finder, project, default_enabled: :yaml)
+    return raw_repository.tags(sort_by: value) if Feature.enabled?(:tags_finder_gitaly, project, default_enabled: :yaml)
 
     tags_ruby_sort(value)
   end

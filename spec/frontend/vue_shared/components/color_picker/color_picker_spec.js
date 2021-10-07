@@ -111,15 +111,13 @@ describe('ColorPicker', () => {
       gon.suggested_label_colors = {};
       createComponent(shallowMount);
 
-      expect(description()).toBe('Choose any color');
+      expect(description()).toBe('Enter any color.');
       expect(presetColors().exists()).toBe(false);
     });
 
     it('shows the suggested colors', () => {
       createComponent(shallowMount);
-      expect(description()).toBe(
-        'Choose any color. Or you can choose one of the suggested colors below',
-      );
+      expect(description()).toBe('Enter any color or choose one of the suggested colors below.');
       expect(presetColors()).toHaveLength(4);
     });
 

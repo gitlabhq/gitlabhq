@@ -87,9 +87,6 @@ export default {
       return isDropdownVariantStandalone(this.variant);
     },
   },
-  mounted() {
-    this.$refs.dropdown.show();
-  },
   methods: {
     toggleDropdownContentsCreateView() {
       this.showDropdownContentsCreateView = !this.showDropdownContentsCreateView;
@@ -100,6 +97,9 @@ export default {
       if (this.$refs.dropdown?.$refs.dropdown) {
         this.$refs.dropdown.$refs.dropdown.$_popper.scheduleUpdate();
       }
+    },
+    showDropdown() {
+      this.$refs.dropdown.show();
     },
     closeDropdown() {
       this.$emit('setLabels', this.localSelectedLabels);

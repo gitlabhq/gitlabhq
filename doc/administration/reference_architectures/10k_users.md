@@ -1604,7 +1604,7 @@ To configure the Sidekiq nodes, on each one:
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
-1. Open `/etc/gitlab/gitlab.rb` with your editor:
+1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 
    ```ruby
    # Avoid running unnecessary services on the Sidekiq server
@@ -1618,6 +1618,10 @@ To configure the Sidekiq nodes, on each one:
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
    nginx['enable'] = false
+
+   # External URL
+   ## This should match the URL of the external load balancer
+   external_url 'https://gitlab.example.com'
 
    # Redis
    ## Redis connection details

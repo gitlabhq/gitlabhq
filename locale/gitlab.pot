@@ -1442,9 +1442,6 @@ msgstr ""
 msgid "A deleted user"
 msgstr ""
 
-msgid "A description is required"
-msgstr ""
-
 msgid "A different reason"
 msgstr ""
 
@@ -6835,13 +6832,7 @@ msgstr ""
 msgid "Choose a type..."
 msgstr ""
 
-msgid "Choose any color"
-msgstr ""
-
 msgid "Choose any color."
-msgstr ""
-
-msgid "Choose any color. Or you can choose one of the suggested colors below"
 msgstr ""
 
 msgid "Choose file…"
@@ -8484,22 +8475,34 @@ msgstr ""
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
-msgid "ComplianceFrameworks|Combines with the CI configuration at runtime."
+msgid "ComplianceFrameworks|Background color"
+msgstr ""
+
+msgid "ComplianceFrameworks|Cancel"
 msgstr ""
 
 msgid "ComplianceFrameworks|Compliance framework deleted successfully"
 msgstr ""
 
-msgid "ComplianceFrameworks|Compliance pipeline configuration location (optional)"
+msgid "ComplianceFrameworks|Compliance pipeline configuration (optional)"
 msgstr ""
 
-msgid "ComplianceFrameworks|Could not find this configuration location, please try a different location"
+msgid "ComplianceFrameworks|Configuration not found"
+msgstr ""
+
+msgid "ComplianceFrameworks|Configured compliance frameworks appear here."
 msgstr ""
 
 msgid "ComplianceFrameworks|Delete compliance framework %{framework}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Delete framework"
+msgstr ""
+
+msgid "ComplianceFrameworks|Description"
+msgstr ""
+
+msgid "ComplianceFrameworks|Description is required"
 msgstr ""
 
 msgid "ComplianceFrameworks|Edit framework"
@@ -8514,31 +8517,31 @@ msgstr ""
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
 msgstr ""
 
-msgid "ComplianceFrameworks|Invalid format: it should follow the format [PATH].y(a)ml@[GROUP]/[PROJECT]"
+msgid "ComplianceFrameworks|Invalid format"
 msgstr ""
 
-msgid "ComplianceFrameworks|Once a compliance framework is added it will appear here."
+msgid "ComplianceFrameworks|Name"
 msgstr ""
 
-msgid "ComplianceFrameworks|There are no compliance frameworks set up yet"
+msgid "ComplianceFrameworks|Name is required"
+msgstr ""
+
+msgid "ComplianceFrameworks|No compliance frameworks are configured"
+msgstr ""
+
+msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
 msgstr ""
 
-msgid "ComplianceFrameworks|Use %{codeStart}::%{codeEnd} to create a %{linkStart}scoped set%{linkEnd} (eg. %{codeStart}SOX::AWS%{codeEnd})"
-msgstr ""
-
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
 msgstr ""
 
-msgid "ComplianceFrameworks|e.g. include-gitlab.ci.yml@group-name/project-name"
+msgid "ComplianceFramework|Edit compliance framework"
 msgstr ""
 
-msgid "ComplianceFramework|Edit Compliance Framework"
-msgstr ""
-
-msgid "ComplianceFramework|New Compliance Framework"
+msgid "ComplianceFramework|New compliance framework"
 msgstr ""
 
 msgid "Component"
@@ -12790,6 +12793,12 @@ msgstr ""
 msgid "Enter an integer number number between 0 and 100"
 msgstr ""
 
+msgid "Enter any color or choose one of the suggested colors below."
+msgstr ""
+
+msgid "Enter any color."
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -16378,7 +16387,7 @@ msgstr ""
 msgid "GroupSettings|Compliance frameworks"
 msgstr ""
 
-msgid "GroupSettings|Configure frameworks to apply enforceable rules to projects."
+msgid "GroupSettings|Configure compliance frameworks to make them available to projects in this group. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "GroupSettings|Custom project templates"
@@ -30505,10 +30514,10 @@ msgstr ""
 msgid "Select a branch"
 msgstr ""
 
-msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
+msgid "Select a compliance framework to apply to this project. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
-msgid "Select a framework that applies to this project. %{linkStart}How are these added?%{linkEnd}"
+msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
 msgstr ""
 
 msgid "Select a group to invite"

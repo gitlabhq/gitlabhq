@@ -141,6 +141,9 @@ export default {
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');
     },
+    showDropdownContents() {
+      this.$refs.dropdownContents.showDropdown();
+    },
     isDropdownVariantSidebar,
     isDropdownVariantStandalone,
     isDropdownVariantEmbedded,
@@ -167,6 +170,7 @@ export default {
         :title="__('Labels')"
         :loading="isLoading"
         :can-edit="allowLabelEdit"
+        @open="showDropdownContents"
       >
         <template #collapsed>
           <dropdown-value
@@ -180,7 +184,7 @@ export default {
             <slot></slot>
           </dropdown-value>
         </template>
-        <template #default="{ edit }">
+        <template #default>
           <dropdown-value
             :disable-labels="labelsSelectInProgress"
             :selected-labels="issuableLabels"
@@ -193,7 +197,7 @@ export default {
             <slot></slot>
           </dropdown-value>
           <dropdown-contents
-            v-if="edit"
+            ref="dropdownContents"
             :dropdown-button-text="dropdownButtonText"
             :allow-multiselect="allowMultiselect"
             :labels-list-title="labelsListTitle"

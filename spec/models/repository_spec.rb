@@ -71,7 +71,7 @@ RSpec.describe Repository do
     let(:feature_flag) { true }
 
     before do
-      stub_feature_flags(gitaly_tags_finder: feature_flag)
+      stub_feature_flags(tags_finder_gitaly: feature_flag)
     end
 
     context 'name_desc' do

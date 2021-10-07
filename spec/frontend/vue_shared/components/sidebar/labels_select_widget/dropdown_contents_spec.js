@@ -68,10 +68,11 @@ describe('DropdownContent', () => {
   const findCreateLabelButton = () => wrapper.find('[data-testid="create-label-button"]');
   const findGoBackButton = () => wrapper.find('[data-testid="go-back-button"]');
 
-  it('calls dropdown `show` method on component mount', () => {
+  it('emits `show` for dropdown on call showDropdown', () => {
     createComponent();
+    wrapper.vm.showDropdown();
 
-    expect(showDropdown).toHaveBeenCalled();
+    expect(findDropdown().emitted('show')).toBeUndefined();
   });
 
   it('emits `setLabels` event on dropdown hide', () => {

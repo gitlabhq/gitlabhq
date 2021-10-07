@@ -128,6 +128,13 @@ describe('LabelsSelectRoot', () => {
   it('emits `updateSelectedLabels` event on dropdown contents `setLabels` event if there are labels to update', async () => {
     const label = { id: 'gid://gitlab/ProjectLabel/1' };
     createComponent();
+    wrapper.vm.$refs.dropdownContents = {
+      showDropdown: jest.fn(),
+    };
+    const showSpy = jest.spyOn(wrapper.vm.$refs.dropdownContents, 'showDropdown');
+    findDropdownContents().vm.$refs.dropdown = {
+      show: jest.fn(),
+    };
     await waitForPromises();
 
     expandDropdown();
@@ -135,5 +142,6 @@ describe('LabelsSelectRoot', () => {
 
     findDropdownContents().vm.$emit('setLabels', [label]);
     expect(wrapper.emitted('updateSelectedLabels')).toEqual([[[label]]]);
+    expect(showSpy).toHaveBeenCalled();
   });
 });

@@ -2678,13 +2678,21 @@ Read more in the [Project members](members.md) documentation.
 > - Introduced in GitLab 11.
 > - Moved to GitLab Premium in 13.9.
 
-Configure pull mirroring while [creating a new project](#create-project) or [updating an existing project](#edit-project) using the API if the remote repository is publicly accessible or via `username/password` authentication. In case your HTTP repository is not publicly accessible, you can add the authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`, where password is a [personal access token](../user/profile/personal_access_tokens.md) with the API scope enabled.
+Configure pull mirroring while [creating a new project](#create-project)
+or [updating an existing project](#edit-project) using the API
+if the remote repository is publicly accessible
+or via `username:token` authentication.
+In case your HTTP repository is not publicly accessible,
+you can add the authentication information to the URL:
+`https://username:token@gitlab.company.com/group/project.git`,
+where `token` is a [personal access token](../user/profile/personal_access_tokens.md)
+with the API scope enabled.
 
-The relevant API parameters to update are:
-
-- `import_url`: URL of remote repository being mirrored (with `username:password` if needed).
-- `mirror`: Enables pull mirroring on project when set to `true`.
-- `only_mirror_protected_branches`: Set to `true` for protected branches.
+| Attribute    | Type    | Required               | Description |
+|--------------|---------|------------------------|-------------|
+| `import_url` | string  | **{check-circle}** Yes | URL of remote repository being mirrored (with `user:token` if needed). |
+| `mirror`     | boolean | **{check-circle}** Yes | Enables pull mirroring on project when set to `true`. |
+| `only_mirror_protected_branches`| boolean | **{dotted-circle}** No | Limits mirroring to only protected branches when set to `true`. |
 
 ## Start the pull mirroring process for a Project **(PREMIUM)**
 
