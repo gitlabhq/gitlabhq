@@ -15,7 +15,7 @@ module Gitlab
 
       HEALTH_ENDPOINT = %r{^/-/(liveness|readiness|health|metrics)/?$}.freeze
 
-      FEATURE_CATEGORY_DEFAULT = 'unknown'
+      FEATURE_CATEGORY_DEFAULT = ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT
       ENDPOINT_MISSING = 'unknown'
 
       # These were the top 5 categories at a point in time, chosen as a

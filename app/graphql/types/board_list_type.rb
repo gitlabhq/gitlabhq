@@ -27,6 +27,7 @@ module Types
 
     field :issues, ::Types::IssueType.connection_type, null: true,
           description: 'Board issues.',
+          late_extensions: [Gitlab::Graphql::Board::IssuesConnectionExtension],
           resolver: ::Resolvers::BoardListIssuesResolver
 
     def issues_count

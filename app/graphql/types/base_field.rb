@@ -21,6 +21,7 @@ module Types
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
       @deprecation = gitlab_deprecation(kwargs)
+      after_connection_extensions = kwargs.delete(:late_extensions) || []
 
       super(**kwargs, &block)
 
@@ -28,6 +29,8 @@ module Types
       extension ::Gitlab::Graphql::CallsGitaly::FieldExtension if Gitlab.dev_or_test_env?
       extension ::Gitlab::Graphql::Present::FieldExtension
       extension ::Gitlab::Graphql::Authorize::ConnectionFilterExtension
+
+      after_connection_extensions.each { extension _1 } if after_connection_extensions.any?
     end
 
     def may_call_gitaly?

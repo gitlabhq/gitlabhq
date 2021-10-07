@@ -10,4 +10,12 @@ RSpec.describe GitlabSchema.types['BoardList'] do
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
+
+  describe 'issues field' do
+    subject { described_class.fields['issues'] }
+
+    it 'has a correct extension' do
+      is_expected.to have_graphql_extension(Gitlab::Graphql::Board::IssuesConnectionExtension)
+    end
+  end
 end

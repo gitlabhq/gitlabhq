@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
+  extend ::Gitlab::Utils::Override
+
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
 
@@ -35,6 +37,7 @@ class GraphqlController < ApplicationController
   # callback execution order here
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
 
+  # The default feature category is overridden to read from request
   feature_category :not_owned
 
   def execute
@@ -62,6 +65,11 @@ class GraphqlController < ApplicationController
 
   rescue_from ::GraphQL::CoercionError do |exception|
     render_error(exception.message, status: :unprocessable_entity)
+  end
+
+  override :feature_category
+  def feature_category
+    ::Gitlab::FeatureCategories.default.from_request(request) || super
   end
 
   private

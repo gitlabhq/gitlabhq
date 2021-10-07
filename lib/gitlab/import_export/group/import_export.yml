@@ -10,7 +10,6 @@ tree:
     - labels:
       - :priorities
     - boards:
-      - :milestone
       - lists:
         - label:
           - :priorities

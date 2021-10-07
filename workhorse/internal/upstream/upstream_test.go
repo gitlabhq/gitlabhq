@@ -99,6 +99,8 @@ func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"push from secondary is forwarded", "/-/push_from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/push_from_secondary/foo/bar.git/info/refs"},
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is forwarded", "/api/v4/jobs/request", "Geo primary received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is forwarded", "/anything", "Geo primary received request to path /anything"},
@@ -117,6 +119,7 @@ func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
@@ -134,6 +137,7 @@ func TestGeoProxyFeatureEnabledOnNonGeoSecondarySite(t *testing.T) {
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
@@ -151,6 +155,7 @@ func TestGeoProxyFeatureEnabledButWithAPIError(t *testing.T) {
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
@@ -174,12 +179,15 @@ func TestGeoProxyFeatureEnablingAndDisabling(t *testing.T) {
 	defer wsDeferredClose()
 
 	testCasesLocal := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
 	}
 
 	testCasesProxied := []testCase{
+		{"push from secondary is forwarded", "/-/push_from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/push_from_secondary/foo/bar.git/info/refs"},
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is forwarded", "/api/v4/jobs/request", "Geo primary received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is forwarded", "/anything", "Geo primary received request to path /anything"},

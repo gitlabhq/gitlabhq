@@ -30,7 +30,7 @@ RSpec.describe 'get board lists' do
           nodes {
             lists {
               nodes {
-                issues(filters: {labelName: "#{label2.title}"}) {
+                issues(filters: {labelName: "#{label2.title}"}, first: 3) {
                   count
                   nodes {
                     #{all_graphql_fields_for('issues'.classify)}
@@ -42,6 +42,10 @@ RSpec.describe 'get board lists' do
         }
     BOARDS
     )
+  end
+
+  def issue_id
+    issues_data.map { |i| i['id'] }
   end
 
   def issue_titles
@@ -60,6 +64,7 @@ RSpec.describe 'get board lists' do
     let!(:issue3) { create(:issue, project: issue_project, labels: [label, label2], relative_position: nil) }
     let!(:issue4) { create(:issue, project: issue_project, labels: [label], relative_position: 9) }
     let!(:issue5) { create(:issue, project: issue_project, labels: [label2], relative_position: 432) }
+    let!(:issue6) { create(:issue, project: issue_project, labels: [label, label2], relative_position: nil) }
 
     context 'when the user does not have access to the board' do
       it 'returns nil' do
@@ -72,13 +77,18 @@ RSpec.describe 'get board lists' do
     context 'when user can read the board' do
       before do
         board_parent.add_reporter(user)
+        post_graphql(query("id: \"#{global_id_of(label_list)}\""), current_user: user)
       end
 
       it 'can access the issues', :aggregate_failures do
-        post_graphql(query("id: \"#{global_id_of(label_list)}\""), current_user: user)
-
+        # ties for relative positions are broken by id in ascending order by default
         expect(issue_titles).to eq([issue2.title, issue1.title, issue3.title])
         expect(issue_relative_positions).not_to include(nil)
+      end
+
+      it 'does not set the relative positions of the issues not being returned', :aggregate_failures do
+        expect(issue_id).not_to include(issue6.id)
+        expect(issue3.relative_position).to be_nil
       end
     end
   end

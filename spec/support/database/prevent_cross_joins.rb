@@ -64,6 +64,10 @@ module Database
       ensure
         ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
       end
+
+      def allow_cross_joins_across_databases(url:, &block)
+        ::Gitlab::Database.allow_cross_joins_across_databases(url: url, &block)
+      end
     end
 
     module GitlabDatabaseMixin

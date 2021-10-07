@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
 
     it 'measures with correct labels and value' do
       value = 1
-      expect(prometheus_metric).to receive(metric_method).with({ controller: 'TestController', action: 'show', feature_category: '' }, value)
+      expect(prometheus_metric).to receive(metric_method).with({ controller: 'TestController', action: 'show', feature_category: ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT }, value)
 
       transaction.send(metric_method, :bau, value)
     end
@@ -105,6 +105,9 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
                           namespace: "/projects")
 
         env['api.endpoint'] = endpoint
+
+        # This is needed since we're not actually making a request, which would trigger the controller pushing to the context
+        ::Gitlab::ApplicationContext.push(feature_category: 'projects')
       end
 
       it 'provides labels with the method and path of the route in the grape endpoint' do
@@ -129,7 +132,7 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
       include_context 'ActionController request'
 
       it 'tags a transaction with the name and action of a controller' do
-        expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: '' })
+        expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT })
       end
 
       it 'contains only the labels defined for transactions' do
@@ -140,7 +143,7 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
         let(:request) { double(:request, format: double(:format, ref: :json)) }
 
         it 'appends the mime type to the transaction action' do
-          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json', feature_category: '' })
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json', feature_category: ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT })
         end
       end
 
@@ -148,13 +151,15 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
         let(:request) { double(:request, format: double(:format, ref: 'http://example.com')) }
 
         it 'does not append the MIME type to the transaction action' do
-          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: '' })
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT })
         end
       end
 
       context 'when the feature category is known' do
         it 'includes it in the feature category label' do
-          expect(controller_class).to receive(:feature_category_for_action).with('show').and_return(:source_code_management)
+          # This is needed since we're not actually making a request, which would trigger the controller pushing to the context
+          ::Gitlab::ApplicationContext.push(feature_category: 'source_code_management')
+
           expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: "source_code_management" })
         end
       end

@@ -19,8 +19,6 @@ module Gitlab
         FORWARD_DIRECTION = 'n'
         BACKWARD_DIRECTION = 'p'
 
-        UnsupportedScopeOrder = Class.new(StandardError)
-
         # scope                  - ActiveRecord::Relation object with order by clause
         # cursor                 - Encoded cursor attributes as String. Empty value will requests the first page.
         # per_page               - Number of items per page.
@@ -167,7 +165,7 @@ module Gitlab
         def build_scope(scope)
           keyset_aware_scope, success = Gitlab::Pagination::Keyset::SimpleOrderBuilder.build(scope)
 
-          raise(UnsupportedScopeOrder, 'The order on the scope does not support keyset pagination') unless success
+          raise(UnsupportedScopeOrder) unless success
 
           keyset_aware_scope
         end

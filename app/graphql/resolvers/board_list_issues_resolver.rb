@@ -18,11 +18,8 @@ module Resolvers
 
       filter_params = filters.merge(board_id: list.board.id, id: list.id)
       service = ::Boards::Issues::ListService.new(list.board.resource_parent, context[:current_user], filter_params)
-      pagination_connections = Gitlab::Graphql::Pagination::Keyset::Connection.new(service.execute)
 
-      ::Boards::Issues::ListService.initialize_relative_positions(list.board, current_user, pagination_connections.items)
-
-      pagination_connections
+      service.execute
     end
 
     # https://gitlab.com/gitlab-org/gitlab/-/issues/235681

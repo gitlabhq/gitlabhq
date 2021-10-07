@@ -57,10 +57,6 @@ module Gitlab
 
         action = "#{controller.action_name}"
 
-        # Try to get the feature category, but don't fail when the controller is
-        # not an ApplicationController.
-        feature_category = controller.class.try(:feature_category_for_action, action).to_s
-
         # Devise exposes a method called "request_format" that does the below.
         # However, this method is not available to all controllers (e.g. certain
         # Doorkeeper controllers). As such we use the underlying code directly.
@@ -91,9 +87,6 @@ module Gitlab
         if route
           path = endpoint_paths_cache[route.request_method][route.path]
 
-          grape_class = endpoint.options[:for]
-          feature_category = grape_class.try(:feature_category_for_app, endpoint).to_s
-
           { controller: 'Grape', action: "#{route.request_method} #{path}", feature_category: feature_category }
         end
       end
@@ -108,6 +101,10 @@ module Gitlab
 
       def endpoint_instrumentable_path(raw_path)
         raw_path.sub('(.:format)', '').sub('/:version', '')
+      end
+
+      def feature_category
+        ::Gitlab::ApplicationContext.current_context_attribute(:feature_category) || ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT
       end
     end
   end

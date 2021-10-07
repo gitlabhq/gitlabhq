@@ -6,7 +6,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        delegate :to_a, :size, :include?, :empty?, to: :nodes
+        delegate :to_a, :size, :map, :include?, :empty?, to: :nodes
       end
     end
   end

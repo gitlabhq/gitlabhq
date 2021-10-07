@@ -6,11 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Award emoji **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1825) in GitLab 8.2.
-> - GitLab 9.0 [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9570) the usage of native emoji if the platform
->   supports them and falls back to images or CSS sprites. This change greatly
->   improved award emoji performance overall.
-
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. Emoji can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
 [snippets](snippets.md), and anywhere you can have a thread.
@@ -24,8 +19,6 @@ For information on the relevant API, see [Award Emoji API](../api/award_emoji.md
 
 ## Sort issues and merge requests on vote count
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2781) in GitLab 8.5.
-
 You can quickly sort issues and merge requests by the number of votes they
 have received. The sort options can be found in the dropdown menu as "Most
 popular" and "Least popular".
@@ -37,8 +30,6 @@ downvotes is considered more popular than an issue with 17 upvotes and no
 downvotes.
 
 ## Award emoji for comments
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4291) in GitLab 8.9.
 
 Award emoji can also be applied to individual comments when you want to
 celebrate an accomplishment or agree with an opinion.

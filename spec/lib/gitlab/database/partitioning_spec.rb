@@ -45,4 +45,10 @@ RSpec.describe Gitlab::Database::Partitioning do
       described_class.drop_detached_partitions
     end
   end
+
+  context 'ensure that the registered models have partitioning strategy' do
+    it 'fails when partitioning_strategy is not specified for the model' do
+      expect(described_class.registered_models).to all(respond_to(:partitioning_strategy))
+    end
+  end
 end

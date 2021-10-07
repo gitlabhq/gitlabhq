@@ -18,6 +18,10 @@ FactoryBot.define do
     transient { child_of { nil } }
     transient { upstream_of { nil } }
 
+    before(:create) do |pipeline, evaluator|
+      pipeline.ensure_project_iid!
+    end
+
     after(:build) do |pipeline, evaluator|
       if evaluator.child_of
         pipeline.project = evaluator.child_of.project
@@ -48,7 +52,6 @@ FactoryBot.define do
       transient { ci_ref_presence { true } }
 
       before(:create) do |pipeline, evaluator|
-        pipeline.ensure_project_iid!
         pipeline.ensure_ci_ref! if evaluator.ci_ref_presence && pipeline.ci_ref_id.nil?
       end
 

@@ -169,7 +169,7 @@ Consider the following scope:
 scope = Issue.where(project_id: 10).order(Gitlab::Database.nulls_last_order('relative_position', 'DESC'))
 # SELECT "issues".* FROM "issues" WHERE "issues"."project_id" = 10 ORDER BY relative_position DESC NULLS LAST
 
-scope.keyset_paginate # raises: Gitlab::Pagination::Keyset::Paginator::UnsupportedScopeOrder: The order on the scope does not support keyset pagination
+scope.keyset_paginate # raises: Gitlab::Pagination::Keyset::UnsupportedScopeOrder: The order on the scope does not support keyset pagination
 ```
 
 The `keyset_paginate` method raises an error because the order value on the query is a custom SQL string and not an [`Arel`](https://www.rubydoc.info/gems/arel) AST node. The keyset library cannot automatically infer configuration values from these kinds of queries.

@@ -6,8 +6,6 @@ module Gitlab
       module InOperatorOptimization
         # rubocop: disable CodeReuse/ActiveRecord
         class QueryBuilder
-          UnsupportedScopeOrder = Class.new(StandardError)
-
           RECURSIVE_CTE_NAME = 'recursive_keyset_cte'
 
           # This class optimizes slow database queries (PostgreSQL specific) where the
@@ -44,14 +42,7 @@ module Gitlab
           def initialize(scope:, array_scope:, array_mapping_scope:, finder_query: nil, values: {})
             @scope, success = Gitlab::Pagination::Keyset::SimpleOrderBuilder.build(scope)
 
-            unless success
-              error_message = <<~MSG
-              The order on the scope does not support keyset pagination. You might need to define a custom Order object.\n
-              See https://docs.gitlab.com/ee/development/database/keyset_pagination.html#complex-order-configuration\n
-              Or the Gitlab::Pagination::Keyset::Order class for examples
-              MSG
-              raise(UnsupportedScopeOrder, error_message)
-            end
+            raise(UnsupportedScopeOrder) unless success
 
             @order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(scope)
             @array_scope = array_scope

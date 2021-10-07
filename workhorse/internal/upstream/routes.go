@@ -56,6 +56,7 @@ const (
 	apiPattern           = `^/api/`
 	ciAPIPattern         = `^/ci/api/`
 	gitProjectPattern    = `^/.+\.git/`
+	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
 	apiProjectPattern    = apiPattern + `v4/projects/[^/]+/` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
 	snippetUploadPattern = `^/uploads/personal_snippet`
@@ -348,10 +349,9 @@ func configureRoutes(u *upstream) {
 		// pulls are performed against a different source of truth. Ideally, we'd
 		// proxy/redirect pulls as well, when the secondary is not up-to-date.
 		//
-		u.route("GET", gitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
-		u.route("POST", gitProjectPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
-		u.route("POST", gitProjectPattern+`git-receive-pack\z`, contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
-		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, lfs.PutStore(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
+		u.route("GET", geoGitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
+		u.route("POST", geoGitProjectPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
+		u.route("GET", geoGitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})\z`, defaultUpstream),
 
 		// Serve health checks from this Geo secondary
 		u.route("", "^/-/(readiness|liveness)$", static.DeployPage(probeUpstream)),

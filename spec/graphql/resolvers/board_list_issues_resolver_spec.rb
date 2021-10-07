@@ -31,12 +31,11 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
         end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
       end
 
-      it 'returns issues in the correct order with non-nil relative positions', :aggregate_failures do
+      it 'returns the issues in the correct order' do
         # by relative_position and then ID
         result = resolve_board_list_issues
 
         expect(result.map(&:id)).to eq [issue1.id, issue3.id, issue2.id, issue4.id]
-        expect(result.map(&:relative_position)).not_to include(nil)
       end
 
       it 'finds only issues matching filters' do
@@ -119,6 +118,6 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
   end
 
   def resolve_board_list_issues(args: {}, current_user: user)
-    resolve(described_class, obj: list, args: args, ctx: { current_user: current_user }).items
+    resolve(described_class, obj: list, args: args, ctx: { current_user: current_user })
   end
 end

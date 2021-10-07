@@ -425,6 +425,92 @@ to fix the cross-join. If the cross-join is being used in a migration, we do not
 need to fix the code. See <https://gitlab.com/gitlab-org/gitlab/-/issues/340017>
 for more details.
 
+### Removing cross-database transactions
+
+When dealing with multiple databases, it's important to pay close attention to data modification
+that affects more than one database.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339811) GitLab 14.4, an automated check
+prevents cross-database modifications.
+
+When at least two different databases are modified during a transaction initiated on any database
+server, the application triggers a cross-database modification error (only in test environment).
+
+Example:
+
+```ruby
+# Open transaction on Main DB
+ApplicationRecord.transaction do
+  ci_build.update!(updated_at: Time.current) # UPDATE on CI DB
+  ci_build.project.update!(updated_at: Time.current) # UPDATE on Main DB
+end
+# raises error: Cross-database data modification of 'main, ci' were detected within
+# a transaction modifying the 'ci_build, projects' tables
+```
+
+The code example above updates the timestamp for two records within a transaction. With the
+ongoing work on the CI database decomposition, we cannot ensure the schematics of a database
+transaction.
+If the second update query fails, the first update query will not be
+rolled back because the `ci_build` record is located on a different database server. For
+more information, look at the
+[transaction guidelines](transaction_guidelines.md#dangerous-example-third-party-api-calls)
+page.
+
+#### Fixing cross-database errors
+
+##### Removing the transaction block
+
+Without an open transaction, the cross-database modification check cannot raise an error.
+By making this change, we sacrifice consistency. In case of an application failure after the
+first `UPDATE` query, the second `UPDATE` query will never execute.
+
+The same code without the `transaction` block:
+
+```ruby
+ci_build.update!(updated_at: Time.current) # CI DB
+ci_build.project.update!(updated_at: Time.current) # Main DB
+```
+
+##### Async processing
+
+If we need more guarantee that an operation finishes the work consistently we can execute it
+within a background job. A background job is scheduled asynchronously and retried several times
+in case of an error. There is still a very small chance of introducing inconsistency.
+
+Example:
+
+```ruby
+current_time = Time.current
+
+MyAsyncConsistencyJob.perform_async(cu_build.id)
+
+ci_build.update!(updated_at: current_time)
+ci_build.project.update!(updated_at: current_time)
+```
+
+The `MyAsyncConsistencyJob` would also attempt to update the timestamp if they differ.
+
+##### Aiming for perfect consistency
+
+At this point, we don't have the tooling (we might not even need it) to ensure similar consistency
+characteristics as we had with one database. If you think that the code you're working on requires
+these properties, then you can disable the cross-database modification check by wrapping to
+offending database queries with a block and create a follow-up issue mentioning the sharding group
+(`gitlab-org/sharding-group`).
+
+```ruby
+Gitlab::Database.allow_cross_joins_across_databases(url: 'gitlab issue URL') do
+  ApplicationRecord.transaction do
+    ci_build.update!(updated_at: Time.current) # UPDATE on CI DB
+    ci_build.project.update!(updated_at: Time.current) # UPDATE on Main DB
+  end
+end
+```
+
+Don't hesitate to reach out to the
+[sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding)
+for advice.
+
 ## `config/database.yml`
 
 GitLab will support running multiple databases in the future, for example to [separate tables for the continuous integration features](https://gitlab.com/groups/gitlab-org/-/epics/6167) from the main database. In order to prepare for this change, we [validate the structure of the configuration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67877) in `database.yml` to ensure that only known databases are used.
