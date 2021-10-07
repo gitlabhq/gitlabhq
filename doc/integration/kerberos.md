@@ -2,7 +2,6 @@
 stage: Manage
 group: Access
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, how-to
 ---
 
 # Kerberos integration **(PREMIUM SELF)**
@@ -296,7 +295,7 @@ Kerberos ticket-based authentication.
 
 ## Upgrading from password-based to ticket-based Kerberos sign-ins
 
-Prior to GitLab 8.10 Enterprise Edition, users had to submit their
+In previous versions of GitLab users had to submit their
 Kerberos username and password to GitLab when signing in. We plan to
 remove support for password-based Kerberos sign-ins in a future
 release, so we recommend that you upgrade to ticket-based sign-ins.

@@ -33,8 +33,6 @@ usernames. A GitLab administrator can configure the GitLab instance to
 
 ## Project members permissions
 
-> The Master role was renamed to Maintainer in GitLab 11.0.
-
 The Owner role is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
 While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner, or an instance administrator, who receives all permissions.
 For more information, see [projects members documentation](project/members/index.md).
@@ -269,9 +267,6 @@ Find the visibility permissions for the Container Registry, as described in the
 
 ## Group members permissions
 
-NOTE:
-In GitLab 11.0, the Master role was renamed to Maintainer.
-
 Any user can remove themselves from a group, unless they are the last Owner of
 the group.
 
@@ -442,8 +437,6 @@ free guest user.
 
 ## Auditor users **(PREMIUM SELF)**
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/998) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.17.
-
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
 
@@ -454,7 +447,7 @@ with the permissions described on the documentation on [auditor users permission
 
 ## Users with minimal access **(PREMIUM)**
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 
 Owners can add members with a "minimal access" role to a parent group. Such users don't
 automatically have access to projects and subgroups underneath. To support such access, owners must explicitly add these "minimal access" users to the specific subgroups/projects.
@@ -479,9 +472,6 @@ which visibility level you select on project settings.
 - Everyone: enabled for everyone (only available for GitLab Pages)
 
 ## GitLab CI/CD permissions
-
-NOTE:
-In GitLab 11.0, the Master role was renamed to Maintainer.
 
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 roles:
@@ -512,9 +502,6 @@ instance and project.
    - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later, run for a non-protected branch.
 
 ### Job permissions
-
-NOTE:
-In GitLab 11.0, the Master role was renamed to Maintainer.
 
 This table shows granted privileges for jobs triggered by specific types of
 users:
@@ -555,7 +542,7 @@ for more information.
 
 ## LDAP users permissions
 
-In GitLab 8.15 and later, LDAP user permissions can now be manually overridden by an administrator.
+LDAP user permissions can be manually overridden by an administrator.
 Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases

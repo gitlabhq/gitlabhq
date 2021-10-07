@@ -230,5 +230,14 @@ describe('Suggestion Diff component', () => {
       expect(tooltip.modifiers.viewport).toBe(true);
       expect(tooltip.value).toBe('This also resolves this thread');
     });
+
+    it('renders the inapplicable reason in the tooltip when button is not applicable', () => {
+      const inapplicableReason = 'lorem';
+      createComponent({ canApply: false, inapplicableReason, batchSuggestionsCount: 0 });
+      const tooltip = findTooltip();
+
+      expect(tooltip.modifiers.viewport).toBe(true);
+      expect(tooltip.value).toBe(inapplicableReason);
+    });
   });
 });

@@ -365,6 +365,15 @@ To determine the current primary Gitaly node for a specific Praefect node:
   curl localhost:9652/metrics | grep gitaly_praefect_primaries`
   ```
 
+### Check that repositories are in sync
+
+Is [some cases](index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
+a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums)
+that checksums the repository on all Gitaly nodes.
+
+The [Praefect dataloss](praefect.md#check-for-data-loss) command only checks the state of the repo in the Praefect database, and cannot
+be relied to detect sync problems in this scenario.
+
 ### Relation does not exist errors
 
 By default Praefect database tables are created automatically by `gitlab-ctl reconfigure` task.

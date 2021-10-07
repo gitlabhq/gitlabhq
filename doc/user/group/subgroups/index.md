@@ -136,7 +136,7 @@ the **Members** page of the group the member was added.
 You can tell if a member has inherited the permissions from a parent group by
 looking at the group's **Members** page.
 
-![Group members page](img/group_members_13_7.png)
+![Group members page](img/group_members_v14_4.png)
 
 From the image above, we can deduce the following things:
 

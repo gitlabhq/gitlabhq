@@ -20382,6 +20382,7 @@ CREATE TABLE vulnerability_finding_evidences (
     updated_at timestamp with time zone NOT NULL,
     vulnerability_occurrence_id bigint NOT NULL,
     summary text,
+    data jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_5773b236fb CHECK ((char_length(summary) <= 8000000))
 );
 

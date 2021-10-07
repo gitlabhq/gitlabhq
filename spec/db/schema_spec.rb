@@ -204,7 +204,8 @@ RSpec.describe 'Database schema' do
     "Operations::FeatureFlags::Strategy" => %w[parameters],
     "Packages::Composer::Metadatum" => %w[composer_json],
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
-    "Releases::Evidence" => %w[summary]
+    "Releases::Evidence" => %w[summary],
+    "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity

@@ -139,7 +139,7 @@ export default {
       <gl-loading-icon size="sm" class="d-flex-center mr-2" />
       <span>{{ applyingSuggestionsMessage }}</span>
     </div>
-    <div v-else-if="canApply" class="d-flex align-items-center">
+    <div v-else-if="isLoggedIn" class="d-flex align-items-center">
       <div v-if="isBatched">
         <gl-button
           class="btn-inverted js-remove-from-batch-btn btn-grouped"
@@ -149,9 +149,8 @@ export default {
           {{ __('Remove from batch') }}
         </gl-button>
       </div>
-      <div v-else>
+      <div v-else-if="!isDisableButton && suggestionsCount > 1">
         <gl-button
-          v-if="!isDisableButton && suggestionsCount > 1"
           class="btn-inverted js-add-to-batch-btn btn-grouped"
           data-qa-selector="add_suggestion_batch_button"
           :disabled="isDisableButton"

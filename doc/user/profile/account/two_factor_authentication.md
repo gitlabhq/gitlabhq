@@ -1,5 +1,4 @@
 ---
-type: howto
 stage: Manage
 group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -234,8 +233,6 @@ Feature.disable(:forti_token_cloud, User.find(<user ID>))
 ```
 
 ### U2F device
-
-> Introduced in [GitLab 8.9](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/).
 
 GitLab officially only supports [YubiKey](https://www.yubico.com/products/)
 U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/)
