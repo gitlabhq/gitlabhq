@@ -73,6 +73,13 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
+      experiment(:new_project_sast_enabled, user: current_user).track(:created,
+        property: active_new_project_tab,
+        checked: Gitlab::Utils.to_boolean(project_params[:initialize_with_sast]),
+        project: @project,
+        namespace: @project.namespace
+      )
+
       redirect_to(
         project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
@@ -436,6 +443,7 @@ class ProjectsController < Projects::ApplicationController
       :template_name,
       :template_project_id,
       :merge_method,
+      :initialize_with_sast,
       :initialize_with_readme,
       :autoclose_referenced_issues,
       :suggestion_commit_message,

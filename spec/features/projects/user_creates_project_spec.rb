@@ -33,6 +33,29 @@ RSpec.describe 'User creates a project', :js do
     expect(page).to have_content(project.url_to_repo)
   end
 
+  it 'creates a new project that is not blank' do
+    stub_experiments(new_project_sast_enabled: 'candidate')
+
+    visit(new_project_path)
+
+    find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
+    fill_in(:project_name, with: 'With initial commits')
+
+    expect(page).to have_checked_field 'Initialize repository with a README'
+    expect(page).to have_checked_field 'Enable Static Application Security Testing (SAST)'
+
+    page.within('#content-body') do
+      click_button('Create project')
+    end
+
+    project = Project.last
+
+    expect(current_path).to eq(project_path(project))
+    expect(page).to have_content('With initial commits')
+    expect(page).to have_content('Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist')
+    expect(page).to have_content('README.md Initial commit')
+  end
+
   context 'in a subgroup they do not own' do
     let(:parent) { create(:group) }
     let!(:subgroup) { create(:group, parent: parent) }

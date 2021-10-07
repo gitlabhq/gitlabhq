@@ -192,19 +192,28 @@
   }
 }
 
-.initialize-with-readme-setting {
-  .form-check {
-    margin-bottom: 10px;
+.nested-settings {
+  padding-left: 20px;
+}
 
-    .option-title {
-      font-weight: $gl-font-weight-normal;
-      display: inline-block;
-      color: $gl-text-color;
-    }
+.input-btn-group {
+  display: flex;
 
-    .option-description {
-      color: $project-option-descr-color;
-    }
+  .input-large {
+    flex: 1;
+  }
+
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.content-list > .settings-flex-row {
+  display: flex;
+  align-items: center;
+
+  .float-right {
+    margin-left: auto;
   }
 }
 

@@ -7,12 +7,6 @@ description: 'Learn how to administer GitLab Pages.'
 
 # GitLab Pages administration **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80) in GitLab EE 8.3.
-> - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173) in GitLab EE 8.5.
-> - GitLab Pages [was ported](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14605) to Community Edition in GitLab 8.17.
-> - Support for subgroup project's websites was
->   [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30548) in GitLab 11.8.
-
 GitLab Pages allows for hosting of static sites. It must be configured by an
 administrator. Separate [user documentation](../../user/project/pages/index.md) is available.
 
@@ -382,8 +376,6 @@ To enable it:
 
 ### Access control
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33422) in GitLab 11.5.
-
 GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.
 
@@ -524,9 +516,6 @@ After an archive reaches `zip_cache_expiration`, it's marked as expired and remo
 
 ## Activate verbose logging for daemon
 
-Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in
-Omnibus GitLab 11.1.
-
 Follow the steps below to configure verbose logging of GitLab Pages daemon.
 
 1. By default the daemon only logs with `INFO` level.
@@ -602,8 +591,6 @@ the below steps to do a no downtime transfer to a new storage location.
 1. Verify Pages are still being served up as expected.
 
 ## Configure listener for reverse proxy requests
-
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in Omnibus GitLab 11.1.
 
 Follow the steps below to configure the proxy listener of GitLab Pages.
 

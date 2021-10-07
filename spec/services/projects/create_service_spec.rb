@@ -622,6 +622,22 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'when SAST initialization is requested' do
+    let(:project) { create_project(user, opts) }
+
+    before do
+      opts[:initialize_with_sast] = '1'
+      allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
+    end
+
+    it 'creates a commit for SAST', :aggregate_failures do
+      expect(project.repository.commit_count).to be(1)
+      expect(project.repository.commit.message).to eq(
+        'Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist'
+      )
+    end
+  end
+
   describe 'create integration for the project' do
     subject(:project) { create_project(user, opts) }
 

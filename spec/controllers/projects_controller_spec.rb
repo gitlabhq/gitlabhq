@@ -420,42 +420,66 @@ RSpec.describe ProjectsController do
   end
 
   describe 'POST create' do
-    let!(:params) do
-      {
-        path: 'foo',
-        description: 'bar',
-        import_url: project.http_url_to_repo,
-        namespace_id: user.namespace.id
-      }
-    end
-
     subject { post :create, params: { project: params } }
 
     before do
       sign_in(user)
     end
 
-    context 'when import by url is disabled' do
-      before do
-        stub_application_setting(import_sources: [])
+    context 'on import' do
+      let(:params) do
+        {
+          path: 'foo',
+          description: 'bar',
+          namespace_id: user.namespace.id,
+          import_url: project.http_url_to_repo
+        }
       end
 
-      it 'does not create project and reports an error' do
-        expect { subject }.not_to change { Project.count }
+      context 'when import by url is disabled' do
+        before do
+          stub_application_setting(import_sources: [])
+        end
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        it 'does not create project and reports an error' do
+          expect { subject }.not_to change { Project.count }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when import by url is enabled' do
+        before do
+          stub_application_setting(import_sources: ['git'])
+        end
+
+        it 'creates project' do
+          expect { subject }.to change { Project.count }
+
+          expect(response).to have_gitlab_http_status(:redirect)
+        end
       end
     end
 
-    context 'when import by url is enabled' do
-      before do
-        stub_application_setting(import_sources: ['git'])
+    context 'with new_project_sast_enabled', :experiment do
+      let(:params) do
+        {
+          path: 'foo',
+          description: 'bar',
+          namespace_id: user.namespace.id,
+          initialize_with_sast: '1'
+        }
       end
 
-      it 'creates project' do
-        expect { subject }.to change { Project.count }
+      it 'tracks an event on project creation' do
+        expect(experiment(:new_project_sast_enabled)).to track(:created,
+          property: 'blank',
+          checked: true,
+          project: an_instance_of(Project),
+          namespace: user.namespace
+        ).on_next_instance.with_context(user: user)
 
-        expect(response).to have_gitlab_http_status(:redirect)
+        post :create, params: { project: params }
       end
     end
   end

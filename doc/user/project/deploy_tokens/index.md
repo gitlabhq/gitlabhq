@@ -2,12 +2,10 @@
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Deploy tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894) in GitLab 10.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199370) from **Settings > Repository** in GitLab 12.9.
 > - [Added `write_registry` scope](https://gitlab.com/gitlab-org/gitlab/-/issues/22743) in GitLab 12.10.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29280) from **Settings > CI/CD** in GitLab 12.10.1.
@@ -59,8 +57,8 @@ following table along with GitLab version it was introduced in:
 
 | Scope                    | Description | Introduced in GitLab Version |
 |--------------------------|-------------|------------------------------|
-| `read_repository`        | Allows read-access to the repository through `git clone` | 10.7 |
-| `read_registry`          | Allows read-access to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. | 10.7 |
+| `read_repository`        | Allows read-access to the repository through `git clone` | -- |
+| `read_registry`          | Allows read-access to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. | -- |
 | `write_registry`         | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). | 12.10 |
 | `read_package_registry`  | Allows read access to the package registry. | 13.0 |
 | `write_package_registry` | Allows write access to the package registry. | 13.0 |
@@ -184,8 +182,6 @@ To pull images from the Dependency Proxy, you must:
 1. Follow the Dependency Proxy [authentication instructions](../../packages/dependency_proxy/index.md).
 
 ### GitLab deploy token
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18414) in GitLab 10.8.
 
 There's a special case when it comes to deploy tokens. If a user creates one
 named `gitlab-deploy-token`, the username and token of the deploy token is

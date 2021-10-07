@@ -12,6 +12,8 @@ module Projects
   #
   #     Projects::AfterRenameService.new(project).execute
   class AfterRenameService
+    include BaseServiceUtility
+
     # @return [String] The Project being renamed.
     attr_reader :project
 
@@ -78,7 +80,7 @@ module Projects
 
     def execute_system_hooks
       project.old_path_with_namespace = full_path_before
-      SystemHooksService.new.execute_hooks_for(project, :rename)
+      system_hook_service.execute_hooks_for(project, :rename)
     end
 
     def update_repository_configuration
@@ -110,7 +112,7 @@ module Projects
     end
 
     def log_completion
-      Gitlab::AppLogger.info(
+      log_info(
         "Project #{project.id} has been renamed from " \
           "#{full_path_before} to #{full_path_after}"
       )
@@ -140,7 +142,7 @@ module Projects
     def rename_failed!
       error = "Repository #{full_path_before} could not be renamed to #{full_path_after}"
 
-      Gitlab::AppLogger.error(error)
+      log_error(error)
 
       raise RenameFailedError, error
     end

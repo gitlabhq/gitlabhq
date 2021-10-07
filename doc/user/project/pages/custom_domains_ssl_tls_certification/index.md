@@ -290,8 +290,6 @@ Sublime Text, Atom, Dreamweaver, Brackets, etc).
 
 ## Force HTTPS for GitLab Pages websites
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28857) in GitLab 10.7.
-
 To make your website's visitors even more secure, you can choose to
 force HTTPS for GitLab Pages. By doing so, all attempts to visit your
 website through HTTP are automatically redirected to HTTPS through 301.

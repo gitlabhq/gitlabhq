@@ -12765,6 +12765,25 @@ CREATE SEQUENCE conversational_development_index_metrics_id_seq
 
 ALTER SEQUENCE conversational_development_index_metrics_id_seq OWNED BY conversational_development_index_metrics.id;
 
+CREATE TABLE coverage_fuzzing_corpuses (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint,
+    package_id bigint NOT NULL,
+    file_updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE coverage_fuzzing_corpuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE coverage_fuzzing_corpuses_id_seq OWNED BY coverage_fuzzing_corpuses.id;
+
 CREATE TABLE csv_issue_imports (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -21188,6 +21207,8 @@ ALTER TABLE ONLY container_repositories ALTER COLUMN id SET DEFAULT nextval('con
 
 ALTER TABLE ONLY conversational_development_index_metrics ALTER COLUMN id SET DEFAULT nextval('conversational_development_index_metrics_id_seq'::regclass);
 
+ALTER TABLE ONLY coverage_fuzzing_corpuses ALTER COLUMN id SET DEFAULT nextval('coverage_fuzzing_corpuses_id_seq'::regclass);
+
 ALTER TABLE ONLY csv_issue_imports ALTER COLUMN id SET DEFAULT nextval('csv_issue_imports_id_seq'::regclass);
 
 ALTER TABLE ONLY custom_emoji ALTER COLUMN id SET DEFAULT nextval('custom_emoji_id_seq'::regclass);
@@ -22703,6 +22724,9 @@ ALTER TABLE ONLY container_repositories
 
 ALTER TABLE ONLY conversational_development_index_metrics
     ADD CONSTRAINT conversational_development_index_metrics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY coverage_fuzzing_corpuses
+    ADD CONSTRAINT coverage_fuzzing_corpuses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY csv_issue_imports
     ADD CONSTRAINT csv_issue_imports_pkey PRIMARY KEY (id);
@@ -24855,6 +24879,12 @@ CREATE INDEX index_container_repositories_on_project_id_and_id ON container_repo
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON container_repositories USING btree (project_id, name);
 
 CREATE INDEX index_container_repository_on_name_trigram ON container_repositories USING gin (name gin_trgm_ops);
+
+CREATE INDEX index_coverage_fuzzing_corpuses_on_package_id ON coverage_fuzzing_corpuses USING btree (package_id);
+
+CREATE INDEX index_coverage_fuzzing_corpuses_on_project_id ON coverage_fuzzing_corpuses USING btree (project_id);
+
+CREATE INDEX index_coverage_fuzzing_corpuses_on_user_id ON coverage_fuzzing_corpuses USING btree (user_id);
 
 CREATE INDEX index_created_at_on_codeowner_approval_merge_request_rules ON approval_merge_request_rules USING btree (created_at) WHERE ((rule_type = 2) AND (section <> 'codeowners'::text));
 
@@ -27555,6 +27585,9 @@ ALTER TABLE ONLY boards
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_1fbed67632 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY coverage_fuzzing_corpuses
+    ADD CONSTRAINT fk_204d40056a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY geo_container_repository_updated_events
     ADD CONSTRAINT fk_212c89c706 FOREIGN KEY (container_repository_id) REFERENCES container_repositories(id) ON DELETE CASCADE;
 
@@ -27593,6 +27626,9 @@ ALTER TABLE ONLY geo_event_log
 
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_289bba3222 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY coverage_fuzzing_corpuses
+    ADD CONSTRAINT fk_29f6f15f82 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_2c9f941965 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -28235,6 +28271,9 @@ ALTER TABLE ONLY application_settings
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_edfd187b6f FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY coverage_fuzzing_corpuses
+    ADD CONSTRAINT fk_ef5ebf339f FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_efb96ab1e2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

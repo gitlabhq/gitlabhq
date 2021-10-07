@@ -4,7 +4,7 @@ group: Purchase
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# The quarterly subscription reconciliation process
+# The quarterly subscription reconciliation process **(PREMIUM)**
 
 GitLab reviews your seat usage every quarter and sends you an invoice for
 any overages.

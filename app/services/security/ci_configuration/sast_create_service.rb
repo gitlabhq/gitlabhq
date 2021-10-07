@@ -5,15 +5,28 @@ module Security
     class SastCreateService < ::Security::CiConfiguration::BaseCreateService
       attr_reader :params
 
-      def initialize(project, current_user, params)
+      def initialize(project, current_user, params, commit_on_default: false)
         super(project, current_user)
         @params = params
+
+        @commit_on_default = commit_on_default
+        @branch_name = project.default_branch if @commit_on_default
       end
 
       private
 
+      def remove_branch_on_exception
+        super unless @commit_on_default
+      end
+
       def action
-        Security::CiConfiguration::SastBuildAction.new(project.auto_devops_enabled?, params, existing_gitlab_ci_content).generate
+        existing_content = begin
+          existing_gitlab_ci_content # this can fail on the very first commit
+        rescue StandardError
+          nil
+        end
+
+        Security::CiConfiguration::SastBuildAction.new(project.auto_devops_enabled?, params, existing_content).generate
       end
 
       def next_branch

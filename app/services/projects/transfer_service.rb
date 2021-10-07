@@ -187,7 +187,7 @@ module Projects
     end
 
     def execute_system_hooks
-      SystemHooksService.new.execute_hooks_for(project, :transfer)
+      system_hook_service.execute_hooks_for(project, :transfer)
     end
 
     def move_project_folders(project)
