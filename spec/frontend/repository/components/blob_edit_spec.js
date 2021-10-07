@@ -7,6 +7,7 @@ const DEFAULT_PROPS = {
   editPath: 'some_file.js/edit',
   webIdePath: 'some_file.js/ide/edit',
   showEditButton: true,
+  needsToFork: false,
 };
 
 describe('BlobEdit component', () => {
@@ -56,7 +57,6 @@ describe('BlobEdit component', () => {
   it('renders the Edit button', () => {
     createComponent();
 
-    expect(findEditButton().attributes('href')).toBe(DEFAULT_PROPS.editPath);
     expect(findEditButton().text()).toBe('Edit');
     expect(findEditButton()).not.toBeDisabled();
   });
@@ -64,7 +64,6 @@ describe('BlobEdit component', () => {
   it('renders the Web IDE button', () => {
     createComponent();
 
-    expect(findWebIdeButton().attributes('href')).toBe(DEFAULT_PROPS.webIdePath);
     expect(findWebIdeButton().text()).toBe('Web IDE');
     expect(findWebIdeButton()).not.toBeDisabled();
   });
@@ -72,13 +71,14 @@ describe('BlobEdit component', () => {
   it('renders WebIdeLink component', () => {
     createComponent(true);
 
-    const { editPath: editUrl, webIdePath: webIdeUrl } = DEFAULT_PROPS;
+    const { editPath: editUrl, webIdePath: webIdeUrl, needsToFork } = DEFAULT_PROPS;
 
     expect(findWebIdeLink().props()).toMatchObject({
       editUrl,
       webIdeUrl,
       isBlob: true,
       showEditButton: true,
+      needsToFork,
     });
   });
 

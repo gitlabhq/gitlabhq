@@ -4,7 +4,7 @@
   height: 100%;
 
   .top-bar {
-    @include build-trace-bar(35px);
+    @include build-log-bar(35px);
 
     top: 0;
     font-size: 12px;

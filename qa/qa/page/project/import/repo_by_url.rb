@@ -5,10 +5,9 @@ module QA
     module Project
       module Import
         class RepoByURL < Page::Base
-          include Page::Component::Select2
-
-          view 'app/views/projects/_new_project_fields.html.haml' do
+          view 'app/assets/javascripts/pages/projects/new/components/new_project_url_select.vue' do
             element :select_namespace_dropdown
+            element :select_namespace_dropdown_search_field
           end
 
           def import!(gitlab_repo_path, name)
@@ -33,8 +32,15 @@ module QA
           end
 
           def choose_test_namespace
-            find('.js-select-namespace').click
-            search_and_select(Runtime::Namespace.path)
+            choose_namespace(Runtime::Namespace.path)
+          end
+
+          def choose_namespace(namespace)
+            retry_on_exception do
+              click_element :select_namespace_dropdown
+              fill_element :select_namespace_dropdown_search_field, namespace
+              click_button namespace
+            end
           end
 
           def click_create_button

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { getJSONFixture } from 'helpers/fixtures';
+import oneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import createFlash from '~/flash';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
@@ -10,10 +10,6 @@ import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader
 import oneReleaseQuery from '~/releases/graphql/queries/one_release.query.graphql';
 
 jest.mock('~/flash');
-
-const oneReleaseQueryResponse = getJSONFixture(
-  'graphql/releases/graphql/queries/one_release.query.graphql.json',
-);
 
 Vue.use(VueApollo);
 

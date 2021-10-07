@@ -1,13 +1,11 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { merge } from 'lodash';
-import { getJSONFixture } from 'helpers/fixtures';
+import originalRelease from 'test_fixtures/api/releases/release.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockHeader from '~/releases/components/release_block_header.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
-
-const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release block header', () => {
   let wrapper;

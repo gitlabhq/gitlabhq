@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
 describe('DelayedJobMixin', () => {
   let wrapper;
-  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const dummyComponent = {
     props: {
       job: {

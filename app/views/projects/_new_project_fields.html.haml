@@ -16,7 +16,12 @@
       - if current_user.can_select_namespace?
         - namespace_id = namespace_id_from(params)
         - if Feature.enabled?(:paginatable_namespace_drop_down_for_project_creation, current_user, default_enabled: :yaml)
-          .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path, namespace_id: namespace_id, root_url: root_url, track_label: track_label } }
+          .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path,
+            namespace_id: namespace_id,
+            root_url: root_url,
+            track_label: track_label,
+            user_namespace_full_path: current_user.namespace.full_path,
+            user_namespace_id: current_user.namespace.id } }
         - else
           .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
             .input-group-text

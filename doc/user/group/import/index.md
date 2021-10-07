@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import groups from another instance of GitLab **(FREE)**
+# Migrate groups from another instance of GitLab **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7.
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
@@ -103,6 +103,7 @@ This might involve reconfiguring your firewall to prevent blocking connection on
 ### Connect to the remote GitLab instance
 
 1. Go to the New Group page:
+
    - On the top bar, select `+` and then **New group**.
    - Or, on an existing group's page, in the top right, select **New subgroup**.
 

@@ -239,7 +239,7 @@
 /*
 * Mixin that handles the container for the job logs (CI/CD and kubernetes pod logs)
 */
-@mixin build-trace($background: $black) {
+@mixin build-log($background: $black) {
   background: $background;
   color: $gray-darkest;
   white-space: pre;
@@ -253,13 +253,13 @@
     display: block;
   }
 
-  &.build-trace-rounded {
+  &.build-log-rounded {
     border-radius: $gl-border-radius-base;
   }
 }
 
 // Used in EE for Web Terminal
-@mixin build-trace-bar($height) {
+@mixin build-log-bar($height) {
   height: $height;
   min-height: $height;
   background: var(--gray-50, $gray-50);
@@ -268,8 +268,8 @@
   padding: $grid-size;
 }
 
-@mixin build-trace-top-bar($height) {
-  @include build-trace-bar($height);
+@mixin build-log-top-bar($height) {
+  @include build-log-bar($height);
 
   position: -webkit-sticky;
   position: sticky;

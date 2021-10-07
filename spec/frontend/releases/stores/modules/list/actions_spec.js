@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { getJSONFixture } from 'helpers/fixtures';
+import originalGraphqlReleasesResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
 import testAction from 'helpers/vuex_action_helper';
 import { PAGE_SIZE } from '~/releases/constants';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
@@ -11,10 +11,6 @@ import {
 import * as types from '~/releases/stores/modules/index/mutation_types';
 import createState from '~/releases/stores/modules/index/state';
 import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
-
-const originalGraphqlReleasesResponse = getJSONFixture(
-  'graphql/releases/graphql/queries/all_releases.query.graphql.json',
-);
 
 describe('Releases State actions', () => {
   let mockedState;

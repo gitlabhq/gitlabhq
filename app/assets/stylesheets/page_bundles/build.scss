@@ -1,8 +1,8 @@
 @import 'mixins_and_variables_and_functions';
 
 .build-page {
-  .build-trace {
-    @include build-trace();
+  .build-log {
+    @include build-log();
   }
 
   .archived-job {
@@ -18,7 +18,7 @@
   }
 
   .top-bar {
-    @include build-trace-top-bar(50px);
+    @include build-log-top-bar(50px);
 
     &.has-archived-block {
       top: $header-height + 28px;

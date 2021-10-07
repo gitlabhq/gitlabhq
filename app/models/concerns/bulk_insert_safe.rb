@@ -51,6 +51,12 @@ module BulkInsertSafe
   PrimaryKeySetError = Class.new(StandardError)
 
   class_methods do
+    def insert_all_proxy_class
+      @insert_all_proxy_class ||= Class.new(self) do
+        attr_readonly :created_at
+      end
+    end
+
     def set_callback(name, *args)
       unless _bulk_insert_callback_allowed?(name, args)
         raise MethodNotAllowedError,
@@ -153,7 +159,7 @@ module BulkInsertSafe
             item_batch, validate, &handle_attributes)
 
           ActiveRecord::InsertAll
-              .new(self, attributes, on_duplicate: on_duplicate, returning: returning, unique_by: unique_by)
+              .new(insert_all_proxy_class, attributes, on_duplicate: on_duplicate, returning: returning, unique_by: unique_by)
               .execute
               .pluck(primary_key)
         end

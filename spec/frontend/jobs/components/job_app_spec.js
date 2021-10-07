@@ -2,7 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
-import { getJSONFixture } from 'helpers/fixtures';
+import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmptyState from '~/jobs/components/empty_state.vue';
 import EnvironmentsBlock from '~/jobs/components/environments_block.vue';
@@ -18,8 +18,6 @@ import job from '../mock_data';
 describe('Job App', () => {
   const localVue = createLocalVue();
   localVue.use(Vuex);
-
-  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
 
   let store;
   let wrapper;

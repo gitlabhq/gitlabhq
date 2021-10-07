@@ -279,7 +279,7 @@ export default {
         <!-- job log -->
         <div
           v-if="hasJobLog"
-          class="build-trace-container gl-relative"
+          class="build-log-container gl-relative"
           :class="{ 'gl-mt-3': !job.archived }"
         >
           <log-top-bar

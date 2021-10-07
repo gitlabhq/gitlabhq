@@ -8,10 +8,12 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import { redirectTo } from '~/lib/utils/url_utility';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import BlobButtonGroup from './blob_button_group.vue';
 import BlobEdit from './blob_edit.vue';
+import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer, viewerProps } from './blob_viewers';
 
 export default {
@@ -21,6 +23,7 @@ export default {
     BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
+    ForkSuggestion,
   },
   mixins: [getRefMixin],
   inject: {
@@ -65,6 +68,7 @@ export default {
   },
   data() {
     return {
+      forkTarget: null,
       legacyRichViewer: null,
       legacySimpleViewer: null,
       isBinary: false,
@@ -74,6 +78,8 @@ export default {
         userPermissions: {
           pushCode: false,
           downloadCode: false,
+          createMergeRequestIn: false,
+          forkProject: false,
         },
         pathLocks: {
           nodes: [],
@@ -92,12 +98,14 @@ export default {
                 path: '',
                 editBlobPath: '',
                 ideEditPath: '',
+                forkAndEditPath: '',
+                ideForkAndEditPath: '',
                 storedExternally: false,
+                canModifyBlob: false,
                 rawPath: '',
                 externalStorageUrl: '',
                 replacePath: '',
                 deletePath: '',
-                forkPath: '',
                 simpleViewer: {},
                 richViewer: null,
                 webPath: '',
@@ -149,6 +157,17 @@ export default {
     isLocked() {
       return this.project.pathLocks.nodes.some((node) => node.path === this.path);
     },
+    showForkSuggestion() {
+      const { createMergeRequestIn, forkProject } = this.project.userPermissions;
+      const { canModifyBlob } = this.blobInfo;
+
+      return this.isLoggedIn && !canModifyBlob && createMergeRequestIn && forkProject;
+    },
+    forkPath() {
+      return this.forkTarget === 'ide'
+        ? this.blobInfo.ideForkAndEditPath
+        : this.blobInfo.forkAndEditPath;
+    },
   },
   methods: {
     loadLegacyViewer(type) {
@@ -187,6 +206,18 @@ export default {
         this.loadLegacyViewer(this.activeViewerType);
       }
     },
+    editBlob(target) {
+      if (this.showForkSuggestion) {
+        this.setForkTarget(target);
+        return;
+      }
+
+      const { ideEditPath, editBlobPath } = this.blobInfo;
+      redirectTo(target === 'ide' ? ideEditPath : editBlobPath);
+    },
+    setForkTarget(target) {
+      this.forkTarget = target;
+    },
   },
 };
 </script>
@@ -208,6 +239,8 @@ export default {
             :show-edit-button="!isBinaryFileType"
             :edit-path="blobInfo.editBlobPath"
             :web-ide-path="blobInfo.ideEditPath"
+            :needs-to-fork="showForkSuggestion"
+            @edit="editBlob"
           />
           <blob-button-group
             v-if="isLoggedIn"
@@ -223,6 +256,11 @@ export default {
           />
         </template>
       </blob-header>
+      <fork-suggestion
+        v-if="forkTarget && showForkSuggestion"
+        :fork-path="forkPath"
+        @cancel="setForkTarget(null)"
+      />
       <blob-content
         v-if="!blobViewer"
         :rich-viewer="legacyRichViewer"

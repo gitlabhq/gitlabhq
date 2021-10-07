@@ -92,7 +92,10 @@ export default {
       const handleOptions = this.needsToFork
         ? {
             href: '#modal-confirm-fork-edit',
-            handle: () => this.showModal('#modal-confirm-fork-edit'),
+            handle: () => {
+              this.$emit('edit', 'simple');
+              this.showModal('#modal-confirm-fork-edit');
+            },
           }
         : { href: this.editUrl };
 
@@ -128,7 +131,10 @@ export default {
       const handleOptions = this.needsToFork
         ? {
             href: '#modal-confirm-fork-webide',
-            handle: () => this.showModal('#modal-confirm-fork-webide'),
+            handle: () => {
+              this.$emit('edit', 'ide');
+              this.showModal('#modal-confirm-fork-webide');
+            },
           }
         : { href: this.webIdeUrl };
 

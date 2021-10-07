@@ -1,6 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { getJSONFixture } from 'helpers/fixtures';
+import originalRelease from 'test_fixtures/api/releases/release.json';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
@@ -8,8 +8,6 @@ import { ASSET_LINK_TYPE, DEFAULT_ASSET_LINK_TYPE } from '~/releases/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release edit component', () => {
   let wrapper;

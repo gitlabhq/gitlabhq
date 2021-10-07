@@ -70,10 +70,10 @@
                   = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'gl-button btn btn-default btn-icon' do
                     = sprite_icon('repeat', css_class: 'gl-icon')
             - if can?(current_user, :read_build, job)
-              %tr.build-trace-row.responsive-table-border-end
+              %tr.build-log-row.responsive-table-border-end
                 %td
-                %td.responsive-table-cell.build-trace-container{ colspan: 4 }
-                  %pre.build-trace.build-trace-rounded
+                %td.responsive-table-cell.build-log-container{ colspan: 4 }
+                  %pre.build-log.build-log-rounded
                     %code.bash.js-build-output
                       = build_summary(build)
 

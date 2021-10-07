@@ -5,10 +5,10 @@
   font-size: 13px;
   word-break: break-all;
   word-wrap: break-word;
-  color: color-yiq($builds-trace-bg);
+  color: color-yiq($builds-log-bg);
   border-radius: $border-radius-small;
   min-height: 42px;
-  background-color: $builds-trace-bg;
+  background-color: $builds-log-bg;
 }
 
 .log-line {

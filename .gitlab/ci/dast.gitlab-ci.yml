@@ -37,6 +37,7 @@
     reports:
       dast: gl-dast-report.json
     expire_in: 1 week  # GitLab-specific
+  allow_failure: true
 
 # DAST scan with a subset of Release scan rules.
 # ZAP rule details can be found at https://www.zaproxy.org/docs/alerts/

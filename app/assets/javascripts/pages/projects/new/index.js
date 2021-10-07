@@ -39,27 +39,32 @@ function initNewProjectCreation() {
 }
 
 function initNewProjectUrlSelect() {
-  const el = document.querySelector('.js-vue-new-project-url-select');
+  const elements = document.querySelectorAll('.js-vue-new-project-url-select');
 
-  if (!el) {
-    return undefined;
+  if (!elements.length) {
+    return;
   }
 
   Vue.use(VueApollo);
 
-  return new Vue({
-    el,
-    apolloProvider: new VueApollo({
-      defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
-    }),
-    provide: {
-      namespaceFullPath: el.dataset.namespaceFullPath,
-      namespaceId: el.dataset.namespaceId,
-      rootUrl: el.dataset.rootUrl,
-      trackLabel: el.dataset.trackLabel,
-    },
-    render: (createElement) => createElement(NewProjectUrlSelect),
-  });
+  elements.forEach(
+    (el) =>
+      new Vue({
+        el,
+        apolloProvider: new VueApollo({
+          defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+        }),
+        provide: {
+          namespaceFullPath: el.dataset.namespaceFullPath,
+          namespaceId: el.dataset.namespaceId,
+          rootUrl: el.dataset.rootUrl,
+          trackLabel: el.dataset.trackLabel,
+          userNamespaceFullPath: el.dataset.userNamespaceFullPath,
+          userNamespaceId: el.dataset.userNamespaceId,
+        },
+        render: (createElement) => createElement(NewProjectUrlSelect),
+      }),
+  );
 }
 
 initProjectVisibilitySelector();

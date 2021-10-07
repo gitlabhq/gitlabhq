@@ -54,7 +54,7 @@ These events have always been disabled by default and had to be manually enabled
 feature flag. Enabling them can cause too many events to be generated which can
 dramatically slow down GitLab instances. For this reason, they are being removed.
 
-Announced: 2021-09-02
+Announced: 2021-09-22
 
 ### OmniAuth Kerberos gem
 

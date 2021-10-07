@@ -44,14 +44,14 @@
     line-height: initial;
   }
 
-  .build-trace-row td {
+  .build-log-row td {
     border-top: 0;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     padding-top: 0;
   }
 
-  .build-trace {
+  .build-log {
     width: 100%;
     text-align: left;
     margin-top: $gl-padding;
@@ -93,7 +93,7 @@
   }
 
   .build-state,
-  .build-trace-row {
+  .build-log-row {
     > td:last-child {
       padding-right: 0;
     }
@@ -108,12 +108,12 @@
       margin-top: 2 * $gl-padding;
     }
 
-    .build-trace-container {
+    .build-log-container {
       padding-top: $gl-padding;
       padding-bottom: $gl-padding;
     }
 
-    .build-trace {
+    .build-log {
       margin-bottom: 0;
       margin-top: 0;
     }
@@ -221,8 +221,8 @@
 }
 
 .test-reports-table {
-  .build-trace {
-    @include build-trace();
+  .build-log {
+    @include build-log();
   }
 }
 

@@ -214,7 +214,7 @@ export default {
       <template #items>
         <pre
           ref="logTrace"
-          class="build-trace"
+          class="build-log"
         ><code class="bash js-build-output"><div v-if="showLoader" class="build-loader-animation js-build-loader-animation">
           <div class="dot"></div>
           <div class="dot"></div>

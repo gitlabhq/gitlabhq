@@ -17,6 +17,7 @@ RSpec.describe BulkInsertSafe do
         t.binary :sha_value, null: false, limit: 20
         t.jsonb :jsonb_value, null: false
         t.belongs_to :bulk_insert_parent_item, foreign_key: true, null: true
+        t.timestamps null: true
 
         t.index :name, unique: true
       end
@@ -228,10 +229,20 @@ RSpec.describe BulkInsertSafe do
       end
 
       describe '.bulk_upsert!' do
-        it 'updates existing object' do
-          bulk_insert_item_class.bulk_upsert!([new_object], unique_by: %w[name])
+        subject(:bulk_upsert) { bulk_insert_item_class.bulk_upsert!([new_object], unique_by: %w[name]) }
 
-          expect(existing_object.reload.secret_value).to eq('new value')
+        it 'updates existing object' do
+          expect { bulk_upsert }.to change { existing_object.reload.secret_value }.to('new value')
+        end
+
+        context 'when the `created_at` attribute is provided' do
+          before do
+            new_object.created_at = 10.days.from_now
+          end
+
+          it 'does not change the existing `created_at` value' do
+            expect { bulk_upsert }.not_to change { existing_object.reload.created_at }
+          end
         end
       end
     end
@@ -250,7 +261,7 @@ RSpec.describe BulkInsertSafe do
       it 'successfully inserts an item' do
         expect(ActiveRecord::InsertAll).to receive(:new)
           .with(
-            bulk_insert_items_with_composite_pk_class, [new_object.as_json], on_duplicate: :raise, returning: false, unique_by: %w[id name]
+            bulk_insert_items_with_composite_pk_class.insert_all_proxy_class, [new_object.as_json], on_duplicate: :raise, returning: false, unique_by: %w[id name]
           ).and_call_original
 
         expect { bulk_insert_items_with_composite_pk_class.bulk_insert!([new_object]) }.to(
