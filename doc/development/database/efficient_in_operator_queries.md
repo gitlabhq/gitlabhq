@@ -226,7 +226,12 @@ Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
 - `finder_query` loads the actual record row from the database. It must also be a lambda, where
   the order by column expressions is available for locating the record. In this example, the
   yielded values are `created_at` and `id` SQL expressions. Finding a record is very fast via the
-  primary key, so we don't use the `created_at` value.
+  primary key, so we don't use the `created_at` value. Providing the `finder_query` lambda is optional.
+  If it's not given, the IN operator optimization will only make the ORDER BY columns available to
+  the end-user and not the full database row.
+
+  If it's not given, the IN operator optimization will only make the ORDER BY columns available to
+  the end-user and not the full database row.
 
 The following database index on the `issues` table must be present
 to make the query execute efficiently:
@@ -608,6 +613,32 @@ opts = {
 
 Gitlab::Pagination::Keyset::Iterator.new(scope: scope, **opts).each_batch(of: 100) do |records|
   puts records.select(:id).map { |r| [r.id] }
+end
+```
+
+NOTE:
+The query loads complete database rows from the disk. This may cause increased I/O and slower
+database queries. Depending on the use case, the primary key is often only
+needed for the batch query to invoke additional statements. For example, `UPDATE` or `DELETE`. The
+`id` column is included in the `ORDER BY` columns (`created_at` and `id`) and is already
+loaded. In this case, you can omit the `finder_query` parameter.
+
+Example for loading the `ORDER BY` columns only:
+
+```ruby
+scope = Issue.order(:created_at, :id)
+array_scope = Group.find(9970).all_projects.select(:id)
+array_mapping_scope = -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
+
+opts = {
+  in_operator_optimization_options: {
+    array_scope: array_scope,
+    array_mapping_scope: array_mapping_scope
+  }
+}
+
+Gitlab::Pagination::Keyset::Iterator.new(scope: scope, **opts).each_batch(of: 100) do |records|
+  puts records.select(:id).map { |r| [r.id] } # only id and created_at are available
 end
 ```
 

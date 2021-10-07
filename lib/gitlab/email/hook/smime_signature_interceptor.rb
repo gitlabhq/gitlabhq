@@ -22,7 +22,7 @@ module Gitlab
           private
 
           def certificate
-            @certificate ||= Gitlab::Email::Smime::Certificate.from_files(key_path, cert_path, ca_certs_path)
+            @certificate ||= Gitlab::X509::Certificate.from_files(key_path, cert_path, ca_certs_path)
           end
 
           def key_path

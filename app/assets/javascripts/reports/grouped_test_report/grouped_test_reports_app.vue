@@ -3,7 +3,6 @@ import { GlButton, GlIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import api from '~/api';
 import { sprintf, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import GroupedIssuesList from '../components/grouped_issues_list.vue';
 import { componentNames } from '../components/issue_body';
 import ReportSection from '../components/report_section.vue';
@@ -28,7 +27,6 @@ export default {
     GlButton,
     GlIcon,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     endpoint: {
       type: String,
@@ -82,9 +80,7 @@ export default {
   methods: {
     ...mapActions(['setPaths', 'fetchReports', 'closeModal']),
     handleToggleEvent() {
-      if (this.glFeatures.usageDataITestingSummaryWidgetTotal) {
-        api.trackRedisHllUserEvent(this.$options.expandEvent);
-      }
+      api.trackRedisHllUserEvent(this.$options.expandEvent);
     },
     reportText(report) {
       const { name, summary } = report || {};

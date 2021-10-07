@@ -9,7 +9,6 @@ module Gitlab
           UnsupportedScopeOrder = Class.new(StandardError)
 
           RECURSIVE_CTE_NAME = 'recursive_keyset_cte'
-          RECORDS_COLUMN = 'records'
 
           # This class optimizes slow database queries (PostgreSQL specific) where the
           # IN SQL operator is used with sorting.
@@ -42,7 +41,7 @@ module Gitlab
           # >   array_mapping_scope: array_mapping_scope,
           # >   finder_query: finder_query
           # > ).execute.limit(20)
-          def initialize(scope:, array_scope:, array_mapping_scope:, finder_query:, values: {})
+          def initialize(scope:, array_scope:, array_mapping_scope:, finder_query: nil, values: {})
             @scope, success = Gitlab::Pagination::Keyset::SimpleOrderBuilder.build(scope)
 
             unless success
@@ -57,11 +56,11 @@ module Gitlab
             @order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(scope)
             @array_scope = array_scope
             @array_mapping_scope = array_mapping_scope
-            @finder_query = finder_query
             @values = values
             @model = @scope.model
             @table_name = @model.table_name
             @arel_table = @model.arel_table
+            @finder_strategy = finder_query.present? ? Strategies::RecordLoaderStrategy.new(finder_query, model, order_by_columns) : Strategies::OrderValuesLoaderStrategy.new(model, order_by_columns)
           end
 
           def execute
@@ -74,7 +73,7 @@ module Gitlab
             q = cte
               .apply_to(model.where({})
               .with(selector_cte.to_arel))
-              .select(result_collector_final_projections)
+              .select(finder_strategy.final_projections)
               .where("count <> 0") # filter out the initializer row
 
             model.from(q.arel.as(table_name))
@@ -82,13 +81,13 @@ module Gitlab
 
           private
 
-          attr_reader :array_scope, :scope, :order, :array_mapping_scope, :finder_query, :values, :model, :table_name, :arel_table
+          attr_reader :array_scope, :scope, :order, :array_mapping_scope, :finder_strategy, :values, :model, :table_name, :arel_table
 
           def initializer_query
             array_column_names = array_scope_columns.array_aggregated_column_names + order_by_columns.array_aggregated_column_names
 
             projections = [
-              *result_collector_initializer_columns,
+              *finder_strategy.initializer_columns,
               *array_column_names,
               '0::bigint AS count'
             ]
@@ -156,7 +155,7 @@ module Gitlab
             order_column_value_arrays = order_by_columns.replace_value_in_array_by_position_expressions
 
             select = [
-              *result_collector_columns,
+              *finder_strategy.columns,
               *array_column_list,
               *order_column_value_arrays,
               "#{RECURSIVE_CTE_NAME}.count + 1"
@@ -252,23 +251,6 @@ module Gitlab
             order.column_definitions.each_with_index.map do |column_definition, i|
               "#{i + 1} #{column_definition.order_direction_as_sql_string}"
             end.join(", ")
-          end
-
-          def result_collector_initializer_columns
-            ["NULL::#{table_name} AS #{RECORDS_COLUMN}"]
-          end
-
-          def result_collector_columns
-            query = finder_query
-              .call(*order_by_columns.array_lookup_expressions_by_position(RECURSIVE_CTE_NAME))
-              .select("#{table_name}")
-              .limit(1)
-
-            ["(#{query.to_sql})"]
-          end
-
-          def result_collector_final_projections
-            ["(#{RECORDS_COLUMN}).*"]
           end
 
           def array_scope_columns

@@ -129,16 +129,13 @@ class PagesDomain < ApplicationRecord
     store = OpenSSL::X509::Store.new
     store.set_default_paths
 
-    # This forces to load all intermediate certificates stored in `certificate`
-    Tempfile.open('certificate_chain') do |f|
-      f.write(certificate)
-      f.flush
-      store.add_file(f.path)
-    end
-
-    store.verify(x509)
+    store.verify(x509, untrusted_ca_certs_bundle)
   rescue OpenSSL::X509::StoreError
     false
+  end
+
+  def untrusted_ca_certs_bundle
+    ::Gitlab::X509::Certificate.load_ca_certs_bundle(certificate)
   end
 
   def expired?

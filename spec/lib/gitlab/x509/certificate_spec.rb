@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::Smime::Certificate do
+RSpec.describe Gitlab::X509::Certificate do
   include SmimeHelper
 
   # cert generation is an expensive operation and they are used read-only,
