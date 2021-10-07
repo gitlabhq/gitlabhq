@@ -1416,6 +1416,31 @@ Input type: `CreateTestCaseInput`
 | <a id="mutationcreatetestcaseerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatetestcasetestcase"></a>`testCase` | [`Issue`](#issue) | Test case created. |
 
+### `Mutation.customerRelationsContactCreate`
+
+Input type: `CustomerRelationsContactCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationscontactcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationscontactcreatedescription"></a>`description` | [`String`](#string) | Description or notes for the contact. |
+| <a id="mutationcustomerrelationscontactcreateemail"></a>`email` | [`String`](#string) | Email address of the contact. |
+| <a id="mutationcustomerrelationscontactcreatefirstname"></a>`firstName` | [`String!`](#string) | First name of the contact. |
+| <a id="mutationcustomerrelationscontactcreategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Group for the contact. |
+| <a id="mutationcustomerrelationscontactcreatelastname"></a>`lastName` | [`String!`](#string) | Last name of the contact. |
+| <a id="mutationcustomerrelationscontactcreateorganizationid"></a>`organizationId` | [`CustomerRelationsOrganizationID`](#customerrelationsorganizationid) | Organization for the contact. |
+| <a id="mutationcustomerrelationscontactcreatephone"></a>`phone` | [`String`](#string) | Phone number of the contact. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationscontactcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationscontactcreatecontact"></a>`contact` | [`CustomerRelationsContact`](#customerrelationscontact) | Contact after the mutation. |
+| <a id="mutationcustomerrelationscontactcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.customerRelationsOrganizationCreate`
 
 Input type: `CustomerRelationsOrganizationCreateInput`

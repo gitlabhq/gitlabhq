@@ -46,7 +46,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it "shows Pending tab jobs" do
-          expect(page).to have_selector('.nav-links li.active', text: 'Pending')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Pending')
           expect(page).to have_content job.short_sha
           expect(page).to have_content job.ref
           expect(page).to have_content job.name
@@ -60,7 +60,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it "shows Running tab jobs" do
-          expect(page).to have_selector('.nav-links li.active', text: 'Running')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Running')
           expect(page).to have_content job.short_sha
           expect(page).to have_content job.ref
           expect(page).to have_content job.name
@@ -74,7 +74,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it "shows Finished tab jobs" do
-          expect(page).to have_selector('.nav-links li.active', text: 'Finished')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Finished')
           expect(page).to have_content('Use jobs to automate your tasks')
         end
       end
@@ -86,7 +86,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it "shows All tab jobs" do
-          expect(page).to have_selector('.nav-links li.active', text: 'All')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'All')
           expect(page).to have_content job.short_sha
           expect(page).to have_content job.ref
           expect(page).to have_content job.name

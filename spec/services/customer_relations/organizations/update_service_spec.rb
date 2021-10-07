@@ -19,7 +19,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService do
         response = update
 
         expect(response).to be_error
-        expect(response.message).to eq('You have insufficient permissions to update an organization for this group')
+        expect(response.message).to eq(['You have insufficient permissions to update an organization for this group'])
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService do
       let_it_be(:group) { create(:group) }
 
       before_all do
-        group.add_reporter(user)
+        group.add_developer(user)
       end
 
       context 'when name is changed' do

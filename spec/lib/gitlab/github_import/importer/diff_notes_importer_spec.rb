@@ -15,10 +15,18 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
       original_commit_id: 'original123abc',
       diff_hunk: "@@ -1 +1 @@\n-Hello\n+Hello world",
       user: double(:user, id: 4, login: 'alice'),
-      body: 'Hello world',
       created_at: Time.zone.now,
       updated_at: Time.zone.now,
-      id: 1
+      line: 23,
+      start_line: nil,
+      id: 1,
+      body: <<~BODY
+        Hello World
+
+        ```suggestion
+        sug1
+        ```
+      BODY
     )
   end
 

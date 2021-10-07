@@ -26,11 +26,12 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Create do
         let_it_be(:group) { create(:group) }
 
         before do
-          group.add_guest(user)
+          group.add_reporter(user)
         end
 
         it 'raises an error' do
           expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+            .with_message("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
         end
       end
 
@@ -38,7 +39,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Create do
         let_it_be(:group) { create(:group) }
 
         before_all do
-          group.add_reporter(user)
+          group.add_developer(user)
         end
 
         context 'when the feature is disabled' do
@@ -48,6 +49,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Create do
 
           it 'raises an error' do
             expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+              .with_message('Feature disabled')
           end
         end
 

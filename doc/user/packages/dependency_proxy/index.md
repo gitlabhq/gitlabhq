@@ -177,6 +177,8 @@ To reclaim disk space used by image blobs that are no longer needed, use
 the [Dependency Proxy API](../../../api/dependency_proxy.md) to clear the entire
 cache.
 
+If you clear the cache, the next time a pipeline runs it must pull an image or tag from Docker Hub.
+
 ### Cleanup policies
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294187) in GitLab Free 14.4.

@@ -40,7 +40,9 @@ module Gitlab
             note: note.body,
             created_at: note.created_at,
             updated_at: note.updated_at,
-            note_id: note.id
+            note_id: note.id,
+            end_line: note.line,
+            start_line: note.start_line
           }
 
           new(hash)
@@ -81,6 +83,14 @@ module Gitlab
             b_mode: '100644',
             new_file: false
           }
+        end
+
+        def note
+          @note ||= DiffNotes::SuggestionFormatter.formatted_note_for(
+            note: attributes[:note],
+            start_line: attributes[:start_line],
+            end_line: attributes[:end_line]
+          )
         end
 
         def github_identifiers

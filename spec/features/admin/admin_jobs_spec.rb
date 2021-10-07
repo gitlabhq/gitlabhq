@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Builds' do
+RSpec.describe 'Admin Jobs' do
   before do
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
   end
 
-  describe 'GET /admin/builds' do
+  describe 'GET /admin/jobs' do
     let(:pipeline) { create(:ci_pipeline) }
 
     context 'All tab' do
@@ -22,7 +22,7 @@ RSpec.describe 'Admin Builds' do
 
           visit admin_jobs_path
 
-          expect(page).to have_selector('.nav-links li.active', text: 'All')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'All')
           expect(page).to have_selector('.row-content-block', text: 'All jobs')
           expect(page.all('.build-link').size).to eq(4)
           expect(page).to have_button 'Stop all jobs'
@@ -37,7 +37,7 @@ RSpec.describe 'Admin Builds' do
         it 'shows a message' do
           visit admin_jobs_path
 
-          expect(page).to have_selector('.nav-links li.active', text: 'All')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'All')
           expect(page).to have_content 'No jobs to show'
           expect(page).not_to have_button 'Stop all jobs'
         end
@@ -54,7 +54,7 @@ RSpec.describe 'Admin Builds' do
 
           visit admin_jobs_path(scope: :pending)
 
-          expect(page).to have_selector('.nav-links li.active', text: 'Pending')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Pending')
           expect(page.find('.build-link')).to have_content(build1.id)
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).not_to have_content(build3.id)
@@ -69,7 +69,7 @@ RSpec.describe 'Admin Builds' do
 
           visit admin_jobs_path(scope: :pending)
 
-          expect(page).to have_selector('.nav-links li.active', text: 'Pending')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Pending')
           expect(page).to have_content 'No jobs to show'
           expect(page).not_to have_button 'Stop all jobs'
         end
@@ -86,7 +86,7 @@ RSpec.describe 'Admin Builds' do
 
           visit admin_jobs_path(scope: :running)
 
-          expect(page).to have_selector('.nav-links li.active', text: 'Running')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Running')
           expect(page.find('.build-link')).to have_content(build1.id)
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).not_to have_content(build3.id)
@@ -101,7 +101,7 @@ RSpec.describe 'Admin Builds' do
 
           visit admin_jobs_path(scope: :running)
 
-          expect(page).to have_selector('.nav-links li.active', text: 'Running')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Running')
           expect(page).to have_content 'No jobs to show'
           expect(page).not_to have_button 'Stop all jobs'
         end
@@ -117,7 +117,7 @@ RSpec.describe 'Admin Builds' do
 
           visit admin_jobs_path(scope: :finished)
 
-          expect(page).to have_selector('.nav-links li.active', text: 'Finished')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Finished')
           expect(page.find('.build-link')).not_to have_content(build1.id)
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).to have_content(build3.id)
@@ -131,7 +131,7 @@ RSpec.describe 'Admin Builds' do
 
           visit admin_jobs_path(scope: :finished)
 
-          expect(page).to have_selector('.nav-links li.active', text: 'Finished')
+          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Finished')
           expect(page).to have_content 'No jobs to show'
           expect(page).to have_button 'Stop all jobs'
         end

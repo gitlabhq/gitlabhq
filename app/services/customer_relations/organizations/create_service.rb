@@ -7,9 +7,7 @@ module CustomerRelations
       def execute
         return error_no_permissions unless allowed?
 
-        params[:group_id] = group.id
-
-        organization = Organization.create(params)
+        organization = Organization.create(params.merge(group_id: group.id))
 
         return error_creating(organization) unless organization.persisted?
 

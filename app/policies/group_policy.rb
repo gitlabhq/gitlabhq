@@ -134,6 +134,8 @@ class GroupPolicy < BasePolicy
     enable :create_package
     enable :create_package_settings
     enable :developer_access
+    enable :admin_organization
+    enable :admin_contact
   end
 
   rule { reporter }.policy do
@@ -147,7 +149,6 @@ class GroupPolicy < BasePolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
-    enable :admin_organization
   end
 
   rule { maintainer }.policy do
