@@ -1,18 +1,13 @@
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
+import json from 'test_fixtures/blob/notebook/basic.json';
+import jsonWithWorksheet from 'test_fixtures/blob/notebook/worksheets.json';
 import Notebook from '~/notebook/index.vue';
 
 const Component = Vue.extend(Notebook);
 
 describe('Notebook component', () => {
   let vm;
-  let json;
-  let jsonWithWorksheet;
-
-  beforeEach(() => {
-    json = getJSONFixture('blob/notebook/basic.json');
-    jsonWithWorksheet = getJSONFixture('blob/notebook/worksheets.json');
-  });
 
   function buildComponent(notebook) {
     return mount(Component, {

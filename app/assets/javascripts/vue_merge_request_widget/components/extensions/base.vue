@@ -60,7 +60,7 @@ export default {
         this.isCollapsed
           ? s__('mrWidget|Show %{widget} details')
           : s__('mrWidget|Hide %{widget} details'),
-        { widget: this.$options.name },
+        { widget: this.$options.label || this.$options.name },
       );
     },
     statusIconName() {
@@ -120,7 +120,7 @@ export default {
   <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
       <status-icon
-        :name="$options.name"
+        :name="$options.label || $options.name"
         :is-loading="isLoadingSummary"
         :icon-name="statusIconName"
       />
@@ -133,7 +133,10 @@ export default {
           </template>
           <div v-else v-safe-html="summary(collapsedData)"></div>
         </div>
-        <actions :widget="$options.name" :tertiary-buttons="tertiaryActionsButtons" />
+        <actions
+          :widget="$options.label || $options.name"
+          :tertiary-buttons="tertiaryActionsButtons"
+        />
         <div
           class="gl-float-right gl-align-self-center gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3"
         >

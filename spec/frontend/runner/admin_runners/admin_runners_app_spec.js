@@ -14,7 +14,6 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
-import RunnerTypeHelp from '~/runner/components/runner_type_help.vue';
 
 import {
   ADMIN_FILTERED_SEARCH_NAMESPACE,
@@ -51,7 +50,6 @@ describe('AdminRunnersApp', () => {
   let wrapper;
   let mockRunnersQuery;
 
-  const findRunnerTypeHelp = () => wrapper.findComponent(RunnerTypeHelp);
   const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
@@ -86,10 +84,6 @@ describe('AdminRunnersApp', () => {
   afterEach(() => {
     mockRunnersQuery.mockReset();
     wrapper.destroy();
-  });
-
-  it('shows the runner type help', () => {
-    expect(findRunnerTypeHelp().exists()).toBe(true);
   });
 
   it('shows the runner setup instructions', () => {

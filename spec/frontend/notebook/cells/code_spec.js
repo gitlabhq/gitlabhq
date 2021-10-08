@@ -1,14 +1,17 @@
 import Vue from 'vue';
+import fixture from 'test_fixtures/blob/notebook/basic.json';
 import CodeComponent from '~/notebook/cells/code.vue';
 
 const Component = Vue.extend(CodeComponent);
 
 describe('Code component', () => {
   let vm;
+
   let json;
 
   beforeEach(() => {
-    json = getJSONFixture('blob/notebook/basic.json');
+    // Clone fixture as it could be modified by tests
+    json = JSON.parse(JSON.stringify(fixture));
   });
 
   const setupComponent = (cell) => {

@@ -2,7 +2,7 @@
 
 module Ci
   module StuckBuilds
-    class DropService
+    class DropPendingService
       include DropHelpers
 
       BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
@@ -10,7 +10,7 @@ module Ci
       BUILD_LOOKBACK = 5.days
 
       def execute
-        Gitlab::AppLogger.info "#{self.class}: Cleaning stuck builds"
+        Gitlab::AppLogger.info "#{self.class}: Cleaning pending timed-out builds"
 
         drop(
           pending_builds(BUILD_PENDING_OUTDATED_TIMEOUT.ago),

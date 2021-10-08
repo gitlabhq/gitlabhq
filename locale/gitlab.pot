@@ -8896,10 +8896,10 @@ msgstr ""
 msgid "ContainerRegistry|Delete selected tags"
 msgstr ""
 
-msgid "ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone. Please type the following to confirm: %{code}"
+msgid "ContainerRegistry|Delete tag"
 msgstr ""
 
-msgid "ContainerRegistry|Deletion disabled due to missing or insufficient permissions."
+msgid "ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone. Please type the following to confirm: %{code}"
 msgstr ""
 
 msgid "ContainerRegistry|Digest: %{imageId}"
@@ -29241,9 +29241,6 @@ msgstr ""
 msgid "Runners are processes that pick up and execute CI/CD jobs for GitLab."
 msgstr ""
 
-msgid "Runners can be:"
-msgstr ""
-
 msgid "Runners currently online: %{active_runners_count}"
 msgstr ""
 
@@ -37400,7 +37397,7 @@ msgstr ""
 msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Median time from issue first merge request created to issue closed."
+msgid "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Number of commits pushed to the default branch"
@@ -38863,9 +38860,6 @@ msgstr ""
 msgid "You can recover this project until %{date}"
 msgstr ""
 
-msgid "You can register runners as separate users, on separate servers, and on your local machine. Register as many runners as you want."
-msgstr ""
-
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
@@ -39751,6 +39745,9 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}"
 msgstr ""
 
+msgid "ciReport|%{prefix} %{strongStart}%{score}%{strongEnd} %{delta} %{deltaPercent} in %{path}"
+msgstr ""
+
 msgid "ciReport|%{remainingPackagesCount} more"
 msgstr ""
 
@@ -39789,6 +39786,11 @@ msgstr ""
 
 msgid "ciReport|Browser performance test metrics: "
 msgstr ""
+
+msgid "ciReport|Browser performance test metrics: %{strongStart}%{changesFound}%{strongEnd} change"
+msgid_plural "ciReport|Browser performance test metrics: %{strongStart}%{changesFound}%{strongEnd} changes"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ciReport|Browser performance test metrics: No changes"
 msgstr ""
@@ -39863,6 +39865,9 @@ msgid "ciReport|Found %{issuesWithCount}"
 msgstr ""
 
 msgid "ciReport|Investigate this vulnerability by creating an issue"
+msgstr ""
+
+msgid "ciReport|Load Performance"
 msgstr ""
 
 msgid "ciReport|Load performance test metrics detected %{strongStart}%{changesFound}%{strongEnd} change"

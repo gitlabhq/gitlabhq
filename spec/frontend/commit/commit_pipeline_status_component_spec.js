@@ -1,7 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Visibility from 'visibilityjs';
-import { getJSONFixture } from 'helpers/fixtures';
+import fixture from 'test_fixtures/pipelines/pipelines.json';
 import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
@@ -20,7 +20,7 @@ jest.mock('~/projects/tree/services/commit_pipeline_service', () =>
 
 describe('Commit pipeline status component', () => {
   let wrapper;
-  const { pipelines } = getJSONFixture('pipelines/pipelines.json');
+  const { pipelines } = fixture;
   const { status: mockCiStatus } = pipelines[0].details;
 
   const defaultProps = {

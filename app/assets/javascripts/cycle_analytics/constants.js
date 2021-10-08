@@ -44,7 +44,7 @@ export const METRICS_POPOVER_CONTENT = {
   },
   'cycle-time': {
     description: s__(
-      'ValueStreamAnalytics|Median time from issue first merge request created to issue closed.',
+      "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
     ),
   },
   'new-issue': { description: s__('ValueStreamAnalytics|Number of new issues created.') },

@@ -161,7 +161,7 @@
     - milestone_ref = milestone.try(:to_reference, full: true)
     - if milestone_ref.present?
       .block.reference
-        .sidebar-collapsed-icon.dont-change-state
+        .sidebar-collapsed-icon.js-dont-change-state
           = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')
         .cross-project-reference.hide-collapsed
           %span.gl-display-inline-block.gl-text-truncate

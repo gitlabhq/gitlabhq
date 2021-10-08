@@ -1,3 +1,4 @@
+import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
 import { DESC, ASC } from '~/notes/constants';
 import * as getters from '~/notes/stores/getters';
 import {
@@ -16,8 +17,6 @@ import {
   draftReply,
   draftDiffDiscussion,
 } from '../mock_data';
-
-const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
 // Helper function to ensure that we're using the same schema across tests.
 const createDiscussionNeighborParams = (discussionId, diffOrder, step) => ({
@@ -123,7 +122,7 @@ describe('Getters Notes Store', () => {
 
   describe('resolvedDiscussionsById', () => {
     it('ignores unresolved system notes', () => {
-      const [discussion] = getJSONFixture(discussionWithTwoUnresolvedNotes);
+      const [discussion] = discussionWithTwoUnresolvedNotes;
       discussion.notes[0].resolved = true;
       discussion.notes[1].resolved = false;
       state.discussions.push(discussion);

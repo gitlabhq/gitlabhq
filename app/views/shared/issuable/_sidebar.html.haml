@@ -75,7 +75,7 @@
         #js-reference-entry-point
         - if issuable_type == 'merge_request'
           .sub-block.js-sidebar-source-branch
-            .sidebar-collapsed-icon.dont-change-state
+            .sidebar-collapsed-icon.js-dont-change-state
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
             .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
               %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap

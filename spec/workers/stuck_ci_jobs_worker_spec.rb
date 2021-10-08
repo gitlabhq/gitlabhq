@@ -23,10 +23,10 @@ RSpec.describe StuckCiJobsWorker do
       subject
     end
 
-    it 'executes an instance of Ci::StuckBuilds::DropService' do
+    it 'executes an instance of Ci::StuckBuilds::DropPendingService' do
       expect_to_obtain_exclusive_lease(worker.lease_key, lease_uuid)
 
-      expect_next_instance_of(Ci::StuckBuilds::DropService) do |service|
+      expect_next_instance_of(Ci::StuckBuilds::DropPendingService) do |service|
         expect(service).to receive(:execute).exactly(:once)
       end
 

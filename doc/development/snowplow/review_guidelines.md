@@ -26,18 +26,18 @@ events or touches Snowplow related files.
 #### The merge request **author** should
 
 - For frontend events, when relevant, add a screenshot of the event in
-  the [testing tool](../snowplow/index.md#develop-and-test-snowplow) used.
+  the [testing tool](implementation.md#develop-and-test-snowplow) used.
 - For backend events, when relevant, add the output of the
-  [Snowplow Micro](index.md#snowplow-mini) good events
+  [Snowplow Micro](implementation.md#snowplow-mini) good events
   `GET http://localhost:9090/micro/good` (it might be a good idea
   to reset with `GET http://localhost:9090/micro/reset` first).
 - Update the [Event Dictionary](event_dictionary_guide.md).
 
 #### The Product Intelligence **reviewer** should
 
-- Check that the [event taxonomy](../snowplow/index.md#structured-event-taxonomy) is correct.
-- Check the [usage recommendations](../snowplow/index.md#usage-recommendations).
+- Check that the [event taxonomy](index.md#structured-event-taxonomy) is correct.
+- Check the [usage recommendations](implementation.md#usage-recommendations).
 - Check that the [Event Dictionary](event_dictionary_guide.md) is up-to-date.
 - If needed, check that the events are firing locally using one of the
-[testing tools](../snowplow/index.md#develop-and-test-snowplow) available.
+[testing tools](implementation.md#develop-and-test-snowplow) available.
 - Approve the MR, and relabel the MR with `~"product intelligence::approved"`.

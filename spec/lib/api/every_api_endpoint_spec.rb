@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Every API endpoint' do
   context 'feature categories' do
     let_it_be(:feature_categories) do
-      YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:to_sym).to_set
+      Gitlab::FeatureCategories.default.categories.map(&:to_sym).to_set
     end
 
     let_it_be(:api_endpoints) do

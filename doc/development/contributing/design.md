@@ -46,16 +46,10 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 - Use appropriate [components](https://design.gitlab.com/components/overview)
   and [data visualizations](https://design.gitlab.com/data-visualization/overview).
 
-### States
-
-- Account for all applicable states ([error](https://design.gitlab.com/content/error-messages),
-  rest, loading, focus, hover, selected, disabled).
-- Account for states dependent on data size ([empty](https://design.gitlab.com/regions/empty-states),
-  some data, and lots of data).
-- Account for states dependent on user role, user preferences, and subscription.
-- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion).
-
 ### Visual design
+
+Check visual design properties using your browser's _elements inspector_ ([Chrome](https://developer.chrome.com/docs/devtools/css/),
+[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector/How_to/Open_the_Inspector)).
 
 - Use recommended [colors](https://design.gitlab.com/product-foundations/colors)
   and [typography](https://design.gitlab.com/product-foundations/type-fundamentals).
@@ -68,7 +62,23 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 
  [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha). The [UX Foundations team](https://about.gitlab.com/direction/ecosystem/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
 
+### States
+
+Check states using your browser's _styles inspector_ to toggle CSS pseudo-classes
+like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/css/reference/#pseudo-class),
+[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector/How_to/Examine_and_edit_CSS#viewing_common_pseudo-classes)).
+
+- Account for all applicable states ([error](https://design.gitlab.com/content/error-messages),
+  rest, loading, focus, hover, selected, disabled).
+- Account for states dependent on data size ([empty](https://design.gitlab.com/regions/empty-states),
+  some data, and lots of data).
+- Account for states dependent on user role, user preferences, and subscription.
+- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion).
+
 ### Responsive
+
+Check responsive behavior using your browser's _responsive mode_ ([Chrome](https://developer.chrome.com/docs/devtools/device-mode/#viewport),
+[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Responsive_Design_Mode)).
 
 - Account for resizing, collapsing, moving, or wrapping of elements across
   all breakpoints (even if larger viewports are prioritized).
@@ -76,12 +86,17 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 
 ### Accessibility
 
+Check accessibility using your browser's _accessibility inspector_ ([Chrome](https://developer.chrome.com/docs/devtools/accessibility/reference/),
+[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Accessibility_inspector#accessing_the_accessibility_inspector)).
+
 - Conform to level AA of the World Wide Web Consortium (W3C) [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/),
   according to our [statement of compliance](https://design.gitlab.com/accessibility/a11y).
 - Follow accessibility [best practices](https://design.gitlab.com/accessibility/best-practices)
   and [checklist](../fe_guide/accessibility.md#quick-checklist).
 
 ### Handoff
+
+When the design is ready, _before_ starting its implementation:
 
 - Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#Copy_links)
   link or [GitLab Designs feature](../../user/project/issues/design_management.md#the-design-management-section).
@@ -95,6 +110,8 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
   project.
 
 ### Follow-ups
+
+At any moment, but usually _during_ or _after_ the design's implementation:
 
 - Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contribute#contribute-an-issue)
   for additions or enhancements to the design system.

@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { getJSONFixture } from 'helpers/fixtures';
+import testReports from 'test_fixtures/pipelines/test_report.json';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import createFlash from '~/flash';
@@ -13,7 +13,6 @@ describe('Actions TestReports Store', () => {
   let mock;
   let state;
 
-  const testReports = getJSONFixture('pipelines/test_report.json');
   const summary = { total_count: 1 };
 
   const suiteEndpoint = `${TEST_HOST}/tests/suite.json`;

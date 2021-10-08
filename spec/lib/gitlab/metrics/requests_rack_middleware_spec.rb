@@ -349,7 +349,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
       it 'has every label in config/feature_categories.yml' do
         defaults = [::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT, 'not_owned']
-        feature_categories = YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:strip) + defaults
+        feature_categories = Gitlab::FeatureCategories.default.categories + defaults
 
         expect(described_class::FEATURE_CATEGORIES_TO_INITIALIZE).to all(be_in(feature_categories))
       end

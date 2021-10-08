@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
 import { trimText } from 'helpers/text_helper';
 import mockDiffFile from 'jest/diffs/mock_data/diff_file';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
@@ -16,8 +17,6 @@ import {
   loggedOutnoteableData,
   userDataMock,
 } from '../mock_data';
-
-const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
 describe('noteable_discussion component', () => {
   let store;
@@ -119,7 +118,7 @@ describe('noteable_discussion component', () => {
 
   describe('for resolved thread', () => {
     beforeEach(() => {
-      const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
+      const discussion = discussionWithTwoUnresolvedNotes[0];
       wrapper.setProps({ discussion });
     });
 
@@ -133,7 +132,7 @@ describe('noteable_discussion component', () => {
   describe('for unresolved thread', () => {
     beforeEach(() => {
       const discussion = {
-        ...getJSONFixture(discussionWithTwoUnresolvedNotes)[0],
+        ...discussionWithTwoUnresolvedNotes[0],
         expanded: true,
       };
       discussion.resolved = false;

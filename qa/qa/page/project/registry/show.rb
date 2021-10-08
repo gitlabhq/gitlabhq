@@ -10,6 +10,10 @@ module QA
           end
 
           view 'app/assets/javascripts/registry/explorer/components/details_page/tags_list_row.vue' do
+            element :more_actions_menu
+          end
+
+          view 'app/assets/javascripts/registry/explorer/components/details_page/tags_list_row.vue' do
             element :tag_delete_button
           end
 
@@ -30,6 +34,7 @@ module QA
           end
 
           def click_delete
+            click_element(:more_actions_menu)
             click_element(:tag_delete_button)
             find_button('Delete').click
           end

@@ -9,7 +9,6 @@ import RunnerList from '../components/runner_list.vue';
 import RunnerManualSetupHelp from '../components/runner_manual_setup_help.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
-import RunnerTypeHelp from '../components/runner_type_help.vue';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import { typeTokenConfig } from '../components/search_tokens/type_token_config';
@@ -29,7 +28,6 @@ export default {
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerManualSetupHelp,
-    RunnerTypeHelp,
     RunnerName,
     RunnerPagination,
   },
@@ -128,17 +126,10 @@ export default {
 </script>
 <template>
   <div>
-    <div class="row">
-      <div class="col-sm-6">
-        <runner-type-help />
-      </div>
-      <div class="col-sm-6">
-        <runner-manual-setup-help
-          :registration-token="registrationToken"
-          :type="$options.INSTANCE_TYPE"
-        />
-      </div>
-    </div>
+    <runner-manual-setup-help
+      :registration-token="registrationToken"
+      :type="$options.INSTANCE_TYPE"
+    />
 
     <runner-filtered-search-bar
       v-model="search"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::StuckBuilds::DropService do
+RSpec.describe Ci::StuckBuilds::DropPendingService do
   let!(:runner) { create :ci_runner }
   let!(:job) { create :ci_build, runner: runner }
   let(:created_at) { }

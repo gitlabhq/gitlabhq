@@ -1,4 +1,4 @@
-import { getJSONFixture } from 'helpers/fixtures';
+import testReports from 'test_fixtures/pipelines/test_report.json';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import {
   iconForTestStatus,
@@ -8,8 +8,6 @@ import {
 
 describe('Getters TestReports Store', () => {
   let state;
-
-  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const defaultState = {
     blobPath: '/test/blob/path',

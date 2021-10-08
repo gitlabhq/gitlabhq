@@ -1,5 +1,12 @@
 <script>
-import { GlFormCheckbox, GlTooltipDirective, GlSprintf, GlIcon } from '@gitlab/ui';
+import {
+  GlFormCheckbox,
+  GlTooltipDirective,
+  GlSprintf,
+  GlIcon,
+  GlDropdown,
+  GlDropdownItem,
+} from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { n__ } from '~/locale';
@@ -11,22 +18,22 @@ import {
   REMOVE_TAG_BUTTON_TITLE,
   DIGEST_LABEL,
   CREATED_AT_LABEL,
-  REMOVE_TAG_BUTTON_DISABLE_TOOLTIP,
   PUBLISHED_DETAILS_ROW_TEXT,
   MANIFEST_DETAILS_ROW_TEST,
   CONFIGURATION_DETAILS_ROW_TEST,
   MISSING_MANIFEST_WARNING_TOOLTIP,
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
+  MORE_ACTIONS_TEXT,
 } from '../../constants/index';
-import DeleteButton from '../delete_button.vue';
 
 export default {
   components: {
     GlSprintf,
     GlFormCheckbox,
     GlIcon,
-    DeleteButton,
+    GlDropdown,
+    GlDropdownItem,
     ListItem,
     ClipboardButton,
     TimeAgoTooltip,
@@ -60,11 +67,11 @@ export default {
     REMOVE_TAG_BUTTON_TITLE,
     DIGEST_LABEL,
     CREATED_AT_LABEL,
-    REMOVE_TAG_BUTTON_DISABLE_TOOLTIP,
     PUBLISHED_DETAILS_ROW_TEXT,
     MANIFEST_DETAILS_ROW_TEST,
     CONFIGURATION_DETAILS_ROW_TEST,
     MISSING_MANIFEST_WARNING_TOOLTIP,
+    MORE_ACTIONS_TEXT,
   },
   computed: {
     formattedSize() {
@@ -173,15 +180,26 @@ export default {
       </span>
     </template>
     <template #right-action>
-      <delete-button
-        :disabled="isDeleteDisabled"
-        :title="$options.i18n.REMOVE_TAG_BUTTON_TITLE"
-        :tooltip-title="$options.i18n.REMOVE_TAG_BUTTON_DISABLE_TOOLTIP"
-        :tooltip-disabled="tag.canDelete"
-        data-qa-selector="tag_delete_button"
-        data-testid="single-delete-button"
-        @delete="$emit('delete')"
-      />
+      <gl-dropdown
+        v-if="!isDeleteDisabled"
+        icon="ellipsis_v"
+        :text="$options.i18n.MORE_ACTIONS_TEXT"
+        :text-sr-only="true"
+        category="tertiary"
+        no-caret
+        right
+        data-testid="additional-actions"
+        data-qa-selector="more_actions_menu"
+      >
+        <gl-dropdown-item
+          variant="danger"
+          data-testid="single-delete-button"
+          data-qa-selector="tag_delete_button"
+          @click="$emit('delete')"
+        >
+          {{ $options.i18n.REMOVE_TAG_BUTTON_TITLE }}
+        </gl-dropdown-item>
+      </gl-dropdown>
     </template>
 
     <template v-if="!isInvalidTag" #details-published>

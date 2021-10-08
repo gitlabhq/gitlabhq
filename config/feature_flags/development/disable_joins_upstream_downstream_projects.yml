@@ -1,8 +1,0 @@
----
-name: disable_joins_upstream_downstream_projects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71247
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/341791
-milestone: '14.4'
-type: development
-group: group::sharding
-default_enabled: false

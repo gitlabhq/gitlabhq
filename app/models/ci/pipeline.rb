@@ -862,11 +862,6 @@ module Ci
       self.duration = Gitlab::Ci::Pipeline::Duration.from_pipeline(self)
     end
 
-    def execute_hooks
-      project.execute_hooks(pipeline_data, :pipeline_hooks) if project.has_active_hooks?(:pipeline_hooks)
-      project.execute_integrations(pipeline_data, :pipeline_hooks) if project.has_active_integrations?(:pipeline_hooks)
-    end
-
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
       @all_merge_requests ||=
@@ -1250,12 +1245,6 @@ module Ci
 
     def add_message(severity, content)
       messages.build(severity: severity, content: content)
-    end
-
-    def pipeline_data
-      strong_memoize(:pipeline_data) do
-        Gitlab::DataBuilder::Pipeline.build(self)
-      end
     end
 
     def merge_request_diff_sha

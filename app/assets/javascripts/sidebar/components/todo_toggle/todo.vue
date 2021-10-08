@@ -41,7 +41,7 @@ export default {
   computed: {
     buttonClasses() {
       return this.collapsed
-        ? 'btn-blank btn-todo sidebar-collapsed-icon dont-change-state'
+        ? 'btn-blank btn-todo sidebar-collapsed-icon js-dont-change-state'
         : 'gl-button btn btn-default btn-todo issuable-header-btn float-right';
     },
     buttonLabel() {

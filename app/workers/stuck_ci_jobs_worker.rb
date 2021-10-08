@@ -20,7 +20,7 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
     Ci::StuckBuilds::DropScheduledWorker.perform_in(40.minutes)
 
     try_obtain_lease do
-      Ci::StuckBuilds::DropService.new.execute
+      Ci::StuckBuilds::DropPendingService.new.execute
     end
   end
 
