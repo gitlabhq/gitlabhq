@@ -43,7 +43,9 @@ export function formatListIssues(listIssues) {
     let sortedIssues = list.issues.edges.map((issueNode) => ({
       ...issueNode.node,
     }));
-    sortedIssues = sortBy(sortedIssues, 'relativePosition');
+    if (list.listType !== ListType.closed) {
+      sortedIssues = sortBy(sortedIssues, 'relativePosition');
+    }
 
     return {
       ...map,

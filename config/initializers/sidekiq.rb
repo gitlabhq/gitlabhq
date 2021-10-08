@@ -29,6 +29,7 @@ use_sidekiq_legacy_memory_killer = !use_sidekiq_daemon_memory_killer
 Sidekiq.configure_server do |config|
   config.options[:strict] = false
   config.options[:queues] = Gitlab::SidekiqConfig.expand_queues(config.options[:queues])
+  config.options[:scheduled_enq] = Gitlab::SidekiqEnq
 
   Sidekiq.logger.info "Listening on queues #{config.options[:queues].uniq.sort}"
 
