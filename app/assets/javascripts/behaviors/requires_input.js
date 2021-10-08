@@ -38,23 +38,9 @@ $.fn.requiresInput = function requiresInput() {
   $form.on('change input', fieldSelector, requireInput);
 };
 
-// Hide or Show the help block when creating a new project
-// based on the option selected
-function hideOrShowHelpBlock(form) {
-  const selected = $('.js-select-namespace option:selected');
-  if (selected.length && selected.data('optionsParent') === 'groups') {
-    form.find('.form-text.text-muted').hide();
-  } else if (selected.length) {
-    form.find('.form-text.text-muted').show();
-  }
-}
-
 $(() => {
   $('form.js-requires-input').each((i, el) => {
     const $form = $(el);
-
     $form.requiresInput();
-    hideOrShowHelpBlock($form);
-    $('.select2.js-select-namespace').change(() => hideOrShowHelpBlock($form));
   });
 });

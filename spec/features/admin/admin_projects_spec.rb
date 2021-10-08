@@ -96,7 +96,7 @@ RSpec.describe "Admin::Projects" do
       visit admin_project_path(project)
 
       click_button 'Search for Namespace'
-      click_link 'group: web'
+      click_button 'group: web'
       click_button 'Transfer'
 
       expect(page).to have_content("Web / #{project.name}")

@@ -1,4 +1,4 @@
-import Ajax from '~/droplab/plugins/ajax';
+import Ajax from '~/filtered_search/droplab/plugins/ajax';
 import AjaxCache from '~/lib/utils/ajax_cache';
 
 describe('Ajax', () => {

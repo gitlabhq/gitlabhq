@@ -1,5 +1,5 @@
-import Filter from '~/droplab/plugins/filter';
 import { __ } from '~/locale';
+import Filter from './droplab/plugins/filter';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdown from './filtered_search_dropdown';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';

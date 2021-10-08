@@ -1,7 +1,7 @@
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import Ajax from '../droplab/plugins/ajax';
-import Filter from '../droplab/plugins/filter';
+import Ajax from './droplab/plugins/ajax';
+import Filter from './droplab/plugins/filter';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdown from './filtered_search_dropdown';
 

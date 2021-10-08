@@ -1,4 +1,4 @@
-import * as constants from '~/droplab/constants';
+import * as constants from '~/filtered_search/droplab/constants';
 
 describe('constants', () => {
   describe('DATA_TRIGGER', () => {

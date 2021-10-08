@@ -1,5 +1,6 @@
 /* eslint-disable */
-import AjaxCache from '../../lib/utils/ajax_cache';
+
+import AjaxCache from '~/lib/utils/ajax_cache';
 
 const AjaxFilter = {
   init: function (hook) {

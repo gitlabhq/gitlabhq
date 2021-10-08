@@ -1,3 +1,13 @@
+/**
+ * This library is deprecated and scheduled to be removed once the
+ * filtered_search component is replaced with GitLab's new Pajamas
+ * filter vue component.
+ *
+ * The documentation has been removed from the gitlab codebase but
+ * can still be found in the commit history here:
+ * https://gitlab.com/gitlab-org/gitlab/-/blob/28f20e28/doc/development/fe_guide/droplab/droplab.md
+ */
+
 import { DATA_TRIGGER } from './constants';
 import HookButton from './hook_button';
 import HookInput from './hook_input';

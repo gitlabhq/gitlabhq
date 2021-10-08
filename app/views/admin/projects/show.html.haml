@@ -143,13 +143,10 @@
             .col-sm-3.col-form-label
               = f.label :new_namespace_id, _("Namespace")
             .col-sm-9
-              .dropdown
-                = dropdown_toggle(_('Search for Namespace'), { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })
-                .dropdown-menu.dropdown-select
-                  = dropdown_title(_('Namespaces'))
-                  = dropdown_filter(_('Search for Namespace'))
-                  = dropdown_content
-                  = dropdown_loading
+              - placeholder = _('Search for Namespace')
+              %button.dropdown-menu-toggle.btn.btn-default.btn-md.gl-button.js-namespace-select{ data: { field_name: 'new_namespace_id', placeholder: placeholder }, type: 'button' }
+                %span.gl-new-dropdown-button-text
+                  = placeholder
 
           .form-group.row
             .offset-sm-3.col-sm-9

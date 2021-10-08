@@ -1,7 +1,7 @@
-import DropDown from '~/droplab/drop_down';
-import Hook from '~/droplab/hook';
+import DropDown from '~/filtered_search/droplab/drop_down';
+import Hook from '~/filtered_search/droplab/hook';
 
-jest.mock('~/droplab/drop_down', () => jest.fn());
+jest.mock('~/filtered_search/droplab/drop_down', () => jest.fn());
 
 describe('Hook', () => {
   let testContext;

@@ -7,7 +7,7 @@ import {
   GlSafeHtmlDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { sprintf, s__, __ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import { EXTENSION_ICON_CLASS } from '../../constants';
 import StatusIcon from './status_icon.vue';
@@ -42,6 +42,12 @@ export default {
     };
   },
   computed: {
+    widgetLabel() {
+      return this.$options.i18n?.label || this.$options.name;
+    },
+    widgetLoadingText() {
+      return this.$options.i18n?.loading || __('Loading...');
+    },
     isLoadingSummary() {
       return this.loadingState === LOADING_STATES.collapsedLoading;
     },
@@ -60,7 +66,7 @@ export default {
         this.isCollapsed
           ? s__('mrWidget|Show %{widget} details')
           : s__('mrWidget|Hide %{widget} details'),
-        { widget: this.$options.label || this.$options.name },
+        { widget: this.widgetLabel },
       );
     },
     statusIconName() {
@@ -119,24 +125,15 @@ export default {
 <template>
   <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
-      <status-icon
-        :name="$options.label || $options.name"
-        :is-loading="isLoadingSummary"
-        :icon-name="statusIconName"
-      />
+      <status-icon :name="widgetLabel" :is-loading="isLoadingSummary" :icon-name="statusIconName" />
       <div
         class="media-body gl-display-flex gl-align-self-center gl-align-items-center gl-flex-direction-row!"
       >
         <div class="gl-flex-grow-1">
-          <template v-if="isLoadingSummary">
-            {{ __('Loading...') }}
-          </template>
+          <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <div v-else v-safe-html="summary(collapsedData)"></div>
         </div>
-        <actions
-          :widget="$options.label || $options.name"
-          :tertiary-buttons="tertiaryActionsButtons"
-        />
+        <actions :widget="widgetLabel" :tertiary-buttons="tertiaryActionsButtons" />
         <div
           class="gl-float-right gl-align-self-center gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3"
         >

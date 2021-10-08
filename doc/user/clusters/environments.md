@@ -33,7 +33,7 @@ owners](../permissions.md#group-members-permissions)
 In order to:
 
 - Track environments for the cluster, you must
-  [deploy to a Kubernetes cluster](../project/clusters/index.md#deploying-to-a-kubernetes-cluster)
+  [deploy to a Kubernetes cluster](../project/clusters/deploy_to_cluster.md)
   successfully.
 - Show pod usage correctly, you must
   [enable deploy boards](../project/deploy_boards.md#enabling-deploy-boards).

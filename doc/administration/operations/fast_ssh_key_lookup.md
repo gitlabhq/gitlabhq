@@ -104,12 +104,12 @@ In the case of lookup failures (which are common), the `authorized_keys`
 file is still scanned. So Git SSH performance would still be slow for many
 users as long as a large file exists.
 
-To disable any more writes to the `authorized_keys` file:
+To disable writes to the `authorized_keys` file:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Performance optimization**.
-1. Clear the **Write to "authorized_keys" file** checkbox.
+1. Clear the **Use authorized_keys file to authenticate SSH keys** checkbox.
 1. Select **Save changes**.
 
 Again, confirm that SSH is working by removing your user's SSH key in the UI,
@@ -123,10 +123,14 @@ or for asking users to re-add their keys.
 
 This is a brief overview. Please refer to the above instructions for more context.
 
-1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file)
-1. Enable writes to the `authorized_keys` file in Application Settings
+1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).
+1. Enable writes to the `authorized_keys` file.
+   1. On the top bar, select **Menu > Admin**.
+   1. On the left sidebar, select **Settings > Network**.
+   1. Expand **Performance optimization**.
+   1. Select the **Use authorized_keys file to authenticate SSH keys** checkbox.
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Omnibus Docker.
-1. Reload `sshd`: `sudo service sshd reload`
+1. Reload `sshd`: `sudo service sshd reload`.
 
 ## Compiling a custom version of OpenSSH for CentOS 6
 

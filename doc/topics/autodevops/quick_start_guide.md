@@ -103,7 +103,7 @@ to deploy this project to.
      [Cloud Run](../../user/project/clusters/add_gke_clusters.md#cloud-run-for-anthos),
      Istio, and HTTP Load Balancing add-ons for this cluster.
    - **GitLab-managed cluster** - Select this checkbox to
-     [allow GitLab to manage namespace and service accounts](../../user/project/clusters/index.md#gitlab-managed-clusters) for this cluster.
+     [allow GitLab to manage namespace and service accounts](../../user/project/clusters/gitlab_managed_clusters.md) for this cluster.
 
 1. Select **Create Kubernetes cluster**.
 

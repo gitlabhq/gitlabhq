@@ -1199,6 +1199,9 @@ msgstr[1] ""
 msgid "- Not available to run jobs."
 msgstr ""
 
+msgid "- Select -"
+msgstr ""
+
 msgid "- User"
 msgid_plural "- Users"
 msgstr[0] ""
@@ -4778,6 +4781,9 @@ msgid "August"
 msgstr ""
 
 msgid "Authenticate"
+msgstr ""
+
+msgid "Authenticate user SSH keys without requiring additional configuration. Performance of GitLab can be improved by using the GitLab database instead."
 msgstr ""
 
 msgid "Authenticate with GitHub"
@@ -8388,6 +8394,9 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
+msgid "Company Name"
+msgstr ""
+
 msgid "Compare"
 msgstr ""
 
@@ -9508,6 +9517,9 @@ msgid "Could not upload your designs as one or more files uploaded are not suppo
 msgstr ""
 
 msgid "Couldn't assign policy to project"
+msgstr ""
+
+msgid "Country"
 msgstr ""
 
 msgid "Coverage"
@@ -14641,6 +14653,9 @@ msgstr ""
 msgid "Finished at"
 msgstr ""
 
+msgid "First Name"
+msgstr ""
+
 msgid "First Seen"
 msgstr ""
 
@@ -16841,9 +16856,6 @@ msgstr ""
 msgid "High or unknown vulnerabilities present"
 msgstr ""
 
-msgid "Highest number of requests per minute for each raw path, default to 300. To disable throttling set to 0."
-msgstr ""
-
 msgid "Highest role:"
 msgstr ""
 
@@ -16902,6 +16914,9 @@ msgid "Housekeeping, export, path, transfer, remove, archive."
 msgstr ""
 
 msgid "How do I configure Akismet?"
+msgstr ""
+
+msgid "How do I configure authentication using the GitLab database?"
 msgstr ""
 
 msgid "How do I configure it?"
@@ -19914,6 +19929,9 @@ msgstr ""
 msgid "Last Activity"
 msgstr ""
 
+msgid "Last Name"
+msgstr ""
+
 msgid "Last Pipeline"
 msgstr ""
 
@@ -21053,6 +21071,9 @@ msgstr ""
 msgid "Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
+msgid "Maximum number of changes (branches or tags) in a single push for which webhooks and services trigger (default is 3)."
+msgstr ""
+
 msgid "Maximum number of comments exceeded"
 msgstr ""
 
@@ -21060,6 +21081,9 @@ msgid "Maximum number of mirrors that can be synchronizing at the same time."
 msgstr ""
 
 msgid "Maximum number of projects."
+msgstr ""
+
+msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
 msgstr ""
 
 msgid "Maximum number of unique IP addresses per user."
@@ -23441,16 +23465,13 @@ msgstr ""
 msgid "Number of LOCs per commit"
 msgstr ""
 
-msgid "Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push event will be created. Bulk push event will be created if it surpasses that value."
-msgstr ""
-
-msgid "Number of changes (branches or tags) in a single push to determine whether webhooks and services will be fired or not. Webhooks and services won't be submitted if it surpasses that value."
-msgstr ""
-
 msgid "Number of commits"
 msgstr ""
 
 msgid "Number of commits per MR"
+msgstr ""
+
+msgid "Number of employees"
 msgstr ""
 
 msgid "Number of events"
@@ -24026,6 +24047,36 @@ msgid "Owned by:"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "PQL|An error occurred while sending hand raise lead."
+msgstr ""
+
+msgid "PQL|By providing my contact information, I agree GitLab may contact me via email about its product, services and events. You may opt-out at any time by unsubscribing in emails or visiting our communication preference center."
+msgstr ""
+
+msgid "PQL|Cancel"
+msgstr ""
+
+msgid "PQL|Contact our Sales team"
+msgstr ""
+
+msgid "PQL|Contact sales"
+msgstr ""
+
+msgid "PQL|Hello %{userName}. Before putting you in touch with our sales team, we would like you to verify and complete the information below."
+msgstr ""
+
+msgid "PQL|Message for the Sales team (optional)"
+msgstr ""
+
+msgid "PQL|Please select a city or state"
+msgstr ""
+
+msgid "PQL|Submit information"
+msgstr ""
+
+msgid "PQL|Thank you for reaching out! Our sales team will bet back to you soon."
 msgstr ""
 
 msgid "Package Registry"
@@ -32306,6 +32357,9 @@ msgstr ""
 msgid "State your message to activate"
 msgstr ""
 
+msgid "State/Province/City"
+msgstr ""
+
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
@@ -32802,6 +32856,9 @@ msgid "Successfully unlocked"
 msgstr ""
 
 msgid "Successfully updated %{last_updated_timeago}."
+msgstr ""
+
+msgid "Successfully updated the environment."
 msgstr ""
 
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
@@ -33303,6 +33360,9 @@ msgid "TeamcityIntegration|Trigger TeamCity CI after a merge request has been cr
 msgstr ""
 
 msgid "TeamcityIntegration|Trigger TeamCity CI after every push to the repository, except branch delete"
+msgstr ""
+
+msgid "Telephone number"
 msgstr ""
 
 msgid "Tell us your experiences with the new Markdown editor %{linkStart}in this feedback issue%{linkEnd}."
@@ -35177,6 +35237,9 @@ msgstr ""
 msgid "Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs."
 msgstr ""
 
+msgid "Threshold number of changes (branches or tags) in a single push above which a bulk push event is created (default is 3)."
+msgstr ""
+
 msgid "Throughput"
 msgstr ""
 
@@ -36879,6 +36942,9 @@ msgid "Use a one-time password authenticator on your mobile device or computer t
 msgstr ""
 
 msgid "Use an AWS CloudFormation Template (CFT) to install and configure GitLab Runner in AWS."
+msgstr ""
+
+msgid "Use authorized_keys file to authenticate SSH keys"
 msgstr ""
 
 msgid "Use cURL"
@@ -38596,9 +38662,6 @@ msgstr ""
 msgid "Write milestone description..."
 msgstr ""
 
-msgid "Write to \"authorized_keys\" file"
-msgstr ""
-
 msgid "Write your release notes or drag your files here…"
 msgstr ""
 
@@ -39784,6 +39847,12 @@ msgstr ""
 msgid "ciReport|Base pipeline codequality artifact not found"
 msgstr ""
 
+msgid "ciReport|Browser Performance"
+msgstr ""
+
+msgid "ciReport|Browser performance test metrics results are being parsed"
+msgstr ""
+
 msgid "ciReport|Browser performance test metrics: "
 msgstr ""
 
@@ -39874,6 +39943,9 @@ msgid "ciReport|Load performance test metrics detected %{strongStart}%{changesFo
 msgid_plural "ciReport|Load performance test metrics detected %{strongStart}%{changesFound}%{strongEnd} changes"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ciReport|Load performance test metrics results are being parsed"
+msgstr ""
 
 msgid "ciReport|Load performance test metrics: "
 msgstr ""

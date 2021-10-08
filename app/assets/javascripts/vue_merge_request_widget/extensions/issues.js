@@ -6,8 +6,11 @@ import issuesQuery from './issues.query.graphql';
 export default {
   // Give the extension a name
   // Make it easier to track in Vue dev tools
-  name: 'Issues',
-  label: 'Issues',
+  name: 'WidgetIssues',
+  i18n: {
+    label: 'Issues',
+    loading: 'Loading issues...',
+  },
   // Add an array of props
   // These then get mapped to values stored in the MR Widget store
   props: ['targetProjectFullPath', 'conflictsDocsPath'],

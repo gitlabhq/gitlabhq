@@ -1,6 +1,6 @@
-import { SELECTED_CLASS } from '~/droplab/constants';
-import DropDown from '~/droplab/drop_down';
-import utils from '~/droplab/utils';
+import { SELECTED_CLASS } from '~/filtered_search/droplab/constants';
+import DropDown from '~/filtered_search/droplab/drop_down';
+import utils from '~/filtered_search/droplab/utils';
 
 describe('DropLab DropDown', () => {
   let testContext;

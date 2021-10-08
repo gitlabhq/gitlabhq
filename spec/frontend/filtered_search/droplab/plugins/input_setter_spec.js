@@ -1,4 +1,4 @@
-import InputSetter from '~/droplab/plugins/input_setter';
+import InputSetter from '~/filtered_search/droplab/plugins/input_setter';
 
 describe('InputSetter', () => {
   let testContext;
