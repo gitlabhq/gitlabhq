@@ -114,6 +114,8 @@ This might involve reconfiguring your firewall to prevent blocking connection on
    ![Fill in import details](img/import_panel_v14_1.png)
 
 1. Enter the source URL of your GitLab instance.
+1. Generate or copy a [personal access token](../../../user/profile/personal_access_tokens.md)
+   with the `api` and `read_repository` scopes on your remote GitLab instance.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your remote GitLab instance.
 1. Select **Connect instance**.
 

@@ -95,7 +95,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
       createComponent({ mockData: { artifacts } });
 
       expect(findFirstArtifactItem().attributes('href')).toBe(artifacts[0].path);
-      expect(findFirstArtifactItem().text()).toBe(`Download ${artifacts[0].name} artifact`);
+      expect(findFirstArtifactItem().text()).toBe(artifacts[0].name);
     });
 
     it('should render empty message when no artifacts are found', () => {

@@ -5,13 +5,13 @@
 body.gl-dark {
   --gray-50: #303030;
   --gray-100: #404040;
+  --gray-900: #fafafa;
   --gray-950: #fff;
   --green-100: #0d532a;
   --green-400: #108548;
   --green-700: #91d4a8;
   --blue-400: #1f75cb;
   --orange-400: #ab6100;
-  --purple-100: #2f2a6b;
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --black: #fff;
@@ -1785,8 +1785,8 @@ body.gl-dark .nav-sidebar li.active > a {
 body.gl-dark .nav-sidebar .fly-out-top-item a,
 body.gl-dark .nav-sidebar .fly-out-top-item.active a,
 body.gl-dark .nav-sidebar .fly-out-top-item .fly-out-top-item-container {
-  background-color: var(--purple-100, #e1d8f9);
-  color: var(--black, #333);
+  background-color: var(--gray-100, #303030);
+  color: var(--gray-900, #fafafa);
 }
 body.gl-dark .logo-text svg {
   fill: var(--gl-text-color);

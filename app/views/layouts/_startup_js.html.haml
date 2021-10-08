@@ -17,11 +17,14 @@
       });
     }
     if (gl.startup_graphql_calls && window.fetch) {
+      const headers = #{page_startup_graphql_headers.to_json};
       const url = `#{api_graphql_url}`
 
       const opts = {
         method: "POST",
-        headers: { "Content-Type": "application/json", 'X-CSRF-Token': "#{form_authenticity_token}" },
+        headers: {
+          "Content-Type": "application/json",
+          ...headers,
       };
 
       gl.startup_graphql_calls = gl.startup_graphql_calls.map(call => ({

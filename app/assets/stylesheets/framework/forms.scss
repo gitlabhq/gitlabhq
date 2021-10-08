@@ -196,14 +196,6 @@ label {
   }
 }
 
-@include media-breakpoint-down(xs) {
-  .remember-me {
-    .remember-me-checkbox {
-      margin-top: 0;
-    }
-  }
-}
-
 .input-icon-wrapper,
 .select-wrapper {
   position: relative;

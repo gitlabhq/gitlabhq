@@ -11,6 +11,8 @@ import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
+import Details from '../extensions/details';
+import DetailsContent from '../extensions/details_content';
 import Division from '../extensions/division';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
@@ -53,6 +55,7 @@ import {
   renderImage,
   renderPlayable,
   renderHTMLNode,
+  renderContent,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -132,6 +135,15 @@ const defaultSerializerConfig = {
       if (index === 1) state.ensureNewLine();
       renderHTMLNode(node.attrs.isTerm ? 'dt' : 'dd')(state, node);
       if (index === parent.childCount - 1) state.ensureNewLine();
+    },
+    [Details.name]: renderHTMLNode('details', true),
+    [DetailsContent.name]: (state, node, parent, index) => {
+      if (!index) renderHTMLNode('summary')(state, node);
+      else {
+        if (index === 1) state.ensureNewLine();
+        renderContent(state, node);
+        if (index === parent.childCount - 1) state.ensureNewLine();
+      }
     },
     [Emoji.name]: (state, node) => {
       const { name } = node.attrs;

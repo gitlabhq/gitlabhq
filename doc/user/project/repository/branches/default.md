@@ -196,3 +196,32 @@ To fix the problem:
    ```
 
 1. In GitLab, [change the default branch](#change-the-default-branch-name-for-a-project) to the one you intend to use.
+
+### Query GraphQL for default branches
+
+You can use a [GraphQL query](../../../../api/graphql/index.md)
+to retrieve the default branches for all projects in a group.
+
+To return all projects in a single page of results, replace `GROUPNAME` with the
+full path to your group. GitLab returns the first page of results. If `hasNextPage`
+is `true`, you can request the next page by replacing the `null` in `after: null`
+with the value of `endCursor`:
+
+```graphql
+{
+ group(fullPath: "GROUPNAME") {
+   projects(after: null) {
+     pageInfo {
+       hasNextPage
+       endCursor
+     }
+     nodes {
+       name
+       repository {
+         rootRef
+       }
+     }
+   }
+ }
+}
+```

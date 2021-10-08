@@ -5,7 +5,6 @@ import {
   GlDropdownItem,
   GlDropdownSectionHeader,
   GlLoadingIcon,
-  GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
@@ -13,7 +12,6 @@ import { __, s__ } from '~/locale';
 
 export const i18n = {
   artifacts: __('Artifacts'),
-  downloadArtifact: __('Download %{name} artifact'),
   artifactSectionHeader: __('Download artifacts'),
   artifactsFetchErrorMessage: s__('Pipelines|Could not load artifacts.'),
   emptyArtifactsMessage: __('No artifacts found'),
@@ -30,7 +28,6 @@ export default {
     GlDropdownItem,
     GlDropdownSectionHeader,
     GlLoadingIcon,
-    GlSprintf,
   },
   inject: {
     artifactsEndpoint: {
@@ -113,9 +110,7 @@ export default {
       class="gl-word-break-word"
       data-testid="artifact-item"
     >
-      <gl-sprintf :message="$options.i18n.downloadArtifact">
-        <template #name>{{ artifact.name }}</template>
-      </gl-sprintf>
+      {{ artifact.name }}
     </gl-dropdown-item>
   </gl-dropdown>
 </template>

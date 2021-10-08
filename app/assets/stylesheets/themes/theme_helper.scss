@@ -212,8 +212,8 @@
       a:hover,
       &.active a,
       .fly-out-top-item-container {
-        background-color: var(--purple-100, $purple-900);
-        color: var(--black, $white);
+        background-color: var(--gray-100, $gray-50);
+        color: var(--gray-900, $gray-900);
       }
     }
   }

@@ -1,16 +1,14 @@
 /* eslint no-param-reassign: "off" */
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
 import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete';
 import { initEmojiMock } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
-import { getJSONFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
-
-const labelsFixture = getJSONFixture('autocomplete_sources/labels.json');
 
 describe('GfmAutoComplete', () => {
   const fetchDataMock = { fetchData: jest.fn() };

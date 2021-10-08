@@ -77,6 +77,35 @@
 
     </dd>
     </dl>
+- name: details
+  markdown: |-
+    <details>
+    <summary>Apply this patch</summary>
+
+    ```diff
+    diff --git a/spec/frontend/fixtures/api_markdown.yml b/spec/frontend/fixtures/api_markdown.yml
+    index 8433efaf00c..69b12c59d46 100644
+    --- a/spec/frontend/fixtures/api_markdown.yml
+    +++ b/spec/frontend/fixtures/api_markdown.yml
+    @@ -33,6 +33,13 @@
+         * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
+         * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
+         * The **Pythagorean theorem** is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> =  <var>c<sup>2</sup></var>.The **Pythagorean theorem** is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var>
+    +- name: details
+    +  markdown: |-
+    +    <details>
+    +    <summary>Apply this patch</summary>
+    +
+    +    🐶 much meta, 🐶 many patch
+    +    🐶 such diff, 🐶 very meme
+    +    🐶 wow!
+    +    </details>
+     - name: link
+       markdown: '[GitLab](https://gitlab.com)'
+     - name: attachment_link
+    ```
+
+    </details>
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
 - name: attachment_link

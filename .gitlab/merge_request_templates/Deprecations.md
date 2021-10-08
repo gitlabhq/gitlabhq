@@ -75,4 +75,4 @@ yourself as a reviewer if it's not ready for merge yet.
 </details>
 
 When the PM indicates it is ready for merge, all issues have been addressed, and
-the doc has been properly regenerated with the Rake task, merge the MR.
+the doc has been properly regenerated with the [Rake task](https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc), merge the MR.

@@ -5,6 +5,13 @@ module StartupjsHelper
     @graphql_startup_calls
   end
 
+  def page_startup_graphql_headers
+    {
+      'X-CSRF-Token' => form_authenticity_token,
+      'x-gitlab-feature-category' => ::Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence || ''
+    }
+  end
+
   def add_page_startup_graphql_call(query, variables = {})
     @graphql_startup_calls ||= []
     file_location = File.join(Rails.root, "app/graphql/queries/#{query}.query.graphql")

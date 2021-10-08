@@ -1,23 +1,19 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import mockData from 'test_fixtures/issues/related_merge_requests.json';
 import axios from '~/lib/utils/axios_utils';
 import RelatedMergeRequests from '~/related_merge_requests/components/related_merge_requests.vue';
 import createStore from '~/related_merge_requests/store/index';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 
-const FIXTURE_PATH = 'issues/related_merge_requests.json';
 const API_ENDPOINT = '/api/v4/projects/2/issues/33/related_merge_requests';
 const localVue = createLocalVue();
 
 describe('RelatedMergeRequests', () => {
   let wrapper;
   let mock;
-  let mockData;
 
   beforeEach((done) => {
-    loadFixtures(FIXTURE_PATH);
-    mockData = getJSONFixture(FIXTURE_PATH);
-
     // put the fixture in DOM as the component expects
     document.body.innerHTML = `<div id="js-issuable-app"></div>`;
     document.getElementById('js-issuable-app').dataset.initial = JSON.stringify(mockData);

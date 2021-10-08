@@ -273,7 +273,7 @@ export default {
       this.onError(UPDATE_IMAGE_DIFF_NOTE_ERROR, e);
     },
     onDesignDeleteError(e) {
-      this.onError(designDeletionError({ singular: true }), e);
+      this.onError(designDeletionError(), e);
     },
     onResolveDiscussionError(e) {
       this.onError(UPDATE_IMAGE_DIFF_NOTE_ERROR, e);

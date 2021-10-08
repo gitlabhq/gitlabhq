@@ -58,9 +58,11 @@ const STATE_MACHINE = {
   states: {
     IDLE: 'IDLE',
     MERGING: 'MERGING',
+    AUTO_MERGE: 'AUTO_MERGE',
   },
   transitions: {
     MERGE: 'start-merge',
+    AUTO_MERGE: 'start-auto-merge',
     MERGE_FAILURE: 'merge-failed',
     MERGED: 'merge-done',
   },
@@ -73,9 +75,16 @@ STATE_MACHINE.definition = {
     [states.IDLE]: {
       on: {
         [transitions.MERGE]: states.MERGING,
+        [transitions.AUTO_MERGE]: states.AUTO_MERGE,
       },
     },
     [states.MERGING]: {
+      on: {
+        [transitions.MERGED]: states.IDLE,
+        [transitions.MERGE_FAILURE]: states.IDLE,
+      },
+    },
+    [states.AUTO_MERGE]: {
       on: {
         [transitions.MERGED]: states.IDLE,
         [transitions.MERGE_FAILURE]: states.IDLE,
@@ -87,9 +96,11 @@ STATE_MACHINE.definition = {
 export const stateToTransitionMap = {
   [stateKey.merging]: transitions.MERGE,
   [stateKey.merged]: transitions.MERGED,
+  [stateKey.autoMergeEnabled]: transitions.AUTO_MERGE,
 };
 export const stateToComponentMap = {
   [states.MERGING]: classStateMap[stateKey.merging],
+  [states.AUTO_MERGE]: classStateMap[stateKey.autoMergeEnabled],
 };
 
 export const EXTENSION_ICONS = {

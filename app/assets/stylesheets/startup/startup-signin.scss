@@ -258,30 +258,12 @@ fieldset:disabled a.btn {
   align-items: center;
   justify-content: space-between;
 }
-.d-block {
-  display: block !important;
-}
-.d-flex {
-  display: flex !important;
-}
-.flex-wrap {
-  flex-wrap: wrap !important;
-}
-.justify-content-between {
-  justify-content: space-between !important;
-}
-.align-items-center {
-  align-items: center !important;
-}
 .fixed-top {
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
   z-index: 1030;
-}
-.ml-2 {
-  margin-left: 0.5rem !important;
 }
 .mt-3 {
   margin-top: 1rem !important;
@@ -348,6 +330,15 @@ fieldset:disabled a.btn {
   align-items: center;
   font-size: 0.875rem;
   border-radius: 0.25rem;
+}
+.gl-button.gl-button .gl-button-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
 }
 .gl-button.gl-button .gl-button-icon {
   height: 1rem;
@@ -637,10 +628,6 @@ svg {
   padding: 0;
   border: 0;
   background: none;
-  margin-bottom: 16px;
-}
-.login-page .omniauth-container .omniauth-btn {
-  width: 100%;
 }
 .login-page .new-session-tabs {
   display: flex;
@@ -771,20 +758,17 @@ svg {
 .gl-align-items-center {
   align-items: center;
 }
+.gl-flex-wrap {
+  flex-wrap: wrap;
+}
 .gl-w-full {
   width: 100%;
-}
-.gl-p-2 {
-  padding: 0.25rem;
 }
 .gl-p-4 {
   padding: 0.75rem;
 }
 .gl-mt-2 {
   margin-top: 0.25rem;
-}
-.gl-mb-2 {
-  margin-bottom: 0.25rem;
 }
 .gl-mb-3 {
   margin-bottom: 0.5rem;
@@ -797,8 +781,8 @@ svg {
     margin-top: 0;
   }
 }
-.gl-text-left {
-  text-align: left;
+.gl-font-weight-bold {
+  font-weight: 600;
 }
 
 @import "startup/cloaking";

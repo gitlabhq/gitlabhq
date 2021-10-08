@@ -26,14 +26,6 @@
     }
   }
 
-  .omniauth-btn {
-    width: 48%;
-
-    @include media-breakpoint-down(md) {
-      width: 100%;
-    }
-  }
-
   .decline-page {
     width: 350px;
   }

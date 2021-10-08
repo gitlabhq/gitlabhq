@@ -8,13 +8,14 @@ unless Rails.env.production?
   namespace :rubocop do
     namespace :todo do
       desc 'Generate RuboCop todos'
-      task :generate do
+      task :generate do # rubocop:disable Rails/RakeEnvironment
         require 'rubocop'
 
         options = %w[
           --auto-gen-config
           --auto-gen-only-exclude
           --exclude-limit=100000
+          --no-offense-counts
         ]
 
         RuboCop::CLI.new.run(options)

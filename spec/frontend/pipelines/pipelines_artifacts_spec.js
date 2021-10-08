@@ -87,8 +87,7 @@ describe('Pipelines Artifacts dropdown', () => {
     createComponent({ mockData: { artifacts } });
 
     expect(findFirstGlDropdownItem().attributes('href')).toBe(artifacts[0].path);
-
-    expect(findFirstGlDropdownItem().text()).toBe(`Download ${artifacts[0].name} artifact`);
+    expect(findFirstGlDropdownItem().text()).toBe(artifacts[0].name);
   });
 
   describe('with a failing request', () => {

@@ -49,7 +49,7 @@ const MERGE_SUCCESS_STATUS = 'success';
 const MERGE_HOOK_VALIDATION_ERROR_STATUS = 'hook_validation_error';
 
 const { transitions } = STATE_MACHINE;
-const { MERGE, MERGED, MERGE_FAILURE } = transitions;
+const { MERGE, MERGED, MERGE_FAILURE, AUTO_MERGE } = transitions;
 
 export default {
   name: 'ReadyToMerge',
@@ -365,7 +365,11 @@ export default {
       }
 
       this.isMakingRequest = true;
-      this.mr.transitionStateMachine({ transition: MERGE });
+
+      if (!useAutoMerge) {
+        this.mr.transitionStateMachine({ transition: MERGE });
+      }
+
       this.service
         .merge(options)
         .then((res) => res.data)
@@ -376,6 +380,7 @@ export default {
 
           if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
             eventHub.$emit('MRWidgetUpdateRequested');
+            this.mr.transitionStateMachine({ transition: AUTO_MERGE });
           } else if (data.status === MERGE_SUCCESS_STATUS) {
             this.initiateMergePolling();
           } else if (hasError) {

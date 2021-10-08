@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { __, s__, n__, sprintf } from '~/locale';
 
 export const ADD_DISCUSSION_COMMENT_ERROR = s__(
@@ -27,12 +26,6 @@ export const DESIGN_NOT_FOUND_ERROR = __('Could not find design.');
 
 export const DESIGN_VERSION_NOT_EXIST_ERROR = __('Requested design version does not exist.');
 
-const DESIGN_UPLOAD_SKIPPED_MESSAGE = s__('DesignManagement|Upload skipped.');
-
-const ALL_DESIGNS_SKIPPED_MESSAGE = `${DESIGN_UPLOAD_SKIPPED_MESSAGE} ${s__(
-  'The designs you tried uploading did not change.',
-)}`;
-
 export const EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE = __(
   'You can only upload one design when dropping onto an existing design.',
 );
@@ -53,12 +46,9 @@ export const DELETE_DESIGN_TODO_ERROR = __('Failed to remove a to-do item for th
 
 export const TOGGLE_TODO_ERROR = __('Failed to toggle the to-do status for the design.');
 
-const MAX_SKIPPED_FILES_LISTINGS = 5;
+const DESIGN_UPLOAD_SKIPPED_MESSAGE = s__('DesignManagement|Upload skipped. %{reason}');
 
-const oneDesignSkippedMessage = (filename) =>
-  `${DESIGN_UPLOAD_SKIPPED_MESSAGE} ${sprintf(s__('DesignManagement|%{filename} did not change.'), {
-    filename,
-  })}`;
+const MAX_SKIPPED_FILES_LISTINGS = 5;
 
 /**
  * Return warning message indicating that some (but not all) uploaded
@@ -66,25 +56,40 @@ const oneDesignSkippedMessage = (filename) =>
  * @param {Array<{ filename }>} skippedFiles
  */
 const someDesignsSkippedMessage = (skippedFiles) => {
-  const designsSkippedMessage = `${DESIGN_UPLOAD_SKIPPED_MESSAGE} ${s__(
-    'Some of the designs you tried uploading did not change:',
-  )}`;
-
-  const moreText = sprintf(s__(`DesignManagement|and %{moreCount} more.`), {
-    moreCount: skippedFiles.length - MAX_SKIPPED_FILES_LISTINGS,
-  });
-
-  return `${designsSkippedMessage} ${skippedFiles
+  const skippedFilesList = skippedFiles
     .slice(0, MAX_SKIPPED_FILES_LISTINGS)
     .map(({ filename }) => filename)
-    .join(', ')}${skippedFiles.length > MAX_SKIPPED_FILES_LISTINGS ? `, ${moreText}` : '.'}`;
+    .join(', ');
+
+  const uploadSkippedReason =
+    skippedFiles.length > MAX_SKIPPED_FILES_LISTINGS
+      ? sprintf(
+          s__(
+            'DesignManagement|Some of the designs you tried uploading did not change: %{skippedFiles} and %{moreCount} more.',
+          ),
+          {
+            skippedFiles: skippedFilesList,
+            moreCount: skippedFiles.length - MAX_SKIPPED_FILES_LISTINGS,
+          },
+        )
+      : sprintf(
+          s__(
+            'DesignManagement|Some of the designs you tried uploading did not change: %{skippedFiles}.',
+          ),
+          { skippedFiles: skippedFilesList },
+        );
+
+  return sprintf(DESIGN_UPLOAD_SKIPPED_MESSAGE, {
+    reason: uploadSkippedReason,
+  });
 };
 
-export const designDeletionError = ({ singular = true } = {}) => {
-  const design = singular ? __('a design') : __('designs');
-  return sprintf(s__('Could not archive %{design}. Please try again.'), {
-    design,
-  });
+export const designDeletionError = (designsCount = 1) => {
+  return n__(
+    'Failed to archive a design. Please try again.',
+    'Failed to archive designs. Please try again.',
+    designsCount,
+  );
 };
 
 /**
@@ -101,7 +106,18 @@ export const designUploadSkippedWarning = (uploadedDesigns, skippedFiles) => {
   if (skippedFiles.length === uploadedDesigns.length) {
     const { filename } = skippedFiles[0];
 
-    return n__(oneDesignSkippedMessage(filename), ALL_DESIGNS_SKIPPED_MESSAGE, skippedFiles.length);
+    const uploadSkippedReason = sprintf(
+      n__(
+        'DesignManagement|%{filename} did not change.',
+        'DesignManagement|The designs you tried uploading did not change.',
+        skippedFiles.length,
+      ),
+      { filename },
+    );
+
+    return sprintf(DESIGN_UPLOAD_SKIPPED_MESSAGE, {
+      reason: uploadSkippedReason,
+    });
   }
 
   return someDesignsSkippedMessage(skippedFiles);

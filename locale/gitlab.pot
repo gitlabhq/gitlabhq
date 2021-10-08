@@ -9414,9 +9414,6 @@ msgstr ""
 msgid "Could not apply %{name} command."
 msgstr ""
 
-msgid "Could not archive %{design}. Please try again."
-msgstr ""
-
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
@@ -11520,7 +11517,9 @@ msgid "DesignManagement|%{current_design} of %{designs_count}"
 msgstr ""
 
 msgid "DesignManagement|%{filename} did not change."
-msgstr ""
+msgid_plural "DesignManagement|The designs you tried uploading did not change."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
@@ -11624,6 +11623,12 @@ msgstr ""
 msgid "DesignManagement|Select all"
 msgstr ""
 
+msgid "DesignManagement|Some of the designs you tried uploading did not change: %{skippedFiles} and %{moreCount} more."
+msgstr ""
+
+msgid "DesignManagement|Some of the designs you tried uploading did not change: %{skippedFiles}."
+msgstr ""
+
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
@@ -11639,13 +11644,10 @@ msgstr ""
 msgid "DesignManagement|Upload designs"
 msgstr ""
 
-msgid "DesignManagement|Upload skipped."
+msgid "DesignManagement|Upload skipped. %{reason}"
 msgstr ""
 
 msgid "DesignManagement|Your designs are being copied and are on their way… Please refresh to update."
-msgstr ""
-
-msgid "DesignManagement|and %{moreCount} more."
 msgstr ""
 
 msgid "Designs"
@@ -12128,9 +12130,6 @@ msgid "Download %{format}"
 msgstr ""
 
 msgid "Download %{format}:"
-msgstr ""
-
-msgid "Download %{name} artifact"
 msgstr ""
 
 msgid "Download (%{fileSizeReadable})"
@@ -13976,6 +13975,11 @@ msgstr ""
 
 msgid "Failed to apply commands."
 msgstr ""
+
+msgid "Failed to archive a design. Please try again."
+msgid_plural "Failed to archive designs. Please try again."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Failed to assign a reviewer because no user was found."
 msgstr ""
@@ -31736,9 +31740,6 @@ msgstr ""
 msgid "Some common domains are not allowed. %{learn_more_link}."
 msgstr ""
 
-msgid "Some of the designs you tried uploading did not change:"
-msgstr ""
-
 msgid "Someone edited the issue at the same time you did. Please check out %{linkStart}the issue%{linkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
@@ -33853,9 +33854,6 @@ msgid "The dependency list details information about the components used within 
 msgstr ""
 
 msgid "The deployment of this job to %{environmentLink} did not succeed."
-msgstr ""
-
-msgid "The designs you tried uploading did not change."
 msgstr ""
 
 msgid "The directory has been successfully created."
@@ -39633,9 +39631,6 @@ msgstr ""
 msgid "a deleted user"
 msgstr ""
 
-msgid "a design"
-msgstr ""
-
 msgid "about 1 hour"
 msgid_plural "about %d hours"
 msgstr[0] ""
@@ -40171,9 +40166,6 @@ msgid "deploy"
 msgstr ""
 
 msgid "design"
-msgstr ""
-
-msgid "designs"
 msgstr ""
 
 msgid "detached"
