@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, api
 ---
 
 # Merge request approvals API **(PREMIUM)**
@@ -15,8 +14,7 @@ in the project. Must be authenticated for all endpoints.
 
 ### Get Configuration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/183) in GitLab 10.6.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 You can request information about a project's approval configuration using the
 following endpoint:
@@ -44,8 +42,7 @@ GET /projects/:id/approvals
 
 ### Change configuration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/183) in GitLab 10.6.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 If you are allowed to, you can change approval configuration using the following
 endpoint:
@@ -180,7 +177,7 @@ GET /projects/:id/approval_rules
 
 ### Get a single project-level rule
 
-> - Introduced 13.7.
+> Introduced in GitLab 13.7.
 
 You can request information about a single project approval rules using the following endpoint:
 
@@ -297,7 +294,7 @@ POST /projects/:id/approval_rules
 | `rule_type`            | string  | no       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular`.
 | `user_ids`             | Array   | no       | The ids of users as approvers                                    |
 | `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
-| `protected_branch_ids` | Array   | no       | **(PREMIUM)** The ids of protected branches to scope the rule by |
+| `protected_branch_ids` | Array   | no       | **(PREMIUM)** The ids of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
 
 ```json
 {
@@ -420,7 +417,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 | `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
 | `user_ids`             | Array   | no       | The ids of users as approvers                                    |
 | `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
-| `protected_branch_ids` | Array   | no       | **(PREMIUM)** The ids of protected branches to scope the rule by |
+| `protected_branch_ids` | Array   | no       | **(PREMIUM)** The ids of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
 
 ```json
 {
@@ -527,8 +524,7 @@ Configuration for approvals on a specific Merge Request. Must be authenticated f
 
 ### Get Configuration
 
-> - Introduced in GitLab 8.9.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 You can request information about a merge request's approval status using the
 following endpoint:
@@ -574,8 +570,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 ### Change approval configuration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/183) in GitLab 10.6.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 If you are allowed to, you can change `approvals_required` using the following
 endpoint:
@@ -955,8 +950,7 @@ These are system generated rules.
 
 ## Approve Merge Request
 
-> - Introduced in GitLab 8.9.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 If you are allowed to, you can approve a merge request using the following
 endpoint:
@@ -1019,8 +1013,7 @@ does not match, the response code is `409`.
 
 ## Unapprove Merge Request
 
-> - Introduced in GitLab 9.0.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 If you did approve a merge request, you can unapprove it using the following
 endpoint:

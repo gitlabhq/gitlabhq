@@ -1,5 +1,6 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __ } from '../../../locale';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
@@ -15,13 +16,18 @@ export default {
     ParentRow,
     GlButton,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin()],
   apollo: {
     projectPath: {
       query: projectPathQuery,
     },
   },
   props: {
+    commits: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     path: {
       type: String,
       required: true,
@@ -48,6 +54,7 @@ export default {
   data() {
     return {
       projectPath: '',
+      rowNumbers: {},
     };
   },
   computed: {
@@ -73,9 +80,36 @@ export default {
       return ['', '/'].indexOf(this.path) === -1;
     },
   },
+  watch: {
+    $route: function routeChange() {
+      this.$options.totalRowsLoaded = -1;
+    },
+  },
+  totalRowsLoaded: -1,
   methods: {
     showMore() {
       this.$emit('showMore');
+    },
+    generateRowNumber(id) {
+      if (!this.glFeatures.lazyLoadCommits) {
+        return 0;
+      }
+
+      if (!this.rowNumbers[id] && this.rowNumbers[id] !== 0) {
+        this.$options.totalRowsLoaded += 1;
+        this.rowNumbers[id] = this.$options.totalRowsLoaded;
+      }
+
+      return this.rowNumbers[id];
+    },
+    getCommit(fileName, type) {
+      if (!this.glFeatures.lazyLoadCommits) {
+        return {};
+      }
+
+      return this.commits.find(
+        (commitEntry) => commitEntry.fileName === fileName && commitEntry.type === type,
+      );
     },
   },
 };
@@ -116,6 +150,9 @@ export default {
               :lfs-oid="entry.lfsOid"
               :loading-path="loadingPath"
               :total-entries="totalEntries"
+              :row-number="generateRowNumber(entry.id)"
+              :commit-info="getCommit(entry.name, entry.type)"
+              v-on="$listeners"
             />
           </template>
           <template v-if="isLoading">

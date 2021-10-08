@@ -255,6 +255,28 @@ RSpec.shared_examples "redis_shared_examples" do
     end
   end
 
+  describe '#db' do
+    let(:rails_env) { 'development' }
+
+    subject { described_class.new(rails_env).db }
+
+    context 'with old format' do
+      let(:config_file_name) { config_old_format_host }
+
+      it 'returns the correct db' do
+        expect(subject).to eq(redis_database)
+      end
+    end
+
+    context 'with new format' do
+      let(:config_file_name) { config_new_format_host }
+
+      it 'returns the correct db' do
+        expect(subject).to eq(redis_database)
+      end
+    end
+  end
+
   describe '#sentinels' do
     subject { described_class.new(rails_env).sentinels }
 

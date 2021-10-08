@@ -31,25 +31,36 @@ exports[`Repository table row component renders a symlink table row 1`] = `
      
     <!---->
      
-    <!---->
+    <gl-icon-stub
+      class="ml-1"
+      name="lock"
+      size="12"
+      title="Locked by Root"
+    />
   </td>
    
   <td
     class="d-none d-sm-table-cell tree-commit cursor-default"
   >
-    <gl-skeleton-loading-stub
-      class="h-auto"
-      lines="1"
+    <gl-link-stub
+      class="str-truncated-100 tree-commit-link"
     />
+     
+    <gl-intersection-observer-stub>
+      <!---->
+    </gl-intersection-observer-stub>
   </td>
    
   <td
     class="tree-time-ago text-right cursor-default"
   >
-    <gl-skeleton-loading-stub
-      class="ml-auto h-auto w-50"
-      lines="1"
+    <timeago-tooltip-stub
+      cssclass=""
+      time="2019-01-01"
+      tooltipplacement="top"
     />
+     
+    <!---->
   </td>
 </tr>
 `;
@@ -85,25 +96,36 @@ exports[`Repository table row component renders table row 1`] = `
      
     <!---->
      
-    <!---->
+    <gl-icon-stub
+      class="ml-1"
+      name="lock"
+      size="12"
+      title="Locked by Root"
+    />
   </td>
    
   <td
     class="d-none d-sm-table-cell tree-commit cursor-default"
   >
-    <gl-skeleton-loading-stub
-      class="h-auto"
-      lines="1"
+    <gl-link-stub
+      class="str-truncated-100 tree-commit-link"
     />
+     
+    <gl-intersection-observer-stub>
+      <!---->
+    </gl-intersection-observer-stub>
   </td>
    
   <td
     class="tree-time-ago text-right cursor-default"
   >
-    <gl-skeleton-loading-stub
-      class="ml-auto h-auto w-50"
-      lines="1"
+    <timeago-tooltip-stub
+      cssclass=""
+      time="2019-01-01"
+      tooltipplacement="top"
     />
+     
+    <!---->
   </td>
 </tr>
 `;
@@ -139,25 +161,36 @@ exports[`Repository table row component renders table row for path with special 
      
     <!---->
      
-    <!---->
+    <gl-icon-stub
+      class="ml-1"
+      name="lock"
+      size="12"
+      title="Locked by Root"
+    />
   </td>
    
   <td
     class="d-none d-sm-table-cell tree-commit cursor-default"
   >
-    <gl-skeleton-loading-stub
-      class="h-auto"
-      lines="1"
+    <gl-link-stub
+      class="str-truncated-100 tree-commit-link"
     />
+     
+    <gl-intersection-observer-stub>
+      <!---->
+    </gl-intersection-observer-stub>
   </td>
    
   <td
     class="tree-time-ago text-right cursor-default"
   >
-    <gl-skeleton-loading-stub
-      class="ml-auto h-auto w-50"
-      lines="1"
+    <timeago-tooltip-stub
+      cssclass=""
+      time="2019-01-01"
+      tooltipplacement="top"
     />
+     
+    <!---->
   </td>
 </tr>
 `;

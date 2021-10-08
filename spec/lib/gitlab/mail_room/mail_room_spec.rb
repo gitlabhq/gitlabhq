@@ -93,7 +93,7 @@ RSpec.describe Gitlab::MailRoom do
     end
 
     describe 'setting up redis settings' do
-      let(:fake_redis_queues) { double(url: "localhost", sentinels: "yes, them", sentinels?: true) }
+      let(:fake_redis_queues) { double(url: "localhost", db: 99, sentinels: "yes, them", sentinels?: true) }
 
       before do
         allow(Gitlab::Redis::Queues).to receive(:new).and_return(fake_redis_queues)
@@ -103,6 +103,7 @@ RSpec.describe Gitlab::MailRoom do
         config = described_class.enabled_configs.first
 
         expect(config[:redis_url]).to eq('localhost')
+        expect(config[:redis_db]).to eq(99)
         expect(config[:sentinels]).to eq('yes, them')
       end
     end

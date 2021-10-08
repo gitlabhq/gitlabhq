@@ -94,7 +94,7 @@ RSpec.describe PagesDomain do
 
       with_them do
         it "is adds the expected errors" do
-          expect(pages_domain.errors.keys).to eq errors_on
+          expect(pages_domain.errors.attribute_names).to eq errors_on
         end
       end
     end
@@ -155,7 +155,7 @@ RSpec.describe PagesDomain do
         it "adds error to certificate" do
           domain.valid?
 
-          expect(domain.errors.keys).to contain_exactly(:key, :certificate)
+          expect(domain.errors.attribute_names).to contain_exactly(:key, :certificate)
         end
       end
 
@@ -165,7 +165,7 @@ RSpec.describe PagesDomain do
 
           domain.valid?
 
-          expect(domain.errors.keys).to contain_exactly(:key)
+          expect(domain.errors.attribute_names).to contain_exactly(:key)
         end
       end
     end

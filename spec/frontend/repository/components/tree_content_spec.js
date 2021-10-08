@@ -3,6 +3,13 @@ import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.g
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
 import TreeContent from '~/repository/components/tree_content.vue';
+import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
+
+jest.mock('~/repository/commits_service', () => ({
+  loadCommits: jest.fn(() => Promise.resolve()),
+  isRequested: jest.fn(),
+  resetRequestedCommits: jest.fn(),
+}));
 
 let vm;
 let $apollo;
@@ -23,6 +30,7 @@ function factory(path, data = () => ({})) {
       glFeatures: {
         increasePageSizeExponentially: true,
         paginatedTreeGraphqlQuery: true,
+        lazyLoadCommits: true,
       },
     },
   });
@@ -45,7 +53,7 @@ describe('Repository table component', () => {
     expect(vm.find(FilePreview).exists()).toBe(true);
   });
 
-  it('trigger fetchFiles when mounted', async () => {
+  it('trigger fetchFiles and resetRequestedCommits when mounted', async () => {
     factory('/');
 
     jest.spyOn(vm.vm, 'fetchFiles').mockImplementation(() => {});
@@ -53,6 +61,7 @@ describe('Repository table component', () => {
     await vm.vm.$nextTick();
 
     expect(vm.vm.fetchFiles).toHaveBeenCalled();
+    expect(resetRequestedCommits).toHaveBeenCalled();
   });
 
   describe('normalizeData', () => {
@@ -179,5 +188,16 @@ describe('Repository table component', () => {
         },
       });
     });
+  });
+
+  it('loads commit data when row-appear event is emitted', () => {
+    const path = 'some/path';
+    const rowNumber = 1;
+
+    factory(path);
+    findFileTable().vm.$emit('row-appear', { hasCommit: false, rowNumber });
+
+    expect(isRequested).toHaveBeenCalledWith(rowNumber);
+    expect(loadCommits).toHaveBeenCalledWith('', path, '', rowNumber);
   });
 });

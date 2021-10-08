@@ -2,17 +2,14 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.html'
 ---
 
 # GitLab Git Large File Storage (LFS) Administration **(FREE SELF)**
 
-> - Git LFS is supported in GitLab starting with version 8.2.
-> - Support for object storage, such as AWS S3, was introduced in 10.0.
-> - LFS is enabled in GitLab self-managed instances by default.
-
 Documentation about how to use Git LFS are under [Managing large binary files with Git LFS doc](../../topics/git/lfs/index.md).
+
+LFS is enabled in GitLab self-managed instances by default.
 
 ## Requirements
 
@@ -346,8 +343,6 @@ git lfs version
 
 ## Known limitations
 
-- Support for removing unreferenced LFS objects was added in 8.14 onward.
-- LFS authentications via SSH was added with GitLab 8.12.
 - Only compatible with the Git LFS client versions 1.1.0 and later, or 1.0.2.
 - The storage statistics count each LFS object for
   every project linking to it.

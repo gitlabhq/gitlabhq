@@ -1,0 +1,11 @@
+fragment Token on ClusterAgentToken {
+  id
+  createdAt
+  description
+  lastUsedAt
+  name
+
+  createdByUser {
+    name
+  }
+}

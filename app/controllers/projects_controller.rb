@@ -33,6 +33,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :export_rate_limit, only: [:export, :download_export, :generate_new_export]
 
   before_action do
+    push_frontend_feature_flag(:lazy_load_commits, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_text_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)

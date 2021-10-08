@@ -8,6 +8,7 @@ import {
   GlIcon,
   GlHoverLoadDirective,
   GlSafeHtmlDirective,
+  GlIntersectionObserver,
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import filesQuery from 'shared_queries/repository/files.query.graphql';
@@ -30,6 +31,7 @@ export default {
     GlIcon,
     TimeagoTooltip,
     FileIcon,
+    GlIntersectionObserver,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -48,10 +50,23 @@ export default {
           maxOffset: this.totalEntries,
         };
       },
+      skip() {
+        return this.glFeatures.lazyLoadCommits;
+      },
     },
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   props: {
+    commitInfo: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    rowNumber: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     totalEntries: {
       type: Number,
       required: true,
@@ -113,9 +128,13 @@ export default {
   data() {
     return {
       commit: null,
+      hasRowAppeared: false,
     };
   },
   computed: {
+    commitData() {
+      return this.glFeatures.lazyLoadCommits ? this.commitInfo : this.commit;
+    },
     refactorBlobViewerEnabled() {
       return this.glFeatures.refactorBlobViewer;
     },
@@ -148,7 +167,10 @@ export default {
       return this.sha.slice(0, 8);
     },
     hasLockLabel() {
-      return this.commit && this.commit.lockLabel;
+      return this.commitData && this.commitData.lockLabel;
+    },
+    showSkeletonLoader() {
+      return !this.commitData && this.hasRowAppeared;
     },
   },
   methods: {
@@ -178,6 +200,19 @@ export default {
     },
     apolloQuery(query, variables) {
       this.$apollo.query({ query, variables });
+    },
+    rowAppeared() {
+      this.hasRowAppeared = true;
+
+      if (this.glFeatures.lazyLoadCommits) {
+        this.$emit('row-appear', {
+          rowNumber: this.rowNumber,
+          hasCommit: Boolean(this.commitInfo),
+        });
+      }
+    },
+    rowDisappeared() {
+      this.hasRowAppeared = false;
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -222,7 +257,7 @@ export default {
       <gl-icon
         v-if="hasLockLabel"
         v-gl-tooltip
-        :title="commit.lockLabel"
+        :title="commitData.lockLabel"
         name="lock"
         :size="12"
         class="ml-1"
@@ -230,17 +265,19 @@ export default {
     </td>
     <td class="d-none d-sm-table-cell tree-commit cursor-default">
       <gl-link
-        v-if="commit"
-        v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
-        :href="commit.commitPath"
-        :title="commit.message"
+        v-if="commitData"
+        v-safe-html:[$options.safeHtmlConfig]="commitData.titleHtml"
+        :href="commitData.commitPath"
+        :title="commitData.message"
         class="str-truncated-100 tree-commit-link"
       />
-      <gl-skeleton-loading v-else :lines="1" class="h-auto" />
+      <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
+        <gl-skeleton-loading v-if="showSkeletonLoader" :lines="1" class="h-auto" />
+      </gl-intersection-observer>
     </td>
     <td class="tree-time-ago text-right cursor-default">
-      <timeago-tooltip v-if="commit" :time="commit.committedDate" />
-      <gl-skeleton-loading v-else :lines="1" class="ml-auto h-auto w-50" />
+      <timeago-tooltip v-if="commitData" :time="commitData.committedDate" />
+      <gl-skeleton-loading v-if="showSkeletonLoader" :lines="1" class="ml-auto h-auto w-50" />
     </td>
   </tr>
 </template>

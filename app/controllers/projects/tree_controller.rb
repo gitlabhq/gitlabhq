@@ -16,6 +16,7 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:create_dir]
 
   before_action do
+    push_frontend_feature_flag(:lazy_load_commits, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_tree_graphql_query, @project, default_enabled: :yaml)
   end
 

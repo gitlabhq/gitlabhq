@@ -4,7 +4,6 @@
   = s_('DeployTokens|Create a new deploy token for all projects in this group. %{link_start}What are deploy tokens?%{link_end}').html_safe % { link_start: group_deploy_tokens_help_link_start, link_end: '</a>'.html_safe }
 
 = form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post, remote: Feature.enabled?(:ajax_new_deploy_token, group_or_project) do |f|
-  = form_errors(token)
 
   .form-group
     = f.label :name, class: 'label-bold'

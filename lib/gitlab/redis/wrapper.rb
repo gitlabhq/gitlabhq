@@ -96,6 +96,8 @@ module Gitlab
         end
 
         def instrumentation_class
+          return unless defined?(::Gitlab::Instrumentation::Redis)
+
           "::Gitlab::Instrumentation::Redis::#{store_name}".constantize
         end
       end
@@ -110,6 +112,10 @@ module Gitlab
 
       def url
         raw_config_hash[:url]
+      end
+
+      def db
+        redis_store_options[:db]
       end
 
       def sentinels

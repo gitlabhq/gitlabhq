@@ -9,10 +9,24 @@ RSpec.describe Gitlab::Redis::Queues do
   include_examples "redis_shared_examples"
 
   describe '#raw_config_hash' do
-    it 'has a legacy default URL' do
-      expect(subject).to receive(:fetch_config) { false }
+    before do
+      expect(subject).to receive(:fetch_config) { config }
+    end
 
-      expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6381' )
+    context 'when the config url is blank' do
+      let(:config) { nil }
+
+      it 'has a legacy default URL' do
+        expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6381' )
+      end
+    end
+
+    context 'when the config url is present' do
+      let(:config) { { url: 'redis://localhost:1111' } }
+
+      it 'sets the configured url' do
+        expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:1111' )
+      end
     end
   end
 end

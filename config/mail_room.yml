@@ -29,6 +29,7 @@
       :delivery_method: sidekiq
       :delivery_options:
         :redis_url: <%= config[:redis_url].to_json %>
+        :redis_db: <%= config[:redis_db] %>
         :namespace: <%= Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE %>
         :queue: <%= config[:queue] %>
         :worker: <%= config[:worker] %>

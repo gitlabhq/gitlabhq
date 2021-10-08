@@ -265,8 +265,8 @@ praefect['database_direct_dbname'] = 'praefect_production'
 #praefect['database_direct_sslrootcert'] = '...'
 ```
 
-We recommend using PgBouncer with `session` pool mode instead. You can use the [bundled
-PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
+We recommend using PgBouncer with `session` pool mode instead. You can use the
+[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
 manually](https://www.pgbouncer.org/config.html).
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools,
@@ -475,8 +475,8 @@ On the **Praefect** node:
 
 1. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2013) in GitLab 13.1 and later, enable [distribution of reads](index.md#distributed-reads).
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure
@@ -499,16 +499,16 @@ On the **Praefect** node:
      running reconfigure automatically when running commands such as `apt-get update`. This way any
      additional configuration changes can be done and then reconfigure can be run manually.
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
 1. To ensure that Praefect [has updated its Prometheus listen
-   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734), [restart
-   Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
+   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
+   [restart Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
 
    ```shell
    gitlab-ctl restart praefect
@@ -695,8 +695,8 @@ Particular attention should be shown to:
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
   `gitaly-2`, and `gitaly-3` as Gitaly storage names.
 
-For more information on Gitaly server configuration, see our [Gitaly
-documentation](configure_gitaly.md#configure-gitaly-servers).
+For more information on Gitaly server configuration, see our
+[Gitaly documentation](configure_gitaly.md#configure-gitaly-servers).
 
 1. SSH into the **Gitaly** node and login as root:
 
@@ -803,16 +803,16 @@ documentation](configure_gitaly.md#configure-gitaly-servers).
    })
    ```
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   Gitaly](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure Gitaly](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
 1. To ensure that Gitaly [has updated its Prometheus listen
-   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734), [restart
-   Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
+   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
+   [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
 
    ```shell
    gitlab-ctl restart gitaly
@@ -1044,8 +1044,8 @@ To get started quickly:
    grafana['disable_login_form'] = false
    ```
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure

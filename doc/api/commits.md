@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, api
 ---
 
 # Commits API **(FREE)**
@@ -74,8 +73,6 @@ Example response:
 ```
 
 ## Create a commit with multiple files and actions
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6096) in GitLab 8.13.
 
 Create a commit by posting a JSON payload
 
@@ -256,8 +253,6 @@ Example response:
 
 ## Get references a commit is pushed to
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15026) in GitLab 10.6
-
 Get all references (from branches or tags) a commit is pushed to.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
@@ -290,8 +285,6 @@ Example response:
 ```
 
 ## Cherry-pick a commit
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047) in GitLab 8.15.
 
 Cherry-picks a commit to a given branch.
 
@@ -365,8 +358,6 @@ In the event of a failure, an error displays that is identical to a failure with
 dry run.
 
 ## Revert a commit
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22919) in GitLab 11.5.
 
 Reverts a commit in a given branch.
 
@@ -622,7 +613,7 @@ Example response:
 
 ## Commit status
 
-In GitLab 8.1 and later, this is the new commit status API.
+This is the commit status API for use with GitLab.
 
 ### List the statuses of a commit
 
@@ -751,8 +742,6 @@ Example response:
 ```
 
 ## List Merge Requests associated with a commit
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18004) in GitLab 10.7.
 
 Get a list of Merge Requests related to the specified commit.
 

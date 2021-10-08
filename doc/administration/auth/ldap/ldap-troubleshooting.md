@@ -55,9 +55,8 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 #### Query LDAP **(PREMIUM SELF)**
 
 The following allows you to perform a search in LDAP using the rails console.
-Depending on what you're trying to do, it may make more sense to query [a
-user](#query-a-user-in-ldap) or [a group](#query-a-group-in-ldap) directly, or
-even [use `ldapsearch`](#ldapsearch) instead.
+Depending on what you're trying to do, it may make more sense to query [a user](#query-a-user-in-ldap)
+or [a group](#query-a-group-in-ldap) directly, or even [use `ldapsearch`](#ldapsearch) instead.
 
 ```ruby
 adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain')
@@ -355,11 +354,10 @@ things to check to debug the situation.
   1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
-- You've waited an hour or [the configured
-  interval](index.md#adjust-ldap-group-sync-schedule) for the group to
-  sync. To speed up the process, either go to the GitLab group **Group information > Members**
-  and press **Sync now** (sync one group) or [run the group sync Rake
-  task](../../raketasks/ldap.md#run-a-group-sync) (sync all groups).
+- You've waited an hour or [the configured interval](index.md#adjust-ldap-group-sync-schedule) for
+  the group to sync. To speed up the process, either go to the GitLab group **Group information > Members**
+  and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
+  (sync all groups).
 
 If all of the above looks good, jump in to a little more advanced debugging in
 the rails console.
@@ -371,8 +369,8 @@ the rails console.
 1. Look through the output of the sync. See [example log
    output](#example-console-output-after-a-group-sync)
    for how to read the output.
-1. If you still aren't able to see why the user isn't being added, [query the
-   LDAP group directly](#query-a-group-in-ldap) to see what members are listed.
+1. If you still aren't able to see why the user isn't being added, [query the LDAP group directly](#query-a-group-in-ldap)
+   to see what members are listed.
 1. Is the user's DN or UID in one of the lists from the above output? One of the DNs or
    UIDs here should match the 'Identifier' from the LDAP identity checked earlier. If it doesn't,
    the user does not appear to be in the LDAP group.
@@ -398,8 +396,8 @@ GitLab syncs the `admin_group`.
 #### Sync all groups
 
 NOTE:
-To sync all groups manually when debugging is unnecessary, [use the Rake
-task](../../raketasks/ldap.md#run-a-group-sync) instead.
+To sync all groups manually when debugging is unnecessary,
+[use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
 
 The output from a manual [group sync](index.md#group-sync) can show you what happens
 when GitLab syncs its LDAP group memberships against LDAP.

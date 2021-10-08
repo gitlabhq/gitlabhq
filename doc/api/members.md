@@ -561,7 +561,12 @@ Example response:
 
 ## Remove a member from a group or project
 
-Removes a user from a group or project.
+Removes a user from a group or project where the user has been explicitly assigned a role.
+
+The user needs to be a group member to qualify for removal.
+For example, if the user was added directly to a project within the group but not this
+group explicitly, you cannot use this API to remove them. See 
+[Remove a billable member from a group](#remove-a-billable-member-from-a-group) for an alternative approach.
 
 ```plaintext
 DELETE /groups/:id/members/:user_id

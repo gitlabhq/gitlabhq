@@ -7,81 +7,100 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.htm
 
 # Pull from a remote repository **(PREMIUM)**
 
-> - [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab/-/issues/10871) in GitLab 11.11.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
-You can set up a repository to automatically have its branches, tags, and commits updated from an
-upstream repository.
+You can use the GitLab interface to browse the content and activity of a repository,
+even if it isn't hosted on GitLab. Create a pull [mirror](index.md) to copy the
+branches, tags, and commits from an upstream repository to yours.
 
-If a repository you're interested in is located on a different server, and you want
-to browse its content and its activity using the GitLab interface, you can configure
-mirror pulling:
+Unlike [push mirrors](push.md), pull mirrors retrieve changes from an upstream (remote)
+repository on a scheduled basis. To prevent the mirror from diverging from the upstream
+repository, don't push commits directly to the downstream mirror. Push commits to
+the upstream repository instead. Changes in the remote repository are pulled into the GitLab repository, either:
 
-1. If your remote repository is on GitHub and you have
-   [two-factor authentication (2FA) configured](https://docs.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa),
-   create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token).
-   with the `repo` scope. If 2FA is enabled, this personal access
-   token serves as your GitHub password.
-1. In your project, go to **Settings > Repository**, and then expand the
-   **Mirroring repositories** section.
-1. In the **Git repository URL** field, enter a repository URL. Include the username
-   in the URL if required: `https://MYUSERNAME@github.com/group/PROJECTNAME.git`
-1. In the **Mirror direction** dropdown, select **Pull**.
-1. In the **Authentication method** dropdown, select your authentication method.
-1. Select from the following checkboxes, if needed:
-   - **Overwrite diverged branches**
-   - **Trigger pipelines for mirror updates**
+- Automatically in a certain period of time. Self-managed instances can
+  configure [pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval).
+- When an administrator [force-updates the mirror](index.md#force-an-update).
+- When an [API call triggers an update](#trigger-an-update-by-using-the-api).
+
+By default, if any branch or tag on the downstream pull mirror diverges from the
+local repository, GitLab stops updating the branch. This prevents data loss.
+Deleted branches and tags in the upstream repository are not reflected in the
+downstream repository.
+
+## How pull mirroring works
+
+After you configure a GitLab repository as a pull mirror:
+
+1. GitLab adds the repository to a queue.
+1. Once per minute, a Sidekiq cron job schedules repository mirrors to update, based on:
+   - Available capacity, determined by Sidekiq settings. For GitLab.com, read
+     [GitLab.com Sidekiq settings](../../../gitlab_com/index.md#sidekiq).
+   - How many mirrors are already in the queue and due for updates. Being due depends
+     on when the repository mirror was last updated, and how many times updates have been retried.
+1. Sidekiq becomes available to process updates, mirrors are updated. If the update process:
+   - **Succeeds**: An update is enqueued again with at least a 30 minute wait.
+   - **Fails**: The update is attempted again later. After 14 failures, a mirror is marked as a
+     [hard failure](#hard-failure) and is no longer enqueued for updates. A branch diverging
+     from its upstream counterpart can cause failures. To prevent branches from
+     diverging, configure [Overwrite diverged branches](#overwrite-diverged-branches) when
+     you create your mirror.
+
+## Configure pull mirroring
+
+Prerequisite:
+
+- If your remote repository is on GitHub and you have
+  [two-factor authentication (2FA) configured](https://docs.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa),
+  create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+  with the `repo` scope. If 2FA is enabled, this personal access
+  token serves as your GitHub password.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Mirroring repositories**.
+1. Enter the **Git repository URL**. Include the username
+   in the URL, if required: `https://MYUSERNAME@github.com/GROUPNAME/PROJECTNAME.git`
+1. In **Mirror direction**, select **Pull**.
+1. In **Authentication method**, select your authentication method.
+1. Select any of the options you need:
+   - [**Overwrite diverged branches**](#overwrite-diverged-branches)
+   - [**Trigger pipelines for mirror updates**](#trigger-pipelines-for-mirror-updates)
    - **Only mirror protected branches**
-1. Select **Mirror repository** to save the configuration.
+1. To save the configuration, select **Mirror repository**.
 
-Because GitLab is now set to pull changes from the upstream repository, you should not push commits
-directly to the repository on GitLab. Instead, any commits should be pushed to the remote repository.
-Changes pushed to the remote repository are pulled into the GitLab repository, either:
-
-- Automatically in a certain period of time.
-- When a [forced update](index.md#force-an-update) is initiated.
-
-WARNING:
-If you do manually update a branch in the GitLab repository, the branch becomes diverged from
-upstream, and GitLab no longer automatically updates this branch to prevent any changes from being lost.
-Deleted branches and tags in the upstream repository are not reflected in the GitLab repository.
-
-## How it works
-
-After the pull mirroring feature has been enabled for a repository, the repository is added to a queue.
-
-Once per minute, a Sidekiq cron job schedules repository mirrors to update, based on:
-
-- The capacity available. This is determined by Sidekiq settings. For GitLab.com, see [GitLab.com Sidekiq settings](../../../gitlab_com/index.md#sidekiq).
-- The number of repository mirrors already in the queue that are due to be updated. Being due depends on when the repository mirror was last updated and how many times it's been retried.
-
-Repository mirrors are updated as Sidekiq becomes available to process them. If the process of updating the repository mirror:
-
-- **Succeeds**: An update is enqueued again with at least a 30 minute wait.
-- **Fails**: (For example, a branch diverged from upstream.), The update attempted again later. Mirrors can fail
-  up to 14 times before they are no longer enqueued for updates.
-
-## Overwrite diverged branches
+### Overwrite diverged branches
 
 > Moved to GitLab Premium in 13.9.
 
-You can choose to always update your local branches with remote versions, even if they have
-diverged from the remote.
+To always update your local branches with remote versions, even if they have
+diverged from the remote, select **Overwrite diverged branches** when you
+create a mirror.
 
 WARNING:
 For mirrored branches, enabling this option results in the loss of local changes.
 
-To use this option, check the **Overwrite diverged branches** box when creating a repository mirror.
-
-## Trigger pipelines for mirror updates
+### Trigger pipelines for mirror updates
 
 > Moved to GitLab Premium in 13.9.
 
 If this option is enabled, pipelines trigger when branches or tags are
 updated from the remote repository. Depending on the activity of the remote
 repository, this may greatly increase the load on your CI runners. Only enable
-this if you know they can handle the load. CI uses the credentials
+this feature if you know they can handle the load. CI uses the credentials
 assigned when you set up pull mirroring.
+
+## Trigger an update by using the API
+
+> Moved to GitLab Premium in 13.9.
+
+Pull mirroring uses polling to detect new branches and commits added upstream,
+often minutes afterwards. If you notify GitLab by
+[API](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project),
+updates are pulled immediately.
+
+For more information, read
+[Start the pull mirroring process for a project](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project).
 
 ## Hard failure
 
@@ -95,12 +114,8 @@ and mirroring attempts stop. This failure is visible in either the:
 
 You can resume the project mirroring again by [forcing an update](index.md#force-an-update).
 
-## Trigger an update using the API
+## Related topics
 
-> Moved to GitLab Premium in 13.9.
-
-Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
-afterwards. If you notify GitLab by [API](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project),
-updates are pulled immediately.
-
-For more information, see [Start the pull mirroring process for a Project](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project).
+- Configure [pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
+  on self-managed instances.
+- Configure [pull mirroring through the API](../../../../api/projects.md#configure-pull-mirroring-for-a-project).

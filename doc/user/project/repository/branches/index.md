@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: concepts, howto
 ---
 
 # Branches **(FREE)**
@@ -57,8 +56,6 @@ To compare branches in a repository:
 
 ## Delete merged branches
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6449) in GitLab 8.14.
-
 ![Delete merged branches](img/delete_merged_branches.png)
 
 This feature allows merged branches to be deleted in bulk. Only branches that
@@ -82,8 +79,6 @@ Search results appear in the following order:
 - Other repositories with names that include search terms, sorted alphabetically.
 
 ## Branch filter search box
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22166) in GitLab 11.5.
 
 ![Branch filter search box](img/branch_filter_search_box_v13_12.png)
 

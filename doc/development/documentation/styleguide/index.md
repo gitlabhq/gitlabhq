@@ -1374,6 +1374,8 @@ Alert boxes are generated when one of these words is followed by a line break:
 - `FLAG:`
 - `NOTE:`
 - `WARNING:`
+- `INFO:` (Marketing only)
+- `DISCLAIMER:`
 
 For example:
 
@@ -1429,6 +1431,58 @@ It renders on the GitLab documentation site as:
 
 WARNING:
 This is something to be warned about.
+
+### Info
+
+The Marketing team uses the `INFO` alert to add information relating
+to sales and marketing efforts.
+
+The text in an `INFO:` alert always renders in a floating text box to the right of the text around it.
+To view the rendered GitLab docs site, check the review app in the MR. You might need to move the text up or down
+in the surrounding text, depending on where you'd like to floating box to appear.
+
+For example, if your page has text like this:
+
+```markdown
+This is an introductory paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+INFO:
+Here is some information. This information is an important addition to how you
+work with GitLab and you might want to consider it.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+```
+
+It renders on the GitLab documentation site as:
+
+This is an introductory paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+INFO:
+Here is some information. This information is an important addition to how you
+work with GitLab and you might want to consider it.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+### Disclaimer
+
+Use to describe future functionality only.
+For more information, see [Legal disclaimer for future features](#legal-disclaimer-for-future-features).
 
 ## Blockquotes
 
@@ -1622,6 +1676,24 @@ For example:
 - You cannot do this thing, but `[an issue exists](LINK)` to change this behavior.
 
 You can say that we plan to remove a feature.
+
+#### Legal disclaimer for future features
+
+If you **must** write about features we have not yet delivered, put this exact disclaimer near the content it applies to.
+
+```markdown
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+```
+
+If all of the content on the page is not available, use the disclaimer once at the top of the page.
+
+If the content in a topic is not ready, use the disclaimer in the topic.
 
 ### Removing versions after each major release
 

@@ -1,9 +1,11 @@
-import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlLink, GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
+
+const COMMIT_MOCK = { lockLabel: 'Locked by Root', committedDate: '2019-01-01' };
 
 let vm;
 let $router;
@@ -20,12 +22,14 @@ function factory(propsData = {}) {
       projectPath: 'gitlab-org/gitlab-ce',
       url: `https://test.com`,
       totalEntries: 10,
+      commitInfo: COMMIT_MOCK,
+      rowNumber: 123,
     },
     directives: {
       GlHoverLoad: createMockDirective(),
     },
     provide: {
-      glFeatures: { refactorBlobViewer: true },
+      glFeatures: { refactorBlobViewer: true, lazyLoadCommits: true },
     },
     mocks: {
       $router,
@@ -40,6 +44,7 @@ function factory(propsData = {}) {
 
 describe('Repository table row component', () => {
   const findRouterLink = () => vm.find(RouterLinkStub);
+  const findIntersectionObserver = () => vm.findComponent(GlIntersectionObserver);
 
   afterEach(() => {
     vm.destroy();
@@ -226,8 +231,6 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    vm.setData({ commit: { lockLabel: 'Locked by Root', committedDate: '2019-01-01' } });
-
     return vm.vm.$nextTick().then(() => {
       expect(vm.find(GlIcon).exists()).toBe(true);
       expect(vm.find(GlIcon).props('name')).toBe('lock');
@@ -245,5 +248,28 @@ describe('Repository table row component', () => {
     });
 
     expect(vm.find(FileIcon).props('loading')).toBe(true);
+  });
+
+  describe('row visibility', () => {
+    beforeEach(() => {
+      factory({
+        id: '1',
+        sha: '1',
+        path: 'test',
+        type: 'tree',
+        currentPath: '/',
+      });
+    });
+    it('emits a `row-appear` event', () => {
+      findIntersectionObserver().vm.$emit('appear');
+      expect(vm.emitted('row-appear')).toEqual([
+        [
+          {
+            hasCommit: true,
+            rowNumber: 123,
+          },
+        ],
+      ]);
+    });
   });
 });

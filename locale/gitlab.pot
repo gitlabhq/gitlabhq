@@ -3611,6 +3611,9 @@ msgstr ""
 msgid "An error occurred while fetching codequality mr diff reports."
 msgstr ""
 
+msgid "An error occurred while fetching commit data."
+msgstr ""
+
 msgid "An error occurred while fetching commits.  Retry the search."
 msgstr ""
 
@@ -14950,6 +14953,9 @@ msgstr ""
 msgid "General pipelines"
 msgstr ""
 
+msgid "General settings"
+msgstr ""
+
 msgid "Generate a default set of labels"
 msgstr ""
 
@@ -16010,6 +16016,9 @@ msgid "Group avatar"
 msgstr ""
 
 msgid "Group by"
+msgstr ""
+
+msgid "Group description"
 msgstr ""
 
 msgid "Group description (optional)"
@@ -20106,6 +20115,9 @@ msgstr ""
 msgid "Learn more about group-level project templates"
 msgstr ""
 
+msgid "Learn more about groups."
+msgstr ""
+
 msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced search configuration%{configuration_link_end} documentation. Changes won't take place until the index is %{recreated_link_start}recreated%{recreated_link_end}."
 msgstr ""
 
@@ -23969,6 +23981,9 @@ msgid "Optional"
 msgstr ""
 
 msgid "Optional parameter \"variables\" must be a Hash. Ex: variables[key1]=value1"
+msgstr ""
+
+msgid "Optional."
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
