@@ -7,7 +7,7 @@ type: reference
 
 # Metrics Reports **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9788) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10. Requires GitLab Runner 11.10 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9788) in GitLab 11.10. Requires GitLab Runner 11.10 and above.
 
 GitLab provides a lot of great reporting tools for things like [merge requests](../user/project/merge_requests/index.md) - [Unit test reports](unit_test_reports.md), [code quality](../user/project/merge_requests/code_quality.md), and performance tests. While JUnit is a great open framework for tests that "pass" or "fail", it is also important to see other types of metrics from a given change.
 

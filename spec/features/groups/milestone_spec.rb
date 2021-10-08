@@ -98,9 +98,11 @@ RSpec.describe 'Group milestones' do
       end
 
       it 'counts milestones correctly' do
-        expect(find('.top-area .active .badge').text).to eq("3")
-        expect(find('.top-area .closed .badge').text).to eq("3")
-        expect(find('.top-area .all .badge').text).to eq("6")
+        page.within '[data-testid="milestones-filter"]' do
+          expect(page).to have_content('Open 3')
+          expect(page).to have_content('Closed 3')
+          expect(page).to have_content('All 6')
+        end
       end
 
       it 'lists group and project milestones' do

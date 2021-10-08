@@ -1,6 +1,10 @@
-import { generateTreeList, getLowestSingleFolder, flattenTree } from '~/diffs/utils/workers';
+import {
+  generateTreeList,
+  getLowestSingleFolder,
+  flattenTree,
+} from '~/diffs/utils/tree_worker_utils';
 
-describe('~/diffs/utils/workers', () => {
+describe('~/diffs/utils/tree_worker_utils', () => {
   describe('generateTreeList', () => {
     let files;
 

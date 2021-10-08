@@ -94,7 +94,7 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 ## Specify a custom CI/CD configuration file
 
-> [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
+> Support for external `.gitlab-ci.yml` locations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) in GitLab 12.6.
 
 GitLab expects to find the CI/CD configuration file (`.gitlab-ci.yml`) in the project's root
 directory. However, you can specify an alternate filename path, including locations outside the project.
@@ -241,7 +241,7 @@ Use this regex for commonly used test tools.
 ### View code coverage history
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
-> - [Graph introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
+> - Graph [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
 
 To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data.

@@ -1,13 +1,15 @@
-%ul.nav-links.mobile-separator.nav.nav-tabs
-  %li{ class: milestone_class_for_state(params[:state], 'opened', true) }>
-    = link_to milestones_filter_path(state: 'opened') do
-      = _('Open')
-      %span.badge.badge-pill= counts[:opened]
-  %li{ class: milestone_class_for_state(params[:state], 'closed') }>
-    = link_to milestones_filter_path(state: 'closed', sort: 'due_date_desc') do
-      = _('Closed')
-      %span.badge.badge-pill= counts[:closed]
-  %li{ class: milestone_class_for_state(params[:state], 'all') }>
-    = link_to milestones_filter_path(state: 'all', sort: 'due_date_desc') do
-      = _('All')
-      %span.badge.badge-pill= counts[:all]
+-  count_badge_classes = 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex'
+
+= gl_tabs_nav( {class: 'gl-border-b-0 gl-flex-grow-1', data: { testid: 'milestones-filter' } } ) do
+  = gl_tab_link_to milestones_filter_path(state: 'opened'), { item_active: params[:state].blank? || params[:state] == 'opened' } do
+    = _('Open')
+    %span{ class: count_badge_classes }
+      = counts[:opened]
+  = gl_tab_link_to milestones_filter_path(state: 'closed', sort: 'due_date_desc'), { item_active: params[:state] == 'closed' } do
+    = _('Closed')
+    %span{ class: count_badge_classes }
+      = counts[:closed]
+  = gl_tab_link_to milestones_filter_path(state: 'all', sort: 'due_date_desc'), { item_active: params[:state] == 'all' } do
+    = _('All')
+    %span{ class: count_badge_classes }
+      = counts[:all]

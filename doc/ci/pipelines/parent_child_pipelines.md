@@ -72,7 +72,7 @@ microservice_a:
       - template: Security/SAST.gitlab-ci.yml
 ```
 
-In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) and later,
+In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/205157),
 you can use [`include:file`](../yaml/index.md#includefile) to trigger child pipelines
 with a configuration file in a different project:
 
@@ -169,7 +169,7 @@ runner for testing, the path separator for the trigger job would be `/`. Other C
 configuration for jobs, like scripts, that use the Windows runner would use `\`.
 
 In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
-This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/209070).
+This is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/209070) in GitLab 12.10.
 
 ## Nested child pipelines
 

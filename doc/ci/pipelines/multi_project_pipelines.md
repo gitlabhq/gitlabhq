@@ -112,7 +112,7 @@ Use:
 
 - The `project` keyword to specify the full path to a downstream project.
 - The `branch` keyword to specify the name of a branch in the project specified by `project`.
-  [In GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/10126) and later, variable expansion is
+  In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/10126), variable expansion is
   supported.
 
 Pipelines triggered on a protected branch in a downstream project use the [role](../../user/permissions.md)
@@ -290,7 +290,7 @@ When using:
 
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab Premium 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project.

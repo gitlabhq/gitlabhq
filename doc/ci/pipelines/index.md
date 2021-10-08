@@ -148,7 +148,7 @@ The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) GitLab 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 You can use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
 keywords to define
@@ -339,7 +339,7 @@ GitLab capitalizes the stages' names in the pipeline graphs.
 
 ### View full pipeline graph
 
-> - [Visualization improvements introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
+> - Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
 
 The [pipeline details page](#view-pipelines) displays the full pipeline graph of
 all the jobs in the pipeline.

@@ -8,8 +8,8 @@ last_update: 2019-07-03
 
 # Merge trains **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
-> - [Squash and merge](../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13001) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9186) in GitLab 12.0.
+> - [Squash and merge](../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13001) in GitLab 12.6.
 
 For more information about why you might want to use merge trains, read [How merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
@@ -58,8 +58,6 @@ If `A` then completes successfully, it merges into the target branch, and `C` co
 to run. If more merge requests are added to the train, they now include the `A`
 changes that are included in the target branch, and the `C` changes that are from
 the merge request already in the train.
-
-Read more about [how merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch this video for a demonstration on [how parallel execution

@@ -8,7 +8,7 @@ type: reference, howto
 
 # Job artifacts **(FREE)**
 
-> Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16675), artifacts in internal and private projects can be previewed when [GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16675) in GitLab 12.4, artifacts in internal and private projects can be previewed when [GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
@@ -111,7 +111,7 @@ the artifact.
 
 ## How searching for job artifacts works
 
-In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201784) and later, artifacts
+In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201784), artifacts
 for [parent and child pipelines](parent_child_pipelines.md) are searched in hierarchical
 order from parent to child. For example, if both parent and child pipelines have a
 job with the same name, the job artifact from the parent pipeline is returned.

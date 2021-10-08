@@ -198,7 +198,7 @@ which helps you get your starting configuration correct.
 If you are seeing two pipelines when using `only/except`, please see the caveats
 related to using `only/except` above (or, consider moving to `rules`).
 
-In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) and later,
+In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201845),
 you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/index.md#switch-between-branch-pipelines-and-merge-request-pipelines).
 After a merge request is open on the branch, the pipeline switches to a merge request pipeline.
 
