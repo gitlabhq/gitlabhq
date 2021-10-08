@@ -98,7 +98,7 @@ function rspec_simple_job() {
 }
 
 function rspec_db_library_code() {
-  local db_files="spec/lib/gitlab/database/ spec/support/helpers/database/"
+  local db_files="spec/lib/gitlab/database/"
 
   rspec_simple_job "-- ${db_files}"
 }

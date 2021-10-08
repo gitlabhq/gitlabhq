@@ -1,13 +1,10 @@
 import dateFormat from 'dateformat';
-import { unescape } from 'lodash';
 import { dateFormats } from '~/analytics/shared/constants';
 import { hideFlash } from '~/flash';
-import { sanitize } from '~/lib/dompurify';
-import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime/date_calculation_utility';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
+import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
 import { slugify } from '~/lib/utils/text_utility';
-import { s__, sprintf } from '../locale';
 
 export const removeFlash = (type = 'alert') => {
   const flashEl = document.querySelector(`.flash-${type}`);
@@ -45,29 +42,6 @@ export const transformStagesForPathNavigation = ({
   return formattedStages;
 };
 
-export const timeSummaryForPathNavigation = ({ seconds, hours, days, minutes, weeks, months }) => {
-  if (months) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}M'), {
-      value: roundToNearestHalf(months),
-    });
-  } else if (weeks) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}w'), {
-      value: roundToNearestHalf(weeks),
-    });
-  } else if (days) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}d'), {
-      value: roundToNearestHalf(days),
-    });
-  } else if (hours) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}h'), { value: hours });
-  } else if (minutes) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}m'), { value: minutes });
-  } else if (seconds) {
-    return unescape(sanitize(s__('ValueStreamAnalytics|&lt;1m'), { ALLOWED_TAGS: [] }));
-  }
-  return '-';
-};
-
 /**
  * Takes a raw median value in seconds and converts it to a string representation
  * ie. converts 172800 => 2d (2 days)
@@ -76,7 +50,7 @@ export const timeSummaryForPathNavigation = ({ seconds, hours, days, minutes, we
  * @returns {String} String representation ie 2w
  */
 export const medianTimeToParsedSeconds = (value) =>
-  timeSummaryForPathNavigation({
+  formatTimeAsSummary({
     ...parseSeconds(value, { daysPerWeek: 7, hoursPerDay: 24 }),
     seconds: value,
   });

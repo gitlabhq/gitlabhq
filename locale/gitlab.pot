@@ -1141,6 +1141,9 @@ msgstr ""
 msgid "(revoked)"
 msgstr ""
 
+msgid "(target)"
+msgstr ""
+
 msgid "(we need your current password to confirm your changes)"
 msgstr ""
 
@@ -3339,6 +3342,9 @@ msgid "All users must accept the Terms of Service and Privacy Policy to access G
 msgstr ""
 
 msgid "All users must have a name."
+msgstr ""
+
+msgid "All users with matching cards"
 msgstr ""
 
 msgid "Allow \"%{group_name}\" to sign you in"
@@ -6307,6 +6313,9 @@ msgid "Cannot skip two factor authentication setup"
 msgstr ""
 
 msgid "Capacity threshold"
+msgstr ""
+
+msgid "Card number:"
 msgstr ""
 
 msgid "CascadingSettings|Enforce for all subgroups"
@@ -9924,10 +9933,7 @@ msgstr ""
 msgid "CredentialsInventory|SSH Keys"
 msgstr ""
 
-msgid "Credit card validated at:"
-msgstr ""
-
-msgid "Credit card validated:"
+msgid "Credit card:"
 msgstr ""
 
 msgid "Critical vulnerabilities present"
@@ -9982,6 +9988,9 @@ msgid "Current sign-in IP:"
 msgstr ""
 
 msgid "Current sign-in at:"
+msgstr ""
+
+msgid "Current sign-in ip"
 msgstr ""
 
 msgid "Current vulnerabilities count"
@@ -13806,6 +13815,9 @@ msgstr ""
 msgid "Expiration date (optional)"
 msgstr ""
 
+msgid "Expiration date:"
+msgstr ""
+
 msgid "Expired"
 msgstr ""
 
@@ -16851,6 +16863,9 @@ msgid "History"
 msgstr ""
 
 msgid "History of authentications"
+msgstr ""
+
+msgid "Holder name:"
 msgstr ""
 
 msgid "Home page URL"
@@ -22937,6 +22952,9 @@ msgid "No contributions"
 msgstr ""
 
 msgid "No contributions were found"
+msgstr ""
+
+msgid "No credit card data for matching"
 msgstr ""
 
 msgid "No credit card required."
@@ -31589,6 +31607,9 @@ msgstr ""
 msgid "Smartcard authentication failed: client certificate header is missing."
 msgstr ""
 
+msgid "Snippet"
+msgstr ""
+
 msgid "Snippets"
 msgstr ""
 
@@ -31613,6 +31634,9 @@ msgstr ""
 msgid "SnippetsEmptyState|There are no snippets to show."
 msgstr ""
 
+msgid "Snippets|%{spammable_titlecase} was submitted to Akismet successfully."
+msgstr ""
+
 msgid "Snippets|Add another file %{num}/%{total}"
 msgstr ""
 
@@ -31620,6 +31644,9 @@ msgid "Snippets|Delete file"
 msgstr ""
 
 msgid "Snippets|Description (optional)"
+msgstr ""
+
+msgid "Snippets|Error with Akismet. Please check the logs for more info."
 msgstr ""
 
 msgid "Snippets|Files"
@@ -36953,6 +36980,9 @@ msgstr ""
 msgid "User and IP rate limits"
 msgstr ""
 
+msgid "User created at"
+msgstr ""
+
 msgid "User does not have a pending request"
 msgstr ""
 
@@ -37311,6 +37341,15 @@ msgid "Validate your GitLab CI configuration"
 msgstr ""
 
 msgid "Validate your GitLab CI configuration file"
+msgstr ""
+
+msgid "Validated at"
+msgstr ""
+
+msgid "Validated at:"
+msgstr ""
+
+msgid "Validated:"
 msgstr ""
 
 msgid "Validations failed."
@@ -40849,6 +40888,9 @@ msgid "or"
 msgstr ""
 
 msgid "originating vulnerability"
+msgstr ""
+
+msgid "other card matches"
 msgstr ""
 
 msgid "out of %d total test"

@@ -192,6 +192,20 @@ cannot change them:
   This ensures that your job uses the settings you intend and that they are not overridden by
   project-level pipelines.
 
+##### Avoid parent and child pipelines
+
+Compliance pipelines start on the run of _every_ pipeline in a relevant project. This means that if a pipeline in the relevant project
+triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
+
+Therefore, in projects with compliance frameworks, we recommend replacing
+[parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md) with the following:
+
+- Direct [`include`](../../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
+- Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/) rather than the parent-child
+  pipeline feature.
+
+This alternative ensures the compliance pipeline does not re-start the parent pipeline.
+
 ### Sharing and permissions
 
 For your repository, you can set up features such as public access, repository features,

@@ -93,19 +93,27 @@ export default {
           </div>
           <div class="gl-text-gray-500">
             <div v-if="user.bio" class="gl-display-flex gl-mb-2">
-              <gl-icon name="profile" class="gl-text-gray-400 gl-flex-shrink-0" />
+              <gl-icon name="profile" class="gl-flex-shrink-0" />
               <span ref="bio" class="gl-ml-2 gl-overflow-hidden">{{ user.bio }}</span>
             </div>
             <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
-              <gl-icon name="work" class="gl-text-gray-400 gl-flex-shrink-0" />
+              <gl-icon name="work" class="gl-flex-shrink-0" />
               <span ref="workInformation" class="gl-ml-2">{{ user.workInformation }}</span>
             </div>
+            <div v-if="user.location" class="gl-display-flex gl-mb-2">
+              <gl-icon name="location" class="gl-flex-shrink-0" />
+              <span class="gl-ml-2">{{ user.location }}</span>
+            </div>
+            <div
+              v-if="user.localTime && !user.bot"
+              class="gl-display-flex gl-mb-2"
+              data-testid="user-popover-local-time"
+            >
+              <gl-icon name="clock" class="gl-flex-shrink-0" />
+              <span class="gl-ml-2">{{ user.localTime }}</span>
+            </div>
           </div>
-          <div v-if="user.location" class="js-location gl-text-gray-500 gl-display-flex">
-            <gl-icon name="location" class="gl-text-gray-400 flex-shrink-0" />
-            <span class="gl-ml-2">{{ user.location }}</span>
-          </div>
-          <div v-if="statusHtml" class="js-user-status gl-mt-3">
+          <div v-if="statusHtml" class="gl-mb-2" data-testid="user-popover-status">
             <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
           </div>
           <div v-if="user.bot" class="gl-text-blue-500">

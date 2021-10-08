@@ -4,6 +4,7 @@ module API
   module Entities
     class User < UserBasic
       include UsersHelper
+      include TimeZoneHelper
       include ActionView::Helpers::SanitizeHelper
 
       expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
@@ -23,6 +24,10 @@ module API
       # to be removed in 14.4
       expose :bio_html do |user|
         strip_tags(user.bio)
+      end
+
+      expose :local_time do |user|
+        local_time(user.timezone)
       end
     end
   end

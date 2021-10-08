@@ -1,23 +1,30 @@
 import { GlButton, GlModal, GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
-import SnippetHeader from '~/snippets/components/snippet_header.vue';
+import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
+import axios from '~/lib/utils/axios_utils';
+import createFlash, { FLASH_TYPES } from '~/flash';
+
+jest.mock('~/flash');
 
 describe('Snippet header component', () => {
   let wrapper;
   let snippet;
   let mutationTypes;
   let mutationVariables;
+  let mock;
 
   let errorMsg;
   let err;
   const originalRelativeUrlRoot = gon.relative_url_root;
   const reportAbusePath = '/-/snippets/42/mark_as_spam';
+  const canReportSpam = true;
 
   const GlEmoji = { template: '<img/>' };
 
@@ -47,6 +54,7 @@ describe('Snippet header component', () => {
       mocks: { $apollo },
       provide: {
         reportAbusePath,
+        canReportSpam,
         ...provide,
       },
       propsData: {
@@ -118,10 +126,13 @@ describe('Snippet header component', () => {
       RESOLVE: jest.fn(() => Promise.resolve({ data: { destroySnippet: { errors: [] } } })),
       REJECT: jest.fn(() => Promise.reject(err)),
     };
+
+    mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
     wrapper.destroy();
+    mock.restore();
     gon.relative_url_root = originalRelativeUrlRoot;
   });
 
@@ -186,7 +197,6 @@ describe('Snippet header component', () => {
       {
         category: 'primary',
         disabled: false,
-        href: reportAbusePath,
         text: 'Submit as spam',
         variant: 'default',
       },
@@ -205,7 +215,6 @@ describe('Snippet header component', () => {
         text: 'Delete',
       },
       {
-        href: reportAbusePath,
         text: 'Submit as spam',
         title: 'Submit as spam',
       },
@@ -249,6 +258,31 @@ describe('Snippet header component', () => {
     );
   });
 
+  describe('submit snippet as spam', () => {
+    beforeEach(async () => {
+      createComponent();
+    });
+
+    it.each`
+      request | variant      | text
+      ${200}  | ${'SUCCESS'} | ${i18n.snippetSpamSuccess}
+      ${500}  | ${'DANGER'}  | ${i18n.snippetSpamFailure}
+    `(
+      'renders a "$variant" flash message with "$text" message for a request with a "$request" response',
+      async ({ request, variant, text }) => {
+        const submitAsSpamBtn = findButtons().at(2);
+        mock.onPost(reportAbusePath).reply(request);
+        submitAsSpamBtn.trigger('click');
+        await waitForPromises();
+
+        expect(createFlash).toHaveBeenLastCalledWith({
+          message: expect.stringContaining(text),
+          type: FLASH_TYPES[variant],
+        });
+      },
+    );
+  });
+
   describe('with guest user', () => {
     beforeEach(() => {
       createComponent({
@@ -258,6 +292,7 @@ describe('Snippet header component', () => {
         },
         provide: {
           reportAbusePath: null,
+          canReportSpam: false,
         },
       });
     });

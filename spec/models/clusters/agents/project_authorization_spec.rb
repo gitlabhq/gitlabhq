@@ -7,4 +7,10 @@ RSpec.describe Clusters::Agents::ProjectAuthorization do
   it { is_expected.to belong_to(:project).class_name('Project').required }
 
   it { expect(described_class).to validate_jsonb_schema(['config']) }
+
+  describe '#config_project' do
+    let(:record) { create(:agent_project_authorization) }
+
+    it { expect(record.config_project).to eq(record.agent.project) }
+  end
 end
