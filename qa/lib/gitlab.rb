@@ -9,10 +9,16 @@ module Gitlab
   module Page
     module Main
       autoload :Login, 'gitlab/page/main/login'
+      autoload :SignUp, 'gitlab/page/main/sign_up'
     end
 
     module Subscriptions
       autoload :New, 'gitlab/page/subscriptions/new'
+    end
+
+    module Admin
+      autoload :Dashboard, 'gitlab/page/admin/dashboard'
+      autoload :Subscription, 'gitlab/page/admin/subscription'
     end
 
     module Group

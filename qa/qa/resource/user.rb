@@ -123,6 +123,10 @@ module QA
         "/users/#{id}/block"
       end
 
+      def api_approve_path
+        "/users/#{id}/approve"
+      end
+
       def api_post_body
         {
           admin: admin,
@@ -146,6 +150,13 @@ module QA
             user.password = password if password
           end
         end
+      end
+
+      def approve!
+        response = post(Runtime::API::Request.new(api_client, api_approve_path).url, nil)
+        return if response.code == 201
+
+        raise ResourceUpdateFailedError, "Failed to approve user. Request returned (#{response.code}): `#{response}`"
       end
 
       def block!

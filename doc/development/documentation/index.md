@@ -202,8 +202,10 @@ with the following conventions:
 
 The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/helping-users/#formatting-help-content).
 
-Use the following special cases depending on the context, ensuring all links
-are inside `_()` so they can be translated:
+#### Linking to `/help` in HAML
+
+Use the following special cases depending on the context, ensuring all link text
+is inside `_()` so it can be translated:
 
 - Linking to a doc page. In its most basic form, the HAML code to generate a
   link to the `/help` page is:
@@ -247,6 +249,27 @@ helpPagePath('user/permissions', { anchor: 'anchor-link' })
 ```
 
 This is preferred over static paths, as the helper also works on instances installed under a [relative URL](../../install/relative_url.md).
+
+#### Linking to `/help` in Ruby
+
+To link to the documentation from within Ruby code, use the following code block as a guide, ensuring all link text is inside `_()` so it can
+be translated:
+
+```ruby
+docs_link = link_to _('Learn more.'), help_page_url('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
+_('This is a text describing the option/feature in a sentence. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+```
+
+In cases where you need to generate a link from outside of views/helpers, where the `link_to` and `help_page_url` methods are not available, use the following code block
+as a guide where the methods are fully qualified:
+
+```ruby
+docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
+_('This is a text describing the option/feature in a sentence. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+```
+
+Do not use `include ActionView::Helpers::UrlHelper` just to make the `link_to` method available as you might see in some existing code. Read more in
+[issue 340567](https://gitlab.com/gitlab-org/gitlab/-/issues/340567).
 
 ### GitLab `/help` tests
 
