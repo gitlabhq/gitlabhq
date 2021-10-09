@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web terminals **(FREE)**
 
-With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
+With the introduction of the [Kubernetes integration](../../user/infrastructure/clusters/index.md),
 GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to
 [web terminals](../../ci/environments/index.md#web-terminals) for environments.

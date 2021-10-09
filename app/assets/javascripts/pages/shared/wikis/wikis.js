@@ -1,6 +1,7 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Tracking from '~/tracking';
 import showToast from '~/vue_shared/plugins/global_toast';
+import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
 
 const TRACKING_EVENT_NAME = 'view_wiki_page';
 const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/wiki_page_context/jsonschema/1-0-1';
@@ -20,6 +21,7 @@ export default class Wikis {
 
     Wikis.trackPageView();
     Wikis.showToasts();
+    Wikis.initShortcuts();
   }
 
   handleToggleSidebar(e) {
@@ -63,5 +65,9 @@ export default class Wikis {
   static showToasts() {
     const toasts = document.querySelectorAll('.js-toast-message');
     toasts.forEach((toast) => showToast(toast.dataset.message));
+  }
+
+  static initShortcuts() {
+    new ShortcutsWiki(); // eslint-disable-line no-new
   }
 }

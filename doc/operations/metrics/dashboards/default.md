@@ -30,7 +30,7 @@ This dashboard requires Kubernetes v1.14 or higher, due to the
 in Kubernetes 1.14.
 
 This dashboard displays CPU, memory, network and disk metrics for the pods in your
-[connected K8s cluster](../../../user/project/clusters/index.md). It provides a
+[connected Kubernetes cluster](../../../user/infrastructure/clusters/index.md). It provides a
 [variable selector](templating_variables.md#metric_label_values-variable-type)
 at the top of the dashboard to select which pod's metrics to display.
 

@@ -41,7 +41,7 @@ In Google's side:
 
 1. You should now be able to see a Client ID and Client secret. Note them down
    or keep this page open as you need them later.
-1. To enable projects to access [Google Kubernetes Engine](../user/project/clusters/index.md), you must also
+1. To enable projects to access [Google Kubernetes Engine](../user/infrastructure/clusters/index.md), you must also
    enable these APIs:
    - Google Kubernetes Engine API
    - Cloud Resource Manager API

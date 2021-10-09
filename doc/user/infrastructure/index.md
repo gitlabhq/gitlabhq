@@ -35,7 +35,7 @@ DevSecOps pipeline by default targeted at Kubernetes based deployments. To suppo
 all the GitLab features, GitLab offers a cluster management project for easy onboarding.
 The deploy boards provide quick insights into your cluster, including pod logs tailing.
 
-Learn more about the [GitLab integration with Kubernetes](../project/clusters/index.md).
+Learn more about the [GitLab integration with Kubernetes](clusters/index.md).
 
 ## Runbooks in GitLab
 

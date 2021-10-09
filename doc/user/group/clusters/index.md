@@ -60,7 +60,7 @@ differentiate the new cluster from your other clusters.
 
 You can choose to allow GitLab to manage your cluster for you. If GitLab manages
 your cluster, resources for your projects are automatically created. See the
-[Access controls](../../project/clusters/add_remove_clusters.md#access-controls)
+[Access controls](../../project/clusters/cluster_access.md)
 section for details on which resources GitLab creates for you.
 
 For clusters not managed by GitLab, project-specific resources aren't created
@@ -172,7 +172,7 @@ documentation for project-level clusters.
 ## More information
 
 For information on integrating GitLab and Kubernetes, see
-[Kubernetes clusters](../../project/clusters/index.md).
+[Kubernetes clusters](../../infrastructure/clusters/index.md).
 
 <!-- ## Troubleshooting
 

@@ -72,8 +72,8 @@ The following table lists project permissions available for each role:
 | [CI/CD](../ci/index.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
-| [Clusters](project/clusters/index.md):<br>View pod logs                                                                 |          |          | ✓         | ✓          | ✓     |
-| [Clusters](project/clusters/index.md):<br>Manage clusters                                                               |          |          |           | ✓          | ✓     |
+| [Clusters](infrastructure/clusters/index.md):<br>View [pod logs](project/clusters/kubernetes_pod_logs.md)                                                                 |          |          | ✓         | ✓          | ✓     |
+| [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                               |          |          |           | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete cleanup policies                    |          |          | ✓         | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Remove a container registry image                        |          |          | ✓         | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Update container registry                                |          |          | ✓         | ✓          | ✓     |

@@ -94,6 +94,6 @@ an environment.
 ## More features
 
 - Deploy to different [environments](../ci/environments/index.md).
-- Connect your project to a [Kubernetes cluster](../user/project/clusters/index.md).
+- Connect your project to a [Kubernetes cluster](../user/infrastructure/clusters/index.md).
 - See how your application is used and analyze events with [Product Analytics](product_analytics.md).
 - Create, toggle, and remove [Feature Flags](feature_flags.md).

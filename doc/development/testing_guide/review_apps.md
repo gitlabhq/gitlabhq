@@ -196,7 +196,7 @@ subgraph "CNG-mirror pipeline"
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
 - The Kubernetes cluster is connected to the `gitlab` projects using the
-  [GitLab Kubernetes integration](../../user/project/clusters/index.md). This basically
+  [GitLab Kubernetes integration](../../user/infrastructure/clusters/index.md). This basically
   allows to have a link to the Review App directly from the merge request widget.
 
 ### Auto-stopping of Review Apps

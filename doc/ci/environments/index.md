@@ -19,7 +19,7 @@ GitLab:
 - Tracks your deployments, so you always know what is deployed on your
   servers.
 
-If you have a deployment service like [Kubernetes](../../user/project/clusters/index.md)
+If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/index.md)
 associated with your project, you can use it to assist with your deployments.
 You can even access a [web terminal](#web-terminals) for your environment from within GitLab.
 
@@ -175,7 +175,7 @@ You can find the play button in the pipelines, environments, deployments, and jo
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
-If you are deploying to a [Kubernetes cluster](../../user/project/clusters/index.md)
+If you are deploying to a [Kubernetes cluster](../../user/infrastructure/clusters/index.md)
 associated with your project, you can configure these deployments from your
 `.gitlab-ci.yml` file.
 
@@ -634,7 +634,7 @@ Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metric
 ### Web terminals
 
 If you deploy to your environments with the help of a deployment service (for example,
-the [Kubernetes integration](../../user/project/clusters/index.md)), GitLab can open
+the [Kubernetes integration](../../user/infrastructure/clusters/index.md)), GitLab can open
 a terminal session to your environment. You can then debug issues without leaving your web browser.
 
 The Web terminal is a container-based deployment, which often lack basic tools (like an editor),

@@ -81,7 +81,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
       browse, and download job artifacts.
     - [Pipeline settings](../../ci/pipelines/settings.md): Set up Git strategy (how jobs fetch your repository),
       timeout (the maximum amount of time a job can run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline visibility, and more.
-  - [Kubernetes cluster integration](clusters/index.md): Connect your GitLab project
+  - [Kubernetes cluster integration](../infrastructure/clusters/index.md): Connect your GitLab project
     with a Kubernetes cluster.
   - [Feature Flags](../../operations/feature_flags.md): Ship different features
     by dynamically toggling functionality. **(PREMIUM)**

@@ -2224,7 +2224,7 @@ For more information, see
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
 Use the `kubernetes` keyword to configure deployments to a
-[Kubernetes cluster](../../user/project/clusters/index.md) that is associated with your project.
+[Kubernetes cluster](../../user/infrastructure/clusters/index.md) that is associated with your project.
 
 For example:
 

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Kubernetes integration - development guidelines **(FREE)**
 
 This document provides various guidelines when developing for the GitLab
-[Kubernetes integration](../user/project/clusters/index.md).
+[Kubernetes integration](../user/infrastructure/clusters/index.md).
 
 ## Development
 

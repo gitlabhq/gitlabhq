@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import Translate from '~/vue_shared/translate';
@@ -9,14 +8,8 @@ import ZenMode from '../../../zen_mode';
 import deleteWikiModal from './components/delete_wiki_modal.vue';
 import wikiAlert from './components/wiki_alert.vue';
 import wikiForm from './components/wiki_form.vue';
-import Wikis from './wikis';
 
 const createModalVueApp = () => {
-  new Wikis(); // eslint-disable-line no-new
-  new ShortcutsWiki(); // eslint-disable-line no-new
-  new ZenMode(); // eslint-disable-line no-new
-  new GLForm($('.wiki-form')); // eslint-disable-line no-new
-
   const deleteWikiModalWrapperEl = document.getElementById('delete-wiki-modal-wrapper');
 
   if (deleteWikiModalWrapperEl) {
@@ -85,7 +78,10 @@ const createWikiFormApp = () => {
   }
 };
 
-export default () => {
+export const mountApplications = () => {
+  new ZenMode(); // eslint-disable-line no-new
+  new GLForm($('.wiki-form')); // eslint-disable-line no-new
+
   createModalVueApp();
   createAlertVueApp();
   createWikiFormApp();
