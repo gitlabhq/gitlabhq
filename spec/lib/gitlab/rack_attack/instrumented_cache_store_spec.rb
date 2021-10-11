@@ -86,17 +86,4 @@ RSpec.describe Gitlab::RackAttack::InstrumentedCacheStore do
       test_proc.call(subject)
     end
   end
-
-  # Remove in https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1249
-  describe '.store' do
-    it 'uses the rate limiting store when USE_RATE_LIMITING_STORE_FOR_RACK_ATTACK is set' do
-      stub_env('USE_RATE_LIMITING_STORE_FOR_RACK_ATTACK', '1')
-
-      expect(described_class.store).to eq(Gitlab::Redis::RateLimiting.cache_store)
-    end
-
-    it 'uses the cache store' do
-      expect(described_class.store).to eq(Rails.cache)
-    end
-  end
 end

@@ -15,18 +15,7 @@ module Gitlab
 
       delegate :silence!, :mute, to: :@upstream_store
 
-      # Clean up in https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1249
-      def self.store
-        if ENV['USE_RATE_LIMITING_STORE_FOR_RACK_ATTACK'] == '1'
-          Gitlab::AuthLogger.info(message: 'Rack::Attack using rate limiting store')
-          ::Gitlab::Redis::RateLimiting.cache_store
-        else
-          Gitlab::AuthLogger.info(message: 'Rack::Attack using cache store')
-          ::Rails.cache
-        end
-      end
-
-      def initialize(upstream_store: self.class.store, notifier: ActiveSupport::Notifications)
+      def initialize(upstream_store: ::Gitlab::Redis::RateLimiting.cache_store, notifier: ActiveSupport::Notifications)
         @upstream_store = upstream_store
         @notifier = notifier
       end

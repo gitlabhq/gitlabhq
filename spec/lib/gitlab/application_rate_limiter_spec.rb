@@ -20,6 +20,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
   subject { described_class }
 
   before do
+    allow(Gitlab::Redis::RateLimiting).to receive(:with).and_yield(redis)
     allow(described_class).to receive(:rate_limits).and_return(rate_limits)
   end
 
@@ -48,94 +49,73 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
     end
   end
 
-  # Clean up in https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1249
-  shared_examples 'rate limiting' do
-    context 'when the key is an array of only ActiveRecord models' do
-      let(:scope) { [user, project] }
+  context 'when the key is an array of only ActiveRecord models' do
+    let(:scope) { [user, project] }
 
-      let(:cache_key) do
-        "application_rate_limiter:test_action:user:#{user.id}:project:#{project.id}"
-      end
-
-      it_behaves_like 'action rate limiter'
+    let(:cache_key) do
+      "application_rate_limiter:test_action:user:#{user.id}:project:#{project.id}"
     end
 
-    context 'when they key a combination of ActiveRecord models and strings' do
-      let(:project) { create(:project, :public, :repository) }
-      let(:commit) { project.repository.commit }
-      let(:path) { 'app/controllers/groups_controller.rb' }
-      let(:scope) { [project, commit, path] }
-
-      let(:cache_key) do
-        "application_rate_limiter:test_action:project:#{project.id}:commit:#{commit.sha}:#{path}"
-      end
-
-      it_behaves_like 'action rate limiter'
-    end
-
-    describe '#log_request' do
-      let(:file_path) { 'master/README.md' }
-      let(:type) { :raw_blob_request_limit }
-      let(:fullpath) { "/#{project.full_path}/raw/#{file_path}" }
-
-      let(:request) do
-        double('request', ip: '127.0.0.1', request_method: 'GET', fullpath: fullpath)
-      end
-
-      let(:base_attributes) do
-        {
-          message: 'Application_Rate_Limiter_Request',
-          env: type,
-          remote_ip: '127.0.0.1',
-          request_method: 'GET',
-          path: fullpath
-        }
-      end
-
-      context 'without a current user' do
-        let(:current_user) { nil }
-
-        it 'logs information to auth.log' do
-          expect(Gitlab::AuthLogger).to receive(:error).with(base_attributes).once
-
-          subject.log_request(request, type, current_user)
-        end
-      end
-
-      context 'with a current_user' do
-        let(:current_user) { create(:user) }
-
-        let(:attributes) do
-          base_attributes.merge({
-                                  user_id: current_user.id,
-                                  username: current_user.username
-                                })
-        end
-
-        it 'logs information to auth.log' do
-          expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
-
-          subject.log_request(request, type, current_user)
-        end
-      end
-    end
+    it_behaves_like 'action rate limiter'
   end
 
-  context 'when use_rate_limiting_store_for_application_rate_limiter is enabled' do
-    before do
-      stub_feature_flags(use_rate_limiting_store_for_application_rate_limiter: true)
-      allow(Gitlab::Redis::RateLimiting).to receive(:with).and_yield(redis)
+  context 'when they key a combination of ActiveRecord models and strings' do
+    let(:project) { create(:project, :public, :repository) }
+    let(:commit) { project.repository.commit }
+    let(:path) { 'app/controllers/groups_controller.rb' }
+    let(:scope) { [project, commit, path] }
+
+    let(:cache_key) do
+      "application_rate_limiter:test_action:project:#{project.id}:commit:#{commit.sha}:#{path}"
     end
 
-    it_behaves_like 'rate limiting'
+    it_behaves_like 'action rate limiter'
   end
 
-  context 'when use_rate_limiting_store_for_application_rate_limiter is disabled' do
-    before do
-      stub_feature_flags(use_rate_limiting_store_for_application_rate_limiter: false)
-      allow(Gitlab::Redis::Cache).to receive(:with).and_yield(redis)
+  describe '#log_request' do
+    let(:file_path) { 'master/README.md' }
+    let(:type) { :raw_blob_request_limit }
+    let(:fullpath) { "/#{project.full_path}/raw/#{file_path}" }
+
+    let(:request) do
+      double('request', ip: '127.0.0.1', request_method: 'GET', fullpath: fullpath)
     end
 
-    it_behaves_like 'rate limiting'
+    let(:base_attributes) do
+      {
+        message: 'Application_Rate_Limiter_Request',
+        env: type,
+        remote_ip: '127.0.0.1',
+        request_method: 'GET',
+        path: fullpath
+      }
+    end
+
+    context 'without a current user' do
+      let(:current_user) { nil }
+
+      it 'logs information to auth.log' do
+        expect(Gitlab::AuthLogger).to receive(:error).with(base_attributes).once
+
+        subject.log_request(request, type, current_user)
+      end
+    end
+
+    context 'with a current_user' do
+      let(:current_user) { create(:user) }
+
+      let(:attributes) do
+        base_attributes.merge({
+                                user_id: current_user.id,
+                                username: current_user.username
+                              })
+      end
+
+      it 'logs information to auth.log' do
+        expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
+
+        subject.log_request(request, type, current_user)
+      end
+    end
   end
 end

@@ -11645,6 +11645,7 @@ CREATE TABLE ci_namespace_monthly_usages (
     additional_amount_available integer DEFAULT 0 NOT NULL,
     amount_used numeric(18,2) DEFAULT 0.0 NOT NULL,
     notification_level smallint DEFAULT 100 NOT NULL,
+    shared_runners_duration integer DEFAULT 0 NOT NULL,
     CONSTRAINT ci_namespace_monthly_usages_year_month_constraint CHECK ((date = date_trunc('month'::text, (date)::timestamp with time zone)))
 );
 
@@ -11889,6 +11890,7 @@ CREATE TABLE ci_project_monthly_usages (
     project_id bigint NOT NULL,
     date date NOT NULL,
     amount_used numeric(18,2) DEFAULT 0.0 NOT NULL,
+    shared_runners_duration integer DEFAULT 0 NOT NULL,
     CONSTRAINT ci_project_monthly_usages_year_month_constraint CHECK ((date = date_trunc('month'::text, (date)::timestamp with time zone)))
 );
 
