@@ -72,7 +72,7 @@ To add additional text to emails:
 1. Enter your text in the **Additional text** field.
 1. Select **Save changes**.
 
-## User deactivation emails **(FREE SELF)**
+## User deactivation emails
 
 GitLab sends email notifications to users when their account has been deactivated.
 

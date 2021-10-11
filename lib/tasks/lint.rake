@@ -12,6 +12,13 @@ unless Rails.env.production?
       dev:load
     ] do
       Gitlab::Utils::Override.verify!
+    end
+
+    desc "GitLab | Lint | Static verification with database"
+    task static_verification_with_database: %w[
+      lint:static_verification_env
+      dev:load
+    ] do
       Gitlab::Utils::DelegatorOverride.verify!
     end
 

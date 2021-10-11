@@ -24,11 +24,8 @@ static-analysis:
   extends:
     - .static-analysis-base
     - .static-analysis:rules:ee-and-foss
-    - .use-pg12
   stage: test
   parallel: 4
-  variables:
-    SETUP_DB: "true"
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
     - scripts/static-analysis
@@ -37,6 +34,17 @@ static-analysis:
     when: always
     paths:
       - tmp/feature_flags/
+
+static-analysis-with-database:
+  extends:
+    - .static-analysis-base
+    - .static-analysis:rules:ee-and-foss
+    - .use-pg12
+  stage: test
+  script:
+    - bundle exec rake lint:static_verification_with_database
+  variables:
+    SETUP_DB: "true"
 
 static-analysis as-if-foss:
   extends:

@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Zero downtime upgrades
+# Zero downtime upgrades **(FREE SELF)**
 
 Starting with GitLab 9.1.0 it's possible to upgrade to a newer major, minor, or
 patch version of GitLab without having to take your GitLab instance offline.
@@ -428,7 +428,7 @@ sure you remove `/etc/gitlab/skip-auto-reconfigure` and revert
 setting `gitlab_rails['auto_migrate'] = false` in
 `/etc/gitlab/gitlab.rb` after you've completed these steps.
 
-### Use Redis HA (using Sentinel) **(PREMIUM ONLY)**
+### Use Redis HA (using Sentinel) **(PREMIUM SELF)**
 
 Package upgrades may involve version updates to the bundled Redis service. On
 instances using [Redis for scaling](../administration/redis/index.md),
@@ -525,7 +525,7 @@ failover is complete, we can go ahead and upgrade the original primary node.
 Install the package for new version and follow regular package upgrade
 procedure.
 
-## Geo deployment **(PREMIUM ONLY)**
+## Geo deployment **(PREMIUM SELF)**
 
 The order of steps is important. While following these steps, make
 sure you follow them in the right order, on the correct node.
@@ -645,7 +645,7 @@ sure you remove `/etc/gitlab/skip-auto-reconfigure` and revert
 setting `gitlab_rails['auto_migrate'] = false` in
 `/etc/gitlab/gitlab.rb` after you've completed these steps.
 
-## Multi-node / HA deployment with Geo **(PREMIUM ONLY)**
+## Multi-node / HA deployment with Geo **(PREMIUM SELF)**
 
 This section describes the steps required to upgrade a multi-node / HA
 deployment with Geo. Some steps must be performed on a particular node. This

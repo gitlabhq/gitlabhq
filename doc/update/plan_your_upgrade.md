@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create a GitLab upgrade plan
+# Create a GitLab upgrade plan **(FREE SELF)**
 
 This document serves as a guide to create a strong plan to upgrade a self-managed
 GitLab instance.

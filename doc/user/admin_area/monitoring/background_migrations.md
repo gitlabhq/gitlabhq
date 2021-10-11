@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batched-background-migrations). **(FREE SELF)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batched-background-migrations).
 
 There can be [risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
@@ -21,12 +21,12 @@ are created by GitLab developers and run automatically on upgrade. However, such
 limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
 prevent integer overflow for some tables.
 
-## Check the status of background migrations **(FREE SELF)**
+## Check the status of background migrations
 
 All migrations must have a `Finished` status before you [upgrade GitLab](../../../update/index.md).
 You can [check the status of existing migrations](../../../update/index.md#checking-for-background-migrations-before-upgrading).
 
-## Enable or disable batched background migrations **(FREE SELF)**
+## Enable or disable batched background migrations
 
 Batched background migrations are under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
@@ -45,21 +45,21 @@ To disable it:
 Feature.disable(:execute_batched_migrations_on_schedule)
 ```
 
-## Automatic batch size optimization **(FREE SELF)**
+## Automatic batch size optimization
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.12.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-automatic-batch-size-optimization). **(FREE SELF)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-automatic-batch-size-optimization).
 
 There can be [risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.
 
-## Enable or disable automatic batch size optimization **(FREE SELF)**
+## Enable or disable automatic batch size optimization
 
 Automatic batch size optimization for batched background migrations is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.

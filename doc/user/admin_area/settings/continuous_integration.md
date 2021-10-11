@@ -47,7 +47,7 @@ details:
 
 ![Shared runner details example](img/continuous_integration_shared_runner_details_v14_0.png)
 
-## Maximum artifacts size **(FREE SELF)**
+## Maximum artifacts size
 
 The maximum size of the [job artifacts](../../../administration/job_artifacts.md)
 can be set at:
@@ -310,7 +310,7 @@ To set the maximum file size:
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - Disabled on GitLab.com.
 > - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 

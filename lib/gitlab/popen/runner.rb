@@ -31,7 +31,7 @@ module Gitlab
       end
 
       def all_stderr_empty?
-        results.all? { |result| stderr_empty_ignoring_spring(result) }
+        results.all? { |result| result.stderr.empty? }
       end
 
       def failed_results
@@ -40,21 +40,8 @@ module Gitlab
 
       def warned_results
         results.select do |result|
-          result.status.success? && !stderr_empty_ignoring_spring(result)
+          result.status.success? && !result.stderr.empty?
         end
-      end
-
-      private
-
-      # NOTE: This is sometimes required instead of just calling `result.stderr.empty?`, if we
-      # want to ignore the spring "Running via Spring preloader..." output to STDERR.
-      # The `Spring.quiet=true` method which spring supports doesn't work, because it doesn't
-      # work to make it quiet when using spring binstubs (the STDERR is printed by `bin/spring`
-      # itself when first required, so there's no opportunity to set Spring.quiet=true).
-      # This should probably be opened as a bug against Spring, with a pull request to support a
-      # `SPRING_QUIET` env var as well.
-      def stderr_empty_ignoring_spring(result)
-        result.stderr.empty? || result.stderr =~ /\ARunning via Spring preloader in process [0-9]+\Z/
       end
     end
   end

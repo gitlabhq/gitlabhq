@@ -28,7 +28,7 @@ All Geo sites have the following settings:
 The site you're currently browsing is indicated with a blue `Current` label, and
 the **primary** node is listed first as `Primary site`.
 
-## **Secondary** site settings
+## Secondary site settings
 
 **Secondary** sites have a number of additional settings available:
 
