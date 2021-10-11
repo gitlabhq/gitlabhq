@@ -365,9 +365,6 @@ To create a custom ruleset:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292686) in GitLab 14.2.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the `vulnerability_flags` flag](../../../administration/feature_flags.md). On GitLab.com, this feature is available.
-
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
 ### Using CI/CD variables to pass credentials for private repositories
@@ -539,6 +536,12 @@ In addition to the aforementioned SAST configuration CI/CD variables,
 all [custom variables](../../../ci/variables/index.md#custom-cicd-variables) are propagated
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
+
+NOTE:
+In [GitLab 13.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/220540),
+variables whose names started with the following prefixes are **not** propagated to either the
+analyzer containers or SAST Docker container: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`,
+`OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
 
 ### Experimental features
 

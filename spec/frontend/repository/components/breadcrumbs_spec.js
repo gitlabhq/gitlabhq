@@ -2,6 +2,7 @@ import { GlDropdown } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
+import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
 
 const defaultMockRoute = {
   name: 'blobPath',
@@ -10,7 +11,7 @@ const defaultMockRoute = {
 describe('Repository breadcrumbs component', () => {
   let wrapper;
 
-  const factory = (currentPath, extraProps = {}, mockRoute = {}) => {
+  const factory = (currentPath, extraProps = {}, mockRoute = {}, newDirModal = true) => {
     const $apollo = {
       queries: {
         userPermissions: {
@@ -34,10 +35,12 @@ describe('Repository breadcrumbs component', () => {
         },
         $apollo,
       },
+      provide: { glFeatures: { newDirModal } },
     });
   };
 
   const findUploadBlobModal = () => wrapper.find(UploadBlobModal);
+  const findNewDirectoryModal = () => wrapper.find(NewDirectoryModal);
 
   afterEach(() => {
     wrapper.destroy();
@@ -119,6 +122,39 @@ describe('Repository breadcrumbs component', () => {
       await wrapper.vm.$nextTick();
 
       expect(findUploadBlobModal().exists()).toBe(true);
+    });
+  });
+
+  describe('renders the new directory modal', () => {
+    describe('with the feature flag enabled', () => {
+      beforeEach(() => {
+        window.gon.features = {
+          newDirModal: true,
+        };
+        factory('/', { canEditTree: true });
+      });
+
+      it('does not render the modal while loading', () => {
+        expect(findNewDirectoryModal().exists()).toBe(false);
+      });
+
+      it('renders the modal once loaded', async () => {
+        wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
+
+        await wrapper.vm.$nextTick();
+
+        expect(findNewDirectoryModal().exists()).toBe(true);
+      });
+    });
+
+    describe('with the feature flag disabled', () => {
+      it('does not render the modal', () => {
+        window.gon.features = {
+          newDirModal: false,
+        };
+        factory('/', { canEditTree: true }, {}, {}, false);
+        expect(findNewDirectoryModal().exists()).toBe(false);
+      });
     });
   });
 });

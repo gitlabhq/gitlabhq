@@ -306,6 +306,12 @@ export const GO_TO_PROJECT_WIKI = {
   defaultKeys: ['g w'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
+export const GO_TO_PROJECT_WEBIDE = {
+  id: 'project.goToWebIDE',
+  description: __('Open in Web IDE'),
+  defaultKeys: ['.'],
+};
+
 export const PROJECT_FILES_MOVE_SELECTION_UP = {
   id: 'projectFiles.moveSelectionUp',
   description: __('Move selection up'),
@@ -549,6 +555,7 @@ export const PROJECT_SHORTCUTS_GROUP = {
     GO_TO_PROJECT_KUBERNETES,
     GO_TO_PROJECT_SNIPPETS,
     GO_TO_PROJECT_WIKI,
+    GO_TO_PROJECT_WEBIDE,
   ],
 };
 

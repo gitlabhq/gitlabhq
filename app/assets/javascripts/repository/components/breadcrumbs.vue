@@ -9,11 +9,13 @@ import {
 } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/repository/permissions.query.graphql';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '../../locale';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import projectShortPathQuery from '../queries/project_short_path.query.graphql';
 import UploadBlobModal from './upload_blob_modal.vue';
+import NewDirectoryModal from './new_directory_modal.vue';
 
 const ROW_TYPES = {
   header: 'header',
@@ -21,6 +23,7 @@ const ROW_TYPES = {
 };
 
 const UPLOAD_BLOB_MODAL_ID = 'modal-upload-blob';
+const NEW_DIRECTORY_MODAL_ID = 'modal-new-directory';
 
 export default {
   components: {
@@ -30,6 +33,7 @@ export default {
     GlDropdownItem,
     GlIcon,
     UploadBlobModal,
+    NewDirectoryModal,
   },
   apollo: {
     projectShortPath: {
@@ -54,7 +58,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagsMixin()],
   props: {
     currentPath: {
       type: String,
@@ -121,8 +125,14 @@ export default {
       required: false,
       default: '',
     },
+    newDirPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   uploadBlobModalId: UPLOAD_BLOB_MODAL_ID,
+  newDirectoryModalId: NEW_DIRECTORY_MODAL_ID,
   data() {
     return {
       projectShortPath: '',
@@ -160,6 +170,13 @@ export default {
     showUploadModal() {
       return this.canEditTree && !this.$apollo.queries.userPermissions.loading;
     },
+    showNewDirectoryModal() {
+      return (
+        this.glFeatures.newDirModal &&
+        this.canEditTree &&
+        !this.$apollo.queries.userPermissions.loading
+      );
+    },
     dropdownItems() {
       const items = [];
 
@@ -185,15 +202,26 @@ export default {
             text: __('Upload file'),
             modalId: UPLOAD_BLOB_MODAL_ID,
           },
-          {
+        );
+
+        if (this.glFeatures.newDirModal) {
+          items.push({
+            attrs: {
+              href: '#modal-create-new-dir',
+            },
+            text: __('New directory'),
+            modalId: NEW_DIRECTORY_MODAL_ID,
+          });
+        } else {
+          items.push({
             attrs: {
               href: '#modal-create-new-dir',
               'data-target': '#modal-create-new-dir',
               'data-toggle': 'modal',
             },
             text: __('New directory'),
-          },
-        );
+          });
+        }
       } else if (this.canCreateMrFromFork) {
         items.push(
           {
@@ -305,6 +333,15 @@ export default {
       :original-branch="originalBranch"
       :can-push-code="canPushCode"
       :path="uploadPath"
+    />
+    <new-directory-modal
+      v-if="showNewDirectoryModal"
+      :can-push-code="canPushCode"
+      :modal-id="$options.newDirectoryModalId"
+      :commit-message="__('Add new directory')"
+      :target-branch="selectedBranch"
+      :original-branch="originalBranch"
+      :path="newDirPath"
     />
   </nav>
 </template>

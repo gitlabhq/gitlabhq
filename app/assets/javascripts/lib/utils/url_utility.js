@@ -590,3 +590,30 @@ export function isSameOriginUrl(url) {
     return false;
   }
 }
+
+/**
+ * Returns a URL to WebIDE considering the current user's position in
+ * repository's tree. If not MR `iid` has been passed, the URL is fetched
+ * from the global `gl.webIDEPath`.
+ *
+ * @param sourceProjectFullPath Source project's full path. Used in MRs
+ * @param targetProjectFullPath Target project's full path. Used in MRs
+ * @param iid                   MR iid
+ * @returns {string}
+ */
+
+export function constructWebIDEPath({
+  sourceProjectFullPath,
+  targetProjectFullPath = '',
+  iid,
+} = {}) {
+  if (!iid || !sourceProjectFullPath) {
+    return window.gl?.webIDEPath;
+  }
+  return mergeUrlParams(
+    {
+      target_project: sourceProjectFullPath !== targetProjectFullPath ? targetProjectFullPath : '',
+    },
+    webIDEUrl(`/${sourceProjectFullPath}/merge_requests/${iid}`),
+  );
+}

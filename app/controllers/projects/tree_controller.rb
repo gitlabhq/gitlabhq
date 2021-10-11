@@ -18,6 +18,7 @@ class Projects::TreeController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:lazy_load_commits, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_tree_graphql_query, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
   end
 
   feature_category :source_code_management

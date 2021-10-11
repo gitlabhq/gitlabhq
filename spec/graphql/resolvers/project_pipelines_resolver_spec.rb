@@ -11,15 +11,23 @@ RSpec.describe Resolvers::ProjectPipelinesResolver do
 
   let(:current_user) { create(:user) }
 
-  before do
-    project.add_developer(current_user)
+  context 'when the user does have access' do
+    before do
+      project.add_developer(current_user)
+    end
+
+    it 'resolves only MRs for the passed merge request' do
+      expect(resolve_pipelines).to contain_exactly(pipeline)
+    end
+  end
+
+  context 'when the user does not have access' do
+    it 'does not return pipeline data' do
+      expect(resolve_pipelines).to be_empty
+    end
   end
 
   def resolve_pipelines
     resolve(described_class, obj: project, ctx: { current_user: current_user })
-  end
-
-  it 'resolves only MRs for the passed merge request' do
-    expect(resolve_pipelines).to contain_exactly(pipeline)
   end
 end

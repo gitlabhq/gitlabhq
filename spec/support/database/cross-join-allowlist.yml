@@ -7,7 +7,6 @@
 - "./ee/spec/features/merge_trains/user_adds_to_merge_train_when_pipeline_succeeds_spec.rb"
 - "./ee/spec/features/projects/pipelines/pipeline_spec.rb"
 - "./ee/spec/finders/ee/namespaces/projects_finder_spec.rb"
-- "./ee/spec/finders/security/findings_finder_spec.rb"
 - "./ee/spec/graphql/ee/resolvers/namespace_projects_resolver_spec.rb"
 - "./ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb"
 - "./ee/spec/lib/ee/gitlab/background_migration/migrate_security_scans_spec.rb"

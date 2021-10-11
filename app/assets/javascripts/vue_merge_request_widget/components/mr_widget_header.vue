@@ -10,7 +10,7 @@ import {
   GlSafeHtmlDirective as SafeHtml,
   GlSprintf,
 } from '@gitlab/ui';
-import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
+import { constructWebIDEPath } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
@@ -58,15 +58,7 @@ export default {
       });
     },
     webIdePath() {
-      return mergeUrlParams(
-        {
-          target_project:
-            this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath
-              ? this.mr.targetProjectFullPath
-              : '',
-        },
-        webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`),
-      );
+      return constructWebIDEPath(this.mr);
     },
     isFork() {
       return this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath;

@@ -19,6 +19,6 @@
       window.gl.mrWidgetData.pipelines_empty_svg_path = '#{image_path('illustrations/pipelines_empty.svg')}';
       window.gl.mrWidgetData.codequality_help_path = '#{help_page_path("user/project/merge_requests/code_quality", anchor: "code-quality-reports")}';
       window.gl.mrWidgetData.false_positive_doc_url = '#{help_page_path('user/application_security/vulnerabilities/index')}';
-      window.gl.mrWidgetData.can_view_false_positive = '#{(Feature.enabled?(:vulnerability_flags, default_enabled: :yaml) && @merge_request.project.licensed_feature_available?(:sast_fp_reduction)).to_s}';
+      window.gl.mrWidgetData.can_view_false_positive = '#{@merge_request.project.licensed_feature_available?(:sast_fp_reduction).to_s}';
 
   #js-vue-mr-widget.mr-widget

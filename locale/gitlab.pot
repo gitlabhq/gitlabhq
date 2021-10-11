@@ -13272,6 +13272,9 @@ msgstr ""
 msgid "Error creating label."
 msgstr ""
 
+msgid "Error creating new directory. Please try again."
+msgstr ""
+
 msgid "Error creating new iteration"
 msgstr ""
 
@@ -23910,6 +23913,9 @@ msgid "Open epics"
 msgstr ""
 
 msgid "Open errors"
+msgstr ""
+
+msgid "Open in Web IDE"
 msgstr ""
 
 msgid "Open in file view"

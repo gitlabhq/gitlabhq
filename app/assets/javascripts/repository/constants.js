@@ -10,6 +10,9 @@ export const SECONDARY_OPTIONS_TEXT = __('Cancel');
 export const COMMIT_LABEL = __('Commit message');
 export const TARGET_BRANCH_LABEL = __('Target branch');
 export const TOGGLE_CREATE_MR_LABEL = __('Start a new merge request with these changes');
+export const NEW_BRANCH_IN_FORK = __(
+  'A new branch will be created in your fork and a new merge request will be started.',
+);
 
 export const COMMIT_MESSAGE_SUBJECT_MAX_LENGTH = 52;
 export const COMMIT_MESSAGE_BODY_MAX_LENGTH = 72;
