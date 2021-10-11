@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Introduced in GitLab 11.0.
 
-This page describes SAML for Groups. For instance-wide SAML on self-managed GitLab instances, see [SAML OmniAuth Provider](../../../integration/saml.md).
+This page describes SAML for groups. For instance-wide SAML on self-managed GitLab instances, see [SAML OmniAuth Provider](../../../integration/saml.md).
 [View the differences between SaaS and Self-Managed Authentication and Authorization Options](../../../administration/auth/index.md#saas-vs-self-managed-comparison).
 
 SAML on GitLab.com allows users to sign in through their SAML identity provider. If the user is not already a member, the sign-in process automatically adds the user to the appropriate group.
@@ -23,7 +23,8 @@ If required, you can find [a glossary of common terms](../../../integration/saml
 
 ## Configuring your identity provider
 
-1. Navigate to the GitLab group and select **Settings > SAML SSO**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
 1. Configure your SAML identity provider using the **Assertion consumer service URL**, **Identifier**, and **GitLab single sign-on URL**.
    Alternatively GitLab provides [metadata XML configuration](#metadata-configuration).
    See [specific identity provider documentation](#providers) for more details.
@@ -74,7 +75,8 @@ The `username` assertion is not supported for GitLab.com SaaS integrations.
 
 GitLab provides metadata XML that can be used to configure your identity provider.
 
-1. Navigate to the group and select **Settings > SAML SSO**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
 1. Copy the provided **GitLab metadata URL**.
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
 
@@ -82,7 +84,8 @@ GitLab provides metadata XML that can be used to configure your identity provide
 
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
-1. Navigate to the group's **Settings > SAML SSO**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
 1. Find the SSO URL from your identity provider and enter it the **Identity provider single sign-on URL** field.
 1. Find and enter the fingerprint for the SAML token signing certificate in the **Certificate** field.
 1. Select the access level to be applied to newly added users in the **Default membership role** field. The default access level is 'Guest'.
@@ -309,7 +312,7 @@ group owner, and then you can unlink the account.
 
 For example, to unlink the `MyOrg` account:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Social sign-in** section, select **Disconnect** next to the connected account.
@@ -346,8 +349,8 @@ a SAML identity provider group name to a GitLab Access Level. This can be done f
 
 To link the SAML groups from the `saml:AttributeStatement` example above:
 
-1. Enter the value of `saml:AttributeValue` in the `SAML Group Name` field.
-1. Choose the desired `Access Level`.
+1. In the **SAML Group Name** box, enter the value of `saml:AttributeValue`.
+1. Choose the desired **Access Level**.
 1. **Save** the group link.
 1. Repeat to add additional group links if desired.
 
