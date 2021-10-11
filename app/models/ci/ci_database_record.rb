@@ -12,13 +12,6 @@ module Ci
 
     if Gitlab::Database.has_config?(:ci)
       connects_to database: { writing: :ci, reading: :ci }
-
-      # TODO: Load Balancing messes with `CiDatabaseRecord`
-      # returning wrong connection. To be removed once merged:
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67773
-      def self.connection
-        retrieve_connection
-      end
     end
   end
 end

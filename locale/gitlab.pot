@@ -22985,7 +22985,7 @@ msgstr ""
 msgid "No compliance frameworks are in use. Create one from the %{link} section in Group Settings."
 msgstr ""
 
-msgid "No confirmation email received? Please check your spam folder or"
+msgid "No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}."
 msgstr ""
 
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
@@ -28884,9 +28884,6 @@ msgid "Request a new one"
 msgstr ""
 
 msgid "Request details"
-msgstr ""
-
-msgid "Request new confirmation email"
 msgstr ""
 
 msgid "Request parameter %{param} is missing."

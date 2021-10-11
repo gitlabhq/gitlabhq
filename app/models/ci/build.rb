@@ -1109,7 +1109,7 @@ module Ci
       return unless saved_change_to_status?
       return unless running?
 
-      ::Gitlab::Database::LoadBalancing::Sticking.stick(:build, id)
+      self.class.sticking.stick(:build, id)
     end
 
     def status_commit_hooks

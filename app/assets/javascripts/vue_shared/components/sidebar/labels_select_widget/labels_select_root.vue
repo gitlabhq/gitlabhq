@@ -136,13 +136,13 @@ export default {
   methods: {
     handleDropdownClose(labels) {
       this.$emit('updateSelectedLabels', labels);
+      this.collapseEditableItem();
+    },
+    collapseEditableItem() {
       this.$refs.editable?.collapse();
     },
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');
-    },
-    showDropdownContents() {
-      this.$refs.dropdownContents.showDropdown();
     },
     isDropdownVariantSidebar,
     isDropdownVariantStandalone,
@@ -170,7 +170,6 @@ export default {
         :title="__('Labels')"
         :loading="isLoading"
         :can-edit="allowLabelEdit"
-        @open="showDropdownContents"
       >
         <template #collapsed>
           <dropdown-value
@@ -184,7 +183,7 @@ export default {
             <slot></slot>
           </dropdown-value>
         </template>
-        <template #default>
+        <template #default="{ edit }">
           <dropdown-value
             :disable-labels="labelsSelectInProgress"
             :selected-labels="issuableLabels"
@@ -197,7 +196,6 @@ export default {
             <slot></slot>
           </dropdown-value>
           <dropdown-contents
-            ref="dropdownContents"
             :dropdown-button-text="dropdownButtonText"
             :allow-multiselect="allowMultiselect"
             :labels-list-title="labelsListTitle"
@@ -207,7 +205,9 @@ export default {
             :selected-labels="selectedLabels"
             :variant="variant"
             :issuable-type="issuableType"
+            :is-visible="edit"
             @setLabels="handleDropdownClose"
+            @closeDropdown="collapseEditableItem"
           />
         </template>
       </sidebar-editable-item>

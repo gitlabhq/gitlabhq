@@ -348,7 +348,7 @@ module Ci
       # intention here is not to execute `Ci::RegisterJobService#execute` on
       # the primary database.
       #
-      ::Gitlab::Database::LoadBalancing::Sticking.stick(:runner, id)
+      ::Ci::Runner.sticking.stick(:runner, id)
 
       SecureRandom.hex.tap do |new_update|
         ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_update,

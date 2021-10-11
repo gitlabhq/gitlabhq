@@ -6,53 +6,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:warden_user) { double(:warden, user: double(:user, id: 42)) }
-  let(:single_sticking_object) { Set.new([[:user, 42]]) }
+  let(:single_sticking_object) { Set.new([[ActiveRecord::Base, :user, 42]]) }
   let(:multiple_sticking_objects) do
     Set.new([
-      [:user, 42],
-      [:runner, '123456789'],
-      [:runner, '1234']
+      [ActiveRecord::Base, :user, 42],
+      [ActiveRecord::Base, :runner, '123456789'],
+      [ActiveRecord::Base, :runner, '1234']
     ])
   end
 
   after do
     Gitlab::Database::LoadBalancing::Session.clear_session
-  end
-
-  describe '.stick_or_unstick' do
-    it 'sticks or unsticks a single object and updates the Rack environment' do
-      expect(Gitlab::Database::LoadBalancing::Sticking)
-        .to receive(:unstick_or_continue_sticking)
-        .with(:user, 42)
-
-      env = {}
-
-      described_class.stick_or_unstick(env, :user, 42)
-
-      expect(env[described_class::STICK_OBJECT].to_a).to eq([[:user, 42]])
-    end
-
-    it 'sticks or unsticks multiple objects and updates the Rack environment' do
-      expect(Gitlab::Database::LoadBalancing::Sticking)
-        .to receive(:unstick_or_continue_sticking)
-        .with(:user, 42)
-        .ordered
-
-      expect(Gitlab::Database::LoadBalancing::Sticking)
-        .to receive(:unstick_or_continue_sticking)
-        .with(:runner, '123456789')
-        .ordered
-
-      env = {}
-
-      described_class.stick_or_unstick(env, :user, 42)
-      described_class.stick_or_unstick(env, :runner, '123456789')
-
-      expect(env[described_class::STICK_OBJECT].to_a).to eq([
-        [:user, 42],
-        [:runner, '123456789']
-      ])
-    end
   end
 
   describe '#call' do
@@ -77,7 +41,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
   describe '#unstick_or_continue_sticking' do
     it 'does not stick if no namespace and identifier could be found' do
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .not_to receive(:unstick_or_continue_sticking)
 
       middleware.unstick_or_continue_sticking({})
@@ -86,9 +50,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if a warden user is found' do
       env = { 'warden' => warden_user }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
-        .to receive(:unstick_or_continue_sticking)
-        .with(:user, 42)
+      Gitlab::Database::LoadBalancing.base_models.each do |model|
+        expect(model.sticking)
+          .to receive(:unstick_or_continue_sticking)
+          .with(:user, 42)
+      end
 
       middleware.unstick_or_continue_sticking(env)
     end
@@ -96,7 +62,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if a sticking namespace and identifier is found' do
       env = { described_class::STICK_OBJECT => single_sticking_object }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:unstick_or_continue_sticking)
         .with(:user, 42)
 
@@ -106,17 +72,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if multiple sticking namespaces and identifiers were found' do
       env = { described_class::STICK_OBJECT => multiple_sticking_objects }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:unstick_or_continue_sticking)
         .with(:user, 42)
         .ordered
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:unstick_or_continue_sticking)
         .with(:runner, '123456789')
         .ordered
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:unstick_or_continue_sticking)
         .with(:runner, '1234')
         .ordered
@@ -127,7 +93,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
   describe '#stick_if_necessary' do
     it 'does not stick to the primary if not necessary' do
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .not_to receive(:stick_if_necessary)
 
       middleware.stick_if_necessary({})
@@ -136,9 +102,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if a warden user is found' do
       env = { 'warden' => warden_user }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
-        .to receive(:stick_if_necessary)
-        .with(:user, 42)
+      Gitlab::Database::LoadBalancing.base_models.each do |model|
+        expect(model.sticking)
+          .to receive(:stick_if_necessary)
+          .with(:user, 42)
+      end
 
       middleware.stick_if_necessary(env)
     end
@@ -146,7 +114,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if a a single sticking object is found' do
       env = { described_class::STICK_OBJECT => single_sticking_object }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:stick_if_necessary)
         .with(:user, 42)
 
@@ -156,17 +124,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if multiple sticking namespaces and identifiers were found' do
       env = { described_class::STICK_OBJECT => multiple_sticking_objects }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:stick_if_necessary)
         .with(:user, 42)
         .ordered
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:stick_if_necessary)
         .with(:runner, '123456789')
         .ordered
 
-      expect(Gitlab::Database::LoadBalancing::Sticking)
+      expect(ApplicationRecord.sticking)
         .to receive(:stick_if_necessary)
         .with(:runner, '1234')
         .ordered
@@ -177,14 +145,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
   describe '#clear' do
     it 'clears the currently used host and session' do
-      lb = double(:lb)
       session = spy(:session)
 
-      allow(middleware).to receive(:load_balancer).and_return(lb)
-
-      expect(lb).to receive(:release_host)
-
       stub_const('Gitlab::Database::LoadBalancing::Session', session)
+
+      expect(Gitlab::Database::LoadBalancing).to receive(:release_hosts)
 
       middleware.clear
 
@@ -192,32 +157,22 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     end
   end
 
-  describe '.load_balancer' do
-    it 'returns a the load balancer' do
-      proxy = double(:proxy)
-
-      expect(Gitlab::Database::LoadBalancing).to receive(:proxy)
-        .and_return(proxy)
-
-      expect(proxy).to receive(:load_balancer)
-
-      middleware.load_balancer
-    end
-  end
-
-  describe '#sticking_namespaces_and_ids' do
+  describe '#sticking_namespaces' do
     context 'using a Warden request' do
       it 'returns the warden user if present' do
         env = { 'warden' => warden_user }
+        ids = Gitlab::Database::LoadBalancing.base_models.map do |model|
+          [model, :user, 42]
+        end
 
-        expect(middleware.sticking_namespaces_and_ids(env)).to eq([[:user, 42]])
+        expect(middleware.sticking_namespaces(env)).to eq(ids)
       end
 
       it 'returns an empty Array if no user was present' do
         warden = double(:warden, user: nil)
         env = { 'warden' => warden }
 
-        expect(middleware.sticking_namespaces_and_ids(env)).to eq([])
+        expect(middleware.sticking_namespaces(env)).to eq([])
       end
     end
 
@@ -225,17 +180,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
       it 'returns the sticking object' do
         env = { described_class::STICK_OBJECT => multiple_sticking_objects }
 
-        expect(middleware.sticking_namespaces_and_ids(env)).to eq([
-          [:user, 42],
-          [:runner, '123456789'],
-          [:runner, '1234']
+        expect(middleware.sticking_namespaces(env)).to eq([
+          [ActiveRecord::Base, :user, 42],
+          [ActiveRecord::Base, :runner, '123456789'],
+          [ActiveRecord::Base, :runner, '1234']
         ])
       end
     end
 
     context 'using a regular request' do
       it 'returns an empty Array' do
-        expect(middleware.sticking_namespaces_and_ids({})).to eq([])
+        expect(middleware.sticking_namespaces({})).to eq([])
       end
     end
   end

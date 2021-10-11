@@ -53,7 +53,7 @@ RSpec.describe UserProjectAccessChangedService do
     end
 
     it 'sticks all the updated users and returns the original result', :aggregate_failures do
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:bulk_stick).with(:user, [1, 2])
+      expect(ApplicationRecord.sticking).to receive(:bulk_stick).with(:user, [1, 2])
 
       expect(service.execute).to eq(10)
     end

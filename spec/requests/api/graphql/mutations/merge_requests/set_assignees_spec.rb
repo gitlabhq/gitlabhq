@@ -115,7 +115,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
   context 'when passing append as true' do
     let(:mode) { Types::MutationOperationModeEnum.enum[:append] }
     let(:input) { { assignee_usernames: [assignee2.username], operation_mode: mode } }
-    let(:db_query_limit) { 21 }
+    let(:db_query_limit) { 22 }
 
     before do
       # In CE, APPEND is a NOOP as you can't have multiple assignees

@@ -35,8 +35,8 @@ RSpec.describe API::Helpers do
     it 'handles sticking when a user could be found' do
       allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
-        .to receive(:stick_or_unstick).with(any_args, :user, 42)
+      expect(ApplicationRecord.sticking)
+        .to receive(:stick_or_unstick_request).with(any_args, :user, 42)
 
       get 'user'
 
@@ -46,8 +46,8 @@ RSpec.describe API::Helpers do
     it 'does not handle sticking if no user could be found' do
       allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(nil)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
-        .not_to receive(:stick_or_unstick)
+      expect(ApplicationRecord.sticking)
+        .not_to receive(:stick_or_unstick_request)
 
       get 'user'
 

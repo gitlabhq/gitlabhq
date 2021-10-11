@@ -3050,7 +3050,7 @@ RSpec.describe Project, factory_default: :keep do
     let(:project) { create(:project) }
 
     it 'marks the location with project ID' do
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:mark_primary_write_location).with(:project, project.id)
+      expect(ApplicationRecord.sticking).to receive(:mark_primary_write_location).with(:project, project.id)
 
       project.mark_primary_write_location
     end

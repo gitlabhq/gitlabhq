@@ -53,7 +53,12 @@ module Gitlab
 
     def self.database_base_models
       @database_base_models ||= {
-        main: ::ApplicationRecord,
+        # Note that we use ActiveRecord::Base here and not ApplicationRecord.
+        # This is deliberate, as we also use these classes to apply load
+        # balancing to, and the load balancer must be enabled for _all_ models
+        # that inher from ActiveRecord::Base; not just our own models that
+        # inherit from ApplicationRecord.
+        main: ::ActiveRecord::Base,
         ci: ::Ci::CiDatabaseRecord.connection_class? ? ::Ci::CiDatabaseRecord : nil
       }.compact.freeze
     end

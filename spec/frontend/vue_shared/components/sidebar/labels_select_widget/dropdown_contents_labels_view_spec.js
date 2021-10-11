@@ -1,4 +1,9 @@
-import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlSearchBoxByType,
+  GlDropdownItem,
+  GlIntersectionObserver,
+} from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -68,23 +73,31 @@ describe('DropdownContentsLabelsView', () => {
   const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findLabels = () => wrapper.findAllComponents(LabelItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
   const findLabelsList = () => wrapper.find('[data-testid="labels-list"]');
   const findNoResultsMessage = () => wrapper.find('[data-testid="no-results"]');
 
+  async function makeObserverAppear() {
+    await findObserver().vm.$emit('appear');
+  }
+
   describe('when loading labels', () => {
     it('renders disabled search input field', async () => {
       createComponent();
+      await makeObserverAppear();
       expect(findSearchInput().props('disabled')).toBe(true);
     });
 
     it('renders loading icon', async () => {
       createComponent();
+      await makeObserverAppear();
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
     it('does not render labels list', async () => {
       createComponent();
+      await makeObserverAppear();
       expect(findLabelsList().exists()).toBe(false);
     });
   });
@@ -92,6 +105,7 @@ describe('DropdownContentsLabelsView', () => {
   describe('when labels are loaded', () => {
     beforeEach(async () => {
       createComponent();
+      await makeObserverAppear();
       await waitForPromises();
     });
 
@@ -121,6 +135,7 @@ describe('DropdownContentsLabelsView', () => {
         },
       }),
     });
+    await makeObserverAppear();
     findSearchInput().vm.$emit('input', '123');
     await waitForPromises();
     await nextTick();
@@ -130,6 +145,7 @@ describe('DropdownContentsLabelsView', () => {
 
   it('calls `createFlash` when fetching labels failed', async () => {
     createComponent({ queryHandler: jest.fn().mockRejectedValue('Houston, we have a problem!') });
+    await makeObserverAppear();
     jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     await waitForPromises();
 
@@ -138,9 +154,17 @@ describe('DropdownContentsLabelsView', () => {
 
   it('emits an `input` event on label click', async () => {
     createComponent();
+    await makeObserverAppear();
     await waitForPromises();
     findFirstLabel().trigger('click');
 
     expect(wrapper.emitted('input')[0][0]).toEqual(expect.arrayContaining(localSelectedLabels));
+  });
+
+  it('does not trigger query when component did not appear', () => {
+    createComponent();
+    expect(findLoadingIcon().exists()).toBe(false);
+    expect(findLabelsList().exists()).toBe(false);
+    expect(successfulQueryHandler).not.toHaveBeenCalled();
   });
 });

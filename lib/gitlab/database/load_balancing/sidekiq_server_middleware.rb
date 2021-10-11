@@ -29,7 +29,7 @@ module Gitlab
         private
 
         def clear
-          release_hosts
+          LoadBalancing.release_hosts
           Session.clear_session
         end
 
@@ -44,7 +44,7 @@ module Gitlab
 
           return :primary_no_wal unless wal_locations
 
-          if all_databases_has_replica_caught_up?(wal_locations)
+          if databases_in_sync?(wal_locations)
             # Happy case: we can read from a replica.
             retried_before?(worker_class, job) ? :replica_retried : :replica
           elsif can_retry?(worker_class, job)
@@ -89,26 +89,17 @@ module Gitlab
           job['retry_count'].nil?
         end
 
-        def all_databases_has_replica_caught_up?(wal_locations)
-          wal_locations.all? do |_config_name, location|
-            # Once we add support for multiple databases to our load balancer, we would use something like this:
-            # Gitlab::Database.databases[config_name].load_balancer.select_up_to_date_host(location)
-            load_balancer.select_up_to_date_host(location)
+        def databases_in_sync?(wal_locations)
+          LoadBalancing.each_load_balancer.all? do |lb|
+            if (location = wal_locations[lb.name])
+              lb.select_up_to_date_host(location)
+            else
+              # If there's no entry for a load balancer it means the Sidekiq
+              # job doesn't care for it. In this case we'll treat the load
+              # balancer as being in sync.
+              true
+            end
           end
-        end
-
-        def release_hosts
-          # Once we add support for multiple databases to our load balancer, we would use something like this:
-          # connection.load_balancer.primary_write_location
-          #
-          # Gitlab::Database.databases.values.each do |connection|
-          #   connection.load_balancer.release_host
-          # end
-          load_balancer.release_host
-        end
-
-        def load_balancer
-          LoadBalancing.proxy.load_balancer
         end
       end
     end

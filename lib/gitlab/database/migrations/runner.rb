@@ -7,14 +7,8 @@ module Gitlab
         BASE_RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
 
         class << self
-          def up(legacy_pipeline: false)
-            result_dir = if legacy_pipeline
-                           BASE_RESULT_DIR
-                         else
-                           BASE_RESULT_DIR.join('up')
-                         end
-
-            Runner.new(direction: :up, migrations: migrations_for_up, result_dir: result_dir)
+          def up
+            Runner.new(direction: :up, migrations: migrations_for_up, result_dir: BASE_RESULT_DIR.join('up'))
           end
 
           def down

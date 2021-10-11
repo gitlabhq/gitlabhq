@@ -7,9 +7,10 @@ module Gitlab
         include ::Gitlab::Utils::StrongMemoize
         include Checksummable
 
-        def initialize(job, trace_metadata)
+        def initialize(job, trace_metadata, metrics = ::Gitlab::Ci::Trace::Metrics.new)
           @job = job
           @trace_metadata = trace_metadata
+          @metrics = metrics
         end
 
         def execute!(stream)
@@ -18,15 +19,18 @@ module Gitlab
             sha256_checksum = self.class.sha256_hexdigest(clone_path)
 
             job.transaction do
-              trace_artifact = create_build_trace!(clone_path, sha256_checksum)
+              self.trace_artifact = create_build_trace!(clone_path, sha256_checksum)
               trace_metadata.track_archival!(trace_artifact.id, md5_checksum)
             end
           end
+
+          validate_archived_trace
         end
 
         private
 
-        attr_reader :job, :trace_metadata
+        attr_reader :job, :trace_metadata, :metrics
+        attr_accessor :trace_artifact
 
         def clone_file!(src_stream, temp_dir)
           FileUtils.mkdir_p(temp_dir)
@@ -49,6 +53,22 @@ module Gitlab
               file_type: :trace,
               file: stream,
               file_sha256: file_sha256)
+          end
+        end
+
+        def validate_archived_trace
+          return unless remote_checksum
+
+          trace_metadata.update!(remote_checksum: remote_checksum)
+
+          unless trace_metadata.remote_checksum_valid?
+            metrics.increment_error_counter(type: :archive_invalid_checksum)
+          end
+        end
+
+        def remote_checksum
+          strong_memoize(:remote_checksum) do
+            ::Gitlab::Ci::Trace::RemoteChecksum.new(trace_artifact).md5_checksum
           end
         end
       end

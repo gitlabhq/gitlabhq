@@ -2790,7 +2790,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
         extra_update_queries = 4 # transition ... => :canceled, queue pop
         extra_generic_commit_status_validation_queries = 2 # name_uniqueness_across_types
-        extra_load_balancer_queries = 3
+
+        # The number of extra load balancing queries depends on whether or not
+        # we use a load balancer for CI. That in turn depends on the contents of
+        # database.yml, so here we support both cases.
+        extra_load_balancer_queries =
+          if Gitlab::Database.has_config?(:ci)
+            6
+          else
+            3
+          end
 
         expect(control2.count).to eq(control1.count + extra_update_queries + extra_generic_commit_status_validation_queries + extra_load_balancer_queries)
       end

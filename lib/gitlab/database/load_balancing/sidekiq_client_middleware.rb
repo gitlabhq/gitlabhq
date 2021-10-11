@@ -30,26 +30,23 @@ module Gitlab
         end
 
         def set_data_consistency_locations!(job)
-          # Once we add support for multiple databases to our load balancer, we would use something like this:
-          #   job['wal_locations'] = Gitlab::Database.databases.transform_values do |connection|
-          #      connection.load_balancer.primary_write_location
-          #   end
-          #
-          job['wal_locations'] = { ::Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
-        end
+          locations = {}
 
-        def wal_location
-          strong_memoize(:wal_location) do
-            if ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
-              load_balancer.primary_write_location
-            else
-              load_balancer.host.database_replica_location
+          ::Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            if (location = wal_location_for(lb))
+              locations[lb.name] = location
             end
           end
+
+          job['wal_locations'] = locations
         end
 
-        def load_balancer
-          ::Gitlab::Database::LoadBalancing.proxy.load_balancer
+        def wal_location_for(load_balancer)
+          if ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
+            load_balancer.primary_write_location
+          else
+            load_balancer.host.database_replica_location
+          end
         end
       end
     end

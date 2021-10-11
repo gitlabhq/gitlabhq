@@ -223,12 +223,6 @@ namespace :gitlab do
       end
     end
 
-    # TODO: Remove this rake task after migrating the database testing runner to :up / :down versions of it
-    desc 'Run migrations with instrumentation'
-    task migration_testing: :environment do
-      Gitlab::Database::Migrations::Runner.up(legacy_pipeline: true).run
-    end
-
     desc 'Run all pending batched migrations'
     task execute_batched_migrations: :environment do
       Gitlab::Database::BackgroundMigration::BatchedMigration.active.queue_order.each do |migration|

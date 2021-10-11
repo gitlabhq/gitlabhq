@@ -312,19 +312,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         subject
       end
     end
-
-    describe 'legacy rake task' do
-      subject { run_rake_task('gitlab:db:migration_testing') }
-
-      let(:runner) { double(Gitlab::Database::Migrations::Runner) }
-
-      it 'delegates to the migration runner in legacy mode' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive(:up).with(legacy_pipeline: true).and_return(runner)
-        expect(runner).to receive(:run)
-
-        subject
-      end
-    end
   end
 
   describe '#execute_batched_migrations' do

@@ -158,7 +158,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
     end
 
     describe 'load balancing' do
-      context 'when feature flag load_balancing_for_export_workers is enabled', :db_load_balancing do
+      context 'when feature flag load_balancing_for_export_workers is enabled' do
         before do
           stub_feature_flags(load_balancing_for_export_workers: true)
         end

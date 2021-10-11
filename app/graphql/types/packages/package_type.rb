@@ -28,6 +28,7 @@ module Types
         description: 'Other versions of the package.',
         deprecated: { reason: 'This field is now only returned in the PackageDetailsType', milestone: '13.11' }
       field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
+      field :can_destroy, GraphQL::Types::Boolean, null: false, description: 'Whether the user can destroy the package.'
 
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
@@ -35,6 +36,10 @@ module Types
 
       def versions
         []
+      end
+
+      def can_destroy
+        Ability.allowed?(current_user, :destroy_package, object)
       end
 
       # NOTE: This method must be kept in sync with the union

@@ -317,7 +317,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
 
-      context 'when load balancing is enabled', :db_load_balancing do
+      context 'when load balancing is enabled' do
         let(:db_config_name) do
           ::Gitlab::Database.db_config_name(ApplicationRecord.retrieve_connection)
         end

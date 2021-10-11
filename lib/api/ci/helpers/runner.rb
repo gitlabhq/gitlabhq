@@ -42,8 +42,7 @@ module API
           token = params[:token]
 
           if token
-            ::Gitlab::Database::LoadBalancing::RackMiddleware
-              .stick_or_unstick(env, :runner, token)
+            ::Ci::Runner.sticking.stick_or_unstick_request(env, :runner, token)
           end
 
           strong_memoize(:current_runner) do
@@ -80,8 +79,9 @@ module API
           id = params[:id]
 
           if id
-            ::Gitlab::Database::LoadBalancing::RackMiddleware
-              .stick_or_unstick(env, :build, id)
+            ::Ci::Build
+              .sticking
+              .stick_or_unstick_request(env, :build, id)
           end
 
           strong_memoize(:current_job) do

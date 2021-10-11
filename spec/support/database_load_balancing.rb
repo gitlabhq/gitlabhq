@@ -1,20 +1,30 @@
 # frozen_string_literal: true
 
 RSpec.configure do |config|
-  config.before(:each, :db_load_balancing) do
-    config = Gitlab::Database::LoadBalancing::Configuration
-      .new(ActiveRecord::Base, [Gitlab::Database.main.config['host']])
-    lb = ::Gitlab::Database::LoadBalancing::LoadBalancer.new(config)
-    proxy = ::Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
+  config.around(:each, :database_replica) do |example|
+    old_proxies = []
 
-    allow(ActiveRecord::Base).to receive(:load_balancing_proxy).and_return(proxy)
+    Gitlab::Database::LoadBalancing.base_models.each do |model|
+      config = Gitlab::Database::LoadBalancing::Configuration
+        .new(model, [model.connection_db_config.configuration_hash[:host]])
+      lb = Gitlab::Database::LoadBalancing::LoadBalancer.new(config)
 
-    ::Gitlab::Database::LoadBalancing::Session.clear_session
+      old_proxies << [model, model.connection]
+
+      model.connection =
+        Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
+    end
+
+    Gitlab::Database::LoadBalancing::Session.clear_session
     redis_shared_state_cleanup!
-  end
 
-  config.after(:each, :db_load_balancing) do
-    ::Gitlab::Database::LoadBalancing::Session.clear_session
+    example.run
+
+    Gitlab::Database::LoadBalancing::Session.clear_session
     redis_shared_state_cleanup!
+
+    old_proxies.each do |(model, proxy)|
+      model.connection = proxy
+    end
   end
 end

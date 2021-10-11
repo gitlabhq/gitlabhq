@@ -2400,7 +2400,7 @@ class Project < ApplicationRecord
   end
 
   def mark_primary_write_location
-    ::Gitlab::Database::LoadBalancing::Sticking.mark_primary_write_location(:project, self.id)
+    self.class.sticking.mark_primary_write_location(:project, self.id)
   end
 
   def toggle_ci_cd_settings!(settings_attribute)

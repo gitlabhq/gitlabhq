@@ -50,3 +50,22 @@ export const extractPaginationQueryParameters = (url = '') => {
     page: page?.value || null,
   };
 };
+
+export const getDataZoomOption = ({
+  totalItems = 0,
+  maxItemsPerPage = 40,
+  dataZoom = [{ type: 'slider', bottom: 10, start: 0 }],
+}) => {
+  if (totalItems <= maxItemsPerPage) {
+    return {};
+  }
+
+  const intervalEnd = Math.ceil((maxItemsPerPage / totalItems) * 100);
+
+  return dataZoom.map((item) => {
+    return {
+      ...item,
+      end: intervalEnd,
+    };
+  });
+};

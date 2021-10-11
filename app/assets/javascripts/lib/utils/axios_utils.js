@@ -2,6 +2,7 @@ import axios from 'axios';
 import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_interceptor';
 import setupAxiosStartupCalls from './axios_startup_calls';
 import csrf from './csrf';
+import { isNavigatingAway } from './is_navigating_away';
 import suppressAjaxErrorsDuringNavigation from './suppress_ajax_errors_during_navigation';
 
 axios.defaults.headers.common[csrf.headerKey] = csrf.token;
@@ -30,16 +31,11 @@ axios.interceptors.response.use(
   },
 );
 
-let isUserNavigating = false;
-window.addEventListener('beforeunload', () => {
-  isUserNavigating = true;
-});
-
 // Ignore AJAX errors caused by requests
 // being cancelled due to browser navigation
 axios.interceptors.response.use(
   (response) => response,
-  (err) => suppressAjaxErrorsDuringNavigation(err, isUserNavigating),
+  (err) => suppressAjaxErrorsDuringNavigation(err, isNavigatingAway()),
 );
 
 registerCaptchaModalInterceptor(axios);

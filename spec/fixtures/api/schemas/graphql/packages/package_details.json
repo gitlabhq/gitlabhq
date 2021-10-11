@@ -13,7 +13,8 @@
     "pipelines",
     "versions",
     "metadata",
-    "status"
+    "status",
+    "canDestroy"
   ],
   "properties": {
     "id": {
@@ -30,6 +31,9 @@
     },
     "version": {
       "type": ["string", "null"]
+    },
+    "canDestroy": {
+      "type": ["boolean"]
     },
     "packageType": {
       "type": ["string"],

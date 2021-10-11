@@ -57,16 +57,8 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
 
   describe '.up' do
     context 'result directory' do
-      context 'legacy mode' do
-        it 'uses the root result directory' do
-          expect(described_class.up(legacy_pipeline: true).result_dir).to eq(result_dir)
-        end
-      end
-
-      context 'not legacy mode' do
-        it 'uses the /up subdirectory' do
-          expect(described_class.up.result_dir).to eq(result_dir.join('up'))
-        end
+      it 'uses the /up subdirectory' do
+        expect(described_class.up.result_dir).to eq(result_dir.join('up'))
       end
     end
 

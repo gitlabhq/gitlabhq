@@ -133,4 +133,29 @@ RSpec.describe Ci::BuildTraceMetadata do
       end
     end
   end
+
+  describe '#remote_checksum_valid?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:metadata) do
+      build(:ci_build_trace_metadata,
+        checksum: checksum,
+        remote_checksum: remote_checksum)
+    end
+
+    subject { metadata.remote_checksum_valid? }
+
+    where(:checksum, :remote_checksum, :result) do
+      nil         | nil         | false
+      nil         | 'a'         | false
+      'a'         | nil         | false
+      'a'         | 'b'         | false
+      'b'         | 'a'         | false
+      'a'         | 'a'         | true
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
 end

@@ -195,7 +195,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       with_them do
         let(:payload) { { name: name, sql: sql(sql_query, comments: comments), connection: connection } }
 
-        context 'query using a connection to a replica', :db_load_balancing do
+        context 'query using a connection to a replica' do
           before do
             allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).and_return(:replica)
           end

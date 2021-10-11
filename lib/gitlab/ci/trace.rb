@@ -286,7 +286,8 @@ module Gitlab
 
       def destroy_stream(build)
         if consistent_archived_trace?(build)
-          ::Gitlab::Database::LoadBalancing::Sticking
+          ::Ci::Build
+            .sticking
             .stick(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
         end
 
@@ -295,7 +296,8 @@ module Gitlab
 
       def read_trace_artifact(build)
         if consistent_archived_trace?(build)
-          ::Gitlab::Database::LoadBalancing::Sticking
+          ::Ci::Build
+            .sticking
             .unstick_or_continue_sticking(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
         end
 

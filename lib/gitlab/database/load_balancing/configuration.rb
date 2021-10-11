@@ -72,7 +72,14 @@ module Gitlab
             Database.default_pool_size
         end
 
+        # Returns `true` if the use of load balancing replicas should be
+        # enabled.
+        #
+        # This is disabled for Rake tasks to ensure e.g. database migrations
+        # always produce consistent results.
         def load_balancing_enabled?
+          return false if Gitlab::Runtime.rake?
+
           hosts.any? || service_discovery_enabled?
         end
 

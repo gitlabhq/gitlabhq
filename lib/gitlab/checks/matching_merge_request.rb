@@ -27,7 +27,7 @@ module Gitlab
         # report no matching merge requests. To avoid this, we check
         # the write location to ensure the replica can make this query.
         track_session_metrics do
-          ::Gitlab::Database::LoadBalancing::Sticking.select_valid_host(:project, @project.id)
+          ::ApplicationRecord.sticking.select_valid_host(:project, @project.id)
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

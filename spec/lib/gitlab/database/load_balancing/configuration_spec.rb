@@ -108,6 +108,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
   end
 
   describe '#load_balancing_enabled?' do
+    it 'returns false when running inside a Rake task' do
+      config = described_class.new(ActiveRecord::Base, %w[foo bar])
+
+      allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+
+      expect(config.load_balancing_enabled?).to eq(false)
+    end
+
     it 'returns true when hosts are configured' do
       config = described_class.new(ActiveRecord::Base, %w[foo bar])
 

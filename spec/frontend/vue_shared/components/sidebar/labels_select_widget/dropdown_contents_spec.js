@@ -19,6 +19,7 @@ const GlDropdownStub = {
   `,
   methods: {
     show: showDropdown,
+    hide: jest.fn(),
   },
 };
 
@@ -68,18 +69,52 @@ describe('DropdownContent', () => {
   const findCreateLabelButton = () => wrapper.find('[data-testid="create-label-button"]');
   const findGoBackButton = () => wrapper.find('[data-testid="go-back-button"]');
 
-  it('emits `show` for dropdown on call showDropdown', () => {
+  it('calls dropdown `show` method on `isVisible` prop change', async () => {
     createComponent();
-    wrapper.vm.showDropdown();
+    await wrapper.setProps({
+      isVisible: true,
+    });
 
     expect(findDropdown().emitted('show')).toBeUndefined();
   });
 
-  it('emits `setLabels` event on dropdown hide', () => {
+  it('does not emit `setLabels` event on dropdown hide if labels did not change', () => {
     createComponent();
     findDropdown().vm.$emit('hide');
 
-    expect(wrapper.emitted('setLabels')).toEqual([[mockLabels]]);
+    expect(wrapper.emitted('setLabels')).toBeUndefined();
+  });
+
+  it('emits `setLabels` event on dropdown hide if labels changed on non-sidebar widget', async () => {
+    createComponent({ props: { variant: DropdownVariant.Standalone } });
+    const updatedLabel = {
+      id: 28,
+      title: 'Bug',
+      description: 'Label for bugs',
+      color: '#FF0000',
+      textColor: '#FFFFFF',
+    };
+    findLabelsView().vm.$emit('input', [updatedLabel]);
+    await nextTick();
+    findDropdown().vm.$emit('hide');
+
+    expect(wrapper.emitted('setLabels')).toEqual([[[updatedLabel]]]);
+  });
+
+  it('emits `setLabels` event on visibility change if labels changed on sidebar widget', async () => {
+    createComponent({ props: { variant: DropdownVariant.Standalone, isVisible: true } });
+    const updatedLabel = {
+      id: 28,
+      title: 'Bug',
+      description: 'Label for bugs',
+      color: '#FF0000',
+      textColor: '#FFFFFF',
+    };
+    findLabelsView().vm.$emit('input', [updatedLabel]);
+    wrapper.setProps({ isVisible: false });
+    await nextTick();
+
+    expect(wrapper.emitted('setLabels')).toEqual([[[updatedLabel]]]);
   });
 
   it('does not render header on standalone variant', () => {

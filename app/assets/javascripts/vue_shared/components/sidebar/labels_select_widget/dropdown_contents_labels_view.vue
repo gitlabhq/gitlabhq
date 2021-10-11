@@ -50,6 +50,7 @@ export default {
     return {
       searchKey: '',
       labels: [],
+      isVisible: false,
     };
   },
   apollo: {
@@ -64,13 +65,13 @@ export default {
         };
       },
       skip() {
-        return this.searchKey.length === 1;
+        return this.searchKey.length === 1 || !this.isVisible;
       },
       update: (data) => data.workspace?.labels?.nodes || [],
       async result() {
         if (this.$refs.searchInput) {
           await this.$nextTick;
-          this.focusInputField();
+          this.$refs.searchInput.focusInput();
         }
       },
       error() {
@@ -150,7 +151,8 @@ export default {
     setSearchKey(value) {
       this.searchKey = value;
     },
-    focusInputField() {
+    onDropdownAppear() {
+      this.isVisible = true;
       this.$refs.searchInput.focusInput();
     },
   },
@@ -158,7 +160,7 @@ export default {
 </script>
 
 <template>
-  <gl-intersection-observer @appear="focusInputField">
+  <gl-intersection-observer @appear="onDropdownAppear">
     <gl-dropdown-form class="labels-select-contents-list js-labels-list">
       <gl-search-box-by-type
         ref="searchInput"

@@ -22,7 +22,8 @@ module Ci
     end
 
     def execute(params = {})
-      db_all_caught_up = ::Gitlab::Database::LoadBalancing::Sticking.all_caught_up?(:runner, runner.id)
+      db_all_caught_up =
+        ::Ci::Runner.sticking.all_caught_up?(:runner, runner.id)
 
       @metrics.increment_queue_operation(:queue_attempt)
 

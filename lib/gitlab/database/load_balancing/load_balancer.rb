@@ -12,22 +12,22 @@ module Gitlab
 
         REPLICA_SUFFIX = '_replica'
 
-        attr_reader :host_list, :configuration
+        attr_reader :name, :host_list, :configuration
 
         # configuration - An instance of `LoadBalancing::Configuration` that
         #                 contains the configuration details (such as the hosts)
         #                 for this load balancer.
-        # primary_only - If set, the replicas are ignored and the primary is
-        #                always used.
-        def initialize(configuration, primary_only: false)
+        def initialize(configuration)
           @configuration = configuration
-          @primary_only = primary_only
+          @primary_only = !configuration.load_balancing_enabled?
           @host_list =
-            if primary_only
+            if @primary_only
               HostList.new([PrimaryHost.new(self)])
             else
               HostList.new(configuration.hosts.map { |addr| Host.new(addr, self) })
             end
+
+          @name = @configuration.model.connection_db_config.name.to_sym
         end
 
         def primary_only?

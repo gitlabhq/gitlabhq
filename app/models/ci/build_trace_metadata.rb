@@ -51,6 +51,11 @@ module Ci
       end
     end
 
+    def remote_checksum_valid?
+      checksum.present? &&
+        checksum == remote_checksum
+    end
+
     private
 
     def backoff

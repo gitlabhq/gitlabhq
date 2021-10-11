@@ -207,6 +207,12 @@ export default {
     hasAlerts() {
       return this.mr.mergeError || this.showMergePipelineForkWarning;
     },
+    shouldShowExtension() {
+      return (
+        window.gon?.features?.refactorMrWidgetsExtensions ||
+        window.gon?.features?.refactorMrWidgetsExtensionsUser
+      );
+    },
   },
   watch: {
     'mr.machineValue': {

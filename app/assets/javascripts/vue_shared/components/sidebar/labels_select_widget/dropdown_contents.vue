@@ -3,7 +3,7 @@ import { GlButton, GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
-import { isDropdownVariantStandalone } from './utils';
+import { isDropdownVariantStandalone, isDropdownVariantSidebar } from './utils';
 
 export default {
   components: {
@@ -52,11 +52,17 @@ export default {
       type: String,
       required: true,
     },
+    isVisible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       showDropdownContentsCreateView: false,
       localSelectedLabels: [...this.selectedLabels],
+      isDirty: false,
     };
   },
   computed: {
@@ -87,6 +93,26 @@ export default {
       return isDropdownVariantStandalone(this.variant);
     },
   },
+  watch: {
+    localSelectedLabels: {
+      handler() {
+        this.isDirty = true;
+      },
+      deep: true,
+    },
+    isVisible(newVal) {
+      if (newVal) {
+        this.$refs.dropdown.show();
+        this.isDirty = false;
+      } else {
+        this.$refs.dropdown.hide();
+        this.setLabels();
+      }
+    },
+    selectedLabels(newVal) {
+      this.localSelectedLabels = newVal;
+    },
+  },
   methods: {
     toggleDropdownContentsCreateView() {
       this.showDropdownContentsCreateView = !this.showDropdownContentsCreateView;
@@ -98,12 +124,16 @@ export default {
         this.$refs.dropdown.$refs.dropdown.$_popper.scheduleUpdate();
       }
     },
-    showDropdown() {
-      this.$refs.dropdown.show();
-    },
-    closeDropdown() {
+    setLabels() {
+      if (!this.isDirty) {
+        return;
+      }
       this.$emit('setLabels', this.localSelectedLabels);
-      this.$refs.dropdown.hide();
+    },
+    handleDropdownHide() {
+      if (!isDropdownVariantSidebar(this.variant)) {
+        this.setLabels();
+      }
     },
   },
 };
@@ -115,7 +145,7 @@ export default {
     :text="buttonText"
     class="gl-w-full gl-mt-2"
     data-qa-selector="labels_dropdown_content"
-    @hide="$emit('setLabels', localSelectedLabels)"
+    @hide="handleDropdownHide"
   >
     <template #header>
       <div
@@ -141,7 +171,7 @@ export default {
           class="dropdown-header-button gl-p-0!"
           icon="close"
           data-testid="close-button"
-          @click="closeDropdown"
+          @click="$emit('closeDropdown')"
         />
       </div>
     </template>

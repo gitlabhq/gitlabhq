@@ -1869,7 +1869,7 @@ class MergeRequest < ApplicationRecord
 
   override :ensure_metrics
   def ensure_metrics
-    if Feature.enabled?(:use_upsert_query_for_mr_metrics)
+    if Feature.enabled?(:use_upsert_query_for_mr_metrics, default_enabled: :yaml)
       MergeRequest::Metrics.record!(self)
     else
       # Backward compatibility: some merge request metrics records will not have target_project_id filled in.

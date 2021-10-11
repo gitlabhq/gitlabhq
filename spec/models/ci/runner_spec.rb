@@ -397,7 +397,7 @@ RSpec.describe Ci::Runner do
     it 'sticks the runner to the primary and calls the original method' do
       runner = create(:ci_runner)
 
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
+      expect(ApplicationRecord.sticking).to receive(:stick)
         .with(:runner, runner.id)
 
       expect(Gitlab::Workhorse).to receive(:set_key_and_notify)

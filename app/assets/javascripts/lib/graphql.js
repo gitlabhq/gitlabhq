@@ -11,6 +11,7 @@ import csrf from '~/lib/utils/csrf';
 import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
 import { getInstrumentationLink } from './apollo/instrumentation_link';
+import { getSuppressNetworkErrorsDuringNavigationLink } from './apollo/suppress_network_errors_during_navigation_link';
 
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',
@@ -143,6 +144,7 @@ export default (resolvers = {}, config = {}) => {
     new ActionCableLink(),
     ApolloLink.from(
       [
+        getSuppressNetworkErrorsDuringNavigationLink(),
         getInstrumentationLink(),
         requestCounterLink,
         performanceBarLink,

@@ -37,10 +37,20 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
 
       before do
         Gitlab::Database::LoadBalancing::Session.clear_session
-        allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?).and_return(all_caught_up)
 
-        expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_valid_host).with(:project, project.id).and_call_original
-        allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_caught_up_replicas).with(:project, project.id).and_return(all_caught_up)
+        allow(::ApplicationRecord.sticking)
+          .to receive(:all_caught_up?)
+          .and_return(all_caught_up)
+
+        expect(::ApplicationRecord.sticking)
+          .to receive(:select_valid_host)
+          .with(:project, project.id)
+          .and_call_original
+
+        allow(::ApplicationRecord.sticking)
+          .to receive(:select_caught_up_replicas)
+          .with(:project, project.id)
+          .and_return(all_caught_up)
       end
 
       after do
