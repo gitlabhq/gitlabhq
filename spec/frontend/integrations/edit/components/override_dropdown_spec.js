@@ -2,7 +2,7 @@ import { GlDropdown, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
-import { integrationLevels, overrideDropdownDescriptions } from '~/integrations/edit/constants';
+import { integrationLevels, overrideDropdownDescriptions } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
 
 describe('OverrideDropdown', () => {

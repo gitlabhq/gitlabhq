@@ -38,7 +38,7 @@ Select **Configuration history** to see the `.gitlab-ci.yml` file's history.
 
 You can configure the following security controls:
 
-- Static Application Security Testing (SAST)
+- Static Application Security Testing (SAST) **(FREE)**
   - Select **Enable SAST** to configure SAST for the current project.
     For more details, read [Configure SAST in the UI](../sast/index.md#configure-sast-in-the-ui).
 - Dynamic Application Security Testing (DAST) **(ULTIMATE)**

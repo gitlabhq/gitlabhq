@@ -1,54 +1,47 @@
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
+import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagePath from '~/packages/shared/components/package_path.vue';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
-import { PACKAGE_ERROR_STATUS } from '~/packages/shared/constants';
+import PackageIconAndName from '~/packages/shared/components/package_icon_and_name.vue';
+import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/package_registry/constants';
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import { packageList } from '../../mock_data';
+import { packageData, packagePipelines, packageProject, packageTags } from '../../mock_data';
 
 describe('packages_list_row', () => {
   let wrapper;
-  let store;
 
-  const [packageWithoutTags, packageWithTags] = packageList;
+  const defaultProvide = {
+    isGroupPage: false,
+  };
 
-  const InfrastructureIconAndName = { name: 'InfrastructureIconAndName', template: '<div></div>' };
-  const PackageIconAndName = { name: 'PackageIconAndName', template: '<div></div>' };
+  const packageWithoutTags = { ...packageData(), project: packageProject() };
+  const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
 
-  const findPackageTags = () => wrapper.findComponent(PackageTags);
-  const findPackagePath = () => wrapper.findComponent(PackagePath);
+  const findPackageTags = () => wrapper.find(PackageTags);
+  const findPackagePath = () => wrapper.find(PackagePath);
   const findDeleteButton = () => wrapper.findByTestId('action-delete');
-  const findPackageIconAndName = () => wrapper.findComponent(PackageIconAndName);
-  const findInfrastructureIconAndName = () => wrapper.findComponent(InfrastructureIconAndName);
+  const findPackageIconAndName = () => wrapper.find(PackageIconAndName);
   const findListItem = () => wrapper.findComponent(ListItem);
   const findPackageLink = () => wrapper.findComponent(GlLink);
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
+  const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
 
   const mountComponent = ({
-    isGroup = false,
     packageEntity = packageWithoutTags,
-    showPackageType = true,
-    disableDelete = false,
-    provide,
+    provide = defaultProvide,
   } = {}) => {
     wrapper = shallowMountExtended(PackagesListRow, {
-      store,
       provide,
       stubs: {
         ListItem,
-        InfrastructureIconAndName,
-        PackageIconAndName,
+        GlSprintf,
       },
       propsData: {
-        packageLink: 'foo',
         packageEntity,
-        isGroup,
-        showPackageType,
-        disableDelete,
       },
       directives: {
         GlTooltip: createMockDirective(),
@@ -58,7 +51,6 @@ describe('packages_list_row', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('renders', () => {
@@ -68,7 +60,7 @@ describe('packages_list_row', () => {
 
   describe('tags', () => {
     it('renders package tags when a package has tags', () => {
-      mountComponent({ isGroup: false, packageEntity: packageWithTags });
+      mountComponent({ packageEntity: packageWithTags });
 
       expect(findPackageTags().exists()).toBe(true);
     });
@@ -80,34 +72,12 @@ describe('packages_list_row', () => {
     });
   });
 
-  describe('when is is group', () => {
+  describe('when it is group', () => {
     it('has a package path component', () => {
-      mountComponent({ isGroup: true });
+      mountComponent({ provide: { isGroupPage: true } });
 
       expect(findPackagePath().exists()).toBe(true);
-      expect(findPackagePath().props()).toMatchObject({ path: 'foo/bar/baz' });
-    });
-  });
-
-  describe('showPackageType', () => {
-    it('shows the type when set', () => {
-      mountComponent();
-
-      expect(findPackageIconAndName().exists()).toBe(true);
-    });
-
-    it('does not show the type when not set', () => {
-      mountComponent({ showPackageType: false });
-
-      expect(findPackageIconAndName().exists()).toBe(false);
-    });
-  });
-
-  describe('deleteAvailable', () => {
-    it('does not show when not set', () => {
-      mountComponent({ disableDelete: true });
-
-      expect(findDeleteButton().exists()).toBe(false);
+      expect(findPackagePath().props()).toMatchObject({ path: 'gitlab-org/gitlab-test' });
     });
   });
 
@@ -135,27 +105,6 @@ describe('packages_list_row', () => {
     });
   });
 
-  describe('Infrastructure config', () => {
-    it('defaults to package registry components', () => {
-      mountComponent();
-
-      expect(findPackageIconAndName().exists()).toBe(true);
-      expect(findInfrastructureIconAndName().exists()).toBe(false);
-    });
-
-    it('mounts different component based on the provided values', () => {
-      mountComponent({
-        provide: {
-          iconComponent: 'InfrastructureIconAndName',
-        },
-      });
-
-      expect(findPackageIconAndName().exists()).toBe(false);
-
-      expect(findInfrastructureIconAndName().exists()).toBe(true);
-    });
-  });
-
   describe(`when the package is in ${PACKAGE_ERROR_STATUS} status`, () => {
     beforeEach(() => {
       mountComponent({ packageEntity: { ...packageWithoutTags, status: PACKAGE_ERROR_STATUS } });
@@ -178,8 +127,30 @@ describe('packages_list_row', () => {
       });
     });
 
-    it('delete button is disabled', () => {
-      expect(findDeleteButton().props('disabled')).toBe(true);
+    it('delete button does not exist', () => {
+      expect(findDeleteButton().exists()).toBe(false);
+    });
+  });
+
+  describe('secondary left info', () => {
+    it('has the package version', () => {
+      mountComponent();
+
+      expect(findLeftSecondaryInfos().text()).toContain(packageWithoutTags.version);
+    });
+
+    it('if the pipeline exists show the author message', () => {
+      mountComponent({
+        packageEntity: { ...packageWithoutTags, pipelines: { nodes: packagePipelines() } },
+      });
+
+      expect(findLeftSecondaryInfos().text()).toContain('published by Administrator');
+    });
+
+    it('has icon and name component', () => {
+      mountComponent();
+
+      expect(findPackageIconAndName().text()).toBe(packageWithoutTags.packageType.toLowerCase());
     });
   });
 });

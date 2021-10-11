@@ -404,7 +404,6 @@ module Gitlab
 
           response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
           response[:"groups_#{name}_active"] = count(Integration.active.where.not(group: nil).where(type: type))
-          response[:"templates_#{name}_active"] = count(Integration.active.where(template: true, type: type))
           response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
           response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
           response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))

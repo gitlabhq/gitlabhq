@@ -86,6 +86,12 @@ export const dependencyLinks = () => [
   },
 ];
 
+export const packageProject = () => ({
+  fullPath: 'gitlab-org/gitlab-test',
+  webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test',
+  __typename: 'Project',
+});
+
 export const packageVersions = () => [
   {
     createdAt: '2021-08-10T09:33:54Z',
@@ -257,14 +263,18 @@ export const packagesListQuery = (type = 'group') => ({
         count: 2,
         nodes: [
           {
-            __typename: 'Package',
-            id: 'gid://gitlab/Packages::Package/247',
-            name: 'version_test1',
+            ...packageData(),
+            project: packageProject(),
+            tags: { nodes: packageTags() },
+            pipelines: {
+              nodes: packagePipelines(),
+            },
           },
           {
-            __typename: 'Package',
-            id: 'gid://gitlab/Packages::Package/246',
-            name: 'version_test1',
+            ...packageData(),
+            project: packageProject(),
+            tags: { nodes: [] },
+            pipelines: { nodes: [] },
           },
         ],
         __typename: 'PackageConnection',

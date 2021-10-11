@@ -37,9 +37,7 @@ module Gitlab
       end
 
       def log_queries(id, data, type)
-        json_path = ['data', type, 'details']
-
-        queries_by_location(data, json_path).each do |location, queries|
+        queries_by_location(data, type).each do |location, queries|
           next unless location
 
           duration = queries.sum { |query| query['duration'].to_f }
@@ -56,8 +54,8 @@ module Gitlab
         end
       end
 
-      def queries_by_location(data, path)
-        return [] unless queries = data.dig(*path)
+      def queries_by_location(data, type)
+        return [] unless queries = data.dig('data', type, 'details')
 
         queries.group_by do |query|
           parse_backtrace(query['backtrace'])

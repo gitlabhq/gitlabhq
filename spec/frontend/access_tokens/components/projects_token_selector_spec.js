@@ -11,7 +11,7 @@ import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
-import { getJSONFixture } from 'helpers/fixtures';
+import getProjectsQueryResponse from 'test_fixtures/graphql/projects/access_tokens/get_projects.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -20,9 +20,6 @@ import getProjectsQuery from '~/access_tokens/graphql/queries/get_projects.query
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 describe('ProjectsTokenSelector', () => {
-  const getProjectsQueryResponse = getJSONFixture(
-    'graphql/projects/access_tokens/get_projects.query.graphql.json',
-  );
   const getProjectsQueryResponsePage2 = produce(
     getProjectsQueryResponse,
     (getProjectsQueryResponseDraft) => {

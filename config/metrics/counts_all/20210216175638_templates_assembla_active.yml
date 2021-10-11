@@ -7,7 +7,8 @@ product_stage: ecosystem
 product_group: group::integrations
 product_category: integrations
 value_type: number
-status: active
+status: removed
+milestone_removed: '14.4'
 time_frame: all
 data_source: database
 distribution:

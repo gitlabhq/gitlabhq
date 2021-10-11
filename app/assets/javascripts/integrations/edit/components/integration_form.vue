@@ -2,8 +2,11 @@
 import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { TEST_INTEGRATION_EVENT, SAVE_INTEGRATION_EVENT } from '~/integrations/constants';
-import { integrationLevels } from '../constants';
+import {
+  TEST_INTEGRATION_EVENT,
+  SAVE_INTEGRATION_EVENT,
+  integrationLevels,
+} from '~/integrations/constants';
 import eventHub from '../event_hub';
 
 import ActiveCheckbox from './active_checkbox.vue';
