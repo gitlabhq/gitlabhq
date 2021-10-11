@@ -112,6 +112,14 @@ RSpec.describe Ci::UpdateBuildStateService do
           .not_to have_received(:increment_trace_operation)
           .with(operation: :invalid)
       end
+
+      it 'does not increment chunks_invalid_checksum trace metric' do
+        execute_with_stubbed_metrics!
+
+        expect(metrics)
+          .not_to have_received(:increment_error_counter)
+          .with(type: :chunks_invalid_checksum)
+      end
     end
 
     context 'when build trace has been migrated' do
@@ -174,6 +182,14 @@ RSpec.describe Ci::UpdateBuildStateService do
             .to have_received(:increment_trace_operation)
             .with(operation: :invalid)
         end
+
+        it 'increments chunks_invalid_checksum trace metric' do
+          execute_with_stubbed_metrics!
+
+          expect(metrics)
+            .to have_received(:increment_error_counter)
+            .with(type: :chunks_invalid_checksum)
+        end
       end
 
       context 'when trace checksum is valid' do
@@ -191,6 +207,14 @@ RSpec.describe Ci::UpdateBuildStateService do
           expect(metrics)
             .not_to have_received(:increment_trace_operation)
             .with(operation: :corrupted)
+
+          expect(metrics)
+            .not_to have_received(:increment_error_counter)
+            .with(type: :chunks_invalid_checksum)
+
+          expect(metrics)
+            .not_to have_received(:increment_error_counter)
+            .with(type: :chunks_invalid_size)
         end
 
         context 'when using deprecated parameters' do
@@ -208,6 +232,14 @@ RSpec.describe Ci::UpdateBuildStateService do
             expect(metrics)
               .not_to have_received(:increment_trace_operation)
               .with(operation: :corrupted)
+
+            expect(metrics)
+              .not_to have_received(:increment_error_counter)
+              .with(type: :chunks_invalid_checksum)
+
+            expect(metrics)
+              .not_to have_received(:increment_error_counter)
+              .with(type: :chunks_invalid_size)
           end
         end
       end
@@ -227,6 +259,14 @@ RSpec.describe Ci::UpdateBuildStateService do
           expect(metrics)
             .to have_received(:increment_trace_operation)
             .with(operation: :corrupted)
+
+          expect(metrics)
+            .to have_received(:increment_error_counter)
+            .with(type: :chunks_invalid_checksum)
+
+          expect(metrics)
+            .to have_received(:increment_error_counter)
+            .with(type: :chunks_invalid_size)
         end
       end
 
@@ -243,8 +283,16 @@ RSpec.describe Ci::UpdateBuildStateService do
             .with(operation: :invalid)
 
           expect(metrics)
+            .to have_received(:increment_error_counter)
+            .with(type: :chunks_invalid_checksum)
+
+          expect(metrics)
             .not_to have_received(:increment_trace_operation)
             .with(operation: :corrupted)
+
+          expect(metrics)
+            .not_to have_received(:increment_error_counter)
+            .with(type: :chunks_invalid_size)
         end
       end
 
@@ -325,6 +373,10 @@ RSpec.describe Ci::UpdateBuildStateService do
         expect(metrics)
           .not_to have_received(:increment_trace_operation)
           .with(operation: :invalid)
+
+        expect(metrics)
+          .not_to have_received(:increment_error_counter)
+          .with(type: :chunks_invalid_checksum)
       end
 
       context 'when build pending state is outdated' do

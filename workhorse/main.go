@@ -18,6 +18,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -232,6 +233,8 @@ func run(boot bootConfig, cfg config.Config) error {
 		return fmt.Errorf("configure access logger: %v", err)
 	}
 	defer accessCloser.Close()
+
+	gitaly.InitializeSidechannelRegistry(accessLogger)
 
 	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger))
 

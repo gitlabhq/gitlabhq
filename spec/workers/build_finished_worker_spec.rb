@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BuildFinishedWorker do
-  subject { described_class.new.perform(build.id) }
+  let(:worker) { described_class.new }
+
+  subject { worker.perform(build.id) }
 
   describe '#perform' do
     context 'when build exists' do
@@ -59,6 +61,30 @@ RSpec.describe BuildFinishedWorker do
 
         it 'schedules a ChatNotification job' do
           expect(ChatNotificationWorker).to receive(:perform_async).with(build.id)
+
+          subject
+        end
+      end
+
+      context 'when project is deleted' do
+        before do
+          allow(build).to receive(:project).and_return(nil)
+        end
+
+        it 'does no processing' do
+          expect(worker).not_to receive(:process_build)
+
+          subject
+        end
+      end
+
+      context 'when project is pending_delete' do
+        before do
+          build.project.update_attribute(:pending_delete, true)
+        end
+
+        it 'does no processing' do
+          expect(worker).not_to receive(:process_build)
 
           subject
         end

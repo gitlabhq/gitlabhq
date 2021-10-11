@@ -4,14 +4,32 @@ import (
 	"context"
 	"testing"
 
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/metadata"
 )
 
 func TestNewSmartHTTPClient(t *testing.T) {
-	ctx, _, err := NewSmartHTTPClient(context.Background(), serverFixture())
+	ctx, client, err := NewSmartHTTPClient(context.Background(), serverFixture())
 	require.NoError(t, err)
 	testOutgoingMetadata(t, ctx)
+
+	require.False(t, client.useSidechannel)
+	require.Nil(t, client.sidechannelRegistry)
+}
+
+func TestNewSmartHTTPClientWithSidechannel(t *testing.T) {
+	InitializeSidechannelRegistry(logrus.StandardLogger())
+
+	fixture := serverFixture()
+	fixture.Sidechannel = true
+
+	ctx, client, err := NewSmartHTTPClient(context.Background(), fixture)
+	require.NoError(t, err)
+	testOutgoingMetadata(t, ctx)
+
+	require.True(t, client.useSidechannel)
+	require.NotNil(t, client.sidechannelRegistry)
 }
 
 func TestNewBlobClient(t *testing.T) {

@@ -6691,6 +6691,9 @@ msgstr ""
 msgid "Checkout|Edit"
 msgstr ""
 
+msgid "Checkout|Enter a number greater than 0"
+msgstr ""
+
 msgid "Checkout|Exp %{expirationMonth}/%{expirationYear}"
 msgstr ""
 

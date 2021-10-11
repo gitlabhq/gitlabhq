@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"io"
 
+	gitalyclient "gitlab.com/gitlab-org/gitaly/v14/client"
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/gitaly/v14/streamio"
 )
 
 type SmartHTTPClient struct {
+	useSidechannel      bool
+	sidechannelRegistry *gitalyclient.SidechannelRegistry
 	gitalypb.SmartHTTPServiceClient
 }
 
@@ -93,6 +96,14 @@ func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.R
 }
 
 func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) error {
+	if client.useSidechannel {
+		return client.runUploadPackWithSidechannel(ctx, repo, clientRequest, clientResponse, gitConfigOptions, gitProtocol)
+	}
+
+	return client.runUploadPack(ctx, repo, clientRequest, clientResponse, gitConfigOptions, gitProtocol)
+}
+
+func (client *SmartHTTPClient) runUploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) error {
 	stream, err := client.PostUploadPack(ctx)
 	if err != nil {
 		return err
@@ -133,6 +144,41 @@ func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Re
 		if err := <-errC; err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (client *SmartHTTPClient) runUploadPackWithSidechannel(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) error {
+	ctx, waiter := client.sidechannelRegistry.Register(ctx, func(conn gitalyclient.SidechannelConn) error {
+		if _, err := io.Copy(conn, clientRequest); err != nil {
+			return err
+		}
+
+		if err := conn.CloseWrite(); err != nil {
+			return fmt.Errorf("fail to signal sidechannel half-close: %w", err)
+		}
+
+		if _, err := io.Copy(clientResponse, conn); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	defer waiter.Close()
+
+	rpcRequest := &gitalypb.PostUploadPackWithSidechannelRequest{
+		Repository:       repo,
+		GitConfigOptions: gitConfigOptions,
+		GitProtocol:      gitProtocol,
+	}
+
+	if _, err := client.PostUploadPackWithSidechannel(ctx, rpcRequest); err != nil {
+		return err
+	}
+
+	if err := waiter.Close(); err != nil {
+		return fmt.Errorf("fail to close sidechannel connection: %w", err)
 	}
 
 	return nil

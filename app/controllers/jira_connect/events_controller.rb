@@ -3,13 +3,18 @@
 class JiraConnect::EventsController < JiraConnect::ApplicationController
   # See https://developer.atlassian.com/cloud/jira/software/app-descriptor/#lifecycle
 
-  skip_before_action :verify_atlassian_jwt!, only: :installed
-  before_action :verify_qsh_claim!, only: :uninstalled
+  skip_before_action :verify_atlassian_jwt!
+  before_action :verify_asymmetric_atlassian_jwt!, if: :signed_install_active?
+
+  before_action :verify_atlassian_jwt!, only: :uninstalled, unless: :signed_install_active?
+  before_action :verify_qsh_claim!, only: :uninstalled, unless: :signed_install_active?
 
   def installed
-    return head :ok if atlassian_jwt_valid?
+    return head :ok if !signed_install_active? && atlassian_jwt_valid?
 
-    installation = JiraConnectInstallation.new(install_params)
+    return head :ok if current_jira_installation
+
+    installation = JiraConnectInstallation.new(event_params)
 
     if installation.save
       head :ok
@@ -28,7 +33,23 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
 
   private
 
-  def install_params
+  def event_params
     params.permit(:clientKey, :sharedSecret, :baseUrl).transform_keys(&:underscore)
+  end
+
+  def verify_asymmetric_atlassian_jwt!
+    asymmetric_jwt = Atlassian::JiraConnect::AsymmetricJwt.new(auth_token, jwt_verification_claims)
+
+    return head :unauthorized unless asymmetric_jwt.valid?
+
+    @current_jira_installation = JiraConnectInstallation.find_by_client_key(asymmetric_jwt.iss_claim)
+  end
+
+  def jwt_verification_claims
+    {
+      aud: jira_connect_base_url(protocol: 'https'),
+      iss: event_params[:client_key],
+      qsh: Atlassian::Jwt.create_query_string_hash(request.url, request.method, jira_connect_base_url)
+    }
   end
 end
