@@ -3,6 +3,7 @@
 module API
   class GroupContainerRepositories < ::API::Base
     include PaginationParams
+    include ::API::Helpers::ContainerRegistryHelpers
 
     helpers ::API::Helpers::PackagesHelpers
 

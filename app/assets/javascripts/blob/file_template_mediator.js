@@ -247,7 +247,11 @@ export default class FileTemplateMediator {
   }
 
   setFilename(name) {
-    this.$filenameInput.val(name).trigger('change');
+    const input = this.$filenameInput.get(0);
+    if (name !== undefined && input.value !== name) {
+      input.value = name;
+      input.dispatchEvent(new Event('change'));
+    }
   }
 
   getSelected() {

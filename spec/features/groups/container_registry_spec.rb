@@ -16,6 +16,7 @@ RSpec.describe 'Container Registry', :js do
     sign_in(user)
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    stub_container_registry_info
   end
 
   it 'has a page title set' do
@@ -55,6 +56,16 @@ RSpec.describe 'Container Registry', :js do
       visit_container_registry_details('my/image')
 
       expect(page).to have_content 'latest'
+    end
+
+    [ContainerRegistry::Path::InvalidRegistryPathError, Faraday::Error].each do |error_class|
+      context "when there is a #{error_class}" do
+        before do
+          expect(::ContainerRegistry::Client).to receive(:registry_info).and_raise(error_class, nil, nil)
+        end
+
+        it_behaves_like 'handling feature network errors with the container registry'
+      end
     end
 
     describe 'image repo details' do

@@ -9,4 +9,5 @@ export const dateFormats = {
   isoDate,
   defaultDate: mediumDate,
   defaultDateTime: 'mmm d, yyyy h:MMtt',
+  month: 'mmmm',
 };

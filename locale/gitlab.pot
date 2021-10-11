@@ -9111,7 +9111,7 @@ msgstr ""
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
-msgid "ContainerRegistry|We are having trouble connecting to the Registry, which could be due to an issue with your project name or path. %{docLinkStart}More information%{docLinkEnd}"
+msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
 msgstr ""
 
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
@@ -11704,6 +11704,9 @@ msgstr ""
 msgid "DevopsAdoption|Adoption by subgroup"
 msgstr ""
 
+msgid "DevopsAdoption|Adoption over time"
+msgstr ""
+
 msgid "DevopsAdoption|An error occurred while removing the group. Please try again."
 msgstr ""
 
@@ -11782,6 +11785,9 @@ msgstr ""
 msgid "DevopsAdoption|No results…"
 msgstr ""
 
+msgid "DevopsAdoption|No tracked features"
+msgstr ""
+
 msgid "DevopsAdoption|Not adopted"
 msgstr ""
 
@@ -11825,6 +11831,9 @@ msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the pag
 msgstr ""
 
 msgid "DevopsAdoption|This group has no subgroups"
+msgstr ""
+
+msgid "DevopsAdoption|Total number of features adopted"
 msgstr ""
 
 msgid "DevopsAdoption|You cannot remove the group you are currently in."
@@ -24104,7 +24113,7 @@ msgstr ""
 msgid "PQL|Submit information"
 msgstr ""
 
-msgid "PQL|Thank you for reaching out! Our sales team will bet back to you soon."
+msgid "PQL|Thank you for reaching out! Our sales team will get back to you soon."
 msgstr ""
 
 msgid "Package Registry"

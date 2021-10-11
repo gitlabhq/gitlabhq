@@ -14,6 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Dependency Scanning metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328034) in GitLab 14.2.
 > - Multiselect [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
 > - Overview table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/335638) in GitLab 14.3.
+> - Adoption over time chart [added](https://gitlab.com/gitlab-org/gitlab/-/issues/337561) in GitLab 14.4.
 
 Prerequisites:
 
@@ -68,6 +69,13 @@ and any added subgroups for the current calendar month.
 Each group appears as a separate row in the table.
 For each row, a feature is considered "adopted" if it has been used in a project in the given group
 during the time period (including projects in any subgroups of the given group).
+
+## Adoption over time
+
+The **Adoption over time** chart in the **Overview** tab displays DevOps Adoption over time. The chart displays the total number of adopted features from the previous twelve months, 
+from when you enabled DevOps Adoption for the group.
+
+The tooltip displays information about the features tracked for individual months.
 
 ## When is a feature considered adopted
 

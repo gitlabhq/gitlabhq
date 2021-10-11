@@ -9,6 +9,7 @@ RSpec.describe Projects::Registry::RepositoriesController do
   before do
     sign_in(user)
     stub_container_registry_config(enabled: true)
+    stub_container_registry_info
   end
 
   context 'when user has access to registry' do
@@ -29,6 +30,18 @@ RSpec.describe Projects::Registry::RepositoriesController do
         go_to_index(format: :json)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      [ContainerRegistry::Path::InvalidRegistryPathError, Faraday::Error].each do |error_class|
+        context "when there is a #{error_class}" do
+          it 'displays a connection error message' do
+            expect(::ContainerRegistry::Client).to receive(:registry_info).and_raise(error_class, nil, nil)
+
+            go_to_index
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
     end
 

@@ -3,6 +3,8 @@
 module API
   class ContainerRepositories < ::API::Base
     include Gitlab::Utils::StrongMemoize
+    include ::API::Helpers::ContainerRegistryHelpers
+
     helpers ::API::Helpers::PackagesHelpers
 
     before { authenticate! }

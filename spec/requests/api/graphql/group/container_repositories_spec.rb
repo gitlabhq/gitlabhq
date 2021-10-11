@@ -14,11 +14,12 @@ RSpec.describe 'getting container repositories in a group' do
   let_it_be(:container_repositories) { [container_repository, container_repositories_delete_scheduled, container_repositories_delete_failed].flatten }
   let_it_be(:container_expiration_policy) { project.container_expiration_policy }
 
+  let(:excluded_fields) { [] }
   let(:container_repositories_fields) do
     <<~GQL
       edges {
         node {
-          #{all_graphql_fields_for('container_repositories'.classify, max_depth: 1)}
+          #{all_graphql_fields_for('container_repositories'.classify, max_depth: 1, excluded: excluded_fields)}
         }
       }
     GQL
@@ -150,6 +151,12 @@ RSpec.describe 'getting container repositories in a group' do
       expect(container_repositories_response.size).to eq(1)
       expect(container_repositories_response.first.dig('node', 'id')).to eq(container_repository.to_global_id.to_s)
     end
+  end
+
+  it_behaves_like 'handling graphql network errors with the container registry'
+
+  it_behaves_like 'not hitting graphql network errors with the container registry' do
+    let(:excluded_fields) { %w[tags tagsCount] }
   end
 
   it 'returns the total count of container repositories' do

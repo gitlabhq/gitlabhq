@@ -153,4 +153,6 @@ RSpec.describe 'container repository details' do
       end
     end
   end
+
+  it_behaves_like 'handling graphql network errors with the container registry'
 end

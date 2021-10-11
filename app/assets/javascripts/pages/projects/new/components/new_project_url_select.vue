@@ -107,7 +107,9 @@ export default {
       this.groupToFilterBy = this.userGroups.find(
         (group) => getIdFromGraphQLId(group.id) === groupId,
       );
-      this.setNamespace(this.groupToFilterBy);
+      if (this.groupToFilterBy) {
+        this.setNamespace(this.groupToFilterBy);
+      }
     },
     setNamespace({ id, fullPath }) {
       this.selectedNamespace = {

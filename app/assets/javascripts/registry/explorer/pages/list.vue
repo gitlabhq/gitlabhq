@@ -171,6 +171,9 @@ export default {
     showDeleteAlert() {
       return this.deleteAlertType && this.itemToDelete?.path;
     },
+    showConnectionError() {
+      return this.config.connectionError || this.config.invalidPathError;
+    },
     deleteImageAlertMessage() {
       return this.deleteAlertType === 'success'
         ? DELETE_IMAGE_SUCCESS_MESSAGE
@@ -292,7 +295,7 @@ export default {
     />
 
     <gl-empty-state
-      v-if="config.characterError"
+      v-if="showConnectionError"
       :title="$options.i18n.CONNECTION_ERROR_TITLE"
       :svg-path="config.containersErrorImage"
     >

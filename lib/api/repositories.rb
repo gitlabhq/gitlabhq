@@ -101,6 +101,7 @@ module API
       params do
         optional :sha, type: String, desc: 'The commit sha of the archive to be downloaded'
         optional :format, type: String, desc: 'The archive format'
+        optional :path, type: String, desc: 'Subfolder of the repository to be downloaded'
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         if archive_rate_limit_reached?(current_user, user_project)
@@ -109,7 +110,7 @@ module API
 
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
 
-        send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
+        send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path]
       rescue StandardError
         not_found!('File')
       end

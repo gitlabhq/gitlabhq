@@ -19,6 +19,7 @@ RSpec.describe Groups::Registry::RepositoriesController do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    stub_container_registry_info
     group.add_owner(user)
     group.add_guest(guest)
     sign_in(user)
@@ -36,6 +37,18 @@ RSpec.describe Groups::Registry::RepositoriesController do
         'id' => repo.id,
         'name' => repo.name
       )
+    end
+
+    [ContainerRegistry::Path::InvalidRegistryPathError, Faraday::Error].each do |error_class|
+      context "when there is a #{error_class}" do
+        it 'displays a connection error message' do
+          expect(::ContainerRegistry::Client).to receive(:registry_info).and_raise(error_class, nil, nil)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
   end
 
@@ -70,6 +83,18 @@ RSpec.describe Groups::Registry::RepositoriesController do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect_no_snowplow_event
+        end
+
+        [ContainerRegistry::Path::InvalidRegistryPathError, Faraday::Error].each do |error_class|
+          context "when there is an invalid path error #{error_class}" do
+            it 'displays a connection error message' do
+              expect(::ContainerRegistry::Client).to receive(:registry_info).and_raise(error_class, nil, nil)
+
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
         end
       end
 

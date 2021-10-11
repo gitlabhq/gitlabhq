@@ -36,6 +36,8 @@ export default () => {
     isAdmin,
     showCleanupPolicyOnAlert,
     showUnfinishedTagCleanupCallout,
+    connectionError,
+    invalidPathError,
     ...config
   } = el.dataset;
 
@@ -67,6 +69,8 @@ export default () => {
             isAdmin: parseBoolean(isAdmin),
             showCleanupPolicyOnAlert: parseBoolean(showCleanupPolicyOnAlert),
             showUnfinishedTagCleanupCallout: parseBoolean(showUnfinishedTagCleanupCallout),
+            connectionError: parseBoolean(connectionError),
+            invalidPathError: parseBoolean(invalidPathError),
           },
           /* eslint-disable @gitlab/require-i18n-strings */
           dockerBuildCommand: `docker build -t ${config.repositoryUrl} .`,
