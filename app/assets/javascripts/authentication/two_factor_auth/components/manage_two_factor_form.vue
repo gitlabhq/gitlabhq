@@ -24,6 +24,7 @@ export default {
   },
   inject: [
     'webauthnEnabled',
+    'isCurrentPasswordRequired',
     'profileTwoFactorAuthPath',
     'profileTwoFactorAuthMethod',
     'codesProfileTwoFactorAuthPath',
@@ -64,7 +65,11 @@ export default {
     <input type="hidden" name="_method" data-testid="test-2fa-method-field" :value="method" />
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
 
-    <gl-form-group :label="$options.i18n.currentPassword" label-for="current-password">
+    <gl-form-group
+      v-if="isCurrentPasswordRequired"
+      :label="$options.i18n.currentPassword"
+      label-for="current-password"
+    >
       <gl-form-input
         id="current-password"
         type="password"

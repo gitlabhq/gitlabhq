@@ -270,7 +270,7 @@ class Group < Namespace
   def dependency_proxy_image_prefix
     # The namespace path can include uppercase letters, which
     # Docker doesn't allow. The proxy expects it to be downcased.
-    url = "#{web_url.downcase}#{DependencyProxy::URL_SUFFIX}"
+    url = "#{Gitlab::Routing.url_helpers.group_url(self).downcase}#{DependencyProxy::URL_SUFFIX}"
 
     # Docker images do not include the protocol
     url.partition('//').last

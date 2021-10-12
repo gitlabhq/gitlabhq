@@ -37,11 +37,12 @@ RSpec.describe Profiles::TwoFactorAuthsController do
 
   shared_examples 'user must enter a valid current password' do
     let(:current_password) { '123' }
+    let(:redirect_path) { profile_two_factor_auth_path }
 
     it 'requires the current password', :aggregate_failures do
       go
 
-      expect(response).to redirect_to(profile_two_factor_auth_path)
+      expect(response).to redirect_to(redirect_path)
       expect(flash[:alert]).to eq(_('You must provide a valid current password'))
     end
 
@@ -52,6 +53,19 @@ RSpec.describe Profiles::TwoFactorAuthsController do
         go
 
         expect(user.reload).to be_access_locked
+      end
+    end
+
+    context 'when user authenticates with an external service' do
+      before do
+        allow(user).to receive(:password_automatically_set?).and_return(true)
+      end
+
+      it 'does not require the current password', :aggregate_failures do
+        go
+
+        expect(response).not_to redirect_to(redirect_path)
+        expect(flash[:alert]).to be_nil
       end
     end
   end
@@ -194,7 +208,9 @@ RSpec.describe Profiles::TwoFactorAuthsController do
   end
 
   describe 'DELETE destroy' do
-    subject { delete :destroy, params: { current_password: current_password } }
+    def go
+      delete :destroy, params: { current_password: current_password }
+    end
 
     let(:current_password) { user.password }
 
@@ -202,40 +218,38 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       let_it_be_with_reload(:user) { create(:user, :two_factor) }
 
       it 'disables two factor' do
-        subject
+        go
 
         expect(user.reload.two_factor_enabled?).to eq(false)
       end
 
       it 'redirects to profile_account_path' do
-        subject
+        go
 
         expect(response).to redirect_to(profile_account_path)
       end
 
       it 'displays a notice on success' do
-        subject
+        go
 
         expect(flash[:notice])
           .to eq _('Two-factor authentication has been disabled successfully!')
       end
 
-      it_behaves_like 'user must enter a valid current password' do
-        let(:go) { delete :destroy, params: { current_password: current_password } }
-      end
+      it_behaves_like 'user must enter a valid current password'
     end
 
     context 'for a user that does not have 2FA enabled' do
       let_it_be_with_reload(:user) { create(:user) }
 
       it 'redirects to profile_account_path' do
-        subject
+        go
 
         expect(response).to redirect_to(profile_account_path)
       end
 
       it 'displays an alert on failure' do
-        subject
+        go
 
         expect(flash[:alert])
           .to eq _('Two-factor authentication is not enabled for this user')

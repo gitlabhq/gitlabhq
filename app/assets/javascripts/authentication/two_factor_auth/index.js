@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { updateHistory, removeParams } from '~/lib/utils/url_utility';
 import ManageTwoFactorForm from './components/manage_two_factor_form.vue';
 import RecoveryCodes from './components/recovery_codes.vue';
@@ -13,16 +14,20 @@ export const initManageTwoFactorForm = () => {
 
   const {
     webauthnEnabled = false,
+    currentPasswordRequired,
     profileTwoFactorAuthPath = '',
     profileTwoFactorAuthMethod = '',
     codesProfileTwoFactorAuthPath = '',
     codesProfileTwoFactorAuthMethod = '',
   } = el.dataset;
 
+  const isCurrentPasswordRequired = parseBoolean(currentPasswordRequired);
+
   return new Vue({
     el,
     provide: {
       webauthnEnabled,
+      isCurrentPasswordRequired,
       profileTwoFactorAuthPath,
       profileTwoFactorAuthMethod,
       codesProfileTwoFactorAuthPath,
