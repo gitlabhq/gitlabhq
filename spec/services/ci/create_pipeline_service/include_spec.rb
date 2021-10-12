@@ -58,17 +58,6 @@ RSpec.describe Ci::CreatePipelineService do
           expect(pipeline).to be_created_successfully
           expect(pipeline.processables.pluck(:name)).to contain_exactly('job', 'rspec')
         end
-
-        context 'when the FF ci_include_rules is disabled' do
-          before do
-            stub_feature_flags(ci_include_rules: false)
-          end
-
-          it 'includes the job in the file' do
-            expect(pipeline).to be_created_successfully
-            expect(pipeline.processables.pluck(:name)).to contain_exactly('job', 'rspec')
-          end
-        end
       end
 
       context 'when the rules does not match' do
@@ -77,17 +66,6 @@ RSpec.describe Ci::CreatePipelineService do
         it 'does not include the job in the file' do
           expect(pipeline).to be_created_successfully
           expect(pipeline.processables.pluck(:name)).to contain_exactly('job')
-        end
-
-        context 'when the FF ci_include_rules is disabled' do
-          before do
-            stub_feature_flags(ci_include_rules: false)
-          end
-
-          it 'includes the job in the file' do
-            expect(pipeline).to be_created_successfully
-            expect(pipeline.processables.pluck(:name)).to contain_exactly('job', 'rspec')
-          end
         end
       end
     end

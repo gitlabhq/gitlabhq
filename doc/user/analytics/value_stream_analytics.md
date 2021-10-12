@@ -43,6 +43,25 @@ The stages tracked by Value Stream Analytics by default represent the [GitLab fl
 - **Staging** (Continuous Deployment)
   - Time between merging and deploying to production
 
+## Filter Value Stream Analytics data
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326701) in GitLab 14.3
+
+You can filter analytics based on the following parameters:
+
+- Milestones (Group level)
+- Labels (Group level)
+- Author
+- Assignees
+
+To filter results:
+
+1. Select the **Filter results** text box.
+1. Select a parameter.
+1. Select a value. To find a value in the list, enter the value name.
+
+![Value stream analytics filter bar](img/project_vsa_filter_v14_3.png "Active filter bar for a project's Value Stream Analytics")
+
 ### Date ranges
 
 To filter analytics results based on a date range,

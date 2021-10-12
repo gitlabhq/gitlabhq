@@ -1,8 +1,16 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormInput,
+  GlModal,
+  GlModalDirective,
+  GlSprintf,
+  GlLink,
+} from '@gitlab/ui';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
@@ -13,6 +21,8 @@ export default {
     GlFormInput,
     GlModal,
     ClipboardButton,
+    GlSprintf,
+    GlLink,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -44,16 +54,6 @@ export default {
   data() {
     return {
       authorizationKey: this.initialAuthorizationKey,
-      sectionDescription: sprintf(
-        __(
-          'To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab.',
-        ),
-        {
-          linkStart: `<a href="${this.learnMoreUrl}" target="_blank" rel="noopener noreferrer">`,
-          linkEnd: '</a>',
-        },
-        false,
-      ),
     };
   },
   methods: {
@@ -84,7 +84,17 @@ export default {
       </p>
     </div>
     <div class="col-lg-9">
-      <p v-html="sectionDescription /* eslint-disable-line vue/no-v-html */"></p>
+      <gl-sprintf
+        :message="
+          __(
+            'To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab.',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="learnMoreUrl" target="_blank">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
       <gl-form-group :label="__('URL')" label-for="notify-url" label-class="label-bold">
         <div class="input-group">
           <gl-form-input id="notify-url" :readonly="true" :value="notifyUrl" />

@@ -52,7 +52,7 @@ module QA
       end
 
       def wait_until_shell_command_matches(cmd, regex, **kwargs)
-        wait_until_shell_command(cmd, kwargs) do |line|
+        wait_until_shell_command(cmd, **kwargs) do |line|
           QA::Runtime::Logger.debug(line.chomp)
 
           line =~ regex

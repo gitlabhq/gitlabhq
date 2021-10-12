@@ -31,7 +31,7 @@ To disable sign ups:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/267568) in GitLab 13.6.
 
-When this setting is enabled, any user visiting your GitLab domain and signing up for a new account
+When this setting is enabled, any user visiting your GitLab domain and signing up for a new account using the registration form
 must be explicitly [approved](../moderate_users.md#approve-or-reject-a-user-sign-up) by an
 administrator before they can start using their account. In GitLab 13.6 and later, this setting is
 enabled by default for new GitLab instances. It is only applicable if sign ups are enabled.
@@ -44,6 +44,12 @@ To require administrator approval for new sign ups:
 
 In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/273258), if an administrator disables this setting, the users in pending approval state are
 automatically approved in a background job.
+
+NOTE:
+This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
+signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
+[OmniAuth configuration](../../../integration/omniauth.md#initial-omniauth-configuration) or
+[LDAP configuration](../../../administration/auth/ldap/index.md#basic-configuration-settings).
 
 ## Require email confirmation
 

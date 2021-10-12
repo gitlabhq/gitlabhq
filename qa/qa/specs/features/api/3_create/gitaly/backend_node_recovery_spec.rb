@@ -14,12 +14,12 @@ module QA
 
         before do
           # Reset the cluster in case previous tests left it in a bad state
-          praefect_manager.reset_primary_to_original
+          praefect_manager.start_all_nodes
         end
 
         after do
           # Leave the cluster in a suitable state for subsequent tests
-          praefect_manager.reset_primary_to_original
+          praefect_manager.start_all_nodes
         end
 
         it 'recovers from dataloss', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1265' do
@@ -28,9 +28,7 @@ module QA
 
           # Stop the primary node to trigger failover, and then wait
           # for Gitaly to be ready for writes again
-          praefect_manager.trigger_failover_by_stopping_primary_node
-          praefect_manager.wait_for_new_primary
-          praefect_manager.wait_for_health_check_current_primary_node
+          praefect_manager.stop_primary_node
           praefect_manager.wait_for_gitaly_check
 
           # Confirm that we have access to the repo after failover

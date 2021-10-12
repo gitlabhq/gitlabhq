@@ -46,6 +46,10 @@ module QA
         end
       end
 
+      def stop_primary_node
+        stop_node(@primary_node)
+      end
+
       def start_primary_node
         start_node(@primary_node)
       end
@@ -66,18 +70,27 @@ module QA
         start_node(@secondary_node)
       end
 
+      def stop_tertiary_node
+        stop_node(@tertiary_node)
+      end
+
+      def start_tertiary_node
+        start_node(@tertiary_node)
+      end
+
       def start_node(name)
         shell "docker start #{name}"
+        wait_until_shell_command_matches(
+          "docker inspect -f {{.State.Running}} #{name}",
+          /true/,
+          sleep_interval: 3,
+          max_duration: 180,
+          retry_on_exception: true
+        )
       end
 
       def stop_node(name)
         shell "docker stop #{name}"
-      end
-
-      def trigger_failover_by_stopping_primary_node
-        QA::Runtime::Logger.info("Stopping node #{@primary_node} to trigger failover")
-        stop_node(@primary_node)
-        wait_for_new_primary
       end
 
       def clear_replication_queue
@@ -157,22 +170,8 @@ module QA
         result[2].to_i
       end
 
-      # Makes the original primary (gitaly1) the primary again by
-      # stopping the other nodes, waiting for gitaly1 to be made the
-      # primary again, and then it starts the other nodes and enables
-      # writes
-      def reset_primary_to_original
-        QA::Runtime::Logger.info("Checking primary node...")
-
-        return if @primary_node == current_primary_node
-
-        QA::Runtime::Logger.info("Reset primary node to #{@primary_node}")
+      def start_all_nodes
         start_node(@primary_node)
-        stop_node(@secondary_node)
-        stop_node(@tertiary_node)
-
-        wait_for_new_primary_node(@primary_node)
-
         start_node(@secondary_node)
         start_node(@tertiary_node)
 
@@ -189,10 +188,12 @@ module QA
       end
 
       def wait_for_praefect
-        QA::Runtime::Logger.info('Wait until Praefect starts and is listening')
         wait_until_shell_command_matches(
-          "docker exec #{@praefect} bash -c 'cat /var/log/gitlab/praefect/current'",
-          /listening at tcp address/
+          "docker inspect -f {{.State.Running}} #{@praefect}",
+          /true/,
+          sleep_interval: 3,
+          max_duration: 180,
+          retry_on_exception: true
         )
 
         # Praefect can fail to start if unable to dial one of the gitaly nodes
@@ -201,20 +202,6 @@ module QA
 
         shell "docker exec #{@praefect} bash -c 'tail /var/log/gitlab/praefect/current'" do |line|
           QA::Runtime::Logger.debug(line.chomp)
-        end
-      end
-
-      def wait_for_new_primary_node(node)
-        QA::Runtime::Logger.info("Wait until #{node} is the primary node")
-        with_praefect_log(max_duration: 120) do |log|
-          break true if log['msg'] == 'primary node changed' && log['newPrimary'] == node
-        end
-      end
-
-      def wait_for_new_primary
-        QA::Runtime::Logger.info("Wait until a new primary node is selected")
-        with_praefect_log(max_duration: 120) do |log|
-          break true if log['msg'] == 'primary node changed'
         end
       end
 
@@ -274,10 +261,6 @@ module QA
         end
       end
 
-      def wait_for_health_check_current_primary_node
-        wait_for_health_check(current_primary_node)
-      end
-
       def wait_for_health_check_all_nodes
         wait_for_health_check(@primary_node)
         wait_for_health_check(@secondary_node)
@@ -286,29 +269,58 @@ module QA
 
       def wait_for_health_check(node)
         QA::Runtime::Logger.info("Waiting for health check on #{node}")
-        wait_until_shell_command("docker exec #{node} bash -c 'cat /var/log/gitlab/gitaly/current'") do |line|
-          QA::Runtime::Logger.debug(line.chomp)
-          log = JSON.parse(line)
+        wait_until_node_is_marked_as_healthy_storage(node)
+      end
 
-          log['grpc.request.fullMethod'] == '/grpc.health.v1.Health/Check' && log['grpc.code'] == 'OK'
-        rescue JSON::ParserError
-          # Ignore lines that can't be parsed as JSON
-        end
+      def wait_for_primary_node_health_check
+        wait_for_health_check(@primary_node)
+      end
+
+      def wait_for_secondary_node_health_check
+        wait_for_health_check(@secondary_node)
+      end
+
+      def wait_for_tertiary_node_health_check
+        wait_for_health_check(@tertiary_node)
+      end
+
+      def wait_for_health_check_failure(node)
+        QA::Runtime::Logger.info("Waiting for health check failure on #{node}")
+        wait_until_node_is_removed_from_healthy_storages(node)
+      end
+
+      def wait_for_primary_node_health_check_failure
+        wait_for_health_check_failure(@primary_node)
       end
 
       def wait_for_secondary_node_health_check_failure
         wait_for_health_check_failure(@secondary_node)
       end
 
-      def wait_for_health_check_failure(node)
-        QA::Runtime::Logger.info("Waiting for Praefect to record a health check failure on #{node}")
-        wait_until_shell_command("docker exec #{@praefect} bash -c 'tail -n 1 /var/log/gitlab/praefect/current'") do |line|
-          QA::Runtime::Logger.debug(line.chomp)
-          log = JSON.parse(line)
+      def wait_for_tertiary_node_health_check_failure
+        wait_for_health_check_failure(@tertiary_node)
+      end
 
-          health_check_failure_message?(log['msg']) && log['storage'] == node
-        rescue JSON::ParserError
-          # Ignore lines that can't be parsed as JSON
+      def wait_until_node_is_removed_from_healthy_storages(node)
+        Support::Waiter.wait_until(max_duration: 60, sleep_interval: 3, raise_on_failure: false) do
+          result = []
+          shell sql_to_docker_exec_cmd("SELECT count(*) FROM healthy_storages WHERE storage = '#{node}';") do |line|
+            result << line
+          end
+          QA::Runtime::Logger.debug("result is ---#{result}")
+          result[2].to_i == 0
+        end
+      end
+
+      def wait_until_node_is_marked_as_healthy_storage(node)
+        Support::Waiter.wait_until(max_duration: 60, sleep_interval: 3, raise_on_failure: false) do
+          result = []
+          shell sql_to_docker_exec_cmd("SELECT count(*) FROM healthy_storages WHERE storage = '#{node}';") do |line|
+            result << line
+          end
+
+          QA::Runtime::Logger.debug("result is ---#{result}")
+          result[2].to_i == 1
         end
       end
 

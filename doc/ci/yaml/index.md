@@ -446,12 +446,11 @@ that proposes expanding this feature to support more variables.
 
 #### `rules` with `include`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276515) in GitLab 14.2.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3 and is ready for production use.
-> - [Enabled with `ci_include_rules` flag](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) for self-managed GitLab in GitLab 14.3 and is ready for production use.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the `ci_include_rules` flag](../../administration/feature_flags.md). On GitLab.com, this feature is available.
+> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) GitLab 14.3.
+> - [Feature flag `ci_include_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
 
 You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
 You can only use [`if` rules](#rulesif) in `include`, and only with [certain variables](#variables-with-include).
