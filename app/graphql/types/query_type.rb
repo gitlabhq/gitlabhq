@@ -136,6 +136,10 @@ module Types
           complexity: 5,
           resolver: ::Resolvers::TimelogResolver
 
+    field :board_list, ::Types::BoardListType,
+          null: true,
+          resolver: Resolvers::BoardListResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

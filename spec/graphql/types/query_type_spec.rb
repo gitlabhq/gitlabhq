@@ -27,6 +27,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       runner
       runners
       timelogs
+      board_list
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -134,6 +135,16 @@ RSpec.describe GitlabSchema.types['Query'] do
       is_expected.to have_graphql_arguments(:startDate, :endDate, :startTime, :endTime, :username, :projectId, :groupId, :after, :before, :first, :last)
       is_expected.to have_graphql_type(Types::TimelogType.connection_type)
       is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
+    end
+  end
+
+  describe 'boardList field' do
+    subject { described_class.fields['boardList'] }
+
+    it 'finds a board list by its gid' do
+      is_expected.to have_graphql_arguments(:id, :issue_filters)
+      is_expected.to have_graphql_type(Types::BoardListType)
+      is_expected.to have_graphql_resolver(Resolvers::BoardListResolver)
     end
   end
 end

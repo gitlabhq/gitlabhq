@@ -20,11 +20,6 @@ module Gitlab
           def additional_limits
             additional_minutes_usage[%r{([^/ ]+)$}]
           end
-
-          # TODO: Refactor/Remove this method once https://gitlab.com/gitlab-org/quality/chemlab/-/merge_requests/28 is merged
-          def additional_minutes_exist?
-            has_element?(:strong, :additional_minutes, text: 'Additional minutes')
-          end
         end
       end
     end

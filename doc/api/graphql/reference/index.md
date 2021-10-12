@@ -36,6 +36,19 @@ in [Removed Items](../removed_items.md).
 
 The `Query` type contains the API's top-level entry points for all executable queries.
 
+### `Query.boardList`
+
+Find an issue board list.
+
+Returns [`BoardList`](#boardlist).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryboardlistid"></a>`id` | [`ListID!`](#listid) | Global ID of the list. |
+| <a id="queryboardlistissuefilters"></a>`issueFilters` | [`BoardIssueInput`](#boardissueinput) | Filters applied when getting issue metadata in the board list. |
+
 ### `Query.ciApplicationSettings`
 
 CI related settings that apply to the entire instance.

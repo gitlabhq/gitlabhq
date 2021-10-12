@@ -26312,6 +26312,9 @@ msgstr ""
 msgid "Profiles|You don't have access to delete this user."
 msgstr ""
 
+msgid "Profiles|You must accept the Terms of Service in order to perform this action."
+msgstr ""
+
 msgid "Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account"
 msgstr ""
 
@@ -28973,13 +28976,13 @@ msgstr ""
 msgid "Requirements can be based on users, stakeholders, system, software, or anything else you find important to capture."
 msgstr ""
 
-msgid "Requires approval from %{names}."
-msgid_plural "Requires %{count} more approvals from %{names}."
+msgid "Requires %d approval from eligible users."
+msgid_plural "Requires %d approvals from eligible users."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Requires approval."
-msgid_plural "Requires %d more approvals."
+msgid "Requires %{count} approval from %{names}."
+msgid_plural "Requires %{count} approvals from %{names}."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -40207,6 +40210,9 @@ msgid "e.g. %{token}"
 msgstr ""
 
 msgid "element is not a hierarchy"
+msgstr ""
+
+msgid "eligible users"
 msgstr ""
 
 msgid "email '%{email}' is not a verified email."

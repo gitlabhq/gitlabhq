@@ -188,6 +188,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
     end
 
     it 'sticks an entity to the primary', :aggregate_failures do
+      allow(ActiveRecord::Base.connection.load_balancer)
+        .to receive(:primary_only?)
+        .and_return(false)
+
       ids.each do |id|
         expect(sticking)
           .to receive(:set_write_location_for)
@@ -196,6 +200,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
       expect(Gitlab::Database::LoadBalancing::Session.current)
         .to receive(:use_primary!)
+
+      subject
+    end
+
+    it 'does not update the write location when no replicas are used' do
+      expect(sticking).not_to receive(:set_write_location_for)
 
       subject
     end
@@ -221,9 +231,19 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
         .to receive(:primary_write_location)
         .and_return('foo')
 
+      allow(ActiveRecord::Base.connection.load_balancer)
+        .to receive(:primary_only?)
+        .and_return(false)
+
       expect(sticking)
         .to receive(:set_write_location_for)
         .with(:user, 42, 'foo')
+
+      sticking.mark_primary_write_location(:user, 42)
+    end
+
+    it 'does nothing when no replicas are used' do
+      expect(sticking).not_to receive(:set_write_location_for)
 
       sticking.mark_primary_write_location(:user, 42)
     end

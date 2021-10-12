@@ -25,7 +25,7 @@ module Gitlab
 
       delegate :old_trace, to: :job
       delegate :can_attempt_archival_now?, :increment_archival_attempts!,
-        :archival_attempts_message, to: :trace_metadata
+        :archival_attempts_message, :archival_attempts_available?, to: :trace_metadata
 
       def initialize(job)
         @job = job
@@ -122,6 +122,10 @@ module Gitlab
         end
       end
 
+      def attempt_archive_cleanup!
+        destroy_any_orphan_trace_data!
+      end
+
       def update_interval
         if being_watched?
           UPDATE_FREQUENCY_WHEN_BEING_WATCHED
@@ -191,7 +195,10 @@ module Gitlab
       def unsafe_archive!
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        unsafe_trace_conditionally_cleanup_before_retry!
+        already_archived?.tap do |archived|
+          destroy_any_orphan_trace_data!
+          raise AlreadyArchivedError, 'Could not archive again' if archived
+        end
 
         if job.trace_chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
@@ -214,16 +221,15 @@ module Gitlab
       def already_archived?
         # TODO check checksum to ensure archive completed successfully
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/259619
-        trace_artifact.archived_trace_exists?
+        trace_artifact&.archived_trace_exists?
       end
 
-      def unsafe_trace_conditionally_cleanup_before_retry!
+      def destroy_any_orphan_trace_data!
         return unless trace_artifact
 
         if already_archived?
           # An archive already exists, so make sure to remove the trace chunks
           erase_trace_chunks!
-          raise AlreadyArchivedError, 'Could not archive again'
         else
           # An archive already exists, but its associated file does not, so remove it
           trace_artifact.destroy!

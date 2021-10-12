@@ -904,23 +904,23 @@
     stylelint-declaration-strict-value "1.7.7"
     stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.215.0":
-  version "1.215.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.215.0.tgz#f2760bbb0a38b26346e1b755e63fb63eba005edd"
-  integrity sha512-/bc0+EOYPQlPCMbfyOkMLxDKBn+ewEBlmTRmFwf7mXvfIRszdJPY8XCx/fJIEQwDr8+k4E28ktFnLZGnaFhCnw==
+"@gitlab/svgs@1.218.0":
+  version "1.218.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.218.0.tgz#0715e2ef50b5cb83813e1a5e29d5919a96685734"
+  integrity sha512-eckixyumeWogykEUZfP4pGjoRdhdWQIFwSTM0ks5tQqza+BikcL2xvxzicJs69T1IiCKwYtEpR1c3T/hSx39Mg==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.18.0":
-  version "32.18.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.18.0.tgz#cd340f050fe0183218f6233328aca2369bd6e449"
-  integrity sha512-bDMmsNB9VMBX2JbezyJWfk02t0aFfAT9Ez4ALTDUJLb5/Q9GKByfE5sLycms6L1aZxzP6r1jypnu5DD0eT92eg==
+"@gitlab/ui@32.19.1":
+  version "32.19.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.19.1.tgz#ab54408272cb5ee695dc0a328892e047da3d41ac"
+  integrity sha512-ooc0TwCvREuWJfvn8EbOkEz1Mh4UKEu7x0MKhD+TBjG+JJwLKDClmD1cPPE05BXtWAvW5W9JUBkaeMCVQG2l3g==
   dependencies:
     "@babel/standalone" "^7.0.0"
-    bootstrap-vue "2.19.0"
+    bootstrap-vue "2.20.1"
     copy-to-clipboard "^3.0.8"
     dompurify "^2.3.3"
     echarts "^4.9.0"
@@ -2758,10 +2758,10 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bootstrap-vue@2.19.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.19.0.tgz#5019df48251e552a5c34da57fc97dabebd53b02f"
-  integrity sha512-IjAXUSrRU5Qu9x3uwUcoj6LtysKbCVeWoJOsODyI/WokStUr95M+tTIajXUjIrB/Nsk0fS+RNvZnm2sWeNFrhg==
+bootstrap-vue@2.20.1:
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.20.1.tgz#1b6cd4368632c1a6dd4a5ed161242baa131c3cd5"
+  integrity sha512-s+w83q0T2mo/RbFwTM8gExbLJMEOYpdTUqmyFaHv2Ir+TFprMvTWpeAzeNuawJ130W1gePZ3LW3cNp1t/tZbOw==
   dependencies:
     "@nuxt/opencollective" "^0.3.2"
     bootstrap ">=4.5.3 <5.0.0"

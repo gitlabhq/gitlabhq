@@ -104,6 +104,10 @@ module Gitlab
         end
 
         def with_primary_write_location
+          # When only using the primary, there's no point in getting write
+          # locations, as the primary is always in sync with itself.
+          return if @load_balancer.primary_only?
+
           location = @load_balancer.primary_write_location
 
           return if location.blank?

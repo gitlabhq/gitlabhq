@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
     middleware.call(worker_class, job, nil, nil) {}
   end
 
-  describe '#call' do
+  describe '#call', :database_replica do
     shared_context 'data consistency worker class' do |data_consistency, feature_flag|
       let(:expected_consistency) { data_consistency }
       let(:worker_class) do

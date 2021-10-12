@@ -45,6 +45,11 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def destroy
+    if current_user.required_terms_not_accepted?
+      redirect_to profile_account_path, status: :see_other, alert: s_('Profiles|You must accept the Terms of Service in order to perform this action.')
+      return
+    end
+
     if destroy_confirmation_valid?
       current_user.delete_async(deleted_by: current_user)
       session.try(:destroy)

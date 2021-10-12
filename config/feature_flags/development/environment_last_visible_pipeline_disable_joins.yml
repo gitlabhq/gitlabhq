@@ -1,8 +1,0 @@
----
-name: environment_last_visible_pipeline_disable_joins
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68870
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340283
-milestone: '14.3'
-type: development
-group: group::release
-default_enabled: true

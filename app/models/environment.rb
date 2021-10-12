@@ -28,8 +28,8 @@ class Environment < ApplicationRecord
 
   has_one :last_deployment, -> { success.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
-  has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus', disable_joins: -> { ::Feature.enabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml) }
-  has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline', disable_joins: -> { ::Feature.enabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml) }
+  has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus', disable_joins: true
+  has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline', disable_joins: true
 
   has_one :upcoming_deployment, -> { running.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
@@ -198,14 +198,14 @@ class Environment < ApplicationRecord
 
   # Overriding association
   def last_visible_deployable
-    return super if association_cached?(:last_visible_deployable) || ::Feature.disabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml)
+    return super if association_cached?(:last_visible_deployable)
 
     last_visible_deployment&.deployable
   end
 
   # Overriding association
   def last_visible_pipeline
-    return super if association_cached?(:last_visible_pipeline) || ::Feature.disabled?(:environment_last_visible_pipeline_disable_joins, default_enabled: :yaml)
+    return super if association_cached?(:last_visible_pipeline)
 
     last_visible_deployable&.pipeline
   end

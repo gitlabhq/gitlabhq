@@ -25,19 +25,15 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
 
-    @members = GroupMembersFinder
-      .new(@group, current_user, params: filter_params)
-      .execute(include_relations: requested_relations)
-
     if can?(current_user, :admin_group_member, @group)
       @skip_groups = @group.related_group_ids
 
-      @invited_members = @members.invite
+      @invited_members = invited_members
       @invited_members = @invited_members.search_invite_email(params[:search_invited]) if params[:search_invited].present?
       @invited_members = present_invited_members(@invited_members)
     end
 
-    @members = present_group_members(@members.non_invite)
+    @members = present_group_members(non_invited_members)
 
     @requesters = present_members(
       AccessRequestsFinder.new(@group).execute(current_user)
@@ -50,6 +46,20 @@ class Groups::GroupMembersController < Groups::ApplicationController
   alias_method :membershipable, :group
 
   private
+
+  def group_members
+    @group_members ||= GroupMembersFinder
+      .new(@group, current_user, params: filter_params)
+      .execute(include_relations: requested_relations)
+  end
+
+  def invited_members
+    group_members.invite
+  end
+
+  def non_invited_members
+    group_members.non_invite
+  end
 
   def present_invited_members(invited_members)
     present_members(invited_members

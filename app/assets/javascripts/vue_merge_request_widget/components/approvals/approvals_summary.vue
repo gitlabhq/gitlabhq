@@ -35,13 +35,17 @@ export default {
       }
 
       if (!this.rulesLeft.length) {
-        return n__('Requires approval.', 'Requires %d more approvals.', this.approvalsLeft);
+        return n__(
+          'Requires %d approval from eligible users.',
+          'Requires %d approvals from eligible users.',
+          this.approvalsLeft,
+        );
       }
 
       return sprintf(
         n__(
-          'Requires approval from %{names}.',
-          'Requires %{count} more approvals from %{names}.',
+          'Requires %{count} approval from %{names}.',
+          'Requires %{count} approvals from %{names}.',
           this.approvalsLeft,
         ),
         {

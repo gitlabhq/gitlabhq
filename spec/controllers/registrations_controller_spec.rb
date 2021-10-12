@@ -602,6 +602,22 @@ RSpec.describe RegistrationsController do
       end
     end
 
+    context 'when user did not accept app terms' do
+      let(:user) { create(:user, accepted_term: nil) }
+
+      before do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+        stub_application_setting(password_authentication_enabled_for_git: false)
+        stub_application_setting(enforce_terms: true)
+      end
+
+      it 'fails with message' do
+        post :destroy, params: { username: user.username }
+
+        expect_failure(s_('Profiles|You must accept the Terms of Service in order to perform this action.'))
+      end
+    end
+
     it 'sets the username and caller_id in the context' do
       expect(controller).to receive(:destroy).and_wrap_original do |m, *args|
         m.call(*args)

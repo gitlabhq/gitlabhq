@@ -90,17 +90,18 @@ export default {
     showMore() {
       this.$emit('showMore');
     },
-    generateRowNumber(id) {
+    generateRowNumber(path, id, index) {
+      const key = `${path}-${id}-${index}`;
       if (!this.glFeatures.lazyLoadCommits) {
         return 0;
       }
 
-      if (!this.rowNumbers[id] && this.rowNumbers[id] !== 0) {
+      if (!this.rowNumbers[key] && this.rowNumbers[key] !== 0) {
         this.$options.totalRowsLoaded += 1;
-        this.rowNumbers[id] = this.$options.totalRowsLoaded;
+        this.rowNumbers[key] = this.$options.totalRowsLoaded;
       }
 
-      return this.rowNumbers[id];
+      return this.rowNumbers[key];
     },
     getCommit(fileName, type) {
       if (!this.glFeatures.lazyLoadCommits) {
@@ -150,7 +151,7 @@ export default {
               :lfs-oid="entry.lfsOid"
               :loading-path="loadingPath"
               :total-entries="totalEntries"
-              :row-number="generateRowNumber(entry.id)"
+              :row-number="generateRowNumber(entry.flatPath, entry.id, index)"
               :commit-info="getCommit(entry.name, entry.type)"
               v-on="$listeners"
             />

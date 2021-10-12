@@ -42,6 +42,9 @@ module Gitlab
         end
 
         def wal_location_for(load_balancer)
+          # When only using the primary there's no need for any WAL queries.
+          return if load_balancer.primary_only?
+
           if ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
             load_balancer.primary_write_location
           else

@@ -71,7 +71,7 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex mr-source-target gl-mb-3">
+  <div class="gl-display-flex mr-source-target">
     <mr-widget-icon name="git-merge" />
     <div class="git-merge-container d-flex">
       <div class="normal">

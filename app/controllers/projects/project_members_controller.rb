@@ -19,16 +19,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @group_links = @project.project_group_links
     @group_links = @group_links.search(params[:search_groups]) if params[:search_groups].present?
 
-    project_members = MembersFinder
-      .new(@project, current_user, params: filter_params)
-      .execute(include_relations: requested_relations)
-
     if can?(current_user, :admin_project_member, @project)
-      @invited_members = present_members(project_members.invite)
+      @invited_members = present_members(invited_members)
       @requesters = present_members(AccessRequestsFinder.new(@project).execute(current_user))
     end
 
-    @project_members = present_members(project_members.non_invite.page(params[:page]))
+    @project_members = present_members(non_invited_members.page(params[:page]))
 
     @project_member = @project.project_members.new
   end
@@ -54,6 +50,20 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   alias_method :membershipable, :project
 
   private
+
+  def members
+    @members ||= MembersFinder
+      .new(@project, current_user, params: filter_params)
+      .execute(include_relations: requested_relations)
+  end
+
+  def invited_members
+    members.invite
+  end
+
+  def non_invited_members
+    members.non_invite
+  end
 
   def filter_params
     params.permit(:search).merge(sort: @sort)
