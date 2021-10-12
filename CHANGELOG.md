@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.3.3 (2021-10-12)
+
+### Fixed (3 changes)
+
+- [Disable caching of MergeToRefService call in mergeability check](gitlab-org/gitlab@ea9f38fb3ce1f9b345ca699b5f9ae7b36726a56f) ([merge request](gitlab-org/gitlab!72179))
+- [Fix 2FA setup for users with no password](gitlab-org/gitlab@c6d5cdfc3fa1a1dc0a6686a8f189972c03403f7a) ([merge request](gitlab-org/gitlab!72179))
+- [Fix dependency proxy image prefix](gitlab-org/gitlab@deb9719db05e99dec787bd76c5e96408f92eb802) ([merge request](gitlab-org/gitlab!72179))
+
 ## 14.3.2 (2021-10-01)
 
 ### Fixed (1 change)
